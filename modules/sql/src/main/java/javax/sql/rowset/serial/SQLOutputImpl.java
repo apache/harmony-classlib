@@ -32,10 +32,14 @@ import java.sql.SQLOutput;
 import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Map;
+import java.util.Vector;
 
 import org.apache.harmony.luni.util.NotImplementedException;
 
 public class SQLOutputImpl implements SQLOutput {
+    public SQLOutputImpl(Vector<?> attributes, Map<String,?> map) throws NotImplementedException {
+    }
 
     public void writeArray(Array theArray) throws SQLException,
             NotImplementedException {

@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
 
-public class SyncFactory {
+class SyncFactory {
     public static String ROWSET_SYNC_PROVIDER = "rowset.provider.classname"; //$NON-NLS-1$
 
     public static String ROWSET_SYNC_VENDOR = "rowset.provider.vendor"; //$NON-NLS-1$

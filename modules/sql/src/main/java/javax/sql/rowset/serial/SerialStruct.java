@@ -57,7 +57,7 @@ public class SerialStruct implements Struct, Serializable, Cloneable {
         throw new NotImplementedException();
     }
 
-    public String getSQLTypeName() throws SQLException, NotImplementedException {
+    public String getSQLTypeName() throws SerialException, NotImplementedException {
         throw new NotImplementedException();
     }
 

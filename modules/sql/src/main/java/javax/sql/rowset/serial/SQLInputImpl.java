@@ -30,10 +30,13 @@ import java.sql.SQLException;
 import java.sql.SQLInput;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Map;
 
 import org.apache.harmony.luni.util.NotImplementedException;
 
 public class SQLInputImpl implements SQLInput {
+    public SQLInputImpl(Object[] attributes, Map<String,Class<?>> map) throws NotImplementedException {
+    }
 
     public Array readArray() throws SQLException, NotImplementedException {
         throw new NotImplementedException();
