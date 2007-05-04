@@ -28,6 +28,10 @@ public class SyncFactory {
     public static String ROWSET_SYNC_VENDOR = "rowset.provider.vendor"; //$NON-NLS-1$
 
     public static String ROWSET_SYNC_PROVIDER_VERSION = "rowset.provider.version"; //$NON-NLS-1$
+    
+    // This class does not have public constructor
+    private SyncFactory() {
+    }
 
     public static void registerProvider(String providerID) throws SyncFactoryException {
         throw new UnsupportedOperationException();
