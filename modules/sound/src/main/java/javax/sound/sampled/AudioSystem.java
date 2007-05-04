@@ -55,6 +55,10 @@ public class AudioSystem {
     private final static String SOURCEDATALINE = "javax.sound.sampled.SourceDataLine"; //$NON-NLS-1$
 
     private final static String TARGETDATALINE = "javax.sound.sampled.TargetDataLine"; //$NON-NLS-1$
+    
+    // This class does not have public constructor
+    private AudioSystem() {
+    }
 
     public static Mixer.Info[] getMixerInfo() {
         List<Mixer.Info> result = new ArrayList<Mixer.Info>();
