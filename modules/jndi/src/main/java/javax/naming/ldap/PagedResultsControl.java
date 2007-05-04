@@ -40,7 +40,7 @@ public final class PagedResultsControl extends BasicControl {
      * static ASN1 Encoder for Paged Result Control using
      * PagedResultSearchControlValue
      */
-    public static ASN1Type ASN1_ENCODER = new ASN1Sequence(new ASN1Type[] {
+    static ASN1Type ASN1_ENCODER = new ASN1Sequence(new ASN1Type[] {
             ASN1Integer.getInstance(), // size
             ASN1OctetString.getInstance(), // cookie
     }) {

@@ -44,7 +44,7 @@ public final class SortControl extends BasicControl {
      * [0] MatchingRuleId OPTIONAL, reverseOrder [1] BOOLEAN DEFAULT FALSE }
      * 
      */
-    public static ASN1Sequence ASN1_SORTKEY = new ASN1Sequence(new ASN1Type[] {
+    static ASN1Sequence ASN1_SORTKEY = new ASN1Sequence(new ASN1Type[] {
             ASN1OctetString.getInstance(),
             new ASN1Implicit(0, ASN1StringType.UTF8STRING),
             new ASN1Implicit(1, ASN1Boolean.getInstance()),
@@ -77,7 +77,7 @@ public final class SortControl extends BasicControl {
      * SortKeyList ::= SEQUENCE OF SortKey;
      * 
      */
-    public static ASN1SequenceOf ASN1_SORTKEYLIST = new ASN1SequenceOf(
+    static ASN1SequenceOf ASN1_SORTKEYLIST = new ASN1SequenceOf(
             ASN1_SORTKEY);
 
     private static final long serialVersionUID = -1965961680233330744L;

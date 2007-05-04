@@ -28,7 +28,7 @@ import javax.naming.NamingException;
  * @see Control
  * 
  */
-public interface HasControls extends Serializable {
+public interface HasControls {
 
     /*
      * -------------------------------------------------------------------

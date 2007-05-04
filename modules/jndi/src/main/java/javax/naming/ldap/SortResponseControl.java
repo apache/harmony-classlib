@@ -69,7 +69,7 @@ public final class SortResponseControl extends BasicControl {
      *      attributeType [0] AttributeDescription OPTIONAL }
      *      
      */
-    public static ASN1Type ASN1_SORTRESPONSE = new ASN1Sequence(new ASN1Type[] {
+    static ASN1Type ASN1_SORTRESPONSE = new ASN1Sequence(new ASN1Type[] {
             ASN1Enumerated.getInstance(),   // sortResult
             ASN1OctetString.getInstance(),  // attributeType
     }) {
