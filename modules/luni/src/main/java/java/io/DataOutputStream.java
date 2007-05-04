@@ -195,6 +195,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         buff[0] = (byte) (val >> 8);
         buff[1] = (byte) val;
         out.write(buff, 0, 2);
+        written += 2;
     }
 
     /**
@@ -276,6 +277,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         buff[2] = (byte) (val >> 8);
         buff[3] = (byte) val;
         out.write(buff, 0, 4);
+        written += 4;
     }
 
     /**
@@ -301,6 +303,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         buff[6] = (byte) (val >> 8);
         buff[7] = (byte) val;
         out.write(buff, 0, 8);
+        written += 8;
     }
 
     /**
@@ -321,6 +324,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
         buff[0] = (byte) (val >> 8);
         buff[1] = (byte) val;
         out.write(buff, 0, 2);
+        written += 2;
     }
 
     /**
