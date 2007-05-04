@@ -28,7 +28,7 @@ import org.apache.harmony.math.internal.nls.Messages;
  * @author Intel Middleware Product Division
  * @author Instituto Tecnologico de Cordoba
  */
-public class MathContext implements Serializable {
+public final class MathContext implements Serializable {
 
     /* Fields */
 
