@@ -23,12 +23,12 @@ public abstract class Control {
 
         private String name;
 
-        public Type(String name) {
+        protected Type(String name) {
             this.name = name;
         }
 
         @Override
-        public boolean equals(Object another) {
+        public final boolean equals(Object another) {
             if (this == another) {
                 return true;
             }

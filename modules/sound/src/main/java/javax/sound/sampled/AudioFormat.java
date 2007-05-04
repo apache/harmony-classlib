@@ -39,7 +39,7 @@ public class AudioFormat {
         }
 
         @Override
-        public boolean equals(Object another) {
+        public final boolean equals(Object another) {
             if (this == another) {
                 return true;
             }
