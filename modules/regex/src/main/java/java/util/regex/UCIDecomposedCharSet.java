@@ -24,7 +24,7 @@ package java.util.regex;
  * CANON_EQ flag of Pattern class
  * is specified.
  */
-public class UCIDecomposedCharSet extends DecomposedCharSet{
+class UCIDecomposedCharSet extends DecomposedCharSet{
     
     /*
      * Just only a stub
