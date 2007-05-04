@@ -35,7 +35,7 @@ import java.util.Map;
 import org.apache.harmony.luni.util.NotImplementedException;
 
 public class SQLInputImpl implements SQLInput {
-    public SQLInputImpl(Object[] attributes, Map<String,Class<?>> map) throws NotImplementedException {
+    public SQLInputImpl(Object[] attributes, Map<String,Class<?>> map) throws SQLException, NotImplementedException {
     }
 
     public Array readArray() throws SQLException, NotImplementedException {
