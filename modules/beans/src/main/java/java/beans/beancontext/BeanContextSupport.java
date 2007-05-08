@@ -117,9 +117,9 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 
     private static final long serialVersionUID = -4879613978649577204L;
 
-    protected transient ArrayList<BeanContextMembershipListener> bcmListeners;
+    protected transient ArrayList bcmListeners;
 
-    protected transient HashMap<Object, BCSChild> children;
+    protected transient HashMap children;
 
     /**
      * @serial
@@ -458,13 +458,13 @@ public class BeanContextSupport extends BeanContextChildSupport implements
     }
 
     protected final void fireChildrenAdded(BeanContextMembershipEvent bcme) {
-        for (BeanContextMembershipListener cur : bcmListeners) {
+        for (BeanContextMembershipListener cur : (ArrayList<BeanContextMembershipListener>)bcmListeners) {
             cur.childrenAdded(bcme);
         }
     }
 
     protected final void fireChildrenRemoved(BeanContextMembershipEvent bcme) {
-        for (BeanContextMembershipListener cur : bcmListeners) {
+        for (BeanContextMembershipListener cur : (ArrayList<BeanContextMembershipListener>)bcmListeners) {
             cur.childrenRemoved(bcme);
         }
     }
@@ -821,7 +821,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
                 synchronized (this.children) {
                     // Just before removing save a reference to it for later use
                     // in childJustRemovedHook() method
-                    BCSChild ch = this.children.get(targetChild);
+                    BCSChild ch = (BCSChild)this.children.get(targetChild);
                     removed = this.children.remove(targetChild);
                     childJustRemovedHook(targetChild, ch);
                 }

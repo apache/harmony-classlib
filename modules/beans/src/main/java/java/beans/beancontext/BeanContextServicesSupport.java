@@ -139,13 +139,13 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
         }
     }
 
-    protected transient ArrayList<BeanContextServicesListener> bcsListeners;
+    protected transient ArrayList bcsListeners;
 
     protected transient BCSSProxyServiceProvider proxy;
 
     protected transient int serializable;
 
-    protected transient HashMap<Class, BCSSServiceProvider> services;
+    protected transient HashMap services;
 
     public BeanContextServicesSupport() {
         super();
@@ -276,7 +276,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
     protected final void fireServiceAdded(
             BeanContextServiceAvailableEvent bcssae) {
 
-        for (BeanContextServicesListener l : this.bcsListeners) {
+        for (BeanContextServicesListener l : (ArrayList<BeanContextServicesListener>)this.bcsListeners) {
             l.serviceAvailable(bcssae);
         }
     }
@@ -287,7 +287,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
 
     protected final void fireServiceRevoked(BeanContextServiceRevokedEvent bcsre) {
 
-        for (BeanContextServicesListener l : this.bcsListeners) {
+        for (BeanContextServicesListener l : (ArrayList<BeanContextServicesListener>)this.bcsListeners) {
             l.serviceRevoked(bcsre);
         }
     }
@@ -348,7 +348,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
 
         synchronized (BeanContext.globalHierarchyLock) {
             synchronized (this.services) {
-                BCSSServiceProvider bcsp = this.services.get(serviceClass);
+                BCSSServiceProvider bcsp = (BCSSServiceProvider)this.services.get(serviceClass);
                 if (bcsp == null) {
                     return null;
                 }
@@ -394,7 +394,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             Object service = null;
 
             synchronized (this.services) {
-                BCSSServiceProvider bcsp = this.services.get(serviceClass);
+                BCSSServiceProvider bcsp = (BCSSServiceProvider)this.services.get(serviceClass);
 
                 if (bcsp != null) {
                     service = bcsp.getServiceProvider().getService(
@@ -546,7 +546,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
         }
 
-        for (BeanContextServicesListener l : this.bcsListeners) {
+        for (BeanContextServicesListener l : (ArrayList<BeanContextServicesListener>)this.bcsListeners) {
             l.serviceAvailable(bcssae);
         }
     }
@@ -557,7 +557,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
             throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
         }
 
-        for (BeanContextServicesListener l : this.bcsListeners) {
+        for (BeanContextServicesListener l : (ArrayList<BeanContextServicesListener>)this.bcsListeners) {
             l.serviceRevoked(bcssre);
         }
     }
