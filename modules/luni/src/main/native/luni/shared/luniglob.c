@@ -52,6 +52,8 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   void **harmonyIdCache = GLOBAL_DATA (HARMONY_ID_CACHE);
   VMInterface *vmInterface;
   char *bootPath = NULL;
+  char *propVal = NULL;
+  vmiError propRes;
 
 #if defined(LINUX)
   /* all UNIX platforms */
@@ -129,6 +131,70 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
                }
            }
        }
+
+       /* set other (not required by api specification) properties */
+       (*vmInterface)->GetSystemProperty (vmInterface, "user.language", &propVal);
+       if (propVal == NULL) {
+            /* FIXME provide appropriate non-dummy value */
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.language", "en");
+           if (VMI_ERROR_NONE != propRes) {
+               /* goto fail2; */
+           }
+       }
+       (*vmInterface)->GetSystemProperty (vmInterface, "user.country", &propVal);
+       if (propVal == NULL) {
+           /* FIXME provide appropriate non-dummy value */
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.country", "US");
+           if (VMI_ERROR_NONE != propRes) {
+               /* goto fail2; */
+           }
+       }
+
+       (*vmInterface)->GetSystemProperty (vmInterface, "user.timezone", &propVal);
+       if (propVal == NULL) {
+           /* FIXME provide appropriate non-dummy value */
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.timezone", "GMT");
+           if (VMI_ERROR_NONE != propRes) {
+               /* goto fail2; */
+           }
+       }
+
+       /* Many classes depend on correct "file.encoding" value */
+       (*vmInterface)->GetSystemProperty (vmInterface, "file.encoding", &propVal);
+       if (propVal == NULL) {
+           /* FIXME provide appropriate non-dummy value */
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "file.encoding", "8859_1");
+           if (VMI_ERROR_NONE != propRes) {
+               /* goto fail2; */
+           }
+       }
+
+       /* Set default PreferencesFactory implementation */
+       (*vmInterface)->GetSystemProperty (vmInterface, "java.util.prefs.PreferencesFactory", &propVal);
+       if (propVal == NULL) {
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, 
+               "java.util.prefs.PreferencesFactory",
+#ifdef _WIN32
+               "java.util.prefs.RegistryPreferencesFactoryImpl");
+#else
+               "java.util.prefs.FilePreferencesFactoryImpl");
+#endif
+           if (VMI_ERROR_NONE != propRes) {
+               /* goto fail2; */
+           }
+       }
+
+       /* Prefer Xalan compiler for better performance, see HARMONY-3209. */
+       (*vmInterface)->GetSystemProperty (vmInterface, "javax.xml.transform.TransformerFactory", &propVal);
+       if (propVal == NULL) {
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, 
+               "javax.xml.transform.TransformerFactory", 
+               "org.apache.xalan.xsltc.trax.TransformerFactoryImpl");
+           if (VMI_ERROR_NONE != propRes) {
+               /* goto fail2; */
+           }
+       }
+
        return JNI_VERSION_1_2;
     }
 
