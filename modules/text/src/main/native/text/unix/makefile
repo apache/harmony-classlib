@@ -25,9 +25,9 @@ INCLUDES += -I$(HY_HDK)/include/icu4c
 BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
 
 MDLLIBFILES += \
-	$(DLLPATH)libicuuc$(HY_SHLIB_SUFFIX).34 \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_SHLIB_SUFFIX) \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
+	$(DLLPATH)libicuuc$(HY_LINKLIB_SUFFIX).34 \
+	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 DLLNAME = ../libhytext$(HY_SHLIB_SUFFIX)
 EXPNAME = HYTEXT_0.1

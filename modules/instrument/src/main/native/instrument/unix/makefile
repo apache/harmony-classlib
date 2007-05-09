@@ -27,7 +27,7 @@ BUILDFILES = \
 MDLLIBFILES += \
 	$(LIBPATH)libhyzip.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(LIBPATH)libvmi$(HY_SHLIB_SUFFIX)
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 DLLNAME = ../libhyinstrument$(HY_SHLIB_SUFFIX)
 EXPNAME = HYINSTRUMENT_0.1

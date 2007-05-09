@@ -30,7 +30,7 @@ VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib $(JPEG_DIR)libjpeg.lib
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(JPEG_DIR)libjpeg$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 COMMENT=/comment:"JPEGDECODER native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

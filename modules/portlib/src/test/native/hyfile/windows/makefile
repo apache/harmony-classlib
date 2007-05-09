@@ -23,7 +23,7 @@ EXENAME=..\hyfile.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)hyfile.obj
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 

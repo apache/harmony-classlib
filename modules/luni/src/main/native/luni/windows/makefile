@@ -44,8 +44,8 @@ VIRTFILES = hyluni.res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib Mswsock.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
-  $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib $(LIBPATH)vmi.lib
+  $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) \
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13200000
 COMMENT=/comment:"LUNI component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."

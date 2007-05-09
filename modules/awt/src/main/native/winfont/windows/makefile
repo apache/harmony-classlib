@@ -30,7 +30,7 @@ BUILDFILES = winFont.obj
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib gdi32.lib GdiPlus.lib advapi32.lib
 
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Win32 Font native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

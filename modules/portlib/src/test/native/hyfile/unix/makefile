@@ -20,7 +20,7 @@
 include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)hyfile.o
-MDLLIBFILES += $(DLLPATH)libhyprt.so
+MDLLIBFILES += $(DLLPATH)libhyprt$(HY_LINKLIB_SUFFIX)
 EXENAME = ../hyfile
 
 include $(HY_HDK)/build/make/rules.mk
