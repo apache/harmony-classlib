@@ -71,6 +71,9 @@
     <condition property="is.unix">
         <os family="unix" />
     </condition>
+    <condition property="is.zos">
+        <os name="z/OS" />
+    </condition>
 
     <!-- Normalized operating system family -->
     <condition property="hy.os.family" value="windows">
@@ -95,6 +98,9 @@
     </condition>
     <condition property="hy.os" value="aix">
         <os name="aix" />
+    </condition>
+    <condition property="hy.os" value="zos">
+        <isset property="is.zos"/>
     </condition>
 
     <property name="hy.os" value="${os.name}" />
@@ -196,6 +202,9 @@
 
     <condition property="linklib.suffix" value=".lib">
         <isset property="is.windows"/>
+    </condition>
+    <condition property="linklib.suffix" value=".x">
+        <isset property="is.zos" />
     </condition>
     <property name="linklib.suffix" value=".so" />
 
@@ -312,6 +321,7 @@ Harmony platform properties:
   is.freebsd = ${is.freebsd}
   is.macosx = ${is.macosx}
   is.aix = ${is.aix}
+  is.zos = ${is.zos}
   is.32bit = ${is.32bit}
   is.64bit = ${is.64bit}
   is.x86 = ${is.x86}
