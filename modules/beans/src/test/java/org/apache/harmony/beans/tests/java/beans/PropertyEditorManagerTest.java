@@ -112,7 +112,7 @@ public class PropertyEditorManagerTest extends TestCase {
     public void testGetEditorSearchPath_default() {
         String[] path = PropertyEditorManager.getEditorSearchPath();
         assertEquals(1, path.length);
-        assertEquals("org.apache.harmony.beans.editors", path[0]);
+        assertTrue(path[0].endsWith("beans.editors"));
     }
 
     public void testGetEditorSearchPath() {
@@ -200,13 +200,18 @@ public class PropertyEditorManagerTest extends TestCase {
         PropertyEditor editor = PropertyEditorManager.findEditor(Boolean.TYPE);
         try {
             editor.setAsText(null);
-            fail("Should throw a Exception");
-        } catch (Exception e) {
+            fail("Should throw a NPException");
+        } catch (NullPointerException e) {
         }
     }
 
     public void testBoolEditor_setAsText_Invalid() {
         PropertyEditor editor = PropertyEditorManager.findEditor(Boolean.TYPE);
+        try {
+            editor.setAsText("yes");
+            fail("Should throw a IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+        }
         try {
             editor.setAsText("***true***");
             fail("Should throw a IllegalArgumentException");
@@ -421,7 +426,7 @@ public class PropertyEditorManagerTest extends TestCase {
 
         editor.setAsText(null);
         assertEquals("null", editor.getAsText());
-        assertEquals("null", editor.getJavaInitializationString());
+        assertEquals("\"null\"", editor.getJavaInitializationString());
         assertNull(editor.getValue());
     }
 
@@ -430,7 +435,7 @@ public class PropertyEditorManagerTest extends TestCase {
         String str = "\n\t\\a\"";
         editor.setAsText(str);
         assertEquals(str, editor.getAsText());
-        assertEquals("\"\\n\\u0009\\\\a\\\"\"", editor
+        assertEquals("\"\n\t\\a\"\"", editor
                 .getJavaInitializationString());
     }
 

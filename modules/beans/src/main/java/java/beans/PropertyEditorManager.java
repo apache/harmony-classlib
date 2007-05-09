@@ -74,7 +74,7 @@ public class PropertyEditorManager {
                             .toUpperCase()
                             + shortEditorClassName.substring(1);
                 }
-
+                
                 for (String element : path) {
                     editorClassName = element + "." + shortEditorClassName; //$NON-NLS-1$
 
@@ -104,7 +104,9 @@ public class PropertyEditorManager {
         if (sm != null) {
             sm.checkPropertiesAccess();
         }
-
+        if(apath == null){
+            apath = new String[0];
+        }
         path = apath;
     }
 

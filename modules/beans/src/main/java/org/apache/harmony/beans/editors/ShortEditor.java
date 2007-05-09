@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class ShortEditor extends PropertyEditorSupport {
+public final class ShortEditor extends PropertyEditorSupport {
 
     public ShortEditor(Object source) {
         super(source);
@@ -30,22 +30,13 @@ public class ShortEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsText();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        try {
-            setValue(new Short(text));
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.toString());
-        }
+        setValue(new Short(text));
     }
 
     @Override
     public String getJavaInitializationString() {
-        return getValueAsText();
+        return new StringBuilder().append("((short)").append(getValue()).append(")").toString();
     }
 
     @Override
@@ -58,15 +49,5 @@ public class ShortEditor extends PropertyEditorSupport {
         if (value instanceof Short) {
             super.setValue(value);
         }
-    }
-
-    private String getValueAsText() {
-        String result = null;
-        Object value = getValue();
-        if (value != null) {
-            Short sValue = (Short) value;
-            result = sValue.toString();
-        }
-        return result;
     }
 }

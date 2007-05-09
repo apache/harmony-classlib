@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class LongEditor extends PropertyEditorSupport {
+public final class LongEditor extends PropertyEditorSupport {
 
     public LongEditor(Object source) {
         super(source);
@@ -30,22 +30,13 @@ public class LongEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsText();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        try {
-            setValue(new Long(text));
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.toString());
-        }
+        setValue(new Long(text));
     }
 
     @Override
     public String getJavaInitializationString() {
-        return getValueAsText();
+        return getValue()+"L";
     }
 
     @Override
@@ -58,15 +49,5 @@ public class LongEditor extends PropertyEditorSupport {
         if (value instanceof Long) {
             super.setValue(value);
         }
-    }
-
-    private String getValueAsText() {
-        String result = null;
-        Object value = getValue();
-        if (value != null) {
-            Long lValue = (Long) value;
-            result = lValue.toString();
-        }
-        return result;
     }
 }

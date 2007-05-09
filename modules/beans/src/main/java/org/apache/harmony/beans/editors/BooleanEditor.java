@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class BooleanEditor extends PropertyEditorSupport {
+public final class BooleanEditor extends PropertyEditorSupport {
 
     public BooleanEditor(Object source) {
         super(source);
@@ -30,13 +30,15 @@ public class BooleanEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsString();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        setValue(new Boolean(text));
+        if(text == null){
+            throw new NullPointerException();
+        }
+        if(text.equalsIgnoreCase("true") || text.equalsIgnoreCase("false")){
+            setValue(new Boolean(text));
+        }else{
+            throw new IllegalArgumentException(text);
+        }
     }
 
     @Override
@@ -46,7 +48,7 @@ public class BooleanEditor extends PropertyEditorSupport {
 
     @Override
     public String[] getTags() {
-        return new String[] { "true", "false" }; //$NON-NLS-1$ //$NON-NLS-2$
+        return new String[] { "True", "False" }; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
