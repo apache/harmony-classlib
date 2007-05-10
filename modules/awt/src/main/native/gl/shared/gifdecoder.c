@@ -526,15 +526,15 @@ GIF_RETVAL readExtension(JNIEnv *env, GifDecoder *decoder, jobject currBlock) {
 
     case APPLICATION_EXTENSION:
       if(extensionSize == SIZE_NETSCAPE_EXT && 
-         !strncmp(decoder->inputPtr, "NETSCAPE2.0", SIZE_NETSCAPE_EXT)
-         ) {        
-        decoder->inputPtr += extensionSize;
-        decoder->bytesInBuffer -= extensionSize;
-        if(*(decoder->inputPtr) == 3) { // Magic size of the sub-block in netscape ext
-          unsigned short loopCount = *((unsigned short *) (decoder->inputPtr+2));
+         !strncmp(decoder->inputPtr, "NETSCAPE2.0", SIZE_NETSCAPE_EXT)) {        
+        if(*(decoder->inputPtr + extensionSize) == 3) { // Magic size of the sub-block in netscape ext
+          unsigned short loopCount;
+          decoder->inputPtr += extensionSize;
+          decoder->bytesInBuffer -= extensionSize;
+          loopCount = *((unsigned short *) (decoder->inputPtr+2));
           (*env)->SetIntField(env, decoder->jDataStream, img_GIF_ds_loopCountID, loopCount);
           return skipData(decoder);
-        }
+        } // If the extension is invalid proceed to default
       }
 
     case PLAIN_TEXT_EXTENSION:
