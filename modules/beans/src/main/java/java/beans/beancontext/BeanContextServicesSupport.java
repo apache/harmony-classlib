@@ -194,6 +194,8 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
         if (bcsp == null) {
             throw new NullPointerException(Messages.getString("beans.16")); //$NON-NLS-1$
         }
+        
+        boolean added = false;
 
         synchronized (BeanContext.globalHierarchyLock) {
             synchronized (this.services) {
@@ -204,26 +206,22 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
                     if (getChildSerializable(bcsp) != null) {
                         this.serializable++;
                     }
-                } else {
-                    fireEvent = false;
-                }
+                    added = true;
+                } 
             }
 
             BeanContextServiceAvailableEvent ev = getEvent(serviceClass);
 
-            if (fireEvent) {
+            if (added && fireEvent) {
                 fireServiceAdded(ev);
-            }
-
-            for (Iterator it = iterator(); it.hasNext();) {
-                Object child = it.next();
-
-                if (child instanceof BeanContextServices) {
-                    ((BeanContextServices) child).serviceAvailable(ev);
+                for (Iterator it = iterator(); it.hasNext();) {
+                    Object child = it.next();
+                    if (child instanceof BeanContextServices) {
+                        ((BeanContextServices) child).serviceAvailable(ev);
+                    }
                 }
             }
-
-            return fireEvent;
+            return added;
         }
     }
 

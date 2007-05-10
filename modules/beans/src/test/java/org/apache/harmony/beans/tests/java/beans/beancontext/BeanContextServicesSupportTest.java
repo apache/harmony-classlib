@@ -1370,4 +1370,43 @@ public class BeanContextServicesSupportTest extends TestCase {
         }
         assertEquals(count, serServices.size());
     }
+    
+    //Regression for HARMONY-3830
+    public void testAddService_with_fireEvent_false() {
+        MyBeanContextServicesSupport myBeanContextServicesSupport = new MyBeanContextServicesSupport();
+        boolean result = myBeanContextServicesSupport.addService(
+                MyService.class, new MyBeanContextServiceProvider(), false);
+        assertTrue(result);
+    }
+
+    public static class MyBeanContextServicesSupport extends
+            BeanContextServicesSupport {
+        private static final long serialVersionUID = 1L;
+
+        public boolean addService(Class serviceClass,
+                BeanContextServiceProvider bcsp, boolean fireEvent) {
+            return super.addService(serviceClass, bcsp, fireEvent);
+        }
+    }
+
+    public static class MyService implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+    
+    public static class MyBeanContextServiceProvider implements
+            BeanContextServiceProvider {
+        public Iterator getCurrentServiceSelectors(BeanContextServices arg0,
+                Class arg1) {
+            return null;
+        }
+
+        public Object getService(BeanContextServices arg0, Object arg1,
+                Class arg2, Object arg3) {
+            return null;
+        }
+        
+        public void releaseService(BeanContextServices arg0, Object arg1,
+                Object arg2) {
+        }
+    }
 }
