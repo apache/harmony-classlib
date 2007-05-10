@@ -34,9 +34,12 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextDelegateS;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListener;
 import org.apache.harmony.beans.tests.support.mock.NonSerializedVCListener;
 import org.apache.harmony.beans.tests.support.mock.SerializedVCListener;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -1629,44 +1632,48 @@ public class VetoableChangeSupportTest extends TestCase {
 
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        MockSource source = new MockSource();
-        VetoableChangeSupport support = new VetoableChangeSupport(source);
 
-        String propertyName1 = "text";
-        SerializedVCListener serialized = new SerializedVCListener(
-                propertyName1);
-        support.addVetoableChangeListener(propertyName1, serialized);
-
-        String propertyName2 = "top";
-        NonSerializedVCListener nonSerialized = new NonSerializedVCListener(
-                propertyName2);
-        support.addVetoableChangeListener(propertyName2, nonSerialized);
-
-        assertTrue(support.hasListeners(propertyName1));
-        assertTrue(support.hasListeners(propertyName2));
-        assertEquals(2, support.getVetoableChangeListeners().length);
-        assertEquals(1,
-                support.getVetoableChangeListeners(propertyName1).length);
-        assertEquals(1,
-                support.getVetoableChangeListeners(propertyName2).length);
-
-        VetoableChangeSupport deserializedSupport = (VetoableChangeSupport) SerializationTester
-                .readObject(support,
-                        "serialization/java/beans/VetoableChangeSupport.ser");
-
-        assertTrue(deserializedSupport.hasListeners(propertyName1));
-        assertFalse(deserializedSupport.hasListeners(propertyName2));
-        assertEquals(1, deserializedSupport.getVetoableChangeListeners().length);
-        assertEquals(1, deserializedSupport
-                .getVetoableChangeListeners(propertyName1).length);
-        assertEquals(0, deserializedSupport
-                .getVetoableChangeListeners(propertyName2).length);
-
-        assertEquals(
-                support.getVetoableChangeListeners(propertyName1)[0],
-                deserializedSupport.getVetoableChangeListeners(propertyName1)[0]);
-    }
+     public void testSerialization_Compatibility() throws Exception {
+         MockSource source = new MockSource();
+         VetoableChangeSupport support = new VetoableChangeSupport(source);
+ 
+         final String propertyName1 = "text";
+         SerializedVCListener serialized = new SerializedVCListener(
+                 propertyName1);
+         support.addVetoableChangeListener(propertyName1, serialized);
+ 
+         final String propertyName2 = "top";
+         NonSerializedVCListener nonSerialized = new NonSerializedVCListener(
+                 propertyName2);
+         support.addVetoableChangeListener(propertyName2, nonSerialized);
+ 
+         assertTrue(support.hasListeners(propertyName1));
+         assertTrue(support.hasListeners(propertyName2));
+         assertEquals(2, support.getVetoableChangeListeners().length);
+         assertEquals(1,
+                 support.getVetoableChangeListeners(propertyName1).length);
+         assertEquals(1,
+                 support.getVetoableChangeListeners(propertyName2).length);
+ 
+         SerializationTest.verifyGolden(this, support, new SerializableAssert(){
+             public void assertDeserialized(Serializable orig, Serializable ser) {
+                 VetoableChangeSupport support = (VetoableChangeSupport)orig;
+                 VetoableChangeSupport deserializedSupport = (VetoableChangeSupport)ser;
+                 
+                 assertTrue(deserializedSupport.hasListeners(propertyName1));
+                 assertFalse(deserializedSupport.hasListeners(propertyName2));
+                 assertEquals(1, deserializedSupport.getVetoableChangeListeners().length);
+                 assertEquals(1, deserializedSupport
+                         .getVetoableChangeListeners(propertyName1).length);
+                 assertEquals(0, deserializedSupport
+                         .getVetoableChangeListeners(propertyName2).length);
+ 
+                 assertEquals(
+                         support.getVetoableChangeListeners(propertyName1)[0],
+                         deserializedSupport.getVetoableChangeListeners(propertyName1)[0]);
+             }
+         });
+     }
 
     public static class MockSource implements Serializable {
 

@@ -48,6 +48,8 @@ import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextSe
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextServices;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextServicesListener;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextServicesListenerS;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -1295,34 +1297,35 @@ public class BeanContextServicesSupportTest extends TestCase {
                         .getDeserilizedObject(support));
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        BeanContextServicesSupport support = new BeanContextServicesSupport(
-                null, Locale.ITALY, true, true);
-        support
-                .addBeanContextServicesListener(new MockBeanContextServicesListener());
-        support
-                .addBeanContextServicesListener(new MockBeanContextServicesListenerS(
-                        "l2"));
-        support
-                .addBeanContextServicesListener(new MockBeanContextServicesListenerS(
-                        "l3"));
-        support
-                .addBeanContextServicesListener(new MockBeanContextServicesListener());
-        support.addService(Collection.class,
-                new MockBeanContextServiceProvider());
-        support.addService(List.class,
-                new MockBeanContextServiceProviderS("p1"));
-        support
-                .addService(Set.class,
-                        new MockBeanContextServiceProviderS("p2"));
-        support.addService(Map.class, new MockBeanContextServiceProvider());
-
-        assertEqualsSerially(
-                support,
-                (BeanContextServicesSupport) SerializationTester
-                        .readObject(support,
-                                "serialization/java/beans/beancontext/BeanContextServicesSupport.ser"));
-    }
+     public void testSerialization_Compatibility() throws Exception {
+         BeanContextServicesSupport support = new BeanContextServicesSupport(
+                 null, Locale.ITALY, true, true);
+         support
+                 .addBeanContextServicesListener(new MockBeanContextServicesListener());
+         support
+                 .addBeanContextServicesListener(new MockBeanContextServicesListenerS(
+                         "l2"));
+         support
+                 .addBeanContextServicesListener(new MockBeanContextServicesListenerS(
+                         "l3"));
+         support
+                 .addBeanContextServicesListener(new MockBeanContextServicesListener());
+         support.addService(Collection.class,
+                 new MockBeanContextServiceProvider());
+         support.addService(List.class,
+                 new MockBeanContextServiceProviderS("p1"));
+         support
+                 .addService(Set.class,
+                         new MockBeanContextServiceProviderS("p2"));
+         support.addService(Map.class, new MockBeanContextServiceProvider());
+         SerializationTest.verifyGolden(this, support, new SerializableAssert(){
+             public void assertDeserialized(Serializable initial, Serializable deserialized) {
+                 assertEqualsSerially((BeanContextServicesSupport) initial,
+                         (BeanContextServicesSupport) deserialized);
+             }
+         });
+     }
+  
 
     public static void assertEqualsSerially(BeanContextServicesSupport orig,
             BeanContextServicesSupport ser) {

@@ -66,6 +66,8 @@ import org.apache.harmony.beans.tests.support.beancontext.mock.MockPropertyChang
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoChangeListener;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListener;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVisibility;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -2033,27 +2035,31 @@ public class BeanContextSupportTest extends TestCase {
         assertEqualsSerially(mock.support, serMock.support);
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        MockBeanContextDelegateS mock = new MockBeanContextDelegateS("main id");
-        BeanContextSupport support = mock.support;
-        support.addBeanContextMembershipListener(new MockBeanContextMembershipListener());
-        support.addBeanContextMembershipListener(new MockBeanContextMembershipListenerS("l2"));
-        support.addBeanContextMembershipListener(new MockBeanContextMembershipListenerS("l3"));
-        support.addBeanContextMembershipListener(new MockBeanContextMembershipListener());
-        support.add("abcd");
-        support.add(new MockBeanContextChild());
-        support.add(new MockBeanContextChildS("a child"));
-        support.add(new MockBeanContextChild());
-        support.add("1234");
 
-        MockBeanContextDelegateS serMock = (MockBeanContextDelegateS) SerializationTester
-                .readObject(mock, "serialization/java/beans/beancontext/BeanContextSupport.ser");
-        assertEquals(mock.id, serMock.id);
-        assertSame(mock, mock.support.beanContextChildPeer);
-        assertSame(serMock, serMock.support.beanContextChildPeer);
-        assertEqualsSerially(mock.support, serMock.support);
-    }
-
+     public void testSerialization_Compatibility() throws Exception {
+         MockBeanContextDelegateS mock = new MockBeanContextDelegateS("main id");
+         BeanContextSupport support = mock.support;
+         support.addBeanContextMembershipListener(new MockBeanContextMembershipListener());
+         support.addBeanContextMembershipListener(new MockBeanContextMembershipListenerS("l2"));
+         support.addBeanContextMembershipListener(new MockBeanContextMembershipListenerS("l3"));
+         support.addBeanContextMembershipListener(new MockBeanContextMembershipListener());
+         support.add("abcd");
+         support.add(new MockBeanContextChild());
+         support.add(new MockBeanContextChildS("a child"));
+         support.add(new MockBeanContextChild());
+         support.add("1234");
+         SerializationTest.verifyGolden(this, mock, new SerializableAssert(){
+             public void assertDeserialized(Serializable orig, Serializable ser) {
+                 MockBeanContextDelegateS serMock = (MockBeanContextDelegateS) ser;
+                 MockBeanContextDelegateS mock = (MockBeanContextDelegateS) orig;
+                 assertEquals(mock.id, serMock.id);
+                 assertSame(mock, mock.support.beanContextChildPeer);
+                 assertSame(serMock, serMock.support.beanContextChildPeer);
+                 assertEqualsSerially(mock.support, serMock.support);
+             }
+         });
+     }
+ 
     private byte[] serialize(Serializable obj) {
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
