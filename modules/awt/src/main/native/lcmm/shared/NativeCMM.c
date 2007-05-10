@@ -309,7 +309,7 @@ static void copyAlphaChannel(
       dst += dstPixelStride;
     }
   } else { // All other sample types, very slow
-    double d;
+    double d = 0;
     
     double srcMax = 1 << srcSampleSize*8;
     double dstMax = 1 << dstSampleSize*8;
