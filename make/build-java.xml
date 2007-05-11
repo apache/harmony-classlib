@@ -280,6 +280,12 @@ ${built.files.list}
                 <include name="net.properties" />
             </fileset>
         </copy>
+
+        <copy todir="${hy.jdk}/jre/lib">
+            <fileset dir="${depends.files}">
+                <include name="rowset.properties" />
+            </fileset>
+        </copy>
     </target>
 
 
