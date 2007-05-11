@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package org.apache.harmony.jndi.internal.parser;
 
@@ -48,6 +48,7 @@ public class RelaxedDnParser extends DNParser {
         super(dn);
     }
 
+    @Override
     protected String nextAT() throws IOException {
         int equalIndex = pos;
         try {
@@ -107,12 +108,14 @@ public class RelaxedDnParser extends DNParser {
     /**
      * Begin to parse the string given in the constructor
      */
+    @Override
     public List parse() throws IOException {
         List list = new ArrayList();
 
         String attValue;
         String attType = nextAT();
         List atav = new ArrayList();
+        String charCopy = new String(chars);
         while (true) {
             if (pos == length) {
                 // empty Attribute Value
@@ -122,22 +125,48 @@ public class RelaxedDnParser extends DNParser {
             }
 
             switch (chars[pos]) {
-            case '"':
-                attValue = quotedAV();
-                atav.add(new AttributeTypeAndValuePair(attType, attValue));
-                break;
-            case '#':
-                attValue = hexAV();
-                atav.add(new AttributeTypeAndValuePair(attType, Rdn
-                        .unescapeValue(attValue)));
-                break;
-            case '+':
-                // empty attribute value
-                atav.add(new AttributeTypeAndValuePair(attType, ""));
-                break;
-            default:
-                attValue = escapedAV();
-                atav.add(new AttributeTypeAndValuePair(attType, attValue));
+                case '"':
+                    attValue = quotedAV();
+                    if (attValue.length() > 0
+                            && attValue.charAt(attValue.length() - 1) == ' ') {
+                        int p = pos - 1;
+                        while (p >= 0 && charCopy.charAt(p) == ' ') {
+                            p--;
+                        }
+                        if (p >= 3
+                                && charCopy.substring(p - 3, p + 1).equals(
+                                        "\\20\"")) {
+                            attValue = attValue.substring(0,
+                                    attValue.length() - 1);
+                        }
+                    }
+                    atav.add(new AttributeTypeAndValuePair(attType, attValue));
+                    break;
+                case '#':
+                    attValue = hexAV();
+                    atav.add(new AttributeTypeAndValuePair(attType, Rdn
+                            .unescapeValue(attValue)));
+                    break;
+                case '+':
+                    // empty attribute value
+                    atav.add(new AttributeTypeAndValuePair(attType, ""));
+                    break;
+                default:
+                    attValue = escapedAV();
+                    if (attValue.length() > 0
+                            && attValue.charAt(attValue.length() - 1) == ' ') {
+                        int p = pos - 1;
+                        while (p >= 0 && charCopy.charAt(p) == ' ') {
+                            p--;
+                        }
+                        if (p >= 2
+                                && charCopy.substring(p - 2, p + 1).equals(
+                                        "\\20")) {
+                            attValue = attValue.substring(0,
+                                    attValue.length() - 1);
+                        }
+                    }
+                    atav.add(new AttributeTypeAndValuePair(attType, attValue));
             }
 
             if (pos >= length) {
@@ -161,27 +190,27 @@ public class RelaxedDnParser extends DNParser {
         }
 
         switch (chars[pos]) {
-        case '"':
-            return chars[pos];
-        case '\\':
-            hasQE = true;
-            return hexToUTF8(new String(chars, pos++, 2));
-        case ',':
-        case '=':
-        case '+':
-        case '<':
-        case '>':
-        case '#':
-        case ';':
-        case ' ':
-            // FIXME: escaping is allowed only for leading or trailing space
-            // char
-            return chars[pos];
-        default:
-            // RFC doesn't explicitly say that escaped hex pair is
-            // interpreted as UTF-8 char. It only contains an example of such
-            // DN.
-            return super.getUTF8();
+            case '"':
+                return chars[pos];
+            case '\\':
+                hasQE = true;
+                return hexToUTF8(new String(chars, pos++, 2));
+            case ',':
+            case '=':
+            case '+':
+            case '<':
+            case '>':
+            case '#':
+            case ';':
+            case ' ':
+                // FIXME: escaping is allowed only for leading or trailing space
+                // char
+                return chars[pos];
+            default:
+                // RFC doesn't explicitly say that escaped hex pair is
+                // interpreted as UTF-8 char. It only contains an example of such
+                // DN.
+                return super.getUTF8();
         }
     }
 

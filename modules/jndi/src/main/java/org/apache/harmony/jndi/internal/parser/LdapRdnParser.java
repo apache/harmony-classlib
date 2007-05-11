@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package org.apache.harmony.jndi.internal.parser;
 
@@ -69,7 +69,8 @@ public class LdapRdnParser implements LdapParser {
         }
 
         attrList = (List) listAll.get(0);
-        for (Iterator<AttributeTypeAndValuePair> iter = attrList.iterator(); iter.hasNext();) {
+        for (Iterator<AttributeTypeAndValuePair> iter = attrList.iterator(); iter
+                .hasNext();) {
             AttributeTypeAndValuePair element = iter.next();
             list.put(element.getType(), element.getValue());
         }
@@ -110,11 +111,24 @@ public class LdapRdnParser implements LdapParser {
 
     private static String getEscaped(char[] chars) {
         StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < chars.length; i++) {
+        int leftSpaceCnt = 0, rightSpaceCnt = 0;
+        int pos = chars.length - 1;
+        while (pos >= 0 && chars[pos] == ' ') {
+            rightSpaceCnt++;
+            pos--;
+        }
+        for (int i = 0; i <= pos && chars[i] == ' '; i++) {
+            leftSpaceCnt++;
+            sb.append("\\ ");
+        }
+        for (int i = leftSpaceCnt; i < chars.length - rightSpaceCnt; i++) {
             if (isSpecialChar(chars, i)) {
                 sb.append('\\');
             }
             sb.append(new Character(chars[i]));
+        }
+        for (int i = 0; i < rightSpaceCnt; i++) {
+            sb.append("\\ ");
         }
         return sb.toString();
     }
@@ -123,7 +137,7 @@ public class LdapRdnParser implements LdapParser {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < byteArray.length; i++) {
             sb.append(Integer.toHexString(byteArray[i] >> 4 & 0x0F));
-            sb.append(Integer.toHexString(byteArray[i] & 0x0F)); 
+            sb.append(Integer.toHexString(byteArray[i] & 0x0F));
         }
         return '#' + sb.toString();
     }
@@ -164,24 +178,36 @@ public class LdapRdnParser implements LdapParser {
 
     private static String getUnEscapedValues(char[] chars) {
         StringBuffer sb = new StringBuffer();
+        boolean trailing20h = false;
         for (int i = 0; i < chars.length; i++) {
+            trailing20h = false;
             if (chars[i] != '\\') {
                 sb.append(chars[i]);
             } else {
                 try {
+                    if (chars[i + 1] == ' ') {
+                        continue;
+                    }
                     if (!isSpecialChar(chars, i + 1)
                             && !isSpecialChar(chars, i + 2)) {
                         try {
                             sb.append(RelaxedDnParser.hexToUTF8(new String(
                                     chars, i + 1, 2)));
+                            if (sb.charAt(sb.length() - 1) == ' ') {
+                                trailing20h = true;
+                            }
                             i = i + 2;
                         } catch (IOException e) {
-                            throw new IllegalArgumentException(Messages.getString("ldap.1A"));
+                            throw new IllegalArgumentException(Messages
+                                    .getString("ldap.1A"));
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
                 }
             }
+        }
+        if (trailing20h && sb.length() > 0 && sb.charAt(sb.length() - 1) == ' ') {
+            sb = sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString();
     }
@@ -199,25 +225,26 @@ public class LdapRdnParser implements LdapParser {
                         .substring(2 * i, 2 * i + 2), 16);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(Messages.getString("ldap.17") + val);
+            throw new IllegalArgumentException(Messages.getString("ldap.17")
+                    + val);
         }
         return ret;
     }
 
     private static boolean isSpecialChar(char[] chars, int index) {
         switch (chars[index]) {
-        case '"':
-        case '\\':
-        case ',':
-        case '=':
-        case '+':
-        case '<':
-        case '>':
-        case '#':
-        case ';':
-            return true;
-        default:
-            return false;
+            case '"':
+            case '\\':
+            case ',':
+            case '=':
+            case '+':
+            case '<':
+            case '>':
+            case '#':
+            case ';':
+                return true;
+            default:
+                return false;
         }
     }
 }

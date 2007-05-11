@@ -1360,6 +1360,29 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.get(int)'
+     * </p>
+     * <p>
+     * Here we are testing if this method retrieves a component of this LDAP
+     * name as a string, notice that the index must be in the range [0,size()).
+     * </p>
+     * <p>
+     * The expected result is if the returned string by this method is the
+     * variable wich we create the Name.
+     * </p>
+     */
+    public void testGet007() throws Exception {
+        String test1 = "t=\\ test\\ +t1=\\ test1";
+        LdapName ln1 = new LdapName(test1);
+        assertEquals(test1, ln1.get(0));
+        
+        String test2 = "t=\\20\\ te\\ s\\20t\\20\\20 + t2 = test1\\20\\ ";
+        LdapName ln2 = new LdapName(test2);
+        assertEquals("t=\\ \\ te s t\\ +t2=test1\\ \\ ", ln2.get(0));
+    }
+    
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
      * </p>
      * <p>
