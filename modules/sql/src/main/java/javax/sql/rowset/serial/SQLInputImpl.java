@@ -77,12 +77,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public Array readArray() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
+        Object o = attributes[readPosition++];        
         return (Array) o;
     }
 
@@ -93,12 +90,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public InputStream readAsciiStream() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (InputStream) o;
     }
 
@@ -109,12 +103,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public BigDecimal readBigDecimal() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (BigDecimal) o;
     }
 
@@ -125,12 +116,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public InputStream readBinaryStream() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (InputStream) o;
     }
 
@@ -141,12 +129,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public Blob readBlob() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (Blob) o;
     }
 
@@ -157,10 +142,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public boolean readBoolean() throws SQLException, NotImplementedException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        return (Boolean) o;
+        return o == null ? false : ((Boolean) o).booleanValue();
     }
 
     /**
@@ -170,10 +155,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public byte readByte() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];
-        return (Byte) o;
+        Object o = attributes[readPosition++];        
+        return o == null ? (byte) 0 : ((Byte) o).byteValue();
     }
 
     /**
@@ -183,12 +168,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public byte[] readBytes() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
+        Object o = attributes[readPosition++];        
         return (byte[]) o;
     }
 
@@ -199,28 +181,22 @@ public class SQLInputImpl implements SQLInput {
      */
     public Reader readCharacterStream() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (Reader) o;
     }
 
-    /**
+    /** 
      * {@inheritDoc}
      * 
      * @see java.sql.SQLInput#readClob()
      */
     public Clob readClob() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
+        Object o = attributes[readPosition++];       
         return (Clob) o;
     }
 
@@ -231,12 +207,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public Date readDate() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (Date) o;
     }
 
@@ -247,10 +220,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public double readDouble() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        return (Double) o;
+        return o == null ? 0 : ((Double) o).doubleValue();
     }
 
     /**
@@ -260,10 +233,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public float readFloat() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        return (Float) o;
+        return o == null ? 0f : ((Float) o).floatValue();
     }
 
     /**
@@ -273,10 +246,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public int readInt() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        return (Integer) o;
+        return o == null ? 0 : ((Integer) o).intValue();
     }
 
     /**
@@ -286,10 +259,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public long readLong() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        return (Long) o;
+        return o == null ? 0 : ((Long) o).longValue();
     }
 
     /**
@@ -299,13 +272,13 @@ public class SQLInputImpl implements SQLInput {
      */
     public Object readObject() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
         if (o instanceof Struct) {
             Struct structuredType = (Struct)o;
             String typeName = structuredType.getSQLTypeName();
-            Class c = map.get(typeName);
+            Class<?> c = map.get(typeName);
             if(c != null) {
                 try {
                     SQLData data = (SQLData)c.newInstance();
@@ -330,12 +303,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public Ref readRef() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
+        Object o = attributes[readPosition++];        
         return (Ref) o;
     }
 
@@ -346,10 +316,10 @@ public class SQLInputImpl implements SQLInput {
      */
     public short readShort() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        return (Short) o;
+        return o == null ? (short) 0 : ((Short) o).shortValue();
     }
 
     /**
@@ -359,12 +329,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public String readString() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
+        Object o = attributes[readPosition++];        
         return (String) o;
     }
 
@@ -375,12 +342,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public Time readTime() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (Time) o;
     }
 
@@ -391,12 +355,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public Timestamp readTimestamp() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
-        if(o == null) {
-            return null;
-        }
         return (Timestamp) o;
     }
 
@@ -407,10 +368,9 @@ public class SQLInputImpl implements SQLInput {
      */
     public URL readURL() throws SQLException {
         if(readPosition >= attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
-        } else {
-            throw new SQLException(Messages.getString("sql.37"));
-        }
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
+        } 
+        throw new SQLException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 
     /**
@@ -419,10 +379,10 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#wasNull()
      */
     public boolean wasNull() throws SQLException, NotImplementedException {
-        if(readPosition > attributes.length) {
-            throw new SQLException(Messages.getString("sql.35"));
+        if (readPosition > attributes.length) {
+            throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        return attributes[readPosition - 1] == null;
+        return readPosition == 0 ? false : attributes[readPosition - 1] == null;
     }
 
 }

@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.rowset.serial.SQLInputImpl;
+import javax.sql.rowset.serial.SerialDatalink;
 
 import junit.framework.TestCase;
 
@@ -91,9 +92,13 @@ public class SQLInputImplTest extends TestCase {
         try {
             impl.readArray();
             fail("should throw SQLException");
-        } catch (SQLException e) {
+        } catch (SQLException e) {            
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readArray());
     }
 
     /**
@@ -111,6 +116,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readAsciiStream());
     }
 
     /**
@@ -128,6 +137,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readBigDecimal());
     }
 
     /**
@@ -138,6 +151,10 @@ public class SQLInputImplTest extends TestCase {
         Object[] attributes = new Object[] {stream};
         SQLInputImpl impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
         assertEquals(stream, impl.readBinaryStream());
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readBinaryStream());
     }
 
     /**
@@ -155,6 +172,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readBlob());
     }
 
     /**
@@ -171,6 +192,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertFalse(impl.readBoolean());
     }
 
     /**
@@ -187,6 +212,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertEquals((byte)0, impl.readByte());
     }
 
     /**
@@ -204,6 +233,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readBytes());
     }
 
     /**
@@ -221,6 +254,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readCharacterStream());
     }
 
     /**
@@ -238,6 +275,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readClob());
     }
 
     /**
@@ -255,6 +296,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readDate());
     }
 
     /**
@@ -271,6 +316,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertEquals(0, impl.readDouble(), 0);
     }
 
     /**
@@ -287,6 +336,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertEquals(0f, impl.readFloat(), 0);
     }
 
     /**
@@ -303,6 +356,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertEquals(0, impl.readInt());
     }
 
     /**
@@ -319,6 +376,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertEquals(0, impl.readLong());
     }
 
     /**
@@ -362,6 +423,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readRef());
     }
 
     /**
@@ -378,6 +443,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertEquals((short)0, impl.readShort());
     }
 
     /**
@@ -394,6 +463,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readString());
     }
 
     /**
@@ -411,6 +484,10 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        
+        attributes = new Object[] {null};
+        impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertNull(impl.readTime());
     }
 
     /**
@@ -435,7 +512,8 @@ public class SQLInputImplTest extends TestCase {
      */
     public void testReadURL() throws SQLException, MalformedURLException {
         URL url = new URL("http://www.apache.org");
-        Object[] attributes = new Object[] {url};
+        SerialDatalink link = new SerialDatalink(url);
+        Object[] attributes = new Object[] {link};
         SQLInputImpl impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
         try {
             impl.readURL();
@@ -458,6 +536,7 @@ public class SQLInputImplTest extends TestCase {
     public void testWasNull() throws SQLException {
         Object[] attributes = new Object[] {null, "hello"};
         SQLInputImpl impl = new SQLInputImpl(attributes, new HashMap<String, Class<?>>());
+        assertFalse(impl.wasNull());
         assertEquals(null, impl.readString());
         assertTrue(impl.wasNull());
         assertEquals("hello", impl.readString());
@@ -468,6 +547,7 @@ public class SQLInputImplTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        assertFalse(impl.wasNull());
         assertFalse(impl.wasNull());
     }
 
