@@ -41,6 +41,10 @@ class ProviderImpl extends SyncProvider {
         this.version = version;
     }
 
+    public SyncProvider getImpl() {
+        return impl;
+    }
+
     @Override
     public int getDataSourceLock() throws SyncProviderException {
         checkClassNameValid();

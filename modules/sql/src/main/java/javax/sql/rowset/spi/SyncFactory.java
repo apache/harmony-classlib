@@ -37,13 +37,7 @@ import org.apache.harmony.sql.internal.nls.Messages;
  * three places to search SyncProviders: system properties, resource files and
  * the JNDI context.
  * 
- * Applications can also use it to add and remove SyncProviders at runtime. By
- * default there are two providers offered by RI:
- * com.sun.rowset.providers.RIOptimisticProvider and
- * com.sun.rowset.providers.RIXMLProvider. The former is the default provider
- * for RowSet that does not specify any provider while the latter is usually
- * used for WebRowSet instances.
- * 
+ * Applications can also use it to add and remove SyncProviders at runtime. 
  */
 public class SyncFactory {
     public static String ROWSET_SYNC_PROVIDER = "rowset.provider.classname"; //$NON-NLS-1$
@@ -60,8 +54,15 @@ public class SyncFactory {
 
     private static Context ctx;
 
-    private static String resLocation;
+    private static String resLocation;    
+    
+    //TODO: the default provider hasn't been implemented yet
+    private static String defaultProviderName = "org.apache.harmony.sql.rowset.providers.RIOptimisticProvider"; //$NON-NLS-1$
 
+    private static ProviderImpl defaultProvider = new ProviderImpl(defaultProviderName);
+    
+    private static Logger logger;
+    
     private static boolean initialized;
 
     static {
@@ -133,15 +134,37 @@ public class SyncFactory {
         }
         return providers.elements();
     }
+    
+    /**
+     * Initializes the registeration table if it is still empty.
+     */
+    private static void initProviders() {
+        if (providers.isEmpty()) {
+            SyncFactory.getRegisteredProvidersImpl();
+        }
+    }
 
     // This class does not have public constructor
     private SyncFactory() {
         // do nothing
     }
 
+    /**
+     * Adds the corresponding SyncProvider implementation into SyncFactory's
+     * registeration table.
+     * 
+     * @param providerID -
+     *            The unique ID of the SyncProvider implementation
+     * @throws SyncFactoryException -
+     *             if the parameter providerID is null or empty.
+     */
     public static void registerProvider(String providerID)
             throws SyncFactoryException {
-        throw new UnsupportedOperationException();
+        if (null == providerID || providerID.length() == 0) {
+            throw new SyncFactoryException();
+        }
+        initProviders();
+        providers.put(providerID, new ProviderImpl(providerID));
     }
 
     /**
@@ -153,14 +176,40 @@ public class SyncFactory {
         return instance;
     }
 
+    /**
+     * Removes the SyncProvider from SyncFactory's registeration table.
+     * 
+     * @param providerID -
+     *            The unique ID of the SyncProvider implementation
+     * @throws SyncFactoryException -
+     *             Removes a unregistered provider.
+     */
     public static void unregisterProvider(String providerID)
             throws SyncFactoryException {
-        throw new UnsupportedOperationException();
+        initProviders();
+        if (null == providers.remove(providerID)) {
+            throw new SyncFactoryException();
+        }
     }
 
+    /**
+     * Answers the specific SyncProvider implementation according to the given
+     * String ID. When the given ID does not exist in the registeration table,
+     * it returns the default provider.
+     * 
+     * @param providerID -
+     *            The unique ID of the SyncProvider implementation
+     * @return - The specific SyncProvider instance
+     * @throws SyncFactoryException
+     */
     public static SyncProvider getInstance(String providerID)
             throws SyncFactoryException {
-        throw new UnsupportedOperationException();
+        initProviders();
+        SyncProvider provider = providers.get(providerID);
+        if (null == provider) {
+            return defaultProvider.getImpl();
+        }
+        return ((ProviderImpl) provider).getImpl();
     }
 
     /**
@@ -175,16 +224,44 @@ public class SyncFactory {
         return getRegisteredProvidersImpl();
     }
 
+    /**
+     * Sets the logging object. All of the SyncProvider implementations can log
+     * events to the object. This object can be retrieved by the getLogger
+     * method.
+     * 
+     * @param logger -
+     *            the logging object
+     */
     public static void setLogger(Logger logger) {
-        throw new UnsupportedOperationException();
+        SyncFactory.logger = logger; 
     }
 
+    /**
+     * Sets the logging object and its corresponding logging level. All of the
+     * SyncProvider implementations can log events to the object. This object
+     * can be retrieved by the getLogger method.
+     * 
+     * @param logger -
+     *            the logging object
+     */
     public static void setLogger(Logger logger, Level level) {
-        throw new UnsupportedOperationException();
+        SyncFactory.logger = logger;
+        SyncFactory.logger.setLevel(level);
     }
 
+    /**
+     * Answers the Logger instance used for recording events triggered by
+     * SyncProvider.
+     * 
+     * @return - the logging object
+     * @throws SyncFactoryException -
+     *             if the logger is null.
+     */
     public static Logger getLogger() throws SyncFactoryException {
-        throw new UnsupportedOperationException();
+        if (null == logger) {
+            throw new SyncFactoryException(Messages.getString("sql.44")); //$NON-NLS-1$
+        }
+        return logger;
     }
 
     /**
