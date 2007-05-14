@@ -18,8 +18,13 @@ package org.apache.harmony.tests.java.util.regex;
 
 import junit.framework.TestCase;
 
+import java.io.ObjectStreamClass;
+import java.io.Serializable;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**
  * TODO Type description
@@ -57,4 +62,48 @@ public class PatternSyntaxExceptionTest extends TestCase {
             assertEquals(regex, e.getPattern());
         }
     }
+    
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        PatternSyntaxException object = new PatternSyntaxException("TESTDESC", "TESTREGEX", 3);
+        SerializationTest.verifySelf(object, PATTERNSYNTAXEXCEPTION_COMPARATOR);
+    }
+    
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        PatternSyntaxException object = new PatternSyntaxException("TESTDESC",
+                "TESTREGEX", 3);
+        SerializationTest.verifyGolden(this, object,
+                PATTERNSYNTAXEXCEPTION_COMPARATOR);
+    }
+    
+    //Regression test for HARMONY-3787
+    public void test_objectStreamField() {
+        ObjectStreamClass objectStreamClass = ObjectStreamClass
+                .lookup(PatternSyntaxException.class);
+        assertNotNull(objectStreamClass.getField("desc"));
+    }
+    
+    // comparator for BatchUpdateException field updateCounts
+    private static final SerializableAssert PATTERNSYNTAXEXCEPTION_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            // do common checks for all throwable objects
+            SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial,
+                    deserialized);
+
+            PatternSyntaxException initPatternSyntaxException = (PatternSyntaxException) initial;
+            PatternSyntaxException dserPatternSyntaxException = (PatternSyntaxException) deserialized;
+
+            // verify fields
+            assertEquals(initPatternSyntaxException.getDescription(), dserPatternSyntaxException.getDescription());
+            assertEquals(initPatternSyntaxException.getPattern(), dserPatternSyntaxException.getPattern());
+            assertEquals(initPatternSyntaxException.getIndex(), dserPatternSyntaxException.getIndex());            
+        }
+    };
 }

@@ -35,18 +35,18 @@ public class PatternSyntaxException extends IllegalArgumentException {
     
     private static final long serialVersionUID = -3864639126226059218L;
     
+    private String desc;
+    
     private String pattern;
-
-    private String message;
-
+   
     private int index = -1;
 
     /**
      * @com.intel.drl.spec_ref
      */
-    public PatternSyntaxException(String message, String pattern, int index) {
+    public PatternSyntaxException(String desc, String pattern, int index) {
+        this.desc = desc;
         this.pattern = pattern;
-        this.message = message;
         this.index = index;
     }
 
@@ -67,7 +67,7 @@ public class PatternSyntaxException extends IllegalArgumentException {
             Arrays.fill(temp, ' ');
             filler = new String(temp);
         }
-        return message
+        return desc
                 + ((pattern != null && pattern.length() != 0) ? Messages.getString("regex.07", //$NON-NLS-1$
                         new Object[]{index, pattern, filler}) : ""); //$NON-NLS-1$
     }
@@ -76,7 +76,7 @@ public class PatternSyntaxException extends IllegalArgumentException {
      * @com.intel.drl.spec_ref
      */
     public String getDescription() {
-        return message;
+        return desc;
     }
 
     /**
