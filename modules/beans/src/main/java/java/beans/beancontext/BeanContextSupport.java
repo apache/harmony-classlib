@@ -948,8 +948,10 @@ public class BeanContextSupport extends BeanContextChildSupport implements
     public synchronized void setLocale(Locale newLocale)
             throws PropertyVetoException {
 
-        // Use default locale if a new value is null
-        newLocale = (newLocale == null ? Locale.getDefault() : newLocale);
+        // As spec says, if newLocale is null, the invocation has no effect.
+        if (null == newLocale) {
+            return;
+        }
 
         // Notify BeanContext about this change
         Locale old = (Locale) this.locale.clone();
