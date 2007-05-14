@@ -36,9 +36,32 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.sql.internal.nls.Messages;
 
 public class SQLOutputImpl implements SQLOutput {
-    public SQLOutputImpl(Vector<?> attributes, Map<String,?> map) throws SQLException, NotImplementedException {
+    private Vector attributes;
+
+    private Map map;
+    
+    /**
+     * Constructs a new SQLOutputImpl object using a list of attributes and a
+     * custom name-type map. JDBC drivers will use this map to identify which
+     * SQLData.writeSQL will be invoked.
+     * 
+     * @param attributes -
+     *            the list of given attribute objects.
+     * @param map -
+     *            the UDT(user defined type) name-type map
+     * @throws SQLException -
+     *             if the attributes or the map is null
+     */
+    public SQLOutputImpl(Vector<?> attributes, Map<String, ?> map)
+            throws SQLException {
+        if (null == attributes || null == map) {
+            throw new SQLException(Messages.getString("sql.33")); //$NON-NLS-1$
+        }
+        this.attributes = attributes;
+        this.map = map;
     }
 
     public void writeArray(Array theArray) throws SQLException,
@@ -70,23 +93,36 @@ public class SQLOutputImpl implements SQLOutput {
         throw new NotImplementedException();
 
     }
-
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeBoolean(boolean)
+     */
+    @SuppressWarnings({ "boxing", "unchecked" })
     public void writeBoolean(boolean theFlag) throws SQLException,
             NotImplementedException {
-        throw new NotImplementedException();
-
+        attributes.addElement(theFlag);
     }
 
-    public void writeByte(byte theByte) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeByte(byte)
+     */
+    @SuppressWarnings({ "boxing", "unchecked" })
+    public void writeByte(byte theByte) throws SQLException {
+        attributes.addElement(theByte);
     }
 
-    public void writeBytes(byte[] theBytes) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeBytes(byte[])
+     */
+    @SuppressWarnings({ "boxing", "unchecked" })
+    public void writeBytes(byte[] theBytes) throws SQLException {
+        attributes.addElement(theBytes);
     }
 
     public void writeCharacterStream(Reader theStream) throws SQLException,
@@ -106,29 +142,45 @@ public class SQLOutputImpl implements SQLOutput {
         throw new NotImplementedException();
 
     }
-
-    public void writeDouble(double theDouble) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeDouble(double)
+     */
+    @SuppressWarnings( { "boxing", "unchecked" })
+    public void writeDouble(double theDouble) throws SQLException {
+        attributes.addElement(theDouble);
     }
 
-    public void writeFloat(float theFloat) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeFloat(float)
+     */
+    @SuppressWarnings( { "boxing", "unchecked" })
+    public void writeFloat(float theFloat) throws SQLException {
+        attributes.addElement(theFloat);
     }
 
-    public void writeInt(int theInt) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeInt(int)
+     */
+    @SuppressWarnings( { "boxing", "unchecked" })
+    public void writeInt(int theInt) throws SQLException {
+        attributes.addElement(theInt);
     }
 
-    public void writeLong(long theLong) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeLong(long)
+     */
+    @SuppressWarnings( { "boxing", "unchecked" })
+    public void writeLong(long theLong) throws SQLException {
+        attributes.addElement(theLong);
     }
 
     public void writeObject(SQLData theObject) throws SQLException,
@@ -143,10 +195,14 @@ public class SQLOutputImpl implements SQLOutput {
 
     }
 
-    public void writeShort(short theShort) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeShort(short)
+     */
+    @SuppressWarnings( { "boxing", "unchecked" })
+    public void writeShort(short theShort) throws SQLException {
+        attributes.addElement(theShort);
     }
 
     public void writeString(String theString) throws SQLException,
