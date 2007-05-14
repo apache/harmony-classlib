@@ -17,12 +17,40 @@
 
 package org.apache.harmony.sql.tests.javax.sql.rowset.serial;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Date;
+import java.sql.Ref;
 import java.sql.SQLException;
+import java.sql.Struct;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.sql.rowset.serial.SQLOutputImpl;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialDatalink;
+import javax.sql.rowset.serial.SerialRef;
+import javax.sql.rowset.serial.SerialStruct;
+
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockArray;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockBlob;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockClob;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockRef;
+import org.apache.harmony.sql.tests.javax.sql.rowset.serial.SQLInputImplTest.MockSQLData;
+import org.apache.harmony.sql.tests.javax.sql.rowset.serial.SQLInputImplTest.MockStruct;
 
 import junit.framework.TestCase;
 
@@ -60,24 +88,69 @@ public class SQLOutputImplTest extends TestCase {
         }
     }
 
-    public void testWriteArray() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeArray(Array)}
+     */
+    public void test_writeArrayLjava_sql_Array() throws SQLException {
+        Array array = new MockArray();
+        impl.writeArray(array);
+        assertEquals(1, attr.size());
+        assertTrue(attr.get(0) instanceof SerialArray);
+        
+        impl.writeArray(null);
+        assertNull(attr.get(1));
     }
 
-    public void testWriteAsciiStream() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeAsciiStream(InputStream)}
+     */
+    public void test_writeAsciiStreamLjava_io_InputStream() throws SQLException {
+        InputStream stream = new ByteArrayInputStream("abc".getBytes());
+        impl.writeAsciiStream(stream);
+        assertEquals(1, attr.size());
+        assertEquals("abc", attr.get(0));
+        
+        try {
+            impl.writeAsciiStream(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
-    public void testWriteBigDecimal() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeBigDecimal(java.math.BigDecimal)}
+     */
+    public void test_writeBigDecimalLjava_math_BigDecimal() throws SQLException {
+        impl.writeBigDecimal(BigDecimal.ONE);
+        impl.writeBigDecimal(BigDecimal.ONE);
+        assertSame(attr.get(0), attr.get(1));
+        
+        impl.writeBigDecimal(null);
+        assertNull(attr.get(2));
     }
 
-    public void testWriteBinaryStream() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeBinaryStream(InputStream)}
+     */
+    public void test_writeBinaryStreamLjava_io_InputStream() throws SQLException {
+        InputStream stream = new ByteArrayInputStream("abc".getBytes());
+        impl.writeBinaryStream(stream);
+        assertEquals(1, attr.size());
+        assertEquals("abc", attr.get(0));
     }
 
-    public void testWriteBlob() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeBlob(Blob)}
+     */
+    public void test_writeBlobLjava_sql_Blob() throws SQLException {
+        Blob blob = new MockBlob();
+        impl.writeBlob(blob);
+        assertEquals(1, attr.size());
+        assertTrue(attr.get(0) instanceof SerialBlob);
+        
+        impl.writeBlob(null);
+        assertNull(attr.get(1));
     }
 
     /**
@@ -121,16 +194,34 @@ public class SQLOutputImplTest extends TestCase {
         assertEquals((byte)0, attrBytes[2]);
     }
 
-    public void testWriteCharacterStream() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeCharacterStream(Reader))}
+     */
+    public void test_writeCharacterStreamLjava_io_Reader() throws SQLException {
+        Reader stream = new StringReader("abc");
+        impl.writeCharacterStream(stream);
+        assertEquals(1, attr.size());
+        assertEquals("abc", attr.get(0));        
     }
 
-    public void testWriteClob() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeClob(Clob)}
+     */
+    public void test_writeClobLjava_sql_Clob() throws SQLException {
+        Clob clob = new MockClob();
+        impl.writeClob(clob);
+        assertEquals(1, attr.size());
+        assertTrue(attr.get(0) instanceof SerialClob);
     }
 
-    public void testWriteDate() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeDate(Date)}
+     */
+    public void test_writeDateLjava_sql_Date() throws SQLException {
+        Date date = new Date(200);
+        impl.writeDate(date);
+        assertEquals(1, attr.size());
+        assertEquals(attr.get(0), date);
     }
 
     /**
@@ -173,14 +264,16 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeInt(Integer.MIN_VALUE);
         impl.writeLong(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, ((Long)attr.get(1)).longValue());
-    }
-
-    public void testWriteObject() {
-
-    }
-
-    public void testWriteRef() {
-
+    }    
+    
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeRef(Ref)}
+     */
+    public void test_writeRefLjava_sql_Ref() throws SQLException {
+        Ref ref = new MockRef();
+        impl.writeRef(ref);
+        assertEquals(1, attr.size());
+        assertTrue(attr.get(0) instanceof SerialRef);
     }
 
     /**
@@ -193,24 +286,49 @@ public class SQLOutputImplTest extends TestCase {
         assertEquals((short) -32768, ((Short) attr.get(1)).shortValue());
     }
 
-    public void testWriteString() {
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeString(String)}
+     */
+    public void test_writeStringLjava_lang_String() throws SQLException {
+        impl.writeString("abc");
+        assertEquals("abc", ((String) attr.get(0)));
+        impl.writeString("def");
+        assertEquals("def", ((String) attr.get(1)));
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeTime(Time)}
+     */
+    public void test_writeTimeLjava_sql_Time() throws SQLException {
+        Time time = new Time(200);
+        impl.writeTime(time);
+        assertEquals(1, attr.size());
+        assertEquals(attr.get(0), time);  
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeTimestamp(Timestamp)}
+     */
+    public void test_writeTimestampLjava_sql_Timestamp() throws SQLException {
+        Timestamp time = new Timestamp(200);
+        impl.writeTimestamp(time);
+        assertEquals(1, attr.size());
+        assertEquals(attr.get(0), time);  
 
     }
 
-    public void testWriteStruct() {
-
-    }
-
-    public void testWriteTime() {
-
-    }
-
-    public void testWriteTimestamp() {
-
-    }
-
-    public void testWriteURL() {
-
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeURL(URL)}
+     */
+    public void test_writeURLLjava_net_URL() throws MalformedURLException, SQLException {
+        URL url = new URL("http://www.apache.org");
+        impl.writeURL(url);
+        assertEquals(1, attr.size());
+        assertTrue(attr.get(0) instanceof SerialDatalink);  
+        assertEquals(url, ((SerialDatalink)attr.get(0)).getDatalink());
+        
+        impl.writeURL(null);
+        assertNull(attr.get(1));
     }
 
     @Override

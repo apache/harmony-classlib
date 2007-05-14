@@ -17,7 +17,10 @@
 
 package javax.sql.rowset.serial;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -32,6 +35,7 @@ import java.sql.SQLOutput;
 import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -64,34 +68,80 @@ public class SQLOutputImpl implements SQLOutput {
         this.map = map;
     }
 
-    public void writeArray(Array theArray) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeArray(Array))
+     */
+    @SuppressWarnings("unchecked")
+    public void writeArray(Array theArray) throws SQLException {
+        if (theArray != null) {
+            SerialArray serialArray = new SerialArray(theArray, map);
+            attributes.addElement(serialArray);
+        } else {
+            attributes.addElement(theArray);
+        }
     }
 
-    public void writeAsciiStream(InputStream theStream) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeAsciiStream(InputStream))
+     */
+    @SuppressWarnings("unchecked")
+    public void writeAsciiStream(InputStream theStream) throws SQLException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(theStream));
+        StringBuffer stringBuffer = new StringBuffer();
+        String line;
+        try {
+            line = br.readLine();
+            while (line != null) {
+                stringBuffer.append(line);
+                line = br.readLine();
+            }
+            attributes.addElement(stringBuffer.toString());
+        } catch (IOException e) {
+            throw new SQLException();
+        } 
     }
 
-    public void writeBigDecimal(BigDecimal theBigDecimal) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeBigDecimal(BigDecimal))
+     */
+    @SuppressWarnings("unchecked")
+    public void writeBigDecimal(BigDecimal theBigDecimal) throws SQLException {
+        attributes.addElement(theBigDecimal);
     }
 
-    public void writeBinaryStream(InputStream theStream) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * FIXME So far NO difference has been detected between writeBinaryStream
+     * and writeAsciiStream in RI. Keep their implementation same temporarily
+     * until some bug is found.
+     * 
+     * @see java.sql.SQLOutput#writeBinaryStream(InputStream))
+     */
+    @SuppressWarnings("unchecked")
+    public void writeBinaryStream(InputStream theStream) throws SQLException {
+        writeAsciiStream(theStream);
     }
 
-    public void writeBlob(Blob theBlob) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeBlob(Blob))
+     */
+    @SuppressWarnings("unchecked")
+    public void writeBlob(Blob theBlob) throws SQLException {
+        if (theBlob != null) {
+            SerialBlob serialBlob = new SerialBlob (theBlob);
+            attributes.addElement(serialBlob);
+        } else {
+            attributes.addElement(theBlob);
+        }
     }
     
     /**
@@ -100,8 +150,7 @@ public class SQLOutputImpl implements SQLOutput {
      * @see java.sql.SQLOutput#writeBoolean(boolean)
      */
     @SuppressWarnings({ "boxing", "unchecked" })
-    public void writeBoolean(boolean theFlag) throws SQLException,
-            NotImplementedException {
+    public void writeBoolean(boolean theFlag) throws SQLException {
         attributes.addElement(theFlag);
     }
 
@@ -125,22 +174,51 @@ public class SQLOutputImpl implements SQLOutput {
         attributes.addElement(theBytes);
     }
 
-    public void writeCharacterStream(Reader theStream) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeCharacterStream(Reader))
+     */
+    @SuppressWarnings("unchecked")
+    public void writeCharacterStream(Reader theStream) throws SQLException {
+        BufferedReader br = new BufferedReader(theStream);
+        StringBuffer stringBuffer = new StringBuffer();
+        String line;
+        try {
+            line = br.readLine();
+            while (line != null) {
+                stringBuffer.append(line);
+                line = br.readLine();
+            }
+            attributes.addElement(stringBuffer.toString());
+        } catch (IOException e) {
+            throw new SQLException();
+        } 
     }
 
-    public void writeClob(Clob theClob) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeClob(Clob)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeClob(Clob theClob) throws SQLException {
+        if (theClob != null) {
+            SerialClob serialClob = new SerialClob(theClob);
+            attributes.addElement(serialClob);
+        } else {
+            attributes.addElement(theClob);
+        }
     }
 
-    public void writeDate(Date theDate) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeDate(Date)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeDate(Date theDate) throws SQLException {
+        attributes.addElement(theDate);
     }
     
     /**
@@ -183,16 +261,33 @@ public class SQLOutputImpl implements SQLOutput {
         attributes.addElement(theLong);
     }
 
-    public void writeObject(SQLData theObject) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeObject(SQLData)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeObject(SQLData theObject) throws SQLException {
+        if(theObject == null) {
+            attributes.addElement(null);
+        } else {
+            attributes.addElement(new SerialStruct(theObject, new HashMap(map)));
+        }
     }
 
-    public void writeRef(Ref theRef) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeRef(Ref)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeRef(Ref theRef) throws SQLException {
+        if (theRef != null) {
+            SerialRef serialRef = new SerialRef(theRef);
+            attributes.addElement(serialRef);
+        } else {
+            attributes.addElement(theRef);
+        }
     }
 
     /**
@@ -205,34 +300,63 @@ public class SQLOutputImpl implements SQLOutput {
         attributes.addElement(theShort);
     }
 
-    public void writeString(String theString) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeString(String)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeString(String theString) throws SQLException {
+        attributes.addElement(theString);
     }
 
-    public void writeStruct(Struct theStruct) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeStruct(Struct)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeStruct(Struct theStruct) throws SQLException {
+        if (theStruct != null) {
+            SerialStruct serialStruct = new SerialStruct(theStruct, map);
+            attributes.addElement(serialStruct);
+        } else {
+            attributes.addElement(theStruct);
+        }
     }
 
-    public void writeTime(Time theTime) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeTime(Time)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeTime(Time theTime) throws SQLException {
+        attributes.addElement(theTime);
     }
 
-    public void writeTimestamp(Timestamp theTimestamp) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeTimestamp(Timestamp)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeTimestamp(Timestamp theTimestamp) throws SQLException {
+        attributes.addElement(theTimestamp);
     }
 
-    public void writeURL(URL theURL) throws SQLException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeURL(URL)
+     */
+    @SuppressWarnings("unchecked")
+    public void writeURL(URL theURL) throws SQLException {
+        if (theURL != null) {
+            SerialDatalink serialDatalink = new SerialDatalink(theURL);
+            attributes.addElement(serialDatalink);
+        } else {
+            attributes.addElement(theURL);
+        }
     }
-
 }
