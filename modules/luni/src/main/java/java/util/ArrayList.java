@@ -654,6 +654,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		array = newArray;
 		firstIndex = 0;
 		lastIndex = array.length;
+		modCount = 0;
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = { new ObjectStreamField(

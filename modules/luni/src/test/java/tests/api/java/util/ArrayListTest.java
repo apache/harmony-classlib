@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.ConcurrentModificationException;
+import java.util.Vector;
 
 import tests.support.Support_ListTest;
 
@@ -489,6 +491,17 @@ public class ArrayListTest extends junit.framework.TestCase {
 		for (int i = 0; i < alist.size(); i++)
 			assertTrue("Trimmed list contained incorrect elements", alist
 					.get(i) == objArray[i]);
+		Vector v = new Vector();
+		v.add("a");
+		ArrayList al = new ArrayList(v);
+		Iterator it = al.iterator();
+		al.trimToSize();
+		try {
+			it.next();
+			fail("should throw a ConcurrentModificationException");
+		} catch (ConcurrentModificationException ioobe) {
+			// expected
+		}
 	}
 
     /**
