@@ -37,7 +37,7 @@ public class MockArray implements Array {
     }
 
     public Object getArray(Map<String, Class<?>> map) throws SQLException {
-        return null;
+        return new Object[0];
     }
 
     public int getBaseType() throws SQLException {

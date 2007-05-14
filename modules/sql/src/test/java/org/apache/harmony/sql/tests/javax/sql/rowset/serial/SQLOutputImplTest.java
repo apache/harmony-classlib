@@ -264,7 +264,27 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeInt(Integer.MIN_VALUE);
         impl.writeLong(Long.MAX_VALUE);
         assertEquals(Long.MAX_VALUE, ((Long)attr.get(1)).longValue());
-    }    
+    }   
+    
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeObject(java.sql.SQLData)}
+     */
+    public void test_writeObjectLjava_sql_SQLData() throws SQLException {
+        MockSQLData sqlData = new MockSQLData();
+        sqlData.firstAttribute = "one";
+        sqlData.secondAttribute = Boolean.FALSE;
+        sqlData.thirdAttribute = "three";
+        sqlData.fourthAttribute = Integer.valueOf(4);
+        impl.writeObject(sqlData);
+        assertTrue(attr.get(0) instanceof SerialStruct);
+        SerialStruct struct = (SerialStruct) attr.get(0);
+        Object[] attributes = struct.getAttributes();
+        assertEquals(sqlData.firstAttribute, attributes[0]);
+        assertEquals(sqlData.secondAttribute, attributes[1]);
+        assertEquals(sqlData.thirdAttribute, attributes[2]);
+        assertEquals(sqlData.fourthAttribute, attributes[3]);
+        assertEquals("harmonytests.MockSQLData", struct.getSQLTypeName());
+    }
     
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeRef(Ref)}
@@ -294,6 +314,19 @@ public class SQLOutputImplTest extends TestCase {
         assertEquals("abc", ((String) attr.get(0)));
         impl.writeString("def");
         assertEquals("def", ((String) attr.get(1)));
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeStruct(java.sql.Struct)}
+     */
+    public void test_writeStructLjava_sql_Struct() throws SQLException {
+        Struct struct = new MockStruct(new Object[] {}, "mockStruct1");
+        impl.writeStruct(struct);
+        assertEquals(1, attr.size());
+        assertTrue(attr.get(0) instanceof SerialStruct);
+        SerialStruct ss = (SerialStruct) attr.get(0);
+        assertEquals(0, ss.getAttributes().length);
+        assertEquals("mockStruct1", ss.getSQLTypeName());
     }
 
     /**

@@ -20,11 +20,14 @@ package javax.sql.rowset.serial;
 import java.io.Serializable;
 import java.sql.SQLData;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.sql.Struct;
 import java.util.Map;
+import java.util.Vector;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
+/**
+ * A struct class for serialization.
+ */
 public class SerialStruct implements Struct, Serializable, Cloneable {
     // required by serialized form
     @SuppressWarnings("unused")
@@ -36,29 +39,74 @@ public class SerialStruct implements Struct, Serializable, Cloneable {
     // required by serialized form
     private Object[] attribs;
 
+    /**
+     * Constructs this serializable struct from an instance of SQLData. Use the
+     * mapping defined in the map for UDT.
+     * 
+     * @param in
+     *            an instance of SQLData.
+     * @param map
+     *            an user defined mapping for UDT.
+     * @throws SerialException
+     *             if there is something wrong.
+     */
     public SerialStruct(SQLData in, Map<String, Class<?>> map)
-            throws SerialException, NotImplementedException {
-        throw new NotImplementedException();
+            throws SerialException {
+        try {
+            SQLTypeName = in.getSQLTypeName();
+        } catch (SQLException e) {
+            throw new SerialException(e.getMessage());
+        }
+        Vector v = new Vector();
+        try {
+            SQLOutput out = new SQLOutputImpl(v, map);
+            in.writeSQL(out);
+        } catch (SQLException e) {
+            throw new SerialException(e.getMessage());
+        }
+        attribs = v.toArray();
     }
 
+    /**
+     * Constructs this serializable struct from an instance of Struct. Use the
+     * mapping defined in the map for UDT.
+     * 
+     * @param in
+     *            an instance of SQLData.
+     * @param map
+     *            an user defined mapping for UDT.
+     * @throws SerialException
+     *             if there is something wrong.
+     */
     public SerialStruct(Struct in, Map<String, Class<?>> map)
-            throws SerialException, NotImplementedException {
-        throw new NotImplementedException();
+            throws SerialException {
+        try {
+            SQLTypeName = in.getSQLTypeName();
+            attribs = in.getAttributes(map);
+        } catch (SQLException e) {
+            throw new SerialException(e.getMessage());
+        }
     }
 
-    public Object[] getAttributes() throws SerialException,
-            NotImplementedException {
-        throw new NotImplementedException();
-
+    /**
+     * Returns all the attributes as an array of Object.
+     */
+    public Object[] getAttributes() throws SerialException {
+        return attribs;
     }
 
+    /**
+     * Returns all the attributes as an array of Object, with the mapping
+     * defined by user.
+     */
     public Object[] getAttributes(Map<String, Class<?>> map)
-            throws SerialException, NotImplementedException {
-        throw new NotImplementedException();
+            throws SerialException {
+        // TODO handle the map.
+        return attribs;
     }
 
-    public String getSQLTypeName() throws SerialException, NotImplementedException {
-        throw new NotImplementedException();
+    public String getSQLTypeName() throws SerialException {
+        return SQLTypeName;
     }
 
 }
