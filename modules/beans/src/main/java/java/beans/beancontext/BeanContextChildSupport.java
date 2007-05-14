@@ -155,24 +155,28 @@ public class BeanContextChildSupport implements BeanContextChild,
             return;
         }
 
-        releaseBeanContextResources();
+       
+        
 
         // Children are not allowed to repeatedly veto this operation.
         // So, we set rejectedSetBCOnce flag to true if veto occurs
         // and never veto the change again
         if (!this.rejectedSetBCOnce) {
 
+            this.rejectedSetBCOnce = true;
             // Validate the new BeanContext value and throw
             // PropertyVetoException if it was not successful
             if (!validatePendingSetBeanContext(bc)) {
-                this.rejectedSetBCOnce = true;
-                fireVetoableChange(BEAN_CONTEXT, this.beanContext, bc);
+                
 
                 throw new PropertyVetoException(Messages.getString("beans.0F"), //$NON-NLS-1$
                         new PropertyChangeEvent(this.beanContextChildPeer,
                                 BEAN_CONTEXT, this.beanContext, bc));
             }
+            fireVetoableChange(BEAN_CONTEXT, this.beanContext, bc);
             this.rejectedSetBCOnce = false;
+            
+            releaseBeanContextResources();
 
             // We have to notify all listeners about "beanContext"
             // property change

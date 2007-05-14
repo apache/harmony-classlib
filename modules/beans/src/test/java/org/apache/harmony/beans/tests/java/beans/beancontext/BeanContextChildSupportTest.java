@@ -133,23 +133,10 @@ public class BeanContextChildSupportTest extends TestCase {
 
     public void testAddPropertyChangeListener_NullParam() {
         BeanContextChildSupport support = new MockBeanContextChildSupport();
-
-        try {
-            support.addPropertyChangeListener(null,
-                    new MockPropertyChangeListener());
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
-
-        try {
-            support.addPropertyChangeListener("property name", null);
-            support.firePropertyChange("property name", "old value",
-                    "new value");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        support.addPropertyChangeListener(null, new MockPropertyChangeListener());
+        support.addPropertyChangeListener("property name", null);
+        support.firePropertyChange("property name", "old value",
+                "new value");
     }
 
     public void testAddPropertyChangeListener() {
@@ -199,23 +186,10 @@ public class BeanContextChildSupportTest extends TestCase {
     public void testAddVetoableChangeListener_NullParam()
             throws PropertyVetoException {
         BeanContextChildSupport support = new MockBeanContextChildSupport();
-
-        try {
-            support.addVetoableChangeListener(null,
-                    new MockVetoableChangeListener());
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
-
-        try {
-            support.addVetoableChangeListener("property name", null);
-            support.fireVetoableChange("property name", "old value",
-                    "new value");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        support.addVetoableChangeListener(null,
+                new MockVetoableChangeListener());
+        support.addVetoableChangeListener("property name", null);
+        support.fireVetoableChange("property name", "old value", "new value");
     }
 
     public void testAddVetoableChangeListener() throws PropertyVetoException {
