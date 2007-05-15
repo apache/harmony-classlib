@@ -89,7 +89,6 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
 		int next = it.nextIndex();
 		while (colIt.hasNext()) {
 			it.add(colIt.next());
-			it.previous();
 		}
 		return next != it.nextIndex();
 	}
