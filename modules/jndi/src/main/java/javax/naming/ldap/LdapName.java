@@ -322,7 +322,7 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Object remove(int posn) throws InvalidNameException {
-        return rdns.remove(posn);
+        return rdns.remove(posn).toString();
     }
 
     /**

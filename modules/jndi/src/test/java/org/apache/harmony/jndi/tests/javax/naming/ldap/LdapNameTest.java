@@ -3275,6 +3275,23 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.remove(int)'
+     * </p>
+     * <p>
+     * Here we are testing if this method removes a component from this LDAP
+     * name.
+     * </p>
+     * <p>
+     * The expected result is an index out of boundary exception.
+     * </p>
+     */
+    public void testRemove006() throws Exception {
+        LdapName ln = new LdapName("t=test, t1=test1");
+        assertEquals("t=test", (String)ln.remove(1));
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.getRdns()'
      * </p>
      * <p>
