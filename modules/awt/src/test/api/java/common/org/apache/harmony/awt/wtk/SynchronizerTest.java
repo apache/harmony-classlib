@@ -104,4 +104,33 @@ public class SynchronizerTest extends TestCase {
         s.unlock();
     }
 
+    // Regression test for HARMONY-3601
+    public void testHarmony_3601() throws Exception {
+        final Thread[] threads = new Thread[10];
+        final boolean[] errFlag = { false };
+
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread() {
+                public void run() {
+                    try {
+                        java.awt.Toolkit.getDefaultToolkit().createImage(
+                                new java.net.URL("file://any/thing"));
+                    } catch (Throwable t) {
+                        errFlag[0] = true;
+                        fail(t.getMessage());
+                    }
+                }
+            };
+        }
+
+        for (int i = 0; i < threads.length; i++) {
+            threads[i].start();
+        }
+
+        for (int i = 0; i < threads.length; i++) {
+            threads[i].join();
+        }
+
+        assertFalse("Exception in child thread", errFlag[0]);
+    }
 }
