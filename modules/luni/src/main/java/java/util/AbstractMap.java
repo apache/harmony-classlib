@@ -142,9 +142,14 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
 
             try {
                 while (it.hasNext()) {
-                    if (!objectSet.contains(it.next())) {
-                        return false;
+                    Entry<K, V> entry = it.next();
+                    K key = entry.getKey();
+                    V value = entry.getValue();
+                    Object obj = map.get(key);
+                    if( null != obj ) {
+                            return obj.equals(value);
                     }
+                    return ( obj == value );
                 }
             } catch (ClassCastException cce) {
                 return false;
