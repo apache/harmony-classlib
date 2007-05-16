@@ -134,6 +134,7 @@ typedef double SYS_FLOAT;
 #else
 #define LIBPATH_ENV_VAR "LD_LIBRARY_PATH"
 #endif
+#define PLATFORM_DLL_EXTENSION ".so"
 
 /**
  * No priorities on Linux
