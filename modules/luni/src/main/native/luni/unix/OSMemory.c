@@ -19,6 +19,9 @@
  * Common natives supporting the memory system interface.
  */
 
+#if defined(MACOSX)
+#include <sys/types.h>
+#endif
 #include <sys/mman.h>
 #include <string.h>
 #include "vmi.h"

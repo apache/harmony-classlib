@@ -25,7 +25,12 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
+#if defined(MACOSX)
+#include <crt_externs.h>
+#define environ (*_NSGetEnviron())
+#else
 extern char **environ;
+#endif
 
 #include <sys/wait.h>
 

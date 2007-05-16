@@ -38,7 +38,7 @@
 #if defined(LINUX)
 #include <sys/sysinfo.h>
 #endif
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(MACOSX)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -652,7 +652,20 @@ hysysinfo_get_number_CPUs (struct HyPortLibrary * portLibrary)
   /* returns number of online(_SC_NPROCESSORS_ONLN) processors, number configured(_SC_NPROCESSORS_CONF) may  be more than online */
   return sysconf (_SC_NPROCESSORS_ONLN);
 #else
+#if defined(MACOSX)
+  /* derived from examples in sysctl(3) man page */
+  int mib[2], ncpu;
+  size_t len;
+
+  mib[0] = CTL_HW;
+  mib[1] = HW_NCPU;
+  len = sizeof(ncpu);
+  sysctl(mib, 2, &ncpu, &len, NULL, 0);
+  return (UDATA)ncpu;
+
+#else
   return 0;
+#endif
 #endif
 
 }
@@ -671,7 +684,7 @@ U_64 VMCALL
 hysysinfo_get_physical_memory (struct HyPortLibrary * portLibrary)
 {
 
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(MACOSX)
   /* derived from examples in sysctl(3) man page */
   int mib[2], mem;
   size_t len;

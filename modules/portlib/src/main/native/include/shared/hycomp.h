@@ -88,7 +88,7 @@ typedef unsigned char U_8;
  * </ul>
  */
 
-#if defined(LINUX) || defined(FREEBSD) || defined(AIX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX)
 
 #define DATA_TYPES_DEFINED
 
@@ -132,9 +132,17 @@ typedef double SYS_FLOAT;
 #if defined(AIX)
 #define LIBPATH_ENV_VAR "LIBPATH"
 #else
+#if defined(MACOSX)
+#define LIBPATH_ENV_VAR "DYLD_LIBRARY_PATH"
+#else
 #define LIBPATH_ENV_VAR "LD_LIBRARY_PATH"
 #endif
+#endif
+#if defined(MACOSX)
+#define PLATFORM_DLL_EXTENSION ".dylib"
+#else
 #define PLATFORM_DLL_EXTENSION ".so"
+#endif
 
 /**
  * No priorities on Linux

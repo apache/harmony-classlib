@@ -17,10 +17,15 @@
 #include <vmi.h>
 #include "hyenv.h"
 #include <stdlib.h>
+#if defined(MACOSX)
+#include <crt_externs.h>
+#define environ (*_NSGetEnviron())
+#else
+extern char** environ;
+#endif
 
 JNIEXPORT jbyteArray JNICALL Java_org_apache_harmony_luni_platform_Environment_getEnvBytes
   (JNIEnv *env, jclass obj){
-  extern char** environ;
   jbyteArray byteArray;
   int bufsize=0,i=0,start=0,len=0;
   for(i=0;*(environ+i);i++){

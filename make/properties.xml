@@ -206,6 +206,9 @@
     <condition property="linklib.suffix" value=".x">
         <isset property="is.zos" />
     </condition>
+    <condition property="linklib.suffix" value=".dylib">
+        <isset property="is.macosx"/>
+    </condition>
     <property name="linklib.suffix" value=".so" />
 
     <property name="manifest.suffix" value=".manifest" />

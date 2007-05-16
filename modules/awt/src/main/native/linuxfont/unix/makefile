@@ -21,6 +21,9 @@ INCLUDES += -I$(SHARED)common -I/usr/X11R6/include -I/usr/include/freetype2 \
 ifeq ($(HY_OS),freebsd)
 INCLUDES += -I/usr/local/include -I/usr/local/include/freetype2
 endif
+ifeq ($(HY_OS),macosx)
+INCLUDES += -I/sw/lib/freetype2/include/freetype2 -I/sw/lib/freetype2/include
+endif
 
 BUILDFILES = LinuxNativeFont.o
 
