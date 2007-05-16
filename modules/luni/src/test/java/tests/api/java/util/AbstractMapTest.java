@@ -18,19 +18,15 @@
 package tests.api.java.util;
 
 import java.util.AbstractMap;
-import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Vector;
 import java.util.WeakHashMap;
 
 public class AbstractMapTest extends junit.framework.TestCase {
@@ -195,77 +191,6 @@ public class AbstractMapTest extends junit.framework.TestCase {
 		MyMap mapClone = (MyMap) map.clone();
 		assertTrue("clone not shallow", map.getMap() == mapClone.getMap());
 	}
-    
-    public class AMT extends AbstractMap {
-
-        // Very crude AbstractMap implementation
-        Vector values = new Vector();
-
-        Vector keys = new Vector();
-
-        public Set entrySet() {
-            return new AbstractSet() {
-                public Iterator iterator() {
-                    return new Iterator() {
-                        int index = 0;
-
-                        public boolean hasNext() {
-                            return index < values.size();
-                        }
-
-                        public Object next() {
-                            if (index < values.size()) {
-                                Map.Entry me = new Map.Entry() {
-                                    Object v = values.elementAt(index);
-
-                                    Object k = keys.elementAt(index);
-
-                                    public Object getKey() {
-                                        return k;
-                                    }
-
-                                    public Object getValue() {
-                                        return v;
-                                    }
-
-                                    public Object setValue(Object value) {
-                                        return null;
-                                    }
-                                };
-                                index++;
-                                return me;
-                            }
-                            return null;
-                        }
-
-                        public void remove() {
-                        }
-                    };
-                }
-
-                public int size() {
-                    return values.size();
-                }
-            };
-        }
-
-        public Object put(Object k, Object v) {
-            keys.add(k);
-            values.add(v);
-            return v;
-        }
-    }
-    
-    /**
-     * @tests {@link java.util.AbstractMap#putAll(Map)}
-     */
-    public void test_putAllLMap() {
-        Hashtable ht = new Hashtable();
-        AMT amt = new AMT();
-        ht.put("this", "that");
-        amt.putAll(ht);
-        assertEquals("Should be equal", amt, ht);
-    }
 
 	protected void setUp() {
 	}
