@@ -2768,6 +2768,27 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.add(String)'
+     * </p>
+     * <p>
+     * Here we are testing if this method adds a single component to the end of
+     * this LDAP name.
+     * </p>
+     * <p>
+     * The expected result is the adding of the single component.
+     * </p>
+     */
+    public void testAddString007() throws Exception {
+        LinkedList ll = new LinkedList();
+        ll.add(new Rdn("t=test"));
+        LdapName ln = new LdapName(ll);
+        ln.add("t1=test1");
+        ll.remove(0);
+        assertEquals(2, ln.size());
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>

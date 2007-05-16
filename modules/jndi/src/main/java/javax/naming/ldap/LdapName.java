@@ -50,7 +50,7 @@ public class LdapName implements Name {
                     + Messages.getString("ldap.00"));
         }
 
-        this.rdns = rdns;
+        this.rdns = new ArrayList(rdns);
     }
 
     /**
