@@ -21,9 +21,7 @@
 #include "main_hlp.h"
 #endif /* HY_NO_THR */
 #include <stdlib.h>             /* for malloc for atoe and abort */
-#ifdef HY_NO_THR
 #include <stdio.h>
-#endif /* HY_NO_THR */
 
 struct haCmdlineOptions
 {
@@ -128,13 +126,14 @@ main (int argc, char **argv, char **envp)
    * for on the stack.  This version may be different from the one in the linked DLL.
    */
   HYPORT_SET_VERSION (&portLibraryVersion, HYPORT_CAPABILITY_MASK);
-  if (0 ==
+  rc =
 #ifndef HY_NO_THR
       hyport_init_library (&hyportLibrary, &portLibraryVersion,
 #else /* HY_NO_THR */
 	  port_init_library_func (&hyportLibrary, &portLibraryVersion,
 #endif /* HY_NO_THR */
-                           sizeof (HyPortLibrary)))
+                                  sizeof (HyPortLibrary));
+   if (rc == 0)
     {
       options.argc = argc;
       options.argv = argv;
@@ -159,6 +158,9 @@ main (int argc, char **argv, char **envp)
       }
 #endif /* HY_NO_SIG */
       hyportLibrary.port_shutdown_library (&hyportLibrary);
+    } else {
+        fprintf( stderr,
+                 "hyport_init_library function failed in hyprt library\n" );
     }
 
   return rc;
