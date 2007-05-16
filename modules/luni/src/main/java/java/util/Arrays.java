@@ -2434,7 +2434,7 @@ public class Arrays {
         // merging
 
         // if arrays are already sorted - no merge
-        if (((Comparable<Object>) in[med]).compareTo(in[med - 1]) >= 0) {
+        if (((Comparable<Object>) in[med - 1]).compareTo(in[med]) <= 0) {
             System.arraycopy(in, fromIndex, out, fromIndex, len);
             return;
         }
@@ -2521,7 +2521,7 @@ public class Arrays {
         // merging
 
         // if arrays are already sorted - no merge
-        if (c.compare(in[med], in[med - 1]) >= 0) {
+        if (c.compare(in[med - 1],in[med] ) <= 0) {
             System.arraycopy(in, fromIndex, out, fromIndex, len);
             return;
         }
