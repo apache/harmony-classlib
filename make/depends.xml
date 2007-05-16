@@ -63,7 +63,8 @@
         <property name="msvcr.dll" value="${msvcr.dll.x86}"/>
         <property name="msvcr.url" value="${msvcr.url.x86}"/>
         <property name="msvcr.dll.file" value="${msvcr.dll.file.x86}"/>
-        <property name="msvcr.md5" value="${msvcr.md5.x86}"/>
+        <property name="msvcr.md5" value="${msvcr_VS2003SP1.md5.x86}"/>
+        <property name="msvcr.md5.deprecated" value="${msvcr_VS2003.md5.x86}"/>
     </target>
 
     <target name="-select-win-deps-x86_64" if="is.x86_64">
@@ -344,13 +345,15 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <property environment="hyenv" />
 
     <mkdir dir="${msvcr.dir}" />
-
-    <download-one-file src="${msvcr.url}" dest="${msvcr.dll}"
-                           md5="${msvcr.md5}" />
+    <download-one-file src="${msvcr.url}"
+                       dest="${msvcr.dll}"
+                       md5="${msvcr.md5}"
+                       md5-deprecated="${msvcr.md5.deprecated}" />
 
     <mkdir dir="${awtdeps.dir}" />
-    <download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"
-                           md5="${awtdeps.md5}" />
+    <download-one-file src="${awtdeps.url}"
+                       dest="${awtdeps.tar}"
+                       md5="${awtdeps.md5}" />
 
     </target>
 
@@ -358,9 +361,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <attribute name="src" />
         <attribute name="dest" />
         <attribute name="md5" />
+        <attribute name="md5-deprecated" default="" />
         <sequential>
             <echo>Checking @{dest}</echo>
-        <available file="@{dest}" type="file"
+            <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
             <antcall target="-really-download">
                 <param name="src" value="@{src}" />
@@ -368,7 +372,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
             </antcall>
             <checksum file="@{dest}" property="@{dest}.md5" />
             <condition property="@{dest}.md5.verified" value="true">
-                <equals arg1="${@{dest}.md5}" arg2="@{md5}" />
+                <or>
+                    <equals arg1="${@{dest}.md5}" arg2="@{md5}" />
+                    <equals arg1="${@{dest}.md5}" arg2="@{md5-deprecated}" />
+                </or>
             </condition>
             <antcall target="-remove-file-if-bad">
                 <param name="jar" value="@{dest}" />
@@ -376,10 +383,9 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <fail unless="@{dest}.md5.verified">
 ...
 
-File @{dest} has incorrect md5 checksum.  Expected:
-  @{md5}
-found:
-  ${@{dest}.md5}
+File @{dest} has incorrect md5 checksum.
+    Expected: @{md5} (or @{md5-deprecated})
+    Found:    ${@{dest}.md5}
 
             </fail>
             <echo>Checksum verified (${@{dest}.md5.verified})</echo>
