@@ -127,7 +127,6 @@ javax/swing/text/html/HTMLEditorKit_HTMLTextActionTest.java
 javax/swing/text/html/HTMLEditorKit_InsertHTMLTextActionTest.java
 javax/swing/text/html/HTMLWriterTest.java
 javax/swing/text/html/InlineViewTest.java
-javax/swing/text/html/MinimalHTMLWriterTest.java
 javax/swing/text/html/ParagraphView_RequirementsTest.java
 javax/swing/text/html/StyleSheet_ResolvedRulesClassTest.java
 javax/swing/text/html/StyleSheet_ResolvedRulesTest.java
