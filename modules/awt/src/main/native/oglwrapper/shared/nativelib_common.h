@@ -21,7 +21,7 @@
 #ifndef NATIVELIB_COMMON_H
 #define NATIVELIB_COMMON_H
 
-#if defined(LINUX) || defined(FREEBSD) || defined(AIX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX)
 // common linux section--------------------------------
 #include <dlfcn.h>
 #include <stdint.h>
