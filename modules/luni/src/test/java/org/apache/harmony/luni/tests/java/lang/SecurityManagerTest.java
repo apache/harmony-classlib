@@ -545,6 +545,14 @@ public class SecurityManagerTest extends TestCase {
         assertFalse(mockSM.inClassLoader());
     }
 
+    /**
+     * @tests {@link java.lang.SecurityManager#inClassLoader()}
+     */
+    public void test_getClassContext() {
+        assertEquals("MockSecurityManager should be the first in the classes stack",
+                mockSM.getClassContext()[0], MockSecurityManager.class);
+    }
+
     // set some protected method to public for testing
     class MockSecurityManager extends SecurityManager {
 
