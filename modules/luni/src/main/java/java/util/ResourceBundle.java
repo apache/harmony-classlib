@@ -267,13 +267,17 @@ public abstract class ResourceBundle {
 
         try {
             Class<?> bundleClass = Class.forName(bundleName, true, loader);
-            bundle = (ResourceBundle) bundleClass.newInstance();
-            bundle.setLocale(locale);
+
+            if (ResourceBundle.class.isAssignableFrom(bundleClass)) {
+                bundle = (ResourceBundle) bundleClass.newInstance();
+            }
         } catch (LinkageError e) {
         } catch (Exception e) {
         }
 
-        if (bundle == null) {
+        if (bundle != null) {
+            bundle.setLocale(locale);
+        } else {
             final String fileName = bundleName.replace('.', '/');
             InputStream stream = AccessController
                     .doPrivileged(new PrivilegedAction<InputStream>() {
