@@ -149,13 +149,12 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
 				eos = true;
 				// Get non-compressed bytes read by fill
 				int size = inf.getRemaining();
-				byte[] b = new byte[8];
+				final int trailerSize = 8; // crc (4 bytes) + total out (4 bytes)
+				byte[] b = new byte[trailerSize];
+				int copySize = (size > trailerSize) ? trailerSize : size;
 
-				if (size > b.length) {
-					size = b.length;
-				}
-				System.arraycopy(buf, len - size, b, 0, size);
-				readFully(b, size, b.length - size);
+                System.arraycopy(buf, len - size, b, 0, copySize);
+				readFully(b, copySize, trailerSize - copySize);
 
 				if (getLong(b, 0) != crc.getValue()) {
                     throw new IOException(Messages.getString("archive.20")); //$NON-NLS-1$
