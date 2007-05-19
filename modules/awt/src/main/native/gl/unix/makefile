@@ -28,9 +28,13 @@ BUILDFILES = \
   $(SHAREDSUB)/SurfaceDataStructure.o \
   libpng.a
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a
+endif
+
+MDLLIBFILES += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS)
 

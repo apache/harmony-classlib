@@ -58,6 +58,7 @@
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
+                <include name="hyzip.h"/>
             </fileset>
         </copy>
         <copy todir="${hy.jdk}/include" overwrite="yes">
@@ -116,7 +117,11 @@
     </target>
 
     <!-- Build secondary native luni components -->
-    <target name="build-native-secondary" >
+    <target name="build-native-secondary"
+        depends="-build-native-secondary,-build-hyzip,-build-native-secondary2"
+        />
+
+    <target name="-build-native-secondary" >
         <!-- Build luni dll -->
         <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -129,6 +134,14 @@
 
         <!-- Build vmls lib -->
         <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" />
+    </target>
+
+    <target name="-build-hyzip" unless="hy.skip.zip.api">
+        <!-- Build hyzip lib -->
+        <make dir="${hy.luni.src.main.native}/hyzip/${hy.os.family}" />
+    </target>
+
+    <target name="-build-native-secondary2" >
 
         <!-- Build launcher executables -->
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}" />
@@ -144,7 +157,6 @@
 
         <!-- Make sure the Linux launcher has execute permission -->
         <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
-
     </target>
 
     <!-- Overlay OSS packages into their required locations -->
@@ -164,6 +176,8 @@
         <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" target="clean" />
         <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" target="clean" />
         <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/hyzip/${hy.os.family}"
+              target="clean" />
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}"
               target="clean" />
     </target>

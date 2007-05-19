@@ -26,8 +26,12 @@ BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
 	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
 	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
 
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES +=	$(LIBPATH)libhyzip.a
+endif
+
 MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
+	$(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 DLLNAME=../libhyarchive$(HY_SHLIB_SUFFIX)

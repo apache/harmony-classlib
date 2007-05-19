@@ -32,7 +32,9 @@ extern "C"
 #include "hyport.h"
 #include "hyvmls.h"
 
+#ifndef HY_ZIP_API
 #include "zipsup.h"
+#endif /* ! HY_ZIP_API */
 /**
  * @enum vmiError
  * Enumeration of all possible return codes from VM interface functions
@@ -58,6 +60,9 @@ extern "C"
   {
     VMI_VERSION_UNKNOWN = 0x00000000,     /**< Unknown VMInterface version */
     VMI_VERSION_1_0 = 0x00010000,         /**< VMInterface version 1.0 */
+#ifdef HY_ZIP_API
+    VMI_VERSION_2_0 = 0x00020000,         /**< VMInterface version 2.0 */
+#endif /* HY_ZIP_API */
     vmiVersionEnsureWideEnum = 0x1000000  /* ensure 4-byte enum */
   } vmiVersion;
 
@@ -70,6 +75,9 @@ extern "C"
   typedef void (JNICALL * vmiSystemPropertyIterator) (char *key, char *value,
                                                       void *userData);
 
+#ifdef HY_ZIP_API
+  struct HyZipFunctionTable;
+#endif /* HY_ZIP_API */
   struct VMInterface_;
   struct VMInterfaceFunctions_;
 
@@ -96,8 +104,12 @@ extern "C"
     JavaVM *(JNICALL * GetJavaVM) (VMInterface * vmi);
     HyPortLibrary *(JNICALL * GetPortLibrary) (VMInterface * vmi);
     HyVMLSFunctionTable *(JNICALL * GetVMLSFunctions) (VMInterface * vmi);
+#ifndef HY_ZIP_API
 
     HyZipCachePool *(JNICALL * GetZipCachePool) (VMInterface * vmi);
+#else /* HY_ZIP_API */
+    struct HyZipFunctionTable *(JNICALL * GetZipFunctions) (VMInterface * vmi);
+#endif /* HY_ZIP_API */
     JavaVMInitArgs *(JNICALL * GetInitArgs) (VMInterface * vmi);
     vmiError (JNICALL * GetSystemProperty) (VMInterface * vmi, char *key,
       char **valuePtr);
@@ -188,17 +200,35 @@ extern "C"
   HyVMLSFunctionTable *JNICALL GetVMLSFunctions (VMInterface * vmi);
 
 /**
+#ifndef HY_ZIP_API
  * @fn VMInterfaceFunctions_::GetZipCachePool(VMInterface * vmi)
  * Return a pointer to the HyZipCachePool structure used by the VM. It is the
  * responsibility of the vm to allocate the pool using zipCachePool_new().
+#else
+   * @fn VMInterfaceFunctions_::GetZipFunctions
+   * Return a pointer to a HyZipFunctionTable. This is a table of functions for managing zip files.
+#endif
  *
+#ifndef HY_ZIP_API
  * @code HyZipCachePool* JNICALL GetZipCachePool(VMInterface* vmi); @endcode
+#else
+   * @code HyZipFunctionTable* JNICALL GetZipFunctions(VMInterface* vmi); @endcode
+#endif
  * 
  * @param[in] vmi  The VM interface pointer
  *
+#ifndef HY_ZIP_API
  * @return a HyZipCachePool pointer
+#else
+   * @return a HyZipFunctionTable pointer
+#endif
  */
+#ifndef HY_ZIP_API
   HyZipCachePool *JNICALL GetZipCachePool (VMInterface * vmi);
+#else /* HY_ZIP_API */
+  struct HyZipFunctionTable* JNICALL 
+  GetZipFunctions(VMInterface* vmi);
+#endif /* HY_ZIP_API */
 
 /**
  * @fn VMInterfaceFunctions_::GetInitArgs(VMInterface * vmi)

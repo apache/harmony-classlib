@@ -99,6 +99,10 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
           JCLZipFile *jclZipFile;
 
           PORT_ACCESS_FROM_ENV (env);
+#ifdef HY_ZIP_API
+          VMI_ACCESS_FROM_ENV(env);
+          HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+#endif /* HY_ZIP_API */
 
           /* Detach from the common library */
           ClearLibDetach (env);
@@ -111,7 +115,11 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
               while (jclZipFile != NULL)
                 {
                   JCLZipFile *next = jclZipFile->next;
+#ifndef HY_ZIP_API
                   zip_closeZipFile (PORTLIB, &jclZipFile->hyZipFile);
+#else /* HY_ZIP_API */
+                  zipFuncs->zip_closeZipFile (VMI, &jclZipFile->hyZipFile);
+#endif /* HY_ZIP_API */
                   jclmem_free_memory (env, jclZipFile);
                   jclZipFile = next;
                 }

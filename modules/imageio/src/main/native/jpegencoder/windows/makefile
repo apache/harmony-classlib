@@ -30,6 +30,10 @@ HYCFLAGS = \
   -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
   $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I. \
   -I$(SHAREDSUB)\include -I$(JPEG_DIR)
+!IF "$(HY_ZIP_API)" == "true"
+HYCFLAGS = $(HYCFLAGS) -DHY_ZIP_API
+!ENDIF
+
 
 BUILDFILES = $(SHAREDSUB)JpegEncoder.obj
 

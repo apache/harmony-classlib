@@ -24,9 +24,12 @@ BUILDFILES = \
   $(SHAREDSUB)JpegDecoder.o \
   libjpeg.a
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+endif
+
+MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 DLLNAME=../libjpegdecoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYJPEGDECODER_0.1

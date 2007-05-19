@@ -282,6 +282,13 @@
         </not>
     </condition>
 
+    <property name="hy.zip.api" value="false" />
+    <condition property="hy.skip.zip.api" value="true">
+        <not>
+            <equals arg1="${hy.zip.api}" arg2="true" />
+        </not>
+     </condition>
+
     <condition property="hy.libstdc++.suffix" value=".libstdc++6">
         <isset property="use.libstdc++6"/>
     </condition>
@@ -448,6 +455,7 @@ properties in preference to these:
             <exec failonerror="true"
                   executable="${make.command}"
                   dir="@{dir}">
+                <env key="HY_ZIP_API" value="${hy.zip.api}" />
                 <env key="HY_HDK" value="${hy.hdk}" />
                 <env key="HY_CFG" value="${hy.cfg}" />
                 <env key="HY_ARCH" value="${hy.arch}" />

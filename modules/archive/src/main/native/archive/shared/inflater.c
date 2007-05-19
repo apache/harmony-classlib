@@ -36,6 +36,11 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
   z_stream *stream;
   int err = 0;
   int wbits = 15;               /*Use MAX for fastest */
+#ifdef HY_ZIP_API
+  VMI_ACCESS_FROM_ENV (env);
+  HyZipFunctionTable *zipFuncs;
+  zipFuncs = (*VMI)->GetZipFunctions(VMI);
+#endif
 
   /*Allocate mem for wrapped struct */
   jstream = jclmem_allocate_memory (env, sizeof (JCLZipStream));
@@ -53,9 +58,15 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
       throwNewOutOfMemoryError (env, "");
       return -1;
     }
+#ifndef HY_ZIP_API
   stream->opaque = (void *) privatePortLibrary;
   stream->zalloc = zalloc;
   stream->zfree = zfree;
+#else
+  stream->opaque = (void *) VMI;
+  stream->zalloc = zipFuncs->zip_zalloc;
+  stream->zfree = zipFuncs->zip_zfree;
+#endif
   stream->adler = 1;
   jstream->stream = stream;
   jstream->dict = NULL;

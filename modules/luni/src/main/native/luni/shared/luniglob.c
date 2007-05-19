@@ -55,7 +55,7 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   char *propVal = NULL;
   vmiError propRes;
 
-#if defined(LINUX)
+#if defined(LINUX) && !defined(HY_NO_SIG)
   /* all UNIX platforms */
   HySignalHandler previousGpHandler;
   HySigSet (SIGPIPE, SIG_IGN, previousGpHandler);

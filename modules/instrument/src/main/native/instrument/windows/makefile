@@ -27,15 +27,18 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
   $(SHAREDSUB)instrument.obj $(SHAREDSUB)inst_agt.obj 
-  
+
 VIRTFILES = hyinstrument.res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
-  
+!IF "$(HY_ZIP_API)" != "true"
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX)
+!ENDIF
+
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
+  $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+
 DLLBASE=0x13200000
 COMMENT=/comment:"instrument component native code. (c) Copyright 2006 The Apache Software Foundation or its licensors, as applicable."
 

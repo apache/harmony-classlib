@@ -20,17 +20,27 @@
 #include "exceptions.h"
 #include "jclglob.h"
 #include "jclprots.h"
+#ifndef HY_ZIP_API
 
 #include "zipsup.h"
+#else /* HY_ZIP_API */
+#include "hyzip.h"
+#endif /* HY_ZIP_API */
 
 /* Build a new ZipEntry from the C struct */
 jobject
 createZipEntry (JNIEnv * env, HyZipFile * zipFile, HyZipEntry * zipEntry)
 {
   PORT_ACCESS_FROM_ENV (env);
+#ifdef HY_ZIP_API
+  VMI_ACCESS_FROM_ENV(env);
+#endif /* HY_ZIP_API */
   jclass javaClass;
   jobject java_ZipEntry, extra, entryName;
   jmethodID mid;
+#ifdef HY_ZIP_API
+  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+#endif /* HY_ZIP_API */
 
   /* Build a new ZipEntry from the C struct */
   entryName = ((*env)->NewStringUTF (env, zipEntry->filename));
@@ -40,7 +50,11 @@ createZipEntry (JNIEnv * env, HyZipFile * zipFile, HyZipEntry * zipEntry)
   extra = NULL;
   if (zipEntry->extraFieldLength > 0)
     {
+#ifndef HY_ZIP_API
       zip_getZipEntryExtraField (PORTLIB, zipFile, zipEntry, NULL,
+#else /* HY_ZIP_API */
+      zipFuncs->zip_getZipEntryExtraField (VMI, zipFile, zipEntry, NULL,
+#endif /* HY_ZIP_API */
 				 zipEntry->extraFieldLength);
       if (zipEntry->extraField == NULL)
 	return NULL;
@@ -81,6 +95,9 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 #define RESULT_BUF_SIZE 256
 
   PORT_ACCESS_FROM_ENV (env);
+#ifdef HY_ZIP_API
+  VMI_ACCESS_FROM_ENV(env);
+#endif /* HY_ZIP_API */
 
   JCLZipFile *jclZipFile;
   HyZipFile *zipFile;
@@ -97,6 +114,9 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
   char startNameBuf[MAX_PATH];
   UDATA nameBufSize = MAX_PATH;
   IDATA rc;
+#ifdef HY_ZIP_API
+  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+#endif /* HY_ZIP_API */
 
   nameBuf = (char *) &startNameBuf;
 
@@ -113,17 +133,29 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 
   if (zipFile->cache)
     {
+#ifndef HY_ZIP_API
       if (zipCache_enumNew (zipFile->cache, "META-INF/", &scanPtr))
+#else /* HY_ZIP_API */
+      if (zipFuncs->zipCache_enumNew (zipFile->cache, "META-INF/", &scanPtr))
+#endif /* HY_ZIP_API */
 	return NULL;
 
       if (0 !=
+#ifndef HY_ZIP_API
 	  zipCache_enumGetDirName (scanPtr, (char *) &metaInfName,
+#else /* HY_ZIP_API */
+	  zipFuncs->zipCache_enumGetDirName (scanPtr, (char *) &metaInfName,
+#endif /* HY_ZIP_API */
 				   sizeof (metaInfName)))
 	return NULL;
 
       for (;;)
 	{
+#ifndef HY_ZIP_API
 	  rc = zipCache_enumElement (scanPtr, nameBuf, nameBufSize, &offset);
+#else /* HY_ZIP_API */
+	  rc = zipFuncs->zipCache_enumElement (scanPtr, nameBuf, nameBufSize, &offset);
+#endif /* HY_ZIP_API */
 	  if (rc < 0)
 	    {
 	      break;		/* we're done, leave the loop */
@@ -144,11 +176,20 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 	      continue;		/* go to the top of the loop again */
 	    }
 
+#ifndef HY_ZIP_API
 	  zip_initZipEntry (PORTLIB, &zipEntry);
 	  if (zip_getZipEntryFromOffset (PORTLIB, zipFile, &zipEntry, offset))
+#else /* HY_ZIP_API */
+	  zipFuncs->zip_initZipEntry (VMI, &zipEntry);
+	  if (zipFuncs->zip_getZipEntryFromOffset (VMI, zipFile, &zipEntry, offset))
+#endif /* HY_ZIP_API */
 	    goto cleanup;
 	  current = createZipEntry (env, zipFile, &zipEntry);
+#ifndef HY_ZIP_API
 	  zip_freeZipEntry (PORTLIB, &zipEntry);
+#else /* HY_ZIP_API */
+	  zipFuncs->zip_freeZipEntry (VMI, &zipEntry);
+#endif /* HY_ZIP_API */
 	  if (resultCount == RESULT_BUF_SIZE)
 	    goto cleanup;	/* fail - should fix. */
 	  if (current)
@@ -173,7 +214,11 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 	  (*env)->SetObjectArrayElement (env, result, i, resultArray[i]);
 	}
     cleanup:
+#ifndef HY_ZIP_API
       zipCache_enumKill (scanPtr);
+#else /* HY_ZIP_API */
+      zipFuncs->zipCache_enumKill (scanPtr);
+#endif /* HY_ZIP_API */
       if (oldNameBuf)
 	jclmem_free_memory (env, oldNameBuf);	/* free old before checking result so we clean up on fail */
       return result;
