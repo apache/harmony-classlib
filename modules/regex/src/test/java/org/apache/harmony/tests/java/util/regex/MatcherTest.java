@@ -687,10 +687,21 @@ public class MatcherTest extends TestCase {
     public void testPatternMatcher() throws Exception {
         Pattern pattern = Pattern.compile("(?:\\d+)(?:pt)");
         assertTrue(pattern.matcher("14pt").matches());
-    } 
+    }
+
+    /**
+     * Inspired by HARMONY-3360
+     */
+    public void test3360() {
+        String str = "!\"#%&'(),-./";
+        Pattern p = Pattern.compile("\\s");
+        Matcher m = p.matcher(str);
+
+        assertFalse(m.find());
+    }
 
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		junit.textui.TestRunner.run(MatcherTest.class);
 	}
 }
