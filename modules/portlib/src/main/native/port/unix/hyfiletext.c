@@ -62,6 +62,11 @@ static char* buf_write_using_iconv (struct HyPortLibrary *portLibrary,
 #endif /* HYVM_USE_ICONV (autogen) */
 
 #if (defined(HYVM_USE_WCTOMB))
+U_32 decodeUTF8CharN (const U_8 * input, U_16 * result, U_32 bytesRemaining);
+U_32 decodeUTF8Char (const U_8 * input, U_16 * result);
+#endif
+
+#if (defined(HYVM_USE_WCTOMB))
 static IDATA walkUTF8String (const U_8 * buf, IDATA nbytes);
 #endif /* HYVM_USE_WCTOMB (autogen) */
 
@@ -512,7 +517,7 @@ hyfile_read_text (struct HyPortLibrary *portLibrary, IDATA fd, char *buf,
                   IDATA nbytes)
 {
   char temp[64];
-  IDATA count, i, result;
+  IDATA count, i;
   char *cursor = buf;
 
   if (nbytes <= 0)
