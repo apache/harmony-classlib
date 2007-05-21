@@ -531,9 +531,9 @@ public class SSLEngineImplTest extends TestCase {
             assertEquals("Unexpected status of operation:",
                     SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                     result.getHandshakeStatus());
-            assertTrue(
+            assertEquals(
                 "The length of the consumed data differs from expected",
-                0 == result.bytesConsumed());
+                0, result.bytesConsumed());
             assertTrue(
                 "The length of the produced data differs from expected",
                 result.bytesProduced() > 0);
@@ -625,12 +625,12 @@ public class SSLEngineImplTest extends TestCase {
             assertEquals("Unexpected status of operation:",
                     SSLEngineResult.HandshakeStatus.NEED_WRAP,
                     result.getHandshakeStatus());
-            assertTrue(
+            assertEquals(
                 "The length of the consumed data differs from expected",
-                0 == result.bytesConsumed());
-            assertTrue(
+                0, result.bytesConsumed());
+            assertEquals(
                 "The length of the produced data differs from expected",
-                0 == result.bytesProduced());
+                0, result.bytesProduced());
 
             if (doLog) {
                 System.out.println("\nServer wraps the fatal alert");
@@ -642,9 +642,9 @@ public class SSLEngineImplTest extends TestCase {
             assertEquals("Unexpected status of operation:",
                     SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                     result.getHandshakeStatus());
-            assertTrue(
+            assertEquals(
                 "The length of the consumed data differs from expected",
-                0 == result.bytesConsumed());
+                0, result.bytesConsumed());
             assertTrue(
                 "The length of the produced data differs from expected",
                 result.bytesProduced() > 0);
@@ -1066,9 +1066,9 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.Status.OK,
                 result.getStatus());
-        assertTrue(
+        assertEquals(
             "The length of the received data differs from expected",
-            "data to be sent".length() == result.bytesProduced());
+            "data to be sent".length(), result.bytesProduced());
 
         // take the data from the buffer
         byte[] resulting_data = new byte[result.bytesProduced()];
@@ -1096,9 +1096,9 @@ public class SSLEngineImplTest extends TestCase {
             assertEquals("Unexpected status of operation:",
                     SSLEngineResult.Status.OK,
                     result.getStatus());
-            assertTrue(
+            assertEquals(
                 "The length of the received data differs from expected",
-                i == result.bytesProduced());
+                i, result.bytesProduced());
             resulting_data = new byte[i];
             si.rewind();
             si.get(resulting_data);
@@ -1171,12 +1171,12 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NEED_UNWRAP,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the consumed data differs from expected",
-            0 == result.bytesConsumed());
-        assertTrue(
+            0, result.bytesConsumed());
+        assertEquals(
             "The length of the produced data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
 
         // prepare the buffer for reading
         buffer.flip();
@@ -1192,9 +1192,9 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the produced data differs from expected",
-            1 == result.bytesProduced());
+            1, result.bytesProduced());
 
         app_data_buffer.clear();
 
@@ -1211,9 +1211,9 @@ public class SSLEngineImplTest extends TestCase {
         assertTrue(
             "The length of the consumed data differs from expected",
             result.bytesConsumed() > 0);
-        assertTrue(
+        assertEquals(
             "The length of the received data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
 
         // prepare the buffer for writing
         app_data_buffer.clear();
@@ -1233,12 +1233,12 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NEED_WRAP,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the consumed data differs from expected",
-            0 == result.bytesConsumed());
-        assertTrue(
+            0, result.bytesConsumed());
+        assertEquals(
             "The length of the received data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
 
         // prepare the buffer for writing
         buffer.clear();
@@ -1253,9 +1253,9 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the consumed data differs from expected",
-            0 == result.bytesConsumed());
+            0, result.bytesConsumed());
         assertTrue(
             "The length of the produced data differs from expected",
             result.bytesProduced() > 0);
@@ -1271,12 +1271,12 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the consumed data differs from expected",
-            0 == result.bytesConsumed());
-        assertTrue(
+            0, result.bytesConsumed());
+        assertEquals(
             "The length of the produced data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
 
         // prepare the buffers for reading
         app_data_buffer.clear();
@@ -1295,9 +1295,9 @@ public class SSLEngineImplTest extends TestCase {
         assertTrue(
             "The length of the consumed data differs from expected",
             result.bytesConsumed() > 0);
-        assertTrue(
+        assertEquals(
             "The length of the produced data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
 
         if (doLog) {
             System.out.println("\nServer tries to read after closure");
@@ -1310,12 +1310,12 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the consumed data differs from expected",
-            0 == result.bytesConsumed());
-        assertTrue(
+            0, result.bytesConsumed());
+        assertEquals(
             "The length of the produced data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
 
         // it's needless, but should work:
         client.closeInbound();
@@ -1332,12 +1332,12 @@ public class SSLEngineImplTest extends TestCase {
         assertEquals("Unexpected status of operation:",
                 SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING,
                 result.getHandshakeStatus());
-        assertTrue(
+        assertEquals(
             "The length of the consumed data differs from expected",
-            0 == result.bytesConsumed());
-        assertTrue(
+            0, result.bytesConsumed());
+        assertEquals(
             "The length of the produced data differs from expected",
-            0 == result.bytesProduced());
+            0, result.bytesProduced());
     }
 
     private static void print(SSLEngineResult result) {

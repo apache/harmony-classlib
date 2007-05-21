@@ -55,37 +55,37 @@ public class SSLContextSpiTests extends TestCase {
             sslConSpi.engineGetSocketFactory();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslConSpi.engineGetServerSocketFactory();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslConSpi.engineGetServerSessionContext();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslConSpi.engineGetClientSessionContext();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }       
         try {
             sslConSpi.engineCreateSSLEngine();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslConSpi.engineCreateSSLEngine("host",1);
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         sslConSpi.engineInit(null, null, new SecureRandom());
         assertNull("Not null result", sslConSpi.engineGetSocketFactory());

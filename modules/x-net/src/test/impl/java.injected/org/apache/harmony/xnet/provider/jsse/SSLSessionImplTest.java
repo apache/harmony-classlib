@@ -41,20 +41,20 @@ public class SSLSessionImplTest extends TestCase {
         session = new SSLSessionImpl(CipherSuite.TLS_RSA_WITH_NULL_MD5,
                 new SecureRandom());
         session.protocol = ProtocolVersion.TLSv1;
-        assertEquals("Incorrect protocol", session.getProtocol(), "TLSv1");
+        assertEquals("Incorrect protocol", "TLSv1", session.getProtocol());
         assertEquals("Incorrect cipher suite", session.getCipherSuite(),
                 CipherSuite.TLS_RSA_WITH_NULL_MD5.getName());
-        assertEquals("Incorrect id", session.getId().length, 32);
+        assertEquals("Incorrect id", 32, session.getId().length);
         assertTrue("Incorrect isValid", session.isValid());
         assertTrue("Incorrect isServer", session.isServer);
         long time = session.getCreationTime();
         assertTrue("Incorrect CreationTime", time <= System.currentTimeMillis());
         assertEquals("Incorrect LastAccessedTime", time, session.getLastAccessedTime());
-        assertEquals("Incorrect LocalCertificates", session.getLocalCertificates(), null);
-        assertEquals("Incorrect LocalPrincipal", session.getLocalPrincipal(), null);
-        assertEquals(session.getPeerHost(), null);
-        assertEquals(session.getPeerPort(), -1);
-        assertEquals(session.getSessionContext(), null);
+        assertNull("Incorrect LocalCertificates", session.getLocalCertificates());
+        assertNull("Incorrect LocalPrincipal", session.getLocalPrincipal());
+        assertNull(session.getPeerHost());
+        assertEquals(-1, session.getPeerPort());
+        assertNull(session.getSessionContext());
         
         try {
             session.getPeerCertificateChain();
@@ -96,22 +96,22 @@ public class SSLSessionImplTest extends TestCase {
     public void testSetPeer() {
         SSLSessionImpl session = new SSLSessionImpl(null);
         session.setPeer("someHost", 8080);
-        assertEquals(session.getPeerHost(), "someHost");
-        assertEquals(session.getPeerPort(), 8080);
+        assertEquals("someHost", session.getPeerHost());
+        assertEquals(8080, session.getPeerPort());
     }
 
 
     public void testGetValue() {
         SSLSessionImpl session = new SSLSessionImpl(null);
         
-        assertEquals(session.getValueNames().length, 0);
+        assertEquals(0, session.getValueNames().length);
         
         try {
             session.getValue(null);
             fail("No expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {            
         }
-        assertEquals(session.getValue("abc"), null);
+        assertNull(session.getValue("abc"));
         
         try {
             session.removeValue(null);
@@ -135,10 +135,10 @@ public class SSLSessionImplTest extends TestCase {
         Object o = new Object();
         session.putValue("abc", o);
         assertSame(session.getValue("abc"), o);
-        assertEquals(session.getValueNames()[0], "abc");
+        assertEquals("abc", session.getValueNames()[0]);
         
         session.removeValue("abc");
-        assertEquals(session.getValue("abc"), null);    
+        assertNull(session.getValue("abc"));    
     }
     
     public void testClone() {

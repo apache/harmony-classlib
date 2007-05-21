@@ -86,7 +86,7 @@ public class TrustManagerFactoryImplTest extends TestCase {
             fail(e.toString());
         }
         TrustManager[] tma = tmf.engineGetTrustManagers();
-        assertTrue("Incorrect array length", tma.length == 1);
+        assertEquals("Incorrect array length", 1, tma.length);
         assertTrue("Incorrect KeyManager type",
                 tma[0] instanceof TrustManagerImpl);
     }

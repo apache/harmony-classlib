@@ -52,7 +52,8 @@ public class KeyManagerFactorySpiTests extends TestCase {
      * Test for <code>KeyManagerFactorySpi</code> constructor 
      * Assertion: constructs KeyManagerFactorySpi
      */
-    public void testKeyManagerFactorySpi01() {
+    public void testKeyManagerFactorySpi01()
+            throws Exception {
         KeyManagerFactorySpi kmfSpi = new MyKeyManagerFactorySpi();
         assertNull(kmfSpi.engineGetKeyManagers());
         KeyStore kStore = null;
@@ -64,15 +65,11 @@ public class KeyManagerFactorySpiTests extends TestCase {
             kmfSpi.engineInit(kStore, null);
             fail("KeyStoreException must be thrown");
         } catch (KeyStoreException e) {
-        } catch (Exception e) {
-            fail("Unexpected: ".concat(e.toString()));
         }
         try {
             kmfSpi.engineInit(kStore, pass);
             fail("UnrecoverableKeyException must be thrown");
         } catch (UnrecoverableKeyException e) {
-        } catch (Exception e) {
-            fail("Unexpected: ".concat(e.toString()));
         }
         try {
             kmfSpi.engineInit(mfp);
@@ -88,15 +85,9 @@ public class KeyManagerFactorySpiTests extends TestCase {
         } catch (KeyStoreException e) {
             fail("default keystore type is not supported");
             return;
-        } catch (Exception e) {
-            fail("Unexpected: "+e.toString());
-            return;            
         }
-        try {
-            kmfSpi.engineInit(kStore, pass);
-        } catch (Exception e) {
-            fail("Unexpected: ".concat(e.toString()));
-        }
+        kmfSpi.engineInit(kStore, pass);
+
         mfp = new MyKeyManagerFactorySpi.Parameters(kStore, null);
         try {
             kmfSpi.engineInit(mfp);
@@ -104,11 +95,7 @@ public class KeyManagerFactorySpiTests extends TestCase {
         } catch (InvalidAlgorithmParameterException e) {
         }
         mfp = new MyKeyManagerFactorySpi.Parameters(kStore, pass);
-        try {
-            kmfSpi.engineInit(mfp);
-        } catch (InvalidAlgorithmParameterException e) {
-            fail("Unexpected InvalidAlgorithmParameterException was thrown");
-        }
+        kmfSpi.engineInit(mfp);
     }
 }
 

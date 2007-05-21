@@ -82,7 +82,7 @@ public class HandshakeProtocolTest extends TestCase {
                         new SSLSessionContextImpl(),
                         new SSLSessionContextImpl())));
 
-        assertEquals(protocol.wrap(), null);
+        assertNull(protocol.wrap());
 
         protocol.delegatedTaskErr = new Exception();
         try {
@@ -91,7 +91,7 @@ public class HandshakeProtocolTest extends TestCase {
         } catch (AlertException e) {
             assertEquals(e.getDescriptionCode(),
                     AlertProtocol.HANDSHAKE_FAILURE);
-            assertEquals(protocol.delegatedTaskErr, null);
+            assertNull(protocol.delegatedTaskErr);
         }
     }
 
@@ -118,8 +118,8 @@ public class HandshakeProtocolTest extends TestCase {
 
         hs_protocol.preMasterSecret = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
         hs_protocol.computerMasterSecret();
-        assertEquals(hs_protocol.preMasterSecret, null);
-        assertEquals(hs_protocol.session.master_secret.length, 48);
+        assertNull(hs_protocol.preMasterSecret);
+        assertEquals(48, hs_protocol.session.master_secret.length);
 
         hs_protocol.send(hs_protocol.clientHello);
         hs_protocol.send(hs_protocol.serverHello);
@@ -162,8 +162,8 @@ public class HandshakeProtocolTest extends TestCase {
 
         hs_protocol.preMasterSecret = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
         hs_protocol.computerMasterSecret();
-        assertEquals(hs_protocol.preMasterSecret, null);
-        assertEquals(hs_protocol.session.master_secret.length, 48);
+        assertNull(hs_protocol.preMasterSecret);
+        assertEquals(48, hs_protocol.session.master_secret.length);
 
         hs_protocol.send(hs_protocol.clientHello);
         hs_protocol.send(hs_protocol.serverHello);
@@ -206,7 +206,7 @@ public class HandshakeProtocolTest extends TestCase {
         DelegatedTask task = new DelegatedTask(null, null, null);
         protocol.delegatedTasks.add(task);
         assertSame(protocol.getTask(), task);
-        assertEquals(protocol.getTask(), null);
+        assertNull(protocol.getTask());
     }
 
     public void testGetRSAKeyLength() throws Exception {
@@ -214,7 +214,8 @@ public class HandshakeProtocolTest extends TestCase {
         kpg.initialize(512);
         PublicKey key = kpg.genKeyPair().getPublic();
 
-        assertEquals(HandshakeProtocol.getRSAKeyLength(key), 512);
+        assertEquals(512, HandshakeProtocol.getRSAKeyLength(key));
+
     }
 
 }

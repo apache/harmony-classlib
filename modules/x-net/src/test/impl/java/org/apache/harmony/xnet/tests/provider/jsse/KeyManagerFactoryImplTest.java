@@ -84,7 +84,7 @@ public class KeyManagerFactoryImplTest extends TestCase {
         kmf.engineInit(ks, null);
 
         KeyManager[] kma = kmf.engineGetKeyManagers();
-        assertTrue("Incorrect array length", kma.length == 1);
+        assertEquals("Incorrect array length", 1, kma.length);
         assertTrue("Incorrect KeyManager type",
                 kma[0] instanceof KeyManagerImpl);
     }

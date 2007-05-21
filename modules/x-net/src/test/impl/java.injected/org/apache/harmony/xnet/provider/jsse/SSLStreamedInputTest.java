@@ -35,11 +35,11 @@ public class SSLStreamedInputTest extends TestCase {
         byte[] data = {1, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 5};
         ByteArrayInputStream bis = new ByteArrayInputStream(data);
         SSLStreamedInput sslsi = new SSLStreamedInput(bis);
-        assertTrue(sslsi.available() == bis.available());
-        assertTrue(sslsi.read() == 1);
-        assertTrue(sslsi.readUint32() == 1);
+        assertEquals(bis.available(), sslsi.available());
+        assertEquals(1, sslsi.read());
+        assertEquals(1, sslsi.readUint32());
         sslsi.skip(3);
-        assertTrue(sslsi.readUint64() == 5);
+        assertEquals(5, sslsi.readUint64());
         try {
             sslsi.read();
             fail("Expected EndOfSourceException was not thrown");

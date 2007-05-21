@@ -316,22 +316,22 @@ public class SSLSocketFactoriesTest extends TestCase {
                         assertTrue("Read message does not equal to expected",
                                 Arrays.equals(client_message.getBytes(), buff));
                         os.write(-1);
-                        assertTrue("Read data differs from expected",
-                                is.read() == 255);
+                        assertEquals("Read data differs from expected",
+                                255, is.read());
                         if (doLog) {
                             System.out.println("Server is closed: "
                                     +s.isClosed());
                         }
-                        assertTrue("Returned value should be -1",
+                        assertEquals("Returned value should be -1",
                         // initiate an exchange of closure alerts
-                                is.read() == -1);
+                                -1, is.read());
                         if (doLog) {
                             System.out.println("Server is closed: "
                                     +s.isClosed());
                         }
-                        assertTrue("Returned value should be -1",
+                        assertEquals("Returned value should be -1",
                         // initiate an exchange of closure alerts
-                                is.read() == -1);
+                                -1, is.read());
                     } catch (Throwable e) {
                         synchronized (throwed) {
                             if (doLog) {
@@ -388,8 +388,8 @@ public class SSLSocketFactoriesTest extends TestCase {
                         // send the response
                         buff = (" "+client_message+" ").getBytes();
                         os.write(buff, 1, buff.length-2);
-                        assertTrue("Read data differs from expected",
-                                is.read() == 255);
+                        assertEquals("Read data differs from expected",
+                                255, is.read());
                         os.write(-1);
                         if (doLog) {
                             System.out.println("Client is closed: "
