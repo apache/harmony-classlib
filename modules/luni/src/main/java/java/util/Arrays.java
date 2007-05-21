@@ -1123,24 +1123,13 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the "deep contents" of the given array. If
-     * the array contains other arrays as its elements, the hash code is based
-     * on their contents not their identities. So It is not acceptable to invoke
-     * this method on an array that contains itself as an element, either
-     * directly or indirectly.
+     * Answers a hash code based on the deep contents of the given array. This
+     * means that if this array contains other arrays, their contents will also
+     * be included in the hash and so on recursively. This method should not be
+     * used if the array is likely to contain a reference to itself.
      * 
-     * For any two arrays a and b, if Arrays.deepEquals(a, b) returns true, it
-     * means that the return value of Arrays.deepHashCode(a) equals
-     * Arrays.deepHashCode(b).
-     * 
-     * The computation of the value returned by this method is similar to that
-     * of the value returned by {@link List#hashCode()}} method invoked on a
-     * {@link List}} containing a sequence of instances representing the
-     * elements of array in the same order. The difference is: If an element e
-     * of array is itself an array, its hash code is computed by calling the
-     * appropriate overloading of Arrays.hashCode(e) if e is an array of a
-     * primitive type, or by calling Arrays.deepHashCode(e) recursively if e is
-     * an array of a reference type.
+     * If Arrays.deepEquals(...) returns true for two arrays then their deep
+     * hash codes will also be equal.
      * 
      * The value returned by this method is the same value as the method
      * Arrays.asList(array).hashCode(). If the array is null, the return value
