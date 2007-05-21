@@ -210,9 +210,8 @@ public interface MemoryPoolMXBean {
      * </p>
      * 
      * @param threshold The new, non-negative threshold.
-     * @throws IllegalArgumentException if <code>threshold</code> is negative
-     *         or greater than the maximum amount supported by this pool, if
-     *         defined.
+     * @throws IllegalArgumentException if the new <code>threshold</code> is either negative
+     *         or greater than the maximum memory allowed.
      * @throws UnsupportedOperationException if this is not supported.
      * @throws SecurityException if caller doesn't have
      *         <code>ManagementPermission("control")</code>.
@@ -225,9 +224,8 @@ public interface MemoryPoolMXBean {
      * </p>
      * 
      * @param threshold The new, non-negative threshold.
-     * @throws IllegalArgumentException if <code>threshold</code> is negative
-     *         or greater than the maximum amount supported by this pool, if
-     *         defined.
+     * @throws IllegalArgumentException if the new <code>threshold</code> is either negative
+     *         or greater than the maximum memory allowed.
      * @throws UnsupportedOperationException if this is not supported.
      * @throws SecurityException if caller doesn't have
      *         <code>ManagementPermission("control")</code>.
