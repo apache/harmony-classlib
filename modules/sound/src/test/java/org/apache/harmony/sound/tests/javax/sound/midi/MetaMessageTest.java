@@ -69,13 +69,13 @@ public class MetaMessageTest extends TestCase {
         /**
          * values change!!!
          */
-        assertEquals( meta3.getStatus(), 10 );
-        assertEquals( meta3.getType(), 20 );
-        assertEquals( meta3.getMessage().length, 3 );
-        assertEquals( meta3.getMessage()[0], 10 );
-        assertEquals( meta3.getMessage()[1], 20 );
-        assertEquals( meta3.getMessage()[2], 30 );
-        assertEquals( meta3.getData().length, 0 );
+        assertEquals(10, meta3.getStatus());
+        assertEquals(20, meta3.getType());
+        assertEquals(3, meta3.getMessage().length);
+        assertEquals(10, meta3.getMessage()[0]);
+        assertEquals(20, meta3.getMessage()[1]);
+        assertEquals(30, meta3.getMessage()[2]);
+        assertEquals(0, meta3.getData().length);
 
         bt = new byte[] {17, -9, 23, 45, 56};
         MetaMessage1 meta1 = new MetaMessage1(bt);
@@ -99,26 +99,26 @@ public class MetaMessageTest extends TestCase {
          * values change, but the begin of array that
          * return by method getData() doesn't displace!!!
          */
-        assertEquals( meta1.getLength(), 5 );
-        assertEquals( meta1.getStatus(), 98 );
-        assertEquals( meta1.getType(), 247 );
-        assertEquals( meta1.getMessage().length, 5 );
-        assertEquals( meta1.getMessage()[0], 98 );
-        assertEquals( meta1.getMessage()[1], -9 );
-        assertEquals( meta1.getMessage()[2], -56 );
-        assertEquals( meta1.getMessage()[3], -16 );
-        assertEquals( meta1.getMessage()[4], -3 );
+        assertEquals(5, meta1.getLength());
+        assertEquals(98, meta1.getStatus());
+        assertEquals(247, meta1.getType());
+        assertEquals(5, meta1.getMessage().length);
+        assertEquals(98, meta1.getMessage()[0]);
+        assertEquals(-9, meta1.getMessage()[1]);
+        assertEquals(-56, meta1.getMessage()[2]);
+        assertEquals(-16, meta1.getMessage()[3]);
+        assertEquals(-3, meta1.getMessage()[4]);
         assertEquals( 2, meta1.getData().length ); //!!!
-        assertEquals( meta1.getData()[0], -16 );   //!!! 
-        assertEquals( meta1.getData()[1], -3 );    //!!!
+        assertEquals(-16, meta1.getData()[0]);   //!!! 
+        assertEquals(-3, meta1.getData()[1]);    //!!!
         byte[] nb = meta1.getData();
         nb[0] = 1;
         nb[1] = 2;
         /**
          * and here values don't change...
          */
-        assertEquals( meta1.getData()[0], -16 );
-        assertEquals( meta1.getData()[1], -3 );
+        assertEquals(-16, meta1.getData()[0]);
+        assertEquals(-3, meta1.getData()[1]);
         
         bt = new byte[] {17, -9, -23, -45, -56};
         MetaMessage1 meta4 = new MetaMessage1(bt);
@@ -194,49 +194,49 @@ public class MetaMessageTest extends TestCase {
 
         meta.setMessage(18, new byte[] { 1, 2, 3 }, 0);
 
-        assertEquals(meta.getLength(), 3);
-        assertEquals(meta.getMessage().length, 3);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 18);
-        assertEquals(meta.getMessage()[2], 0);
-        assertEquals(meta.getData().length, 0);
+        assertEquals(3, meta.getLength());
+        assertEquals(3, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(18, meta.getMessage()[1]);
+        assertEquals(0, meta.getMessage()[2]);
+        assertEquals(0, meta.getData().length);
 
         meta.setMessage(10, new byte[100000], 65535);
-        assertEquals(meta.getLength(), 65540);
-        assertEquals(meta.getMessage().length, 65540);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], -125);
-        assertEquals(meta.getMessage()[3], -1);
-        assertEquals(meta.getMessage()[4], 127);
+        assertEquals(65540, meta.getLength());
+        assertEquals(65540, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(-125, meta.getMessage()[2]);
+        assertEquals(-1, meta.getMessage()[3]);
+        assertEquals(127, meta.getMessage()[4]);
 
         meta.setMessage(10, new byte[100000], 16385);
-        assertEquals(meta.getLength(), 16390);
-        assertEquals(meta.getMessage().length, 16390);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], -127);
-        assertEquals(meta.getMessage()[3], -128);
-        assertEquals(meta.getMessage()[4], 1);
+        assertEquals(16390, meta.getLength());
+        assertEquals(16390, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(-127, meta.getMessage()[2]);
+        assertEquals(-128, meta.getMessage()[3]);
+        assertEquals(1, meta.getMessage()[4]);
 
         byte[] bt = new byte[] { 1, 2, 3, 4 };
         meta.setMessage(10, bt, 4);
-        assertEquals(meta.getLength(), 7);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 10);
+        assertEquals(7, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
         assertEquals(4, meta.getData().length);
-        assertEquals(meta.getData()[0], 1);
-        assertEquals(meta.getData()[1], 2);
-        assertEquals(meta.getData()[2], 3);
-        assertEquals(meta.getData()[3], 4);
-        assertEquals(meta.getMessage().length, 7);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], 4);
-        assertEquals(meta.getMessage()[3], 1);
-        assertEquals(meta.getMessage()[4], 2);
-        assertEquals(meta.getMessage()[5], 3);
-        assertEquals(meta.getMessage()[6], 4);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(3, meta.getData()[2]);
+        assertEquals(4, meta.getData()[3]);
+        assertEquals(7, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(4, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
+        assertEquals(3, meta.getMessage()[5]);
+        assertEquals(4, meta.getMessage()[6]);
         bt[0] = 0;
         bt[1] = 1;
         bt[2] = 2;
@@ -244,33 +244,33 @@ public class MetaMessageTest extends TestCase {
         /**
          * values don't change
          */
-        assertEquals( meta.getLength(), 7 );
-        assertEquals( meta.getStatus(), 255 );
-        assertEquals( meta.getType(), 10 );
-        assertEquals( meta.getData().length, 4 );
-        assertEquals( meta.getData()[0], 1 );
-        assertEquals( meta.getData()[1], 2 );
-        assertEquals( meta.getData()[2], 3 );
-        assertEquals( meta.getData()[3], 4 );
-        assertEquals( meta.getMessage().length, 7 );
-        assertEquals( meta.getMessage()[0], -1 );
-        assertEquals( meta.getMessage()[1], 10 );
-        assertEquals( meta.getMessage()[2], 4 );
-        assertEquals( meta.getMessage()[3], 1 );
-        assertEquals( meta.getMessage()[4], 2 );
-        assertEquals( meta.getMessage()[5], 3 );
-        assertEquals( meta.getMessage()[6], 4 );
+        assertEquals(7, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
+        assertEquals(4, meta.getData().length);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(3, meta.getData()[2]);
+        assertEquals(4, meta.getData()[3]);
+        assertEquals(7, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(4, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
+        assertEquals(3, meta.getMessage()[5]);
+        assertEquals(4, meta.getMessage()[6]);
 
         meta.setMessage(12, null, 0);
 
-        assertEquals(meta.getLength(), 3);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 12);
-        assertEquals(meta.getData().length, 0);
-        assertEquals(meta.getMessage().length, 3);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 12);
-        assertEquals(meta.getMessage()[2], 0);
+        assertEquals(3, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(12, meta.getType());
+        assertEquals(0, meta.getData().length);
+        assertEquals(3, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(12, meta.getMessage()[1]);
+        assertEquals(0, meta.getMessage()[2]);
 
         /**
          * I will testing following condition after throw out exception;
@@ -284,64 +284,64 @@ public class MetaMessageTest extends TestCase {
             meta.setMessage(12, new byte[0], 9);
             fail("InvalidMidiDataException expected");
         } catch (InvalidMidiDataException e) {}
-        assertEquals(meta.getLength(), 7);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 10);
-        assertEquals(meta.getData().length, 4);
-        assertEquals(meta.getData()[0], 1);
-        assertEquals(meta.getData()[1], 2);
-        assertEquals(meta.getData()[2], 3);
-        assertEquals(meta.getData()[3], 4);
-        assertEquals(meta.getMessage().length, 7);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], 4);
-        assertEquals(meta.getMessage()[3], 1);
-        assertEquals(meta.getMessage()[4], 2);
-        assertEquals(meta.getMessage()[5], 3);
-        assertEquals(meta.getMessage()[6], 4);
+        assertEquals(7, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
+        assertEquals(4, meta.getData().length);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(3, meta.getData()[2]);
+        assertEquals(4, meta.getData()[3]);
+        assertEquals(7, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(4, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
+        assertEquals(3, meta.getMessage()[5]);
+        assertEquals(4, meta.getMessage()[6]);
 
         try {
             meta.setMessage(12, null, 9);
             fail("NullPointerException expected");
         } catch (NullPointerException e) {}
-        assertEquals(meta.getLength(), 7);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 10);
-        assertEquals(meta.getData().length, 4);
-        assertEquals(meta.getData()[0], 1);
-        assertEquals(meta.getData()[1], 2);
-        assertEquals(meta.getData()[2], 3);
-        assertEquals(meta.getData()[3], 4);
-        assertEquals(meta.getMessage().length, 7);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], 4);
-        assertEquals(meta.getMessage()[3], 1);
-        assertEquals(meta.getMessage()[4], 2);
-        assertEquals(meta.getMessage()[5], 3);
-        assertEquals(meta.getMessage()[6], 4);
+        assertEquals(7, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
+        assertEquals(4, meta.getData().length);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(3, meta.getData()[2]);
+        assertEquals(4, meta.getData()[3]);
+        assertEquals(7, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(4, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
+        assertEquals(3, meta.getMessage()[5]);
+        assertEquals(4, meta.getMessage()[6]);
 
         try {
             meta.setMessage(12, null, -9);
             fail("InvalidMidiDataException expected");
         } catch (InvalidMidiDataException e) {}
-        assertEquals(meta.getLength(), 7);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 10);
-        assertEquals(meta.getData().length, 4);
-        assertEquals(meta.getData()[0], 1);
-        assertEquals(meta.getData()[1], 2);
-        assertEquals(meta.getData()[2], 3);
-        assertEquals(meta.getData()[3], 4);
-        assertEquals(meta.getMessage().length, 7);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], 4);
-        assertEquals(meta.getMessage()[3], 1);
-        assertEquals(meta.getMessage()[4], 2);
-        assertEquals(meta.getMessage()[5], 3);
-        assertEquals(meta.getMessage()[6], 4);
+        assertEquals(7, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
+        assertEquals(4, meta.getData().length);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(3, meta.getData()[2]);
+        assertEquals(4, meta.getData()[3]);
+        assertEquals(7, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(4, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
+        assertEquals(3, meta.getMessage()[5]);
+        assertEquals(4, meta.getMessage()[6]);
     }
 
     /**
@@ -373,47 +373,47 @@ public class MetaMessageTest extends TestCase {
 
         meta.setMessage(10, new byte[] { 1, 2, 3, 4 }, 4);
 
-        assertEquals(meta.getLength(), 7);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 10);
-        assertEquals(meta.getData().length, 4);
-        assertEquals(meta.getData()[0], 1);
-        assertEquals(meta.getData()[1], 2);
-        assertEquals(meta.getData()[2], 3);
-        assertEquals(meta.getData()[3], 4);
-        assertEquals(meta.getMessage().length, 7);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], 4);
-        assertEquals(meta.getMessage()[3], 1);
-        assertEquals(meta.getMessage()[4], 2);
-        assertEquals(meta.getMessage()[5], 3);
-        assertEquals(meta.getMessage()[6], 4);
+        assertEquals(7, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
+        assertEquals(4, meta.getData().length);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(3, meta.getData()[2]);
+        assertEquals(4, meta.getData()[3]);
+        assertEquals(7, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(4, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
+        assertEquals(3, meta.getMessage()[5]);
+        assertEquals(4, meta.getMessage()[6]);
 
         meta.setMessage(10, new byte[] { 1, 2, 3, 4 }, 2);
 
-        assertEquals(meta.getLength(), 5);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 10);
-        assertEquals(meta.getData().length, 2);
-        assertEquals(meta.getData()[0], 1);
-        assertEquals(meta.getData()[1], 2);
-        assertEquals(meta.getMessage().length, 5);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 10);
-        assertEquals(meta.getMessage()[2], 2);
-        assertEquals(meta.getMessage()[3], 1);
-        assertEquals(meta.getMessage()[4], 2);
+        assertEquals(5, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(10, meta.getType());
+        assertEquals(2, meta.getData().length);
+        assertEquals(1, meta.getData()[0]);
+        assertEquals(2, meta.getData()[1]);
+        assertEquals(5, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(10, meta.getMessage()[1]);
+        assertEquals(2, meta.getMessage()[2]);
+        assertEquals(1, meta.getMessage()[3]);
+        assertEquals(2, meta.getMessage()[4]);
 
         meta.setMessage(12, null, 0);
-        assertEquals(meta.getLength(), 3);
-        assertEquals(meta.getStatus(), 255);
-        assertEquals(meta.getType(), 12);
-        assertEquals(meta.getData().length, 0);
-        assertEquals(meta.getMessage().length, 3);
-        assertEquals(meta.getMessage()[0], -1);
-        assertEquals(meta.getMessage()[1], 12);
-        assertEquals(meta.getMessage()[2], 0);
+        assertEquals(3, meta.getLength());
+        assertEquals(255, meta.getStatus());
+        assertEquals(12, meta.getType());
+        assertEquals(0, meta.getData().length);
+        assertEquals(3, meta.getMessage().length);
+        assertEquals(-1, meta.getMessage()[0]);
+        assertEquals(12, meta.getMessage()[1]);
+        assertEquals(0, meta.getMessage()[2]);
 
     }
 
@@ -423,11 +423,11 @@ public class MetaMessageTest extends TestCase {
      */
     public void test_getType() throws Exception {
         MetaMessage meta = new MetaMessage();
-        assertEquals(meta.getType(), 0);
+        assertEquals(0, meta.getType());
 
         byte[] bt = new byte[] { 9, -4, 34, 18 };
         MetaMessage1 meta2 = new MetaMessage1(bt);
-        assertEquals(meta2.getType(), 252);
+        assertEquals(252, meta2.getType());
         bt[1] = 5;
         /**
          * value change
@@ -435,10 +435,10 @@ public class MetaMessageTest extends TestCase {
         assertEquals(5, meta2.getType());
         
         meta.setMessage(10, new byte[] { 1, 2, 3, 4 }, 4);
-        assertEquals(meta.getType(), 10);
+        assertEquals(10, meta.getType());
 
         meta.setMessage(27, null, 0);
-        assertEquals(meta.getType(), 27);
+        assertEquals(27, meta.getType());
     }
 
     /**
