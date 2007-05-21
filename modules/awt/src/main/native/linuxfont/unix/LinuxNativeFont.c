@@ -54,6 +54,7 @@
 #include <math.h>
 
 #include "LinuxNativeFont.h"
+#include "exceptions.h"
 #include "org_apache_harmony_awt_gl_font_LinuxNativeFont.h"
 /* debug code marker - to print debug information change to DEBUG */
 #   define NO_DEBUG
