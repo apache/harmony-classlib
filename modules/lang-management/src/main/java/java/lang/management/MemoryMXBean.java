@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for the memory system.
+ * <code>MemoryMXBean</code> is an interface used by the management
+ * system to access memory-related properties.
  * </p>
  * <p>
  * <code>ObjectName</code>: java.lang:type=Memory
@@ -28,6 +29,7 @@ package java.lang.management;
  * @since 1.5
  */
 public interface MemoryMXBean {
+    
     /**
      * <p>
      * Invokes the JVM's garbage collector; equivalent to {@link System#gc()}.

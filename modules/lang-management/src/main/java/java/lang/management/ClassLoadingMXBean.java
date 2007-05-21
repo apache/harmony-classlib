@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for the class loading system.
+ * <code>ClassLoadingMXBean</code> is an interface used by the management
+ * system to access class loader properties.
  * </p>
  * <p>
  * <code>ObjectName</code>: java.lang:type=ClassLoading

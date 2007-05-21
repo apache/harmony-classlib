@@ -22,7 +22,8 @@ import java.util.Map;
 
 /**
  * <p>
- * The management interface for the runtime system.
+ * <code>RuntimeMXBean</code> is an interface used by the management
+ * system to access JVM runtime system properties.
  * </p>
  * <p>
  * <code>ObjectName</code>: java.lang:type=Runtime
@@ -31,6 +32,7 @@ import java.util.Map;
  * @since 1.5
  */
 public interface RuntimeMXBean {
+    
     /**
      * <p>
      * The boot class path used by the JVM's bootstrap class loader.

@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for the operating system the JVM is running on.
+ * <code>OperatingSystemMXBean</code> is an interface used by the management
+ * system to access operating system properties.
  * </p>
  * <p>
  * <code>ObjectName</code>: java.lang:type=OperatingSystem

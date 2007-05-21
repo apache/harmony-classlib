@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for the thread system.
+ * <code>ThreadMXBean</code> is an interface used by the management
+ * system to access thread-related properties.
  * </p>
  * <p>
  * <code>ObjectName</code>: java.lang:type=Threading
@@ -28,6 +29,7 @@ package java.lang.management;
  * @since 1.5
  */
 public interface ThreadMXBean {
+    
     /**
      * <p>
      * Finds cycles of threads that are in deadlock waiting to acquire and

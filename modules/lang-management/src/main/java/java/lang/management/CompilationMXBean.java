@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for the compilation system.
+ * <code>CompilationMXBean</code> is an interface used by the management
+ * system to access compilation properties.
  * </p>
  * <p>
  * <code>ObjectName</code>: java.lang:type=Compilation
@@ -28,6 +29,7 @@ package java.lang.management;
  * @since 1.5
  */
 public interface CompilationMXBean {
+    
     /**
      * <p>
      * The name of the compilation system.

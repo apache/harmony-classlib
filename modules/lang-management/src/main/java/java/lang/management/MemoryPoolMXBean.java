@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for a memory pool.
+ * <code>MemoryPoolMXBean</code> is an interface used by the management
+ * system to access memory pool properties.
  * </p>
  * <p>
  * <code>ObjectName</code> pattern: java.lang:type=MemoryPool,name=<i>pool_name</i>
