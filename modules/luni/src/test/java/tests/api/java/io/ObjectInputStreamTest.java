@@ -25,8 +25,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidObjectException;
 import java.io.NotActiveException;
 import java.io.ObjectInputStream;
+import java.io.ObjectInputValidation;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
@@ -919,8 +921,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
         }
     }
 
-    // Regression Test for Harmony-2402
     public void test_registerValidation() throws Exception {
+        // Regression Test for Harmony-2402
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         new ObjectOutputStream(baos);
         ObjectInputStream ois = new ObjectInputStream(
@@ -931,6 +933,30 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
             fail("NotActiveException should be thrown");
         } catch (NotActiveException nae) {
             // expected
+        }
+        
+        // Regression Test for Harmony-3916
+        baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(new RegisterValidationClass());
+        oos.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream fis = new ObjectInputStream(bais);
+        // should not throw NotActiveException
+        fis.readObject();
+    }
+    
+    private static class RegisterValidationClass implements Serializable {
+        private A a = new A();
+        private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+            stream.defaultReadObject();
+            stream.registerValidation(new MockObjectInputValidation(), 0);
+        }
+    }
+    
+    private static class MockObjectInputValidation implements ObjectInputValidation {
+        public void validateObject() throws InvalidObjectException {
+            
         }
     }
     

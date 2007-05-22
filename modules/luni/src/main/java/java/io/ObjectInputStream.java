@@ -2322,7 +2322,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         Object instanceBeingRead = this.currentObject;
 
         // We can't be called from just anywhere. There are rules.
-        if (instanceBeingRead == null) {
+        if (instanceBeingRead == null && nestedLevels == 0) {
             throw new NotActiveException();
         }
         if (object == null) {
