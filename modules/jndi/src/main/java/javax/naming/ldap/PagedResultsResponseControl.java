@@ -31,9 +31,10 @@ import org.apache.harmony.jndi.internal.PagedResultSearchControlValue;
  */
 public final class PagedResultsResponseControl extends BasicControl {
 
-    private PagedResultSearchControlValue pgscv;
-
     private static final long serialVersionUID = -8819778744844514666L;
+    
+    private int resultSize;
+    private byte[] cookie;
 
     /**
      * @ar.org.fitc.spec_ref
@@ -46,18 +47,20 @@ public final class PagedResultsResponseControl extends BasicControl {
     public PagedResultsResponseControl(String id, boolean criticality,
             byte[] value) throws IOException {
         super(id, criticality, value);
-        this.pgscv = (PagedResultSearchControlValue) PagedResultsControl.ASN1_ENCODER
+        PagedResultSearchControlValue pgscv = (PagedResultSearchControlValue) PagedResultsControl.ASN1_ENCODER
                 .decode(value);
+        resultSize = pgscv.getSize();
+        cookie = pgscv.getCookie();
     }
 
     /**
      * @ar.org.fitc.spec_ref
      */
     public byte[] getCookie() {
-        if (pgscv.getCookie().length == 0) {
+        if (cookie.length == 0) {
             return null;
         } else {
-            return pgscv.getCookie();
+            return cookie;
         }
     }
 
@@ -65,7 +68,7 @@ public final class PagedResultsResponseControl extends BasicControl {
      * @ar.org.fitc.spec_ref
      */
     public int getResultSize() {
-        return pgscv.getSize();
+        return resultSize;
     }
 
 }

@@ -23,8 +23,12 @@
 package org.apache.harmony.jndi.tests.javax.naming.ldap;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
 import javax.naming.ldap.PagedResultsResponseControl;
 import junit.framework.TestCase;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**        
  * <p>This Test class is testing the PagedResultsControls class.</p>
@@ -328,4 +332,30 @@ public class TestPagedResultsResponseControl extends TestCase {
 			fail("Failed with:"+e);
 		}
 	}
+
+    public void testSerializationCompatibility() throws Exception{
+        byte[] b={48,5,2,1,0,4,0};
+        PagedResultsResponseControl object=new PagedResultsResponseControl("test", true, b);
+        SerializationTest.verifyGolden(this, object, PAGEDRESULTSRESPONSECONTROL_COMPARATOR);
+    }
+    
+    // comparator for PagedResultsResponseControl
+    private static final SerializableAssert PAGEDRESULTSRESPONSECONTROL_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            PagedResultsResponseControl initThr = (PagedResultsResponseControl) initial;
+            PagedResultsResponseControl dserThr = (PagedResultsResponseControl) deserialized;
+
+            // verify ResultSize
+            int initResultSize = initThr.getResultSize();
+            int dserResultSize = dserThr.getResultSize();
+            assertTrue(initResultSize == dserResultSize);
+            
+            // verify Cookie
+            byte[] initCookie = initThr.getCookie();
+            byte[] dserCookie = dserThr.getCookie();
+            assertTrue(Arrays.equals(initCookie, dserCookie));
+        }
+    };
 }
