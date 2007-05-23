@@ -820,7 +820,7 @@ public class DecimalFormat extends NumberFormat {
             throw new InvalidObjectException(Messages.getString("text.09")); //$NON-NLS-1$
         }
         if (serialVersionOnStream < 3) {
-            setMaximumIntegerDigits(super.getMinimumIntegerDigits());
+            setMaximumIntegerDigits(super.getMaximumIntegerDigits());
             setMinimumIntegerDigits(super.getMinimumIntegerDigits());
             setMaximumFractionDigits(super.getMaximumFractionDigits());
             setMinimumFractionDigits(super.getMinimumFractionDigits());
