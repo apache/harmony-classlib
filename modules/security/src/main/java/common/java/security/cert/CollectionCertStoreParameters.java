@@ -59,7 +59,11 @@ public class CollectionCertStoreParameters implements CertStoreParameters {
      * @com.intel.drl.spec_ref
      */
     public Object clone() {
-        return new CollectionCertStoreParameters(collection);
+        try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
     }
 
     /**

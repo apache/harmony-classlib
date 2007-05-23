@@ -515,9 +515,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 if (boundary_suffix[i] != inStream.read()) {
                     throw new IOException(
                         Messages.getString("security.15B", //$NON-NLS-1$
-                            ((boundary_suffix == null) 
-                                ? "" 
-                                : new String(boundary_suffix)))); //$NON-NLS-1$
+                            new String(boundary_suffix))); //$NON-NLS-1$
                 }
             }
             // read new line characters
@@ -574,9 +572,7 @@ public class X509CertFactoryImpl extends CertificateFactorySpi {
                 if (boundary_suffix[i] != inStream.read()) {
                     throw new IOException(
                         Messages.getString("security.15B1", //$NON-NLS-1$
-                            ((boundary_suffix == null) 
-                                ? "" 
-                                : new String(boundary_suffix)))); //$NON-NLS-1$
+                            new String(boundary_suffix))); //$NON-NLS-1$
                 }
             }
         }

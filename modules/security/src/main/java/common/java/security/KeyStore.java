@@ -729,7 +729,7 @@ public class KeyStore {
          * 
          * @author Vera Petrashkova
          */
-        private class TmpLSParameter implements LoadStoreParameter {
+        private static class TmpLSParameter implements LoadStoreParameter {
 
             // Store used protection parameter
             private final ProtectionParameter protPar;
@@ -819,7 +819,9 @@ public class KeyStore {
          *  
          */
         public PasswordProtection(char[] password) {
-            this.password = password;
+        	if (password != null) {
+        		this.password = password.clone();
+        	}
         }
 
         /**
@@ -922,7 +924,7 @@ public class KeyStore {
          *  
          */
         public Certificate[] getCertificateChain() {
-            return chain;
+            return chain.clone();
         }
 
         /**

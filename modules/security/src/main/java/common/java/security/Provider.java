@@ -24,6 +24,7 @@ package java.security;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.NotActiveException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -294,14 +295,14 @@ public abstract class Provider extends Properties {
             alg = getPropertyIgnoreCase("Alg.Alias." + servAlg); //$NON-NLS-1$
             if (alg != null) {
                 servAlg = serv + "." + alg; //$NON-NLS-1$
-                prop = getPropertyIgnoreCase(serv + "." + alg); //$NON-NLS-1$
+                prop = getPropertyIgnoreCase(servAlg); //$NON-NLS-1$
             }
         }
         if (prop != null) {
             if (attribute == null) {
                 return true;
             } else {
-                return checkAttribute(serv + "." + alg, attribute, val); //$NON-NLS-1$
+                return checkAttribute(servAlg, attribute, val); //$NON-NLS-1$
             }
         }
         return false;
@@ -889,5 +890,11 @@ public abstract class Provider extends Properties {
             }
             return result;
         }
+    }
+    
+    private void readObject(java.io.ObjectInputStream in) throws NotActiveException, IOException, ClassNotFoundException {
+    	in.defaultReadObject();
+        versionString = String.valueOf(version);
+        providerNumber = -1;
     }
 }

@@ -301,7 +301,7 @@ public class AttributeTypeAndValue {
     public void appendName(String attrFormat, StringBuffer buf) {
 
         boolean hexFormat = false;
-        if (attrFormat == X500Principal.RFC1779) {
+        if (X500Principal.RFC1779.equals(attrFormat)) {
             if (RFC1779_NAMES == oid.getGroup()) {
                 buf.append(oid.getName());
             } else {
@@ -324,7 +324,7 @@ public class AttributeTypeAndValue {
             if (RFC1779_NAMES == group || RFC2253_NAMES == group) {
                 buf.append(oid.getName());
 
-                if (attrFormat == X500Principal.CANONICAL) {
+                if (X500Principal.CANONICAL.equals(attrFormat)) {
                     // only PrintableString and UTF8String in string format
                     // all others are output in hex format
                     int tag = value.getTag();
@@ -344,7 +344,7 @@ public class AttributeTypeAndValue {
             if (hexFormat) {
                 buf.append(value.getHexString());
             } else {
-                if (attrFormat == X500Principal.CANONICAL) {
+                if (X500Principal.CANONICAL.equals(attrFormat)) {
                     buf.append(value.makeCanonical());
                 } else {
                     buf.append(value.escapedString);
@@ -383,7 +383,7 @@ public class AttributeTypeAndValue {
      *  
      */
 
-    public static ASN1Type AttributeValue = new ASN1Type(
+    public static final ASN1Type attributeValue = new ASN1Type(
             ASN1Constants.TAG_PRINTABLESTRING) {
 
         public boolean checkTag(int tag) {
@@ -472,7 +472,7 @@ public class AttributeTypeAndValue {
     };
 
     public static final ASN1Sequence ASN1 = new ASN1Sequence(new ASN1Type[] {
-            ASN1Oid.getInstance(), AttributeValue }) {
+            ASN1Oid.getInstance(), attributeValue }) {
 
         protected Object getDecodedObject(BerInputStream in) throws IOException {
             Object[] values = (Object[]) in.content;
