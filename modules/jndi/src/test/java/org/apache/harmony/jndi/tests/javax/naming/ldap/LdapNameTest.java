@@ -33,6 +33,7 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import junit.framework.TestCase;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * 
@@ -3641,5 +3642,11 @@ public class LdapNameTest extends TestCase {
         LdapName ln2 = new LdapName(
                 "t=test1+f=anything,d=here;j=uos<asd,h=that,");
         assertTrue(ln.compareTo(ln2) == 0);
+    }
+
+    public void testSerializationCompatibility() throws Exception{
+        LdapName object = new LdapName("t=test\\, , t1=\\ test1");
+        object.add(new Rdn("t2=te\\ st2"));
+        SerializationTest.verifyGolden(this, object);
     }
 }

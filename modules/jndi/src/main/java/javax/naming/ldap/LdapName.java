@@ -17,7 +17,9 @@
 
 package javax.naming.ldap;
 
-import javax.naming.ldap.Rdn;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -39,7 +41,7 @@ public class LdapName implements Name {
 
     private static final long serialVersionUID = -1595520034788997356L;
 
-    private List<Rdn> rdns;
+    private transient List<Rdn> rdns;
 
     /**
      * @ar.org.fitc.spec_ref
@@ -379,5 +381,17 @@ public class LdapName implements Name {
             sb.append(rdns.get(i).toString());
         }
         return sb.toString();
+    }
+    
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException, InvalidNameException {
+        ois.defaultReadObject();
+        LdapNameParser parser = new LdapNameParser((String) ois.readObject());
+        this.rdns = parser.getList();
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(this.toString());
     }
 }

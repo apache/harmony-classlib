@@ -140,6 +140,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
+            <classpath location="../../deploy/build/test/support.jar" />
         </javac>
     </target>
 
@@ -167,6 +168,9 @@
 
             <classpath>
                 <pathelement path="${hy.jndi.bin.test}"/>
+                <fileset dir="${hy.hdk}/build/test/">
+                    <include name="*.jar" />
+                </fileset>
             </classpath>
             <classpath location="../../build/tests" />
 
