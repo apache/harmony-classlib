@@ -92,6 +92,10 @@ public class RelaxedDnParser extends DNParser {
             }
             pos++;
         }
+        
+        while (end > beg+1 && chars[end - 1] == ' ') {
+            end--;
+        }
 
         // verify length of hex string
         // encoded byte array must be even number

@@ -1709,6 +1709,23 @@ public class RdnTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.Rdn.size()'
+     * </p>
+     * <p>
+     * Here we are testing if the return of this method is the correct size of
+     * the given Rdn wich has three names.
+     * </p>
+     * <p>
+     * The expected result is an integer with the value of three.
+     * </p>
+     */
+    public void testSize004() throws Exception {
+        Rdn rdn = new Rdn("t = #20 ");
+        assertEquals(1, rdn.size());
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
