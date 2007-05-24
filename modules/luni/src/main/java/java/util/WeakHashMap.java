@@ -178,6 +178,29 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 throw new ConcurrentModificationException();
             }
         }
+
+        /**
+         * Adds next element to the given collection.
+         *
+         * @param coll Collection to add next element to
+         *
+         * @return true if next element exists and was added, false otherwise
+         */
+        private boolean addNext(Collection<R> coll) {
+            if (expectedModCount == modCount) {
+                if (hasNext()) {
+                    currentEntry = nextEntry;
+                    nextEntry = currentEntry.next;
+                    R result = type.get(currentEntry);
+                    // free the key
+                    nextKey = null;
+                    coll.add(result);
+                    return true;
+                }
+                return false;
+            }
+            throw new ConcurrentModificationException();
+        }
     }
 
     /**
@@ -387,20 +410,18 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 @Override
                 public Object[] toArray() {
                     Collection<K> coll = new ArrayList<K>(size());
+                    HashIterator<K> iter = (HashIterator<K>) iterator();
 
-                    for (Iterator<K> iter = iterator(); iter.hasNext();) {
-                        coll.add(iter.next());
-                    }
+                    while(iter.addNext(coll));
                     return coll.toArray();
                 }
 
                 @Override
                 public <T> T[] toArray(T[] contents) {
                     Collection<K> coll = new ArrayList<K>(size());
+                    HashIterator<K> iter = (HashIterator<K>) iterator();
 
-                    for (Iterator<K> iter = iterator(); iter.hasNext();) {
-                        coll.add(iter.next());
-                    }
+                    while(iter.addNext(coll));
                     return coll.toArray(contents);
                 }
             };
