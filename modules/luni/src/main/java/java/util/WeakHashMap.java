@@ -126,7 +126,7 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         }
 
         public boolean hasNext() {
-            if (nextEntry != null) {
+            if (nextEntry != null && (nextKey != null || nextEntry.isNull)) {
                 return true;
             }
             while (true) {
