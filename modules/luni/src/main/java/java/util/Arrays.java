@@ -444,7 +444,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the byte array to fill
@@ -458,14 +458,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the byte array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the byte element
      * 
@@ -490,7 +490,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the short array to fill
@@ -504,14 +504,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the short array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the short element
      * 
@@ -536,7 +536,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the char array to fill
@@ -550,14 +550,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the char array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the char element
      * 
@@ -582,7 +582,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the int array to fill
@@ -596,14 +596,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the int array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the int element
      * 
@@ -628,7 +628,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the long array to fill
@@ -642,14 +642,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the long array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the long element
      * 
@@ -674,7 +674,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the float array to fill
@@ -688,14 +688,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the float array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the float element
      * 
@@ -720,7 +720,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the float array to fill
@@ -734,14 +734,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the double array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the double element
      * 
@@ -766,7 +766,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the boolean array to fill
@@ -780,14 +780,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the boolean array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the boolean element
      * 
@@ -812,7 +812,7 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified array with the specified element.
+     * Fills the array with the given value.
      * 
      * @param array
      *            the Object array to fill
@@ -826,14 +826,14 @@ public class Arrays {
     }
 
     /**
-     * Fills the specified range in the array with the specified element.
+     * Fills the section of the array between the given indices with the given value.
      * 
      * @param array
      *            the Object array to fill
      * @param start
-     *            the first index to fill
+     *            the start index
      * @param end
-     *            the last + 1 index to fill
+     *            the end index + 1
      * @param value
      *            the Object element
      * 
@@ -858,18 +858,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * boolean arrays a and b, if Arrays.equals(a, b) returns true, it means
-     * that the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
      * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
+     *  
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Boolean}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(boolean[] array) {
@@ -885,19 +887,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * not-null int arrays a and b, if Arrays.equals(a, b) returns true, it
-     * means that the return value of Arrays.hashCode(a) equals
-     * Arrays.hashCode(b).
+     * Returns the hash code for the given array.
+     * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
      * 
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Integer}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(int[] array) {
@@ -913,18 +916,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * short arrays a and b, if Arrays.equals(a, b) returns true, it means that
-     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
+     * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
      * 
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Short}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(short[] array) {
@@ -940,18 +945,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * char arrays a and b, if Arrays.equals(a, b) returns true, it means that
-     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
      * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
+     *  
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Character}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(char[] array) {
@@ -967,18 +974,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * byte arrays a and b, if Arrays.equals(a, b) returns true, it means that
-     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
      * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
+     *  
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Byte}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(byte[] array) {
@@ -994,18 +1003,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * long arrays a and b, if Arrays.equals(a, b) returns true, it means that
-     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
      * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
+     *  
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Long}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(long[] array) {
@@ -1025,18 +1036,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * float arrays a and b, if Arrays.equals(a, b) returns true, it means that
-     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
      * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
+     *  
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Float}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(float[] array) {
@@ -1055,18 +1068,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. For any two
-     * double arrays a and b, if Arrays.equals(a, b) returns true, it means that
-     * the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * Returns the hash code for the given array.
+     * 
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
      * 
      * The value returned by this method is the same value as the
      * {@link List#hashCode()}} method which is invoked on a {@link List}}
      * containing a sequence of {@link Double}} instances representing the
-     * elements of array in the same order. If the array is null, the return
-     * value is 0.
+     * elements of array in the same order. 
+     * 
+     * If the array is null, the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(double[] array) {
@@ -1087,21 +1102,20 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the contents of the given array. If the
-     * array contains other arrays as its elements, the hash code is based on
-     * their identities not their contents. So it is acceptable to invoke this
-     * method on an array that contains itself as an element, either directly or
-     * indirectly.
+     * Returns the hash code for the given array. If this array contains other
+     * arrays, their contents will not be recursively searched so this method
+     * should be used if the array is likely to contain a reference to itself.
      * 
-     * For any two arrays a and b, if Arrays.equals(a, b) returns true, it means
-     * that the return value of Arrays.hashCode(a) equals Arrays.hashCode(b).
+     * If Arrays.equals(...) returns true for two arrays then their hash codes
+     * will also be equal.
      * 
      * The value returned by this method is the same value as the method
-     * Arrays.asList(array).hashCode(). If the array is null, the return value
-     * is 0.
+     * Arrays.asList(array).hashCode(). 
+     * 
+     * If the array is null, the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int hashCode(Object[] array) {
@@ -1123,20 +1137,19 @@ public class Arrays {
     }
 
     /**
-     * Answers a hash code based on the deep contents of the given array. This
-     * means that if this array contains other arrays, their contents will also
-     * be included in the hash and so on recursively. This method should not be
-     * used if the array is likely to contain a reference to itself.
+     * Returns the 'deep' hash code for the given array. This means that if this
+     * array contains other arrays their contents will also be included in the
+     * hash and so on recursively. This method should not be used if the array
+     * or any arrays contained within it are likely to contain a reference to
+     * itself.
      * 
      * If Arrays.deepEquals(...) returns true for two arrays then their deep
      * hash codes will also be equal.
      * 
-     * The value returned by this method is the same value as the method
-     * Arrays.asList(array).hashCode(). If the array is null, the return value
-     * is 0.
+     * If the array is null the return value will be 0.
      * 
      * @param array
-     *            the array whose hash code to compute
+     *            the array to return the hash code for
      * @return the hash code for array
      */
     public static int deepHashCode(Object[] array) {
@@ -1428,32 +1441,16 @@ public class Arrays {
     }
 
     /**
-     * Returns true if the two given arrays are deeply equal to one another.
-     * Unlike the method equals(Object[] array1, Object[] array2), this method
-     * is appropriate for use for nested arrays of arbitrary depth.
+     * Returns the 'deep' equals for the two given arrays. This means that if
+     * either of the arrays contains other arrays then their contents are also
+     * checked for (deep) equality. If two corresponding elements are arrays of
+     * a primitive type then the appropriate <code>Arrays.equals</code> method
+     * is used to determine their equality. Otherwise for two
+     * <code>Object</code> arrays <code>deepEquals</code> is called
+     * recursively.
      * 
-     * Two array references are considered deeply equal if they are both null,
-     * or if they refer to arrays that have the same length and the elements at
-     * each index in the two arrays are equal.
-     * 
-     * Two null elements element1 and element2 are possibly deeply equal if any
-     * of the following conditions satisfied:
-     * 
-     * element1 and element2 are both arrays of object reference types, and
-     * Arrays.deepEquals(element1, element2) would return true.
-     * 
-     * element1 and element2 are arrays of the same primitive type, and the
-     * appropriate overloading of Arrays.equals(element1, element2) would return
-     * true.
-     * 
-     * element1 == element2
-     * 
-     * element1.equals(element2) would return true.
-     * 
-     * Note that this definition permits null elements at any depth.
-     * 
-     * If either of the given arrays contain themselves as elements, the
-     * behavior of this method is incertitude.
+     * This method should not be used if either of the arrays, or any arrays
+     * contained within it are likely to contain a reference to itself.
      * 
      * @param array1
      *            the first Object array
@@ -1613,24 +1610,26 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the byte array to be sorted
+     *            the byte array to sort
      */
     public static void sort(byte[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Sorts the specified range in the array in ascending order.
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the byte array to be sorted
+     *            the byte array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -1648,8 +1647,8 @@ public class Arrays {
 
     private static void checkBounds(int arrLength, int start, int end) {
         if (start > end) {
-            throw new IllegalArgumentException("fromIndex(" + start //$NON-NLS-1$
-                    + ") > toIndex(" + end + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("start(" + start //$NON-NLS-1$
+                    + ") > end(" + end + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (start < 0 || end > arrLength) {
             throw new ArrayIndexOutOfBoundsException();
@@ -1735,24 +1734,26 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the char array to be sorted
+     *            the char array to sort
      */
     public static void sort(char[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Sorts the specified range in the array in ascending order.
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the char array to be sorted
+     *            the char array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -1847,10 +1848,11 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into 
+     * ascending order.
      * 
      * @param array
-     *            the double array to be sorted
+     *            the double array to sort
      * 
      * @see #sort(double[], int, int)
      */
@@ -1859,15 +1861,15 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified range in the array in ascending order. The values are
-     * sorted according to the order imposed by Double.compareTo().
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the double array to be sorted
+     *            the double array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -1964,10 +1966,11 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the float array to be sorted
+     *            the float array to sort
      * 
      * @see #sort(float[], int, int)
      */
@@ -1976,15 +1979,15 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified range in the array in ascending order. The values are
-     * sorted according to the order imposed by Float.compareTo().
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the float array to be sorted
+     *            the float array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -2081,24 +2084,26 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the int array to be sorted
+     *            the int array to sort
      */
     public static void sort(int[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Sorts the specified range in the array in ascending order.
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the int array to be sorted
+     *            the int array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -2193,24 +2198,26 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the long array to be sorted
+     *            the long array to sort
      */
     public static void sort(long[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Sorts the specified range in the array in ascending order.
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the long array to be sorted
+     *            the long array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -2305,10 +2312,11 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the Object array to be sorted
+     *            the Object array to sort
      * 
      * @exception ClassCastException
      *                when an element in the array does not implement Comparable
@@ -2319,17 +2327,18 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified range in the array in ascending order.
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order.
      * 
      * @param array
-     *            the Object array to be sorted
+     *            the Object array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception ClassCastException
-     *                when an element in the array does not implement Comparable
+     *                when an element in the array does not implement <code>Comparable</code>
      *                or elements cannot be compared to each other
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
@@ -2345,22 +2354,22 @@ public class Arrays {
         sort(start, end, array);
     }
 
-    private static void sort(int fromIndex, int toIndex, Object[] array) {
-        int length = toIndex - fromIndex;
+    private static void sort(int start, int end, Object[] array) {
+        int length = end - start;
         if (length <= 0) {
             return;
         }
         if (array instanceof String[]) {
-            stableStringSort((String[]) array, fromIndex, toIndex);
+            stableStringSort((String[]) array, start, end);
         } else {
-            Object[] out = new Object[toIndex];
-            System.arraycopy(array, fromIndex, out, fromIndex, length);
-            mergeSort(out, array, fromIndex, toIndex);
+            Object[] out = new Object[end];
+            System.arraycopy(array, start, out, start, length);
+            mergeSort(out, array, start, end);
         }
     }
 
     /**
-     * Swaps the elements at the specified positions in the specified array.
+     * Swaps the elements at the given indices in the array.
      * 
      * @param a -
      *            the index of one element to be swapped.
@@ -2376,179 +2385,169 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified range of the specified array of objects. The range to
-     * be sorted extends from index fromIndex, inclusive, to index toIndex,
-     * exclusive. (If fromIndex==toIndex, the range to be sorted is empty.) This
-     * sort is guaranteed to be stable: equal elements will not be reordered as
-     * a result of the sort.
-     * 
-     * The sorting algorithm is a mergesort with exponential search (in which
-     * the merge is performed by exponential search). This algorithm offers
-     * guaranteed n*log(n) performance and in average case faster then any
-     * mergesort in which the merge is performed by linear search.
+     * Performs a sort on the section of the array between the given indices
+     * using a mergesort with exponential search algorithm (in which the merge
+     * is performed by exponential search). n*log(n) performance is guaranteed
+     * and in the average case it will be faster then any mergesort in which the
+     * merge is performed by linear search.
      * 
      * @param in -
      *            the array for sorting.
      * @param out -
      *            the result, sorted array.
-     * @param fromIndex -
-     *            the index of the first element (inclusive) to be sorted.
-     * @param toIndex -
-     *            the index of the last element (exclusive) to be sorted.
+     * @param start
+     *            the start index
+     * @param end
+     *            the end index + 1
      */
     @SuppressWarnings("unchecked")
-    private static void mergeSort(Object[] in, Object[] out, int fromIndex,
-            int toIndex) {
-        int len = toIndex - fromIndex;
+    private static void mergeSort(Object[] in, Object[] out, int start,
+            int end) {
+        int len = end - start;
         // use insertion sort for small arrays
         if (len <= SIMPLE_LENGTH) {
-            for (int i = fromIndex + 1; i < toIndex; i++) {
+            for (int i = start + 1; i < end; i++) {
                 Comparable<Object> current = (Comparable<Object>) out[i];
                 Object prev = out[i - 1];
                 if (current.compareTo(prev) < 0) {
                     int j = i;
                     do {
                         out[j--] = prev;
-                    } while (j > fromIndex
+                    } while (j > start
                             && current.compareTo(prev = out[j - 1]) < 0);
                     out[j] = current;
                 }
             }
             return;
         }
-        int med = (toIndex + fromIndex) >> 1;
-        mergeSort(out, in, fromIndex, med);
-        mergeSort(out, in, med, toIndex);
+        int med = (end + start) >> 1;
+        mergeSort(out, in, start, med);
+        mergeSort(out, in, med, end);
 
         // merging
 
         // if arrays are already sorted - no merge
         if (((Comparable<Object>) in[med - 1]).compareTo(in[med]) <= 0) {
-            System.arraycopy(in, fromIndex, out, fromIndex, len);
+            System.arraycopy(in, start, out, start, len);
             return;
         }
-        int r = med, i = fromIndex;
+        int r = med, i = start;
 
         // use merging with exponential search
         do {
-            Comparable<Object> fromVal = (Comparable<Object>) in[fromIndex];
+            Comparable<Object> fromVal = (Comparable<Object>) in[start];
             Comparable<Object> rVal = (Comparable<Object>) in[r];
             if (fromVal.compareTo(rVal) <= 0) {
-                int l_1 = find(in, rVal, -1, fromIndex + 1, med - 1);
-                int toCopy = l_1 - fromIndex + 1;
-                System.arraycopy(in, fromIndex, out, i, toCopy);
+                int l_1 = find(in, rVal, -1, start + 1, med - 1);
+                int toCopy = l_1 - start + 1;
+                System.arraycopy(in, start, out, i, toCopy);
                 i += toCopy;
                 out[i++] = rVal;
                 r++;
-                fromIndex = l_1 + 1;
+                start = l_1 + 1;
             } else {
-                int r_1 = find(in, fromVal, 0, r + 1, toIndex - 1);
+                int r_1 = find(in, fromVal, 0, r + 1, end - 1);
                 int toCopy = r_1 - r + 1;
                 System.arraycopy(in, r, out, i, toCopy);
                 i += toCopy;
                 out[i++] = fromVal;
-                fromIndex++;
+                start++;
                 r = r_1 + 1;
             }
-        } while ((toIndex - r) > 0 && (med - fromIndex) > 0);
+        } while ((end - r) > 0 && (med - start) > 0);
 
         // copy rest of array
-        if ((toIndex - r) <= 0) {
-            System.arraycopy(in, fromIndex, out, i, med - fromIndex);
+        if ((end - r) <= 0) {
+            System.arraycopy(in, start, out, i, med - start);
         } else {
-            System.arraycopy(in, r, out, i, toIndex - r);
+            System.arraycopy(in, r, out, i, end - r);
         }
     }
 
     /**
-     * Sorts the specified range of the specified array of objects. The range to
-     * be sorted extends from index fromIndex, inclusive, to index toIndex,
-     * exclusive. (If fromIndex==toIndex, the range to be sorted is empty.) This
-     * sort is guaranteed to be stable: equal elements will not be reordered as
-     * a result of the sort.
-     * 
-     * The sorting algorithm is a mergesort with exponential search (in which
-     * the merge is performed by exponential search). This algorithm offers
-     * guaranteed n*log(n) performance and in average case faster then any
-     * mergesort in which the merge is performed by linear search.
+     * Performs a sort on the section of the array between the given indices
+     * using a mergesort with exponential search algorithm (in which the merge
+     * is performed by exponential search). n*log(n) performance is guaranteed
+     * and in the average case it will be faster then any mergesort in which the
+     * merge is performed by linear search.
      * 
      * @param in -
      *            the array for sorting.
      * @param out -
      *            the result, sorted array.
-     * @param fromIndex -
-     *            the index of the first element (inclusive) to be sorted.
-     * @param toIndex -
-     *            the index of the last element (exclusive) to be sorted.
+     * @param start
+     *            the start index
+     * @param end
+     *            the end index + 1
      * @param c -
      *            the comparator to determine the order of the array.
      */
     @SuppressWarnings("unchecked")
-    private static void mergeSort(Object[] in, Object[] out, int fromIndex,
-            int toIndex, Comparator c) {
-        int len = toIndex - fromIndex;
+    private static void mergeSort(Object[] in, Object[] out, int start,
+            int end, Comparator c) {
+        int len = end - start;
         // use insertion sort for small arrays
         if (len <= SIMPLE_LENGTH) {
-            for (int i = fromIndex + 1; i < toIndex; i++) {
+            for (int i = start + 1; i < end; i++) {
                 Object current = out[i];
                 Object prev = out[i - 1];
                 if (c.compare(prev, current) > 0) {
                     int j = i;
                     do {
                         out[j--] = prev;
-                    } while (j > fromIndex
+                    } while (j > start
                             && (c.compare(prev = out[j - 1], current) > 0));
                     out[j] = current;
                 }
             }
             return;
         }
-        int med = (toIndex + fromIndex) >> 1;
-        mergeSort(out, in, fromIndex, med, c);
-        mergeSort(out, in, med, toIndex, c);
+        int med = (end + start) >> 1;
+        mergeSort(out, in, start, med, c);
+        mergeSort(out, in, med, end, c);
 
         // merging
 
         // if arrays are already sorted - no merge
         if (c.compare(in[med - 1],in[med] ) <= 0) {
-            System.arraycopy(in, fromIndex, out, fromIndex, len);
+            System.arraycopy(in, start, out, start, len);
             return;
         }
-        int r = med, i = fromIndex;
+        int r = med, i = start;
 
         // use merging with exponential search
         do {
-            Object fromVal = in[fromIndex];
+            Object fromVal = in[start];
             Object rVal = in[r];
             if (c.compare(fromVal, rVal) <= 0) {
-                int l_1 = find(in, rVal, -1, fromIndex + 1, med - 1, c);
-                int toCopy = l_1 - fromIndex + 1;
-                System.arraycopy(in, fromIndex, out, i, toCopy);
+                int l_1 = find(in, rVal, -1, start + 1, med - 1, c);
+                int toCopy = l_1 - start + 1;
+                System.arraycopy(in, start, out, i, toCopy);
                 i += toCopy;
                 out[i++] = rVal;
                 r++;
-                fromIndex = l_1 + 1;
+                start = l_1 + 1;
             } else {
-                int r_1 = find(in, fromVal, 0, r + 1, toIndex - 1, c);
+                int r_1 = find(in, fromVal, 0, r + 1, end - 1, c);
                 int toCopy = r_1 - r + 1;
                 System.arraycopy(in, r, out, i, toCopy);
                 i += toCopy;
                 out[i++] = fromVal;
-                fromIndex++;
+                start++;
                 r = r_1 + 1;
             }
-        } while ((toIndex - r) > 0 && (med - fromIndex) > 0);
+        } while ((end - r) > 0 && (med - start) > 0);
 
         // copy rest of array
-        if ((toIndex - r) <= 0) {
-            System.arraycopy(in, fromIndex, out, i, med - fromIndex);
+        if ((end - r) <= 0) {
+            System.arraycopy(in, start, out, i, med - start);
         } else {
-            System.arraycopy(in, r, out, i, toIndex - r);
+            System.arraycopy(in, r, out, i, end - r);
         }
     }
 
     /**
-     * Finds the place of specified range of specified sorted array, where the
+     * Finds the place in the given range of specified sorted array, where the
      * element should be inserted for getting sorted array. Uses exponential
      * search algorithm.
      * 
@@ -2559,10 +2558,10 @@ public class Arrays {
      *            object to be inserted
      * 
      * @param l -
-     *            the index of the first element (inclusive)
+     *            the start index
      * 
      * @param r -
-     *            the index of the last element (inclusive)
+     *            the end index
      * 
      * @param bnd -
      *            possible values 0,-1. "-1" - val is located at index more then
@@ -2597,28 +2596,23 @@ public class Arrays {
 
     /**
      * Finds the place of specified range of specified sorted array, where the
-     * element should be inserted for getting sorted array. Uses expionential
+     * element should be inserted for getting sorted array. Uses exponential
      * search algorithm.
      * 
      * @param arr -
      *            the array with already sorted range
-     * 
      * @param val -
      *            object to be inserted
-     * 
      * @param l -
-     *            the index of the first element (inclusive)
-     * 
+     *            the start index
      * @param r -
-     *            the index of the last element (inclusive)
-     * 
+     *            the end index
      * @param bnd -
      *            possible values 0,-1. "-1" - val is located at index more then
      *            elements equals to val. "0" - val is located at index less
      *            then elements equals to val.
-     * 
      * @param c -
-     *            the comparator to determine the order of the array.
+     *            the comparator used to compare Objects
      */
     @SuppressWarnings("unchecked")
     private static int find(Object[] arr, Object val, int bnd, int l, int r,
@@ -2704,63 +2698,64 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified range of the specified array of String.
+     * Performs a sort on the given String array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param arr -
-     *            the array to be sorted
-     * @param fromIndex -
-     *            the index of the first element (inclusive) to be sorted.
-     * @param toIndex -
-     *            the index of the last element (exclusive) to be sorted.
+     *            the array to sort
+     * @param start -
+     *            the start index
+     * @param end -
+     *            the end index + 1
      */
-    private static void stableStringSort(String[] arr, int fromIndex,
-            int toIndex) {
-        stableStringSort(arr, arr, new String[toIndex], fromIndex, toIndex, 0);
+    private static void stableStringSort(String[] arr, int start,
+            int end) {
+        stableStringSort(arr, arr, new String[end], start, end, 0);
     }
 
     /**
-     * Sorts the specified range of the specified array of String. Use stable
-     * ternary quick sort algorithm.
+     * Performs a sort on the given String array. Elements will be re-ordered into
+     * ascending order. Uses a stable ternary quick sort algorithm.
      * 
      * @param arr -
-     *            the array to be sorted
+     *            the array to sort
      * @param src -
      *            auxiliary array
      * @param dst -
      *            auxiliary array
-     * @param fromIndex -
-     *            the index of the first element (inclusive) to be sorted.
-     * @param toIndex -
-     *            the index of the last element (exclusive) to be sorted.
+     * @param start -
+     *            the start index
+     * @param end -
+     *            the end index + 1
      * @param chId -
      *            index of char for current sorting
      */
     private static void stableStringSort(String[] arr, String[] src,
-            String[] dst, int fromIndex, int toIndex, int chId) {
-        int length = toIndex - fromIndex;
+            String[] dst, int start, int end, int chId) {
+        int length = end - start;
         // use insertion sort for small arrays
         if (length < SIMPLE_LENGTH) {
             if (src == arr) {
-                for (int i = fromIndex + 1; i < toIndex; i++) {
+                for (int i = start + 1; i < end; i++) {
                     String current = arr[i];
                     String prev = arr[i - 1];
                     if (current.compareTo(prev) < 0) {
                         int j = i;
                         do {
                             arr[j--] = prev;
-                        } while (j > fromIndex
+                        } while (j > start
                                 && current.compareTo(prev = arr[j - 1]) < 0);
                         arr[j] = current;
                     }
                 }
             } else {
-                int end = toIndex - 1;
-                dst[fromIndex] = src[end--];
-                for (int i = fromIndex + 1; i < toIndex; i++, end--) {
-                    String current = src[end];
+                int actualEnd = end - 1;
+                dst[start] = src[actualEnd--];
+                for (int i = start + 1; i < end; i++, actualEnd--) {
+                    String current = src[actualEnd];
                     String prev;
                     int j = i;
-                    while (j > fromIndex
+                    while (j > start
                             && current.compareTo(prev = dst[j - 1]) < 0) {
                         dst[j--] = prev;
                     }
@@ -2771,9 +2766,9 @@ public class Arrays {
         }
         // Approximate median
         int s;
-        int mid = fromIndex + length / 2;
-        int lo = fromIndex;
-        int hi = toIndex - 1;
+        int mid = start + length / 2;
+        int lo = start;
+        int hi = end - 1;
         if (length > 40) {
             s = length / 8;
             lo = medChar(lo, lo + s, lo + s * 2, src, chId);
@@ -2787,11 +2782,11 @@ public class Arrays {
         // i - current element;
         int midVal = charAt(src[mid], chId);
         int a, b, c;
-        a = b = fromIndex;
-        c = toIndex - 1;
+        a = b = start;
+        c = end - 1;
         int cmp;
 
-        for (int i = fromIndex; i < toIndex; i++) {
+        for (int i = start; i < end; i++) {
             String el = src[i];
             cmp = charAt(el, chId) - midVal;
             if (cmp < 0) {
@@ -2806,42 +2801,44 @@ public class Arrays {
             }
         }
 
-        s = b - fromIndex;
+        s = b - start;
         if (s > 0) {
             if (arr == src) {
-                System.arraycopy(dst, fromIndex, arr, a, s);
+                System.arraycopy(dst, start, arr, a, s);
             } else {
-                copySwap(dst, fromIndex, arr, a, s);
+                copySwap(dst, start, arr, a, s);
             }
 
-            if (b >= toIndex && midVal == -1) {
+            if (b >= end && midVal == -1) {
                 return;
             }
             stableStringSort(arr, arr, arr == dst ? src : dst, a, a + s,
                     chId + 1);
         }
 
-        s = a - fromIndex;
+        s = a - start;
         if (s > 0) {
-            stableStringSort(arr, src, dst, fromIndex, a, chId);
+            stableStringSort(arr, src, dst, start, a, chId);
         }
 
         c++;
-        s = toIndex - c;
+        s = end - c;
         if (s > 0) {
-            stableStringSort(arr, dst, src, c, toIndex, chId);
+            stableStringSort(arr, dst, src, c, end, chId);
         }
     }
 
     /**
-     * Sorts the specified range in the array using the specified Comparator.
+     * Performs a sort on the section of the array between the given indices.
+     * Elements will be re-ordered into ascending order according to the given
+     * Comparator.
      * 
      * @param array
-     *            the Object array to be sorted
+     *            the Object array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * @param comparator
      *            the Comparator
      * 
@@ -2876,10 +2873,11 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array using the specified Comparator.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order according to the given Comparator.
      * 
      * @param array
-     *            the Object array to be sorted
+     *            the Object array to sort
      * @param comparator
      *            the Comparator
      * 
@@ -2892,24 +2890,26 @@ public class Arrays {
     }
 
     /**
-     * Sorts the specified array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the short array to be sorted
+     *            the short array to sort
      */
     public static void sort(short[] array) {
         sort(0, array.length, array);
     }
 
     /**
-     * Sorts the specified range in the array in ascending order.
+     * Performs a sort on the given array. Elements will be re-ordered into
+     * ascending order.
      * 
      * @param array
-     *            the short array to be sorted
+     *            the short array to sort
      * @param start
-     *            the start index to sort
+     *            the start index
      * @param end
-     *            the last + 1 index to sort
+     *            the end index + 1
      * 
      * @exception IllegalArgumentException
      *                when <code>start > end</code>
