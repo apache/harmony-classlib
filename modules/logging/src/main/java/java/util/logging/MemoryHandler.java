@@ -24,43 +24,43 @@ import org.apache.harmony.logging.internal.nls.Messages;
 
 
 /**
- * A <code>Handler</code> put the description of log events into a cycled memory 
- * buffer.
- * <p> 
- * Mostly this <code>MemoryHandler</code> just puts the given <code>LogRecord</code>
- * into the internal buffer and doesn't perform any formatting or any other process.
- * When the buffer is full, the earliest buffered records will be discarded.  
- * </p>
+ * <code>MemoryHandler</code> is a <code>Handler</code> that 'remembers' a
+ * finite number of <code>LogRecord</code>s at a time and stores them in a
+ * buffer without formatting them. When the buffer is full this
+ * <code>Handler</code> overwrites the oldest record as each new record is
+ * added.
+ * 
  * <p>
- * Every <code>MemoryHandler</code> has a target handler, and push action can be 
- * triggered so that all buffered records will be output to the target handler 
- * and normally the latter will publish the records. After the push action, the 
- * buffer will be cleared.    
+ * Every <code>MemoryHandler</code> has a target <code>Handler</code>, and
+ * calling the <code>push()</code> method on the <code>MemoryHandler</code>
+ * will output all buffered records to the target <code>Handler</code> After
+ * the push action, the buffer will be cleared.
  * </p>
+ * 
  * <p>
- * The push action can be triggered in three ways:
+ * The push method can be called directly, but will also be called automatically
+ * if a new <code>LogRecord</code> is added that has a level greater than or
+ * equal to than the value defined for the property
+ * java.util.logging.MemoryHandler.push.
+ * </p>
+ * 
+ * <p>
+ * <code>MemoryHandler</code> defines the following configuration properties,
+ * which are read by the <code>LogManager</code> on initialization. If the
+ * properties have not been specified then defaults will be used. The properties
+ * and defaults are as follows:
  * <ul>
- * <li>The push method is called explicitly</li>
- * <li>When a new <code>LogRecord</code> is put into the internal buffer, and it has a level which is not less than the specified push level.</li>
- * <li>A subclass extends this <code>MemoryHandler</code> and call push method implicitly according to some criteria.</li>
- * </ul>
- * </p>
- * <p>
- * <code>MemoryHandler</code> will read following <code>LogManager</code> 
- * properties for initialization, if given properties are not defined or has 
- * invalid values, default value will be used.
- * <ul>
- * <li>java.util.logging.MemoryHandler.level specifies the level for this 
- * <code>Handler</code>, defaults to <code>Level.ALL</code>.</li>
- * <li>java.util.logging.MemoryHandler.filter specifies the <code>Filter</code> 
- * class name, defaults to no <code>Filter</code>.</li>
- * <li>java.util.logging.MemoryHandler.size specifies the buffer size in number 
- * of <code>LogRecord</code>, defaults to 1000.</li>
- * <li>java.util.logging.MemoryHandler.push specifies the push level, defaults 
- * to level.SEVERE.</li>
- * <li>java.util.logging.MemoryHandler.target specifies the class of the target 
- * <code>Handler</code>, no default value, which means this property must be 
- * specified either by property setting or by constructor.</li> 
+ * <li>java.util.logging.MemoryHandler.filter - the <code>Filter</code> class
+ * name. No <code>Filter</code> is used by default.</li>
+ * <li>java.util.logging.MemoryHandler.level - the log level for this
+ * <code>Handler</code>. Default is <code>Level.ALL</code>.</li>
+ * <li>java.util.logging.MemoryHandler.push - the push level. Default is
+ * <code>Level.SEVERE</code>.</li>
+ * <li>java.util.logging.MemoryHandler.size - the buffer size in number of
+ * <code>LogRecord</code>s. Default is 1000.</li>
+ * <li>java.util.logging.MemoryHandler.target - the class name of the target
+ * <code>Handler</code>. No default value, which means this property must be
+ * specified either by property setting or by constructor.</li>
  * </ul>
  * </p>
  * 
