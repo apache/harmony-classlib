@@ -19,7 +19,7 @@ package java.util;
 
 /**
  * AbstractMap is an abstract implementation of the Map interface. This
- * Implementation does not support adding. A subclass must implement the
+ * implementation does not support adding. A subclass must implement the
  * abstract method entrySet().
  * 
  * @since 1.2
@@ -103,14 +103,13 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * Answers a set view of the mappings contained in this map. Each element in
-     * this set is a Map.Entry. The set is backed by the map so changes to one
-     * are reflected by the other. (If the map is modified while an iteration
-     * over the set is in progress, the results of the iteration are undefined.)
-     * The set supports remove, removeAll, retainAll and clear operations, and
-     * it does not support add or addAll operations.
+     * Returns a Set of <code>Map.Entry</code>s that represent the entries in
+     * this Map. Making changes to this Set will change the original Map and
+     * vice-versa. Entries can be removed from the Set, or their values can be
+     * changed, but new entries cannot be added to the Set.
      * 
-     * @return a set of the mappings contained in this map
+     * @return a Set of <code>Map.Entry</code>s representing the entries in
+     *         this Map
      */
     public abstract Set<Map.Entry<K, V>> entrySet();
 
