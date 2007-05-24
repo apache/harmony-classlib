@@ -435,14 +435,12 @@ public interface PreparedStatement extends Statement {
             throws SQLException;
 
     /**
-     * Sets the value of a specified parameter using a supplied object.
+     * Sets the value of a specified parameter.
      * <p>
-     * The Object is converted to the given targetSqlType before it is sent to
-     * the database. If the object has a custom mapping (its class implements
-     * the interface SQLData), the JDBC driver will call the method
-     * SQLData.writeSQL to write it to the SQL data stream. If the object's
-     * class implements Ref, Blob, Clob, Struct, or Array, the driver will pass
-     * it to the database in the form of the relevant SQL type.
+     * The Object is converted to the target SQL type before it is added to the
+     * database. If the Object is an instance of SQLData then SQLData.writeSQL
+     * is called to write out its data.
+     * </p>
      * 
      * @param parameterIndex
      *            the parameter index, where the first parameter has index 1
@@ -458,14 +456,12 @@ public interface PreparedStatement extends Statement {
             int targetSqlType) throws SQLException;
 
     /**
-     * Sets the value of a specified parameter using a supplied object.
+     * Sets the value of a specified parameter.
      * <p>
-     * The Object is converted to the given targetSqlType before it is sent to
-     * the database. If the object has a custom mapping (its class implements
-     * the interface SQLData), the JDBC driver will call the method
-     * SQLData.writeSQL to write it to the SQL data stream. If the object's
-     * class implements Ref, Blob, Clob, Struct, or Array, the driver will pass
-     * it to the database in the form of the relevant SQL type.
+     * The Object is converted to the target SQL type before it is added to the
+     * database. If the Object is an instance of SQLData then SQLData.writeSQL
+     * is called to write out its data.
+     * </p>
      * 
      * @param parameterIndex
      *            the parameter index, where the first parameter has index 1
@@ -475,9 +471,8 @@ public interface PreparedStatement extends Statement {
      *            the SQL Type to send to the database, as defined in
      *            java.sql.Types
      * @param scale
-     *            the number of digits after the decimal point - only applies to
-     *            the types java.sql.Types.DECIMAL and java.sql.Types.NUMERIC -
-     *            ignored for all other types.
+     *            the number of decimal places if the types is
+     *            java.sql.Types.DECIMAL or java.sql.Types.NUMERIC
      * @throws SQLException
      *             if a database error happens
      */
