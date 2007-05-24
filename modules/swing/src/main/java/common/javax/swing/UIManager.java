@@ -28,14 +28,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.border.Border;
 import javax.swing.event.SwingPropertyChangeSupport;
 import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.multi.MultiLookAndFeel;
 
 import org.apache.harmony.x.swing.Utilities;
 
@@ -103,6 +106,9 @@ public class UIManager implements Serializable {
     private static final String CROSSPLATFORM_LAF = "swing.crossplatformlaf";
     private static final String INSTALLED_LAFS = "swing.installedlafs";
     private static final String INSTALLED_LAF = "swing.installedlaf";
+    private static final String AUXILIARY_LAFS = "swing.auxiliarylaf";
+    private static final String MULTIPLEXING_LAF = "swing.plaf.multiplexinglaf";
+    
 
     private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
@@ -115,6 +121,8 @@ public class UIManager implements Serializable {
     private static List<LookAndFeelInfo> installedLFs;
     private static SwingPropertyChangeSupport propertyChangeSupport = new SwingPropertyChangeSupport(UIManager.class);
     private static UIDefaults userUIDefaults;
+    private static LookAndFeel multiplexingLaf;
+    private static final Set<LookAndFeel> auxillaryLafs = new HashSet<LookAndFeel>();
 
     static {
         initialize();
@@ -202,8 +210,17 @@ public class UIManager implements Serializable {
     }
 
     public static ComponentUI getUI(final JComponent comp) {
-        return getDefaults().getUI(comp);
-    }
+		if ((multiplexingLaf != null)
+				&& (!auxillaryLafs.isEmpty())
+				&& (multiplexingLaf.getDefaults().get(comp.getUIClassID()) != null)) {
+			/*
+			 * Note that multiplexingLaf.getDefaults().getUI(comp) may return UI
+			 * from defaultlaf if threre are no auxiliary UIs for the comp
+			 */
+			return multiplexingLaf.getDefaults().getUI(comp);
+		}
+		return getDefaults().getUI(comp);
+	}
 
     public static Object get(final Object obj) {
         return getDefaults().get(obj);
@@ -286,16 +303,31 @@ public class UIManager implements Serializable {
         propertyChangeSupport.firePropertyChange(LOOK_AND_FEEL_PROPERTY, oldValue, laf);
     }
 
+    /**
+	 * Adds the auxiliary look and feel if the look and feel hasn't been added
+	 * before.
+	 */
     public static void addAuxiliaryLookAndFeel(final LookAndFeel lf) {
-    }
+		if ((lf.isSupportedLookAndFeel())
+				&& (auxillaryLafs.add(lf)/* <-The addition goes here */)) {
+			/*
+			 * Initialization of mutiplexing laf placed here due to relatively
+			 * small amount of progrmas uses multiplexing. So, the multi look and feel
+			 * defined only if there is any auxiliary laf
+			 */
+			if (multiplexingLaf == null) {
+				multiplexingLaf = getMultiPlexingLaf();
+			}
+		}
+	}
 
-    public static boolean removeAuxiliaryLookAndFeel(final LookAndFeel lf) {
-        return false;
-    }
+	public static boolean removeAuxiliaryLookAndFeel(final LookAndFeel lf) {
+		return auxillaryLafs.remove(lf);
+	}
 
-    public static LookAndFeel[] getAuxiliaryLookAndFeels() {
-        return new LookAndFeel[] {};
-    }
+	public static LookAndFeel[] getAuxiliaryLookAndFeels() {
+		return auxillaryLafs.toArray(new LookAndFeel[] {});
+	}
 
     public static LookAndFeel getLookAndFeel() {
         return lookAndFeel;
@@ -348,8 +380,9 @@ public class UIManager implements Serializable {
 
     private static void initialize() {
         props = loadSwingProperties();
-        setDefaultLookAndFeel();
+        setDefaultLookAndFeel();        
         installedLFs = new ArrayList<LookAndFeelInfo>(getDefaultInstalledLFs());
+        fillAuxillaryLafs();
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .setDefaultFocusTraversalPolicy(new LayoutFocusTraversalPolicy());
     }
@@ -447,6 +480,43 @@ public class UIManager implements Serializable {
         return null;
     }
 
+    /**
+	 * Verifies the "swing.plaf.multiplexinglaf" and sets the defined look and
+	 * feel as multiplexing. In the case of error of the property is undefined
+	 * returns defaulr multiplexing laf
+	 * 
+	 * @return the look and feel used as Multiplexing
+	 */
+    private static LookAndFeel getMultiPlexingLaf() {
+		if (props.getProperty(MULTIPLEXING_LAF) != null) {
+			try {
+				return (LookAndFeel) Class.forName(MULTIPLEXING_LAF, false,
+						ClassLoader.getSystemClassLoader()).newInstance();
+			} catch (Exception ignored) {
+				// Compartibility
+			}
+		}
+		return new MultiLookAndFeel();
+	}
+
+    /**
+	 * The private method used while UIManager initialization to obtain
+	 * auxillary look and feels if any
+	 */
+	private static void fillAuxillaryLafs() {
+		String auxProperty = props.getProperty(AUXILIARY_LAFS);
+		if (auxProperty != null) {
+			for (String auxLafName : auxProperty.split(",")) { //$NON-NLS-1$
+				try {
+					addAuxiliaryLookAndFeel((LookAndFeel) Class.forName(auxLafName,
+							false, ClassLoader.getSystemClassLoader()).newInstance());
+				} catch (Exception ignored) {
+					// Compartibility
+				}
+			}
+		}
+	}
+    
     /**
      * Default values specified by user
      * @return UIDefaults userUIDefaults

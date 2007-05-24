@@ -26,6 +26,8 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
+
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
@@ -260,6 +262,32 @@ public class UIManagerTest extends SwingTestCase {
             }
         }
         assertTrue(foundMetalLF);
+    }
+    
+    public void testAuxillaryLafs() {
+
+        MetalLookAndFeel auxLaf1 = new MetalLookAndFeel();
+        MetalLookAndFeel auxLaf2 = new MetalLookAndFeel();
+
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 0);
+        UIManager.addAuxiliaryLookAndFeel(auxLaf1);
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 1);
+        UIManager.addAuxiliaryLookAndFeel(auxLaf1);
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 1);
+        UIManager.addAuxiliaryLookAndFeel(auxLaf2);
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 2);
+        UIManager.addAuxiliaryLookAndFeel(createUnsupportedLF());
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 2);
+
+        assertTrue(UIManager.removeAuxiliaryLookAndFeel(auxLaf1));
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 1);
+        assertFalse(UIManager.removeAuxiliaryLookAndFeel(auxLaf1));
+        assertFalse(UIManager
+                .removeAuxiliaryLookAndFeel(new MetalLookAndFeel()));
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 1);
+        assertTrue(UIManager.removeAuxiliaryLookAndFeel(auxLaf2));
+        assertEquals(UIManager.getAuxiliaryLookAndFeels().length, 0);
+
     }
 
     private LookAndFeel createUnsupportedLF() {
