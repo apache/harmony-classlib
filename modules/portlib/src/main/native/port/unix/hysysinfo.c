@@ -653,7 +653,7 @@ hysysinfo_get_number_CPUs (struct HyPortLibrary * portLibrary)
   return sysconf (_SC_NPROCESSORS_ONLN);
 #else
 #if defined(MACOSX)
-  /* derived from examples in sysctl(3) man page */
+  /* derived from examples in the sysctl(3) man page from FreeBSD */
   int mib[2], ncpu;
   size_t len;
 
@@ -685,7 +685,7 @@ hysysinfo_get_physical_memory (struct HyPortLibrary * portLibrary)
 {
 
 #if defined(FREEBSD) || defined(MACOSX)
-  /* derived from examples in sysctl(3) man page */
+  /* derived from examples in the sysctl(3) man page from FreeBSD */
   int mib[2], mem;
   size_t len;
 
