@@ -380,8 +380,17 @@ getPlatformIsReadOnly (JNIEnv * env, char *path)
 I_32
 getPlatformIsWriteOnly (JNIEnv * env, char *path)
 {
+  HANDLE fHandle = CreateFile(path, GENERIC_READ, FILE_SHARE_READ,
+      NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+
+  if (fHandle == INVALID_HANDLE_VALUE) {
+    return 1;
+  }
+
+  CloseHandle(fHandle);
   return 0;
 }
+
 
 /* Resolve link if it is a symbolic link and put the result in link. */
 int

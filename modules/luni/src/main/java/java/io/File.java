@@ -861,11 +861,12 @@ public class File implements Serializable, Comparable<File> {
         if (security != null) {
             security.checkRead(path);
         }
-        if (!isDirectory()) {
+        if (!isDirectory() || !canRead()) {
             return null;
-        }
+		}
         byte[][] implList = listImpl(properPath(true));
         if (implList == null) {
+            // empty list
             return new String[0];
         }
         String result[] = new String[implList.length];
@@ -953,7 +954,7 @@ public class File implements Serializable, Comparable<File> {
         if (security != null) {
             security.checkRead(path);
         }
-        if (!isDirectory()) {
+        if (!isDirectory() || !canRead()) {
             return null;
         }
         byte[][] implList = listImpl(properPath(true));
@@ -993,11 +994,12 @@ public class File implements Serializable, Comparable<File> {
         if (security != null) {
             security.checkRead(path);
         }
-        if (!isDirectory()) {
+        if (!isDirectory() || !canRead()) {
             return null;
         }
         byte[][] implList = listImpl(properPath(true));
         if (implList == null) {
+            // empty list
             return new String[0];
         }
         java.util.Vector<String> tempResult = new java.util.Vector<String>();
