@@ -381,7 +381,7 @@ abstract class AbstractCharClass extends SpecialToken {
                 chCl.lowHighSurrogates.set(0, SURROGATE_CARDINALITY);
             }
 
-            chCl.mayContainSupplCodepoints = mayContainSupplCodepoints;;
+            chCl.mayContainSupplCodepoints = mayContainSupplCodepoints;
             return chCl;
         }
     }
@@ -808,7 +808,13 @@ abstract class AbstractCharClass extends SpecialToken {
                 { "Cf", new LazyCategory(Character.FORMAT, true) },
                 { "Co", new LazyCategory(Character.PRIVATE_USE, true) },
                 { "Cs", new LazyCategory(Character.SURROGATE, false, true) },
-                { "IsP", new LazyCategoryScope(0xF8000, true) },
+                {"IsP", new LazyCategoryScope((1 << Character.DASH_PUNCTUATION) |
+                        (1 << Character.START_PUNCTUATION) |
+                        (1 << Character.END_PUNCTUATION) |
+                        (1 << Character.CONNECTOR_PUNCTUATION) |
+                        (1 << Character.OTHER_PUNCTUATION) |
+                        (1 << Character.INITIAL_QUOTE_PUNCTUATION) |
+                        (1 << Character.FINAL_QUOTE_PUNCTUATION), true)},
                 { "Pd", new LazyCategory(Character.DASH_PUNCTUATION, false) },
                 { "Ps", new LazyCategory(Character.START_PUNCTUATION, false) },
                 { "Pe", new LazyCategory(Character.END_PUNCTUATION, false) },
