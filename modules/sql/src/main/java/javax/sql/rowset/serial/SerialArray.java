@@ -18,10 +18,17 @@
 package javax.sql.rowset.serial;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Struct;
+import java.sql.Types;
 import java.util.Map;
+
+import org.apache.harmony.sql.internal.nls.Messages;
 
 /**
  * 
@@ -54,14 +61,38 @@ public class SerialArray implements Array, Serializable, Cloneable {
      */
     public SerialArray(Array array, Map<String, Class<?>> map)
             throws SerialException, SQLException {
-        // TODO add check for map
-        if (null == array || null == array.getArray()) {
-            throw new SQLException(
-                    "Cannot instantiate a SerialArray object with a null Array object.");
+        if (null == array || null == array.getArray() || null == map) {
+            throw new SQLException(Messages.getString("sql.39"));
         }
         baseType = array.getBaseType();
         baseTypeName = array.getBaseTypeName();
-        elements = (Object[]) array.getArray();
+        Object[] element = (Object[]) array.getArray(map);
+
+        switch (baseType) {
+        case Types.STRUCT:
+            elements = DefaultUDTMap.processObject((Struct[])element);
+            break;
+        case Types.ARRAY:
+            elements = DefaultUDTMap.processObject((Array[])element);
+            break;
+        case Types.CLOB:
+            elements = DefaultUDTMap.processObject((Clob[])element);
+            break;
+        case Types.BLOB:
+            elements = DefaultUDTMap.processObject((Blob[])element);
+            break;
+        case Types.DATALINK:
+            elements = DefaultUDTMap.processObject((URL[])element);
+            break;
+        case Types.JAVA_OBJECT:
+            elements = DefaultUDTMap.processObject(element);
+            break;
+        default:
+            elements = new Object[element.length];
+            for (int i = 0; i < element.length; i++) {
+                elements[i] = element[i];
+            }
+        }
     }
 
     /**
@@ -75,13 +106,7 @@ public class SerialArray implements Array, Serializable, Cloneable {
      *             if array is null
      */
     public SerialArray(Array array) throws SerialException, SQLException {
-        if (null == array || null == array.getArray()) {
-            throw new SQLException(
-                    "Cannot instantiate a SerialArray object with a null Array object.");
-        }
-        baseType = array.getBaseType();
-        baseTypeName = array.getBaseTypeName();
-        elements = (Object[]) array.getArray();
+        this(array, DefaultUDTMap.DEFAULTMAP);
     }
 
     /**
@@ -110,11 +135,10 @@ public class SerialArray implements Array, Serializable, Cloneable {
      *             if any error occurs when copy the array
      */
     public Object getArray(long index, int count) throws SerialException {
-        if (index < 0 || count >= index + elements.length) {
+        if (index < 0 || count + index > elements.length) {
             throw new SerialException("Illegal Argument");
         }
         Object[] ret = new Object[count];
-        // TODO check if casting long to int is legal
         System.arraycopy(elements, (int) index, ret, 0, count);
         return ret;
     }
@@ -135,12 +159,10 @@ public class SerialArray implements Array, Serializable, Cloneable {
      */
     public Object getArray(long index, int count, Map<String, Class<?>> map)
             throws SerialException {
-        // TODO replace raw string to Msg.getString 
-        if (index < 0 || count >= index + elements.length) {
-            throw new SerialException("Illegal Argument");
+        if (index < 0 || count + index > elements.length ) {
+            throw new SerialException(Messages.getString("sql.40"));
         }
         Object[] ret = new Object[count];
-        // TODO check if casting long to int is legal
         System.arraycopy(elements, (int) index, ret, 0, count);
         return ret;
     }
@@ -155,10 +177,8 @@ public class SerialArray implements Array, Serializable, Cloneable {
      *             if any error occurs when copy the array
      */
     public Object getArray(Map<String, Class<?>> map) throws SerialException {
-        // TODO add check for map
-        Object[] ret = new Object[elements.length];
-        System.arraycopy(elements, 0, ret, 0, elements.length);
-        return elements;
+        return getArray(0, elements.length,
+                null == map ? DefaultUDTMap.DEFAULTMAP : map);
     }
 
     /**

@@ -33,25 +33,65 @@ import junit.framework.TestCase;
 
 public class SerialArrayTest extends TestCase {
 
-    private Array mock = new MockArray();
+    private MockArray mock = new MockArray();
 
     private SerialArray sa;
 
-    String[] strs = new String[2];
+    Object[] testElements = new Object[4];
 
     Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+    
+    Map<String, Class<?>> badmap = new HashMap<String, Class<?>>();
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        sa = new SerialArray(mock);
-        strs[0] = "test1";
-        strs[1] = "test2";
+        testElements = new Object[4];
+        testElements[0] = "test1";
+        testElements[1] = "test2";
+        testElements[2] = new SQLException();
+        testElements[3] = new HashMap();       
+        sa = new SerialArray(mock);     
+        map = new HashMap<String, Class<?>>();
         map.put("String", MockStringSQLData.class);
-        map.put("Object", MockObjectSQLData.class);
+        map.put("Object", null);
+        badmap = new HashMap<String, Class<?>>();
+        badmap.put("Something", HashMap.class);
     }
 
-    public void testConstructor() throws SQLException {
+    public void testConstructor_ObjectArray() throws SQLException {
+        // OK
+        sa = new SerialArray(mock);
+        // array.getArray should not return null
+        try {
+            sa = new SerialArray(new MockNullArray());
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }        
+        testElements = new Object[5];
+        testElements[0] = "test1";
+        testElements[1] = "test2";
+        testElements[2] = new SQLException();
+        testElements[3] = new HashMap();  
+        try {
+            sa = new SerialArray(mock);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        testElements[4] = new Object();
+        try {
+            sa = new SerialArray(mock);
+            // RI fail here
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+    
+    public void testConstructor_IntArray() throws SQLException {
+        mock.basetype = Types.INTEGER;
         // OK
         sa = new SerialArray(mock);
         // array.getArray should not return null
@@ -61,11 +101,22 @@ public class SerialArrayTest extends TestCase {
         } catch (SQLException e) {
             // expected
         }
+        testElements = new Object[5];
+        testElements[0] = "test1";
+        testElements[1] = "test2";
+        testElements[2] = new SQLException();
+        testElements[3] = new HashMap();
+        // OK for integer
+        sa = new SerialArray(mock);
+
+        testElements[4] = new Object();
+        sa = new SerialArray(mock);
     }
 
     public void testConstructor_map() throws SQLException {
         try {
             sa = new SerialArray(mock, null);
+            fail("should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
@@ -75,33 +126,70 @@ public class SerialArrayTest extends TestCase {
             fail("should throw SQLException");
         } catch (SQLException e) {
             // expected
-        }        
+        }     
+        //OK        
+        sa = new SerialArray(mock,map);
+        sa = new SerialArray(mock,badmap);
     }
 
     public void testGetArray() throws SerialException {
-        for (int i = 0; i < strs.length; i++) {
-            assertEquals(strs[i], ((Object[]) sa.getArray())[i]);
+        for (int i = 0; i < testElements.length; i++) {
+            assertEquals(testElements[i], ((Object[]) sa.getArray())[i]);
         }
     }
 
+    public void testGetArrayMap() throws SerialException {
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(null))[i]);
+        }
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(map))[i]);
+        }
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(badmap))[i]);
+        }
+        
+    }
+    
     public void testGetArrayLongInt() throws SerialException {
-        for (int i = 0; i < strs.length; i++) {
-            assertEquals(strs[i], ((Object[]) sa.getArray(i, 1))[0]);
+        for (int i = 0; i < testElements.length; i++) {
+            assertEquals(testElements[i], ((Object[]) sa.getArray(i, 1))[0]);
         }
     }
 
-    public void testGetArrayLongIntMapOfStringClassOfQ() {
-
+    public void testGetArrayLongIntMap() throws SerialException {
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(i, 1, null))[0]);
+        }
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(i, 1, map))[0]);
+        }
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(i, 1, badmap))[0]);
+        }
+        mock.returnNull = true;
+        // elements force deeper copy
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(i, 1, map))[0]);
+        }
     }
 
     public void testGetArrayMapOfStringClassOfQ() throws SerialException {
-        for (int i = 0; i < strs.length; i++) {
-            assertEquals(strs[i], ((Object[]) sa.getArray())[i]);
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(badmap))[i]);
+        }
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(map))[i]);
+        }
+        mock.returnNull = true;
+        // elements force deeper copy
+        for (int i = 0; i < testElements.length; i++) {
+            assertSame(testElements[i], ((Object[]) sa.getArray(map))[i]);
         }
     }
 
     public void testGetBaseType() throws SerialException {
-        assertEquals(Types.ARRAY, sa.getBaseType());
+        assertEquals(Types.JAVA_OBJECT, sa.getBaseType());
     }
 
     public void testGetBaseTypeName() throws SQLException {
@@ -146,34 +234,46 @@ public class SerialArrayTest extends TestCase {
     }
 
     class MockArray implements Array {
+        
+        public boolean returnNull = false;
+        
+        public int basetype = Types.JAVA_OBJECT;
 
         public Object getArray() throws SQLException {
-            return strs;
+            return testElements;
         }
 
         public Object getArray(long index, int count) throws SQLException {
-            String[] ret = new String[count];
+            Object[] ret = new Object[count];
             for (int i = 0; i < ret.length; i++) {
-                ret[i] = strs[(int) index + i];
+                ret[i] = testElements[(int) index + i];
             }
             return ret;
         }
 
         public Object getArray(long index, int count, Map<String, Class<?>> map)
                 throws SQLException {
-            String[] ret = new String[count];
-            for (int i = 0; i < ret.length; i++) {
-                ret[i] = strs[(int) index + i];
+            if (!returnNull) {
+                Object[] ret = new Object[count];
+                for (int i = 0; i < ret.length; i++) {
+                    ret[i] = testElements[(int) index + i];
+                }
+                return ret;
+            } else {
+                return null;
             }
-            return ret;
         }
 
         public Object getArray(Map<String, Class<?>> map) throws SQLException {
-            return strs;
+            if (!returnNull){
+                return testElements;
+            } else {
+                return null;
+            }
         }
 
         public int getBaseType() throws SQLException {
-            return Types.ARRAY;
+            return basetype;
         }
 
         public String getBaseTypeName() throws SQLException {
@@ -217,7 +317,7 @@ public class SerialArrayTest extends TestCase {
         }
 
         public Object getArray(Map<String, Class<?>> map) throws SQLException {
-            return strs;
+            return testElements;
         }
 
         public int getBaseType() throws SQLException {
