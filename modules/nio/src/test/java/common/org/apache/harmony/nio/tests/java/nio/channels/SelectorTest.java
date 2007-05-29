@@ -278,6 +278,23 @@ public class SelectorTest extends TestCase {
     }
 
     /**
+     * @test java.nio.channels.Selector#select(long)
+     */
+    public void test_selectJ_Empty_Keys() throws IOException {
+        // regression test, see HARMONY-3888.
+        // make sure select(long) does wait for specified amount of
+        // time if keys.size() == 0 (initial state of selector).
+
+        final long SELECT_TIMEOUT = 2000;
+
+        long time1 = System.currentTimeMillis();
+        selector.select(SELECT_TIMEOUT);
+        long time2 = System.currentTimeMillis();
+        assertEquals("elapsed time", SELECT_TIMEOUT, (time2 - time1),
+                     SELECT_TIMEOUT * 0.05); // 5% accuracy
+    }
+
+    /**
      * @tests java.nio.channels.Selector#wakeup()
      */
     public void test_wakeup() throws IOException {
