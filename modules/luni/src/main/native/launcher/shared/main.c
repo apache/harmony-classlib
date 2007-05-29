@@ -205,6 +205,14 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	* have a '-jar' argument.
 	*/
 	for (i = 1; i < argc; i++) {
+        if ((0 == strcmp ("-help", argv[i])) ||
+            (0 == strcmp ("-?", argv[i])) ||
+            (0 == strcmp ("-X", argv[i]))) {
+            printUsageMessage(PORTLIB);
+            rc = 0;
+            goto bail;
+        }
+        
 		if ((0 == strcmp ("-cp", argv[i])) ||
 		    (0 == strcmp ("-classpath", argv[i]))) {
 			/* Skip the classpath argument while looking for main class */
