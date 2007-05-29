@@ -441,9 +441,7 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
                 new AbstractSet<Map.Entry<K, V>>() {
                     @Override
                     public int size() {
-                        synchronized (Hashtable.this) {
-                            return elementCount;
-                        }
+                        return elementCount;
                     }
 
                     @Override
@@ -454,25 +452,20 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
                     @Override
                     @SuppressWarnings("unchecked")
                     public boolean remove(Object object) {
-                        synchronized (Hashtable.this) {
-                            if (contains(object)) {
-                                Hashtable.this
-                                        .remove(((Map.Entry<K, V>) object)
-                                                .getKey());
-                                return true;
-                            }
-                            return false;
+                        if (contains(object)) {
+                            Hashtable.this.remove(((Map.Entry<K, V>) object)
+                                    .getKey());
+                            return true;
                         }
+                        return false;
                     }
 
                     @Override
                     @SuppressWarnings("unchecked")
                     public boolean contains(Object object) {
-                        synchronized (Hashtable.this) {
-                            Entry<K, V> entry = getEntry(((Map.Entry<K, V>) object)
-                                    .getKey());
-                            return object.equals(entry);
-                        }
+                        Entry<K, V> entry = getEntry(((Map.Entry<K, V>) object)
+                                .getKey());
+                        return object.equals(entry);
                     }
 
                     @Override
@@ -626,16 +619,12 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         return new Collections.SynchronizedSet<K>(new AbstractSet<K>() {
             @Override
             public boolean contains(Object object) {
-                synchronized (Hashtable.this) {
-                    return containsKey(object);
-                }
+                return containsKey(object);
             }
 
             @Override
             public int size() {
-                synchronized (Hashtable.this) {
-                    return elementCount;
-                }
+                return elementCount;
             }
 
             @Override
@@ -645,13 +634,11 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
 
             @Override
             public boolean remove(Object key) {
-                synchronized (Hashtable.this) {
-                    if (containsKey(key)) {
-                        Hashtable.this.remove(key);
-                        return true;
-                    }
-                    return false;
+                if (containsKey(key)) {
+                    Hashtable.this.remove(key);
+                    return true;
                 }
+                return false;
             }
 
             @Override
@@ -863,16 +850,12 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
                 new AbstractCollection<V>() {
                     @Override
                     public boolean contains(Object object) {
-                        synchronized (Hashtable.this) {
-                            return Hashtable.this.contains(object);
-                        }
+                        return Hashtable.this.contains(object);
                     }
 
                     @Override
                     public int size() {
-                        synchronized (Hashtable.this) {
-                            return elementCount;
-                        }
+                        return elementCount;
                     }
 
                     @Override
