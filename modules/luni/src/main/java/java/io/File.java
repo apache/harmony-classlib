@@ -44,6 +44,8 @@ import org.apache.harmony.luni.util.Util;
  * @see java.lang.Comparable
  */
 public class File implements Serializable, Comparable<File> {
+    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
     private static final long serialVersionUID = 301077366599181567L;
 
     private String path;
@@ -165,7 +167,7 @@ public class File implements Serializable, Comparable<File> {
 
     private String calculatePath(String dirPath, String name) {
         dirPath = fixSlashes(dirPath);
-        if (!name.equals("")) { //$NON-NLS-1$
+        if (!name.equals(EMPTY_STRING) || dirPath.equals(EMPTY_STRING)) { 
             // Remove all the proceeding separator chars from name
             name = fixSlashes(name);
 
@@ -1288,12 +1290,12 @@ public class File implements Serializable, Comparable<File> {
         String name = getAbsoluteName();
         if (!name.startsWith("/")) { //$NON-NLS-1$
             // start with sep.
-            return new URL("file", "", -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ //$NON-NLS-2$
+            return new URL("file", EMPTY_STRING, -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ 
                     .append('/').append(name).toString(), null);
         } else if (name.startsWith("//")) { //$NON-NLS-1$
             return new URL("file:" + name); // UNC path //$NON-NLS-1$
         }
-        return new URL("file", "", -1, name, null); //$NON-NLS-1$ //$NON-NLS-2$
+        return new URL("file", EMPTY_STRING, -1, name, null); //$NON-NLS-1$
     }
 
     private String getAbsoluteName() {
