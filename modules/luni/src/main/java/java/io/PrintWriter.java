@@ -202,6 +202,17 @@ public class PrintWriter extends Writer {
         }
         return ioError;
     }
+    
+    /**
+     * Sets the error state of the stream to false.
+     * 
+     * @since 1.6
+     */
+    protected void clearError() {
+        synchronized (lock) {
+            ioError = false;
+        }
+    }
 
     /**
      * Close this PrintWriter. This implementation flushes and then closes the
