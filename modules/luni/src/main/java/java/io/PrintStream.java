@@ -232,6 +232,15 @@ public class PrintStream extends FilterOutputStream implements Appendable,
         }
         return ioError;
     }
+    
+    /**
+     * Sets the error state of the stream to false.
+     * 
+     * @since 1.6
+     */
+    protected void clearError() {
+        ioError = false;
+    }
 
     /**
      * Close this PrintStream. This implementation flushes and then closes the
