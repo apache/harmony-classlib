@@ -265,7 +265,7 @@ public class URLClassLoader extends SecureClassLoader {
 
         URL findResource(String name) {
             URL resURL = targetURL(url, name);
-            if (resURL!=null) {
+            if (resURL != null) {
                 try {
                     URLConnection uc = resURL.openConnection();
                     uc.getInputStream().close();
@@ -276,7 +276,7 @@ public class URLClassLoader extends SecureClassLoader {
                     }
                     int code;
                     if ((code = ((HttpURLConnection) uc).getResponseCode()) >= 200
-                        && code < 300) {
+                            && code < 300) {
                         return resURL;
                     }
                 } catch (SecurityException e) {
@@ -568,26 +568,31 @@ public class URLClassLoader extends SecureClassLoader {
 
         URL findResource(String name) {
             int idx =0;
+            String filename;
+            
             // Do not create a UNC path, i.e. \\host
             while (idx<name.length() && ((name.charAt(idx)=='/') //$NON-NLS-1$
                    || (name.charAt(idx)=='\\') )) { //$NON-NLS-1$
                 idx++;
             }
-            if(idx>0) {
+
+            if (idx > 0) {
                 name = name.substring(idx);
             }
-            String filename = prefix+name;
+
             try {
-                filename = URLDecoder.decode(filename, "UTF-8"); //$NON-NLS-1$
+                filename = URLDecoder.decode(prefix, "UTF-8") + name; //$NON-NLS-1$
+
+                if (new File(filename).exists()) {
+                    return targetURL(url, name);
+                } else {
+                    return null;
+                }
             } catch (IllegalArgumentException e) {
                 return null;
             } catch (UnsupportedEncodingException e) {
                 return null;
             }
-            if (new File(filename).exists()) {
-                return targetURL(url, name);
-            }
-            return null;
         }
 
     }
@@ -971,13 +976,14 @@ public class URLClassLoader extends SecureClassLoader {
      */
     URL findResourceImpl(String resName) {
         int n = 0;
-        while(true) {
+
+        while (true) {
             URLHandler handler = getHandler(n++);
-            if(handler == null) {
+            if (handler == null) {
                 break;
             }
             URL res = handler.findResource(resName);
-            if(res!=null) {
+            if (res != null) {
                 return res;
             }
         }
@@ -985,23 +991,23 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     URLHandler getHandler(int num) {
-        if(num < handlerList.size()) {
+        if (num < handlerList.size()) {
             return handlerList.get(num);
         }
         makeNewHandler();
-        if(num < handlerList.size()) {
+        if (num < handlerList.size()) {
             return handlerList.get(num);
         }
         return null;
     }
 
     private synchronized void makeNewHandler() {
-        while(!searchList.isEmpty()) {
+        while (!searchList.isEmpty()) {
             URL nextCandidate = searchList.remove(0);
             if (nextCandidate == null) {  // KA024=One of urls is null
                 throw new NullPointerException(Msg.getString("KA024")); //$NON-NLS-1$
             }
-            if(!handlerMap.containsKey(nextCandidate)) {
+            if (!handlerMap.containsKey(nextCandidate)) {
                 URLHandler result;
                 String protocol = nextCandidate.getProtocol();
                 if (protocol.equals("jar")) { //$NON-NLS-1$
@@ -1011,8 +1017,8 @@ public class URLClassLoader extends SecureClassLoader {
                 } else {
                     result = createURLHandler(nextCandidate);
                 }
-                if(result!=null) {
-                    handlerMap.put(nextCandidate,result);
+                if (result != null) {
+                    handlerMap.put(nextCandidate, result);
                     handlerList.add(result);
                     return;
                 }
