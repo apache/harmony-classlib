@@ -61,7 +61,7 @@ public class URLClassLoader extends SecureClassLoader {
 
     List<URL> searchList;
     ArrayList<URLHandler> handlerList;
-    Map<URL,URLHandler> handlerMap = new HashMap<URL,URLHandler>();
+    Map<URL, URLHandler> handlerMap = new HashMap<URL, URLHandler>();
 
     private URLStreamHandlerFactory factory;
 
@@ -83,19 +83,16 @@ public class URLClassLoader extends SecureClassLoader {
          * Overrides the loadClass() of <code>ClassLoader</code>. It calls
          * the security manager's <code>checkPackageAccess()</code> before
          * attempting to load the class.
-         * 
+         *
+         * @param className    String the name of the class to search for.
+         * @param resolveClass boolean indicates if class should be resolved after
+         *                     loading.
          * @return the Class object.
-         * @param className
-         *            String the name of the class to search for.
-         * @param resolveClass
-         *            boolean indicates if class should be resolved after
-         *            loading.
-         * @throws ClassNotFoundException
-         *             If the class could not be found.
+         * @throws ClassNotFoundException If the class could not be found.
          */
         @Override
         protected synchronized Class<?> loadClass(String className,
-                boolean resolveClass) throws ClassNotFoundException {
+                                                  boolean resolveClass) throws ClassNotFoundException {
             SecurityManager sm = System.getSecurityManager();
             if (sm != null && !checkingPackageAccess) {
                 int index = className.lastIndexOf('.');
@@ -114,49 +111,50 @@ public class URLClassLoader extends SecureClassLoader {
 
     static class IndexFile {
 
-        private HashMap<String,ArrayList<URL>> map;
+        private HashMap<String, ArrayList<URL>> map;
         //private URLClassLoader host;
 
 
-        static IndexFile readIndexFile(JarFile jf, JarEntry indexEntry,URL url) {
+        static IndexFile readIndexFile(JarFile jf, JarEntry indexEntry, URL url) {
             BufferedReader in = null;
             InputStream is = null;
             try {
                 // Add mappings from resource to jar file
                 String parentURLString = getParentURL(url).toExternalForm();
                 String prefix = "jar:" //$NON-NLS-1$
-                                + parentURLString + "/"; //$NON-NLS-1$
+                        + parentURLString + "/"; //$NON-NLS-1$
                 is = jf.getInputStream(indexEntry);
-                in = new BufferedReader(new InputStreamReader(is,"UTF8"));
+                in = new BufferedReader(new InputStreamReader(is, "UTF8"));
                 HashMap<String, ArrayList<URL>> pre_map = new HashMap<String, ArrayList<URL>>();
                 // Ignore the 2 first lines (index version)
-                if(in.readLine()==null) return null;
-                if(in.readLine()==null) return null;
-                TOP_CYCLE:  while(true) {
+                if (in.readLine() == null) return null;
+                if (in.readLine() == null) return null;
+                TOP_CYCLE:
+                while (true) {
                     String line = in.readLine();
-                    if(line==null) {
+                    if (line == null) {
                         break;
                     }
-                    URL jar = new URL(prefix+ line + "!/"); //$NON-NLS-1$
-                    while(true) {
+                    URL jar = new URL(prefix + line + "!/"); //$NON-NLS-1$
+                    while (true) {
                         line = in.readLine();
-                        if(line==null) {
+                        if (line == null) {
                             break TOP_CYCLE;
                         }
-                        if("".equals(line) ) {
+                        if ("".equals(line)) {
                             break;
                         }
                         ArrayList<URL> list;
-                        if(pre_map.containsKey(line)) {
+                        if (pre_map.containsKey(line)) {
                             list = pre_map.get(line);
                         } else {
                             list = new ArrayList<URL>();
-                            pre_map.put(line,list);
+                            pre_map.put(line, list);
                         }
                         list.add(jar);
                     }
                 }
-                if(!pre_map.isEmpty()){
+                if (!pre_map.isEmpty()) {
                     return new IndexFile(pre_map);
                 }
             } catch (MalformedURLException e) {
@@ -165,13 +163,13 @@ public class URLClassLoader extends SecureClassLoader {
                 // Ignore this jar's index
             }
             finally {
-                if(in!=null) {
+                if (in != null) {
                     try {
                         in.close();
                     } catch (IOException e) {
                     }
                 }
-                if(is!=null) {
+                if (is != null) {
                     try {
                         is.close();
                     } catch (IOException e) {
@@ -190,7 +188,7 @@ public class URLClassLoader extends SecureClassLoader {
                 parentFile = "/" + parentFile; //$NON-NLS-1$
             }
             URL parentURL = new URL(fileURL.getProtocol(), fileURL
-                                                           .getHost(), fileURL.getPort(), parentFile);
+                    .getHost(), fileURL.getPort(), parentFile);
             return parentURL;
         }
 
@@ -198,7 +196,7 @@ public class URLClassLoader extends SecureClassLoader {
             this.map = map;
         }
 
-        ArrayList<URL> get(String name){
+        ArrayList<URL> get(String name) {
             return map.get(name);
         }
     }
@@ -209,7 +207,7 @@ public class URLClassLoader extends SecureClassLoader {
 
         public URLHandler(URL url) {
             this.url = url;
-            this.codeSourceUrl=url;
+            this.codeSourceUrl = url;
         }
 
         void findResources(String name, ArrayList<URL> resources) {
@@ -219,12 +217,12 @@ public class URLClassLoader extends SecureClassLoader {
             }
         }
 
-        Class<?> findClass(String packageName,String name, String origName) {
+        Class<?> findClass(String packageName, String name, String origName) {
             URL resURL = targetURL(url, name);
-            if(resURL !=null) {
+            if (resURL != null) {
                 try {
                     InputStream is = resURL.openStream();
-                    return createClass(is,packageName,origName);
+                    return createClass(is, packageName, origName);
                 } catch (IOException e) {
                 }
             }
@@ -233,7 +231,7 @@ public class URLClassLoader extends SecureClassLoader {
 
 
         Class<?> createClass(InputStream is, String packageName, String origName) {
-            if(is==null) {
+            if (is == null) {
                 return null;
             }
             byte[] clBuf = null;
@@ -248,19 +246,19 @@ public class URLClassLoader extends SecureClassLoader {
                 }
             }
             if (packageName != null) {
-                    String packageDotName = packageName.replace('/','.');
-                    Package packageObj = getPackage(packageDotName);
-                    if (packageObj == null) {
-                            definePackage(packageDotName, null, null,
-                                          null, null, null, null, null);
-                    } else {
-                        if (packageObj.isSealed()) {
-                            throw new SecurityException(Msg
-                                                        .getString("K004c")); //$NON-NLS-1$
-                        }
+                String packageDotName = packageName.replace('/', '.');
+                Package packageObj = getPackage(packageDotName);
+                if (packageObj == null) {
+                    definePackage(packageDotName, null, null,
+                            null, null, null, null, null);
+                } else {
+                    if (packageObj.isSealed()) {
+                        throw new SecurityException(Msg
+                                .getString("K004c")); //$NON-NLS-1$
                     }
+                }
             }
-            return defineClass(origName, clBuf, 0, clBuf.length, new CodeSource(codeSourceUrl, (Certificate[])null));
+            return defineClass(origName, clBuf, 0, clBuf.length, new CodeSource(codeSourceUrl, (Certificate[]) null));
         }
 
         URL findResource(String name) {
@@ -304,29 +302,29 @@ public class URLClassLoader extends SecureClassLoader {
 
     }
 
-    class URLJarHandler extends URLHandler{
+    class URLJarHandler extends URLHandler {
         JarFile jf;
         String prefixName;
         IndexFile index = null;
-        Map<URL,URLHandler> subHandlers = new HashMap<URL, URLHandler>();
+        Map<URL, URLHandler> subHandlers = new HashMap<URL, URLHandler>();
 
-        public URLJarHandler(URL url, URL jarURL, JarFile jf,String prefixName) {
+        public URLJarHandler(URL url, URL jarURL, JarFile jf, String prefixName) {
             super(url);
-            this.jf=jf;
-            this.prefixName=prefixName;
-            this.codeSourceUrl=jarURL;
+            this.jf = jf;
+            this.prefixName = prefixName;
+            this.codeSourceUrl = jarURL;
             JarEntry je = jf.getJarEntry("META-INF/INDEX.LIST"); //$NON-NLS-1$
             if (je != null) {
-                 index = IndexFile.readIndexFile(jf,je,url);
+                index = IndexFile.readIndexFile(jf, je, url);
             }
         }
 
-        public URLJarHandler(URL url, URL jarURL, JarFile jf,String prefixName,IndexFile index) {
+        public URLJarHandler(URL url, URL jarURL, JarFile jf, String prefixName, IndexFile index) {
             super(url);
-            this.jf=jf;
-            this.prefixName=prefixName;
+            this.jf = jf;
+            this.prefixName = prefixName;
             this.index = index;
-            this.codeSourceUrl=jarURL;
+            this.codeSourceUrl = jarURL;
         }
 
         IndexFile getIndex() {
@@ -338,17 +336,17 @@ public class URLClassLoader extends SecureClassLoader {
             if (res != null && !resources.contains(res)) {
                 resources.add(res);
             }
-            if(index!=null) {
+            if (index != null) {
                 int pos = name.lastIndexOf("/"); //$NON-NLS-1$
                 // only keep the directory part of the resource
                 // as index.list only keeps track of directories and root files
                 String indexedName = (pos > 0) ? name.substring(0, pos) : name;
                 ArrayList<URL> urls = index.get(indexedName);
-                if(urls!=null) {
-                    for(URL url : urls) {
+                if (urls != null) {
+                    for (URL url : urls) {
                         URLHandler h = getSubHandler(url);
-                        if(h != null) {
-                            h.findResources(name,resources);
+                        if (h != null) {
+                            h.findResources(name, resources);
                         }
                     }
                 }
@@ -356,7 +354,7 @@ public class URLClassLoader extends SecureClassLoader {
 
         }
 
-        Class<?> findClass(String packageName,String name,String origName) {
+        Class<?> findClass(String packageName, String name, String origName) {
             String entryName = prefixName + name;
             JarEntry entry = jf.getJarEntry(entryName);
             if (entry != null) {
@@ -367,23 +365,23 @@ public class URLClassLoader extends SecureClassLoader {
                  */
                 try {
                     Manifest manifest = jf.getManifest();
-                    return createClass(entry,manifest,packageName,origName);
+                    return createClass(entry, manifest, packageName, origName);
                 } catch (IOException e) {
                 }
             }
-            if(index!=null) {
+            if (index != null) {
                 ArrayList<URL> urls;
-                if(packageName==null) {
-                     urls = index.get(name);
-                }else {
-                     urls = index.get(packageName);
+                if (packageName == null) {
+                    urls = index.get(name);
+                } else {
+                    urls = index.get(packageName);
                 }
-                if(urls!=null) {
-                    for(URL url : urls) {
+                if (urls != null) {
+                    for (URL url : urls) {
                         URLHandler h = getSubHandler(url);
-                        if(h != null) {
-                            Class<?> res = h.findClass(packageName,name,origName);
-                            if(res!=null) {
+                        if (h != null) {
+                            Class<?> res = h.findClass(packageName, name, origName);
+                            if (res != null) {
                                 return res;
                             }
                         }
@@ -415,10 +413,10 @@ public class URLClassLoader extends SecureClassLoader {
                 if (packageObj == null) {
                     if (manifest != null) {
                         definePackage(packageDotName, manifest,
-                                      codeSourceUrl);
+                                codeSourceUrl);
                     } else {
                         definePackage(packageDotName, null, null,
-                                      null, null, null, null, null);
+                                null, null, null, null, null);
                     }
                 } else {
                     boolean exception = false;
@@ -432,7 +430,7 @@ public class URLClassLoader extends SecureClassLoader {
                     }
                     if (exception) {
                         throw new SecurityException(Msg
-                                                    .getString("K004c")); //$NON-NLS-1$
+                                .getString("K004c")); //$NON-NLS-1$
                     }
                 }
             }
@@ -440,31 +438,31 @@ public class URLClassLoader extends SecureClassLoader {
             return defineClass(origName, clBuf, 0, clBuf.length, codeS);
         }
 
-         URL findResourceInOwn(String name) {
-             String entryName = prefixName + name;
-             if (jf.getEntry(entryName) != null) {
-                 return targetURL(url, name);
-             }
-             return null;
-         }
+        URL findResourceInOwn(String name) {
+            String entryName = prefixName + name;
+            if (jf.getEntry(entryName) != null) {
+                return targetURL(url, name);
+            }
+            return null;
+        }
 
         URL findResource(String name) {
             URL res = findResourceInOwn(name);
-            if(res!=null) {
+            if (res != null) {
                 return res;
             }
-            if(index!=null) {
+            if (index != null) {
                 int pos = name.lastIndexOf("/"); //$NON-NLS-1$
                 // only keep the directory part of the resource
                 // as index.list only keeps track of directories and root files
                 String indexedName = (pos > 0) ? name.substring(0, pos) : name;
                 ArrayList<URL> urls = index.get(indexedName);
-                if(urls!=null) {
-                    for(URL url : urls) {
+                if (urls != null) {
+                    for (URL url : urls) {
                         URLHandler h = getSubHandler(url);
-                        if(h != null) {
+                        if (h != null) {
                             res = h.findResource(name);
-                            if(res!=null) {
+                            if (res != null) {
                                 return res;
                             }
                         }
@@ -476,7 +474,7 @@ public class URLClassLoader extends SecureClassLoader {
 
         private synchronized URLHandler getSubHandler(URL url) {
             URLHandler sub = subHandlers.get(url);
-            if(url!=null) {
+            if (url != null) {
                 return sub;
             }
             String protocol = url.getProtocol();
@@ -487,8 +485,8 @@ public class URLClassLoader extends SecureClassLoader {
             } else {
                 sub = createURLHandler(url);
             }
-            if(sub!=null) {
-                subHandlers.put(url,sub);
+            if (sub != null) {
+                subHandlers.put(url, sub);
             }
             return sub;
         }
@@ -509,12 +507,12 @@ public class URLClassLoader extends SecureClassLoader {
             }
             try {
                 URL jarURL = ((JarURLConnection) url
-                          .openConnection()).getJarFileURL();
+                        .openConnection()).getJarFileURL();
                 JarURLConnection juc = (JarURLConnection) new URL(
                         "jar", "", //$NON-NLS-1$ //$NON-NLS-2$
                         jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
                 JarFile jf = juc.getJarFile();
-                URLJarHandler jarH = new URLJarHandler(url,jarURL,jf,prefixName,null);
+                URLJarHandler jarH = new URLJarHandler(url, jarURL, jf, prefixName, null);
                 // TODO : to think what we should do with indexes & manifest.class file here
                 return jarH;
             } catch (IOException e) {
@@ -524,7 +522,7 @@ public class URLClassLoader extends SecureClassLoader {
 
     }
 
-    class URLFileHandler extends URLHandler{
+    class URLFileHandler extends URLHandler {
         private String prefix;
 
         public URLFileHandler(URL url) {
@@ -536,7 +534,7 @@ public class URLClassLoader extends SecureClassLoader {
                 hostLength = host.length();
             }
             StringBuilder buf = new StringBuilder(2 + hostLength
-                                                  + baseFile.length());
+                    + baseFile.length());
             if (hostLength > 0) {
                 buf.append("//").append(host); //$NON-NLS-1$
             }
@@ -545,8 +543,8 @@ public class URLClassLoader extends SecureClassLoader {
             prefix = buf.toString();
         }
 
-        Class<?> findClass(String packageName,String name,String origName) {
-            String filename = prefix+name;
+        Class<?> findClass(String packageName, String name, String origName) {
+            String filename = prefix + name;
             try {
                 filename = URLDecoder.decode(filename, "UTF-8"); //$NON-NLS-1$
             } catch (IllegalArgumentException e) {
@@ -559,7 +557,7 @@ public class URLClassLoader extends SecureClassLoader {
             if (file.exists()) {
                 try {
                     InputStream is = new FileInputStream(file);
-                    return createClass(is,packageName,origName);
+                    return createClass(is, packageName, origName);
                 } catch (FileNotFoundException e) {
                 }
             }
@@ -567,12 +565,12 @@ public class URLClassLoader extends SecureClassLoader {
         }
 
         URL findResource(String name) {
-            int idx =0;
+            int idx = 0;
             String filename;
-            
+
             // Do not create a UNC path, i.e. \\host
-            while (idx<name.length() && ((name.charAt(idx)=='/') //$NON-NLS-1$
-                   || (name.charAt(idx)=='\\') )) { //$NON-NLS-1$
+            while (idx < name.length() && ((name.charAt(idx) == '/') //$NON-NLS-1$
+                    || (name.charAt(idx) == '\\'))) { //$NON-NLS-1$
                 idx++;
             }
 
@@ -635,9 +633,8 @@ public class URLClassLoader extends SecureClassLoader {
 
     /**
      * Adds the specified URL to the search list.
-     * 
-     * @param url
-     *            java.net.URL the new URL
+     *
+     * @param url java.net.URL the new URL
      */
     protected void addURL(URL url) {
         try {
@@ -649,11 +646,10 @@ public class URLClassLoader extends SecureClassLoader {
 
     /**
      * Answers an enumeration of URLs that contain the specified resource.
-     * 
+     *
+     * @param name java.lang.String the name of the requested resource
      * @return Enumeration the enumeration of URLs that contain the specified
      *         resource.
-     * @param name
-     *            java.lang.String the name of the requested resource
      * @throws IOException
      *             thrown if an IO Exception occurs while attempting to connect
      */
@@ -690,22 +686,21 @@ public class URLClassLoader extends SecureClassLoader {
 
     void findResourcesImpl(String name, ArrayList<URL> result) {
         int n = 0;
-        while(true) {
+        while (true) {
             URLHandler handler = getHandler(n++);
-            if(handler == null) {
+            if (handler == null) {
                 break;
             }
-            handler.findResources(name,result);
+            handler.findResources(name, result);
         }
     }
 
 
     /**
      * Converts an input stream into a byte array.
-     * 
+     *
+     * @param is the input stream
      * @return byte[] the byte array
-     * @param is
-     *            the input stream
      */
     private static byte[] getBytes(InputStream is)
             throws IOException {
@@ -725,10 +720,9 @@ public class URLClassLoader extends SecureClassLoader {
      * the read permission to the file is added to the permission collection.
      * Otherwise, connecting to and accepting connections from the URL is
      * granted.
-     * 
+     *
+     * @param codesource CodeSource
      * @return PermissionCollection
-     * @param codesource
-     *            CodeSource
      */
     @Override
     protected PermissionCollection getPermissions(final CodeSource codesource) {
@@ -770,7 +764,7 @@ public class URLClassLoader extends SecureClassLoader {
 
     /**
      * Answers the search list of this URLClassLoader
-     * 
+     *
      * @return java.net.URL[]
      */
     public URL[] getURLs() {
@@ -779,10 +773,9 @@ public class URLClassLoader extends SecureClassLoader {
 
     /**
      * Determines if the URL is pointing to a directory.
-     * 
+     *
+     * @param url java.net.URL
      * @return boolean
-     * @param url
-     *            java.net.URL
      */
     private static boolean isDirectory(URL url) {
         String file = url.getFile();
@@ -794,12 +787,11 @@ public class URLClassLoader extends SecureClassLoader {
      * <code>loadClass()</code> of the new instance will call the
      * SecurityManager's <code>checkPackageAccess()</code> before loading a
      * class.
-     * 
+     *
+     * @param urls java.net.URL[] a list of URLs that is passed to the new
+     *             URLClassloader
      * @return java.net.URLClassLoader the new instance of
      *         <code>URLClassLoader</code>
-     * @param urls
-     *            java.net.URL[] a list of URLs that is passed to the new
-     *            URLClassloader
      */
     public static URLClassLoader newInstance(final URL[] urls) {
         URLClassLoader sub = AccessController
@@ -816,18 +808,15 @@ public class URLClassLoader extends SecureClassLoader {
      * Answers an instance of <code>URLClassLoader</code>.
      * <code>loadClass()</code> of the new instance will call security
      * manager's <code>checkPackageAccess()</code> before loading a class.
-     * 
+     *
+     * @param urls     URL[] the list of URLs that is passed to the new
+     *                 <code>URLClassloader</code>
+     * @param parentCl ClassLoader the parent class loader that is passed to
+                       the new <code>URLClassloader</code>
      * @return URLClassLoader the new instance of <code>URLClassLoader</code>
-     * 
-     * @param urls
-     *            URL[] the list of URLs that is passed to the new
-     *            <code>URLClassloader</code>
-     * @param parentCl
-     *            ClassLoader the parent class loader that is passed to the new
-     *            <code>URLClassloader</code>
      */
     public static URLClassLoader newInstance(final URL[] urls,
-            final ClassLoader parentCl) {
+                                             final ClassLoader parentCl) {
         URLClassLoader sub = AccessController
                 .doPrivileged(new PrivilegedAction<URLClassLoader>() {
                     public URLClassLoader run() {
@@ -859,7 +848,7 @@ public class URLClassLoader extends SecureClassLoader {
      *             method doesn't allow creation of new ClassLoaders
      */
     public URLClassLoader(URL[] searchUrls, ClassLoader parent,
-            URLStreamHandlerFactory factory) {
+                          URLStreamHandlerFactory factory) {
         super(parent);
         // Required for pre-v1.2 security managers to work
         SecurityManager security = System.getSecurityManager();
@@ -885,14 +874,11 @@ public class URLClassLoader extends SecureClassLoader {
     /**
      * Locates and loads the specified class, searching this URLClassLoader's
      * list of URLS.
-     * 
+     *
+     * @param clsName String the name of the class.
      * @return Class the class that has been loaded.
-     * 
-     * @param clsName
-     *            String the name of the class.
-     * 
      * @throws java.lang.ClassNotFoundException
-     *             if the class cannot be loaded
+     *          if the class cannot be loaded
      */
     @Override
     protected Class<?> findClass(final String clsName)
@@ -913,7 +899,7 @@ public class URLClassLoader extends SecureClassLoader {
      * Answers an URL that will be checked if it contains the class or resource.
      * If the file component of the URL is not a directory, a Jar URL will be
      * created.
-     * 
+     *
      * @return java.net.URL a test URL
      */
     private URL createSearchURL(URL url) throws MalformedURLException {
@@ -938,10 +924,9 @@ public class URLClassLoader extends SecureClassLoader {
     /**
      * Answers a URL referencing the specified resource or null if no resource
      * could be found.
-     * 
+     *
+     * @param name java.lang.String the name of the requested resource
      * @return URL URL for the resource.
-     * @param name
-     *            java.lang.String the name of the requested resource
      */
     @Override
     public URL findResource(final String name) {
@@ -970,9 +955,8 @@ public class URLClassLoader extends SecureClassLoader {
      * Answers a URL among the given ones referencing the specified resource or
      * null if no resource could be found.
      *
+     * @param resName java.lang.String the name of the requested resource
      * @return URL URL for the resource.
-     * @param resName
-     *            java.lang.String the name of the requested resource
      */
     URL findResourceImpl(String resName) {
         int n = 0;
@@ -1050,20 +1034,20 @@ public class URLClassLoader extends SecureClassLoader {
         }
         try {
             URL jarURL = ((JarURLConnection) url
-                      .openConnection()).getJarFileURL();
+                    .openConnection()).getJarFileURL();
             JarURLConnection juc = (JarURLConnection) new URL(
                     "jar", "", //$NON-NLS-1$ //$NON-NLS-2$
                     jarURL.toExternalForm() + "!/").openConnection(); //$NON-NLS-1$
             JarFile jf = juc.getJarFile();
-            URLJarHandler jarH = new URLJarHandler(url,jarURL,jf,prefixName);
-            if(jarH.getIndex()==null) {
+            URLJarHandler jarH = new URLJarHandler(url, jarURL, jf, prefixName);
+            if (jarH.getIndex() == null) {
                 try {
                     Manifest manifest = jf.getManifest();
-                    if(manifest!=null) {
+                    if (manifest != null) {
                         String classpath = manifest.getMainAttributes().getValue(
-                            Attributes.Name.CLASS_PATH);
-                        if(classpath!=null) {
-                            searchList.addAll(0,getInternalURLs(url, classpath));
+                                Attributes.Name.CLASS_PATH);
+                        if (classpath != null) {
+                            searchList.addAll(0, getInternalURLs(url, classpath));
                         }
                     }
                 } catch (IOException e) {
@@ -1078,20 +1062,15 @@ public class URLClassLoader extends SecureClassLoader {
     /**
      * Define a new Package using information extracted from the specified
      * Manifest.
-     * 
-     * @param packageName
-     *            The name of the package
-     * @param manifest
-     *            The Manifest for the Package
-     * @param url
-     *            The code source for the Package
+     *
+     * @param packageName The name of the package
+     * @param manifest    The Manifest for the Package
+     * @param url         The code source for the Package
      * @return The Package created
-     * 
-     * @throws IllegalArgumentException
-     *             if the Package already exists
+     * @throws IllegalArgumentException if the Package already exists
      */
     protected Package definePackage(String packageName, Manifest manifest,
-            URL url) throws IllegalArgumentException {
+                                    URL url) throws IllegalArgumentException {
         Attributes mainAttributes = manifest.getMainAttributes();
         String dirName = packageName.replace('.', '/') + "/"; //$NON-NLS-1$
         Attributes packageAttributes = manifest.getAttributes(dirName);
@@ -1140,7 +1119,7 @@ public class URLClassLoader extends SecureClassLoader {
         return definePackage(packageName, specificationTitle,
                 specificationVersion, specificationVendor, implementationTitle,
                 implementationVersion, implementationVendor, isSealed(manifest,
-                        dirName) ? url : null);
+                dirName) ? url : null);
     }
 
     private boolean isSealed(Manifest manifest, String dirName) {
@@ -1159,25 +1138,22 @@ public class URLClassLoader extends SecureClassLoader {
 
     /**
      * returns URLs referenced in the string classpath.
-     * 
-     * @param root
-     *            the jar URL that classpath is related to
-     * @param classpath
-     *            the relative URLs separated by spaces
-     * 
+     *
+     * @param root      the jar URL that classpath is related to
+     * @param classpath the relative URLs separated by spaces
      * @return URL[] the URLs contained in the string classpath.
      */
     private ArrayList<URL> getInternalURLs(URL root, String classpath) {
         // Class-path attribute is composed of space-separated values.
         StringTokenizer tokenizer = new java.util.StringTokenizer(classpath);
         ArrayList<URL> addedURLs = new ArrayList<URL>();
-        String file = root.getFile();        
+        String file = root.getFile();
         int jarIndex = file.lastIndexOf("!/") - 1; //$NON-NLS-1$
         int index = file.lastIndexOf("/", jarIndex) + 1; //$NON-NLS-1$
         if (index == 0) {
-                        index = file.lastIndexOf(
-                                        System.getProperty("file.separator"), jarIndex) + 1; //$NON-NLS-1$
-                }
+            index = file.lastIndexOf(
+                    System.getProperty("file.separator"), jarIndex) + 1; //$NON-NLS-1$
+        }
         file = file.substring(0, index);
         String protocol = root.getProtocol();
         String host = root.getHost();
@@ -1188,7 +1164,7 @@ public class URLClassLoader extends SecureClassLoader {
                 try {
                     URL newURL = new URL(protocol, host, port, file + element
                             + "!/"); //$NON-NLS-1$
-                     addedURLs.add(newURL);
+                    addedURLs.add(newURL);
                 } catch (MalformedURLException e) {
                     // Nothing is added
                 }
@@ -1203,20 +1179,20 @@ public class URLClassLoader extends SecureClassLoader {
             return loadedClass;
         }
         String partialName = className.replace('.', '/');
-        final String classFileName = new StringBuilder(partialName ).append(".class").toString(); //$NON-NLS-1$
+        final String classFileName = new StringBuilder(partialName).append(".class").toString(); //$NON-NLS-1$
         String packageName = null;
         int position = partialName.lastIndexOf('/');
         if ((position = partialName.lastIndexOf('/')) != -1) {
             packageName = partialName.substring(0, position);
         }
         int n = 0;
-        while(true) {
+        while (true) {
             URLHandler handler = getHandler(n++);
-            if(handler == null) {
+            if (handler == null) {
                 break;
             }
-            Class<?> res = handler.findClass(packageName,classFileName,className);
-            if(res!=null) {
+            Class<?> res = handler.findClass(packageName, classFileName, className);
+            if (res != null) {
                 return res;
             }
         }
