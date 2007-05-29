@@ -79,7 +79,8 @@ public class CharArrayWriter extends Writer {
             return;
         }
 
-        char[] newbuf = new char[buf.length + (2 * i)];
+        int newLen = Math.max(2 * buf.length, count + i);
+        char[] newbuf = new char[newLen];
         System.arraycopy(buf, 0, newbuf, 0, count);
         buf = newbuf;
     }
