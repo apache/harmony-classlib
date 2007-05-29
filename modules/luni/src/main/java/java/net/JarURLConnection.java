@@ -54,10 +54,12 @@ public abstract class JarURLConnection extends URLConnection {
         if ((sepIdx = file.indexOf("!/")) < 0) { //$NON-NLS-1$
             throw new MalformedURLException();
         }
-        if (file.length() == sepIdx + 2) {
+        fileURL = new URL(url.getFile().substring(0,sepIdx)); //$NON-NLS-1$
+        sepIdx += 2;
+        if (file.length() == sepIdx) {
             return;
         }
-        entryName = file.substring(sepIdx + 2, file.length());
+        entryName = file.substring(sepIdx, file.length());
         if (null != url.getRef()) {
             entryName += "#" + url.getRef(); //$NON-NLS-1$
         }
@@ -149,15 +151,7 @@ public abstract class JarURLConnection extends URLConnection {
      * @return java.net.URL the URL of the JarFile.
      */
     public URL getJarFileURL() {
-        if (fileURL != null) {
-            return fileURL;
-        }
-        try {
-            return fileURL = new URL(url.getFile().substring(0,
-                    url.getFile().indexOf("!/"))); //$NON-NLS-1$
-        } catch (MalformedURLException e) {
-            return null;
-        }
+        return fileURL;
     }
 
     /**
