@@ -149,8 +149,12 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
      * @return true
      */
     @Override
-    public boolean add(E object) {
-        addElement(object);
+    public synchronized boolean add(E object) {
+        if (elementCount == elementData.length) {
+            growByOne();
+        }
+        elementData[elementCount++] = object;
+        modCount++;
         return true;
     }
 

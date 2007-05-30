@@ -22,15 +22,45 @@ import junit.framework.TestCase;
 
 public class VectorTest extends TestCase {
 
-	/**
-	 * @tests java.util.Vector#toString()
-	 */
-	public void test_toString() {
-		// Ensure toString works with self-referencing elements.
-		Vector<Object> vec = new Vector<Object>(3);
-		vec.add(null);
-		vec.add(new Object());
-		vec.add(vec);
-		assertNotNull(vec.toString());
-	}
+    class SubVector<E> extends Vector<E> {
+
+        private static final long serialVersionUID = 1L;
+
+        public SubVector() {
+            super();
+        }
+
+        public synchronized boolean add(E obj) {
+            super.addElement(obj);
+            return true;
+        }
+
+        public synchronized void addElement(E obj) {
+            super.add(obj);
+        }
+
+        /**
+         * @tests java.util.Vector#add(Object)
+         */
+        @SuppressWarnings("nls")
+        public void test_add() {
+            SubVector<String> subvector = new SubVector<String>();
+            subvector.add("foo");
+            subvector.addElement("bar");
+            assertEquals("Expected two elements in vector", 2, subvector.size());
+        }
+
+    }
+
+    /**
+     * @tests java.util.Vector#toString()
+     */
+    public void test_toString() {
+        // Ensure toString works with self-referencing elements.
+        Vector<Object> vec = new Vector<Object>(3);
+        vec.add(null);
+        vec.add(new Object());
+        vec.add(vec);
+        assertNotNull(vec.toString());
+    }
 }
