@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * HashMap is an implementation of Map. All optional operations are supported,
@@ -186,7 +187,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         public boolean contains(Object object) {
             if (object instanceof Map.Entry) {
                 Object key = ((Map.Entry<?, ?>) object).getKey();
-                Entry entry;
+                Entry<KT, VT> entry;
                 if (key == null) {
                     entry = associatedMap.findNullKeyEntry();
                 } else {
@@ -579,9 +580,22 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
 
-    void rehash(int capacity) {
-        int length = (capacity == 0 ? 1 : capacity << 1);
+    private static final int PRIMES[] = { 7, 37, 79, 163, 331, 673, 1361, 2729,
+            5471, 10949, 21911, 43853, 87719, 175447, 350899, 701819 };
 
+    private int nextLength(int capacity) {
+        int nextNumber = capacity << 1;
+        for (int i = 0; i < PRIMES.length; i++) {
+            if (nextNumber < PRIMES[i]) {
+                return PRIMES[i];
+            }
+        }
+        // This could overflow an int, but in practice never will.
+        return BigInteger.valueOf(nextNumber).nextProbablePrime().intValue();
+    }
+
+    void rehash(int capacity) {
+        int length = nextLength(capacity);
         Entry<K, V>[] newData = newElementArray(length);
         for (int i = 0; i < elementData.length; i++) {
             Entry<K, V> entry = elementData[i];
