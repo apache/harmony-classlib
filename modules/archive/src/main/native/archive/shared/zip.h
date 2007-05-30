@@ -24,6 +24,8 @@
 #include "hyzip.h"
 #endif /* HY_ZIP_API */
 
+#include "hymutex.h"
+
 typedef struct JCLZipFile
 {
   struct JCLZipFile *last;
@@ -36,6 +38,7 @@ typedef struct JCLZipFileLink
 {
   JCLZipFile *last;
   JCLZipFile *next;
+  MUTEX mutex;
 } JCLZipFileLink;
 
 #endif /* zip_h */

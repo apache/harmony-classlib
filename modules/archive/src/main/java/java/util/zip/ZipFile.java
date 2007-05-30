@@ -134,10 +134,10 @@ public class ZipFile implements ZipConstants {
 	/**
 	 * Closes this ZipFile.
 	 */
-	public void close() throws IOException {
-		if (fileName != null) {
+	public synchronized void close() throws IOException {
+		if (descriptor != -1 && fileName != null) {
 			// Only close initialized instances
-			closeZipImpl();
+			closeZipImpl(descriptor);
 			if ((mode & OPEN_DELETE) != 0) {
 				AccessController.doPrivileged(new PrivilegedAction<Object>() {
 					public Object run() {
@@ -147,7 +147,7 @@ public class ZipFile implements ZipConstants {
 				});
 			}
 		}
-}
+	}
 
 	/**
 	 * Answers all of the zip entries contained in this ZipFile.
@@ -204,7 +204,7 @@ public class ZipFile implements ZipConstants {
 
 	private synchronized native int openZipImpl(byte[] fileName1);
 
-	private synchronized native void closeZipImpl() throws IOException;
+	private native void closeZipImpl(long descriptor1) throws IOException;
 
 	private native ZipEntry getEntryImpl(long descriptor1, String entryName);
 
