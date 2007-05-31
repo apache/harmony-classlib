@@ -567,6 +567,7 @@ hyfile_read (struct HyPortLibrary * portLibrary, IDATA fd, void *buf,
     }
   if (bytesRead == 0)
     {
+      portLibrary->error_set_last_error (portLibrary, 0, 0);
       return -1;
     }
 
