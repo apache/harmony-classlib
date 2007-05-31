@@ -91,7 +91,9 @@ JNIEXPORT jarray JNICALL
 Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 					       jbyteArray zipName)
 {
-#define MAX_PATH	1024
+
+#define MAX_PATH_J	1024
+
 #define RESULT_BUF_SIZE 256
 
   PORT_ACCESS_FROM_ENV (env);
@@ -111,8 +113,8 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
   const UDATA metaInfSize = 10;	/* 10 == strlen("META-INF/") + 1 */
   jobjectArray result = NULL;
   char *nameBuf, *newNameBuf, *oldNameBuf = NULL;
-  char startNameBuf[MAX_PATH];
-  UDATA nameBufSize = MAX_PATH;
+  char startNameBuf[MAX_PATH_J];
+  UDATA nameBufSize = MAX_PATH_J;
   IDATA rc;
 #ifdef HY_ZIP_API
   HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
@@ -225,6 +227,6 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
     }
   return NULL;
 
-#undef MAX_PATH
+#undef MAX_PATH_J
 #undef RESULT_BUF_SIZE
 }
