@@ -505,7 +505,7 @@ public interface Context {
      * is a name which is relative to the specified parent context names.
      * 
      * @param n     a <code>Name</code>, may not be null
-     * @param pfx   a <code>Name</code> serves as perfix, may not be null
+     * @param pfx   a <code>Name</code> serves as prefix, may not be null
      * @return      the combined name
      * @throws NamingException if an error occurs.
      */
