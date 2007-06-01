@@ -495,6 +495,57 @@ accordance with the licensing terms for RFC3280, the license is included here :
    MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 
 
+Portions of Apache Harmony reference RFC 3161 - Internet X.509 Public Key 
+Infrastructure Time-Stamp Protocol (TSP). Portions of RFC 3161 are included 
+in Harmony Javadoc for reference, and in accordance with the licensing terms 
+for RFC 3161, the full copyright statement is here:
+
+
+   Copyright (C) The Internet Society (2001).  All Rights Reserved.
+
+   This document and translations of it may be copied and furnished to
+   others, and derivative works that comment on or otherwise explain it
+   or assist in its implementation may be prepared, copied, published
+   and distributed, in whole or in part, without restriction of any
+   kind, provided that the above copyright notice and this paragraph are
+   included on all such copies and derivative works.  However, this
+   document itself may not be modified in any way, such as by removing
+   the copyright notice or references to the Internet Society or other
+   Internet organizations, except as needed for the purpose of
+   developing Internet standards in which case the procedures for
+   copyrights defined in the Internet Standards process must be
+   followed, or as required to translate it into languages other than
+   English.
+
+   The limited permissions granted above are perpetual and will not be
+   revoked by the Internet Society or its successors or assigns.
+
+   This document and the information contained herein is provided on an
+   "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+   TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+   HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+
+===============================================================================
+===============================================================================
+
+
+Notice for RSA Public-Key Cryptography Standards 
+================================================
+
+Portions of Apache Harmony reference RSA Public-Key Cryptography Standards:
+PKCS#7, PKCS#8 and PKSC#10. Portions of these standards are included 
+in Harmony Javadoc for reference, and in accordance with the licensing terms 
+for PKCS#7, PKCS#8 and PKSC#10, the full copyright statement is here:
+
+Copyright © 1991-1993 RSA Laboratories, a division of RSA Data Security, Inc.
+License to copy this document is granted provided that it is identified as
+"RSA Data Security, Inc. Public-Key Cryptography Standards (PKCS)" in all
+material mentioning or referencing this document.
+
+
 ===============================================================================
 ===============================================================================
 
@@ -548,5 +599,6 @@ Source code for the Eclipse JDT Core Batch Compiler can be found at:
 
 Navigate to the version of ECJ used in this distribution, and the source is
 provided in a ZIP file in the section titled "JDT Core Batch Compiler".
+
 
 

@@ -32,40 +32,9 @@ import java.util.Map.Entry;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
 /**
- * Provides Algorithm Name to OID
- * and OID to Algorithm Name mappings.
- * Some known mappings are hardcoded.
- * Tries to obtain additional mappings
- * from installed providers during initialization.
- * 
- * Hardcoded mappings
- * (source: http://asn1.elibel.tm.fr):
- * 
- * 1.2.840.10040.4.1 -> DSA
- * 
- * 1.2.840.113549.1.1.1 -> RSA
- * 
- * 1.2.840.113549.1.3.1 -> DiffieHellman
- * 
- * 1.2.840.113549.1.5.3 -> PBEWithMD5AndDES
- * 
- * 1.2.840.113549.1.12.1.3 -> pbeWithSHAAnd3-KeyTripleDES-CBC
- * 1.2.840.113549.1.12.1.3 -> PBEWithSHA1AndDESede
- * 1.2.840.113549.1.12.1.3 -> PBEWithSHA1AndTripleDES
- * 
- * 1.2.840.113549.1.12.1.6 -> pbeWithSHAAnd40BitRC2-CBC
- * 1.2.840.113549.1.12.1.6 -> PBEWithSHA1AndRC2_40
- * 
- * 1.2.840.113549.3.2 -> RC2-CBC
- * 1.2.840.113549.3.3 -> RC2-EBC
- * 1.2.840.113549.3.4 -> RC4
- * 1.2.840.113549.3.5 -> RC4WithMAC
- * 1.2.840.113549.3.6 -> DESx-CBC
- * 1.2.840.113549.3.7 -> TripleDES-CBC
- * 1.2.840.113549.3.8 -> rc5CBC
- * 1.2.840.113549.3.9 -> RC5-CBC
- * 1.2.840.113549.3.10 -> DESCDMF (CDMFCBCPad)
- *  
+ * Provides Algorithm Name to OID and OID to Algorithm Name mappings. Some known
+ * mappings are hardcoded. Tries to obtain additional mappings from installed
+ * providers during initialization.
  */
 public class AlgNameMapper {
     
