@@ -188,6 +188,11 @@
     </condition>
     <property name="exe.suffix" value="" />
 
+    <condition property="shlib.prefix" value="">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="shlib.prefix" value="lib" />
+
     <condition property="shlib.suffix" value=".dll">
         <isset property="is.windows"/>
     </condition>
@@ -343,6 +348,7 @@ Harmony platform properties:
   is.s390x = ${is.s390x}
 
   exe.suffix = ${exe.suffix}
+  shlib.prefix = ${shlib.prefix}
   shlib.suffix = ${shlib.suffix}
   make.command = ${make.command}
 

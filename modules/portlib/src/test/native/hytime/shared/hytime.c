@@ -25,6 +25,9 @@ int main (int argc, char **argv, char **envp)
 {
   HyPortLibrary hyportLibrary;
   HyPortLibraryVersion portLibraryVersion;
+#ifdef HY_NO_THR
+  HyThreadLibrary *privateThreadLibrary;
+#endif
   UDATA msec, usec;
   I_64 millis;
   U_64 hires, hires2, freq, delta;
@@ -40,6 +43,10 @@ int main (int argc, char **argv, char **envp)
   }
 
   printf("  portlib initialized\n");
+
+#ifdef HY_NO_THR
+  privateThreadLibrary = hyportLibrary.port_get_thread_library(&hyportLibrary);
+#endif
 
   msec = hyportLibrary.time_msec_clock(&hyportLibrary);
   printf("msec = %u\n", msec);
