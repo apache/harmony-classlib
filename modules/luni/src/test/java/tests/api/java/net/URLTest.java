@@ -36,6 +36,7 @@ import java.net.Proxy.Type;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.image.ImageProducer;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_Jetty;
@@ -856,6 +857,26 @@ public class URLTest extends junit.framework.TestCase {
 			// Support_Resources.deleteTempFolder(resources);
 		}
 	}
+
+    // Regression test for HARMONY-1718
+    public void test_getContent1718() throws IOException {
+        URL url;
+        
+        url = Support_Resources.class.getResource(
+                Support_Resources.RESOURCE_PACKAGE + "Harmony.GIF");
+        assertTrue("Returned object doesn't implement ImageProducer interface",
+                url.getContent() instanceof ImageProducer);      
+
+        url = Support_Resources.class.getResource(
+                Support_Resources.RESOURCE_PACKAGE + "Harmony.jpg");
+        assertTrue("Returned object doesn't implement ImageProducer interface",
+                url.getContent() instanceof ImageProducer);      
+
+        url = Support_Resources.class.getResource(
+                Support_Resources.RESOURCE_PACKAGE + "Harmony.png");
+        assertTrue("Returned object doesn't implement ImageProducer interface",
+                url.getContent() instanceof ImageProducer);      
+    }
 
     /**
      * @tests java.net.URL#getContent(class[])
