@@ -27,24 +27,20 @@ import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
  * A <code>StreamHandler</code> object writes log messages to an output
- * stream, that is, objects of the class <code>java.io.OutputStream</code>.
+ * stream, that is, an object of type <code>java.io.OutputStream</code>.
  * <p>
- * A <code>StreamHandler</code> object reads the following properties from the
- * log manager to initialize itself:
+ * A <code>StreamHandler</code> reads the following properties from the log
+ * manager to initialize itself:
  * <ul>
- * <li>java.util.logging.StreamHandler.level specifies the logging level,
- * defaults to <code>Level.INFO</code> if this property is not found or has an
- * invalid value;
- * <li>java.util.logging.StreamHandler.filter specifies the name of the filter
- * class to be associated with this handler, defaults to <code>null</code> if
- * this property is not found or has an invalid value;
- * <li>java.util.logging.StreamHandler.formatter specifies the name of the
- * formatter class to be associated with this handler, defaults to
- * <code>java.util.logging.SimpleFormatter</code> if this property is not
- * found or has an invalid value;
- * <li>java.util.logging.StreamHandler.encoding specifies the encoding this
- * handler will use to encode log messages, defaults to <code>null</code> if
- * this property is not found or has an invalid value.
+ * <li>java.util.logging.StreamHandler.encoding - the name of the character set
+ * encoding. Default is the encoding used by the current platform.</li>
+ * <li>java.util.logging.StreamHandler.filter - the name of the
+ * <code>Filter</code> class. No <code>Filter</code> is used by default.</li>
+ * <li>java.util.logging.StreamHandler.formatter - the name of the
+ * <code>Formatter</code> class. Default is
+ * <code>java.util.logging.SimpleFormatter</code>.</li>
+ * <li>java.util.logging.StreamHandler.level - the log level for this
+ * <code>Handler</code>. Default is <code>Level.INFO</code>.</li>
  * </ul>
  * </p>
  * <p>
