@@ -236,7 +236,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ===============================================================================
 ===============================================================================
 
-License Notice for MX4J 3.0.1.
+License Notice for MX4J 3.0.2.
 ==============================
 
 The MX4J License, Version 1.0
@@ -544,22 +544,6 @@ Copyright © 1991-1993 RSA Laboratories, a division of RSA Data Security, Inc.
 License to copy this document is granted provided that it is identified as
 "RSA Data Security, Inc. Public-Key Cryptography Standards (PKCS)" in all
 material mentioning or referencing this document.
-
-
-===============================================================================
-===============================================================================
-
-
-Notice for MX4J 3.0.1
-=====================
-
-Copyright (c) 2001-2004 by the MX4J contributors.  All rights reserved.
-
-This product includes software developed by the MX4J project
-(http://mx4j.sourceforge.net).
-
-The license terms for MX4J are available at
-http://mx4j.sourceforge.net/docs/ch01s06.html
 
 
 ===============================================================================
