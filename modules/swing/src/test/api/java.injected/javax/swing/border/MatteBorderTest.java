@@ -85,10 +85,20 @@ public class MatteBorderTest extends SwingTestCase {
     public void testMatteBorderIcon() {
         Icon icon = new ImageIcon(new BufferedImage(20, 20, BufferedImage.TYPE_BYTE_GRAY));
         MatteBorder border = new MatteBorder(icon);
+        Insets insets;
+
         assertEquals("icon value coinsides", icon, border.getTileIcon());
         icon = new ImageIcon(new BufferedImage(30, 40, BufferedImage.TYPE_4BYTE_ABGR));
         border = new MatteBorder(icon);
         assertEquals("icon value coinsides", icon, border.getTileIcon());
+        
+        //Regression test for HARMONY-2589
+        border = new MatteBorder(null);
+        insets = border.getBorderInsets();
+        assertEquals(-1, insets.top);
+        assertEquals(-1, insets.bottom);
+        assertEquals(-1, insets.left);
+        assertEquals(-1, insets.right);
     }
 
     /*
@@ -307,5 +317,5 @@ public class MatteBorderTest extends SwingTestCase {
         color = Color.YELLOW;
         border = new MatteBorder(top, left, bottom, right, color);
         assertEquals("Colors coinside ", color, border.getMatteColor());
-    }
+    }    
 }

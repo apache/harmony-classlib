@@ -46,10 +46,12 @@ public class MatteBorder extends EmptyBorder {
     }
 
     public MatteBorder(final Icon tileIcon) {
-        super(tileIcon.getIconHeight(), tileIcon.getIconWidth());
-
-        this.tileIcon = tileIcon;
-    }
+		// null vervfication has been added according to HARMONY-2589
+		super((tileIcon == null) ? -1 : tileIcon.getIconHeight(),
+				(tileIcon == null) ? -1 : tileIcon.getIconWidth());
+		
+		this.tileIcon=tileIcon;
+	}
 
     public MatteBorder(final int top, final int left, final int bottom, final int right, final Icon tileIcon) {
         super(top, left, bottom, right);
