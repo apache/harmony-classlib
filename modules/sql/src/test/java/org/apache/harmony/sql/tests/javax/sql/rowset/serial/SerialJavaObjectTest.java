@@ -20,6 +20,7 @@ package org.apache.harmony.sql.tests.javax.sql.rowset.serial;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import javax.sql.rowset.serial.SerialException;
 import javax.sql.rowset.serial.SerialJavaObject;
 
 import junit.framework.TestCase;
@@ -27,24 +28,32 @@ import junit.framework.TestCase;
 public class SerialJavaObjectTest extends TestCase {
 	public void test_Constructor() throws Exception {
 		TransientFieldClass tfc = new TransientFieldClass();
-		SerialJavaObject sjo = new SerialJavaObject(tfc);
-		assertSame(tfc, sjo.getObject());
-		Arrays.equals(sjo.getFields(), tfc.getClass().getFields());
-		
-		NonSerialiableClass nsc = new NonSerialiableClass();
-		sjo = new SerialJavaObject(nsc);
-		assertSame(nsc, sjo.getObject());
-		Arrays.equals(sjo.getFields(), nsc.getClass().getFields());
-		
-		StaticFieldClass sfc = new StaticFieldClass();
-		sjo = new SerialJavaObject(sfc);
-		assertSame(sfc, sjo.getObject());
-		Arrays.equals(sjo.getFields(), sfc.getClass().getFields());
+        SerialJavaObject sjo;
+        try {
+            sjo = new SerialJavaObject(tfc);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // excepted
+        }
+        try {
+            NonSerialiableClass nsc = new NonSerialiableClass();
+            sjo = new SerialJavaObject(nsc);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // excepted
+        }		
 		
 		SerializableClass sc = new SerializableClass();
 		sjo = new SerialJavaObject(sc);
 		assertSame(sc, sjo.getObject());
 		Arrays.equals(sjo.getFields(), sc.getClass().getFields());
+        
+        try {
+            new SerialJavaObject(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
 	}
 	
 	static class TransientFieldClass {

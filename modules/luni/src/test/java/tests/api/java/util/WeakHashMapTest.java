@@ -297,6 +297,40 @@ public class WeakHashMapTest extends junit.framework.TestCase {
 				.size());
 	}
 
+    /**
+     * Regression test for HARMONY-3883
+     * @tests java.util.WeakHashMap#keySet()
+     */
+    public void test_keySet_hasNext() {
+        WeakHashMap map = new WeakHashMap();
+        ConstantHashClass cl = new ConstantHashClass(2);
+        map.put(new ConstantHashClass(1), null);
+        map.put(cl, null);
+        map.put(new ConstantHashClass(3), null);
+        Iterator iter = map.keySet().iterator();
+        iter.next();
+        iter.next();
+        System.gc();
+        assertFalse("Wrong hasNext() value", iter.hasNext());
+    }
+
+    static class ConstantHashClass {
+        private int id = 0;
+
+        public ConstantHashClass(int id) {
+            this.id = id;
+        }
+
+        public int hashCode() {
+            return 0;
+        }
+
+        public String toString() {
+            return "ConstantHashClass[id=" + id + "]";
+        }
+    }
+
+
 	/**
 	 * @tests java.util.WeakHashMap#values()
 	 */

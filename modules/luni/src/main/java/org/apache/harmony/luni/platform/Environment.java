@@ -42,7 +42,9 @@ public class Environment {
             }
             String[] envStrings = new String(bytes).split("\0");
             for (int i = 0; i < envStrings.length; i++) {
-                int separator = envStrings[i].indexOf("=");
+                // some "hidden" variable names on Windows start with "="
+                // so we search "=" from the second character
+                int separator = envStrings[i].indexOf("=", 1);
                 newEnvMap.put(envStrings[i].substring(0, separator),
                         envStrings[i].substring(separator + 1));
             }

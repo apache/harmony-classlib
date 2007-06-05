@@ -24,12 +24,15 @@ CFLAGS += -fpic
 BUILDFILES = \
 	../shared/instrument.o ../shared/inst_agt.o 
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(LIBPATH)libvmi.so
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a 
+endif
 
-DLLNAME = ../libhyinstrument.so
+MDLLIBFILES += \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+
+DLLNAME = ../libhyinstrument$(HY_SHLIB_SUFFIX)
 EXPNAME = HYINSTRUMENT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

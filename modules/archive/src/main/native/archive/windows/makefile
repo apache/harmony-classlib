@@ -36,10 +36,14 @@ VIRTFILES = $(LIBBASE).res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
+!IF "$(HY_ZIP_API)" != "true"
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX)
+!ENDIF
+
 MDLLIBFILES = $(MDLLIBFILES) \
-	$(LIBPATH)hyzip.lib \
-        $(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
-	$(LIBPATH)vmi.lib
+        $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) \
+	$(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
+	$(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x13100000
 
 !include <$(HY_HDK)\build\make\rules.mak>

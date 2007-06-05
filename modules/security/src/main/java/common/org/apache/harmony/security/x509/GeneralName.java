@@ -328,6 +328,24 @@ public class GeneralName {
         return false;
     }
     
+	public int hashCode() {
+		switch(tag) {
+	        case RFC822_NAME:
+	        case DNS_NAME:
+	        case UR_ID:
+	        case REG_ID:
+	        case IP_ADDR: 
+	            return name.hashCode();
+	        case DIR_NAME: 
+	        case X400_ADDR:
+	        case OTHER_NAME:
+	        case EDIP_NAME:
+	            return getEncoded().hashCode();
+	        default:
+	            return super.hashCode();
+		}
+	}
+    
     /**
      * Checks if the other general name is acceptable by this object.
      * The name is acceptable if it has the same type name and its
@@ -585,7 +603,7 @@ public class GeneralName {
             if (ch == '.') {
                 // check the end of the previous label, it should not
                 // be '-' sign
-                if (bytes[i-i] == '-') {
+                if (bytes[i-1] == '-') {
                     throw new IOException(
                             Messages.getString("security.186", dns)); //$NON-NLS-1$
                 }

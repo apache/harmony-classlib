@@ -22,8 +22,6 @@
 #include "hyport.h"
 #include "libhlp.h"
 
-#define HY_PATH_SLASH DIR_SEPARATOR
-
 I_32
 main_appendToClassPath (HyPortLibrary * portLib, U_16 sep,
                         HyStringBuffer ** classPath, char *toAppend)
@@ -106,20 +104,20 @@ main_initializeJavaHome (HyPortLibrary * portLib,
   if ((strlen (javaHome) > 2) && (javaHome[1] == ':'))
     {
       javaHomeModifiablePart = javaHome + 2;
-      if (javaHome[2] == HY_PATH_SLASH)
+      if (javaHome[2] == DIR_SEPARATOR)
         javaHomeModifiablePart++;
     }
 #endif
 
 #if defined(WIN32)
   /* Make sure we don't modify the root of a UNC pathname. */
-  if ((strlen (javaHome) > 2) && (javaHome[0] == HY_PATH_SLASH)
-      && (javaHome[1] == HY_PATH_SLASH))
+  if ((strlen (javaHome) > 2) && (javaHome[0] == DIR_SEPARATOR)
+      && (javaHome[1] == DIR_SEPARATOR))
     {
       javaHomeModifiablePart = javaHome + 2;
       /* skip over the machine name */
       while (*javaHomeModifiablePart
-             && (*javaHomeModifiablePart != HY_PATH_SLASH))
+             && (*javaHomeModifiablePart != DIR_SEPARATOR))
         {
           javaHomeModifiablePart++;
         }
@@ -127,14 +125,14 @@ main_initializeJavaHome (HyPortLibrary * portLib,
         javaHomeModifiablePart++;
       /* skip over the share name */
       while (*javaHomeModifiablePart
-             && (*javaHomeModifiablePart != HY_PATH_SLASH))
+             && (*javaHomeModifiablePart != DIR_SEPARATOR))
         {
           javaHomeModifiablePart++;
         }
     }
 #endif
 
-  if ((javaHomeModifiablePart == javaHome) && javaHome[0] == HY_PATH_SLASH)
+  if ((javaHomeModifiablePart == javaHome) && javaHome[0] == DIR_SEPARATOR)
     {
       /* make sure we don't modify a root slash. */
       javaHomeModifiablePart++;
@@ -142,7 +140,7 @@ main_initializeJavaHome (HyPortLibrary * portLib,
 
   /* Note: if sysinfo_get_executable_name claims we were invoked from a root directory, */
   /* then this code will return that root directory for java.home also. */
-  p = strrchr (javaHomeModifiablePart, HY_PATH_SLASH);
+  p = strrchr (javaHomeModifiablePart, DIR_SEPARATOR);
   if (!p)
     {
       javaHomeModifiablePart[0] = '\0'; /* chop off whole thing! */
@@ -150,7 +148,7 @@ main_initializeJavaHome (HyPortLibrary * portLib,
   else
     {
       p[0] = '\0';              /* chop off trailing slash and executable name. */
-      p = strrchr (javaHomeModifiablePart, HY_PATH_SLASH);
+      p = strrchr (javaHomeModifiablePart, DIR_SEPARATOR);
       if (!p)
         {
           javaHomeModifiablePart[0] = '\0';     /* chop off the rest */
@@ -173,12 +171,6 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
                                 HyStringBuffer ** finalJavaLibraryPath,
                                 char *argv0)
 {
-#if defined(WIN32)
-#define ENV_PATH "PATH"
-#else
-#define ENV_PATH "LD_LIBRARY_PATH"
-#endif
-
   HyStringBuffer *javaLibraryPath = NULL;
   char *exeName = NULL;
   IDATA rc = -1;
@@ -197,7 +189,7 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
     {
       goto done;
     }
-  p = strrchr (exeName, HY_PATH_SLASH);
+  p = strrchr (exeName, DIR_SEPARATOR);
   if (p)
     {
       p[1] = '\0';
@@ -208,7 +200,7 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
       exeName = NULL;
     }
 
-  envSize = hysysinfo_get_env (ENV_PATH, NULL, 0);
+  envSize = hysysinfo_get_env (LIBPATH_ENV_VAR, NULL, 0);
   if (envSize > 0)
     {
       if (envSize >= ENV_BUFFER_SIZE)
@@ -216,12 +208,12 @@ main_initializeJavaLibraryPath (HyPortLibrary * portLib,
           envResult = hymem_allocate_memory (envSize + 1);
           if (!envResult)
             goto done;
-          hysysinfo_get_env (ENV_PATH, envResult, envSize);
+          hysysinfo_get_env (LIBPATH_ENV_VAR, envResult, envSize);
         }
       else
         {
           envSize = -1;         /* make it -1 so we don't free the buffer */
-          hysysinfo_get_env (ENV_PATH, envBuffer, ENV_BUFFER_SIZE);
+          hysysinfo_get_env (LIBPATH_ENV_VAR, envBuffer, ENV_BUFFER_SIZE);
           envResult = envBuffer;
         }
     }

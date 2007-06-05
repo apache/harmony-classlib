@@ -114,23 +114,12 @@ abstract class ImageDecoder {
     }
 
     /**
-     * Stops the decoding by interrupting the current decoding thread.
      * Used when all consumers are removed and there's no more need to
      * run the decoder.
      */
     public void terminate() {
         src.lockDecoder(this);
         closeStream();
-
-        AccessController.doPrivileged(
-                new PrivilegedAction<Void>() {
-                    public Void run() {
-                        Thread.currentThread().interrupt();
-                        return null;
-                    }
-                }
-        );
-
         terminated = true;
     }
 

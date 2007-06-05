@@ -752,7 +752,7 @@ public class RegistryContext implements Context, Referenceable {
      *          if <code>csf</code> is not <code>null</code>.
      *
      * @param   csf
-     *          Client-side socket factory used to make connections to the
+     *          RMIClientSocketFactory that is used to create socket connections to the
      *          registry. If <code>null</code>, default socket factory is used.
      *          See
      *          {@link LocateRegistry#getRegistry(String, int, RMIClientSocketFactory)}.

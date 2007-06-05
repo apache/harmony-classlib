@@ -20,10 +20,10 @@ package org.apache.harmony.archive.util;
 import junit.framework.TestCase;
 
 public class UtilTest extends TestCase {
+    String s1 = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
+    String s2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //$NON-NLS-1$
 
     public void testASCIIIgnoreCaseRegionMatches() {
-        String s1 = "abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
-        String s2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //$NON-NLS-1$
         for (int i = 0; i < s1.length(); i++) {
             assertTrue(Util.ASCIIIgnoreCaseRegionMatches(s1, i, s2, i, s1
                     .length()
@@ -61,6 +61,10 @@ public class UtilTest extends TestCase {
             String cString = "" + (char) i; //$NON-NLS-1$
             assertEquals(cString, Util.toASCIIUpperCase(cString));
         }
+    }
+    
+    public void testEqualsIgnoreCase(){
+        assertTrue(Util.equalsIgnoreCase(s1, s2));
     }
 
 }

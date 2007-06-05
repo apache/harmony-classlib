@@ -100,18 +100,16 @@ abstract class AbstractMemorySpy implements IMemorySpy {
 		AddressWrapper wrapper;
 		synchronized (this) {
 			PlatformAddress shadow = refToShadow.remove(ref);
-			wrapper = memoryInUse.remove(shadow);
+			wrapper = memoryInUse.get(shadow);
+            if (wrapper != null) {
+                // There is a leak if we were not auto-freeing this memory.
+                if (!wrapper.autoFree) {
+                    System.err
+                            .println("Memory Spy! Fixed memory leak by freeing " + wrapper.shadow); //$NON-NLS-1$
+                }
+                wrapper.shadow.free();
+            }
 		}
         ref.clear();
-		if (wrapper != null) {
-			// There is a leak if we were not auto-freeing this memory.
-			if (!wrapper.autoFree) {
-				System.err
-						.println("Memory Spy! Fixed memory leak by freeing " + wrapper.shadow); //$NON-NLS-1$
-			}
-			memoryInUse.put(wrapper.shadow, wrapper);
-			wrapper.shadow.free();
-		}
-
 	}
 }

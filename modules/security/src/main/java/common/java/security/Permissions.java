@@ -234,9 +234,10 @@ public final class Permissions extends PermissionCollection implements
         Map perms = (Map)fields.get("perms", null); //$NON-NLS-1$
         klasses = new HashMap();
         synchronized (klasses) {
-            for (Iterator iter = perms.keySet().iterator(); iter.hasNext();) {
-                Class key = (Class)iter.next();
-                PermissionCollection pc = (PermissionCollection)perms.get(key);
+            for (Iterator iter = perms.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry entry = (Map.Entry)  iter.next();
+                Class key = (Class) entry.getKey();
+                PermissionCollection pc = (PermissionCollection) entry.getValue();
                 if (key != pc.elements().nextElement().getClass()) {
                     throw new InvalidObjectException(Messages.getString("security.22")); //$NON-NLS-1$
                 }

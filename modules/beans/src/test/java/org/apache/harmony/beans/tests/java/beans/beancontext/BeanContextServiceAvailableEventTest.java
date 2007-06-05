@@ -19,6 +19,7 @@ package org.apache.harmony.beans.tests.java.beans.beancontext;
 
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextServiceAvailableEvent;
+import java.beans.beancontext.BeanContextServiceRevokedEvent;
 import java.beans.beancontext.BeanContextServices;
 import java.io.IOException;
 import java.io.Serializable;
@@ -29,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextDelegateS;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextServices;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -124,17 +127,18 @@ public class BeanContextServiceAvailableEventTest extends TestCase {
                         .getDeserilizedObject(event));
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        BeanContextServiceAvailableEvent event = new BeanContextServiceAvailableEvent(
-                new MockBeanContextServices(), ArrayList.class);
-        event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
 
-        assertEqualsSerially(
-                event,
-                (BeanContextServiceAvailableEvent) SerializationTester
-                        .readObject(event,
-                                "serialization/java/beans/beancontext/BeanContextServiceAvailableEvent.ser"));
-    }
+     public void testSerialization_Compatibility() throws Exception {
+         BeanContextServiceAvailableEvent event = new BeanContextServiceAvailableEvent(
+                 new MockBeanContextServices(), ArrayList.class);
+         event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
+         SerializationTest.verifyGolden(this, event, new SerializableAssert(){
+             public void assertDeserialized(Serializable orig, Serializable ser) {
+                 assertEqualsSerially((BeanContextServiceAvailableEvent) orig,
+                         (BeanContextServiceAvailableEvent) ser);
+             }
+         });
+     }
 
     private void assertEqualsSerially(BeanContextServiceAvailableEvent orig,
             BeanContextServiceAvailableEvent ser) {

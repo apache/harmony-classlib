@@ -488,7 +488,7 @@ extern "C"
   void throwJavaZIOException PROTOTYPE ((JNIEnv * env, const char *message));
   void throwNewInternalError PROTOTYPE ((JNIEnv * env, const char *message));
   JNIEXPORT void JNICALL Java_java_util_zip_ZipFile_closeZipImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv));
+    PROTOTYPE ((JNIEnv * env, jobject recv, jlong descriptor));
   JNIEXPORT jobject JNICALL Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong descriptor,
                 jlong nextEntry));

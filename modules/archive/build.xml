@@ -43,17 +43,22 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
-    <target name="copy-native-includes" depends="overlay-oss">
+    <target name="copy-native-includes" depends="overlay-oss, copy-zipsup-include">
         <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.archive.src.main.native}/include/shared">
-                <include name="zipsup.h" />
-            </fileset>
             <fileset dir="${hy.archive.src.main.native}/zlib_dist">
                 <include name="zlib.h" />
                 <include name="zconf.h" />
             </fileset>
         </copy>
     </target>
+	
+	<target name="copy-zipsup-include" if="hy.skip.zip.api">
+        <copy todir="${hy.hdk}/include" overwrite="yes">
+            <fileset dir="${hy.archive.src.main.native}/include/shared">
+                <include name="zipsup.h" />
+            </fileset>
+        </copy>
+	</target>
     
     <target name="overlay-oss">
         <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
@@ -66,9 +71,13 @@
     </target>
     
     <!-- Build native code -->
-    <target name="build-native" >
+    <target name="build-native" depends="-build-native-zip,-build-native" />
+
+    <target name="-build-native-zip" if="hy.skip.zip.api">
         <make dir="${hy.archive.src.main.native}/zip/${hy.os.family}" />
+    </target>
         
+    <target name="-build-native">
         <make dir="${hy.archive.src.main.native}/zlib/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.archive.src.main.native}/zlib">

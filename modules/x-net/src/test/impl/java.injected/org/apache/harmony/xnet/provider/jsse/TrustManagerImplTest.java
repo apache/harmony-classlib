@@ -75,7 +75,7 @@ public class TrustManagerImplTest extends TestCase {
         ks.load(null, null);
 
         TrustManagerImpl tm = new TrustManagerImpl(ks);
-        assertEquals(tm.getAcceptedIssuers().length, 0);
+        assertEquals(0, tm.getAcceptedIssuers().length);
         checkTrustManager(tm);
     }
 
@@ -83,7 +83,7 @@ public class TrustManagerImplTest extends TestCase {
         KeyStore ks = JSSETestData.getKeyStore();
 
         TrustManagerImpl tm = new TrustManagerImpl(ks);
-        assertEquals(tm.getAcceptedIssuers().length, 1);
+        assertEquals(1, tm.getAcceptedIssuers().length);
         checkTrustManager(tm);
     }
 

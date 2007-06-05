@@ -59,16 +59,16 @@ public class AudioSystemTest extends TestCase {
 
         Mixer.Info[] minfos = AudioSystem.getMixerInfo();
         assertTrue(minfos.length > 0);
-        assertEquals(minfos[0].getName(), "NAME");
-        assertEquals(minfos[0].getVersion(), "VERSION");
+        assertEquals("NAME", minfos[0].getName());
+        assertEquals("VERSION", minfos[0].getVersion());
 
         assertTrue(AudioSystem.getMixer(null) != null);
 
         Mixer mix = AudioSystem.getMixer(minfos[0]);
-        assertEquals(mix.getClass().getName(),
-                "org.apache.harmony.sound.testProvider.MyMixer");
+        assertEquals("org.apache.harmony.sound.testProvider.MyMixer",
+                mix.getClass().getName());
         Line.Info[] mli = mix.getSourceLineInfo();
-        assertEquals(mli.length, 4);
+        assertEquals(4, mli.length);
 
         Line.Info[] infos = AudioSystem.getSourceLineInfo(mli[0]);
         ok = false;
@@ -149,23 +149,25 @@ public class AudioSystemTest extends TestCase {
 
     public void testGetLine() throws Exception {
 
-        assertEquals(AudioSystem.getLine(
+        assertEquals("org.apache.harmony.sound.testProvider.myClip",
+                AudioSystem.getLine(
                 new Line.Info(javax.sound.sampled.Clip.class)).getClass()
-                .getName(), "org.apache.harmony.sound.testProvider.myClip");
-        assertEquals(AudioSystem.getLine(
+                .getName());
+        assertEquals("org.apache.harmony.sound.testProvider.mySourceDataLine",
+                AudioSystem.getLine(
                 new Line.Info(javax.sound.sampled.SourceDataLine.class))
-                .getClass().getName(),
-                "org.apache.harmony.sound.testProvider.mySourceDataLine");
-        assertEquals(AudioSystem.getLine(
+                .getClass().getName());
+        assertEquals("org.apache.harmony.sound.testProvider.myTargetDataLine",
+                AudioSystem.getLine(
                 new Line.Info(javax.sound.sampled.TargetDataLine.class))
-                .getClass().getName(),
-                "org.apache.harmony.sound.testProvider.myTargetDataLine");
-        assertEquals(AudioSystem.getLine(
+                .getClass().getName());
+        assertEquals("org.apache.harmony.sound.testProvider.myPort",
+                AudioSystem.getLine(
                 new Line.Info(javax.sound.sampled.Port.class)).getClass()
-                .getName(), "org.apache.harmony.sound.testProvider.myPort");
+                .getName());
 
-        assertEquals(AudioSystem.getClip().getClass().getName(),
-                "org.apache.harmony.sound.testProvider.myClip");
+        assertEquals("org.apache.harmony.sound.testProvider.myClip",
+                     AudioSystem.getClip().getClass().getName());
 
     }
 }

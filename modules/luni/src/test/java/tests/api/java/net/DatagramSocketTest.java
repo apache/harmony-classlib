@@ -27,6 +27,7 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.PortUnreachableException;
 import java.net.SocketAddress;
@@ -727,7 +728,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#receive(java.net.DatagramPacket)
 	 */
-	public void test_receiveLjava_net_DatagramPacket() {
+	public void test_receiveLjava_net_DatagramPacket() throws IOException {
 		// Test for method void
 		// java.net.DatagramSocket.receive(java.net.DatagramPacket)
 
@@ -867,9 +868,76 @@ public class DatagramSocketTest extends SocketTestCase {
 		} catch (IOException e) {
 			fail("Unexpected IOException : " + e.getMessage());
 		}
+
 	}
 
-	/**
+    /**
+     * Tests receive() method in various combinations with
+     * DatagramPacket#getLength() and DatagramPacket#getLength(). 
+     * This is regression test for HARMONY-2276.
+     * 
+     * @throws IOException if some I/O error occured
+     */
+    public void test2276() throws IOException {
+        final String ADDRESS = "239.255.2.3";
+        final int PORT = Support_PortManager.getNextPortForUDP();
+        InetAddress group = InetAddress.getByName(ADDRESS);
+        MulticastSocket socket = new MulticastSocket(PORT);
+        byte[] recvData = new byte[100];
+        DatagramPacket recvDatagram = new DatagramPacket(recvData, recvData.length);        
+
+        String message = "Hello, world!";
+        String longerMessage = message + " again.";
+        String veryLongMessage = longerMessage + " Forever!";
+
+        socket.joinGroup(group);
+        socket.setSoTimeout(5000); // prevent eternal block in
+                                   // socket.receive()
+        // send & recieve packet
+        byte[] sendData = message.getBytes();
+        DatagramPacket sendDatagram = new DatagramPacket(sendData, 0,
+                sendData.length, group, PORT);
+        socket.send(sendDatagram);
+        socket.receive(recvDatagram);
+        String recvMessage = new String(recvData, 0, recvDatagram.getLength());
+        assertEquals(message, recvMessage);
+        
+        // send & receive longer packet
+        sendData = longerMessage.getBytes();
+        sendDatagram = new DatagramPacket(sendData, 0, sendData.length,
+                group, PORT);
+        socket.send(sendDatagram);
+        socket.receive(recvDatagram);
+        recvMessage = new String(recvData, 0, recvDatagram.getLength());
+        assertEquals(longerMessage, recvMessage);
+
+        // tricky case, added to test compatibility with RI;
+        // depends on the previous test case
+        sendData = veryLongMessage.getBytes();
+        sendDatagram = new DatagramPacket(sendData, 0, sendData.length, group,
+                PORT);
+        socket.send(sendDatagram);
+        recvDatagram.setLength(recvDatagram.getLength()); // !!!
+        socket.receive(recvDatagram);
+        recvMessage = new String(recvData, 0, recvDatagram.getLength());
+        assertEquals(longerMessage, recvMessage);
+
+        // tests if received packet is truncated after length was set to 1
+        sendData = message.getBytes();
+        sendDatagram = new DatagramPacket(sendData, 0, sendData.length,
+                group, PORT);
+        socket.send(sendDatagram);
+        recvDatagram.setLength(1);
+        socket.receive(recvDatagram);
+        assertEquals("Received message was not truncated", 1,
+                recvDatagram.getLength());
+        assertSame("Received message is invalid", sendData[0], recvData[0]);
+
+        socket.leaveGroup(group);
+        socket.close();
+    }
+
+    /**
 	 * @tests java.net.DatagramSocket#send(java.net.DatagramPacket)
 	 */
 	public void test_sendLjava_net_DatagramPacket() throws Exception {

@@ -118,14 +118,14 @@ public class SearchControls implements Serializable {
     private boolean derefLink;
 
     /** 
-     * Flag showing whether object is returned in the search results.
+     * Flag showing whether an Object is returned in the search results.
      * 
      * @serial
      */
     private boolean returnObj;
 
     /** 
-     * Contains the maximum number of search results to return.
+     * Maximum number of search results that will be returned.
      * 
      * @serial
      */

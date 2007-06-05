@@ -28,11 +28,13 @@
 
     <property file="../../make/depends.properties" />
     <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
+    <available property="hythr.available"
+        file="${hy.jdk}/jre/bin/default/${shlib.prefix}hythr${shlib.suffix}" />
     <condition property="test.portlib">
         <and>
             <isset property="is.32bit" />
             <not><isset property="is.windows" /></not>
-            <equals arg1="${hy.no.thr}" arg2="false" />
+            <isset property="hythr.available" />
         </and>
     </condition>
 
@@ -187,6 +189,10 @@
     <target name="-run-native-tests" if="test.portlib" >
         <mkdir dir="${hy.tests.reports}" />
         <property environment="env"/>
+        <condition property="hy.thr.libpath"
+                   value="${path.separator}${hy.jdk}/jre/bin/default" else="">
+            <equals arg1="${hy.no.thr}" arg2="true" />
+        </condition>
         <exec-native test="init" />
         <exec-native test="hyerror" />
         <exec-native test="hytime" />
@@ -221,11 +227,11 @@
                   outputproperty="@{test}.output"
                   resultproperty="@{test}.resultcode" >
                 <env key="PATH"
-                     path="${env.Path}:${env.PATH}:${hy.jdk}/jre/bin" />
+                     path="${env.Path}${path.separator}${env.PATH}${path.separator}${hy.jdk}/jre/bin${hy.thr.libpath}" />
                 <env key="Path"
-                     path="${env.Path}:${env.PATH}:${hy.jdk}/jre/bin" />
+                     path="${env.Path}${path.separator}${env.PATH}${path.separator}${hy.jdk}/jre/bin${hy.thr.libpath}" />
                 <env key="LD_LIBRARY_PATH"
-                     path="${env.LD_LIBRARY_PATH}:${hy.jdk}/jre/bin" />
+                     path="${env.LD_LIBRARY_PATH}${path.separator}${hy.jdk}/jre/bin${hy.thr.libpath}" />
             </exec>
             <condition property="@{test}.result" value="passed" else="FAILED">
                 <equals arg1="${@{test}.resultcode}" arg2="0" />

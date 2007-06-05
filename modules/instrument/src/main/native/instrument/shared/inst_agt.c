@@ -21,7 +21,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#ifndef HY_ZIP_API
 #include <zipsup.h>
+#else /* HY_ZIP_API */
+#include <hyzip.h>
+#endif /* HY_ZIP_API */
 #include <jni.h>
 #include <vmi.h>
 
@@ -160,8 +164,16 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	VMI_ACCESS_FROM_JAVAVM(vm);
 	PORT_ACCESS_FROM_JAVAVM(vm);
 
+#ifdef HY_ZIP_API
+	HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+
+#endif /* HY_ZIP_API */
 	/* open zip file */
+#ifndef HY_ZIP_API
 	retval = zip_openZipFile(privatePortLibrary, (char *)jar_name, &zipFile, NULL);
+#else /* HY_ZIP_API */
+	retval = zipFuncs->zip_openZipFile(VMI, (char *)jar_name, &zipFile);
+#endif /* HY_ZIP_API */
 	if(retval){
 		sprintf(errorMessage,"failed to open file:%s, %d\n", jar_name, retval);
 		(*env)->FatalError(env, errorMessage);
@@ -169,10 +181,19 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	}
 
 	/* get manifest entry */
+#ifndef HY_ZIP_API
 	zip_initZipEntry(privatePortLibrary, &zipEntry);
 	retval = zip_getZipEntry(privatePortLibrary, &zipFile, &zipEntry, "META-INF/MANIFEST.MF", TRUE);
+#else /* HY_ZIP_API */
+	zipFuncs->zip_initZipEntry(VMI, &zipEntry);
+	retval = zipFuncs->zip_getZipEntry(VMI, &zipFile, &zipEntry, "META-INF/MANIFEST.MF", TRUE);
+#endif /* HY_ZIP_API */
 	if (retval) {
+#ifndef HY_ZIP_API
 		zip_freeZipEntry(PORTLIB, &zipEntry);
+#else /* HY_ZIP_API */
+		zipFuncs->zip_freeZipEntry(VMI, &zipEntry);
+#endif /* HY_ZIP_API */
 		sprintf(errorMessage,"failed to get entry: %d\n", retval);
 		(*env)->FatalError(env, errorMessage);
 		return NULL;
@@ -181,17 +202,30 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	/* read bytes */
 	size = zipEntry.uncompressedSize;
 	result = (char *)hymem_allocate_memory(size*sizeof(char));
+#ifndef HY_ZIP_API
 	retval = zip_getZipEntryData(privatePortLibrary, &zipFile, &zipEntry, result, size);
+#else /* HY_ZIP_API */
+	retval = zipFuncs->zip_getZipEntryData(VMI, &zipFile, &zipEntry, result, size);
+#endif /* HY_ZIP_API */
 	if(retval){
+#ifndef HY_ZIP_API
 		zip_freeZipEntry(PORTLIB, &zipEntry);
+#else /* HY_ZIP_API */
+		zipFuncs->zip_freeZipEntry(VMI, &zipEntry);
+#endif /* HY_ZIP_API */
 		sprintf(errorMessage,"failed to get bytes from zip entry, %d\n", zipEntry.extraFieldLength);
 		(*env)->FatalError(env, errorMessage);
 		return NULL;
 	}
 
 	/* free resource */
+#ifndef HY_ZIP_API
 	zip_freeZipEntry(privatePortLibrary, &zipEntry);
 	retval = zip_closeZipFile(privatePortLibrary, &zipFile);
+#else /* HY_ZIP_API */
+	zipFuncs->zip_freeZipEntry(VMI, &zipEntry);
+	retval = zipFuncs->zip_closeZipFile(VMI, &zipFile);
+#endif /* HY_ZIP_API */
 	if (retval) {
 		sprintf(errorMessage,"failed to close zip file: %s, %d\n", jar_name, retval);
 		(*env)->FatalError(env, errorMessage);

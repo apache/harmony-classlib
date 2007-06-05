@@ -43,99 +43,81 @@ import javax.management.MalformedObjectNameException;
 import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
- * <code>LogManager</code> is used to maintain configuration properties of the
- * logging framework, and to manage a hierarchical namespace of all named
- * <code>Logger</code> objects.
+ * <code>LogManager</code> is used to manage named <code>Logger</code>s and
+ * any shared logging properties.
  * <p>
- * There is only one global <code>LogManager</code> instance in the
- * application, which can be get by calling static method
- * <code>LogManager.getLogManager()</code>. This instance is created and
- * initialized during class initialization and cannot be changed.
+ * There is one global <code>LogManager</code> instance in the application,
+ * which can be obtained by calling the static method
+ * <code>LogManager.getLogManager()</code>.
  * </p>
  * <p>
- * The <code>LogManager</code> class can be specified by
- * java.util.logging.manager system property, if the property is unavailable or
- * invalid, the default class <code>java.util.logging.LogManager</code> will
- * be used.
+ * All methods on this type can be taken as being thread safe.
  * </p>
  * <p>
- * When initialization, <code>LogManager</code> read its configuration from a
- * properties file, which by default is the "lib/logging.properties" in the JRE
- * directory.
+ * The <code>LogManager</code> class can be specified by the
+ * "java.util.logging.manager" system property. If the property is unavailable
+ * or invalid <code>java.util.logging.LogManager</code> will be used by
+ * default.
  * </p>
  * <p>
- * However, two optional system properties can be used to customize the initial
- * configuration process of <code>LogManager</code>.
+ * On initialization, <code>LogManager</code> reads its configuration data
+ * from a properties file, which by default is the "lib/logging.properties" file
+ * in the JRE directory.
+ * </p>
+ * <p>
+ * However, two system properties can be used instead to customize the
+ * initialization of the <code>LogManager</code>:
  * <ul>
  * <li>"java.util.logging.config.class"</li>
  * <li>"java.util.logging.config.file"</li>
  * </ul>
  * </p>
  * <p>
- * These two properties can be set in three ways, by the Preferences API, by the
- * "java" command line property definitions, or by system property definitions
- * passed to JNI_CreateJavaVM.
+ * These properties can be set either by using the Preferences API, as a command
+ * line option or by passing the appropriate system property definitions to
+ * JNI_CreateJavaVM.
  * </p>
  * <p>
- * The "java.util.logging.config.class" should specifies a class name. If it is
- * set, this given class will be loaded and instantiated during
- * <code>LogManager</code> initialization, so that this object's default
- * constructor can read the initial configuration and define properties for
+ * The "java.util.logging.config.class" property should specify a class name. If
+ * it is set, this class will be loaded and instantiated during
+ * <code>LogManager</code>'s initialization, so that this object's default
+ * constructor can read the initial configuration and define properties for the
  * <code>LogManager</code>.
  * </p>
  * <p>
- * If "java.util.logging.config.class" property is not set, or it is invalid, or
- * some exception is thrown during the instantiation, then the
- * "java.util.logging.config.file" system property can be used to specify a
- * properties file. The <code>LogManager</code> will read initial
- * configuration from this file.
+ * The "java.util.logging.config.file" system property can be used to specify a
+ * properties file if the "java.util.logging.config.class" property has not been
+ * used. This file will be read instead of the default properties file.
  * </p>
  * <p>
- * If neither of these properties is defined, or some exception is thrown
- * during these two properties using, the <code>LogManager</code> will read
- * its initial configuration from default properties file, as described above.
- * </p>
- * <p>
- * The global logging properties may include:
+ * Some global logging properties are as follows:
  * <ul>
- * <li>"handlers". This property's values should be a list of class names for
- * handler classes separated by whitespace, these classes must be subclasses of
- * <code>Handler</code> and each must have a default constructor, these
- * classes will be loaded, instantiated and registered as handlers on the root
- * <code>Logger</code> (the <code>Logger</code> named ""). These
- * <code>Handler</code>s maybe initialized lazily.</li>
- * <li>"config". The property defines a list of class names separated by
- * whitespace. Each class must have a default constructor, in which it can
- * update the logging configuration, such as levels, handlers, or filters for
- * some logger, etc. These classes will be loaded and instantiated during
- * <code>LogManager</code> configuration</li>
+ * <li>"handlers" - a list of handler classes, separated by whitespace. These
+ * classes must be subclasses of <code>Handler</code> and must have a public
+ * no-argument constructor. They will be registered with the root
+ * <code>Logger</code>.</li>
+ * <li>"config" - a list of configuration classes, separated by whitespace.
+ * These classes should also have a public no-argument default constructor,
+ * which should contain all the code for applying that configuration to the
+ * logging system.
  * </ul>
  * </p>
  * <p>
- * This class, together with any handler and configuration classes associated
- * with it, <b>must</b> be loaded from the system classpath when
- * <code>LogManager</code> configuration occurs.
+ * Besides global properties, properties for individual <code>Loggers</code>
+ * and <code>Handlers</code> can be specified in the property files. The names
+ * of these properties will start with the fully qualified name of the handler
+ * or logger.
  * </p>
  * <p>
- * Besides global properties, the properties for loggers and Handlers can be
- * specified in the property files. The names of these properties will start
- * with the complete dot separated names for the handlers or loggers.
- * </p>
- * <p>
- * In the <code>LogManager</code>'s hierarchical namespace,
- * <code>Loggers</code> are organized based on their dot separated names. For
- * example, "x.y.z" is child of "x.y".
+ * The <code>LogManager</code> organizes <code>Loggers</code> based on their
+ * fully qualified names. For example, "x.y.z" is child of "x.y".
  * </p>
  * <p>
  * Levels for <code>Loggers</code> can be defined by properties whose name end
- * with ".level". Thus "alogger.level" defines a level for the logger named as
- * "alogger" and for all its children in the naming hierarchy. Log levels
- * properties are read and applied in the same order as they are specified in
- * the property file. The root logger's level can be defined by the property
- * named as ".level".
- * </p>
- * <p>
- * All methods on this type can be taken as being thread safe.
+ * with ".level". For example, "alogger.level = 4" sets the level for the logger
+ * "alogger" to 4, Any children of "alogger" will also be given the level 4
+ * unless specified lower down in the properties file. The property ".level"
+ * will set the log level for the root logger.
  * </p>
  * 
  */

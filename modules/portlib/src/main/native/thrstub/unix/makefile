@@ -23,7 +23,7 @@ CFLAGS += -fpic
 
 BUILDFILES = $(SHAREDSUB)hythread.o
 
-DLLNAME = ../libhythr.so
+DLLNAME = ../libhythr$(HY_SHLIB_SUFFIX)
 EXPNAME = HYTHR_0.2
 
 include $(HY_HDK)/build/make/rules.mk

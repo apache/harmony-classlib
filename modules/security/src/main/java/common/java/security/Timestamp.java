@@ -87,7 +87,7 @@ public final class Timestamp implements Serializable {
      * @com.intel.drl.spec_ref 
      */
     public Date getTimestamp() {
-        return timestamp;
+        return (Date) timestamp.clone();
     }
 
     /**

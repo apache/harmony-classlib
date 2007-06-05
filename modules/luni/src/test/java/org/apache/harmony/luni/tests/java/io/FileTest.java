@@ -120,7 +120,12 @@ public class FileTest extends TestCase {
 
         assertEquals(parent.getPath(), f3.getPath());
         
+        // Regression for HARMONY-3869
+        File file1 = new File("", "");
+        assertEquals(File.separator, file1.getPath());
         
+        File file2 = new File(new File(""), "");
+        assertEquals(File.separator, file2.getPath());
     }
     
     /**

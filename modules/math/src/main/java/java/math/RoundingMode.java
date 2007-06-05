@@ -50,7 +50,7 @@ public enum RoundingMode {
     UNNECESSARY(BigDecimal.ROUND_UNNECESSARY);
 
     /** The old constant of <code>BigDecimal</code>. */
-    protected final int bigDecimalRM;
+    private final int bigDecimalRM;
 
     /** It sets the old constant. */
     RoundingMode(int rm) {

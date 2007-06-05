@@ -24,13 +24,16 @@ BUILDFILES = \
   org_apache_harmony_awt_nativebridge_linux_X11.o \
   org_apache_harmony_awt_nativebridge_linux_Xft.o
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+endif
+
+MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS) $(XLIBS)
 
-DLLNAME=../libX11Wrapper.so
+DLLNAME=../libX11Wrapper$(HY_SHLIB_SUFFIX)
 EXPNAME=HYX11WRAPPER_0.1
 
 include $(HY_HDK)/build/make/rules.mk

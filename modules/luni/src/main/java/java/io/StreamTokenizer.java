@@ -607,9 +607,7 @@ public class StreamTokenizer {
                 result.append(sval);
                 break;
             default:
-                result.append('\'');
-                result.append((char) ttype);
-                result.append('\'');
+                result.append(sval);
                 break;
         }
         result.append("], line "); //$NON-NLS-1$

@@ -35,9 +35,18 @@ import org.apache.harmony.luni.util.InvalidJarIndexException;
 
 import tests.support.Support_Configuration;
 import tests.support.resource.Support_Resources;
+import junit.framework.TestSuite;
 
 public class URLClassLoaderTest extends junit.framework.TestCase {
 
+    public URLClassLoaderTest() {
+        super();
+    }
+    
+    public URLClassLoaderTest(String s) {
+        super(s);
+    }
+    
     class BogusClassLoader extends ClassLoader {
         public URL getResource(String res) {
             try {
@@ -379,7 +388,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         f.deleteOnExit();
         f2 = File.createTempFile("bad#name#", ".dat", dir);
         f2.deleteOnExit();
-                
+          
         assertNotNull("Unable to load resource from path with problematic name",
             loader.getResource(f.getName()));
         assertEquals("URL was not correctly encoded",
@@ -445,4 +454,24 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         URLClassLoader loader = new URLClassLoader(urls, null);
 		return loader;
 	}
+
+    /**
+     * Regression test for HARMONY-2255
+     */
+    public void test_getResourceAsStream() {
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(
+                "tests/api/java/net/test%.properties");
+        assertNotNull(in);
+        in = this.getClass().getClassLoader().getResourceAsStream(
+                "tests/api/java/net/test%25.properties");
+        assertNull(in);
+    }
+    
+//    public static TestSuite suite() {
+//        TestSuite suite = new TestSuite();
+//        
+//        suite.addTest(new URLClassLoaderTest("testFindResource_H3461"));
+//        suite.addTest(new URLClassLoaderTest("test_getResourceAsStream"));
+//        return suite;
+//    }
 }

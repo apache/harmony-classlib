@@ -138,6 +138,12 @@ public class ObjectStreamClass implements Serializable {
     // of ObjectStreamClass
     private static final WeakHashMap<Class<?>, ObjectStreamClass> classesAndDescriptors = new WeakHashMap<Class<?>, ObjectStreamClass>();
 
+    private transient Method methodWriteReplace;
+    private transient Method methodReadResolve;
+    private transient Method methodWriteObject;
+    private transient Method methodReadObject;
+    private transient Method methodReadObjectNoData;
+
     // ClassDesc //
 
     // Name of the class this descriptor represents
@@ -182,8 +188,7 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
-     * Add an extra entry mapping a given class <code>cl</code> to its class
-     * descriptor, which will be computed (an ObjectStreamClass). If
+     * Compute class descriptor for a given class <code>cl</code>. If
      * <code>computeSUID</code> is true, this method will compute the SUID for
      * this class.
      * 
@@ -194,7 +199,7 @@ public class ObjectStreamClass implements Serializable {
      *            a boolean indicating if SUID should be computed or not.
      * @return the computer class descriptor
      */
-    private static ObjectStreamClass addToCache(Class<?> cl, boolean computeSUID) {
+    private static ObjectStreamClass createClassDesc(Class<?> cl, boolean computeSUID) {
 
         ObjectStreamClass result = new ObjectStreamClass();
 
@@ -234,11 +239,20 @@ public class ObjectStreamClass implements Serializable {
         } else if (serializable) {
             flags |= ObjectStreamConstants.SC_SERIALIZABLE;
         }
-        if (getPrivateWriteObjectMethod(cl) != null) {
+        result.methodWriteReplace = 
+            findMethod(cl, "writeReplace");
+        result.methodReadResolve = 
+            findMethod(cl, "readResolve");
+        result.methodWriteObject = 
+            findPrivateMethod(cl, "writeObject", WRITE_PARAM_TYPES);
+        result.methodReadObject = 
+            findPrivateMethod(cl, "readObject", READ_PARAM_TYPES);
+        result.methodReadObjectNoData = 
+            findPrivateMethod(cl, "readObjectNoData", EMPTY_CONSTRUCTOR_PARAM_TYPES); 
+        if (result.hasMethodWriteObject()) {
             flags |= ObjectStreamConstants.SC_WRITE_METHOD;
         }
         result.setFlags(flags);
-        classesAndDescriptors.put(cl, result);
 
         return result;
     }
@@ -633,14 +647,12 @@ public class ObjectStreamClass implements Serializable {
      */
     ObjectStreamField[] fields() {
         if (fields == null) {
-            synchronized(this){ 
-                Class<?> forCl = forClass();
-                if (forCl != null && isSerializable(forCl) && !forCl.isArray()) {
-                    buildFieldDescriptors(forCl.getDeclaredFields());
-                } else {
-                    // Externalizables or arrays do not need FieldDesc info
-                    setFields(new ObjectStreamField[0]);
-                }
+            Class<?> forCl = forClass();
+            if (forCl != null && isSerializable(forCl) && !forCl.isArray()) {
+                buildFieldDescriptors(forCl.getDeclaredFields());
+            } else {
+                // Externalizables or arrays do not need FieldDesc info
+                setFields(new ObjectStreamField[0]);
             }
         }
         return fields;
@@ -771,75 +783,6 @@ public class ObjectStreamClass implements Serializable {
     private static native boolean hasClinit(Class<?> cl);
 
     /**
-     * Return true if the given class <code>cl</code> implements private
-     * method <code>readObject()</code>.
-     * 
-     * @param cl
-     *            a java.lang.Class which to test
-     * @return <code>true</code> if the class implements readObject
-     *         <code>false</code> if the class does not implement readObject
-     */
-    static Method getPrivateReadObjectMethod(Class<?> cl) {
-        try {
-            Method method = cl
-                    .getDeclaredMethod("readObject", READ_PARAM_TYPES); //$NON-NLS-1$
-            if (Modifier.isPrivate(method.getModifiers())
-                    && method.getReturnType() == VOID_CLASS) {
-                return method;
-            }
-        } catch (NoSuchMethodException nsm) {
-            // Ignored
-        }
-        return null;
-    }
-
-    /**
-     * Return true if the given class <code>cl</code> implements private
-     * method <code>readObject()</code>.
-     * 
-     * @param cl
-     *            a java.lang.Class which to test
-     * @return <code>true</code> if the class implements readObject
-     *         <code>false</code> if the class does not implement readObject
-     */
-    static Method getPrivateReadObjectNoDataMethod(Class<?> cl) {
-        try {
-            Method method = cl.getDeclaredMethod("readObjectNoData", //$NON-NLS-1$
-                    EMPTY_CONSTRUCTOR_PARAM_TYPES);
-            if (Modifier.isPrivate(method.getModifiers())
-                    && method.getReturnType() == VOID_CLASS) {
-                return method;
-            }
-        } catch (NoSuchMethodException nsm) {
-            // Ignored
-        }
-        return null;
-    }
-
-    /**
-     * Return true if the given class <code>cl</code> implements private
-     * method <code>writeObject()</code>.
-     * 
-     * @param cl
-     *            a java.lang.Class which to test
-     * @return <code>true</code> if the class implements writeObject
-     *         <code>false</code> if the class does not implement writeObject
-     */
-    static Method getPrivateWriteObjectMethod(Class<?> cl) {
-        try {
-            Method method = cl.getDeclaredMethod("writeObject", //$NON-NLS-1$
-                    WRITE_PARAM_TYPES);
-            if (Modifier.isPrivate(method.getModifiers())
-                    && method.getReturnType() == VOID_CLASS) {
-                return method;
-            }
-        } catch (NoSuchMethodException nsm) {
-            // Ignored
-        }
-        return null;
-    }
-
-    /**
      * Return true if instances of class <code>cl</code> are Externalizable,
      * false otherwise.
      * 
@@ -953,47 +896,25 @@ public class ObjectStreamClass implements Serializable {
      *            a boolean indicating if SUID should be computed or not.
      * @return the corresponding descriptor
      */
-    private static synchronized ObjectStreamClass lookupStreamClass(
+    private static ObjectStreamClass lookupStreamClass(
             Class<?> cl, boolean computeSUID) {
         // Synchronized because of the lookup table 'classesAndDescriptors'
-        ObjectStreamClass cachedValue = classesAndDescriptors.get(cl);
-        if (cachedValue != null) {
-            return cachedValue;
-        }
-        return addToCache(cl, computeSUID);
-    }
 
-    /**
-     * Return the java.lang.reflect.Method <code>readResolve</code> if class
-     * <code>cl</code> implements it. Return null otherwise.
-     * 
-     * @param cl
-     *            a java.lang.Class which to test
-     * @return <code>java.lang.reflect.Method</code> if the class implements
-     *         readResolve <code>null</code> if the class does not implement
-     *         readResolve
-     */
-    static Method methodReadResolve(Class<?> cl) {
-        Class<?> search = cl;
-        while (search != null) {
-            try {
-                Method method = search.getDeclaredMethod(
-                        "readResolve", (Class[]) null); //$NON-NLS-1$
-                if (search == cl
-                        || (method.getModifiers() & Modifier.PRIVATE) == 0) {
-                    return method;
-                }
-                return null;
-            } catch (NoSuchMethodException nsm) {
+        ObjectStreamClass cachedValue;  
+        synchronized(classesAndDescriptors){
+            cachedValue = classesAndDescriptors.get(cl);
+            if (cachedValue == null) {
+                cachedValue  = createClassDesc(cl, computeSUID);;
+               classesAndDescriptors.put(cl, cachedValue);
             }
-            search = search.getSuperclass();
         }
-        return null;
+        return cachedValue;
+
     }
 
     /**
-     * Return the java.lang.reflect.Method <code>writeReplace</code> if class
-     * <code>cl</code> implements it. Return null otherwise.
+     * Return the java.lang.reflect.Method if class
+     * <code>cl</code> implements <code>methodName</code> . Return null otherwise.
      * 
      * @param cl
      *            a java.lang.Class which to test
@@ -1001,25 +922,96 @@ public class ObjectStreamClass implements Serializable {
      *         writeReplace <code>null</code> if the class does not implement
      *         writeReplace
      */
-    static Method methodWriteReplace(Class<?> cl) {
+    static Method findMethod(Class<?> cl, String methodName) {
         Class<?> search = cl;
+        Method method = null;
         while (search != null) {
             try {
-                Method method = search.getDeclaredMethod(
-                        "writeReplace", (Class[]) null); //$NON-NLS-1$
+                method = search.getDeclaredMethod(methodName, (Class[]) null); //$NON-NLS-1$
                 if (search == cl
                         || (method.getModifiers() & Modifier.PRIVATE) == 0) {
+                    method.setAccessible(true);
                     return method;
                 }
-                return null;
             } catch (NoSuchMethodException nsm) {
-                // Ignored
             }
             search = search.getSuperclass();
         }
         return null;
     }
 
+    /**
+     * Return the java.lang.reflect.Method if class
+     * <code>cl</code> implements private <code>methodName</code> . Return null otherwise.
+     * 
+     * @param cl
+     *            a java.lang.Class which to test
+     * @return <code>java.lang.reflect.Method</code> if the class implements
+     *         writeReplace <code>null</code> if the class does not implement
+     *         writeReplace
+     */
+    static Method findPrivateMethod(Class<?> cl, String methodName, Class[] param) {
+        try {
+            Method method = cl
+                    .getDeclaredMethod(methodName, param); //$NON-NLS-1$
+            if (Modifier.isPrivate(method.getModifiers())
+                    && method.getReturnType() == VOID_CLASS) {
+                method.setAccessible(true);
+                return method;
+            }
+        } catch (NoSuchMethodException nsm) {
+            // Ignored
+        }
+        return null;
+    }
+
+    boolean hasMethodWriteReplace(){
+        return (methodWriteReplace != null);
+    }
+
+    Method getMethodWriteReplace(){
+        return methodWriteReplace;
+    }
+
+    boolean hasMethodReadResolve(){
+        return (methodReadResolve != null);
+    }
+
+    Method getMethodReadResolve(){
+        return methodReadResolve;
+    }
+
+    boolean hasMethodWriteObject(){
+        return (methodWriteObject != null);
+    }
+
+    Method getMethodWriteObject(){
+        return methodWriteObject;
+    }
+
+    boolean hasMethodReadObject(){
+        return (methodReadObject != null);
+    }
+
+    Method getMethodReadObject(){
+        return methodReadObject;
+    }
+
+    boolean hasMethodReadObjectNoData(){
+        return (methodReadObjectNoData != null);
+    }
+
+    Method getMethodReadObjectNoData(){
+        return methodReadObjectNoData;
+    }
+
+    void initPrivateFields(ObjectStreamClass desc){
+        methodWriteReplace = desc.methodWriteReplace;
+        methodReadResolve = desc.methodReadResolve;
+        methodWriteObject = desc.methodWriteObject;
+        methodReadObject = desc.methodReadObject;
+        methodReadObjectNoData = desc.methodReadObjectNoData;
+    }
     /**
      * Set the class (java.lang.Class) that the receiver represents
      * 

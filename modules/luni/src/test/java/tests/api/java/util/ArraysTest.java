@@ -16,10 +16,11 @@
  */
 package tests.api.java.util;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 
 import tests.support.Support_UnmodifiableCollectionTest;
 
@@ -1757,6 +1758,18 @@ public class ArraysTest extends junit.framework.TestCase {
 			booleanArray[counter + 1] = true;
 		}
 	}
+	
+	/**
+     * @tests java.util.Arrays#swap(int, int, Object[])
+     */
+    public void test_swap_I_I_$Ljava_lang_Object() throws Exception {
+    	Method m = Arrays.class.getDeclaredMethod("swap", int.class, int.class, Object[].class);
+    	m.setAccessible(true);
+    	Integer[] arr = {new Integer(0), new Integer(1), new Integer(2)};
+    	m.invoke(null,0, 1, arr);
+    	assertEquals("should be equal to 1",1, arr[0].intValue());
+    	assertEquals("should be equal to 0",0, arr[1].intValue());
+    }
 
 	/**
 	 * Tears down the fixture, for example, close a network connection. This

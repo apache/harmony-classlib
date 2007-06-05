@@ -368,7 +368,7 @@ int VMCALL
 main_open_port_library (UDATA * descriptor)
 {
   void *handle;
-  char *openName = "libhyprt.so";
+  char *openName = ("libhyprt" PLATFORM_DLL_EXTENSION);
 
   handle = dlopen (openName, RTLD_NOW);
   if (handle == NULL)

@@ -72,7 +72,7 @@ public class TrustManagerFactory2Test extends TestCase {
         Security.removeProvider(mProv.getName());
     }
 
-    private void checkResult(TrustManagerFactory tmf) throws InvalidAlgorithmParameterException {
+    private void checkResult(TrustManagerFactory tmf) throws Exception {
         KeyStore kStore = null;
         ManagerFactoryParameters mfp = null;
         
@@ -95,15 +95,8 @@ public class TrustManagerFactory2Test extends TestCase {
         } catch (KeyStoreException e) {
             fail("default keystore is not supported");
             return;
-        } catch (Exception e) {
-            fail("Unexpected: "+e.toString());
-            return;            
         }
-        try {
-            tmf.init(kStore);
-        } catch (KeyStoreException e) {
-            fail("Unexpected KeyStoreException was thrown");
-        }
+        tmf.init(kStore);
         mfp = (ManagerFactoryParameters) new MyTrustManagerFactorySpi.Parameters(null);
         try {
             tmf.init(mfp);
@@ -122,8 +115,7 @@ public class TrustManagerFactory2Test extends TestCase {
      * throws NoSuchAlgorithmException when algorithm is not correct;
      * returns TrustManagerFactory object
      */
-    public void testGetInstance01() throws NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException {
+    public void testGetInstance01() throws Exception {
         try {
             TrustManagerFactory.getInstance(null);
             fail("NoSuchAlgorithmException or NullPointerException should be thrown (algorithm is null");
@@ -160,9 +152,7 @@ public class TrustManagerFactory2Test extends TestCase {
      * throws NoSuchProviderException when provider is available;
      * returns TrustManagerFactory object
      */
-    public void testGetInstance02() throws NoSuchAlgorithmException,
-            NoSuchProviderException, IllegalArgumentException,
-            InvalidAlgorithmParameterException {
+    public void testGetInstance02() throws Exception {
         try {
             TrustManagerFactory.getInstance(null, mProv.getName());
             fail("NoSuchAlgorithmException or NullPointerException should be thrown (algorithm is null");
@@ -228,9 +218,7 @@ public class TrustManagerFactory2Test extends TestCase {
      * throws IllegalArgumentException when provider is null;
      * returns TrustManagerFactory object
      */
-    public void testGetInstance03() throws NoSuchAlgorithmException,
-            IllegalArgumentException,
-            InvalidAlgorithmParameterException {
+    public void testGetInstance03() throws Exception {
         try {
             TrustManagerFactory.getInstance(null, mProv);
             fail("NoSuchAlgorithmException or NullPointerException should be thrown (algorithm is null");

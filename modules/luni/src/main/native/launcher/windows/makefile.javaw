@@ -25,7 +25,7 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
         winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
 !IF "$(HY_NO_THR)" == "false"
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
 !ELSE
 BUILDFILES = $(BUILDFILES) main_hlp.obj
 !ENDIF

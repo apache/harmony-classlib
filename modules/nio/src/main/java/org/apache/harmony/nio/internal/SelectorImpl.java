@@ -182,9 +182,6 @@ final class SelectorImpl extends AbstractSelector {
                     doCancel();
                     int[] readyChannels = null;
                     boolean isBlock = (SELECT_NOW != timeout);
-                    if (keys.size() == 0) {
-                        return 0;
-                    }
                     prepareChannels();
                     try {
                         if (isBlock) {

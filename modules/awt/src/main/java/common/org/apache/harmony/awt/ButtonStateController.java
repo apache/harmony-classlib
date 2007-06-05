@@ -70,13 +70,12 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
 
     public void mousePressed(MouseEvent me) {
         if (mousePressed || keyPressed ||
-                (me.getButton() != MouseEvent.BUTTON1) ||
-                (activeComponent != null)) {
+                (me.getButton() != MouseEvent.BUTTON1) || !lock()) {
             return;
         }
 
         mousePressed = true;
-        activeComponent = component;
+        
         if (mouseInside) {
             component.repaint();
         }
@@ -87,14 +86,13 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
     }
 
     public void mouseReleased(MouseEvent me) {
-        if (!mousePressed || (me.getButton() != MouseEvent.BUTTON1) || 
-                (activeComponent != component)) {
+        if (!mousePressed || (me.getButton() != MouseEvent.BUTTON1) || !unlock()) {
             return;
         }
 
         mousePressed = false;
         component.repaint();
-        activeComponent = null;
+        
         if (mouseInside) {
             when = me.getWhen();
             mod = me.getModifiers();
@@ -107,13 +105,11 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
         assert focused == true : Messages.getString("awt.54"); //$NON-NLS-1$
 
         if (mousePressed || keyPressed ||
-                (ke.getKeyCode() != KeyEvent.VK_SPACE) ||
-                (activeComponent != null)) {
+                (ke.getKeyCode() != KeyEvent.VK_SPACE) || !lock()) {
             return;
         }
 
         keyPressed = true;
-        activeComponent = component;
         component.repaint();
     }
 
@@ -121,13 +117,11 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
         // awt.54=Key event for unfocused component
         assert focused == true : Messages.getString("awt.54"); //$NON-NLS-1$
 
-        if (!keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE) ||
-                (activeComponent != component)) {
+        if (!keyPressed || (ke.getKeyCode() != KeyEvent.VK_SPACE) || !unlock()) {
             return;
         }
 
         keyPressed = false;
-        activeComponent = null;
         component.repaint();
         when = ke.getWhen();
         mod = ke.getModifiers();
@@ -158,6 +152,7 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
         // awt.58=Double focus lost event for component
         assert focused == true : Messages.getString("awt.58"); //$NON-NLS-1$
 
+        unlock();
         focused = false;
         keyPressed = false;
         mousePressed = false;
@@ -185,5 +180,34 @@ public abstract class ButtonStateController implements MouseListener, FocusListe
     }
 
     protected abstract void fireEvent();
+    
+    /**
+     * Acquires the lock for this button. If the lock is acquired no other
+     * buttons could be pressed until the lock is released.
+     * 
+     * @return true if the lock has been successfully acquired, otherwise
+     *         returns false.
+     */
+    private boolean lock() {
+        if (activeComponent != null) {
+            return false;
+        }
 
+        activeComponent = component;
+        return true;
+    }
+
+    /**
+     * Releases the lock.
+     * 
+     * @return true if the lock has been released, otherwise returns false.
+     */
+    private boolean unlock() {
+        if (activeComponent != component) {
+            return false;
+        }
+
+        activeComponent = null;
+        return true;
+    }
 }

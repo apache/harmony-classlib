@@ -33,6 +33,7 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import junit.framework.TestCase;
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
  * 
@@ -1358,6 +1359,29 @@ public class LdapNameTest extends TestCase {
         } catch (IndexOutOfBoundsException e) {}
     }
 
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.LdapName.get(int)'
+     * </p>
+     * <p>
+     * Here we are testing if this method retrieves a component of this LDAP
+     * name as a string, notice that the index must be in the range [0,size()).
+     * </p>
+     * <p>
+     * The expected result is if the returned string by this method is the
+     * variable wich we create the Name.
+     * </p>
+     */
+    public void testGet007() throws Exception {
+        String test1 = "t=\\ test\\ +t1=\\ test1";
+        LdapName ln1 = new LdapName(test1);
+        assertEquals(test1, ln1.get(0));
+        
+        String test2 = "t=\\20\\ te\\ s\\20t\\20\\20 + t2 = test1\\20\\ ";
+        LdapName ln2 = new LdapName(test2);
+        assertEquals("t=\\ \\ te s t\\ +t2=test1\\ \\ ", ln2.get(0));
+    }
+    
     /**
      * <p>
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
@@ -2745,6 +2769,27 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.add(String)'
+     * </p>
+     * <p>
+     * Here we are testing if this method adds a single component to the end of
+     * this LDAP name.
+     * </p>
+     * <p>
+     * The expected result is the adding of the single component.
+     * </p>
+     */
+    public void testAddString007() throws Exception {
+        LinkedList ll = new LinkedList();
+        ll.add(new Rdn("t=test"));
+        LdapName ln = new LdapName(ll);
+        ln.add("t1=test1");
+        ll.remove(0);
+        assertEquals(2, ln.size());
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
@@ -3252,6 +3297,23 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.remove(int)'
+     * </p>
+     * <p>
+     * Here we are testing if this method removes a component from this LDAP
+     * name.
+     * </p>
+     * <p>
+     * The expected result is an index out of boundary exception.
+     * </p>
+     */
+    public void testRemove006() throws Exception {
+        LdapName ln = new LdapName("t=test, t1=test1");
+        assertEquals("t=test", (String)ln.remove(1));
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.getRdns()'
      * </p>
      * <p>
@@ -3580,5 +3642,11 @@ public class LdapNameTest extends TestCase {
         LdapName ln2 = new LdapName(
                 "t=test1+f=anything,d=here;j=uos<asd,h=that,");
         assertTrue(ln.compareTo(ln2) == 0);
+    }
+
+    public void testSerializationCompatibility() throws Exception{
+        LdapName object = new LdapName("t=test\\, , t1=\\ test1");
+        object.add(new Rdn("t2=te\\ st2"));
+        SerializationTest.verifyGolden(this, object);
     }
 }

@@ -25,6 +25,7 @@ all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 
 $(LIBNAME): $(BUILDFILES)
 	$(AR) $(ARFLAGS) $@ $(BUILDFILES)
+	$(RANLIB) $@
 
 $(EXPFILE): exports.txt
 ifeq ($(HY_OS),aix)
@@ -38,8 +39,7 @@ else
 endif
 
 $(DLLNAME): $(BUILDFILES) $(MDLLIBFILES) $(EXPFILE)
-	$(DLL_LD) -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE) \
-	$(LDFLAGS) $(VMLINK) -o $@ \
+	$(DLL_LD) $(DLL_LDFLAGS) $(LDFLAGS) $(VMLINK) -o $@ \
 	$(BUILDFILES) \
 	$(MDLLIBPREFIX) $(MDLLIBFILES) $(MDLLIBSUFFIX) \
 	$(OSLIBS)

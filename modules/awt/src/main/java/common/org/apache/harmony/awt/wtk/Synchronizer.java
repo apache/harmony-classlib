@@ -20,8 +20,8 @@
  */
 package org.apache.harmony.awt.wtk;
 
-import java.util.Hashtable;
-import java.util.LinkedList;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 import org.apache.harmony.awt.internal.nls.Messages;
 
@@ -36,7 +36,6 @@ import org.apache.harmony.awt.internal.nls.Messages;
 
 public class Synchronizer {
     //TODO: think about java.util.concurrent use for faster blocking/awaking operations
-    //TODO: think about all synchronized methods. Is there need to synchronize everything?
 
     /**
      * This field holds the counter of lock operation.
@@ -53,18 +52,24 @@ public class Synchronizer {
     protected Thread owner;
 
     /**
-     * This field holds the wait queue.
-     * Wait queue is a queue where thread wait for synchronizer access.
-     * Empty when synchronizer is free.
-     */
-    protected final LinkedList<Thread> waitQueue = new LinkedList<Thread>();
-
-    /**
      * The event dispatch thread
      */
     protected Thread dispatchThread;
-
-    private final Hashtable<Thread, Integer> storedStates = new Hashtable<Thread, Integer>();
+    
+    /**
+     * Indicates whether the event dispatch thread, which has the highest 
+     * priority, is waiting to acquire the lock.
+     */
+    private boolean isDispatchThreadWaiting;
+    
+    /**
+     * This object is used for threads locking. A locked thread could be 
+     * unlocked only in one of two ways: the unlock() method of this class has 
+     * been invoked; the thread has been interrupted from another thread.
+     */
+    private final Object lock = new Object();
+    
+    private final Map<Thread, Integer> storedStates = new IdentityHashMap<Thread, Integer>();
 
     /**
      * Acquire the lock for this synchronizer. Nested lock is supported.
@@ -74,60 +79,51 @@ public class Synchronizer {
      * Supposed to be used in Toolkit.lockAWT() only.
      */
     public void lock() {
-        synchronized (this) {
-            Thread curThread = Thread.currentThread();
+        final Thread curThread = Thread.currentThread();
 
-            if (acquestCounter == 0) {
-                acquestCounter = 1;
+        synchronized (lock) {
+            if (owner == null) {
                 owner = curThread;
-            } else {
-                if (owner == curThread) {
-                    acquestCounter++;
-                } else {
-                    if (curThread == dispatchThread) {
-                        waitQueue.addFirst(curThread);
-                    } else {
-                        waitQueue.addLast(curThread);
-                    }
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        if (owner != curThread) {
-                            waitQueue.remove(curThread);
-                            // awt.1F=Waiting for resource access thread interrupted not from unlock method.
-                            throw new RuntimeException(Messages
-                                    .getString("awt.1F")); //$NON-NLS-1$
-                        }
-                    }
-                }
+                acquestCounter = 1;
+                return;
+            } else if (owner == curThread) {
+                acquestCounter++;
+                return;
             }
+            
+            isDispatchThreadWaiting = (curThread == dispatchThread);
+            park(curThread);
         }
     }
-
+    
     /**
      * Release the lock for this synchronizer.
      * If wait queue is not empty the first waiting thread acquires the lock.
      * Supposed to be used in Toolkit.unlockAWT() only.
      */
     public void unlock() {
-        synchronized (this) {
-            if (acquestCounter == 0) {
+        synchronized (lock) {
+            if (owner == null) {
                 // awt.20=Can't unlock not locked resource.
                 throw new RuntimeException(Messages.getString("awt.20")); //$NON-NLS-1$
             }
+
             if (owner != Thread.currentThread()) {
                 // awt.21=Not owner can't unlock resource.
                 throw new RuntimeException(Messages.getString("awt.21")); //$NON-NLS-1$
             }
 
             acquestCounter--;
+
             if (acquestCounter == 0) {
-                if (waitQueue.size() > 0) {
+                if (isDispatchThreadWaiting) {
+                    isDispatchThreadWaiting = false;
+                    owner = dispatchThread;
                     acquestCounter = 1;
-                    owner = waitQueue.removeFirst();
-                    owner.interrupt();
+                    dispatchThread.interrupt();
                 } else {
                     owner = null;
+                    lock.notify();
                 }
             }
         }
@@ -140,22 +136,21 @@ public class Synchronizer {
      * Do not call it directly.
      */
     public void storeStateAndFree() {
-        synchronized (this) {
-            Thread curThread = Thread.currentThread();
+        final Thread curThread = Thread.currentThread();
 
-            if (owner != curThread) {
-                // awt.22=Not owner can't free resource.
-                throw new RuntimeException(Messages.getString("awt.22")); //$NON-NLS-1$
-            }
-            if (storedStates.containsKey(curThread)) {
-                // awt.23=One thread can't store state several times in a row.
-                throw new RuntimeException(Messages.getString("awt.23")); //$NON-NLS-1$
-            }
-
-            storedStates.put(curThread, new Integer(acquestCounter));
-            acquestCounter = 1;
-            unlock();
+        if (owner != curThread) {
+            // awt.22=Not owner can't free resource.
+            throw new RuntimeException(Messages.getString("awt.22")); //$NON-NLS-1$
         }
+
+        if (storedStates.containsKey(curThread)) {
+            // awt.23=One thread can't store state several times in a row.
+            throw new RuntimeException(Messages.getString("awt.23")); //$NON-NLS-1$
+        }
+
+        storedStates.put(curThread, new Integer(acquestCounter));
+        acquestCounter = 1;
+        unlock();
     }
 
     /**
@@ -165,23 +160,24 @@ public class Synchronizer {
      * Do not call it directly.
      */
     public void lockAndRestoreState() {
-        synchronized (this) {
-            Thread curThread = Thread.currentThread();
+        final Integer counter;
+        final Thread curThread = Thread.currentThread();
 
-            if (owner == curThread) {
-                // awt.24=Owner can't overwrite resource state. Lock operations may be lost.
-                throw new RuntimeException(
-                        Messages.getString("awt.24")); //$NON-NLS-1$
-            }
-            if (!storedStates.containsKey(curThread)) {
-                // awt.25=No state stored for current thread.
-                throw new RuntimeException(Messages.getString("awt.25")); //$NON-NLS-1$
-            }
-
-            lock();
-            acquestCounter = storedStates.get(curThread).intValue();
-            storedStates.remove(curThread);
+        if (owner == curThread) {
+            // awt.24=Owner can't overwrite resource state. Lock operations
+            // may be lost.
+            throw new RuntimeException(Messages.getString("awt.24")); //$NON-NLS-1$
         }
+
+        counter = storedStates.remove(curThread);
+
+        if (counter == null) {
+            // awt.25=No state stored for current thread.
+            throw new RuntimeException(Messages.getString("awt.25")); //$NON-NLS-1$
+        }
+
+        lock();
+        acquestCounter = counter.intValue();
     }
 
     /**
@@ -191,10 +187,25 @@ public class Synchronizer {
      * @param wtk - reference to WTK instance
      * @param dispatchThread - reference to event dispatch thread
      */
-    public void setEnvironment(WTK wtk, Thread dispatchThread) {
-        synchronized (this) {
-            this.dispatchThread = dispatchThread;
+    public void setEnvironment(WTK wtk, Thread dispatchThread) { 
+        this.dispatchThread = dispatchThread;
+    }
+    
+    private void park(final Thread t) {
+        synchronized (lock) {
+            try {
+                lock.wait();
+                
+                if (owner == null) { 
+                    owner = t;
+                    acquestCounter = 1;
+                } else {
+                    park(t);
+                }
+            } catch (InterruptedException ex) {
+                // event dispatch thread unlocked or the waiting thread has been 
+                // interrupted from another thread
+            }
         }
     }
-
 }

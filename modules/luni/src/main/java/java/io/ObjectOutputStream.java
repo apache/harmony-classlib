@@ -105,10 +105,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      */
     private boolean subclassOverridingImplementation;
 
-    /*
-     * cache for writeReplace methods
-     */
-    private IdentityHashMap<Class<?>, Object> writeReplaceCache;
 
     /**
      * Inner class to provide access to serializable fields
@@ -207,7 +203,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         this.enableReplace = false;
         this.protocolVersion = PROTOCOL_VERSION_2;
         this.subclassOverridingImplementation = false;
-        this.writeReplaceCache = new IdentityHashMap<Class<?>, Object>();
 
         resetState();
         this.nestedException = new StreamCorruptedException();
@@ -1304,12 +1299,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         boolean executed = false;
         Class<?> targetClass = classDesc.forClass();
         try {
-            final Method method = ObjectStreamClass
-                    .getPrivateWriteObjectMethod(targetClass);
-            if (method != null) {
-                // We have to be able to fetch its value, even if it is
-                // private
-                AccessController.doPrivileged(new PriviAction<Object>(method));
+            if (classDesc.hasMethodWriteObject()){
+                final Method method = classDesc.getMethodWriteObject();
                 try {
                     method.invoke(object, new Object[] { this });
                     executed = true;
@@ -1325,6 +1316,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                     throw new RuntimeException(e.toString());
                 }
             }
+
 
             if (executed) {
                 drain();
@@ -1853,57 +1845,40 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
             if (ObjectStreamClass.isSerializable(object.getClass())
                     && computeClassBasedReplacement) {
-                Object writeReplaceMethod = writeReplaceCache.get(objClass);
-                if (writeReplaceMethod != this) {
-                    if (writeReplaceMethod == null) {
-                        final Method writeReplace = ObjectStreamClass
-                                .methodWriteReplace(objClass);
-                        if (writeReplace == null) {
-                            writeReplaceCache.put(objClass, this);
-                            // writeReplaceMethod must be null here
-                            assert writeReplaceMethod == null;
+                ObjectStreamClass clDesc = ObjectStreamClass.lookupStreamClass(objClass);
+                if(clDesc.hasMethodWriteReplace()){
+                    Method methodWriteReplace = clDesc.getMethodWriteReplace();
+                    Object replObj = null; 
+                    try {
+                        replObj = methodWriteReplace.invoke(object, (Object[]) null);
+                    } catch (IllegalAccessException iae) {
+                        replObj = object;
+                    } catch (InvocationTargetException ite) {
+                        // WARNING - Not sure this is the right thing to do
+                        // if we can't run the method
+                        Throwable target = ite.getTargetException();
+                        if (target instanceof ObjectStreamException) {
+                            throw (ObjectStreamException) target;
+                        } else if (target instanceof Error) {
+                            throw (Error) target;
                         } else {
-                            // Has replacement method
-                            AccessController
-                                    .doPrivileged(new PriviAction<Object>(
-                                            writeReplace));
-                            writeReplaceCache.put(objClass, writeReplace);
-                            writeReplaceMethod = writeReplace;
+                            throw (RuntimeException) target;
                         }
                     }
-                    if (writeReplaceMethod != null) {
-                        Object classBasedReplacement;
-                        try {
-                            classBasedReplacement = ((Method) writeReplaceMethod)
-                                    .invoke(object, (Object[]) null);
-                        } catch (IllegalAccessException iae) {
-                            classBasedReplacement = object;
-                        } catch (InvocationTargetException ite) {
-                            // WARNING - Not sure this is the right thing to do
-                            // if we can't run the method
-                            Throwable target = ite.getTargetException();
-                            if (target instanceof ObjectStreamException) {
-                                throw (ObjectStreamException) target;
-                            } else if (target instanceof Error) {
-                                throw (Error) target;
-                            } else {
-                                throw (RuntimeException) target;
-                            }
+                    if (replObj != object) {
+                        // All over, class-based replacement off this time.
+                        Integer replacementHandle = writeObjectInternal(
+                                replObj, false, false,
+                                computeStreamReplacement);
+                        // Make the original object also map to the same
+                        // handle.
+                        if (replacementHandle != null) {
+                            registerObjectWritten(object, replacementHandle);
                         }
-                        if (classBasedReplacement != object) {
-                            // All over, class-based replacement off this time.
-                            Integer replacementHandle = writeObjectInternal(
-                                    classBasedReplacement, false, false,
-                                    computeStreamReplacement);
-                            // Make the original object also map to the same
-                            // handle.
-                            if (replacementHandle != null) {
-                                registerObjectWritten(object, replacementHandle);
-                            }
-                            return replacementHandle;
-                        }
+                        return replacementHandle;
                     }
                 }
+
             }
 
             // We get here either if class-based replacement was not needed or

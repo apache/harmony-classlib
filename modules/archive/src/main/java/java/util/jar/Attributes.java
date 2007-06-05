@@ -109,7 +109,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
                 return false;
             }
             return an.getClass() == this.getClass()
-                    && name.equalsIgnoreCase(((Name) an).name);
+                    && Util.equalsIgnoreCase(name, ((Name) an).name);
         }
 
         @Override

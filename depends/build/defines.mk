@@ -22,11 +22,8 @@ CPP = $(CC) -E
 AS = as
 AR = ar
 ARFLAGS = rcv
-ifneq ($(HY_OS),aix)
 DLL_LD = $(CC)
-else
-DLL_LD = $(LD)
-endif
+DLL_LDFLAGS = -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE)
 CXX_DLL_LD = $(CXX)
 STDCLIBS = -lstdc++
 OSLIBS = -lc -lm
@@ -39,6 +36,10 @@ EXERPATHPREFIX = -Xlinker -z -Xlinker origin -Xlinker -rpath \
 	-Xlinker
 
 include $(HY_HDK)/build/make/platform/$(HY_PLATFORM).mk
+
+ifeq ($(RANLIB),)
+RANLIB=echo
+endif
 
 ifneq ($(HY_OS),freebsd)
 OSLIBS += -ldl
@@ -69,13 +70,17 @@ endif
 MDLLIBFILES = $(LIBPATH)libhycommon.a
 
 ifeq ($(HY_NO_THR),false)
-MDLLIBFILES += $(DLLPATH)libhythr.so
+MDLLIBFILES += $(DLLPATH)libhythr$(HY_SHLIB_SUFFIX)
 else
 DEFINES += -DHY_NO_THR
 endif
 
 ifeq ($(HY_NO_SIG),false)
-MDLLIBFILES += $(DLLPATH)libhysig.so
+MDLLIBFILES += $(DLLPATH)libhysig$(HY_SHLIB_SUFFIX)
 else
 DEFINES += -DHY_NO_SIG
+endif
+
+ifeq ($(HY_ZIP_API),true)
+DEFINES += -DHY_ZIP_API
 endif

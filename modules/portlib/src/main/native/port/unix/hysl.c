@@ -57,8 +57,6 @@
 #include "hyport.h"
 #include "portnls.h"
 
-#define PLATFORM_DLL_EXTENSION ".so"
-
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 #if (defined(HYVM_USE_MBTOWC))
 static void convertWithMBTOWC (struct HyPortLibrary *portLibrary, char *error,

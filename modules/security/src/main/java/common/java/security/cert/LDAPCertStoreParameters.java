@@ -71,7 +71,11 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
      * @com.intel.drl.spec_ref
      */
     public Object clone() {
-        return new LDAPCertStoreParameters(serverName, port);
+    	try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
     }
 
     /**

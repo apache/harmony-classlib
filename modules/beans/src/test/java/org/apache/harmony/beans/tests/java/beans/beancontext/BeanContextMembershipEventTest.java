@@ -19,6 +19,7 @@ package org.apache.harmony.beans.tests.java.beans.beancontext;
 
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextServiceAvailableEvent;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ import junit.framework.TestCase;
 import org.apache.harmony.beans.tests.support.beancontext.Utils;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContext;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextDelegateS;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -247,21 +250,21 @@ public class BeanContextMembershipEventTest extends TestCase {
                         .getDeserilizedObject(event));
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        ArrayList<String> things = new ArrayList<String>();
-        things.add("1");
-        things.add("2");
-        things.add("3");
-        BeanContextMembershipEvent event = new BeanContextMembershipEvent(
-                new MockBeanContext(), things);
-        event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
-
-        assertEqualsSerially(
-                event,
-                (BeanContextMembershipEvent) SerializationTester
-                        .readObject(event,
-                                "serialization/java/beans/beancontext/BeanContextMembershipEvent.ser"));
-    }
+   public void testSerialization_Compatibility() throws Exception {
+       ArrayList<String> things = new ArrayList<String>();
+       things.add("1");
+       things.add("2");
+       things.add("3");
+       BeanContextMembershipEvent event = new BeanContextMembershipEvent(
+               new MockBeanContext(), things);
+       event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
+       SerializationTest.verifyGolden(this, event, new SerializableAssert(){
+           public void assertDeserialized(Serializable orig, Serializable ser) {
+               assertEqualsSerially((BeanContextMembershipEvent) orig,
+                       (BeanContextMembershipEvent) ser);
+           }
+       });
+   }
 
     private void assertEqualsSerially(BeanContextMembershipEvent orig,
             BeanContextMembershipEvent ser) {

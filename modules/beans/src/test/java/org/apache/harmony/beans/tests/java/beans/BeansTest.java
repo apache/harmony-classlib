@@ -23,6 +23,8 @@ import java.beans.Beans;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.Externalizable;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
@@ -423,6 +425,24 @@ public class BeansTest extends TestCase {
         // null targetType
         targetType = null;
         assertFalse(Beans.isInstanceOf(bean, targetType));
+    }
+    
+    public void test_instantiate_with_corrupted_serialization_file()
+            throws Exception {
+        final String BEANS_NAME = "TestBean";
+
+        // create a corrupted serialization file with name TestBean.ser
+        File file = new File(BEANS_NAME + ".ser");
+        file.deleteOnExit();
+        FileOutputStream fout = new FileOutputStream(file);
+        fout.close();       
+
+        try {
+            Beans.instantiate(null, BEANS_NAME);
+            fail("should throw IOException.");
+        } catch (IOException e) {
+            // expected
+        }
     }
 
     /**

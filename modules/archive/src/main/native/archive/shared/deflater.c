@@ -24,8 +24,10 @@
 #include "jclglob.h"
 #include "jclprots.h"
 
+#ifndef HY_ZIP_API
 void zfree PROTOTYPE ((void *opaque, void *address));
 void *zalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
+#endif
 
 JNIEXPORT void JNICALL
 Java_java_util_zip_Deflater_setDictionaryImpl (JNIEnv * env, jobject recv,
@@ -92,11 +94,15 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
 					  jboolean noHeader)
 {  
   PORT_ACCESS_FROM_ENV (env);
-
   JCLZipStream *jstream;
   z_stream *stream;
   int err = 0;
   int wbits = 15;		/*Use MAX for fastest */
+#ifdef HY_ZIP_API
+  VMI_ACCESS_FROM_ENV (env);
+  HyZipFunctionTable *zipFuncs;
+  zipFuncs = (*VMI)->GetZipFunctions(VMI);
+#endif
 
   /*Allocate mem for wrapped struct */
   jstream = jclmem_allocate_memory (env, sizeof (JCLZipStream));
@@ -113,9 +119,15 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
       throwNewOutOfMemoryError (env, "");
       return -1;
     }
+#ifndef HY_ZIP_API
   stream->opaque = (void *) privatePortLibrary;
   stream->zalloc = zalloc;
   stream->zfree = zfree;
+#else
+  stream->opaque = (void *) VMI;
+  stream->zalloc = zipFuncs->zip_zalloc;
+  stream->zfree =zipFuncs->zip_zfree;
+#endif
   jstream->stream = stream;
   jstream->dict = NULL;
   jstream->inaddr = NULL;

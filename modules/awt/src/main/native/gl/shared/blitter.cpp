@@ -973,7 +973,7 @@ void setRGB
   unsigned char r, unsigned char g, unsigned char b, unsigned char a){
 
       int type = surfStruct->ss_type;
-      unsigned char *p, pixel;
+      unsigned char *p, pixel = 0;
       unsigned short *sp;
       int rc, gc, bc, ac, rgb, pixelBits, bitnum, shift, bitMask, elem, gray, mask,
           error, minError, alphaError, minAlphaError, buf;
@@ -1173,7 +1173,6 @@ void setRGB
               } else  {
                   minAlphaError = 255;
                   minError = 195075; // 255^2 + 255^2 + 255^2
-                  alphaError;
                   error = 0;
 
                   for (int i = 0; i < surfStruct->colormap_size; i++) {

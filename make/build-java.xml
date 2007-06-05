@@ -113,7 +113,7 @@ ${built.files.list}
           target: -compile
          ================================= -->
     <target name="-compile" depends="-prepare-depends, -layout">
-        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
+        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can be downloaded directly from eclipse.org or copied from COMMON_RESOURCES/depends/jars/ecj_3.x folder after the fetch-depends target for JDKTOOLS has been run.">
             <condition>
                 <not>
                     <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
@@ -170,7 +170,6 @@ ${built.files.list}
             <src path="modules/swing/src/main/java/${hy.os.family}" />
             <src path="modules/swing/src/main/java/common" />
             <src path="modules/text/src/main/java" />
-            <src path="modules/tools/src/main/java" />
             <src path="modules/x-net/src/main/java/" />
 
             <classpath>
@@ -240,25 +239,6 @@ ${built.files.list}
 		<fileset dir="${hy.jdk}/jre/lib/boot/xerces-2_9_0"/>
 	</move>
 
-	<!-- Unzip xmlsec jars -->
-	<mkdir dir="${hy.jdk}/jre/lib/boot/xmlsec-1.4.0" />
-	<unzip src="${depends.jars}/xmlsec_1.4.0/xmlsec.zip"
-	       dest="${hy.jdk}/jre/lib/boot" >
-		<patternset>
-			<include name="xml-security-1_4_0/libs/xmlsec-1.4.0.jar" />
-			<include name="xml-security-1_4_0/libs/commons-logging.jar" />
-		</patternset>
-
-                <!-- mapper type="flatten" / -->
-	</unzip>
-
-        <!-- TODO: remove this when switch to next ant version -->
-	<move todir="${hy.jdk}/jre/lib/boot/xmlsec-1.4.0">
-		<fileset dir="${hy.jdk}/jre/lib/boot/xml-security-1_4_0/libs"/>
-	</move>
-        <delete dir="${hy.jdk}/jre/lib/boot/xml-security-1_4_0" />
-
-
         <!-- delete these lines if BC version is greater than jdk15-134 -->
         <!-- delete the original signed.bcprov.jar                      -->
         <delete file="${hy.jdk}/jre/lib/ext/signed.bcprov.jar" />
@@ -298,6 +278,12 @@ ${built.files.list}
         <copy todir="${hy.jdk}/jre/lib">
             <fileset dir="${depends.files}">
                 <include name="net.properties" />
+            </fileset>
+        </copy>
+
+        <copy todir="${hy.jdk}/jre/lib">
+            <fileset dir="${depends.files}">
+                <include name="rowset.properties" />
             </fileset>
         </copy>
     </target>

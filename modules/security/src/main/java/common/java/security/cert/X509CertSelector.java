@@ -1052,11 +1052,14 @@ public class X509CertSelector implements CertSelector {
      * @com.intel.drl.spec_ref
      */
     public Object clone() {
-        X509CertSelector result = new X509CertSelector();
-        result.certificateEquals = this.certificateEquals;
-        result.serialNumber = this.serialNumber;
-        result.issuer = this.issuer;
-        result.subject = this.subject;
+        X509CertSelector result;
+
+		try {
+			result = (X509CertSelector) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+
         if (this.subjectKeyIdentifier != null) {
             result.subjectKeyIdentifier =
                 new byte[this.subjectKeyIdentifier.length];
@@ -1071,9 +1074,6 @@ public class X509CertSelector implements CertSelector {
                     result.authorityKeyIdentifier, 0,
                     this.authorityKeyIdentifier.length);
         }
-        result.certificateValid = this.certificateValid;
-        result.subjectPublicKeyAlgID = this.subjectPublicKeyAlgID;
-        result.privateKeyValid = this.privateKeyValid;
         if (this.subjectPublicKey != null) {
             result.subjectPublicKey = new byte[this.subjectPublicKey.length];
             System.arraycopy(this.subjectPublicKey, 0, result.subjectPublicKey,
@@ -1087,8 +1087,6 @@ public class X509CertSelector implements CertSelector {
         result.extendedKeyUsage = (this.extendedKeyUsage == null)
             ? null
             : new HashSet(this.extendedKeyUsage);
-        result.matchAllNames = this.matchAllNames;
-        result.pathLen = this.pathLen;
         if (this.subjectAltNames != null) {
             result.subjectAltNames = new ArrayList[9];
             for (int i=0; i<9; i++) {
@@ -1098,15 +1096,12 @@ public class X509CertSelector implements CertSelector {
                 }
             }
         }
-        result.nameConstraints = this.nameConstraints;
         result.policies = (this.policies == null)
             ? null
             : new HashSet(this.policies);
         result.pathToNames = (this.pathToNames == null)
             ? null
             : new ArrayList(this.pathToNames);
-        result.subjectPublicKeyImpl = this.subjectPublicKeyImpl;
-
         return result;
     }
 }

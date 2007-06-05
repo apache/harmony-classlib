@@ -24,13 +24,16 @@ BUILDFILES = \
   $(SHAREDSUB)pngencoder.o \
   libpng.a
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+endif
+
+MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS)
 
-DLLNAME=../libpngencoder.so
+DLLNAME=../libpngencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYPNGENCODER_0.1
 
 CLEANFILES=jconfig.h

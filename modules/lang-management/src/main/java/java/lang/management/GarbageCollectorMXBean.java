@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for the garbage collector system.
+ * <code>GarbageCollectorMXBean</code> is an interface used by the management
+ * system to access garbage collector properties.
  * </p>
  * <p>
  * <code>ObjectName</code> pattern: java.lang:type=GarbageCollector,name=<i>collector_name</i>

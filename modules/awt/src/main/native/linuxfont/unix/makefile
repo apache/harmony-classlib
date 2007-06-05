@@ -21,16 +21,22 @@ INCLUDES += -I$(SHARED)common -I/usr/X11R6/include -I/usr/include/freetype2 \
 ifeq ($(HY_OS),freebsd)
 INCLUDES += -I/usr/local/include -I/usr/local/include/freetype2
 endif
+ifeq ($(HY_OS),macosx)
+INCLUDES += -I/sw/lib/freetype2/include/freetype2 -I/sw/lib/freetype2/include
+endif
 
 BUILDFILES = LinuxNativeFont.o
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+endif
+
+MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(XLIBS)
 
-DLLNAME=../liblinuxfont.so
+DLLNAME=../liblinuxfont$(HY_SHLIB_SUFFIX)
 EXPNAME=HYLINUXFONT_0.1
 
 include $(HY_HDK)/build/make/rules.mk

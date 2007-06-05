@@ -19,8 +19,8 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class ByteEditor extends PropertyEditorSupport {
-
+public final class ByteEditor extends PropertyEditorSupport {
+    
     public ByteEditor(Object source) {
         super(source);
     }
@@ -30,22 +30,13 @@ public class ByteEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsText();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        try {
-            setValue(new Byte(text));
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.toString());
-        }
+        setValue(new Byte(text));
     }
 
     @Override
     public String getJavaInitializationString() {
-        return getValueAsText();
+        return new StringBuilder("((byte)").append(getValue()).append(")").toString();
     }
 
     @Override
@@ -58,15 +49,5 @@ public class ByteEditor extends PropertyEditorSupport {
         if (value instanceof Byte) {
             super.setValue(value);
         }
-    }
-
-    private String getValueAsText() {
-        String result = null;
-        Object value = getValue();
-        if (value != null) {
-            Byte bValue = (Byte) value;
-            result = bValue.toString();
-        }
-        return result;
     }
 }

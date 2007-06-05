@@ -272,6 +272,48 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         assertNull(juc.getCertificates());
     }
 
+    /**
+     * @tests java.net.JarURLConnection#getContentLength()
+     * Regression test for HARMONY-3665
+     */
+    public void test_getContentLength() throws Exception {
+        // check length for jar file itself
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/");
+        assertEquals("Returned incorrect size for jar file", 33095,
+                u.openConnection().getContentLength());
+
+        // check length for jar entry
+        u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/plus.bmp");
+        assertEquals("Returned incorrect size for the entry", 190,
+                u.openConnection().getContentLength());
+    }
+
+    /**
+     * @tests java.net.JarURLConnection#getContentType()
+     * Regression test for HARMONY-3665
+     */
+    public void test_getContentType() throws Exception {
+        // check type for jar file itself
+        URL u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/");
+        assertEquals("Returned incorrect type for jar file", "x-java/jar",
+                u.openConnection().getContentType());
+
+        // check type for jar entry with known type
+        u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/plus.bmp");
+        assertEquals("Returned incorrect type for the entry with known type",
+                "image/bmp", u.openConnection().getContentType());
+
+        // check type for jar entry with unknown type
+        u = new URL("jar:"
+                + BASE.toString()+"/lf.jar!/Manifest.mf");
+        assertEquals("Returned incorrect type for the entry with known type",
+                "content/unknown", u.openConnection().getContentType());
+    }
+
 	protected void setUp() {
 	}
 

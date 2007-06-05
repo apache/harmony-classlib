@@ -31,13 +31,24 @@ public final class DatagramPacket {
 
     byte[] data;
 
+    /**
+     * Length of the data to be sent or size of data that was received via
+     * DatagramSocket#receive() method call. 
+     */
     int length;
+
+    /**
+     * Size of internal buffer that is used to store received data. Should be
+     * greater or equal to "length" field.
+     */
+    int capacity;
 
     InetAddress address;
 
     int port = -1; // The default port number is -1
 
     int offset = 0;
+
 
     /**
      * Constructs a new <code>DatagramPacket</code> suitable for receiving
@@ -186,6 +197,7 @@ public final class DatagramPacket {
         data = buf;
         offset = anOffset;
         length = aLength;
+        capacity = aLength;
     }
 
     /**
@@ -196,6 +208,7 @@ public final class DatagramPacket {
      */
     public synchronized void setData(byte[] buf) {
         length = buf.length; // This will check for null
+        capacity = buf.length;
         data = buf;
         offset = 0;
     }
@@ -211,6 +224,7 @@ public final class DatagramPacket {
             throw new IllegalArgumentException(Msg.getString("K002f")); //$NON-NLS-1$
         }
         length = len;
+        capacity = len;
     }
 
     /**

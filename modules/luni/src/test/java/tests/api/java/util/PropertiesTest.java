@@ -89,7 +89,7 @@ public class PropertiesTest extends junit.framework.TestCase {
     public void test_getPropertyLjava_lang_StringLjava_lang_String2() {
         // regression test for HARMONY-3518
         MyProperties props = new MyProperties();
-        assertEquals(props.getProperty("key", "defaultValue"), "defaultValue");
+        assertEquals("defaultValue", props.getProperty("key", "defaultValue"));
     }
 
     // regression testing for HARMONY-3518

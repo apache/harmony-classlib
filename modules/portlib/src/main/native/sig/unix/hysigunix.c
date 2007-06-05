@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(MACOSX)
 #include <sys/signalvar.h>
 #endif
 #if defined(LINUX)

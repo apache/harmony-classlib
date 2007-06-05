@@ -783,17 +783,12 @@ public class SSLSocketImplTest extends TestCase {
             }
 
             server.close(); // makes error during the handshake
-            try {
-                thread.join();
-                if ((session[0] == null) ||
-                        (!session[0].getCipherSuite()
-                         .endsWith("_NULL_WITH_NULL_NULL"))) {
-                    fail("Returned session is null "
-                            + "or not TLS_NULL_WITH_NULL_NULL");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail("Unexpected exception: "+e.getMessage());
+            thread.join();
+            if ((session[0] == null) ||
+                (!session[0].getCipherSuite()
+                 .endsWith("_NULL_WITH_NULL_NULL"))) {
+                fail("Returned session is null "
+                     + "or not TLS_NULL_WITH_NULL_NULL");
             }
         } finally {
             if (server != null) {
@@ -886,14 +881,9 @@ public class SSLSocketImplTest extends TestCase {
             }
 
             server.close(); // makes error during the handshake
-            try {
-                thread.join();
-                if (exception[0] == null) {
-                    fail("Expected IOException was not thrown");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail("Unexpected exception: "+e.getMessage());
+            thread.join();
+            if (exception[0] == null) {
+                fail("Expected IOException was not thrown");
             }
         } finally {
             if (server != null) {

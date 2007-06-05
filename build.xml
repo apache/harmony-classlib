@@ -159,7 +159,7 @@ Building native libs and executables...
         <ant antfile="make/build-native.xml" inheritall="false" target="clean" />
     </target>
 
-    <target name="test"
+    <target name="test" depends="-init-hdk"
             description="Runs all tests">
         <echo>
 ========================================

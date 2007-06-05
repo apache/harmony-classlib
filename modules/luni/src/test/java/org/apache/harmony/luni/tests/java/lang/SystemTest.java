@@ -19,6 +19,7 @@ package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Map;
@@ -186,6 +187,24 @@ public class SystemTest extends junit.framework.TestCase {
 		}
 		assertTrue("Wrong encoding: " + encoding, !is8859_1 || found8859_1);
 	}
+
+    /**
+     * @tests java.lang.System#getProperty(java.lang.String)
+     * Tests that there are no extra path separator in boot class path.
+     * Regression test for HARMONY-3298
+     */
+    public void test_getProperty_bootClassPath() {
+        String bootClassPath = System.getProperty("org.apache.harmony.boot.class.path");
+
+        if (bootClassPath == null) {
+            bootClassPath = System.getProperty("sun.boot.class.path");
+        }
+
+        if (bootClassPath != null
+                && (bootClassPath.indexOf(File.pathSeparator + File.pathSeparator) >= 0)) {
+            fail("Boot class path contains extra path separator: " + bootClassPath);
+        }
+    }
 
 	/**
 	 * @tests java.lang.System#getProperty(java.lang.String, java.lang.String)

@@ -17,6 +17,7 @@
 
 package tests.api.java.util;
 
+import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,8 +31,12 @@ import java.util.TreeMap;
 
 import tests.support.Support_MapTest2;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 public class IdentityHashMapTest extends junit.framework.TestCase {
-	class MockMap extends AbstractMap {
+	private static final String ID = "hello";
+
+    class MockMap extends AbstractMap {
 		public Set entrySet() {
 			return null;
 		}
@@ -424,6 +429,16 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 				!myIdentityHashMap.containsValue(objArray2[0]));
 
 	}
+	
+	/**
+	 * @tests java.util.IdentityHashMap#Serialization()
+	 */
+	public void test_Serialization() throws Exception {
+		IdentityHashMap<String, String> map = new IdentityHashMap<String, String>();
+		map.put(ID, "world");
+		SerializationTest.verifySelf(map, comparator);
+        SerializationTest.verifyGolden(this, map, comparator);
+	}
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -443,4 +458,15 @@ public class IdentityHashMapTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown() {
 	}
+	
+	private static final SerializationTest.SerializableAssert comparator = new 
+	                         SerializationTest.SerializableAssert() {
+
+		public void assertDeserialized(Serializable initial, Serializable deserialized) {
+			IdentityHashMap<String, String> initialMap = (IdentityHashMap<String, String>) initial;
+			IdentityHashMap<String, String> deseriaMap = (IdentityHashMap<String, String>) deserialized;
+			assertEquals("should be equal", initialMap.size(), deseriaMap.size());
+		}
+		
+	};
 }

@@ -279,7 +279,7 @@ void JNICALL Java_java_net_PlainMulticastSocketImpl_createMulticastSocketImpl PR
 /* NativesCommonZipFile*/
 void throwJavaZIOException PROTOTYPE((JNIEnv * env, const char *message));
 void throwNewInternalError PROTOTYPE((JNIEnv * env, const char * message));
-void JNICALL Java_java_util_zip_ZipFile_closeZipImpl PROTOTYPE((JNIEnv * env, jobject recv));
+void JNICALL Java_java_util_zip_ZipFile_closeZipImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
 jobject JNICALL Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor, jlong nextEntry));
 void JNICALL Java_java_util_zip_ZipFile_ntvinit PROTOTYPE((JNIEnv * env, jclass cls));
 void throwNewIllegalStateException PROTOTYPE((JNIEnv * env, const char * message));

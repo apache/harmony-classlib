@@ -28,11 +28,14 @@ BUILDFILES = \
   $(SHAREDSUB)/NativeImageFormat.o \
   liblcms.a
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+endif
 
-DLLNAME=../liblcmm.so
+MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+
+DLLNAME=../liblcmm$(HY_SHLIB_SUFFIX)
 EXPNAME=HYLCMM_0.1
 
 include $(HY_HDK)/build/make/rules.mk

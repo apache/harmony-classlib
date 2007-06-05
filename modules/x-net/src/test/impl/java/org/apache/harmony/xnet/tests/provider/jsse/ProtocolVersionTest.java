@@ -46,11 +46,11 @@ public class ProtocolVersionTest extends TestCase {
     }
 
     public void testGetByVersion() {
-        assertEquals(ProtocolVersion.getByVersion(new byte[] { 2, 1 }), null);
-        assertEquals(ProtocolVersion.getByVersion(new byte[] { 3, 0 }).name,
-                "SSLv3");
-        assertEquals(ProtocolVersion.getByVersion(new byte[] { 3, 1 }).name,
-                "TLSv1");
+        assertNull(ProtocolVersion.getByVersion(new byte[] { 2, 1 }));
+        assertEquals("SSLv3",
+                     ProtocolVersion.getByVersion(new byte[] { 3, 0 }).name);
+        assertEquals("TLSv1",
+                     ProtocolVersion.getByVersion(new byte[] { 3, 1 }).name);
     }
 
     /*
@@ -65,21 +65,19 @@ public class ProtocolVersionTest extends TestCase {
     }
 
     public void testGetByName() {
-        assertEquals(ProtocolVersion.getByName("SSLv2"), null);
-        assertEquals(ProtocolVersion.getByName("SSLv3").name, "SSLv3");
-        assertEquals(ProtocolVersion.getByName("TLSv1").name, "TLSv1");
+        assertNull(ProtocolVersion.getByName("SSLv2"));
+        assertEquals("SSLv3", ProtocolVersion.getByName("SSLv3").name);
+        assertEquals("TLSv1", ProtocolVersion.getByName("TLSv1").name);
     }
 
     public void testGetLatestVersion() {
         ProtocolVersion ver = ProtocolVersion.getLatestVersion(new String[] {
                 "SSLv2", "TLSv1", "SSLv3" });
-        assertTrue("Incorrect protocol version " + ver.name, ver.name
-                .equals("TLSv1"));
+        assertEquals("Incorrect protocol version", "TLSv1", ver.name);
 
         ver = ProtocolVersion.getLatestVersion(new String[] {"SSLv3",
                 "unknown", "SSLv2" });
-        assertEquals("Incorrect protocol version " + ver.name, ver.name,
-                "SSLv3");
+        assertEquals("Incorrect protocol version", "SSLv3", ver.name);
     }
 
 }

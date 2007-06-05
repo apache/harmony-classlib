@@ -34,8 +34,6 @@
 
 #define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable."
 
-#define HY_PATH_SLASH DIR_SEPARATOR
-
 /* Tools launchers will invoke HY_TOOLS_PACKAGE+"."+<execname>+"."+HY_TOOLS_MAIN_TYPE */
 #define HY_TOOLS_PACKAGE "org.apache.harmony.tools"
 #define HY_TOOLS_MAIN_TYPE "Main"
@@ -48,7 +46,7 @@
 #define PLATFORM_STRNICMP strnicmp
 #endif
 
-#if (LINUX) || defined(FREEBSD) || defined(AIX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX)
 #define PLATFORM_STRNICMP strncasecmp
 #endif
 
@@ -95,13 +93,15 @@ PROTOTYPE ((HyPortLibrary * portLib, void **vmOptionsTable, int argc,
             HyStringBuffer ** javaLibraryPathInd,
             char *vmdllsubdir, int *vmOptionsCount));
 
-#if defined(WIN32)
-#define	DIR_SEPERATOR '\\'
-#define	DIR_SEPERATOR_STRING "\\"
-#else
-#define	DIR_SEPERATOR '/'
-#define	DIR_SEPERATOR_STRING "/"
-#endif
+void
+printUsageMessage(HyPortLibrary * portLibrary)
+{
+  PORT_ACCESS_FROM_PORT (portLibrary);
+  hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony Java launcher\n");
+  hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
+  hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
+                  "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
+}
 
 /**
  * The actual main function wrapped in the standard GP-handler.
@@ -151,7 +151,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   hysysinfo_get_executable_name (argv[0], &exeName);
 
   /* Pick out the end of the exe path, and start of the basename */
-  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  exeBaseName = strrchr(exeName, DIR_SEPARATOR);
   if (exeBaseName == NULL) {
 	  endPathPtr = exeBaseName = exeName;
   } else {
@@ -196,10 +196,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
      *  they thought they were running Java...
 	 */
 	if (argc <= 1) {
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, "Harmony Java launcher\n");
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT, HY_COPYRIGHT_STRING "\n");
-      hyfile_printf (PORTLIB, HYPORT_TTY_OUT,
-                     "java [-vm:vmdll -vmdir:dir -D... [-X...]] [args]\n");
+      printUsageMessage(PORTLIB);
       goto bail;
     }
 
@@ -208,6 +205,14 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	* have a '-jar' argument.
 	*/
 	for (i = 1; i < argc; i++) {
+        if ((0 == strcmp ("-help", argv[i])) ||
+            (0 == strcmp ("-?", argv[i])) ||
+            (0 == strcmp ("-X", argv[i]))) {
+            printUsageMessage(PORTLIB);
+            rc = 0;
+            goto bail;
+        }
+        
 		if ((0 == strcmp ("-cp", argv[i])) ||
 		    (0 == strcmp ("-classpath", argv[i]))) {
 			/* Skip the classpath argument while looking for main class */
@@ -268,6 +273,11 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
   }
 
+  if (mainClass == NULL && !isStandaloneJar && !versionFlag) {
+    printUsageMessage(PORTLIB);
+    goto bail;
+  }
+
   /* Useful when debugging */
   /* hytty_printf(PORTLIB, "After...\n");
    * for (i=0; i<argc; i++) {
@@ -309,7 +319,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
     vmiPath =
     hymem_allocate_memory (strlen (exeName) + strlen (vmdllsubdir) +
                             strlen (vmdll) +
-                            strlen (DIR_SEPERATOR_STRING) + 1);
+                            strlen (DIR_SEPARATOR_STR) + 1);
     if (vmiPath == NULL)
     {
         /* HYNLS_EXELIB_INTERNAL_VM_ERR_OUT_OF_MEMORY=Internal VM error: Out of memory\n */
@@ -323,7 +333,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
     strcpy (newPathToAdd, exeName);
     strcat (newPathToAdd, vmdllsubdir);
     strcpy (vmiPath, newPathToAdd);
-    strcat (vmiPath, DIR_SEPERATOR_STRING);
+    strcat (vmiPath, DIR_SEPARATOR_STR);
     strcat (vmiPath, vmdll);
 
 #ifndef HY_NO_THR
@@ -741,7 +751,8 @@ cleanup:
     {
       hymem_free_memory (mainClassJar);
     }
-  (*jvm)->DetachCurrentThread(jvm);
+
+  // by spec we must call DestroyJavaVM without detaching main thread
   (*jvm)->DestroyJavaVM (jvm);
   /*if ((*jvm)->DestroyJavaVM(jvm)) {
      hytty_printf (PORTLIB, "Failed to destroy JVM\n");
@@ -801,7 +812,7 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
   PORT_ACCESS_FROM_PORT (portLibrary);
   /* get the path to the executable */
   hysysinfo_get_executable_name (argv[0], &exeName);
-  endPathPtr = strrchr (exeName, DIR_SEPERATOR);
+  endPathPtr = strrchr (exeName, DIR_SEPARATOR);
   endPathPtr[0] = '\0';
 
   subst_values[0] = exeName;
@@ -1055,13 +1066,8 @@ addDirsToPath (int count, char *newPathToAdd[], char **argv)
   main_get_executable_name (argv[0], &exeName);
 #endif /* HY_NO_THR */
 
-#if defined(WIN32)
-  variableName = "PATH";
-  separator = ";";
-#else
-  variableName = "LD_LIBRARY_PATH";
-  separator = ":";
-#endif
+  variableName = LIBPATH_ENV_VAR;
+  separator = PATH_SEPARATOR_STR;
 
   oldPath = getenv (variableName);
   if (!oldPath) {
@@ -1516,7 +1522,7 @@ main_addVMDirToPath(int argc, char **argv, char **envp)
   main_get_executable_name (argv[0], &exeName);
 
   /* Pick out the end of the exe path, and start of the basename */
-  exeBaseName = strrchr(exeName, HY_PATH_SLASH);
+  exeBaseName = strrchr(exeName, DIR_SEPARATOR);
   if (exeBaseName == NULL) {
     endPathPtr = exeBaseName = exeName;
   } else {

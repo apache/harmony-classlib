@@ -28,13 +28,17 @@ BUILDFILES = \
   $(SHAREDSUB)/SurfaceDataStructure.o \
   libpng.a
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a
+endif
+
+MDLLIBFILES += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS)
 
-DLLNAME=../libgl.so
+DLLNAME=../libgl$(HY_SHLIB_SUFFIX)
 EXPNAME=HYGL_0.1
 
 include $(HY_HDK)/build/make/rules.mk

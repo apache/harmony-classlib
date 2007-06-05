@@ -465,6 +465,102 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertFalse(pd.mutatesTo(null, null));
         assertFalse(pd.mutatesTo(null, "test"));
     }
+    
+    //Regression for HARMONY-3782
+    public void test_mutates_with_equals_true() {
+        MyObjectEqualsTrue o1 = new MyObjectEqualsTrue();
+        MyObjectEqualsTrue o2 = new MyObjectEqualsTrue();
+        MyDefaultPersistenceDelegate myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate();
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertFalse(o1.equalsCalled);        
+        
+        o1 = new MyObjectEqualsTrue();
+        o2 = new MyObjectEqualsTrue();
+        myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate(new String[0]);
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertFalse(o1.equalsCalled);
+        
+        o1 = new MyObjectEqualsTrue();
+        o2 = new MyObjectEqualsTrue();
+        myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate(new String[]{"TEST_ARUGMENT_NAME"});
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertTrue(o1.equalsCalled);              
+    }
+    
+    
+    public void test_mutates_with_equals_false() {
+        MyObjectEqualsFalse o1 = new MyObjectEqualsFalse();
+        MyObjectEqualsFalse o2 = new MyObjectEqualsFalse();
+        MyDefaultPersistenceDelegate myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate();
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertFalse(o1.equalsCalled);
+        
+        o1 = new MyObjectEqualsFalse();
+        o2 = new MyObjectEqualsFalse();
+        myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate(new String[0]);
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertFalse(o1.equalsCalled);
+        
+        o1 = new MyObjectEqualsFalse();
+        o2 = new MyObjectEqualsFalse();
+        myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate(new String[]{"TEST_ARUGMENT_NAME"});
+        assertFalse(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertTrue(o1.equalsCalled);        
+    }
+    
+    public void test_mutates_with_no_equals()
+    {
+        MyObjectNoExplicitEquals o1 = new MyObjectNoExplicitEquals();
+        MyObjectNoExplicitEquals o2 = new MyObjectNoExplicitEquals();
+        MyDefaultPersistenceDelegate myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate();
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertFalse(o1.equalsCalled);
+        
+        o1 = new MyObjectNoExplicitEquals();
+        o2 = new MyObjectNoExplicitEquals();
+        myDefaultPersistenceDelegate = new MyDefaultPersistenceDelegate(new String[]{"TEST_ARUGMENT_NAME"});
+        assertTrue(myDefaultPersistenceDelegate.mutatesTo(o1, o2));
+        assertFalse(o1.equalsCalled);
+    }
+    
+    public class MyDefaultPersistenceDelegate extends
+            DefaultPersistenceDelegate {
+        public MyDefaultPersistenceDelegate() {
+            super();
+        }
+
+        public MyDefaultPersistenceDelegate(String[] constructorPropertyNames) {
+            super(constructorPropertyNames);
+        }
+
+        public boolean mutatesTo(Object oldInstance, Object newInstance) {
+            return super.mutatesTo(oldInstance, newInstance);
+        }
+    }
+
+    public class MyObjectEqualsTrue extends Object {
+        public boolean equalsCalled = false;
+
+        @Override
+        public boolean equals(Object object) {
+            equalsCalled = true;
+            return true;
+        }
+    }
+
+    public class MyObjectEqualsFalse extends Object {
+        public boolean equalsCalled = false;
+
+        @Override
+        public boolean equals(Object object) {
+            equalsCalled = true;
+            return false;
+        }
+    }
+
+    public class MyObjectNoExplicitEquals extends MyObjectEqualsFalse {
+
+    }
 
     /*
      * Test initialize() under normal conditions with a bean that does not have

@@ -52,7 +52,7 @@ public class Services {
     /**
      * Refresh number
      */
-    public static int refreshNumber = 1;
+    static int refreshNumber = 1;
 
     // Registered providers
     private static final List<Provider> providers = new ArrayList<Provider>(20);
@@ -85,8 +85,10 @@ public class Services {
                 providers.add(p);
                 providersNames.put(p.getName(), p);
                 initServiceInfo(p);
-            } catch (Exception e) { // ignore
-            }
+            } catch (ClassNotFoundException e) { // ignore Exceptions
+            } catch (IllegalAccessException e) {
+			} catch (InstantiationException e) {
+			}
         }
         Engine.door.renumProviders();
     }

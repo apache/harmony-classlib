@@ -76,8 +76,7 @@ public class KeyManagerFactory2Test extends TestCase {
     }
 
     private void checkResult(KeyManagerFactory keyMF)
-        throws NoSuchAlgorithmException, UnrecoverableKeyException,
-        KeyStoreException {
+        throws Exception {
         KeyStore kStore = null;
         ManagerFactoryParameters mfp = null;
         
@@ -107,15 +106,9 @@ public class KeyManagerFactory2Test extends TestCase {
         } catch (KeyStoreException e) {
             fail("default keystore is not supported");
             return;
-        } catch (Exception e) {
-            fail("Unexpected: "+e.toString());
-            return;            
         }
-        try {
-            keyMF.init(kStore, pass);
-        } catch (KeyStoreException e) {
-            fail("Unexpected KeyStoreException was thrown");
-        }
+        keyMF.init(kStore, pass);
+
         mfp = (ManagerFactoryParameters) new MyKeyManagerFactorySpi.Parameters(kStore, null);
         try {
             keyMF.init(mfp);
@@ -123,11 +116,7 @@ public class KeyManagerFactory2Test extends TestCase {
         } catch (InvalidAlgorithmParameterException e) {
         }
         mfp = (ManagerFactoryParameters) new MyKeyManagerFactorySpi.Parameters(kStore, pass);
-        try {
-            keyMF.init(mfp);
-        } catch (InvalidAlgorithmParameterException e) {
-            fail("Unexpected InvalidAlgorithmParameterException was thrown");
-        }
+        keyMF.init(mfp);
     }
     /**
      * Test for <code>getInstance(String algorithm)</code> method
@@ -136,8 +125,7 @@ public class KeyManagerFactory2Test extends TestCase {
      * throws NoSuchAlgorithmException when algorithm is not correct;
      * returns KeyManagerFactory object
      */
-    public void testGetInstance01() throws NoSuchAlgorithmException,
-            KeyStoreException, UnrecoverableKeyException {
+    public void testGetInstance01() throws Exception {
         try {
             KeyManagerFactory.getInstance(null);
             fail("NoSuchAlgorithmException or NullPointerException should be thrown (algorithm is null");
@@ -174,9 +162,7 @@ public class KeyManagerFactory2Test extends TestCase {
      * throws NoSuchProviderException when provider is available;
      * returns KeyManagerFactory object
      */
-    public void testGetInstance02() throws NoSuchAlgorithmException,
-            NoSuchProviderException, IllegalArgumentException,
-            KeyStoreException, UnrecoverableKeyException {
+    public void testGetInstance02() throws Exception {
         try {
             KeyManagerFactory.getInstance(null, mProv.getName());
             fail("NoSuchAlgorithmException or NullPointerException should be thrown (algorithm is null");
@@ -242,9 +228,7 @@ public class KeyManagerFactory2Test extends TestCase {
      * throws IllegalArgumentException when provider is null;
      * returns KeyManagerFactory object
      */
-    public void testGetInstance03() throws NoSuchAlgorithmException,
-            IllegalArgumentException, KeyStoreException,
-            UnrecoverableKeyException {
+    public void testGetInstance03() throws Exception {
         try {
             KeyManagerFactory.getInstance(null, mProv);
             fail("NoSuchAlgorithmException or NullPointerException should be thrown (algorithm is null");

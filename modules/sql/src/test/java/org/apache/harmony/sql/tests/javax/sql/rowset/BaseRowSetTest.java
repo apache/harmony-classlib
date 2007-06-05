@@ -17,13 +17,23 @@
 
 package org.apache.harmony.sql.tests.javax.sql.rowset;
 
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Ref;
 import java.sql.SQLException;
 import java.sql.Types;
+
 import javax.sql.rowset.BaseRowSet;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialRef;
+
 import junit.framework.TestCase;
 
 public class BaseRowSetTest extends TestCase {
-    
+
     public void testGetParams() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         Object[] params = brs.getParams();
@@ -153,6 +163,52 @@ public class BaseRowSetTest extends TestCase {
         assertEquals(Short.valueOf((short)1), params[0]);
     }
     
+    public void testSetArray() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Array a = new MockArray();
+        brs.setArray(1, a);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue("Should have stored a SerialArray", params[0] instanceof SerialArray);
+    }
+    
+    public void testSetBlob() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Blob b = new MockBlob();
+        brs.setBlob(1, b);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue("Should have stored a SerialBlob", params[0] instanceof SerialBlob);
+    }
+    
+    public void testSetClob() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Clob c = new MockClob();
+        brs.setClob(1, c);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue(c != params[0]);
+        assertTrue("Should have stored a SerialClob", params[0] instanceof SerialClob);
+    }
+    
+    public void testSetRef() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        Ref r = new MockRef();
+        brs.setRef(1, r);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertTrue(r != params[0]);
+        assertTrue("Should have stored a SerialRef", params[0] instanceof SerialRef);        
+    }
+    
     private static final class BaseRowSetImpl extends BaseRowSet {
         private static final long serialVersionUID = 1L;
 
@@ -161,4 +217,5 @@ public class BaseRowSetTest extends TestCase {
             super.initParams();
         }
     }
+
 }

@@ -21,7 +21,7 @@ import java.awt.HeadlessException;
 
 import org.apache.harmony.awt.gl.CommonGraphicsEnvironment;
 
-public class HeadlessGraphicsEnvironment extends CommonGraphicsEnvironment {
+class HeadlessGraphicsEnvironment extends CommonGraphicsEnvironment {
     
     @Override
     public boolean isHeadlessInstance() {

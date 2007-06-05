@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -30,9 +32,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
+import java.net.Proxy.Type;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.image.ImageProducer;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_Jetty;
@@ -836,7 +840,8 @@ public class URLTest extends junit.framework.TestCase {
 		File resources = Support_Resources.createTempFolder();
 		try {
 			Support_Resources.copyFile(resources, null, "hyts_htmltest.html");
-			u = new URL("file:/" + resources.toString() + "/hyts_htmltest.html");
+            u = new URL("file", "", resources.getAbsolutePath() + 
+                    "/hyts_htmltest.html");
 			u.openConnection();
 			is = (InputStream) u.getContent();
 			is.read(ba = new byte[4096]);
@@ -851,12 +856,56 @@ public class URLTest extends junit.framework.TestCase {
 		} finally {
 			// Support_Resources.deleteTempFolder(resources);
 		}
-
 	}
 
+    // Regression test for HARMONY-1718
+    public void test_getContent1718() throws IOException {
+        URL url;
+        
+        url = Support_Resources.class.getResource(
+                Support_Resources.RESOURCE_PACKAGE + "Harmony.GIF");
+        assertTrue("Returned object doesn't implement ImageProducer interface",
+                url.getContent() instanceof ImageProducer);      
+
+        url = Support_Resources.class.getResource(
+                Support_Resources.RESOURCE_PACKAGE + "Harmony.jpg");
+        assertTrue("Returned object doesn't implement ImageProducer interface",
+                url.getContent() instanceof ImageProducer);      
+
+        url = Support_Resources.class.getResource(
+                Support_Resources.RESOURCE_PACKAGE + "Harmony.png");
+        assertTrue("Returned object doesn't implement ImageProducer interface",
+                url.getContent() instanceof ImageProducer);      
+    }
+
+    /**
+     * @tests java.net.URL#getContent(class[])
+     */
+    public void test_getContent_LJavaLangClass() throws Exception{
+        byte[] ba;
+        InputStream is;
+        String s;
+
+        File resources = Support_Resources.createTempFolder();
+
+        Support_Resources.copyFile(resources, null, "hyts_htmltest.html");
+        u = new URL("file", "", resources.getAbsolutePath() + 
+                "/hyts_htmltest.html");
+        u.openConnection();
+
+        is = (InputStream) u.getContent(new Class[]{Object.class});
+        is.read(ba = new byte[4096]);
+        s = new String(ba);
+        assertTrue("Incorrect content " + u
+                + " does not contain: \" A Seemingly Non Important String \"",
+                s.indexOf("A Seemingly Non Important String") >= 0);
+
+
+    }
+    
 	/**
-	 * @tests java.net.URL#openStream()
-	 */
+     * @tests java.net.URL#openStream()
+     */
 	public void test_openStream() throws Exception {
         // Regression test for Harmony-1700
         URL BASE = URLTest.class.getClassLoader().getResource(
@@ -875,7 +924,8 @@ public class URLTest extends junit.framework.TestCase {
 		File resources = Support_Resources.createTempFolder();
 		try {
 			Support_Resources.copyFile(resources, null, "hyts_htmltest.html");
-			u = new URL("file:/" + resources.toString() + "/hyts_htmltest.html");
+            u = new URL("file", "", resources.getAbsolutePath() + 
+                    "/hyts_htmltest.html");
 			// HTTP connection
 			InputStream is1 = u.openStream();
 			assertTrue("Unable to read from stream", is1.read() != 0);
@@ -1039,10 +1089,21 @@ public class URLTest extends junit.framework.TestCase {
 			fail("Threw exception : " + e.getMessage());
 		}
 	}
+    
+    /**
+     * @throws MalformedURLException
+     * @tests java.net.URL#getDefaultPort()
+     */
+    public void test_getDefaultPort() throws MalformedURLException {
+        u = new URL("http://member12.c++.com:9999");
+        assertEquals(80, u.getDefaultPort());
+        u = new URL("ftp://member12.c++.com:9999/");
+        assertEquals(21, u.getDefaultPort());
+    }
 
 	/**
-	 * @tests java.net.URL#getProtocol()
-	 */
+     * @tests java.net.URL#getProtocol()
+     */
 	public void test_getProtocol() {
 		// Test for method java.lang.String java.net.URL.getProtocol()
 		try {
@@ -1148,6 +1209,30 @@ public class URLTest extends junit.framework.TestCase {
 
 		}
 	}
+    
+     
+    
+    /**
+     * @throws IOException 
+     * @tests java.net.URL#openConnection(Proxy)
+     */
+    public void test_openConnection_proxy_SelectorCalled()
+            throws IOException {
+        URL httpUrl = new URL("http://"
+                + Support_Configuration.ProxyServerTestHost
+                + "/cgi-bin/test.pl");
+
+        try {
+            httpUrl.openConnection(null);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e){
+            // expected
+        }
+
+        URLConnection uc = httpUrl.openConnection(new Proxy(Type.SOCKS,
+                new InetSocketAddress(InetAddress.getLocalHost(), 80)));
+        assertEquals(uc.getURL(), httpUrl);
+    }
 
     /**
      * @tests java.net.URL#openConnection()
@@ -1175,6 +1260,37 @@ public class URLTest extends junit.framework.TestCase {
             } catch (Throwable e) {
                 return null;
             }
+        }
+        
+        public URLConnection openConnection(URL arg0, Proxy proxy) throws IOException {
+            return super.openConnection(u, proxy);
+        }
+    }
+    
+    /**
+     * Check UnsupportedOperationException in openConnection(URL arg0, Proxy proxy)
+     */
+    public void test_openConnection_URL_Proxy() throws Exception {
+        // Regression for HARMONY-1131
+        TestURLStreamHandler lh = new TestURLStreamHandler();
+        URL httpUrl = new URL("http://"
+                + Support_Configuration.ProxyServerTestHost
+                + "/cgi-bin/test.pl");
+        Proxy proxy = new Proxy(Type.SOCKS,
+                new InetSocketAddress(InetAddress.getLocalHost(), 80));
+
+        try {
+            lh.openConnection(null , null);
+            fail("UnsupportedOperationException expected, but nothing was thrown!");
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
+
+        try {
+            lh.openConnection(httpUrl , proxy);
+            fail("UnsupportedOperationException expected, but nothing was thrown!");
+        } catch (UnsupportedOperationException e) {
+            // Expected
         }
     }
     

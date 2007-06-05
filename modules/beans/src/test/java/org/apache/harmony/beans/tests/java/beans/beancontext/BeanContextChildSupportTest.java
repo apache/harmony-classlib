@@ -25,6 +25,7 @@ import java.beans.VetoableChangeSupport;
 import java.beans.beancontext.BeanContext;
 import java.beans.beancontext.BeanContextChild;
 import java.beans.beancontext.BeanContextChildSupport;
+import java.beans.beancontext.BeanContextMembershipEvent;
 import java.beans.beancontext.BeanContextSupport;
 import java.io.IOException;
 import java.io.Serializable;
@@ -42,6 +43,8 @@ import org.apache.harmony.beans.tests.support.beancontext.mock.MockPropertyChang
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoChangeListener;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListener;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockVetoableChangeListenerS;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -130,23 +133,10 @@ public class BeanContextChildSupportTest extends TestCase {
 
     public void testAddPropertyChangeListener_NullParam() {
         BeanContextChildSupport support = new MockBeanContextChildSupport();
-
-        try {
-            support.addPropertyChangeListener(null,
-                    new MockPropertyChangeListener());
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
-
-        try {
-            support.addPropertyChangeListener("property name", null);
-            support.firePropertyChange("property name", "old value",
-                    "new value");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        support.addPropertyChangeListener(null, new MockPropertyChangeListener());
+        support.addPropertyChangeListener("property name", null);
+        support.firePropertyChange("property name", "old value",
+                "new value");
     }
 
     public void testAddPropertyChangeListener() {
@@ -196,23 +186,10 @@ public class BeanContextChildSupportTest extends TestCase {
     public void testAddVetoableChangeListener_NullParam()
             throws PropertyVetoException {
         BeanContextChildSupport support = new MockBeanContextChildSupport();
-
-        try {
-            support.addVetoableChangeListener(null,
-                    new MockVetoableChangeListener());
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
-
-        try {
-            support.addVetoableChangeListener("property name", null);
-            support.fireVetoableChange("property name", "old value",
-                    "new value");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        support.addVetoableChangeListener(null,
+                new MockVetoableChangeListener());
+        support.addVetoableChangeListener("property name", null);
+        support.fireVetoableChange("property name", "old value", "new value");
     }
 
     public void testAddVetoableChangeListener() throws PropertyVetoException {
@@ -842,28 +819,28 @@ public class BeanContextChildSupportTest extends TestCase {
                         .getDeserilizedObject(support));
     }
 
-    public void testSerialization_Compatibility() throws IOException,
-            ClassNotFoundException, Exception {
-        MockBeanContextChildDelegateS peer = new MockBeanContextChildDelegateS(
-                "id of peer");
-        BeanContextChildSupport support = peer.support;
-        MockPropertyChangeListener pcl1 = new MockPropertyChangeListener();
-        MockPropertyChangeListenerS pcl2 = new MockPropertyChangeListenerS(
-                "id of pcl2");
-        MockVetoableChangeListener vcl1 = new MockVetoableChangeListener();
-        MockVetoableChangeListenerS vcl2 = new MockVetoableChangeListenerS(
-                "id of vcl2");
-        support.addPropertyChangeListener("beanContext", pcl1);
-        support.addPropertyChangeListener("beanContext", pcl2);
-        support.addVetoableChangeListener("beanContext", vcl1);
-        support.addVetoableChangeListener("beanContext", vcl2);
-
-        assertEqualsSerially(
-                support,
-                (BeanContextChildSupport) SerializationTester
-                        .readObject(support,
-                                "serialization/java/beans/beancontext/BeanContextChildSupport.ser"));
-    }
+     public void testSerialization_Compatibility() throws IOException,
+             ClassNotFoundException, Exception {
+         MockBeanContextChildDelegateS peer = new MockBeanContextChildDelegateS(
+                 "id of peer");
+         BeanContextChildSupport support = peer.support;
+         MockPropertyChangeListener pcl1 = new MockPropertyChangeListener();
+         MockPropertyChangeListenerS pcl2 = new MockPropertyChangeListenerS(
+                 "id of pcl2");
+         MockVetoableChangeListener vcl1 = new MockVetoableChangeListener();
+         MockVetoableChangeListenerS vcl2 = new MockVetoableChangeListenerS(
+                 "id of vcl2");
+         support.addPropertyChangeListener("beanContext", pcl1);
+         support.addPropertyChangeListener("beanContext", pcl2);
+         support.addVetoableChangeListener("beanContext", vcl1);
+         support.addVetoableChangeListener("beanContext", vcl2);
+         SerializationTest.verifyGolden(this, support, new SerializableAssert(){
+             public void assertDeserialized(Serializable orig, Serializable ser) {
+                 assertEqualsSerially((BeanContextChildSupport) orig,
+                         (BeanContextChildSupport) ser);
+             }
+         });
+     }
 
     public static void assertEqualsSerially(BeanContextChildSupport orig,
             BeanContextChildSupport ser) {

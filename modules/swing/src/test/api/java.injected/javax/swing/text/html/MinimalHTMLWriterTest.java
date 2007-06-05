@@ -102,11 +102,11 @@ public class MinimalHTMLWriterTest extends SwingTestCase {
 
         writer.writeAttributes(attrs);
         if (isHarmony()) {
-            assertEquals("  font-style: italic;~  font-family: serif;~",
-                         out.toString());
+            assertTrue("  font-style: italic;~  font-family: serif;~".equals(out.toString())
+                       ^ "  font-family: serif;~  font-style: italic;~".equals(out.toString()));
         } else {
-            assertEquals("  family:serif;~  italic:italic;~",
-                         out.toString());
+            assertTrue("  family:serif;~  italic:italic;~".equals(out.toString())
+                       ^ "  italic:italic;~  family:serif;~".equals(out.toString()));
         }
     }
 

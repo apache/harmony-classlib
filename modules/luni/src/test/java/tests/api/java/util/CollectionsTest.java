@@ -17,6 +17,8 @@
 
 package tests.api.java.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +37,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import org.apache.harmony.luni.internal.nls.Messages;
 
 import tests.support.Support_CollectionTest;
 import tests.support.Support_ListTest;
@@ -1889,6 +1893,25 @@ public class CollectionsTest extends junit.framework.TestCase {
         Map um = Collections.unmodifiableMap(m);
         assertEquals("{one=1, two=2}", um.toString());
     }
+    
+    /**
+     * @tests java.util.Collections#checkType(Object, Class)
+     */
+    public void test_checkType_Ljava_lang_Object_Ljava_lang_Class() throws Exception {
+        Method m = Collections.class.getDeclaredMethod("checkType", Object.class, Class.class);
+   		m.setAccessible(true);
+   		m.invoke(null, new Object(), Object.class);
+    		
+   		try {
+   			m.invoke(null, new Object(), int.class);
+   			fail("should throw InvocationTargetException");
+   		} catch (InvocationTargetException e) {
+            String errMsg = Messages.getString(
+                    "luni.05", Object.class, int.class);
+   			assertEquals(errMsg, e.getCause().getMessage());
+   		}
+    }
+
 
     /**
      * Sets up the fixture, for example, open a network connection. This method

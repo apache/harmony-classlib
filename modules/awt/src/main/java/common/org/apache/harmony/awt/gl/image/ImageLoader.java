@@ -147,7 +147,6 @@ public class ImageLoader extends Thread {
 
         try {
             while (storage.loaders.contains(this)) {
-                Thread.interrupted(); // Reset the interrupted flag
                 DecodingImageSource isrc = getWaitingImageSource();
                 if (isrc != null) {
                     try {

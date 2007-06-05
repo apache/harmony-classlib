@@ -35,6 +35,10 @@ import javax.sound.midi.spi.SoundbankReader;
 import org.apache.harmony.sound.utils.ProviderService;
 
 public class MidiSystem {
+    // This class has no public constructor
+    private MidiSystem() {
+    }
+
     //path to javax.sound.midi.spi.MidiDeviceProvider file in the jar-file
     private final static String midiDeviceProviderPath = 
         "META-INF/services/javax.sound.midi.spi.MidiDeviceProvider";

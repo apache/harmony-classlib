@@ -256,6 +256,7 @@
                 <pathelement path="${hy.beans.bin.test}"/>
                 <pathelement path="${hy.beans.bin.test.support}"/>
                 <pathelement path="${hy.beans.src.test.resources}"/>
+                <pathelement path="${hy.beans}"/>
             </classpath>
             <classpath location="../../build/tests" />
             <classpath location="${hy.hdk}/build/test/support.jar" />

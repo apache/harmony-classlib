@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class IntEditor extends PropertyEditorSupport {
+public final class IntEditor extends PropertyEditorSupport {
 
     public IntEditor(Object source) {
         super(source);
@@ -30,17 +30,8 @@ public class IntEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsText();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        try {
-            setValue(new Integer(text));
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.toString());
-        }
+        setValue(new Integer(text));
     }
 
     @Override

@@ -23,5 +23,7 @@ Import-Package: java.awt,
  java.security,
  java.util,
  org.apache.harmony.awt.gl.image,
+ org.apache.harmony.kernel.vm,
+ org.apache.harmony.luni.util,
  org.w3c.dom
 Export-Package: javax.imageio

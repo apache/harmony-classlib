@@ -53,11 +53,26 @@ final class HeadlessEventDispatchThread extends EventDispatchThread  {
                     toolkit.shutdownWatchdog.setAwtQueueEmpty(true);
                     toolkit.onQueueEmpty();
                     lastPaintTime = System.currentTimeMillis();
+                    waitForAnyEvent();
                 }
             } catch (Throwable t) {
                 t.printStackTrace();
             }
         }
     }   
+
+    private void waitForAnyEvent() {
+        EventQueue eventQueue = toolkit.getSystemEventQueueImpl();
+        if (!eventQueue.isEmpty()) {
+            return;
+        }
+        
+        Object eventMonitor = toolkit.getEventMonitor();
+        synchronized(eventMonitor) {
+            try {
+                eventMonitor.wait();
+            } catch (InterruptedException e) {}
+        }
+    }
 
 }

@@ -96,7 +96,7 @@ class EventDispatchThread extends Thread  {
         if (!eventQueue.isEmpty() || !nativeQueue.isEmpty()) {
             return;
         }
-        Object eventMonitor = nativeQueue.getEventMonitor();
+        Object eventMonitor = toolkit.getEventMonitor();
         synchronized(eventMonitor) {
             try {
                 eventMonitor.wait();

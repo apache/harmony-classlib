@@ -24,6 +24,8 @@
         Ant file of common properties to be imported by other ant files
     </description>
 
+    <property file="${user.home}/.harmony-classlib.properties" />
+
     <!-- Debug or release version -->
     <property name="hy.cfg" value="debug" />
 
@@ -34,7 +36,8 @@
     <property name="hy.javac.target" value="1.5" />
     <property name="hy.javac.maxmem" value="384M" />
 
-    <condition property="hy.javac.debug" value="on" else="off">
+    <!-- Temporarily always include class file debug info -->
+    <condition property="hy.javac.debug" value="on" else="on">
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
@@ -56,6 +59,9 @@
     <condition property="is.linux">
         <os name="linux" />
     </condition>
+    <condition property="is.macosx">
+        <os name="mac os x" />
+    </condition>
     <condition property="is.freebsd">
         <os name="freebsd" />
     </condition>
@@ -64,6 +70,9 @@
     </condition>
     <condition property="is.unix">
         <os family="unix" />
+    </condition>
+    <condition property="is.zos">
+        <os name="z/OS" />
     </condition>
 
     <!-- Normalized operating system family -->
@@ -84,8 +93,14 @@
     <condition property="hy.os" value="freebsd">
         <os name="freebsd" />
     </condition>
+    <condition property="hy.os" value="macosx">
+        <isset property="is.macosx"/>
+    </condition>
     <condition property="hy.os" value="aix">
         <os name="aix" />
+    </condition>
+    <condition property="hy.os" value="zos">
+        <isset property="is.zos"/>
     </condition>
 
     <property name="hy.os" value="${os.name}" />
@@ -114,7 +129,10 @@
         <equals arg1="ia64" arg2="${os.arch}"/>
     </condition>
     <condition property="is.ppc32">
-        <equals arg1="${os.arch}" arg2="ppc32" />
+        <or>
+            <equals arg1="${os.arch}" arg2="ppc32" />
+            <equals arg1="${os.arch}" arg2="ppc" />
+        </or>
     </condition>
     <condition property="is.ppc64">
         <equals arg1="${os.arch}" arg2="ppc64" />
@@ -156,6 +174,9 @@
             <isset property="is.32bit" />
         </and>
     </condition>
+    <condition property="hy.arch" value="ppc32">
+        <isset property="is.ppc32" />
+    </condition>
     <property name="hy.arch" value="${os.arch}" />
     
     <!-- Normalized platform name -->
@@ -167,8 +188,16 @@
     </condition>
     <property name="exe.suffix" value="" />
 
+    <condition property="shlib.prefix" value="">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="shlib.prefix" value="lib" />
+
     <condition property="shlib.suffix" value=".dll">
         <isset property="is.windows"/>
+    </condition>
+    <condition property="shlib.suffix" value=".dylib">
+        <isset property="is.macosx"/>
     </condition>
     <property name="shlib.suffix" value=".so" />
 
@@ -178,6 +207,12 @@
 
     <condition property="linklib.suffix" value=".lib">
         <isset property="is.windows"/>
+    </condition>
+    <condition property="linklib.suffix" value=".x">
+        <isset property="is.zos" />
+    </condition>
+    <condition property="linklib.suffix" value=".dylib">
+        <isset property="is.macosx"/>
     </condition>
     <property name="linklib.suffix" value=".so" />
 
@@ -202,15 +237,24 @@
     <condition property="png.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
+    <condition property="png.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
     <property name="png.home" value="/usr" />
 
     <condition property="lcms.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
+    <condition property="lcms.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
     <property name="lcms.home" value="/usr" />
 
     <condition property="jpeg.home" value="/usr/local">
         <isset property="is.freebsd"/>
+    </condition>
+    <condition property="jpeg.home" value="/sw">
+        <isset property="is.macosx"/>
     </condition>
     <property name="jpeg.home" value="/usr" />
     
@@ -242,6 +286,18 @@
             <equals arg1="${hy.no.sig}" arg2="false" />
         </not>
     </condition>
+
+    <property name="hy.zip.api" value="false" />
+    <condition property="hy.skip.zip.api" value="true">
+        <not>
+            <equals arg1="${hy.zip.api}" arg2="true" />
+        </not>
+     </condition>
+
+    <condition property="hy.libstdc++.suffix" value=".libstdc++6">
+        <isset property="use.libstdc++6"/>
+    </condition>
+    <property name="hy.libstdc++.suffix" value="" />
 
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
@@ -278,7 +334,9 @@ Harmony platform properties:
   is.unix = ${is.unix}
   is.linux = ${is.linux}
   is.freebsd = ${is.freebsd}
+  is.macosx = ${is.macosx}
   is.aix = ${is.aix}
+  is.zos = ${is.zos}
   is.32bit = ${is.32bit}
   is.64bit = ${is.64bit}
   is.x86 = ${is.x86}
@@ -290,6 +348,7 @@ Harmony platform properties:
   is.s390x = ${is.s390x}
 
   exe.suffix = ${exe.suffix}
+  shlib.prefix = ${shlib.prefix}
   shlib.suffix = ${shlib.suffix}
   make.command = ${make.command}
 
@@ -402,6 +461,7 @@ properties in preference to these:
             <exec failonerror="true"
                   executable="${make.command}"
                   dir="@{dir}">
+                <env key="HY_ZIP_API" value="${hy.zip.api}" />
                 <env key="HY_HDK" value="${hy.hdk}" />
                 <env key="HY_CFG" value="${hy.cfg}" />
                 <env key="HY_ARCH" value="${hy.arch}" />
@@ -409,6 +469,8 @@ properties in preference to these:
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <env key="HY_NO_THR" value="${hy.no.thr}" />
+                <env key="HY_SHLIB_SUFFIX" value="${shlib.suffix}" />
+                <env key="HY_LINKLIB_SUFFIX" value="${linklib.suffix}" />
                 <arg line="${make.arg}" />
                 <arg line="@{target}" />
             </exec>

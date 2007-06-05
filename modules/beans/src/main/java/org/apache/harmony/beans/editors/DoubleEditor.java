@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class DoubleEditor extends PropertyEditorSupport {
+public final class DoubleEditor extends PropertyEditorSupport {
 
     public DoubleEditor(Object source) {
         super(source);
@@ -30,22 +30,13 @@ public class DoubleEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsText();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        try {
-            setValue(new Double(text));
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.toString());
-        }
+        setValue(new Double(text));
     }
 
     @Override
     public String getJavaInitializationString() {
-        return getValueAsText();
+        return getValue().toString();
     }
 
     @Override
@@ -58,15 +49,5 @@ public class DoubleEditor extends PropertyEditorSupport {
         if (value instanceof Double) {
             super.setValue(value);
         }
-    }
-
-    private String getValueAsText() {
-        String result = null;
-        Object value = getValue();
-        if (value != null) {
-            Double dValue = (Double) value;
-            result = dValue.toString();
-        }
-        return result;
     }
 }

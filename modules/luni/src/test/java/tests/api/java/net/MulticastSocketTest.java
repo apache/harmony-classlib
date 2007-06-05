@@ -61,19 +61,31 @@ public class MulticastSocketTest extends SocketTestCase {
 
 		volatile public byte[] rbuf = new byte[512];
 
-		volatile DatagramPacket rdp = null;
+        volatile DatagramPacket rdp = null;
+        
+        private InetAddress groupAddr = null;
+        private SocketAddress groupSockAddr = null;
+        private NetworkInterface groupNI = null;
 
-		public void run() {
+        public void run() {
 			try {
-				while (running) {
+                byte[] tmpbuf = new byte[512];
+                DatagramPacket tmpPack =
+                        new DatagramPacket(tmpbuf, tmpbuf.length);
+                
+                while (running) {
 					try {
-						ms.receive(rdp);
-					} catch (java.io.InterruptedIOException e) {
-						Thread.yield();
+                        ms.receive(tmpPack);
+                        
+                        System.arraycopy(tmpPack.getData(), 0, rdp.getData(),
+                                rdp.getOffset(), tmpPack.getLength());
+                        rdp.setLength(tmpPack.getLength());
+                        rdp.setAddress(tmpPack.getAddress());
+                        rdp.setPort(tmpPack.getPort());
+                    } catch (java.io.InterruptedIOException e) {
+                        Thread.yield();
 					}
-					;
 				}
-				;
 			} catch (java.io.IOException e) {
 				System.out.println("Multicast server failed: " + e);
 			} finally {
@@ -81,33 +93,39 @@ public class MulticastSocketTest extends SocketTestCase {
 			}
 		}
 
-		public synchronized void leaveGroup(InetAddress aGroup)
-				throws java.io.IOException {
-			ms.leaveGroup(aGroup);
-		}
-
 		public void stopServer() {
 			running = false;
-		}
+            try {
+                if (groupAddr != null) {
+                    ms.leaveGroup(groupAddr);
+                } else if (groupSockAddr != null) {
+                    ms.leaveGroup(groupSockAddr, groupNI);
+                }
+            } catch (IOException e) {}
+        }
 
-		public MulticastServer(InetAddress anAddress, int aPort)
-				throws java.io.IOException {
-			rbuf = new byte[512];
-			rbuf[0] = -1;
-			rdp = new DatagramPacket(rbuf, rbuf.length);
-			ms = new MulticastSocket(aPort);
-			ms.setSoTimeout(2000);
-			ms.joinGroup(anAddress);
-		}
-
-		public MulticastServer(SocketAddress anAddress, int aPort,
+        public MulticastServer(InetAddress anAddress, int aPort)
+                throws java.io.IOException {
+            rbuf = new byte[512];
+            rbuf[0] = -1;
+            rdp = new DatagramPacket(rbuf, rbuf.length);
+            ms = new MulticastSocket(aPort);
+            ms.setSoTimeout(2000);
+            groupAddr = anAddress;
+            ms.joinGroup(groupAddr);
+        }
+        
+        
+        public MulticastServer(SocketAddress anAddress, int aPort,
 				NetworkInterface netInterface) throws java.io.IOException {
 			rbuf = new byte[512];
 			rbuf[0] = -1;
 			rdp = new DatagramPacket(rbuf, rbuf.length);
 			ms = new MulticastSocket(aPort);
 			ms.setSoTimeout(2000);
-			ms.joinGroup(anAddress, netInterface);
+            groupSockAddr = anAddress;
+            groupNI = netInterface;
+            ms.joinGroup(groupSockAddr, groupNI);
 		}
 	}
 
@@ -319,7 +337,7 @@ public class MulticastSocketTest extends SocketTestCase {
 	public void test_joinGroupLjava_net_InetAddress() {
 		// Test for method void
 		// java.net.MulticastSocket.joinGroup(java.net.InetAddress)
-		String msg = null;
+        String msg = null;
 		InetAddress group = null;
 		int[] ports = Support_PortManager.getNextPortsForUDP(2);
 		int groupPort = ports[0];
@@ -337,9 +355,8 @@ public class MulticastSocketTest extends SocketTestCase {
 		} catch (Exception e) {
 			fail("Exception during joinGroup test: " + e.toString());
 		}
-		assertTrue("Group member did not recv data: ", new String(server.rdp
+        assertTrue("Group member did not recv data: ", new String(server.rdp
 				.getData(), 0, server.rdp.getLength()).equals(msg));
-
 	}
 
 	/**

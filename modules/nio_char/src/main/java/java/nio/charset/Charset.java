@@ -133,6 +133,8 @@ public abstract class Charset implements Comparable<Charset> {
     // cached CharsetEncoder table
     private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable = new HashMap<String, CharsetEncoder>();
 
+    private CharsetEncoder cachedEncoder = null;
+    private CharsetDecoder cachedDecoder = null; 
     /*
      * -------------------------------------------------------------------
      * Global initialization
@@ -672,10 +674,13 @@ public abstract class Charset implements Comparable<Charset> {
      * @return the result of the encoding
      */
     synchronized public final ByteBuffer encode(CharBuffer buffer) {
-        CharsetEncoder e = getCachedCharsetEncoder(canonicalName);
+        if (cachedEncoder == null) {
+            cachedEncoder = getCachedCharsetEncoder(canonicalName);
+        }
+        
         try {
-            synchronized (e) {
-                return e.encode(buffer);
+            synchronized (cachedEncoder) {
+                return cachedEncoder.encode(buffer);
             }
         } catch (CharacterCodingException ex) {
             throw new Error(ex.getMessage(), ex);
@@ -727,10 +732,13 @@ public abstract class Charset implements Comparable<Charset> {
      * @return a character buffer containing the output of the decoding
      */
     public final CharBuffer decode(ByteBuffer buffer) {
-        CharsetDecoder d = getCachedCharsetDecoder(canonicalName);
+        if (cachedDecoder == null) {
+            cachedDecoder = getCachedCharsetDecoder(canonicalName);
+        }
+
         try {
-            synchronized (d) {
-                return d.decode(buffer);
+            synchronized (cachedDecoder) {
+                return cachedDecoder.decode(buffer);
             }
         } catch (CharacterCodingException ex) {
             throw new Error(ex.getMessage(), ex);

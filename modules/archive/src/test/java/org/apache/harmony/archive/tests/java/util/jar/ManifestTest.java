@@ -31,9 +31,11 @@ import tests.support.resource.Support_Resources;
 
 public class ManifestTest extends TestCase {
 
-	private final String jarName = "hyts_patch.jar";
+	private final String JAR_NAME = "hyts_patch.jar";
 
-    private final String attJarName = "hyts_att.jar";
+    private final String ATT_JAR_NAME = "hyts_att.jar";
+
+    private final String MANIFEST_NAME = "manifest/hyts_MANIFEST.MF";
 
     private Manifest m;
     
@@ -45,12 +47,12 @@ public class ManifestTest extends TestCase {
     protected void setUp() {
         resources = Support_Resources.createTempFolder();
         try {
-            Support_Resources.copyFile(resources, null, jarName);
-            JarFile jarFile = new JarFile(new File(resources, jarName));
+            Support_Resources.copyFile(resources, null, JAR_NAME);
+            JarFile jarFile = new JarFile(new File(resources, JAR_NAME));
             m = jarFile.getManifest();
             jarFile.close();
-            Support_Resources.copyFile(resources, null, attJarName);
-            jarFile = new JarFile(new File(resources, attJarName));
+            Support_Resources.copyFile(resources, null, ATT_JAR_NAME);
+            jarFile = new JarFile(new File(resources, ATT_JAR_NAME));
             m2 = jarFile.getManifest();
             jarFile.close();
         } catch (Exception e) {
@@ -70,6 +72,16 @@ public class ManifestTest extends TestCase {
 				.getMainAttributes().isEmpty());
 	}
 
+    /**
+     * @tests java.util.jar.Manifest#Manifest(java.util.jar.Manifest)
+     */
+    public void test_Constructor_Ljava_util_jar_Manifest() throws IOException {
+        Manifest firstManifest = new Manifest(new URL(Support_Resources
+                .getURL(MANIFEST_NAME)).openStream());
+        Manifest secondManifest = new Manifest(firstManifest);
+        assertEquals(firstManifest, secondManifest);
+    }
+	
 	/**
 	 * @tests java.util.jar.Manifest#Manifest(java.io.InputStream)
 	 */
@@ -85,7 +97,7 @@ public class ManifestTest extends TestCase {
 		Manifest manifest = null;
 		try {
 			manifest = new Manifest(new URL(Support_Resources
-					.getURL("manifest/hyts_MANIFEST.MF")).openStream());
+					.getURL(MANIFEST_NAME)).openStream());
 		} catch (MalformedURLException e) {
 			fail("Malformed URL");
 		} catch (IOException e) {
@@ -139,6 +151,34 @@ public class ManifestTest extends TestCase {
 				.isEmpty());
 	}
 
+    /**
+     * @tests java.util.jar.Manifest#clone()
+     */
+    public void test_clone() {
+        Manifest newManifest = (Manifest) m.clone();
+        assertEquals(newManifest, m);
+    }
+
+    /**
+     * @tests java.util.jar.Manifest#equals(java.lang.Object)
+     */
+    public void test_equalsLjava_lang_Object() throws IOException {
+        Manifest firstManifest = new Manifest(new URL(Support_Resources
+                .getURL(MANIFEST_NAME)).openStream());
+        Manifest secondManifest = new Manifest(new URL(Support_Resources
+                .getURL(MANIFEST_NAME)).openStream());
+
+        assertTrue(firstManifest.equals(secondManifest));
+    }
+
+    /**
+     * @tests java.util.jar.Manifest#hashCode()
+     */
+    public void test_hashCode() {
+        Manifest newManifest = (Manifest) m.clone();
+        assertEquals(newManifest.hashCode(), m.hashCode());
+    }
+	
 	/**
 	 * @tests java.util.jar.Manifest#getAttributes(java.lang.String)
 	 */

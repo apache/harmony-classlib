@@ -61,7 +61,6 @@ javax/swing/plaf/basic/BasicOptionPaneUITest.java
 javax/swing/plaf/basic/BasicProgressBarUITest.java
 javax/swing/plaf/basic/BasicRadioButtonMenuItemUITest.java
 javax/swing/plaf/basic/BasicRootPaneUITest.java
-javax/swing/plaf/basic/BasicScrollBarUITest.java
 javax/swing/plaf/basic/BasicSplitPaneDividerTest.java
 javax/swing/plaf/basic/BasicSplitPaneUITest.java
 javax/swing/plaf/basic/BasicTabbedPaneUITest.java
@@ -119,3 +118,23 @@ javax/swing/text/View_VisualPosition_PartTest.java
 javax/swing/text/WrappedPlainViewRTest.java
 javax/swing/text/WrappedPlainViewTest.java
 org/apache/harmony/x/swing/plaf/resources/basic/BasicResourceBundleTest.java
+
+#HTML tests
+javax/swing/text/html/HTMLDocument_InsertsTest.java
+javax/swing/text/html/HTMLDocument_ReaderTest.java
+javax/swing/text/html/HTMLDocumentTest.java
+javax/swing/text/html/HTMLEditorKit_HTMLTextActionTest.java
+javax/swing/text/html/HTMLEditorKit_InsertHTMLTextActionTest.java
+javax/swing/text/html/HTMLWriterTest.java
+javax/swing/text/html/InlineViewTest.java
+javax/swing/text/html/ParagraphView_RequirementsTest.java
+javax/swing/text/html/StyleSheet_ResolvedRulesClassTest.java
+javax/swing/text/html/StyleSheet_ResolvedRulesTest.java
+javax/swing/text/html/StyleSheet_ViewAttributesTest.java
+javax/swing/text/html/StyleSheetTest.java
+
+javax/swing/text/html/parser/ContentModelTest.java
+javax/swing/text/html/parser/DocumentParserTest.java
+javax/swing/text/html/parser/DTD401Test.java
+javax/swing/text/html/parser/DTDTest.java
+javax/swing/text/html/parser/TagElementTest.java

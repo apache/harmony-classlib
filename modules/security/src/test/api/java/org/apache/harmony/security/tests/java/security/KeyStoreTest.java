@@ -237,6 +237,11 @@ public class KeyStoreTest extends TestCase {
         // Regression for HARMONY-1539
         // no exception expected
         assertNull(new KeyStore.PasswordProtection(null).getPassword());
+        char[] password = new char[] {'a', 'b', 'c'};
+        KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection(password);
+        assertNotSame(pp.getPassword(), password);
+        assertSame(pp.getPassword(), pp.getPassword());
+        
     }
 
 

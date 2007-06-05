@@ -122,8 +122,7 @@ public class PKIStatusInfo {
             
             int failInfoValue = -1;
             if (values[2] != null) {
-                boolean[] failInfoBoolArray = (values[2] == null) ? null
-                        : ((BitString) values[2]).toBooleanArray();
+                boolean[] failInfoBoolArray = ((BitString) values[2]).toBooleanArray();
                 for (int i = 0; i < failInfoBoolArray.length; i++) {
                     if (failInfoBoolArray[i]) {
                         failInfoValue = i;

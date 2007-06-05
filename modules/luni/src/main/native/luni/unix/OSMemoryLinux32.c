@@ -20,6 +20,9 @@
  */
 
 #include <string.h>
+#if defined(MACOSX)
+#include <sys/types.h>
+#endif
 #include <sys/mman.h>
 #include <errno.h>
 #include <unistd.h>

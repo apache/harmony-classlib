@@ -21,6 +21,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.io.ObjectOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class HashSetTest extends junit.framework.TestCase {
 
@@ -190,6 +198,17 @@ public class HashSetTest extends junit.framework.TestCase {
 		hs.clear();
 		assertEquals("Cleared set returned non-zero size", 0, hs.size());
 	}
+	
+	/**
+	 * @tests java.util.HashSet#SerializationTest
+	 */
+	public void test_Serialization() throws Exception{
+		HashSet<String> hs = new HashSet<String>();
+		hs.add("hello");
+		hs.add("world");
+		SerializationTest.verifySelf(hs, comparator);
+        SerializationTest.verifyGolden(this, hs, comparator);
+	}
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -208,4 +227,15 @@ public class HashSetTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown() {
 	}
+	
+	private static final SerializationTest.SerializableAssert comparator = new 
+	                                   SerializationTest.SerializableAssert() {
+		public void assertDeserialized(Serializable initial, Serializable deserialized) {
+			HashSet<String> initialHs = (HashSet<String>) initial;
+			HashSet<String> deseriaHs = (HashSet<String>) deserialized;
+			assertEquals("should be equal", initialHs.size(), deseriaHs.size());
+			assertEquals("should be equal", initialHs, deseriaHs);
+		}
+		
+	};
 }

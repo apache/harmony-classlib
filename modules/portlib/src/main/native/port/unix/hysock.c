@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>         /* for struct in_addr */
+#include <arpa/inet.h>          /* for inet_addr */
 #include <sys/ioctl.h>
 #include <net/if.h>             /* for struct ifconf */
 
@@ -2194,8 +2195,8 @@ hysock_htons (struct HyPortLibrary * portLibrary, U_16 val)
  * Answer the dotted IP string as an Internet address.
  *
  * @param[in] portLibrary The port library.
- * @param[out] addrStr The dotted IP string.
- * @param[in] addr Pointer to the Internet address.
+ * @param[in] addrStr The dotted IP string.
+ * @param[out] addr Pointer to the Internet address.
  *
  * @return	0, if no errors occurred, otherwise the (negative) error code.
  */
@@ -2204,17 +2205,15 @@ hysock_inetaddr (struct HyPortLibrary * portLibrary, char *addrStr,
                  U_32 * addr)
 {
   I_32 rc = 0;
-  U_32 val;
-
-  val = inet_addr (addrStr);
-  if (val == -1)
+  struct in_addr in;
+  if (inet_aton(addrStr, &in) == 0)
     {
-      HYSOCKDEBUGPRINT ("<inet_addr failed>\n");
+      HYSOCKDEBUGPRINT ("<inet_aton failed>\n");
       rc = HYPORT_ERROR_SOCKET_ADDRNOTAVAIL;
     }
   else
     {
-      *addr = val;
+      *addr = in.s_addr;
     }
   return rc;
 }

@@ -161,9 +161,10 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
      */
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         Hashtable permissions = new Hashtable();
-        for (Iterator iter = klasses.keySet().iterator(); iter.hasNext();) {
-            String key = (String)iter.next();
-            permissions.put(key, new Vector(((Collection)klasses.get(key))));
+        for (Iterator iter = klasses.entrySet().iterator(); iter.hasNext();) {
+        	Map.Entry entry = (Map.Entry) iter.next();
+            String key = (String) entry.getKey();
+            permissions.put(key, new Vector(((Collection) entry.getValue())));
         }
         ObjectOutputStream.PutField fields = out.putFields();
         fields.put("permissions", permissions); //$NON-NLS-1$
@@ -181,20 +182,23 @@ final class UnresolvedPermissionCollection extends PermissionCollection {
         Map permissions = (Map)fields.get("permissions", null); //$NON-NLS-1$
         klasses = new HashMap();
         synchronized (klasses) {
-            for (Iterator iter = permissions.keySet().iterator(); iter
-                .hasNext();) {
-                String key = (String)iter.next();
-                Collection values = (Collection)permissions.get(key);
-                for (Iterator iterator = values.iterator(); iterator.hasNext();) {
-                    UnresolvedPermission element = (UnresolvedPermission)iterator
-                        .next();
-                    if (!element.getName().equals(key)) {
-                        throw new InvalidObjectException(
-                            Messages.getString("security.22")); //$NON-NLS-1$
-                    }
-                }
-                klasses.put(key, new HashSet(values));
-            }
+            for (Iterator iter = permissions.entrySet().iterator(); iter
+            	.hasNext();) {
+            	Map.Entry entry = (Map.Entry) iter.next();
+	            String key = (String) entry.getKey();
+	            Collection values = (Collection) entry.getValue();
+
+	            for (Iterator iterator = values.iterator(); iterator.hasNext();) {
+	                UnresolvedPermission element =
+	                        (UnresolvedPermission) iterator.next();
+
+	                if (!element.getName().equals(key)) {
+	                    throw new InvalidObjectException(
+	                        Messages.getString("security.22")); //$NON-NLS-1$
+	                }
+	            }
+	            klasses.put(key, new HashSet(values));
+	        }
         }
     }
 }

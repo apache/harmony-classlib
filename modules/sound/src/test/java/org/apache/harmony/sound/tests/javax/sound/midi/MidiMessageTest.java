@@ -29,29 +29,29 @@ public class MidiMessageTest extends TestCase {
      */
     public void test_constructor_MidiMessage() {
         MidiMessage1 midi = new MidiMessage1(new byte[] { 1, 2, 3, -5 });
-        assertTrue(midi.getLength() == 4);
-        assertTrue(midi.getStatus() == 1);
-        assertTrue(midi.getMessage().length == 4);
-        assertTrue(midi.getMessage()[0] == 1);
-        assertTrue(midi.getMessage()[1] == 2);
-        assertTrue(midi.getMessage()[2] == 3);
-        assertTrue(midi.getMessage()[3] == -5);
+        assertEquals(4, midi.getLength());
+        assertEquals(1, midi.getStatus());
+        assertEquals(4, midi.getMessage().length);
+        assertEquals(1, midi.getMessage()[0]);
+        assertEquals(2, midi.getMessage()[1]);
+        assertEquals(3, midi.getMessage()[2]);
+        assertEquals(-5, midi.getMessage()[3]);
 
         MidiMessage1 midi1 = new MidiMessage1(new byte[] { 0, -2 });
-        assertTrue(midi1.getLength() == 2);
-        assertTrue(midi1.getStatus() == 0);
-        assertTrue(midi1.getMessage().length == 2);
-        assertTrue(midi1.getMessage()[0] == 0);
-        assertTrue(midi1.getMessage()[1] == -2);
+        assertEquals(2, midi1.getLength());
+        assertEquals(0, midi1.getStatus());
+        assertEquals(2, midi1.getMessage().length);
+        assertEquals(0, midi1.getMessage()[0]);
+        assertEquals(-2, midi1.getMessage()[1]);
 
         byte[] bt = new byte[] { -1, 87, 19 };
         MidiMessage1 midi2 = new MidiMessage1(bt);
-        assertTrue(midi2.getLength() == 3);
-        assertTrue(midi2.getStatus() == 255);
-        assertTrue(midi2.getMessage().length == 3);
-        assertTrue(midi2.getMessage()[0] == -1);
-        assertTrue(midi2.getMessage()[1] == 87);
-        assertTrue(midi2.getMessage()[2] == 19);
+        assertEquals(3, midi2.getLength());
+        assertEquals(255, midi2.getStatus());
+        assertEquals(3, midi2.getMessage().length);
+        assertEquals(-1, midi2.getMessage()[0]);
+        assertEquals(87, midi2.getMessage()[1]);
+        assertEquals(19, midi2.getMessage()[2]);
         bt[0] = 45;
         bt[1] = 16;
         bt[2] = -29;
@@ -67,8 +67,8 @@ public class MidiMessageTest extends TestCase {
         
 
         MidiMessage1 midi3 = new MidiMessage1(null);
-        assertTrue(midi3.getLength() == 0);
-        assertTrue(midi3.getStatus() == 0);
+        assertEquals(0, midi3.getLength());
+        assertEquals(0, midi3.getStatus());
         try {
             midi3.getMessage();
             fail("No NPE");
@@ -89,9 +89,9 @@ public class MidiMessageTest extends TestCase {
     public void test_getMessage() throws Exception {
         byte[] bt = new byte[] {1, 2, 3};
         MidiMessage1 midi = new MidiMessage1(bt);
-        assertTrue(midi.getMessage()[0] == 1);
-        assertTrue(midi.getMessage()[1] == 2);
-        assertTrue(midi.getMessage()[2] == 3);
+        assertEquals(1, midi.getMessage()[0]);
+        assertEquals(2, midi.getMessage()[1]);
+        assertEquals(3, midi.getMessage()[2]);
         bt[0] = 76;
         bt[1] = 13;
         bt[2] = -5;
@@ -103,7 +103,7 @@ public class MidiMessageTest extends TestCase {
         assertEquals(-5, midi.getMessage()[2]);
 
         MidiMessage1 midi1 = new MidiMessage1(new byte[] {1});
-        assertTrue(midi1.getMessage()[0] == 1);
+        assertEquals(1, midi1.getMessage()[0]);
 
         MidiMessage1 midi2 = new MidiMessage1(null);
         try {
@@ -113,9 +113,9 @@ public class MidiMessageTest extends TestCase {
         }
 
         midi2.setMessage(new byte[] { 90, 84 }, 2);
-        assertTrue(midi2.getMessage().length == 2);
-        assertTrue(midi2.getMessage()[0] == 90);
-        assertTrue(midi2.getMessage()[1] == 84);
+        assertEquals(2, midi2.getMessage().length);
+        assertEquals(90, midi2.getMessage()[0]);
+        assertEquals(84, midi2.getMessage()[1]);
         byte[] nb = midi2.getMessage();
         nb[0] = 1;
         nb[1] = 2;
@@ -126,11 +126,11 @@ public class MidiMessageTest extends TestCase {
         assertEquals(84, midi2.getMessage()[1]);
 
         midi1.setMessage(new byte[] { -54, 84, -9 }, 1);
-        assertTrue(midi1.getMessage().length == 1);
-        assertTrue(midi1.getMessage()[0] == -54);
+        assertEquals(1, midi1.getMessage().length);
+        assertEquals(-54, midi1.getMessage()[0]);
 
         midi.setMessage(new byte[] { -90, -7, 4 }, 0);
-        assertTrue(midi.getMessage().length == 0);
+        assertEquals(0, midi.getMessage().length);
     }
 
     /**
@@ -140,7 +140,7 @@ public class MidiMessageTest extends TestCase {
     public void test_getStatus() throws Exception {
         byte[] bt = new byte[] {1, 2, 3};
         MidiMessage1 midi = new MidiMessage1(bt);
-        assertTrue(midi.getStatus() == 1);
+        assertEquals(1, midi.getStatus());
         bt[0] = -1;
         /**
          * value change
@@ -148,13 +148,13 @@ public class MidiMessageTest extends TestCase {
         assertEquals(255, midi.getStatus());
 
         MidiMessage1 midi1 = new MidiMessage1(new byte[] { -91, 2, 3 });
-        assertTrue(midi1.getStatus() == 165);
+        assertEquals(165, midi1.getStatus());
 
         MidiMessage1 midi2 = new MidiMessage1(new byte[] { 1 });
-        assertTrue(midi2.getStatus() == 1);
+        assertEquals(1, midi2.getStatus());
 
         MidiMessage1 midi3 = new MidiMessage1(null);
-        assertTrue(midi3.getStatus() == 0);
+        assertEquals(0, midi3.getStatus());
 
         bt = new byte[] {90, 84};
         midi2.setMessage(bt, 2);
@@ -166,10 +166,10 @@ public class MidiMessageTest extends TestCase {
         assertEquals(90, midi2.getStatus());
 
         midi1.setMessage(new byte[] {-54, 84, -9}, 1);
-        assertTrue(midi1.getStatus() == 202);
+        assertEquals(202, midi1.getStatus());
 
         midi.setMessage(new byte[] { -90, -7, 4 }, 0);
-        assertTrue(midi.getStatus() == 0);
+        assertEquals(0, midi.getStatus());
     }
 
     /**
@@ -178,22 +178,22 @@ public class MidiMessageTest extends TestCase {
      */
     public void test_getLength() throws Exception {
         MidiMessage1 midi = new MidiMessage1(new byte[] {1, 2, 3});
-        assertTrue(midi.getLength() == 3);
+        assertEquals(3, midi.getLength());
 
         MidiMessage1 midi1 = new MidiMessage1(null);
-        assertTrue(midi1.getLength() == 0);
+        assertEquals(0, midi1.getLength());
 
         MidiMessage1 midi2 = new MidiMessage1(new byte[] {-71, 2, 3, -90});
-        assertTrue(midi2.getLength() == 4);
+        assertEquals(4, midi2.getLength());
 
         midi2.setMessage(new byte[] {90, 84}, 2);
-        assertTrue(midi2.getLength() == 2);
+        assertEquals(2, midi2.getLength());
 
         midi1.setMessage(new byte[] { 90, 84, -9 }, 2);
-        assertTrue(midi1.getLength() == 2);
+        assertEquals(2, midi1.getLength());
 
         midi.setMessage(new byte[] { -90, -7, 4 }, 0);
-        assertTrue(midi.getLength() == 0);
+        assertEquals(0, midi.getLength());
     }
 
     /**
@@ -219,11 +219,11 @@ public class MidiMessageTest extends TestCase {
         assertEquals(84, midi2.getMessage()[1]);
 
         midi1.setMessage(new byte[] { -54, 84, -9 }, 1);
-        assertTrue(midi1.getMessage().length == 1);
-        assertTrue(midi1.getMessage()[0] == -54);
+        assertEquals(1, midi1.getMessage().length);
+        assertEquals(-54, midi1.getMessage()[0]);
 
         midi.setMessage(new byte[] { -90, -7, 4 }, 0);
-        assertTrue(midi.getMessage().length == 0);
+        assertEquals(0, midi.getMessage().length);
         
         try {
             midi1.setMessage(new byte[] { -54, 84, -9 }, 5);

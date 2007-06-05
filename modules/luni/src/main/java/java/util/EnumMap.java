@@ -497,13 +497,16 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a {@link Set}} view of the mappings contained in this map. The
-     * returned set complies with the general rule specified in
-     * {@link Map#entrySet()}}. The set's iterator will return the mappings in
-     * the their keys' natural order(the enum constants are declared in this
-     * order)
+     * Returns a Set of <code>Map.Entry</code>s that represent the entries in
+     * this EnumMap. Making changes to this Set will change the original EnumMap
+     * and vice-versa. Entries can be removed from the Set, or their values can
+     * be changed, but new entries cannot be added.
      * 
-     * @return a set view of the mappings contained in this map.
+     * The order of the entries in the Set will be the order that the Enum keys
+     * were declared in.
+     * 
+     * @return a Set of <code>Map.Entry</code>s representing the entries in
+     *         this EnumMap
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
@@ -557,12 +560,14 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a {@link Set}} view of the keys contained in this map. The
-     * returned set complies with the general rule specified in
-     * {@link Map#keySet()}}. The set's iterator will return the keys in the
-     * their natural order(the enum constants are declared in this order)
+     * Returns a Set containing the keys for this EnumMap. Making changes to
+     * this Set will change the original EnumMap and vice-versa. Entries can be
+     * removed from the Set, but new entries cannot be added.
      * 
-     * @return a set view of the keys contained in this map.
+     * The order of the Set will be the order that the Enum keys were declared
+     * in.
+     * 
+     * @return a Set containing the keys for this EnumMap.
      */
     @Override
     public Set<K> keySet() {
@@ -643,13 +648,15 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a {@link Collection}} view of the values contained in this map.
-     * The returned collection complys with the general rule specified in
-     * {@link Map#values()}}. The collection's iterator will return the values
-     * in the their corresponding keys' natural order(the enum constants are
-     * declared in this order)
+     * Returns a Collection containing the values for this EnumMap. Making
+     * changes to this Collection will change the original EnumMap and
+     * vice-versa. Values can be removed from the Collection, but new entries
+     * cannot be added.
      * 
-     * @return a collection view of the mappings contained in this map.
+     * The order of the values in the Collection will be the order that their
+     * corresponding Enum keys were declared in.
+     * 
+     * @return a Collection containing the values for this EnumMap
      */
     @Override
     public Collection<V> values() {

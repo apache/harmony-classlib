@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import tests.support.resource.Support_Resources;
+import tests.api.java.util.support.B;
 
 public class ResourceBundleTest extends junit.framework.TestCase {
 
@@ -126,6 +127,12 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		bundle = ResourceBundle.getBundle(name, Locale.getDefault(), loader);
 		assertEquals("Wrong cached value", 
 				"resource", bundle.getString("property"));
+
+		// Regression test for Harmony-3823
+		B bb = new B();
+		String s = bb.find("nonexistent");
+		s = bb.find("name");
+		assertEquals("Wrong property got", "Name", s);
 	}
 
 	/**

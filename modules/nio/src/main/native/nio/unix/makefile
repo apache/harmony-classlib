@@ -24,11 +24,15 @@ CFLAGS += -fpic
 BUILDFILES = \
 	../shared/DirectBufferUtil.o ../shared/AddressUtil.o 
 
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a 
+endif
+
 MDLLIBFILES = \
-	$(LIBPATH)libhycommon.a $(LIBPATH)libhyzip.a \
+	$(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a
 
-DLLNAME = ../libhynio.so
+DLLNAME = ../libhynio$(HY_SHLIB_SUFFIX)
 EXPNAME = HYNIO_0.1
 
 include $(HY_HDK)/build/make/rules.mk

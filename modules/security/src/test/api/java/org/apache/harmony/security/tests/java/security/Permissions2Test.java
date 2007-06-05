@@ -40,12 +40,7 @@ public class Permissions2Test extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.security.Permissions()
-		try {
-			new Permissions();
-		} catch (Exception e) {
-			fail("creating an instance of permissions constructor failed : "
-					+ e);
-		}
+        new Permissions();
 	}
 
 	/**
@@ -66,14 +61,9 @@ public class Permissions2Test extends junit.framework.TestCase {
 		perm[5] = readInFile;
 		perm[6] = new FilePermission("hello.file", "write");
 		Permissions perms = new Permissions();
-		try {
-			for (int i = 0; i < perm.length; i++) {
-				perms.add(perm[i]);
-			}
-		} catch (IllegalStateException e) {
-			fail("add method failed with unexpected IllegalStateException : "
-					+ e);
-		}
+        for (int i = 0; i < perm.length; i++) {
+            perms.add(perm[i]);
+        }
 
 		Enumeration e = perms.elements();
 		FilePermission perm2[] = new FilePermission[10];

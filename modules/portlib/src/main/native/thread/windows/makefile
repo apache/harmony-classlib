@@ -33,7 +33,7 @@ VIRTFILES = $(LIBBASE).res
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
-MDLLIBFILES = $(LIBPATH)hypool.lib $(LIBPATH)hycommon.lib
+MDLLIBFILES = $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x11500000
 COMMENT=/comment:"Thread support library. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."

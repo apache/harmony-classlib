@@ -282,6 +282,10 @@ public final class LinuxEvent extends NativeEvent {
 
     private void processMotionEvent(X11.XMotionEvent event) {
         LinuxWindow win = (LinuxWindow) factory.getWindowById(windowId);
+        
+        if (win == null) {
+            return;
+        }
 
         localPos = new Point(event.get_x(), event.get_y());
         if (!localPos.equals(win.queryPointer())) {
@@ -357,6 +361,11 @@ public final class LinuxEvent extends NativeEvent {
 
     private void processConfigureEvent(X11.XConfigureEvent event) {
         LinuxWindow win = (LinuxWindow)factory.getWindowById(windowId);
+        
+        if (win == null) {
+            return;
+        }
+        
         boolean child = win.isChild();
         boolean isSynthetic = event.get_send_event() != 0;
 
@@ -441,9 +450,11 @@ public final class LinuxEvent extends NativeEvent {
      */
     private void processInsetsChange(Insets newInsets) {
         LinuxWindow win = (LinuxWindow) factory.getWindowById(windowId);
+        
         if ((win == null) || win.isChild() || win.isUndecorated()) {
             return;
         }
+        
         eventId = ID_INSETS_CHANGED;
 
         if (newInsets != null) {
@@ -482,6 +493,11 @@ public final class LinuxEvent extends NativeEvent {
 
     private void deriveNewWindowState(int typesCount, CLongPointer types) {
         LinuxWindow win = (LinuxWindow) factory.getWindowById(windowId);
+
+        if (win == null) {
+            return;
+        }
+        
         int oldState = win.getState();
         int newState = 0;
         boolean oldAlwaysOnTop = win.alwaysOnTop;
@@ -610,17 +626,20 @@ public final class LinuxEvent extends NativeEvent {
     }
 
     private long getContentId(long winId) {
-        if (factory.validWindowId(winId)) {
-            LinuxWindow win = (LinuxWindow) factory
-                    .getWindowById(winId);
+        LinuxWindow win = (LinuxWindow) factory.getWindowById(winId);
+        
+        if (win != null) {
             LinuxWindow content = win.getContentWindow();
+            
             if (content != null) {
                 long contentId = content.getId();
+                
                 if (factory.validWindowId(contentId)) {
                     return contentId;
                 }
             }
         }
+        
         return winId;
     }
 

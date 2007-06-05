@@ -636,12 +636,17 @@ class LinuxWindow implements NativeWindow {
         PointerPointer children = bridge.createPointerPointer(1, true);
         Int32Pointer count = bridge.createInt32Pointer(1, false);
 
-        x11.XQueryTree(display, windowID, root, parent, children, count);
-        VoidPointer data = children.get(0);
-        if (data != null) {
-            x11.XFree(data);
+        if (x11.XQueryTree(display, windowID, root, parent, children, count) != 0) {
+            final VoidPointer data = children.get(0);
+            
+            if (data != null) {
+                x11.XFree(data);
+            }
+            
+            return parent.get(0);
         }
-        return parent.get(0);
+        
+        return 0;
     }
 
     private long getFrameID(long windowId, long rootID) {

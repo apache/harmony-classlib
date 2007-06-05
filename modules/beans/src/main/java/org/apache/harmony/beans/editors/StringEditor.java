@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class StringEditor extends PropertyEditorSupport {
+public final class StringEditor extends PropertyEditorSupport {
 
     public StringEditor(Object source) {
         super(source);
@@ -32,5 +32,12 @@ public class StringEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) {
         setValue(text);
+    }
+    
+
+    @Override
+    public String getJavaInitializationString() {
+        Object value = getValue(); 
+        return value==null?"\"null\"":"\""+value+"\"";
     }
 }

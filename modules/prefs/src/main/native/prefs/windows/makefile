@@ -31,9 +31,14 @@ VIRTFILES = $(LIBBASE).res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
+!IF "$(HY_ZIP_API)" != "true"
+MDLLIBFILES = \
+  $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX)
+!ENDIF
+
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
-  $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib $(LIBPATH)vmi.lib
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) \
+  $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x13300000
 COMMENT=/comment:"Preferences component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 

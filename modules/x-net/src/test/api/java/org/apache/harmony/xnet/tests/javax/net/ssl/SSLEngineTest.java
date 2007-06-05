@@ -46,7 +46,7 @@ public class SSLEngineTest extends TestCase {
     public void test01() {
         SSLEngine e = new mySSLEngine();
         assertNull(e.getPeerHost());
-        assertEquals(e.getPeerPort(), -1);
+        assertEquals(-1, e.getPeerPort());
         String[] suites = { "a", "b", "c" };
         e.setEnabledCipherSuites(suites);
         assertEquals(e.getEnabledCipherSuites().length, suites.length);
@@ -165,8 +165,8 @@ public class SSLEngineTest extends TestCase {
         } catch (SSLException ex) {
         }
         SSLEngineResult res = e.wrap(bbd, bbs);
-        assertEquals(res.bytesConsumed(), 10);
-        assertEquals(res.bytesProduced(), 20);
+        assertEquals(10, res.bytesConsumed());
+        assertEquals(20, res.bytesProduced());
 
         try {
             e.wrap(new ByteBuffer[] { bbs }, bbd);
@@ -174,8 +174,8 @@ public class SSLEngineTest extends TestCase {
         } catch (SSLException ex) {
         }
         res = e.wrap(new ByteBuffer[] { bbd }, bbs);
-        assertEquals(res.bytesConsumed(), 10);
-        assertEquals(res.bytesProduced(), 20);
+        assertEquals(10, res.bytesConsumed());
+        assertEquals(20, res.bytesProduced());
     }
 
     /**
@@ -191,8 +191,8 @@ public class SSLEngineTest extends TestCase {
         SSLEngine e = new mySSLEngine(host, port);
         
         SSLEngineResult res = e.wrap(bb, ByteBuffer.allocate(10));
-        assertEquals(res.bytesConsumed(), 10);
-        assertEquals(res.bytesProduced(), 20);
+        assertEquals(10, res.bytesConsumed());
+        assertEquals(20, res.bytesProduced());
     }
     
     /**
@@ -210,8 +210,8 @@ public class SSLEngineTest extends TestCase {
         SSLEngine e = new mySSLEngine(host, port);
 
         SSLEngineResult res = e.wrap(bbA, bb);
-        assertEquals(res.bytesConsumed(), 10);
-        assertEquals(res.bytesProduced(), 20);
+        assertEquals(10, res.bytesConsumed());
+        assertEquals(20, res.bytesProduced());
     }
     
     /**
@@ -297,8 +297,8 @@ public class SSLEngineTest extends TestCase {
         } catch (SSLException ex) {
         }
         SSLEngineResult res = e.unwrap(bbd, bbs);
-        assertEquals(res.bytesConsumed(), 1);
-        assertEquals(res.bytesProduced(), 2);
+        assertEquals(1, res.bytesConsumed());
+        assertEquals(2, res.bytesProduced());
 
         try {
             e.unwrap(bbs, new ByteBuffer[] { bbd });
@@ -306,8 +306,8 @@ public class SSLEngineTest extends TestCase {
         } catch (SSLException ex) {
         }
         res = e.unwrap(bbd, new ByteBuffer[] { bbs });
-        assertEquals(res.bytesConsumed(), 1);
-        assertEquals(res.bytesProduced(), 2);
+        assertEquals(1, res.bytesConsumed());
+        assertEquals(2, res.bytesProduced());
     }
     
     /**
@@ -322,8 +322,8 @@ public class SSLEngineTest extends TestCase {
         SSLEngine e = new mySSLEngine(host, port);
         SSLEngineResult res = e.unwrap(bb, ByteBuffer.allocate(10));
         
-        assertEquals(res.bytesConsumed(), 1);
-        assertEquals(res.bytesProduced(), 2);
+        assertEquals(1, res.bytesConsumed());
+        assertEquals(2, res.bytesProduced());
     }
     
     /**
@@ -341,8 +341,8 @@ public class SSLEngineTest extends TestCase {
         SSLEngine e = new mySSLEngine(host, port);
 
         SSLEngineResult res = e.unwrap(bb, bbA);
-        assertEquals(res.bytesConsumed(), 1);
-        assertEquals(res.bytesProduced(), 2);
+        assertEquals(1, res.bytesConsumed());
+        assertEquals(2, res.bytesProduced());
     }
 }
 

@@ -19,7 +19,7 @@ package org.apache.harmony.beans.editors;
 
 import java.beans.PropertyEditorSupport;
 
-public class FloatEditor extends PropertyEditorSupport {
+public final class FloatEditor extends PropertyEditorSupport {
 
     public FloatEditor(Object source) {
         super(source);
@@ -30,22 +30,13 @@ public class FloatEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        return getValueAsText();
-    }
-
-    @Override
     public void setAsText(String text) throws IllegalArgumentException {
-        try {
-            setValue(new Float(text));
-        } catch (NumberFormatException nfe) {
-            throw new IllegalArgumentException(nfe.toString());
-        }
+        setValue(new Float(text));
     }
 
     @Override
     public String getJavaInitializationString() {
-        return getValueAsText();
+        return getValue()+"F";
     }
 
     @Override
@@ -58,15 +49,5 @@ public class FloatEditor extends PropertyEditorSupport {
         if (value instanceof Float) {
             super.setValue(value);
         }
-    }
-
-    private String getValueAsText() {
-        String result = null;
-        Object value = getValue();
-        if (value != null) {
-            Float fValue = (Float) value;
-            result = fValue.toString();
-        }
-        return result;
     }
 }

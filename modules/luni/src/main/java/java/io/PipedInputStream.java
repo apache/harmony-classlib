@@ -161,16 +161,15 @@ public class PipedInputStream extends InputStream {
          */
         lastReader = Thread.currentThread();
         try {
-            boolean first = true;
+            int attempts = 3;
             while (in == -1) {
                 // Are we at end of stream?
                 if (isClosed) {
                     return -1;
                 }
-                if (!first && lastWriter != null && !lastWriter.isAlive()) {
+                if ((attempts-- <= 0) && lastWriter != null && !lastWriter.isAlive()) {
                     throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
                 }
-                first = false;
                 // Notify callers of receive()
                 notifyAll();
                 wait(1000);
@@ -243,16 +242,15 @@ public class PipedInputStream extends InputStream {
          */
         lastReader = Thread.currentThread();
         try {
-            boolean first = true;
+            int attempts = 3;
             while (in == -1) {
                 // Are we at end of stream?
                 if (isClosed) {
                     return -1;
                 }
-                if (!first && lastWriter != null && !lastWriter.isAlive()) {
+                if ((attempts-- <= 0) && lastWriter != null && !lastWriter.isAlive()) {
                     throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
                 }
-                first = false;
                 // Notify callers of receive()
                 notifyAll();
                 wait(1000);

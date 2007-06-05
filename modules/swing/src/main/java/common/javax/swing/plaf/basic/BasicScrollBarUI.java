@@ -263,11 +263,6 @@ public class BasicScrollBarUI extends ScrollBarUI implements LayoutManager, Swin
         return new BasicScrollBarUI();
     }
 
-    public BasicScrollBarUI() {
-        thumbRect = new Rectangle();
-        trackRect = new Rectangle();
-    }
-
     public void addLayoutComponent(final String s, final Component c) {
     }
 
@@ -367,6 +362,8 @@ public class BasicScrollBarUI extends ScrollBarUI implements LayoutManager, Swin
     }
 
     protected void installDefaults() {
+        thumbRect = new Rectangle();
+        trackRect = new Rectangle();
         LookAndFeel.installColors(scrollbar, "ScrollBar.background", "ScrollBar.foreground");
         LookAndFeel.installProperty(scrollbar, "opaque", Boolean.TRUE);
         configureScrollBarColors();

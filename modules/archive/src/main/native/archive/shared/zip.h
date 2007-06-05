@@ -18,7 +18,13 @@
 #if !defined(zip_h)
 #define zip_h
 
+#ifndef HY_ZIP_API
 #include "zipsup.h"
+#else /* HY_ZIP_API */
+#include "hyzip.h"
+#endif /* HY_ZIP_API */
+
+#include "hymutex.h"
 
 typedef struct JCLZipFile
 {
@@ -32,6 +38,7 @@ typedef struct JCLZipFileLink
 {
   JCLZipFile *last;
   JCLZipFile *next;
+  MUTEX mutex;
 } JCLZipFileLink;
 
 #endif /* zip_h */

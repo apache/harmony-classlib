@@ -22,6 +22,13 @@ import java.net.ServerSocket;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+/**
+ * The port manager is supposed to help finding a free
+ * network port on the machine; however, it uses strange
+ * logic, so leave it to the OS.
+ *  
+ * @deprecated Use OS to find free ports.
+ */
 public class Support_PortManager {
 
     private static int lastAssignedPort = somewhatRandomPort();

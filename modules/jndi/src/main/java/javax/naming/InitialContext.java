@@ -427,18 +427,20 @@ public class InitialContext implements Context {
     }
 
     /**
-     * Composes the name of this context with a name relative to this context.
-     * Because an initial context could not be named relative to any context
-     * except itself, the value of the prefix parameter must be an empty name.
+     * Combines two names into a composite name according to the syntax for this
+     * context. The name <code>prefix</code> is expected to be the name of one
+     * or more of the immediate parent contexts of this context, so should be an
+     * empty name for an <code>InitialContext</code>. <code>name</code> is
+     * a name relative to this context. Neither <code>prefix</code> nor
+     * <code>name</code> may be null.
      * 
      * @param name
-     *            a name relative to this context.
+     *            a <code>Name</code>, may not be null
      * @param prefix
-     *            the name of this context relative to one of its ancestors.
-     * 
-     * @return the composition of prefix and name.
+     *            a <code>Name</code> serves as prefix, may not be null
+     * @return the combined name
      * @throws NamingException
-     *             if a naming exception happens.
+     *             if an error occurs.
      */
     public Name composeName(Name name, Name prefix) throws NamingException {
         if (null == name) {
@@ -448,18 +450,16 @@ public class InitialContext implements Context {
     }
 
     /**
-     * Composes the name of this context with a name relative to this context.
-     * Because an initial context could not be named relative to any context
-     * except itself, the value of the prefix parameter must be an empty name.
+     * Combines two names into a composite name according to the syntax for 
+     * this context. The name <code>prefix</code> is expected to be the name of 
+     * one or more of the immediate parent contexts of this context, so should
+     * be an empty string for an <code>InitialContext</code>.
+     * <code>name</code> is a name relative to this context. 
      * 
-     * @param name
-     *            a name relative to this context.
-     * @param prefix
-     *            the name of this context relative to one of its ancestors.
-     * 
-     * @return the composition of prefix and name.
-     * @throws NamingException
-     *             if a naming exception happens.
+     * @param name     a <code>Name</code>, may not be null
+     * @param prefix   a <code>Name</code> serves as prefix, may not be null
+     * @return      the combined name
+     * @throws NamingException if an error occurs.
      */
     public String composeName(String name, String prefix)
             throws NamingException {

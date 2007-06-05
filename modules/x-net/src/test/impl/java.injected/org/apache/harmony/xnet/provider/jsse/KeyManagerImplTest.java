@@ -38,23 +38,23 @@ public class KeyManagerImplTest extends TestCase {
         KeyManagerImpl km = new KeyManagerImpl(ks, new char[0]);
         String[] keyType = {"RSA", "DSA"};
         String al = km.chooseClientAlias(keyType, null, new Socket());
-        assertEquals(al, null);
+        assertNull(al);
         
         al = km.chooseEngineClientAlias(keyType, null, new SSLEngineImpl(null));
-        assertEquals(al, null);
+        assertNull(al);
         
         al = km.chooseEngineServerAlias("RSA", null, new SSLEngineImpl(null));
-        assertEquals(al, null);
+        assertNull(al);
         
         al = km.chooseServerAlias("RSA", null, new Socket());
-        assertEquals(al, null);
+        assertNull(al);
         
-        assertEquals(km.getClientAliases("RSA", null), null);
+        assertNull(km.getClientAliases("RSA", null));
         
-        assertEquals(km.getServerAliases("RSA", null), null);
+        assertNull(km.getServerAliases("RSA", null));
         
-        assertEquals(km.getCertificateChain("alias"), null);
-        assertEquals(km.getPrivateKey("alias"), null);
+        assertNull(km.getCertificateChain("alias"));
+        assertNull(km.getPrivateKey("alias"));
     }
     
     public void testKeyManagerImpl2() throws Exception {
@@ -65,16 +65,16 @@ public class KeyManagerImplTest extends TestCase {
         KeyManagerImpl km = new KeyManagerImpl(ks, pwd);
         String[] keyType = { "RSA", "DSA" };
         String al = km.chooseClientAlias(keyType, null, new Socket());
-        assertEquals(al, "ssl_test_store");
+        assertEquals("ssl_test_store", al);
 
         al = km.chooseEngineClientAlias(keyType, null, new SSLEngineImpl(null));
-        assertEquals(al, "ssl_test_store");
+        assertEquals("ssl_test_store", al);
 
         al = km.chooseEngineServerAlias("RSA", null, new SSLEngineImpl(null));
-        assertEquals(al, "ssl_test_store");
+        assertEquals("ssl_test_store", al);
 
         al = km.chooseServerAlias("RSA", null, new Socket());
-        assertEquals(al, "ssl_test_store");
+        assertEquals("ssl_test_store", al);
 
         assertTrue(km.getCertificateChain("ssl_test_store") != null);
         assertTrue(km.getPrivateKey("ssl_test_store") != null);

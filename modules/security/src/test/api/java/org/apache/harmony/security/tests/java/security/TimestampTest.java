@@ -85,7 +85,9 @@ public class TimestampTest extends TestCase {
     }
 
     public void testGetTimestamp() {
-        assertEquals(new Timestamp(now, cpath).getTimestamp(), now);
+    	Timestamp t = new Timestamp(now, cpath);
+        assertEquals(now, t.getTimestamp());
+        assertNotSame(now, t.getTimestamp());
     }
 
     /*

@@ -337,14 +337,16 @@ public class X509CRLSelector implements CRLSelector {
      * @com.intel.drl.spec_ref
      */
     public Object clone() {
-        X509CRLSelector result = new X509CRLSelector();
-        if (issuerNames != null) {
-            result.issuerNames = new ArrayList<String>(issuerNames);
-        }
-        result.minCRL = minCRL;
-        result.maxCRL = maxCRL;
-        result.dateAndTime = dateAndTime;
-        result.certificateChecking = certificateChecking;
+        X509CRLSelector result;
+
+		try {
+			result = (X509CRLSelector) super.clone();
+			if (issuerNames != null) {
+	            result.issuerNames = new ArrayList<String>(issuerNames);
+	        }
+		} catch (CloneNotSupportedException e) {
+			result = null;
+		}        
         return result;
     }
 }

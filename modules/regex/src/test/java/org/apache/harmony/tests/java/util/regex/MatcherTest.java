@@ -687,10 +687,35 @@ public class MatcherTest extends TestCase {
     public void testPatternMatcher() throws Exception {
         Pattern pattern = Pattern.compile("(?:\\d+)(?:pt)");
         assertTrue(pattern.matcher("14pt").matches());
-    } 
+    }
+
+    /**
+     * Inspired by HARMONY-3360
+     */
+    public void test3360() {
+        String str = "!\"#%&'(),-./";
+        Pattern p = Pattern.compile("\\s");
+        Matcher m = p.matcher(str);
+
+        assertFalse(m.find());
+    }
+
+    /**
+     * Regression test for HARMONY-3360
+     */
+    public void testGeneralPunctuationCategory() {
+        String[] s = {",", "!", "\"", "#", "%", "&", "'", "(", ")", "-", ".", "/"};
+        String regexp = "\\p{P}";
+
+        for (int i = 0; i < s.length; i++) {
+            Pattern pattern = Pattern.compile(regexp);
+            Matcher matcher = pattern.matcher(s[i]);
+            assertTrue(matcher.find());
+        }
+    }
 
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		junit.textui.TestRunner.run(MatcherTest.class);
 	}
 }

@@ -17,8 +17,12 @@
 
 package tests.api.java.util;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.PropertyPermission;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 public class PropertyPermissionTest extends junit.framework.TestCase {
 
@@ -119,6 +123,16 @@ public class PropertyPermissionTest extends junit.framework.TestCase {
 		assertTrue("Invalid PermissionCollection returned", elementEnum
 				.nextElement().equals(javaPP));
 	}
+    
+    /**
+     * @tests java.util.PropertyPermission#readObject(ObjectInputStream)
+     * @tests java.util.PropertyPermission#writeObject(ObjectOutputStream)
+     */
+    public void test_serialization() throws Exception{
+        PropertyPermission pp = new PropertyPermission("test", "read");
+        SerializationTest.verifySelf(pp, comparator);
+        SerializationTest.verifyGolden(this, pp, comparator);
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
@@ -133,4 +147,14 @@ public class PropertyPermissionTest extends junit.framework.TestCase {
 	 */
 	protected void tearDown() {
 	}
+    
+    private static final SerializableAssert comparator = new SerializableAssert() {
+
+        public void assertDeserialized(Serializable initial, Serializable deserialized) {
+            PropertyPermission initialPP = (PropertyPermission) initial;
+            PropertyPermission deseriaPP = (PropertyPermission) deserialized;
+            assertEquals("should be equal", initialPP, deseriaPP);
+        }
+        
+    };
 }

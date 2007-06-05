@@ -55,6 +55,22 @@ public final class Util {
 		}
 		return name.getBytes();
 	}
+    
+    /**
+     * Get bytes from String with specific encoding
+     * @param name
+     *          input String
+     * @param encoding
+     *          specific encoding
+     * @return byte array
+     */
+    public static byte[] getUTF8Bytes(String name) {
+        try {
+            return name.getBytes("UTF-8");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return getBytes(name);
+        }
+    }
 
 	public static String toString(byte[] bytes) {
 		if (defaultEncoding != null) {
@@ -66,6 +82,10 @@ public final class Util {
 		return new String(bytes, 0, bytes.length);
 	}
 
+    public static String toUTF8String(byte[] bytes) {
+        return toUTF8String(bytes, 0, bytes.length);
+    }    
+    
 	public static String toString(byte[] bytes, int offset, int length) {
 		if (defaultEncoding != null) {
 			try {
@@ -76,6 +96,14 @@ public final class Util {
 		return new String(bytes, offset, length);
 	}
 
+    public static String toUTF8String(byte[] bytes, int offset, int length) {
+        try {
+            return new String(bytes, offset, length, "UTF-8");
+        } catch (java.io.UnsupportedEncodingException e) {
+            return toString(bytes, offset, length);
+        }
+    }
+    
 	/**
 	 * Answers the millisecond value of the date and time parsed from the
 	 * specified String. Many date/time formats are recognized

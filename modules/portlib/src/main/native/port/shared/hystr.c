@@ -699,7 +699,7 @@ writeIntToBuffer (char *buf, U_32 bufLen, U_64 width, U_64 precision,
         {
           if (buf)
             {
-              if (actualPrecision >= 0)
+              if ((I_32)actualPrecision >= 0)
                 {
                   buf[length] = '0';
                 }

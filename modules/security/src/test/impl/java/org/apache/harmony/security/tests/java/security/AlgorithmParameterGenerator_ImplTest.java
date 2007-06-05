@@ -23,6 +23,7 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.security.AlgorithmParameterGenerator;
+import java.security.InvalidParameterException;
 import java.security.Provider;
 import java.security.SecureRandom;
 
@@ -33,9 +34,7 @@ import junit.framework.TestCase;
 /**
  * Tests for <code>AlgorithmParameterGenerator</code> class constructors and
  * methods.
- * 
  */
-
 public class AlgorithmParameterGenerator_ImplTest extends TestCase {
 
     private static String validAlgName = "DSA";
@@ -81,6 +80,7 @@ public class AlgorithmParameterGenerator_ImplTest extends TestCase {
             fail(validAlgName + " algorithm is not supported");
             return;
         }
+        // Invalid key strengths (strength must be from 512 - 1024 and a multiple of 64)
         int [] keys = {-10000, -512, -1, 0, 10000};
         SecureRandom random = new SecureRandom();
         AlgorithmParameterGenerator[] apgs = createAPGen();
@@ -88,11 +88,37 @@ public class AlgorithmParameterGenerator_ImplTest extends TestCase {
                 apgs);
 
         for (int i = 0; i < apgs.length; i++) {
+            
+            // Test invalid strengths
             for (int j = 0; j < keys.length; j++) {
-                apgs[i].init(keys[j]);
-                apgs[i].init(keys[j], random);
-                apgs[i].init(keys[j], null);
+                try {
+                    apgs[i].init(keys[j]);
+                    fail("Expected an invalid parameter exception for strength "
+                            + keys[j]);
+                } catch (InvalidParameterException e) {
+                    // expected
+                }
+                try {
+                    apgs[i].init(keys[j], random);
+                    fail("Expected an invalid parameter exception for strength "
+                            + keys[j]);
+                } catch (InvalidParameterException e) {
+                    // expected
+                }
+                try {
+                    apgs[i].init(keys[j], null);
+                    fail("Expected an invalid parameter exception for strength "
+                            + keys[j]);
+                } catch (InvalidParameterException e) {
+                    // expected
+                }
             }
+            
+            // Test valid strengths
+            apgs[i].init(512);
+            apgs[i].init(512, random);
+            apgs[i].init(512 + 64);
+            apgs[i].init(512 + 64 + 64, random);
             apgs[i].init(1024);
             apgs[i].init(1024, random);
         }

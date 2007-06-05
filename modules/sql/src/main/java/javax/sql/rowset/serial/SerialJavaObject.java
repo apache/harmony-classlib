@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Vector;
 
+import org.apache.harmony.sql.internal.nls.Messages;
+
 public class SerialJavaObject implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -1465795139032831023L;
@@ -36,6 +38,12 @@ public class SerialJavaObject implements Serializable, Cloneable {
 	private transient Field[] fields;
 
 	public SerialJavaObject(Object obj) throws SerialException {
+        if (null == obj) {
+            throw new NullPointerException();
+        }
+        if (!(obj instanceof Serializable)) {
+            throw new SerialException(Messages.getString("sql.41"));
+        }
         this.obj = obj;
     }
 

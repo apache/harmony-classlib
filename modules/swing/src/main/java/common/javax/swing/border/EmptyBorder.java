@@ -50,8 +50,8 @@ public class EmptyBorder extends AbstractBorder implements Serializable {
      *  This constructor initialize vertical and horizontal insets
      *  with the same value
      *
-     * @param <code>topBottom</code> - specifies vertical (top and bottom) insets
-     * @param <code>leftRight</code> - specifies horizontal (left and right) insets
+     * @param topBottom - specifies vertical (top and bottom) insets
+     * @param leftRight - specifies horizontal (left and right) insets
      *
      */
     EmptyBorder(final int topBottom, final int leftRight) {

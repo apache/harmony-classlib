@@ -59,9 +59,9 @@ typedef struct png_decoder_info_tag {
   png_infop info_ptr;
   unsigned char *inputBuffer;  
 
-  size_t rowbytes; // Bytes for one row of data
-  int width;
-  int height;
+  png_uint_32 rowbytes; // Bytes for one row of data
+  png_uint_32 width;
+  png_uint_32 height;
 
   int channels;
   int bitDepth;
@@ -72,7 +72,7 @@ typedef struct png_decoder_info_tag {
   boolean doneDecoding;
 
   int updateFromScanline; // Current row
-  int numScanlines; // How much we decoded during this call of processData
+  png_uint_32 numScanlines; // How much we decoded during this call of processData
 
   // JNI-related vars
   JNIEnv *env;

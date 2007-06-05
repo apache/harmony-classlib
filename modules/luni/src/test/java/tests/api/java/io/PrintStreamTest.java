@@ -53,12 +53,7 @@ public class PrintStreamTest extends junit.framework.TestCase {
 		public MockPrintStream(OutputStream os) {
 			super(os);
 		}
-        
-        @Override
-        public void clearError() {
-            super.clearError();
-        }
-        
+		
 		@Override
 		public void setError() {
 			super.setError();
@@ -131,19 +126,6 @@ public class PrintStreamTest extends junit.framework.TestCase {
         assertTrue("Checkerror should return true", os.checkError());
     }
 
-    /**
-     * @tests {@link java.io.PrintStream#clearError()} 
-     */
-    public void test_clearError() throws FileNotFoundException {        
-        MockPrintStream os = new MockPrintStream(testFilePath);     
-        assertFalse(os.checkError());
-        os.setError();
-        assertTrue(os.checkError());
-        os.clearError();
-        assertFalse(os.checkError());
-        os.close();
-    }
-    
     /**
      * @tests java.io.PrintStream#close()
      */

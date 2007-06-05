@@ -30,9 +30,6 @@ import java.util.TimeZone;
 /**
  * This class represents ASN.1 GeneralizedTime type.
  * 
- * According to X.680 specification this type is defined as follows:
- *     GeneralizedTime ::= [UNIVERSAL 24] IMPLICIT VisibleString
- * 
  * @see http://asn1.elibel.tm.fr/en/standards/index.htm
  */
 

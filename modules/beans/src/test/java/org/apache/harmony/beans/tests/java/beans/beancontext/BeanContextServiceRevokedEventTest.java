@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextDelegateS;
 import org.apache.harmony.beans.tests.support.beancontext.mock.MockBeanContextServices;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -150,18 +152,17 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
                         .getDeserilizedObject(event));
     }
 
-    public void testSerialization_Compatibility() throws Exception {
-        BeanContextServiceRevokedEvent event = new BeanContextServiceRevokedEvent(
-                new MockBeanContextServices(), ArrayList.class, true);
-        event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
-
-        assertEqualsSerially(
-                event,
-                (BeanContextServiceRevokedEvent) SerializationTester
-                        .readObject(event,
-                                "serialization/java/beans/beancontext/BeanContextServiceRevokedEvent.ser"));
-    }
-
+     public void testSerialization_Compatibility() throws Exception {
+         BeanContextServiceRevokedEvent event = new BeanContextServiceRevokedEvent(
+                 new MockBeanContextServices(), ArrayList.class, true);
+         event.setPropagatedFrom(new MockBeanContextDelegateS("from ID"));
+         SerializationTest.verifyGolden(this, event, new SerializableAssert(){
+             public void assertDeserialized(Serializable orig, Serializable ser) {
+                 assertEqualsSerially((BeanContextServiceRevokedEvent) orig,
+                         (BeanContextServiceRevokedEvent) ser);
+             }
+         });
+     }
     private void assertEqualsSerially(BeanContextServiceRevokedEvent orig,
             BeanContextServiceRevokedEvent ser) {
         assertNull(ser.getSource());

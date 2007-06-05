@@ -295,41 +295,32 @@ public class JarFileTest extends TestCase {
 	/**
 	 * @tests java.util.jar.JarFile#getInputStream(java.util.zip.ZipEntry)
 	 */
-	public void test_getInputStreamLjava_util_jar_JarEntry() {
-		File localFile = null;
-		try {
-			Support_Resources.copyFile(resources, null, jarName);
-			localFile = new File(resources, jarName);
-		} catch (Exception e) {
-			fail("Failed to create local file: " + e);
-		}
+	public void test_getInputStreamLjava_util_jar_JarEntry() throws Exception {
+        File localFile;
+        byte[] b = new byte[1024];
+        JarFile jf;
+        InputStream is;
 
-		byte[] b = new byte[1024];
-		try {
-			JarFile jf = new JarFile(localFile);
-			java.io.InputStream is = jf.getInputStream(jf.getEntry(entryName));
-			jf.close();
-			assertTrue("Returned invalid stream", is.available() > 0);
-			int r = is.read(b, 0, 1024);
-			is.close();
-			StringBuffer sb = new StringBuffer(r);
-			for (int i = 0; i < r; i++) {
-				sb.append((char) (b[i] & 0xff));
-			}
-			String contents = sb.toString();
-			assertTrue("Incorrect stream read", contents.indexOf("bar") > 0);
-		} catch (Exception e) {
-			fail("Exception during test: " + e.toString());
-		}
+        Support_Resources.copyFile(resources, null, jarName);
+        localFile = new File(resources, jarName);
 
-		try {
-			JarFile jf = new JarFile(localFile);
-			InputStream in = jf.getInputStream(new JarEntry("invalid"));
-			assertNull("Got stream for non-existent entry", in);
-		} catch (Exception e) {
-			fail("Exception during test 2: " + e);
-		}
-	}
+        jf = new JarFile(localFile);
+
+        is = jf.getInputStream(new JarEntry("invalid"));
+        assertNull("Got stream for non-existent entry", is);
+
+        is = jf.getInputStream(jf.getEntry(entryName));
+        assertTrue("Returned invalid stream", is.available() > 0);
+
+        // try to read class file header
+        is.read(b, 0, 1024);
+        jf.close();
+        assertTrue("Invalid bytes were red",
+                b[0] == (byte) 0xCA &&
+                b[1] == (byte) 0xFE &&
+                b[2] == (byte) 0xBA &&
+                b[3] == (byte) 0xBE);
+    }
 
 	/**
 	 * @tests java.util.jar.JarFile#getInputStream(java.util.zip.ZipEntry)

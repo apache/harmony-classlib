@@ -31,8 +31,8 @@ VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool.lib $(LIBPATH)vmi.lib \
-  $(LIBPATH)hyzlib.lib $(PNG_DIR)libpng.lib
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) \
+  $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) $(PNG_DIR)libpng$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 COMMENT=/comment:"PNGENCODER native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

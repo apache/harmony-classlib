@@ -25,8 +25,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidObjectException;
 import java.io.NotActiveException;
 import java.io.ObjectInputStream;
+import java.io.ObjectInputValidation;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
@@ -38,6 +40,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.harmony.luni.tests.java.lang.ClassTest;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
@@ -918,8 +921,8 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
         }
     }
 
-    // Regression Test for Harmony-2402
     public void test_registerValidation() throws Exception {
+        // Regression Test for Harmony-2402
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         new ObjectOutputStream(baos);
         ObjectInputStream ois = new ObjectInputStream(
@@ -931,8 +934,49 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
         } catch (NotActiveException nae) {
             // expected
         }
+        
+        // Regression Test for Harmony-3916
+        baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(new RegisterValidationClass());
+        oos.close();
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream fis = new ObjectInputStream(bais);
+        // should not throw NotActiveException
+        fis.readObject();
     }
+    
+    private static class RegisterValidationClass implements Serializable {
+        private A a = new A();
+        private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+            stream.defaultReadObject();
+            stream.registerValidation(new MockObjectInputValidation(), 0);
+        }
+    }
+    
+    private static class MockObjectInputValidation implements ObjectInputValidation {
+        public void validateObject() throws InvalidObjectException {
+            
+        }
+    }
+    
+    //Regression Test for HARMONY-3726
+    public void test_readObject_array() throws Exception {
+        
+        final String resourcePrefix = ObjectInputStreamTest.class.getPackage().getName().replace('.', '/');
+        
+        ObjectInputStream oin = new ObjectInputStream(this.getClass().getClassLoader().getResourceAsStream(
+                resourcePrefix+"/test_array_strings.ser"));               
+        TestArray testArray = (TestArray) oin.readObject();
+        String[] strings = new String[] { "AAA", "BBB" };
+        assertTrue(java.util.Arrays.equals(strings, testArray.array));
 
+        oin = new ObjectInputStream(this.getClass().getClassLoader().getResourceAsStream(
+                resourcePrefix+"/test_array_integers.ser"));        
+        testArray = (TestArray) oin.readObject();
+        Integer[] integers = new Integer[] { 10, 20 };
+        assertTrue(java.util.Arrays.equals(integers, testArray.array));
+    }
 
     /**
      * Sets up the fixture, for example, open a network connection. This method
@@ -944,6 +988,17 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
     }
 }
 
+class TestArray implements Serializable
+{
+    private static final long serialVersionUID = 1L;
+    
+    public Object[] array;
+    
+    public TestArray(Object[] array) {
+        this.array = array;
+    }
+    
+}
 
 class Test implements Serializable {
 	private static final long serialVersionUID = 1L;

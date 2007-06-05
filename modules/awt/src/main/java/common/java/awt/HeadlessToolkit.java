@@ -38,7 +38,10 @@ import org.apache.harmony.awt.wtk.GraphicsFactory;
 import org.apache.harmony.awt.wtk.NativeEventQueue;
 import org.apache.harmony.awt.wtk.WindowFactory;
 
-public final class HeadlessToolkit extends ToolkitImpl {
+final class HeadlessToolkit extends ToolkitImpl {
+
+    private class EventMonitor {}
+    private final Object eventMonitor = new EventMonitor();
     
     @Override
     protected ButtonPeer createButton(Button a0) throws HeadlessException {
@@ -159,6 +162,11 @@ public final class HeadlessToolkit extends ToolkitImpl {
     }
 
     @Override
+    public final Object getEventMonitor() {
+        return eventMonitor;
+    }
+
+    @Override
     GraphicsFactory getGraphicsFactory() throws HeadlessException {
         throw new HeadlessException();
     }
@@ -225,14 +233,12 @@ public final class HeadlessToolkit extends ToolkitImpl {
     }
     
     @Override
-    protected void init() {
+    void init() {
         lockAWT();
         try {
             ComponentInternals.setComponentInternals(new ComponentInternalsImpl());
             new EventQueue(this); // create the system EventQueue
             dispatcher = new Dispatcher(this);
-            desktopProperties = new HashMap<String, Object>();
-            desktopPropsSupport = new PropertyChangeSupport(this);
             awtEventsManager = new AWTEventsManager();
             dispatchThread = new HeadlessEventDispatchThread(this, dispatcher);            
             dtk = DTK.getDTK();

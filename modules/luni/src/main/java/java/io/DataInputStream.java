@@ -41,8 +41,12 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutputStream
      * @see RandomAccessFile
      */
+
+    byte[] buff;
+
     public DataInputStream(InputStream in) {
         super(in);
+        buff = new byte[8];
     }
 
     /**
@@ -136,13 +140,23 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * 
      * @see DataOutput#writeChar(int)
      */
+    private int readToBuff(int count) throws IOException {
+        int offset = 0;
+
+        while(offset < count) {
+            int bytesRead = in.read(buff, offset, count - offset);
+            if(bytesRead == -1) return bytesRead;
+            offset += bytesRead;
+        } 
+        return offset;
+    }
+
     public final char readChar() throws IOException {
-        int b1 = in.read();
-        int b2 = in.read();
-        if ((b1 | b2) < 0) {
+        if (readToBuff(2) < 0){
             throw new EOFException();
         }
-        return (char) ((b1 << 8) + b2);
+        return (char) (((buff[0] & 0xff) << 8) | (buff[1] & 0xff));
+
     }
 
     /**
@@ -248,14 +262,11 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutput#writeInt(int)
      */
     public final int readInt() throws IOException {
-        int b1 = in.read();
-        int b2 = in.read();
-        int b3 = in.read();
-        int b4 = in.read();
-        if ((b1 | b2 | b3 | b4) < 0) {
+        if (readToBuff(4) < 0){
             throw new EOFException();
         }
-        return ((b1 << 24) + (b2 << 16) + (b3 << 8) + b4);
+        return ((buff[0] & 0xff) << 24) | ((buff[1] & 0xff) << 16) |
+            ((buff[2] & 0xff) << 8) | (buff[3] & 0xff);
     }
 
     /**
@@ -320,16 +331,15 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutput#writeLong(long)
      */
     public final long readLong() throws IOException {
-        int i1 = readInt();
-        int b1 = in.read();
-        int b2 = in.read();
-        int b3 = in.read();
-        int b4 = in.read();
-        if ((b1 | b2 | b3 | b4) < 0) {
+        if (readToBuff(8) < 0){
             throw new EOFException();
         }
-        return (((long) i1) << 32) + ((long) b1 << 24) + (b2 << 16) + (b3 << 8)
-                + b4;
+        int i1 = ((buff[0] & 0xff) << 24) | ((buff[1] & 0xff) << 16) |
+            ((buff[2] & 0xff) << 8) | (buff[3] & 0xff);
+        int i2 = ((buff[4] & 0xff) << 24) | ((buff[5] & 0xff) << 16) |
+            ((buff[6] & 0xff) << 8) | (buff[7] & 0xff);
+
+        return ((i1 & 0xffffffffL) << 32) | (i2 & 0xffffffffL);
     }
 
     /**
@@ -343,12 +353,10 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutput#writeShort(int)
      */
     public final short readShort() throws IOException {
-        int b1 = in.read();
-        int b2 = in.read();
-        if ((b1 | b2) < 0) {
+        if (readToBuff(2) < 0){
             throw new EOFException();
         }
-        return (short) ((b1 << 8) + b2);
+        return (short) (((buff[0] & 0xff) << 8) | (buff[1] & 0xff));
     }
 
     /**
@@ -383,12 +391,10 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutput#writeShort(int)
      */
     public final int readUnsignedShort() throws IOException {
-        int b1 = in.read();
-        int b2 = in.read();
-        if ((b1 | b2) < 0) {
+        if (readToBuff(2) < 0){
             throw new EOFException();
         }
-        return ((b1 << 8) + b2);
+        return (char) (((buff[0] & 0xff) << 8) | (buff[1] & 0xff));
     }
 
     /**
@@ -402,72 +408,17 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutput#writeUTF(java.lang.String)
      */
     public final String readUTF() throws IOException {
-        int utfSize = readUnsignedShort();
-        return decodeUTF(utfSize);
+        return decodeUTF(readUnsignedShort());
     }
 
-    static final int MAX_BUF_SIZE = 8192;
-
-    private static class CacheLock {
-    }
-
-    static final Object cacheLock = new CacheLock();
-
-    static boolean useShared = true;
-
-    static byte[] byteBuf = new byte[0];
-
-    static char[] charBuf = new char[0];
 
     String decodeUTF(int utfSize) throws IOException {
-        byte[] buf;
-        char[] out = null;
-        boolean makeBuf = true;
 
-        /*
-         * Try to avoid the synchronization -- if we get a stale value for
-         * useShared then there is no foul below, but those that sync on the
-         * lock must see the right value.
-         */
-        if (utfSize <= MAX_BUF_SIZE && useShared) {
-            synchronized (cacheLock) {
-                if (useShared) {
-                    useShared = false;
-                    makeBuf = false;
-                }
-            }
-        }
-        if (makeBuf) {
-            buf = new byte[utfSize];
-            out = new char[utfSize];
-        } else {
-            /*
-             * Need to 'sample' byteBuf and charBuf before using them because
-             * they are not protected by the cacheLock. They may get out of sync
-             * with the static and one another, but that is ok because we
-             * explicitly check and fix their length after sampling.
-             */
-            buf = byteBuf;
-            if (buf.length < utfSize) {
-                buf = byteBuf = new byte[utfSize];
-            }
-            out = charBuf;
-            if (out.length < utfSize) {
-                out = charBuf = new char[utfSize];
-            }
-        }
-
+        byte[] buf = new byte[utfSize];
+        char[] out = new char[utfSize];
         readFully(buf, 0, utfSize);
-        String result;
-        result = Util.convertUTF8WithBuf(buf, out, 0, utfSize);
-        if (!makeBuf) {
-            /*
-             * Do not synchronize useShared on cacheLock, it will make it back
-             * to main storage at some point, and no harm until it does.
-             */
-            useShared = true;
-        }
-        return result;
+
+        return Util.convertUTF8WithBuf(buf, out, 0, utfSize);
     }
 
     /**

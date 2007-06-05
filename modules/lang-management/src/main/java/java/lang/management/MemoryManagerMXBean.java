@@ -19,7 +19,8 @@ package java.lang.management;
 
 /**
  * <p>
- * The management interface for a memory manager system.
+ * <code>MemoryManagerMXBean</code> is an interface used by the management
+ * system to access memory manager properties.
  * </p>
  * <p>
  * <code>ObjectName</code> pattern: java.lang:type=MemoryManager,name=<i>manager_name</i>
@@ -28,6 +29,7 @@ package java.lang.management;
  * @since 1.5
  */
 public interface MemoryManagerMXBean {
+    
     /**
      * <p>
      * The names of the memory pools being managed by this manager.

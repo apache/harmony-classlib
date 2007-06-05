@@ -56,76 +56,54 @@ public class DigestInputStream2Test extends junit.framework.TestCase {
 	/**
 	 * @tests java.security.DigestInputStream#on(boolean)
 	 */
-	public void test_onZ() {
-		// Test for method void java.security.DigestInputStream.on(boolean)
-		try {
-			MessageDigest originalDigest = (MessageDigest) (digest.clone());
-			MessageDigest noChangeDigest = (MessageDigest) (digest.clone());
-			DigestInputStream dis = new DigestInputStream(inStream,
-					noChangeDigest);
-			// turn off processing
-			dis.on(false);
-			// read some data
-			try {
-				int c = dis.read();
-				assertTrue("Stream returned bogus first character. Char was: '"
-						+ (char) c + " 'Should have been 'T'", c == 'T');
-			} catch (IOException e) {
-				fail("Stream threw an IOException : " + e);
-			}
-			
-			// make sure the digest for the part where it was off has not
-			// changed
-			assertTrue("MessageDigest changed even though processing was off",
-					MessageDigest.isEqual(noChangeDigest.digest(),
-							originalDigest.digest()));
-			MessageDigest changeDigest = (MessageDigest) (digest.clone());
-			dis = new DigestInputStream(inStream, digest);
-			
-			// turn on processing
-			dis.on(true);
-			try {
-				int c = dis.read();
-				assertTrue(
-						"Stream returned bogus second character. Char was: '"
-								+ (char) c + " 'Should have been 'h'", c == 'h');
-			} catch (IOException e) {
-				fail("Stream threw an IOException : " + e);
-			}
-			// make sure the digest has changed
-			assertTrue("MessageDigest did not change with processing on",
-					!MessageDigest.isEqual(digest.digest(), changeDigest
-							.digest()));
-		} catch (CloneNotSupportedException e) {
-			fail("MessageDigest should support clone : " + e);
-		}
+    public void test_onZ() throws Exception {
+        // Test for method void java.security.DigestInputStream.on(boolean)
+        MessageDigest originalDigest = (MessageDigest) (digest.clone());
+        MessageDigest noChangeDigest = (MessageDigest) (digest.clone());
+        DigestInputStream dis = new DigestInputStream(inStream, noChangeDigest);
+        // turn off processing
+        dis.on(false);
+        // read some data
+        int c = dis.read();
+        assertEquals('T', c);
 
-	}
+        // make sure the digest for the part where it was off has not
+        // changed
+        assertTrue("MessageDigest changed even though processing was off",
+                MessageDigest.isEqual(noChangeDigest.digest(), originalDigest
+                        .digest()));
+        MessageDigest changeDigest = (MessageDigest) (digest.clone());
+        dis = new DigestInputStream(inStream, digest);
+
+        // turn on processing
+        dis.on(true);
+        c = dis.read();
+        assertEquals('h', c);
+
+        // make sure the digest has changed
+        assertTrue("MessageDigest did not change with processing on",
+                !MessageDigest.isEqual(digest.digest(), changeDigest.digest()));
+    }
 
 	/**
 	 * @tests java.security.DigestInputStream#read()
 	 */
-	public void test_read() {
-		// Test for method int java.security.DigestInputStream.read()
-		DigestInputStream dis = new DigestInputStream(inStream, digest);
-		
-		// read and compare the data that the inStream has
-		try {
-			int c;
-			while ((c = dis.read()) > -1) {
-				int d = inStream1.read();
-				assertTrue("Stream returned bogus character '" + (char) c
-						+ "' should have been '" + (char) d + "'", c == d);
-			}// end while
-		} catch (IOException e) {
-			fail("Stream threw an IOException : " + e);
-		}
-	}
+    public void test_read() throws IOException {
+        // Test for method int java.security.DigestInputStream.read()
+        DigestInputStream dis = new DigestInputStream(inStream, digest);
+
+        // read and compare the data that the inStream has
+        int c;
+        while ((c = dis.read()) > -1) {
+            int d = inStream1.read();
+            assertEquals(d, c);
+        }// end while
+    }
 
 	/**
 	 * @tests java.security.DigestInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
+	public void test_read$BII() throws IOException {
 		// Test for method int java.security.DigestInputStream.read(byte [],
 		// int, int)
 		DigestInputStream dis = new DigestInputStream(inStream, digest);
@@ -136,23 +114,19 @@ public class DigestInputStream2Test extends junit.framework.TestCase {
 		assertTrue("No data to read for this test", bytesToRead>0);
 		
 		// read and compare the data that the inStream has
-		try {
-			int bytesRead1 = dis.read(buf1, 5, bytesToRead);
-			int bytesRead2 = inStream1.read(buf2, 5, bytesToRead);
-			assertTrue("Didn't read the same from each stream",
-					bytesRead1 == bytesRead2);
-			assertTrue("Didn't read the entire", bytesRead1 == bytesToRead);
-			// compare the arrays
-			boolean same = true;
-			for (int i = 0; i < bytesToRead + 5; i++) {
-				if (buf1[i] != buf2[i]) {
-					same = false;
-				}
-			}// end for 
-			assertTrue("Didn't get the same data", same);
-		} catch (IOException e) {
-			fail("Stream threw an IOException : " + e);
-		}
+        int bytesRead1 = dis.read(buf1, 5, bytesToRead);
+        int bytesRead2 = inStream1.read(buf2, 5, bytesToRead);
+        assertEquals("Didn't read the same from each stream", bytesRead1,
+                bytesRead2);
+        assertEquals("Didn't read the entire", bytesRead1, bytesToRead);
+        // compare the arrays
+        boolean same = true;
+        for (int i = 0; i < bytesToRead + 5; i++) {
+            if (buf1[i] != buf2[i]) {
+                same = false;
+            }
+        }// end for 
+        assertTrue("Didn't get the same data", same);
 	}
 
 	/**

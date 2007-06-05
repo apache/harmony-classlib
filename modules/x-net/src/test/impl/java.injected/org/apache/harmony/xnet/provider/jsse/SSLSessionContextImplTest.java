@@ -58,10 +58,10 @@ public class SSLSessionContextImplTest extends TestCase {
 
     public void testGetSessionCacheSize() {
         SSLSessionContextImpl context = new SSLSessionContextImpl();
-        assertEquals(context.getSessionCacheSize(), 0);
+        assertEquals(0, context.getSessionCacheSize());
 
         context.setSessionCacheSize(100);
-        assertEquals(context.getSessionCacheSize(), 100);
+        assertEquals(100, context.getSessionCacheSize());
         
         try {
             context.setSessionCacheSize(-1);
@@ -72,10 +72,10 @@ public class SSLSessionContextImplTest extends TestCase {
 
     public void testGetSessionTimeout() {
         SSLSessionContextImpl context = new SSLSessionContextImpl();
-        assertEquals(context.getSessionTimeout(), 0);
+        assertEquals(0, context.getSessionTimeout());
 
         context.setSessionTimeout(1000);
-        assertEquals(context.getSessionTimeout(), 1000);
+        assertEquals(1000, context.getSessionTimeout());
         
         try {
             context.setSessionTimeout(-1);

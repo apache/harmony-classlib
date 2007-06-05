@@ -82,37 +82,37 @@ public class SSLContext2Test extends TestCase {
             sslC.getSocketFactory();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslC.getServerSocketFactory();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslC.getServerSessionContext();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslC.getClientSessionContext();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }      
         try {
             sslC.createSSLEngine();
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         try {
             sslC.createSSLEngine("host",1);
             fail("RuntimeException must be thrown");
         } catch (RuntimeException e) {
-            assertEquals("Incorrect message", e.getMessage(),"Not initialiazed");
+            assertEquals("Incorrect message", "Not initialiazed", e.getMessage());
         }
         TrustManager [] tm = new TManager[10];
         KeyManager [] km = new KManager[5];
@@ -126,7 +126,7 @@ public class SSLContext2Test extends TestCase {
         SSLEngine sslE = sslC.createSSLEngine();
         assertTrue("Not null result",sslE instanceof SSLEngine);
         assertNull("Incorrect host", sslE.getPeerHost());
-        assertEquals("Incorrect port", sslE.getPeerPort(), 0);
+        assertEquals("Incorrect port", 0, sslE.getPeerPort());
         String host = "ZZZ";
         int port = 8080;
         sslE = sslC.createSSLEngine(host, port);

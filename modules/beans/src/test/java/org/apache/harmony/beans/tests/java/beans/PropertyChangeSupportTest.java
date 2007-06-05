@@ -17,11 +17,11 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.beans.IndexedPropertyChangeEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
-import java.beans.IndexedPropertyChangeEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +36,8 @@ import junit.textui.TestRunner;
 
 import org.apache.harmony.beans.tests.support.NonSerializablePropertyChangeListener;
 import org.apache.harmony.beans.tests.support.SerializablePropertyChangeListener;
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.util.SerializationTester;
 
@@ -1216,6 +1218,7 @@ public class PropertyChangeSupportTest extends TestCase {
     /*
      * Test serialization/deserialization compatibility
      */
+
     public void testSerializationCompatibility() throws Exception {
         Object src = "PropertyChangeSupportSerializationTest";
         PropertyChangeSupport sup = new PropertyChangeSupport(src);
@@ -1232,16 +1235,19 @@ public class PropertyChangeSupportTest extends TestCase {
         sup.addPropertyChangeListener("myProp", l2);
         sup2.addPropertyChangeListener(l1);
         sup2.addPropertyChangeListener("myProp", l1);
-
-        PropertyChangeSupport deSup = (PropertyChangeSupport) SerializationTester
-                .readObject(sup,
-                        "serialization/java/beans/PropertyChangeSupport.ser");
-        assertEquals(sup2.getPropertyChangeListeners()[0], deSup
-                .getPropertyChangeListeners()[0]);
-        assertEquals(((PropertyChangeListenerProxy) sup2
-                .getPropertyChangeListeners()[1]).getListener(),
-                ((PropertyChangeListenerProxy) deSup
-                        .getPropertyChangeListeners()[1]).getListener());
+        SerializationTest.verifyGolden(this, sup2, new SerializableAssert() {
+            public void assertDeserialized(Serializable initial,
+                    Serializable deserialized) {
+                PropertyChangeSupport sup2 = (PropertyChangeSupport) initial;
+                PropertyChangeSupport deSup = (PropertyChangeSupport) deserialized;
+                assertEquals(sup2.getPropertyChangeListeners()[0], deSup
+                        .getPropertyChangeListeners()[0]);
+                assertEquals(((PropertyChangeListenerProxy) sup2
+                        .getPropertyChangeListeners()[1]).getListener(),
+                        ((PropertyChangeListenerProxy) deSup
+                                .getPropertyChangeListeners()[1]).getListener());
+            }
+        });
     }
 
     /*

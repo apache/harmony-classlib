@@ -151,7 +151,7 @@
 
         <mkdir dir="${hy.swing.bin.test}" />
 
-        <javac srcdir="${hy.swing.src.test.api}/java/common"
+        <javac srcdir="${hy.swing.src.test.api}/java.injected"
                destdir="${hy.swing.bin.test}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
@@ -201,7 +201,7 @@
 
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
-                <fileset dir="${hy.swing.src.test.api}/java/common">
+                <fileset dir="${hy.swing.src.test.api}/java.injected">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->

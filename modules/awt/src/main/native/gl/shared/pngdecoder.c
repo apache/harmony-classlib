@@ -69,10 +69,6 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_decode
   decoderInfo->env = env;
   decoderInfo->obj = obj;
   
-  // Obtain input data
-  decoderInfo->jInputData = jInput;
-  decoderInfo->inputBuffer = (*env)->GetPrimitiveArrayCritical(env, jInput, 0);
-  
   // Get java array for image data if it is created (header is passed already)
   if(decoderInfo->colorType >= 0) {
     if(decoderInfo->colorType == PNG_COLOR_TYPE_RGB || 
@@ -83,6 +79,10 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_image_PngDecoder_decode
     }
     decoderInfo->imageData = (*env)->GetPrimitiveArrayCritical(env, decoderInfo->jImageData, 0);
   }  
+
+  // Obtain input data
+  decoderInfo->jInputData = jInput;
+  decoderInfo->inputBuffer = (*env)->GetPrimitiveArrayCritical(env, jInput, 0);  
 
   // Now process data
   processData(decoderInfo, decoderInfo->inputBuffer, bytesInBuffer);
@@ -225,6 +225,7 @@ void gl_info_callback(png_structp png_ptr, png_infop info) {
   env = decoderInfo->env;
   obj = decoderInfo->obj;
 
+  // images that have width or height > 2^31 aren't supported :)
   (*env)->SetIntField(env, obj, img_PNG_imageWidthID, decoderInfo->width);
   (*env)->SetIntField(env, obj, img_PNG_imageHeightID, decoderInfo->height);
   (*env)->SetIntField(env, obj, img_PNG_bitDepthID, decoderInfo->bitDepth);
