@@ -239,6 +239,25 @@ ${built.files.list}
 		<fileset dir="${hy.jdk}/jre/lib/boot/xerces-2_9_0"/>
 	</move>
 
+	<!-- Unzip xmlsec jars -->
+	<mkdir dir="${hy.jdk}/jre/lib/boot/xmlsec-1.4.0" />
+	<unzip src="${depends.jars}/xmlsec_1.4.0/xmlsec.zip"
+	       dest="${hy.jdk}/jre/lib/boot" >
+		<patternset>
+			<include name="xml-security-1_4_0/libs/xmlsec-1.4.0.jar" />
+			<include name="xml-security-1_4_0/libs/commons-logging.jar" />
+		</patternset>
+
+                <!-- mapper type="flatten" / -->
+	</unzip>
+
+        <!-- TODO: remove this when switch to next ant version -->
+	<move todir="${hy.jdk}/jre/lib/boot/xmlsec-1.4.0">
+		<fileset dir="${hy.jdk}/jre/lib/boot/xml-security-1_4_0/libs"/>
+	</move>
+        <delete dir="${hy.jdk}/jre/lib/boot/xml-security-1_4_0" />
+
+
         <!-- delete these lines if BC version is greater than jdk15-134 -->
         <!-- delete the original signed.bcprov.jar                      -->
         <delete file="${hy.jdk}/jre/lib/ext/signed.bcprov.jar" />
