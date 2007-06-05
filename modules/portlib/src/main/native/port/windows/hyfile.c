@@ -602,7 +602,7 @@ hyfile_seek (struct HyPortLibrary * portLibrary, IDATA fd, I_64 offset,
   I_32 error;
 
   lowerOffset = (DWORD) (offset & 0xFFFFFFFF);
-  upperOffset = (DWORD) ((offset >> 32) & 0x7FFFFFFF);
+  upperOffset = (DWORD) ((offset >> 32) & 0xFFFFFFFF);
 
   if ((whence < HySeekSet) || (whence > HySeekEnd))
     {
