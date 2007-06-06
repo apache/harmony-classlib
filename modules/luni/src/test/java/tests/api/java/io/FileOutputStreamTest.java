@@ -68,7 +68,10 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
         // Test for method java.io.FileOutputStream(java.lang.String)
         f = new File(fileName = System.getProperty("user.home"), "fos.tst");
         fileName = f.getAbsolutePath();
-        fos = new java.io.FileOutputStream(f);
+        fos = new FileOutputStream(fileName);
+
+        // Regression test for HARMONY-4012
+        new FileOutputStream("nul");
     }
 
     /**

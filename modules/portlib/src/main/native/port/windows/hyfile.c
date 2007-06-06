@@ -504,7 +504,7 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
       return -1;
     }
 
-  if ((flags & HyOpenTruncate) == HyOpenTruncate)
+  if ((GetFileType(aHandle) == FILE_TYPE_DISK) && ((flags & HyOpenTruncate) == HyOpenTruncate))
     {
       if (0 == CloseHandle (aHandle))
 	{
