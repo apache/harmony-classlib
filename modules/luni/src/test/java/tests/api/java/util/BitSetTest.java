@@ -19,6 +19,8 @@ package tests.api.java.util;
 
 import java.util.BitSet;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 public class BitSetTest extends junit.framework.TestCase {
 
 	BitSet eightbs;
@@ -159,6 +161,14 @@ public class BitSetTest extends junit.framework.TestCase {
 		assertTrue("Test1: Wrong length, " + bs.size(), bs.length() == 0);
 		bs.clear(0);
 		assertTrue("Test2: Wrong length" + bs.size(), bs.length() == 0);
+		
+		bs = new BitSet();
+		try {
+			bs.clear(-1);
+			fail("Should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
 	}
 
 	/**
@@ -198,7 +208,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		initialSize = bs.size();
 		bs.set(0, initialSize);
 		bs.clear(7, 64);
-		assertEquals("Failed to grow BitSet", 128, bs.size());
+		assertEquals("Failed to grow BitSet", 64, bs.size());
 		for (int i = 0; i < 7; i++)
 			assertTrue("Shouldn't have cleared bit " + i, bs.get(i));
 		for (int i = 7; i < 64; i++)
@@ -324,6 +334,14 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs = new BitSet();
 		bs.set(63);
 		assertTrue("Test highest bit", bs.get(63));
+		
+		bs = new BitSet();
+		try {
+			bs.get(Integer.MIN_VALUE);
+			fail("Should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
 	}
 
 	/**
@@ -482,6 +500,14 @@ public class BitSetTest extends junit.framework.TestCase {
 
 		eightbs.set(5, true);
 		assertTrue("Should have set bit 5 to false", eightbs.get(5));
+		
+		try {
+            BitSet bs = new BitSet();
+            bs.set(-2147483648, false);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
 	}
 
 	/**
@@ -512,7 +538,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		// pos1 and pos2 is in the same bitset element, boundary testing
 		bs = new BitSet(16);
 		bs.set(7, 64);
-		assertEquals("Failed to grow BitSet", 128, bs.size());
+		assertEquals("Failed to grow BitSet", 64, bs.size());
 		for (int i = 0; i < 7; i++)
 			assertTrue("Shouldn't have set bit " + i, !bs.get(i));
 		for (int i = 7; i < 64; i++)
@@ -708,7 +734,7 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs.set(7);
 		bs.set(10);
 		bs.flip(7, 64);
-		assertEquals("Failed to grow BitSet", 128, bs.size());
+		assertEquals("Failed to grow BitSet", 64, bs.size());
 		for (int i = 0; i < 7; i++)
 			assertTrue("Shouldn't have flipped bit " + i, !bs.get(i));
 		assertTrue("Failed to flip bit 7", !bs.get(7));
@@ -936,6 +962,14 @@ public class BitSetTest extends junit.framework.TestCase {
 		for (int i = 64; i < 128; i++)
 			assertTrue("Failed to clear extra bits in the receiver BitSet", !bs
 					.get(i));
+		
+		bs = new BitSet(64);
+		try {
+			bs.and(null);
+			fail("Should throw NPE");
+		} catch (NullPointerException e) {
+			// expected
+		}
 	}
 
 	/**
@@ -954,6 +988,14 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs = new BitSet(0);
 		bs.andNot(bs2);
 		assertEquals("Incorrect size", 0, bs.size());
+		
+		bs = new BitSet(64);
+		try {
+			bs.andNot(null);
+			fail("Should throw NPE");
+		} catch (NullPointerException e) {
+			// expected
+		}
 	}
 
 	/**
@@ -1268,8 +1310,11 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs.set(127, 130);
 		bs.set(193);
 		bs.set(450);
+        
 		assertEquals("cardinality() returned wrong value", 48, bs.cardinality());
-
+        
+        
+        
 		bs.flip(0, 500);
 		assertEquals("cardinality() returned wrong value", 452, bs
 				.cardinality());
@@ -1280,8 +1325,39 @@ public class BitSetTest extends junit.framework.TestCase {
 		bs.set(0, 500);
 		assertEquals("cardinality() returned wrong value", 500, bs
 				.cardinality());
+        
+        
+        bs.clear();
+        bs.set(0, 64);
+        assertEquals("cardinality() returned wrong value", 64, bs.cardinality());
 	}
-
+    
+	public void test_serialization() throws Exception{
+        BitSet bs = new BitSet(500);
+        bs.set(5);
+        bs.set(32);
+        bs.set(63);
+        bs.set(64);
+        bs.set(71, 110);
+        bs.set(127, 130);
+        bs.set(193);
+        bs.set(450);        
+        SerializationTest.verifySelf(bs);   
+    }
+    
+    public void test_serializationCompatiblity() throws Exception{
+        BitSet bs = new BitSet(500);
+        bs.set(5);
+        bs.set(32);
+        bs.set(63);
+        bs.set(64);
+        bs.set(71, 110);
+        bs.set(127, 130);
+        bs.set(193);
+        bs.set(450);        
+        SerializationTest.verifyGolden(this, bs);
+    }
+    
 	/**
 	 * helper method to display the contents of a bitset
 	 * 
