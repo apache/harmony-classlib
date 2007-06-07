@@ -48,6 +48,14 @@ public final class Float extends Number implements Comparable<Float> {
      * </p>
      */
     public static final float MIN_VALUE = 1.40129846432481707e-45f;
+    
+    /**
+     * <p>
+     * Constant for the smallest positive normal value of <code>float</code>.
+     * </p>
+     * @since 1.6
+     */
+    public static final float MIN_NORMAL = 1.1754943508222875E-38f;
 
     /**
      * <p>
@@ -84,6 +92,22 @@ public final class Float extends Number implements Comparable<Float> {
 
     // Note: This can't be set to "float.class", since *that* is
     // defined to be "java.lang.Float.TYPE";
+    
+    /**
+     * <p>
+     * Maximum exponent that a finite float variable may have.
+     * </p>
+     * @since 1.6
+     */
+    public static final int MAX_EXPONENT = 127;
+    
+    /**
+     * <p>
+     * Minimum exponent that a finite float variable may have.
+     * </p>
+     * @since 1.6
+     */
+    public static final int MIN_EXPONENT = -126;
 
     /**
      * <p>

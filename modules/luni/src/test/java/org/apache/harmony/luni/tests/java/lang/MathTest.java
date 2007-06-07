@@ -251,6 +251,95 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect floor for double",
                              -79, Math.floor(-78.89), 0);
 	}
+	
+	/**
+     * cases for test_getExponent_D in MathTest/StrictMathTest
+     */
+    static final double GETEXPONENT_D_CASES[] = new double[] {
+            Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY,
+            Double.MAX_VALUE, -Double.MAX_VALUE, 2.342E231, -2.342E231, 2800.0,
+            -2800.0, 5.323, -5.323, 1.323, -1.323, 0.623, -0.623, 0.323,
+            -0.323, Double.MIN_NORMAL * 24, -Double.MIN_NORMAL * 24,
+            Double.MIN_NORMAL, -Double.MIN_NORMAL, Double.MIN_NORMAL / 2,
+            -Double.MIN_NORMAL / 2, Double.MIN_VALUE, -Double.MIN_VALUE, +0.0,
+            0.0, -0.0, Double.NaN };
+
+    /**
+     * result for test_getExponent_D in MathTest/StrictMathTest
+     */
+    static final int GETEXPONENT_D_RESULTS[] = new int[] {
+            Double.MAX_EXPONENT + 1, Double.MAX_EXPONENT + 1,
+            Double.MAX_EXPONENT, Double.MAX_EXPONENT, 768, 768, 11, 11, 2, 2,
+            0, 0, -1, -1, -2, -2, -1018, -1018, Double.MIN_EXPONENT,
+            Double.MIN_EXPONENT, Double.MIN_EXPONENT - 1,
+            Double.MIN_EXPONENT - 1, Double.MIN_EXPONENT - 1,
+            Double.MIN_EXPONENT - 1, Double.MIN_EXPONENT - 1,
+            Double.MIN_EXPONENT - 1, Double.MIN_EXPONENT - 1,
+            Double.MAX_EXPONENT + 1 };
+
+    /**
+     * @tests {@link java.lang.Math#getExponent(double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_getExponent_D() {
+        for (int i = 0; i < GETEXPONENT_D_CASES.length; i++) {
+            final double number = GETEXPONENT_D_CASES[i];
+            final int result = GETEXPONENT_D_RESULTS[i];
+            assertEquals("Wrong result of getExponent(double).", result, Math
+                    .getExponent(number));
+        }
+
+        try {
+            Math.getExponent((Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * cases for test_getExponent_F in MathTest/StrictMathTest
+     */
+    static final float GETEXPONENT_F_CASES[] = new float[] {
+            Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.MAX_VALUE,
+            -Float.MAX_VALUE, 3.4256E23f, -3.4256E23f, 2800.0f, -2800.0f,
+            5.323f, -5.323f, 1.323f, -1.323f, 0.623f, -0.623f, 0.323f, -0.323f,
+            Float.MIN_NORMAL * 24, -Float.MIN_NORMAL * 24, Float.MIN_NORMAL,
+            -Float.MIN_NORMAL, Float.MIN_NORMAL / 2, -Float.MIN_NORMAL / 2,
+            Float.MIN_VALUE, -Float.MIN_VALUE, +0.0f, 0.0f, -0.0f, Float.NaN,1,Float.MIN_NORMAL * 1.5f };
+
+    /**
+     * result for test_getExponent_F in MathTest/StrictMathTest
+     */
+    static final int GETEXPONENT_F_RESULTS[] = new int[] {
+            Float.MAX_EXPONENT + 1, Float.MAX_EXPONENT + 1, Float.MAX_EXPONENT,
+            Float.MAX_EXPONENT, 78, 78, 11, 11, 2, 2, 0, 0, -1, -1, -2, -2,
+            -122, -122, Float.MIN_EXPONENT, Float.MIN_EXPONENT,
+            Float.MIN_EXPONENT - 1, Float.MIN_EXPONENT - 1,
+            Float.MIN_EXPONENT - 1, Float.MIN_EXPONENT - 1,
+            Float.MIN_EXPONENT - 1, Float.MIN_EXPONENT - 1,
+            Float.MIN_EXPONENT - 1, Float.MAX_EXPONENT + 1,0,Float.MIN_EXPONENT };
+    
+    /**
+     * @tests {@link java.lang.Math#getExponent(float)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_getExponent_F() {
+        for (int i = 0; i < GETEXPONENT_F_CASES.length; i++) {
+            final float number = GETEXPONENT_F_CASES[i];
+            final int result = GETEXPONENT_F_RESULTS[i];
+            assertEquals("Wrong result of getExponent(float).", result, Math
+                    .getExponent(number));
+        }
+        try {
+            Math.getExponent((Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
     
     /**
      * @tests java.lang.Math#hypot(double, double)

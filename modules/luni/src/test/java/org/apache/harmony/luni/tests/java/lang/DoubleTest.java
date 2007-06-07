@@ -1403,4 +1403,40 @@ public class DoubleTest extends TestCase {
             s++;
         }
     }
+    
+    /**
+	 * @tests {@link java.lang.Double#MAX_EXPONENT}
+	 * @since 1.6
+	 */
+	public void test_MAX_EXPONENT() {
+		assertTrue("Wrong value of java.lang.Double.MAX_EXPONENT",
+				Double.MAX_EXPONENT == 1023);
+		assertTrue("Wrong value of java.lang.Double.MAX_EXPONENT",
+				Double.MAX_EXPONENT == Math.getExponent(Double.MAX_VALUE));
+	}
+
+	/**
+	 * @tests {@link java.lang.Double#MIN_EXPONENT}
+	 * @since 1.6
+	 */
+	public void test_MIN_EXPONENT() {
+		assertTrue("Wrong value of java.lang.Double.MIN_EXPONENT",
+				Double.MIN_EXPONENT == -1022);
+		assertTrue("Wrong value of java.lang.Double.MIN_EXPONENT",
+				Double.MIN_EXPONENT == Math.getExponent(Double.MIN_NORMAL));
+	}
+
+	/**
+	 * @tests {@link java.lang.Double#MIN_NORMAL}
+	 * @since 1.6
+	 */
+	public void test_MIN_NORMAL() {
+		assertTrue("Wrong value of java.lang.Double.MIN_NORMAL",
+				Double.MIN_NORMAL == 0x1.0p-1022);
+		assertTrue("Wrong value of java.lang.Double.MIN_NORMAL",
+				Double.MIN_NORMAL == Double
+						.longBitsToDouble(0x0010000000000000L));
+		assertTrue("Wrong value of java.lang.Double.MIN_NORMAL",
+				Double.MIN_NORMAL == 2.2250738585072014E-308);
+	}
 }

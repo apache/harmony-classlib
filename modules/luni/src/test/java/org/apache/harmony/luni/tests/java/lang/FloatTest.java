@@ -1015,4 +1015,39 @@ public class FloatTest extends TestCase {
             s++;
         }
     }
+    
+    /**
+	 * @tests {@link java.lang.Float#MAX_EXPONENT}
+	 * @since 1.6 
+	 */
+	public void test_MAX_EXPONENT() {
+		assertTrue("Wrong value of java.lang.Float.MAX_EXPONENT",
+				Float.MAX_EXPONENT == 127);
+		assertTrue("Wrong value of java.lang.Float.MAX_EXPONENT",
+				Float.MAX_EXPONENT == Math.getExponent(Float.MAX_VALUE));
+	}
+
+	/**
+	 * @tests {@link java.lang.Float#MIN_EXPONENT}
+	 * @since 1.6
+	 */
+	public void test_MIN_EXPONENT() {
+		assertTrue("Wrong value of java.lang.Float.MIN_EXPONENT",
+				Float.MIN_EXPONENT == -126);
+		assertTrue("Wrong value of java.lang.Float.MIN_EXPONENT",
+				Float.MIN_EXPONENT == Math.getExponent(Float.MIN_NORMAL));
+	}
+
+	/**
+	 * @tests {@link java.lang.Float#MIN_NORMAL}
+	 * @since 1.6
+	 */
+	public void test_MIN_NORMAL() {
+		assertTrue("Wrong value of java.lang.Float.MIN_NORMAL",
+				Float.MIN_NORMAL == 0x1.0p-126f);
+		assertTrue("Wrong value of java.lang.Float.MIN_NORMAL",
+				Float.MIN_NORMAL == Float.intBitsToFloat(0x00800000));
+		assertTrue("Wrong value of java.lang.Float.MIN_NORMAL",
+				Float.MIN_NORMAL == 1.1754943508222875E-38f);
+	}
 }

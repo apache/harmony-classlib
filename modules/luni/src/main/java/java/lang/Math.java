@@ -23,7 +23,19 @@ package java.lang;
  * constants.
  */
 public final class Math {
+	
+	private static final int FLOAT_EXPONENT_BIAS = 127;
 
+    private static final int FLOAT_EXPONENT_MASK = 0x7F800000;
+
+    private static final int DOUBLE_MANTISSA_BITS = 52;
+    
+    private static final int FLOAT_MANTISSA_BITS = 23;
+
+    private static final int DOUBLE_EXPONENT_BIAS = 1023;
+
+    private static final long DOUBLE_EXPONENT_MASK = 0x7fff000000000000L;
+    
 	/**
 	 * Standard math constants.
 	 */
@@ -629,4 +641,34 @@ public final class Math {
     private native static double nextafter(double x, double y);
 
     private native static float nextafterf(float x, float y); 
+    
+    /**
+     * Answers the exponent of a float.
+     * 
+     * @param f
+     *            the given float
+     * @return the exponent of the float.
+     * 
+     * @since 1.6
+     */
+    public static int getExponent(float f) {
+        int bits = Float.floatToRawIntBits(f);
+        bits = (bits & FLOAT_EXPONENT_MASK) >> FLOAT_MANTISSA_BITS;
+        return bits - FLOAT_EXPONENT_BIAS;
+    }
+
+    /**
+     * Answers the exponent of a double.
+     * 
+     * @param d
+     *            the given double
+     * @return the exponent of the double.
+     * 
+     * @since 1.6
+     */
+    public static int getExponent(double d) {
+        long bits = Double.doubleToRawLongBits(d);
+        bits = (bits & DOUBLE_EXPONENT_MASK) >> DOUBLE_MANTISSA_BITS;
+        return (int) bits - DOUBLE_EXPONENT_BIAS;
+    }    
 }

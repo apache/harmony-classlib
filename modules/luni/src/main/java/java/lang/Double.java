@@ -50,6 +50,15 @@ public final class Double extends Number implements Comparable<Double> {
     public static final double MIN_VALUE = 5e-324;
 
     /* 4.94065645841246544e-324 gets rounded to 9.88131e-324 */
+    
+    /**
+	 * <p>
+	 * Constant for the smallest positive normal value of <code>double</code>.
+	 * </p>
+	 * 
+	 * @since 1.6
+	 */
+	public static final double MIN_NORMAL = 2.2250738585072014E-308;
 
     /**
      * <p>
@@ -66,6 +75,22 @@ public final class Double extends Number implements Comparable<Double> {
      * </p>
      */
     public static final double POSITIVE_INFINITY = 1.0 / 0.0;
+    
+    /**
+     * <p>
+     * Maximum exponent that a finite double variable may have.
+     * </p>
+     * @since 1.6
+     */
+    public static final int MAX_EXPONENT = 1023;
+    
+        /**
+     * <p>
+     * Minimum exponent that a finite double variable may have.
+     * </p>
+     * @since 1.6
+     */
+    public static final int MIN_EXPONENT = -1022;
 
     /**
      * <p>
