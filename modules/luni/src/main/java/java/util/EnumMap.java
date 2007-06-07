@@ -372,10 +372,10 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Constructs an empty enum map using the given key type.
+     * Constructs an empty EnumMap.
      * 
      * @param keyType
-     *            the class object of the key type used by this enum map
+     *           the Class that is to be used for the key type for this map
      * @throws NullPointerException
      *             if the keyType is null
      */
@@ -384,11 +384,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Constructs an enum map using the same key type as the given enum map and
-     * initially containing the same mappings.
+     * Constructs an EnumMap using the same key type and contents as the given
+     * EnumMap.
      * 
      * @param map
-     *            the enum map from which this enum map is initialized
+     *            the EnumMap from which the initial contents of this EnumMap
+     *            are copied
      * @throws NullPointerException
      *             if the map is null
      */
@@ -397,16 +398,16 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Constructs an enum map initialized from the given map. If the given map
-     * is an EnumMap instance, this constructor behaves in the exactly the same
-     * way as {@link EnumMap#EnumMap(EnumMap)}}. Otherwise, the given map at
-     * least should contain one mapping.
+     * Constructs an EnumMap with the same contents as the given Map. If the Map
+     * is an EnumMap, this is equivalent to calling
+     * {@link EnumMap#EnumMap(EnumMap)}}. Otherwise, the given map cannot be
+     * empty so that the key type of this EnumMap can be inferred.
      * 
      * @param map
-     *            the map from which this enum map is initialized
+     *            the Map from which the initial contents of this EnumMap are
+     *            copied
      * @throws IllegalArgumentException
-     *             if the map is not an enum map instance and does not contain
-     *             any mappings
+     *             if the map is empty and is not of type <code>EnumMap</code>
      * @throws NullPointerException
      *             if the map is null
      */
@@ -430,7 +431,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Removes all mappings in this map.
+     * Clears this map.
      */
     @Override
     public void clear() {
@@ -440,7 +441,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers a shallow copy of this map.
+     * Clones this map to create a shallow copy.
      * 
      * @return a shallow copy of this map
      */
@@ -456,11 +457,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers true if this map has a mapping for the given key.
+     * Returns true if the given object is present as a key in this map.
      * 
      * @param key
-     *            the key whose presence in this map is to be tested
-     * @return true if this map has a mapping for the given key.
+     *            the key to look for
+     * @return true if this map contains the key
      */
     @Override
     public boolean containsKey(Object key) {
@@ -472,11 +473,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers true if this map has one or more keys mapped to the given value.
+     * Returns true if the given object is present as a value in this map.
      * 
      * @param value
-     *            the value whose presence in this map is to be tested
-     * @return true if this map has one or more keys mapped to the given value.
+     *            the value to look for
+     * @return true if this map contains the value.
      */
     @Override
     public boolean containsValue(Object value) {
@@ -517,12 +518,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Compares the given object with this map. Answers true if the given object
-     * is equal to this map.
+     * Returns true if this EnumMap is equal to the given object.
      * 
      * @param object
-     *            the object to be compared with this map
-     * @return true if the given object is equal to this map.
+     *            the object
+     * @return true if this EnumMap is equal to the given object.
      */
     @Override
     public boolean equals(Object object) {
@@ -541,13 +541,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers the value which is mapped to the given key in this map, or null
-     * if this map has no mapping for the given key.
+     * Returns the value stored in this map for the given key in this map, or null
+     * if this map has no entry for that key.
      * 
      * @param key
-     *            the key whose associated value is to be returned
-     * @return the value to which this map maps the given key, or null if this
-     *         map has no mapping for the given key.
+     *            the key to get the value for.
+     * @return the value for the given key.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -578,17 +577,17 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Associates the given value with the given key in this map. If the map
-     * previously had a mapping for this key, the old value is replaced.
+     * Stores a value in this map for the given key. If the map already has an
+     * entry for this key the current value will be overwritten.
      * 
      * @param key
-     *            the key with which the given value is to be associated value
+     *            the key
      * @param value
-     *            the value to be associated with the given key
-     * @return the value to which this map maps the given key, or null if this
-     *         map has no mapping for the given key.
+     *            the value to store for the given key
+     * @return the value stored for the given key, or null if this map has no
+     *         entry for the key
      * @throws NullPointerException
-     *             if the given key is null
+     *             if the key is null
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -597,15 +596,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Copies all the mappings in the given map to this map. These mappings will
-     * replace all mappings that this map had for all of the keys currently in
-     * the given map.
+     * Add all the entries in the given map to this map
      * 
      * @param map
-     *            the key whose presence in this map is to be tested
+     *            the map whose entries to copy
      * @throws NullPointerException
-     *             if the given map is null, or if one or more keys in the given
-     *             map are null
+     *             if the given map or any of its keys are null
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -614,12 +610,12 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Removes the mapping for this key from this map if it is present.
+     * Removes the entry for the given key from this map, if there is one.
      * 
      * @param key
-     *            the key whose mapping is to be removed from this map
-     * @return the previous value associated with the given key, or null if this
-     *         map has no mapping for this key.
+     *            the key to remove
+     * @return the value that had been stored for the key, or null if there was
+     *         not one.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -638,9 +634,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
     }
 
     /**
-     * Answers the number of the mappings in this map.
+     * Returns the size of this map
      * 
-     * @return the number of the mappings in this map
+     * @return the number of entries in the map
      */
     @Override
     public int size() {

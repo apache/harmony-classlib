@@ -17,6 +17,7 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.Color;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 
@@ -72,5 +73,36 @@ public class PropertyEditorManagerRegressionTest extends TestCase {
 
         editor.setAsText(text);
         assertEquals(text, editor.getAsText());
+    }
+    
+    // Regression for HARMONY-4062
+    public void testColorEditor() {
+        PropertyEditor propertyEditor = PropertyEditorManager
+                .findEditor(Color.class);
+        propertyEditor.setValue(new Color(0, 0, 0));
+        propertyEditor.setAsText("1,2,3");
+        Color newColor = new Color(1, 2, 3);
+        assertEquals(newColor, propertyEditor.getValue());
+
+        try {
+            propertyEditor.setAsText(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
+
+        try {
+            propertyEditor.setAsText("illegalArugment");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected.
+        }
+
+        try {
+            propertyEditor.setAsText("1,2,3,4");
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            //expected.
+        }
     }
 }

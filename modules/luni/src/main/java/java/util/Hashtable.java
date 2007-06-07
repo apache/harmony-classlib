@@ -373,7 +373,7 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
         for (int i = elementData.length; --i >= 0;) {
             Entry<K, V> entry = elementData[i];
             while (entry != null) {
-                if (value.equals(entry.value)) {
+                if (entry.value.equals(value)) {
                     return true;
                 }
                 entry = entry.next;

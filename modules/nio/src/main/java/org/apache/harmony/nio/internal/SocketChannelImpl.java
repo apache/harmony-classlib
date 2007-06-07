@@ -154,6 +154,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     /*
      * for native call
      */
+    @SuppressWarnings("unused")
     private SocketChannelImpl(){
         super(SelectorProvider.provider());
         fd = new FileDescriptor();

@@ -77,15 +77,15 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 public class RegistryContext implements Context, Referenceable {
 
     /**
-     * Constant that holds the name of the environment property
-     * for specifying that RMI security manager should be installed.
+     * System property used to state whether the RMI security manager should be
+     * installed.
      */
-    public static final String SECURITY_MANAGER =
+    public static final String SECURITY_MANAGER = 
             "java.naming.rmi.security.manager"; //$NON-NLS-1$
 
     /**
-     * Constant that holds the name of the environment property
-     * for specifying the name of {@link RMIClientSocketFactory} class.
+     * System property used to supply the name of the
+     * {@link RMIClientSocketFactory} to use.
      */
     public static final String CLIENT_SOCKET_FACTORY =
             "org.apache.harmony.jndi.provider.rmi.registry.clientSocketFactory"; //$NON-NLS-1$

@@ -114,6 +114,7 @@ class DatagramChannelImpl extends DatagramChannel implements
     /*
      * for native call
      */
+    @SuppressWarnings("unused")
     private DatagramChannelImpl(){
         super(SelectorProvider.provider());
         fd = new FileDescriptor();
