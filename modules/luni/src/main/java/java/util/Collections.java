@@ -575,15 +575,51 @@ public class Collections {
         }
 
         public int indexOf(Object object) {
+            final int size;
+            final Object[] array;
             synchronized (mutex) {
-                return list.indexOf(object);
+                size = list.size();
+                array = new Object[size];
+                list.toArray(array);
             }
+            if (null != object)
+                for (int i = 0; i < size; i++) {
+                    if (object.equals(array[i])) {
+                        return i;
+                    }
+                }
+            else {
+                for (int i = 0; i < size; i++) {
+                    if (null == array[i]) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
         }
 
         public int lastIndexOf(Object object) {
+            final int size;
+            final Object[] array;
             synchronized (mutex) {
-                return list.lastIndexOf(object);
+                size = list.size();
+                array = new Object[size];
+                list.toArray(array);
             }
+            if (null != object)
+                for (int i = size - 1; i >= 0; i--) {
+                    if (object.equals(array[i])) {
+                        return i;
+                    }
+                }
+            else {
+                for (int i = size - 1; i >= 0; i--) {
+                    if (null == array[i]) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
         }
 
         public ListIterator<E> listIterator() {

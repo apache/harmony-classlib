@@ -67,6 +67,31 @@ public class ColorEditor extends PropertyEditorSupport {
             super.setValue(value);
         }
     }
+    
+    @Override
+    public void setAsText(String text) {
+        if (null == text) {
+            throw new NullPointerException();
+        }
+
+        int r = 0;
+        int g = 0;
+        int b = 0;
+
+        try {
+            int index = text.indexOf(",");
+            r = Integer.parseInt(text.substring(0, index));
+            text = text.substring(index + 1);
+            index = text.indexOf(",");
+            g = Integer.parseInt(text.substring(0, index));
+            text = text.substring(index + 1);
+            b = Integer.parseInt(text);
+            setValue(new Color(r, g, b));
+        } catch (Exception e) {
+            throw new IllegalArgumentException(text);
+        }
+    }
+    
 
     @Override
     public boolean isPaintable() {

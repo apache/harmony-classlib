@@ -75,9 +75,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	 */
 	public ArrayList(Collection<? extends E> collection) {
 		int size = collection.size();
-		firstIndex = lastIndex = 0;
+		firstIndex = 0;
 		array = newElementArray(size + (size / 10));
-		addAll(collection);
+        collection.toArray(array);
+        lastIndex = size;
+        modCount = 1;
 	}
     
     @SuppressWarnings("unchecked")
@@ -201,12 +203,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
         }
 
         if (growSize > 0) {
-            Iterator<? extends E> it = collection.iterator();
-            int index = location + firstIndex;
-            int end = index + growSize;
-            while (index < end) {
-                array[index++] = it.next();
-            }
+            Object[] dumparray = new Object[growSize];
+            collection.toArray(dumparray);
+            System.arraycopy(dumparray, 0, this.array, location+firstIndex, growSize);
             modCount++;
             return true;
         }
@@ -227,11 +226,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 			if (lastIndex > array.length - growSize) {
                 growAtEnd(growSize);
             }
-			Iterator<? extends E> it = collection.iterator();
-			int end = lastIndex + growSize;
-			while (lastIndex < end) {
-                array[lastIndex++] = it.next();
-            }
+            Object[] dumparray = new Object[growSize];
+            collection.toArray(dumparray);
+            System.arraycopy(dumparray, 0, this.array, lastIndex, growSize);
+            lastIndex += growSize;
 			modCount++;
 			return true;
 		}
@@ -366,7 +364,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 
 	private void growAtFront(int required) {
 		int size = size();
-		if (array.length - lastIndex >= required) {
+		if (array.length - lastIndex + firstIndex >= required) {
 			int newFirst = array.length - size;
 			if (size > 0) {
 				System.arraycopy(array, firstIndex, array, newFirst, size);
@@ -526,8 +524,26 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 		modCount++;
 		return result;
 	}
-
+    
 	/**
+     * Removes the first one of the specified object in this list, if present.
+     * 
+     * @param object
+     *            the object to removes
+     * @return true if the list contains the object
+     * @see java.util.AbstractCollection#remove(java.lang.Object)
+     */
+    @Override
+    public boolean remove(Object object) {
+        int location = indexOf(object);
+        if (location >= 0) {
+            remove(location);
+            return true;
+        }
+        return false;
+    }
+
+    /**
 	 * Removes the objects in the specified range from the start to the end, but
 	 * not including the end index.
 	 * 

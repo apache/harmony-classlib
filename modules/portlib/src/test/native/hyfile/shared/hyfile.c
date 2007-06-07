@@ -73,7 +73,7 @@ int main (int argc, char **argv, char **envp)
     exit(1);
   }
 
-  hyportLibrary.file_printf(&hyportLibrary, fd, "%d%c%s\n", 1, '2', "3");
+  hyportLibrary.file_printf(&hyportLibrary, fd, "%d%c%s", 1, '2', "3");
   rc = hyportLibrary.file_sync(&hyportLibrary, fd);
   if (rc != 0) {
     fprintf(stderr, "hyfile_sync failed %s\n",
@@ -108,7 +108,7 @@ int main (int argc, char **argv, char **envp)
     exit(1);
   }
 
-  offset = hyportLibrary.file_seek(&hyportLibrary, fd, -11, HySeekEnd);
+  offset = hyportLibrary.file_seek(&hyportLibrary, fd, -10, HySeekEnd);
   printf("  offset = %d\n", offset);
   if (offset != 7) {
     fprintf(stderr, "Failed to seek hytest.tmp2\n");
@@ -142,7 +142,7 @@ int main (int argc, char **argv, char **envp)
 
   length = hyportLibrary.file_length(&hyportLibrary, "hytest.tmp2");
   printf("  length = %d\n", length);
-  if (length != 18) {
+  if (length != 17) {
     fprintf(stderr, "hytest.tmp2 has incorrect length\n");
     cleanup(hyportLibrary);
     exit(1);

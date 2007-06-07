@@ -27,7 +27,6 @@ import java.net.SocketTimeoutException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.IllegalBlockingModeException;
 import java.nio.channels.NotYetBoundException;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
@@ -95,6 +94,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
     }
     
     // for native call
+    @SuppressWarnings("unused")
     private ServerSocketChannelImpl() throws IOException {
         super(SelectorProvider.provider());
         status = SERVER_STATUS_OPEN;
