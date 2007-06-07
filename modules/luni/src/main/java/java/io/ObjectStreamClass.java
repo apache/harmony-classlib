@@ -869,6 +869,22 @@ public class ObjectStreamClass implements Serializable {
 
         return lookupStreamClass(cl, true);
     }
+    
+    /**
+     * Return the descriptor (ObjectStreamClass) corresponding to the class
+     * <code>cl</code>. This method does not check whether the class
+     * implements Serializable or Externalizable.
+     * 
+     * @param cl
+     *            a java.lang.Class for which to obtain the corresponding
+     *            descriptor
+     * @return The corresponding descriptor for the specified class
+     * @since 1.6
+     */
+    public static ObjectStreamClass lookupAny(Class<?> cl) {
+        return isSerializable(cl) ? lookupStreamClass(cl, true)
+                : lookupStreamClass(cl, false);
+    }
 
     /**
      * Return the descriptor (ObjectStreamClass) corresponding to the class
