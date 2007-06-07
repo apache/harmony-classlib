@@ -96,7 +96,9 @@ public class PipedOutputStream extends OutputStream {
             if (stream.isConnected) {
                 throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
             }
-            stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
+            if (stream.buffer == null) {
+                stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
+            }
             stream.isConnected = true;
             this.dest = stream;
         }

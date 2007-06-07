@@ -80,6 +80,45 @@ public class PipedInputStream extends InputStream {
     public PipedInputStream(PipedOutputStream out) throws IOException {
         connect(out);
     }
+    
+    /**
+     * Constructs a new PipedInputStream connected to the PipedOutputStream
+     * <code>out</code> and uses the specified buffer size. Any data written
+     * to the output stream can be read from this input stream.
+     * 
+     * @param out
+     *            the PipedOutputStream to connect to.
+     * @param pipeSize
+     *            the size of the buffer.
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @throws IllegalArgumentException
+     *             if pipeSize is less than or equal to zero.
+     * @since 1.6
+     */
+    public PipedInputStream(PipedOutputStream out, int pipeSize)
+            throws IOException {
+        this(pipeSize);
+        connect(out);
+    }
+
+    /**
+     * Constructs a new unconnected PipedInputStream and uses the specified
+     * buffer size. The resulting Stream must be connected to a
+     * PipedOutputStream before data may be read from it.
+     * 
+     * @param pipeSize
+     *            the size of the buffer.
+     * @throws IllegalArgumentException
+     *             if pipeSize is less than or equal to zero.
+     * @since 1.6
+     */
+    public PipedInputStream(int pipeSize) {
+        if (pipeSize <= 0) {
+            throw new IllegalArgumentException();
+        }
+        buffer = new byte[pipeSize];
+    }
 
     /**
      * Answers a int representing the number of bytes that are available before

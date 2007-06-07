@@ -46,6 +46,22 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 				bytes[i] = (byte) (System.currentTimeMillis() % 9);
 		}
 	}
+    
+     static class MockPipedInputStream extends PipedInputStream {
+
+        public MockPipedInputStream(java.io.PipedOutputStream src,
+                int bufferSize) throws IOException {
+            super(src, bufferSize);
+        }
+
+        public MockPipedInputStream(int bufferSize) {
+            super(bufferSize);
+        }
+
+        public int bufferLength() {
+            return super.buffer.length;
+        }
+    }
 
 	Thread t;
 
@@ -71,6 +87,60 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
         pis = new PipedInputStream(new PipedOutputStream());
         pis.available();
     }
+    
+     /**
+     * @tests java.io.PipedInputStream#PipedInputStream(java.io.PipedOutputStream,
+     *        int)
+     * @since 1.6
+     */
+    public void test_Constructor_LPipedOutputStream_I() throws Exception {
+        // Test for method java.io.PipedInputStream(java.io.PipedOutputStream,
+        // int)
+        MockPipedInputStream mpis = new MockPipedInputStream(
+                new PipedOutputStream(), 100);
+        int bufferLength = mpis.bufferLength();
+        assertEquals(100, bufferLength);
+        
+        try {
+            pis = new PipedInputStream(null, -1);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            pis = new PipedInputStream(null, 0);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.io.PipedInputStream#PipedInputStream(int)
+     * @since 1.6
+     */
+    public void test_Constructor_I() throws Exception {
+        // Test for method java.io.PipedInputStream(int)
+        MockPipedInputStream mpis = new MockPipedInputStream(100);
+        int bufferLength = mpis.bufferLength();
+        assertEquals(100, bufferLength);
+
+        try {
+            pis = new PipedInputStream(-1);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            pis = new PipedInputStream(0);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
 
 	/**
 	 * @tests java.io.PipedInputStream#available()
