@@ -202,4 +202,15 @@ public abstract class Enum<E extends Enum<E>> implements Serializable,
             return null;
         }
     }
+    
+
+    /**
+     * All enum classes should not have <code>finalize</code> methods.
+     * 
+     * @since 1.6
+     */
+    @Override
+    protected final void finalize() {
+        // should not have this method
+    }
 }
