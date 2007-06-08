@@ -970,7 +970,6 @@ createVMArgs (HyPortLibrary * portLibrary, int argc, char **argv,
           else if (strcmp(argv[i], "-verify")==0)
             {
                 options[j].optionString="-Xverify";
-                i++;
             }
           else
             {

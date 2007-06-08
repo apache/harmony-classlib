@@ -17,6 +17,8 @@
 
 package java.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import org.apache.harmony.luni.util.Msg;
@@ -29,10 +31,35 @@ import org.apache.harmony.luni.util.Msg;
 public class BitSet implements Serializable, Cloneable {
     private static final long serialVersionUID = 7997698588986878753L;
 
-    // Size in bits of the data type being used in the bits array
-    private static final int ELM_SIZE = 64;
+    private static final int OFFSET = 6;
+
+    private static final int ELM_SIZE = 1 << OFFSET;
+
+    private static final int RIGHT_BITS = ELM_SIZE - 1;
+
+    private static final long[] TWO_N_ARRAY = new long[] { 0x1L, 0x2L, 0x4L,
+            0x8L, 0x10L, 0x20L, 0x40L, 0x80L, 0x100L, 0x200L, 0x400L, 0x800L,
+            0x1000L, 0x2000L, 0x4000L, 0x8000L, 0x10000L, 0x20000L, 0x40000L,
+            0x80000L, 0x100000L, 0x200000L, 0x400000L, 0x800000L, 0x1000000L,
+            0x2000000L, 0x4000000L, 0x8000000L, 0x10000000L, 0x20000000L,
+            0x40000000L, 0x80000000L, 0x100000000L, 0x200000000L, 0x400000000L,
+            0x800000000L, 0x1000000000L, 0x2000000000L, 0x4000000000L,
+            0x8000000000L, 0x10000000000L, 0x20000000000L, 0x40000000000L,
+            0x80000000000L, 0x100000000000L, 0x200000000000L, 0x400000000000L,
+            0x800000000000L, 0x1000000000000L, 0x2000000000000L,
+            0x4000000000000L, 0x8000000000000L, 0x10000000000000L,
+            0x20000000000000L, 0x40000000000000L, 0x80000000000000L,
+            0x100000000000000L, 0x200000000000000L, 0x400000000000000L,
+            0x800000000000000L, 0x1000000000000000L, 0x2000000000000000L,
+            0x4000000000000000L, 0x8000000000000000L };
 
     private long[] bits;
+
+    private transient boolean needClear;
+
+    private transient int actualArrayLength;
+
+    private transient boolean isLengthActual;
 
     /**
      * Create a new BitSet with size equal to 64 bits
@@ -46,7 +73,9 @@ public class BitSet implements Serializable, Cloneable {
      * @see #set(int, int, boolean)
      */
     public BitSet() {
-        this(64);
+        bits = new long[1];
+        actualArrayLength = 0;
+        isLengthActual = true;
     }
 
     /**
@@ -68,11 +97,12 @@ public class BitSet implements Serializable, Cloneable {
      * @see #set(int, int, boolean)
      */
     public BitSet(int nbits) {
-        if (nbits >= 0) {
-            bits = new long[(nbits / ELM_SIZE) + (nbits % ELM_SIZE > 0 ? 1 : 0)];
-        } else {
+        if (nbits < 0) {
             throw new NegativeArraySizeException();
         }
+        bits = new long[(nbits + ELM_SIZE - 1) >> OFFSET];
+        actualArrayLength = 0;
+        isLengthActual = true;
     }
 
     /**
@@ -80,9 +110,14 @@ public class BitSet implements Serializable, Cloneable {
      * 
      * @param bits
      *            the size of the bit set
+     * @param needClear
      */
-    private BitSet(long[] bits) {
+    private BitSet(long[] bits, boolean needClear, int actualArrayLength,
+            boolean isLengthActual) {
         this.bits = bits;
+        this.needClear = needClear;
+        this.actualArrayLength = actualArrayLength;
+        this.isLengthActual = isLengthActual;
     }
 
     /**
@@ -118,10 +153,13 @@ public class BitSet implements Serializable, Cloneable {
         }
         if (obj instanceof BitSet) {
             long[] bsBits = ((BitSet) obj).bits;
-            int length1 = bits.length, length2 = bsBits.length;
+            int length1 = this.actualArrayLength, length2 = ((BitSet) obj).actualArrayLength;
+            if (this.isLengthActual && ((BitSet) obj).isLengthActual
+                    && length1 != length2) {
+                return false;
+            }
             // If one of the BitSets is larger than the other, check to see if
-            // any of
-            // its extra bits are set. If so return false.
+            // any of its extra bits are set. If so return false.
             if (length1 <= length2) {
                 for (int i = 0; i < length1; i++) {
                     if (bits[i] != bsBits[i]) {
@@ -157,11 +195,9 @@ public class BitSet implements Serializable, Cloneable {
      * @param pos
      *            the index the new array needs to be able to access
      */
-    private void growBits(int pos) {
-        pos++; // Inc to get correct bit count
-        long[] tempBits = new long[(pos / ELM_SIZE)
-                + (pos % ELM_SIZE > 0 ? 1 : 0)];
-        System.arraycopy(bits, 0, tempBits, 0, bits.length);
+    private final void growLength(int len) {
+        long[] tempBits = new long[Math.max(len, bits.length * 2)];
+        System.arraycopy(bits, 0, tempBits, 0, this.actualArrayLength);
         bits = tempBits;
     }
 
@@ -177,9 +213,7 @@ public class BitSet implements Serializable, Cloneable {
     @Override
     public int hashCode() {
         long x = 1234;
-        // for (int i = 0, length = bits.length; i < length; i+=2)
-        // x ^= (bits[i] + ((long)bits[i+1] << 32)) * (i/2 + 1);
-        for (int i = 0, length = bits.length; i < length; i++) {
+        for (int i = 0, length = actualArrayLength; i < length; i++) {
             x ^= bits[i] * (i + 1);
         }
         return (int) ((x >> 32) ^ x);
@@ -204,14 +238,16 @@ public class BitSet implements Serializable, Cloneable {
      * @see #set(int, int, boolean)
      */
     public boolean get(int pos) {
-        if (pos >= 0) {
-            if (pos < bits.length * ELM_SIZE) {
-                return (bits[pos / ELM_SIZE] & (1L << (pos % ELM_SIZE))) != 0;
-            }
-            return false;
+        if (pos < 0) {
+            // Negative index specified
+            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
         }
-        // Negative index specified
-        throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+
+        int arrayPos = pos >> OFFSET;
+        if (arrayPos < actualArrayLength) {
+            return (bits[arrayPos] & TWO_N_ARRAY[pos & RIGHT_BITS]) != 0;
+        }
+        return false;
     }
 
     /**
@@ -230,53 +266,62 @@ public class BitSet implements Serializable, Cloneable {
      * @see #get(int)
      */
     public BitSet get(int pos1, int pos2) {
-        if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
-            int last = (bits.length * ELM_SIZE);
-            if (pos1 >= last || pos1 == pos2) {
+        if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
+            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+        }
+
+        int last = actualArrayLength << OFFSET;
+        if (pos1 >= last || pos1 == pos2) {
+            return new BitSet(0);
+        }
+        if (pos2 > last) {
+            pos2 = last;
+        }
+
+        int idx1 = pos1 >> OFFSET;
+        int idx2 = (pos2 - 1) >> OFFSET;
+        long factor1 = (~0L) << (pos1 & RIGHT_BITS);
+        long factor2 = (~0L) >>> (ELM_SIZE - (pos2 & RIGHT_BITS));
+
+        if (idx1 == idx2) {
+            long result = (bits[idx1] & (factor1 & factor2)) >>> (pos1 % ELM_SIZE);
+            if (result == 0) {
                 return new BitSet(0);
             }
-            if (pos2 > last) {
-                pos2 = last;
-            }
+            return new BitSet(new long[] { result }, needClear, 1, true);
+        }
+        long[] newbits = new long[idx2 - idx1 + 1];
+        // first fill in the first and last indexes in the new bitset
+        newbits[0] = bits[idx1] & factor1;
+        newbits[newbits.length - 1] = bits[idx2] & factor2;
 
-            int idx1 = pos1 / ELM_SIZE;
-            int idx2 = (pos2 - 1) / ELM_SIZE;
-            long factor1 = (~0L) << (pos1 % ELM_SIZE);
-            long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
+        // fill in the in between elements of the new bitset
+        for (int i = 1; i < idx2 - idx1; i++) {
+            newbits[i] = bits[idx1 + i];
+        }
 
-            if (idx1 == idx2) {
-                long result = (bits[idx1] & (factor1 & factor2)) >>> (pos1 % ELM_SIZE);
-                return new BitSet(new long[] { result });
-            }
-            long[] newbits = new long[idx2 - idx1 + 1];
-            // first fill in the first and last indexes in the new bitset
-            newbits[0] = bits[idx1] & factor1;
-            newbits[newbits.length - 1] = bits[idx2] & factor2;
+        // shift all the elements in the new bitset to the right by pos1
+        // % ELM_SIZE
+        int numBitsToShift = pos1 & RIGHT_BITS;
+        int actualLen = newbits.length;
+        if (numBitsToShift != 0) {
+            for (int i = 0; i < newbits.length; i++) {
+                // shift the current element to the right regardless of
+                // sign
+                newbits[i] = newbits[i] >>> (numBitsToShift);
 
-            // fill in the in between elements of the new bitset
-            for (int i = 1; i < idx2 - idx1; i++) {
-                newbits[i] = bits[idx1 + i];
-            }
-
-            // shift all the elements in the new bitset to the right by pos1
-            // % ELM_SIZE
-            int numBitsToShift = pos1 % ELM_SIZE;
-            if (numBitsToShift != 0) {
-                for (int i = 0; i < newbits.length; i++) {
-                    // shift the current element to the right regardless of
-                    // sign
-                    newbits[i] = newbits[i] >>> (numBitsToShift);
-
-                    // apply the last x bits of newbits[i+1] to the current
-                    // element
-                    if (i != newbits.length - 1) {
-                        newbits[i] |= newbits[i + 1] << (ELM_SIZE - (numBitsToShift));
-                    }
+                // apply the last x bits of newbits[i+1] to the current
+                // element
+                if (i != newbits.length - 1) {
+                    newbits[i] |= newbits[i + 1] << (ELM_SIZE - (numBitsToShift));
+                }
+                if (newbits[i] != 0) {
+                    actualLen = i + 1;
                 }
             }
-            return new BitSet(newbits);
         }
-        throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+        return new BitSet(newbits, needClear, actualLen,
+                newbits[actualLen - 1] != 0);
     }
 
     /**
@@ -292,14 +337,20 @@ public class BitSet implements Serializable, Cloneable {
      * @see #clear(int, int)
      */
     public void set(int pos) {
-        if (pos >= 0) {
-            if (pos >= bits.length * ELM_SIZE) {
-                growBits(pos);
-            }
-            bits[pos / ELM_SIZE] |= 1L << (pos % ELM_SIZE);
-        } else {
+        if (pos < 0) {
             throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
         }
+
+        int len = (pos >> OFFSET) + 1;
+        if (len > bits.length) {
+            growLength(len);
+        }
+        bits[len - 1] |= TWO_N_ARRAY[pos & RIGHT_BITS];
+        if (len > actualArrayLength) {
+            actualArrayLength = len;
+            isLengthActual = true;
+        }
+        needClear();
     }
 
     /**
@@ -337,31 +388,41 @@ public class BitSet implements Serializable, Cloneable {
      * @see #set(int)
      */
     public void set(int pos1, int pos2) {
-        if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
-            if (pos1 == pos2) {
-                return;
-            }
-            if (pos2 >= bits.length * ELM_SIZE) {
-                growBits(pos2);
-            }
-
-            int idx1 = pos1 / ELM_SIZE;
-            int idx2 = (pos2 - 1) / ELM_SIZE;
-            long factor1 = (~0L) << (pos1 % ELM_SIZE);
-            long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
-
-            if (idx1 == idx2) {
-                bits[idx1] |= (factor1 & factor2);
-            } else {
-                bits[idx1] |= factor1;
-                bits[idx2] |= factor2;
-                for (int i = idx1 + 1; i < idx2; i++) {
-                    bits[i] |= (~0L);
-                }
-            }
-        } else {
+        if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
             throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
         }
+
+        if (pos1 == pos2) {
+            return;
+        }
+        int len2 = ((pos2 - 1) >> OFFSET) + 1;
+        if (len2 > bits.length) {
+            growLength(len2);
+        }
+
+        int idx1 = pos1 >> OFFSET;
+        int idx2 = (pos2 - 1) >> OFFSET;
+        long factor1 = (~0L) << (pos1 & RIGHT_BITS);
+        long factor2 = (~0L) >>> (ELM_SIZE - (pos2 & RIGHT_BITS));
+
+        if (idx1 == idx2) {
+            bits[idx1] |= (factor1 & factor2);
+        } else {
+            bits[idx1] |= factor1;
+            bits[idx2] |= factor2;
+            for (int i = idx1 + 1; i < idx2; i++) {
+                bits[i] |= (~0L);
+            }
+        }
+        if (idx2 + 1 > actualArrayLength) {
+            actualArrayLength = idx2 + 1;
+            isLengthActual = true;
+        }
+        needClear();
+    }
+
+    private void needClear() {
+        this.needClear = true;
     }
 
     /**
@@ -395,8 +456,13 @@ public class BitSet implements Serializable, Cloneable {
      * @see #clear(int, int)
      */
     public void clear() {
-        for (int i = 0; i < bits.length; i++) {
-            bits[i] = 0L;
+        if (needClear) {
+            for (int i = 0; i < bits.length; i++) {
+                bits[i] = 0L;
+            }
+            actualArrayLength = 0;
+            isLengthActual = true;
+            needClear = false;
         }
     }
 
@@ -411,13 +477,20 @@ public class BitSet implements Serializable, Cloneable {
      * @see #clear(int, int)
      */
     public void clear(int pos) {
-        if (pos >= 0) {
-            if (pos < bits.length * ELM_SIZE) {
-                bits[pos / ELM_SIZE] &= ~(1L << (pos % ELM_SIZE));
-            }
-        } else {
+        if (pos < 0) {
             // Negative index specified
             throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+        }
+
+        if (!needClear) {
+            return;
+        }
+        int arrayPos = pos >> OFFSET;
+        if (arrayPos < actualArrayLength) {
+            bits[arrayPos] &= ~(TWO_N_ARRAY[pos & RIGHT_BITS]);
+            if (bits[actualArrayLength - 1] == 0) {
+                isLengthActual = false;
+            }
         }
     }
 
@@ -432,35 +505,40 @@ public class BitSet implements Serializable, Cloneable {
      * @throws IndexOutOfBoundsException
      *             when pos1 or pos2 is negative, or when pos2 is not smaller
      *             than pos1
-     * 
      * @see #clear(int)
      */
     public void clear(int pos1, int pos2) {
-        if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
-            int last = (bits.length * ELM_SIZE);
-            if (pos1 >= last || pos1 == pos2) {
-                return;
-            }
-            if (pos2 > last) {
-                pos2 = last;
-            }
-
-            int idx1 = pos1 / ELM_SIZE;
-            int idx2 = (pos2 - 1) / ELM_SIZE;
-            long factor1 = (~0L) << (pos1 % ELM_SIZE);
-            long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
-
-            if (idx1 == idx2) {
-                bits[idx1] &= ~(factor1 & factor2);
-            } else {
-                bits[idx1] &= ~factor1;
-                bits[idx2] &= ~factor2;
-                for (int i = idx1 + 1; i < idx2; i++) {
-                    bits[i] = 0L;
-                }
-            }
-        } else {
+        if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
             throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+        }
+
+        if (!needClear) {
+            return;
+        }
+        int last = (actualArrayLength << OFFSET);
+        if (pos1 >= last || pos1 == pos2) {
+            return;
+        }
+        if (pos2 > last) {
+            pos2 = last;
+        }
+
+        int idx1 = pos1 >> OFFSET;
+        int idx2 = (pos2 - 1) >> OFFSET;
+        long factor1 = (~0L) << (pos1 & RIGHT_BITS);
+        long factor2 = (~0L) >>> (ELM_SIZE - (pos2 & RIGHT_BITS));
+
+        if (idx1 == idx2) {
+            bits[idx1] &= ~(factor1 & factor2);
+        } else {
+            bits[idx1] &= ~factor1;
+            bits[idx2] &= ~factor2;
+            for (int i = idx1 + 1; i < idx2; i++) {
+                bits[i] = 0L;
+            }
+        }
+        if ((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0)) {
+            isLengthActual = false;
         }
     }
 
@@ -475,14 +553,20 @@ public class BitSet implements Serializable, Cloneable {
      * @see #flip(int, int)
      */
     public void flip(int pos) {
-        if (pos >= 0) {
-            if (pos >= bits.length * ELM_SIZE) {
-                growBits(pos);
-            }
-            bits[pos / ELM_SIZE] ^= 1L << (pos % ELM_SIZE);
-        } else {
+        if (pos < 0) {
             throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
         }
+
+        int len = (pos >> OFFSET) + 1;
+        if (len > bits.length) {
+            growLength(len);
+        }
+        bits[len - 1] ^= TWO_N_ARRAY[pos & RIGHT_BITS];
+        if (len > actualArrayLength) {
+            actualArrayLength = len;
+        }
+        isLengthActual = !((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0));
+        needClear();
     }
 
     /**
@@ -500,31 +584,37 @@ public class BitSet implements Serializable, Cloneable {
      * @see #flip(int)
      */
     public void flip(int pos1, int pos2) {
-        if (pos1 >= 0 && pos2 >= 0 && pos2 >= pos1) {
-            if (pos1 == pos2) {
-                return;
-            }
-            if (pos2 >= bits.length * ELM_SIZE) {
-                growBits(pos2);
-            }
-
-            int idx1 = pos1 / ELM_SIZE;
-            int idx2 = (pos2 - 1) / ELM_SIZE;
-            long factor1 = (~0L) << (pos1 % ELM_SIZE);
-            long factor2 = (~0L) >>> (ELM_SIZE - (pos2 % ELM_SIZE));
-
-            if (idx1 == idx2) {
-                bits[idx1] ^= (factor1 & factor2);
-            } else {
-                bits[idx1] ^= factor1;
-                bits[idx2] ^= factor2;
-                for (int i = idx1 + 1; i < idx2; i++) {
-                    bits[i] ^= (~0L);
-                }
-            }
-        } else {
+        if (pos1 < 0 || pos2 < 0 || pos2 < pos1) {
             throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
         }
+
+        if (pos1 == pos2) {
+            return;
+        }
+        int len2 = ((pos2 - 1) >> OFFSET) + 1;
+        if (len2 > bits.length) {
+            growLength(len2);
+        }
+
+        int idx1 = pos1 >> OFFSET;
+        int idx2 = (pos2 - 1) >> OFFSET;
+        long factor1 = (~0L) << (pos1 & RIGHT_BITS);
+        long factor2 = (~0L) >>> (ELM_SIZE - (pos2 & RIGHT_BITS));
+
+        if (idx1 == idx2) {
+            bits[idx1] ^= (factor1 & factor2);
+        } else {
+            bits[idx1] ^= factor1;
+            bits[idx2] ^= factor2;
+            for (int i = idx1 + 1; i < idx2; i++) {
+                bits[i] ^= (~0L);
+            }
+        }
+        if (len2 > actualArrayLength) {
+            actualArrayLength = len2;
+        }
+        isLengthActual = !((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0));
+        needClear();
     }
 
     /**
@@ -538,7 +628,7 @@ public class BitSet implements Serializable, Cloneable {
      */
     public boolean intersects(BitSet bs) {
         long[] bsBits = bs.bits;
-        int length1 = bits.length, length2 = bsBits.length;
+        int length1 = actualArrayLength, length2 = bs.actualArrayLength;
 
         if (length1 <= length2) {
             for (int i = 0; i < length1; i++) {
@@ -566,10 +656,12 @@ public class BitSet implements Serializable, Cloneable {
      * @see #or
      * @see #xor
      */
-
     public void and(BitSet bs) {
         long[] bsBits = bs.bits;
-        int length1 = bits.length, length2 = bsBits.length;
+        if (!needClear) {
+            return;
+        }
+        int length1 = actualArrayLength, length2 = bs.actualArrayLength;
         if (length1 <= length2) {
             for (int i = 0; i < length1; i++) {
                 bits[i] &= bsBits[i];
@@ -581,7 +673,9 @@ public class BitSet implements Serializable, Cloneable {
             for (int i = length2; i < length1; i++) {
                 bits[i] = 0;
             }
+            actualArrayLength = length2;
         }
+        isLengthActual = !((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0));
     }
 
     /**
@@ -593,10 +687,16 @@ public class BitSet implements Serializable, Cloneable {
      */
     public void andNot(BitSet bs) {
         long[] bsBits = bs.bits;
-        int range = bits.length < bsBits.length ? bits.length : bsBits.length;
+        if (!needClear) {
+            return;
+        }
+        int range = actualArrayLength < bs.actualArrayLength ? actualArrayLength
+                : bs.actualArrayLength;
         for (int i = 0; i < range; i++) {
             bits[i] &= ~bsBits[i];
         }
+        actualArrayLength = range;
+        isLengthActual = !((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0));
     }
 
     /**
@@ -609,15 +709,27 @@ public class BitSet implements Serializable, Cloneable {
      * @see #and
      */
     public void or(BitSet bs) {
-        int nbits = bs.length();
-        int length = nbits / ELM_SIZE + (nbits % ELM_SIZE > 0 ? 1 : 0);
-        if (length > bits.length) {
-            growBits(nbits - 1);
+        int bsActualLen = bs.getActualArrayLength();
+        if (bsActualLen > bits.length) {
+            long[] tempBits = new long[bsActualLen];
+            System.arraycopy(bs.bits, 0, tempBits, 0, bs.actualArrayLength);
+            for (int i = 0; i < actualArrayLength; i++) {
+                tempBits[i] |= bits[i];
+            }
+            bits = tempBits;
+            actualArrayLength = bsActualLen;
+            isLengthActual = true;
+        } else {
+            long[] bsBits = bs.bits;
+            for (int i = 0; i < bsActualLen; i++) {
+                bits[i] |= bsBits[i];
+            }
+            if (bsActualLen > actualArrayLength) {
+                actualArrayLength = bsActualLen;
+                isLengthActual = true;
+            }
         }
-        long[] bsBits = bs.bits;
-        for (int i = 0; i < length; i++) {
-            bits[i] |= bsBits[i];
-        }
+        needClear();
     }
 
     /**
@@ -630,16 +742,27 @@ public class BitSet implements Serializable, Cloneable {
      * @see #and
      */
     public void xor(BitSet bs) {
-        int nbits = bs.length();
-        int length = nbits / ELM_SIZE + (nbits % ELM_SIZE > 0 ? 1 : 0);
-        if (length > bits.length) {
-            growBits(nbits - 1);
+        int bsActualLen = bs.getActualArrayLength();
+        if (bsActualLen > bits.length) {
+            long[] tempBits = new long[bsActualLen];
+            System.arraycopy(bs.bits, 0, tempBits, 0, bs.actualArrayLength);
+            for (int i = 0; i < actualArrayLength; i++) {
+                tempBits[i] ^= bits[i];
+            }
+            bits = tempBits;
+            actualArrayLength = bsActualLen;
+            isLengthActual = !((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0));
+        } else {
+            long[] bsBits = bs.bits;
+            for (int i = 0; i < bsActualLen; i++) {
+                bits[i] ^= bsBits[i];
+            }
+            if (bsActualLen > actualArrayLength) {
+                actualArrayLength = bsActualLen;
+                isLengthActual = true;
+            }
         }
-        long[] bsBits = bs.bits;
-        for (int i = 0; i < length; i++) {
-            bits[i] ^= bsBits[i];
-        }
-
+        needClear();
     }
 
     /**
@@ -650,7 +773,7 @@ public class BitSet implements Serializable, Cloneable {
      * @see #length
      */
     public int size() {
-        return bits.length * ELM_SIZE;
+        return bits.length << OFFSET;
     }
 
     /**
@@ -659,19 +782,33 @@ public class BitSet implements Serializable, Cloneable {
      * @return the length of the BitSet
      */
     public int length() {
-        int idx = bits.length - 1;
+        int idx = actualArrayLength - 1;
         while (idx >= 0 && bits[idx] == 0) {
             --idx;
         }
+        actualArrayLength = idx + 1;
         if (idx == -1) {
             return 0;
         }
         int i = ELM_SIZE - 1;
         long val = bits[idx];
-        while ((val & (1L << i)) == 0 && i > 0) {
+        while ((val & (TWO_N_ARRAY[i])) == 0 && i > 0) {
             i--;
         }
-        return idx * ELM_SIZE + i + 1;
+        return (idx << OFFSET) + i + 1;
+    }
+
+    private final int getActualArrayLength() {
+        if (isLengthActual) {
+            return actualArrayLength;
+        }
+        int idx = actualArrayLength - 1;
+        while (idx >= 0 && bits[idx] == 0) {
+            --idx;
+        }
+        actualArrayLength = idx + 1;
+        isLengthActual = true;
+        return actualArrayLength;
     }
 
     /**
@@ -692,7 +829,7 @@ public class BitSet implements Serializable, Cloneable {
                 continue;
             }
             for (int j = 0; j < ELM_SIZE; j++) {
-                if (((bits[i] & (1L << j)) != 0)) {
+                if (((bits[i] & (TWO_N_ARRAY[j])) != 0)) {
                     if (comma) {
                         sb.append(", "); //$NON-NLS-1$
                     }
@@ -714,40 +851,41 @@ public class BitSet implements Serializable, Cloneable {
      * @return -1 if there is no bits that are set to true on or after pos.
      */
     public int nextSetBit(int pos) {
-        if (pos >= 0) {
-            if (pos >= bits.length * ELM_SIZE) {
-                return -1;
-            }
+        if (pos < 0) {
+            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+        }
 
-            int idx = pos / ELM_SIZE;
-            // first check in the same bit set element
-            if (bits[idx] != 0L) {
-                for (int j = pos % ELM_SIZE; j < ELM_SIZE; j++) {
-                    if (((bits[idx] & (1L << j)) != 0)) {
-                        return idx * ELM_SIZE + j;
-                    }
-                }
-
-            }
-            idx++;
-            while (idx < bits.length && bits[idx] == 0L) {
-                idx++;
-            }
-            if (idx == bits.length) {
-                return -1;
-            }
-
-            // we know for sure there is a bit set to true in this element
-            // since the bitset value is not 0L
-            for (int j = 0; j < ELM_SIZE; j++) {
-                if (((bits[idx] & (1L << j)) != 0)) {
-                    return idx * ELM_SIZE + j;
-                }
-            }
-
+        if (pos >= actualArrayLength << OFFSET) {
             return -1;
         }
-        throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+
+        int idx = pos >> OFFSET;
+        // first check in the same bit set element
+        if (bits[idx] != 0L) {
+            for (int j = pos & RIGHT_BITS; j < ELM_SIZE; j++) {
+                if (((bits[idx] & (TWO_N_ARRAY[j])) != 0)) {
+                    return (idx << OFFSET) + j;
+                }
+            }
+
+        }
+        idx++;
+        while (idx < actualArrayLength && bits[idx] == 0L) {
+            idx++;
+        }
+        if (idx == actualArrayLength) {
+            return -1;
+        }
+
+        // we know for sure there is a bit set to true in this element
+        // since the bitset value is not 0L
+        for (int j = 0; j < ELM_SIZE; j++) {
+            if (((bits[idx] & (TWO_N_ARRAY[j])) != 0)) {
+                return (idx << OFFSET) + j;
+            }
+        }
+
+        return -1;
     }
 
     /**
@@ -759,41 +897,42 @@ public class BitSet implements Serializable, Cloneable {
      *         than this bitset's size.
      */
     public int nextClearBit(int pos) {
-        if (pos >= 0) {
-            int bssize = bits.length * ELM_SIZE;
-            if (pos >= bssize) {
-                return pos;
-            }
+        if (pos < 0) {
+            throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+        }
 
-            int idx = pos / ELM_SIZE;
-            // first check in the same bit set element
-            if (bits[idx] != (~0L)) {
-                for (int j = pos % ELM_SIZE; j < ELM_SIZE; j++) {
-                    if (((bits[idx] & (1L << j)) == 0)) {
-                        return idx * ELM_SIZE + j;
-                    }
-                }
+        int length = actualArrayLength;
+        int bssize = length << OFFSET;
+        if (pos >= bssize) {
+            return pos;
+        }
 
-            }
-            idx++;
-            while (idx < bits.length && bits[idx] == (~0L)) {
-                idx++;
-            }
-            if (idx == bits.length) {
-                return bssize;
-            }
-
-            // we know for sure there is a bit set to true in this element
-            // since the bitset value is not 0L
-            for (int j = 0; j < ELM_SIZE; j++) {
-                if (((bits[idx] & (1L << j)) == 0)) {
+        int idx = pos >> OFFSET;
+        // first check in the same bit set element
+        if (bits[idx] != (~0L)) {
+            for (int j = pos % ELM_SIZE; j < ELM_SIZE; j++) {
+                if (((bits[idx] & (TWO_N_ARRAY[j])) == 0)) {
                     return idx * ELM_SIZE + j;
                 }
             }
-
+        }
+        idx++;
+        while (idx < length && bits[idx] == (~0L)) {
+            idx++;
+        }
+        if (idx == length) {
             return bssize;
         }
-        throw new IndexOutOfBoundsException(Msg.getString("K0006")); //$NON-NLS-1$
+
+        // we know for sure there is a bit set to true in this element
+        // since the bitset value is not 0L
+        for (int j = 0; j < ELM_SIZE; j++) {
+            if (((bits[idx] & (TWO_N_ARRAY[j])) == 0)) {
+                return (idx << OFFSET) + j;
+            }
+        }
+
+        return bssize;
     }
 
     /**
@@ -803,12 +942,15 @@ public class BitSet implements Serializable, Cloneable {
      *         otherwise
      */
     public boolean isEmpty() {
-        for (int idx = 0; idx < bits.length; idx++) {
+        if (!needClear) {
+            return true;
+        }
+        int length = bits.length;
+        for (int idx = 0; idx < length; idx++) {
             if (bits[idx] != 0L) {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -818,17 +960,34 @@ public class BitSet implements Serializable, Cloneable {
      * @return the number of true bits in the set
      */
     public int cardinality() {
+        if (!needClear) {
+            return 0;
+        }
         int count = 0;
-        for (int idx = 0; idx < bits.length; idx++) {
-            long temp = bits[idx];
-            if (temp != 0L) {
-                for (int i = 0; i < ELM_SIZE; i++) {
-                    if ((temp & (1L << i)) != 0L) {
-                        count++;
-                    }
-                }
-            }
+        int length = bits.length;
+        // FIXME: need to test performance, if still not satisfied, change it to
+        // 256-bits table based
+        for (int idx = 0; idx < length; idx++) {
+            count += pop(bits[idx] & 0xffffffffL);
+            count += pop(bits[idx] >>> 32);
         }
         return count;
+    }
+
+    private final int pop(long x) {
+        x = x - ((x >>> 1) & 0x55555555);
+        x = (x & 0x33333333) + ((x >>> 2) & 0x33333333);
+        x = (x + (x >>> 4)) & 0x0f0f0f0f;
+        x = x + (x >>> 8);
+        x = x + (x >>> 16);
+        return (int) x & 0x0000003f;
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
+        ois.defaultReadObject();
+        this.isLengthActual = false;
+        this.actualArrayLength = bits.length;
+        this.needClear = this.getActualArrayLength() != 0;
     }
 }
