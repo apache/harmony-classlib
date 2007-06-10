@@ -24,6 +24,7 @@ import java.awt.font.TextAttribute;
 import java.awt.font.TransformAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.peer.FontPeer;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,11 +39,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import java.awt.peer.FontPeer;
-
 import org.apache.harmony.awt.gl.font.CommonGlyphVector;
+import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
+import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
 import org.apache.harmony.awt.internal.nls.Messages;
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.misc.HashCode;
 
 
@@ -245,8 +247,14 @@ public class Font implements Serializable {
         if (!Character.isValidCodePoint(i)) {
             throw new IllegalArgumentException();
         }
-        //TODO implement true code point support 
-        return canDisplay((char)i);
+        
+        if (!FontManager.IS_FONTLIB) {
+            //TODO implement true code point support 
+            return canDisplay((char)i);
+        } else {
+            FontPeerImpl peer = (FontPeerImpl)this.getPeer();
+            return peer.canDisplay(peer.getUnicodeByIndex(i));
+        }
     }
 
     public int canDisplayUpTo(char[] text, int start, int limit) {
@@ -311,19 +319,25 @@ public class Font implements Serializable {
     }
 
     public GlyphVector createGlyphVector(FontRenderContext frc, int[] glyphCodes) throws org.apache.harmony.luni.util.NotImplementedException {
-        // TODO : to find out, how to operate with glyphcodes
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //$NON-NLS-1$
+        if (!FontManager.IS_FONTLIB) {
+            // TODO : to find out, how to operate with glyphcodes
+            throw new NotImplementedException();
         }
-        return null;
+        
+        int length = glyphCodes.length;        
+        char[] chars = new char[length];        
+        FontPeerImpl peer = (FontPeerImpl) getPeer();
+        
+        for (int i = 0; i < length; i ++) {
+            chars[i] = peer.getUnicodeByIndex(glyphCodes[i]); 
+        }
+        
+        return new CommonGlyphVector(chars, frc, this, 0);
     }
 
 
     public GlyphVector createGlyphVector(FontRenderContext frc, String str) {
-
         return new CommonGlyphVector(str.toCharArray(), frc, this, 0);
-
-
     }
 
     /**
@@ -596,7 +610,7 @@ public class Font implements Serializable {
     }
 
 
-    public String getFontName() {
+    public String getFontName() {        
         FontPeerImpl peer = (FontPeerImpl)this.getPeer();
         return peer.getFontName();
     }
@@ -608,6 +622,7 @@ public class Font implements Serializable {
 
     public LineMetrics getLineMetrics(char[] chars, int start, int end,
             FontRenderContext frc) {
+        
         if (frc == null) {
             // awt.00=FontRenderContext is null
             throw new NullPointerException(Messages.getString("awt.00")); //$NON-NLS-1$
@@ -845,9 +860,14 @@ public class Font implements Serializable {
      * @deprecated
      */
     @Deprecated
-    public FontPeer getPeer() {
+    public FontPeer getPeer() {        
         if (fontPeer == null){
-            fontPeer = (FontPeerImpl)Toolkit.getDefaultToolkit().getGraphicsFactory().getFontPeer(this);
+            fontPeer = (FontPeerImpl) FontManager.getInstance().getFontPeer(
+                    this.getName(), 
+                    this.getStyle(), 
+                    this.getSize()
+                    );
+             
         }
         return fontPeer;
     }
@@ -936,11 +956,22 @@ public class Font implements Serializable {
 
     public static Font createFont(int fontFormat, File fontFile) throws FontFormatException,
             IOException {
-        InputStream is = new FileInputStream(fontFile);
-        try {
-            return createFont(fontFormat, is);
-        } finally {
-            is.close();
+        if (fontFile == null) throw new NullPointerException();
+        
+        if (FontManager.IS_FONTLIB) {
+            if (fontFormat != TRUETYPE_FONT && fontFormat != TYPE1_FONT) {
+                // awt.9A=Unsupported font format
+                throw new IllegalArgumentException ( Messages.getString("awt.9A") ); //$NON-NLS-1$
+            }
+            
+            return ((FLFontManager)FontManager.getInstance()).embedFont(fontFile.getAbsolutePath(), fontFormat);
+        } else {
+            InputStream is = new FileInputStream(fontFile);
+            try {
+                return createFont(fontFormat, is);
+            } finally {
+                is.close();
+            }
         }
     }
     
@@ -952,13 +983,14 @@ public class Font implements Serializable {
         int size = 8192;  // memory page size, for the faster reading
         byte buf[] = new byte[size];
 
-        if (fontFormat != TRUETYPE_FONT) {
+        if (fontFormat != TRUETYPE_FONT && !FontManager.IS_FONTLIB) {
             // awt.9A=Unsupported font format
             throw new IllegalArgumentException ( Messages.getString("awt.9A") ); //$NON-NLS-1$
         }
 
         /* Get font file in system-specific directory */
-        File fontFile = Toolkit.getDefaultToolkit().getGraphicsFactory().getFontManager().getTempFontFile();
+        File fontFile = FontManager.getInstance().getTempFontFile();
+//        File fontFile = Toolkit.getDefaultToolkit().getGraphicsFactory().getFontManager().getTempFontFile();
 
 
         buffStream = new BufferedInputStream ( fontStream );
@@ -975,8 +1007,12 @@ public class Font implements Serializable {
         fOutStream.close();
 
         Font font = null;
-
-        font = Toolkit.getDefaultToolkit().getGraphicsFactory().embedFont(fontFile.getAbsolutePath());
+        
+        if (FontManager.IS_FONTLIB) {
+            font = ((FLFontManager)FontManager.getInstance()).embedFont(fontFile.getAbsolutePath(), fontFormat);
+        } else {
+            font = Toolkit.getDefaultToolkit().getGraphicsFactory().embedFont(fontFile.getAbsolutePath());
+        }
         if ( font == null ) {
             // awt.9B=Can't create font - bad font data
             throw new FontFormatException ( Messages.getString("awt.9B") ); //$NON-NLS-1$
@@ -985,4 +1021,5 @@ public class Font implements Serializable {
     }
 
 }
+
 

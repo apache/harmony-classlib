@@ -27,6 +27,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.apache.harmony.awt.gl.font.FontManager;
+import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
 import org.apache.harmony.awt.gl.image.BufferedImageGraphics2D;
 
 /**
@@ -57,11 +59,11 @@ public abstract class CommonGraphicsEnvironment extends GraphicsEnvironment {
 
     @Override
     public Font[] getAllFonts() {
-        return CommonGraphics2DFactory.inst.getFontManager().getAllFonts();
+        return FontManager.getInstance().getAllFonts();
     }
 
     @Override
     public String[] getAvailableFontFamilyNames() {
-        return CommonGraphics2DFactory.inst.getFontManager().getAllFamilies();
+        return FontManager.getInstance().getAllFamilies();
     }
 }

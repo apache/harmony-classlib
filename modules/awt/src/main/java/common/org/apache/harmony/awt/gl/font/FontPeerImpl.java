@@ -21,12 +21,11 @@
 package org.apache.harmony.awt.gl.font;
 
 
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.peer.FontPeer;
-
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -53,16 +52,16 @@ public abstract class FontPeerImpl implements FontPeer{
     float height;
 
     // the style of this font peer
-    int style;
+    protected int style;
 
     // the point size of this font peer (in pixels)
-    int size;
+    protected int size;
 
     // the logical hight of this font peer (in pixels)
     int logicalHeight;
 
     // the name of this font peer
-    String name;
+    protected String name;
 
     // family name of this font peer
     String fontFamilyName;
@@ -71,7 +70,7 @@ public abstract class FontPeerImpl implements FontPeer{
     String faceName;
 
     // bounds rectanlge of the largest character in this font peer
-    Rectangle2D maxCharBounds;
+    protected Rectangle2D maxCharBounds;
 
     // italic angle value of this font peer
     float italicAngle = 0.0f;
@@ -80,13 +79,13 @@ public abstract class FontPeerImpl implements FontPeer{
     int numGlyphs = 0;
 
     // native font handle
-    long pFont;
+    protected long pFont;
 
     // cached line metrics object
-    LineMetricsImpl nlm;
+    protected LineMetricsImpl nlm = null;
 
     // the postscript name of this font peer
-    String psName = null;
+    protected String psName = null;
 
     /**
      * Default glyph index, that is used, when the desired glyph
@@ -402,6 +401,9 @@ public abstract class FontPeerImpl implements FontPeer{
      * Returns cached LineMetrics object of this font peer. 
      */
     public LineMetrics getLineMetrics(){
+        if (nlm == null) {
+            nlm = (LineMetricsImpl) getLineMetrics("", null, AffineTransform.getTranslateInstance(0,0));
+        }
         return nlm;
     }
 
@@ -458,6 +460,10 @@ public abstract class FontPeerImpl implements FontPeer{
         if (newType == FontManager.FONT_TYPE_T1 || newType == FontManager.FONT_TYPE_TT){
             fontType = newType;
         }
+    }
+    
+    public char getUnicodeByIndex(int glyphCode) {
+        return 0;
     }
 
     /**

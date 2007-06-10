@@ -21,6 +21,7 @@
 package org.apache.harmony.awt.gl.font;
 
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.peer.FontPeer;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,16 +35,20 @@ import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
+import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
 
 
 public abstract class FontManager {
+    
+    public static final boolean IS_FONTLIB = "true".equals(System.getProperty("java.awt.fontlib")) || 
+        GraphicsEnvironment.isHeadless();
     
     /**
      * array of font families names
      */
     public String[] allFamilies;
 
-    public static final String DEFAULT_NAME = "Default"; /* Default font name */ //$NON-NLS-1$
+    public static final String DEFAULT_NAME = IS_FONTLIB ? "Luxi Sans" : "Default"; /* Default font name */ //$NON-NLS-1$
     public static final String DIALOG_NAME = "Dialog";  /* Dialog font name */ //$NON-NLS-1$
 
     /**
@@ -197,13 +202,16 @@ public abstract class FontManager {
     public Hashtable<String, Vector<FontProperty>> fProperties = new Hashtable<String, Vector<FontProperty>>();
 
     public FontManager(){
-        allFamilies = getAllFamilies();
-        /*
-         * Creating and registering shutdown hook to free resources
-         * before object is destroyed.
-         */
-        DisposeNativeHook shutdownHook = new DisposeNativeHook();
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
+        
+        if (!IS_FONTLIB) {
+            allFamilies = getAllFamilies();
+            /*
+             * Creating and registering shutdown hook to free resources
+             * before object is destroyed.
+             */
+            DisposeNativeHook shutdownHook = new DisposeNativeHook();
+            Runtime.getRuntime().addShutdownHook(shutdownHook);
+        }
     }
 
     /**
@@ -214,7 +222,7 @@ public abstract class FontManager {
     /**
      * Locale - Language ID hash table.
      */
-    Hashtable<String, Short> tableLCID = new Hashtable<String, Short>();
+    protected Hashtable<String, Short> tableLCID = new Hashtable<String, Short>();
 
     /**
      * Hash table that contains FontPeers instances.
@@ -231,7 +239,10 @@ public abstract class FontManager {
     /**
      * Singleton instance
      */
-    public final static FontManager inst = CommonGraphics2DFactory.inst.getFontManager();
+    private static FontManager inst = 
+        IS_FONTLIB ? 
+            new FLFontManager() : 
+                CommonGraphics2DFactory.inst.getFontManager();
 
 
     /**
@@ -305,7 +316,7 @@ public abstract class FontManager {
      * @param logicalIndex index of the logical face name in LOGICAL_FONT_FACES 
      * array or -1 if desired font peer is not logical.
      */
-    private FontPeer createFontPeer(String name, int style, int size, int logicalIndex){
+    protected FontPeer createFontPeer(String name, int style, int size, int logicalIndex){
         FontPeer peer;
         if (logicalIndex != -1){
             peer = createLogicalFontPeer(name, style, size);
@@ -765,7 +776,7 @@ public abstract class FontManager {
      * Class contains SoftReference instance that can be stored in the 
      * Hashtable by means of key field corresponding to it.
      */
-    private class HashMapReference extends SoftReference<FontPeer> {
+    protected class HashMapReference extends SoftReference<FontPeer> {
         
         /**
          * The key for Hashtable.
@@ -808,5 +819,6 @@ public abstract class FontManager {
     }
 
 }
+
 
 
