@@ -221,6 +221,35 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
             return entry;
         }
     }
+    
+    /**
+     * Searches this map for the specified value.
+     * 
+     * @param value
+     *            the object to search for
+     * @return true if <code>value</code> is a value of this HashMap, false
+     *         otherwise
+     */
+    @Override
+    public boolean containsValue(Object value) {
+        LinkedHashMapEntry<K, V> entry = head;
+        if (null == value) {
+            while (null != entry) {
+                if (null == entry.value) {
+                    return true;
+                }
+                entry = entry.chainForward;
+            }
+        } else {
+            while (null != entry) {
+                if (value.equals(entry.value)) {
+                    return true;
+                }
+                entry = entry.chainForward;
+            }
+        }
+        return false;
+    }
 
     /**
      * Create a new element array
