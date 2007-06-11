@@ -2287,4 +2287,17 @@ public final class Scanner implements Iterator<String> {
         buffer.position(oldPosition);
         buffer.limit(oldLimit);
     }
+
+    /**
+     * Discards all state information and resets this scanner.
+     * 
+     * @return this scanner
+     * @since 1.6
+     */
+    public Scanner reset(){
+        delimiter = DEFAULT_DELIMITER;
+        locale = Locale.getDefault();
+        integerRadix = 10;
+        return this;
+    }
 }
