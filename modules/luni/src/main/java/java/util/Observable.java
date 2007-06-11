@@ -17,117 +17,130 @@
 
 package java.util;
 
-
 /**
  * Observable is used to notify a group of Observer objects when a change
  * occurs.
  */
 public class Observable {
-	
-	Vector<Observer> observers = new Vector<Observer>();
 
-	boolean changed = false;
+    List<Observer> observers = new ArrayList<Observer>();
 
-	/**
-	 * Constructs a new Observable object.
-	 */
-	public Observable() {
-		super();
-	}
+    boolean changed = false;
 
-	/**
-	 * Adds the specified Observer to the list of observers.
-	 * 
-	 * @param observer
-	 *            the Observer to add
-	 */
-	public synchronized void addObserver(Observer observer) {
-		if (observer == null) {
-			throw new NullPointerException();
-		}
-		if (!observers.contains(observer))
-			observers.addElement(observer);
-	}
+    /**
+     * Constructs a new Observable object.
+     */
+    public Observable() {
+        super();
+    }
 
-	/**
-	 * Clears the changed flag for this Observable.  After calling <code>clearChanged()</code>, <code>hasChanged()</code> will return false.
-	 */
-	protected synchronized void clearChanged() {
-		changed = false;
-	}
+    /**
+     * Adds the specified Observer to the list of observers.
+     * 
+     * @param observer
+     *            the Observer to add
+     */
+    public void addObserver(Observer observer) {
+        if (observer == null) {
+            throw new NullPointerException();
+        }
+        synchronized (this) {
+            if (!observers.contains(observer))
+                observers.add(observer);
+        }
+    }
 
-	/**
-	 * Answers the number of Observers in the list of observers.
-	 * 
-	 * @return the number of observers
-	 */
-	public synchronized int countObservers() {
-		return observers.size();
-	}
+    /**
+     * Clears the changed flag for this Observable. After calling
+     * <code>clearChanged()</code>, <code>hasChanged()</code> will return
+     * false.
+     */
+    protected void clearChanged() {
+        changed = false;
+    }
 
-	/**
-	 * Removes the specified Observer from the list of observers.
-	 * 
-	 * @param observer
-	 *            the Observer to remove
-	 */
-	public synchronized void deleteObserver(Observer observer) {
-		observers.removeElement(observer);
-	}
+    /**
+     * Answers the number of Observers in the list of observers.
+     * 
+     * @return the number of observers
+     */
+    public int countObservers() {
+        return observers.size();
+    }
 
-	/**
-	 * Removes all Observers from the list of observers.
-	 */
-	public synchronized void deleteObservers() {
-		observers.setSize(0);
-	}
+    /**
+     * Removes the specified Observer from the list of observers.
+     * 
+     * @param observer
+     *            the Observer to remove
+     */
+    public synchronized void deleteObserver(Observer observer) {
+        observers.remove(observer);
+    }
 
-	/**
-	 * Answers the changed flag for this Observable.
-	 * 
-	 * @return true when the changed flag for this Observable is set, false
-	 *         otherwise
-	 */
-	public synchronized boolean hasChanged() {
-		return changed;
-	}
+    /**
+     * Removes all Observers from the list of observers.
+     */
+    public synchronized void deleteObservers() {
+        observers.clear();
+    }
 
-	/**
-	 * If <code>hasChanged()</code> returns true, calls the <code>update()</code> method for
-	 * every Observer in the list of observers using null as the argument.
-	 * Afterwards calls <code>clearChanged()</code>.
+    /**
+     * Answers the changed flag for this Observable.
+     * 
+     * @return true when the changed flag for this Observable is set, false
+     *         otherwise
+     */
+    public boolean hasChanged() {
+        return changed;
+    }
+
+    /**
+     * If <code>hasChanged()</code> returns true, calls the
+     * <code>update()</code> method for every Observer in the list of
+     * observers using null as the argument. Afterwards calls
+     * <code>clearChanged()</code>.
      * 
      * Equivalent to calling <code>notifyObservers(null)</code>
-	 */
-	public void notifyObservers() {
-		notifyObservers(null);
-	}
+     */
+    public void notifyObservers() {
+        notifyObservers(null);
+    }
 
-	/**
-	 * If <code>hasChanged()</code> returns true, calls the <code>update()</code> method for
-	 * every Observer in the list of observers using the specified argument.
-	 * Afterwards calls <code>clearChanged()</code>.
-	 * 
-	 * @param data
-	 *            the argument passed to update()
-	 */
+    /**
+     * If <code>hasChanged()</code> returns true, calls the
+     * <code>update()</code> method for every Observer in the list of
+     * observers using the specified argument. Afterwards calls
+     * <code>clearChanged()</code>.
+     * 
+     * @param data
+     *            the argument passed to update()
+     */
     @SuppressWarnings("unchecked")
     public void notifyObservers(Object data) {
-		if (hasChanged()) {
-			// Must clone the vector in case deleteObserver is called
-			Vector<Observer> clone = (Vector<Observer>)observers.clone();
-			int size = clone.size();
-			for (int i = 0; i < size; i++) {
-				clone.elementAt(i).update(this, data);
+        int size = 0;
+        Observer[] arrays = null;
+        synchronized (this) {
+            if (hasChanged()) {
+                clearChanged();
+                size = observers.size();
+                arrays = new Observer[size];
+                observers.toArray(arrays);
             }
-			clearChanged();
-		}
-	}
+        }
+        if (arrays != null) {
+            for (Observer observer : arrays) {
+                observer.update(this, data);
+            }
+        }
+    }
 
-	/**
-	 * Sets the changed flag for this Observable. After calling <code>setChanged()</code>, <code>hasChanged()</code> will return true.
-	 */
-	protected synchronized void setChanged() {
-		changed = true;
-	}
+    /**
+     * Sets the changed flag for this Observable. After calling
+     * <code>setChanged()</code>, <code>hasChanged()</code> will return
+     * true.
+     */
+    protected void setChanged() {
+        changed = true;
+    }
 }
