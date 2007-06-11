@@ -84,7 +84,7 @@ public class FontMetricsImpl extends FontMetrics  {
         this.maxAscent = ascent;
         this.maxDescent = descent;
         this.maxAdvance = lm.getLogicalMaxCharWidth();
-        initWidths();
+//        initWidths();
     }
 
     /**
@@ -134,9 +134,9 @@ public class FontMetricsImpl extends FontMetrics  {
      */
     @Override
     public int charWidth(int ch) {
-        if (ch < 256){
-            return widths[ch];
-        }
+//        if (ch < 256){
+//            return widths[ch];
+//        }
 
         return getFontPeer().charWidth((char)ch);
     }
@@ -151,9 +151,9 @@ public class FontMetricsImpl extends FontMetrics  {
      */
     @Override
     public int charWidth(char ch) {
-        if (ch < 256){
-            return widths[ch];
-        }
+//        if (ch < 256){
+//            return widths[ch];
+//        }
 
         return (int)(getFontPeer().charWidth(ch)*scaleX);
     }
@@ -202,6 +202,10 @@ public class FontMetricsImpl extends FontMetrics  {
      */
     @Override
     public int[] getWidths() {
+        this.widths = new int[256];
+        for (int chr=0; chr < 256; chr++){
+            widths[chr] = (int)(getFontPeer().charWidth((char)chr)*scaleX);
+        }
         return this.widths;
     }
 

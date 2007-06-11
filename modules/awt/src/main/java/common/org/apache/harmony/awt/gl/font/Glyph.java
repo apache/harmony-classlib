@@ -28,13 +28,13 @@ import java.awt.image.BufferedImage;
 public abstract class Glyph{
 
     // character of the glyph
-    char glChar;
+    protected char glChar;
     
     // precise glyph metrics
-    GlyphMetrics glMetrics;
+    protected GlyphMetrics glMetrics;
     
     // glyph metrics in pixels
-    GlyphMetrics glPointMetrics;
+    protected GlyphMetrics glPointMetrics;
     
     //  glyph code of this Glyph
     int glCode;
@@ -55,7 +55,7 @@ public abstract class Glyph{
     BufferedImage image;
     
     // shape that representing the outline of this glyph
-    Shape glOutline = null;
+    protected Shape glOutline = null;
 
     /**
      * image bitmap parameters
@@ -94,14 +94,14 @@ public abstract class Glyph{
      *  Retruns precise width of this glyph object
      */
     public int getWidth(){
-        return Math.round((float)glMetrics.getBounds2D().getWidth());
+        return Math.round((float)getGlyphMetrics().getBounds2D().getWidth());
     }
 
     /**
      *  Retruns precise height of this glyph object
      */
     public int getHeight(){
-        return Math.round((float)glMetrics.getBounds2D().getHeight());
+        return Math.round((float)getGlyphMetrics().getBounds2D().getHeight());
     }
 
     /**
@@ -150,9 +150,9 @@ public abstract class Glyph{
      */
     public int[] getABC(){
         int[] abc = new int[3];
-        abc[0] = (int)glMetrics.getLSB();
-        abc[1] = (int)glMetrics.getBounds2D().getWidth();
-        abc[2] = (int)glMetrics.getRSB();
+        abc[0] = (int)getGlyphMetrics().getLSB();
+        abc[1] = (int)getGlyphMetrics().getBounds2D().getWidth();
+        abc[2] = (int)getGlyphMetrics().getRSB();
 
         return abc;
     }
@@ -194,14 +194,14 @@ public abstract class Glyph{
      * Returns height of the glyph in points. 
      */
     public int getPointHeight(){
-        return (int)glPointMetrics.getBounds2D().getHeight();
+        return (int)getGlyphPointMetrics().getBounds2D().getHeight();
     }
 
     /**
      * Returns width of the glyph in points. 
      */
     public int getPointWidth(){
-        return (int)glPointMetrics.getBounds2D().getWidth();
+        return (int)getGlyphPointMetrics().getBounds2D().getWidth();
     }
 
     public Shape getShape(){
@@ -232,5 +232,6 @@ public abstract class Glyph{
     public abstract Shape initOutline(char c);
 
 }
+
 
 

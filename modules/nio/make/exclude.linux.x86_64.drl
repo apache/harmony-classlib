@@ -1,1 +1,3 @@
 org/apache/harmony/nio/tests/java/nio/channels/FileChannelWin32OnlyTest.java
+#HARMONY-4116
+org/apache/harmony/nio/tests/java/nio/channels/SelectorTest.java

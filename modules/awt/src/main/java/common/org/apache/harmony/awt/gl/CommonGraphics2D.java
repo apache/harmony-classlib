@@ -58,6 +58,8 @@ import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
 import org.apache.harmony.awt.gl.Surface;
+import org.apache.harmony.awt.gl.font.FontManager;
+import org.apache.harmony.awt.gl.font.fontlib.FLTextRenderer;
 import org.apache.harmony.awt.gl.image.OffscreenImage;
 import org.apache.harmony.awt.gl.render.Blitter;
 import org.apache.harmony.awt.gl.render.JavaArcRasterizer;
@@ -145,7 +147,10 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
     protected Font font = new Font("Dialog", Font.PLAIN, 12);; //$NON-NLS-1$
 
-    protected TextRenderer jtr = JavaTextRenderer.inst;
+    protected TextRenderer jtr = 
+        FontManager.IS_FONTLIB ? 
+                FLTextRenderer.getInstance() : 
+                    JavaTextRenderer.inst;
 
     // Current graphics transform
     protected AffineTransform transform = new AffineTransform();

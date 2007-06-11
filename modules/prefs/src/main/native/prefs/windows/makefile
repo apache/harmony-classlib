@@ -37,8 +37,7 @@ MDLLIBFILES = \
 !ENDIF
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) \
-  $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x13300000
 COMMENT=/comment:"Preferences component native code. (c) Copyright 1993, 2005 The Apache Software Foundation or its licensors, as applicable."
 

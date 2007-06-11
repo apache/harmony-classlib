@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #endif
+#include <sys/poll.h>
 #include <netinet/in_systm.h>
 #include<netinet/ip.h>
 #include<netinet/ip_icmp.h>
@@ -37,27 +38,18 @@
 unsigned short ip_checksum(unsigned short * buffer, int size);
 void set_icmp_packet(struct icmp * icmp_hdr, int packet_size);
 
-//Alternative Select function
+// Alternative Select function
 int
 selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   PORT_ACCESS_FROM_ENV (env);
-  hytimeval_struct timeP;
-  hyfdset_t fdset_read;
   I_32 result = 0;
-  I_32 size = 0;
-  if (0 <= uSecTime)
-    hysock_timeval_init (0, uSecTime, &timeP);
+  struct pollfd my_pollfd;
 
-  fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
-  FD_ZERO (&fdset_read->handle);
-  FD_SET (hysocketP->sock, &fdset_read->handle);
-  size =hysocketP->sock + 1;
-
-  if (0 <= uSecTime)
-    result = hysock_select (size, fdset_read, NULL, NULL,&timeP);
-  else
-    result = hysock_select (size, fdset_read, NULL, NULL,NULL);
-  hymem_free_memory(fdset_read);
+  my_pollfd.fd = hysocketP->sock;
+  my_pollfd.events = POLLIN | POLLPRI;
+  my_pollfd.revents = 0;
+  result = poll (&my_pollfd, 1, TO_MILLIS(0, uSecTime));
+  
   return result;
 }
 
@@ -67,8 +59,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   struct icmp * send_buf = 0;
   struct ip * recv_buf = 0;
   int result,ret=UNREACHABLE;
-  struct timeval timeP;
-  fd_set * fdset_read = NULL;
+  struct pollfd my_pollfd;
   int sockadd_size = sizeof (source);
   jbyte host[HYSOCK_INADDR6_LEN];
   U_32 length =  (*env)->GetArrayLength (env,address);
@@ -103,7 +94,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   send_buf = (struct icmp*)malloc(sizeof(char)*ICMP_SIZE);
   recv_buf = (struct ip*)malloc(sizeof(char)*PACKET_SIZE);
   if (NULL == send_buf || NULL == recv_buf){
-	  return NOPRIVILEGE;
+	  ret = NOPRIVILEGE;
+      goto cleanup;
   }
   set_icmp_packet(send_buf, ICMP_SIZE);
 
@@ -111,15 +103,16 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
             (struct sockaddr*)&dest, sizeof(dest))){
             goto cleanup;
   }
-  //set select timeout, change millisecond to usec
-  memset (&timeP, 0, sizeof (struct timeval));    
-  timeP.tv_sec = timeout/1000;
-  timeP.tv_usec = timeout%1000*1000;
-  result = select (sock+1, fdset_read, NULL, NULL,&timeP);
-  fdset_read = (fd_set *)malloc(sizeof (fd_set));
-  FD_ZERO (fdset_read);
-  FD_SET (sock, fdset_read);
-  result = select (sock+1, fdset_read, NULL, NULL,&timeP);
+
+  //don't ask what is it - just kinda sleep
+  my_pollfd.fd = 0;
+  my_pollfd.events = 0;
+  result = poll(&my_pollfd, 1, timeout);
+
+  my_pollfd.fd = sock;
+  my_pollfd.events = POLLIN | POLLPRI;
+  result = poll(&my_pollfd, 1, timeout);
+
   if (SOCKET_ERROR == result || 0 == result){
   	goto cleanup;
   }  
@@ -141,9 +134,15 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   }
   ret = REACHABLE;
 cleanup:
-  free(fdset_read);
-  free(send_buf);
-  free(recv_buf);
+
+  if (send_buf != NULL) {
+      free(send_buf);
+  }
+
+  if (recv_buf != NULL) {
+      free(recv_buf);
+  }
+
   return ret;
 }
 
@@ -188,85 +187,65 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
    jint	countReadC, jint countWriteC, jintArray	outFlags, jlong	timeout){
   PORT_ACCESS_FROM_ENV (env);
-  hytimeval_struct timeP;	
   I_32 result =	0;		
-  I_32 size = 0;		
-  jobject gotFD;		
-  hyfdset_t fdset_read,fdset_write;
   hysocket_t hysocketP;		
   jboolean isCopy ;
   jint *flagArray;
   int val;
-  U_32 time_sec = (U_32)timeout/1000;
-  U_32 time_msec = (U_32)(timeout%1000)*1000;
+  struct pollfd * my_pollfds;
+  int n_pollfds;
+  jobject gotFD;
 
-  fdset_read = hymem_allocate_memory(sizeof (struct hyfdset_struct));
-  fdset_write =	hymem_allocate_memory(sizeof (struct hyfdset_struct));
-  
-  FD_ZERO (&fdset_read->handle);
-  FD_ZERO (&fdset_write->handle);
-  for (val = 0; val<countReadC; val++){
-	  gotFD	= (*env)->GetObjectArrayElement(env,readFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
-	  /*No difference between ipv4 and ipv6 as in windows*/
-		FD_SET (hysocketP->sock, &fdset_read->handle);
-		if (0 >	(size -	hysocketP->sock))
-			size = hysocketP->sock;		
-	}
-  for (val = 0; val<countWriteC; val++){
-	  gotFD	= (*env)->GetObjectArrayElement(env,writeFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
-	  /*No difference between ipv4 and ipv6 as in windows*/
-	  FD_SET (hysocketP->sock, &fdset_write->handle);	
-		if (0 >	(size -	hysocketP->sock))
-			size = hysocketP->sock;	
-	}
-  /* the size is the max_fd + 1	*/
-  size =size + 1;
+  n_pollfds = countReadC + countWriteC;
 
-  if (0	> size)	
-    {
-      result = HYPORT_ERROR_SOCKET_FDSET_SIZEBAD;
-    }
-  else
-    {
-      /* only set when timeout >= 0 (non-block)*/
-      if (0 <= timeout){
-		hysock_timeval_init (time_sec, time_msec, &timeP);
-		result = hysock_select (size, fdset_read, fdset_write, NULL,&timeP);
-      }	
-      else{
-		result = hysock_select (size, fdset_read, fdset_write, NULL,NULL);
-      }	
-    }
-    
-  if (0	< result){
-	  /*output the reslut to a int array*/
-	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
-	  for (val=0;val<countReadC;val++){
-		gotFD =	(*env)->GetObjectArrayElement(env,readFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
-		if (FD_ISSET(hysocketP->sock,&fdset_read->handle))
-			flagArray[val] = SOCKET_OP_READ;
-		else
-			flagArray[val] = SOCKET_OP_NONE;
-
-	 }
-		
-	  for (val=0;val<countWriteC;val++){
-		gotFD =	(*env)->GetObjectArrayElement(env,writeFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
-		if (FD_ISSET(hysocketP->sock,&fdset_write->handle))
-			flagArray[val+countReadC] = SOCKET_OP_WRITE;
-		else
-			flagArray[val+countReadC] = SOCKET_OP_NONE;
-
-		}
-	(*env)->ReleaseIntArrayElements(env,outFlags, flagArray, 0); 
+  my_pollfds = hymem_allocate_memory(sizeof(struct pollfd) * n_pollfds);
+  if (my_pollfds == NULL) {
+      return HYPORT_ERROR_SYSTEMFULL;
   }
-  hymem_free_memory(fdset_write);
-  hymem_free_memory(fdset_read);
-  /* return both correct and error result, let java code handle	the exception*/
+
+  for (val=0; val<countReadC; val++) {
+	  gotFD	= (*env)->GetObjectArrayElement(env, readFDArray, val);
+	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+
+      my_pollfds[val].fd = hysocketP->sock;
+      my_pollfds[val].events = POLLIN | POLLPRI;
+      my_pollfds[val].revents = 0;
+  }
+
+  for (val=0; val<countWriteC; val++) {
+	  gotFD	= (*env)->GetObjectArrayElement(env, writeFDArray, val);
+	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+
+      my_pollfds[countReadC + val].fd = hysocketP->sock;
+      my_pollfds[countReadC + val].events = POLLOUT;
+      my_pollfds[countReadC + val].revents = 0;
+  }
+
+  result = poll(my_pollfds, n_pollfds, timeout);
+
+  if (result > 0) {
+	  /* output result to int array */
+	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
+	  for (val=0; val<countReadC; val++) {
+          if (my_pollfds[val].revents & (POLLIN | POLLPRI)) {
+              flagArray[val] = SOCKET_OP_READ;
+          } else {
+              flagArray[val] = SOCKET_OP_NONE;
+          }
+      }
+
+	  for (val=0; val<countWriteC; val++) {
+          if (my_pollfds[val+countReadC].revents & POLLOUT) {
+              flagArray[val+countReadC] = SOCKET_OP_WRITE;
+          } else {
+              flagArray[val+countReadC] = SOCKET_OP_NONE;
+          }
+      }
+      (*env)->ReleaseIntArrayElements(env, outFlags, flagArray, 0);
+  }
+  hymem_free_memory(my_pollfds);
+  
+  /* return both correct and error result, let java code handle	exceptions */
   return result;
 };
 

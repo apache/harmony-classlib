@@ -2,7 +2,7 @@
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  The ASF licenses this file to You under the Apache License, Version 2.0 
  *  (the "License"); you may not use this file except in compliance with
  *  the License.  You may obtain a copy of the License at
  *
@@ -33,6 +33,7 @@
 
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/poll.h>
 #include <sys/socket.h>
 #include <netinet/in.h>         /* for struct in_addr */
 #include <arpa/inet.h>          /* for inet_addr */
@@ -99,16 +100,6 @@ MUTEX hostentLock = PTHREAD_MUTEX_INITIALIZER;
 #endif /*NO_R */
 
 #define VALIDATE_ALLOCATIONS 1
-
-/* needed for connect_with_timeout */
-typedef struct selectFDSet_struct
-{
-  int nfds;
-  int sock;
-  fd_set writeSet;
-  fd_set readSet;
-  fd_set exceptionSet;
-} selectFDSet_struct;
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 
@@ -2571,6 +2562,11 @@ hysock_select (struct HyPortLibrary * portLibrary, I_32 nfds,
     I_32 rc = 0;
     I_32 result = 0;
 
+    if (nfds >= FD_SETSIZE) {
+        rc = portLibrary->error_set_last_error(portLibrary, errno, 
+                                               HYPORT_ERROR_SOCKET_UNIX_EINVAL);
+        return -1;
+    }
     result = select (nfds, 
                         readfds == NULL ? NULL : &readfds->handle,
                         writefds == NULL ? NULL : &writefds->handle,
@@ -2609,7 +2605,6 @@ hysock_select (struct HyPortLibrary * portLibrary, I_32 nfds,
  * The portable version of a read operation is a blocking call (will wait indefinitely for data).
  * This function should be called prior to a read operation, to provide a read timeout.
  * If the result is 1, the caller is guaranteed to be able to complete a read on the socket without blocking.
- * The actual contents of the fdset are not available for inspection (as provided in the more general 'select' function).
  * The timeout is specified in seconds and microseconds.
  * If the timeout is 0, skip this function (and thus the caller of a subsequent read operation may block).
  *
@@ -2628,42 +2623,40 @@ I_32 VMCALL
 hysock_select_read (struct HyPortLibrary * portLibrary, hysocket_t hysocketP,
                     I_32 secTime, I_32 uSecTime, BOOLEAN accept)
 {
-  hytimeval_struct timeP;
+  // Current implementation uses poll() system routine since select()
+  // has issues if fd_num is greater than FD_SETSIZE. See HARMONY-4077.
+
+  int poll_timeout;
   I_32 result = 0;
-  I_32 size = 0, flags = 0;
-  PortlibPTBuffers_t ptBuffers;
+  I_32 rc = 0;
+  struct pollfd my_pollfd;
 
-  ptBuffers = hyport_tls_get (portLibrary);
-  if (NULL == ptBuffers)
-    {
-      return HYPORT_ERROR_SOCKET_SYSTEMFULL;
-    }
+  my_pollfd.fd = SOCKET_CAST(hysocketP);
+  my_pollfd.events = POLLIN | POLLPRI;
+  my_pollfd.revents = 0;
+  poll_timeout = TO_MILLIS(secTime, uSecTime);
 
-/* The max fdset size per process is always expected to be less than a 32bit integer value.
- * Is this valid on a 64bit platform?
- */
+  result = poll(&my_pollfd, 1, poll_timeout);
 
-  /* Removed check for zero timeout */
+  if (result == -1) {
+      HYSOCKDEBUG ("<poll failed, err=%d>\n", errno);
 
-  result = hysock_fdset_init (portLibrary, hysocketP);
-  if (0 != result)
-    {
-      return result;
-    }
+      if (errno == EINTR) {
+          rc = portLibrary->error_set_last_error(portLibrary, errno, 
+                                                 HYPORT_ERROR_SOCKET_INTERRUPTED);
+      } else {
+          rc = portLibrary->error_set_last_error(portLibrary, errno,
+                                                 HYPORT_ERROR_SOCKET_OPFAILED);
+      }
+  } else {
+      if (result || poll_timeout == 0) {
+      	  rc = result;
+      } else {
+          rc = HYPORT_ERROR_SOCKET_TIMEOUT;
+      }
+  }
 
-  hysock_timeval_init (portLibrary, secTime, uSecTime, &timeP);
-  size = hysock_fdset_size (portLibrary, hysocketP);
-  if (0 > size)
-    {
-      result = HYPORT_ERROR_SOCKET_FDSET_SIZEBAD;
-    }
-  else
-    {
-      result =
-        hysock_select (portLibrary, size, ptBuffers->fdset, NULL, NULL,
-                       &timeP);
-    }
-  return result;
+  return rc;
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -4923,7 +4916,10 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
 #if (defined(HAS_RTNETLINK))
   struct sockaddr_nl address;
   U_32 receiveLength;
+  struct pollfd my_pollfd;
   socklen_t addressLength = sizeof (address);
+  int result;
+
   for (;;)
     {
       /* check if we are done */
@@ -4943,24 +4939,17 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
 
     /* 
      * if the remainingLength is 0 then there was no messages available in the existing data 
-     * so read another datagram containing messages we first use a select to make sure we 
+     * so read another datagram containing messages we first use a poll to make sure we 
      * don't block forever if for some reason there is no netlink message to read 
      */
      
       if (netlinkContext->remainingLength == 0)
         {
-          fd_set waitSockets;
-          struct timeval waitTime;
-          waitTime.tv_sec = NETLINK_READTIMEOUT_SECS;
-          waitTime.tv_usec = 0;
-          FD_ZERO (&waitSockets);
-          FD_SET (netlinkContext->netlinkSocketHandle, &waitSockets);
-                     
-          if (select
-              (netlinkContext->netlinkSocketHandle + 1, &waitSockets, NULL,
-               NULL, &waitTime) > 0)
-            {
-                
+          my_pollfd.fd = netlinkContext->netlinkSocketHandle;
+          my_pollfd.events = POLLIN | POLLPRI;
+          my_pollfd.revents = 0;
+
+          if (poll(&my_pollfd, 1, NETLINK_READTIMEOUT_SECS * 1000) > 0) {
                 struct sockaddr_nl nladdr;
                 struct msghdr msg;
                 struct iovec iov;
@@ -5127,38 +5116,12 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
                              U_32 step, U_8 ** context)
 {
   I_32 rc = 0;
-  struct timeval passedTimeout;
   int errorVal;
   int errorValLen = sizeof (int);
+  struct pollfd my_pollfd;
 
   if (HY_PORT_SOCKET_STEP_START == step)
     {
-      /* initialize the context to a known state */
-      if (NULL != context)
-        {
-          *context = NULL;
-        }
-      else
-        {
-          /* this should never happen but just in case */
-          return HYPORT_ERROR_SOCKET_NORECOVERY;
-        }
-
-      /* we will be looping checking for when we are connected so allocate the descriptor sets that we will use */
-      *context =
-        (U_8 *) portLibrary->mem_allocate_memory (portLibrary,
-                                                  sizeof (struct
-                                                          selectFDSet_struct));
-#if (defined(VALIDATE_ALLOCATIONS))
-      if (NULL == *context)
-        {
-          return HYPORT_ERROR_SOCKET_NOBUFFERS;
-        }
-#endif
-
-      ((struct selectFDSet_struct *) *context)->sock = SOCKET_CAST (sock);
-      ((struct selectFDSet_struct *) *context)->nfds = SOCKET_CAST (sock) + 1;
-
       /* set the socket to non-blocking */
       rc = hysock_set_nonblocking (portLibrary, sock, TRUE);
       if (0 != rc)
@@ -5166,14 +5129,13 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
           return rc;
         }
 
-      rc =
-        connect (SOCKET_CAST (sock), (struct sockaddr *) &addr->addr,
-                 sizeof (addr->addr));
+      rc = connect
+          (SOCKET_CAST (sock), (struct sockaddr *) &addr->addr,
+           sizeof (addr->addr));
       if (rc < 0)
         {
           rc = errno;
-          switch (rc)
-            {
+          switch (rc) {
             case HYPORT_ERROR_SOCKET_UNIX_EINTR:
               return HYPORT_ERROR_SOCKET_ALREADYBOUND;
             case HYPORT_ERROR_SOCKET_UNIX_EAGAIN:
@@ -5186,54 +5148,32 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
           return rc;
         }
 
-      /* we connected right off the bat so just return */
-      return rc;
+        /* we connected right off the bat so just return */
+        return rc;
 
-    }
-  else if (HY_PORT_SOCKET_STEP_CHECK == step)
-    {
+      }
+    else if (HY_PORT_SOCKET_STEP_CHECK == step)
+      {
       /* now check if we have connected yet */
 
       /* set the timeout value to be used. Because on some unix platforms we don't get notified when a socket
          is closed we only sleep for 100ms at a time */
-      passedTimeout.tv_sec = 0;
-      if (timeout > 100)
-        {
-          passedTimeout.tv_usec = 100 * 1000;
-        }
-      else if ((I_32)timeout >= 0)
-        {
-          passedTimeout.tv_usec = timeout * 1000;
-        }
+      timeout = timeout > 100 ? 100 : timeout;
 
       /* initialize the FD sets for the select */
-      FD_ZERO (&(((struct selectFDSet_struct *) *context)->exceptionSet));
-      FD_ZERO (&(((struct selectFDSet_struct *) *context)->writeSet));
-      FD_ZERO (&(((struct selectFDSet_struct *) *context)->readSet));
-      FD_SET (((struct selectFDSet_struct *) *context)->sock,
-              &(((struct selectFDSet_struct *) *context)->writeSet));
-      FD_SET (((struct selectFDSet_struct *) *context)->sock,
-              &(((struct selectFDSet_struct *) *context)->readSet));
-      FD_SET (((struct selectFDSet_struct *) *context)->sock,
-              &(((struct selectFDSet_struct *) *context)->exceptionSet));
-      rc =
-        select (((struct selectFDSet_struct *) *context)->nfds,
-                &(((struct selectFDSet_struct *) *context)->readSet),
-                &(((struct selectFDSet_struct *) *context)->writeSet),
-                &(((struct selectFDSet_struct *) *context)->exceptionSet),
-                (I_32)timeout >= 0 ? &passedTimeout : NULL);
+      my_pollfd.fd = SOCKET_CAST(sock);
+      my_pollfd.events = POLLIN | POLLPRI | POLLOUT;
+      my_pollfd.revents = 0;
 
+      rc = poll(&my_pollfd, 1, timeout);
+      
       /* if there is at least one descriptor ready to be checked */
       if (0 < rc)
         {
           /* if the descriptor is in the write set then we have connected or failed */
-          if (FD_ISSET
-              (((struct selectFDSet_struct *) *context)->sock,
-               &(((struct selectFDSet_struct *) *context)->writeSet)))
-            {
-              if (!FD_ISSET
-                  (((struct selectFDSet_struct *) *context)->sock,
-                   &(((struct selectFDSet_struct *) *context)->readSet)))
+
+          if (my_pollfd.revents & POLLOUT) {
+              if (!(my_pollfd.revents & (POLLIN | POLLPRI)))
                 {
                   /* ok we have connected ok */
                   return 0;
@@ -5241,39 +5181,28 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
               else
                 {
                   /* ok we have more work to do to figure it out */
-                  if (getsockopt
-                      (((struct selectFDSet_struct *) *context)->sock,
-                       SOL_SOCKET, SO_ERROR, (char *) &errorVal,
-                       &errorValLen) >= 0)
-                    {
-                        return errorVal ? findError(errorVal):0; 
-                    }
-                  else
-                    {
+                  if (getsockopt (SOCKET_CAST(sock), SOL_SOCKET, SO_ERROR,
+                                  (char *) &errorVal, &errorValLen) >= 0) {
+                      return errorVal ? findError(errorVal):0; 
+                  } else {
                       rc = errno;
                       return portLibrary->error_set_last_error (portLibrary,
                                                                 rc,
-                                                                findError
-                                                                (rc));
-                    }
-                }
-            }
+                                                                findError(rc));
+                  }
+              }
+          }
 
           /* if the descriptor is in the exception set then the connect failed */
-          if (FD_ISSET
-              (((struct selectFDSet_struct *) *context)->sock,
-               &(((struct selectFDSet_struct *) *context)->exceptionSet)))
-            {
-              if (getsockopt
-                  (((struct selectFDSet_struct *) *context)->sock, SOL_SOCKET,
-                   SO_ERROR, (char *) &errorVal, &errorValLen) >= 0)
-                {
-                     return errorVal ? findError(errorVal):0; 
-                }
+          if (my_pollfd.revents & (POLLERR | POLLHUP | POLLNVAL)) {
+              if (getsockopt(SOCKET_CAST(sock), SOL_SOCKET, SO_ERROR,
+                             (char *) &errorVal, &errorValLen) >= 0) {
+                  return errorVal ? findError(errorVal):0; 
+              }
               rc = errno;
               return portLibrary->error_set_last_error (portLibrary, rc,
                                                         findError (rc));
-            }
+          }
 
         }
       else if (rc < 0)
@@ -5290,26 +5219,20 @@ hysock_connect_with_timeout (struct HyPortLibrary * portLibrary,
           /* some other error occured so look it up and return */
           return portLibrary->error_set_last_error (portLibrary, rc,
                                                     findError (rc));
-        }
+      }
 
       /* if we get here the timeout expired or the connect had not yet completed
-         just indicate that the connect is not yet complete */
+         just indicate that the connect is not yet complete  */
       return HYPORT_ERROR_SOCKET_NOTCONNECTED;
     }
   else if (HY_PORT_SOCKET_STEP_DONE == step)
     {
-      /* we are done the connect or an error occured so clean up  */
-      if (sock != INVALID_SOCKET)
-        {
-          hysock_set_nonblocking (portLibrary, sock, FALSE);
-        }
-
-      /* free the memory for the FD set */
-      if ((context != NULL) && (*context != NULL))
-        {
-          portLibrary->mem_free_memory (portLibrary, *context);
-        }
-      return 0;
+        /* we are done the connect or an error occured so clean up  */
+        if (sock != INVALID_SOCKET)
+          {
+            hysock_set_nonblocking (portLibrary, sock, FALSE);
+          }
+        return 0;
     }
   return HYPORT_ERROR_SOCKET_ARGSINVALID;
 }
