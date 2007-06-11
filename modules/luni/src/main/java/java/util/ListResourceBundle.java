@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 /**
  * ListResourceBundle is the abstract superclass of classes which provide
  * resources by implementing the <code>getContents()</code> method to return
@@ -27,103 +26,116 @@ package java.util;
  * @since 1.1
  */
 public abstract class ListResourceBundle extends ResourceBundle {
-	Hashtable<String, Object> table;
+    HashMap<String, Object> table;
 
-	/**
-	 * Constructs a new instance of this class.
-	 */
-	public ListResourceBundle() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class.
+     */
+    public ListResourceBundle() {
+        super();
+    }
 
-	/**
-	 * Answers an Object array which contains the resources of this
-	 * ListResourceBundle. Each element in the array is an array of two
-	 * elements, the first is the resource key and the second is the resource.
-	 * 
-	 * @return a Object array containing the resources
-	 */
-	protected abstract Object[][] getContents();
+    /**
+     * Answers an Object array which contains the resources of this
+     * ListResourceBundle. Each element in the array is an array of two
+     * elements, the first is the resource key and the second is the resource.
+     * 
+     * @return a Object array containing the resources
+     */
+    protected abstract Object[][] getContents();
 
-	/**
-	 * Answers the names of the resources contained in this ListResourceBundle.
-	 * 
-	 * @return an Enumeration of the resource names
-	 */
-	@Override
+    /**
+     * Answers the names of the resources contained in this ListResourceBundle.
+     * 
+     * @return an Enumeration of the resource names
+     */
+    @Override
     public Enumeration<String> getKeys() {
-		if (table == null) {
-            initializeTable();
+        initializeTable();
+        if (parent != null) {
+            return new Enumeration<String>() {
+                Iterator<String> local = table.keySet().iterator();
+
+                Enumeration<String> pEnum = parent.getKeys();
+
+                String nextElement;
+
+                private boolean findNext() {
+                    if (nextElement != null) {
+                        return true;
+                    }
+                    while (pEnum.hasMoreElements()) {
+                        String next = pEnum.nextElement();
+                        if (!table.containsKey(next)) {
+                            nextElement = next;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                public boolean hasMoreElements() {
+                    if (local.hasNext()) {
+                        return true;
+                    }
+                    return findNext();
+                }
+
+                public String nextElement() {
+                    if (local.hasNext()) {
+                        return local.next();
+                    }
+                    if (findNext()) {
+                        String result = nextElement;
+                        nextElement = null;
+                        return result;
+                    }
+                    // Cause an exception
+                    return pEnum.nextElement();
+                }
+            };
+        } else {
+            return new Enumeration<String>() {
+                Iterator<String> it = table.keySet().iterator();
+
+                public boolean hasMoreElements() {
+                    return it.hasNext();
+                }
+
+                public String nextElement() {
+                    return it.next();
+                }
+            };
         }
-		if (parent == null) {
-            return table.keys();
-        }
-		return new Enumeration<String>() {
-			Enumeration<String> local = table.keys();
+    }
 
-			Enumeration<String> pEnum = parent.getKeys();
-
-			String nextElement;
-
-			private boolean findNext() {
-				if (nextElement != null) {
-                    return true;
-                }
-				while (pEnum.hasMoreElements()) {
-					String next = pEnum.nextElement();
-					if (!table.containsKey(next)) {
-						nextElement = next;
-						return true;
-					}
-				}
-				return false;
-			}
-
-			public boolean hasMoreElements() {
-				if (local.hasMoreElements()) {
-                    return true;
-                }
-				return findNext();
-			}
-
-			public String nextElement() {
-				if (local.hasMoreElements()) {
-                    return local.nextElement();
-                }
-				if (findNext()) {
-					String result = nextElement;
-					nextElement = null;
-					return result;
-				}
-				// Cause an exception
-				return pEnum.nextElement();
-			}
-		};
-	}
-
-	/**
-	 * Answers the named resource from this ResourceBundle, or null if the
-	 * resource is not found.
-	 * 
-	 * @param key
-	 *            the name of the resource
-	 * @return the resource object
-	 */
-	@Override
+    /**
+     * Answers the named resource from this ResourceBundle, or null if the
+     * resource is not found.
+     * 
+     * @param key
+     *            the name of the resource
+     * @return the resource object
+     */
+    @Override
     public final Object handleGetObject(String key) {
-		if (table == null) {
-            initializeTable();
+        initializeTable();
+        if (key == null) {
+            throw new NullPointerException();
         }
-		return table.get(key);
-	}
+        return table.get(key);
+    }
 
-	private synchronized void initializeTable() {
-		if (table == null) {
-			Object[][] contents = getContents();
-			table = new Hashtable<String, Object>(contents.length / 3 * 4 + 3);
-			for (int i = 0; i < contents.length; i++) {
-				table.put((String)contents[i][0], contents[i][1]);
-			}
-		}
-	}
+    private synchronized void initializeTable() {
+        if (table == null) {
+            Object[][] contents = getContents();
+            table = new HashMap<String, Object>(contents.length / 3 * 4 + 3);
+            for (Object[] content : contents) {
+                if (content[0] == null || content[1] == null) {
+                    throw new NullPointerException();
+                }
+                table.put((String) content[0], content[1]);
+            }
+        }
+    }
 }
