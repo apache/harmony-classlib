@@ -67,6 +67,44 @@ public class PipedReader extends Reader {
     }
 
     /**
+     * Constructs a new unconnected PipedReader and the buffer size is
+     * specified. The resulting Reader must be connected to a PipedWriter before
+     * data may be read from it.
+     * 
+     * @param size
+     *            the size of the buffer.
+     * @throws IllegalArgumentException
+     *             if pipeSize is less than or equal to zero.
+     * @since 1.6
+     */
+    public PipedReader(int size) {
+        if (size <= 0) {
+            throw new IllegalArgumentException();
+        }
+        data = new char[size];
+    }
+
+    /**
+     * Constructs a new PipedReader connected to the PipedWriter
+     * <code>out</code> and the buffer size is specified. Any data written to the writer can be read from the
+     * this reader.
+     * 
+     * @param out
+     *            the PipedWriter to connect to.
+     * @param pipeSize
+     *            the size of the buffer.
+     * @throws IOException
+     *             if IO errors occur
+     * @throws IllegalArgumentException
+     *             if pipeSize is less than or equal to zero.
+     * @since 1.6
+     */
+    public PipedReader(PipedWriter out, int pipeSize) throws IOException {
+        this(pipeSize);
+        connect(out);
+    }
+
+    /**
      * Constructs a new PipedReader connected to the PipedWriter
      * <code>out</code>. Any data written to the writer can be read from the
      * this reader.
