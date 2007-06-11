@@ -450,7 +450,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
      * @see #size
      */
     @Override
-    public synchronized E get(int location) {
+    public E get(int location) {
         return elementAt(location);
     }
 
