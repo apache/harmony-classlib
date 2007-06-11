@@ -5644,6 +5644,24 @@ public class ScannerTest extends TestCase {
         assertEquals(1, matchResult.end());
     }
     
+    /**
+	 * @tests {@link java.util.Scanner#reset()}
+	 * @since 1.6
+	 */
+	public void test_reset() {
+		Scanner s = new Scanner("test");
+		s.useRadix(11);
+		assertEquals(11, s.radix());
+		s.useDelimiter("\\w+");
+		assertEquals("\\w+", s.delimiter().toString());
+		s.useLocale(new Locale("test", "test", "test"));
+		assertEquals("test", s.locale().getLanguage());
+		s.reset();
+		assertEquals(10, s.radix());
+		assertEquals("\\p{javaWhitespace}+", s.delimiter().toString());
+		assertEquals(Locale.getDefault(), s.locale());
+	}
+    
     protected void setUp() throws Exception {
         super.setUp();
 
