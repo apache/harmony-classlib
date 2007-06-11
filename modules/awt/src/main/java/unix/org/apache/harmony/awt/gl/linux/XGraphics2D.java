@@ -82,7 +82,7 @@ public class XGraphics2D extends CommonGraphics2D {
         blitter = XBlitter.getInstance();
         Rectangle bounds = clip.getBounds();
         dstSurf = new XSurface(this, bounds.width, bounds.height);
-        jtr = DrawableTextRenderer.inst;
+//        jtr = DrawableTextRenderer.inst;
 
         //setTransformedClip(clip);
         setClip(clip);

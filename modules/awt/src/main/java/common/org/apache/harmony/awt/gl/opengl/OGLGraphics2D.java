@@ -25,6 +25,7 @@ import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Utils;
 import org.apache.harmony.awt.gl.Surface;
+import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.render.NullBlitter;
 import org.apache.harmony.awt.wtk.NativeWindow;
 import org.apache.harmony.awt.nativebridge.Int32Pointer;
@@ -197,7 +198,9 @@ public final class OGLGraphics2D extends CommonGraphics2D {
 
         blitter = OGLBlitter.getInstance();
 
-        jtr = new OGLTextRenderer();
+        if (!FontManager.IS_FONTLIB) {
+            jtr = new OGLTextRenderer();
+        }
     }
 
     public OGLGraphics2D(NativeWindow nwin, int tx, int ty, int width, int height) {

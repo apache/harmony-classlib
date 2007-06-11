@@ -178,6 +178,16 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+
+        <make dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/fontlib">
+                <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
+                <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="-build-native-unix" if="is.unix">

@@ -60,6 +60,8 @@
 #define NO_R (defined(MACOSX))
 /* OTHER_R: everything else */
 #define OTHER_R ((!HOSTENT_DATA_R)&&(!GLIBC_R)&&(!ORIGINAL_R)&&(!NO_R))
+/* Converts (seconds, microseconds) to milliseconds */
+#define TO_MILLIS(sec, microsec) (sec * 1000 + (microsec + 999) / 1000)
 /* os types */
 typedef int OSSOCKET;           /* as returned by socket() */
 typedef struct sockaddr_in OSSOCKADDR;  /* as used by bind() and friends */

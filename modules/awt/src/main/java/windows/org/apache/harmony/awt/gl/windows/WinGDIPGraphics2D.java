@@ -39,7 +39,9 @@ import java.util.Map;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.NativeFont;
+import org.apache.harmony.awt.gl.font.fontlib.FLTextRenderer;
 import org.apache.harmony.awt.wtk.NativeWindow;
 
 
@@ -92,8 +94,10 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         size = new Dimension(b.width, b.height);
 
         gi = createGraphicsInfo(this.nw.getId(), tx, ty, b.width, b.height);
-        setTransformedClip(this.clip);
-        jtr = GDIPTextRenderer.inst;
+        setTransformedClip(this.clip);        
+        if (!FontManager.IS_FONTLIB) {
+            jtr = GDIPTextRenderer.inst;
+        }
         dstSurf = new GDISurface(gi);
         blitter = GDIBlitter.getInstance();
         setTransform(getTransform());
@@ -107,8 +111,9 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
         gi = createGraphicsInfo(this.nw.getId(), tx, ty, width, height);
         setTransformedClip(this.clip);
-        jtr = GDIPTextRenderer.inst;
-
+        if (!FontManager.IS_FONTLIB) {
+            jtr = GDIPTextRenderer.inst;
+        }
         dstSurf = new GDISurface(gi);
         blitter = GDIBlitter.getInstance();
         if (debugOutput) {
@@ -134,18 +139,22 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         setTransformedClip(this.clip);
         dstSurf = img.getImageSurface();
         blitter = GDIBlitter.getInstance();
-        jtr = GDIPTextRenderer.inst;
+        if (!FontManager.IS_FONTLIB) {
+            jtr = GDIPTextRenderer.inst;
+        }        
         setTransform(getTransform());
     }
 
     @Override
     public void addRenderingHints(Map<?,?> hints) {
         super.addRenderingHints(hints);
-        Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
-            NativeFont.setAntialiasing(gi,true);
-        } else {
-            NativeFont.setAntialiasing(gi,false);
+        if (!FontManager.IS_FONTLIB) {
+            Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
+                NativeFont.setAntialiasing(gi,true);
+            } else {
+                NativeFont.setAntialiasing(gi,false);
+            }
         }
     }
     
@@ -563,22 +572,26 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     @Override
     public void setRenderingHint(RenderingHints.Key key, Object value) {
         super.setRenderingHint(key,value);
-        Object val = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        if (val == RenderingHints.VALUE_ANTIALIAS_ON) {
-            NativeFont.setAntialiasing(gi,true);
-        } else {
-            NativeFont.setAntialiasing(gi,false);
+        if (!FontManager.IS_FONTLIB) {
+            Object val = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            if (val == RenderingHints.VALUE_ANTIALIAS_ON) {
+                NativeFont.setAntialiasing(gi,true);
+            } else {
+                NativeFont.setAntialiasing(gi,false);
+            }
         }
     }
 
     @Override
     public void setRenderingHints(Map<?,?> hints) {
         super.setRenderingHints(hints);
-        Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-        if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
-            NativeFont.setAntialiasing(gi,true);
-        } else {
-            NativeFont.setAntialiasing(gi,false);
+        if (!FontManager.IS_FONTLIB) {
+            Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
+                NativeFont.setAntialiasing(gi,true);
+            } else {
+                NativeFont.setAntialiasing(gi,false);
+            }
         }
     }
 
