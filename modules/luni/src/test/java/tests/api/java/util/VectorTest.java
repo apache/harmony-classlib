@@ -496,8 +496,8 @@ public class VectorTest extends junit.framework.TestCase {
 	 */
 	public void test_indexOfLjava_lang_ObjectI() {
 		// Test for method int java.util.Vector.indexOf(java.lang.Object, int)
-		assertTrue("Failed to find correct index", (tVector.indexOf("Test 98",
-				50) == 98));
+		assertEquals("Failed to find correct index", tVector.indexOf("Test 98",
+				50), 98);
 		assertTrue("Found index of bogus element", (tVector.indexOf(
 				"Test 1001", 50) == -1));
 		tVector.setElementAt(null, 20);
@@ -507,6 +507,22 @@ public class VectorTest extends junit.framework.TestCase {
 				+ tVector.indexOf(null, 25), tVector.indexOf(null, 25) == 40);
 		assertTrue("b) Incorrect indexOf returned for null: "
 				+ tVector.indexOf(null, 20), tVector.indexOf(null, 20) == 20);
+		try {
+			tVector.indexOf("Test 98", -1);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		assertEquals(-1, tVector.indexOf("Test 98", 1000));
+		assertEquals(-1, tVector.indexOf("Test 98", Integer.MAX_VALUE));
+		assertEquals(-1, tVector.indexOf("Test 98", tVector.size()));
+		assertEquals(98, tVector.indexOf("Test 98", 0));
+		try {
+			tVector.indexOf("Test 98", Integer.MIN_VALUE);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+		}
 	}
 
 	/**
@@ -615,6 +631,29 @@ public class VectorTest extends junit.framework.TestCase {
 		assertTrue("Incorrect lastIndexOf returned for null: "
 				+ tVector.lastIndexOf(null, 45),
 				tVector.lastIndexOf(null, 45) == 40);
+
+		assertEquals(-1, tVector.lastIndexOf("Test 98", -1));
+		assertEquals(-1, tVector.lastIndexOf("Test 98", 0));
+		try {
+			assertEquals(-1, tVector.lastIndexOf("Test 98", 1000));
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			assertEquals(-1, tVector.lastIndexOf("Test 98", Integer.MAX_VALUE));
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			tVector.lastIndexOf("Test 98", tVector.size());
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+		}
+		try {
+			tVector.indexOf("Test 98", Integer.MIN_VALUE);
+			fail("should throw ArrayIndexOutOfBoundsException");
+		} catch (ArrayIndexOutOfBoundsException e) {
+		}
 	}
 
 	/**

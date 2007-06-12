@@ -140,7 +140,7 @@ public class SQLInputImpl implements SQLInput {
      * 
      * @see java.sql.SQLInput#readBoolean()
      */
-    public boolean readBoolean() throws SQLException, NotImplementedException {
+    public boolean readBoolean() throws SQLException {
         if(readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
@@ -378,7 +378,7 @@ public class SQLInputImpl implements SQLInput {
      * 
      * @see java.sql.SQLInput#wasNull()
      */
-    public boolean wasNull() throws SQLException, NotImplementedException {
+    public boolean wasNull() throws SQLException {
         if (readPosition > attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
