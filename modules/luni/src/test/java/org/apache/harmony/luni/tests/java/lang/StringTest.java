@@ -19,6 +19,7 @@ package org.apache.harmony.luni.tests.java.lang;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
+import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
@@ -596,5 +597,118 @@ public class StringTest extends TestCase {
             fail("No IOOBE for begin index larger than end index.");
         } catch (IndexOutOfBoundsException e) {
         }
+    }
+    
+    /**
+     * @tests {@link java.lang.String#String(byte[], int, int, Charset)} 
+     * 
+     * @since 1.6
+     */
+    public void test_ConstructorBIIL() throws Exception {
+        // can construct normally
+        new String(new byte[8], 0, 4, Charset.defaultCharset());
+        new String(new byte[8], 8, 0, Charset.defaultCharset());
+        new String(new byte[0], 0, 0, Charset.defaultCharset());
+        // throws exceptions
+        try {
+            new String(new byte[8], 0, 9, Charset.defaultCharset());
+            fail("should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            new String(new byte[8], 9, 0, Charset.defaultCharset());
+            fail("should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            new String(new byte[8], -1, 0, Charset.defaultCharset());
+            fail("should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            new String(new byte[8], 9, -1, Charset.defaultCharset());
+            fail("should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            new String(null, -1, 0, Charset.defaultCharset());
+            fail("should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            new String(null, 0, -1, Charset.defaultCharset());
+            fail("should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            new String(null, 0, 9, Charset.defaultCharset());
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(null, 0, 0, Charset.defaultCharset());
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(null, -1, 0, (Charset)null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(new byte[8], -1, 0, (Charset)null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(new byte[8], 0, 9, (Charset)null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(new byte[8], 0, 4, (Charset)null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    /**
+     * @tests {@link java.lang.String#String(byte[], Charset)}
+     * 
+     *  @since 1.6
+     */
+    public void test_ConstructorBL() throws Exception {
+        new String(new byte[8], Charset.defaultCharset());
+        try {
+            new String(new byte[8],(Charset)null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(new byte[0],(Charset)null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            new String(null,Charset.defaultCharset());
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        new String(new byte[0], Charset.defaultCharset());
     }
 }

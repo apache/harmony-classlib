@@ -410,6 +410,85 @@ public final class String implements Serializable, Comparable<String>,
     public String(byte[] data, String encoding) throws UnsupportedEncodingException {
         this(data, 0, data.length, encoding);
     }
+    
+    /**
+     * Converts the byte array to a String using the specified encoding.
+     * 
+     * @param data
+     *            the byte array to convert to a String
+     * @param start
+     *            the starting offset in the byte array
+     * @param length
+     *            the number of bytes to convert
+     * @param encoding
+     *            the encoding
+     * 
+     * @throws IndexOutOfBoundsException
+     *             when <code>length < 0, start < 0</code> or
+     *             <code>start + length > data.length</code>
+     * @throws NullPointerException
+     *             when data is null
+     * 
+     * @see #getBytes()
+     * @see #getBytes(int, int, byte[], int)
+     * @see #getBytes(String)
+     * @see #valueOf(boolean)
+     * @see #valueOf(char)
+     * @see #valueOf(char[])
+     * @see #valueOf(char[], int, int)
+     * @see #valueOf(double)
+     * @see #valueOf(float)
+     * @see #valueOf(int)
+     * @see #valueOf(long)
+     * @see #valueOf(Object)
+     * @since 1.6
+     */
+    public String(byte[] data, int start, int length, final Charset encoding) {
+        if (encoding == null) {
+            throw new NullPointerException();
+        }
+        // start + length could overflow, start/length maybe MaxInt
+        if (start >= 0 && 0 <= length && length <= data.length - start) {
+            offset = 0;
+            lastCharset = encoding;
+            
+            CharBuffer cb = encoding
+                    .decode(ByteBuffer.wrap(data, start, length));
+            value = cb.array();
+            count = cb.length();
+        } else {
+            throw new StringIndexOutOfBoundsException();
+        }
+    }
+    
+    /**
+     * Converts the byte array to a String using the specified encoding.
+     * 
+     * @param data
+     *            the byte array to convert to a String
+     * @param encoding
+     *            the encoding
+     * 
+     * @throws NullPointerException
+     *             when data is null
+     * 
+     * @see #getBytes()
+     * @see #getBytes(int, int, byte[], int)
+     * @see #getBytes(String)
+     * @see #valueOf(boolean)
+     * @see #valueOf(char)
+     * @see #valueOf(char[])
+     * @see #valueOf(char[], int, int)
+     * @see #valueOf(double)
+     * @see #valueOf(float)
+     * @see #valueOf(int)
+     * @see #valueOf(long)
+     * @see #valueOf(Object)
+     * @since 1.6
+     */
+    public String(byte[] data, Charset encoding) {
+        this(data, 0, data.length, encoding);
+    }
 
     /**
      * Initializes this String to contain the characters in the specified
