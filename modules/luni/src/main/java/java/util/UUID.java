@@ -132,9 +132,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
             if (rng == null) {
                 rng = new SecureRandom();
             }
-            rng.nextBytes(data = new byte[16]);
         }
-
+        rng.nextBytes(data = new byte[16]);
         long msb = (data[0] & 0xFFL) << 56;
         msb |= (data[1] & 0xFFL) << 48;
         msb |= (data[2] & 0xFFL) << 40;
