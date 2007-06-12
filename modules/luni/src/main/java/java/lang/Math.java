@@ -36,6 +36,10 @@ public final class Math {
 
     private static final long DOUBLE_EXPONENT_MASK = 0x7fff000000000000L;
     
+    private static final int FLOAT_SIGN_MASK = 0x80000000;
+    
+    private static final long DOUBLE_SIGN_MASK = 0x8000000000000000L;
+    
 	/**
 	 * Standard math constants.
 	 */
@@ -641,6 +645,46 @@ public final class Math {
     private native static double nextafter(double x, double y);
 
     private native static float nextafterf(float x, float y); 
+    
+    /**
+     * Answers a result of the magnitude of the first given double value and the
+     * sign of the second given double value.
+     * 
+     * @param magnitude
+     *            the double value whose magnitude should be used
+     * @param sign
+     *            the double value whose sign should be used
+     * @return a result of the magnitude of the first given double value and the
+     *         sign of the second given double value .
+     * 
+     * @since 1.6
+     */
+    public static double copySign(double magnitude, double sign) {
+        long mbits = Double.doubleToRawLongBits(magnitude);
+        long sbits = Double.doubleToRawLongBits(sign);
+        return Double.longBitsToDouble((mbits & ~DOUBLE_SIGN_MASK)
+                | (sbits & DOUBLE_SIGN_MASK));
+    }
+
+    /**
+     * Answers a result of the magnitude of the first given float value and the
+     * sign of the second given float value .
+     * 
+     * @param magnitude
+     *            the float value whose magnitude should be used
+     * @param sign
+     *            the float value whose sign should be used
+     * @return a result with the magnitude of the first given float value and
+     *         the sign of the second given float value .
+     * 
+     * @since 1.6
+     */
+    public static float copySign(float magnitude, float sign) {
+        int mbits = Float.floatToRawIntBits(magnitude);
+        int sbits = Float.floatToRawIntBits(sign);
+        return Float.intBitsToFloat((mbits & ~FLOAT_SIGN_MASK)
+                | (sbits & FLOAT_SIGN_MASK));
+    }
     
     /**
      * Answers the exponent of a float.

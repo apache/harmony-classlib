@@ -25,6 +25,21 @@ import java.util.Random;
  * set by the January 4th, 1995 version of the library.
  */
 public final class StrictMath {
+	private static final int FLOAT_EXPONENT_BIAS = 127;
+
+    private static final int FLOAT_EXPONENT_MASK = 0x7F800000;
+
+    private static final int DOUBLE_MANTISSA_BITS = 52;
+    
+    private static final int FLOAT_MANTISSA_BITS = 23;  
+
+    private static final int DOUBLE_EXPONENT_BIAS = 1023;
+
+    private static final long DOUBLE_EXPONENT_MASK = 0x7fff000000000000L;
+
+    private static final int FLOAT_SIGN_MASK = 0x80000000;
+
+    private static final long DOUBLE_SIGN_MASK = 0x8000000000000000L;
 
 	/**
 	 * Standard math constant
@@ -640,4 +655,72 @@ public final class StrictMath {
     private native static double nextafter(double x, double y);
 
     private native static float nextafterf(float x, float y); 
+    
+    /**
+     * Answers a result of the magnitude of the first given double value and the
+     * sign of the seconde given double value.
+     * 
+     * @param magnitude
+     *            the double value whose magnitude should be used
+     * @param sign
+     *            the double value whose sign should be used
+     * @return a result of the magnitude of the first given double value and the
+     *         sign of the seconde given double value.
+     *         
+     * @since 1.6
+     */
+    public static double copySign(double magnitude, double sign) {
+        long mbits = Double.doubleToRawLongBits(magnitude);
+        long sbits = Double.doubleToLongBits(sign);
+        return Double.longBitsToDouble((mbits & ~DOUBLE_SIGN_MASK) | (sbits & DOUBLE_SIGN_MASK) );
+    }
+
+    /**
+     * Answers a result of the magnitude of the first given float value and the
+     * sign of the seconde given float value.
+     * 
+     * @param magnitude
+     *            the float value whose magnitude should be used
+     * @param sign
+     *            the float value whose sign should be used
+     * @return a result with the magnitude of the first given float value and
+     *         the sign of the seconde given float value.
+     *         
+     * @since 1.6
+     */
+    public static float copySign(float magnitude, float sign) {
+        int mbits = Float.floatToRawIntBits(magnitude);
+        int sbits = Float.floatToIntBits(sign);
+        return Float.intBitsToFloat((mbits & ~FLOAT_SIGN_MASK)| (sbits & FLOAT_SIGN_MASK) );
+    }
+    
+    /**
+     * Answers the exponent of a float.
+     * 
+     * @param f
+     *            the given float
+     * @return the exponent of the float.
+     * 
+     * @since 1.6
+     */
+    public static int getExponent(float f){
+    	int bits = Float.floatToRawIntBits(f);
+        bits = (bits & FLOAT_EXPONENT_MASK) >> FLOAT_MANTISSA_BITS;
+        return bits - FLOAT_EXPONENT_BIAS;
+    }
+    
+    /**
+     * Answers the exponent of a double.
+     * 
+     * @param d
+     *            the given double
+     * @return the exponent of the double.
+     * 
+     * @since 1.6
+     */
+    public static int getExponent(double d){
+    	long bits = Double.doubleToRawLongBits(d);
+        bits = (bits & DOUBLE_EXPONENT_MASK) >> DOUBLE_MANTISSA_BITS;
+        return (int) bits - DOUBLE_EXPONENT_BIAS;
+    }
 }

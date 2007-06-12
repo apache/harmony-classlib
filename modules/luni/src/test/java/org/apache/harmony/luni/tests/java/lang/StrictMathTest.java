@@ -17,6 +17,13 @@
 
 package org.apache.harmony.luni.tests.java.lang;
 
+import static org.apache.harmony.luni.tests.java.lang.MathTest.COPYSIGN_DD_CASES;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.COPYSIGN_FF_CASES;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_D_CASES;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_D_RESULTS;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_F_CASES;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_F_RESULTS;
+
 public class StrictMathTest extends junit.framework.TestCase {
 
 	double HYP = StrictMath.sqrt(2.0);
@@ -164,6 +171,135 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect ceiling for double",
                              -78, StrictMath.ceil(-78.89), 0.0);
 	}
+	
+	/**
+     * @tests {@link java.lang.StrictMath#copySign(double, double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_copySign_DD() {
+        for (int i = 0; i < COPYSIGN_DD_CASES.length; i++) {
+            final double magnitude = COPYSIGN_DD_CASES[i];
+            final long absMagnitudeBits = Double.doubleToLongBits(StrictMath
+                    .abs(magnitude));
+            final long negMagnitudeBits = Double.doubleToLongBits(-StrictMath
+                    .abs(magnitude));
+
+            // cases for NaN
+            assertEquals("If the sign is NaN, the result should be positive.",
+                    absMagnitudeBits, Double.doubleToLongBits(StrictMath
+                            .copySign(magnitude, Double.NaN)));
+            assertTrue("The result should be NaN.", Double.isNaN(StrictMath
+                    .copySign(Double.NaN, magnitude)));
+
+            for (int j = 0; j < COPYSIGN_DD_CASES.length; j++) {
+                final double sign = COPYSIGN_DD_CASES[j];
+                final long resultBits = Double.doubleToLongBits(StrictMath
+                        .copySign(magnitude, sign));
+
+                if (sign > 0 || Double.valueOf(+0.0).equals(sign)
+                        || Double.valueOf(0.0).equals(sign)) {
+                    assertEquals(
+                            "If the sign is positive, the result should be positive.",
+                            absMagnitudeBits, resultBits);
+                }
+                if (sign < 0 || Double.valueOf(-0.0).equals(sign)) {
+                    assertEquals(
+                            "If the sign is negative, the result should be negative.",
+                            negMagnitudeBits, resultBits);
+                }
+            }
+        }
+
+        assertTrue("The result should be NaN.", Double.isNaN(StrictMath
+                .copySign(Double.NaN, Double.NaN)));
+
+        try {
+            StrictMath.copySign((Double) null, 2.3);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.copySign(2.3, (Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.copySign((Double) null, (Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        
+		double d = Double.longBitsToDouble(0xfff8000000000000L);
+		assertEquals(1.0, StrictMath.copySign(1.0, d), 0d);
+    }
+
+    /**
+     * @tests {@link java.lang.StrictMath#copySign(float, float)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_copySign_FF() {
+        for (int i = 0; i < COPYSIGN_FF_CASES.length; i++) {
+            final float magnitude = COPYSIGN_FF_CASES[i];
+            final int absMagnitudeBits = Float.floatToIntBits(StrictMath
+                    .abs(magnitude));
+            final int negMagnitudeBits = Float.floatToIntBits(-StrictMath
+                    .abs(magnitude));
+
+            // cases for NaN
+            assertEquals("If the sign is NaN, the result should be positive.",
+                    absMagnitudeBits, Float.floatToIntBits(StrictMath.copySign(
+                            magnitude, Float.NaN)));
+            assertTrue("The result should be NaN.", Float.isNaN(StrictMath
+                    .copySign(Float.NaN, magnitude)));
+
+            for (int j = 0; j < COPYSIGN_FF_CASES.length; j++) {
+                final float sign = COPYSIGN_FF_CASES[j];
+                final int resultBits = Float.floatToIntBits(StrictMath
+                        .copySign(magnitude, sign));
+                if (sign > 0 || Float.valueOf(+0.0f).equals(sign)
+                        || Float.valueOf(0.0f).equals(sign)) {
+                    assertEquals(
+                            "If the sign is positive, the result should be positive.",
+                            absMagnitudeBits, resultBits);
+                }
+                if (sign < 0 || Float.valueOf(-0.0f).equals(sign)) {
+                    assertEquals(
+                            "If the sign is negative, the result should be negative.",
+                            negMagnitudeBits, resultBits);
+                }
+            }
+        }
+
+        assertTrue("The result should be NaN.", Float.isNaN(StrictMath
+                .copySign(Float.NaN, Float.NaN)));
+
+        try {
+            StrictMath.copySign((Float) null, 2.3f);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.copySign(2.3f, (Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.copySign((Float) null, (Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        
+		float f = Float.intBitsToFloat(0xffc00000);
+		assertEquals(1.0f, StrictMath.copySign(1.0f, f), 0f);
+    }
 
 	/**
 	 * @tests java.lang.StrictMath#cos(double)
@@ -263,6 +399,47 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect floor for double",
                              -79, StrictMath.floor(-78.89), 0.0);
 	}
+	
+	/**
+     * @tests {@link java.lang.StrictMath#getExponent(double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_getExponent_D() {
+        for (int i = 0; i < GETEXPONENT_D_CASES.length; i++) {
+            final double number = GETEXPONENT_D_CASES[i];
+            final int result = GETEXPONENT_D_RESULTS[i];
+            assertEquals("Wrong result of getExponent(double).", result,
+                    StrictMath.getExponent(number));
+        }
+
+        try {
+            StrictMath.getExponent((Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.StrictMath#getExponent(float)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_getExponent_F() {
+        for (int i = 0; i < GETEXPONENT_F_CASES.length; i++) {
+            final float number = GETEXPONENT_F_CASES[i];
+            final int result = GETEXPONENT_F_RESULTS[i];
+            assertEquals("Wrong result of getExponent(float).", result,
+                    StrictMath.getExponent(number));
+        }
+        try {
+            StrictMath.getExponent((Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
     
     /**
      * @tests java.lang.StrictMath#hypot(double, double)
