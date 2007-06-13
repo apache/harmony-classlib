@@ -107,11 +107,15 @@ public class Proxy {
      */
     @Override
     public String toString() {
-        String proxyString = String.valueOf(type);
-        if (null != address) {
-            proxyString += "/" + address.toString(); //$NON-NLS-1$
+        StringBuilder builder = new StringBuilder();
+        if (type != null) {
+            builder.append(type.toString());
         }
-        return proxyString;
+        builder.append("@"); //$NON-NLS-1$
+        if (type != Proxy.Type.DIRECT && address != null) {
+            builder.append(address.toString());
+        }
+        return builder.toString();
     }
 
     /**
