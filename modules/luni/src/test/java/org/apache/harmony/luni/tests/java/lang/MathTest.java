@@ -702,6 +702,263 @@ public class MathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect long min value",
 				-19088976000089L, Math.min(-20, -19088976000089L));
 	}
+	
+	/**
+     * start number cases for test_nextAfter_DD in MathTest/StrictMathTest
+     * NEXTAFTER_DD_START_CASES[i][0] is the start number
+     * NEXTAFTER_DD_START_CASES[i][1] is the nextUp of start number
+     * NEXTAFTER_DD_START_CASES[i][2] is the nextDown of start number
+     */
+    static final double NEXTAFTER_DD_START_CASES[][] = new double[][] {
+            { 3.4, 3.4000000000000004, 3.3999999999999995 },
+            { -3.4, -3.3999999999999995, -3.4000000000000004 },
+            { 3.4233E109, 3.4233000000000005E109, 3.4232999999999996E109 },
+            { -3.4233E109, -3.4232999999999996E109, -3.4233000000000005E109 },
+            { +0.0, Double.MIN_VALUE, -Double.MIN_VALUE },
+            { 0.0, Double.MIN_VALUE, -Double.MIN_VALUE },
+            { -0.0, Double.MIN_VALUE, -Double.MIN_VALUE },
+            { Double.MIN_VALUE, 1.0E-323, +0.0 },
+            { -Double.MIN_VALUE, -0.0, -1.0E-323 },
+            { Double.MIN_NORMAL, 2.225073858507202E-308, 2.225073858507201E-308 },
+            { -Double.MIN_NORMAL, -2.225073858507201E-308,
+                    -2.225073858507202E-308 },
+            { Double.MAX_VALUE, Double.POSITIVE_INFINITY,
+                    1.7976931348623155E308 },
+            { -Double.MAX_VALUE, -1.7976931348623155E308,
+                    Double.NEGATIVE_INFINITY },
+            { Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
+                    Double.MAX_VALUE },
+            { Double.NEGATIVE_INFINITY, -Double.MAX_VALUE,
+                    Double.NEGATIVE_INFINITY } };
+
+    /**
+     * direction number cases for test_nextAfter_DD/test_nextAfter_FD in
+     * MathTest/StrictMathTest
+     */
+    static final double NEXTAFTER_DD_FD_DIRECTION_CASES[] = new double[] {
+            Double.POSITIVE_INFINITY, Double.MAX_VALUE, 8.8, 3.4, 1.4,
+            Double.MIN_NORMAL, Double.MIN_NORMAL / 2, Double.MIN_VALUE, +0.0,
+            0.0, -0.0, -Double.MIN_VALUE, -Double.MIN_NORMAL / 2,
+            -Double.MIN_NORMAL, -1.4, -3.4, -8.8, -Double.MAX_VALUE,
+            Double.NEGATIVE_INFINITY };
+
+    /**
+     * @tests {@link java.lang.Math#nextAfter(double, double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextAfter_DD() {
+        // test for most cases without exception
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            final double start = NEXTAFTER_DD_START_CASES[i][0];
+            final long nextUpBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][1]);
+            final long nextDownBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][2]);
+
+            for (int j = 0; j < NEXTAFTER_DD_FD_DIRECTION_CASES.length; j++) {
+                final double direction = NEXTAFTER_DD_FD_DIRECTION_CASES[j];
+                final long resultBits = Double.doubleToLongBits(Math.nextAfter(
+                        start, direction));
+                final long directionBits = Double.doubleToLongBits(direction);
+                if (direction > start) {
+                    assertEquals("Result should be next up-number.",
+                            nextUpBits, resultBits);
+                } else if (direction < start) {
+                    assertEquals("Result should be next down-number.",
+                            nextDownBits, resultBits);
+                } else {
+                    assertEquals("Result should be direction.", directionBits,
+                            resultBits);
+                }
+            }
+        }
+
+        // test for cases with NaN
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Double.isNaN(Math
+                    .nextAfter(NEXTAFTER_DD_START_CASES[i][0], Double.NaN)));
+        }
+        for (int i = 0; i < NEXTAFTER_DD_FD_DIRECTION_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Double.isNaN(Math
+                    .nextAfter(Double.NaN, NEXTAFTER_DD_FD_DIRECTION_CASES[i])));
+        }
+        assertTrue("The result should be NaN.", Double.isNaN(Math.nextAfter(
+                Double.NaN, Double.NaN)));
+
+        // test for exception
+        try {
+            Math.nextAfter((Double) null, 2.3);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.nextAfter(2.3, (Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.nextAfter((Double) null, (Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * start number cases for test_nextAfter_FD in MathTest/StrictMathTest
+     * NEXTAFTER_FD_START_CASES[i][0] is the start number
+     * NEXTAFTER_FD_START_CASES[i][1] is the nextUp of start number
+     * NEXTAFTER_FD_START_CASES[i][2] is the nextDown of start number
+     */
+    static final float NEXTAFTER_FD_START_CASES[][] = new float[][] {
+            { 3.4f, 3.4000003f, 3.3999999f },
+            { -3.4f, -3.3999999f, -3.4000003f },
+            { 3.4233E19f, 3.4233002E19f, 3.4232998E19f },
+            { -3.4233E19f, -3.4232998E19f, -3.4233002E19f },
+            { +0.0f, Float.MIN_VALUE, -Float.MIN_VALUE },
+            { 0.0f, Float.MIN_VALUE, -Float.MIN_VALUE },
+            { -0.0f, Float.MIN_VALUE, -Float.MIN_VALUE },
+            { Float.MIN_VALUE, 2.8E-45f, +0.0f },
+            { -Float.MIN_VALUE, -0.0f, -2.8E-45f },
+            { Float.MIN_NORMAL, 1.1754945E-38f, 1.1754942E-38f },
+            { -Float.MIN_NORMAL, -1.1754942E-38f, -1.1754945E-38f },
+            { Float.MAX_VALUE, Float.POSITIVE_INFINITY, 3.4028233E38f },
+            { -Float.MAX_VALUE, -3.4028233E38f, Float.NEGATIVE_INFINITY },
+            { Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.MAX_VALUE },
+            { Float.NEGATIVE_INFINITY, -Float.MAX_VALUE,
+                    Float.NEGATIVE_INFINITY } };
+
+    /**
+     * @tests {@link java.lang.Math#nextAfter(float, double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextAfter_FD() {
+        // test for most cases without exception
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            final float start = NEXTAFTER_FD_START_CASES[i][0];
+            final int nextUpBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][1]);
+            final int nextDownBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][2]);
+
+            for (int j = 0; j < NEXTAFTER_DD_FD_DIRECTION_CASES.length; j++) {
+                final double direction = NEXTAFTER_DD_FD_DIRECTION_CASES[j];
+                final int resultBits = Float.floatToIntBits(Math.nextAfter(
+                        start, direction));
+                if (direction > start) {
+                    assertEquals("Result should be next up-number.",
+                            nextUpBits, resultBits);
+                } else if (direction < start) {
+                    assertEquals("Result should be next down-number.",
+                            nextDownBits, resultBits);
+                } else {
+                    final int equivalentBits = Float.floatToIntBits(new Float(
+                            direction));
+                    assertEquals(
+                            "Result should be a number equivalent to direction.",
+                            equivalentBits, resultBits);
+                }
+            }
+        }
+
+        // test for cases with NaN
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Float.isNaN(Math.nextAfter(
+                    NEXTAFTER_FD_START_CASES[i][0], Float.NaN)));
+        }
+        for (int i = 0; i < NEXTAFTER_DD_FD_DIRECTION_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Float.isNaN(Math.nextAfter(
+                    Float.NaN, NEXTAFTER_DD_FD_DIRECTION_CASES[i])));
+        }
+        assertTrue("The result should be NaN.", Float.isNaN(Math.nextAfter(
+                Float.NaN, Float.NaN)));
+
+        // test for exception
+        try {
+            Math.nextAfter((Float) null, 2.3);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.nextAfter(2.3, (Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.nextAfter((Float) null, (Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.Math#nextUp(double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextUp_D() {
+        // This method is semantically equivalent to nextAfter(d,
+        // Double.POSITIVE_INFINITY),
+        // so we use the data of test_nextAfter_DD
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            final double start = NEXTAFTER_DD_START_CASES[i][0];
+            final long nextUpBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][1]);
+            final long resultBits = Double.doubleToLongBits(Math.nextUp(start));
+            assertEquals("Result should be next up-number.", nextUpBits,
+                    resultBits);
+        }
+
+        // test for cases with NaN
+        assertTrue("The result should be NaN.", Double.isNaN(Math
+                .nextUp(Double.NaN)));
+
+        // test for exception
+        try {
+            Math.nextUp((Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.Math#nextUp(float)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextUp_F() {
+        // This method is semantically equivalent to nextAfter(f,
+        // Float.POSITIVE_INFINITY),
+        // so we use the data of test_nextAfter_FD
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            final float start = NEXTAFTER_FD_START_CASES[i][0];
+            final int nextUpBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][1]);
+            final int resultBits = Float.floatToIntBits(Math.nextUp(start));
+            assertEquals("Result should be next up-number.", nextUpBits,
+                    resultBits);
+        }
+
+        // test for cases with NaN
+        assertTrue("The result should be NaN.", Float.isNaN(Math
+                .nextUp(Float.NaN)));
+
+        // test for exception
+        try {
+            Math.nextUp((Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
 
 	/**
 	 * @tests java.lang.Math#pow(double, double)
