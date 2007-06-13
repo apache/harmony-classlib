@@ -983,6 +983,24 @@ public final class String implements Serializable, Comparable<String>,
         }
         return charset;
     }
+    
+    /**
+     * Converts this String to a byte encoding using the specified encoding.
+     * 
+     * @param encoding
+     *            the encoding
+     * @return the byte array encoding of this String
+     * 
+     * @see String
+     * @since 1.6
+     */
+    public byte[] getBytes(Charset encoding) {
+        ByteBuffer buffer = encoding.encode(CharBuffer.wrap(this.value,
+                this.offset, this.count));
+        byte[] bytes = new byte[buffer.limit()];
+        buffer.get(bytes);
+        return bytes;
+    }
 
     /**
      * Copies the specified characters in this String to the character array
@@ -1302,6 +1320,16 @@ public final class String implements Serializable, Comparable<String>,
      */
     public int length() {
         return count;
+    }
+    
+    /**
+     * Answers if the size of this String is zero.
+     * 
+     * @return true if the size of this String is zero, false otherwise
+     * @since 1.6
+     */
+    public boolean isEmpty() {
+        return 0 == count;
     }
 
     /**

@@ -20,6 +20,7 @@ package org.apache.harmony.luni.tests.java.lang;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
+import java.util.SortedMap;
 
 import junit.framework.TestCase;
 
@@ -710,5 +711,53 @@ public class StringTest extends TestCase {
             // expected
         }
         new String(new byte[0], Charset.defaultCharset());
+    }
+    
+    /**
+     * @tests {@link java.lang.String#isEmpty()}
+     * 
+     * @since 1.6
+     */
+    public void test_isEmpty() throws Exception {
+        assertTrue(new String(new byte[0], Charset.defaultCharset()).isEmpty());
+        assertTrue(new String(new byte[8], Charset.defaultCharset()).substring(0, 0).isEmpty());
+    }
+    
+    /**
+     * @tests {@link java.lang.String#getBytes(Charset)}
+     * 
+     * @since 1.6
+     */
+    public void test_getBytesLCharset() throws Exception {
+        byte[] emptyBytes = new byte[0];
+        byte[] someBytes = new byte[]{'T','h','i','s',' ',' ','i','s',' ','t','e','s','t',' ','b','y','t','e','s'};
+        assertEquals(0, new String(emptyBytes, Charset.defaultCharset()).getBytes(Charset.defaultCharset()).length);
+        try{
+            new String(emptyBytes, Charset.defaultCharset()).getBytes((Charset)null);
+            fail("should throw NPE");
+        } catch (NullPointerException e){
+            // correct
+        }
+        assertTrue(bytesEquals(someBytes,new String(someBytes, Charset.defaultCharset()).getBytes(Charset.defaultCharset())));
+        SortedMap<String, Charset> charsets = Charset.availableCharsets();
+
+        Charset ascii = charsets.get("US-ASCII");
+        Charset utf8 = charsets.get("UTF-8");
+        if (charsets.size() >= 2){
+            assertTrue(bytesEquals(someBytes,new String(someBytes, charsets.get(charsets.firstKey())).getBytes(charsets.get(charsets.lastKey()))));            
+            assertFalse(bytesEquals("\u4f60\u597d".getBytes(ascii), "\u4f60\u597d".getBytes(utf8)));
+        }
+    }
+    
+    boolean bytesEquals(byte[] bytes1, byte[] bytes2){
+        if (bytes1.length == bytes2.length){
+            for (int i = 0; i < bytes1.length; i++){
+                if (bytes1[i] != bytes2[i]){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }
