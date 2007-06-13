@@ -43,6 +43,19 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
+    <!-- Build natives.-->
+    <target name="build-native">
+
+        <make dir="${hy.nio_char.src.main.native}/niochar/${hy.os.family}" />
+
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.nio_char.src.main.native}/niochar">
+                <patternset includes="*${shlib.suffix}*" />
+            </fileset>
+        </copy>
+    </target>
+
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
             <condition>
@@ -56,6 +69,12 @@
 
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+
+    <!-- Clean natives. -->
+    <target name="clean-native">
+        <make dir="${hy.nio_char.src.main.native}/niochar/${hy.os.family}"
+                      target="clean" />
+    </target>
 
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}.jar" />
@@ -95,6 +114,7 @@
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.nio_char.src.main.java}">
                 <exclude name="**/*.java" />
+                <exclude name="**/java.nio.charset.spi.CharsetProvider" />
             </fileset>
         </copy>
     </target>
@@ -102,6 +122,9 @@
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}.jar"
              manifest="${hy.nio_char}/META-INF/MANIFEST.MF">
+            <metainf prefix="META-INF/services"
+                dir="${hy.nio_char.src.main.java}/org/apache/harmony/niochar"
+                includes="java.nio.charset.spi.CharsetProvider"/>
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -111,6 +134,9 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}-src.jar">
+            <metainf prefix="META-INF/services"
+                dir="${hy.nio_char.src.main.java}/org/apache/harmony/niochar"
+                includes="java.nio.charset.spi.CharsetProvider"/>
             <fileset dir="${hy.nio_char.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

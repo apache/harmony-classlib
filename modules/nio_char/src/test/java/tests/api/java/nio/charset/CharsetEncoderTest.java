@@ -51,7 +51,7 @@ public class CharsetEncoderTest extends TestCase {
 	byte[] defaultReplacement = new byte[] { 63 };
 
 	// specific for Charset implementation subclass
-	byte[] specifiedReplacement = new byte[] { 26 };
+	byte[] specifiedReplacement = new byte[] { 63 };
 
 	static final String unistr = " buffer";// \u8000\u8001\u00a5\u3000\r\n";
 

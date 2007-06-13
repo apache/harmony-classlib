@@ -33,7 +33,7 @@ public class UTFCharsetEncoderTest extends CharsetEncoderTest {
 	 */
 	protected void setUp() throws Exception {
 		cs = CS;
-		specifiedReplacement = new byte[] { -17, -65, -67 };
+		specifiedReplacement = new byte[] { 63 };
 		super.setUp();
 	}
 
@@ -76,10 +76,10 @@ public class UTFCharsetEncoderTest extends CharsetEncoderTest {
 	}
 
 	public void testSpecificDefaultValue() {
-		// assertEquals(1.1, encoder.averageBytesPerChar(), 0.0001);
-		assertEquals(2, encoder.averageBytesPerChar(), 0.0001);
-		// assertEquals(4, encoder.maxBytesPerChar(), 0);
-		assertEquals(3, encoder.maxBytesPerChar(), 0);
+		assertEquals(1.1, encoder.averageBytesPerChar(), 0.0001);
+		// assertEquals(2, encoder.averageBytesPerChar(), 0.0001);
+		assertEquals(4, encoder.maxBytesPerChar(), 0);
+		// assertEquals(3, encoder.maxBytesPerChar(), 0);
 	}
 
 	CharBuffer getMalformedCharBuffer() {
