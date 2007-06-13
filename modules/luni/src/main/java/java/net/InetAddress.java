@@ -844,12 +844,12 @@ public class InetAddress extends Object implements Serializable {
                     boolean threadReached = false;
                     // if isICMP, tries ICMP ping, else TCP echo
                     if (isICMP) {
-                        threadReached = NETIMPL.isReachableByICMP(
-                                InetAddress.this, addr, ttl, timeout);
+                        threadReached = NETIMPL.isReachableByICMP(addr,
+                                InetAddress.this, ttl, timeout);
                     } else {
                         try {
-                            threadReached = isReachableByTCP(InetAddress.this,
-                                    addr, timeout);
+                            threadReached = isReachableByTCP(addr,
+                                    InetAddress.this, timeout);
                         } catch (IOException e) {
                             // do nothing
                         }
