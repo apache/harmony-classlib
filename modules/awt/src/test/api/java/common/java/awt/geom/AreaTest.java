@@ -45,126 +45,54 @@ public class AreaTest extends PathIteratorTestCase {
     }
     
     public void testContainsPoint() {
+        // Regression test HARMONY-1404
         try {
-             Area area = new Area(new Ellipse2D.Double(200, 300, 400, 200));
-             assertTrue(area.contains(250, 350));
-             assertFalse(area.contains(200, 300));
-             assertFalse(area.contains(50, 50));
-             
-             assertTrue(area.contains(new Point2D.Double(500, 400)));
-             assertFalse(area.contains(new Point2D.Double(700, 400)));
-             
-             // Regression test HARMONY-1404
-             Area emptyArea = new Area();
-             emptyArea.contains((Point2D)null);
-             fail("Expected NPE");
-         } catch (NullPointerException e) {
-             // expected
-         }
-     }
-
-     public void testContainsRect() {
-         // Regression test HARMONY-1476
-         GeneralPath path = new GeneralPath();
-         path.moveTo(100, 500);
-         path.lineTo(400, 100);
-         path.lineTo(700, 500);
-         path.closePath();
-         
-         Area area = new Area(path);
-         assertTrue(area.contains(new Rectangle2D.Double(300, 400, 100, 50)));
-         assertFalse(area.contains(new Rectangle2D.Double(50, 400, 700, 50)));
-         
-         GeneralPath path1 = new GeneralPath();
-         path1.moveTo(400, 500);
-         path1.quadTo(200, 200, 400, 100);
-         path1.quadTo(600, 200, 400, 500);
-         path1.closePath();
-         
-         Area area1 = new Area(path1);
-         assertTrue(area1.contains(350, 200, 50, 50));
-         assertFalse(area1.contains(100, 50, 600, 500));
-         
-     	// Regression test HARMONY-1404
-         try {
-             Area emptyArea = new Area();
-             emptyArea.contains((Rectangle2D)null);
-             fail("Expected NPE");
-         } catch (NullPointerException e) {
-             // expected
-         }
-     }
-
-     public void testIntersectsRect() {
-         // Regression test HARMONY-1476
-         GeneralPath path = new GeneralPath();
-         path.moveTo(100, 500);
-         path.lineTo(400, 100);
-         path.lineTo(700, 500);
-         path.closePath();
-         
-         Area area = new Area(path);
-         assertTrue(area.intersects(new Rectangle2D.Double(300, 400, 100, 50)));
-         assertFalse(area.intersects(new Rectangle2D.Double(50, 50, 50, 50)));
-         
-         GeneralPath path1 = new GeneralPath();
-         path1.moveTo(400, 500);
-         path1.quadTo(200, 200, 400, 100);
-         path1.quadTo(600, 200, 400, 500);
-         path1.closePath();
-         
-         Area area1 = new Area(path1);
-         assertTrue(area1.intersects(350, 200, 50, 50));
-         assertFalse(area1.intersects(500, 50, 100, 50));
-         
-         // Regression test HARMONY-1404
-         try {
-             Area emptyArea = new Area();
-             emptyArea.intersects((Rectangle2D)null);
-             fail("Expected NPE");
-         } catch (NullPointerException e) {
-             // expected
-         }
-     }
-     
-     public void testIsRectangle() {
-     	 // Regression test HARMONY-1476
-     	Area area = new Area(new Rectangle2D.Double(200, 300, 400, 150));
-     	assertTrue(area.isRectangular());
-         
-     	GeneralPath path = new GeneralPath();
-         path.moveTo(200, 300);
-         path.lineTo(600, 300);
-         path.lineTo(600, 450);
-         path.lineTo(200, 450);
-         path.closePath();
-         
-         Area area1 = new Area(path);
-         assertTrue(area1.isRectangular());
-         
-         Area area2 = new Area(new Ellipse2D.Double(200, 300, 400, 150));
-         assertFalse(area2.isRectangular());     
-     }
-     
-     public void testGetPathIterator() {
-         // Regression test HARMONY-1860
-         Area a = new Area();
-         PathIterator path = a.getPathIterator(null);
-         checkPathRule(path, PathIterator.WIND_EVEN_ODD);
-         checkPathDone(path, true);
-     }
-     
-     public void testCreateTransformedArea() {
-         // Regression test HARMONY-1880
-         AffineTransform t = AffineTransform.getScaleInstance(2, 3);
-         Area a1 = new Area();        
-         Area a2 = a1.createTransformedArea(t);
-         PathIterator path = a2.getPathIterator(null);
-         checkPathRule(path, PathIterator.WIND_EVEN_ODD);
-         checkPathDone(path, true);
-     }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AreaTest.class);
+            Area a = new Area();
+            a.contains((Point2D)null);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
+
+    public void testContainsRect() {
+        // Regression test HARMONY-1404
+        try {
+            Area a = new Area();
+            a.contains((Rectangle2D)null);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void testIntersectsRect() {
+        // Regression test HARMONY-1404
+        try {
+            Area a = new Area();
+            a.intersects((Rectangle2D)null);
+            fail("Expected NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+    
+    public void testGetPathIterator() {
+        // Regression test HARMONY-1860
+        Area a = new Area();
+        PathIterator path = a.getPathIterator(null);
+        checkPathRule(path, PathIterator.WIND_NON_ZERO);
+        checkPathDone(path, true);
+    }
+    
+    public void testCreateTransformedArea() {
+        // Regression test HARMONY-1880
+        AffineTransform t = AffineTransform.getScaleInstance(2, 3);
+        Area a1 = new Area();        
+        Area a2 = a1.createTransformedArea(t);
+        PathIterator path = a2.getPathIterator(null);
+        checkPathRule(path, PathIterator.WIND_NON_ZERO);
+        checkPathDone(path, true);
+    }
+
 }
