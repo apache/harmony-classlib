@@ -1003,6 +1003,307 @@ public class MathTest extends junit.framework.TestCase {
 		// Test for method int java.lang.Math.round(float)
 		assertEquals("Incorrect rounding of a float", -91, Math.round(-90.89f));
 	}
+	
+	/**
+     * @tests {@link java.lang.Math#scalb(double, int)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_scalb_DI() {
+        // result is normal
+        assertEquals(4.1422946304E7, Math.scalb(1.2345, 25));
+        assertEquals(3.679096698760986E-8, Math.scalb(1.2345, -25));
+        assertEquals(1.2345, Math.scalb(1.2345, 0));
+        assertEquals(7868514.304, Math.scalb(0.2345, 25));
+
+        double normal = Math.scalb(0.2345, -25);
+        assertEquals(6.98864459991455E-9, normal);
+        // precision kept
+        assertEquals(0.2345, Math.scalb(normal, 25));
+
+        assertEquals(0.2345, Math.scalb(0.2345, 0));
+        assertEquals(-4.1422946304E7, Math.scalb(-1.2345, 25));
+        assertEquals(-6.98864459991455E-9, Math.scalb(-0.2345, -25));
+        assertEquals(2.0, Math.scalb(Double.MIN_NORMAL / 2, 1024));
+        assertEquals(64.0, Math.scalb(Double.MIN_VALUE, 1080));
+        assertEquals(234, Math.getExponent(Math.scalb(1.0, 234)));
+        assertEquals(3.9999999999999996, Math.scalb(Double.MAX_VALUE,
+                Double.MIN_EXPONENT));
+
+        // result is near infinity
+        double halfMax = Math.scalb(1.0, Double.MAX_EXPONENT);
+        assertEquals(8.98846567431158E307, halfMax);
+        assertEquals(Double.MAX_VALUE, halfMax - Math.ulp(halfMax) + halfMax);
+        assertEquals(Double.POSITIVE_INFINITY, halfMax + halfMax);
+        assertEquals(1.7976931348623155E308, Math.scalb(1.0 - Math.ulp(1.0),
+                Double.MAX_EXPONENT + 1));
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(1.0 - Math.ulp(1.0),
+                Double.MAX_EXPONENT + 2));
+
+        halfMax = Math.scalb(-1.0, Double.MAX_EXPONENT);
+        assertEquals(-8.98846567431158E307, halfMax);
+        assertEquals(-Double.MAX_VALUE, halfMax + Math.ulp(halfMax) + halfMax);
+        assertEquals(Double.NEGATIVE_INFINITY, halfMax + halfMax);
+
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(0.345, 1234));
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(44.345E102, 934));
+        assertEquals(Double.NEGATIVE_INFINITY, Math.scalb(-44.345E102, 934));
+
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(
+                Double.MIN_NORMAL / 2, 4000));
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(Double.MIN_VALUE,
+                8000));
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(Double.MAX_VALUE, 1));
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(
+                Double.POSITIVE_INFINITY, 0));
+        assertEquals(Double.POSITIVE_INFINITY, Math.scalb(
+                Double.POSITIVE_INFINITY, -1));
+        assertEquals(Double.NEGATIVE_INFINITY, Math.scalb(
+                Double.NEGATIVE_INFINITY, -1));
+        assertEquals(Double.NEGATIVE_INFINITY, Math.scalb(
+                Double.NEGATIVE_INFINITY, Double.MIN_EXPONENT));
+
+        // result is subnormal/zero
+        long posZeroBits = Double.doubleToLongBits(+0.0);
+        long negZeroBits = Double.doubleToLongBits(-0.0);
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(+0.0,
+                Integer.MAX_VALUE)));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math
+                .scalb(+0.0, -123)));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(+0.0, 0)));
+        assertEquals(negZeroBits, Double
+                .doubleToLongBits(Math.scalb(-0.0, 123)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(-0.0,
+                Integer.MIN_VALUE)));
+
+        assertEquals(Double.MIN_VALUE, Math.scalb(1.0, -1074));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math
+                .scalb(1.0, -1075)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(-1.0,
+                -1075)));
+
+        // precision lost
+        assertEquals(Math.scalb(21.405, -1078), Math.scalb(21.405, -1079));
+        assertEquals(Double.MIN_VALUE, Math.scalb(21.405, -1079));
+        assertEquals(-Double.MIN_VALUE, Math.scalb(-21.405, -1079));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(21.405,
+                -1080)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(-21.405,
+                -1080)));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(
+                Double.MIN_VALUE, -1)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(
+                -Double.MIN_VALUE, -1)));
+        assertEquals(Double.MIN_VALUE, Math.scalb(Double.MIN_NORMAL, -52));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(
+                Double.MIN_NORMAL, -53)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(
+                -Double.MIN_NORMAL, -53)));
+        assertEquals(Double.MIN_VALUE, Math.scalb(Double.MAX_VALUE, -2098));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(
+                Double.MAX_VALUE, -2099)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(
+                -Double.MAX_VALUE, -2099)));
+        assertEquals(Double.MIN_VALUE, Math.scalb(Double.MIN_NORMAL / 3, -51));
+        assertEquals(posZeroBits, Double.doubleToLongBits(Math.scalb(
+                Double.MIN_NORMAL / 3, -52)));
+        assertEquals(negZeroBits, Double.doubleToLongBits(Math.scalb(
+                -Double.MIN_NORMAL / 3, -52)));
+        double subnormal = Math.scalb(Double.MIN_NORMAL / 3, -25);
+        assertEquals(2.2104123E-316, subnormal);
+        // precision lost
+        assertFalse(Double.MIN_NORMAL / 3 == Math.scalb(subnormal, 25));
+
+        // NaN
+        assertTrue(Double.isNaN(Math.scalb(Double.NaN, 1)));
+        assertTrue(Double.isNaN(Math.scalb(Double.NaN, 0)));
+        assertTrue(Double.isNaN(Math.scalb(Double.NaN, -120)));
+
+        assertEquals(1283457024, Double.doubleToLongBits(Math.scalb(
+                Double.MIN_VALUE * 153, 23)));
+        assertEquals(-9223372035571318784L, Double.doubleToLongBits(Math.scalb(
+                -Double.MIN_VALUE * 153, 23)));
+        assertEquals(36908406321184768L, Double.doubleToLongBits(Math.scalb(
+                Double.MIN_VALUE * 153, 52)));
+        assertEquals(-9186463630533591040L, Double.doubleToLongBits(Math.scalb(
+                -Double.MIN_VALUE * 153, 52)));
+
+        // test for exception
+        try {
+            Math.scalb((Double) null, (Integer) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.scalb(1.0, (Integer) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.scalb((Double) null, 1);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        
+        long b1em1022 = 0x0010000000000000L; // bit representation of
+                                                // Double.MIN_NORMAL
+        long b1em1023 = 0x0008000000000000L; // bit representation of half of
+                                                // Double.MIN_NORMAL
+        // assert exact identity
+        assertEquals(b1em1023, Double.doubleToLongBits(Math.scalb(Double
+                .longBitsToDouble(b1em1022), -1)));
+    }
+
+    /**
+     * @tests {@link java.lang.Math#scalb(float, int)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_scalb_FI() {
+        // result is normal
+        assertEquals(4.1422946304E7f, Math.scalb(1.2345f, 25));
+        assertEquals(3.679096698760986E-8f, Math.scalb(1.2345f, -25));
+        assertEquals(1.2345f, Math.scalb(1.2345f, 0));
+        assertEquals(7868514.304f, Math.scalb(0.2345f, 25));
+
+        float normal = Math.scalb(0.2345f, -25);
+        assertEquals(6.98864459991455E-9f, normal);
+        // precision kept
+        assertEquals(0.2345f, Math.scalb(normal, 25));
+
+        assertEquals(0.2345f, Math.scalb(0.2345f, 0));
+        assertEquals(-4.1422946304E7f, Math.scalb(-1.2345f, 25));
+        assertEquals(-6.98864459991455E-9f, Math.scalb(-0.2345f, -25));
+        assertEquals(2.0f, Math.scalb(Float.MIN_NORMAL / 2, 128));
+        assertEquals(64.0f, Math.scalb(Float.MIN_VALUE, 155));
+        assertEquals(34, Math.getExponent(Math.scalb(1.0f, 34)));
+        assertEquals(3.9999998f, Math
+                .scalb(Float.MAX_VALUE, Float.MIN_EXPONENT));
+
+        // result is near infinity
+        float halfMax = Math.scalb(1.0f, Float.MAX_EXPONENT);
+        assertEquals(1.7014118E38f, halfMax);
+        assertEquals(Float.MAX_VALUE, halfMax - Math.ulp(halfMax) + halfMax);
+        assertEquals(Float.POSITIVE_INFINITY, halfMax + halfMax);
+        assertEquals(3.4028233E38f, Math.scalb(1.0f - Math.ulp(1.0f),
+                Float.MAX_EXPONENT + 1));
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(1.0f - Math.ulp(1.0f),
+                Float.MAX_EXPONENT + 2));
+
+        halfMax = Math.scalb(-1.0f, Float.MAX_EXPONENT);
+        assertEquals(-1.7014118E38f, halfMax);
+        assertEquals(-Float.MAX_VALUE, halfMax + Math.ulp(halfMax) + halfMax);
+        assertEquals(Float.NEGATIVE_INFINITY, halfMax + halfMax);
+
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(0.345f, 1234));
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(44.345E10f, 934));
+        assertEquals(Float.NEGATIVE_INFINITY, Math.scalb(-44.345E10f, 934));
+
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(Float.MIN_NORMAL / 2,
+                400));
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(Float.MIN_VALUE, 800));
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(Float.MAX_VALUE, 1));
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(
+                Float.POSITIVE_INFINITY, 0));
+        assertEquals(Float.POSITIVE_INFINITY, Math.scalb(
+                Float.POSITIVE_INFINITY, -1));
+        assertEquals(Float.NEGATIVE_INFINITY, Math.scalb(
+                Float.NEGATIVE_INFINITY, -1));
+        assertEquals(Float.NEGATIVE_INFINITY, Math.scalb(
+                Float.NEGATIVE_INFINITY, Float.MIN_EXPONENT));
+
+        // result is subnormal/zero
+        int posZeroBits = Float.floatToIntBits(+0.0f);
+        int negZeroBits = Float.floatToIntBits(-0.0f);
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(+0.0f,
+                Integer.MAX_VALUE)));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(+0.0f, -123)));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(+0.0f, 0)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(-0.0f, 123)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(-0.0f,
+                Integer.MIN_VALUE)));
+
+        assertEquals(Float.MIN_VALUE, Math.scalb(1.0f, -149));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(1.0f, -150)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(-1.0f, -150)));
+
+        // precision lost
+        assertEquals(Math.scalb(21.405f, -154), Math.scalb(21.405f, -153));
+        assertEquals(Float.MIN_VALUE, Math.scalb(21.405f, -154));
+        assertEquals(-Float.MIN_VALUE, Math.scalb(-21.405f, -154));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math
+                .scalb(21.405f, -155)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(-21.405f,
+                -155)));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(
+                Float.MIN_VALUE, -1)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(
+                -Float.MIN_VALUE, -1)));
+        assertEquals(Float.MIN_VALUE, Math.scalb(Float.MIN_NORMAL, -23));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(
+                Float.MIN_NORMAL, -24)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(
+                -Float.MIN_NORMAL, -24)));
+        assertEquals(Float.MIN_VALUE, Math.scalb(Float.MAX_VALUE, -277));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(
+                Float.MAX_VALUE, -278)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(
+                -Float.MAX_VALUE, -278)));
+        assertEquals(Float.MIN_VALUE, Math.scalb(Float.MIN_NORMAL / 3, -22));
+        assertEquals(posZeroBits, Float.floatToIntBits(Math.scalb(
+                Float.MIN_NORMAL / 3, -23)));
+        assertEquals(negZeroBits, Float.floatToIntBits(Math.scalb(
+                -Float.MIN_NORMAL / 3, -23)));
+        float subnormal = Math.scalb(Float.MIN_NORMAL / 3, -11);
+        assertEquals(1.913E-42f, subnormal);
+        // precision lost
+        assertFalse(Float.MIN_NORMAL / 3 == Math.scalb(subnormal, 11));
+
+        assertEquals(68747264, Float.floatToIntBits(Math.scalb(
+                Float.MIN_VALUE * 153, 23)));
+        assertEquals(-2078736384, Float.floatToIntBits(Math.scalb(
+                -Float.MIN_VALUE * 153, 23)));
+
+        assertEquals(4896, Float.floatToIntBits(Math.scalb(
+                Float.MIN_VALUE * 153, 5)));
+        assertEquals(-2147478752, Float.floatToIntBits(Math.scalb(
+                -Float.MIN_VALUE * 153, 5)));
+
+        // NaN
+        assertTrue(Float.isNaN(Math.scalb(Float.NaN, 1)));
+        assertTrue(Float.isNaN(Math.scalb(Float.NaN, 0)));
+        assertTrue(Float.isNaN(Math.scalb(Float.NaN, -120)));
+
+        // test for exception
+        try {
+            Math.scalb((Float) null, (Integer) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.scalb(1.0f, (Integer) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            Math.scalb((Float) null, 1);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        
+        int b1em126 = 0x00800000; // bit representation of Float.MIN_NORMAL
+        int b1em127 = 0x00400000; // bit representation of half
+                                    // Float.MIN_NORMAL
+        // assert exact identity
+        assertEquals(b1em127, Float.floatToIntBits(Math.scalb(Float
+                .intBitsToFloat(b1em126), -1)));
+    }
     
     /**
      * @tests java.lang.Math#signum(double)
@@ -1252,5 +1553,101 @@ public class MathTest extends junit.framework.TestCase {
 				.ulp(1153.0f), 0f);
 		assertEquals("Returned incorrect value", 5.6E-45f, Math
 				.ulp(9.403954E-38f), 0f);
+    }
+	
+	/**
+     * @tests {@link java.lang.Math#shiftIntBits(int, int)}
+     * 
+     * @since 1.6 
+     */
+    public void test_shiftIntBits_II() {
+        class Tuple {
+            public int result;
+
+            public int value;
+
+            public int factor;
+
+            public Tuple(int result, int value, int factor) {
+                this.result = result;
+                this.value = value;
+                this.factor = factor;
+            }
+        }
+        final Tuple[] TUPLES = new Tuple[] {
+        // sub-normal to sub-normal
+                new Tuple(0x00000000, 0x00000001, -1),
+                // round to even
+                new Tuple(0x00000002, 0x00000003, -1),
+                // round to even
+                new Tuple(0x00000001, 0x00000005, -3),
+                // round to infinity
+                new Tuple(0x00000002, 0x0000000d, -3),
+                // round to infinity
+
+                // normal to sub-normal
+                new Tuple(0x00000002, 0x01a00000, -24),
+                // round to even 
+                new Tuple(0x00000004, 0x01e00000, -24),
+                // round to even
+                new Tuple(0x00000003, 0x01c80000, -24),
+                // round to infinity
+                new Tuple(0x00000004, 0x01e80000, -24),
+        // round to infinity
+        };
+        for (int i = 0; i < TUPLES.length; ++i) {
+            Tuple tuple = TUPLES[i];
+            assertEquals(tuple.result, Float.floatToIntBits(Math.scalb(Float
+                    .intBitsToFloat(tuple.value), tuple.factor)));
+            assertEquals(tuple.result, Float.floatToIntBits(-Math.scalb(-Float
+                    .intBitsToFloat(tuple.value), tuple.factor)));
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.Math#shiftLongBits(long, long)}
+     * 
+     * Round result to nearest value on precision lost.
+     * 
+     * @since 1.6 
+     */
+    public void test_shiftLongBits_LL() {
+        class Tuple {
+            public long result;
+
+            public long value;
+
+            public int factor;
+
+            public Tuple(long result, long value, int factor) {
+                this.result = result;
+                this.value = value;
+                this.factor = factor;
+            }
+        }
+        final Tuple[] TUPLES = new Tuple[] {
+        // sub-normal to sub-normal
+                new Tuple(0x00000000L, 0x00000001L, -1),
+                //round to even
+                new Tuple(0x00000002L, 0x00000003L, -1),
+                //round to even
+                new Tuple(0x00000001L, 0x00000005L, -3),
+                //round to infinity
+                new Tuple(0x00000002L, 0x0000000dL, -3),
+                //round to infinity
+
+                // normal to sub-normal
+                new Tuple(0x0000000000000002L, 0x0034000000000000L, -53), // round to even
+                new Tuple(0x0000000000000004L, 0x003c000000000000L, -53), // round to even
+                new Tuple(0x0000000000000003L, 0x0035000000000000L, -53), // round to infinity
+                new Tuple(0x0000000000000004L, 0x003d000000000000L, -53), // round to infinity
+        };
+        for (int i = 0; i < TUPLES.length; ++i) {
+            Tuple tuple = TUPLES[i];
+            assertEquals(tuple.result, Double.doubleToLongBits(Math.scalb(
+                    Double.longBitsToDouble(tuple.value), tuple.factor)));
+            assertEquals(tuple.result, Double.doubleToLongBits(-Math.scalb(
+                    -Double.longBitsToDouble(tuple.value), tuple.factor)));
+        }
     }
 }
