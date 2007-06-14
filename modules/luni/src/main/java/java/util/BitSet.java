@@ -100,7 +100,7 @@ public class BitSet implements Serializable, Cloneable {
         if (nbits < 0) {
             throw new NegativeArraySizeException();
         }
-        bits = new long[(nbits + ELM_SIZE - 1) >> OFFSET];
+        bits = new long[(nbits >> OFFSET) + ((nbits & RIGHT_BITS) > 0 ? 1 : 0)];
         actualArrayLength = 0;
         isLengthActual = true;
     }

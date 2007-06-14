@@ -62,6 +62,9 @@ public class BitSetTest extends junit.framework.TestCase {
 		} catch (NegativeArraySizeException e) {
 			// Correct behaviour
 		}
+
+        // Regression test for HARMONY-4147
+        new BitSet(Integer.MAX_VALUE);
 	}
 
 	/**
