@@ -141,7 +141,7 @@ public class UTF_8 extends Charset {
                         	in.position(x); out.position(outPos);
                             return CoderResult.unmappableForLength(1);
                         }
-                        if (limit - pos < 1 + tail) {
+                        if (limit - x < 1 + tail) {
                         	in.position(x); out.position(outPos);
                             return CoderResult.UNDERFLOW;
                         }
