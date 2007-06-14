@@ -17,21 +17,37 @@
 
 package tests.api.java.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 import tests.support.Support_ListTest;
 
 public class LinkedListTest extends junit.framework.TestCase {
 
 	LinkedList ll;
+    
+    LinkedList<Object> testList;
+    
+    private Object testObjOne;
+
+    private Object testObjTwo;
+
+    private Object testObjThree;
+
+    private Object testObjFour;
+
+    private Object testObjLast;
 
 	static Object[] objArray;
 	{
@@ -472,18 +488,27 @@ public class LinkedListTest extends junit.framework.TestCase {
 			assertTrue("Lists are not equal", li.next() == ri.next());
 	}
 
+    /**
+     * @tests {@link java.util.LinkedList#offer(Object)}
+     */
     public void test_offer() {
         int origSize = ll.size();
         assertTrue("offer() should return true'", ll.offer(objArray[0]));
         assertEquals("offer() should add an element as the last one", origSize, ll.lastIndexOf(objArray[0]));
     }
 
+    /**
+     * @tests {@link java.util.LinkedList#poll()}
+     */
     public void test_poll() {
         assertEquals("should return the head", objArray[0], ll.poll());
         LinkedList list = new LinkedList();
         assertNull("should return 'null' if list is empty", list.poll());
     }
 
+    /**
+     * @tests {@link java.util.LinkedList#remove()}
+     */
     public void test_remove() {
         for (int i = 0; i < objArray.length; i++) {
             assertEquals("should remove the head", objArray[i], ll.remove());
@@ -497,6 +522,9 @@ public class LinkedListTest extends junit.framework.TestCase {
         }
     }
 
+    /**
+     * @tests {@link java.util.LinkedList#element()}
+     */
     public void test_element() {
         assertEquals("should return the head", objArray[0], ll.element());
         assertEquals("element() should remove nothing", objArray.length, ll.size());
@@ -507,7 +535,285 @@ public class LinkedListTest extends junit.framework.TestCase {
             //-- expected
         }
     }
+    
+    /**
+     * @tests {@link java.util.LinkedList#removeFirstOccurrence(Object)}
+     */
+    public void test_removeFirstOccurrence() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjThree));
+        assertTrue(testList.offerLast(testObjOne));
+        assertEquals(5, testList.size());
+        assertTrue(testList.removeFirstOccurrence(testObjOne));
+        assertFalse(testList.removeFirstOccurrence(testObjFour));
+        assertEquals(testObjTwo, testList.peekFirst());
+        assertEquals(testObjOne, testList.peekLast());
+        assertEquals(4, testList.size());
+        assertTrue(testList.removeFirstOccurrence(testObjOne));
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.peekLast());
+        assertTrue(testList.removeFirstOccurrence(testObjOne));
+        assertEquals(2, testList.size());
+        assertEquals(testObjThree, testList.peekLast());
+        assertFalse(testList.removeFirstOccurrence(testObjOne));
+    }
 
+    /**
+     * @tests {@link java.util.LinkedList#removeLastOccurrence(Object)}
+     */    
+    public void test_removeLastOccurrence() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjThree));
+        assertTrue(testList.offerLast(testObjOne));
+        assertEquals(5, testList.size());
+        assertTrue(testList.removeLastOccurrence(testObjOne));
+        assertFalse(testList.removeLastOccurrence(testObjFour));
+        assertEquals(testObjOne, testList.peekFirst());
+        assertEquals(testObjThree, testList.peekLast());
+        assertEquals(4, testList.size());
+        assertTrue(testList.removeLastOccurrence(testObjOne));
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.peekFirst());
+        assertEquals(testObjThree, testList.peekLast());
+        assertTrue(testList.removeLastOccurrence(testObjOne));
+        assertEquals(2, testList.size());
+        assertEquals(testObjThree, testList.peekLast());
+        assertFalse(testList.removeLastOccurrence(testObjOne));
+    }
+    
+    /**
+     * @tests {@link java.util.LinkedList#offerFirst(Object)}
+     */
+    public void test_offerFirst() throws Exception {
+        assertTrue(testList.offerFirst(testObjOne));
+        assertEquals(1, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        assertTrue(testList.offerFirst(testObjOne));
+        assertEquals(2, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        assertTrue(testList.offerFirst(testObjTwo));
+        assertEquals(3, testList.size());
+        assertEquals(testObjTwo, testList.peek());
+        assertEquals(testObjOne, testList.getLast());
+        assertTrue(testList.offerFirst(null));
+        assertEquals(4, testList.size());
+    }
+
+    /**
+     * @tests {@link java.util.LinkedList#offerLast(Object)}
+     */
+    public void test_offerLast() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertEquals(1, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        assertTrue(testList.offerLast(testObjOne));
+        assertEquals(2, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        assertTrue(testList.offerLast(testObjTwo));
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        assertEquals(testObjTwo, testList.getLast());
+        assertTrue(testList.offerLast(null));
+        assertEquals(4, testList.size());
+    }
+    
+    /**
+     * @tests {@link java.util.LinkedList#push(Object)}
+     */
+    public void test_push() throws Exception {
+        testList.push(testObjOne);
+        assertEquals(1, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        testList.push(testObjOne);
+        assertEquals(2, testList.size());
+        assertEquals(testObjOne, testList.peek());
+        testList.push(testObjTwo);
+        assertEquals(3, testList.size());
+        assertEquals(testObjTwo, testList.peek());
+        assertEquals(testObjOne, testList.getLast());
+        testList.push(null);
+        assertEquals(4, testList.size());
+    }
+
+    /**
+     * @tests {@link java.util.LinkedList#pop()}
+     */
+    public void test_pop() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjThree));
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.pop());
+        assertEquals(2, testList.size());
+        assertEquals(testObjTwo, testList.pop());
+        assertEquals(testObjThree, testList.pop());
+        assertEquals(0, testList.size());
+        testList.push(null);
+        assertEquals(1, testList.size());
+        assertNull(testList.pop());
+        try {
+            testList.pop();
+            fail("should throw NoSuchElementException ");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+    }    
+
+    /**
+     * @tests {@link java.util.LinkedList#descendingIterator()}
+     */
+    public void test_descendingIterator() throws Exception {
+        assertFalse(testList.descendingIterator().hasNext());
+        assertTrue(testList.add(testObjOne));
+        assertTrue(testList.add(testObjTwo));
+        assertTrue(testList.add(testObjOne));
+        assertTrue(testList.add(testObjThree));
+        assertTrue(testList.add(testObjLast));
+        Iterator result = testList.descendingIterator();
+        assertEquals(5, testList.size());
+        try {
+            result.remove();
+            fail("should throw IllegalStateException");
+        } catch (IllegalStateException e) {
+            // expected
+        }
+        assertTrue(testList.add(testObjFour));
+        
+        try {
+            assertEquals(testObjLast,result.next());
+            fail("should throw ConcurrentModificationException");
+        } catch (ConcurrentModificationException e) {
+            // expected
+        }
+   
+        result = testList.descendingIterator();
+        assertEquals(testObjFour, result.next());
+        assertEquals(testObjLast, result.next());
+        assertEquals(testObjThree, result.next());
+        assertEquals(testObjOne, result.next());
+        assertEquals(testObjTwo, result.next());
+        assertTrue(result.hasNext());
+        result.remove();
+        assertEquals(testObjOne, result.next());
+        assertFalse(result.hasNext());
+        try {
+            result.next();
+            fail("should throw NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+    }
+    /**
+     * @tests {@link java.util.LinkedList#pollFirst()}
+     */
+    public void test_pollFirst() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjThree));
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.pollFirst());
+        assertEquals(2, testList.size());
+        assertEquals(testObjTwo, testList.pollFirst());
+        assertEquals(testObjThree, testList.pollFirst());
+        assertEquals(0, testList.size());
+        assertNull(testList.pollFirst());
+    }
+
+    /**
+     * @tests {@link java.util.LinkedList#pollLast()}
+     */
+    public void test_pollLast() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjThree));
+        assertEquals(3, testList.size());
+        assertEquals(testObjThree, testList.pollLast());
+        assertEquals(2, testList.size());
+        assertEquals(testObjTwo, testList.pollLast());
+        assertEquals(testObjOne, testList.pollLast());
+        assertEquals(0, testList.size());
+        assertNull(testList.pollFirst());
+    }
+    
+    /**
+     * @tests {@link java.util.LinkedList#peekFirst()}
+     */
+    public void test_peekFirst() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjThree));
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.peekFirst());
+        assertEquals(3, testList.size());
+        assertEquals(testObjOne, testList.pollFirst());
+        assertEquals(testObjTwo, testList.peekFirst());
+        assertEquals(testObjTwo, testList.pollFirst());
+        assertEquals(testObjThree, testList.pollFirst());
+        assertEquals(0, testList.size());
+        assertEquals(null, testList.peekFirst());
+    }
+
+    /**
+     * @tests {@link java.util.LinkedList#peek()}
+     */
+    public void test_peekLast() throws Exception {
+        assertTrue(testList.offerLast(testObjOne));
+        assertTrue(testList.offerLast(testObjTwo));
+        assertTrue(testList.offerLast(testObjThree));
+        assertEquals(3, testList.size());
+        assertEquals(testObjThree, testList.peekLast());
+        assertEquals(3, testList.size());
+        assertEquals(testObjThree, testList.pollLast());
+        assertEquals(testObjTwo, testList.peekLast());
+        assertEquals(testObjTwo, testList.pollLast());
+        assertEquals(testObjOne, testList.pollLast());
+        assertEquals(0, testList.size());
+        assertNull(testList.peekLast());
+    }
+
+    /**
+     * @tests java.util.LinkedList#Serialization()
+     */
+    public void test_serialization() throws Exception {
+        assertTrue(ll.add(new Integer(1)));
+        assertTrue(ll.add(new Integer(2)));
+        assertTrue(ll.add(new Integer(3)));
+        assertTrue(ll.add(new Integer(4)));
+        assertTrue(ll.add(new Integer(5)));
+        SerializationTest.verifySelf(ll, new SerializableAssert() {
+            public void assertDeserialized(Serializable initial,
+                    Serializable deserialized) {
+                LinkedList<Object> formerQue = (LinkedList)initial;
+                LinkedList<Object> deserializedQue = (LinkedList)deserialized;
+                assertEquals(formerQue.remove(),deserializedQue.remove());
+            }
+        });
+    }
+    
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    @SuppressWarnings( { "unchecked", "boxing" })
+    public void testSerializationCompatibility() throws Exception {
+        assertTrue(ll.add(new Integer(1)));
+        assertTrue(ll.add(new Integer(2)));
+        assertTrue(ll.add(new Integer(3)));
+        assertTrue(ll.add(new Integer(4)));
+        assertTrue(ll.add(new Integer(5)));
+        SerializationTest.verifyGolden(this,ll, new SerializableAssert() {
+            public void assertDeserialized(Serializable initial,
+                    Serializable deserialized) {
+                LinkedList<Object> formerQue = (LinkedList)initial;
+                LinkedList<Object> deserializedQue = (LinkedList)deserialized;
+                assertEquals(formerQue.remove(),deserializedQue.remove());
+            }
+        });
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
@@ -518,5 +824,11 @@ public class LinkedListTest extends junit.framework.TestCase {
 		for (int i = 0; i < objArray.length; i++) {
 			ll.add(objArray[i]);
         }
+        testList = new LinkedList<Object>();
+        testObjOne = new Object();
+        testObjTwo = new Object();
+        testObjThree = new Object();
+        testObjFour = new Object();
+        testObjLast = new Object();
 	}
 }
