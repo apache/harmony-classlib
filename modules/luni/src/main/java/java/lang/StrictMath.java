@@ -723,4 +723,128 @@ public final class StrictMath {
         bits = (bits & DOUBLE_EXPONENT_MASK) >> DOUBLE_MANTISSA_BITS;
         return (int) bits - DOUBLE_EXPONENT_BIAS;
     }
+    
+    /**
+     * Answers a double next to the first given double value in the direction of
+     * the second given double.
+     * 
+     * @param start
+     *            the double value to start
+     * @param direction
+     *            the double indicating the direction
+     * @return a double next to the first given double value in the direction of
+     *         the second given double.
+     *         
+     * @since 1.6
+     */
+    public static double nextAfter(double start, double direction) {
+        if (0 == start && 0 == direction) {
+            return direction;
+        }
+        return nextafter(start, direction);
+    }
+
+    /**
+     * Answers a float next to the first given float value in the direction of
+     * the second given double value.
+     * 
+     * @param start
+     *            the float value to start
+     * @param direction
+     *            the double indicating the direction
+     * @return a float next to the first given float value in the direction of
+     *         the second given double.
+     *         
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public static float nextAfter(float start, double direction) {
+        if (Float.isNaN(start) || Double.isNaN(direction)) {
+            return Float.NaN;
+        }
+        if (0 == start && 0 == direction) {
+            return new Float(direction);
+        }
+        if ((start == Float.MIN_VALUE && direction < start)
+                || (start == -Float.MIN_VALUE && direction > start)) {
+            return (start > 0 ? 0f : -0f);
+        }
+        if (Float.isInfinite(start) && (direction != start)) {
+            return (start > 0 ? Float.MAX_VALUE : -Float.MAX_VALUE);
+        }
+        if ((start == Float.MAX_VALUE && direction > start)
+                || (start == -Float.MAX_VALUE && direction < start)) {
+            return (start > 0 ? Float.POSITIVE_INFINITY
+                    : Float.NEGATIVE_INFINITY);
+        }
+        if (direction > start) {
+            if (start > 0) {
+                return Float.intBitsToFloat(Float.floatToIntBits(start) + 1);
+            }
+            if (start < 0) {
+                return Float.intBitsToFloat(Float.floatToIntBits(start) - 1);
+            }
+            return +Float.MIN_VALUE;
+        }
+        if (direction < start) {
+            if (start > 0) {
+                return Float.intBitsToFloat(Float.floatToIntBits(start) - 1);
+            }
+            if (start < 0) {
+                return Float.intBitsToFloat(Float.floatToIntBits(start) + 1);
+            }
+            return -Float.MIN_VALUE;
+        }
+        return Double.valueOf(direction).floatValue();
+    }
+
+    /**
+     * Answers the next larger double value to d.
+     * 
+     * @param d
+     *            the double value to start
+     * @return the next larger double value of d.
+     * 
+     * @since 1.6
+     */
+    public static double nextUp(double d) {
+        if (Double.isNaN(d)) {
+            return Double.NaN;
+        }
+        if ((d == Double.POSITIVE_INFINITY)) {
+            return Double.POSITIVE_INFINITY;
+        }
+        if (0 == d) {
+            return Double.MIN_VALUE;
+        } else if (0 < d) {
+            return Double.longBitsToDouble(Double.doubleToLongBits(d) + 1);
+        } else {
+            return Double.longBitsToDouble(Double.doubleToLongBits(d) - 1);
+        }
+    }
+    
+    /**
+     * Answers the next larger float value to d.
+     * 
+     * @param f
+     *            the float value to start
+     * @return the next larger float value of d.
+     * 
+     * @since 1.6
+     */
+    public static float nextUp(float f) {
+        if (Float.isNaN(f)) {
+            return Float.NaN;
+        }
+        if ((f == Float.POSITIVE_INFINITY)) {
+            return Float.POSITIVE_INFINITY;
+        }
+        if (0 == f) {
+            return Float.MIN_VALUE;
+        } else if (0 < f) {
+            return Float.intBitsToFloat(Float.floatToIntBits(f) + 1);
+        } else {
+            return Float.intBitsToFloat(Float.floatToIntBits(f) - 1);
+        }
+    }
 }

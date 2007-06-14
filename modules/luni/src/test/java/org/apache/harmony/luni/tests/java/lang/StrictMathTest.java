@@ -23,6 +23,9 @@ import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_D_CAS
 import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_D_RESULTS;
 import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_F_CASES;
 import static org.apache.harmony.luni.tests.java.lang.MathTest.GETEXPONENT_F_RESULTS;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.NEXTAFTER_DD_START_CASES;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.NEXTAFTER_DD_FD_DIRECTION_CASES;
+import static org.apache.harmony.luni.tests.java.lang.MathTest.NEXTAFTER_FD_START_CASES;
 
 public class StrictMathTest extends junit.framework.TestCase {
 
@@ -680,6 +683,202 @@ public class StrictMathTest extends junit.framework.TestCase {
 		assertEquals("Incorrect long min value", -19088976000089L, StrictMath.min(-20,
 				-19088976000089L));
 	}
+	
+	 /**
+     * @tests {@link java.lang.StrictMath#nextAfter(double, double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextAfter_DD() {
+        // test for most cases without exception
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            final double start = NEXTAFTER_DD_START_CASES[i][0];
+            final long nextUpBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][1]);
+            final long nextDownBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][2]);
+
+            for (int j = 0; j < NEXTAFTER_DD_FD_DIRECTION_CASES.length; j++) {
+                final double direction = NEXTAFTER_DD_FD_DIRECTION_CASES[j];
+                final long resultBits = Double.doubleToLongBits(StrictMath
+                        .nextAfter(start, direction));
+                final long directionBits = Double.doubleToLongBits(direction);
+                if (direction > start) {
+                    assertEquals("Result should be next up-number.",
+                            nextUpBits, resultBits);
+                } else if (direction < start) {
+                    assertEquals("Result should be next down-number.",
+                            nextDownBits, resultBits);
+                } else {
+                    assertEquals("Result should be direction.", directionBits,
+                            resultBits);
+                }
+            }
+        }
+
+        // test for cases with NaN
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Double.isNaN(StrictMath
+                    .nextAfter(NEXTAFTER_DD_START_CASES[i][0], Double.NaN)));
+        }
+        for (int i = 0; i < NEXTAFTER_DD_FD_DIRECTION_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Double.isNaN(StrictMath
+                    .nextAfter(Double.NaN, NEXTAFTER_DD_FD_DIRECTION_CASES[i])));
+        }
+        assertTrue("The result should be NaN.", Double.isNaN(StrictMath
+                .nextAfter(Double.NaN, Double.NaN)));
+
+        // test for exception
+        try {
+            StrictMath.nextAfter((Double) null, 2.3);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.nextAfter(2.3, (Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.nextAfter((Double) null, (Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.StrictMath#nextAfter(float, double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextAfter_FD() {
+        // test for most cases without exception
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            final float start = NEXTAFTER_FD_START_CASES[i][0];
+            final int nextUpBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][1]);
+            final int nextDownBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][2]);
+
+            for (int j = 0; j < NEXTAFTER_DD_FD_DIRECTION_CASES.length; j++) {
+                final double direction = NEXTAFTER_DD_FD_DIRECTION_CASES[j];
+                final int resultBits = Float.floatToIntBits(StrictMath
+                        .nextAfter(start, direction));
+                if (direction > start) {
+                    assertEquals("Result should be next up-number.",
+                            nextUpBits, resultBits);
+                } else if (direction < start) {
+                    assertEquals("Result should be next down-number.",
+                            nextDownBits, resultBits);
+                } else {
+                    final int equivalentBits = Float.floatToIntBits(new Float(
+                            direction));
+                    assertEquals(
+                            "Result should be a number equivalent to direction.",
+                            equivalentBits, resultBits);
+                }
+            }
+        }
+
+        // test for cases with NaN
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Float.isNaN(StrictMath
+                    .nextAfter(NEXTAFTER_FD_START_CASES[i][0], Float.NaN)));
+        }
+        for (int i = 0; i < NEXTAFTER_DD_FD_DIRECTION_CASES.length; i++) {
+            assertTrue("The result should be NaN.", Float.isNaN(StrictMath
+                    .nextAfter(Float.NaN, NEXTAFTER_DD_FD_DIRECTION_CASES[i])));
+        }
+        assertTrue("The result should be NaN.", Float.isNaN(StrictMath
+                .nextAfter(Float.NaN, Float.NaN)));
+
+        // test for exception
+        try {
+            StrictMath.nextAfter((Float) null, 2.3);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.nextAfter(2.3, (Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+        try {
+            StrictMath.nextAfter((Float) null, (Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.StrictMath#nextUp(double)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextUp_D() {
+        // This method is semantically equivalent to nextAfter(d,
+        // Double.POSITIVE_INFINITY),
+        // so we use the data of test_nextAfter_DD
+        for (int i = 0; i < NEXTAFTER_DD_START_CASES.length; i++) {
+            final double start = NEXTAFTER_DD_START_CASES[i][0];
+            final long nextUpBits = Double
+                    .doubleToLongBits(NEXTAFTER_DD_START_CASES[i][1]);
+            final long resultBits = Double.doubleToLongBits(StrictMath
+                    .nextUp(start));
+            assertEquals("Result should be next up-number.", nextUpBits,
+                    resultBits);
+        }
+
+        // test for cases with NaN
+        assertTrue("The result should be NaN.", Double.isNaN(StrictMath
+                .nextUp(Double.NaN)));
+
+        // test for exception
+        try {
+            StrictMath.nextUp((Double) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * @tests {@link java.lang.StrictMath#nextUp(float)}
+     * @since 1.6
+     */
+    @SuppressWarnings("boxing")
+    public void test_nextUp_F() {
+        // This method is semantically equivalent to nextAfter(f,
+        // Float.POSITIVE_INFINITY),
+        // so we use the data of test_nextAfter_FD
+        for (int i = 0; i < NEXTAFTER_FD_START_CASES.length; i++) {
+            final float start = NEXTAFTER_FD_START_CASES[i][0];
+            final int nextUpBits = Float
+                    .floatToIntBits(NEXTAFTER_FD_START_CASES[i][1]);
+            final int resultBits = Float.floatToIntBits(StrictMath
+                    .nextUp(start));
+            assertEquals("Result should be next up-number.", nextUpBits,
+                    resultBits);
+        }
+
+        // test for cases with NaN
+        assertTrue("The result should be NaN.", Float.isNaN(StrictMath
+                .nextUp(Float.NaN)));
+
+        // test for exception
+        try {
+            StrictMath.nextUp((Float) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+    }
 
 	/**
 	 * @tests java.lang.StrictMath#pow(double, double)
