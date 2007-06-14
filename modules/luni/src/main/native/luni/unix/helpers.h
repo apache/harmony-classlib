@@ -18,6 +18,24 @@
 #if !defined(helpers_h)
 #define helpers_h
 #include "vmi.h"
+#include "hysock.h"
+
+/* structure for returning interface address information */
+typedef struct interfaceAddress_struct
+{
+  U_16 prefixLength;
+  struct hyipAddress_struct *address;
+  //struct hyipAddress_struct *mask;
+  //struct hyipAddress_struct *broadcast;
+} interfaceAddress_struct;
+
+/* array of interface address structures */
+typedef struct interfaceAddressArray_struct
+{
+  U_32 length;
+  struct interfaceAddress_struct *elements;
+} interfaceAddressArray_struct;
+
 int platformReadLink (char *link);
 jbyteArray getPlatformPath (JNIEnv * env, jbyteArray path);
 void setDefaultServerSocketOptions (JNIEnv * env, hysocket_t socketP);
@@ -35,4 +53,12 @@ void setPlatformBindOptions (JNIEnv * env, hysocket_t socketP);
 I_32 setPlatformLastModified (JNIEnv * env, char *path, I_64 time);
 I_32 setPlatformReadOnly (JNIEnv * env, char *path);
 int portCmp (const void **a, const void **b);
+char* convertInterfaceName(JNIEnv * env, jstring ifname);
+jboolean getPlatformNetworkInterfaceAttribute(JNIEnv * env, jstring ifname, u_long iiFlag);
+jboolean getPlatformIsUp(JNIEnv * env, jstring ifname, jint index);
+jboolean getPlatformIsLoopback(JNIEnv * env, jstring ifname, jint index);
+jboolean getPlatformIsPoint2Point(JNIEnv * env, jstring ifname, jint index);
+jboolean getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint index);
+jint getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index);
+I_32 getPlatformGetInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct* interfaceAddressArray);
 #endif /* helpers_h */

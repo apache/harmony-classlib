@@ -32,7 +32,9 @@
 #include "jclprots.h"
 #include "harmonyglob.h"
 
+#include "helpers.h"
 #include "hysock.h"
+#include <iphlpapi.h>
 
 int platformReadLink (char *link);
 jbyteArray getPlatformPath (JNIEnv * env, jbyteArray path);
@@ -56,6 +58,13 @@ UDATA platformFindfirst (char *path, char *resultbuf);
 int portCmp (const void **a, const void **b);
 static void unmangle (JNIEnv * env, LPWSTR data);
 I_32 getPlatformAttribute (JNIEnv * env, char *path, DWORD attribute);
+typedef enum {
+	OPERSTAT,
+	IFTYPE,
+	FLAGS,
+	MTU
+}FLAGTYPE;
+jboolean getPlatformNetworkInterfaceAttribute(JNIEnv * env, FLAGTYPE type , jint jindex, DWORD flag);
 static LPWSTR mangle (JNIEnv * env, char *path);
 
 /* This function converts a char array into a unicode wide string */
@@ -410,3 +419,387 @@ void
 setDefaultServerSocketOptions (JNIEnv * env, hysocket_t socketP)
 {
 }
+
+jboolean isIPv6Enabled (PIP_ADAPTER_ADDRESSES adapterAddrs)
+{
+	jboolean isIPv6 = JNI_FALSE;
+	PIP_ADAPTER_ADDRESSES adapterPtr = adapterAddrs;
+
+	while (adapterAddrs != NULL) {
+		if(adapterAddrs->Ipv6IfIndex != 0) {
+			isIPv6 = JNI_TRUE;
+			break;
+		}
+		adapterAddrs = adapterAddrs->Next;
+	}
+	adapterAddrs = adapterPtr; 
+	return isIPv6;
+}
+
+PIP_ADAPTER_ADDRESSES initAdapters(JNIEnv * env, ULONG RetVal)
+{
+	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
+	ULONG OutBufferLength = 0;
+	int i;
+
+    PORT_ACCESS_FROM_ENV (env);
+
+	// One call to get the size and one call to get the actual parameters.
+	for (i = 0; i < 2; i++) {
+		RetVal =  GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, AdapterAddresses, &OutBufferLength);
+
+		if (RetVal != ERROR_BUFFER_OVERFLOW) {
+			break;
+		}
+
+		if (AdapterAddresses != NULL) {
+			hymem_free_memory (AdapterAddresses);
+		}
+
+		AdapterAddresses = hymem_allocate_memory (OutBufferLength);
+		if (AdapterAddresses == NULL) {
+			RetVal = GetLastError();
+			break;
+		}
+	}
+	return AdapterAddresses;
+}
+
+jboolean
+getPlatformNetworkInterfaceAttribute(JNIEnv * env, FLAGTYPE type , jint jindex, DWORD flag)
+{
+	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
+	ULONG OutBufferLength = 0;
+	ULONG RetVal = 0;
+	jboolean isIPv6 = JNI_FALSE;
+	jboolean isSet = JNI_FALSE;
+
+	/* required call if we are going to call port library methods */
+	PORT_ACCESS_FROM_ENV (env);
+
+    AdapterAddresses = initAdapters(env, RetVal);
+	isIPv6 = isIPv6Enabled (AdapterAddresses);
+	if (RetVal == NO_ERROR) {		
+		while (AdapterAddresses != NULL) {
+			// when ipv4 in port library, the index is equal to IfIndex while ipv6 it is equal to Ipv6IfIndex.
+			U_32 interfaceIndex = isIPv6 ? AdapterAddresses->Ipv6IfIndex : AdapterAddresses->IfIndex;
+			if (interfaceIndex == jindex)
+			{
+				switch(type) {
+					case OPERSTAT:
+						isSet = ((AdapterAddresses->OperStatus & flag) == flag);
+						break;
+					case IFTYPE:
+						if(flag == IF_TYPE_PPP && isIPv6)
+							isSet = ((AdapterAddresses->IfType & IF_TYPE_TUNNEL) == IF_TYPE_TUNNEL);
+						else
+							isSet = ((AdapterAddresses->IfType & flag) == flag);
+						break;
+					case FLAGS:
+						isSet = ((AdapterAddresses->Flags & flag) == flag);
+						break;
+					default:
+						isSet = JNI_FALSE;
+				}
+			}
+			AdapterAddresses = AdapterAddresses->Next;
+		}
+	} else {
+		throwJavaNetSocketException (env, hyerror_set_last_error(RetVal, HYPORT_ERROR_SOCKET_NORECOVERY));
+		return 0;
+	}
+
+	if (AdapterAddresses != NULL) {
+		hymem_free_memory (AdapterAddresses);
+	}
+	return isSet;
+}
+
+jboolean
+getPlatformIsUp(JNIEnv * env, jstring ifname, jint jindex)
+{
+	return getPlatformNetworkInterfaceAttribute(env,OPERSTAT,jindex,IfOperStatusUp);
+}
+
+
+jboolean getPlatformIsLoopback(JNIEnv * env, jstring ifname, jint jindex)
+{
+	return getPlatformNetworkInterfaceAttribute(env,IFTYPE,jindex,IF_TYPE_SOFTWARE_LOOPBACK);
+}
+
+jboolean getPlatformIsPoint2Point(JNIEnv * env, jstring ifname, jint jindex)
+{
+	return getPlatformNetworkInterfaceAttribute(env,IFTYPE,jindex,IF_TYPE_PPP);
+}
+
+
+jboolean getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint jindex)
+{
+	return !getPlatformNetworkInterfaceAttribute(env,FLAGS,jindex,IP_ADAPTER_NO_MULTICAST);
+}
+
+
+jint
+getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index)
+{
+	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
+	ULONG OutBufferLength = 0;
+	ULONG RetVal = 0;
+	DWORD mtu = 0;
+	jboolean isIPv6 = JNI_FALSE;
+
+	/* required call if we are going to call port library methods */
+	PORT_ACCESS_FROM_ENV (env);
+
+    AdapterAddresses = initAdapters(env, RetVal);
+	isIPv6 = isIPv6Enabled (AdapterAddresses);
+
+	if (RetVal == NO_ERROR) {		
+		while (AdapterAddresses != NULL) {
+			// when ipv4 in port library, the index is equal to IfIndex while ipv6 it is equal to Ipv6IfIndex.
+			U_32 interfaceIndex = isIPv6 ? AdapterAddresses->Ipv6IfIndex : AdapterAddresses->IfIndex;
+			if (interfaceIndex == index)
+			{
+				mtu =  AdapterAddresses->Mtu;
+				break;
+			}
+			AdapterAddresses = AdapterAddresses->Next;
+		}
+	} else {
+		throwJavaNetSocketException (env, hyerror_set_last_error(RetVal, HYPORT_ERROR_SOCKET_NORECOVERY));
+		return 0;
+	}
+
+	if (AdapterAddresses != NULL) {
+		hymem_free_memory (AdapterAddresses);
+	}
+	return mtu;
+}
+
+jbyteArray 
+getPlatformGetHardwareAddress(JNIEnv * env, jstring ifname, jint index)
+{   
+	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
+	ULONG OutBufferLength = 0;
+	ULONG RetVal = 0; 
+	jboolean isIPv6 = JNI_FALSE;
+	jbyteArray byteArray = NULL;	
+
+	/* required call if we are going to call port library methods */
+	PORT_ACCESS_FROM_ENV (env);
+
+	AdapterAddresses = initAdapters(env, RetVal);
+	isIPv6 = isIPv6Enabled(AdapterAddresses);
+
+	if (RetVal == NO_ERROR) {		
+		while (AdapterAddresses != NULL) {
+			U_32 interfaceIndex = isIPv6 ? AdapterAddresses->Ipv6IfIndex : AdapterAddresses->IfIndex;			
+			if (interfaceIndex == index)
+			{
+				// Follow RI here. RI returns null when PhysicalAddressLength is 0 under ipv4 while a zero-length array under ipv6.
+				if (AdapterAddresses->PhysicalAddressLength > 0 || isIPv6)
+				{
+					byteArray = (*env)->NewByteArray(env, AdapterAddresses->PhysicalAddressLength);
+					(*env)->SetByteArrayRegion(env, byteArray, 0, AdapterAddresses->PhysicalAddressLength, (jbyte * )AdapterAddresses->PhysicalAddress);
+				}				
+				break;
+			}
+			AdapterAddresses = AdapterAddresses->Next;
+		}
+	} else {
+		throwJavaNetSocketException (env, hyerror_set_last_error(RetVal, HYPORT_ERROR_SOCKET_NORECOVERY));
+		return NULL;
+	}
+
+	if (AdapterAddresses != NULL) {
+		hymem_free_memory (AdapterAddresses);
+	}
+	return byteArray;
+}
+
+
+void
+getPlatformGetInterfaceAddressesImpl(JNIEnv * env, 
+									 char* name, 
+									 jint index,
+									 PIP_ADAPTER_ADDRESSES adapters,
+									 interfaceAddressArray_struct* array)
+{	
+	interfaceAddress_struct *interfaces = NULL;
+	interfaceAddress_struct *backInterfaceAddrs = NULL;
+	int numAddresses = 0;
+	int previousNumAddress = 0;
+	jboolean isLoopback = JNI_FALSE;
+	jboolean isIPv6 = JNI_FALSE;
+
+	PORT_ACCESS_FROM_ENV (env);	
+
+	// if the interface is a loopback one, it needs some special treatment
+	// according to RI's behavior
+	isLoopback = strcmp(name, "lo") == 0 ? JNI_TRUE : JNI_FALSE;
+
+	isIPv6 =  isIPv6Enabled(adapters);
+
+	while (adapters != NULL) {
+		PIP_ADAPTER_UNICAST_ADDRESS unicastAddr = adapters->FirstUnicastAddress;
+		PIP_ADAPTER_PREFIX prefixAddr = adapters->FirstPrefix;
+		PIP_ADAPTER_UNICAST_ADDRESS addrPtr = NULL;	
+		jboolean isFound = JNI_FALSE;		
+
+		// if the interface is a loopback one, concatenate all the addresses
+		isFound = (!isLoopback && index == (isIPv6? adapters->Ipv6IfIndex : adapters->IfIndex)) ||
+			(isLoopback && adapters->IfType == IF_TYPE_SOFTWARE_LOOPBACK);
+
+		// calculate number of addresses
+		if (isFound) {
+			// save the head pointer
+			addrPtr = unicastAddr;
+			while (unicastAddr != NULL)	{
+				numAddresses++;
+				unicastAddr = unicastAddr->Next;
+			}			
+			// recover it after iteration
+			unicastAddr = addrPtr;     
+		}
+
+		if (isFound && numAddresses > 0) {							
+			int counter = 0;
+
+			// initialize the array. 
+			backInterfaceAddrs = interfaces;
+			interfaces = hymem_allocate_memory (sizeof(interfaceAddress_struct) * (numAddresses));
+			for (counter = 0; counter < numAddresses; counter++)
+			{
+				interfaces[counter].address = NULL;
+				interfaces[counter].prefixLength = 0;
+			}
+			counter = 0;
+
+			if (backInterfaceAddrs != NULL) {
+				// If it is not null, copy the previous loopback addresses.
+				for (counter = 0; counter < previousNumAddress; counter++)
+				{
+					interfaces[counter].address = hymem_allocate_memory(sizeof(hyipAddress_struct));
+#if defined(VALIDATE_ALLOCATIONS)
+					if (NULL == interfaces[counter].address){						
+						return ;
+					}
+#endif
+					// copy from original addresses to concatenate 
+					if (backInterfaceAddrs[counter].address->length == sizeof(struct in_addr)) {
+						interfaces[counter].address->addr.inAddr.S_un.S_addr = backInterfaceAddrs[counter].address->addr.inAddr.S_un.S_addr;
+					} else if (backInterfaceAddrs[counter].address->length == sizeof (struct in6_addr)) {						
+						memcpy (backInterfaceAddrs[counter].address->addr.bytes,  
+							interfaces[counter].address->addr.bytes, sizeof (struct in6_addr));
+					}
+					interfaces[counter].address->length = backInterfaceAddrs[counter].address->length;
+					interfaces[counter].address->scope = backInterfaceAddrs[counter].address->scope;	
+					interfaces[counter].prefixLength = backInterfaceAddrs[counter].prefixLength;                    
+				}
+
+				// cleanup 
+				for (counter = 0; counter < previousNumAddress; counter++)
+				{
+					hymem_free_memory (backInterfaceAddrs[counter].address);
+				}
+
+				hymem_free_memory (backInterfaceAddrs);
+			}
+
+			while (unicastAddr != NULL){
+				struct sockaddr_in* addr = NULL;
+				struct sockaddr_in6* addr6 = NULL;				
+				struct sockaddr_in6_old* addr6_old = NULL;
+
+				LPSOCKADDR sock_addr = unicastAddr->Address.lpSockaddr;
+				int length = unicastAddr->Address.iSockaddrLength;
+				int currentIPAddressIndex = 0;
+
+				if (length == sizeof (struct sockaddr_in)) {				
+					addr = (struct sockaddr_in*)sock_addr;
+				} else if (length == sizeof (struct sockaddr_in6)){
+					addr6 = (struct sockaddr_in6*)sock_addr;
+				} else if (length == sizeof (struct sockaddr_in6_old)){
+					addr6_old = (struct sockaddr_in6_old*)sock_addr;
+				}					
+
+				interfaces[counter].address = hymem_allocate_memory(sizeof(hyipAddress_struct));
+#if defined(VALIDATE_ALLOCATIONS)
+				if (NULL == interfaces[counter].address){
+					return ;
+				}
+#endif
+				if (addr != NULL) {
+					// deal with sockaddr_in, copy address					
+					interfaces[counter].address->addr.inAddr.S_un.S_addr = addr->sin_addr.S_un.S_addr;
+					interfaces[counter].address->length = sizeof (struct in_addr);
+					interfaces[counter].address->scope = 0;					
+				} else if (addr6 != NULL){
+					// deal with sockaddr_in6, copy address
+					memcpy (interfaces[counter].address->addr.bytes,
+						&(addr6->sin6_addr.u.Byte), sizeof (struct in6_addr));
+					interfaces[counter].address->length = sizeof (struct in6_addr);
+					interfaces[counter].address->scope = addr6->sin6_scope_id;						
+				} else {
+					// deal with sockaddr_in6_old, copy address
+					memcpy (interfaces[counter].address->addr.bytes,  
+						&(addr6_old->sin6_addr.u.Byte), sizeof (struct in6_addr));
+					interfaces[counter].address->length = sizeof (struct in6_addr);
+					interfaces[counter].address->scope = 0;
+				}
+
+				// copy prefixLength
+				if (prefixAddr != NULL) {
+					interfaces[counter].prefixLength = prefixAddr->PrefixLength;
+					prefixAddr = prefixAddr -> Next;
+				} else {
+					// since GetAdaptersAddresses cannot regonize the prefix length 
+					// for ipv4 loopback interface, we hard code the value here
+					interfaces[counter].prefixLength = isIPv6 ? 0 : 8;
+				}
+
+				unicastAddr = unicastAddr -> Next;		
+				counter++;				
+			}
+
+			if (isLoopback && adapters->IfType == IF_TYPE_SOFTWARE_LOOPBACK) {
+				// If a loopback interface, record the previous address in order to do concatenate
+				previousNumAddress = numAddresses;                
+			} else {
+				break;
+			}		
+		}
+		adapters = adapters->Next;
+	}
+	array -> length = numAddresses;
+	array -> elements = interfaces;
+}
+
+I_32 
+getPlatformGetInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct * interfaceAddressArray)
+{	
+	PIP_ADAPTER_ADDRESSES AdapterAddresses = NULL;
+	PIP_ADAPTER_ADDRESSES Adapters = NULL;
+	ULONG RetVal = 0;	
+
+	/* required call if we are going to call port library methods */
+	PORT_ACCESS_FROM_ENV (env);
+	
+	AdapterAddresses = initAdapters(env, RetVal);	
+
+	if (RetVal == NO_ERROR) {			
+		char* adapterName = convertInterfaceName(env, ifname);
+		if (NULL != adapterName)
+		{
+			getPlatformGetInterfaceAddressesImpl (env, adapterName, index, AdapterAddresses, interfaceAddressArray);
+			hymem_free_memory (adapterName);
+		}		
+	} else {
+		throwJavaNetSocketException (env, hyerror_set_last_error(RetVal, HYPORT_ERROR_SOCKET_NORECOVERY));
+		return -1;
+	}
+
+	hymem_free_memory (AdapterAddresses);
+	return 0;
+}
+
