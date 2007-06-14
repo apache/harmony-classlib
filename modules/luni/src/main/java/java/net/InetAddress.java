@@ -803,7 +803,7 @@ public class InetAddress extends Object implements Serializable {
         }
         Enumeration<InetAddress> addresses = netif.getInetAddresses();
         reached = false;
-        addrCount = netif.addresses.length;
+        addrCount = netif.addresses.size();
         boolean needWait = false;
         while (addresses.hasMoreElements()) {
             final InetAddress addr = addresses.nextElement();

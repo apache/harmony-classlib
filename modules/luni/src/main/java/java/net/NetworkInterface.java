@@ -17,8 +17,10 @@
 
 package java.net;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.harmony.luni.util.Msg;
@@ -39,7 +41,7 @@ public final class NetworkInterface extends Object {
 
     private String displayName;
 
-    InetAddress addresses[];
+    List<InetAddress> addresses = new LinkedList<InetAddress>();
 
     // The interface index is a positive integer which is non-negative. Where
     // value is zero then we do not have an index for the interface (which
@@ -47,6 +49,10 @@ public final class NetworkInterface extends Object {
     private int interfaceIndex;
 
     private int hashCode;
+
+    private NetworkInterface parent = null;
+
+    private List<NetworkInterface> children = new LinkedList<NetworkInterface>();
 
     /**
      * This native answers the list of network interfaces supported by the
@@ -79,8 +85,10 @@ public final class NetworkInterface extends Object {
             int interfaceIndex) {
         this.name = name;
         this.displayName = displayName;
-        this.addresses = addresses;
         this.interfaceIndex = interfaceIndex;
+        for (int i = 0; i < addresses.length; i++) {
+            this.addresses.add(addresses[i]);
+        }
     }
 
     /**
@@ -101,8 +109,8 @@ public final class NetworkInterface extends Object {
      * @return the first address if one exists, otherwise null.
      */
     InetAddress getFirstAddress() {
-        if ((addresses != null) && (addresses.length >= 1)) {
-            return addresses[0];
+        if (addresses.size() >= 1) {
+            return addresses.get(0);
         }
         return null;
     }
@@ -132,7 +140,7 @@ public final class NetworkInterface extends Object {
          * return an empty enumeration if there are no addresses associated with
          * the interface
          */
-        if (addresses == null) {
+        if (0 == addresses.size()) {
             return new Vector<InetAddress>(0).elements();
         }
 
@@ -141,7 +149,7 @@ public final class NetworkInterface extends Object {
          * return addresses for which checkConnect returns true
          */
         Vector<InetAddress> accessibleAddresses = new Vector<InetAddress>(
-                addresses.length);
+                addresses.size());
 
         /*
          * get the security manager. If one does not exist just return the full
@@ -149,8 +157,7 @@ public final class NetworkInterface extends Object {
          */
         SecurityManager security = System.getSecurityManager();
         if (security == null) {
-            return (new Vector<InetAddress>(Arrays.asList(addresses)))
-                    .elements();
+            return (new Vector<InetAddress>(addresses)).elements();
         }
 
         /*
@@ -266,9 +273,9 @@ public final class NetworkInterface extends Object {
                  * filtering
                  */
                 // Enumeration netifAddresses = netif.getInetAddresses();
-                if ((netif.addresses != null) && (netif.addresses.length != 0)) {
-                    Enumeration<InetAddress> netifAddresses = (new Vector<InetAddress>(
-                            Arrays.asList(netif.addresses))).elements();
+                if (netif.addresses.size() != 0) {
+                    Enumeration<InetAddress> netifAddresses = new Vector<InetAddress>(
+                            netif.addresses).elements();
                     if (netifAddresses != null) {
                         while (netifAddresses.hasMoreElements()) {
                             if (address.equals(netifAddresses.nextElement())) {
@@ -299,25 +306,57 @@ public final class NetworkInterface extends Object {
             return null;
         }
 
+        boolean peeked[] = new boolean[interfaces.length];
+        for (boolean p : peeked) {
+            p = false;
+        }
+
         for (NetworkInterface netif : interfaces) {
             // Ensure that current NetworkInterface is bound to at least
             // one InetAddress before processing
-            if (netif.addresses != null) {
-                for (InetAddress addr : netif.addresses) {
-                    if (16 == addr.ipaddress.length) {
-                        if (addr.isLinkLocalAddress()
-                                || addr.isSiteLocalAddress()) {
-                            ((Inet6Address) addr).scopedIf = netif;
-                            ((Inet6Address) addr).ifname = netif.name;
-                            ((Inet6Address) addr).scope_ifname_set = true;
-                        }
+            for (InetAddress addr : netif.addresses) {
+                if (16 == addr.ipaddress.length) {
+                    if (addr.isLinkLocalAddress() || addr.isSiteLocalAddress()) {
+                        ((Inet6Address) addr).scopedIf = netif;
+                        ((Inet6Address) addr).ifname = netif.name;
+                        ((Inet6Address) addr).scope_ifname_set = true;
                     }
                 }
             }
         }
 
-        return (new Vector<NetworkInterface>(Arrays.asList(interfaces)))
-                .elements();
+        List<NetworkInterface> hlist = new ArrayList<NetworkInterface>();
+        for (int counter = 0; counter < interfaces.length; counter++) {
+            // If this interface has been touched, continue.
+            if (peeked[counter]) {
+                continue;
+            }
+            int counter2 = counter;
+            // Checks whether the following interfaces are children.
+            for (; counter2 < interfaces.length; counter2++) {
+                if (peeked[counter2]) {
+                    continue;
+                }
+                StringBuilder headBuilder = new StringBuilder();
+                headBuilder.append(interfaces[counter].name);
+                headBuilder.append(":"); //$NON-NLS-1$
+                if (interfaces[counter2].name
+                        .startsWith(headBuilder.toString())) {
+                    // Tagged as peeked
+                    peeked[counter2] = true;
+                    interfaces[counter].children.add(interfaces[counter2]);
+                    interfaces[counter2].parent = interfaces[counter];
+                    for (int i = 0; i < interfaces[counter2].addresses.size(); i++) {
+                        interfaces[counter].addresses
+                                .add(interfaces[counter2].addresses.get(i));
+                    }
+                }
+            }
+            // Tagged as peeked
+            hlist.add(interfaces[counter]);
+            peeked[counter] = true;
+        }
+        return (new Vector<NetworkInterface>(hlist)).elements();
     }
 
     /**
@@ -438,4 +477,197 @@ public final class NetworkInterface extends Object {
         }
         return string.toString();
     }
+
+    /**
+     * Get a List of all or a subset of the InterfaceAddresses of this network
+     * interface.
+     * 
+     * If there is a security manager, its checkConnect method is called with
+     * the InetAddress for each InterfaceAddress. Only InterfaceAddresses where
+     * the checkConnect doesn't throw a SecurityException will be returned in
+     * the List.
+     * 
+     * @return a List object with all or a subset of the InterfaceAddresss of
+     *         this network interface
+     * 
+     * @since 1.6
+     */
+    public List<InterfaceAddress> getInterfaceAddresses() {
+        InterfaceAddress[] ifAddrs = getInterfaceAddressesImpl(name,
+                interfaceIndex);
+        List<InterfaceAddress> ifList = new ArrayList<InterfaceAddress>();
+        if (ifAddrs == null) {
+            return ifList;
+        }
+        SecurityManager sm = System.getSecurityManager();
+
+        for (InterfaceAddress ifAddr : ifAddrs) {
+            if (sm != null) {
+                try {
+                    sm.checkConnect(ifAddr.getAddress().getHostName(),
+                            CHECK_CONNECT_NO_PORT);
+                } catch (SecurityException e) {
+                    // if there is an exception, not add it into the list
+                    continue;
+                }
+            }
+            ifList.add(ifAddr);
+        }
+        return ifList;
+    }
+
+    private static native InterfaceAddress[] getInterfaceAddressesImpl(
+            String n, int index);
+
+    /**
+     * Get an Enumeration with all the subinterfaces (also known as virtual
+     * interfaces) attached to this network interface.
+     * 
+     * For instance eth0:1 will be a subinterface to eth0.
+     * 
+     * @return an Enumeration object with all of the subinterfaces of this
+     *         network interface
+     * @since 1.6
+     */
+    public Enumeration<NetworkInterface> getSubInterfaces() {
+        return (new Vector<NetworkInterface>(children)).elements();
+    }
+
+    /**
+     * Returns the parent NetworkInterface of this interface if this is a
+     * subinterface, or null if it's a physical (non virtual) interface.
+     * 
+     * @return The NetworkInterface this interface is attached to.
+     * 
+     * @since 1.6
+     */
+    public NetworkInterface getParent() {
+        return parent;
+    }
+
+    /**
+     * Answers if a network interface is up and running.
+     * 
+     * @return true if the interface is up and running.
+     * @throws SocketException
+     *             if an I/O error occurs.
+     * @since 1.6
+     */
+    public boolean isUp() throws SocketException {
+        if (0 == addresses.size()) {
+            return false;
+        }
+        return isUpImpl(name, interfaceIndex);
+    }
+
+    private native boolean isUpImpl(String n, int index) throws SocketException;
+
+    /**
+     * Answers if a network interface is a loopback interface.
+     * 
+     * @return true if the interface is a loopback interface.
+     * @throws SocketException
+     *             if an I/O error occurs.
+     * @since 1.6
+     */
+    public boolean isLoopback() throws SocketException {
+        if (0 == addresses.size()) {
+            return false;
+        }
+        return isLoopbackImpl(name, interfaceIndex);
+    }
+
+    private native boolean isLoopbackImpl(String n, int index)
+            throws SocketException;
+
+    /**
+     * Answers if a network interface is a point to point interface. Usually, a
+     * point to point interface would be a PPP connection using a modem.
+     * 
+     * @return true if the interface is a point to point one.
+     * @throws SocketException
+     *             if an I/O error occurs.
+     * @since 1.6
+     */
+    public boolean isPointToPoint() throws SocketException {
+        if (0 == addresses.size()) {
+            return false;
+        }
+        return isPoint2PointImpl(name, interfaceIndex);
+    }
+
+    private native boolean isPoint2PointImpl(String n, int index)
+            throws SocketException;
+
+    /**
+     * Answers if a network interface supports multicasting.
+     * 
+     * @throws SocketException
+     *             if an I/O error occurs.
+     * @since 1.6
+     */
+    public boolean supportsMulticast() throws SocketException {
+        if (0 == addresses.size()) {
+            return false;
+        }
+        return supportMulticastImpl(name, interfaceIndex);
+    }
+
+    private native boolean supportMulticastImpl(String n, int index)
+            throws SocketException;
+
+    /**
+     * Answers the (MAC) hardware address of the interface if it has one and the
+     * user has privilege to access the address.
+     * 
+     * @return a byte array containing the address or null if the address
+     *         doesn't exist or is not accessible.
+     * @throws SocketException
+     *             if an I/O error occurs.
+     * @since 1.6
+     */
+    public byte[] getHardwareAddress() throws SocketException {
+        if (0 == addresses.size()) {
+            return new byte[0];
+        }
+        return getHardwareAddressImpl(name, interfaceIndex);
+    }
+
+    private native byte[] getHardwareAddressImpl(String n, int index)
+            throws SocketException;
+
+    /**
+     * Answers the Maximum Transmission Unit (MTU) of the interface.
+     * 
+     * @return the value of the MTU for the interface.
+     * @throws SocketException
+     *             if an I/O error occurs.
+     * @since 1.6
+     */
+    public int getMTU() throws SocketException {
+        if (0 == addresses.size()) {
+            return 0;
+        }
+        return getMTUImpl(name, interfaceIndex);
+    }
+
+    private native int getMTUImpl(String n, int index) throws SocketException;
+
+    /**
+     * Answers if this interface is a virtual interface (also called
+     * subinterface). Virtual interfaces are, on some systems, interfaces
+     * created as a child of a physical interface and given different settings
+     * (like address or MTU). Usually the name of the interface will the name of
+     * the parent followed by a colon (:) and a number identifying the child
+     * since there can be several virtual interfaces attached to a single
+     * physical interface.
+     * 
+     * @return true if this interface is a virtual interface.
+     * 
+     * @since 1.6
+     */
+    public boolean isVirtual() {
+        return parent != null;
+    }
+
 }
