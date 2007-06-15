@@ -383,6 +383,7 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
   jmethodID errorCodeExConstructor, socketExConstructor,socketExCauseMethod;
   jobject errorCodeEx,socketEx;
   char *errorMessage = netLookupErrorString (env, errorNumber);
+  jstring errorMessageString = (*env)->NewStringUTF (env,errorMessage);
   if (HYPORT_ERROR_SOCKET_WOULDBLOCK == errorNumber){
   	   errorCodeExClass = (*env)->FindClass (env, "org/apache/harmony/luni/util/ErrorCodeException");
   	   if (!errorCodeExClass){
@@ -401,7 +402,7 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
        if (!socketExConstructor) {
                return;
        }
-       socketEx = (*env)->NewObject(env, socketExClass,errorCodeExConstructor,errorMessage); 
+       socketEx = (*env)->NewObject(env, socketExClass,errorCodeExConstructor,errorMessageString); 
        socketExCauseMethod = (*env)->GetMethodID(env,socketExClass,"initCause","(Ljava/lang/Throwable;)Ljava/lang/Throwable;");
        (*env)->CallObjectMethod(env,socketEx,socketExCauseMethod,errorCodeEx);
        (*env)->Throw(env,socketEx);
