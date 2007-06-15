@@ -64,7 +64,11 @@ public class BitSetTest extends junit.framework.TestCase {
 		}
 
         // Regression test for HARMONY-4147
-        new BitSet(Integer.MAX_VALUE);
+        try {
+          new BitSet(Integer.MAX_VALUE);
+        } catch (OutOfMemoryError e) {
+            // Ignore if no room for this size.
+        }
 	}
 
 	/**
