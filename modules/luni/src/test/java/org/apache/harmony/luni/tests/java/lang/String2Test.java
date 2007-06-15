@@ -466,6 +466,12 @@ public class String2Test extends junit.framework.TestCase {
         } catch (UnsupportedEncodingException e) {
             //expected
         }
+
+        // Regression for HARMONY-4135
+        bytes = "-".getBytes("UTF-16");
+        expected = new byte[] { -2, -1 };
+        assertEquals(expected[0], bytes[0]);
+        assertEquals(expected[1], bytes[1]);
     }
 
 	/**
