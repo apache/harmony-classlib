@@ -37,21 +37,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A parser that parses a text string to primitive types with the help of
- * regular expression. It supports localized number and various radixes.
+ * A parser that parses a text string of primitive types and strings with the
+ * help of regular expressions. It supports localized numbers and various
+ * radixes.
  * 
  * The input is broken into tokens by the delimiter pattern, which is whitespace
- * by default. The primitive types can be got via corresponding next methods. If
- * the token is not in valid format, an InputMissmatchException is thrown.
+ * by default. The primitive types can be obtained via corresponding next*
+ * methods. If the token is not in a valid format, an InputMismatchException is
+ * thrown.
  * 
- * For example: Scanner s = new Scanner("1A true");
- * System.out.println(s.nextInt(16)); System.out.println(s.nextBoolean()); The
- * result: 26 true
+ * For example: <code>Scanner s = new Scanner("1A true");
+ * System.out.println(s.nextInt(16)); System.out.println(s.nextBoolean());</code>
+ * The result: <code>26 true</code>
  * 
- * A scanner can find or skip specific pattern with no regard to the delimiter.
- * All these methods and the various next and hasNext methods may block.
+ * A scanner can also find or skip specific patterns with no regard to the
+ * delimiter. All these methods and the various next* and hasNext* methods may
+ * block.
  * 
- * Scanner is not thread-safe without external synchronization
+ * The Scanner class is not thread-safe.
  */
 public final class Scanner implements Iterator<String> {
 
@@ -531,12 +534,11 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns true if this scanner has next token. This method may be blocked
-     * when it is waiting for input to scan. This scanner does not advance past
-     * the input.
+     * Returns true if this scanner has one or more tokens remaining to 
+     * parse. Will block if the data is still being read.
      * 
      * @return true 
-     *             iff this scanner has next token
+     *             if this scanner has one or more tokens remaining
      * @throws IllegalStateException
      *             if the scanner has been closed
      */
@@ -545,16 +547,16 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns true if this scanner's next token matches the specified pattern.
-     * This method may be blocked when it is waiting for input to scan. This
-     * scanner does not advance past the input that matched the pattern.
+     * Returns true if this scanner has one or more tokens remaining to parse
+     * and the next token matches the given pattern. Will block if the data is
+     * still being read.
      * 
      * @param pattern
-     *            the specified pattern to scan
-     * @return 
-     *            true iff this scanner's next token matches the specified pattern
+     *            the pattern to check for
+     * @return true if this scanner has more tokens and the next token matches
+     *         the pattern
      * @throws IllegalStateException
-     *            if the scanner has been closed
+     *             if the scanner has been closed
      */
     public boolean hasNext(Pattern pattern) {
         checkClosed();
@@ -580,18 +582,16 @@ public final class Scanner implements Iterator<String> {
 
 
     /**
-     * Returns true if this scanner's next token matches the pattern constructed
-     * from the specified string. This method may be blocked when it is waiting
-     * for input to scan. This scanner does not advance past the input that
-     * matched the pattern.
+     * Returns true if this scanner has one or more tokens remaining to parse
+     * and the next token matches a pattern compiled from the given string. Will
+     * block if the data is still being read.
      * 
-     * The invocation of this method in the form hasNext(pattern) behaves in the
-     * same way as the invocation of hasNext(Pattern.compile(pattern)).
+     * Equivalent to <code>hasNext(Pattern.compile(pattern))</code>.
      * 
      * @param pattern
-     *            the string specifying the pattern to scan for
-     * @return true 
-     *            iff this scanner's next token matches the specified pattern
+     *            the string representation of the pattern to check for
+     * @return true if this scanner has more tokens and the next token matches
+     *         the pattern
      * @throws IllegalStateException
      *             if the scanner has been closed
      */
@@ -601,9 +601,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * BigDecimal. The scanner does not advance past the input.
+     * BigDecimal.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid BigDecimal
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -626,10 +626,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * BigInteger in the default radix. The scanner does not advance past the
-     * input.
+     * BigInteger in the default radix.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid BigInteger
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -640,12 +639,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * BigInteger in the specified radix. The scanner does not advance past the
-     * input.
+     * BigInteger in the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into a BigInteger
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid BigInteger
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -668,10 +666,10 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * boolean value. The scanner does not advance past the input that matched.
+     * boolean value.
      * 
      * @return true 
-     *             iff the next token in this scanner's input can be translated
+     *             if the next token in this scanner's input can be translated
      *         into a valid boolean value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -682,10 +680,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * byte value in the default radix. The scanner does not advance past the
-     * input.
+     * byte value in the default radix.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid byte value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -696,12 +693,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * byte value in the specified radix. The scanner does not advance past the
-     * input.
+     * byte value in the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into a byte value
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid byte value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -724,9 +720,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * double value. The scanner does not advance past the input.
+     * double value.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid double value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -749,9 +745,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * float value. The scanner does not advance past the input.
+     * float value.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid float value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -774,10 +770,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * int value in the default radix. The scanner does not advance past the
-     * input.
+     * int value in the default radix.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid int value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -788,12 +783,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * int value in the specified radix. The scanner does not advance past the
-     * input.
+     * int value in the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into an int value
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid int value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -816,8 +810,7 @@ public final class Scanner implements Iterator<String> {
     
     /**
      * Returns true if there is another line in the input. Otherwise, returns
-     * false. When waiting for input, the scanner may be blocked. No matter true
-     * or false, the scanner will not advance any input.
+     * false. When waiting for input, the scanner may be blocked.
      * 
      * @return true if there is another line in the input. Otherwise, false will
      *         be returned.
@@ -853,10 +846,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * long value in the default radix. The scanner does not advance past the
-     * input.
+     * long value in the default radix.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid long value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -867,12 +859,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * long value in the specified radix. The scanner does not advance past the
-     * input.
+     * long value in the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into a long value
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid long value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -896,10 +887,9 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * short value in the default radix. The scanner does not advance past the
-     * input.
+     * short value in the default radix.
      * 
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid short value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -910,12 +900,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * Returns true if this scanner's next token can be translated into a valid
-     * short value in the specified radix. The scanner does not advance past the
-     * input.
+     * short value in the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into a short value
-     * @return true iff the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid short value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -982,14 +971,11 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Finds and Returns the next complete token which is prefixed and postfixed
-     * by input that matches the delimiter pattern. This method may be blocked
-     * when it is waiting for input to scan, even if a previous invocation of
-     * hasNext() returned true. If this match successes, the scanner advances
-     * past the next complete token.
+     * Returns the next token. The token will be both prefixed and postfixed by
+     * the delimiter that is currently being used (or a string that matches the
+     * delimiter pattern). Will block if input is being read.
      * 
-     * @return 
-     *             the next complete token
+     * @return the next token
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1000,21 +986,20 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns the next token which is prefixed and postfixed by input that
-     * matches the delimiter pattern if this token matches the specified
-     * pattern. This method may be blocked when it is waiting for input to scan,
-     * even if a previous invocation of hasNext(Pattern) returned true. If this
-     * match successes, the scanner advances past the next token that matched
-     * the pattern.
+     * Returns the next token if it matches the specified pattern. The token
+     * will be both prefixed and postfixed by the delimiter that is currently
+     * being used (or a string that matches the delimiter pattern). Will block
+     * if input is being read.
      * 
      * @param pattern
-     *            the specified pattern to scan
-     * @return 
-     *             the next token
+     *            the pattern to check for
+     * @return the next token
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token does not match the pattern given
      */
     public String next(Pattern pattern) {
         checkClosed();
@@ -1037,44 +1022,39 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns the next token which is prefixed and postfixed by input that
-     * matches the delimiter pattern if this token matches the pattern
-     * constructed from the sepcified string. This method may be blocked when it
-     * is waiting for input to scan. If this match successes, the scanner
-     * advances past the next token that matched the pattern.
+     * Returns the next token if it matches the specified pattern. The token
+     * will be both prefixed and postfixed by the delimiter that is currently
+     * being used (or a string that matches the delimiter pattern). Will block
+     * if input is being read.
      * 
-     * The invocation of this method in the form next(pattern) behaves in the
-     * same way as the invocation of next(Pattern.compile(pattern)).
+     * Equivalent to <code>next(Pattern.compile(pattern))</code>.
      * 
      * @param pattern
-     *            the string specifying the pattern to scan for
-     * @return 
-     *             the next token
+     *            the string representation of the pattern to check for
+     * @return the next token
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
+     * @throws InputMismatchException
+     *             if the next token does not match the pattern given
      */
     public String next(String pattern) {
         return next(Pattern.compile(pattern));
     }
 
     /**
-     * Translates the next token in this scanner's input into a BigDecimal and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextBigDecimal()
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as a BigDecimal. Will block if input is being
+     * read.
      * 
-     * If the next token matches the Float regular expression successfully, the
-     * token is translated into a BigDecimal as following steps. At first all
-     * locale specific prefixes ,group separators, and locale specific suffixes
-     * are removed. Then non-ASCII digits are mapped into ASCII digits via
-     * {@link Character#digit(char, int)}}, a negative sign (-) is added if the
-     * locale specific negative prefixes and suffixes were present. At last the
+     * If the next token can be translated into a BigDecimal the following is
+     * done: All locale specific prefixes, group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
      * resulting String is passed to {@link BigDecimal#BigDecimal(String)}}.
      * 
-     * @return the BigDecimal scanned from the input
+     * @return the next token as a BigDecimal
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1106,55 +1086,46 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into a BigInteger and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextBigInteger()
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as a BigInteger. Will block if input is being
+     * read.
      * 
-     * The invocation of this method in the form nextBigInteger() behaves in the
-     * same way as the invocation of nextBigInteger(radix), the radix is the
-     * default radix of this scanner.
+     * Equivalent to <code>nextBigInteger(DEFAULT_RADIX)</code>
      * 
-     * @return the BigInteger scanned from the input
+     * @return the next token as a BigInteger
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid
-     *             BigInteger, or it is out of range
+     *             BigInteger
      */
     public BigInteger nextBigInteger() {
         return nextBigInteger(integerRadix);
     }
 
     /**
-     * Translates the next token in this scanner's input into a BigInteger and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextBigInteger(radix)
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as a BigInteger with the specified radix. Will
+     * block if input is being read.
      * 
-     * If the next token matches the Integer regular expression successfully,
-     * the token is translated into a BigInteger as following steps. At first
-     * all locale specific prefixes ,group separators, and locale specific
+     * If the next token can be translated into a BigInteger the following is
+     * done: All locale specific prefixes, group separators, and locale specific
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
-     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
-     * the locale specific negative prefixes and suffixes were present. At last
-     * the resulting String is passed to
-     * {@link BigInteger#BigInteger(String, int)}} with the specified radix.
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
+     * resulting String is passed to {@link BigInteger#BigInteger(String, int)}}
+     * with the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into a BigInteger
-     * @return the int value scanned from the input
+     * @return the next token as a BigInteger
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid
-     *             BigInteger, or it is out of range
+     *             BigInteger
      */
     public BigInteger nextBigInteger(int radix) {
     	checkClosed();
@@ -1179,13 +1150,10 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into a boolean value and
-     * returns this value. This method will throw InputMismatchException if the
-     * next token can not be interpreted as a boolean value with a case
-     * insensitive pattern created from the string "true|false". If this match
-     * succeeds, the scanner advances past the input that matched.
+     * Returns the next token as a boolean. Will block if input is being
+     * read.
      * 
-     * @return the boolean value scanned from the input
+     * @return the next token as a boolean
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1199,55 +1167,45 @@ public final class Scanner implements Iterator<String> {
     }
     
     /**
-     * Translates the next token in this scanner's input into a byte value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextByte() returned
-     * true. If this match succeeds, the scanner advances past the input that
-     * matched.
+     * Returns the next token as a byte. Will block if input is being read.
      * 
-     * The invocation of this method in the form nextByte() behaves in the same
-     * way as the invocation of nextByte(radix), the radix is the default radix
-     * of this scanner.
+     * Equivalent to <code>nextByte(DEFAULT_RADIX)</code>
      * 
-     * @return the byte value scanned from the input
+     * @return the next token as a byte
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid byte
-     *             value, or it is out of range
+     *             value
      */
     public byte nextByte() {
         return nextByte(integerRadix);
     }
 
     /**
-     * Translates the next token in this scanner's input into a byte value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextByte(radix)
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as a byte with the specified radix. Will
+     * block if input is being read.
      * 
-     * If the next token matches the Integer regular expression successfully,
-     * the token is translated into a byte value as following steps. At first
-     * all locale specific prefixes ,group separators, and locale specific
+     * If the next token can be translated into a byte the following is
+     * done: All locale specific prefixes, group separators, and locale specific
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
-     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
-     * the locale specific negative prefixes and suffixes were present. At last
-     * the resulting String is passed to {@link Byte#parseByte(String, int)}}
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
+     * resulting String is passed to {@link Byte#parseByte(String, int)}}
      * with the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into byte value
-     * @return the byte value scanned from the input
+     * @return the next token as a byte
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid byte
-     *             value, or it is out of range
+     *             value
      */
     @SuppressWarnings("boxing")
     public byte nextByte(int radix) {
@@ -1273,25 +1231,18 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into a double value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextDouble() returned
-     * true. If this match succeeds, the scanner advances past the input that
-     * matched.
+     * Returns the next token as a double. Will block if input is being read.
      * 
-     * If the next token matches the Float regular expression successfully, the
-     * token is translated into a double value as following steps. At first all
-     * locale specific prefixes ,group separators, and locale specific suffixes
-     * are removed. Then non-ASCII digits are mapped into ASCII digits via
-     * {@link Character#digit(char, int)}}, a negative sign (-) is added if the
-     * locale specific negative prefixes and suffixes were present. At last the
-     * resulting String is passed to {@link Double#parseDouble(String)}}.If the
-     * token matches the localized NaN or infinity strings, it is also passed to
-     * {@link Double#parseDouble(String)}}.
+     * If the next token can be translated into a double the following is done:
+     * All locale specific prefixes, group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
+     * resulting String is passed to {@link Double#parseDouble(String)}}. If
+     * the token matches the localized NaN or infinity strings, it is also
+     * passed to {@link Double#parseDouble(String)}}.
      * 
-     * @param integerRadix
-     *            the radix used to translate the token into double value
-     * @return the double value scanned from the input
+     * @return the next token as a double
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1324,23 +1275,18 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into a float value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextFloat() returned
-     * true. If this match succeeds, the scanner advances past the input that
-     * matched.
+     * Returns the next token as a float. Will block if input is being read.
      * 
-     * If the next token matches the Float regular expression successfully, the
-     * token is translated into a float value as following steps. At first all
-     * locale specific prefixes ,group separators, and locale specific suffixes
-     * are removed. Then non-ASCII digits are mapped into ASCII digits via
-     * {@link Character#digit(char, int)}}, a negative sign (-) is added if the
-     * locale specific negative prefixes and suffixes were present. At last the
+     * If the next token can be translated into a float the following is done:
+     * All locale specific prefixes, group separators, and locale specific
+     * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
      * resulting String is passed to {@link Float#parseFloat(String)}}.If the
      * token matches the localized NaN or infinity strings, it is also passed to
      * {@link Float#parseFloat(String)}}.
      * 
-     * @return the float value scanned from the input
+     * @return the next token as a float
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1373,17 +1319,11 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into an int value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextInt() returned
-     * true. If this match succeeds, the scanner advances past the input that
-     * matched.
+     * Returns the next token as an int. Will block if input is being read.
      * 
-     * The invocation of this method in the form nextInt() behaves in the same
-     * way as the invocation of nextInt(radix), the radix is the default radix
-     * of this scanner.
+     * Equivalent to <code>nextInt(DEFAULT_RADIX)</code>.
      * 
-     * @return the int value scanned from the input
+     * @return the next token as an int
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1397,23 +1337,20 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into an int value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextInt(radix)
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as an int with the specified radix. Will block if
+     * input is being read.
      * 
-     * If the next token matches the Integer regular expression successfully,
-     * the token is translated into an int value as following steps. At first
-     * all locale specific prefixes ,group separators, and locale specific
+     * If the next token can be translated into an int the following is done:
+     * All locale specific prefixes, group separators, and locale specific
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
-     * via Character.digit, a negative sign (-) is added if the locale specific
-     * negative prefixes and suffixes were present. At last the resulting String
-     * is passed to Integer.parseInt with the specified radix.
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
+     * resulting String is passed to {@link Integer#parseInt(String, int)} with
+     * the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into an int value
-     * @return the int value scanned from the input
+     * @return the next token as an int
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
@@ -1495,43 +1432,33 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into a long value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextLong() returned
-     * true. If this match succeeds, the scanner advances past the input that
-     * matched.
+     * Returns the next token as a long. Will block if input is being read.
      * 
-     * The invocation of this method in the form nextLong() behaves in the same
-     * way as the invocation of nextLong(radix), the radix is the default radix
-     * of this scanner.
+     * Equivalent to <code>nextLong(DEFAULT_RADIX)</code>.
      * 
-     * @return the long value scanned from the input
+     * @return the next token as a long
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid long
-     *             value, or it is out of range
+     *             value
      */
     public long nextLong() {
         return nextLong(integerRadix);
     }
 
     /**
-     * Translates the next token in this scanner's input into a long value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextLong(radix)
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as a long with the specified radix. Will block if
+     * input is being read.
      * 
-     * If the next token matches the Integer regular expression successfully,
-     * the token is translated into a long value as following steps. At first
-     * all locale specific prefixes, group separators, and locale specific
+     * If the next token can be translated into a long the following is done:
+     * All locale specific prefixes, group separators, and locale specific
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
-     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
-     * the locale specific negative prefixes and suffixes were present. At last
-     * the resulting String is passed to {@link Long#parseLong(String, int)}}
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
+     * resulting String is passed to  {@link Long#parseLong(String, int)}}
      * with the specified radix.
      * 
      * @param radix
@@ -1543,7 +1470,7 @@ public final class Scanner implements Iterator<String> {
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid long
-     *             value, or it is out of range
+     *             value
      */
     @SuppressWarnings("boxing")
     public long nextLong(int radix) {
@@ -1569,43 +1496,33 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Translates the next token in this scanner's input into a short value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextShort() returned
-     * true. If this match succeeds, the scanner advances past the input that
-     * matched.
+     * Returns the next token as a short. Will block if input is being read.
      * 
-     * The invocation of this method in the form nextShort() behaves in the same
-     * way as the invocation of nextShort(radix), the radix is the default radix
-     * of this scanner.
+     * Equivalent to <code>nextShort(DEFAULT_RADIX)</code>.
      * 
-     * @return the short value scanned from the input
+     * @return the next token as a short
      * @throws IllegalStateException
      *             if this scanner has been closed
      * @throws NoSuchElementException
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid short
-     *             value, or it is out of range
+     *             value
      */
     public short nextShort() {
         return nextShort(integerRadix);
     }
 
     /**
-     * Translates the next token in this scanner's input into a short value and
-     * returns this value. This method may be blocked when it is waiting for
-     * input to scan, even if a previous invocation of hasNextShort(radix)
-     * returned true. If this match succeeds, the scanner advances past the
-     * input that matched.
+     * Returns the next token as a short with the specified radix. Will block if
+     * input is being read.
      * 
-     * If the next token matches the Integer regular expression successfully,
-     * the token is translated into a short value as following steps. At first
-     * all locale specific prefixes, group separators, and locale specific
+     * If the next token can be translated into a short the following is done:
+     * All locale specific prefixes, group separators, and locale specific
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
-     * via {@link Character#digit(char, int)}}, a negative sign (-) is added if
-     * the locale specific negative prefixes and suffixes were present. At last
-     * the resulting String is passed to {@link Short#parseShort(String, int)}}
+     * via {@link Character#digit(char, int)}, a negative sign (-) is added if
+     * the locale specific negative prefix or suffix was present. Finally the
+     * resulting String is passed to  {@link Short#parseShort(String, int)}}
      * with the specified radix.
      * 
      * @param radix
@@ -1617,7 +1534,7 @@ public final class Scanner implements Iterator<String> {
      *             if input has been exhausted
      * @throws InputMismatchException
      *             if the next token can not be translated into a valid short
-     *             value, or it is out of range
+     *             value
      */
     @SuppressWarnings("boxing")
     public short nextShort(int radix) {
@@ -1645,8 +1562,7 @@ public final class Scanner implements Iterator<String> {
     /**
      * Return the radix of this scanner.
      * 
-     * @return
-     *            the radix of this scanner
+     * @return the radix of this scanner
      */
     public int radix() {
         return integerRadix;
@@ -1781,12 +1697,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * 
-     * Set the radix of this scanner to a specified radix.
+     * Set the radix of this scanner to the specified radix.
      * 
      * @param radix
-     *             the specified radix to use
-     * @return
-     *             this scanner
+     *            the specified radix to use
+     * @return this scanner
      */
     public Scanner useRadix(int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
@@ -1798,19 +1713,16 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
+     * Remove is not a supported operation on Scanner.
      * 
-     * The operation of remove is not supported by this implementation of
-     * Iterator.
-     * 
-     * @throw UnsupportedOperationException 
-     *            if this method is invoked
+     * @throw UnsupportedOperationException if this method is invoked
      */
     public void remove() {
         throw new UnsupportedOperationException();
     }
 
     /*
-     * Initial some components.
+     * Initialize some components.
      */
     private void initialization() {
         buffer = CharBuffer.allocate(DEFAULT_TRUNK_SIZE);
@@ -1829,8 +1741,8 @@ public final class Scanner implements Iterator<String> {
     }
     
     /*
-     * Check the inputed pattern. If it is null, then a NullPointerException
-     * will be thrown out.
+     * Check the given pattern. If it is null, then a NullPointerException
+     * will be thrown.
      */
     private void checkNull(Pattern pattern) {
         if (null == pattern) {
@@ -2068,8 +1980,9 @@ public final class Scanner implements Iterator<String> {
         }
         return result.toString();
     }
+    
     /*
-     * remove positive and negative sign from the parameter stringBuilder, and
+     * Remove positive and negative sign from the parameter stringBuilder, and
      * return whether the input string is negative
      */
     private boolean removeLocaleSign(StringBuilder tokenBuilder) {
@@ -2145,7 +2058,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * Find prefixed delimiter
+     * Find prefix delimiter
      */
     private int findPreDelimiter() {
         int tokenStartIndex;
@@ -2205,7 +2118,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * Find postfixed delimiter
+     * Find postfix delimiter
      */
     private int findPostDelimiter() {
         int tokenEndIndex = 0;

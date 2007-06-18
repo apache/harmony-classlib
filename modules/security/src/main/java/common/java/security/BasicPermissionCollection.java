@@ -146,20 +146,17 @@ final class BasicPermissionCollection extends PermissionCollection {
     }
 
     /**
-     * Expected format is the following:
-     * <dl>
-     * <dt>boolean all_allowed
-     * <dd>This is set to true if this BasicPermissionCollection contains a
-     * BasicPermission with '*' as its permission name.
-     * <dt>Class&lt;T&gt; permClass
-     * <dd>The class to which all BasicPermissions in this
-     * BasicPermissionCollection belongs.
-     * <dt>Hashtable&lt;K,V&gt; permissions
-     * <dd>The BasicPermissions in this BasicPermissionCollection. All
-     * BasicPermissions in the collection must belong to the same class. The
-     * Hashtable is indexed by the BasicPermission name; the value of the
-     * Hashtable entry is the permission.
-     * </dl>
+     * Writes the object to the given stream for serialization.
+     * 
+     * The following fields are stored via an ObjectOutputStream.PutField,
+     * obtained by calling putFields() on the given output stream, in order to
+     * comply with the serialized form specification for this class:
+     * 
+     * <code>boolean all_allowed</code>, set to <code>allEnabled</code>
+     * <code>Hashtable permissions</code>,
+     * set to <code>items</code>
+     * <code>Class permClass</code>, set to
+     * <code>permClass</code>
      */
     private void writeObject(java.io.ObjectOutputStream out) throws IOException {
         ObjectOutputStream.PutField fields = out.putFields();

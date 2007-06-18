@@ -273,10 +273,9 @@ public abstract class Provider extends Properties {
     }
 
     /**
-     * 
-     * returns true if the provider implements the specified algorithm.  Caller must
-     * specify the cryptographic service and specify constraints via the
-     * attribute name the attribute value
+     * Returns true if this provider implements the given algorithm. Caller
+     * must specify the cryptographic service and specify constraints via the
+     * attribute name and value.
      * 
      * @param serv
      *            Crypto service
@@ -308,8 +307,8 @@ public abstract class Provider extends Properties {
         return false;
     }
 
-    // returns true if the implementation meets the constraint expressed by the
-    // specified attribute name/value pair.
+    // Returns true if this provider has the same value as is given for the
+    // given attribute
     private boolean checkAttribute(String servAlg, String attribute, String val) {
         
         String attributeValue = getPropertyIgnoreCase(servAlg + ' ' + attribute);

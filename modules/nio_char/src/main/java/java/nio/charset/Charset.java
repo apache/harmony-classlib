@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.ibm.icu4jni.charset.CharsetProviderICU;
+import org.apache.harmony.niochar.CharsetProviderImpl;
 
 /**
  * A charset defines a mapping between a Unicode character sequence and a byte
@@ -108,7 +108,7 @@ public abstract class Charset implements Comparable<Charset> {
      */
 
     // built in provider instance, assuming thread-safe
-    private static CharsetProviderICU _builtInProvider = null;
+    private static CharsetProviderImpl _builtInProvider = null;
 
     // cached built in charsets
     private static TreeMap<String, Charset> _builtInCharsets = null;
@@ -146,9 +146,9 @@ public abstract class Charset implements Comparable<Charset> {
          * charset provider.
          */
         _builtInProvider = AccessController
-                .doPrivileged(new PrivilegedAction<CharsetProviderICU>() {
-                    public CharsetProviderICU run() {
-                        return new CharsetProviderICU();
+                .doPrivileged(new PrivilegedAction<CharsetProviderImpl>() {
+                    public CharsetProviderImpl run() {
+                        return new CharsetProviderImpl();
                     }
                 });
     }
@@ -487,6 +487,9 @@ public abstract class Charset implements Comparable<Charset> {
                 return cs;
             }
             // Try built-in charsets
+            if(_builtInProvider == null) {
+                _builtInProvider = new CharsetProviderImpl();
+            }
             cs = _builtInProvider.charsetForName(charsetName);
             if (null != cs) {
                 cacheCharset(cs);

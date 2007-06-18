@@ -389,7 +389,6 @@ public abstract class CharsetDecoder {
                 status = endOfInput ? END : ONGOING;
                 if (endOfInput && remaining > 0) {
                     result = CoderResult.malformedForLength(remaining);
-                    in.position(in.position() + result.length());
                 } else {
                     return result;
                 }
@@ -412,9 +411,7 @@ public abstract class CharsetDecoder {
                 if (action != CodingErrorAction.IGNORE)
                     return result;
             }
-            if (!result.isMalformed()) {
-                in.position(in.position() + result.length());
-            }
+            in.position(in.position() + result.length());
         }
     }
 

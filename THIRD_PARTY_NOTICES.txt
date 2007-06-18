@@ -463,45 +463,29 @@ copyright holder.
 Notice for IETF RFC
 ===================
 
-Portions of Apache Harmony reference RFC 3280 - "Internet X.509 Public
-Key Infrastructure, Certificate and Certificate Revocation List (CRL) Profile".
-Portions of RFC 3280 are included in Harmony Javadoc for reference, and in
-accordance with the licensing terms for RFC3280, the license is included here :
-
-   Copyright (C) The Internet Society (2002).  All Rights Reserved.
-
-   This document and translations of it may be copied and furnished to
-   others, and derivative works that comment on or otherwise explain it
-   or assist in its implementation may be prepared, copied, published
-   and distributed, in whole or in part, without restriction of any
-   kind, provided that the above copyright notice and this paragraph are
-   included on all such copies and derivative works.  However, this
-   document itself may not be modified in any way, such as by removing
-   the copyright notice or references to the Internet Society or other
-   Internet organizations, except as needed for the purpose of
-   developing Internet standards in which case the procedures for
-   copyrights defined in the Internet Standards process must be
-   followed, or as required to translate it into languages other than
-   English.
-
-   The limited permissions granted above are perpetual and will not be
-   revoked by the Internet Society or its successors or assigns.
-
-   This document and the information contained herein is provided on an
-   "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
-   TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
-   BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
-   HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
-   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+Portions of Apache Harmony reference the following RFC specifications:
+RFC 2313 - PKCS #1: RSA Encryption
+RFC 2315 - PKCS #7: Cryptographic Message Syntax
+RFC 2781 - UTF-16, an encoding of ISO 10646
+RFC 2891 - LDAP Control Extension for Server Side Sorting of Search Results
+RFC 2985 - PKCS #9: Selected Object Classes and Attribute Types
+RFC 3161 - Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP)
+RFC 3280 - Internet X.509 Public Key Infrastructure, Certificate and
+    Certificate Revocation List (CRL) Profile
 
 
-Portions of Apache Harmony reference RFC 3161 - Internet X.509 Public Key 
-Infrastructure Time-Stamp Protocol (TSP). Portions of RFC 3161 are included 
-in Harmony Javadoc for reference, and in accordance with the licensing terms 
-for RFC 3161, the full copyright statement is here:
+Portions of these specifications are included in Harmony Javadoc for reference, and in
+accordance with the licensing terms, the licenses are included here:
 
+RFC 2313: Copyright (C) The Internet Society (1998).  All Rights Reserved.
+RFC 2315: Copyright (C) The Internet Society (1998).  All Rights Reserved.
+RFC 2781: Copyright (C) The Internet Society (2000).  All Rights Reserved.
+RFC 2891: Copyright (C) The Internet Society (2000).  All Rights Reserved.
+RFC 2985: Copyright (C) The Internet Society (2000).  All Rights Reserved.
+RFC 3161: Copyright (C) The Internet Society (2001).  All Rights Reserved.
+RFC 3280: Copyright (C) The Internet Society (2002).  All Rights Reserved.
 
-   Copyright (C) The Internet Society (2001).  All Rights Reserved.
+The following statement applies to each RFC:
 
    This document and translations of it may be copied and furnished to
    others, and derivative works that comment on or otherwise explain it
@@ -583,6 +567,7 @@ Source code for the Eclipse JDT Core Batch Compiler can be found at:
 
 Navigate to the version of ECJ used in this distribution, and the source is
 provided in a ZIP file in the section titled "JDT Core Batch Compiler".
+
 
 
 
