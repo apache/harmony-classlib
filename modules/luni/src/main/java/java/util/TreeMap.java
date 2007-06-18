@@ -906,16 +906,24 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
 		Comparable<K> object = null;
 		if (comparator == null) {
             object = toComparable(key);
+    		Entry<K, V> x = root;
+    		while (x != null) {
+    			result = object.compareTo(x.key);
+    			if (result == 0) {
+                    return x;
+                }
+    			x = result < 0 ? x.left : x.right;
+    		}
+        } else {
+    		Entry<K, V> x = root;
+    		while (x != null) {
+    			result = comparator.compare(key, x.key);
+    			if (result == 0) {
+                    return x;
+                }
+    			x = result < 0 ? x.left : x.right;
+    		}
         }
-		Entry<K, V> x = root;
-		while (x != null) {
-			result = object != null ? object.compareTo(x.key) : comparator
-					.compare(key, x.key);
-			if (result == 0) {
-                return x;
-            }
-			x = result < 0 ? x.left : x.right;
-		}
 		return null;
 	}
 
@@ -1264,28 +1272,39 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements SortedMap<K, V>,
                 fixup(x);
             }
 		}
+        y.left = y.right = y.parent = null;
 		size--;
 	}
 
 	private Entry<K, V> rbInsert(K object) {
 		int result = 0;
 		Entry<K, V> y = null;
-		if (size != 0) {
-			Comparable<K> key = null;
-			if (comparator == null) {
-				key = toComparable(object);
-			}
-			Entry<K, V> x = root;
-			while (x != null) {
-				y = x;
-				result = key != null ? key.compareTo(x.key) : comparator
-						.compare(object, x.key);
-				if (result == 0) {
-					return x;
-				}
-				x = result < 0 ? x.left : x.right;
-			}
-		}
+        if (size != 0) {
+            Comparable<K> key = null;
+            if (comparator == null) {
+                key = toComparable(object);
+                Entry<K, V> x = root;
+                while (x != null) {
+                    y = x;
+                    result = key.compareTo(x.key);
+                    if (result == 0) {
+                        return x;
+                    }
+                    x = result < 0 ? x.left : x.right;
+                }
+            } else {
+                Entry<K, V> x = root;
+                while (x != null) {
+                    y = x;
+                    result = comparator.compare(object, x.key);
+                    if (result == 0) {
+                        return x;
+                    }
+                    x = result < 0 ? x.left : x.right;
+                }
+            }
+
+        }
 
 		size++;
 		modCount++;
