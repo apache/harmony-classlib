@@ -215,6 +215,15 @@ public abstract class Policy {
     }
     
     /**
+     * A marker interface for Policy parameters.
+     * 
+     * @since 1.6
+     */
+    public static interface Parameters {
+        // a marker interface
+    }
+    
+    /**
      * A read-only empty PermissionCollection instance.
      * 
      * @since 1.6
