@@ -837,7 +837,7 @@ getPlatformIsExecutable (JNIEnv * env, char *path)
   result = hasPrivilegeInOtherGroups(env, &buffer, S_IXGRP);
   return -1 == result ? (buffer.st_mode & S_IXOTH) != 0 : result;
 }
-
+:
 I_32 
 hasPrivilegeInOtherGroups(JNIEnv * env, struct stat * buffer, mode_t attr) 
 {
@@ -862,4 +862,25 @@ hasPrivilegeInOtherGroups(JNIEnv * env, struct stat * buffer, mode_t attr)
       }
       hymem_free_memory(group);
       return result;    	
+}
+
+I_32
+setPlatformExecutable (JNIEnv * env, char *path, jboolean executable, jboolean ownerOnly)
+{
+  struct stat buffer;
+  mode_t mode;
+  if (stat (path, &buffer))
+    {
+      return 0;
+    }
+  mode = buffer.st_mode;
+  if (executable && ownerOnly)
+	  mode |= S_IXUSR;
+  else if (executable) 
+	  mode |= (S_IXUSR | S_IXGRP | S_IXOTH);
+  else if (ownerOnly)
+  	  mode &= (~S_IXUSR);
+  else
+      mode &= ~(S_IXUSR | S_IXGRP | S_IXOTH);
+  return chmod (path, mode) == 0;
 }
