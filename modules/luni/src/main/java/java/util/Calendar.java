@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
+import java.text.DateFormatSymbols;
 
 /**
  * Calendar is an abstract class which provides the conversion between Dates and
@@ -63,9 +64,35 @@ public abstract class Calendar implements Serializable, Cloneable,
 	protected boolean isTimeSet;
 
 	/**
+	 * A specifier for all styles.
+	 * 
+	 * @since 1.6
+	 */
+	public static final int ALL_STYLES = 0;
+
+	/**
+	 * A specifier for a short name
+	 * 
+	 * @since 1.6
+	 */
+	public static final int SHORT = 1;
+
+	/**
+	 * A specifier for a long name
+	 * 
+	 * @since 1.6
+	 */
+	public static final int LONG = 2;
+
+	/**
 	 * The time in milliseconds since January 1, 1970.
 	 */
 	protected long time;
+
+	/**
+	 * The version of the serialized data of the class
+	 */
+	int serialVersionOnStream = 1;
 
 	transient int lastTimeFieldSet;
 
@@ -797,6 +824,149 @@ public abstract class Calendar implements Serializable, Cloneable,
 			return 0;
 		}
 		return -1;
+	}
+
+	/**
+	 * answers the display name for given field, style and locale
+	 * 
+	 * @param field
+	 *            the field of the calendar
+	 * @param style
+	 *            the style of the name
+	 * @param locale
+	 *            the locale to use
+	 * @return the display name
+	 * @since 1.6
+	 */
+	public String getDisplayName(int field, int style, Locale locale) {
+		if (field < 0 || field >= FIELD_COUNT) {
+			throw new IllegalArgumentException();
+		}
+		if (ALL_STYLES == style) {
+			if (!lenient) {
+				throw new IllegalArgumentException();
+			}
+			style = SHORT;
+		}
+		if (SHORT != style && LONG != style) {
+			throw new IllegalArgumentException();
+		}
+		DateFormatSymbols symbol = new DateFormatSymbols(locale);
+		int fid = get(field);
+		switch (field) {
+		case MONTH:
+			return (LONG == style ? symbol.getMonths()[fid] : symbol
+					.getShortMonths()[fid]);
+		case DAY_OF_WEEK:
+			return (LONG == style ? symbol.getWeekdays()[fid] : symbol
+					.getShortWeekdays()[fid]);
+		case AM_PM:
+			return symbol.getAmPmStrings()[fid];
+		case ERA:
+			return symbol.getEras()[fid];
+		default:
+			return null;
+		}
+	}
+
+	/**
+	 * answers a map of display names for given field, style and locale
+	 * 
+	 * @param field
+	 *            the field of the calendar
+	 * @param style
+	 *            the style of the name
+	 * @param locale
+	 *            the locale to use
+	 * @return a map of display names
+	 * @since 1.6
+	 */
+	public Map<String, Integer> getDisplayNames(int field, int style,
+			Locale locale) {
+		if (field < 0 || field >= FIELD_COUNT) {
+			throw new IllegalArgumentException();
+		}
+		if (ALL_STYLES != style && SHORT != style && LONG != style) {
+			throw new IllegalArgumentException();
+		}
+		complete();
+		DateFormatSymbols symbol = new DateFormatSymbols(locale);
+		Map<String, Integer> ret = new HashMap<String, Integer>();
+		switch (field) {
+		case MONTH:
+			String[] months;
+			switch (style) {
+			case LONG:
+				months = symbol.getMonths();
+				break;
+			case SHORT:
+				months = symbol.getShortMonths();
+				break;
+			case ALL_STYLES:
+				months = symbol.getMonths();
+				for (int i = 0; i < months.length; i++) {
+					if (!months[i].equals("") && months[i] != null) {
+						ret.put(months[i], i);
+					}
+				}
+				months = symbol.getShortMonths();
+				break;
+			default:
+				throw new IllegalArgumentException();
+			}
+			for (int i = 0; i < months.length; i++) {
+				if (!months[i].equals("") && months[i] != null) {
+					ret.put(months[i], i);
+				}
+			}
+			break;
+		case DAY_OF_WEEK:
+			String[] weekDays;
+			switch (style) {
+			case LONG:
+				weekDays = symbol.getWeekdays();
+				break;
+			case SHORT:
+				weekDays = symbol.getShortWeekdays();
+				break;
+			case ALL_STYLES:
+				weekDays = symbol.getWeekdays();
+				for (int i = 0; i < weekDays.length; i++) {
+					if (!weekDays[i].equals("") && weekDays[i] != null) {
+						ret.put(weekDays[i], i);
+					}
+				}
+				weekDays = symbol.getWeekdays();
+				break;
+			default:
+				throw new IllegalArgumentException();
+			}
+			for (int i = 0; i < weekDays.length; i++) {
+				if (!weekDays[i].equals("") && weekDays[i] != null) {
+					ret.put(weekDays[i], i);
+				}
+			}
+			break;
+		case AM_PM:
+			String[] amPms = symbol.getAmPmStrings();
+			for (int i = 0; i < amPms.length; i++) {
+				if (!amPms[i].equals("") && amPms[i] != null) {
+					ret.put(amPms[i], i);
+				}
+			}
+			break;
+		case ERA:
+			String[] eras = symbol.getEras();
+			for (int i = 0; i < eras.length; i++) {
+				if (!eras[i].equals("") && eras[i] != null) {
+					ret.put(eras[i], i);
+				}
+			}
+			break;
+		default:
+			ret = null;
+		}
+		return ret;
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = {
