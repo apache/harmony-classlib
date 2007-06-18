@@ -25,23 +25,24 @@
 #include "Glyph.h"
 #include "Outline.h"
 #include "TTCurve.h"
+#include "TypeDefinition.h"
 
 typedef struct
 {
-	short format; //format of the 'loca' table
-	unsigned long* offsets;
+	fshort format; //format of the 'loca' table
+	uflong* offsets;
 } GlyphOffsets;
 
 typedef struct
 {
-	short format;
+	fshort format;
 	void* TableEncode;
 } TableEncode;
 
 typedef struct
 {
-	unsigned short adwance_width;
-	short lsb;
+	ufshort adwance_width;
+	fshort lsb;
 }HMetrics;
 
 class TTGlyph;
@@ -50,48 +51,48 @@ class TTFont:public Font
 {
 friend class TTGlyph;
 private:
-	char* _pathToFile; // path to font file
-	wchar_t *_psName; // postscript name of font
+	fchar* _pathToFile; // path to font file
+	fwchar_t *_psName; // postscript name of font
 	GlyphOffsets _glyphOffsets; //glyphs offsets in font file
 	TableEncode _tableEncode; // table with indexes of glyphs
-	unsigned short _unitsPerEm; //size of em-square
-	unsigned short _numOfHMetrics; // for 'hmtx' table
+	ufshort _unitsPerEm; //size of em-square
+	ufshort _numOfHMetrics; // for 'hmtx' table
 	HMetrics* _hMetrics; // horizontal metrics for all glyphs
 	FILE* _ttfile;
 
-	unsigned short getGlyphIndex(unsigned short symb);
-	unsigned short getUnicodeByIndex(unsigned short ind);
-//	friend unsigned short TTGlyph::getGlyphIndex(unsigned short symb);
-//	friend int TTGlyph::initialize();
+	ufshort getGlyphIndex(ufshort symb);
+	ufshort getUnicodeByIndex(ufshort ind);
+//	friend ufshort TTGlyph::getGlyphIndex(ufshort symb);
+//	friend fint TTGlyph::initialize();
 
 public:
-	TTFont(char* pathToFile);
+	TTFont(fchar* pathToFile);
 	~TTFont(void);
 	
-	Glyph* createGlyph(unsigned short unicode, unsigned short size);
-	wchar_t* getPSName();
-	float* getLineMetrics(); 
-	bool canDisplay(unsigned short c);
+	Glyph* createGlyph(ufshort unicode, ufshort size);
+	fwchar_t* getPSName();
+	ffloat* getLineMetrics(); 
+	bool canDisplay(ufshort c);
 
-//	float* GetExtraMetrics();
+//	ffloat* GetExtraMetrics();
 };
 
 
 class TTGlyph : public Glyph {
 private:
 	TTFont* _ttfont;			
-	unsigned short _index; 
+	ufshort _index; 
 	TTCurve* _curve;
-	short _boundingRect[4]; 
+	fshort _boundingRect[4]; 
 
 	
-	friend Glyph* TTFont::createGlyph(unsigned short unicode, unsigned short size);
+	friend Glyph* TTFont::createGlyph(ufshort unicode, ufshort size);
 
 public:
-	TTGlyph(TTFont *font, unsigned short unicode, unsigned short size);
+	TTGlyph(TTFont *font, ufshort unicode, ufshort size);
 	~TTGlyph();
 	Outline* getOutline(void);
-	float* getGlyphMetrics(void);
+	ffloat* getGlyphMetrics(void);
 };
 
 #endif //__TTFONT_H__

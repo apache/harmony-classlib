@@ -22,19 +22,20 @@
 #define __SHARED_GLYPH_CLASS_H
 
 #include "Outline.h"
+#include "TypeDefinition.h"
 
 class Glyph {
 public:
 	Glyph();
 	virtual ~Glyph(void);
 	virtual Outline* getOutline(void);
-	virtual float* getGlyphMetrics(void);
+	virtual ffloat* getGlyphMetrics(void);
 
 //protected:
-	unsigned short _size;
-	unsigned short _unicode;	
-	float _advanceX;
-	float _advanceY;
+	ufshort _size;
+	ufshort _unicode;	
+	ffloat _advanceX;
+	ffloat _advanceY;
 };
 
 #endif //__SHARED_GLYPH_CLASS_H

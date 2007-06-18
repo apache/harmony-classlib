@@ -17,9 +17,11 @@
 #ifndef __TYPE_1_FL_TREE_H 
 #define __TYPE_1_FL_TREE_H 
 
-static const unsigned short FONT_NOT_FOUND_UNICODE_VALUE = 0xffff;
+#include "TypeDefinition.h"
 
-static const unsigned char GLYPH_LIST[64323] = {
+static const ufshort FONT_NOT_FOUND_UNICODE_VALUE = 0xffff;
+
+static const ufchar GLYPH_LIST[64323] = {
 193,  0, 65,  0,  7,248,220,194,  0, 66,  0, 14,248, 61,195,  0,
  67,  0, 21,246,122,196,  0, 68,  0, 28,244,196,197,  0, 69,  0,
  35,241,128,198,  0, 70,  0, 42,240,246,199,  0, 71,  0, 49,239,
@@ -4042,7 +4044,7 @@ static const unsigned char GLYPH_LIST[64323] = {
 111,238,  1,226,251, 56,  0,  0,115,109, 97,108,236,247,230,  0,
   0,  0,  0}; 
 
-static const unsigned short STANDART_ENCODING[256] = {
+static const ufshort STANDART_ENCODING[256] = {
     0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,

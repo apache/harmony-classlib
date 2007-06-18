@@ -21,14 +21,16 @@
 #ifndef __TYPE_1_ENCODED_VALUE_CLASS_H
 #define __TYPE_1_ENCODED_VALUE_CLASS_H
 
+#include "TypeDefinition.h"
+
 class EncodedValue {
 public:
 	EncodedValue(void);
 	~EncodedValue(void);  
 
-	unsigned short number;
-	unsigned short length;
-	char* text;
+	ufshort number;
+	ufshort length;
+	fchar* text;
 };
 
 #endif //__TYPE_1_ENCODED_VALUE_CLASS_H

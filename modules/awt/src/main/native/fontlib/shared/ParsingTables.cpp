@@ -23,34 +23,34 @@
 
 #include "Tables.h"
 
-static inline unsigned long dwReverse(unsigned long data)
+static inline uflong dwReverse(uflong data)
 {
-    unsigned char *dataElems = (unsigned char *) &data;
-    return (unsigned long)((dataElems[0]<<24) | (dataElems[1]<<16) | (dataElems[2]<<8) | dataElems[3]);
+    ufchar *dataElems = (ufchar *) &data;
+    return (uflong)((dataElems[0]<<24) | (dataElems[1]<<16) | (dataElems[2]<<8) | dataElems[3]);
 }
 
 /* Reverses WORD bytes order */
-static inline unsigned short wReverse(unsigned short data)
+static inline ufshort wReverse(ufshort data)
 {
-    return (unsigned short)(((data<<8) & 0xFF00) | ((data>>8) & 0x00FF));
+    return (ufshort)(((data<<8) & 0xFF00) | ((data>>8) & 0x00FF));
 }
 
 /* Reverses WORD bytes order */
-static inline short wReverse(short data)
+static inline fshort wReverse(fshort data)
 {
-    return (short)(((data<<8) & 0xFF00) | ((data>>8) & 0x00FF));
+    return (fshort)(((data<<8) & 0xFF00) | ((data>>8) & 0x00FF));
 }
 
 /* Searching of table, 
 	return TRUE if table founded */
-bool searchTable(unsigned long table, unsigned long* offset, FILE* tt_file)
+bool searchTable(uflong table, uflong* offset, FILE* tt_file)
 {
     Table_Offset tableOffset;
     Table_Directory tableDirectory;
 
     bool isFound = false;
-    int size;
-    int i;
+    fint size;
+    fint i;
 
     /* Open font file stream */
 //	if( (tt_file = fopen( fPath,"rb")) == NULL ){
@@ -58,7 +58,7 @@ bool searchTable(unsigned long table, unsigned long* offset, FILE* tt_file)
 //		return 0;
 //  }
 
-	size = (int)fseek(tt_file,0,SEEK_SET);
+	size = (fint)fseek(tt_file,0,SEEK_SET);
 	if (size != 0)
 	{
 #ifdef DEBUG
@@ -67,7 +67,7 @@ bool searchTable(unsigned long table, unsigned long* offset, FILE* tt_file)
 		return 0;
 	}
 
-    size = (int)fread(&tableOffset, sizeof(Table_Offset), 1, tt_file);
+    size = (fint)fread(&tableOffset, sizeof(Table_Offset), 1, tt_file);
     if (size != 1){
 #ifdef DEBUG
 		printf("Error reading font file\n");
@@ -88,14 +88,14 @@ bool searchTable(unsigned long table, unsigned long* offset, FILE* tt_file)
     /* look for 'head' table */
     for(i=0; i< tableOffset.num_tables; i++)
 	{
-		size = (int)fread(&tableDirectory, sizeof(Table_Directory), 1, tt_file);
+		size = (fint)fread(&tableDirectory, sizeof(Table_Directory), 1, tt_file);
         if ( size != 1){
 #ifdef DEBUG
             printf("Error reading Table Directory from file.");
 #endif
             return 0;
         }
-        if (* (unsigned long*)tableDirectory.tag == table){
+        if (* (uflong*)tableDirectory.tag == table){
             isFound = true;
 //            tableDirectory.length = dwReverse(tableDirectory.length);
 //            tableDirectory.offset = dwReverse(tableDirectory.offset);
@@ -106,17 +106,17 @@ bool searchTable(unsigned long table, unsigned long* offset, FILE* tt_file)
 	return isFound;
 }
 
-int getTableEncode_4(FILE* tt_file, TableEncode* te, unsigned short table_len)
+fint getTableEncode_4(FILE* tt_file, TableEncode* te, ufshort table_len)
 {
-	unsigned short* tableEncode;
-	unsigned short length;
-	int size, i; 
+	ufshort* tableEncode;
+	ufshort length;
+	fint size, i; 
 
-	length = (table_len - sizeof(Table_encode_header))/sizeof(unsigned short); // in USHORTs
-	tableEncode = new unsigned short[length];
+	length = (table_len - sizeof(Table_encode_header))/sizeof(ufshort); // in USHORTs
+	tableEncode = new ufshort[length];
 	
 	/* reading tail of the table */
-	size = (int)fread(tableEncode,sizeof(unsigned short),length,tt_file);
+	size = (fint)fread(tableEncode,sizeof(ufshort),length,tt_file);
 	if(size != length)
 	{
 #ifdef DEBUG
@@ -136,26 +136,37 @@ int getTableEncode_4(FILE* tt_file, TableEncode* te, unsigned short table_len)
 	return 0;
 }
 
-#ifndef WIN32
-static inline bool compare(wchar_t* wstr, char* str)
+//#ifndef WIN32
+static inline bool compare(fwchar_t* wstr, fchar* str)
 {
-    char cstr[256];
-	wcstombs(cstr,wstr,256);
-	return !strcasecmp(cstr,str);
-}
-#endif
+//  fchar cstr[256];
+//	wcstombs(cstr,wstr,256);
+//	return !strcasecmp(cstr,str);
 
-int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleName* fontStyle)
+	fchar tmpstr[256];
+	fwchar_t* tmpwstr = wstr;
+    fint i = 0;
+	for (; i<= fwcslen(tmpwstr); i++)
+	{
+        tmpstr[i] = (fchar)((*wstr) & 0xFF);
+	}
+	tmpstr[i]=0;
+
+	return !strcmp(tmpstr,str);
+}
+//#endif
+
+fint parseNameTable(FILE* tt_file, fwchar_t** familyName, fwchar_t** psName, StyleName* fontStyle)
 {
-    unsigned long dwTable = *(unsigned long*)NAME_TABLE;
-    unsigned long offset;
+    uflong dwTable = *(uflong*)NAME_TABLE;
+    uflong offset;
     Table_name tableName;
     Name_Entry nameRecord;
-    long curPos;
-	unsigned short *subFamilyName;
+    flong curPos;
+	ufshort *subFamilyName;
 
-    int i, j;
-    int size;
+    fint i, j;
+    fint size;
 	bool inFamilyNameCase = false, inSubfamilyNameCase = false, inPSNameCase = false;
 
     if (searchTable(dwTable, &offset, tt_file))
@@ -170,7 +181,7 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
         }
 
 		/* read 'name' table header */
-        size = (int)fread(&tableName, sizeof(Table_name) - sizeof(Name_Entry), 1, tt_file);
+        size = (fint)fread(&tableName, sizeof(Table_name) - sizeof(Name_Entry), 1, tt_file);
         if (size != 1){
 #ifdef DEBUG
             printf("Error reading Table 'Name' from file.");
@@ -184,7 +195,7 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
         /* enumerating NameRecords and finding Family Name value */
         for(i=0; i < tableName.num_name_records; i++)
 		{
-            size = (int)fread(&nameRecord, sizeof(Name_Entry), 1, tt_file);
+            size = (fint)fread(&nameRecord, sizeof(Name_Entry), 1, tt_file);
             if (size != 1)
 			{
 #ifdef DEBUG
@@ -217,13 +228,13 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 						}
 
 
-//		                ZeroMemory(&fontFamilyName, nameRecord.string_length/2 + sizeof(unsigned short));
+//		                ZeroMemory(&fontFamilyName, nameRecord.string_length/2 + sizeof(ufshort));
 
-						unsigned short *fontFamilyName = new unsigned short[nameRecord.string_length/2+1];
+						ufshort *fontFamilyName = new ufshort[nameRecord.string_length/2+1];
 
 //						ZeroMemory(&(fontName[nameRecord.string_length]),1);
 
-						size = (int)fread(fontFamilyName, sizeof(unsigned short), nameRecord.string_length/2, tt_file);
+						size = (fint)fread(fontFamilyName, sizeof(ufshort), nameRecord.string_length/2, tt_file);
 						if (size != nameRecord.string_length/2)
 						{
 #ifdef DEBUG
@@ -237,24 +248,24 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 						for(j=0; j < nameRecord.string_length/2; j++)
 						{
 							(fontFamilyName)[j] = wReverse((fontFamilyName)[j]);
-//printf("%c",(char)(fontFamilyName)[j]);
+//printf("%c",(fchar)(fontFamilyName)[j]);
 						}
 //printf("\n");
 						(fontFamilyName)[j] = 0;
 						inFamilyNameCase = true;
 
-#ifdef WIN32
-						*familyName = (wchar_t*)fontFamilyName;
-#else
+//#ifdef WIN32
+						*familyName = (fwchar_t*)fontFamilyName;
+/*#else
 //TODO: To unify this cycle and previous
-						*familyName = new wchar_t[nameRecord.string_length/2+1];
+						*familyName = new fwchar_t[nameRecord.string_length/2+1];
 
 						for(j=0; j < nameRecord.string_length/2+1; j++)
 						{
-                            (*familyName)[j] = (wchar_t)fontFamilyName[j];
+                            (*familyName)[j] = (fwchar_t)fontFamilyName[j];
 						}
 						delete fontFamilyName;
-#endif
+#endif*/
 
 						size = fseek( tt_file, curPos, SEEK_SET);
 				        if (size != 0){
@@ -283,9 +294,9 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 							return -1;
 						}
 
-						unsigned short *fontPSName = new unsigned short[nameRecord.string_length/2+1];
+						ufshort *fontPSName = new ufshort[nameRecord.string_length/2+1];
 
-						size = (int)fread(fontPSName, sizeof(unsigned short), nameRecord.string_length/2, tt_file);
+						size = (fint)fread(fontPSName, sizeof(ufshort), nameRecord.string_length/2, tt_file);
 						if (size != nameRecord.string_length/2)
 						{
 #ifdef DEBUG
@@ -303,18 +314,18 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 						(fontPSName)[j] = 0;
 						inPSNameCase = true;
 
-#ifdef WIN32
-						*psName = (wchar_t*)fontPSName;
-#else
+//#ifdef WIN32
+						*psName = (fwchar_t*)fontPSName;
+/*#else
 
-						*psName = new wchar_t[nameRecord.string_length/2+1];
+						*psName = new fwchar_t[nameRecord.string_length/2+1];
 //TODO: To unify this cycle and previous
 						for(j=0; j < nameRecord.string_length/2+1; j++)
 						{
-                            (*psName)[j] = (wchar_t)fontPSName[j];
+                            (*psName)[j] = (fwchar_t)fontPSName[j];
 						}
 						delete fontPSName;
-#endif
+#endif*/
 
 						size = fseek( tt_file, curPos, SEEK_SET);
 				        if (size != 0){
@@ -343,13 +354,13 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 							return -1;
 						}
 
-//					    ZeroMemory(&fontName, nameRecord.string_length + sizeof(unsigned short));
+//					    ZeroMemory(&fontName, nameRecord.string_length + sizeof(ufshort));
 
-						subFamilyName = new unsigned short[nameRecord.string_length/2+1];
+						subFamilyName = new ufshort[nameRecord.string_length/2+1];
 
 //						ZeroMemory(&(fontName[nameRecord.string_length]),1);
 
-						size = (int)fread(subFamilyName, sizeof(unsigned short), nameRecord.string_length/2, tt_file);
+						size = (fint)fread(subFamilyName, sizeof(ufshort), nameRecord.string_length/2, tt_file);
 					    if (size != nameRecord.string_length/2)
 						{
 #ifdef DEBUG
@@ -366,21 +377,21 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 						}
 						subFamilyName[j] = 0;
 
-#ifdef WIN32
+/*#ifdef WIN32
 
-#define COMPARE_IT		(!_wcsicmp((wchar_t *)subFamilyName,L"Italic"))
-#define COMPARE_BD		(!_wcsicmp((wchar_t *)subFamilyName,L"Bold"))
-#define COMPARE_BDIT	(!_wcsicmp((wchar_t *)subFamilyName,L"Bold Italic"))
-#define COMPARE_REG		(!_wcsicmp((wchar_t *)subFamilyName,L"Regular") || !_wcsicmp((wchar_t *)subFamilyName,L"Normal"))
+#define COMPARE_IT		(!_wcsicmp((fwchar_t *)subFamilyName,L"Italic"))
+#define COMPARE_BD		(!_wcsicmp((fwchar_t *)subFamilyName,L"Bold"))
+#define COMPARE_BDIT	(!_wcsicmp((fwchar_t *)subFamilyName,L"Bold Italic"))
+#define COMPARE_REG		(!_wcsicmp((fwchar_t *)subFamilyName,L"Regular") || !_wcsicmp((fwchar_t *)subFamilyName,L"Normal"))
 
-#else
+#else*/
 
-#define COMPARE_IT		(compare((wchar_t *)subFamilyName, "Italic"))
-#define COMPARE_BD		(compare((wchar_t *)subFamilyName, "Bold"))
-#define COMPARE_BDIT	(compare((wchar_t *)subFamilyName, "Bold Italic"))
-#define COMPARE_REG		(compare((wchar_t *)subFamilyName, "Regular") || compare((wchar_t *)subFamilyName, "Normal"))
+#define COMPARE_IT		(compare((fwchar_t *)subFamilyName, "Italic"))
+#define COMPARE_BD		(compare((fwchar_t *)subFamilyName, "Bold"))
+#define COMPARE_BDIT	(compare((fwchar_t *)subFamilyName, "Bold Italic"))
+#define COMPARE_REG		(compare((fwchar_t *)subFamilyName, "Regular") || compare((fwchar_t *)subFamilyName, "Normal"))
 
-#endif
+//#endif
 
 						if COMPARE_IT
 						{
@@ -434,13 +445,13 @@ int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleN
 	return 0;
 }
 
-int parseHeadTable(FILE* tt_file, float* bbox, short* format, unsigned short* unitsPerEm)
+fint parseHeadTable(FILE* tt_file, ffloat* bbox, fshort* format, ufshort* unitsPerEm)
 {
-    unsigned long hTable = *(unsigned long*)HEAD_TABLE;
-	unsigned long offset;
+    uflong hTable = *(uflong*)HEAD_TABLE;
+	uflong offset;
     Table_head tableHead;
 
-    int size;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -454,7 +465,7 @@ int parseHeadTable(FILE* tt_file, float* bbox, short* format, unsigned short* un
         }
 
 		/* read 'head' table header */
-        size = (int)fread(&tableHead, sizeof(Table_head), 1, tt_file);
+        size = (fint)fread(&tableHead, sizeof(Table_head), 1, tt_file);
         if (size != 1){
 //            printf("Error reading Table 'Head' from file.");
             return -1;
@@ -485,8 +496,8 @@ int parseHeadTable(FILE* tt_file, float* bbox, short* format, unsigned short* un
 //	HDC hDC = GetDC(NULL);
 //	HDC hDC = GetDC(NULL);
 //	Table_head tableHead1;
-//	unsigned long tbl = (unsigned long)"head";
-//	int m = GetFontData(hDC,tbl,(unsigned long)offset,&tableHead1,sizeof(Table_head));
+//	uflong tbl = (uflong)"head";
+//	fint m = GetFontData(hDC,tbl,(uflong)offset,&tableHead1,sizeof(Table_head));
 
 // ******* Validating data *********
 //	return *bbox;
@@ -494,13 +505,13 @@ int parseHeadTable(FILE* tt_file, float* bbox, short* format, unsigned short* un
 	return 0;
 }
 
-int parseMaxpTable(FILE* tt_file, unsigned short* numGlyphs)
+fint parseMaxpTable(FILE* tt_file, ufshort* numGlyphs)
 {
-    unsigned long hTable = *(unsigned long*)MAXP_TABLE;
-	unsigned long offset;
+    uflong hTable = *(uflong*)MAXP_TABLE;
+	uflong offset;
     Table_maxp tableMaxp;
 
-    int size;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -512,7 +523,7 @@ int parseMaxpTable(FILE* tt_file, unsigned short* numGlyphs)
         }
 
 		/* read 'maxp' table header */
-        size = (int)fread(&tableMaxp, sizeof(Table_maxp), 1, tt_file);
+        size = (fint)fread(&tableMaxp, sizeof(Table_maxp), 1, tt_file);
         if (size != 1){
 //            printf("Error reading Table 'maxp' from file.");
             return -1;
@@ -534,13 +545,13 @@ int parseMaxpTable(FILE* tt_file, unsigned short* numGlyphs)
 	return 0;
 }
 
-int parseHheaTable(FILE* tt_file, unsigned short* numOfHMetrics, float* ascent, float* descent, float* lineGap)
+fint parseHheaTable(FILE* tt_file, ufshort* numOfHMetrics, ffloat* ascent, ffloat* descent, ffloat* lineGap)
 {
-    unsigned long hTable = *(unsigned long*)HHEA_TABLE;
-	unsigned long offset;
+    uflong hTable = *(uflong*)HHEA_TABLE;
+	uflong offset;
     Table_hhea tableHhea;
 
-    int size;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -552,7 +563,7 @@ int parseHheaTable(FILE* tt_file, unsigned short* numOfHMetrics, float* ascent, 
         }
 
 	/* read 'hhea' table header */
-        size = (int)fread(&tableHhea, sizeof(Table_hhea), 1, tt_file);
+        size = (fint)fread(&tableHhea, sizeof(Table_hhea), 1, tt_file);
         if (size != 1){
 //            printf("Error reading Table 'hhea' from file.");
             return -1;
@@ -570,13 +581,13 @@ int parseHheaTable(FILE* tt_file, unsigned short* numOfHMetrics, float* ascent, 
 	return 0;
 }
 
-int parseOs2Table(FILE* tt_file, float* strikeOutSize, float* strikeOutOffset)
+fint parseOs2Table(FILE* tt_file, ffloat* strikeOutSize, ffloat* strikeOutOffset)
 {
-    unsigned long hTable = *(unsigned long*)OS2_TABLE;
-	unsigned long offset;
+    uflong hTable = *(uflong*)OS2_TABLE;
+	uflong offset;
     Table_os2 tableOs2;
 
-    int size;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -588,7 +599,7 @@ int parseOs2Table(FILE* tt_file, float* strikeOutSize, float* strikeOutOffset)
         }
 
 	/* read 'OS/2' table header */
-        size = (int)fread(&tableOs2, sizeof(Table_os2), 1, tt_file);
+        size = (fint)fread(&tableOs2, sizeof(Table_os2), 1, tt_file);
         if (size != 1){
 //            printf("Error reading Table 'OS/2' from file.");
             return -1;
@@ -608,13 +619,13 @@ int parseOs2Table(FILE* tt_file, float* strikeOutSize, float* strikeOutOffset)
 	return 0;
 }
 
-int parsePostTable(FILE* tt_file, short* uOffset, short* uThickness)
+fint parsePostTable(FILE* tt_file, fshort* uOffset, fshort* uThickness)
 {
-    unsigned long hTable = *(unsigned long*)POST_TABLE;
-	unsigned long offset;
+    uflong hTable = *(uflong*)POST_TABLE;
+	uflong offset;
     Table_post tablePost;
 
-    int size;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -626,7 +637,7 @@ int parsePostTable(FILE* tt_file, short* uOffset, short* uThickness)
         }
 
 	/* read 'post' table header */
-        size = (int)fread(&tablePost, sizeof(Table_post), 1, tt_file);
+        size = (fint)fread(&tablePost, sizeof(Table_post), 1, tt_file);
         if (size != 1){
 //            printf("Error reading Table 'post' from file.");
             return -1;
@@ -642,12 +653,12 @@ int parsePostTable(FILE* tt_file, short* uOffset, short* uThickness)
 	return 0;
 }
 
-int parseHmtxTable(FILE* tt_file, unsigned short numOfHMetrics, HMetrics** hm)
+fint parseHmtxTable(FILE* tt_file, ufshort numOfHMetrics, HMetrics** hm)
 {
-    unsigned long hTable = *(unsigned long*)HMTX_TABLE;
-	unsigned long offset;
+    uflong hTable = *(uflong*)HMTX_TABLE;
+	uflong offset;
 
-    int size;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -660,14 +671,14 @@ int parseHmtxTable(FILE* tt_file, unsigned short numOfHMetrics, HMetrics** hm)
 		/* read 'hmtx' table */
 		*hm = new HMetrics[numOfHMetrics];
 
-        size = (int)fread(*hm, sizeof(HMetrics), numOfHMetrics, tt_file);
+        size = (fint)fread(*hm, sizeof(HMetrics), numOfHMetrics, tt_file);
         if (size != numOfHMetrics){
 			delete[] hm;
 //            printf("Error reading Table 'hmtx' from file.");
             return -1;
         }
 
-		for (int i=0; i<numOfHMetrics;i++)
+		for (fint i=0; i<numOfHMetrics;i++)
 		{
 			(*hm)[i].adwance_width = wReverse((*hm)[i].adwance_width);
 		}
@@ -680,19 +691,19 @@ int parseHmtxTable(FILE* tt_file, unsigned short numOfHMetrics, HMetrics** hm)
 	return 0;
 }
 
-int parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, unsigned short numGlyphs)
+fint parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, ufshort numGlyphs)
 {
-	unsigned long hTable = *(unsigned long*)LOCA_TABLE;
-	unsigned long gTable = *(unsigned long*)GLYF_TABLE;
-	unsigned long offset,localGlyfOffset;
+	uflong hTable = *(uflong*)LOCA_TABLE;
+	uflong gTable = *(uflong*)GLYF_TABLE;
+	uflong offset,localGlyfOffset;
 
-	unsigned long *gLongOffsets = NULL;
-	unsigned short *gShortOffsets = NULL;
-    int size, i;
+	uflong *gLongOffsets = NULL;
+	ufshort *gShortOffsets = NULL;
+    fint size, i;
 
-	gLongOffsets = new unsigned long[numGlyphs+1];
+	gLongOffsets = new uflong[numGlyphs+1];
 	if (!(*gOffsets).format)
-		gShortOffsets = new unsigned short[numGlyphs+1];
+		gShortOffsets = new ufshort[numGlyphs+1];
 
     if (searchTable(hTable, &offset, tt_file) && searchTable(gTable,&localGlyfOffset,tt_file))
 	{
@@ -715,7 +726,7 @@ int parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, unsigned short numGlyp
 		/* read 'loca' table */
 		if (gOffsets->format)
 		{
-			size = (int)fread(gLongOffsets, sizeof(long),numGlyphs+1, tt_file);
+			size = (fint)fread(gLongOffsets, sizeof(flong),numGlyphs+1, tt_file);
 			if (size != numGlyphs+1)
 			{
 //				printf("Error reading Table 'loca' from file.");
@@ -727,7 +738,7 @@ int parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, unsigned short numGlyp
 				gLongOffsets[i] = dwReverse(gLongOffsets[i])+localGlyfOffset;
 		}else
 		{
-			size = (int)fread(gShortOffsets, sizeof(short), numGlyphs+1, tt_file);
+			size = (fint)fread(gShortOffsets, sizeof(fshort), numGlyphs+1, tt_file);
 			if (size != numGlyphs+1)
 			{
 //				printf("Error reading Table 'loca' from file.");
@@ -749,17 +760,17 @@ int parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, unsigned short numGlyp
 	return 0;
 };
 
-int parseCmapTable(FILE* tt_file, TableEncode* te)
+fint parseCmapTable(FILE* tt_file, TableEncode* te)
 {
-	unsigned long hTable = *(unsigned long*)CMAP_TABLE;
-	unsigned long offset;
+	uflong hTable = *(uflong*)CMAP_TABLE;
+	uflong offset;
     Table_cmap tableCmap;
 	Cmap_Entry cmapRecord;
 	Table_encode_header tableEncodeHeader;
-	long curPos;
+	flong curPos;
 
-    int i;
-    int size;
+    fint i;
+    fint size;
 
     if (searchTable(hTable, &offset, tt_file))
 	{
@@ -771,7 +782,7 @@ int parseCmapTable(FILE* tt_file, TableEncode* te)
         }
 
 		/* read 'cmap' table header */
-        size = (int)fread(&tableCmap, sizeof(Table_cmap) - sizeof(Cmap_Entry), 1, tt_file);
+        size = (fint)fread(&tableCmap, sizeof(Table_cmap) - sizeof(Cmap_Entry), 1, tt_file);
         if (size != 1){
 //            printf("Error reading Table 'cmap' from file.");
             return -1;
@@ -781,7 +792,7 @@ int parseCmapTable(FILE* tt_file, TableEncode* te)
 
 		for(i=0; i < tableCmap.numSubTables; i++)
 		{
-            size = (int)fread(&cmapRecord, sizeof(Cmap_Entry), 1, tt_file);
+            size = (fint)fread(&cmapRecord, sizeof(Cmap_Entry), 1, tt_file);
             if (size != 1)
 			{
 //                printf("Error reading cmap Record from file.");
@@ -807,7 +818,7 @@ int parseCmapTable(FILE* tt_file, TableEncode* te)
 					}
 
 
-					size = (int)fread(&tableEncodeHeader, sizeof(Table_encode_header), 1, tt_file);
+					size = (fint)fread(&tableEncodeHeader, sizeof(Table_encode_header), 1, tt_file);
 					if (size != 1)
 					{
 //						printf("Error reading Table Encode from file.");
@@ -820,9 +831,9 @@ int parseCmapTable(FILE* tt_file, TableEncode* te)
 
 					if (tableEncodeHeader.format == 0 && te->TableEncode == NULL) 
 					{
-						unsigned char *map = new unsigned char[256];
+						ufchar *map = new ufchar[256];
 						te->format = 0;
-                        size = (int)fread(map, sizeof(unsigned char), 256, tt_file);
+                        size = (fint)fread(map, sizeof(ufchar), 256, tt_file);
 						if (size != 256)
 						{
 //							printf("Error reading map format 0");
@@ -854,29 +865,29 @@ int parseCmapTable(FILE* tt_file, TableEncode* te)
 	return 0;
 }
 
-int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyphs, unsigned short glyphIndex, TTCurve *curve, short* bRect, float transform)
+fint parseGlyphData(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufshort glyphIndex, TTCurve *curve, fshort* bRect, ffloat transform)
 {
-	unsigned long offset;
+	uflong offset;
 	Glyph_header glyphHeader;
-	short numOfContours;
-	unsigned short *endPtsOfContours = NULL; 
-	unsigned short instructionLength;//instruction length in bytes
-	unsigned char* instructions = NULL;
-	unsigned char* flags = NULL;
-	unsigned char* xCoord = NULL; //pointer to array of X coordinates
-	unsigned char* yCoord = NULL; //pointer to array of Y coordinates
-	unsigned char* tmp = NULL;
+	fshort numOfContours;
+	ufshort *endPtsOfContours = NULL; 
+	ufshort instructionLength;//instruction length in bytes
+	ufchar* instructions = NULL;
+	ufchar* flags = NULL;
+	ufchar* xCoord = NULL; //pointer to array of X coordinates
+	ufchar* yCoord = NULL; //pointer to array of Y coordinates
+	ufchar* tmp = NULL;
 
-	int numPoints; // number of Points
-	int size, i, j, curLen;
-	int flagIndex = 0; 
-	int xCoordIndex = 0;
-	int yCoordIndex = 0;
-	int rep = 0;
+	fint numPoints; // number of Points
+	fint size, i, j, curLen;
+	fint flagIndex = 0; 
+	fint xCoordIndex = 0;
+	fint yCoordIndex = 0;
+	fint rep = 0;
 
-	short xLength = 0; //length of array of X coordinates
-	short yLength = 0; //length of array of Y coordinates
-	unsigned char curFlag = 0;
+	fshort xLength = 0; //length of array of X coordinates
+	fshort yLength = 0; //length of array of Y coordinates
+	ufchar curFlag = 0;
 
 	if (glyphIndex >= numGlyphs)
 	{
@@ -898,7 +909,7 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 	}
 
 	/* read 'Glyph_header' table */
-	size = (int)fread(&glyphHeader, sizeof(Glyph_header), 1, tt_file);
+	size = (fint)fread(&glyphHeader, sizeof(Glyph_header), 1, tt_file);
 	if (size != 1){
 //		printf("Error reading 'Glyph_header' table from file.");
 		return -1;
@@ -913,8 +924,8 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 	
 	if (numOfContours > 0)
 	{
-		endPtsOfContours = new unsigned short[numOfContours];
-		size = (int)fread(endPtsOfContours, sizeof(short),numOfContours,tt_file);
+		endPtsOfContours = new ufshort[numOfContours];
+		size = (fint)fread(endPtsOfContours, sizeof(fshort),numOfContours,tt_file);
 		if (size != numOfContours)
 		{
 //			printf("Error reading endPtsOfContours for someone glyph.");
@@ -928,7 +939,7 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 		}
 		numPoints = endPtsOfContours[i-1] + 1;
 
-		size = (int)fread(&instructionLength,sizeof(short),1,tt_file);
+		size = (fint)fread(&instructionLength,sizeof(fshort),1,tt_file);
 		if (size != 1)
 		{
 //			printf("Error reading length of instructions./n");
@@ -937,8 +948,8 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 		}
 		instructionLength = wReverse(instructionLength);
 
-		instructions = new unsigned char[instructionLength];
-		size = (int)fread(instructions,sizeof(unsigned char),instructionLength,tt_file);
+		instructions = new ufchar[instructionLength];
+		size = (fint)fread(instructions,sizeof(ufchar),instructionLength,tt_file);
 		if (size != instructionLength)
 		{
 //			printf("Error reading instructions./n");
@@ -952,15 +963,15 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 
 		for (i=0; i<numPoints; i++)
 		{
-            int x_repeat = 0;
-			int y_repeat = 0;
+            fint x_repeat = 0;
+			fint y_repeat = 0;
 
 			tmp = flags;
 			curLen++;
-			flags = new unsigned char[curLen];
+			flags = new ufchar[curLen];
 			memcpy(flags,tmp,curLen-1);
 			delete[] tmp;
-			size = (int)fread(&(flags[curLen-1]),sizeof(unsigned char),1,tt_file);
+			size = (fint)fread(&(flags[curLen-1]),sizeof(ufchar),1,tt_file);
 			if (size != 1)
 			{
 //                printf("Error reading array of flags from font file.\n");
@@ -986,10 +997,10 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 			{
                 tmp = flags;
 				curLen++;
-				flags = new unsigned char[curLen];
+				flags = new ufchar[curLen];
 				memcpy(flags,tmp,curLen-1);
 				delete[] tmp;
-				size=(int)fread(&(flags[curLen-1]),sizeof(unsigned char),1,tt_file);
+				size=(fint)fread(&(flags[curLen-1]),sizeof(ufchar),1,tt_file);
 				if (size != 1)
 				{
 //					printf("Error reading array of flags from font file.\n");
@@ -1009,10 +1020,10 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 				yLength += y_repeat;
 		}
 
-        xCoord = new unsigned char[xLength];
-		yCoord = new unsigned char[yLength];
+        xCoord = new ufchar[xLength];
+		yCoord = new ufchar[yLength];
 
-		size = (int)fread(xCoord,sizeof(unsigned char),xLength,tt_file);
+		size = (fint)fread(xCoord,sizeof(ufchar),xLength,tt_file);
 		if (size != xLength)
 		{
 //			printf("Error reading x-coordinate of glyph's point.\n");
@@ -1022,7 +1033,7 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 			return -1;
 		}
 
-		size = (int)fread(yCoord,sizeof(unsigned char),yLength,tt_file);
+		size = (fint)fread(yCoord,sizeof(ufchar),yLength,tt_file);
 		if (size != yLength)
 		{
 //			printf("Error reading coordinates of glyph points.\n");
@@ -1034,13 +1045,13 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 		
 		i=0;
 		rep=0;
-		int x=0, y=0;
-		float xFirstInContour,yFirstInContour;
+		fint x=0, y=0;
+		ffloat xFirstInContour,yFirstInContour;
 		bool contBegin; //начало контура
 
 		for (j=0; j<numOfContours;j++)
 		{
-			int repLim = endPtsOfContours[j];
+			fint repLim = endPtsOfContours[j];
 			contBegin = 1;
 			
 			while(i<=repLim)
@@ -1058,7 +1069,7 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 					}
 				}
 
-				int xChange = 0, yChange = 0;
+				fint xChange = 0, yChange = 0;
 
 				if ((curFlag & X_POSITIVE) == X_POSITIVE)
 				{
@@ -1070,7 +1081,7 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 					xCoordIndex++;
 				}else if ((curFlag & X_POSITIVE) == X_DWORD)
 				{
-					xChange = (short)((xCoord[xCoordIndex]<<8)+xCoord[xCoordIndex+1]);
+					xChange = (fshort)((xCoord[xCoordIndex]<<8)+xCoord[xCoordIndex+1]);
 					xCoordIndex+=2;
 				}
 
@@ -1084,7 +1095,7 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 					yCoordIndex++;
 				}else if ((curFlag & Y_POSITIVE) == Y_DWORD)
 				{
-					yChange = (short)((yCoord[yCoordIndex]<<8)+yCoord[yCoordIndex+1]);
+					yChange = (fshort)((yCoord[yCoordIndex]<<8)+yCoord[yCoordIndex+1]);
 					yCoordIndex+=2;
 				}
 
@@ -1124,12 +1135,12 @@ int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyph
 }
 
 /* Should be removed when the composite glyph parsing will be realized */
-bool isCompositeGlyph(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyphs, unsigned short glyphIndex)
+bool isCompositeGlyph(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufshort glyphIndex)
 {
-	unsigned long offset;
+	uflong offset;
 	Glyph_header glyphHeader;
 
-	int size;
+	fint size;
 
 	if (glyphIndex >= numGlyphs) 
 		glyphIndex = 0;
@@ -1151,7 +1162,7 @@ printf("file isn't NULL\n");*/
 }
 //printf("second return\n");
 	/* read 'Glyph_header' table */
-	size = (int)fread(&glyphHeader, sizeof(Glyph_header), 1, tt_file);
+	size = (fint)fread(&glyphHeader, sizeof(Glyph_header), 1, tt_file);
 	if (size != 1)
 		return false;
 //printf("third return\n");

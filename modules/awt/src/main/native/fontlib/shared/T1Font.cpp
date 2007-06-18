@@ -24,7 +24,7 @@
 #include "T1Font.h"
 #include "T1Glyph.h"
 
-T1Font::T1Font(wchar_t *family, StyleName sn, char* pathToFile):Font() {
+T1Font::T1Font(fwchar_t *family, StyleName sn, fchar* pathToFile):Font() {
 	//this->_famName = family;
 	_style = sn;   
 
@@ -36,7 +36,7 @@ T1Font::T1Font(wchar_t *family, StyleName sn, char* pathToFile):Font() {
 
 		try {
 			initFont(inputFile);
-		} catch (char*) {
+		} catch (fchar*) {
 			//printf("%s", str);
 		} 
 		
@@ -47,7 +47,7 @@ T1Font::T1Font(wchar_t *family, StyleName sn, char* pathToFile):Font() {
         _descent = 195;
 
 
-        char path[MAX_STR_LENGHT];
+        fchar path[MAX_STR_LENGHT];
         size_t length = strlen(pathToFile) - 3;
 
         strncpy(path, pathToFile, length);
@@ -85,42 +85,42 @@ T1Font::~T1Font(void) {
     delete fullName;
 }
 
-Glyph* T1Font::createGlyph(unsigned short unicode, unsigned short size) {    
+Glyph* T1Font::createGlyph(ufshort unicode, ufshort size) {    
 
-    /*float floatMas[4];
+    /*ffloat floatMas[4];
     
     Type1AFMMap::iterator iter = afmMap.find(unicode); 
 
-    //return iter == glyphCodeMap.end()? NULL : (unsigned short)iter->second;
+    //return iter == glyphCodeMap.end()? NULL : (ufshort)iter->second;
 
-    memcpy(floatMas, _boundingBox, 4 * sizeof(float));    
+    memcpy(floatMas, _boundingBox, 4 * sizeof(ffloat));    
 
     if (iter != afmMap.end()) {
         //printf("%s\n", iter->second);
-        char* curValue = strstr( iter->second, " B ");
+        fchar* curValue = strstr( iter->second, " B ");
         if (curValue != NULL) {
 
             curValue += 3; 
 
-            floatMas[0] = (float) atof(curValue);
+            floatMas[0] = (ffloat) atof(curValue);
             //printf("0 = %f\n", floatMas[0]);
 
             while (*(++curValue) != ' ') {
 			}
 
-            floatMas[1] = (float) atof(curValue);
+            floatMas[1] = (ffloat) atof(curValue);
             //printf("1 = %f\n", floatMas[1]);
 
             while (*(++curValue) != ' ') {
 			}
 
-            floatMas[2] = (float) atof(curValue);           
+            floatMas[2] = (ffloat) atof(curValue);           
             //printf("2 = %f\n", floatMas[2]);
 
             while (*(++curValue) != ' ') {
 			}
 
-            floatMas[3] = (float) atof(curValue);
+            floatMas[3] = (ffloat) atof(curValue);
             //printf("3 = %f\n", floatMas[3]);
         }
     }*/
@@ -131,11 +131,11 @@ Glyph* T1Font::createGlyph(unsigned short unicode, unsigned short size) {
 }
 
 //TODO: owerwrite this:
-wchar_t* T1Font::getPSName() {
+fwchar_t* T1Font::getPSName() {
 	return fullName;
 }
 
-float* T1Font::getLineMetrics() {
+ffloat* T1Font::getLineMetrics() {
     /*
      * metrics[0] - ascent<p>
      * metrics[1] - descent<p>
@@ -144,9 +144,9 @@ float* T1Font::getLineMetrics() {
      * metrics[4] - underline offset<p>
      * metrics[5] - strikethrough thickness<p>
      * metrics[6] - strikethrough offset<p>
-     * metrics[7] - maximum char width<p>*/
+     * metrics[7] - maximum fchar width<p>*/
 
-    float* floatMas = new float[FONT_METRICS_QUANTITY];
+    ffloat* floatMas = new ffloat[FONT_METRICS_QUANTITY];
 
     floatMas[0] = _ascent / matrixScale; //ascent
     floatMas[1] = _descent / matrixScale; //descent
@@ -158,19 +158,19 @@ float* T1Font::getLineMetrics() {
     floatMas[5] = _underlineThickness / matrixScale;//_strikeOutSize;
 	floatMas[6] = -_ascent/(2 * matrixScale);//_strikeOutOffset;
 
-	floatMas[7] = ((float)(_boundingBox[3] - _boundingBox[1])) / matrixScale;
+	floatMas[7] = ((ffloat)(_boundingBox[3] - _boundingBox[1])) / matrixScale;
 	
 	return floatMas;
 }
 
-bool T1Font::canDisplay(unsigned short ch) {    
+bool T1Font::canDisplay(ufshort ch) {    
 	return this->charStringMap.find(ch) != this->charStringMap.end();
 }
 
-unsigned short T1Font::getUnicodeByIndex(unsigned short index) {
+ufshort T1Font::getUnicodeByIndex(ufshort index) {
     Type1GlyphCodeMap::iterator iter = glyphCodeMap.find(index); 
 
-    return iter == glyphCodeMap.end()? 0 : (unsigned short)iter->second;
+    return iter == glyphCodeMap.end()? 0 : (ufshort)iter->second;
 }
 
 void error(){
@@ -178,16 +178,16 @@ void error(){
 	throw "invalidfont";
 }
 
-unsigned inline short hexCharToUShort(char ch){
+inline ufshort hexCharToUShort(fchar ch){
 	return  ch >= '0' && ch <= '9' ? ch - '0' :
 			ch >= 'A' && ch <= 'F' ? ch - 'A' + 10 :
 			ch >= 'a' && ch <= 'f' ? ch - 'a' + 10 :			
 			0;   
 }
 
-void static getNextLine(char* str, FILE* font) {
-	unsigned short count = 0;
-	unsigned char ch = ' ';
+void static getNextLine(fchar* str, FILE* font) {
+	ufshort count = 0;
+	ufchar ch = ' ';
 
     while (!feof(font) && (ch == ' ' || ch == '\n' || ch == '\r')) {
         ch = getc(font);
@@ -201,8 +201,8 @@ void static getNextLine(char* str, FILE* font) {
 	str[count] = '\0';
 }
 
-unsigned static char getNextChar(FILE* font) {
-	unsigned char ch;	
+static ufchar getNextChar(FILE* font) {
+	ufchar ch;	
 	do {
 		ch = getc(font);
 	} while (ch == '\r' || ch == '\n');
@@ -210,30 +210,30 @@ unsigned static char getNextChar(FILE* font) {
 	return ch;
 }
 
-unsigned static char decryptNextSimbol(FILE* font, unsigned short* r, bool isASCII) {
-	unsigned char clipher = (unsigned char)(
+static ufchar decryptNextSimbol(FILE* font, ufshort* r, bool isASCII) {
+	ufchar clipher = (ufchar)(
 		isASCII ? 
-		(unsigned char) ((hexCharToUShort(getNextChar(font)) << 4 ) + (hexCharToUShort(getNextChar(font)))) : 
+		(ufchar) ((hexCharToUShort(getNextChar(font)) << 4 ) + (hexCharToUShort(getNextChar(font)))) : 
 		getc(font)
 	);
 
-	unsigned char plain = (unsigned char)(clipher ^ (*r >> 8));
-	*r = ( (unsigned char)clipher + *r ) * C1 + C2;	
+	ufchar plain = (ufchar)(clipher ^ (*r >> 8));
+	*r = ( (ufchar)clipher + *r ) * C1 + C2;	
 	return plain;
 }
 
-void static decodeASCIILine(char* str, unsigned short* r, unsigned short n, unsigned short length) {
-	char* p = str;
-	unsigned char plain;
-	unsigned char clipher;
-	unsigned short count = 0;	
+void static decodeASCIILine(fchar* str, ufshort* r, ufshort n, ufshort length) {
+	fchar* p = str;
+	ufchar plain;
+	ufchar clipher;
+	ufshort count = 0;	
 	length /= 2;	
 	
 	while(count < length) {
-		clipher = (unsigned char)((hexCharToUShort(*p) << 4 ) + (hexCharToUShort(*(p + 1))));
+		clipher = (ufchar)((hexCharToUShort(*p) << 4 ) + (hexCharToUShort(*(p + 1))));
 
-		plain = (unsigned char)(clipher ^ (*r >> 8));
-		*r = ( (unsigned char)clipher + *r ) * C1 + C2;
+		plain = (ufchar)(clipher ^ (*r >> 8));
+		*r = ( (ufchar)clipher + *r ) * C1 + C2;
 
 		if (count >= n) {
 			str[count - n] = plain;
@@ -246,16 +246,16 @@ void static decodeASCIILine(char* str, unsigned short* r, unsigned short n, unsi
 	str[count - n] = '\0';
 }
 
-void static decodeBinaryLine(char* str, unsigned short* r, unsigned short n, unsigned short length) {
-	char* p = str;
-	unsigned char plain;
-	unsigned char clipher;
-	unsigned short count = 0;		
+void static decodeBinaryLine(fchar* str, ufshort* r, ufshort n, ufshort length) {
+	fchar* p = str;
+	ufchar plain;
+	ufchar clipher;
+	ufshort count = 0;		
 	while(count < length) {
-		clipher = (unsigned char)*p;
+		clipher = (ufchar)*p;
 		
-		plain = (unsigned char)(clipher ^ (*r >> 8));
-		*r = ( (unsigned char)clipher + *r ) * C1 + C2;
+		plain = (ufchar)(clipher ^ (*r >> 8));
+		*r = ( (ufchar)clipher + *r ) * C1 + C2;
 
 		if (count >= n) {
 			str[count - n] = plain;
@@ -268,7 +268,7 @@ void static decodeBinaryLine(char* str, unsigned short* r, unsigned short n, uns
 	str[count - n] = '\0';
 }
 
-void static decodeLine(char* str, unsigned short* r, unsigned short n, bool isASCII, unsigned short length) {
+void static decodeLine(fchar* str, ufshort* r, ufshort n, bool isASCII, ufshort length) {
 
 	if (isASCII) {
 		decodeASCIILine(str,r,n,length);
@@ -276,18 +276,18 @@ void static decodeLine(char* str, unsigned short* r, unsigned short n, bool isAS
 		decodeBinaryLine(str,r,n,length);
 	}
 	return;
-	/*char* p = str;
-	unsigned char plain;
-	unsigned char clipher;
-	unsigned short count = 0;	
+	/*fchar* p = str;
+	ufchar plain;
+	ufchar clipher;
+	ufshort count = 0;	
 	if (isASCII) {
 		length /= 2;	
 	}
 	while(count < length) {
-		clipher = (unsigned char)(isASCII ? ((hexCharToUShort(*p) << 4 ) + (hexCharToUShort(*(p + 1)))) : *p);
+		clipher = (ufchar)(isASCII ? ((hexCharToUShort(*p) << 4 ) + (hexCharToUShort(*(p + 1)))) : *p);
 
-		plain = (unsigned char)(clipher ^ (*r >> 8));
-		*r = ( (unsigned char)clipher + *r ) * C1 + C2;
+		plain = (ufchar)(clipher ^ (*r >> 8));
+		*r = ( (ufchar)clipher + *r ) * C1 + C2;
 
 		//printf("%u ---- %u,%u\n", clipher, plain, *r);
 		if (count >= n) {
@@ -301,9 +301,9 @@ void static decodeLine(char* str, unsigned short* r, unsigned short n, bool isAS
 	str[count - n] = '\0';//*/
 }
 
-void static getNextDecodeLine(char* str, FILE* font, unsigned short* r, bool isASCII) {
-	unsigned short count = 0;
-	unsigned char plain;
+void static getNextDecodeLine(fchar* str, FILE* font, ufshort* r, bool isASCII) {
+	ufshort count = 0;
+	ufchar plain;
 	while(!feof(font)) {		
 		plain = decryptNextSimbol(font, r, isASCII);
 
@@ -317,9 +317,9 @@ void static getNextDecodeLine(char* str, FILE* font, unsigned short* r, bool isA
 	str[count] = '\0';
 }
 
-void static getNextDecodeLexeme(char* str, FILE* font, unsigned short* r, bool isASCII) {
-	unsigned char ch;
-	unsigned short count = 0;
+void static getNextDecodeLexeme(fchar* str, FILE* font, ufshort* r, bool isASCII) {
+	ufchar ch;
+	ufshort count = 0;
 
 	while (!feof(font) && ((ch = decryptNextSimbol(font, r, isASCII)) == ' ' || ch == '\n' || ch == '\r')) {
 	}
@@ -332,9 +332,9 @@ void static getNextDecodeLexeme(char* str, FILE* font, unsigned short* r, bool i
 	str[count] = '\0';	
 }
 
-void static getNextLexeme(char* str, FILE* font) {
-	unsigned char ch;
-	unsigned short count = 0;
+void static getNextLexeme(fchar* str, FILE* font) {
+	ufchar ch;
+	ufshort count = 0;
 
 	while (!feof(font) && ((ch = getc(font)) == ' ' || ch == '\n' || ch == '\r' && ch != '{')) {
 	}
@@ -347,11 +347,11 @@ void static getNextLexeme(char* str, FILE* font) {
 	str[count] = '\0';	
 }
 
-unsigned short static findUnicode(const char *str) {
+ufshort static findUnicode(const fchar *str) {
 	
-	unsigned short count = 0;
-	unsigned short strCount = 0;
-	unsigned short lastStrCount = 0;
+	ufshort count = 0;
+	ufshort strCount = 0;
+	ufshort lastStrCount = 0;
 
 	while(true) {
 		if (GLYPH_LIST[count] == str[strCount]) {
@@ -361,7 +361,7 @@ unsigned short static findUnicode(const char *str) {
 		} else if ((GLYPH_LIST[count] ^ (1 << 7)) == str[strCount]) {
 			strCount ++;
 			if (str[strCount] == '\0') {
-				return (unsigned short)((GLYPH_LIST[count + 1] << 8) + GLYPH_LIST[count + 2]);
+				return (ufshort)((GLYPH_LIST[count + 1] << 8) + GLYPH_LIST[count + 2]);
 			}
 
 			count = ((GLYPH_LIST[count + 5] << 8) + GLYPH_LIST[count + 6]);
@@ -391,7 +391,7 @@ unsigned short static findUnicode(const char *str) {
 	}
 }
 
-unsigned short static getUnicode(char *name) {
+ufshort static getUnicode(fchar *name) {
 	if (!strncmp(name, ".notdef", 7)) {
 		return 0;	
 	}
@@ -400,7 +400,7 @@ unsigned short static getUnicode(char *name) {
 }
 
 void T1Font::parseAFM(FILE *font) {
-    char curStr[MAX_STR_LENGHT];
+    fchar curStr[MAX_STR_LENGHT];
 
     while (!feof(font)) {
         getNextLexeme(curStr, font);
@@ -411,20 +411,20 @@ void T1Font::parseAFM(FILE *font) {
             return;
         } else if (!strcmp(curStr, "Ascender")) {
             getNextLexeme(curStr, font);
-            _ascent = (float) fabs(atof(curStr));
+            _ascent = (ffloat) fabs(atof(curStr));
             //printf("ascend = %f\n", _ascent);
             
         } else if (!strcmp(curStr, "Descender")) {
             getNextLexeme(curStr, font);
-            _descent = (float) fabs(atof(curStr));
+            _descent = (ffloat) fabs(atof(curStr));
             //printf("descent = %f\n", _descent);
             
         } /*else if (!strcmp(curStr, "StartCharMetrics")) {
             getNextLexeme(curStr, font);            
-            char* curValue;
-            char psName[MAX_STR_LENGHT];
-            unsigned short count = (unsigned short) atoi(curStr);
-            for (unsigned short i = 0; i < count; i ++) {
+            fchar* curValue;
+            fchar psName[MAX_STR_LENGHT];
+            ufshort count = (ufshort) atoi(curStr);
+            for (ufshort i = 0; i < count; i ++) {
                 getNextLine(curStr, font);
 
                 //printf("%s\n",curStr);
@@ -435,13 +435,13 @@ void T1Font::parseAFM(FILE *font) {
 
                     //printf("%s\n", curValue);
                     
-                    unsigned short i;
+                    ufshort i;
                     for (i = 0; curValue[i] != ' ' && curValue[i] != '\0'; i ++) {
                         psName[i] = curValue[i];
                     }
                     psName[i] = '\0';                    
 
-                    curValue = new char[strlen(curStr) + 1]; 
+                    curValue = new fchar[strlen(curStr) + 1]; 
 
                     strcpy(curValue, curStr);
 
@@ -459,26 +459,26 @@ void T1Font::parseAFM(FILE *font) {
 
 
 void T1Font::initFont(FILE *font) {
-	char curStr[MAX_STR_LENGHT];
+	fchar curStr[MAX_STR_LENGHT];
 
 	DecodeState state = HEADER;
 
-	unsigned short r = DEF_R_EXEC;
-	unsigned short n = 4;
+	ufshort r = DEF_R_EXEC;
+	ufshort n = 4;
 
-	unsigned short lenIV = DEF_LENIV;	
-	unsigned short charStringR;	
+	ufshort lenIV = DEF_LENIV;	
+	ufshort charStringR;	
 
-	unsigned short count = 0;
-	unsigned short tempShort = 0;
-	unsigned short length = 0;
-	unsigned short valueLength = 0;
+	ufshort count = 0;
+	ufshort tempShort = 0;
+	ufshort length = 0;
+	ufshort valueLength = 0;
 
     matrixScale = 1000;
 
 	bool isASCII = true;
 
-	unsigned char ch;	
+	ufchar ch;	
 	EncodedValue *curValue;
 
 	ch = getc(font);
@@ -498,10 +498,10 @@ void T1Font::initFont(FILE *font) {
 
             if (!strcmp(curStr, "/UnderlinePosition")) {
                 getNextLexeme(curStr, font);
-                _underlineOffset = (float) - atof(curStr);
+                _underlineOffset = (ffloat) - atof(curStr);
 		    } else if (!strcmp(curStr, "/UnderlineThickness")) {
                 getNextLexeme(curStr, font);
-                _underlineThickness = (float) atof(curStr);			
+                _underlineThickness = (ffloat) atof(curStr);			
 		    } else if (strstr(curStr, "/FontBBox") != NULL) {
                 //getNextLexeme(curStr, font);
 
@@ -511,18 +511,18 @@ void T1Font::initFont(FILE *font) {
                 ungetc(ch, font);
 
                 getNextLexeme(curStr, font);
-                _boundingBox[0] = (float) atof(curStr);
+                _boundingBox[0] = (ffloat) atof(curStr);
 
                 getNextLexeme(curStr, font);
-                _boundingBox[1] = (float) atof(curStr);
+                _boundingBox[1] = (ffloat) atof(curStr);
 
                 getNextLexeme(curStr, font);
-                _boundingBox[2] = (float) atof(curStr);
+                _boundingBox[2] = (ffloat) atof(curStr);
 
                 getNextLexeme(curStr, font);                
-                _boundingBox[3] = (float) atof(curStr);
+                _boundingBox[3] = (ffloat) atof(curStr);
 
-                _height = ((float)(_boundingBox[2] -_boundingBox[0]));
+                _height = ((ffloat)(_boundingBox[2] -_boundingBox[0]));
 
 		    } else if (!strcmp(curStr, "/FullName")) {
                 //getNextLexeme(curStr, font);                
@@ -537,10 +537,10 @@ void T1Font::initFont(FILE *font) {
 
 				curStr[count] = '\0';	
 
-				char *ptr = curStr;
+				fchar *ptr = curStr;
 
 				ch = 0;
-				fullName = new wchar_t[count + 1];
+				fullName = new fwchar_t[count + 1];
 				while (*ptr != '\0') {
 					fullName[ch ++] = *ptr;
 					ptr ++;
@@ -563,7 +563,7 @@ void T1Font::initFont(FILE *font) {
 						curStr[count] = getc(font);
 					}
 					
-					if (curStr[0] != (char)0x80 || curStr[1] != 0x02) {
+					if (curStr[0] != (fchar)0x80 || curStr[1] != 0x02) {
 						error();
 					}
 					for (count = 0; count < lenIV; count ++) {
@@ -601,10 +601,10 @@ void T1Font::initFont(FILE *font) {
 			getNextDecodeLexeme(curStr, font, &r, isASCII);
 
 			getNextDecodeLexeme(curStr, font, &r, isASCII);
-			curValue->number = (unsigned short) atoi(curStr);	
+			curValue->number = (ufshort) atoi(curStr);	
 
 			getNextDecodeLexeme(curStr, font, &r, isASCII);
-			length = (unsigned short) atoi(curStr);
+			length = (ufshort) atoi(curStr);
 			curValue->length = length - lenIV;
 
 			getNextDecodeLexeme(curStr, font, &r, isASCII);
@@ -616,7 +616,7 @@ void T1Font::initFont(FILE *font) {
 			charStringR = DEF_R_CHARSTRING;
 			decodeBinaryLine(curStr, &charStringR, lenIV, length);
 
-			curValue->text = new char[curValue->length];
+			curValue->text = new fchar[curValue->length];
 			for (tempShort = 0; tempShort - curValue->length < 0; tempShort ++) {
 				curValue->text[tempShort] = curStr[tempShort];
 			}
@@ -645,7 +645,7 @@ void T1Font::initFont(FILE *font) {
 				curValue->number = tempShort;
 
 				getNextDecodeLexeme(curStr, font, &r, isASCII);
-				length = (unsigned short) atoi(curStr);
+				length = (ufshort) atoi(curStr);
 				curValue->length = length - lenIV;	
 
 				getNextDecodeLexeme(curStr, font, &r, isASCII);
@@ -656,14 +656,14 @@ void T1Font::initFont(FILE *font) {
 				charStringR = DEF_R_CHARSTRING;
 				decodeBinaryLine(curStr, &charStringR, lenIV, length);
 
-				curValue->text = new char[curValue->length];
+				curValue->text = new fchar[curValue->length];
 				for (tempShort = 0; tempShort - curValue->length < 0; tempShort ++) {
 					curValue->text[tempShort] = curStr[tempShort];
 				}
 				charStringMap[curValue->number] = curValue;
 			} else {
 				getNextDecodeLexeme(curStr, font, &r, isASCII);
-				length = (unsigned short) atoi(curStr);							
+				length = (ufshort) atoi(curStr);							
 
 				getNextDecodeLexeme(curStr, font, &r, isASCII);
 				for (tempShort = 0; tempShort - length < 0; tempShort ++) {

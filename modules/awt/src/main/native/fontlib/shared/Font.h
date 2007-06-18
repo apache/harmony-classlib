@@ -23,6 +23,7 @@
 
 #include <map>
 #include "Glyph.h"
+#include "TypeDefinition.h"
 
 typedef enum StyleNameTag {
     Regular = 0, 
@@ -33,23 +34,23 @@ typedef enum StyleNameTag {
 
 typedef enum FlagsTag {ANGLE, IS_FIXED_PITCH, BOLD} Flags;
 
-static const unsigned char FONT_METRICS_QUANTITY = 8;
-static const unsigned char GLYPH_METRICS_QUANTITY = 6;
+static const ufchar FONT_METRICS_QUANTITY = 8;
+static const ufchar GLYPH_METRICS_QUANTITY = 6;
 
 /*
 typedef struct
 {
-	int numChars;
-	int baselineIndex;
-	float underlineThickness;
-	float underlineOffset;
-	float strikethroughThickness;
-    float strikethroughOffset;
-	float leading;
-	float height;
-	float descent;
-	float ascent;
-	float baseLineOffsets[1];
+	fint numChars;
+	fint baselineIndex;
+	ffloat underlineThickness;
+	ffloat underlineOffset;
+	ffloat strikethroughThickness;
+    ffloat strikethroughOffset;
+	ffloat leading;
+	ffloat height;
+	ffloat descent;
+	ffloat ascent;
+	ffloat baseLineOffsets[1];
 }LineMetrics;
 */
 
@@ -58,43 +59,43 @@ public:
 	Font();
 	virtual ~Font();
 
-	Glyph* getGlyph(unsigned short unicode, unsigned short size);
+	Glyph* getGlyph(ufshort unicode, ufshort size);
 	Glyph* getDefaultGlyph();
-	int	getMissingGlyphCode();
+	fint	getMissingGlyphCode();
 
-	virtual Glyph* createGlyph(unsigned short unicode, unsigned short size);
-	virtual	float* getLineMetrics(); 
-	virtual wchar_t* getPSName();
-	virtual bool canDisplay(unsigned short c);
-	virtual unsigned short getUnicodeByIndex(unsigned short ind);
+	virtual Glyph* createGlyph(ufshort unicode, ufshort size);
+	virtual	ffloat* getLineMetrics(); 
+	virtual fwchar_t* getPSName();
+	virtual bool canDisplay(ufshort c);
+	virtual ufshort getUnicodeByIndex(ufshort ind);
 
 
 //protected:
-	unsigned short _numGlyphs; // Number of available glyphs
-	wchar_t *_famName; // (unsigned short*) Family name
+	ufshort _numGlyphs; // Number of available glyphs
+	fwchar_t *_famName; // (ufshort*) Family name
     StyleName _style; // Font style 
-	//short *_bitmaps; // - (?)
-	float _boundingBox[4]; // Glyphs bounding box - array of 4 shorts
-	float _ascent; 
-	float _descent;
-	float _externalLeading; //lineGap in TrueType
-	float _height;
-	float _strikeOutSize;
-	float _strikeOutOffset;
-    float _underlineOffset;
-    float _underlineThickness;
-	unsigned short _size;
-	std::map<const unsigned long, Glyph*> _glyphMap;//(size << 16 + unicode) -- Glyph	
+	//fshort *_bitmaps; // - (?)
+	ffloat _boundingBox[4]; // Glyphs bounding box - array of 4 shorts
+	ffloat _ascent; 
+	ffloat _descent;
+	ffloat _externalLeading; //lineGap in TrueType
+	ffloat _height;
+	ffloat _strikeOutSize;
+	ffloat _strikeOutOffset;
+    ffloat _underlineOffset;
+    ffloat _underlineThickness;
+	ufshort _size;
+	std::map<const uflong, Glyph*> _glyphMap;//(size << 16 + unicode) -- Glyph	
 	Flags _flags;	
 
-//	virtual unsigned short* getBitmap();
-//	virtual unsigned short* getOutline();
-//	virtual unsigned short* getGlyph();
+//	virtual ufshort* getBitmap();
+//	virtual ufshort* getOutline();
+//	virtual ufshort* getGlyph();
 private:
-	inline Glyph* findGlyph(unsigned short unicode, unsigned short size, unsigned long id);
+	inline Glyph* findGlyph(ufshort unicode, ufshort size, uflong id);
 };
 
-Font* createFont(wchar_t* family, StyleName sn);
-Font* createFont(char* family, StyleName sn);
+Font* createFont(fwchar_t* family, StyleName sn);
+Font* createFont(fchar* family, StyleName sn);
 
 #endif //__FONT_H__
