@@ -23,6 +23,8 @@
 package org.apache.harmony.jndi.tests.javax.naming.ldap;
 
 import java.io.IOException;
+import java.io.Serializable;
+
 import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.LimitExceededException;
 import javax.naming.NamingException;
@@ -33,7 +35,11 @@ import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.ldap.SortResponseControl;
+
 import junit.framework.TestCase;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
 /**        
  * <p>This Test class is testing the SortControl class.</p>
@@ -805,4 +811,32 @@ public class TestSortResponseControl extends TestCase {
 		
 	}
 
+    public void testSerializationCompatibility() throws Exception{
+        String Id = "test";
+        boolean crit = true;
+        SortResponseControl object;
+        byte[] ber = { 48, 3, 10, 1, 0 };
+        object = new SortResponseControl(Id, crit, ber);
+        SerializationTest.verifyGolden(this, object, SORTRESPONSECONTROL_COMPARATOR);
+    }
+
+    // comparator for SortResponseControl
+    private static final SerializableAssert SORTRESPONSECONTROL_COMPARATOR = new SerializableAssert() {
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+
+            SortResponseControl initThr = (SortResponseControl) initial;
+            SortResponseControl dserThr = (SortResponseControl) deserialized;
+
+            // verify ResultCode
+            int initResultCode = initThr.getResultCode();
+            int dserResultCode = dserThr.getResultCode();
+            assertTrue(initResultCode == dserResultCode);
+            
+            // verify BadAttrId
+            String initBadAttrId = initThr.getAttributeID();
+            String dserBadAttrId = dserThr.getAttributeID();
+            assertEquals(initBadAttrId, dserBadAttrId);
+        }
+    };
 }
