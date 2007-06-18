@@ -1,3 +1,4 @@
+# see HARMONY-3483
 java/awt/BasicStrokeTest.java
 java/awt/ButtonRTest.java
 java/awt/font/TextLayoutTest.java
