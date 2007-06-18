@@ -98,13 +98,18 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     }
 
     public String getSubString(long pos, int length) throws SerialException {
+        checkValidation();
         if (pos < 1 || pos > len) {
             throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
         }
-        if (length < 0 || length > len) {
+        if (length < 0 || pos + length > len + 1) {
             throw new SerialException(Messages.getString("sql.22")); // $NON-NLS-1$
         }
-        return new String(buf, (int) (pos - 1), length);
+        try {
+            return new String(buf, (int) (pos - 1), length);
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new SerialException();
+        }
     }
 
     public long position(Clob searchClob, long start) throws SerialException,
@@ -184,5 +189,11 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         System.arraycopy(buf, 0, truncatedBuffer, 0, (int)length);
         buf = truncatedBuffer;
         len = length;   
+    }
+    
+    private void checkValidation() throws SerialException {
+        if(len == -1){
+            throw new SerialException(Messages.getString("sql.38")); //$NON-NLS-1$
+        }
     }
 }
