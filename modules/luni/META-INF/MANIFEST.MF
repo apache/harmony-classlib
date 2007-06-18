@@ -13,6 +13,7 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
 Import-Package: com.ibm.icu.lang,
+ java.lang,
  java.lang.annotation,
  java.math,
  java.nio,
