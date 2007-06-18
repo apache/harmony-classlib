@@ -37,6 +37,16 @@ public abstract class Configuration {
 
     // Key to security properties, defining default configuration provider.
     private static final String LOGIN_CONFIGURATION_PROVIDER = "login.configuration.provider"; //$NON-NLS-1$
+    
+    /**
+	 * A marker interface for Configuration parameters.
+	 * 
+	 * @since 1.6
+	 */
+    public static interface Parameters {
+    	// a marker interface    	
+    }
+    
 
     protected Configuration() {
         super();
