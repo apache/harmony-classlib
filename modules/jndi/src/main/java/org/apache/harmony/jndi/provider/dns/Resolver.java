@@ -25,6 +25,7 @@ package org.apache.harmony.jndi.provider.dns;
 
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -33,7 +34,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
-//import java.util.logging.Level;
 
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
@@ -99,9 +99,9 @@ public class Resolver implements Runnable {
     private int threadNumberLimit;
     
     // vector with currently running Resolver threads 
-    private final Vector<ThreadListEntry> resolverThreads = new Vector<ThreadListEntry>();
+    private final ArrayList<ThreadListEntry> resolverThreads = new ArrayList<ThreadListEntry>();
     // the list of host names that should be resolved
-    private final Vector<ThreadListEntry> hostnamesToResolve = new Vector<ThreadListEntry>();
+    private final ArrayList<ThreadListEntry> hostnamesToResolve = new ArrayList<ThreadListEntry>();
     // semaphore that controls access to both lists above
     private class ThreadListSemaphore {}
     private final Object threadListSemaphore = new ThreadListSemaphore();
@@ -1428,7 +1428,7 @@ public class Resolver implements Runnable {
         synchronized (threadListSemaphore) {
             // check that no currently running thread looks for this hostname 
             for (int i = 0; i < resolverThreads.size(); i++) {
-                Resolver.ThreadListEntry entry = resolverThreads.elementAt(i);
+                Resolver.ThreadListEntry entry = resolverThreads.get(i);
                 if (ProviderMgr.namesAreEqual(hostname,
                                               entry.serverNameToResolve) &&
                     entry.dnsClass == dnsClass)
@@ -1440,7 +1440,7 @@ public class Resolver implements Runnable {
             }
             // check if the hostname is already scheduled for resolving
             for (int i = 0; i < hostnamesToResolve.size(); i++) {
-                Resolver.ThreadListEntry entry = hostnamesToResolve.elementAt(i);
+                Resolver.ThreadListEntry entry = hostnamesToResolve.get(i);
                 if (ProviderMgr.namesAreEqual(hostname,
                                               entry.serverNameToResolve) &&
                     entry.dnsClass == dnsClass)
@@ -1459,7 +1459,7 @@ public class Resolver implements Runnable {
             newEntry = new Resolver.ThreadListEntry();
             newEntry.serverNameToResolve = hostname;
             newEntry.dnsClass = dnsClass;
-            hostnamesToResolve.addElement(newEntry);
+            hostnamesToResolve.add(newEntry);
             // starting new thread that should make further updates by itself
             newThread = new Thread(this);
             //if (LogConst.DEBUG) {                            
@@ -1483,10 +1483,10 @@ public class Resolver implements Runnable {
         // update lists
         synchronized (threadListSemaphore) {
             if (hostnamesToResolve.size() > 0) {
-                entryToProcess = hostnamesToResolve.elementAt(0);
+                entryToProcess = hostnamesToResolve.get(0);
                 hostnamesToResolve.remove(0);
                 entryToProcess.thread = Thread.currentThread();
-                resolverThreads.addElement(entryToProcess);
+                resolverThreads.add(entryToProcess);
             } else {
                 //ProviderMgr.logger.warning(
                 //        "Resolver thread: no host name to resolve");
@@ -1515,7 +1515,7 @@ public class Resolver implements Runnable {
         // update resolver threads list, remove info about current thread
         synchronized (threadListSemaphore) {
             for (int i = 0; i < resolverThreads.size(); i++) {
-                Resolver.ThreadListEntry entry = resolverThreads.elementAt(i);
+                Resolver.ThreadListEntry entry = resolverThreads.get(i);
 
                 if (ProviderMgr.namesAreEqual(
                         entryToProcess.serverNameToResolve,

@@ -24,7 +24,7 @@
 package org.apache.harmony.jndi.provider.dns;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -37,14 +37,14 @@ import java.util.Vector;
 class ResolverCache {
 
     /** keys - zone & host names; values - vectors with RRs */
-    Hashtable<String, Vector<CacheEntry>> names = new Hashtable<String, Vector<CacheEntry>>();
+    HashMap<String, Vector<CacheEntry>> names = new HashMap<String, Vector<CacheEntry>>();
 
     /** 
      * Since <code>ResolverCache</code> is singleton class its constructor
      *  should be hidden.
      */
     private ResolverCache() {
-        names = new Hashtable<String, Vector<CacheEntry>>();
+        names = new HashMap<String, Vector<CacheEntry>>();
     }
 
     private static ResolverCache instance = null;
@@ -146,7 +146,7 @@ class ResolverCache {
      * Removes all cached entries.
      */
     synchronized void clear() {
-        names = new Hashtable<String, Vector<CacheEntry>>();
+        names = new HashMap<String, Vector<CacheEntry>>();
     }
 
     // additional class

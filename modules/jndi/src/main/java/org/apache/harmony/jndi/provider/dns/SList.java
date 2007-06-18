@@ -23,9 +23,9 @@
 
 package org.apache.harmony.jndi.provider.dns;
 
-import java.util.Vector;
-import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 
@@ -60,16 +60,13 @@ class SList {
         servers = new Vector<Server>();
     }
 
-    private static SList instance = null;
+    private static SList instance = new SList();
 
     /**
      * <code>SList</code> is a singleton class.
      * @return instance of <code>SList</code>
      */
     static SList getInstance() {
-        if (instance == null) {
-            instance = new SList();
-        }
         return instance;
     }
 
