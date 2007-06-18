@@ -1327,4 +1327,94 @@ public class File implements Serializable, Comparable<File> {
         char inSeparator = stream.readChar();
         path = path.replace(inSeparator, separatorChar);
     }
+    
+    /**
+	 * Manipulates the execute permission of the abstract path designated by
+	 * this file object.
+	 * 
+	 * @param executable
+	 *            To allow execute permission if true, otherwise disallow
+	 * @param ownerOnly
+	 *            To manipulate execute permission only for owner if true,
+	 *            otherwise for everyone. The manipulation will apply to
+	 *            everyone regardless of this value if the underlying system
+	 *            does not distinguish owner and other users.
+	 * @return true if and only if the operation succeeded. If the user does not
+	 *         have permission to change the access permissions of this abstract
+	 *         pathname the operation will fail. If the underlying file system
+	 *         does not support execute permission and the value of executable
+	 *         is false, this operation will fail.
+	 * @throws SecurityException -
+	 *             If a security manager exists and
+	 *             SecurityManager.checkWrite(java.lang.String) disallows write
+	 *             permission to this file object
+	 * @since 1.6
+	 */
+	public boolean setExecutable(boolean executable, boolean ownerOnly) {
+		checkWrite();
+		return (setExecutableImpl(properPath(true), executable, ownerOnly));
+	}
+
+	/**
+	 * A convenience method for setExecutable(boolean, boolean). An invocation
+	 * of this method is the same as file.setExecutable(executable, true).
+	 * 
+	 * @param executable
+	 *            To allow execute permission if true, otherwise disallow
+	 * @return true if and only if the operation succeeded. If the user does not
+	 *         have permission to change the access permissions of this abstract
+	 *         pathname the operation will fail. If the underlying file system
+	 *         does not support execute permission and the value of executable
+	 *         is false, this operation will fail.
+	 * @throws SecurityException -
+	 *             If a security manager exists and
+	 *             SecurityManager.checkWrite(java.lang.String) disallows write
+	 *             permission to this file object
+	 * @since 1.6
+	 */
+	public boolean setExecutable(boolean executable) {
+		return setExecutable(executable, true);
+	}
+
+	private native boolean setExecutableImpl(byte[] path, boolean executable,
+			boolean ownerOnly);
+	
+	  
+
+    /**
+     * Answers a boolean indicating whether or not the current context is
+     * allowed to execute this File.
+     * 
+     * @return <code>true</code> if this File can be executed,
+     *         <code>false</code> otherwise.
+     * 
+     * @throws SecurityException
+     *             If a security manager exists and
+     *             SecurityManager.checkExec(java.lang.String) disallows read
+     *             permission to this file object
+     * @see java.lang.SecurityManager#checkExec(FileDescriptor)
+     * 
+     * @since 1.6
+     */
+    public boolean canExecute() {
+        checkExec();
+        return exists() && isExecutableImpl(properPath(true));
+    }
+
+    private native boolean isExecutableImpl(byte[] filePath);
+
+    private void checkExec() {
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkExec(path);
+        }
+    }
+
+    private void checkWrite() {
+		SecurityManager security = System.getSecurityManager();
+		if (security != null) {
+			security.checkWrite(path);
+		}
+	}
+
 }

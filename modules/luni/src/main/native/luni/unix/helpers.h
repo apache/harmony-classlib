@@ -61,4 +61,7 @@ jboolean getPlatformIsPoint2Point(JNIEnv * env, jstring ifname, jint index);
 jboolean getPlatformSupportMulticast(JNIEnv * env, jstring ifname, jint index);
 jint getPlatformGetMTU(JNIEnv * env, jstring ifname, jint index);
 I_32 getPlatformGetInterfaceAddresses(JNIEnv * env, jstring ifname, jint index, interfaceAddressArray_struct* interfaceAddressArray);
+I_32 getPlatformIsExecutable (JNIEnv * env, char *path);
+I_32 setPlatformExecutable (JNIEnv * env, char *path, jboolean executable, jboolean ownerOnly);
 #endif /* helpers_h */
+

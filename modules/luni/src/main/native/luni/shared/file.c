@@ -520,5 +520,43 @@ Java_java_io_File_isCaseSensitiveImpl (JNIEnv * env, jclass clazz)
 #else
   return TRUE;
 #endif
-
 }
+
+JNIEXPORT jboolean JNICALL
+Java_java_io_File_setExecutableImpl (JNIEnv * env, jobject recv,
+                                   jbyteArray path, jboolean executable, jboolean ownerOnly)
+{
+
+#if (defined(WIN32))
+  return executable;
+#else
+  jsize length = (*env)->GetArrayLength (env, path);
+  char pathCopy[HyMaxPath];
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  return setPlatformExecutable (env, pathCopy, executable, ownerOnly);
+
+#endif
+  
+}
+
+JNIEXPORT jboolean JNICALL
+Java_java_io_File_isExecutableImpl (JNIEnv * env, jobject recv, jbyteArray path)
+{
+#if (defined(WIN32))
+  return TRUE;
+#else
+  I_32 result;
+  char pathCopy[HyMaxPath];
+  jsize length = (*env)->GetArrayLength (env, path);
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  result = getPlatformIsExecutable (env, pathCopy);
+  return result;
+#endif  
+} 
+

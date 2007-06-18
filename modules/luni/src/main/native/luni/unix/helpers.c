@@ -806,3 +806,34 @@ getPlatformGetInterfaceAddresses(JNIEnv * env,
 	return 0;	
 }
 
+I_32
+getPlatformIsExecutable (JNIEnv * env, char *path)
+{
+  I_32 result;
+  struct stat buffer;
+
+  result = stat (path, &buffer);
+  if (result == -1)
+    return 0;
+
+  PORT_ACCESS_FROM_ENV (env);
+
+  //if the current user is 'root', then the file is executable when 
+  //either of user/group/others has the permission to execute.
+  // and the directory is always executable.
+  if (geteuid() == 0) {
+     if(HyIsDir == hyfile_attr (path)) {
+         return 1;
+     } else {
+         return (buffer.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0;
+     }
+  }
+
+  if (buffer.st_uid == geteuid ())
+    return (buffer.st_mode & S_IXUSR) != 0;
+  else if (buffer.st_gid == getegid ())
+    return (buffer.st_mode & S_IXGRP) != 0;
+
+  result = hasPrivilegeInOtherGroups(env, &buffer, S_IXGRP);
+  return -1 == result ? (buffer.st_mode & S_IXOTH) != 0 : result;
+}
