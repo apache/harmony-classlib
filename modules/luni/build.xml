@@ -26,6 +26,8 @@
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
+    <property name="hy.luni.src.test.api.java.platform"
+	    value="${hy.luni.src.test.api}/${hy.os.family}" />
     <fileset id="classes" dir="${hy.build}">
         <or>
             <present targetdir="${hy.luni.src.main.java}" />
@@ -279,7 +281,8 @@
         <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
             <javac-elements>
                 <src>
-                    <pathelement location="${hy.luni.src.test}/java"/>
+		    <pathelement location="${hy.luni.src.test.api}/common"/>
+	            <pathelement location="${hy.luni.src.test.api.java.platform}"/>
                 </src>
                 <include name="**/*.java" />
             </javac-elements>
@@ -310,7 +313,14 @@
 
 
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
-                    <fileset dir="${hy.luni.src.test}/java">
+                    <fileset dir="${hy.luni.src.test.api}/common">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
+                    </fileset>
+                    <fileset dir="${hy.luni.src.test.api.java.platform}">
                         <!-- if ${test.case}     -->
                         <include name="${converted.tc}" if="test.case" />
                         <!-- unless ${test.case} -->
