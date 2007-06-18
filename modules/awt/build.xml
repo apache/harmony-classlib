@@ -138,7 +138,7 @@
     </target>
 
     <target name="build-native"
-        depends="-build-native-unix,-build-native-windows,-build-native-x86">
+        depends="-build-native-unix,-build-native-windows">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -228,10 +228,6 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
-    </target>
-
-    <target name="-build-native-x86" if="is.x86">
-
     </target>
 
     <target name="clean-native"
