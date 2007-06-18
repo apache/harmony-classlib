@@ -837,3 +837,29 @@ getPlatformIsExecutable (JNIEnv * env, char *path)
   result = hasPrivilegeInOtherGroups(env, &buffer, S_IXGRP);
   return -1 == result ? (buffer.st_mode & S_IXOTH) != 0 : result;
 }
+
+I_32 
+hasPrivilegeInOtherGroups(JNIEnv * env, struct stat * buffer, mode_t attr) 
+{
+      // if the user belongs other groups
+      gid_t *group;
+      long ngroups_max;
+      int result;
+      
+      PORT_ACCESS_FROM_ENV (env);
+      ngroups_max = sysconf(_SC_NGROUPS_MAX) + 1;
+      group = (gid_t *) hymem_allocate_memory(ngroups_max * sizeof(gid_t));
+      result = getgroups(ngroups_max, group);
+      
+      if(-1 != result) {
+            int i = 0;
+            for (i = 0; i < result; i++) {
+                if (buffer->st_gid == group[i]) {
+                  hymem_free_memory(group);
+                  return (buffer->st_mode & attr) != 0;
+                }
+           } 
+      }
+      hymem_free_memory(group);
+      return result;    	
+}
