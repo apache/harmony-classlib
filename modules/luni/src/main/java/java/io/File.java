@@ -1277,15 +1277,17 @@ public class File implements Serializable, Comparable<File> {
     }
 
     /**
-     * Answers a <code>file</code> URL for this File. The URL is System
-     * dependent and may not be transferable between different operating/file
-     * systems.
-     * 
-     * @return a <code>file</code> URL for this File.
-     * 
-     * @throws java.net.MalformedURLException
-     *             if the path cannot be transformed into an URL
-     */
+	 * Answers a <code>file</code> URL for this File. The URL is System
+	 * dependent and may not be transferable between different operating/file
+	 * systems.
+	 * 
+	 * @return a <code>file</code> URL for this File.
+	 * 
+	 * @throws java.net.MalformedURLException
+	 *             if the path cannot be transformed into an URL
+	 * @deprecated Use File.toURI() and URI.toURL() instead
+	 */
+    @Deprecated
     public URL toURL() throws java.net.MalformedURLException {
         String name = getAbsoluteName();
         if (!name.startsWith("/")) { //$NON-NLS-1$
