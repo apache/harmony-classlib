@@ -373,6 +373,17 @@ public class LocaleTest extends junit.framework.TestCase {
         List<String> countries = Arrays.asList(Locale.getISOCountries());
         assertTrue(countries.contains("CS"));
     }
+    
+    /**
+     * @tests {@value java.util.Locale#ROOT}
+     * @since 1.6
+     */
+    public void test_constantROOT() {
+        Locale root = Locale.ROOT;
+        assertEquals("", root.getLanguage());
+        assertEquals("", root.getCountry());
+        assertEquals("", root.getVariant());
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

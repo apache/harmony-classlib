@@ -157,6 +157,12 @@ public final class Locale implements Cloneable, Serializable {
 	 */
 	public static final Locale US = new Locale("en", "US");  //$NON-NLS-1$//$NON-NLS-2$
 
+    /**
+     * the locale whose language, country, and variant are empty ("") strings.
+     * @since 1.6
+     */
+    public static final Locale ROOT = new Locale("","","");//$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+    
 	private static final PropertyPermission setLocalePermission = new PropertyPermission(
 			"user.language", "write");  //$NON-NLS-1$//$NON-NLS-2$
 
