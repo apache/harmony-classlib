@@ -39,6 +39,8 @@ import javax.naming.ldap.Rdn;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 /**
  * <p>
  * Test cases for all methods of the class Rdn.
@@ -2073,5 +2075,10 @@ public class RdnTest extends TestCase {
             Rdn.unescapeValue("#GOFJMOII");
             fail("Should raise IllegalArgumentException");
         } catch (IllegalArgumentException e) {}
+    }
+
+    public void testSerializationCompatibility() throws Exception{
+        Rdn object = new Rdn("t=\\20\\ te\\ s\\20t\\20\\20 + t2 = test1\\20\\ ");
+        SerializationTest.verifyGolden(this, object);
     }
 }

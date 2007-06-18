@@ -17,6 +17,9 @@
 
 package javax.naming.ldap;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -339,5 +342,25 @@ public class Rdn implements Serializable, Comparable<Object> {
             }
         }
         return sb.toString();
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException, InvalidNameException {
+        ois.defaultReadObject();
+        String rdnString = (String) ois.readObject();
+        if (rdnString == null) {
+            throw new NullPointerException("rdnString "+Messages.getString("ldap.00"));
+        }
+        if (rdnString.length() != 0) {
+            parser = new LdapRdnParser(rdnString);
+            list = parser.getList();
+        } else {
+            list = new ArrayList<Attribute>();
+        }
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(this.toString());
     }
 }
