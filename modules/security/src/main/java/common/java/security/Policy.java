@@ -26,6 +26,7 @@ import java.util.Enumeration;
 
 import org.apache.harmony.security.fortress.DefaultPolicy;
 import org.apache.harmony.security.fortress.PolicyUtils;
+import org.apache.harmony.security.internal.nls.Messages;
 
 
 /**
@@ -212,4 +213,39 @@ public abstract class Policy {
             activePolicy = policy;
         }
     }
+    
+    /**
+     * A read-only empty PermissionCollection instance.
+     * 
+     * @since 1.6
+     */
+    public static final PermissionCollection UNSUPPORTED_EMPTY_COLLECTION = new PermissionCollection() {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void add(Permission permission) {
+            throw new SecurityException(Messages.getString("security.1A5")); //$NON-NLS-1$
+        }
+
+        @Override
+        public Enumeration<Permission> elements() {
+            return new Permissions().elements();
+        }
+
+        @Override
+        public boolean implies(Permission permission) {
+            if (permission == null) {
+                throw new NullPointerException();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isReadOnly() {
+            // always returns true since it is a read-only instance.
+            // RI does not override this method.
+            return true;
+        }
+    };
 }
