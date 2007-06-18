@@ -77,12 +77,14 @@ public class Random implements Serializable {
     }
 
     /**
-     * Answers a pseudo-random uniformly distributed <code>int</code> value of
-     * the number of bits specified by the argument <code>bits</code> as
-     * described by Donald E. Knuth in <i>The Art of Computer Programming,
-     * Volume 2: Seminumerical Algorithms</i>, section 3.2.1.
+     * Returns a pseudo-random uniformly distributed <code>int</code> value of
+     * the number of bits specified by the argument <code>bits</code>.
      * 
-     * @return int a pseudo-random generated int number
+     * Implements D. H. Lehmer's random number algorithm found in <i>The Art of
+     * Computer Programming, Volume 2: Seminumerical Algorithms</i>, by Donald
+     * E. Knuth (section 3.2.1).
+     * 
+     * @return a pseudo-randomly generated int
      * @param bits
      *            number of bits of the returned value
      * 
@@ -136,7 +138,7 @@ public class Random implements Serializable {
      * Generates a normally distributed random double number between 0.0
      * inclusively and 1.0 exclusively.
      * 
-     * @return double
+     * @return a random double between 0.0 and 1.0
      * 
      * @see #nextFloat
      */
@@ -148,7 +150,7 @@ public class Random implements Serializable {
      * Generates a normally distributed random float number between 0.0
      * inclusively and 1.0 exclusively.
      * 
-     * @return float a random float number between 0.0 and 1.0
+     * @return a random float between 0.0 and 1.0
      * 
      * @see #nextDouble
      */
@@ -157,14 +159,15 @@ public class Random implements Serializable {
     }
 
     /**
-     * pseudo-randomly generates (approximately) a normally distributed
+     * Returns a pseudo-randomly generated, normally distributed
      * <code>double</code> value with mean 0.0 and a standard deviation value
-     * of <code>1.0</code> using the <i>polar method<i> of G. E. P. Box, M.
-     * E. Muller, and G. Marsaglia, as described by Donald E. Knuth in <i>The
-     * Art of Computer Programming, Volume 2: Seminumerical Algorithms</i>,
-     * section 3.4.1, subsection C, algorithm P
+     * of <code>1.0</code>.
      * 
-     * @return double
+     * Implements G. E. P. Box, M. E. Muller, and G. Marsaglia's polar method
+     * found in <i>The Art of Computer Programming, Volume 2: Seminumerical
+     * Algorithms</i>, by Donald E. Knuth (section 3.4.1).
+     * 
+     * @return a pseudo-randomly generated double
      * 
      * @see #nextDouble
      */
@@ -194,7 +197,7 @@ public class Random implements Serializable {
      * Generates a uniformly distributed 32-bit <code>int</code> value from
      * the this random number sequence.
      * 
-     * @return int uniformly distributed <code>int</code> value
+     * @return a randomly generated <code>int</code>
      * 
      * @see java.lang.Integer#MAX_VALUE
      * @see java.lang.Integer#MIN_VALUE
@@ -206,13 +209,12 @@ public class Random implements Serializable {
     }
 
     /**
-     * Returns to the caller a new pseudo-random integer value which is uniformly
-     * distributed between 0 (inclusively) and the value of <code>n</code>
-     * (exclusively).
+     * Returns a new pseudo-random integer value which is uniformly distributed
+     * between 0 (inclusively) and <code>n</code> (exclusively).
      * 
-     * @return int
+     * @return a randomly generated <code>int</code> between 0 and n
      * @param n
-     *            int
+     *            the upper limit of the values that can be returned
      */
     public int nextInt(int n) {
         if (n > 0) {
@@ -246,8 +248,9 @@ public class Random implements Serializable {
     }
 
     /**
-     * Modifies the seed using linear congruential formula presented in <i>The
-     * Art of Computer Programming, Volume 2</i>, Section 3.2.1.
+     * Modifies the seed using a linear congruential formula, as found in <i>The
+     * Art of Computer Programming, Volume 2</i>, by Donald E. Knuth (section
+     * 3.2.1).
      * 
      * @param seed
      *            the seed that alters the state of the random number generator

@@ -38,7 +38,7 @@ public class UTF16CharsetEncoderTest extends CharsetEncoderTest {
 	 */
 	protected void setUp() throws Exception {
 		cs = CS;
-		specifiedReplacement = new byte[] { -3, -1 };
+		specifiedReplacement = new byte[] { -1, -3 };
 		surrogate = new byte[] { -1, -2 };
 		unibytes = new byte[] { 32, 0, 98, 0, 117, 0, 102, 0, 102, 0, 101, 0,
 				114, 0 };

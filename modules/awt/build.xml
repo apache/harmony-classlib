@@ -138,7 +138,7 @@
     </target>
 
     <target name="build-native"
-        depends="-build-native-unix,-build-native-windows">
+        depends="-build-native-unix,-build-native-windows,-build-native-x86">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -173,16 +173,6 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/oglwrapper">
-                <include name="*${shlib.suffix}*"/>
-                <include name="*${progdb.suffix}*" if="is.windows" />
-                <exclude name="*${manifest.suffix}"/>
-            </fileset>
-        </copy>
-
-        <make dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}" />
-        <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.awt.src.main.native}/fontlib">
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
@@ -230,6 +220,18 @@
         </copy>
     </target>
 
+    <target name="-build-native-x86" if="is.x86">
+        <make dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}" />
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/fontlib">
+                <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
+                <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+    </target>
+
     <target name="clean-native"
             depends="-clean-native-unix,-clean-native-windows">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}"
@@ -239,6 +241,8 @@
         <make dir="${hy.awt.src.main.native}/gl/${hy.os.family}"
               target="clean"/>
         <make dir="${hy.awt.src.main.native}/oglwrapper/${hy.os.family}"
+              target="clean"/>
+        <make dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}"
               target="clean"/>
     </target>
 

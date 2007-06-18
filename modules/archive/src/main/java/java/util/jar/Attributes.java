@@ -115,7 +115,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         @Override
         public int hashCode() {
             if (hashCode == 0) {
-                hashCode = Util.toASCIILowerCase("name").hashCode();
+                hashCode = Util.toASCIILowerCase(name).hashCode();
             }
             return hashCode;
         }

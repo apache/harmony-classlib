@@ -51,7 +51,7 @@ public class GBCharsetDecoderTest extends CharsetDecoderTest {
 
 	ByteBuffer getMalformByteBuffer() throws UnsupportedEncodingException {
 		ByteBuffer buffer = ByteBuffer.allocate(20);
-		buffer.put(new byte[] { (byte) 0xd8, 0 });
+		buffer.put(new byte[] { (byte) 0xd8 });
 		buffer.put(unibytes);
 		buffer.flip();
 		return buffer;

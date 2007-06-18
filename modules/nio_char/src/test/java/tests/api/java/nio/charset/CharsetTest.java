@@ -665,7 +665,7 @@ public class CharsetTest extends TestCase {
 		CharBuffer cb = c1.decode(ByteBuffer.wrap("abcd\u5D14efg"
 				.getBytes("iso8859-1")));
 		byte[] replacement = c1.newEncoder().replacement();
-		assertEquals(new String(cb.array()), "abcd" + new String(replacement)
+		assertEquals(new String(cb.array()).trim(), "abcd" + new String(replacement)
 				+ "efg");
 	}
 
