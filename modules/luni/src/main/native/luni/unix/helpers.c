@@ -837,7 +837,7 @@ getPlatformIsExecutable (JNIEnv * env, char *path)
   result = hasPrivilegeInOtherGroups(env, &buffer, S_IXGRP);
   return -1 == result ? (buffer.st_mode & S_IXOTH) != 0 : result;
 }
-:
+
 I_32 
 hasPrivilegeInOtherGroups(JNIEnv * env, struct stat * buffer, mode_t attr) 
 {
