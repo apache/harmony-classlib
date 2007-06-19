@@ -90,7 +90,15 @@ public class Policy_ImplTest extends TestCase {
         assertTrue(policy.implies(new ProtectionDomain(null, null), sp));
         assertFalse(policy.implies(null, sp));
         assertFalse(policy.implies(new ProtectionDomain(null, null), null));
-        assertFalse(policy.implies(null, null));
+        
+        //RI throws NullPointerException.
+        try {
+            policy.implies(null, null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
+        
         
         ProtectionDomain pd = new ProtectionDomain(null, policy.pc);
         policy.pc = null;

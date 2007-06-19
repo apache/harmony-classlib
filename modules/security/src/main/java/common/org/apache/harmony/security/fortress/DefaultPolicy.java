@@ -23,6 +23,7 @@
 package org.apache.harmony.security.fortress;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.CodeSource;
@@ -30,7 +31,9 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
+import java.security.URIParameter;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -172,6 +175,10 @@ public class DefaultPolicy extends Policy {
     public DefaultPolicy() {
         this(new DefaultPolicyParser());
     }
+    
+    public DefaultPolicy(boolean needRefresh) {
+        this(new DefaultPolicyParser(), needRefresh);
+    }
 
     /**
      * Extension constructor for plugging-in a custom parser. Defers policy data
@@ -179,9 +186,15 @@ public class DefaultPolicy extends Policy {
      * (though policy may be refreshed explicitly, as well).
      */
     public DefaultPolicy(DefaultPolicyParser dpr) {
+        this(dpr, true);
+    }
+    
+    public DefaultPolicy(DefaultPolicyParser dpr, boolean needRefresh) {
         parser = dpr;
         initialized = false;
-        refresh();
+        if (needRefresh) {
+        	refreshImpl(null);      	
+        }        
     }
 
     /**
@@ -270,42 +283,85 @@ public class DefaultPolicy extends Policy {
      * 
      * @see PolicyUtils#getPolicyURLs(Properties, String, String)
      */
-    public synchronized void refresh() {
-        Set<PolicyEntry> fresh = new HashSet<PolicyEntry>();
-        Properties system = new Properties(AccessController
-                .doPrivileged(new PolicyUtils.SystemKit()));
-        system.setProperty("/", File.separator); //$NON-NLS-1$
-        URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
-                                                          JAVA_SECURITY_POLICY,
-                                                          POLICY_URL_PREFIX);
-        for (int i = 0; i < policyLocations.length; i++) {
-            try {
-                //TODO debug log
-                //System.err.println("Parsing policy file: " + policyLocations[i]);
-                fresh.addAll(parser.parse(policyLocations[i], system));
-            } catch (Exception e) {
-                // TODO log warning
-                //System.err.println("Ignoring policy file: " 
-                //                 + policyLocations[i] + ". Reason:\n"+ e);
-            }
-        }
-        // XXX: what if new policy is empty - provide some default??
-
-        // we could safely replace references instead of
-        // synchronizing access:
-        // <pre>
-        // grants = fresh;
-        // cache = new WeakHashMap();
-        // </pre>
-        // but there is possibility that concurrent thread will put
-        // old data to cache right after we finish refresh(),
-        // thus synchronization is added in getPermissions() methods...
-        synchronized (cache) {
-            grants.clear();
-            grants.addAll(fresh);
-
-            cache.clear();
-        }
-        initialized = true;
+    @Override
+	public synchronized void refresh() {
+    	refreshImpl(null);
     }
+    
+    public synchronized void refresh(URIParameter para) {
+    	refreshImpl(para);
+    }
+
+	private void refreshImpl(URIParameter para) {
+		Set<PolicyEntry> fresh = new HashSet<PolicyEntry>();
+		Properties system = new Properties(AccessController
+				.doPrivileged(new PolicyUtils.SystemKit()));
+		system.setProperty("/", File.separator); //$NON-NLS-1$
+		URL[] policyLocations = PolicyUtils.getPolicyURLs(system,
+				JAVA_SECURITY_POLICY, POLICY_URL_PREFIX);
+		boolean needLoadSysProp = true;
+		if (para != null) {			
+			try {
+				URL paramURL = para.getURI().toURL();
+				fresh.addAll(parser.parse(paramURL, system));
+				needLoadSysProp = false;
+			} catch (MalformedURLException e) {
+				throw new IllegalArgumentException(e);				
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+		
+		if (needLoadSysProp) {
+			for (int i = 0; i < policyLocations.length; i++) {
+				try {
+					fresh.addAll(parser.parse(policyLocations[i], system));
+					//System.out.println(policyLocations[i]);
+				} catch (Exception e) {										
+					// just ignore the invalid policy file
+				}
+			}
+		}
+				
+		// XXX: what if new policy is empty - provide some default??
+
+		// we could safely replace references instead of
+		// synchronizing access:
+		// <pre>
+		// grants = fresh;
+		// cache = new WeakHashMap();
+		// </pre>
+		// but there is possibility that concurrent thread will put
+		// old data to cache right after we finish refresh(),
+		// thus synchronization is added in getPermissions() methods...
+		synchronized (cache) {
+			grants.clear();
+			grants.addAll(fresh);
+
+			cache.clear();
+		}
+		initialized = true;
+	}
+    
+	@Override
+	public boolean implies(ProtectionDomain domain, Permission permission) {
+		if (permission == null) {
+			throw new NullPointerException();
+		}
+		boolean implies = false;
+		if (domain != null) {
+			PermissionCollection total = getPermissions(domain);
+			PermissionCollection inherent = domain.getPermissions();
+			if (inherent != null) {
+				Enumeration<Permission> en = inherent.elements();
+				while (en.hasMoreElements()) {
+					total.add(en.nextElement());
+				}
+			}
+			implies = total.implies(permission);
+		}
+		return implies;
+	}
+    
+    
 }
