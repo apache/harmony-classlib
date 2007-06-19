@@ -544,6 +544,15 @@ public class RdnTest extends TestCase {
         } catch (InvalidNameException e) {}
     }
 
+    public void testRdnString027() {
+        try {
+            Rdn rdn1 = new Rdn("t", "test");
+            Rdn rdn2 = new Rdn("t = test + t = test");
+            assertFalse(rdn1.equals(rdn2));
+            assertEquals(rdn1.toAttributes(), rdn2.toAttributes());            
+        } catch (InvalidNameException e) {}
+    }
+
     /**
      * <p>
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Rdn)'
