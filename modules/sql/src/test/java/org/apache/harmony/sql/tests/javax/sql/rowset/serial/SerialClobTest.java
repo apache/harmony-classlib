@@ -62,22 +62,8 @@ public class SerialClobTest extends TestCase {
 
         mockClob.characterStreamReader = null;
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
-        try {
-            new SerialClob(mockClob);
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
-        }
-
         mockClob.characterStreamReader = new CharArrayReader(new char[] { 1 });
         mockClob.asciiInputStream = null;
-        try {
-            new SerialClob(mockClob);
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
-        }
-
         mockClob.characterStreamReader = new MockAbnormalReader();
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
         try {
@@ -261,9 +247,17 @@ public class SerialClobTest extends TestCase {
         MockSerialClob mockClob = new MockSerialClob();
         mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
-        mockClob.asciiOutputStream = new ByteArrayOutputStream();
         SerialClob serialClob = new SerialClob(mockClob);
-        OutputStream os = serialClob.setAsciiStream(1);
+        OutputStream os = null;
+        try {
+            os = serialClob.setAsciiStream(1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        mockClob.asciiOutputStream = new ByteArrayOutputStream();
+        os = serialClob.setAsciiStream(1);
+        assertNotNull(os);
         assertTrue(mockClob.isSetAsciiStreamInvoked);
         assertEquals(mockClob.asciiOutputStream, os);
         

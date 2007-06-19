@@ -1041,6 +1041,14 @@ public class BitSetTest extends junit.framework.TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+
+        // Regression test for HARMONY-4213
+        bs = new BitSet(256);
+        bs2 = new BitSet(256);
+        bs.set(97);
+        bs2.set(37);
+        bs.andNot(bs2);
+        assertTrue("Incorrect value at 97 pos", bs.get(97));
     }
 
     /**

@@ -25,7 +25,8 @@ class ProviderImpl extends SyncProvider {
         className = name;
 
         try {
-            Class<?> implClass = Class.forName(className);
+			Class<?> implClass = Class.forName(className, true, Thread
+					.currentThread().getContextClassLoader());
             impl = (SyncProvider) implClass.newInstance();
         } catch (ClassNotFoundException e) {
             errMsg = Messages.getString("sql.40", className); //$NON-NLS-1$
@@ -41,7 +42,11 @@ class ProviderImpl extends SyncProvider {
         this.version = version;
     }
 
-    public SyncProvider getImpl() {
+    public SyncProvider getImpl() throws SyncFactoryException {
+		if (null == impl) {
+			throw new SyncFactoryException(Messages.getString(
+					"sql.40", className)); //$NON-NLS-1$
+		}
         return impl;
     }
 

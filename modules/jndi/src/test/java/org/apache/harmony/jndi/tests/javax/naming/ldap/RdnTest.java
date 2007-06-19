@@ -23,10 +23,8 @@
  */
 package org.apache.harmony.jndi.tests.javax.naming.ldap;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
@@ -546,6 +544,15 @@ public class RdnTest extends TestCase {
         } catch (InvalidNameException e) {}
     }
 
+    public void testRdnString027() {
+        try {
+            Rdn rdn1 = new Rdn("t", "test");
+            Rdn rdn2 = new Rdn("t = test + t = test");
+            assertFalse(rdn1.equals(rdn2));
+            assertEquals(rdn1.toAttributes(), rdn2.toAttributes());            
+        } catch (InvalidNameException e) {}
+    }
+
     /**
      * <p>
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Rdn)'
@@ -735,6 +742,26 @@ public class RdnTest extends TestCase {
         int y = new Rdn("T=TEST\\, THAT+S=THIS").hashCode();
         assertNotSame(0, x & y);
         assertEquals(x, y);
+    }
+
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.Rdn.hashCode()'
+     * </p>
+     * <p>
+     * Here we are testing if this method returns the hash code of this RDN, in
+     * this case we are testing if the hashcode returned by this method is the
+     * correct one, the only hash that we know something is of the Rdn empty,
+     * this hash has to be zero.
+     * </p>
+     * <p>
+     * The expected result is the hashcode of the rdn.
+     * </p>
+     */
+    public void testHashCode002() throws Exception {
+        int x = new Rdn("t= #20").hashCode();
+        int y = new Rdn("t= #20").hashCode();
+        assertTrue(x == y);
     }
 
     /**

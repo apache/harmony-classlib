@@ -137,6 +137,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
   int rc = -1;
   int showVersion = 0;
   int versionFlag = 0;
+  int vmHelp = 0;
   int genericLauncher = 0;
   char *str;
   char *knownGenericNames[] = { "java", "java.exe", "javaw.exe", NULL };
@@ -206,13 +207,12 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	*/
 	for (i = 1; i < argc; i++) {
         if ((0 == strcmp ("-help", argv[i])) ||
+            (0 == strcmp ("-h", argv[i])) ||
             (0 == strcmp ("-?", argv[i])) ||
             (0 == strcmp ("-X", argv[i]))) {
-            printUsageMessage(PORTLIB);
-            rc = 0;
-            goto bail;
+            vmHelp = 1;
         }
-        
+
 		if ((0 == strcmp ("-cp", argv[i])) ||
 		    (0 == strcmp ("-classpath", argv[i]))) {
 			/* Skip the classpath argument while looking for main class */
@@ -273,7 +273,7 @@ gpProtectedMain (struct haCmdlineOptions *args)
 	classArg = arrangeToolsArgs(args->portLibrary, &argc, &argv, mainClass);
   }
 
-  if (mainClass == NULL && !isStandaloneJar && !versionFlag) {
+  if (mainClass == NULL && !isStandaloneJar && !versionFlag && !vmHelp) {
     printUsageMessage(PORTLIB);
     goto bail;
   }

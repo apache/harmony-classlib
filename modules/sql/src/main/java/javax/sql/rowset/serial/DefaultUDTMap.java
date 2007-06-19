@@ -21,6 +21,7 @@ import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.SQLException;
 import java.sql.Struct;
 import java.sql.Types;
 import java.util.HashMap;
@@ -34,45 +35,45 @@ public class DefaultUDTMap<T> {
                 || type == Types.DATALINK || type == Types.STRUCT || type == Types.JAVA_OBJECT);
     }
 
-    public static SerialDatalink[] processObject(URL[] elements)
+    public static SerialDatalink[] processDatalink(Object[] elements)
             throws SerialException {
         SerialDatalink[] ret = new SerialDatalink[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = new SerialDatalink(elements[i]);
+            ret[i] = new SerialDatalink((URL)elements[i]);
         }
         return ret;
     }
 
-    public static Struct[] processObject(Struct[] elements)
+    public static Struct[] processStruct(Object[] elements)
             throws SerialException {
         Struct[] ret = new Struct[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = elements[i];
+            ret[i] = (Struct)elements[i];
         }
         return ret;
     }
 
-    public static Array[] processObject(Array[] elements)
+    public static Array[] processArray(Object[] elements)
             throws SerialException {
         Array[] ret = new Array[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = elements[i];
+            ret[i] = (Array)elements[i];
         }
         return ret;
     }
 
-    public static Clob[] processObject(Clob[] elements) throws SerialException {
+    public static Clob[] processClob(Object[] elements) throws SQLException {
         Clob[] ret = new Clob[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = elements[i];
+            ret[i] = new SerialClob((Clob)elements[i]);
         }
         return ret;
     }
 
-    public static Blob[] processObject(Blob[] elements) throws SerialException {
+    public static Blob[] processBlob(Object[] elements) throws SQLException {
         Blob[] ret = new Blob[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = elements[i];
+            ret[i] = new SerialBlob((Blob)elements[i]);
         }
         return ret;
     }
@@ -89,3 +90,4 @@ public class DefaultUDTMap<T> {
         return ret;
     }
 }
+

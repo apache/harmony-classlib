@@ -31,10 +31,12 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.internal.parser.LdapRdnParser;
+import org.apache.harmony.jndi.internal.parser.LdapTypeAndValueList;
 
 /**
  * 
@@ -68,7 +70,7 @@ public class Rdn implements Serializable, Comparable<Object> {
         return LdapRdnParser.unescapeValue(val);
     }
 
-    private List<Attribute> list;
+    private transient List<Attribute> list;
 
     private transient LdapRdnParser parser;
 
@@ -182,13 +184,18 @@ public class Rdn implements Serializable, Comparable<Object> {
     }
 
     private List<Attribute> convertToAttributeArrayList(Attributes attrList) {
-        List<Attribute> myList = new ArrayList<Attribute>();
+        LdapTypeAndValueList myList = new LdapTypeAndValueList();
 
         NamingEnumeration<? extends Attribute> ne = attrList.getAll();
-        while (ne.hasMoreElements()) {
-            myList.add((Attribute)ne.nextElement().clone());
+        try {
+            while (ne.hasMoreElements()) {
+                Attribute attr = ne.nextElement();
+                myList.put(attr.getID(), attr.get());
+            }
+        } catch (NamingException e){
+            
         }
-        return myList;
+        return myList.toAttributeList();
     }
 
     /**
@@ -280,6 +287,9 @@ public class Rdn implements Serializable, Comparable<Object> {
 
             while (en.hasMoreElements()) {
                 Object obj = en.nextElement();
+                if (obj instanceof byte[]) {
+                    obj = new String((byte[])obj);
+                }
                 try {
                     String s = (String) obj;
                     sum += escapeValue(s.toLowerCase()).hashCode();
@@ -306,11 +316,21 @@ public class Rdn implements Serializable, Comparable<Object> {
      * @ar.org.fitc.spec_ref
      */
     public Attributes toAttributes() {
-        BasicAttributes ba = new BasicAttributes(true);
+        BasicAttributes bas = new BasicAttributes(true);
         for (Iterator<Attribute> iter = list.iterator(); iter.hasNext();) {
-            ba.put((Attribute) iter.next().clone());
+            Attribute attr = iter.next();
+            BasicAttribute ba = new BasicAttribute(attr.getID(), false);
+            try {
+                NamingEnumeration nameEnum = attr.getAll();
+                while (nameEnum.hasMore()) {
+                    ba.add(nameEnum.next());
+                }
+            } catch (NamingException ne) {
+
+            }
+            bas.put(ba);
         }
-        return ba;
+        return bas;
     }
 
     /**

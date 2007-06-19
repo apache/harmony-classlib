@@ -380,12 +380,8 @@ public class KeyStore {
         if (!isInit) {
             throw new KeyStoreException(NOTINITKEYSTORE);
         }
-        if (stream == null) {
-            throw new IOException(Messages.getString("security.51")); //$NON-NLS-1$
-        }
-        if (password == null) {
-            throw new IOException(Messages.getString("security.50")); //$NON-NLS-1$
-        }
+
+        //Just delegate stream and password to implSpi
         implSpi.engineStore(stream, password);
     }
 
