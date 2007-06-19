@@ -60,12 +60,10 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         if (clob == null) {
             throw new SQLException(Messages.getString("sql.19"));//$NON-NLS-1$
         }
-
-        characterStream = clob.getCharacterStream();
-        asciiStream = clob.getAsciiStream();
-        if (characterStream == null || asciiStream == null) {
-            throw new SQLException(Messages.getString("sql.20"));//$NON-NLS-1$
-        }
+        if ((characterStream = clob.getCharacterStream()) == null
+				&& (asciiStream = clob.getAsciiStream()) == null) {
+			throw new SQLException(Messages.getString("sql.20"));//$NON-NLS-1$
+		}
 
         this.clob = clob;
         origLen = clob.length();
@@ -83,10 +81,12 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     }
 
     public long length() throws SerialException {
+        checkValidation();
         return len;
     }
 
     public InputStream getAsciiStream() throws SerialException, SQLException {
+        checkValidation();
         if (clob == null) {
             throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
         }
@@ -94,6 +94,7 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     }
 
     public Reader getCharacterStream() throws SerialException {
+        checkValidation();
         return new CharArrayReader(buf);
     }
 
@@ -114,12 +115,14 @@ public class SerialClob implements Clob, Serializable, Cloneable {
 
     public long position(Clob searchClob, long start) throws SerialException,
             SQLException {
+        checkValidation();
         String searchString = searchClob.getSubString(1, (int)searchClob.length());
         return position(searchString, start);
     }
 
     public long position(String searchString, long start) throws SerialException,
             SQLException {
+        checkValidation();
         if (start < 1 || len - (start - 1) < searchString.length()) {
             return -1;
         }
@@ -148,26 +151,38 @@ public class SerialClob implements Clob, Serializable, Cloneable {
 
     public OutputStream setAsciiStream(long pos) throws SerialException,
             SQLException {
+        checkValidation();
         if (clob == null) {
             throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
         }
-        return clob.setAsciiStream(pos);
+        OutputStream os = clob.setAsciiStream(pos);
+        if(os == null){
+            throw new SerialException(Messages.getString("sql.46")); // $NON-NLS-1$
+        }
+        return os;
     }
 
     public Writer setCharacterStream(long pos) throws SerialException,
             SQLException {
+        checkValidation();
         if (clob == null) {
             throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
         }
-        return clob.setCharacterStream(pos);
+        Writer writer = clob.setCharacterStream(pos);
+        if(writer == null){
+            throw new SerialException(Messages.getString("sql.45")); // $NON-NLS-1$
+        }
+        return writer;
     }
 
     public int setString(long pos, String str) throws SerialException {
+        checkValidation();
         return setString(pos, str, 0, str.length());
     }
 
     public int setString(long pos, String str, int offset, int length)
             throws SerialException {
+        checkValidation();
         if (pos < 1 || length < 0 || pos > (len - length + 1)) {
             throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
         }
@@ -182,6 +197,7 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     }
 
     public void truncate(long length) throws SerialException {
+        checkValidation();
         if(length > len || length < 0) {
             throw new SerialException(Messages.getString("sql.24"));
         }

@@ -584,7 +584,7 @@ public class DriverManagerTest extends TestCase {
      * 
      * Registers a driver for multiple times and deregisters it only once.
      * 
-     * Regression for
+     * Regression for HARMONY-4205
      */
     public void test_registerDriver_MultiTimes() throws SQLException {
         int register_count = 10;
