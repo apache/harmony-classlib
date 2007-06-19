@@ -52,10 +52,7 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
         return this.invalidateRefs;
     }
 
-    public boolean isServiceClass(Class service) {
-        if (service == null) {
-            return false;
-        }
-        return service.equals(this.serviceClass);
+    public boolean isServiceClass(Class service) {        
+        return serviceClass.equals(service);
     }
 }
