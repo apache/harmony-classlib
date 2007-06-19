@@ -68,7 +68,7 @@ public class Rdn implements Serializable, Comparable<Object> {
         return LdapRdnParser.unescapeValue(val);
     }
 
-    private List<Attribute> list;
+    private transient List<Attribute> list;
 
     private transient LdapRdnParser parser;
 
@@ -280,6 +280,9 @@ public class Rdn implements Serializable, Comparable<Object> {
 
             while (en.hasMoreElements()) {
                 Object obj = en.nextElement();
+                if (obj instanceof byte[]) {
+                    obj = new String((byte[])obj);
+                }
                 try {
                     String s = (String) obj;
                     sum += escapeValue(s.toLowerCase()).hashCode();
