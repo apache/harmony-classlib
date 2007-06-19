@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialClob;
 import javax.sql.rowset.serial.SerialException;
 
 import junit.framework.TestCase;
@@ -60,6 +61,8 @@ public class SerialArrayTest extends TestCase {
     }
 
     public void testConstructor_ObjectArray() throws SQLException {
+        assertNotNull(new SerialArray(new SQLArray()));
+
         // OK
         sa = new SerialArray(mock);
         // array.getArray should not return null
@@ -382,6 +385,64 @@ public class SerialArrayTest extends TestCase {
 
         public void writeSQL(SQLOutput stream) throws SQLException {
             return;
+        }
+    }
+    
+    private static class SQLArray implements java.sql.Array {
+
+        Object[] array;
+
+        SQLArray() throws SQLException {
+
+            char[] chars = { 'a', 'b', 'c', 'd' };
+            array = new Object[1];
+
+            array[0] = (Object) new SerialClob(chars);
+        }
+
+        public Object getArray() {
+            return array;
+        }
+
+        public int getBaseType() {
+            return java.sql.Types.CLOB;
+        }
+
+        /** Everything below here is just supplied to satisfy
+         the interface and is not part of this testcase.
+         **/
+
+        public Object getArray(long index, int count) {
+            return null;
+        }
+
+        public Object getArray(long index, int count, Map<String, Class<?>> map) {
+            return null;
+        }
+
+        public Object getArray(Map<String, Class<?>> map) {
+            return null;
+        }
+
+        public String getBaseTypeName() {
+            return null;
+        }
+
+        public ResultSet getResultSet() {
+            return null;
+        }
+
+        public ResultSet getResultSet(long index, int count) {
+            return null;
+        }
+
+        public ResultSet getResultSet(Map<String, Class<?>> map) {
+            return null;
+        }
+
+        public ResultSet getResultSet(long index, int count,
+                Map<String, Class<?>> map) {
+            return null;
         }
     }
 }
