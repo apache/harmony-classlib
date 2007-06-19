@@ -17,8 +17,7 @@
 
 package java.sql;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.io.Serializable;
 
 /**
  * An Exception class that is used in conjunction with JDBC operations. It
@@ -41,7 +40,7 @@ import java.util.NoSuchElementException;
  * additional error information.
  * </ul>
  */
-public class SQLException extends Exception implements Iterable<Throwable> {
+public class SQLException extends Exception implements Serializable {
 
     private static final long serialVersionUID = 2135244094396331484L;
 
@@ -104,80 +103,6 @@ public class SQLException extends Exception implements Iterable<Throwable> {
     }
 
     /**
-     * Creates an SQLException object. The Reason string is set to the null if
-     * cause == null or cause.toString() if cause!=null,and the cause Throwable
-     * object is set to the given cause Throwable object.
-     * 
-     * @param theCause
-     *            the Throwable object for the underlying reason this
-     *            SQLException
-     *            
-     * @since 1.6
-     */
-    public SQLException(Throwable theCause) {
-        this(theCause == null ? null : theCause.toString(), null, 0, theCause);
-    }
-
-    /**
-     * Creates an SQLException object. The Reason string is set to the given and
-     * the cause Throwable object is set to the given cause Throwable object.
-     * 
-     * @param theReason
-     *            the string to use as the Reason string
-     * @param theCause
-     *            the Throwable object for the underlying reason this
-     *            SQLException
-     *            
-     * @since 1.6
-     */
-    public SQLException(String theReason, Throwable theCause) {
-        super(theReason, theCause);
-    }
-
-    /**
-     * Creates an SQLException object. The Reason string is set to the given
-     * reason string, the SQLState string is set to the given SQLState string
-     * and the cause Throwable object is set to the given cause Throwable
-     * object.
-     * 
-     * @param theReason
-     *            the string to use as the Reason string
-     * @param theSQLState
-     *            the string to use as the SQLState string
-     * @param theCause
-     *            the Throwable object for the underlying reason this
-     *            SQLException
-     * @since 1.6
-     */
-    public SQLException(String theReason, String theSQLState, Throwable theCause) {
-        super(theReason, theCause);
-        SQLState = theSQLState;
-    }
-
-    /**
-     * Creates an SQLException object. The Reason string is set to the given
-     * reason string, the SQLState string is set to the given SQLState string ,
-     * the Error Code is set to the given error code value, and the cause
-     * Throwable object is set to the given cause Throwable object.
-     * 
-     * @param theReason
-     *            the string to use as the Reason string
-     * @param theSQLState
-     *            the string to use as the SQLState string
-     * @param theErrorCode
-     *            the integer value for the error code
-     * @param theCause
-     *            the Throwable object for the underlying reason this
-     *            SQLException
-     * @since 1.6
-     */
-    public SQLException(String theReason, String theSQLState, int theErrorCode,
-            Throwable theCause) {
-        this(theReason, theSQLState, theCause);
-        vendorCode = theErrorCode;
-    }
-
-    /**
      * Returns the integer error code for this SQLException
      * 
      * @return The integer error code for this SQLException. The meaning of the
@@ -223,38 +148,6 @@ public class SQLException extends Exception implements Iterable<Throwable> {
             next.setNextException(ex);
         } else {
             next = ex;
-        }
-    }
-    /**
-     * Answer an iterator over the chained SQLExceptions.
-     */
-    public Iterator<Throwable> iterator() {
-        return new InternalIterator(this);
-    }
-
-    private static class InternalIterator implements Iterator<Throwable> {
-
-        SQLException current;
-
-        InternalIterator(SQLException e) {
-            current = e;
-        }
-
-        public boolean hasNext() {
-            return null != current;
-        }
-
-        public Throwable next() {
-            if (null == current) {
-                throw new NoSuchElementException();
-            }
-            SQLException ret = current;
-            current = current.next;
-            return ret;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
     }
 }
