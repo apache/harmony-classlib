@@ -14,31 +14,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Dmitriy S. Matveev
- * @version $Revision$
- */
-#ifndef __CURVE_H__
-#define __CURVE_H__
 
-#include "TypeDefinition.h"
+#ifndef __TYPEDEFINITION_H__
+#define __TYPEDEFINITION_H__
 
-enum{OPEN_FLAG=1, FLAG_ONCURVE=2};
+typedef int fint;
+typedef long flong;
+typedef unsigned long uflong;
+typedef double fdouble;
+typedef float ffloat;
+typedef unsigned char ufchar;
+typedef char fchar;
+typedef unsigned short ufshort;
+typedef short fshort;
+typedef unsigned short fwchar_t;
 
-class TTCurve
-{
-public:
-
-	TTCurve();
-	~TTCurve();
-
-	ffloat* _coords;
-    ufchar* _flags;
-	ufshort _len;
-	ufshort _outlineCommandsNumb;
-
-	fint add(ffloat x, ffloat y, ufchar flag);
-
-};
+fint fwcslen(fwchar_t* str);
+fint fwcscmp(fwchar_t* str1, fwchar_t* str2);
 
 #endif

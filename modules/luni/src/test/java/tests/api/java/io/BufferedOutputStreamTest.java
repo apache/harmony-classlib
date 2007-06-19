@@ -82,6 +82,24 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 		}
 	}
 
+    private static class MockOutputStream extends OutputStream {
+        byte[] written;
+        int count;
+
+        public MockOutputStream(int size) {
+            written = new byte[size];
+            count = 0;
+        }
+
+        public void write(int b) {
+            written[count++] = (byte)b;
+        }
+
+        public String getWritten() {
+            return new String(written, 0, count);
+        }
+    }
+
 	/**
 	 * @tests java.io.BufferedOutputStream#write(byte[], int, int)
 	 */
@@ -105,8 +123,20 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
 			bais.read(wbytes, 0, 1013);
 			assertTrue("Incorrect bytes written", fileString.substring(0, 1013)
 					.equals(new String(wbytes, 0, wbytes.length)));
+
+			// regression test for HARMONY-4177
+			MockOutputStream mos = new MockOutputStream(5);
+			BufferedOutputStream bos = new BufferedOutputStream(mos, 3);
+			bos.write("a".getBytes());
+			bos.write("bcde".getBytes());
+			assertEquals("Large data should be written directly", "abcde", mos.getWritten());
+			mos = new MockOutputStream(4);
+			bos = new BufferedOutputStream(mos, 3);
+			bos.write("ab".getBytes());
+			bos.write("cd".getBytes());
+			assertEquals("Should flush before write", "ab", mos.getWritten());
 		} catch (java.io.IOException e) {
-			fail("Flush test failed");
+			fail("write$BII test failed: " + e);
 		}
 
 	}

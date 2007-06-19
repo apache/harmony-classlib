@@ -43,7 +43,7 @@ public class FLFontManager extends FontManager {
     public FLFontManager() {
         
         Runtime.getRuntime().addShutdownHook(new DisposeNativeHook());
-        
+
         initManager();
         
         addPath(new File(System.getProperty("java.home") + "/lib/fonts/"));
@@ -82,7 +82,7 @@ public class FLFontManager extends FontManager {
         Font newFont;
         
         for (int i = 0; i < strMas.length; i++) {
-            String str = strMas[i].substring(strMas[i].length() - 3).toLowerCase();                         
+            String str = strMas[i].substring(strMas[i].length() - 3).toLowerCase();
             newFont = addFont(dir + "/" + strMas[i], str.equals("ttf") ? Font.TRUETYPE_FONT : Font.TYPE1_FONT);
             
             if (newFont != null) {

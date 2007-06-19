@@ -19,6 +19,7 @@ package tests.api.java.io;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import tests.support.Support_StringWriter;
 
@@ -51,6 +52,33 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 		assertTrue("Used in tests", true);
 	}
 
+    private static class MockWriter extends Writer { 
+        StringBuffer sb = new StringBuffer();
+        boolean flushCalled = false;
+        
+        public void write(char[] buf, int off, int len) throws IOException {
+            for (int i = off; i < off + len; i++) {
+                sb.append(buf[i]);
+            }
+        }
+
+        public void close() throws IOException {
+            System.out.println("close");
+        }
+
+        public void flush() throws IOException {
+            flushCalled = true;
+        }
+
+        public String getWritten() {
+            return sb.toString();
+        }
+
+        public boolean isFlushCalled() {
+            return flushCalled;
+        }
+    }
+
 	/**
 	 * @tests java.io.BufferedWriter#close()
 	 */
@@ -62,6 +90,22 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 		}
 		assertTrue("Write after close", !sw.toString().equals(testString));
+
+        // Regression test for HARMONY-4178
+        try {
+            MockWriter mw = new MockWriter();
+            BufferedWriter bw = new BufferedWriter(mw);
+            bw.write('a');
+            bw.close();
+
+            // flush should not be called on underlying stream
+            assertFalse("Flush was called in the underlying stream", mw.isFlushCalled());
+
+            // on the other hand the BufferedWriter itself should flush the buffer
+            assertEquals("BufferdWriter do not flush itself before close", "a", mw.getWritten());
+        } catch (IOException ioe) {
+            fail("Exception during close test: " + ioe);
+        }
 	}
 
 	/**

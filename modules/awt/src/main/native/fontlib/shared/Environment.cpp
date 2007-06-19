@@ -37,7 +37,7 @@ static FontHeader* fhArray = NULL;
 //static bool getFonts = false;//true;
 //#endif
 
-int Environment::_length = 0;
+fint Environment::_length = 0;
 
 FontHeader::FontHeader()
 {
@@ -48,7 +48,7 @@ FontHeader::FontHeader()
 	_head = NULL;
 }
 
-FontHeader::FontHeader(char** filePath, FontType fType)
+FontHeader::FontHeader(fchar** filePath, FontType fType)
 {
 	_filePath = *filePath;
 	_familyName = NULL;
@@ -60,20 +60,20 @@ FontHeader::FontHeader(char** filePath, FontType fType)
 
 FontHeader::~FontHeader()
 {
-    //printf("now = %s , %u \n", (char *)_filePath, _fType);
+    //printf("now = %s , %u \n", (fchar *)_filePath, _fType);
 	delete _familyName;
 	delete _filePath;
     //delete _font;
 	delete _nextHeader;
 }
 
-bool fntType(char* font, char* type)
+bool fntType(fchar* font, fchar* type)
 {
 	bool ret=0;
-	unsigned char j=0;
+	ufchar j=0;
 
-	int len = (int)strlen(font);
-	for (int i = 0; i<=len; i++)
+	fint len = (fint)strlen(font);
+	for (fint i = 0; i<=len; i++)
 	{
 		if (tolower(font[i]) == tolower(type[j])) 
 		{
@@ -89,9 +89,9 @@ bool fntType(char* font, char* type)
 	return ret;
 }
 
-void static inline getNewLexeme(char* str, FILE* font) {
-	unsigned char ch;
-	unsigned short count = 0;
+void static inline getNewLexeme(fchar* str, FILE* font) {
+	ufchar ch;
+	ufshort count = 0;
 
 	while (!feof(font) && ((ch = getc(font)) == ' ' || ch == '\n' || ch == '\r')) {
 	}
@@ -104,12 +104,12 @@ void static inline getNewLexeme(char* str, FILE* font) {
 	str[count] = '\0';	
 }
 
-int static inline getT1Name(char *pathToFile,wchar_t** fontFamilyName, StyleName* style) {
+fint static inline getT1Name(fchar *pathToFile,fwchar_t** fontFamilyName, StyleName* style) {
 
 	FILE *font;
-	char curStr[1024];
-	char *ptr;
-	unsigned char ch;
+	fchar curStr[1024];
+	fchar *ptr;
+	ufchar ch;
 
 	if( font = fopen(pathToFile, "rb")) {	
 
@@ -137,7 +137,7 @@ int static inline getT1Name(char *pathToFile,wchar_t** fontFamilyName, StyleName
 			getNewLexeme(curStr, font);
 			if (!strcmp(curStr, "/FamilyName")) {
 
-				unsigned short count = 0;
+				ufshort count = 0;
 
 				while (!feof(font) && ((ch = getc(font)) == '(')) {
 				}
@@ -153,7 +153,7 @@ int static inline getT1Name(char *pathToFile,wchar_t** fontFamilyName, StyleName
 
 				//printf("fontFamilyName = ");
 				ch = 0;
-				*fontFamilyName = new wchar_t[count + 1];
+				*fontFamilyName = new fwchar_t[count + 1];
 				while (*ptr != '\0') {
 					(*fontFamilyName)[ch ++] = *ptr;
 					//printf("%c", *ptr);
@@ -187,7 +187,7 @@ int static inline getT1Name(char *pathToFile,wchar_t** fontFamilyName, StyleName
 
 			} else if (!strcmp(curStr, "/ItalicAngle")) {
 				getNewLexeme(curStr, font);				
-				double italicAngle = atof(curStr);
+				fdouble italicAngle = atof(curStr);
 				if (italicAngle) {
 					//printf("\n%f\n",italicAngle);
 					if (*style == Bold) {
@@ -209,11 +209,11 @@ int static inline getT1Name(char *pathToFile,wchar_t** fontFamilyName, StyleName
     return -1;
 }
 
-FontHeader* addFontFile(char** file, FontType ft)
+FontHeader* addFontFile(fchar** file, FontType ft)
 {
 	FILE* ttfile;
 	StyleName* fStyle;
-	int result;
+	fint result;
 
 	FontHeader *fh = new FontHeader(file, ft);
 
@@ -268,34 +268,34 @@ FontHeader* addFontFile(char** file, FontType ft)
 	return fh;
 }
 
-/*static inline FontHeader* add( char* name, char* dir, FontType ft)
+/*static inline FontHeader* add( fchar* name, fchar* dir, FontType ft)
 {
-	int len = (int)strlen(dir);
-	char* fontFile = new char[len+strlen(name)+1];
+	fint len = (fint)strlen(dir);
+	fchar* fontFile = new fchar[len+strlen(name)+1];
 	strncpy(fontFile, dir, len+1);
 	strcat(fontFile, name);
 	return addFontFile(&fontFile, ft);		
 }*/
 
-FontHeader* Environment::addFile(char* file, FontType ft)
+FontHeader* Environment::addFile(fchar* file, FontType ft)
 {
-	int len = (int)strlen(file);
-    char* filepath = new char[len+1];
+	fint len = (fint)strlen(file);
+    fchar* filepath = new fchar[len+1];
 	strcpy(filepath,file);
 
 	return addFontFile(&filepath, ft);
 }
 
-/*int Environment::addPath(char* argPath)
+/*fint Environment::addPath(fchar* argPath)
 {
-	char* tok;
-	char fDir[1024];
+	fchar* tok;
+	fchar fDir[1024];
 
-	char deLimits[] = " ;";
-	char currentDir[1024];
-	long hFile;
+	fchar deLimits[] = " ;";
+	fchar currentDir[1024];
+	flong hFile;
 
-	char path[1024];
+	fchar path[1024];
     strcpy(path,argPath);
 
     tok = strtok(path, deLimits);
@@ -308,7 +308,7 @@ FontHeader* Environment::addFile(char* file, FontType ft)
 
 #ifdef WIN32
 		struct _finddata_t font_file;
-		if( (hFile = (long)_findfirst( currentDir, &font_file )) != -1L )
+		if( (hFile = (flong)_findfirst( currentDir, &font_file )) != -1L )
 //			printf("No available fonts in %s\n", currentDir);
 //		else
 		{
@@ -330,7 +330,7 @@ FontHeader* Environment::addFile(char* file, FontType ft)
 		globbuf.gl_offs = 5; 
 		glob(currentDir, GLOB_NOSORT, NULL, &globbuf); 
 
-		for(char** filesList = globbuf.gl_pathv; *filesList != NULL; filesList++)
+		for(fchar** filesList = globbuf.gl_pathv; *filesList != NULL; filesList++)
 		{
 			if (fntType(*filesList,".ttf"))
 				addFontFile(filesList, TrueType);		
@@ -354,8 +354,8 @@ FontHeader* Environment::getAllFonts()
 	/*if (getFonts)
 	{
 #ifdef WIN32
-		char* WINFONTS = "\\Fonts\\";
-		char winDir[256];
+		fchar* WINFONTS = "\\Fonts\\";
+		fchar winDir[256];
 		strcpy(winDir,getenv("windir"));
 		strcat(winDir,WINFONTS);
 		addPath(winDir);

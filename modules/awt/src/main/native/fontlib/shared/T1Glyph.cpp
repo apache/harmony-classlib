@@ -20,7 +20,7 @@
  */
 #include "T1Glyph.h"
 
-T1Glyph::T1Glyph(Type1Map *charStringMap, Type1Map *subrsMap, unsigned short unicode, unsigned short size, float relativeSize, float* fontBB):Glyph() {
+T1Glyph::T1Glyph(Type1Map *charStringMap, Type1Map *subrsMap, ufshort unicode, ufshort size, ffloat relativeSize, ffloat* fontBB):Glyph() {
 	_charStringMap = charStringMap;
 	_subrsMap = subrsMap;
 	_unicode = unicode;
@@ -39,12 +39,12 @@ T1Glyph::T1Glyph(Type1Map *charStringMap, Type1Map *subrsMap, unsigned short uni
 T1Glyph::~T1Glyph() {
 }
 
-void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack, Outline *out, float *curX, float *curY, float relativeSize){
-	float x1, y1, x2, y2, x3, y3;
+void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<ffloat> *stack, Outline *out, ffloat *curX, ffloat *curY, ffloat relativeSize){
+	ffloat x1, y1, x2, y2, x3, y3;
 	
-	unsigned char curChar;	
+	ufchar curChar;	
 
-	for (unsigned short count = 0; count < value->length; count ++) {
+	for (ufshort count = 0; count < value->length; count ++) {
 		
 		curChar = value->text[count];		
 
@@ -54,14 +54,14 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 
 		if (curChar > 31) {
 			if (curChar > 31 && curChar < 247) { // -107  to  107
-				stack->push((float) (curChar - 139));
+				stack->push((ffloat) (curChar - 139));
 			} else if (curChar > 246 && curChar < 251) { // 108 to 1131
-				stack->push((float) ((curChar - 247) * 256 + 108 + (unsigned char)(value->text[++count])));
+				stack->push((ffloat) ((curChar - 247) * 256 + 108 + (ufchar)(value->text[++count])));
 			} else if (curChar > 250 && curChar < 255) { // -1131  to -108
-				stack->push((float) ((curChar - 251) * (-256) - 108 - (unsigned char)(value->text[++count])));			
-			} else if (curChar == 255) { // int
-				stack->push((float) ((curChar << 24) + (unsigned char)((value->text[++count]) << 16) + 
-					(unsigned char)((value->text[++count]) << 8) + (unsigned char)(value->text[++count])));
+				stack->push((ffloat) ((curChar - 251) * (-256) - 108 - (ufchar)(value->text[++count])));			
+			} else if (curChar == 255) { // fint
+				stack->push((ffloat) ((curChar << 24) + (ufchar)((value->text[++count]) << 16) + 
+					(ufchar)((value->text[++count]) << 8) + (ufchar)(value->text[++count])));
 			} 
 		} else {
 			switch (curChar) {
@@ -76,9 +76,9 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_RLINETO : {// rlineto
-					*curY += (float) stack->top() * relativeSize;
+					*curY += (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					*curX += (float) stack->top() * relativeSize;
+					*curX += (ffloat) stack->top() * relativeSize;
 					stack->pop();			
 
 					#ifdef GLYPH_OUTLINE_CREATE_DEBUG
@@ -88,7 +88,7 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_HLINETO : {// hlineto
-					*curX += (float) stack->top() * relativeSize;
+					*curX += (ffloat) stack->top() * relativeSize;
 					stack->pop();
 
 					#ifdef GLYPH_OUTLINE_CREATE_DEBUG
@@ -98,7 +98,7 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_VLINETO : {// vlineto
-					*curY += (float) stack->top() * relativeSize;
+					*curY += (ffloat) stack->top() * relativeSize;
 					stack->pop();
 
 					#ifdef GLYPH_OUTLINE_CREATE_DEBUG
@@ -108,17 +108,17 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_RRCURVETO : {// rrcurveto equivalent to dx1 dy1 (dx1+dx2) (dy1+dy2) (dx1+dx2+dx3) (dy1+dy2+dy3) rcurveto.
-					y3 = (float) stack->top() * relativeSize;
+					y3 = (ffloat) stack->top() * relativeSize;
 					stack->pop();			
-					x3 = (float) stack->top() * relativeSize;
+					x3 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					y2 = (float) stack->top() * relativeSize;
+					y2 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					x2 = (float) stack->top() * relativeSize;
+					x2 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					y1 = (float) stack->top() * relativeSize;
+					y1 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					x1 = (float) stack->top() * relativeSize;
+					x1 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
 
 					x1 += *curX;
@@ -145,20 +145,20 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_CALLSUBR : {// callsubr
-					x1 = (float) stack->top();
+					x1 = (ffloat) stack->top();
 					stack->pop();
 
 					#ifdef GLYPH_OUTLINE_CREATE_DEBUG
 					printf("call subr = %f, ", x1);
 					#endif
 
-					parseValueToOutline((*_subrsMap)[(const unsigned short)x1], stack, out, curX, curY, relativeSize);
+					parseValueToOutline((*_subrsMap)[(const ufshort)x1], stack, out, curX, curY, relativeSize);
 					break;
 				} 
 				case CH_STR_HSBW : {// hsbw
-					y1 = (float) stack->top() * relativeSize;
+					y1 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					x1 = (float) stack->top() * relativeSize;
+					x1 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
 
 					_advanceX = y1;
@@ -181,9 +181,9 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_RMOVETO : {// rmoveto
-					*curY += (float) stack->top() * relativeSize;
+					*curY += (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					*curX += (float) stack->top() * relativeSize;
+					*curX += (ffloat) stack->top() * relativeSize;
 					stack->pop();			
 
 					#ifdef GLYPH_OUTLINE_CREATE_DEBUG
@@ -193,7 +193,7 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_HMOVETO : {// hmoveto
-					*curX += (float) stack->top() * relativeSize;
+					*curX += (ffloat) stack->top() * relativeSize;
 					stack->pop();
 
 					#ifdef GLYPH_OUTLINE_CREATE_DEBUG
@@ -204,13 +204,13 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 				} 
 				case CH_STR_VHCURVETO : {// vhcurveto			
 					y3 = 0;
-					x3 = (float) stack->top() * relativeSize;
+					x3 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					y2 = (float) stack->top() * relativeSize;
+					y2 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					x2 = (float) stack->top() * relativeSize;
+					x2 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					y1 = (float) stack->top() * relativeSize;
+					y1 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
 					x1 = 0;
 
@@ -230,15 +230,15 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					break;
 				} 
 				case CH_STR_HVCURVETO : {// hvcurveto
-					y3 = (float) stack->top() * relativeSize;
+					y3 = (ffloat) stack->top() * relativeSize;
 					stack->pop();			
 					x3 = 0;
-					y2 = (float) stack->top() * relativeSize;
+					y2 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
-					x2 = (float) stack->top() * relativeSize;
+					x2 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
 					y1 = 0;
-					x1 = (float) stack->top() * relativeSize;
+					x1 = (ffloat) stack->top() * relativeSize;
 					stack->pop();
 
 					x1 += *curX;
@@ -262,50 +262,50 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 					printf("escape command = %u, ", curChar);
 					#endif
 					if (curChar == CH_STR_ESCAPE_SEAC) {//seak						
-						x3 = (float) stack->top();
+						x3 = (ffloat) stack->top();
 						stack->pop();
-						y2 = (float) stack->top();
+						y2 = (ffloat) stack->top();
 						stack->pop();
-						x2 = (float) stack->top() * relativeSize;
+						x2 = (ffloat) stack->top() * relativeSize;
 						stack->pop();
-						y1 = (float) stack->top() * relativeSize;
+						y1 = (ffloat) stack->top() * relativeSize;
 						stack->pop();
-						x1 = (float) stack->top() * relativeSize;
+						x1 = (ffloat) stack->top() * relativeSize;
 						stack->pop();						
 
 						#ifdef GLYPH_OUTLINE_CREATE_DEBUG
 						printf("seak = %f,%f,%f,%f,%f ; ", x1, y1, x2, y2, x3);
 						#endif
 
-						unsigned short aX = (unsigned short) _advanceX;
-						unsigned short aY = (unsigned short) _advanceY;
+						ufshort aX = (ufshort) _advanceX;
+						ufshort aY = (ufshort) _advanceY;
 
-                        float tempGlyphBB[4];
+                        ffloat tempGlyphBB[4];
 
-                        memcpy(tempGlyphBB, _glyphBB, 4 * sizeof(float));
+                        memcpy(tempGlyphBB, _glyphBB, 4 * sizeof(ffloat));
 
-						parseValueToOutline((*_charStringMap)[STANDART_ENCODING[(unsigned short)y2]], stack, out, curX, curY, relativeSize);
+						parseValueToOutline((*_charStringMap)[STANDART_ENCODING[(ufshort)y2]], stack, out, curX, curY, relativeSize);
 
 						*curY = x2;
 						*curX = y1;
 						out->moveTo(*curX, *curY);
 
-						parseValueToOutline((*_charStringMap)[STANDART_ENCODING[(unsigned short)x3]], stack, out, curX, curY, relativeSize);
+						parseValueToOutline((*_charStringMap)[STANDART_ENCODING[(ufshort)x3]], stack, out, curX, curY, relativeSize);
 
 						_advanceX = aX;
 						_advanceY = aY;
 
-                        memcpy(_glyphBB, tempGlyphBB, 4 * sizeof(float));
+                        memcpy(_glyphBB, tempGlyphBB, 4 * sizeof(ffloat));
 
 						break;
 					} else if (curChar == CH_STR_ESCAPE_SBW) { //sbw
-						y2 = (float) stack->top() * relativeSize;
+						y2 = (ffloat) stack->top() * relativeSize;
 						stack->pop();
-						x2 = (float) stack->top() * relativeSize;
+						x2 = (ffloat) stack->top() * relativeSize;
 						stack->pop();
-						y1 = (float) stack->top() * relativeSize;
+						y1 = (ffloat) stack->top() * relativeSize;
 						stack->pop();
-						x1 = (float) stack->top() * relativeSize;
+						x1 = (ffloat) stack->top() * relativeSize;
 						stack->pop();
 
 						_advanceX = x1;
@@ -329,9 +329,9 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 						out->moveTo(*curX, *curY);
 						break;
 					} else if (curChar == CH_STR_ESCAPE_DIV) {//div
-						y1 = (float) stack->top();
+						y1 = (ffloat) stack->top();
 						stack->pop();
-						x1 = (float) stack->top();
+						x1 = (ffloat) stack->top();
 						stack->pop();
 						#ifdef GLYPH_OUTLINE_CREATE_DEBUG
 						printf("div (%f/%f) ", x1, y1);
@@ -346,23 +346,23 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<float> *stack,
 	}
 }
 
-void T1Glyph::countPoints(std::stack<float> *stack, EncodedValue *value, unsigned short *point, unsigned short *command) {	
-	unsigned char curChar;
+void T1Glyph::countPoints(std::stack<ffloat> *stack, EncodedValue *value, ufshort *point, ufshort *command) {	
+	ufchar curChar;
 
-	for (unsigned short count = 0; count < value->length; count ++) {
+	for (ufshort count = 0; count < value->length; count ++) {
 		
 		curChar = value->text[count];
 
 		if (curChar > 31) {
 			if (curChar > 31 && curChar < 247) { // -107  to  107
-				stack->push((float) (curChar - 139));
+				stack->push((ffloat) (curChar - 139));
 			} else if (curChar > 246 && curChar < 251) { // 108 to 1131
-				stack->push((float) ((curChar - 247) * 256 + 108 + (unsigned char)(value->text[++count])));
+				stack->push((ffloat) ((curChar - 247) * 256 + 108 + (ufchar)(value->text[++count])));
 			} else if (curChar > 250 && curChar < 255) { // -1131  to -108
-				stack->push((float) ((curChar - 251) * (-256) - 108 - (unsigned char)(value->text[++count])));			
-			} else if (curChar == 255) { // int
-				stack->push((float) ((curChar << 24) + (unsigned char)((value->text[++count]) << 16) + 
-					(unsigned char)((value->text[++count]) << 8) + (unsigned char)(value->text[++count])));
+				stack->push((ffloat) ((curChar - 251) * (-256) - 108 - (ufchar)(value->text[++count])));			
+			} else if (curChar == 255) { // fint
+				stack->push((ffloat) ((curChar << 24) + (ufchar)((value->text[++count]) << 16) + 
+					(ufchar)((value->text[++count]) << 8) + (ufchar)(value->text[++count])));
 			} 
 		} else {
 			switch (curChar) {									
@@ -390,7 +390,7 @@ void T1Glyph::countPoints(std::stack<float> *stack, EncodedValue *value, unsigne
 					break;
 				} 
 				case CH_STR_CALLSUBR : {// callsubr
-					unsigned short com = (unsigned short) stack->top();
+					ufshort com = (ufshort) stack->top();
 					stack->pop();
 
 					countPoints(stack, (*_subrsMap)[com], point, command);
@@ -401,9 +401,9 @@ void T1Glyph::countPoints(std::stack<float> *stack, EncodedValue *value, unsigne
 					if (curChar == CH_STR_ESCAPE_DIV) {//div
 						break;
 					} else if (curChar == CH_STR_ESCAPE_SEAC) {//seac
-						unsigned short achar = (unsigned short) stack->top();
+						ufshort achar = (ufshort) stack->top();
 						stack->pop();
-						unsigned short bchar = (unsigned short) stack->top();
+						ufshort bchar = (ufshort) stack->top();
 						stack->pop();											
 
 						*point += 2;
@@ -425,12 +425,12 @@ void T1Glyph::countPoints(std::stack<float> *stack, EncodedValue *value, unsigne
 	}
 }
 
-float* T1Glyph::getGlyphMetrics(void){
+ffloat* T1Glyph::getGlyphMetrics(void){
     if ((_advanceX == 0) && (_advanceY == 0)) {
         getOutline();
     }
 
-    float* gMetrics = new float[6];
+    ffloat* gMetrics = new ffloat[6];
 
 	gMetrics[0] = _advanceX;
 	gMetrics[1] = _advanceY;
@@ -443,12 +443,12 @@ float* T1Glyph::getGlyphMetrics(void){
 }
 
 Outline* T1Glyph::getOutline(void){
-	float curX, curY;
+	ffloat curX, curY;
 	curX = curY = 0;	
-	unsigned short point, command;
+	ufshort point, command;
 	point = command = 0;	
-	Outline *out;// = new Outline((unsigned short)200,(unsigned short)200);	
-	std::stack<float> *stack = new std::stack<float>();
+	Outline *out;// = new Outline((ufshort)200,(ufshort)200);	
+	std::stack<ffloat> *stack = new std::stack<ffloat>();
 	EncodedValue *value;
 
 	#ifdef GLYPH_OUTLINE_CREATE_DEBUG			

@@ -24,6 +24,7 @@
 
 #include "TTCurve.h"
 #include "TTFont.h"
+#include "TypeDefinition.h"
 
 #define CMAP_TABLE "cmap"   /* character to glyph mapping   */
 #define GLYF_TABLE "glyf"   /* glyph data                   */
@@ -51,7 +52,7 @@
 #define BIG5_ENCODING 3
 #define PRC_ENCODING 4
 
-typedef long Fixed;
+typedef flong Fixed;
 typedef long long LONGDT;
 
 typedef enum
@@ -72,50 +73,50 @@ typedef enum
 
 /* From Win GDI 
 typedef struct { 
-  unsigned char bFamilyType; 
-  unsigned char bSerifStyle; 
-  unsigned char bWeight; 
-  unsigned char bProportion; 
-  unsigned char bContrast; 
-  unsigned char bStrokeVariation; 
-  unsigned char bArmStyle; 
-  unsigned char bLetterform; 
-  unsigned char bMidline; 
-  unsigned char bXHeight; 
+  ufchar bFamilyType; 
+  ufchar bSerifStyle; 
+  ufchar bWeight; 
+  ufchar bProportion; 
+  ufchar bContrast; 
+  ufchar bStrokeVariation; 
+  ufchar bArmStyle; 
+  ufchar bLetterform; 
+  ufchar bMidline; 
+  ufchar bXHeight; 
 } PANOSE; */
 
 typedef struct
 {
     Fixed version;
-    unsigned short num_tables;
-    unsigned short search_range;
-    unsigned short entry_selector;
-    unsigned short range_shift;
+    ufshort num_tables;
+    ufshort search_range;
+    ufshort entry_selector;
+    ufshort range_shift;
 } Table_Offset;
 
 typedef struct
 {
-    char    tag[4];
-    unsigned long   checkSum;
-    unsigned long   offset;
-    unsigned long   length;
+    fchar    tag[4];
+    uflong   checkSum;
+    uflong   offset;
+    uflong   length;
 } Table_Directory;
 
 typedef struct
 {
-    unsigned short platformID;
-    unsigned short encodingID;
-    unsigned short languageID;
-    unsigned short nameID;
-    unsigned short string_length;
-    unsigned short string_offset;
+    ufshort platformID;
+    ufshort encodingID;
+    ufshort languageID;
+    ufshort nameID;
+    ufshort string_length;
+    ufshort string_offset;
 } Name_Entry;
 
 typedef struct 
 {
-    unsigned short format;
-    unsigned short num_name_records;
-    unsigned short storage_offset;
+    ufshort format;
+    ufshort num_name_records;
+    ufshort storage_offset;
     Name_Entry name_record[1];
 } Table_name; 
 
@@ -123,20 +124,20 @@ typedef struct
 typedef struct
 {
     Fixed  version;
-    unsigned short numGlyphs; // number of Glyphs
-    unsigned short maxPoints;
-    unsigned short maxContours;
-    unsigned short maxCompositePoints;
-    unsigned short maxCompositeContours;
-    unsigned short maxZones;
-    unsigned short maxTwilightPoints;
-    unsigned short maxStorage;
-    unsigned short maxFunctionDefs;
-    unsigned short maxInstructionDefs;
-    unsigned short maxStackElements;
-    unsigned short maxSizeOfInstructions;
-    unsigned short maxComponentElements;
-    unsigned short maxComponentDepth;
+    ufshort numGlyphs; // number of Glyphs
+    ufshort maxPoints;
+    ufshort maxContours;
+    ufshort maxCompositePoints;
+    ufshort maxCompositeContours;
+    ufshort maxZones;
+    ufshort maxTwilightPoints;
+    ufshort maxStorage;
+    ufshort maxFunctionDefs;
+    ufshort maxInstructionDefs;
+    ufshort maxStackElements;
+    ufshort maxSizeOfInstructions;
+    ufshort maxComponentElements;
+    ufshort maxComponentDepth;
 } Table_maxp;
 
 /* TrueType Font Header table */
@@ -144,92 +145,92 @@ typedef struct
 {
     Fixed table_version;
     Fixed font_revision;
-    unsigned long checksum_adjust;
-    unsigned long magic_number;
-    unsigned short flags;
-    unsigned short units_per_EM;
+    uflong checksum_adjust;
+    uflong magic_number;
+    ufshort flags;
+    ufshort units_per_EM;
 	LONGDT created;
 	LONGDT modified;
-    short xMin;
-    short yMin;
-    short xMax;
-    short yMax;
-    unsigned short mac_style;
-    unsigned short lowest_rec_PPEM;
-    short font_direction;
-    short index_to_loc_format;  // format of 'loca' table
-    short glyph_data_format;
+    fshort xMin;
+    fshort yMin;
+    fshort xMax;
+    fshort yMax;
+    ufshort mac_style;
+    ufshort lowest_rec_PPEM;
+    fshort font_direction;
+    fshort index_to_loc_format;  // format of 'loca' table
+    fshort glyph_data_format;
 } Table_head;
 
 typedef struct
 {
     Fixed table_version;
-	short ascender;	             /* typographic ascent */
-	short descender;             /* typographic descent */
-	short line_gap;              /* typographic line gap */
-	unsigned short advance_width_max;    /* Maximum advance width value in ‘hmtx’ table */
-	short min_left_sidebearing;
-	short min_right_sidebearing; /* Min(aw - lsb - (xMax - xMin)) */
-	short xMaxExtent;            /* Max(lsb + (xMax - xMin)) */
-	short caret_slope_rise;
-	short caret_slope_run;
-	short first_reserved;
-	short second_reserved;
-	short third_reserved;
-	short fourth_reserved;
-	short fifth_reserved;
-    short metric_data_format;
-	unsigned short number_of_hMetrics;
+	fshort ascender;	             /* typographic ascent */
+	fshort descender;             /* typographic descent */
+	fshort line_gap;              /* typographic line gap */
+	ufshort advance_width_max;    /* Maximum advance width value in ‘hmtx’ table */
+	fshort min_left_sidebearing;
+	fshort min_right_sidebearing; /* Min(aw - lsb - (xMax - xMin)) */
+	fshort xMaxExtent;            /* Max(lsb + (xMax - xMin)) */
+	fshort caret_slope_rise;
+	fshort caret_slope_run;
+	fshort first_reserved;
+	fshort second_reserved;
+	fshort third_reserved;
+	fshort fourth_reserved;
+	fshort fifth_reserved;
+    fshort metric_data_format;
+	ufshort number_of_hMetrics;
 } Table_hhea;
 
 typedef struct
 {
-	unsigned short table_version;
-	short xAvgCharWidth;
-	unsigned short usWeightClass;
-	unsigned short usWidthClass;
-	short fsType;
-	short ySubscriptXSize;
-	short ySubscriptYSize;
-	short ySubscriptXOffset;
-	short ySubscriptYOffset;
-	short ySuperscriptXSize;
-	short ySuperscriptYSize;
-	short ySuperscriptXOffset;
-	short ySuperscriptYOffset;
-	short yStrikeoutSize;
-	short yStrikeoutPosition;
-	short sFamilyClass;
+	ufshort table_version;
+	fshort xAvgCharWidth;
+	ufshort usWeightClass;
+	ufshort usWidthClass;
+	fshort fsType;
+	fshort ySubscriptXSize;
+	fshort ySubscriptYSize;
+	fshort ySubscriptXOffset;
+	fshort ySubscriptYOffset;
+	fshort ySuperscriptXSize;
+	fshort ySuperscriptYSize;
+	fshort ySuperscriptXOffset;
+	fshort ySuperscriptYOffset;
+	fshort yStrikeoutSize;
+	fshort yStrikeoutPosition;
+	fshort sFamilyClass;
 //	PANOSE panose;
-	unsigned char panose[10];
-	unsigned long ulUnicodeRange1;
-	unsigned long ulUnicodeRange2;
-	unsigned long ulUnicodeRange3;
-	unsigned long ulUnicodeRange4;
-	unsigned char achVendID[4];
-	unsigned short fsSelection;
-	unsigned short usFirstCharIndex;
-	unsigned short usLastCharIndex;
-	unsigned short sTypoAscender;
-	unsigned short sTypoDescender;
-	unsigned short sTypoLineGap;
-	unsigned short sWinAscent;
-	unsigned short sWinDescent;
-	unsigned long ulCodePageRange1;
-	unsigned long ulCodePageRange2;
+	ufchar panose[10];
+	uflong ulUnicodeRange1;
+	uflong ulUnicodeRange2;
+	uflong ulUnicodeRange3;
+	uflong ulUnicodeRange4;
+	ufchar achVendID[4];
+	ufshort fsSelection;
+	ufshort usFirstCharIndex;
+	ufshort usLastCharIndex;
+	ufshort sTypoAscender;
+	ufshort sTypoDescender;
+	ufshort sTypoLineGap;
+	ufshort sWinAscent;
+	ufshort sWinDescent;
+	uflong ulCodePageRange1;
+	uflong ulCodePageRange2;
 } Table_os2;
 
 typedef struct
 {
-	unsigned short platform;	 //identifier of platform
-	unsigned short encodingID;	 //identifier fo encoding
-	unsigned long  table_offset; //offset of the encoding table	
+	ufshort platform;	 //identifier of platform
+	ufshort encodingID;	 //identifier fo encoding
+	uflong  table_offset; //offset of the encoding table	
 } Cmap_Entry;
 
 typedef struct
 {
-	unsigned short table_version;       // =0
-    unsigned short numSubTables;        //number subtables
+	ufshort table_version;       // =0
+    ufshort numSubTables;        //number subtables
 	Cmap_Entry tableHeaders[1]; //headers of subtables
 } Table_cmap;
 
@@ -237,78 +238,78 @@ typedef struct
 {
     Fixed format; //format type
 	Fixed italic_angle;
-	short underlineOffset;
-	short underlineThickness;
-	unsigned long isFixedPitch;
-	unsigned long minMemType42;
-	unsigned long maxMemType42;
-	unsigned long minMemType1;
-	unsigned long maxMemType1;
+	fshort underlineOffset;
+	fshort underlineThickness;
+	uflong isFixedPitch;
+	uflong minMemType42;
+	uflong maxMemType42;
+	uflong minMemType1;
+	uflong maxMemType1;
 } Table_post;
 
 /* first part of the encoding table identical for all format of them */
 typedef struct
 {
-	unsigned short format;
-	unsigned short length; //length in bytes
-	unsigned short version;
+	ufshort format;
+	ufshort length; //length in bytes
+	ufshort version;
 } Table_encode_header;
 
 /*
 typedef struct
 {
-	unsigned short format; // =0,2,4,6
-	unsigned short length; // size
-	unsigned short version;
-	unsigned char map[256];
+	ufshort format; // =0,2,4,6
+	ufshort length; // size
+	ufshort version;
+	ufchar map[256];
 } Table_encode_0;
 
 
 typedef struct
 {
-//	unsigned short segCountX2;       // 2 x segCount
-	unsigned short search_range;     // 2 x (2**floor(log_2(segCount)))
-	unsigned short entry_selector;   // log_2(search_range/2)
-	unsigned short range_shift;      // 2 x segCount - search_range
-	unsigned short end_count[1];     // end characterCode for each segment, last =0xFFFF, length = segCount
-	unsigned short reservedPad;      // = 0
-	unsigned short start_count[1];   // Start character code for each segment, length = segCount
-	unsigned short idDelta[1];       // Delta for all character codes in segment, length = segCount
-    unsigned short idRangeOffset[1]; // Offsets into glyphIdArray or 0, length = segCount
-	unsigned short glyphIdArray[];  // Glyph index array (arbitrary length)
+//	ufshort segCountX2;       // 2 x segCount
+	ufshort search_range;     // 2 x (2**floor(log_2(segCount)))
+	ufshort entry_selector;   // log_2(search_range/2)
+	ufshort range_shift;      // 2 x segCount - search_range
+	ufshort end_count[1];     // end characterCode for each segment, last =0xFFFF, length = segCount
+	ufshort reservedPad;      // = 0
+	ufshort start_count[1];   // Start character code for each segment, length = segCount
+	ufshort idDelta[1];       // Delta for all character codes in segment, length = segCount
+    ufshort idRangeOffset[1]; // Offsets into glyphIdArray or 0, length = segCount
+	ufshort glyphIdArray[];  // Glyph index array (arbitrary length)
 } Table_encode_4;
 */
 
 typedef struct
 {
-	short number_of_contours; // <0 for composite glyph
-    short xMin;
-	short yMin;
-	short xMax;
-	short yMax;
+	fshort number_of_contours; // <0 for composite glyph
+    fshort xMin;
+	fshort yMin;
+	fshort xMax;
+	fshort yMax;
 } Glyph_header;
 
-template<short n> // n = number_of_contours from Glyph_header
+template<fshort n> // n = number_of_contours from Glyph_header
 struct SimpleGlyphDescription
 {
-    unsigned short endPtsOfContours[n];
-	unsigned short instruction_length;
-//	unsigned char instructions[instruction_length];
-//	unsigned char flags[n];
-//	unsigned char(short) xCoordinates[n];
-//	unsigned char(short) yCoordinates[n];
+    ufshort endPtsOfContours[n];
+	ufshort instruction_length;
+//	ufchar instructions[instruction_length];
+//	ufchar flags[n];
+//	ufchar(fshort) xCoordinates[n];
+//	ufchar(fshort) yCoordinates[n];
 };
 
-int parseCmapTable(FILE* tt_file, TableEncode* te);
-int parseNameTable(FILE* tt_file, wchar_t** familyName, wchar_t** psName, StyleName* fontStyle);
-int parseHeadTable(FILE* tt_file, float* bbox, short* format, unsigned short* unitsPerEm);
-int parseHheaTable(FILE* tt_file, unsigned short* numOfHMetrics, float* ascent, float* descent, float* lineGap);
-int parseMaxpTable(FILE* tt_file, unsigned short *numGlyphs);
-int parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, unsigned short numGlyphs);
-int parseOs2Table(FILE* tt_file, float* strikeOutSize, float* strikeOutOffset);
-int parsePostTable(FILE* tt_file, short* uOffset, short* uThickness);
-int parseGlyphData(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyphs, unsigned short glyphIndex, TTCurve *curve, short* bRect, float transform);
-int parseHmtxTable(FILE* tt_file, unsigned short numOfHMetrics, HMetrics** hm);
-bool isCompositeGlyph(FILE* tt_file, const GlyphOffsets gO, unsigned short numGlyphs, unsigned short glyphIndex);
+fint parseCmapTable(FILE* tt_file, TableEncode* te);
+fint parseNameTable(FILE* tt_file, fwchar_t** familyName, fwchar_t** psName, StyleName* fontStyle);
+fint parseHeadTable(FILE* tt_file, ffloat* bbox, fshort* format, ufshort* unitsPerEm);
+fint parseHheaTable(FILE* tt_file, ufshort* numOfHMetrics, ffloat* ascent, ffloat* descent, ffloat* lineGap);
+fint parseMaxpTable(FILE* tt_file, ufshort *numGlyphs);
+fint parseLocaTable(FILE* tt_file, GlyphOffsets* gOffsets, ufshort numGlyphs);
+fint parseOs2Table(FILE* tt_file, ffloat* strikeOutSize, ffloat* strikeOutOffset);
+fint parsePostTable(FILE* tt_file, fshort* uOffset, fshort* uThickness);
+fint parseGlyphData(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufshort glyphIndex, TTCurve *curve, fshort* bRect, ffloat transform);
+fint parseHmtxTable(FILE* tt_file, ufshort numOfHMetrics, HMetrics** hm);
+bool isCompositeGlyph(FILE* tt_file, const GlyphOffsets gO, ufshort numGlyphs, ufshort glyphIndex);
 
 #endif

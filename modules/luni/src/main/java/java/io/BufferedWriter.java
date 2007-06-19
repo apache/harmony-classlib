@@ -85,7 +85,7 @@ public class BufferedWriter extends Writer {
     public void close() throws IOException {
         synchronized (lock) {
             if (!isClosed()) {
-                flush();
+                flushInternal();
                 out.close();
                 buf = null;
                 out = null;
@@ -106,12 +106,19 @@ public class BufferedWriter extends Writer {
             if (isClosed()) {
                 throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
             }
-            if (pos > 0) {
-                out.write(buf, 0, pos);
-            }
-            pos = 0;
+            flushInternal();
             out.flush();
         }
+    }
+
+    /**
+     * Flushes the internal buffer.
+     */
+    private void flushInternal() throws IOException {
+        if (pos > 0) {
+            out.write(buf, 0, pos);
+        }
+        pos = 0;
     }
 
     /**

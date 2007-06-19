@@ -30,6 +30,6 @@ Outline* Glyph::getOutline(void){
 	return NULL;
 }
 
-float* Glyph::getGlyphMetrics(void){
+ffloat* Glyph::getGlyphMetrics(void){
 	return NULL;
 }

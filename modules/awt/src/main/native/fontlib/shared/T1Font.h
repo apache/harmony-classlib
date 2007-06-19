@@ -29,16 +29,16 @@
 
 class T1Font : public Font {
 public:
-	T1Font(wchar_t *family, StyleName sn, char* pathToFile);
+	T1Font(fwchar_t *family, StyleName sn, fchar* pathToFile);
 	~T1Font(void);
-	Glyph* createGlyph(unsigned short unicode, unsigned short size);
-	wchar_t* getPSName();
-	float* getLineMetrics(); 
-	bool canDisplay(unsigned short c);
+	Glyph* createGlyph(ufshort unicode, ufshort size);
+	fwchar_t* getPSName();
+	ffloat* getLineMetrics(); 
+	bool canDisplay(ufshort c);
 
-	unsigned short getUnicodeByIndex(unsigned short ind);
+	ufshort getUnicodeByIndex(ufshort ind);
 
-//	float* GetExtraMetrics();
+//	ffloat* GetExtraMetrics();
 
 
 private:
@@ -51,9 +51,9 @@ private:
 
     Type1GlyphCodeMap glyphCodeMap;//glyphCode -- unicode
 
-    wchar_t *fullName;
+    fwchar_t *fullName;
 
-    float matrixScale;
+    ffloat matrixScale;
 };
 
 #endif //__TYPE_1_FONT_CLASS_H

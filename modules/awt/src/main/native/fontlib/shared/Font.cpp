@@ -28,16 +28,16 @@ Font::Font() {
 }
 
 Font::~Font() {
-	for( std::map<const unsigned long, Glyph*>::iterator iter = _glyphMap.begin(); iter != _glyphMap.end(); iter++ ) {		
+	for( std::map<const uflong, Glyph*>::iterator iter = _glyphMap.begin(); iter != _glyphMap.end(); iter++ ) {		
 		delete iter->second;		
 	}
 
 	delete[] _famName;
 
-	/*unsigned short famLength = wcslen((wchar_t *)_famName);
-	char *family = new char[famLength+1];
+	/*ufshort famLength = fwcslen((fwchar_t *)_famName);
+	fchar *family = new fchar[famLength+1];
 
-	unsigned short i;
+	ufshort i;
 	for (i = 0;i < famLength;i++) {
 		(family)[i] = _famName[i];
 	}
@@ -45,7 +45,7 @@ Font::~Font() {
 
 	FontHeader* fh = GraphicsEnvironment::getAllFonts()->_head;
 	//printf("\nfaund = -%s-\n", family);
-	for(int i=0; i<GraphicsEnvironment::_length; i++){
+	for(fint i=0; i<GraphicsEnvironment::_length; i++){
 		//printf("font = -%s-\n", fh->_familyName);
 		if (strcmp(fh->_familyName,family)==0 && fh->_style == _style) {
 			fh->_font = NULL;
@@ -58,51 +58,51 @@ Font::~Font() {
 	delete[] family;*/
 }
 
-Glyph* Font::createGlyph(unsigned short unicode, unsigned short size){
+Glyph* Font::createGlyph(ufshort unicode, ufshort size){
 	return NULL; 
 }
 
-wchar_t* Font::getPSName()
+fwchar_t* Font::getPSName()
 {
 	return NULL;
 }
 
-float* Font::getLineMetrics()
+ffloat* Font::getLineMetrics()
 {
 	return NULL;
 }
 
-int	Font::getMissingGlyphCode()
+fint	Font::getMissingGlyphCode()
 {
 	return 0;
 }
 
-bool Font::canDisplay(unsigned short c)
+bool Font::canDisplay(ufshort c)
 {
 	return NULL;
 }
 
-unsigned short Font::getUnicodeByIndex(unsigned short ind)
+ufshort Font::getUnicodeByIndex(ufshort ind)
 {
 	return NULL;
 }
 
 //unicode = 0 - default glyph
-Glyph* Font::getGlyph(unsigned short unicode, unsigned short size) {
-	unsigned long id;
+Glyph* Font::getGlyph(ufshort unicode, ufshort size) {
+	uflong id;
     
 	//printf("unicode = %lu, size = %lu\n", unicode,size);
 
     if (!canDisplay(unicode)) {
-		id = (unsigned long)(size << 16);
+		id = (uflong)(size << 16);
         unicode = 0;
     } else {
-		id = (unsigned long)(size << 16) + unicode;
+		id = (uflong)(size << 16) + unicode;
     }	
 
     //printf("unicode = %lu, size = %lu, id = %lu\n", unicode,size,id);
 
-	std::map<const unsigned long, Glyph*>::iterator iter = _glyphMap.find(id);	
+	std::map<const uflong, Glyph*>::iterator iter = _glyphMap.find(id);	
 	if (iter != _glyphMap.end()) {
 //printf("return the glyph");
 		return (Glyph *)(*iter).second;	
@@ -116,10 +116,10 @@ Glyph* Font::getGlyph(unsigned short unicode, unsigned short size) {
 }
 
 // Creation of font depending on font type
-Font* createFont(char* family, StyleName sn) {
-	int nLen = (int) strlen(family);
-	wchar_t* name = new wchar_t[nLen+1];
-	for (int i = 0; i <= nLen; i++)
+Font* createFont(fchar* family, StyleName sn) {
+	fint nLen = (fint) strlen(family);
+	fwchar_t* name = new fwchar_t[nLen+1];
+	for (fint i = 0; i <= nLen; i++)
 		name[i] = family[i];
 
 	Font* retFont = createFont(name, sn);
@@ -130,7 +130,7 @@ Font* createFont(char* family, StyleName sn) {
 }
 
 // Creation of font depending on font type
-Font* createFont(wchar_t* family, StyleName sn) 
+Font* createFont(fwchar_t* family, StyleName sn) 
 {
 	Font* retFont;
 	bool isFound = false;
@@ -141,7 +141,7 @@ Font* createFont(wchar_t* family, StyleName sn)
 		fh != NULL; fh=fh->_nextHeader)
 	{
 
-		if (wcscmp(fh->_familyName,family)==0 && fh->_style == sn)
+		if (fwcscmp(fh->_familyName,family)==0 && fh->_style == sn)
 		{
 
 			switch(fh->_fType)

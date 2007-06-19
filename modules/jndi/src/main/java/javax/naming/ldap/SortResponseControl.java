@@ -93,9 +93,11 @@ public final class SortResponseControl extends BasicControl {
     
     private static final long serialVersionUID = 5142939176006310877L;
     
-    private SortResult sr;
+    private int resultCode;
     
-    private boolean sorted = false;
+    private String badAttrId;    
+    
+    private transient boolean sorted = false;
     
     /**
      * @ar.org.fitc.spec_ref
@@ -107,7 +109,10 @@ public final class SortResponseControl extends BasicControl {
      */
     public SortResponseControl(String id, boolean criticality, byte[] value) throws IOException {
         super(OID,criticality,value);
-        this.sr = (SortResult) ASN1_SORTRESPONSE.decode(value);
+        SortResult sr;
+        sr = (SortResult) ASN1_SORTRESPONSE.decode(value);
+        resultCode = sr.getSortresult();
+        badAttrId = sr.getAttributeType();
         if (getResultCode() == 0) {
             sorted = true;
         } else {
@@ -119,14 +124,14 @@ public final class SortResponseControl extends BasicControl {
      * @ar.org.fitc.spec_ref
      */
     public String getAttributeID () {
-        return sr.getAttributeType();    
+        return badAttrId;
     }
     
     /**
      * @ar.org.fitc.spec_ref
      */
     public int getResultCode () {
-        return sr.getSortresult();
+        return resultCode;
     }
     
     /**

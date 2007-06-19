@@ -84,10 +84,7 @@ public class BufferedOutputStream extends FilterOutputStream {
      */
     @Override
     public synchronized void flush() throws IOException {
-        if (count > 0) {
-            out.write(buf, 0, count);
-        }
-        count = 0;
+        flushInternal();
         out.flush();
     }
 
@@ -122,7 +119,8 @@ public class BufferedOutputStream extends FilterOutputStream {
             throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
         }
         
-        if (count == 0 && length >= buf.length) {
+        if (length >= buf.length) {
+            flushInternal();
             out.write(buffer, offset, length);
             return;
         }
@@ -131,29 +129,15 @@ public class BufferedOutputStream extends FilterOutputStream {
             // K002f=Arguments out of bounds
             throw new ArrayIndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
         }
-        
-        int available = buf.length - count;
-        if (length < available) {
-            available = length;
+
+        // flush the internal buffer first if we have not enough space left
+        if (length >= (buf.length - count)) {
+            flushInternal();
         }
-        if (available > 0) {
-            System.arraycopy(buffer, offset, buf, count, available);
-            count += available;
-        }
-        if (count == buf.length) {
-            out.write(buf, 0, buf.length);
-            count = 0;
-            if (length > available) {
-                offset += available;
-                available = length - available;
-                if (available >= buf.length) {
-                    out.write(buffer, offset, available);
-                } else {
-                    System.arraycopy(buffer, offset, buf, count, available);
-                    count += available;
-                }
-            }
-        }
+
+        // the length is always less than (buf.length - count) here so arraycopy is safe
+        System.arraycopy(buffer, offset, buf, count, length);
+        count += length;
     }
 
     /**
@@ -178,5 +162,15 @@ public class BufferedOutputStream extends FilterOutputStream {
             count = 0;
         }
         buf[count++] = (byte) oneByte;
+    }
+
+    /**
+     * Flushes only internal buffer.
+     */
+    private void flushInternal() throws IOException {
+        if (count > 0) {
+            out.write(buf, 0, count);
+        }
+        count = 0;
     }
 }

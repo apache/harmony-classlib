@@ -33,6 +33,8 @@ import java.util.Arrays;
 import javax.sql.rowset.serial.SerialClob;
 import javax.sql.rowset.serial.SerialException;
 
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockClob;
+
 import junit.framework.TestCase;
 
 public class SerialClobTest extends TestCase {
@@ -173,6 +175,22 @@ public class SerialClobTest extends TestCase {
         
         try {
             sub = serialClob.getSubString(1, -2);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        try {
+            sub = serialClob.getSubString(3, 4);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        LongLengthClob longClob = new LongLengthClob();
+        serialClob = new SerialClob(longClob);
+        
+        try {
+            serialClob.getSubString(1, 3);
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
@@ -390,6 +408,12 @@ public class SerialClobTest extends TestCase {
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
+        }
+    }
+    private static class LongLengthClob extends MockClob {
+        @Override
+        public long length() throws SQLException {
+            return (long)Integer.MAX_VALUE * (long)2 + 4;
         }
     }
 

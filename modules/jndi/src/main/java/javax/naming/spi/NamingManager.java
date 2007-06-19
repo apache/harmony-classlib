@@ -106,7 +106,7 @@ public class NamingManager {
     static InitialContextFactoryBuilder icfb;
 
     static ObjectFactoryBuilder ofb;
-
+    
     NamingManager() {
         super();
         // package private to prevent it being instanced but make it can be
@@ -129,22 +129,21 @@ public class NamingManager {
      * @throws NamingException
      *             for other errors encountered.
      */
-    public static synchronized void setInitialContextFactoryBuilder(
+    public static  void setInitialContextFactoryBuilder(
             InitialContextFactoryBuilder icfb) throws IllegalStateException,
             SecurityException, NamingException {
-
-        if (null != NamingManager.icfb) {
-            // jndi.1E=InitialContextFactoryBuilder cannot be reset
-            throw new IllegalStateException(Messages.getString("jndi.1E"));  //$NON-NLS-1$
-        }
-
         // check security access
         SecurityManager sm = System.getSecurityManager();
         if (null != sm) {
             sm.checkSetFactory();
         }
-
-        NamingManager.icfb = icfb;
+        synchronized (NamingManager.class) {
+            if (null != NamingManager.icfb) {
+                // jndi.1E=InitialContextFactoryBuilder cannot be reset
+                throw new IllegalStateException(Messages.getString("jndi.1E")); //$NON-NLS-1$
+            }
+            NamingManager.icfb = icfb;
+        }
     }
 
     /**

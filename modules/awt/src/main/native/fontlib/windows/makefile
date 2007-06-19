@@ -34,7 +34,8 @@ BUILDFILES = \
   $(SHAREDSUB)T1Font.obj \
   $(SHAREDSUB)T1Glyph.obj \
   $(SHAREDSUB)TTCurve.obj \
-  $(SHAREDSUB)TTFont.obj
+  $(SHAREDSUB)TTFont.obj \
+  $(SHAREDSUB)TypeDefinition.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib

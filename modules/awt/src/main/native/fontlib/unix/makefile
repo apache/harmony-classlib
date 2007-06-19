@@ -16,7 +16,7 @@
 include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include -I$(PNG_DIR)
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include
 
 BUILDFILES = \
   $(SHAREDSUB)fljni.o \
@@ -29,10 +29,14 @@ BUILDFILES = \
   $(SHAREDSUB)T1Font.o \
   $(SHAREDSUB)T1Glyph.o \
   $(SHAREDSUB)TTCurve.o \
-  $(SHAREDSUB)TTFont.o
+  $(SHAREDSUB)TTFont.o \
+  $(SHAREDSUB)TypeDefinition.o
+
+ifneq ($(HY_ZIP_API),true)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+endif
 
 MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
 
 OSLIBS += $(STDCLIBS)

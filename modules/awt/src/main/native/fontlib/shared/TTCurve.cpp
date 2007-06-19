@@ -35,7 +35,7 @@ TTCurve::~TTCurve()
 	delete[] _flags;
 }
 
-int TTCurve::add(float x, float y, unsigned char flag)
+fint TTCurve::add(ffloat x, ffloat y, ufchar flag)
 {
 	_len +=2;
 	
@@ -44,13 +44,13 @@ int TTCurve::add(float x, float y, unsigned char flag)
 	else if (flag != 0)
 		_outlineCommandsNumb++;
 
-	float* tmpC = _coords;
-	unsigned char* tmpF = _flags;
+	ffloat* tmpC = _coords;
+	ufchar* tmpF = _flags;
 
-	_coords = new float[_len];
-	_flags = new unsigned char[(_len+1)/2];
+	_coords = new ffloat[_len];
+	_flags = new ufchar[(_len+1)/2];
 
-	memcpy(_coords,tmpC,(_len-2)*sizeof(float));
+	memcpy(_coords,tmpC,(_len-2)*sizeof(ffloat));
     _coords[_len-2] = x;
 	_coords[_len-1] = y;
     

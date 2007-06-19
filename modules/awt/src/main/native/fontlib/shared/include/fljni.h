@@ -24,6 +24,7 @@
 #include "org_apache_harmony_awt_gl_font_fontlib_FLFontPeer.h"
 
 #include "Environment.h"
+#include "TypeDefinition.h"
 #include "Font.h"
 
 //#include <stdlib.h>
