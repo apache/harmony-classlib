@@ -30,7 +30,7 @@ public class ConnectionEvent extends EventObject implements Serializable {
 
     private static final long serialVersionUID = -4843217645290030002L;
 
-    private SQLException theSQLException;
+    private SQLException ex;
 
     /**
      * Creates a connection event initialized with a supplied PooledConnection.
@@ -56,7 +56,7 @@ public class ConnectionEvent extends EventObject implements Serializable {
     public ConnectionEvent(PooledConnection theConnection,
             SQLException theException) {
         super(theConnection);
-        theSQLException = theException;
+        ex = theException;
     }
 
     /**
@@ -67,6 +67,6 @@ public class ConnectionEvent extends EventObject implements Serializable {
      *         null if no error has occurred.
      */
     public SQLException getSQLException() {
-        return theSQLException;
+        return ex;
     }
 }
