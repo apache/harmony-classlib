@@ -21,6 +21,7 @@ import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Ref;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -39,6 +40,22 @@ public class BaseRowSetTest extends TestCase {
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(0, params.length);
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.BaseRowSet#getFetchDirection()}
+     */
+    public void testGetFetchDirection() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        assertEquals(ResultSet.FETCH_FORWARD, brs.getFetchDirection());
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.BaseRowSet#getTypeMap()}
+     */
+    public void testGetTypeMap() {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        assertNull(brs.getTypeMap());
     }
     
     public void testSetNullintint() throws Exception {
@@ -161,6 +178,43 @@ public class BaseRowSetTest extends TestCase {
         assertNotNull(params);
         assertEquals(1, params.length);
         assertEquals(Short.valueOf((short)1), params[0]);
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.BaseRowSet#setFetchDirection(int)}
+     */
+    public void testSetFetchDirectionI() throws SQLException {
+    	BaseRowSetImpl brs = new BaseRowSetImpl();
+    	brs.setFetchDirection(ResultSet.FETCH_FORWARD);
+    	assertEquals(ResultSet.FETCH_FORWARD, brs.getFetchDirection());
+    	
+    	brs.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
+    	brs.setFetchDirection(ResultSet.FETCH_UNKNOWN);
+    	assertEquals(ResultSet.FETCH_UNKNOWN, brs.getFetchDirection());
+    	
+    	brs.setType(ResultSet.TYPE_FORWARD_ONLY);
+    	try {
+    		brs.setFetchDirection(ResultSet.FETCH_REVERSE);
+    		fail("should throw SQLException");
+    	} catch (SQLException e) {
+    		// expected
+    	}
+    	
+    	try {
+    		brs.setFetchDirection(1100);
+    		fail("should throw SQLException");
+    	} catch (SQLException e) {
+    		// expected
+    	}
+    }
+    
+    /**
+     * @tests {@link javax.sql.rowset.BaseRowSet#setTypeMap(java.util.Map)}
+     */
+    public void testSetTypeMap() {
+    	BaseRowSetImpl brs = new BaseRowSetImpl();
+    	brs.setTypeMap(null);
+    	assertNull(brs.getTypeMap());
     }
     
     public void testSetArray() throws SQLException {
