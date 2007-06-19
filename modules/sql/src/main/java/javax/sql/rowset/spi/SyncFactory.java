@@ -86,10 +86,13 @@ public class SyncFactory {
     private static Enumeration<SyncProvider> getRegisteredProvidersImpl() {
         if (!initialized) {
             // 1. load from System property
-            String sysProvider = System.getProperty(ROWSET_SYNC_PROVIDER);
-            if (sysProvider != null) {
-                providers.put(sysProvider, new ProviderImpl(sysProvider));
-            }
+        	String rowsetPropStr = System.getProperty(ROWSET_SYNC_PROVIDER);
+        	if (rowsetPropStr != null) {
+        		String[] sysProviders = rowsetPropStr.split(":"); //$NON-NLS-1$    			
+				for (String sysProvider : sysProviders) {
+					providers.put(sysProvider, new ProviderImpl(sysProvider));
+				}   		
+        	}
 
             // 2. looks in the resource file
             Properties rowsetProp = new Properties();
