@@ -2,3 +2,4 @@ tests/api/java/util/PropertiesTest.java
 org/apache/harmony/tests/internal/net/www/protocol/http/HttpURLConnectionTest.java
 org/apache/harmony/luni/tests/java/lang/SecurityManager2Test.java
 org/apache/harmony/luni/tests/java/lang/PackageTest.java
+org/apache/harmony/luni/tests/java/io/windows/WinFileTest.java
