@@ -22,14 +22,13 @@ import java.math.BigInteger;
 
 import javax.naming.NamingException;
 
-import org.apache.harmony.jndi.asn1.ASN1Enumerated;
-import org.apache.harmony.jndi.asn1.ASN1Implicit;
-import org.apache.harmony.jndi.asn1.ASN1OctetString;
-import org.apache.harmony.jndi.asn1.ASN1Sequence;
-import org.apache.harmony.jndi.asn1.ASN1Type;
-import org.apache.harmony.jndi.asn1.BerInputStream;
 import org.apache.harmony.jndi.internal.SortResult;
 import org.apache.harmony.jndi.internal.Util;
+import org.apache.harmony.security.asn1.ASN1Enumerated;
+import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Sequence;
+import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.security.asn1.BerInputStream;
 
 
 /**
@@ -72,7 +71,7 @@ public final class SortResponseControl extends BasicControl {
      */
     static ASN1Type ASN1_SORTRESPONSE = new ASN1Sequence(new ASN1Type[] {
             ASN1Enumerated.getInstance(),   // sortResult
-            new ASN1Implicit(0, ASN1OctetString.getInstance()),   // attributeType
+            ASN1OctetString.getInstance(),  // attributeType
     }) {
         
         {
@@ -109,7 +108,7 @@ public final class SortResponseControl extends BasicControl {
      * @ar.org.fitc.spec_ref
      */
     public SortResponseControl(String id, boolean criticality, byte[] value) throws IOException {
-        super(id,criticality,value);
+        super(OID,criticality,value);
         SortResult sr;
         sr = (SortResult) ASN1_SORTRESPONSE.decode(value);
         resultCode = sr.getSortresult();
