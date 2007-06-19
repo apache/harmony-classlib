@@ -402,7 +402,7 @@ throwJavaNetSocketException (JNIEnv * env, I_32 errorNumber)
        if (!socketExConstructor) {
                return;
        }
-       socketEx = (*env)->NewObject(env, socketExClass,errorCodeExConstructor,errorMessageString); 
+       socketEx = (*env)->NewObject(env, socketExClass, socketExConstructor, errorMessageString); 
        socketExCauseMethod = (*env)->GetMethodID(env,socketExClass,"initCause","(Ljava/lang/Throwable;)Ljava/lang/Throwable;");
        (*env)->CallObjectMethod(env,socketEx,socketExCauseMethod,errorCodeEx);
        (*env)->Throw(env,socketEx);
