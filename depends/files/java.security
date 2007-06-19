@@ -27,6 +27,8 @@ security.provider.2=org.apache.harmony.security.provider.crypto.CryptoProvider
 security.provider.3=org.apache.harmony.xnet.provider.jsse.JSSEProvider
 # Other Open Source providers
 security.provider.4=org.bouncycastle.jce.provider.BouncyCastleProvider
+# Default Policy provider
+security.provider.5=org.apache.harmony.security.provider.PolicyProvider
 
 #
 # Class to instantiate as a default Configuration implementation
