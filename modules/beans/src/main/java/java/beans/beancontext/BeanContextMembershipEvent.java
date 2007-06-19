@@ -17,9 +17,9 @@
 
 package java.beans.beancontext;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 @SuppressWarnings("unchecked")
@@ -47,11 +47,7 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
         }
 
         // Initialize collection
-        this.children = new Vector<Object>();
-
-        for (Object element : changes) {
-            this.children.add(element);
-        }
+        this.children = Arrays.asList(changes);
     }
 
     public boolean contains(Object child) {
