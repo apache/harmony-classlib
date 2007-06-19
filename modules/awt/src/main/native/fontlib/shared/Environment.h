@@ -22,6 +22,7 @@
 #define __GRAPHICS_ENVIRONMENT_H__
 
 #include "Font.h"
+#include "TypeDefinition.h"
 
 typedef enum FontTypeTag {
     TrueType = 0, 
@@ -30,8 +31,8 @@ typedef enum FontTypeTag {
 class FontHeader
 {
 public:
-	wchar_t *_familyName;
-	char* _filePath;
+	fwchar_t *_familyName;
+	fchar* _filePath;
 	StyleName _style;
     Font* _font;
 	FontType _fType;
@@ -39,7 +40,7 @@ public:
 	FontHeader* _head;
 
 	FontHeader();
-	FontHeader(char** filePath, FontType fType);
+	FontHeader(fchar** filePath, FontType fType);
 
 	~FontHeader();
 }; 
@@ -47,9 +48,9 @@ public:
 class Environment
 {
 public:
-	static int _length; //length of list 
-	static int addPath(char* argPath);
-	static FontHeader* addFile(char* argPath, FontType ft);
+	static fint _length; //length of list 
+//	static fint addPath(fchar* argPath);
+	static FontHeader* addFile(fchar* argPath, FontType ft);
 	static FontHeader* getAllFonts();
 };
 

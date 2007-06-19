@@ -46,6 +46,8 @@ public class BeanContextChildSupport implements BeanContextChild,
     protected transient boolean rejectedSetBCOnce;
 
     protected VetoableChangeSupport vcSupport;
+    
+    private transient BeanContext lastVetoedContext;
 
     public BeanContextChildSupport() {
         // This class implements the JavaBean component itself
@@ -81,6 +83,7 @@ public class BeanContextChildSupport implements BeanContextChild,
         }
 
         this.vcSupport.addVetoableChangeListener(name, vcl);
+        this.lastVetoedContext = null;
     }
 
     public void firePropertyChange(String name, Object oldValue, Object newValue) {
@@ -127,6 +130,7 @@ public class BeanContextChildSupport implements BeanContextChild,
             VetoableChangeListener vcl) {
 
         this.vcSupport.removeVetoableChangeListener(name, vcl);
+        this.lastVetoedContext = null;
     }
 
     public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
@@ -158,22 +162,23 @@ public class BeanContextChildSupport implements BeanContextChild,
        
         
 
+        
         // Children are not allowed to repeatedly veto this operation.
         // So, we set rejectedSetBCOnce flag to true if veto occurs
         // and never veto the change again
-        if (!this.rejectedSetBCOnce) {
-
+        if (!(this.rejectedSetBCOnce && this.lastVetoedContext == bc)) {
+            this.lastVetoedContext = bc;
             this.rejectedSetBCOnce = true;
             // Validate the new BeanContext value and throw
             // PropertyVetoException if it was not successful
-            if (!validatePendingSetBeanContext(bc)) {
-                
-
+            if (!validatePendingSetBeanContext(bc)) {                
                 throw new PropertyVetoException(Messages.getString("beans.0F"), //$NON-NLS-1$
                         new PropertyChangeEvent(this.beanContextChildPeer,
                                 BEAN_CONTEXT, this.beanContext, bc));
             }
             fireVetoableChange(BEAN_CONTEXT, this.beanContext, bc);
+        }
+            
             this.rejectedSetBCOnce = false;
             
             releaseBeanContextResources();
@@ -183,7 +188,7 @@ public class BeanContextChildSupport implements BeanContextChild,
             firePropertyChange(BEAN_CONTEXT, this.beanContext, bc);
             this.beanContext = bc;
             initializeBeanContextResources();
-        }
+        //}
     }
 
     public boolean validatePendingSetBeanContext(BeanContext newValue) {

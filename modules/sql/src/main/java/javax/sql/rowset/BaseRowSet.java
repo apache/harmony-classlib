@@ -32,7 +32,6 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -86,7 +85,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
 
     private int isolation;
 
-    private int fetchDir;
+    private int fetchDir = ResultSet.FETCH_FORWARD;
 
     private int fetchSize;
 
@@ -278,13 +277,11 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
     }
 
     public Map<String, Class<?>> getTypeMap() {
-        //TODO determine if copy is necessary
-        return new HashMap<String, Class<?>>(map);
+        return map;
     }
 
     public void setTypeMap(Map<String, Class<?>> map) {
-        //TODO determine if copy is necessary
-        this.map = new HashMap<String, Class<?>>(map);
+        this.map = map;
     }
 
     public int getMaxFieldSize() throws SQLException {

@@ -21,7 +21,7 @@
 #include "TTFont.h"
 #include "Tables.h"
 
-TTFont::TTFont(char* pathToFile):Font()
+TTFont::TTFont(fchar* pathToFile):Font()
 {
 	_pathToFile=pathToFile;
 	_glyphOffsets.offsets = NULL;
@@ -36,14 +36,14 @@ TTFont::TTFont(char* pathToFile):Font()
 	parseCmapTable(_ttfile, &_tableEncode); 
 	parseMaxpTable(_ttfile, &_numGlyphs);
 	parseHeadTable(_ttfile, _boundingBox, &(_glyphOffsets.format), &_unitsPerEm);
-	for (int i=0; i<4; i++)
-		_boundingBox[i]/=(float)(_unitsPerEm);
+	for (fint i=0; i<4; i++)
+		_boundingBox[i]/=(ffloat)(_unitsPerEm);
 	parseLocaTable(_ttfile, &(_glyphOffsets), _numGlyphs);
 	parseHheaTable(_ttfile, &_numOfHMetrics, &_ascent, &_descent, &_externalLeading);
 
-	_ascent/=(float)(_unitsPerEm);
+	_ascent/=(ffloat)(_unitsPerEm);
 	_descent = ((_descent>0)?_descent:(-_descent))/_unitsPerEm;
-	_externalLeading/=(float)(_unitsPerEm);
+	_externalLeading/=(ffloat)(_unitsPerEm);
 
 	parseHmtxTable(_ttfile, _numOfHMetrics, &_hMetrics);
 	fclose(_ttfile);
@@ -52,45 +52,45 @@ TTFont::TTFont(char* pathToFile):Font()
 TTFont::~TTFont(void)
 {
 	delete[] _glyphOffsets.offsets;
-	delete[] (int*)(_tableEncode.TableEncode);
+	delete[] (fint*)(_tableEncode.TableEncode);
 	delete[] _psName;
 	delete[] _hMetrics;
 }
 
-Glyph* TTFont::createGlyph(unsigned short unicode, unsigned short size) 
+Glyph* TTFont::createGlyph(ufshort unicode, ufshort size) 
 {
 	TTGlyph *gl = new TTGlyph(this, unicode, size);
 	if (gl->_index < _numOfHMetrics)
-		gl->_advanceX = _hMetrics[gl->_index].adwance_width*(float)(size)/(float)(_unitsPerEm);
+		gl->_advanceX = _hMetrics[gl->_index].adwance_width*(ffloat)(size)/(ffloat)(_unitsPerEm);
 	else
-		gl->_advanceX = _hMetrics[_numOfHMetrics-1].adwance_width*(float)(size)/(float)(_unitsPerEm);
+		gl->_advanceX = _hMetrics[_numOfHMetrics-1].adwance_width*(ffloat)(size)/(ffloat)(_unitsPerEm);
 	gl->_advanceY = 0;
 	return gl;
 }
 
-unsigned short TTFont::getGlyphIndex(unsigned short symb)
+ufshort TTFont::getGlyphIndex(ufshort symb)
 {
-	unsigned short index = 0;
+	ufshort index = 0;
 
 	if (_tableEncode.format == 0)
 	{
-		unsigned char* te = (unsigned char*)_tableEncode.TableEncode;
+		ufchar* te = (ufchar*)_tableEncode.TableEncode;
 		index = te[symb];
 	
 	}else if (_tableEncode.format == 4)
 	{
-		unsigned short segCountX2;
-		unsigned short segCount;
-//		unsigned short search_range;     
-//		unsigned short entry_selector;   
-//		unsigned short range_shift;     
-		unsigned short* end_count;
-		unsigned short* start_count;
-		unsigned short* idDelta;
-		unsigned short* idRangeOffset;
-		unsigned short reservedPad;      
-		unsigned short* te = (unsigned short*)(_tableEncode.TableEncode);
-		int i;
+		ufshort segCountX2;
+		ufshort segCount;
+//		ufshort search_range;     
+//		ufshort entry_selector;   
+//		ufshort range_shift;     
+		ufshort* end_count;
+		ufshort* start_count;
+		ufshort* idDelta;
+		ufshort* idRangeOffset;
+		ufshort reservedPad;      
+		ufshort* te = (ufshort*)(_tableEncode.TableEncode);
+		fint i;
 
 		segCountX2 = te[0];
 		segCount = segCountX2/2;
@@ -117,14 +117,14 @@ unsigned short TTFont::getGlyphIndex(unsigned short symb)
 	return index;
 }
 
-unsigned short TTFont::getUnicodeByIndex(unsigned short ind)
+ufshort TTFont::getUnicodeByIndex(ufshort ind)
 {
-	unsigned short symb = 0;
+	ufshort symb = 0;
 
 	if (_tableEncode.format == 0)
 	{
-		unsigned char* te = (unsigned char*)_tableEncode.TableEncode;
-		for (unsigned short i = 0; i<=_numGlyphs; i++)
+		ufchar* te = (ufchar*)_tableEncode.TableEncode;
+		for (ufshort i = 0; i<=_numGlyphs; i++)
 		{
 			if (ind = te[i]) 
 			{
@@ -135,15 +135,15 @@ unsigned short TTFont::getUnicodeByIndex(unsigned short ind)
 	}else 
 	if (_tableEncode.format == 4)
 	{
-		unsigned short segCountX2;
-		unsigned short segCount;
-		unsigned short* end_count;
-		unsigned short* start_count;
-		unsigned short* idDelta;
-		unsigned short* idRangeOffset;
-		unsigned short reservedPad;      
-		unsigned short* te = (unsigned short*)(_tableEncode.TableEncode);
-		int i;
+		ufshort segCountX2;
+		ufshort segCount;
+		ufshort* end_count;
+		ufshort* start_count;
+		ufshort* idDelta;
+		ufshort* idRangeOffset;
+		ufshort reservedPad;      
+		ufshort* te = (ufshort*)(_tableEncode.TableEncode);
+		fint i;
 
 		segCountX2 = te[0];
 		segCount = segCountX2/2;
@@ -156,10 +156,10 @@ unsigned short TTFont::getUnicodeByIndex(unsigned short ind)
 		for (i=0;i<segCount;i++)
 		{
 			if (idRangeOffset[i] != 0)
-				for (int j=0; j< _numGlyphs; j++)
+				for (fint j=0; j< _numGlyphs; j++)
 				{
 					if (ind - idDelta[i] == idRangeOffset[j] )
-						symb = (unsigned short)(&idRangeOffset[j] - idRangeOffset[i]/2 + start_count[i] - &idRangeOffset[i]);
+						symb = (ufshort)(&idRangeOffset[j] - idRangeOffset[i]/2 + start_count[i] - &idRangeOffset[i]);
 				}
 			else
 				symb = (ind - idDelta[i]) % 65536;
@@ -173,27 +173,27 @@ unsigned short TTFont::getUnicodeByIndex(unsigned short ind)
 	return symb;
 }
 
-wchar_t* TTFont::getPSName()
+fwchar_t* TTFont::getPSName()
 {
 	return _psName;
 }
 
-float* TTFont::getLineMetrics()
+ffloat* TTFont::getLineMetrics()
 {
 //printf("reading file...\n");
 	_ttfile = fopen(_pathToFile,"rb");
 	
-	float* ret = new float[8];
+	ffloat* ret = new ffloat[8];
 	ret[0] = _ascent;
 	ret[1] = _descent;
     ret[2] = _externalLeading;
 
-	short uOffset, uThickness;
+	fshort uOffset, uThickness;
 
 //printf("parsing POST table...\n");
     parsePostTable(_ttfile, &uOffset, &uThickness);
-	ret[3] = (float)uThickness/(float)(_unitsPerEm);
-	ret[4] = (float)uOffset/(float)(_unitsPerEm);
+	ret[3] = (ffloat)uThickness/(ffloat)(_unitsPerEm);
+	ret[4] = (ffloat)uOffset/(ffloat)(_unitsPerEm);
 
 //printf("parsing OS2 table...\n");	
 	parseOs2Table(_ttfile, &_strikeOutSize, &_strikeOutOffset);
@@ -201,7 +201,7 @@ float* TTFont::getLineMetrics()
 	ret[5] = _strikeOutSize;
 	ret[6] = _strikeOutOffset;
 
-	float width = _boundingBox[3]-_boundingBox[1];
+	ffloat width = _boundingBox[3]-_boundingBox[1];
 	ret[7] = (width>0)?width:(-width);
 	
 	fclose(_ttfile);
@@ -209,9 +209,9 @@ float* TTFont::getLineMetrics()
 	return ret;
 }
 
-bool TTFont::canDisplay(unsigned short c)
+bool TTFont::canDisplay(ufshort c)
 {
-	unsigned short index = getGlyphIndex(c);
+	ufshort index = getGlyphIndex(c);
 #ifdef WIN32
 	bool isComposite = isCompositeGlyph(_ttfile, _glyphOffsets, _numGlyphs, index);
 	if (index == 0 || index >= _numGlyphs || isComposite)
@@ -226,7 +226,7 @@ bool TTFont::canDisplay(unsigned short c)
 /* *************** */
 /* TTGlyph methods */
 /* *************** */
-TTGlyph::TTGlyph(TTFont* font, unsigned short unicode, unsigned short size):Glyph() 
+TTGlyph::TTGlyph(TTFont* font, ufshort unicode, ufshort size):Glyph() 
 {
 	_ttfont = font;
 	_unicode = unicode;
@@ -239,7 +239,7 @@ TTGlyph::TTGlyph(TTFont* font, unsigned short unicode, unsigned short size):Glyp
 
 	_ttfont->_ttfile = fopen(_ttfont->_pathToFile,"rb");
 	_index = _ttfont->getGlyphIndex(_unicode);
-	parseGlyphData(_ttfont->_ttfile, _ttfont->_glyphOffsets,_ttfont->_numGlyphs,_index, _curve, _boundingRect, (float)_size/(float)(_ttfont->_unitsPerEm));
+	parseGlyphData(_ttfont->_ttfile, _ttfont->_glyphOffsets,_ttfont->_numGlyphs,_index, _curve, _boundingRect, (ffloat)_size/(ffloat)(_ttfont->_unitsPerEm));
     fclose(_ttfont->_ttfile);
 }
 
@@ -248,8 +248,8 @@ TTGlyph::~TTGlyph()
 	delete _curve;
 }
 
-float* TTGlyph::getGlyphMetrics(void){
-	float* gMetrics = new float[6];
+ffloat* TTGlyph::getGlyphMetrics(void){
+	ffloat* gMetrics = new ffloat[6];
 
 	gMetrics[0]=_advanceX;
 	gMetrics[1]=_advanceY;
@@ -265,7 +265,7 @@ Outline* TTGlyph::getOutline(void)
 {
 	Outline* outline = new Outline(_curve->_len,_curve->_outlineCommandsNumb); 
 
-	for (int i = 0; i<_curve->_len; i+=2)
+	for (fint i = 0; i<_curve->_len; i+=2)
 	{
 		switch(_curve->_flags[i/2])
 		{

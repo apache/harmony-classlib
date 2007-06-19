@@ -17,6 +17,8 @@
 
 package java.sql;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -51,7 +53,7 @@ public class DriverManager {
      * Set to hold Registered Drivers - initial capacity 10 drivers (will expand
      * automatically if necessary.
      */
-    private static final Set<Driver> theDriverSet = new HashSet<Driver>(10);
+    private static final List<Driver> theDrivers = new ArrayList<Driver>(10);
 
     // Permission for setting log
     private static final SQLPermission logPermission = new SQLPermission("setLog"); //$NON-NLS-1$
@@ -121,8 +123,8 @@ public class DriverManager {
             // sql.1=DriverManager: calling class not authorized to deregister JDBC driver
             throw new SecurityException(Messages.getString("sql.1")); //$NON-NLS-1$
         } // end if
-        synchronized (theDriverSet) {
-            theDriverSet.remove(driver);
+        synchronized (theDrivers) {
+            theDrivers.remove(driver);
         }
     }
 
@@ -168,13 +170,13 @@ public class DriverManager {
             // sql.5=The url cannot be null
             throw new SQLException(Messages.getString("sql.5"), sqlState); //$NON-NLS-1$
         }
-        synchronized (theDriverSet) {
+        synchronized (theDrivers) {
             /*
              * Loop over the drivers in the DriverSet checking to see if one can
              * open a connection to the supplied URL - return the first
              * connection which is returned
              */
-            for (Driver theDriver : theDriverSet) {
+            for (Driver theDriver : theDrivers) {
                 Connection theConnection = theDriver.connect(url, info);
                 if (theConnection != null) {
                     return theConnection;
@@ -226,13 +228,13 @@ public class DriverManager {
     public static Driver getDriver(String url) throws SQLException {
         ClassLoader callerClassLoader = VM.callerClassLoader();
 
-        synchronized (theDriverSet) {
+        synchronized (theDrivers) {
             /*
              * Loop over the drivers in the DriverSet checking to see if one
              * does understand the supplied URL - return the first driver which
              * does understand the URL
              */
-            Iterator<Driver> theIterator = theDriverSet.iterator();
+            Iterator<Driver> theIterator = theDrivers.iterator();
             while (theIterator.hasNext()) {
                 Driver theDriver = theIterator.next();
                 if (theDriver.acceptsURL(url)
@@ -261,13 +263,13 @@ public class DriverManager {
          * Synchronize to avoid clashes with additions and removals of drivers
          * in the DriverSet
          */
-        synchronized (theDriverSet) {
+        synchronized (theDrivers) {
             /*
              * Create the Enumeration by building a Vector from the elements of
              * the DriverSet
              */
             Vector<Driver> theVector = new Vector<Driver>();
-            Iterator<Driver> theIterator = theDriverSet.iterator();
+            Iterator<Driver> theIterator = theDrivers.iterator();
             while (theIterator.hasNext()) {
                 Driver theDriver = theIterator.next();
                 if (DriverManager.isClassFromClassLoader(theDriver,
@@ -345,8 +347,8 @@ public class DriverManager {
         if (driver == null) {
             throw new NullPointerException();
         }
-        synchronized (theDriverSet) {
-            theDriverSet.add(driver);
+        synchronized (theDrivers) {
+            theDrivers.add(driver);
         }
     }
 

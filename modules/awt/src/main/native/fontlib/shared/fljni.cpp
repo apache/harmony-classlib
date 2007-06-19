@@ -31,24 +31,24 @@ static jmethodID fontConstructor;
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontManager_initManager
 (JNIEnv *env, jobject obj) {
 
-//    jboolean iscopy;
+    //jboolean iscopy;
 
     //printf("getting fonts...\n");
-    Environment::getAllFonts();
+    //Environment::getAllFonts();
     //printf("fonts added\n");
-#ifdef WIN32    
-	//char *nativePath = (char *)(env->GetStringUTFChars(path, &iscopy));
+//#ifdef WIN32    
+	//fchar *nativePath = (fchar *)(env->GetStringUTFChars(path, &iscopy));
 
     //Environment::addPath(nativePath);
 
 	//env->ReleaseStringUTFChars(path, nativePath);
-#endif 
+//#endif 
 
 
     fontClass = env->FindClass("java/awt/Font");
     outlineClass = env->FindClass("org/apache/harmony/awt/gl/font/fontlib/FLOutline");    
     fontConstructor = env->GetMethodID(fontClass, "<init>", "(Ljava/lang/String;II)V");
-    setOutline = env->GetMethodID(outlineClass, "setOutline", "([B[F)V");
+    setOutline = env->GetMethodID(outlineClass, "setOutline", "([B[F)V");    
 }
 
 /*
@@ -59,7 +59,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontManager
 JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontManager_getAllFontsNative
 (JNIEnv *env, jobject obj) {
 
-    Environment::getAllFonts();
+    Environment::getAllFonts();    
 
     if (Environment::_length == 0) return NULL;
 
@@ -69,23 +69,23 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFon
 
     FontHeader *fh = Environment::getAllFonts();
 
-    for (unsigned short i = 0; i < Environment::_length; i ++){
-#ifndef WIN32
-        unsigned short fName[wcslen((wchar_t *)fh->_familyName)];
-	for(unsigned short a = 0; a<wcslen(fh->_familyName); a++){
-		fName[a]=(unsigned short)(fh->_familyName[a]);
-	}
-#endif
+    for (ufshort i = 0; i < Environment::_length; i ++){
+/*#ifndef WIN32
+		ufshort fName[fwcslen((fwchar_t *)fh->_familyName)];
+		for(ufshort a = 0; a<fwcslen(fh->_familyName); a++){
+			fName[a]=(ufshort)(fh->_familyName[a]);
+		}
+#endif*/
 
         env->SetObjectArrayElement(fonts, i, env->NewObject(
             fontClass, 
             fontConstructor, 
-#ifdef WIN32
-	    env->NewString((jchar *)fh->_familyName, (jsize) wcslen((wchar_t *)fh->_familyName)),
-#else
-            env->NewString((jchar*)fName, (jsize) wcslen((wchar_t *)fh->_familyName)),
-#endif
-            (jint) (char) fh->_style,
+//#ifdef WIN32
+	    env->NewString((jchar *)fh->_familyName, (jsize) fwcslen((fwchar_t *)fh->_familyName)),
+/*#else
+            env->NewString((jchar*)fName, (jsize) fwcslen((fwchar_t *)fh->_familyName)),
+#endif*/
+            (jint) (fchar) fh->_style,
             (jint) 1
             ));
         fh = fh->_nextHeader;
@@ -95,24 +95,25 @@ JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFon
 }
 
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontManager_addFont
-(JNIEnv *env, jobject obj, jstring fontPath, jint type) {
+(JNIEnv *env, jobject obj, jstring fontPath, jint type) {    
+
     jboolean iscopy;
 
     fontClass = env->FindClass("java/awt/Font");
 
-	char *nativePath = (char *)(env->GetStringUTFChars(fontPath, &iscopy));
+	fchar *nativePath = (fchar *)(env->GetStringUTFChars(fontPath, &iscopy));
     
     FontHeader *fh = Environment::addFile(nativePath, (FontType)type);
 
-	env->ReleaseStringUTFChars(fontPath, nativePath);
+	env->ReleaseStringUTFChars(fontPath, nativePath);    
 
     if (fh == NULL) return NULL;
 
     return env->NewObject(
             fontClass, 
             fontConstructor, 
-            env->NewString((jchar *)fh->_familyName, (jsize) wcslen((wchar_t *)fh->_familyName)),
-            (jint) (char) fh->_style,
+            env->NewString((jchar *)fh->_familyName, (jsize) fwcslen((fwchar_t *)fh->_familyName)),
+            (jint) (fchar) fh->_style,
             (jint) 1
             );
 }
@@ -136,9 +137,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPeer_i
 (JNIEnv *env, jobject obj, jstring fontName, jint style) {
     jboolean iscopy;
 
-	//char *getenv( const char *name );	
+	//fchar *getenv( const fchar *name );	
 
-	char *tName = (char *)(env->GetStringUTFChars(fontName, &iscopy));
+	fchar *tName = (fchar *)(env->GetStringUTFChars(fontName, &iscopy));
 			
 	Font *font = createFont(tName, (StyleName) style);
 
@@ -151,7 +152,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPeer_i
 	#ifdef WIN32
     return (jlong) font;
     #else
-    return (jlong) (long) font;
+    return (jlong) (flong) font;
     #endif
 }
 
@@ -165,15 +166,15 @@ JNIEXPORT jfloatArray JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFont
     #ifdef WIN32
     Font *font = (Font *) ptr;
     #else
-    Font *font = (Font *) (long)ptr;
+    Font *font = (Font *) (flong)ptr;
     #endif
 
     jfloatArray metrics = env->NewFloatArray((jsize) FONT_METRICS_QUANTITY);
-    float *buffer = (float *)env->GetPrimitiveArrayCritical(metrics, NULL);
+    ffloat *buffer = (ffloat *)env->GetPrimitiveArrayCritical(metrics, NULL);
 
 //printf("getting line metrics...\n");
-    float *lineMetrics;
-    memcpy(buffer, lineMetrics = font->getLineMetrics(), FONT_METRICS_QUANTITY * sizeof(float));
+    ffloat *lineMetrics;
+    memcpy(buffer, lineMetrics = font->getLineMetrics(), FONT_METRICS_QUANTITY * sizeof(ffloat));
 //printf("line metrics gotten");
 
     delete[] lineMetrics;
@@ -193,12 +194,12 @@ JNIEXPORT jstring JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPeer
     #ifdef WIN32
     Font *font = (Font *) ptr;
     #else
-    Font *font = (Font *) (long)ptr;
+    Font *font = (Font *) (flong)ptr;
     #endif
 
-    wchar_t *psName = font->getPSName();
+    fwchar_t *psName = font->getPSName();
 
-    return env->NewString((jchar *) psName, (jsize) wcslen(psName));
+    return env->NewString((jchar *) psName, (jsize) fwcslen(psName));
 }
 
 /*
@@ -211,7 +212,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPeer_ge
     #ifdef WIN32
     Font *font = (Font *) ptr;
     #else
-    Font *font = (Font *) (long)ptr;
+    Font *font = (Font *) (flong)ptr;
     #endif    
 
     return (jint) font->getMissingGlyphCode();
@@ -222,10 +223,10 @@ JNIEXPORT jchar JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPeer_g
     #ifdef WIN32
     Font *font = (Font *) ptr;
     #else
-    Font *font = (Font *) (long)ptr;
+    Font *font = (Font *) (flong)ptr;
     #endif
 
-    return (jchar) font->getUnicodeByIndex((unsigned short) index);
+    return (jchar) font->getUnicodeByIndex((ufshort) index);
 }
 
 /*
@@ -238,7 +239,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPeer_di
     #ifdef WIN32
     delete (Font *) ptr;
     #else
-    delete (Font *) (long) ptr;
+    delete (Font *) (flong) ptr;
     #endif
 }
 
@@ -252,10 +253,10 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLFontPee
     #ifdef WIN32
     Font *font = (Font *) ptr;
     #else
-    Font *font = (Font *) (long)ptr;
+    Font *font = (Font *) (flong)ptr;
     #endif
 
-    return font->canDisplay((unsigned short)ch);
+    return font->canDisplay((ufshort)ch);
 }
 
 /*
@@ -268,14 +269,14 @@ JNIEXPORT jfloatArray JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLGlyp
     #ifdef WIN32
     Glyph *glyph = (Glyph *) ptr;
     #else
-    Glyph *glyph = (Glyph *) (long)ptr;
+    Glyph *glyph = (Glyph *) (flong)ptr;
     #endif
 
 
     jfloatArray metrics = env->NewFloatArray((jsize) GLYPH_METRICS_QUANTITY);
-    float *buffer = (float *)env->GetPrimitiveArrayCritical(metrics, NULL);
+    ffloat *buffer = (ffloat *)env->GetPrimitiveArrayCritical(metrics, NULL);
 
-    memcpy(buffer, glyph->getGlyphMetrics(), GLYPH_METRICS_QUANTITY * sizeof(float));
+    memcpy(buffer, glyph->getGlyphMetrics(), GLYPH_METRICS_QUANTITY * sizeof(ffloat));
 
     env->ReleasePrimitiveArrayCritical(metrics, buffer, 0);
 
@@ -291,10 +292,10 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLGlyph_init
 (JNIEnv *env, jobject obj, jchar ch, jint size, jlong ptr) {
     #ifdef WIN32
     Font *font = (Font *) ptr;
-    return (jlong) font->getGlyph((unsigned short) ch, (unsigned short) size);
+    return (jlong) font->getGlyph((ufshort) ch, (ufshort) size);
     #else
-    Font *font = (Font *) (long)ptr;
-    return (jlong) (long) font->getGlyph((unsigned short) ch, (unsigned short) size);
+    Font *font = (Font *) (flong)ptr;
+    return (jlong) (flong) font->getGlyph((ufshort) ch, (ufshort) size);
     #endif
 }
 
@@ -308,7 +309,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLPath_getSha
     #ifdef WIN32
     Glyph *glyph = (Glyph *) ptr;
     #else
-    Glyph *glyph = (Glyph *) (long)ptr;
+    Glyph *glyph = (Glyph *) (flong)ptr;
     #endif    
 
     Outline* out = glyph->getOutline(); 
@@ -316,7 +317,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLPath_getSha
     out->trim();
 
     jbyteArray commands = env->NewByteArray((jsize) out->getCommandLength());
-    unsigned char *native_buffer = (unsigned char *)env->GetPrimitiveArrayCritical(commands, NULL);
+    ufchar *native_buffer = (ufchar *)env->GetPrimitiveArrayCritical(commands, NULL);
 
     memcpy(native_buffer, out->_commands, out->getCommandLength());
 
@@ -324,9 +325,9 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_fontlib_FLPath_getSha
 
 
     jfloatArray points = env->NewFloatArray((jsize) out->getPointsLength());
-    float *buffer = (float *)env->GetPrimitiveArrayCritical(points, NULL);
+    ffloat *buffer = (ffloat *)env->GetPrimitiveArrayCritical(points, NULL);
 
-    memcpy(buffer, out->_points, out->getPointsLength() * sizeof(float));
+    memcpy(buffer, out->_points, out->getPointsLength() * sizeof(ffloat));
 
     env->ReleasePrimitiveArrayCritical(points, buffer, 0);
 

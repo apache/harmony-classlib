@@ -20,12 +20,12 @@
  */
 #include "Outline.h"
 
-Outline::Outline(unsigned short pointsNumber, unsigned short commandNumber) {
+Outline::Outline(ufshort pointsNumber, ufshort commandNumber) {
 	pointsCount = 0;
 	commandsCount = 0;
 
-	_points = new float[_pointsLength = pointsNumber];
-	_commands = new unsigned char[_commandLenght = commandNumber];    
+	_points = new ffloat[_pointsLength = pointsNumber];
+	_commands = new ufchar[_commandLenght = commandNumber];    
 
 	/*for (commandsCount = 0 ; commandsCount < commandNumber; commandsCount ++) {
 		this->_commands[commandsCount] = SEG_CLOSE;
@@ -46,11 +46,11 @@ void Outline::trim() {
 
 	//printf("_length = %u, commandsCount = %u\n", _commandLenght, commandsCount);
 
-	unsigned char *commandMas = new unsigned char[commandsCount];
-	float *pointsMas = new float[pointsCount];
+	ufchar *commandMas = new ufchar[commandsCount];
+	ffloat *pointsMas = new ffloat[pointsCount];
 	
     memcpy(commandMas, _commands, commandsCount);
-    memcpy(pointsMas, _points, pointsCount * sizeof(float));
+    memcpy(pointsMas, _points, pointsCount * sizeof(ffloat));
 
 	delete[] _points;
 	delete[] _commands;
@@ -62,21 +62,21 @@ void Outline::trim() {
     _pointsLength = pointsCount;
 }
 
-void Outline::lineTo(float x, float y) {
+void Outline::lineTo(ffloat x, ffloat y) {
 	_points[pointsCount ++] = x;
 	_points[pointsCount ++] = -y;
 	_commands[commandsCount ++] = SEG_LINETO;
 	//printf("SEG_LINETO ");
 }
 
-void Outline::moveTo(float x, float y) {
+void Outline::moveTo(ffloat x, ffloat y) {
 	_commands[commandsCount ++] = SEG_MOVETO;
 	_points[pointsCount ++] = x;
 	_points[pointsCount ++] = -y;
 //	printf("SEG_MOVETO ");
 }
 
-void Outline::quadTo(float x1, float y1, float x2, float y2) {
+void Outline::quadTo(ffloat x1, ffloat y1, ffloat x2, ffloat y2) {
 	_points[pointsCount ++] = x1;
 	_points[pointsCount ++] = -y1;
 	_points[pointsCount ++] = x2;
@@ -85,7 +85,7 @@ void Outline::quadTo(float x1, float y1, float x2, float y2) {
 	//printf("SEG_QUADTO ");
 }
 
-void Outline::curveTo(float x1, float y1, float x2, float y2, float x3, float y3) {
+void Outline::curveTo(ffloat x1, ffloat y1, ffloat x2, ffloat y2, ffloat x3, ffloat y3) {
 	_points[pointsCount ++] = x1;
 	_points[pointsCount ++] = -y1;
 	_points[pointsCount ++] = x2;
@@ -106,10 +106,10 @@ void Outline::closePath(void) {
 	//printf("SEG_CLOSE\n");
 }
 
-unsigned short Outline::getPointsLength(void) {
+ufshort Outline::getPointsLength(void) {
 	return _pointsLength;
 }
 
-unsigned short Outline::getCommandLength(void) {
+ufshort Outline::getCommandLength(void) {
     return _commandLenght;
 }

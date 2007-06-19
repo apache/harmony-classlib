@@ -33,6 +33,8 @@ import java.util.Arrays;
 import javax.sql.rowset.serial.SerialClob;
 import javax.sql.rowset.serial.SerialException;
 
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockClob;
+
 import junit.framework.TestCase;
 
 public class SerialClobTest extends TestCase {
@@ -60,22 +62,8 @@ public class SerialClobTest extends TestCase {
 
         mockClob.characterStreamReader = null;
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
-        try {
-            new SerialClob(mockClob);
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
-        }
-
         mockClob.characterStreamReader = new CharArrayReader(new char[] { 1 });
         mockClob.asciiInputStream = null;
-        try {
-            new SerialClob(mockClob);
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
-        }
-
         mockClob.characterStreamReader = new MockAbnormalReader();
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
         try {
@@ -177,6 +165,22 @@ public class SerialClobTest extends TestCase {
         } catch (SerialException e) {
             // expected
         }
+        try {
+            sub = serialClob.getSubString(3, 4);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        
+        LongLengthClob longClob = new LongLengthClob();
+        serialClob = new SerialClob(longClob);
+        
+        try {
+            serialClob.getSubString(1, 3);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
 
     }
 
@@ -243,9 +247,17 @@ public class SerialClobTest extends TestCase {
         MockSerialClob mockClob = new MockSerialClob();
         mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
-        mockClob.asciiOutputStream = new ByteArrayOutputStream();
         SerialClob serialClob = new SerialClob(mockClob);
-        OutputStream os = serialClob.setAsciiStream(1);
+        OutputStream os = null;
+        try {
+            os = serialClob.setAsciiStream(1);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
+        mockClob.asciiOutputStream = new ByteArrayOutputStream();
+        os = serialClob.setAsciiStream(1);
+        assertNotNull(os);
         assertTrue(mockClob.isSetAsciiStreamInvoked);
         assertEquals(mockClob.asciiOutputStream, os);
         
@@ -390,6 +402,12 @@ public class SerialClobTest extends TestCase {
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
+        }
+    }
+    private static class LongLengthClob extends MockClob {
+        @Override
+        public long length() throws SQLException {
+            return (long)Integer.MAX_VALUE * (long)2 + 4;
         }
     }
 

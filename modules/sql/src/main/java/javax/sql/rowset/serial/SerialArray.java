@@ -18,13 +18,9 @@
 package javax.sql.rowset.serial;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.sql.Array;
-import java.sql.Blob;
-import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Struct;
 import java.sql.Types;
 import java.util.Map;
 
@@ -62,51 +58,74 @@ public class SerialArray implements Array, Serializable, Cloneable {
     public SerialArray(Array array, Map<String, Class<?>> map)
             throws SerialException, SQLException {
         if (null == array || null == array.getArray() || null == map) {
-            throw new SQLException(Messages.getString("sql.39"));
+            throw new SQLException(Messages.getString("sql.39")); //$NON-NLS-1$
         }
         baseType = array.getBaseType();
         baseTypeName = array.getBaseTypeName();
         Object[] element = (Object[]) array.getArray(map);
-
-        switch (baseType) {
-        case Types.STRUCT:
-            elements = DefaultUDTMap.processObject((Struct[])element);
-            break;
-        case Types.ARRAY:
-            elements = DefaultUDTMap.processObject((Array[])element);
-            break;
-        case Types.CLOB:
-            elements = DefaultUDTMap.processObject((Clob[])element);
-            break;
-        case Types.BLOB:
-            elements = DefaultUDTMap.processObject((Blob[])element);
-            break;
-        case Types.DATALINK:
-            elements = DefaultUDTMap.processObject((URL[])element);
-            break;
-        case Types.JAVA_OBJECT:
-            elements = DefaultUDTMap.processObject(element);
-            break;
-        default:
-            elements = new Object[element.length];
-            for (int i = 0; i < element.length; i++) {
-                elements[i] = element[i];
-            }
+        if (element.length == 0) {
+            elements = new Object[0];
+        } else {
+            transferElements(baseType, element);
         }
+    }
+    
+    /**
+	 * Transfers primitive objects to SerialXXX objects according to the given
+	 * type.
+     * @throws SQLException 
+	 */
+    private void transferElements(int type, Object[] element) throws SQLException {
+    	switch (type) {
+		case Types.STRUCT:
+			elements = DefaultUDTMap.processStruct(element);
+			break;
+		case Types.ARRAY:
+			elements = DefaultUDTMap.processArray(element);
+			break;
+		case Types.CLOB:
+			elements = DefaultUDTMap.processClob(element);
+			break;
+		case Types.BLOB:
+			elements = DefaultUDTMap.processBlob(element);
+			break;
+		case Types.DATALINK:
+			elements = DefaultUDTMap.processDatalink(element);
+			break;
+		case Types.JAVA_OBJECT:
+			elements = DefaultUDTMap.processObject(element);
+			break;
+		default:
+			elements = new Object[element.length];
+			for (int i = 0; i < element.length; i++) {
+				elements[i] = element[i];
+			}
+		}
     }
 
     /**
-     * The constructor
-     * 
-     * @param array
-     *            array to be serializated
-     * @throws SerialException
-     *             when any error occurs during serializing
-     * @throws SQLException
-     *             if array is null
-     */
+	 * The constructor
+	 * 
+	 * @param array
+	 *            array to be serializated
+	 * @throws SerialException
+	 *             when any error occurs during serializing
+	 * @throws SQLException
+	 *             if array is null
+	 */
     public SerialArray(Array array) throws SerialException, SQLException {
-        this(array, DefaultUDTMap.DEFAULTMAP);
+    	if (null == array || null == array.getArray()) {
+            throw new SQLException(Messages.getString("sql.39")); //$NON-NLS-1$
+        }
+        baseType = array.getBaseType();
+        baseTypeName = array.getBaseTypeName();
+        
+        Object[] element = (Object[]) array.getArray();
+        if (element.length == 0) {
+            elements = new Object[0];
+        } else {
+            transferElements(baseType, element);
+        }
     }
 
     /**
@@ -136,7 +155,7 @@ public class SerialArray implements Array, Serializable, Cloneable {
      */
     public Object getArray(long index, int count) throws SerialException {
         if (index < 0 || count + index > elements.length) {
-            throw new SerialException("Illegal Argument");
+            throw new SerialException(Messages.getString("sql.42")); //$NON-NLS-1$
         }
         Object[] ret = new Object[count];
         System.arraycopy(elements, (int) index, ret, 0, count);
@@ -160,7 +179,7 @@ public class SerialArray implements Array, Serializable, Cloneable {
     public Object getArray(long index, int count, Map<String, Class<?>> map)
             throws SerialException {
         if (index < 0 || count + index > elements.length ) {
-            throw new SerialException(Messages.getString("sql.40"));
+            throw new SerialException(Messages.getString("sql.40")); //$NON-NLS-1$
         }
         Object[] ret = new Object[count];
         System.arraycopy(elements, (int) index, ret, 0, count);
@@ -264,5 +283,4 @@ public class SerialArray implements Array, Serializable, Cloneable {
             throws SerialException {
         throw new UnsupportedOperationException();
     }
-
 }

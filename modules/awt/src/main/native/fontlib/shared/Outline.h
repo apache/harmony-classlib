@@ -22,6 +22,7 @@
 #define __SHARED_OUTLINE_CLASS_H
 
 #include <string>
+#include "TypeDefinition.h"
 
 /*typedef enum {
 	SEG_CLOSE = 0,
@@ -39,43 +40,43 @@
     SEG_CLOSE = 4
 } SegmentType;*/
 
-static const unsigned char SEG_MOVETO = 0;
-static const unsigned char SEG_LINETO = 1;
-static const unsigned char SEG_QUADTO = 2;
-static const unsigned char SEG_CUBICTO = 3;
-static const unsigned char SEG_CLOSE = 4;
+static const ufchar SEG_MOVETO = 0;
+static const ufchar SEG_LINETO = 1;
+static const ufchar SEG_QUADTO = 2;
+static const ufchar SEG_CUBICTO = 3;
+static const ufchar SEG_CLOSE = 4;
 
 class Outline {
 public:
 
-	Outline(unsigned short pointsNumber, unsigned short commandNumber);
+	Outline(ufshort pointsNumber, ufshort commandNumber);
 
 	~Outline();
 
-	void lineTo(float x, float y);
+	void lineTo(ffloat x, ffloat y);
 
-	void moveTo(float x, float y);
+	void moveTo(ffloat x, ffloat y);
 
-	void quadTo(float x1, float y1, float x2, float y2);
+	void quadTo(ffloat x1, ffloat y1, ffloat x2, ffloat y2);
 
-	void curveTo(float x1, float y1, float x2, float y2, float x3, float y3);
+	void curveTo(ffloat x1, ffloat y1, ffloat x2, ffloat y2, ffloat x3, ffloat y3);
 
 	void closePath(void);
 
-	unsigned short getPointsLength(void);
-    unsigned short getCommandLength(void);
+	ufshort getPointsLength(void);
+    ufshort getCommandLength(void);
 
 	void trim(void);
 
-    float *_points;
-	unsigned char *_commands;
+    ffloat *_points;
+	ufchar *_commands;
 	
 private:
-	unsigned short _pointsLength;	
-    unsigned short _commandLenght;	
+	ufshort _pointsLength;	
+    ufshort _commandLenght;	
 
-	unsigned short pointsCount;
-	unsigned short commandsCount;
+	ufshort pointsCount;
+	ufshort commandsCount;
 };
 
 #endif //__SHARED_OUTLINE_CLASS_H

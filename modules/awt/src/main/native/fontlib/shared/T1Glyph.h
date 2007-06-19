@@ -31,17 +31,17 @@ private:
 	Type1Map *_charStringMap;
 	Type1Map *_subrsMap;
 
-    float _relativeSize;
-    float _glyphBB[4]; 
+    ffloat _relativeSize;
+    ffloat _glyphBB[4]; 
 
-	void parseValueToOutline(EncodedValue *value, std::stack<float> *stack, Outline *out, float *curX, float *curY, float relativeSize);
-	void countPoints(std::stack<float> *stack, EncodedValue *value, unsigned short *point, unsigned short *command);
+	void parseValueToOutline(EncodedValue *value, std::stack<ffloat> *stack, Outline *out, ffloat *curX, ffloat *curY, ffloat relativeSize);
+	void countPoints(std::stack<ffloat> *stack, EncodedValue *value, ufshort *point, ufshort *command);
 
 public:
-	T1Glyph(Type1Map *charStringMap, Type1Map *subrsMap, unsigned short unicode, unsigned short size, float relativeSize, float* fontBB);
+	T1Glyph(Type1Map *charStringMap, Type1Map *subrsMap, ufshort unicode, ufshort size, ffloat relativeSize, ffloat* fontBB);
 	~T1Glyph();
 	Outline* getOutline(void);
-	float* getGlyphMetrics(void);
+	ffloat* getGlyphMetrics(void);
 };
 
 #endif //__TYPE_1_GLYPH_CLASS_H

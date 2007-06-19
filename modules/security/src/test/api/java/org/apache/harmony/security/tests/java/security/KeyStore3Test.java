@@ -143,6 +143,11 @@ public class KeyStore3Test extends TestCase {
         mockKeyStore.setCertificateEntry("Alias", null);
     }
     
+    public void test_store_null() throws Exception {
+        mockKeyStore.load(null, null);
+        mockKeyStore.store(null, null);
+    }
+    
     protected void setUp() throws Exception {
         super.setUp();
         mockKeyStore = new MyKeyStore(new MyKeyStoreSpi(), null, "MyKeyStore");

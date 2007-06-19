@@ -17,9 +17,15 @@
 
 package org.apache.harmony.security.tests.java.security;
 
+import java.io.Serializable;
 import java.security.AllPermission;
 import java.security.SecurityPermission;
 import java.security.UnresolvedPermission;
+
+import org.apache.harmony.testframework.serialization.SerializationTest;
+import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
+
+import tests.util.SerializationTester;
 
 import junit.framework.TestCase;
 
@@ -74,5 +80,42 @@ public class UnresolvedPermissionTest extends TestCase {
         assertFalse(up.implies(up));
         assertFalse(up.implies(new AllPermission()));
         assertFalse(up.implies(new SecurityPermission("a.b.c")));
+    }
+    
+    public void testSerialization() throws Exception {
+        UnresolvedPermission up = new UnresolvedPermission(
+                "java.security.SecurityPermission", "a.b.c", "actions", null);
+        assertEquals("java.security.SecurityPermission", up.getUnresolvedType());
+        assertEquals("a.b.c", up.getUnresolvedName());
+        assertEquals("actions", up.getUnresolvedActions());
+        assertNull(up.getUnresolvedCerts());
+
+        UnresolvedPermission deserializedUp = (UnresolvedPermission) SerializationTester
+                .getDeserilizedObject(up);
+        assertEquals("java.security.SecurityPermission", deserializedUp
+                .getUnresolvedType());
+        assertEquals("a.b.c", deserializedUp.getUnresolvedName());
+        assertEquals("actions", deserializedUp.getUnresolvedActions());
+        assertNull(deserializedUp.getUnresolvedCerts());
+    }
+    
+    public void testSerialization_Compatibility() throws Exception {
+        UnresolvedPermission up = new UnresolvedPermission(
+                "java.security.SecurityPermission", "a.b.c", "actions", null);
+        assertEquals("java.security.SecurityPermission", up.getUnresolvedType());
+        assertEquals("a.b.c", up.getUnresolvedName());
+        assertEquals("actions", up.getUnresolvedActions());
+        assertNull(up.getUnresolvedCerts());
+
+        SerializationTest.verifyGolden(this, up, new SerializableAssert() {
+            public void assertDeserialized(Serializable orig, Serializable ser) {
+                UnresolvedPermission deserializedUp = (UnresolvedPermission) ser;
+                assertEquals("java.security.SecurityPermission", deserializedUp
+                        .getUnresolvedType());
+                assertEquals("a.b.c", deserializedUp.getUnresolvedName());
+                assertEquals("actions", deserializedUp.getUnresolvedActions());
+                assertNull(deserializedUp.getUnresolvedCerts());
+            }
+        });
     }
 }

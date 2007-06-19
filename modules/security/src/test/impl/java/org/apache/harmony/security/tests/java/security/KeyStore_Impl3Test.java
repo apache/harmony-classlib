@@ -142,11 +142,8 @@ public class KeyStore_Impl3Test extends TestCase {
             } catch (NullPointerException e) {
             }
 
-            try {
-                kss[i].store(bos, null);
-                fail("store(...) does not throw any exception when password is null");
-            } catch (IOException e) {
-            }
+            //RI does not throw exception while password is null.
+            kss[i].store(bos, null);
 
             kss[i].store(bos, pwd);
             ByteArrayInputStream bis = new ByteArrayInputStream(bos

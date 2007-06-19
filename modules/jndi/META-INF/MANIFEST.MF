@@ -41,5 +41,6 @@ Export-Package: javax.naming,
  javax.naming.event,
  javax.naming.ldap,
  javax.naming.spi
+Require-Bundle: org.apache.harmony.support
 
 

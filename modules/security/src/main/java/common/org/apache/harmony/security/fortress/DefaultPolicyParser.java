@@ -198,7 +198,7 @@ public class DefaultPolicyParser {
             if ("file".equals(codebase.getProtocol())) { //$NON-NLS-1$
             	File codeFile = new File(codebase.getFile());
             	if (codeFile.isAbsolute()) {
-            		codebase = new URL("file://" +  //$NON-NLS-1$
+            		codebase = new URL("file:/" +  //$NON-NLS-1$
                             codeFile.getAbsolutePath());            		
             	}
             }

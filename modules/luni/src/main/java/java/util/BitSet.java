@@ -695,7 +695,10 @@ public class BitSet implements Serializable, Cloneable {
         for (int i = 0; i < range; i++) {
             bits[i] &= ~bsBits[i];
         }
-        actualArrayLength = range;
+
+        if (actualArrayLength < range) {
+            actualArrayLength = range;
+        }
         isLengthActual = !((actualArrayLength > 0) && (bits[actualArrayLength - 1] == 0));
     }
 
