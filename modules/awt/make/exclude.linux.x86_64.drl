@@ -13,3 +13,6 @@ java/awt/font/TextMeasurerTest.java
 java/awt/font/LineBreakMeasurerTest.java
 java/awt/ButtonRTest.java
 java/awt/KeyboardFocusManagerRTest.java
+
+#HARMONY-4181
+java/awt/geom/AreaTest.java
