@@ -57,16 +57,12 @@ public final class UnresolvedPermission extends Permission
      */
     private static final long serialVersionUID = -4821973115467008846L;
 
-    private static final ObjectStreamField serialPersistentFields[] = {
-        new ObjectStreamField("type", String.class), //$NON-NLS-1$
-        new ObjectStreamField("name", String.class), //$NON-NLS-1$
-        new ObjectStreamField("actions", String.class), }; //$NON-NLS-1$
 
-    // Target name
-    private transient String targetName;
-
-    //Target actions
-    private transient String targetActions;
+    private String type;    
+    
+    private String name;
+    
+    private String actions;
 
     // The signer certificates 
     private transient Certificate[] targetCerts;
@@ -89,8 +85,9 @@ public final class UnresolvedPermission extends Permission
                                 Certificate[] certs) {
         super(type);
         checkType(type);
-        targetName = name;
-        targetActions = actions;
+        this.type = type;
+        this.name = name;
+        this.actions = actions;
         if (certs != null && certs.length != 0) {
             //TODO filter non-signer certificates ???
             List tmp = new ArrayList();
@@ -142,10 +139,10 @@ public final class UnresolvedPermission extends Permission
         if (obj instanceof UnresolvedPermission) {
             UnresolvedPermission that = (UnresolvedPermission)obj;
             if (getName().equals(that.getName())
-                && (targetName == null ? that.targetName == null 
-                    : targetName.equals(that.targetName))
-                && (targetActions == null ? that.targetActions == null
-                    : targetActions.equals(that.targetActions))
+                && (name == null ? that.name == null 
+                    : name.equals(that.name))
+                && (actions == null ? that.actions == null
+                    : actions.equals(that.actions))
                 && (PolicyUtils.matchSubset(targetCerts, that.targetCerts) 
                     && PolicyUtils.matchSubset(that.targetCerts, targetCerts))) {
                 return true;
@@ -166,11 +163,11 @@ public final class UnresolvedPermission extends Permission
     public int hashCode() {
         if (hash == 0) {
             hash = getName().hashCode();
-            if (targetName != null) {
-                hash ^= targetName.hashCode();
+            if (name != null) {
+                hash ^= name.hashCode();
             }
-            if (targetActions != null) {
-                hash ^= targetActions.hashCode();
+            if (actions != null) {
+                hash ^= actions.hashCode();
             }
         }
         return hash;
@@ -190,14 +187,14 @@ public final class UnresolvedPermission extends Permission
      * @com.intel.drl.spec_ref 
      */
     public String getUnresolvedName() {
-        return targetName;
+        return name;
     }
 
     /** 
      * @com.intel.drl.spec_ref 
      */
     public String getUnresolvedActions() {
-        return targetActions;
+        return actions;
     }
 
     /** 
@@ -244,8 +241,8 @@ public final class UnresolvedPermission extends Permission
 	 * @return a printable representation for the receiver.
 	 */
     public String toString() {
-        return "(unresolved " + getName() + " " + targetName + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            + targetActions + ")"; //$NON-NLS-1$
+        return "(unresolved " + type + " " + name + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + actions + ")"; //$NON-NLS-1$
     }
 
 	/**
@@ -281,8 +278,8 @@ public final class UnresolvedPermission extends Permission
         if (PolicyUtils.matchSubset(targetCerts, targetType.getSigners())) {
             try {
                 return PolicyUtils.instantiatePermission(targetType,
-                                                         targetName,
-                                                         targetActions);
+                                                         name,
+                                                         actions);
             } catch (Exception ignore) {
                 //TODO log warning?
             }
@@ -311,11 +308,7 @@ public final class UnresolvedPermission extends Permission
      *  @see  <a href="http://java.sun.com/j2se/1.5.0/docs/api/serialized-form.html#java.security.UnresolvedPermission">Java Spec</a>
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
-        ObjectOutputStream.PutField fields = out.putFields();
-        fields.put("type", getUnresolvedType()); //$NON-NLS-1$
-        fields.put("name", getUnresolvedName()); //$NON-NLS-1$
-        fields.put("actions", getUnresolvedActions()); //$NON-NLS-1$
-        out.writeFields();
+        out.defaultWriteObject();
         if (targetCerts == null) {
             out.writeInt(0);
         } else {
@@ -342,13 +335,8 @@ public final class UnresolvedPermission extends Permission
      */
     private void readObject(ObjectInputStream in) throws IOException,
         ClassNotFoundException {
-        checkType(getUnresolvedType());
-        ObjectInputStream.GetField fields = in.readFields();
-        if (!getUnresolvedType().equals(fields.get("type", null))) { //$NON-NLS-1$
-            throw new InvalidObjectException(Messages.getString("security.31")); //$NON-NLS-1$
-        }
-        targetName = (String)fields.get("name", null); //$NON-NLS-1$
-        targetActions = (String)fields.get("actions", null); //$NON-NLS-1$
+        in.defaultReadObject();        
+        checkType(getUnresolvedType());      
         int certNumber = in.readInt();
         if (certNumber != 0) {
             targetCerts = new Certificate[certNumber];
