@@ -41,7 +41,9 @@ public class DataTruncation extends SQLWarning implements Serializable {
 
     private static final String THE_REASON = "Data truncation"; //$NON-NLS-1$
 
-    private static final String THE_SQLSTATE = "01004"; //$NON-NLS-1$
+    private static final String THE_SQLSTATE_READ = "01004"; //$NON-NLS-1$
+    
+    private static final String THE_SQLSTATE_WRITE = "22001"; //$NON-NLS-1$
 
     private static final int THE_ERROR_CODE = 0;
 
@@ -65,14 +67,50 @@ public class DataTruncation extends SQLWarning implements Serializable {
      *            the size of the data after truncation
      */
     public DataTruncation(int index, boolean parameter, boolean read,
-            int dataSize, int transferSize) {
-        super(THE_REASON, THE_SQLSTATE, THE_ERROR_CODE);
-        this.index = index;
-        this.parameter = parameter;
-        this.read = read;
-        this.dataSize = dataSize;
-        this.transferSize = transferSize;
-    }
+			int dataSize, int transferSize) {
+		super(THE_REASON, read ? THE_SQLSTATE_READ : THE_SQLSTATE_WRITE,
+				THE_ERROR_CODE);
+		this.index = index;
+		this.parameter = parameter;
+		this.read = read;
+		this.dataSize = dataSize;
+		this.transferSize = transferSize;
+	}
+
+    /**
+	 * Creates a DataTruncation. The Reason is set to "Data truncation", the
+	 * ErrorCode is set to the SQLException default value and other fields are
+	 * set to the values supplied on this method.
+	 * 
+	 * @param index
+	 *            the Index value of the column value or parameter that was
+	 *            truncated
+	 * @param parameter
+	 *            true if it was a Parameter value that was truncated, false
+	 *            otherwise
+	 * @param read
+	 *            true if the truncation occurred on a read operation, false
+	 *            otherwise
+	 * @param dataSize
+	 *            the original size of the truncated data
+	 * @param transferSize
+	 *            the size of the data after truncation
+	 * @param cause
+	 *            the root reason for this DataTruncation
+	 * 
+	 * @since 1.6
+	 */
+	public DataTruncation(int index, boolean parameter, boolean read,
+			int dataSize, int transferSize, Throwable cause) {
+		super(THE_REASON, read ? THE_SQLSTATE_READ : THE_SQLSTATE_WRITE,
+				THE_ERROR_CODE, cause);
+		this.index = index;
+		this.parameter = parameter;
+		this.read = read;
+		this.dataSize = dataSize;
+		this.transferSize = transferSize;
+	}
+            
 
     /**
      * Gets the number of bytes of data that should have been read/written.

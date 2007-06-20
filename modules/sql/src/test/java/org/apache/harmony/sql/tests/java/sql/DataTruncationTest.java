@@ -40,8 +40,8 @@ public class DataTruncationTest extends TestCase {
 		int[] init5 = { -2147483648, 2147483647, 0, 540816689, -1890783845,
 				-105552912, -85923935 };
 
-		String[] theFinalStates1 = { "01004", "01004", "01004", "01004",
-				"01004", "01004", "01004" };
+		String[] theFinalStates1 = { "22001", "01004", "22001", "22001",
+				"22001", "22001", "01004" };
 		String state2 = "Data truncation";
 		String[] theFinalStates2 = { state2, state2, state2, state2, state2,
 				state2, state2 };
@@ -92,6 +92,20 @@ public class DataTruncationTest extends TestCase {
 		} // end for
 
 	} // end method testDataTruncationintbooleanbooleanintint
+	
+	/**
+	 * @tests {@link java.sql.DataTruncation#DataTruncation(int, boolean, boolean, int, int, Throwable)}
+	 * 
+	 * @since 1.6
+	 */
+	public void testConstructor_IBBIILjava_lang_Throwable() {
+		Exception e = new Exception("error message");
+		DataTruncation dataTruncation = new DataTruncation(2147483647, true,
+				false, 0, 2147483647, e);
+		assertNotNull(dataTruncation);
+		assertEquals(e, dataTruncation.getCause());
+		assertEquals("error message", dataTruncation.getCause().getMessage());
+	}
 
 	/*
 	 * Method test for getIndex
@@ -110,7 +124,7 @@ public class DataTruncationTest extends TestCase {
 
 		int theReturn;
 		int[] theReturns = init1;
-		String[] theFinalStates1 = { "01004", "01004", "01004", "01004",
+		String[] theFinalStates1 = { "22001", "01004", "22001", "22001",
 				"01004", "01004", "01004" };
 		String state2 = "Data truncation";
 		String[] theFinalStates2 = { state2, state2, state2, state2, state2,
@@ -182,8 +196,8 @@ public class DataTruncationTest extends TestCase {
 
 		boolean theReturn;
 		boolean[] theReturns = init2;
-		String[] theFinalStates1 = { "01004", "01004", "01004", "01004",
-				"01004", "01004", "01004" };
+		String[] theFinalStates1 = { "22001", "01004", "22001", "22001",
+				"22001", "01004", "01004" };
 		String state2 = "Data truncation";
 		String[] theFinalStates2 = { state2, state2, state2, state2, state2,
 				state2, state2 };
@@ -254,8 +268,8 @@ public class DataTruncationTest extends TestCase {
 
 		boolean theReturn;
 		boolean[] theReturns = init3;
-		String[] theFinalStates1 = { "01004", "01004", "01004", "01004",
-				"01004", "01004", "01004" };
+		String[] theFinalStates1 = { "22001", "01004", "22001", "22001",
+				"01004", "01004", "22001" };
 		String state2 = "Data truncation";
 		String[] theFinalStates2 = { state2, state2, state2, state2, state2,
 				state2, state2 };
@@ -326,8 +340,8 @@ public class DataTruncationTest extends TestCase {
 
 		int theReturn;
 		int[] theReturns = init4;
-		String[] theFinalStates1 = { "01004", "01004", "01004", "01004",
-				"01004", "01004", "01004" };
+		String[] theFinalStates1 = { "22001", "01004", "22001", "01004",
+				"01004", "22001", "22001" };
 		String state2 = "Data truncation";
 		String[] theFinalStates2 = { state2, state2, state2, state2, state2,
 				state2, state2 };
@@ -398,8 +412,8 @@ public class DataTruncationTest extends TestCase {
 
 		int theReturn;
 		int[] theReturns = init5;
-		String[] theFinalStates1 = { "01004", "01004", "01004", "01004",
-				"01004", "01004", "01004" };
+		String[] theFinalStates1 = { "22001", "01004", "22001", "22001",
+				"22001", "22001", "22001" };
 		String state2 = "Data truncation";
 		String[] theFinalStates2 = { state2, state2, state2, state2, state2,
 				state2, state2 };
