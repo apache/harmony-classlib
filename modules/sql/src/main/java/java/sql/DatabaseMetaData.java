@@ -290,6 +290,71 @@ public interface DatabaseMetaData {
      * States that the version column may be a pseudo column or not.
      */
     public static final int versionColumnUnknown = 0;
+    
+    /**
+     * States that the method DatabaseMetaData.getSQLStateType may returns  an SQLSTATE value or not.
+     */
+    public static final int sqlStateSQL = 2;
+
+    /**
+     * States that the parameter or column is an IN parameter
+     */
+    public static final int functionColumnIn = 1;
+
+    /**
+     * States that the parameter or column is an INOUT parameter
+     */
+    public static final int functionColumnInOut = 2;
+
+    /**
+     * States that the parameter or column is an OUT parameter
+     */
+    public static final int functionColumnOut = 3;
+
+    /**
+     * States that the parameter or column is a return value
+     */
+    public static final int functionReturn = 4;
+
+    /**
+     * States that the parameter of function is unknown
+     */
+    public static final int  functionColumnUnknown = 0;
+    
+    /**
+     * States that the parameter or column is a column in a result set
+     */
+    public static final int functionColumnResult = 5;
+
+    /**
+     * States that NULL values are not allowed
+     */
+    public static final int functionNoNulls = 0;
+
+    /**
+     * States that NULL values are allowed
+     */
+    public static final int functionNullable = 1;
+
+    /**
+     * States that whether NULL values are allowed is unknown
+     */
+    public static final int functionNullableUnknown = 2;
+
+    /**
+     * States that it is not known whether the function returns a result or a table
+     */
+    public static final int functionResultUnknown = 0;
+
+    /**
+     * States that the function does not return a table
+     */
+    public static final int functionNoTable = 1;
+
+    /**
+     * States that the function returns a table.
+     */
+    public static final int functionReturnsTable = 2;
 
     /**
      * Answers whether all procedures returned by <code>getProcedures</code>

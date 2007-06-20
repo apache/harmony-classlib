@@ -17,9 +17,7 @@
 
 package org.apache.harmony.sql.tests.java.sql;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
+import static java.sql.DatabaseMetaData.*;
 
 import junit.framework.TestCase;
 
@@ -29,91 +27,67 @@ public class DatabaseMetaDataTest extends TestCase {
 	 * Public statics test
 	 */
 	public void testPublicStatics() {
+		assertEquals(attributeNoNulls,0);
+		assertEquals(attributeNullable,1);
+		assertEquals(attributeNullableUnknown,2);
+		assertEquals(bestRowNotPseudo,1);
+		assertEquals(bestRowPseudo,2);
+		assertEquals(bestRowSession,2);
+		assertEquals(bestRowTemporary,0);
+		assertEquals(bestRowTransaction,1);
+		assertEquals(bestRowUnknown,0);
+		assertEquals(columnNoNulls,0);
+		assertEquals(columnNullable,1);
+		assertEquals(columnNullableUnknown,2);
+		assertEquals(functionColumnIn,1);
+		assertEquals(functionColumnInOut,2);
+		assertEquals(functionColumnOut,3);
+		assertEquals(functionColumnResult,5);
+		assertEquals(functionColumnUnknown,0);
+		assertEquals(functionNoNulls,0);
+		assertEquals(functionNoTable,1);
+		assertEquals(functionNullable,1);
+		assertEquals(functionNullableUnknown,2);
+		assertEquals(functionResultUnknown,0);
+		assertEquals(functionReturn,4);
+		assertEquals(functionReturnsTable,2);
+		assertEquals(importedKeyCascade,0);
+		assertEquals(importedKeyInitiallyDeferred,5);
+		assertEquals(importedKeyInitiallyImmediate,6);
+		assertEquals(importedKeyNoAction,3);
+		assertEquals(importedKeyNotDeferrable,7);
+		assertEquals(importedKeyRestrict,1);
+		assertEquals(importedKeySetDefault,4);
+		assertEquals(importedKeySetNull,2);
+		assertEquals(procedureColumnIn,1);
+		assertEquals(procedureColumnInOut,2);
+		assertEquals(procedureColumnOut,4);
+		assertEquals(procedureColumnResult,3);
+		assertEquals(procedureColumnReturn,5);
+		assertEquals(procedureColumnUnknown,0);
+		assertEquals(procedureNoNulls,0);
+		assertEquals(procedureNoResult,1);
+		assertEquals(procedureNullable,1);
+		assertEquals(procedureNullableUnknown,2);
+		assertEquals(procedureResultUnknown,0);
+		assertEquals(procedureReturnsResult,2);
+		assertEquals(sqlStateSQL,2);
+		assertEquals(sqlStateSQL99,2);
+		assertEquals(sqlStateXOpen,1);
+		assertEquals(tableIndexClustered,1);
+		assertEquals(tableIndexHashed,2);
+		assertEquals(tableIndexOther,3);
+		assertEquals(tableIndexStatistic,0);
+		assertEquals(typeNoNulls,0);
+		assertEquals(typeNullable,1);
+		assertEquals(typeNullableUnknown,2);
+		assertEquals(typePredBasic,2);
+		assertEquals(typePredChar,1);
+		assertEquals(typePredNone,0);
+		assertEquals(typeSearchable,3);
+		assertEquals(versionColumnNotPseudo,1);
+		assertEquals(versionColumnPseudo,2);
+		assertEquals(versionColumnUnknown,0);
+	}
 
-		HashMap<String, Number> thePublicStatics = new HashMap<String, Number>();
-		thePublicStatics.put("sqlStateSQL99", new Integer(2));
-		thePublicStatics.put("sqlStateXOpen", new Integer(1));
-		thePublicStatics.put("attributeNullableUnknown", new Short((short) 2));
-		thePublicStatics.put("attributeNullable", new Short((short) 1));
-		thePublicStatics.put("attributeNoNulls", new Short((short) 0));
-		thePublicStatics.put("tableIndexOther", new Short((short) 3));
-		thePublicStatics.put("tableIndexHashed", new Short((short) 2));
-		thePublicStatics.put("tableIndexClustered", new Short((short) 1));
-		thePublicStatics.put("tableIndexStatistic", new Short((short) 0));
-		thePublicStatics.put("typeSearchable", new Integer(3));
-		thePublicStatics.put("typePredBasic", new Integer(2));
-		thePublicStatics.put("typePredChar", new Integer(1));
-		thePublicStatics.put("typePredNone", new Integer(0));
-		thePublicStatics.put("typeNullableUnknown", new Integer(2));
-		thePublicStatics.put("typeNullable", new Integer(1));
-		thePublicStatics.put("typeNoNulls", new Integer(0));
-		thePublicStatics.put("importedKeyNotDeferrable", new Integer(7));
-		thePublicStatics.put("importedKeyInitiallyImmediate", new Integer(6));
-		thePublicStatics.put("importedKeyInitiallyDeferred", new Integer(5));
-		thePublicStatics.put("importedKeySetDefault", new Integer(4));
-		thePublicStatics.put("importedKeyNoAction", new Integer(3));
-		thePublicStatics.put("importedKeySetNull", new Integer(2));
-		thePublicStatics.put("importedKeyRestrict", new Integer(1));
-		thePublicStatics.put("importedKeyCascade", new Integer(0));
-		thePublicStatics.put("versionColumnPseudo", new Integer(2));
-		thePublicStatics.put("versionColumnNotPseudo", new Integer(1));
-		thePublicStatics.put("versionColumnUnknown", new Integer(0));
-		thePublicStatics.put("bestRowPseudo", new Integer(2));
-		thePublicStatics.put("bestRowNotPseudo", new Integer(1));
-		thePublicStatics.put("bestRowUnknown", new Integer(0));
-		thePublicStatics.put("bestRowSession", new Integer(2));
-		thePublicStatics.put("bestRowTransaction", new Integer(1));
-		thePublicStatics.put("bestRowTemporary", new Integer(0));
-		thePublicStatics.put("columnNullableUnknown", new Integer(2));
-		thePublicStatics.put("columnNullable", new Integer(1));
-		thePublicStatics.put("columnNoNulls", new Integer(0));
-		thePublicStatics.put("procedureNullableUnknown", new Integer(2));
-		thePublicStatics.put("procedureNullable", new Integer(1));
-		thePublicStatics.put("procedureNoNulls", new Integer(0));
-		thePublicStatics.put("procedureColumnResult", new Integer(3));
-		thePublicStatics.put("procedureColumnReturn", new Integer(5));
-		thePublicStatics.put("procedureColumnOut", new Integer(4));
-		thePublicStatics.put("procedureColumnInOut", new Integer(2));
-		thePublicStatics.put("procedureColumnIn", new Integer(1));
-		thePublicStatics.put("procedureColumnUnknown", new Integer(0));
-		thePublicStatics.put("procedureReturnsResult", new Integer(2));
-		thePublicStatics.put("procedureNoResult", new Integer(1));
-		thePublicStatics.put("procedureResultUnknown", new Integer(0));
-
-		Class<?> databaseMetaDataClass;
-		try {
-			databaseMetaDataClass = Class.forName("java.sql.DatabaseMetaData");
-		} catch (ClassNotFoundException e) {
-			fail("java.sql.DatabaseMetaData class not found!");
-			return;
-		} // end try
-
-		Field[] theFields = databaseMetaDataClass.getDeclaredFields();
-		int requiredModifier = Modifier.PUBLIC + Modifier.STATIC
-				+ Modifier.FINAL;
-
-		int countPublicStatics = 0;
-		for (Field element : theFields) {
-			String fieldName = element.getName();
-			int theMods = element.getModifiers();
-			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
-				try {
-					Object fieldValue = element.get(null);
-					Object expectedValue = thePublicStatics.get(fieldName);
-					if (expectedValue == null) {
-						fail("Field " + fieldName + " missing!");
-					} // end
-					assertEquals("Field " + fieldName + " value mismatch: ",
-							expectedValue, fieldValue);
-					assertEquals("Field " + fieldName + " modifier mismatch: ",
-							requiredModifier, theMods);
-					countPublicStatics++;
-				} catch (IllegalAccessException e) {
-					fail("Illegal access to Field " + fieldName);
-				} // end try
-			} // end if
-		} // end for
-
-	} // end method testPublicStatics
-
-} // end class DatabaseMetaDataTest
+}
