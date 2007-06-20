@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 
 /**
  * PriorityQueue holds elements on a priority heap, which orders elements
@@ -230,17 +231,13 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
         if (o == null) {
             return false;
         }
-        int targetIndex;
-        for (targetIndex = 0; targetIndex < size; targetIndex++) {
-            if (0 == this.compare((E) o, elements[targetIndex])) {
-                break;
+        for (int i = 0; i < size; i++) {
+            if (elements[i].equals(o)) {
+                removeAt(i);
+                return true;
             }
         }
-        if (size == 0 || size == targetIndex) {
-            return false;
-        }
-        removeAt(targetIndex);
-        return true;
+        return false;
     }
 
     /**
@@ -256,6 +253,73 @@ public class PriorityQueue<E> extends AbstractQueue<E> implements Serializable {
     @Override
     public boolean add(E o) {
         return offer(o);
+    }
+    
+    /**
+     * Answers if there is an element in this queue equals to the object.
+     * 
+     * @see java.util.AbstractCollection#contains(java.lang.Object)
+     */
+    @Override
+    public boolean contains(Object object) {
+        for (int i = 0; i < size; i++) {
+            if(elements[i].equals(object)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns all the elements in an array. The result is a copy of all the
+     * elements.
+     * 
+     * @return the Array of all the elements
+     * @see java.util.AbstractCollection#toArray()
+     */
+    @Override
+    public Object[] toArray() {
+        return newArray(new Object[size()]);
+    }
+
+    /**
+     * Returns all the elements in an array, and the type of the result array is
+     * the type of the argument array. If the argument array is big enough, the
+     * elements from the queue will be stored in it(element immediately
+     * following the end of the queue is set to null, if any); otherwise, it
+     * will return a new array with the size of the argument array and size of
+     * the queue.
+     * 
+     * @param <T>
+     *            the type of elements in the array
+     * @param array
+     *            the array stores all the elements from the queue, if it has
+     *            enough space; otherwise, a new array of the same type and the
+     *            size of the queue will be used
+     * @return the Array of all the elements
+     * @throws ArrayStoreException
+     *             if the type of the argument array is not compatible with
+     *             every element in the queue
+     * @throws NullPointerException
+     *             if the argument array is null
+     * @see java.util.AbstractCollection#toArray(T[])
+     */
+    @Override
+    public <T> T[] toArray(T[] array) {
+        return newArray(array);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T[] newArray(T[] array) {
+        if (size > array.length) {
+            Class<?> clazz = array.getClass().getComponentType();
+            array = (T[]) Array.newInstance(clazz, size);
+        }
+        System.arraycopy(elements, 0, array, 0, size);
+        if (size < array.length) {
+            array[size] = null;
+        }
+        return array;
     }
 
     private class PriorityIterator implements Iterator<E> {

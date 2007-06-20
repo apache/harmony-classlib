@@ -27,9 +27,8 @@ import java.util.PriorityQueue;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import tests.util.SerializationTester;
-
 import junit.framework.TestCase;
+import tests.util.SerializationTester;
 
 public class PriorityQueueTest extends TestCase {
 
@@ -594,7 +593,7 @@ public class PriorityQueueTest extends TestCase {
             queue.offer(array[i]);
         }
         assertFalse(queue.contains("BB"));
-        assertTrue(queue.remove("BB"));
+        assertFalse(queue.remove("BB"));
     }
 
     /**
@@ -607,12 +606,7 @@ public class PriorityQueueTest extends TestCase {
         PriorityQueue<Integer> integerQueue = new PriorityQueue<Integer>(list);
         assertFalse(integerQueue.remove(111));
         assertFalse(integerQueue.remove(null));
-        try {
-            integerQueue.remove("");
-            fail("should throw ClassCastException");
-        } catch (ClassCastException e) {
-            // expected
-        }
+        assertFalse(integerQueue.remove(""));
     }
 
     /**
@@ -634,12 +628,7 @@ public class PriorityQueueTest extends TestCase {
         Integer[] array = { 2, 45, 7, -12, 9, 23, 17, 1118, 10, 16, 39 };
         List<Integer> list = Arrays.asList(array);
         PriorityQueue<Integer> integerQueue = new PriorityQueue<Integer>(list);
-        try {
-            integerQueue.remove(new Float(1.3F));
-            fail("should throw ClassCastException");
-        } catch (ClassCastException e) {
-            // expected
-        }
+        assertFalse(integerQueue.remove(new Float(1.3F)));
 
         // although argument element type is not compatible with those in queue,
         // but comparator supports it.
@@ -652,12 +641,7 @@ public class PriorityQueueTest extends TestCase {
         PriorityQueue<Object> queue = new PriorityQueue<Object>();
         Object o = new Object();
         queue.offer(o);
-        try {
-            queue.remove(o);
-            fail("should throw ClassCastException");
-        } catch (ClassCastException e) {
-            // expected
-        }
+        assertTrue(queue.remove(o));
     }
 
     /**
@@ -671,7 +655,7 @@ public class PriorityQueueTest extends TestCase {
         queue = new PriorityQueue<Object>(100, comparator);
         assertEquals(comparator, queue.comparator());
     }
-
+    
     /**
      * @tests serialization/deserialization.
      */
@@ -722,6 +706,73 @@ public class PriorityQueueTest extends TestCase {
         Arrays.sort(array);
         Integer I = (Integer) o;
         assertEquals(array[0], I);
+    }
+    
+    /**
+     * @tests {@link PriorityQueue#contains(Object)}
+     */
+    public void test_contains() throws Exception {
+        PriorityQueue<Integer> integerQueue = new PriorityQueue<Integer>();
+        Integer[] array = { 2, 45, 7, -12, 9 };
+        for (int i = 0; i < array.length; i++) {
+            integerQueue.add(array[i]);
+        }
+        for (int i = 0; i < array.length; i++) {
+            assertTrue(integerQueue.contains(array[i]));
+        }
+        assertFalse(integerQueue.contains(null));
+    }
+    
+    /**
+     * @tests {@link PriorityQueue#toArray()}
+     */
+    public void test_toArray() throws Exception {
+        PriorityQueue<Integer> integerQueue = new PriorityQueue<Integer>();
+        Integer[] array = { 2, 45, 7, -12, 9 };
+        for (int i = 0; i < array.length; i++) {
+            integerQueue.add(array[i]);
+        }
+        Object[] returnArray = integerQueue.toArray();
+        assertEquals(returnArray.length,integerQueue.size());
+        for (int i = 0; i < returnArray.length; i++) {
+            assertTrue(integerQueue.contains(returnArray[i]));
+        }
+    }
+    
+    /**
+     * @tests {@link PriorityQueue#toArray(T[])}
+     */
+    public void test_toArray_$T() throws Exception {
+        PriorityQueue<Integer> integerQueue = new PriorityQueue<Integer>();
+        Integer[] array = { 2, 45, 7, -12, 9 };
+        for (int i = 0; i < array.length; i++) {
+            integerQueue.add(array[i]);
+        }
+        Object[] returnArray = integerQueue.toArray(new Integer[0]);
+        assertEquals(returnArray.length,integerQueue.size());
+        for (int i = 0; i < returnArray.length; i++) {
+            assertTrue(integerQueue.contains(returnArray[i]));
+        }
+        returnArray = integerQueue.toArray(new Integer[10]);
+        assertEquals(10,returnArray.length);
+        for (int i = 0; i < array.length; i++) {
+            assertTrue(integerQueue.contains(returnArray[i]));
+        }
+        for (int i = array.length; i < 10; i++) {
+            assertNull(returnArray[i]);
+        }
+        try {
+            integerQueue.toArray(null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        try {
+            integerQueue.toArray(new String[1]);
+            fail("should throw ArrayStoreException");
+        } catch (ArrayStoreException e) {
+            // expected
+        }
     }
 
     private static class MockComparator<E> implements Comparator<E> {
