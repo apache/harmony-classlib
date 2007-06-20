@@ -17,6 +17,8 @@
 
 package org.apache.harmony.beans.tests.java.beans.beancontext;
 
+import java.awt.Button;
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -2035,7 +2037,6 @@ public class BeanContextSupportTest extends TestCase {
         assertEqualsSerially(mock.support, serMock.support);
     }
 
-
      public void testSerialization_Compatibility() throws Exception {
          MockBeanContextDelegateS mock = new MockBeanContextDelegateS("main id");
          BeanContextSupport support = mock.support;
@@ -2082,7 +2083,7 @@ public class BeanContextSupportTest extends TestCase {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -2179,6 +2180,42 @@ public class BeanContextSupportTest extends TestCase {
                 baos.toByteArray()));
         Object obj = oin.readObject();
         assertTrue(obj instanceof BeanContextSupport);
+    }
+    
+    public void testAvoidGui() throws Exception
+    {
+        MockBeanContextSupport1 mockBeanContextSupport1 = new MockBeanContextSupport1();
+        mockBeanContextSupport1.setOkToUseGui(false);
+        assertFalse(mockBeanContextSupport1.avoidingGui());
+        
+        mockBeanContextSupport1 = new MockBeanContextSupport1();
+        mockBeanContextSupport1.setOkToUseGui(true);
+        assertFalse(mockBeanContextSupport1.avoidingGui());
+        
+        mockBeanContextSupport1 = new MockBeanContextSupport1();
+        Component component = new Button();
+        mockBeanContextSupport1.add(component);
+        mockBeanContextSupport1.setOkToUseGui(false);
+        assertTrue(mockBeanContextSupport1.needsGui());
+        assertTrue(mockBeanContextSupport1.avoidingGui());
+        
+        mockBeanContextSupport1 = new MockBeanContextSupport1();
+        component = new Button();
+        mockBeanContextSupport1.add(component);        
+        mockBeanContextSupport1.setOkToUseGui(true);
+        assertTrue(mockBeanContextSupport1.needsGui());
+        assertFalse(mockBeanContextSupport1.avoidingGui());     
+    }
+    
+    
+    public class MockBeanContextSupport1 extends BeanContextSupport
+    {
+        private static final long serialVersionUID = 1L;
+
+        public void setOkToUseGui(boolean ok)
+        {
+            this.okToUseGui = ok;
+        }      
     }
 
 }
