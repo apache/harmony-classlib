@@ -6,4 +6,3 @@ org/apache/harmony/beans/tests/java/beans/XMLEncoderTest.java
 org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextMembershipEventTest.java
 org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextServiceAvailableEventTest.java
 org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextServiceRevokedEventTest.java
-org/apache/harmony/beans/tests/java/beans/beancontext/BeanContextServicesSupportTest.java
