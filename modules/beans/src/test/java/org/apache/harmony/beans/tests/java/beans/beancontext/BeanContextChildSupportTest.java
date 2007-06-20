@@ -17,6 +17,7 @@
 
 package org.apache.harmony.beans.tests.java.beans.beancontext;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
@@ -482,8 +483,7 @@ public class BeanContextChildSupportTest extends TestCase {
 
         BeanContextChildSupport sup = new BeanContextChildSupport();
 
-        assertFalse("Child is not supposed to be delegated",
-                sup.isDelegated());
+        assertFalse("Child is not supposed to be delegated", sup.isDelegated());
     }
 
     public void testReleaseBeanContextResources() throws PropertyVetoException {
@@ -945,6 +945,55 @@ public class BeanContextChildSupportTest extends TestCase {
 
         assertNotNull("BeanContext should not be null", sup.getBeanContext());
     }
+    
+    public void testSetBeanContextBeanContextWithPropertyVetoException()
+            throws Exception {
+        MyBeanContextChildSupport myBeanContextChildSupport = new MyBeanContextChildSupport();
+        VetoableChangeListener vcl = new MyVetoableChangeListener();
+        myBeanContextChildSupport.addVetoableChangeListener("beanContext", vcl);
+        BeanContext beanContext = new BeanContextSupport();
+        try {
+            myBeanContextChildSupport.setBeanContext(beanContext);
+            fail("should throw PropertyVetoException");
+        } catch (PropertyVetoException e) {           
+            // expected
+        }
+        assertTrue(myBeanContextChildSupport.getRejectedSetBCOnce());
+        assertNull(myBeanContextChildSupport.getBeanContext());
+        
+        myBeanContextChildSupport.setBeanContext(beanContext);
+        assertFalse(myBeanContextChildSupport.getRejectedSetBCOnce());
+        assertNotNull(myBeanContextChildSupport.getBeanContext());
+        
+        try {
+            myBeanContextChildSupport.setBeanContext(new BeanContextSupport());
+            fail("should throw PropertyVetoException");
+        } catch (PropertyVetoException e) {
+            // expected
+        }
+        
+        myBeanContextChildSupport
+                .removeVetoableChangeListener("beanContext", vcl);
+        myBeanContextChildSupport.setBeanContext(beanContext);
+        assertTrue(myBeanContextChildSupport.getRejectedSetBCOnce());
+        assertSame(beanContext, myBeanContextChildSupport.getBeanContext());
+    }
+    
+    
+    class MyVetoableChangeListener implements VetoableChangeListener 
+    { 
+
+        public void vetoableChange(PropertyChangeEvent arg0) throws PropertyVetoException { 
+            throw new PropertyVetoException("TESTSTRING", null); 
+        } 
+    }
+    
+    class MyBeanContextChildSupport extends BeanContextChildSupport {
+        public boolean getRejectedSetBCOnce() {
+            return rejectedSetBCOnce;
+        }
+    }
+
 
     /** UTILITY METHODS * */
 
