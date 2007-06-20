@@ -179,29 +179,36 @@
         </delete>
     </target>
 
-    <target name="-compile-native-tests" if="test.portlib" >
+    <target name="-compile-native-tests" >
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" />
     </target>
 
-    <target name="-run-native-tests" if="test.portlib" >
+    <target name="-run-native-tests" >
         <mkdir dir="${hy.tests.reports}" />
         <property environment="env"/>
         <condition property="hy.thr.libpath"
                    value="${path.separator}${hy.jdk}/jre/bin/default" else="">
             <equals arg1="${hy.no.thr}" arg2="true" />
         </condition>
-        <exec-native test="init" />
+        <!-- <exec-native test="init" /> -->
         <exec-native test="hyerror" />
-        <exec-native test="hytime" />
-        <exec-native test="hyfile" />
+        <!-- <exec-native test="hytime" /> -->
+        <!-- <exec-native test="hyfile" /> -->
+        <!-- <exec-native test="hystr" /> -->
+	
+        <move todir="${hy.tests.reports}">
+            <fileset dir="${hy.portlib}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+        </move>
 
         <antcall target="touch-errors-file" />
     </target>
 
-    <target name="-clean-native-tests" if="test.portlib" >
+    <target name="-clean-native-tests" >
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" 
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" 
@@ -245,14 +252,14 @@
                 </not>
             </condition>
             <echo>@{test}: ${@{test}.result}${line.separator}</echo>
-            <echo file="${hy.tests.reports}/TEST-${@{test}.name}.xml"
+<!--            <echo file="${hy.tests.reports}/TEST-${@{test}.name}.xml"
                  >&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
 &lt;testsuite tests="1" errors='${@{test}.errorcount}' failures='0'
     name='${@{test}.name}' time='0'&gt;
   &lt;testcase classname='${@{test}.name}' name='${@{test}.name}'
        time='0.0' /&gt;
   &lt;system-out&gt;&lt;![CDATA[${@{test}.output}]]&gt;&lt;/system-out&gt;
-&lt;/testsuite&gt;${line.separator}</echo>
+&lt;/testsuite&gt;${line.separator}</echo>   -->
         </sequential>
     </macrodef>
 

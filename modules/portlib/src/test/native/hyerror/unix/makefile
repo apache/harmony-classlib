@@ -19,7 +19,9 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
+INCLUDES += -I../../hycunit
 BUILDFILES = $(SHAREDSUB)hyerror.o
+BUILDFILES += ../../hycunit/hycunit.o
 MDLLIBFILES += $(DLLPATH)libhyprt$(HY_LINKLIB_SUFFIX)
 ifeq ($(HY_NO_THR),true)
 MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
