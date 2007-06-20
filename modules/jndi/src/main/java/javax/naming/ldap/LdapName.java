@@ -42,6 +42,8 @@ public class LdapName implements Name {
     private static final long serialVersionUID = -1595520034788997356L;
 
     private transient List<Rdn> rdns;
+    
+    private transient String rdnsStr;
 
     /**
      * @ar.org.fitc.spec_ref
@@ -59,7 +61,8 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public LdapName(String name) throws InvalidNameException {
-        LdapNameParser parser = new LdapNameParser(name);
+        rdnsStr = name;
+        LdapNameParser parser = new LdapNameParser(rdnsStr);
 
         this.rdns = parser.getList();
     }
@@ -78,6 +81,7 @@ public class LdapName implements Name {
         }
 
         rdns.add(posn, comp);
+        rdnsStr = null;
         return this;
     }
 
@@ -116,6 +120,7 @@ public class LdapName implements Name {
         }
 
         rdns.addAll(posn, suffixRdns);
+        rdnsStr = null;
         return this;
     }
 
@@ -152,6 +157,12 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Object clone() {
+        try {
+            if (rdnsStr != null) {
+                return new LdapName(rdnsStr);
+            }
+        } catch (InvalidNameException e) {
+        }
         List<Rdn> lista = new ArrayList<Rdn>();
         for (int i = 0; i < rdns.size(); i++) {
             lista.add(rdns.get(i));
@@ -324,6 +335,7 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public Object remove(int posn) throws InvalidNameException {
+        rdnsStr = null;
         return rdns.remove(posn).toString();
     }
 
@@ -370,6 +382,9 @@ public class LdapName implements Name {
      * @ar.org.fitc.spec_ref
      */
     public String toString() {
+        if (rdnsStr != null) {
+            return rdnsStr;
+        }
         if (rdns.size() == 0) {
             return "";
         }
