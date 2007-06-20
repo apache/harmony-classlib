@@ -195,7 +195,7 @@
         </condition>
         <!-- <exec-native test="init" /> -->
         <exec-native test="hyerror" />
-        <!-- <exec-native test="hytime" /> -->
+        <exec-native test="hytime" />
         <!-- <exec-native test="hyfile" /> -->
         <!-- <exec-native test="hystr" /> -->
 	

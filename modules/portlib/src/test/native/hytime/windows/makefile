@@ -20,9 +20,10 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 EXENAME=..\hytime.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\hycunit
 
 BUILDFILES = $(SHAREDSUB)hytime.obj
+BUILDFILES = $(BUILDFILES) ..\..\hycunit\hycunit.obj
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
 
 !IF "$(HY_NO_THR)" == "true"
