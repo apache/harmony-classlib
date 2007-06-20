@@ -63,7 +63,7 @@ int main (int argc, char **argv, char **envp)
   }
   
   printf("  portlib shutdown\n");
-  return 0;
+  return ret;
 }
 
 int test_hyerror_set_last_error(struct HyPortLibrary *hyportLibrary)

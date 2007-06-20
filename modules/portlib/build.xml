@@ -181,9 +181,12 @@
 
     <target name="-compile-native-tests" >
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hycpu/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
-        <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hygp/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hymem/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
     </target>
 
     <target name="-run-native-tests" >
@@ -194,10 +197,12 @@
             <equals arg1="${hy.no.thr}" arg2="true" />
         </condition>
         <!-- <exec-native test="init" /> -->
+        <exec-native test="hycpu" />
         <exec-native test="hyerror" />
-        <exec-native test="hytime" />
         <!-- <exec-native test="hyfile" /> -->
-        <!-- <exec-native test="hystr" /> -->
+        <exec-native test="hygp" />
+        <exec-native test="hymem" />
+        <exec-native test="hytime" />
 	
         <move todir="${hy.tests.reports}">
             <fileset dir="${hy.portlib}">
@@ -211,11 +216,17 @@
     <target name="-clean-native-tests" >
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" 
               target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hycpu/${hy.os.family}" 
+              target="clean" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" 
               target="clean" />
-        <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" 
-              target="clean" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hygp/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hymem/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" 
               target="clean" />
     </target>
 
