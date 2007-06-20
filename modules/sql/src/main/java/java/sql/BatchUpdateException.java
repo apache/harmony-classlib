@@ -45,6 +45,91 @@ public class BatchUpdateException extends SQLException implements Serializable {
     private int[] updateCounts = null;
 
     /**
+	 * Creates an BatchUpdateException object. The Reason string is set to the
+	 * null if cause == null otherwise to cause.toString(), and the cause
+	 * Throwable object is set to the given cause Throwable object.
+	 * 
+	 * @param cause -
+	 *            the Throwable object for the underlying reason this
+	 *            SQLException
+	 *            
+	 * @since 1.6
+	 */
+    public BatchUpdateException(Throwable cause) {
+		this(null, cause);
+	}
+
+    /**
+	 * Creates an BatchUpdateException object. The Reason string is set to the
+	 * null if cause == null otherwise to cause.toString(), and the cause
+	 * Throwable object is set to the given cause Throwable object. SQLState is
+	 * initialized to null while vendorCode is zero.
+	 * 
+	 * @param cause -
+	 *            the Throwable object for the underlying reason this
+	 *            SQLException
+	 * 
+	 * @since 1.6
+	 */
+    public BatchUpdateException(int[] updateCounts, Throwable cause) {
+    	super(cause);
+    	this.updateCounts = updateCounts;    	
+    }
+
+    /**
+	 * Creates an BatchUpdateException object. The cause Throwable object is set
+	 * to the given cause Throwable object. SQLState is initialized to null
+	 * while vendorCode is zero.
+	 * 
+	 * @param cause -
+	 *            the Throwable object for the underlying reason this
+	 *            SQLException
+	 * 
+	 * @since 1.6
+	 */
+    public BatchUpdateException(String reason, int[] updateCounts,
+            Throwable cause) {
+    	super(reason, cause);
+    	this.updateCounts = updateCounts;
+    }
+
+    /**
+	 * Creates an BatchUpdateException object. The cause Throwable object is set
+	 * to the given cause Throwable object and the updateCounts array set to the
+	 * int array parameter. SQLState is initialized to null while vendorCode is
+	 * zero.
+	 * 
+	 * @param cause -
+	 *            the Throwable object for the underlying reason this
+	 *            SQLException
+	 * 
+	 * @since 1.6
+	 */
+    public BatchUpdateException(String reason, String SQLState,
+            int[] updateCounts, Throwable cause) {
+    	super(reason, SQLState, cause);
+    	this.updateCounts = updateCounts;
+    }
+
+    /**
+	 * Creates an BatchUpdateException object. The cause Throwable object is set
+	 * to the given cause Throwable object and the updateCounts array set to the
+	 * int array parameter. VendorCode is set to the given vendorCode. SQLState
+	 * is initialized to null while vendorCode is zero.
+	 * 
+	 * @param cause -
+	 *            the Throwable object for the underlying reason this
+	 *            SQLException
+	 * 
+	 * @since 1.6
+	 */
+    public BatchUpdateException(String reason, String SQLState, int vendorCode,
+            int[] updateCounts, Throwable cause) {
+    	super(reason, SQLState, vendorCode, cause);
+    	this.updateCounts = updateCounts;
+    }
+
+    /**
      * Creates a BatchUpdateException with the Reason, SQLState, and Update
      * Counts set to null and a Vendor Code of 0.
      */
@@ -144,4 +229,5 @@ public class BatchUpdateException extends SQLException implements Serializable {
     public int[] getUpdateCounts() {
         return updateCounts;
     }
+
 }
