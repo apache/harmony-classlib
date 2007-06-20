@@ -1,4 +1,4 @@
-package org.apache.harmony.luni.tests.java.io.windows;
+package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
 
