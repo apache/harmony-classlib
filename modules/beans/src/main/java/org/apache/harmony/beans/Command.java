@@ -486,8 +486,12 @@ public class Command {
                 }
 
                 if (className != null) {
-                    target = Class.forName(className, true, Thread
-                            .currentThread().getContextClassLoader());
+                    try {
+                        target = Class.forName(className, true, Thread
+                                .currentThread().getContextClassLoader());
+                    } catch (ClassNotFoundException e) {
+                        target = Class.forName(className);
+                    }
 
                     if (isField()) {
                         String fieldName = getAttr("field"); //$NON-NLS-1$
