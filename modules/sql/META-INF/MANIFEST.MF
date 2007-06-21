@@ -25,6 +25,7 @@ Import-Package: java.io,
  java.util.logging,
  java.util.zip;resolution:=optional,
  javax.naming,
+ javax.xml.transform,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.luni.util,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
