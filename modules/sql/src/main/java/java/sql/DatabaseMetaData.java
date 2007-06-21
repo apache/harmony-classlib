@@ -32,7 +32,7 @@ package java.sql;
  * that argument's criteria are dropped from the search.
  * 
  */
-public interface DatabaseMetaData {
+public interface DatabaseMetaData extends Wrapper{
 
     /**
      * States that it may not be permitted to store <code>NULL</code> values.
