@@ -138,4 +138,15 @@ public abstract class ListResourceBundle extends ResourceBundle {
             }
         }
     }
+    
+    /**
+     * Answers a set of the keys in this ResourceBundle but not in its parents.
+     * 
+     * @return a set of the keys in this ResourceBundle but not in its parents.
+     * @since 1.6
+     */
+    protected Set<String> handleKeySet() {
+        initializeTable();
+        return table.keySet();
+    }
 }

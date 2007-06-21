@@ -20,8 +20,10 @@ package tests.api.java.util;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.Vector;
 
+import tests.resources.subfolder.tests.resources.hyts_resource_fr_FR;
 public class ListResourceBundleTest extends junit.framework.TestCase {
 
 	/**
@@ -46,6 +48,45 @@ public class ListResourceBundleTest extends junit.framework.TestCase {
 		assertTrue("Missing key child3", result.contains("child3"));
 	}
 
+    /**
+     * @tests {@link java.util.ListResourceBundle#handleKeySet()}
+     * @since 1.6
+     */
+    @SuppressWarnings("nls")
+    public void test_handleKeySet() {
+        ResourceBundle.clearCache();
+        hyts_resource_fr_FR bundle = (hyts_resource_fr_FR) ResourceBundle
+                .getBundle(
+                        "tests.resources.subfolder.tests.resources.hyts_resource",
+                        new Locale("fr", "FR"));
+        Set<String> set = bundle.handleKeySet();
+        assertEquals(4, set.size());
+        assertTrue(set.contains("subChild1"));
+        assertTrue(set.contains("subChild2"));
+        assertTrue(set.contains("subParent3"));
+        assertTrue(set.contains("subParent4"));
+        set = bundle.keySet();
+        assertEquals(6, set.size());
+        assertTrue(set.contains("subChild1"));
+        assertTrue(set.contains("subChild2"));
+        assertTrue(set.contains("subParent1"));
+        assertTrue(set.contains("subParent2"));
+        assertTrue(set.contains("subParent3"));
+        assertTrue(set.contains("subParent4"));
+    }
+    
+    public void test_handleGetObject(){
+        ResourceBundle.clearCache();
+        hyts_resource_fr_FR bundle = (hyts_resource_fr_FR) ResourceBundle
+                .getBundle(
+                        "tests.resources.subfolder.tests.resources.hyts_resource",
+                        new Locale("fr", "FR"));
+        try{
+            bundle.handleGetObject(null);
+            fail("Should throw NPE");
+        }catch(NullPointerException e){
+        }
+    }
 	protected void setUp() {
 	}
 
