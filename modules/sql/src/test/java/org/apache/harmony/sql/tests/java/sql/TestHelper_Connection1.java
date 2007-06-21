@@ -173,4 +173,12 @@ public class TestHelper_Connection1 implements Connection {
 
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
     }
+
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
+
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
 }
