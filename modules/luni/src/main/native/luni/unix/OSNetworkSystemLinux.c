@@ -43,12 +43,14 @@ int
 selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
   PORT_ACCESS_FROM_ENV (env);
   I_32 result = 0;
+  I_32 timeout;
   struct pollfd my_pollfd;
 
+  timeout = uSecTime >= 0 ? TO_MILLIS(0, uSecTime) : -1;
   my_pollfd.fd = hysocketP->sock;
   my_pollfd.events = POLLIN | POLLPRI;
   my_pollfd.revents = 0;
-  result = poll (&my_pollfd, 1, TO_MILLIS(0, uSecTime));
+  result = poll (&my_pollfd, 1, timeout);
   
   return result;
 }

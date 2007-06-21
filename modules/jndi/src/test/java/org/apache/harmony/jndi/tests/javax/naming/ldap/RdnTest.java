@@ -2104,6 +2104,34 @@ public class RdnTest extends TestCase {
         } catch (IllegalArgumentException e) {}
     }
 
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
+     * </p>
+     * <p>
+     * Here we are testing if a given attribute value string formated, returns
+     * the unformated value. In this case we are testing the special character
+     * "#" in the form "#GOFJMOII".
+     * </p>
+     * <p>
+     * The expected result is an exception.
+     * </p>
+     */
+    public void testUnescapeValue011() {
+        try {
+            assertEquals("te st  ", Rdn.unescapeValue("te st \\  "));
+            assertEquals("te\\st", Rdn.unescapeValue("te\\\\st"));
+            assertEquals("test", Rdn.unescapeValue("\"test\""));
+            assertEquals("\"test", Rdn.unescapeValue("\"test"));
+            assertEquals("\"te\"st", Rdn.unescapeValue("\"te\"st"));
+            assertEquals("te\"st", Rdn.unescapeValue("\"te\"st\""));
+            assertEquals("test", Rdn.unescapeValue(" \"test\"  "));
+            assertEquals("\"test\"  ", Rdn.unescapeValue(" \"test\" \\ "));
+            assertEquals("te1st\\", Rdn.unescapeValue(" \"te\\31st\\\" "));
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
     public void testSerializationCompatibility() throws Exception{
         Rdn object = new Rdn("t=\\20\\ te\\ s\\20t\\20\\20 + t2 = test1\\20\\ ");
         SerializationTest.verifyGolden(this, object);

@@ -198,8 +198,17 @@ public class DefaultPolicyParser {
             if ("file".equals(codebase.getProtocol())) { //$NON-NLS-1$
             	File codeFile = new File(codebase.getFile());
             	if (codeFile.isAbsolute()) {
-            		codebase = new URL("file:/" +  //$NON-NLS-1$
-                            codeFile.getAbsolutePath());            		
+                    String absolutePath = codeFile.getAbsolutePath();
+                    //Fix HARMONY-4184
+                    //Unix style file path.
+                    if (absolutePath.startsWith("/")) {
+                        codebase = new URL("file://" + //$NON-NLS-1$
+                                codeFile.getAbsolutePath());
+                    } else {
+                        //Windows style file path.                        
+                        codebase = new URL("file:/" + //$NON-NLS-1$
+                                codeFile.getAbsolutePath());
+                    }           		
             	}
             }
         }

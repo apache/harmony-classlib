@@ -14,23 +14,18 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'hytime.exe'
+# Makefile for 'hygp'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+include $(HY_HDK)/build/make/defines.mk
 
-EXENAME=..\hytime.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\hycunit
+INCLUDES += -I../../hycunit
+BUILDFILES = $(SHAREDSUB)hygp.o
+BUILDFILES += ../../hycunit/hycunit.o
+MDLLIBFILES += $(DLLPATH)libhyprt$(HY_LINKLIB_SUFFIX)
+ifeq ($(HY_NO_THR),true)
+MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
+endif
+EXENAME = ../hygp
 
-BUILDFILES = $(SHAREDSUB)hytime.obj
-BUILDFILES = $(BUILDFILES) ..\..\hycunit\hycunit.obj
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
-
-!IF "$(HY_NO_THR)" == "true"
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
-!ENDIF
-
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
-
-!include <$(HY_HDK)\build\make\rules.mak>
+include $(HY_HDK)/build/make/rules.mk

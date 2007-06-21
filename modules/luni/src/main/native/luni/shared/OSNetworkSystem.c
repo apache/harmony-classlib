@@ -450,7 +450,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
   /*----------------the older form,nearly the same with below------------
   //result = pollSelectRead (env, fileDescriptor, timeout, TRUE);
   */
-  result = selectRead (env,hysocketP, timeout, FALSE);	    
+  result = selectRead (env, hysocketP, timeout * 1000, FALSE);	    
   if (0	>= result)
 	return (jint) 0;
 

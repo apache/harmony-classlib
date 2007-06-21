@@ -294,7 +294,10 @@
             <fileset dir="${hy.beans.src.test.resources}">
                 <exclude name="**/*.java" />
             </fileset>
-        </copy>
+        	<fileset dir="${hy.beans.src.test.support}">
+                <exclude name="**/*.java" />
+        	</fileset>
+        </copy>  	
     </target>
 
 </project>

@@ -26,6 +26,7 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -202,7 +203,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
                 if (isBlocking == blockingMode) {
                     return this;
                 }
-                if (blockingMode && isRegistered()) {
+                if (blockingMode && containsValidKeys()) {
                     throw new IllegalBlockingModeException();
                 }
                 implConfigureBlocking(blockingMode);
@@ -235,4 +236,17 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
         }
     }
 
+    /**
+     * Returns true if the keyList contains at least 1 valid key and false otherwise.
+     */
+    private synchronized boolean containsValidKeys() {
+        for (Iterator<SelectionKey> iter = keyList.iterator(); iter.hasNext();) {
+            SelectionKey key = iter.next();
+
+            if (key != null && key.isValid()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -933,7 +933,7 @@ public class URLTest extends junit.framework.TestCase {
 
 			boolean exception = false;
 			try {
-				u = new URL("file://nonexistenttestdir/tstfile");
+				u = new URL("file:///nonexistenttestdir/tstfile");
 				u.openStream();
 			} catch (IOException e) {
 				// Correct behaviour

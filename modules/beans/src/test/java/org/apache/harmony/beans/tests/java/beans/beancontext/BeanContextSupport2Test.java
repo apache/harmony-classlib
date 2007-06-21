@@ -20,6 +20,9 @@ package org.apache.harmony.beans.tests.java.beans.beancontext;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.beancontext.BeanContextSupport;
+import java.beans.beancontext.BeanContextMembershipListener;
+import java.beans.beancontext.BeanContextMembershipEvent;
+import java.beans.beancontext.BeanContextChildSupport;
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -37,6 +40,33 @@ public class BeanContextSupport2Test extends TestCase {
         beanContextSupport.setLocale(null);
         assertEquals(Locale.FRANCE, beanContextSupport.getLocale());
         assertFalse(myPropertyChangeListener.changed);        
+    }
+
+    /**
+     * Regression test for HARMONY-4011
+     */
+    public void test4011() {
+        BeanContextSupport context = new BeanContextSupport();
+        final int[] k = { 0 };
+        BeanContextMembershipListener listener =
+                new BeanContextMembershipListener() {
+                    
+            public void childrenAdded(BeanContextMembershipEvent bcme) {
+                k[0]++;
+            }
+
+            public void childrenRemoved(BeanContextMembershipEvent bcme) {}
+        };
+
+        // add listener
+        context.addBeanContextMembershipListener(listener);
+        context.add(new BeanContextChildSupport());
+        assertEquals(1, k[0]);
+        
+        // add the same listener onse again
+        context.addBeanContextMembershipListener(listener);
+        context.add(new BeanContextChildSupport());
+        assertEquals(2, k[0]);
     }
     
     private class MyPropertyChangeListener implements PropertyChangeListener {

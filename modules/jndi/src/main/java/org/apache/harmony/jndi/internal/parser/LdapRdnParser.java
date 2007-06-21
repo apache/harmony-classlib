@@ -156,7 +156,27 @@ public class LdapRdnParser implements LdapParser {
         } else if (val.startsWith("#")) {
             return getByteFromHexString(val);
         } else {
-            char[] chars = new String(val.trim()).toCharArray();
+            String tmpVal = val.trim();
+            if (tmpVal.length() > 0 && tmpVal.charAt(0) == '\"'
+                    && tmpVal.charAt(tmpVal.length() - 1) == '\"') {
+                if (tmpVal.length() == 1) {
+                    val = "";
+                } else {
+                    val = tmpVal.substring(1, tmpVal.length() - 1);
+                }
+            }
+            char[] chars;
+            int pos = val.length() - 1;
+            boolean trailingSpace = false;
+            while (pos >= 0 && val.charAt(pos) == ' ') {
+                trailingSpace = true;
+                pos--;
+            }
+            if (pos >= 0 && val.charAt(pos) == '\\' && trailingSpace) {
+                chars = (new String(val.trim()) + " ").toCharArray();
+            } else {
+                chars = new String(val.trim()).toCharArray();
+            }
             return getUnEscapedValues(chars);
         }
 
@@ -188,6 +208,11 @@ public class LdapRdnParser implements LdapParser {
                     if (chars[i + 1] == ' ') {
                         continue;
                     }
+                    if (chars[i + 1] == '\\') {
+                        sb.append('\\');
+                        i = i + 1;
+                        continue;
+                    }
                     if (!isSpecialChar(chars, i + 1)
                             && !isSpecialChar(chars, i + 2)) {
                         try {
@@ -203,6 +228,7 @@ public class LdapRdnParser implements LdapParser {
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
+                    sb.append(chars[i]);
                 }
             }
         }

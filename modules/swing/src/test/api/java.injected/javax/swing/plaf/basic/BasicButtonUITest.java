@@ -354,17 +354,27 @@ public class BasicButtonUITest extends SwingTestCase {
         assertEquals("prefix", "Button.", ui.getPropertyPrefix());
     }
 
-    public void testSetTextShiftOffset() {
-    }
+    /**
+     * The test verifies that getTextShiftOffset methods returns
+     * Button.textShiftOffset property if the setTextShiftOffset method is
+     * called and returns 0 if the clearTextShiftOffset method is called
+     */
+    @SuppressWarnings( { "boxing", "nls" })
+    public void testTextShiftOffest() {
 
-    public void testClearTextShiftOffset() {
-        ui.defaultTextShiftOffset = 100;
-        ui.clearTextShiftOffset();
-        assertEquals(100, ui.defaultTextShiftOffset);
-    }
+        int oldTextShiftOffset = UIManager.getInt("Button.textShiftOffset");
 
-    public void testGetTextShiftOffset() {
-        ui.defaultTextShiftOffset = 100;
-        assertEquals("offset", 0, ui.getTextShiftOffset());
+        UIManager.put("Button.textShiftOffset", 5);
+
+        BasicButtonUI currentUI = new BasicButtonUI();
+        currentUI.installUI(new JButton());
+
+        assertEquals(currentUI.getTextShiftOffset(), 0);
+        currentUI.setTextShiftOffset();
+        assertEquals(currentUI.getTextShiftOffset(), 5);
+        currentUI.clearTextShiftOffset();
+        assertEquals(currentUI.getTextShiftOffset(), 0);
+
+        UIManager.put("Button.textShiftOffset", oldTextShiftOffset);
     }
 }
