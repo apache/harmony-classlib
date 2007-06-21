@@ -1267,7 +1267,23 @@ public class BeanContextServicesSupportTest extends TestCase {
     }
 
     public void testServiceRevoked() {
-        // covered by testRemoveService
+        MockChildBeanContextServicesSupport mockChildBeanContextServicesSupport = new MockChildBeanContextServicesSupport();
+        BeanContextServicesSupport beanContextServicesSupport = new BeanContextServicesSupport();
+        beanContextServicesSupport.add(mockChildBeanContextServicesSupport);
+        BeanContextServiceRevokedEvent beanContextServiceRevokedEvent = new BeanContextServiceRevokedEvent(new BeanContextServicesSupport(), Collection.class,false);
+        beanContextServicesSupport.serviceRevoked(beanContextServiceRevokedEvent);
+        assertTrue(mockChildBeanContextServicesSupport.revokeCalled);        
+    }
+    
+    public static class MockChildBeanContextServicesSupport extends
+            BeanContextServicesSupport {
+        private static final long serialVersionUID = 1L;
+
+        public boolean revokeCalled = false;
+
+        public void serviceRevoked(BeanContextServiceRevokedEvent bcssre) {
+            revokeCalled = true;
+        }
     }
 
     public void testSerialization() throws IOException, ClassNotFoundException {

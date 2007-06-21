@@ -49,6 +49,8 @@ public class BasicButtonUI extends ButtonUI {
     protected int defaultTextIconGap;
 
     protected int defaultTextShiftOffset;
+    
+    private int textShiftOffset = 0;
 
     private Color focusColor;
     private Color disabledTextColor;
@@ -120,8 +122,8 @@ public class BasicButtonUI extends ButtonUI {
         final AbstractButton b = (AbstractButton)c;
         final Color color = b.isEnabled() ? b.getForeground() : disabledTextColor;
 
-        final int textShiftOffset = getTextShiftOffset();
-        textRect.translate(textShiftOffset, textShiftOffset);
+        final int currentTextShiftOffset = getTextShiftOffset();
+        textRect.translate(currentTextShiftOffset, currentTextShiftOffset);
         ButtonCommons.paintText(g, b, textRect, text, color);
     }
 
@@ -199,13 +201,15 @@ public class BasicButtonUI extends ButtonUI {
     }
 
     protected void setTextShiftOffset() {
+        textShiftOffset = defaultTextShiftOffset;
     }
 
     protected void clearTextShiftOffset() {
+        textShiftOffset = 0;
     }
 
     protected int getTextShiftOffset() {
-        return 0;
+        return textShiftOffset;
     }
 
     private boolean isFocusPainted(final AbstractButton button) {
@@ -224,4 +228,5 @@ public class BasicButtonUI extends ButtonUI {
         return null;
     }
 }
+
 

@@ -319,7 +319,9 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             throw new NullPointerException();
         }
         synchronized (bcmListeners) {
-            bcmListeners.add(listener);
+            if (!bcmListeners.contains(listener)) {
+                bcmListeners.add(listener);
+            }
         }
     }
 

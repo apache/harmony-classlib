@@ -28,11 +28,14 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.naming.InvalidNameException;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import junit.framework.TestCase;
+
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 /**
@@ -274,6 +277,21 @@ public class LdapNameTest extends TestCase {
         new LdapName("C=test\\, this");
         new LdapName("S=#04024869");
         new LdapName("DC=test,T=time+CM=common V<this C>this,S=#04024869");
+    }
+
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.LdapName(String)'
+     * </p>
+     */
+    public void testLdapNameString002() throws Exception {
+        String str = "t=\\20\\ te\\ s\\20t\\20\\20 + t2 = test1\\20\\ ";
+        LdapName ln = new LdapName(str);
+        assertEquals(ln.toString(), str);
+        ln.get(0);
+        assertEquals(ln.toString(), str);
+        ln.add("t=test");
+        assertEquals(ln.toString(), "t=test,t=\\ \\ te s t\\ +t2=test1\\ \\ ");
     }
 
     /**
@@ -760,6 +778,35 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
+     * </p>
+     * <p>
+     * Here we are testing the constructor method of LdapName reciving a list of
+     * valid names.
+     * </p>
+     * <p>
+     * The expected result is an instance of an object of LdapName, and also
+     * that the indexing is made like the other way around.
+     * </p>
+     */    
+    public void testLdapNameListOfRdn006() throws Exception {
+        try {
+            BasicAttributes bas = new BasicAttributes();
+            bas.put("test2", "test2");
+            bas.put("test1", "test1");
+            bas.put("test3", "test3");
+            Rdn rdn1 = new Rdn(bas);
+            LinkedList<Rdn> rdns = new LinkedList<Rdn>();
+            rdns.add(rdn1);
+            LdapName ln = new LdapName(rdns);
+            assertEquals("test1=test1+test2=test2+test3=test3", ln.getAll().nextElement());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.hashCode()'
      * </p>
      * <p>
@@ -1030,7 +1077,7 @@ public class LdapNameTest extends TestCase {
      * </p>
      */
     public void testToString004() throws Exception {
-        LdapName ln = new LdapName("t=\\4c\\4c");
+        LdapName ln = new LdapName("t=ll");
         assertEquals("T=LL", ln.toString().toUpperCase());
     }
 
@@ -2217,6 +2264,24 @@ public class LdapNameTest extends TestCase {
         test.add(new Rdn("t2", "test"));
         test.add(new Rdn("t3", "test"));
         assertTrue(new LdapName("t3=test,t2=test,t=test").endsWith(test));
+    }
+
+    /**
+     * <p>
+     * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
+     * </p>
+     * <p>
+     * Here we are testing if this method determines whether the specified RDN
+     * sequence forms a suffix of this LDAP name.
+     * </p>
+     * <p>
+     * The expected result is if a non null list of Rdns is sended, is a true.
+     * </p>
+     */
+    public void testEndsWithListOfRdn007() throws Exception {
+        LinkedList<Rdn> test = new LinkedList<Rdn>();
+        test.add(new Rdn("t3=test3"));
+        assertTrue(new LdapName("t3=test3,t2=test2,t=test").endsWith(test));
     }
 
     /**

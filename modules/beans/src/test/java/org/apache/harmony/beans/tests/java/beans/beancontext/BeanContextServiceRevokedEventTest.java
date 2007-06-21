@@ -86,6 +86,17 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
+        
+        try {
+            event.isServiceClass(null);
+            fail("NPE expected");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        event = new MockBeanContextServiceRevokedEvent(services, services
+                .getClass(), true);
+        assertFalse(event.isServiceClass(null));
     }
 
     public void testBeanContextServiceRevokedEvent() {
