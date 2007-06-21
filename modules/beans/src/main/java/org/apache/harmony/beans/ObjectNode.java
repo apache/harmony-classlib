@@ -61,30 +61,29 @@ public class ObjectNode {
     }
 
     public Object getObjectValue() throws Exception {
-        if (objectValue == null) {
-            objectValue = initializer.getValue();
+        if (objectValue != null) {
+            return objectValue;
         }
 
-        // XXX We probably don't need this. Investigate.
-//        if (nodes != null) {
-//            Object[] oldArgs = initializer.getArguments();
-//            Object[] newArgs = new Object[oldArgs.length];
-//
-//            for (int i = 0; i < oldArgs.length; ++i) {
-//                if (oldArgs[i] != null) {
-//                    ObjectNode node = nodes.get(oldArgs[i]);
-//
-//                    newArgs[i] = node.getObjectValue();
-//                } else {
-//                    newArgs[i] = null;
-//                }
-//            }
-//
-//            objectValue = (new Expression(initializer.getTarget(), initializer
-//                    .getMethodName(), newArgs)).getValue();
-//        } else {
-//            objectValue = initializer.getValue();
-//        }
+        if (nodes != null) {
+            Object[] oldArgs = initializer.getArguments();
+            Object[] newArgs = new Object[oldArgs.length];
+
+            for (int i = 0; i < oldArgs.length; ++i) {
+                if (oldArgs[i] != null) {
+                    ObjectNode node = nodes.get(oldArgs[i]);
+
+                    newArgs[i] = node.getObjectValue();
+                } else {
+                    newArgs[i] = null;
+                }
+            }
+
+            objectValue = (new Expression(initializer.getTarget(), initializer
+                    .getMethodName(), newArgs)).getValue();
+        } else {
+            objectValue = initializer.getValue();
+        }
 
         return objectValue;
     }
