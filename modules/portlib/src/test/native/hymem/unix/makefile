@@ -28,4 +28,5 @@ MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
 endif
 EXENAME = ../hymem
 
+CLEANFILES=../TEST-*.xml
 include $(HY_HDK)/build/make/rules.mk

@@ -14,15 +14,15 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'hygp.exe'
+# Makefile for module 'hyfiletext.exe'
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=..\hygp.exe
+EXENAME=..\hyfiletext.exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\hycunit
 
-BUILDFILES = $(SHAREDSUB)hygp.obj
+BUILDFILES = $(SHAREDSUB)hyfiletext.obj
 BUILDFILES = $(BUILDFILES) ..\..\hycunit\hycunit.obj
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
 

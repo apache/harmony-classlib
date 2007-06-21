@@ -184,6 +184,7 @@
         <make dir="${hy.portlib.src.test.native}/hycpu/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hyfiletext/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hygp/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hymem/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hynls/${hy.os.family}" />
@@ -202,7 +203,8 @@
         <!-- <exec-native test="init" /> -->
         <exec-native test="hycpu" />
         <exec-native test="hyerror" />
-        <!-- <exec-native test="hyfile" /> -->
+        <exec-native test="hyfile" />
+        <exec-native test="hyfiletext" />
         <exec-native test="hygp" />
         <exec-native test="hymem" />
         <exec-native test="hynls" />
@@ -227,6 +229,8 @@
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" 
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hyfiletext/${hy.os.family}" 
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hygp/${hy.os.family}" 
               target="clean" />

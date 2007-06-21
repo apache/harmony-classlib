@@ -32,5 +32,6 @@ MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
 
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
+CLEANFILES=..\TEST-*.xml
 
 !include <$(HY_HDK)\build\make\rules.mak>
