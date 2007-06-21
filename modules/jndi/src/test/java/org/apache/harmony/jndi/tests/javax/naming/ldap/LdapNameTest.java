@@ -2268,6 +2268,24 @@ public class LdapNameTest extends TestCase {
 
     /**
      * <p>
+     * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
+     * </p>
+     * <p>
+     * Here we are testing if this method determines whether the specified RDN
+     * sequence forms a suffix of this LDAP name.
+     * </p>
+     * <p>
+     * The expected result is if a non null list of Rdns is sended, is a true.
+     * </p>
+     */
+    public void testEndsWithListOfRdn007() throws Exception {
+        LinkedList<Rdn> test = new LinkedList<Rdn>();
+        test.add(new Rdn("t3=test3"));
+        assertTrue(new LdapName("t3=test3,t2=test2,t=test").endsWith(test));
+    }
+
+    /**
+     * <p>
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>

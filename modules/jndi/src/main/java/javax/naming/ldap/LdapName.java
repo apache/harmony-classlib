@@ -204,7 +204,7 @@ public class LdapName implements Name {
     public boolean endsWith(List<Rdn> rdns) {
         try {
             Iterator<?> iter = rdns.iterator();
-            Iterator<?> iter2 = ((LdapName) getSuffix(rdns.size()
+            Iterator<?> iter2 = ((LdapName) getSuffix(this.rdns.size()
                     - rdns.size())).rdns.iterator();
 
             while (iter.hasNext()) {
