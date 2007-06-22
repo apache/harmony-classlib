@@ -30,8 +30,6 @@ import java.util.Vector;
 /**
  * A cache for received resource records. Common for all active resolvers.
  * 
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  * TODO handling of records with TTL set to 0; should not be cached.
  */
 class ResolverCache {
@@ -39,9 +37,9 @@ class ResolverCache {
     /** keys - zone & host names; values - vectors with RRs */
     HashMap<String, Vector<CacheEntry>> names = new HashMap<String, Vector<CacheEntry>>();
 
-    /** 
+    /**
      * Since <code>ResolverCache</code> is singleton class its constructor
-     *  should be hidden.
+     * should be hidden.
      */
     private ResolverCache() {
         names = new HashMap<String, Vector<CacheEntry>>();
@@ -51,6 +49,7 @@ class ResolverCache {
 
     /**
      * <code>ResolverCache</code> is a singleton class.
+     * 
      * @return active instance of <code>ResolverCache</code>
      */
     static ResolverCache getInstance() {
@@ -59,15 +58,16 @@ class ResolverCache {
         }
         return instance;
     }
-    
+
     /**
      * Looks through the cache and returns all suitable resource records
-     * @param question a question record that determines which records we want
-     *  to get from the cache
+     * 
+     * @param question
+     *            a question record that determines which records we want to get
+     *            from the cache
      * @return Enumeration of found Resource Records.
      */
-    synchronized Enumeration<ResourceRecord> get(QuestionRecord question)
-    {
+    synchronized Enumeration<ResourceRecord> get(QuestionRecord question) {
         String name = question.getQName().toLowerCase();
         Vector<CacheEntry> vect = names.get(name);
         int qClass = question.getQClass();
@@ -84,12 +84,12 @@ class ResolverCache {
                     vect.removeElementAt(i--);
                     continue;
                 }
-                if (qClass == ProviderConstants.ANY_QCLASS ||
-                        qClass != curRR.getRRClass()) {
+                if (qClass == ProviderConstants.ANY_QCLASS
+                        || qClass != curRR.getRRClass()) {
                     continue;
                 }
-                if (qType == ProviderConstants.ANY_QTYPE ||
-                        qType != curRR.getRRType()) {
+                if (qType == ProviderConstants.ANY_QTYPE
+                        || qType != curRR.getRRType()) {
                     continue;
                 }
                 resVect.addElement(curRR);
@@ -99,12 +99,13 @@ class ResolverCache {
     }
 
     /**
-     * Puts element into the cache. Doesn't put records with zero TTLs.
-     * Doesn't put records with bad TTLs.
-     * @param record a resource record to insert
+     * Puts element into the cache. Doesn't put records with zero TTLs. Doesn't
+     * put records with bad TTLs.
+     * 
+     * @param record
+     *            a resource record to insert
      */
-    synchronized void put(ResourceRecord record)
-    {
+    synchronized void put(ResourceRecord record) {
         String name = record.getName().toLowerCase();
         Vector<CacheEntry> vect = names.get(name);
         long curTime = System.currentTimeMillis();
@@ -119,7 +120,7 @@ class ResolverCache {
         if (record.getTtl() >> 31 != 0) {
             record.setTtl(0);
         }
-        // skip records with wildcards in names or with zero TTL 
+        // skip records with wildcards in names or with zero TTL
         if (record.getTtl() > 0 && (record.getName().indexOf('*') == -1)) {
             entry = new CacheEntry(record, curTime + record.getTtl());
             // remove old occurrence if any
@@ -127,12 +128,12 @@ class ResolverCache {
                 CacheEntry exEntry = vect.elementAt(i);
                 ResourceRecord exRec = exEntry.rr;
 
-                if (ProviderMgr.namesAreEqual(record.getName(), exRec.getName())
+                if (ProviderMgr
+                        .namesAreEqual(record.getName(), exRec.getName())
                         && record.getRRClass() == exRec.getRRClass()
-                        && record.getRRType() == exRec.getRRType())
-                {
-                    if (record.getRData() != null && exRec.getRData() != null &&
-                            record.getRData().equals(exRec.getRData())) {
+                        && record.getRRType() == exRec.getRRType()) {
+                    if (record.getRData() != null && exRec.getRData() != null
+                            && record.getRData().equals(exRec.getRData())) {
                         vect.remove(i);
                         break;
                     }
@@ -149,34 +150,35 @@ class ResolverCache {
         names = new HashMap<String, Vector<CacheEntry>>();
     }
 
-    // additional class
-    
     /**
      * Represents SLIST cache entry.
-     * @author Alexei Zakharov
      */
     static class CacheEntry {
 
         private ResourceRecord rr;
+
         private long bestBefore;
 
         /**
          * Constructs new cache entry.
-         * @param rr Resource Record
-         * @param bestBefore best before (time in millis)
+         * 
+         * @param rr
+         *            Resource Record
+         * @param bestBefore
+         *            best before (time in millis)
          */
         public CacheEntry(ResourceRecord rr, long bestBefore) {
             this.rr = rr;
             this.bestBefore = bestBefore;
         }
 
-        
         /**
          * @return Returns the bestBefore.
          */
         public long getBestBefore() {
             return bestBefore;
         }
+
         /**
          * @return Returns the Resource Record.
          */
@@ -184,5 +186,5 @@ class ResolverCache {
             return rr;
         }
     }
-    
+
 }

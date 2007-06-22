@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when a connection to a 
- * server cannot be established.
+ * This is the <code>NamingException</code> used when a connection to a server
+ * cannot be established.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class ServiceUnavailableException extends NamingException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = -4996964726566773444L; // J2SE 1.4.2
+    static final long serialVersionUID = -4996964726566773444L;
 
     /**
-     * Constructs a <code>ServiceUnavailableException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>ServiceUnavailableException</code> instance with all
+     * data initialized to null.
      */
     public ServiceUnavailableException() {
         super();
     }
 
     /**
-     * Constructs a <code>ServiceUnavailableException</code> instance
-     * with the specified message.
+     * Constructs a <code>ServiceUnavailableException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for this exception. It may be null.
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     public ServiceUnavailableException(String s) {
         super(s);
     }
 
 }
-
-

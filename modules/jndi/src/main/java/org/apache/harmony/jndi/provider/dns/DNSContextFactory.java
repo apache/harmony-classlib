@@ -30,8 +30,6 @@ import javax.naming.spi.InitialContextFactory;
 
 /**
  * A factory to build DNS contexts.
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class DNSContextFactory implements InitialContextFactory {
 
@@ -45,11 +43,13 @@ public class DNSContextFactory implements InitialContextFactory {
     /**
      * Creates a new instance of DNS context.
      * 
-     * @param env an environment to be used
+     * @param env
+     *            an environment to be used
      * @return new instance of <code>DNSContext</code>
      * @see javax.naming.spi.InitialContextFactory#getInitialContext(java.util.Hashtable)
      */
-    public Context getInitialContext(Hashtable<?, ?> env) throws NamingException {
+    public Context getInitialContext(Hashtable<?, ?> env)
+            throws NamingException {
         return new DNSContext(env);
     }
 

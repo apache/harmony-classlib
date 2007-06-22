@@ -15,42 +15,36 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
  * A <code>NoInitialContextException</code> is the exception thrown by the
  * naming classes when an initial context cannot be created. See the
- * specification of the <code>Context</code> interface and the 
- * <code>InitialContext</code> class regarding how initial context 
+ * specification of the <code>Context</code> interface and the
+ * <code>InitialContext</code> class regarding how initial context
  * implementations are selected.
  * <p>
  * Any interaction with an <code>InitialContext</code> object may cause a
- * <code>NoInitialContextException</code> to be thrown. The 
- * <code>InitialContext</code> implementation may choose to defer getting 
- * the initial context until any of its methods are invoked.</p>
+ * <code>NoInitialContextException</code> to be thrown. The
+ * <code>InitialContext</code> implementation may choose to defer getting the
+ * initial context until any of its methods are invoked.
+ * </p>
  * <p>
- * Multithreaded access to a <code>NoInitialContextException</code> instance 
- * is only safe when client code locks the object first.</p>
- * 
+ * Multithreaded access to a <code>NoInitialContextException</code> instance
+ * is only safe when client code locks the object first.
+ * </p>
  */
 public class NoInitialContextException extends NamingException {
 
     /*
-     * For serialization purposes, the following fields must appear in the
-     * order given and specified serialVersionUID must be used.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-    static final long serialVersionUID = -3413733186901258623L; // J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = -3413733186901258623L;
 
     /**
-     * Constructs an <code>NoInitialContextException</code> instance 
-     * with all data initialized to null.
+     * Constructs an <code>NoInitialContextException</code> instance with all
+     * data initialized to null.
      */
     public NoInitialContextException() {
         super();
@@ -59,13 +53,12 @@ public class NoInitialContextException extends NamingException {
     /**
      * Constructs an <code>NoInitialContextException</code> instance with the
      * specified error message.
-     *  
-     * @param msg The detail message for this exception. It may be null.
+     * 
+     * @param msg
+     *            The detail message for this exception. It may be null.
      */
     public NoInitialContextException(String msg) {
         super(msg);
     }
 
 }
-
-

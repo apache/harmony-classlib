@@ -20,6 +20,7 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.2 $
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import java.rmi.registry.Registry;
@@ -34,9 +35,6 @@ import javax.naming.NamingException;
 /**
  * Enumeration of {@link Binding} objects, used by
  * {@link RegistryContext#listBindings(Name)} method.
- * 
- * @author Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 class BindingEnumeration implements NamingEnumeration<Binding> {
 
@@ -58,9 +56,11 @@ class BindingEnumeration implements NamingEnumeration<Binding> {
     /**
      * Creates this enumeration.
      * 
-     * @param names Binding names returned from {@link Registry#list()} method.
+     * @param names
+     *            Binding names returned from {@link Registry#list()} method.
      * 
-     * @param context RegistryContext to extract bindings from.
+     * @param context
+     *            RegistryContext to extract bindings from.
      */
     public BindingEnumeration(String[] names, RegistryContext context) {
         super();
@@ -95,7 +95,8 @@ class BindingEnumeration implements NamingEnumeration<Binding> {
         try {
             return next();
         } catch (NamingException e) {
-            throw (NoSuchElementException) new NoSuchElementException().initCause(e);
+            throw (NoSuchElementException) new NoSuchElementException()
+                    .initCause(e);
         }
     }
 
@@ -103,4 +104,5 @@ class BindingEnumeration implements NamingEnumeration<Binding> {
         index = names.length;
         context.close();
     }
+
 }

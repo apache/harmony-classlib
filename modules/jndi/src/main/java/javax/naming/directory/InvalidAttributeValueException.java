@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
- package javax.naming.directory;
+package javax.naming.directory;
 
 import javax.naming.NamingException;
 
@@ -23,59 +23,48 @@ import javax.naming.NamingException;
  * Thrown when the value part of an attribute is invalid.
  * <p>
  * Directory service providers may restrict the characteristics of the attribute
- * value.  If an attempt is made to set the attribute with an invalid attribute
- * value the provider will throw an <code>InvalidAttributeValueException</code>.</p>
+ * value. If an attempt is made to set the attribute with an invalid attribute
+ * value the provider will throw an <code>InvalidAttributeValueException</code>.
+ * </p>
  * <p>
- * Examples include attempting to set a value on an attribute that doesn't take 
- * a value, attempting to set multiple values on an attribute that only takes a 
- * single value, attempting to clear a value on an attribute that must have a 
- * value, and so on.</p> 
+ * Examples include attempting to set a value on an attribute that doesn't take
+ * a value, attempting to set multiple values on an attribute that only takes a
+ * single value, attempting to clear a value on an attribute that must have a
+ * value, and so on.
+ * </p>
  * <p>
- * The serialization and synchronization specification for <code>NamingException</code>
- * applies equally to this class.</p>
+ * The serialization and synchronization specification for
+ * <code>NamingException</code> applies equally to this class.
+ * </p>
  * 
  * @see NamingException
- * 
  */
 public class InvalidAttributeValueException extends NamingException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
-	 
-	/* Serialization information - start. */
-	private static final long serialVersionUID = 0x7903d78afec63b03L;
-	/* Serialization information - end. */
+    private static final long serialVersionUID = 0x7903d78afec63b03L;
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-	 	
-	/**
-	 * Default constructor. 
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 */	 		
-	public InvalidAttributeValueException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     */
+    public InvalidAttributeValueException() {
+        super();
+    }
 
-	/**
-	 * Constructs an <code>InvalidAttributeValueException</code> instance 
+    /**
+     * Constructs an <code>InvalidAttributeValueException</code> instance
      * using the supplied text of the message.
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 * 
-	 * @param s				message about the problem
-	 */
-	public InvalidAttributeValueException(String s) {
-		super(s);
-	}
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     * 
+     * @param s
+     *            message about the problem
+     */
+    public InvalidAttributeValueException(String s) {
+        super(s);
+    }
 
 }
-
-

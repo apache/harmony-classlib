@@ -32,15 +32,14 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * DNS name parser
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class DNSNameParser implements NameParser {
 
     /**
      * Constructs a new name parser.
      */
-    public DNSNameParser() {}
+    public DNSNameParser() {
+    }
 
     /**
      * Parses string representation of DNS name. Following situations will be
@@ -49,11 +48,14 @@ public class DNSNameParser implements NameParser {
      * <li>The length of the whole name is longer than 255 characters</li>
      * <li>The length of each label is more than 63 characters</li>
      * <li>more than one null label encountered or null label is not the least
-     * specific label (the rightmost)</li> 
+     * specific label (the rightmost)</li>
      * </ul>
-     * @param name string representation of DNS name
+     * 
+     * @param name
+     *            string representation of DNS name
      * @return new instance of <code>DNSName</code> class
-     * @throws InvalidNameException if given string is not a correct DNS name
+     * @throws InvalidNameException
+     *             if given string is not a correct DNS name
      * @see javax.naming.NameParser#parse(java.lang.String)
      * @see RFC 1034
      */
@@ -78,20 +80,21 @@ public class DNSNameParser implements NameParser {
                 if (lastTokenWasDilim) {
                     // two delimiters one after another
                     // jndi.55=Null label is not the rightmost one
-                    throw new InvalidNameException(
-                            Messages.getString("jndi.55")); //$NON-NLS-1$
+                    throw new InvalidNameException(Messages
+                            .getString("jndi.55")); //$NON-NLS-1$
                 }
                 lastTokenWasDilim = true;
                 if (dnsName.size() == 0 && st.hasMoreTokens()) {
                     // jndi.56=DNS name shouldn't start with a dot
-                    throw new InvalidNameException(Messages.getString("jndi.56")); //$NON-NLS-1$
+                    throw new InvalidNameException(Messages
+                            .getString("jndi.56")); //$NON-NLS-1$
                 }
-            }
-            else {
+            } else {
                 if (comp.length() > 63) {
-                    // jndi.57=The length of {0} label is more than 63 characters
-                    throw new InvalidNameException(
-                            Messages.getString("jndi.57", comp)); //$NON-NLS-1$
+                    // jndi.57=The length of {0} label is more than 63
+                    // characters
+                    throw new InvalidNameException(Messages.getString(
+                            "jndi.57", comp)); //$NON-NLS-1$
                 }
                 dnsName.add(0, comp);
                 lastTokenWasDilim = false;
@@ -104,9 +107,11 @@ public class DNSNameParser implements NameParser {
     }
 
     /**
-     * @param obj the object to compare with
-     * @return <code>true</code> if and only if the given object is instance of
-     * class <code>DNSParser</code>; otherwise returns <code>false</code>.
+     * @param obj
+     *            the object to compare with
+     * @return <code>true</code> if and only if the given object is instance
+     *         of class <code>DNSParser</code>; otherwise returns
+     *         <code>false</code>.
      */
     @Override
     public boolean equals(Object obj) {
@@ -115,4 +120,5 @@ public class DNSNameParser implements NameParser {
         }
         return false;
     }
+
 }

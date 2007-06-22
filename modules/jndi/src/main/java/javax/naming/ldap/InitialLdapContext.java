@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import java.util.Hashtable;
@@ -28,77 +27,66 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 /**
  * This is used as the starting context when the LDAPv3 extended functionality
  * provided by the <code>javax.naming.ldap</code> package is required.
- *
- * See <code>LdapContext</code> for a description of the Request and Response 
+ * 
+ * See <code>LdapContext</code> for a description of the Request and Response
  * controls.
  * 
  * @see LdapContext
- * 
  */
-public class InitialLdapContext
-    extends InitialDirContext
-    implements LdapContext {
+public class InitialLdapContext extends InitialDirContext implements
+        LdapContext {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /*
-     * This is set to the environment property java.naming.ldap.version. 
+     * This is set to the environment property java.naming.ldap.version.
      */
     private static final String LDAP_VERSION = "java.naming.ldap.version"; //$NON-NLS-1$
 
     /*
      * This is set to the environment property java.naming.ldap.control.connect.
      */
-    private static final String CONNECT_CONTROL =
-        "java.naming.ldap.control.connect"; //$NON-NLS-1$
+    private static final String CONNECT_CONTROL = "java.naming.ldap.control.connect"; //$NON-NLS-1$
 
     /*
-     * The version of this LDAP context implementation. 
+     * The version of this LDAP context implementation.
      */
     private static final String THIS_LDAP_VERSION = "3"; //$NON-NLS-1$
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Constructs an <code>InitialLdapContext</code> instance without using 
+     * Constructs an <code>InitialLdapContext</code> instance without using
      * any environment properties or connection controls.
      * 
-     * @throws NamingException  If an error is encountered. 
+     * @throws NamingException
+     *             If an error is encountered.
      */
     public InitialLdapContext() throws NamingException {
         this(null, null);
     }
 
     /**
-     * Constructs an <code>InitialLdapContext</code> instance using the supplied
-     * environment properties and connection controls.
+     * Constructs an <code>InitialLdapContext</code> instance using the
+     * supplied environment properties and connection controls.
      * 
-     * @param h                 the environment properties which may be null
-     * @param cs                the connection controls which may be null
-     * @throws NamingException  If an error is encountered.
+     * @param h
+     *            the environment properties which may be null
+     * @param cs
+     *            the connection controls which may be null
+     * @throws NamingException
+     *             If an error is encountered.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public InitialLdapContext(Hashtable<?, ?> h, Control[] cs)
-        throws NamingException {
+            throws NamingException {
         super(true);
 
-        /* 
-         * Prepare the environment properties to be inherited by the 
-         * service provider.
+        /*
+         * Prepare the environment properties to be inherited by the service
+         * provider.
          */
-        Hashtable<Object,Object> newEnvironment = null;
+        Hashtable<Object, Object> newEnvironment = null;
         if (null == h) {
-            newEnvironment = new Hashtable<Object,Object>();
+            newEnvironment = new Hashtable<Object, Object>();
         } else {
-            newEnvironment = (Hashtable<Object,Object>) h.clone();
+            newEnvironment = (Hashtable<Object, Object>) h.clone();
         }
 
         // Set the environment property java.naming.ldap.control.connect
@@ -116,31 +104,19 @@ public class InitialLdapContext
     }
 
     /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
-    /*
      * Gets the default initial context and verify that it's an instance of
      * LdapContext.
      */
     private LdapContext getDefaultInitLdapContext() throws NamingException {
         if (!(super.defaultInitCtx instanceof LdapContext)) {
             // jndi.1D=Expected an LdapContext object.
-            throw new NotContextException(Messages.getString("jndi.1D"));  //$NON-NLS-1$
+            throw new NotContextException(Messages.getString("jndi.1D")); //$NON-NLS-1$
         }
         return (LdapContext) super.defaultInitCtx;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods of Interface LdapContext
-     * -------------------------------------------------------------------
-     */
-
     public ExtendedResponse extendedOperation(ExtendedRequest e)
-        throws NamingException {
+            throws NamingException {
         return getDefaultInitLdapContext().extendedOperation(e);
     }
 
@@ -169,5 +145,3 @@ public class InitialLdapContext
     }
 
 }
-
-

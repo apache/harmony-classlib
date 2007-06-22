@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
@@ -23,35 +22,34 @@ package javax.naming;
  * or if too many links are being done.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class LinkLoopException extends LinkException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = -3119189944325198009L;
+    static final long serialVersionUID = -3119189944325198009L;
 
     /**
-     * Constructs a <code>LinkLoopException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>LinkLoopException</code> instance with all data
+     * initialized to null.
      */
     public LinkLoopException() {
         super();
     }
 
     /**
-     * Constructs a <code>LinkLoopException</code> instance 
-     * with the specified message.
-     *  
-     * @param s The detail message for the exception. It may be null.
+     * Constructs a <code>LinkLoopException</code> instance with the specified
+     * message.
+     * 
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public LinkLoopException(String s) {
         super(s);
     }
 
 }
-
-

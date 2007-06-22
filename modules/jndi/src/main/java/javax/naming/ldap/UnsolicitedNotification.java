@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import javax.naming.NamingException;
@@ -25,35 +24,29 @@ import javax.naming.NamingException;
  * 
  * @see ExtendedResponse
  * @see HasControls
- * 
  */
-public interface UnsolicitedNotification
-    extends ExtendedResponse, HasControls {
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
+public interface UnsolicitedNotification extends ExtendedResponse, HasControls {
 
     /**
      * Gets the referrals associated with this <code>UnsolicitedNotification
-     * </code> instance.
+     * </code>
+     * instance.
      * 
-     * @return  the referrals associated with this <code>
-     *          UnsolicitedNotification</code> instance
+     * @return the referrals associated with this <code>
+     *          UnsolicitedNotification</code>
+     *         instance
      */
     String[] getReferrals();
 
     /**
      * Gets the naming exception associated with this <code>
-     * UnsolicitedNotification</code> instance.
+     * UnsolicitedNotification</code>
+     * instance.
      * 
-     * @return  the naming exception associated with this <code>
-     *          UnsolicitedNotification</code> instance
+     * @return the naming exception associated with this <code>
+     *          UnsolicitedNotification</code>
+     *         instance
      */
     NamingException getException();
 
 }
-
-

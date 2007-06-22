@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-
 package org.apache.harmony.jndi.internal;
 
 /**
- * Identifies the simplest URL syntax: <code>{scheme}:{scheme specific part}</code>.
- * 
+ * Identifies the simplest URL syntax:
+ * <code>{scheme}:{scheme specific part}</code>.
  */
 public class UrlParser {
-    
+
     /*
      * Prevent instantiate.
      */
     private UrlParser() {
-    	super();
+        super();
     }
 
     /**
-     * Returns an URL's scheme part, in lower case. If the url is not a valid 
+     * Returns an URL's scheme part, in lower case. If the url is not a valid
      * URL, null is returned.
      * 
-     * @param url   a url string
-     * @return      the URL's scheme part, in lower case. If the url is not a 
-     *              valid URL, null is returned.
+     * @param url
+     *            a url string
+     * @return the URL's scheme part, in lower case. If the url is not a valid
+     *         URL, null is returned.
      */
     public static String getScheme(String url) {
         if (null == url) {
@@ -52,14 +52,9 @@ public class UrlParser {
         boolean inCharSet;
         for (int i = 0; i < scheme.length(); i++) {
             c = scheme.charAt(i);
-            inCharSet =
-                (c >= 'A' && c <= 'Z')
-                    || (c >= 'a' && c <= 'z')
-                    || (c >= '0' && c <= '9')
-                    || c == '+'
-                    || c == '.'
-                    || c == '-'
-                    || c == '_';
+            inCharSet = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+                    || (c >= '0' && c <= '9') || c == '+' || c == '.'
+                    || c == '-' || c == '_';
             if (!inCharSet) {
                 return null;
             }
@@ -68,5 +63,3 @@ public class UrlParser {
     }
 
 }
-
-

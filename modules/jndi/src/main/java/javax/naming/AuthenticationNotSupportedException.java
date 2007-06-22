@@ -15,27 +15,21 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * An <code>AuthenticationNotSupportedException</code> is the 
- * <code>NamingSecurityException</code> used
- * when the authentication required is not available.
+ * An <code>AuthenticationNotSupportedException</code> is the
+ * <code>NamingSecurityException</code> used when the authentication required
+ * is not available.
  * <p>
- * Multithreaded access to an <code>AuthenticationNotSupportedException</code> 
- * instance is only safe when client code locks the object first.</p>
- * 
+ * Multithreaded access to an <code>AuthenticationNotSupportedException</code>
+ * instance is only safe when client code locks the object first.
+ * </p>
  */
-public class AuthenticationNotSupportedException extends NamingSecurityException {
+public class AuthenticationNotSupportedException extends
+        NamingSecurityException {
 
     static final long serialVersionUID = -7149033933259492300L;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs an <code>AuthenticationNotSupportedException</code> instance
@@ -49,12 +43,11 @@ public class AuthenticationNotSupportedException extends NamingSecurityException
      * Constructs an <code>AuthenticationNotSupportedException</code> instance
      * using the specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public AuthenticationNotSupportedException(String s) {
         super(s);
     }
 
 }
-
-

@@ -27,9 +27,7 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.security.x509.DNParser;
 
 /**
- * A relative distinguised name parser that does less checkings than DNParser
- * 
- * @author Osvaldo C. Demo
+ * A relative distinguished name parser that does less checking than DNParser
  */
 public class RelaxedDnParser extends DNParser {
 
@@ -57,17 +55,17 @@ public class RelaxedDnParser extends DNParser {
                 // type pair
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IOException(Messages.getString("ldap.1C"));
+            throw new IOException(Messages.getString("ldap.1C")); //$NON-NLS-1$
         }
 
         // Check for quotations and special chars on the type
         for (int i = pos; i < equalIndex; i++) {
             if (chars[i] == '\\') {
-                throw new IOException(Messages.getString("ldap.1D"));
+                throw new IOException(Messages.getString("ldap.1D")); //$NON-NLS-1$
             }
             for (int j = 0; j < specialChars.length; j++) {
                 if (chars[i] == specialChars[j]) {
-                    throw new IOException(Messages.getString("ldap.1E"));
+                    throw new IOException(Messages.getString("ldap.1E")); //$NON-NLS-1$
                 }
             }
         }
@@ -92,8 +90,8 @@ public class RelaxedDnParser extends DNParser {
             }
             pos++;
         }
-        
-        while (end > beg+1 && chars[end - 1] == ' ') {
+
+        while (end > beg + 1 && chars[end - 1] == ' ') {
             end--;
         }
 
@@ -211,9 +209,11 @@ public class RelaxedDnParser extends DNParser {
                 // char
                 return chars[pos];
             default:
-                // RFC doesn't explicitly say that escaped hex pair is
-                // interpreted as UTF-8 char. It only contains an example of such
-                // DN.
+                /*
+                 * RFC doesn't explicitly say that escaped hex pair is
+                 * interpreted as UTF-8 char. It only contains an example of
+                 * such DN.
+                 */
                 return super.getUTF8();
         }
     }
@@ -232,7 +232,8 @@ public class RelaxedDnParser extends DNParser {
         try {
             return new Character((char) Integer.parseInt(hex, 16));
         } catch (NumberFormatException e) {
-            throw new IOException(Messages.getString("ldap.20"));
+            throw new IOException(Messages.getString("ldap.20")); //$NON-NLS-1$
         }
     }
+
 }

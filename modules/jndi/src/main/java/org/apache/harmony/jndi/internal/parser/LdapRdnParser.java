@@ -27,9 +27,6 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * Class used to parse RDN components of a Distinguished name
- * 
- * @author Osvaldo C. Demo
- * 
  */
 public class LdapRdnParser implements LdapParser {
 
@@ -189,11 +186,7 @@ public class LdapRdnParser implements LdapParser {
                 counter++;
             }
         }
-        if (counter == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return counter == 1;
     }
 
     private static String getUnEscapedValues(char[] chars) {

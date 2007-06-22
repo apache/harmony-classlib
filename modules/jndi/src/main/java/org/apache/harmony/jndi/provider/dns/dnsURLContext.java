@@ -37,80 +37,97 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 /**
  * DNS context that is capable of serving requests with DNS URL's given as
  * names.
- * 
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class dnsURLContext extends DNSContext {
 
     /**
      * Constructs new DNS URL context.
-     * @param env environment
-     * @throws NamingException if such exception was encountered
+     * 
+     * @param env
+     *            environment
+     * @throws NamingException
+     *             if such exception was encountered
      */
     public dnsURLContext(Hashtable<?, ?> env) throws NamingException {
         super(env);
     }
 
     /**
-     * @param name well formed DNS URL that points to some context
-     * @param attrNames array of attribute identifiers
+     * @param name
+     *            well formed DNS URL that points to some context
+     * @param attrNames
+     *            array of attribute identifiers
      * @return collection of attributes
-     * @throws NamingException if such exception was encountered
-     * @throws NullPointerException if <code>name</code> is null
+     * @throws NamingException
+     *             if such exception was encountered
+     * @throws NullPointerException
+     *             if <code>name</code> is null
      * @see DNSContext#getAttributes(String, String[])
      */
     @Override
     public Attributes getAttributes(String name, String[] attrNames)
-            throws NamingException
-    {
+            throws NamingException {
         process(name);
         return super.getAttributes(new DNSName(), attrNames);
     }
-    
+
     /**
-     * @param name well formed DNS URL
+     * @param name
+     *            well formed DNS URL
      * @return retrieved collection of attributes
-     * @throws NamingException if such exception was encountered
-     * @throws NullPointerException if <code>name</code> is null
-     * @see DNSContext#getAttributes(String) 
+     * @throws NamingException
+     *             if such exception was encountered
+     * @throws NullPointerException
+     *             if <code>name</code> is null
+     * @see DNSContext#getAttributes(String)
      */
     @Override
     public Attributes getAttributes(String name) throws NamingException {
         return getAttributes(name, null);
     }
-    
+
     /**
-     * @param name well formed DNS URL
-     * @return collection of <code>NameClassPair</code> 
-     * @throws NamingException if such exception was encountered
-     * @throws NullPointerException if <code>name</code> is null
+     * @param name
+     *            well formed DNS URL
+     * @return collection of <code>NameClassPair</code>
+     * @throws NamingException
+     *             if such exception was encountered
+     * @throws NullPointerException
+     *             if <code>name</code> is null
      * @see DNSContext#list(String)
      */
     @Override
-    public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(String name)
+            throws NamingException {
         process(name);
         return super.list(new DNSName());
     }
 
     /**
-     * @param name well formed DNS URL
-     * @return collection of <code>Binding</code> 
-     * @throws NamingException if such exception was encountered
-     * @throws NullPointerException if <code>name</code> is null
+     * @param name
+     *            well formed DNS URL
+     * @return collection of <code>Binding</code>
+     * @throws NamingException
+     *             if such exception was encountered
+     * @throws NullPointerException
+     *             if <code>name</code> is null
      * @see DNSContext#listBindings(String)
      */
     @Override
-    public NamingEnumeration<Binding> listBindings(String name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(String name)
+            throws NamingException {
         process(name);
         return super.listBindings(new DNSName());
     }
 
     /**
-     * @param name well formed DNS URL
+     * @param name
+     *            well formed DNS URL
      * @return found object
-     * @throws NamingException if such exception was encountered
-     * @throws NullPointerException if <code>name</code> is null
+     * @throws NamingException
+     *             if such exception was encountered
+     * @throws NullPointerException
+     *             if <code>name</code> is null
      * @see DNSContext#lookup(String)
      */
     @Override
@@ -120,10 +137,13 @@ public class dnsURLContext extends DNSContext {
     }
 
     /**
-     * @param name well formed DNS URL
+     * @param name
+     *            well formed DNS URL
      * @return found object
-     * @throws NamingException if such exception was encountered
-     * @throws NullPointerException if <code>name</code> is null
+     * @throws NamingException
+     *             if such exception was encountered
+     * @throws NullPointerException
+     *             if <code>name</code> is null
      * @see DNSContext#lookupLink(String)
      */
     @Override
@@ -133,9 +153,13 @@ public class dnsURLContext extends DNSContext {
 
     /**
      * Service method
-     * @param name DNS URL
-     * @throws NamingException if was encountered
-     * @throws NullPointerException if name is null
+     * 
+     * @param name
+     *            DNS URL
+     * @throws NamingException
+     *             if was encountered
+     * @throws NullPointerException
+     *             if name is null
      */
     private void process(String name) throws NamingException {
         if (name == null) {
@@ -144,4 +168,5 @@ public class dnsURLContext extends DNSContext {
         }
         addToEnvironment(Context.PROVIDER_URL, name);
     }
+
 }

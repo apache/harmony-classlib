@@ -26,36 +26,40 @@
  * DO NOT EDIT!!!
  * Contents subject to change without notice!
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 
-@SuppressWarnings("deprecation") //$NON-NLS-1$
-public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skeleton {
+@SuppressWarnings("deprecation")
+public final class RemoteReferenceWrapper_Skel implements
+        java.rmi.server.Skeleton {
 
     private static final long interfaceHash = 2534274963554139942L;
 
-    private static final java.rmi.server.Operation[] operations = {
-        new java.rmi.server.Operation("javax.naming.Reference getReference()") //$NON-NLS-1$
+    private static final java.rmi.server.Operation[] operations = { new java.rmi.server.Operation(
+            "javax.naming.Reference getReference()") //$NON-NLS-1$
     };
 
     public java.rmi.server.Operation[] getOperations() {
         return operations.clone();
     }
 
-    public void dispatch(java.rmi.Remote obj, java.rmi.server.RemoteCall call, int opnum, long hash) throws java.lang.Exception {
+    public void dispatch(java.rmi.Remote obj, java.rmi.server.RemoteCall call,
+            int opnum, long hash) throws java.lang.Exception {
         if (opnum < 0) {
             if (hash == 3529874867989176284L) {
                 opnum = 0;
             } else {
                 // jndi.87=Invalid method hash: {0}
-                throw new java.rmi.UnmarshalException(Messages.getString("jndi.87", hash)); //$NON-NLS-1$
+                throw new java.rmi.UnmarshalException(Messages.getString(
+                        "jndi.87", hash)); //$NON-NLS-1$
             }
         } else {
             if (hash != interfaceHash) {
                 // jndi.88=Interface hash mismatch, expected: {0}, received: {1}
-                throw new java.rmi.server.SkeletonMismatchException(
-                        Messages.getString("jndi.88", interfaceHash , hash)); //$NON-NLS-1$
+                throw new java.rmi.server.SkeletonMismatchException(Messages
+                        .getString("jndi.88", interfaceHash, hash)); //$NON-NLS-1$
             }
         }
 
@@ -63,26 +67,29 @@ public final class RemoteReferenceWrapper_Skel implements java.rmi.server.Skelet
 
         switch (opnum) {
 
-        case 0: {    // getReference()
+            case 0: { // getReference()
 
-            call.releaseInputStream();
+                call.releaseInputStream();
 
-            javax.naming.Reference $result = server.getReference();
+                javax.naming.Reference $result = server.getReference();
 
-            try {
-                java.io.ObjectOutput out = call.getResultStream(true);
-                out.writeObject($result);
-            } catch (java.io.IOException e) {
-                // jndi.89=Error marshalling return
-                throw new java.rmi.MarshalException(Messages.getString("jndi.89"), e); //$NON-NLS-1$
+                try {
+                    java.io.ObjectOutput out = call.getResultStream(true);
+                    out.writeObject($result);
+                } catch (java.io.IOException e) {
+                    // jndi.89=Error marshalling return
+                    throw new java.rmi.MarshalException(Messages
+                            .getString("jndi.89"), e); //$NON-NLS-1$
+                }
+
+                break;
             }
 
-            break;
-        }
-
-        default:
-            // jndi.8A=Invalid method number: {0}
-            throw new java.rmi.UnmarshalException(Messages.getString("jndi.8A", opnum)); //$NON-NLS-1$
+            default:
+                // jndi.8A=Invalid method number: {0}
+                throw new java.rmi.UnmarshalException(Messages.getString(
+                        "jndi.8A", opnum)); //$NON-NLS-1$
         }
     }
+
 }

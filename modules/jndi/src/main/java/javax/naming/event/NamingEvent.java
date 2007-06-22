@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.event;
 
 import java.util.EventObject;
@@ -24,22 +23,22 @@ import javax.naming.Binding;
 /**
  * An event from a directory or naming service, for passing to a listener.
  * <p>
- * The source of the event is always the <code>EventContext</code> that the 
- * listener registered with. Names in the <code>NamingEvent</code> object 
- * are all relative to this context.</p>
+ * The source of the event is always the <code>EventContext</code> that the
+ * listener registered with. Names in the <code>NamingEvent</code> object are
+ * all relative to this context.
+ * </p>
  * <p>
  * Note the discussion about threads and synchronization in the description for
- * this package.</p>
- * 
- * 
+ * this package.
+ * </p>
  */
 public class NamingEvent extends EventObject {
 
     /*
-     * -----------------------------------------
-     * Constants
-     * -----------------------------------------
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
+    private static final long serialVersionUID = 0x9d18b00289d22f45L;
 
     /**
      * A <code>NamingEvent</code> type constant, indicating that an object was
@@ -65,20 +64,8 @@ public class NamingEvent extends EventObject {
      */
     public static final int OBJECT_RENAMED = 2;
 
-    /* 
-     * This constant is used during deserialization to check the J2SE version which
-     * created the serialized object.
-     */
-    private static final long serialVersionUID = 0x9d18b00289d22f45L; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Some information about the event, whose format is specified by the 
+     * Some information about the event, whose format is specified by the
      * service provider.
      * 
      * @serial
@@ -110,69 +97,51 @@ public class NamingEvent extends EventObject {
     // the context that generated this event
     private transient EventContext eventContext;
 
-    /*
-     * -----------------------------------------
-     * Constructors
-     * -----------------------------------------
-     */
-
     /**
      * 
-     * Constructs an <code>NamingEvent</code> with all parameters. 
-     *
-     * @param eventContext	the context that generated this event. It is the
-     * 						originator of this event and cannot be null.
-     * @param type			the constant value that specifies the type of event
-     * @param newBinding    binding after the event. <code>newBinding</code> might 
-     * 						be null depending on the value of the <code>type</code>
-     * 						parameter as follows:
-     * 						<ul>
-     * 						<li>
-     * 						<code>OBJECT_ADDED</code> - <code>newBinding</code> cannot be null
-     * 						</li>
-     * 						<li>
-     * 						<code>OBJECT_CHANGED</code> - <code>newBinding</code> cannot be null
-     * 						</li>
-     * 						<li>
-     * 						<code>OBJECT_REMOVED</code> - <code>newBinding</code> can be null
-     * 						</li>
-     * 						<li>
-     * 						<code>OBJECT_RENAMED</code> - <code>newBinding</code> can be null
-     * 						</li>
-     * 						</ul>
-     * 						The names are relative to the <code>eventContext</code>
-     * @param oldBinding	the binding before the event. <code>oldBinding</code> might 
-     * 						be null depending on the value of the <code>type</code>
-     * 						parameter as follows:
-     * 						<ul>
-     * 						<li>
-     * 						<code>OBJECT_ADDED</code> - <code>oldBinding</code> 
-     * 						can be null
-     * 						</li>
-     * 						<li>
-     * 						<code>OBJECT_CHANGED</code> - <code>oldBinding</code> 
-     * 						cannot be null
-     * 						</li>
-     * 						<li>
-     * 						<code>OBJECT_REMOVED</code> - <code>oldBinding</code> 
-     * 						cannot be null
-     * 						</li>
-     * 						<li>
-     * 						<code>OBJECT_RENAMED</code> - <code>oldBinding</code> 
-     * 						can be null
-     * 						</li>
-     * 						</ul>
-     * 						The names are relative to the <code>eventContext</code>
-     * @param changeInfo	contain some information about the event and maybe 
-     * 						null, the format of which is specified by the 
-     * 						service provider.
+     * Constructs an <code>NamingEvent</code> with all parameters.
+     * 
+     * @param eventContext
+     *            the context that generated this event. It is the originator of
+     *            this event and cannot be null.
+     * @param type
+     *            the constant value that specifies the type of event
+     * @param newBinding
+     *            binding after the event. <code>newBinding</code> might be
+     *            null depending on the value of the <code>type</code>
+     *            parameter as follows:
+     *            <ul>
+     *            <li> <code>OBJECT_ADDED</code> - <code>newBinding</code>
+     *            cannot be null </li>
+     *            <li> <code>OBJECT_CHANGED</code> - <code>newBinding</code>
+     *            cannot be null </li>
+     *            <li> <code>OBJECT_REMOVED</code> - <code>newBinding</code>
+     *            can be null </li>
+     *            <li> <code>OBJECT_RENAMED</code> - <code>newBinding</code>
+     *            can be null </li>
+     *            </ul>
+     *            The names are relative to the <code>eventContext</code>
+     * @param oldBinding
+     *            the binding before the event. <code>oldBinding</code> might
+     *            be null depending on the value of the <code>type</code>
+     *            parameter as follows:
+     *            <ul>
+     *            <li> <code>OBJECT_ADDED</code> - <code>oldBinding</code>
+     *            can be null </li>
+     *            <li> <code>OBJECT_CHANGED</code> - <code>oldBinding</code>
+     *            cannot be null </li>
+     *            <li> <code>OBJECT_REMOVED</code> - <code>oldBinding</code>
+     *            cannot be null </li>
+     *            <li> <code>OBJECT_RENAMED</code> - <code>oldBinding</code>
+     *            can be null </li>
+     *            </ul>
+     *            The names are relative to the <code>eventContext</code>
+     * @param changeInfo
+     *            contain some information about the event and maybe null, the
+     *            format of which is specified by the service provider.
      */
-    public NamingEvent(
-        EventContext eventContext,
-        int type,
-        Binding newBinding,
-        Binding oldBinding,
-        Object changeInfo) {
+    public NamingEvent(EventContext eventContext, int type, Binding newBinding,
+            Binding oldBinding, Object changeInfo) {
         super(eventContext);
 
         this.type = type;
@@ -183,37 +152,33 @@ public class NamingEvent extends EventObject {
 
     }
 
-    /*
-     * -----------------------------------------
-     * Methods
-     * -----------------------------------------
-     */
-
     /**
-     * Calls a method to notify the listener of this event. 
+     * Calls a method to notify the listener of this event.
      * <p>
-     * For <code>OBJECT_ADDED</code>, <code>OBJECT_REMOVED</code> or 
-     * <code>OBJECT_RENAMED</code> type events this method calls the 
-     * corresponding method in the <code>NamespaceChangedListener</code> 
-     * interface. For <code>OBJECT_CHANGED</code> type events this method calls 
-     * <code>objectChanged()</code> in the <code>ObjectChangeListener</code> 
-     * interface.</p>
+     * For <code>OBJECT_ADDED</code>, <code>OBJECT_REMOVED</code> or
+     * <code>OBJECT_RENAMED</code> type events this method calls the
+     * corresponding method in the <code>NamespaceChangedListener</code>
+     * interface. For <code>OBJECT_CHANGED</code> type events this method
+     * calls <code>objectChanged()</code> in the
+     * <code>ObjectChangeListener</code> interface.
+     * </p>
      * 
-     * @param naminglistener	the listener of this event
+     * @param naminglistener
+     *            the listener of this event
      */
     public void dispatch(NamingListener naminglistener) {
         switch (type) {
-            case OBJECT_ADDED :
-                 ((NamespaceChangeListener) naminglistener).objectAdded(this);
+            case OBJECT_ADDED:
+                ((NamespaceChangeListener) naminglistener).objectAdded(this);
                 break;
-            case OBJECT_REMOVED :
-                 ((NamespaceChangeListener) naminglistener).objectRemoved(this);
+            case OBJECT_REMOVED:
+                ((NamespaceChangeListener) naminglistener).objectRemoved(this);
                 break;
-            case OBJECT_RENAMED :
-                 ((NamespaceChangeListener) naminglistener).objectRenamed(this);
+            case OBJECT_RENAMED:
+                ((NamespaceChangeListener) naminglistener).objectRenamed(this);
                 break;
-            case OBJECT_CHANGED :
-                 ((ObjectChangeListener) naminglistener).objectChanged(this);
+            case OBJECT_CHANGED:
+                ((ObjectChangeListener) naminglistener).objectChanged(this);
                 break;
         }
     }
@@ -221,8 +186,8 @@ public class NamingEvent extends EventObject {
     /**
      * Gets the change information.
      * 
-     * @return 				the change information object provided by the 
-     * 						service provider, which may be null.
+     * @return the change information object provided by the service provider,
+     *         which may be null.
      */
     public Object getChangeInfo() {
         return changeInfo;
@@ -231,7 +196,7 @@ public class NamingEvent extends EventObject {
     /**
      * Gets the <code>EventContext</code> that generated this event.
      * 
-     * @return				the <code>EventContext</code> that generated this event.
+     * @return the <code>EventContext</code> that generated this event.
      */
     public EventContext getEventContext() {
         return eventContext;
@@ -240,45 +205,47 @@ public class NamingEvent extends EventObject {
     /**
      * Gets the binding after this event.
      * <p>
-     * If it exists and is inside the scope that was specified when the listener 
-     * was registered using <code>EventContext.addNamingListener</code>. 
-     * Returns null otherwise. Therefore for an <code>OBJECT_RENAMED</code> 
-     * event, the return value will be non-null if the new name places the 
-     * binding within the scope for the listener.</p>
-     *
-     * @return				the binding after this event
+     * If it exists and is inside the scope that was specified when the listener
+     * was registered using <code>EventContext.addNamingListener</code>.
+     * Returns null otherwise. Therefore for an <code>OBJECT_RENAMED</code>
+     * event, the return value will be non-null if the new name places the
+     * binding within the scope for the listener.
+     * </p>
+     * 
+     * @return the binding after this event
      */
     public Binding getNewBinding() {
         return newBinding;
     }
 
     /**
-     * Gets the binding before this event. 
+     * Gets the binding before this event.
      * <p>
-     * If it existed and was inside the scope that was specified when the 
-     * listener was registered using <code>EventContext.addNamingListener</code>. 
-     * Returns null otherwise. Therefore for an <code>OBJECT_RENAMED</code> 
-     * event, the return value will be non-null if the old name placed the 
-     * binding within the scope for the listener.</p>
-     *
-     * @return				the binding before this event
+     * If it existed and was inside the scope that was specified when the
+     * listener was registered using <code>EventContext.addNamingListener</code>.
+     * Returns null otherwise. Therefore for an <code>OBJECT_RENAMED</code>
+     * event, the return value will be non-null if the old name placed the
+     * binding within the scope for the listener.
+     * </p>
+     * 
+     * @return the binding before this event
      */
     public Binding getOldBinding() {
         return oldBinding;
     }
 
     /**
-     * Gets the type of the event. 
+     * Gets the type of the event.
      * <p>
-     * The return value is constrained to a choice from: 
-     * <code>OBJECT_ADDED</code>, <code>OBJECT_REMOVED</code>, 
-     * <code>OBJECT_RENAMED</code>, <code>OBJECT_CHANGED</code>.</p>
+     * The return value is constrained to a choice from:
+     * <code>OBJECT_ADDED</code>, <code>OBJECT_REMOVED</code>,
+     * <code>OBJECT_RENAMED</code>, <code>OBJECT_CHANGED</code>.
+     * </p>
      * 
-     * @return				the type of the event
+     * @return the type of the event
      */
     public int getType() {
         return type;
     }
+
 }
-
-

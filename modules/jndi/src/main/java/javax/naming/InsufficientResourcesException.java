@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when limited resources 
+ * This is the <code>NamingException</code> used when limited resources
  * prevent completion of a request.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class InsufficientResourcesException extends NamingException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = 6227672693037844532L; // J2SE 1.4.2
+    static final long serialVersionUID = 6227672693037844532L;
 
     /**
-     * Constructs an <code>InsufficientResourcesException</code> instance 
-     * with all data initialized to null.
+     * Constructs an <code>InsufficientResourcesException</code> instance with
+     * all data initialized to null.
      */
     public InsufficientResourcesException() {
         super();
     }
 
     /**
-     * Constructs an <code>InsufficientResourcesException</code> instance
-     * with the specified message. 
+     * Constructs an <code>InsufficientResourcesException</code> instance with
+     * the specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public InsufficientResourcesException(String s) {
         super(s);
     }
 
 }
-
-

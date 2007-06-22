@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.spi;
 
 import java.util.Hashtable;
@@ -24,8 +23,8 @@ import javax.naming.Context;
 import javax.naming.directory.Attributes;
 
 /**
- * An <code>DirObjectFactory</code> creates objects of a specified type. 
- * <code>DirObjectFactory</code> is a specific version of 
+ * An <code>DirObjectFactory</code> creates objects of a specified type.
+ * <code>DirObjectFactory</code> is a specific version of
  * <code>ObjectFactory</code> for <code>DirectoryManager</code>.
  * 
  * @see ObjectFactory
@@ -33,33 +32,26 @@ import javax.naming.directory.Attributes;
  */
 public interface DirObjectFactory extends ObjectFactory {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Similar to <code>ObjectFactory.getObjectInstance</code>, with an 
+     * Similar to <code>ObjectFactory.getObjectInstance</code>, with an
      * additional <code>attributes</code> parameter.
      * 
-     * @param o     an object
-     * @param n     a name
-     * @param c     a context
-     * @param envmt a context environment
-     * @param a     some attributes
-     * @return      the created object
-     * @throws Exception if an exception occurs
+     * @param o
+     *            an object
+     * @param n
+     *            a name
+     * @param c
+     *            a context
+     * @param envmt
+     *            a context environment
+     * @param a
+     *            some attributes
+     * @return the created object
+     * @throws Exception
+     *             if an exception occurs
      * @see ObjectFactory#getObjectInstance(Object, Name, Context, Hashtable)
      */
-    Object getObjectInstance(
-        Object o,
-        Name n,
-        Context c,
-        Hashtable<?, ?> envmt,
-        Attributes a)
-        throws Exception;
+    Object getObjectInstance(Object o, Name n, Context c,
+            Hashtable<?, ?> envmt, Attributes a) throws Exception;
 
 }
-
-

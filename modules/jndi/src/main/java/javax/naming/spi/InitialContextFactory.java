@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.spi;
 
 import java.util.Hashtable;
@@ -23,33 +22,26 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 /**
- * An implementation of <code>InitialContextFactory</code> creates an initial 
- * context so that the JNDI application can begin to invoke naming operations 
- * on that context. The class implementing this interface should be public and 
+ * An implementation of <code>InitialContextFactory</code> creates an initial
+ * context so that the JNDI application can begin to invoke naming operations on
+ * that context. The class implementing this interface should be public and
  * should also provide a public constructor taking no arguments.
- * 
  */
 public interface InitialContextFactory {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Returns a non-null initial context object on which naming operations can be
-     * invoked. The specified <code>envmt</code> parameter may be null or may be 
-     * used to customize the requested <code>Context</code> object.  The 
-     * implementation may clone or copy the <code>envmt</code> object, 
-     * but will not modify the original object.
+     * Returns a non-null initial context object on which naming operations can
+     * be invoked. The specified <code>envmt</code> parameter may be null or
+     * may be used to customize the requested <code>Context</code> object. The
+     * implementation may clone or copy the <code>envmt</code> object, but
+     * will not modify the original object.
      * 
-     * @param envmt the context environment as a <code>Hashtable</code>
+     * @param envmt
+     *            the context environment as a <code>Hashtable</code>
      * @return a non-null initial context object
-     * @throws NamingException if a naming exception occurs
+     * @throws NamingException
+     *             if a naming exception occurs
      */
     Context getInitialContext(Hashtable<?, ?> envmt) throws NamingException;
 
 }
-
-

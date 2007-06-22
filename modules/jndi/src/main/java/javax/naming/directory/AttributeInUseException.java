@@ -20,47 +20,35 @@ package javax.naming.directory;
 import javax.naming.NamingException;
 
 /**
- * Thrown when attempting to add an attribute that is already defined
- * for an object.
- * 
+ * Thrown when attempting to add an attribute that is already defined for an
+ * object.
  */
 public class AttributeInUseException extends NamingException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
-	 
-	private static final long serialVersionUID = 0x3d95ea02c92a5c44L;
-	
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */	
+    private static final long serialVersionUID = 0x3d95ea02c92a5c44L;
 
-	/**
-	 * Default constructor. 
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 */	 	
-	public AttributeInUseException() {
-		super();
-	}
-	
-	/**
-	 * Constructs an <code>AttributeInUseException</code> instance using the 
+    /**
+     * Default constructor.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     */
+    public AttributeInUseException() {
+        super();
+    }
+
+    /**
+     * Constructs an <code>AttributeInUseException</code> instance using the
      * supplied text of the message.
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 * 
-	 * @param s				message about the problem
-	 */
-	public AttributeInUseException(String s) {
-		super(s);
-	}
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     * 
+     * @param s
+     *            message about the problem
+     */
+    public AttributeInUseException(String s) {
+        super(s);
+    }
 
 }
-
-

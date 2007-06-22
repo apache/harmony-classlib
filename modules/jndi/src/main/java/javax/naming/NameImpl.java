@@ -18,13 +18,12 @@
 package javax.naming;
 
 /**
- * A useless class required to satisfy the requirement for an 'impl'
- * field (see CompoundName.java).
+ * A class required to satisfy the requirement for an 'impl' field.
+ * 
+ * @see CompoundName
  */
 class NameImpl {
     protected NameImpl() {
         super();
     }
 }
-
-

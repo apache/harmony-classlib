@@ -29,12 +29,8 @@ import javax.naming.Name;
 
 import org.apache.harmony.jndi.provider.GenericURLContextFactory;
 
-
 /**
  * URL context factory for {@link rmiURLContext}.
- *
- * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public class rmiURLContextFactory extends GenericURLContextFactory {
 
@@ -48,14 +44,15 @@ public class rmiURLContextFactory extends GenericURLContextFactory {
     /**
      * Returns new {@link rmiURLContext}. Used by
      * {@link GenericURLContextFactory#getObjectInstance(Object, Name, Context, Hashtable)}.
-     *
-     * @param   environment
-     *          Environment.
-     *
-     * @return  New {@link rmiURLContext}.
+     * 
+     * @param environment
+     *            Environment.
+     * 
+     * @return New {@link rmiURLContext}.
      */
     @Override
     protected Context createURLContext(Hashtable<?, ?> environment) {
         return new rmiURLContext(environment);
     }
+
 }

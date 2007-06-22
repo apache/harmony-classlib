@@ -15,35 +15,27 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
  * An object which is not in a naming service, but can be referenced, implements
- * the <code>Referenceable</code> interface.
- * The <code>getReference()</code> method is implemented to provide details of 
- * how to find the object.
+ * the <code>Referenceable</code> interface. The <code>getReference()</code>
+ * method is implemented to provide details of how to find the object.
  * 
  * @see Reference
- * 
  */
 public interface Referenceable {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Get the <code>Reference</code> object associated with this <code>
-     * Referenceable</code> object.
+     * Referenceable</code>
+     * object.
      * 
-     * @return                  the <code>Reference</code> object associated 
-     *                          with this <code>Referenceable</code> object
-     * @throws NamingException  if a naming error occurs
+     * @return the <code>Reference</code> object associated with this
+     *         <code>Referenceable</code> object
+     * @throws NamingException
+     *             if a naming error occurs
      */
     Reference getReference() throws NamingException;
+
 }
-
-

@@ -26,27 +26,20 @@ import java.util.EventListener;
  * The method is <code>namingExceptionThrown</code>, which is required for
  * notification of problems when registering a listener, or problems when
  * getting information to send an event to a listener. When a listener is
- * notified of a <code>NamingExceptionEvent</code> it is automatically 
- * deregistered.</p>
- * 
- * 
+ * notified of a <code>NamingExceptionEvent</code> it is automatically
+ * deregistered.
+ * </p>
  */
-public interface NamingListener extends EventListener{
-	
-	/*
-	 * -----------------------------------------
-	 * methods
-	 * -----------------------------------------
-	 */
+public interface NamingListener extends EventListener {
 
-	 /**
-	  * This method is called by a naming or directory service provider when a naming
-	  * exception occurs whilst the service provider is trying to register or prepare
-	  * an event notification for the listener.
-	  * 
-	  * @param namingExceptionEvent		the event notification
-	  */	
-	void namingExceptionThrown(NamingExceptionEvent namingExceptionEvent);
+    /**
+     * This method is called by a naming or directory service provider when a
+     * naming exception occurs whilst the service provider is trying to register
+     * or prepare an event notification for the listener.
+     * 
+     * @param namingExceptionEvent
+     *            the event notification
+     */
+    void namingExceptionThrown(NamingExceptionEvent namingExceptionEvent);
+
 }
-
-

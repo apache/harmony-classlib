@@ -20,6 +20,7 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.4 $
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import java.rmi.AccessException;
@@ -67,12 +68,8 @@ import javax.naming.spi.NamingManager;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 
-
 /**
  * RMI Registry context implementation.
- *
- * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class RegistryContext implements Context, Referenceable {
 
@@ -80,15 +77,13 @@ public class RegistryContext implements Context, Referenceable {
      * System property used to state whether the RMI security manager should be
      * installed.
      */
-    public static final String SECURITY_MANAGER = 
-            "java.naming.rmi.security.manager"; //$NON-NLS-1$
+    public static final String SECURITY_MANAGER = "java.naming.rmi.security.manager"; //$NON-NLS-1$
 
     /**
      * System property used to supply the name of the
      * {@link RMIClientSocketFactory} to use.
      */
-    public static final String CLIENT_SOCKET_FACTORY =
-            "org.apache.harmony.jndi.provider.rmi.registry.clientSocketFactory"; //$NON-NLS-1$
+    public static final String CLIENT_SOCKET_FACTORY = "org.apache.harmony.jndi.provider.rmi.registry.clientSocketFactory"; //$NON-NLS-1$
 
     /**
      * Prefix for RMI URLs.
@@ -137,62 +132,63 @@ public class RegistryContext implements Context, Referenceable {
     protected Reference reference;
 
     /**
-     * Creates RMI registry context bound to RMI Registry
-     * operating on the specified host and port.
-     *
-     * @param   host
-     *          Host. If <code>null</code>, localhost is assumed.
-     *
-     * @param   port
-     *          Port. If <code>0</code>, default registry port
-     *          (<code>1099</code>) is assumed.
-     *
-     * @param   environment
-     *          Context environment, may be <code>null</code>
-     *          which denotes empty environment.
-     *
-     * @throws  NamingException
-     *          If some naming error occurs.
+     * Creates RMI registry context bound to RMI Registry operating on the
+     * specified host and port.
+     * 
+     * @param host
+     *            Host. If <code>null</code>, localhost is assumed.
+     * 
+     * @param port
+     *            Port. If <code>0</code>, default registry port (<code>1099</code>)
+     *            is assumed.
+     * 
+     * @param environment
+     *            Context environment, may be <code>null</code> which denotes
+     *            empty environment.
+     * 
+     * @throws NamingException
+     *             If some naming error occurs.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public RegistryContext(String host, int port, Hashtable<?, ?> environment)
             throws NamingException {
         this.host = host;
         this.port = port;
 
-        this.environment = ((environment != null)
-                ? (Hashtable<Object, Object>) environment.clone()
+        this.environment = ((environment != null) ? (Hashtable<Object, Object>) environment
+                .clone()
                 : new Hashtable<Object, Object>());
 
         if (this.environment.get(SECURITY_MANAGER) != null) {
             installSecurityManager();
         }
 
-        String clientSocketFactoryName = (String)
-                this.environment.get(CLIENT_SOCKET_FACTORY);
+        String clientSocketFactoryName = (String) this.environment
+                .get(CLIENT_SOCKET_FACTORY);
 
         if (clientSocketFactoryName == null) {
             csf = null;
         } else {
             try {
                 csf = (RMIClientSocketFactory) Class.forName(
-                        clientSocketFactoryName, true, Thread.currentThread()
-                                .getContextClassLoader()).newInstance();
+                        clientSocketFactoryName, true,
+                        Thread.currentThread().getContextClassLoader())
+                        .newInstance();
             } catch (ClassNotFoundException e) {
                 // jndi.79=RMI Client Socket Factory cannot be instantiated
                 throw (ConfigurationException) new ConfigurationException(
                         Messages.getString("jndi.79")) //$NON-NLS-1$
-                                .initCause(e);
+                        .initCause(e);
             } catch (InstantiationException e) {
                 // jndi.79=RMI Client Socket Factory cannot be instantiated
                 throw (ConfigurationException) new ConfigurationException(
                         Messages.getString("jndi.79")) //$NON-NLS-1$
-                                .initCause(e);
+                        .initCause(e);
             } catch (IllegalAccessException e) {
                 // jndi.79=RMI Client Socket Factory cannot be instantiated
                 throw (NoPermissionException) new NoPermissionException(
                         Messages.getString("jndi.79")) //$NON-NLS-1$
-                                .initCause(e);
+                        .initCause(e);
             }
         }
         registry = getRegistry(host, port, csf);
@@ -201,11 +197,11 @@ public class RegistryContext implements Context, Referenceable {
 
     /**
      * Creates RMI registry context by copying the specified context.
-     *
-     * @param   context
-     *          Context to copy.
+     * 
+     * @param context
+     *            Context to copy.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     protected RegistryContext(RegistryContext context) {
         host = context.host;
         port = context.port;
@@ -228,8 +224,8 @@ public class RegistryContext implements Context, Referenceable {
             return getObjectInstance(stringName, registry.lookup(stringName));
         } catch (NotBoundException e) {
             // jndi.7A=Name is not bound: {0}
-            throw (NameNotFoundException) new NameNotFoundException(
-                    Messages.getString("jndi.7A", stringName)).initCause(e); //$NON-NLS-1$
+            throw (NameNotFoundException) new NameNotFoundException(Messages
+                    .getString("jndi.7A", stringName)).initCause(e); //$NON-NLS-1$
         } catch (RemoteException e) {
             throw (NamingException) newNamingException(e).fillInStackTrace();
         }
@@ -339,7 +335,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public Context createSubcontext(Name name)
             throws OperationNotSupportedException {
-        // jndi.7F=RMI Registry is a flat context and doesn't support subcontexts
+        // jndi.7F=RMI Registry is a flat context and doesn't support
+        // subcontexts
         throw new OperationNotSupportedException(Messages.getString("jndi.7F")); //$NON-NLS-1$
     }
 
@@ -355,7 +352,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public void destroySubcontext(Name name)
             throws OperationNotSupportedException {
-        // jndi.7F=RMI Registry is a flat context and doesn't support subcontexts
+        // jndi.7F=RMI Registry is a flat context and doesn't support
+        // subcontexts
         throw new OperationNotSupportedException(Messages.getString("jndi.7F")); //$NON-NLS-1$
     }
 
@@ -384,13 +382,14 @@ public class RegistryContext implements Context, Referenceable {
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration<NameClassPair> list(Name name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(Name name)
+            throws NamingException {
         if (name.isEmpty()) {
             try {
                 return new NameClassPairEnumeration(registry.list());
             } catch (RemoteException e) {
-                throw (NamingException)
-                        newNamingException(e).fillInStackTrace();
+                throw (NamingException) newNamingException(e)
+                        .fillInStackTrace();
             }
         }
         Object obj = lookup(name);
@@ -403,27 +402,28 @@ public class RegistryContext implements Context, Referenceable {
             }
         }
         // jndi.80=Name specifies an object that is not a context: {0}
-        throw new NotContextException(
-                Messages.getString("jndi.80", name)); //$NON-NLS-1$
+        throw new NotContextException(Messages.getString("jndi.80", name)); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration<NameClassPair> list(String name) throws NamingException {
+    public NamingEnumeration<NameClassPair> list(String name)
+            throws NamingException {
         return list(new CompositeName(name));
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration<Binding> listBindings(Name name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(Name name)
+            throws NamingException {
         if (name.isEmpty()) {
             try {
                 return new BindingEnumeration(registry.list(), this);
             } catch (RemoteException e) {
-                throw (NamingException)
-                        newNamingException(e).fillInStackTrace();
+                throw (NamingException) newNamingException(e)
+                        .fillInStackTrace();
             }
         }
         Object obj = lookup(name);
@@ -436,14 +436,14 @@ public class RegistryContext implements Context, Referenceable {
             }
         }
         // jndi.80=Name specifies an object that is not a context: {0}
-        throw new NotContextException(
-                Messages.getString("jndi.80", name)); //$NON-NLS-1$
+        throw new NotContextException(Messages.getString("jndi.80", name)); //$NON-NLS-1$
     }
 
     /**
      * {@inheritDoc}
      */
-    public NamingEnumeration<Binding> listBindings(String name) throws NamingException {
+    public NamingEnumeration<Binding> listBindings(String name)
+            throws NamingException {
         return listBindings(new CompositeName(name));
     }
 
@@ -473,8 +473,8 @@ public class RegistryContext implements Context, Referenceable {
      */
     public String composeName(String name, String prefix)
             throws NamingException {
-        return composeName(
-                new CompositeName(name), new CompositeName(prefix)).toString();
+        return composeName(new CompositeName(name), new CompositeName(prefix))
+                .toString();
     }
 
     /**
@@ -523,12 +523,11 @@ public class RegistryContext implements Context, Referenceable {
     public Reference getReference() throws NamingException {
         if (reference == null) {
             if ((host == null) || (host.equals("localhost"))) { //$NON-NLS-1$
-                // jndi.81=Cannot create reference for RMI registry that is being accessed using localhost
-                throw new ConfigurationException(
-                        Messages.getString("jndi.81")); //$NON-NLS-1$
+                // jndi.81=Cannot create reference for RMI registry that is
+                // being accessed using localhost
+                throw new ConfigurationException(Messages.getString("jndi.81")); //$NON-NLS-1$
             }
-            reference = new Reference(
-                    RegistryContext.class.getName(),
+            reference = new Reference(RegistryContext.class.getName(),
                     new StringRefAddr(ADDRESS_TYPE, RMI_URL_PREFIX + "//" //$NON-NLS-1$
                             + host + ((port > 0) ? (":" + port) : "")), //$NON-NLS-1$ //$NON-NLS-2$
                     RegistryContextFactory.class.getName(), null);
@@ -539,9 +538,9 @@ public class RegistryContext implements Context, Referenceable {
     /**
      * Initializes reference for this context instance. Called by
      * {@link RegistryContextFactory#getObjectInstance(Object, Name, Context, Hashtable)}.
-     *
-     * @param   reference
-     *          Reference for this context instance.
+     * 
+     * @param reference
+     *            Reference for this context instance.
      */
     protected void setReference(Reference reference) {
         this.reference = reference;
@@ -549,26 +548,26 @@ public class RegistryContext implements Context, Referenceable {
 
     /**
      * Returns a clone of this context.
-     *
-     * @return  Clone of this context.
+     * 
+     * @return Clone of this context.
      */
     protected RegistryContext cloneContext() {
         return new RegistryContext(this);
     }
 
     /**
-     * Verifies that the specified name is valid for this context
-     * and returns string representation of that name for this provider.
-     *
-     * Returns returns first component of a {@link CompositeName}
-     * or a string representation of a name otherwise.
-     *
-     * @param   name
-     *          Name to verify.
-     *
-     * @return  {@link CompositeName#get(int) CompositeName#get(0)}
-     *          if <code>name</code> is a {@link CompositeName},
-     *          {@link Object#toString() name.toString()} otherwise.
+     * Verifies that the specified name is valid for this context and returns
+     * string representation of that name for this provider.
+     * 
+     * Returns returns first component of a {@link CompositeName} or a string
+     * representation of a name otherwise.
+     * 
+     * @param name
+     *            Name to verify.
+     * 
+     * @return {@link CompositeName#get(int) CompositeName#get(0)} if
+     *         <code>name</code> is a {@link CompositeName},
+     *         {@link Object#toString() name.toString()} otherwise.
      */
     protected String getMyComponents(Name name) {
         if (name instanceof CompositeName) {
@@ -582,25 +581,25 @@ public class RegistryContext implements Context, Referenceable {
      * {@link NamingManager#getStateToBind(Object, Name, Context, Hashtable)}
      * and makes the resulting object {@link Remote} by wrapping it into
      * {@link RemoteReferenceWrapper}.
-     *
-     * @param   name
-     *          Object name.
-     *
-     * @param   obj
-     *          Object to prepare for binding.
-     *
-     * @return  Object ready for binding.
-     *
-     * @throws  NamingException
-     *          If some naming error occurs.
-     *
-     * @throws  RemoteException
-     *          If remote exception occurs.
+     * 
+     * @param name
+     *            Object name.
+     * 
+     * @param obj
+     *            Object to prepare for binding.
+     * 
+     * @return Object ready for binding.
+     * 
+     * @throws NamingException
+     *             If some naming error occurs.
+     * 
+     * @throws RemoteException
+     *             If remote exception occurs.
      */
     protected Remote getStateToBind(String name, Object obj)
             throws NamingException, RemoteException {
-        obj = NamingManager.getStateToBind(
-                obj, new CompositeName().add(name), this, environment);
+        obj = NamingManager.getStateToBind(obj, new CompositeName().add(name),
+                this, environment);
 
         if (obj instanceof Remote) {
             return (Remote) obj;
@@ -611,51 +610,51 @@ public class RegistryContext implements Context, Referenceable {
         }
 
         if (obj instanceof Referenceable) {
-            return new RemoteReferenceWrapper(
-                    ((Referenceable) obj).getReference());
+            return new RemoteReferenceWrapper(((Referenceable) obj)
+                    .getReference());
         }
-        // jndi.82=Cannot bind to RMI Registry object that is neither Remote nor Reference nor Referenceable
+        // jndi.82=Cannot bind to RMI Registry object that is neither Remote nor
+        // Reference nor Referenceable
         throw new IllegalArgumentException(Messages.getString("jndi.82")); //$NON-NLS-1$
     }
 
     /**
-     * Processes object returned from {@linkplain Registry RMI registry}.
-     * It unwraps {@link RemoteReference} if necessary and calls
+     * Processes object returned from {@linkplain Registry RMI registry}. It
+     * unwraps {@link RemoteReference} if necessary and calls
      * {@link NamingManager#getObjectInstance(Object, Name, Context, Hashtable)}.
-     *
-     * @param   name
-     *          Object name.
-     *
-     * @param   remote
-     *          Returned object.
-     *
-     * @return  Processed object.
-     *
-     * @throws  NamingException
-     *          If some naming error occurs.
-     *
-     * @throws  RemoteException
-     *          If remote exception occurs.
+     * 
+     * @param name
+     *            Object name.
+     * 
+     * @param remote
+     *            Returned object.
+     * 
+     * @return Processed object.
+     * 
+     * @throws NamingException
+     *             If some naming error occurs.
+     * 
+     * @throws RemoteException
+     *             If remote exception occurs.
      */
     protected Object getObjectInstance(String name, Remote remote)
             throws NamingException, RemoteException {
         Object obj;
 
-        obj = ((remote instanceof RemoteReference)
-                ? ((RemoteReference) remote).getReference()
-                : (Object) remote);
+        obj = ((remote instanceof RemoteReference) ? ((RemoteReference) remote)
+                .getReference() : (Object) remote);
 
         try {
-            return NamingManager.getObjectInstance(
-                    obj, new CompositeName().add(name), this, environment);
+            return NamingManager.getObjectInstance(obj, new CompositeName()
+                    .add(name), this, environment);
         } catch (NamingException e) {
             throw e;
         } catch (RemoteException e) {
             throw e;
         } catch (Exception e) {
             // jndi.83=NamingManager.getObjectInstance() failed
-            throw (NamingException) new NamingException(
-                    Messages.getString("jndi.83")).initCause(e); //$NON-NLS-1$
+            throw (NamingException) new NamingException(Messages
+                    .getString("jndi.83")).initCause(e); //$NON-NLS-1$
         }
     }
 
@@ -663,53 +662,48 @@ public class RegistryContext implements Context, Referenceable {
      * Prepares a new {@link NamingException} wrapping the specified
      * {@link RemoteException} source exception. Source exception becomes a
      * {@linkplain NamingException#getCause() cause} of the generated exception.
-     *
-     * The particular subclass of {@link NamingException} returned depends
-     * on the particular subclass of source {@link RemoteException}.
-     *
-     * If source exception is not of a specific class or is not
-     * a {@link RemoteException} or is <code>null</code>,
-     * then plain {@link NamingException} is returned.
-     *
+     * 
+     * The particular subclass of {@link NamingException} returned depends on
+     * the particular subclass of source {@link RemoteException}.
+     * 
+     * If source exception is not of a specific class or is not a
+     * {@link RemoteException} or is <code>null</code>, then plain
+     * {@link NamingException} is returned.
+     * 
      * Note: {@link Throwable#fillInStackTrace()} should be called before
-     * throwing the generated exception, to provide the proper
-     * (not including this method) stack trace for the exception.
-     *
+     * throwing the generated exception, to provide the proper (not including
+     * this method) stack trace for the exception.
+     * 
      * Example of use:
-     *
+     * 
      * <code>try {
      *     ...
      * } catch (RemoteException e) {
      *     throw (NamingException) newNamingException(e).fillInStackTrace();
      * }</code>
-     *
-     * @param   e
-     *          Source {@link RemoteException}.
-     *
-     * @return  Generated {@link NamingException} exception.
+     * 
+     * @param e
+     *            Source {@link RemoteException}.
+     * 
+     * @return Generated {@link NamingException} exception.
      */
-    @SuppressWarnings("deprecation") //$NON-NLS-1$
+    @SuppressWarnings("deprecation")
     protected NamingException newNamingException(Throwable e) {
-        NamingException ret =
-                  (e instanceof AccessException)
-                        ? new NoPermissionException()
-                : (e instanceof ConnectException)
-                        ? new ServiceUnavailableException()
-                : (e instanceof ConnectIOException)
-               || (e instanceof ExportException)
-               || (e instanceof MarshalException)
-               || (e instanceof UnmarshalException)
-                        ? new CommunicationException()
-                : (e instanceof ActivateFailedException)
-               || (e instanceof NoSuchObjectException)
-               || (e instanceof java.rmi.server.SkeletonMismatchException)
-               || (e instanceof java.rmi.server.SkeletonNotFoundException)
-               || (e instanceof StubNotFoundException)
-               || (e instanceof UnknownHostException)
-                        ? new ConfigurationException()
-                : (e instanceof ServerException)
-                        ? newNamingException(e.getCause())
-                        : new NamingException();
+        NamingException ret = (e instanceof AccessException) ? new NoPermissionException()
+                : (e instanceof ConnectException) ? new ServiceUnavailableException()
+                        : (e instanceof ConnectIOException)
+                                || (e instanceof ExportException)
+                                || (e instanceof MarshalException)
+                                || (e instanceof UnmarshalException) ? new CommunicationException()
+                                : (e instanceof ActivateFailedException)
+                                        || (e instanceof NoSuchObjectException)
+                                        || (e instanceof java.rmi.server.SkeletonMismatchException)
+                                        || (e instanceof java.rmi.server.SkeletonNotFoundException)
+                                        || (e instanceof StubNotFoundException)
+                                        || (e instanceof UnknownHostException) ? new ConfigurationException()
+                                        : (e instanceof ServerException) ? newNamingException(e
+                                                .getCause())
+                                                : new NamingException();
 
         if (ret.getCause() == null) {
             ret.initCause(e);
@@ -719,13 +713,13 @@ public class RegistryContext implements Context, Referenceable {
 
     /**
      * Installs {@link RMISecurityManager} if it is not already installed.
-     *
-     * @throws  NoPermissionException
-     *          If security manager other than {@link RMISecurityManager}
-     *          is installed and prohibits installing a new security manager.
+     * 
+     * @throws NoPermissionException
+     *             If security manager other than {@link RMISecurityManager} is
+     *             installed and prohibits installing a new security manager.
      */
     protected void installSecurityManager() throws NoPermissionException {
-        if (! (System.getSecurityManager() instanceof RMISecurityManager)) {
+        if (!(System.getSecurityManager() instanceof RMISecurityManager)) {
             try {
                 System.setSecurityManager(new RMISecurityManager());
             } catch (SecurityException e) {
@@ -737,42 +731,41 @@ public class RegistryContext implements Context, Referenceable {
     }
 
     /**
-     * Creates reference to the {@linkplain Registry RMI registry}
-     * located on the specified host and port.
-     *
-     * @param   host
-     *          Host. If <code>null</code>, localhost is assumed.
-     *          May not be <code>null</code>
-     *          if <code>csf</code> is not <code>null</code>.
-     *
-     * @param   port
-     *          Port. If <code>0</code>, default registry port
-     *          (<code>1099</code>) is assumed.
-     *          May not be <code>0</code>
-     *          if <code>csf</code> is not <code>null</code>.
-     *
-     * @param   csf
-     *          RMIClientSocketFactory that is used to create socket connections to the
-     *          registry. If <code>null</code>, default socket factory is used.
-     *          See
-     *          {@link LocateRegistry#getRegistry(String, int, RMIClientSocketFactory)}.
-     *
-     * @return  Registry reference.
-     *
-     * @throws  NamingException
-     *          If getting registry failed.
+     * Creates reference to the {@linkplain Registry RMI registry} located on
+     * the specified host and port.
+     * 
+     * @param host
+     *            Host. If <code>null</code>, localhost is assumed. May not
+     *            be <code>null</code> if <code>csf</code> is not
+     *            <code>null</code>.
+     * 
+     * @param port
+     *            Port. If <code>0</code>, default registry port (<code>1099</code>)
+     *            is assumed. May not be <code>0</code> if <code>csf</code>
+     *            is not <code>null</code>.
+     * 
+     * @param csf
+     *            RMIClientSocketFactory that is used to create socket
+     *            connections to the registry. If <code>null</code>, default
+     *            socket factory is used. See
+     *            {@link LocateRegistry#getRegistry(String, int, RMIClientSocketFactory)}.
+     * 
+     * @return Registry reference.
+     * 
+     * @throws NamingException
+     *             If getting registry failed.
      */
     protected Registry getRegistry(String host, int port,
             RMIClientSocketFactory csf) throws NamingException {
         try {
             return ((csf != null) ? LocateRegistry.getRegistry(host, port, csf)
-                    : ((host != null)
-                        ? ((port != 0) ? LocateRegistry.getRegistry(host, port)
-                                       : LocateRegistry.getRegistry(host))
-                        : ((port != 0) ? LocateRegistry.getRegistry(port)
-                                       : LocateRegistry.getRegistry())));
+                    : ((host != null) ? ((port != 0) ? LocateRegistry
+                            .getRegistry(host, port) : LocateRegistry
+                            .getRegistry(host)) : ((port != 0) ? LocateRegistry
+                            .getRegistry(port) : LocateRegistry.getRegistry())));
         } catch (RemoteException e) {
             throw (NamingException) new NamingException().initCause(e);
         }
     }
+
 }

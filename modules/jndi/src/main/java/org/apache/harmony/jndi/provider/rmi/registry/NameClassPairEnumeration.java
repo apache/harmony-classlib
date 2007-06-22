@@ -20,6 +20,7 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.2 $
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import java.rmi.registry.Registry;
@@ -34,9 +35,6 @@ import javax.naming.NamingException;
 /**
  * Enumeration of {@link NameClassPair} objects, used by
  * {@link RegistryContext#list(Name)} method.
- * 
- * @author Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 class NameClassPairEnumeration implements NamingEnumeration<NameClassPair> {
 
@@ -53,7 +51,8 @@ class NameClassPairEnumeration implements NamingEnumeration<NameClassPair> {
     /**
      * Creates this enumeration.
      * 
-     * @param names Binding names returned from {@link Registry#list()} method.
+     * @param names
+     *            Binding names returned from {@link Registry#list()} method.
      */
     public NameClassPairEnumeration(String[] names) {
         this.names = names;
@@ -82,11 +81,13 @@ class NameClassPairEnumeration implements NamingEnumeration<NameClassPair> {
         try {
             return next();
         } catch (NamingException e) {
-            throw (NoSuchElementException) new NoSuchElementException().initCause(e);
+            throw (NoSuchElementException) new NoSuchElementException()
+                    .initCause(e);
         }
     }
 
     public void close() {
         index = names.length;
     }
+
 }

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.spi;
 
 import java.util.Hashtable;
@@ -25,9 +24,9 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 
 /**
- * The <code>DirStateFactory</code> interface describes a factory used to get 
- * the state of an object to be bound. <code>DirStateFactory</code> is a 
- * specific version of <code>StateFactory</code> for 
+ * The <code>DirStateFactory</code> interface describes a factory used to get
+ * the state of an object to be bound. <code>DirStateFactory</code> is a
+ * specific version of <code>StateFactory</code> for
  * <code>DirectoryManager</code>.
  * 
  * @see StateFactory
@@ -35,51 +34,34 @@ import javax.naming.directory.Attributes;
  */
 public interface DirStateFactory extends StateFactory {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Similar to <code>StateFactory.getStateToBind</code> with an additional
      * <code>attributes</code> parameter.
      * 
-     * @param o     an object
-     * @param n     a name
-     * @param c     a context
-     * @param envmt a context environment
-     * @param a     some attributes
-     * @return      the state as a <code>Result</code> instance, containing
-     *              an object and associated attributes.
-     * @throws NamingException if an exception occurs
+     * @param o
+     *            an object
+     * @param n
+     *            a name
+     * @param c
+     *            a context
+     * @param envmt
+     *            a context environment
+     * @param a
+     *            some attributes
+     * @return the state as a <code>Result</code> instance, containing an
+     *         object and associated attributes.
+     * @throws NamingException
+     *             if an exception occurs
      * @see StateFactory#getStateToBind(Object, Name, Context, Hashtable)
      */
-    Result getStateToBind(
-        Object o,
-        Name n,
-        Context c,
-        Hashtable<?, ?> envmt,
-        Attributes a)
-        throws NamingException;
-
-    /*
-     * -------------------------------------------------------------------
-     * Inner classes
-     * -------------------------------------------------------------------
-     */
+    Result getStateToBind(Object o, Name n, Context c, Hashtable<?, ?> envmt,
+            Attributes a) throws NamingException;
 
     /**
-     * Used by the <code>DirectoryManager.getStateToBind</code> method as
-     * the returning value.
+     * Used by the <code>DirectoryManager.getStateToBind</code> method as the
+     * returning value.
      */
     public static class Result {
-
-        /*
-         * -------------------------------------------------------------------
-         * Instance variables
-         * -------------------------------------------------------------------
-         */
 
         // the Object returned by DirectoryManager.getStateToBind.
         private Object obj;
@@ -87,30 +69,22 @@ public interface DirStateFactory extends StateFactory {
         // the Attributes returned by DirectoryManager.getStateToBind.
         private Attributes attrs;
 
-        /*
-         * -------------------------------------------------------------------
-         * Constructors
-         * -------------------------------------------------------------------
-         */
-
         /**
          * Creates an instance of <code>DirStateFactory.Result</code>
          * 
-         * @param o the object returned by 
-         *          <code>DirectoryManager.getStateToBind</code>. May be null.
-         * @param a the attributes returned by 
-         *          <code>DirectoryManager.getStateToBind</code>. May be null.
+         * @param o
+         *            the object returned by
+         *            <code>DirectoryManager.getStateToBind</code>. May be
+         *            null.
+         * @param a
+         *            the attributes returned by
+         *            <code>DirectoryManager.getStateToBind</code>. May be
+         *            null.
          */
         public Result(Object o, Attributes a) {
             this.obj = o;
             this.attrs = a;
         }
-
-        /*
-         * -------------------------------------------------------------------
-         * Methods
-         * -------------------------------------------------------------------
-         */
 
         /**
          * Returns the object associated with this result.
@@ -132,5 +106,3 @@ public interface DirStateFactory extends StateFactory {
     }
 
 }
-
-

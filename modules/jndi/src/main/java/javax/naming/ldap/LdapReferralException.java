@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import java.util.Hashtable;
@@ -27,56 +26,39 @@ import javax.naming.ReferralException;
 /**
  * <code>LdapReferralException</code> is an abstract exception which extends
  * <code>ReferralException</code> to handle LDAPv3 request controls.
- * 
  */
 public abstract class LdapReferralException extends ReferralException {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /* 
-     * This constant is used during deserialization to check the J2SE version which
+     * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -1668992791764950804L; // J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = -1668992791764950804L;
 
     /**
      * Default constructor.
      */
     protected LdapReferralException() {
-    	super();
+        super();
     }
 
     /**
      * Constructs an LdapReferralException instance using the supplied text of
      * the message
-     * @param s				the supplied text of the message, which may be null
+     * 
+     * @param s
+     *            the supplied text of the message, which may be null
      */
     protected LdapReferralException(String s) {
         super(s);
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Gets referral context without environment properties.
      * 
-     * @return 				referral context
+     * @return referral context
      * @throws NamingException
-     * 						If cannot get referral context correctly.
+     *             If cannot get referral context correctly.
      */
     @Override
     public abstract Context getReferralContext() throws NamingException;
@@ -84,28 +66,29 @@ public abstract class LdapReferralException extends ReferralException {
     /**
      * Gets referral context with environment properties.
      * 
-     * @param h				environment properties			
-     * @return 				referral context
+     * @param h
+     *            environment properties
+     * @return referral context
      * @throws NamingException
-     * 						If cannot get referral context correctly.
+     *             If cannot get referral context correctly.
      */
     @Override
     public abstract Context getReferralContext(Hashtable<?, ?> h)
-        throws NamingException;
+            throws NamingException;
 
     /**
      * Gets referral context with environment properties and an array of LDAPv3
      * controls.
      * 
-     * @param h				environment properties
-     * @param cs			array of LDAPv3 controls
-     * @return 				referral context
+     * @param h
+     *            environment properties
+     * @param cs
+     *            array of LDAPv3 controls
+     * @return referral context
      * @throws NamingException
-     * 						If cannot get referral context correctly.
+     *             If cannot get referral context correctly.
      */
     public abstract Context getReferralContext(Hashtable<?, ?> h, Control[] cs)
-        throws NamingException;
+            throws NamingException;
 
 }
-
-

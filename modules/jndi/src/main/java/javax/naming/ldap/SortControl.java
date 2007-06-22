@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package javax.naming.ldap;
 
@@ -29,11 +29,7 @@ import org.apache.harmony.security.asn1.ASN1StringType;
 import org.apache.harmony.security.asn1.ASN1Type;
 
 /**
- * 
- * @ar.org.fitc.spec_ref
- * 
- * @version 0.0.1
- * 
+ * TODO: JavaDoc
  */
 public final class SortControl extends BasicControl {
 
@@ -75,56 +71,42 @@ public final class SortControl extends BasicControl {
      * Represents the following ASN1 Syntax:
      * 
      * SortKeyList ::= SEQUENCE OF SortKey;
-     * 
      */
-    static ASN1SequenceOf ASN1_SORTKEYLIST = new ASN1SequenceOf(
-            ASN1_SORTKEY);
+    static ASN1SequenceOf ASN1_SORTKEYLIST = new ASN1SequenceOf(ASN1_SORTKEY);
 
     private static final long serialVersionUID = -1965961680233330744L;
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public static final String OID = "1.2.840.113556.1.4.473";
+    public static final String OID = "1.2.840.113556.1.4.473"; //$NON-NLS-1$
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public SortControl(String sortBy, boolean criticality) throws IOException {
         super(OID, criticality, null);
-        ArrayList list = new ArrayList();
+        ArrayList<SortKey> list = new ArrayList<SortKey>();
         if (sortBy != null) {
             list.add(new SortKey(sortBy, true, null));
         } else {
-            list.add(new SortKey("", true, null));
+            list.add(new SortKey("", true, null)); //$NON-NLS-1$
         }
         value = ASN1_SORTKEYLIST.encode(list);
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public SortControl(String[] sortBy, boolean criticality) throws IOException {
         super(OID, criticality, null);
-        ArrayList list = new ArrayList();
+        ArrayList<SortKey> list = new ArrayList<SortKey>();
         for (int i = 0; i < sortBy.length; i++) {
             list.add(new SortKey(sortBy[i], true, null));
         }
         value = ASN1_SORTKEYLIST.encode(list);
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public SortControl(SortKey[] sortBy, boolean criticality)
             throws IOException {
         super(OID, criticality, null);
 
-        ArrayList list = new ArrayList();
+        ArrayList<SortKey> list = new ArrayList<SortKey>();
         for (int i = 0; i < sortBy.length; i++) {
             list.add(sortBy[i]);
         }
         this.value = ASN1_SORTKEYLIST.encode(list);
-
     }
+
 }

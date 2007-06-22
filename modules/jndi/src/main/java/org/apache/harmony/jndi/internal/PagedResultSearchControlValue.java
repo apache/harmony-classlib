@@ -13,39 +13,42 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package org.apache.harmony.jndi.internal;
 
 /**
  * Represents the following ASN1 Syntax on java Types:
  * 
+ * <pre>
+ *  
  * realSearchControlValue ::= SEQUENCE {
  *   size            INTEGER (0..maxInt),
  *                           -- requested page size from client
  *                           -- result set size estimate from server
  *   cookie          OCTET STRING
  * } 
- * 
- * @author Osvaldo C. Demo
- * @author Juan Giannuzzo
+ * </pre>
  */
 public class PagedResultSearchControlValue {
-    
+
     private byte[] cookie;
+
     private int size;
-    
+
     /**
-     * Constructor 
+     * Constructor
      * 
-     * @param size an int with the size
-     * @param cookie the cookie from the server
+     * @param size
+     *            an int with the size
+     * @param cookie
+     *            the cookie from the server
      */
     public PagedResultSearchControlValue(int size, byte[] cookie) {
-        this.cookie = cookie;    
+        this.cookie = cookie;
         this.size = size;
     }
-    
+
     /**
      * Getter method for cookie
      * 
@@ -54,7 +57,7 @@ public class PagedResultSearchControlValue {
     public byte[] getCookie() {
         return cookie;
     }
-    
+
     /**
      * Getter method for size
      * 
@@ -63,5 +66,5 @@ public class PagedResultSearchControlValue {
     public int getSize() {
         return size;
     }
-    
+
 }

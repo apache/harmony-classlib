@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when a link turns out to
- * be malformed.
+ * This is the <code>NamingException</code> used when a link turns out to be
+ * malformed.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class MalformedLinkException extends LinkException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = -3066740437737830242L;
+    static final long serialVersionUID = -3066740437737830242L;
 
     /**
-     * Constructs a <code>MalformedLinkException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>MalformedLinkException</code> instance with all data
+     * initialized to null.
      */
     public MalformedLinkException() {
         super();
     }
 
     /**
-     * Constructs a <code>MalformedLinkException</code> instance
-     * with the specified message.
+     * Constructs a <code>MalformedLinkException</code> instance with the
+     * specified message.
      * 
-     * @param arg0 The detail message for the exception. It may be null.
+     * @param arg0
+     *            The detail message for the exception. It may be null.
      */
     public MalformedLinkException(String arg0) {
         super(arg0);
     }
 
 }
-
-

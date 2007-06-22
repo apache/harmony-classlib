@@ -23,38 +23,21 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 /**
- * a simple implementation of NamingEnumeration
- * 
+ * A simple implementation of NamingEnumeration
  */
 class BasicNamingEnumeration<T> implements NamingEnumeration<T> {
 
-    /*
-     * -----------------------------------
-     * Fields
-     * -----------------------------------
-     */
-
     private Enumeration<T> enumeration;
 
-    /*
-   	 * -----------------------------------
-     * Constructors
-     * -----------------------------------
-     */
-
     /**
-     * default constructor
-     * @param e			wrapped enumeration
+     * Default constructor
+     * 
+     * @param e
+     *            wrapped enumeration
      */
     public BasicNamingEnumeration(Enumeration<T> e) {
         this.enumeration = e;
     }
-
-	/*
-	 * -----------------------------------
-	 * Methods of interface NamingEnumeration
-	 * -----------------------------------
-	 */
 
     public T next() throws NamingException {
         return enumeration.nextElement();
@@ -65,7 +48,7 @@ class BasicNamingEnumeration<T> implements NamingEnumeration<T> {
     }
 
     public void close() throws NamingException {
-    	// Does nothing.
+        // Does nothing.
     }
 
     public boolean hasMoreElements() {
@@ -77,5 +60,3 @@ class BasicNamingEnumeration<T> implements NamingEnumeration<T> {
     }
 
 }
-
-

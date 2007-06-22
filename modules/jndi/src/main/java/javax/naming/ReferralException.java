@@ -15,89 +15,73 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.util.Hashtable;
 
 /**
- * A <code>ReferralException</code> is an abstract class used by service 
+ * A <code>ReferralException</code> is an abstract class used by service
  * providers when dealing with referral exceptions.
- * 
  */
 public abstract class ReferralException extends NamingException {
-    
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-     
-    /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
-     */
-    private static final long serialVersionUID = -2881363844695698876L; // J2SE 1.4.2
 
     /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
+    private static final long serialVersionUID = -2881363844695698876L;
 
     /**
-     * Constructs a <code>ReferralException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>ReferralException</code> instance with all data
+     * initialized to null.
      */
     protected ReferralException() {
         super();
     }
 
     /**
-     * Constructs a <code>ReferralException</code> instance
-     * with the specified message. All other fields are initialized to null.
+     * Constructs a <code>ReferralException</code> instance with the specified
+     * message. All other fields are initialized to null.
      * 
-     * @param s The detail message for this exception. It may be null.
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     protected ReferralException(String s) {
         super(s);
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Returns the <code>Context</code> where the method should be resumed 
+     * Returns the <code>Context</code> where the method should be resumed
      * following a referral exception. This should not return null.
-     *
-     * @return  the <code>Context</code> where the method should be resumed 
-     *          following a referral exception. This should not return null.
-     * @throws  NamingException
+     * 
+     * @return the <code>Context</code> where the method should be resumed
+     *         following a referral exception. This should not return null.
+     * @throws NamingException
      */
     public abstract Context getReferralContext() throws NamingException;
 
     /**
-     * The same as <code>getReferralContext()</code> except that a 
-     * <code>Hashtable</code> containing environment properties can be taken 
+     * The same as <code>getReferralContext()</code> except that a
+     * <code>Hashtable</code> containing environment properties can be taken
      * to override the environment properties associated with the context that
      * threw this referral exception. This should not return null.
-     *
-     * @param h the environment properties. It may be null and then behaves 
-     *          the same as <code>getReferralContext()</code>.
-     * @return  the <code>Context</code> where the method should be resumed 
-     *          following a referral exception. This should not return null.
-     * @throws  NamingException
+     * 
+     * @param h
+     *            the environment properties. It may be null and then behaves
+     *            the same as <code>getReferralContext()</code>.
+     * @return the <code>Context</code> where the method should be resumed
+     *         following a referral exception. This should not return null.
+     * @throws NamingException
      */
-    public abstract Context getReferralContext(Hashtable<?, ?> h) throws NamingException;
+    public abstract Context getReferralContext(Hashtable<?, ?> h)
+            throws NamingException;
 
     /**
-     * Returns the information relating to the exception. This should
-     * not return null.
-     * @return  the information relating to the exception. This should
-     *          not return null.
+     * Returns the information relating to the exception. This should not return
+     * null.
+     * 
+     * @return the information relating to the exception. This should not return
+     *         null.
      */
     public abstract Object getReferralInfo();
 
@@ -112,7 +96,5 @@ public abstract class ReferralException extends NamingException {
      * Retry this referral.
      */
     public abstract void retryReferral();
-    
+
 }
-
-

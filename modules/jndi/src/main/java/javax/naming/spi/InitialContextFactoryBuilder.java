@@ -15,44 +15,36 @@
  * limitations under the License.
  */
 
-
 package javax.naming.spi;
 
 import java.util.Hashtable;
 import javax.naming.NamingException;
 
 /**
- * An initial context factory builder creates an initial context factory, and
- * an initial context factory creates initial contexts. A variety of different
+ * An initial context factory builder creates an initial context factory, and an
+ * initial context factory creates initial contexts. A variety of different
  * initial context implementations may be used by a JNDI application. The
- * application uses <code>NamingManager.setInitialContextFactoryBuilder()</code> 
- * to specify its own or its preferred builder to override JNDI default policies.
- * Any such builder must implement the <code>InitialContextFactoryBuilder</code>
- * interface.
- * 
+ * application uses <code>NamingManager.setInitialContextFactoryBuilder()</code>
+ * to specify its own or its preferred builder to override JNDI default
+ * policies. Any such builder must implement the
+ * <code>InitialContextFactoryBuilder</code> interface.
  */
 public interface InitialContextFactoryBuilder {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Uses the environment properties in the specified <code>envmt</code> 
-     * parameter to create an initial context factory. If the implementation 
-     * needs to keep a copy of <code>envmt</code> or to change it, it will 
-     * clone or copy the specified object and use that instead.
-     * The <code>envmt</code> parameter may be null.
+     * Uses the environment properties in the specified <code>envmt</code>
+     * parameter to create an initial context factory. If the implementation
+     * needs to keep a copy of <code>envmt</code> or to change it, it will
+     * clone or copy the specified object and use that instead. The
+     * <code>envmt</code> parameter may be null.
      * 
-     * @param envmt the context environment as a <code>Hashtable</code>
+     * @param envmt
+     *            the context environment as a <code>Hashtable</code>
      * @return an initial context factory - cannot be null.
-     * @throws NamingException if an initial context factory could not be created.
+     * @throws NamingException
+     *             if an initial context factory could not be created.
      */
     InitialContextFactory createInitialContextFactory(Hashtable<?, ?> envmt)
-        throws NamingException;
+            throws NamingException;
 
 }
-
-

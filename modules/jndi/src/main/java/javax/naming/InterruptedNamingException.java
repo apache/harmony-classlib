@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
@@ -23,35 +22,34 @@ package javax.naming;
  * interrupted.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class InterruptedNamingException extends NamingException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = 6404516648893194728L; // J2SE 1.4.2	
+    static final long serialVersionUID = 6404516648893194728L;
 
     /**
-     * Constructs an <code>InterruptedNamingException</code> instance 
-     * with all data initialized to null.
+     * Constructs an <code>InterruptedNamingException</code> instance with all
+     * data initialized to null.
      */
     public InterruptedNamingException() {
         super();
     }
 
     /**
-     * Constructs an <code>InterruptedNamingException</code> instance
-     * with the specified message.
+     * Constructs an <code>InterruptedNamingException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public InterruptedNamingException(String s) {
         super(s);
     }
 
 }
-
-

@@ -15,43 +15,31 @@
  * limitations under the License.
  */
 
-
 package javax.naming.directory;
 
 import javax.naming.NamingException;
 
 /**
  * Thrown when attempting to make a modification that contravenes the directory
- * schema.<p>
+ * schema.
+ * <p>
  * 
  * For example, this exception is thrown if an attempt is made to modify the set
  * of attributes that is defined on an entry to a state that is invalid by the
- * object attributes schema.  Another example is if the naming schema is contravened
- * by attempting to move the entry to a new part of the directory.<p>
+ * object attributes schema. Another example is if the naming schema is
+ * contravened by attempting to move the entry to a new part of the directory.
+ * <p>
  * 
- * The directory service provider throws these exceptions.<p>
+ * The directory service provider throws these exceptions.
+ * <p>
  * 
- * The specification for serialization and thread-safety of <code>NamingException</code>
- * applies equally to this class.<p> 
- * 
+ * The specification for serialization and thread-safety of
+ * <code>NamingException</code> applies equally to this class.
+ * <p>
  */
 public class SchemaViolationException extends NamingException {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /* Serialization information - start. */
     private static final long serialVersionUID = 0xd5c97d2fb107bec1L;
-    /* Serialization information - end. */
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * This is the default constructor. All fields are initialized to null.
@@ -62,11 +50,12 @@ public class SchemaViolationException extends NamingException {
 
     /**
      * Construct a <code>SchemaViolationException</code> with given message.
-     * @param s a message about exception detail
+     * 
+     * @param s
+     *            a message about exception detail
      */
     public SchemaViolationException(String s) {
         super(s);
     }
+
 }
-
-
