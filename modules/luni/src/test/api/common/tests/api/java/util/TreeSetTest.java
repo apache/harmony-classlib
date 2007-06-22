@@ -17,10 +17,12 @@
 
 package tests.api.java.util;
 
+import java.net.Inet4Address;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
