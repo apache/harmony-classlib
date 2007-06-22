@@ -20,7 +20,7 @@ package java.sql;
 /**
  * Provides information about the columns in a ResultSet.
  */
-public interface ResultSetMetaData {
+public interface ResultSetMetaData extends Wrapper {
 
     /**
      * Indicates that a column cannot contain NULL values

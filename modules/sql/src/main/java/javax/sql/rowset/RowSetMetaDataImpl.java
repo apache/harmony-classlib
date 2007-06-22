@@ -533,4 +533,22 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         
         public String catalogName = EMPTY_STRING;
     }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.Wrapper#isWrapperFor(Class)
+     */
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.Wrapper#unwrap(Class)
+     */
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
 }
