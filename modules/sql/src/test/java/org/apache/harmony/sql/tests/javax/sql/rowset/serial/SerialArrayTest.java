@@ -20,6 +20,7 @@ import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLData;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLInput;
 import java.sql.SQLOutput;
 import java.sql.Types;
@@ -234,6 +235,29 @@ public class SerialArrayTest extends TestCase {
         } catch (UnsupportedOperationException e) {
             // expected
         }
+    }
+    
+    public void test_free() throws Exception {
+        try {
+            sa.free();
+            fail("should throw SQLFeatureNotSupportedException");
+        } catch (SQLFeatureNotSupportedException e) {
+            // expected
+        }
+        try {
+            sa.getResultSet(null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+        try {
+            sa.getResultSet(0, 1, null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+        // OK after its free
+        assertNotNull(sa.getArray());
     }
 
     class MockArray implements Array {
