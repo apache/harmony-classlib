@@ -73,6 +73,12 @@ public abstract class PersistenceDelegate {
             }
 
             out.writeExpression(instantiate(oldInstance, out));
+            newInstance = out.get(oldInstance);
+            
+            if (newInstance != null) {
+                initialize(oldInstance.getClass(), oldInstance,
+                           newInstance, out);
+            }
         }
     }
 }

@@ -31,6 +31,7 @@ import org.apache.harmony.luni.util.PriviAction;
 /**
  * Default implementation for ProxySelector
  */
+@SuppressWarnings("unchecked")
 class ProxySelectorImpl extends ProxySelector {
 
     private static final int HTTP_PROXY_PORT = 80;

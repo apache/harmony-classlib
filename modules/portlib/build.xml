@@ -33,7 +33,6 @@
     <condition property="test.portlib">
         <and>
             <isset property="is.32bit" />
-            <not><isset property="is.windows" /></not>
             <isset property="hythr.available" />
         </and>
     </condition>
@@ -51,7 +50,7 @@
     </target>
 
     <target name="-test-module"
-            depends="-compile-native-tests,-run-native-tests" />
+            depends="-make-report-dir,-compile-native-tests,-run-native-tests" />
 
     <target name="copy-native-includes"
             depends="-copy-thread-include,-copy-thread-stub-include" >
@@ -179,18 +178,25 @@
         </delete>
     </target>
 
-    <target name="-compile-native-tests" >
+    <target name="-make-report-dir">
+        <mkdir dir="${hy.tests.reports}" />
+    </target>
+
+    <target name="-compile-native-tests" if="test.portlib">
         <make dir="${hy.portlib.src.test.native}/init/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hycpu/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyerror/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hyfiletext/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hygp/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hymem/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hynls/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hyport/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hystr/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
     </target>
 
-    <target name="-run-native-tests" >
-        <mkdir dir="${hy.tests.reports}" />
+    <target name="-run-native-tests" if="test.portlib">
         <property environment="env"/>
         <condition property="hy.thr.libpath"
                    value="${path.separator}${hy.jdk}/jre/bin/default" else="">
@@ -199,9 +205,13 @@
         <!-- <exec-native test="init" /> -->
         <exec-native test="hycpu" />
         <exec-native test="hyerror" />
-        <!-- <exec-native test="hyfile" /> -->
+        <exec-native test="hyfile" />
+        <exec-native test="hyfiletext" />
         <exec-native test="hygp" />
         <exec-native test="hymem" />
+        <exec-native test="hynls" />
+        <exec-native test="hyport" />
+        <exec-native test="hystr" />
         <exec-native test="hytime" />
 	
         <move todir="${hy.tests.reports}">
@@ -222,9 +232,17 @@
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hyfile/${hy.os.family}" 
               target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hyfiletext/${hy.os.family}" 
+              target="clean" />
         <make dir="${hy.portlib.src.test.native}/hygp/${hy.os.family}" 
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hymem/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hynls/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hyport/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hystr/${hy.os.family}" 
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" 
               target="clean" />

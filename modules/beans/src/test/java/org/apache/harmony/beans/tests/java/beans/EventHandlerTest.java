@@ -126,6 +126,13 @@ public class EventHandlerTest extends TestCase {
 
         assertEquals(invocationObject, handler.getTarget());
         assertEquals("doSomething", getMethodName());
+
+        // Regression test for HARMONY-4033
+        m = FredListener.class.getMethod("fireFredEvent",
+                new Class[] { FredEvent.class });
+        proxy = EventHandler.create(FredListener.class, invocationObject,
+                "doSomething", null, "fireFredEvent");
+        m.invoke(proxy, new Object[] { null });
     }
 
     /**

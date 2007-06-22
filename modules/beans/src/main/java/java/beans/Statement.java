@@ -50,10 +50,12 @@ public class Statement {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String targetVar = target != null ? convertClassName(target.getClass()) : "null"; //$NON-NLS-1$
+
         sb.append(targetVar);
         sb.append('.');
         sb.append(methodName);
         sb.append('(');
+
         if (arguments != null) {
             for (int i = 0; i < arguments.length; ++i) {
                 if (i > 0) {
@@ -72,6 +74,7 @@ public class Statement {
         }
         sb.append(')');
         sb.append(';');
+
         return sb.toString();
     }
 
@@ -93,6 +96,7 @@ public class Statement {
 
     Object invokeMethod() throws Exception {
         Object result = null;
+
         try {
             if (target.getClass().isArray()) {
                 Method method = findArrayMethod();
@@ -101,21 +105,27 @@ public class Statement {
             } else if (methodName.equals("newInstance") //$NON-NLS-1$
                     && target == Array.class) {
                 Class<?> componentType = (Class) arguments[0];
-                int length = ((Integer) arguments[1]).intValue();
+                int length = (Integer) arguments[1];
                 result = Array.newInstance(componentType, length);
-            } else if (methodName.equals("new") //$NON-NLS-1$
-                    || methodName.equals("newInstance")) { //$NON-NLS-1$
-                if (target instanceof Class) {
-                    Constructor<?> constructor = findConstructor();
-                    result = constructor.newInstance(arguments);
+            } else if (target instanceof Class &&
+                       (methodName.equals("new") || //$NON-NLS-1$
+                        methodName.equals("newInstance"))) { //$NON-NLS-1$
+                Constructor<?> constructor;
+                Class<?> clazz = (Class <?>) target;
+                
+                if (clazz.isArray()) {
+                    // special form for constructing arrays, 
+                    // can be passed from decoder
+                    result = Array.newInstance(clazz.getComponentType(),
+                            (Integer) arguments[0]);
                 } else {
-                    // XXX should be investigated, dead code?
-                    Constructor<?> constructor = findConstructor();
+                    constructor = findConstructor();
                     result = constructor.newInstance(arguments);
                 }
             } else if (target instanceof Class) {
                 Method method = null;
                 boolean found = false;
+
                 try {
                     /*
                      * Try to look for a static method of class described by the
@@ -129,6 +139,7 @@ public class Statement {
                     }
                 } catch (NoSuchMethodException e) {
                 }
+
                 if (!found) {
                     // static method was not found
                     // try to invoke method of Class object
@@ -187,6 +198,7 @@ public class Statement {
 
     private Object[] getArrayMethodArguments() {
         Object[] args = new Object[arguments.length + 1];
+
         args[0] = target;
         for (int i = 0; i < arguments.length; ++i) {
             args[i + 1] = arguments[i];
@@ -199,10 +211,13 @@ public class Statement {
         Class<?> targetClass = (Class) target;
         Constructor<?> result = null;
         Constructor<?>[] constructors = targetClass.getConstructors();
+
         for (Constructor<?> constructor : constructors) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
+
             if (parameterTypes.length == argClasses.length) {
                 boolean found = true;
+
                 for (int j = 0; j < parameterTypes.length; ++j) {
                     boolean argIsNull = argClasses[j] == null;
                     boolean argIsPrimitiveWrapper = isPrimitiveWrapper(argClasses[j],
@@ -210,6 +225,7 @@ public class Statement {
                     boolean paramIsPrimitive = parameterTypes[j].isPrimitive();
                     boolean paramIsAssignable = argIsNull ? false : parameterTypes[j]
                             .isAssignableFrom(argClasses[j]);
+
                     if (!argIsNull && !paramIsAssignable && !argIsPrimitiveWrapper || argIsNull
                             && paramIsPrimitive) {
                         found = false;
@@ -238,13 +254,17 @@ public class Statement {
         Method[] methods = targetClass.getMethods();
         Vector<Method> foundMethods = new Vector<Method>();
         Method[] foundMethodsArr;
+
         for (Method method : methods) {
             int mods = method.getModifiers();
+
             if (method.getName().equals(methodName)
                     && (methodIsStatic ? Modifier.isStatic(mods) : true)) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
+
                 if (parameterTypes.length == argClasses.length) {
                     boolean found = true;
+
                     for (int j = 0; j < parameterTypes.length; ++j) {
                         boolean argIsNull = (argClasses[j] == null);
                         boolean argIsPrimitiveWrapper = isPrimitiveWrapper(argClasses[j],
@@ -252,6 +272,7 @@ public class Statement {
                         boolean paramIsPrimitive = parameterTypes[j].isPrimitive();
                         boolean paramIsAssignable = argIsNull ? false : parameterTypes[j]
                                 .isAssignableFrom(argClasses[j]);
+
                         if (!argIsNull && !paramIsAssignable && !argIsPrimitiveWrapper
                                 || argIsNull && paramIsPrimitive) {
                             found = false;
@@ -275,9 +296,11 @@ public class Statement {
     static boolean isStaticMethodCall(Statement stmt) {
         Object target = stmt.getTarget();
         String mName = stmt.getMethodName();
+
         if (!(target instanceof Class)) {
             return false;
         }
+
         try {
             Statement.findMethod((Class) target, mName, stmt.getArguments(), true);
             return true;

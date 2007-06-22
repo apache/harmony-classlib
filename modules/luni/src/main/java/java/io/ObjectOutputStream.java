@@ -20,10 +20,7 @@ package java.io;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.security.AccessController;
 import java.util.IdentityHashMap;
-
-import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * An ObjectOutputStream can be used to save Java objects into a stream where
@@ -1297,7 +1294,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
         // See if the object has a writeObject method. If so, run it
         boolean executed = false;
-        Class<?> targetClass = classDesc.forClass();
         try {
             if (classDesc.hasMethodWriteObject()){
                 final Method method = classDesc.getMethodWriteObject();

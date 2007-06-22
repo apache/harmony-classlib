@@ -52,6 +52,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             ordinal = ((Enum) theKey).ordinal();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object object) {
             if (!enumMap.hasMapping[ordinal]) {
@@ -78,18 +79,21 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
                             : enumMap.values[ordinal].hashCode());
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public KT getKey() {
             checkEntryStatus();
             return (KT) enumMap.keys[ordinal];
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public VT getValue() {
             checkEntryStatus();
             return (VT) enumMap.values[ordinal];
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public VT setValue(VT value) {
             checkEntryStatus();
@@ -280,6 +284,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             super(value, em);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public E next() {
             if (!hasNext()) {
@@ -349,6 +354,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             return toArray(entryArray);
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public Object[] toArray(Object[] array) {
             int size = enumMap.size();
@@ -411,6 +417,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * @throws NullPointerException
      *             if the map is null
      */
+    @SuppressWarnings("unchecked")
     public EnumMap(Map<K, ? extends V> map) {
         if (map instanceof EnumMap) {
             initialization((EnumMap<K, V>) map);
@@ -445,6 +452,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      * 
      * @return a shallow copy of this map
      */
+    @SuppressWarnings("unchecked")
     @Override
     public EnumMap<K, V> clone() {
         try {
@@ -524,6 +532,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
      *            the object
      * @return true if this EnumMap is equal to the given object.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -662,6 +671,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         return valuesCollection;
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
         stream.defaultReadObject();

@@ -110,7 +110,10 @@ public class Handler extends DefaultHandler {
         try {
             cmd.exec(references);
         } catch (Exception e) {
-            throw new SAXException(e);
+            SAXException e2 = new SAXException(e.getMessage());
+            
+            e2.initCause(e);
+            throw e2;
         }
 
         if (--tabCount < 0) {

@@ -25,6 +25,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Vector;
+import java.lang.reflect.Array;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -378,6 +379,29 @@ public class XMLDecoderTest extends TestCase {
         decode("xml/Test7.xml");
     }
 
+
+    /**
+     * Regression test for HARMONY-1890
+     */
+    public void testDecodeEmptyStringArray1890() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(out);
+        XMLDecoder decoder;
+        Object obj;
+
+        encoder.writeObject(new String[10]);
+        encoder.close();
+
+        decoder = new XMLDecoder(new ByteArrayInputStream(out.toByteArray()));
+        obj = decoder.readObject();
+        decoder.close();
+        
+        assertTrue("Returned object is not array", obj.getClass().isArray());
+        assertSame("String type expected", String.class,
+                obj.getClass().getComponentType());
+        assertEquals("Size mismatch", 10, Array.getLength(obj));
+    }
+    
     /*
      * The test checks the code generation for XML from MainTest.xml
      * 

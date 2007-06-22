@@ -1049,19 +1049,6 @@ public class AbstractPreferencesTest extends TestCase {
 
 		// Create the builder and parse the file
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		builder.setEntityResolver(new EntityResolver() {
-			public InputSource resolveEntity(String publicId, String systemId)
-					throws SAXException, IOException {
-				if (systemId.equals("http://java.sun.com/dtd/preferences.dtd")) {
-					InputSource result = new InputSource(
-							AbstractPreferencesTest.class
-									.getResourceAsStream("/prefs/java/util/prefs/preferences.dtd"));
-					result.setSystemId("preferences.dtd");
-					return result;
-				}
-				throw new SAXException("Invalid DOCTYPE:" + systemId);
-			}
-		});
 		Document doc = builder.parse(input);
 		return doc;
 	}
