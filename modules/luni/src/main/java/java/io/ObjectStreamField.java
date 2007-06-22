@@ -129,7 +129,7 @@ public class ObjectStreamField implements Comparable<Object> {
 
     @Override
     public boolean equals(Object arg0) {
-        return compareTo(arg0) == 0;
+        return (arg0 instanceof ObjectStreamField) && (compareTo(arg0) == 0);
     }
 
     @Override
