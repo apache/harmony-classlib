@@ -25,7 +25,6 @@ import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.UnknownHostException;
 import java.nio.channels.Channel;
-import java.nio.channels.SelectableChannel;
 
 /*
  * The interface for network methods.
