@@ -79,7 +79,7 @@ import java.net.URL;
  * results.
  * 
  */
-public interface ResultSet {
+public interface ResultSet extends Wrapper {
 
     /**
      * A constant used to indicate that a ResultSet object must be closed when
