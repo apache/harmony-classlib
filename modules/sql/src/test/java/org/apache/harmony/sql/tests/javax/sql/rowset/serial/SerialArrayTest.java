@@ -302,6 +302,10 @@ public class SerialArrayTest extends TestCase {
                 throws SQLException {
             return null;
         }
+
+        public void free() throws SQLException {
+            
+        }
     }
 
     class MockNullArray implements Array {
@@ -350,6 +354,11 @@ public class SerialArrayTest extends TestCase {
                 throws SQLException {
             return null;
         }
+
+        public void free() throws SQLException {
+            
+        }
+
     }
 
     class MockStringSQLData implements SQLData {
@@ -443,6 +452,10 @@ public class SerialArrayTest extends TestCase {
         public ResultSet getResultSet(long index, int count,
                 Map<String, Class<?>> map) {
             return null;
+        }
+        
+        public void free() throws SQLException {
+
         }
     }
 }

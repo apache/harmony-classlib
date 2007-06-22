@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 import java.util.Map;
 
@@ -282,5 +283,13 @@ public class SerialArray implements Array, Serializable, Cloneable {
     public ResultSet getResultSet(Map<String, Class<?>> map)
             throws SerialException {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * free the resource related to this object. Always throw
+     * UnsupportedOperationException here.
+     */
+    public void free() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 }

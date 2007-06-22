@@ -130,4 +130,10 @@ public interface Array {
     public ResultSet getResultSet(Map<String, Class<?>> map)
             throws SQLException;
 
+    /**
+     * TODO Javadoc
+     * 
+     * @throws SQLException
+     */
+    public void free() throws SQLException;
 }
