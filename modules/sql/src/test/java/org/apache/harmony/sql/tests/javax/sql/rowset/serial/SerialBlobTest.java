@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Arrays;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -349,6 +350,53 @@ public class SerialBlobTest extends TestCase {
             // expected
         }
     }
+    
+    public void test_free() throws Exception {
+        MockSerialBlob mockBlob = new MockSerialBlob();
+        mockBlob.binaryStream = new ByteArrayOutputStream();
+        SerialBlob serialBlob = new SerialBlob(mockBlob);
+        try {
+            serialBlob.free();
+            fail("should throw SQLFeatureNotSupportedException");
+        } catch (SQLFeatureNotSupportedException e) {
+            // expected
+        }
+    }
+    
+    public void testGetBinaryStreamJJ() throws Exception {
+        byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        SerialBlob serialBlob = new SerialBlob(buf);
+        try{
+            serialBlob.getBinaryStream(0,4);
+            fail("Should throw SQLException");
+        }catch(SQLException e){
+            // expected
+        }
+        try{
+            serialBlob.getBinaryStream(3,8);
+            fail("Should throw SQLException");
+        }catch(SQLException e){
+            // expected
+        }
+        
+        
+        InputStream is = serialBlob.getBinaryStream(2,4);
+        int i = 0;
+        while (true) {
+            int b = is.read();
+            if (b == -1) {
+                if (i < 4) {
+                    fail("returned input stream contains too few data");
+                }
+                break;
+            }
+
+            if (i > 4) {
+                fail("returned input stream contains too much data");
+            }
+            assertEquals(buf[2+i++], b);
+        }
+    }
 
     private void assertBlobPosition_BytePattern(Blob blob)
             throws SerialException, SQLException {
@@ -527,6 +575,14 @@ public class SerialBlobTest extends TestCase {
 
         public void truncate(long len) throws SQLException {
 
+        }
+
+        public void free() throws SQLException {
+            
+        }
+
+        public InputStream getBinaryStream(long pos, long length) throws SQLException {
+            return null;
         }
 
     }

@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 
 import org.apache.harmony.sql.internal.nls.Messages;
 
@@ -233,4 +234,18 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
         len = length;
     }
 
+    public void free() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public InputStream getBinaryStream(long pos, long length)
+            throws SQLException {
+        if (len == -1) {
+            throw new SerialException(Messages.getString("sql.38"));
+        }
+        if (pos < 1 || pos + length > len) {
+            throw new SerialException(Messages.getString("sql.22"));
+        }
+        return new ByteArrayInputStream(buf, (int) pos, (int) length);
+    }
 }
