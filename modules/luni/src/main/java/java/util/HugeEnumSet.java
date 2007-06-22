@@ -176,6 +176,7 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
         }
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public boolean contains(Object object) {
         if (null == object) {

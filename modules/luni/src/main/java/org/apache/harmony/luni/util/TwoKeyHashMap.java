@@ -69,6 +69,7 @@ public class TwoKeyHashMap<E, K, V> extends AbstractMap<String, V> {
      * @param initialCapacity
      * @param initialLoadFactor
      */
+    @SuppressWarnings("unchecked")
     public TwoKeyHashMap(int initialCapacity, float initialLoadFactor) {
          if (initialCapacity < 0) {
             throw new IllegalArgumentException("initialCapacity should be >= 0");
@@ -174,6 +175,7 @@ public class TwoKeyHashMap<E, K, V> extends AbstractMap<String, V> {
      * Rehash the map
      *
      */
+    @SuppressWarnings("unchecked")
     void rehash() {
         int newArrSize = (arrSize + 1) * 2 + 1;
         if (newArrSize < 0) {

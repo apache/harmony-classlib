@@ -51,7 +51,8 @@ public class Stack<E> extends Vector<E> {
 	 *                when empty() is true
 	 * @see #pop
 	 */
-	public synchronized E peek() {
+	@SuppressWarnings("unchecked")
+    public synchronized E peek() {
 		try {
 			return (E)elementData[elementCount - 1];
 		} catch (IndexOutOfBoundsException e) {
@@ -68,7 +69,8 @@ public class Stack<E> extends Vector<E> {
 	 * @see #peek
 	 * @see #push
 	 */
-	public synchronized E pop() {
+	@SuppressWarnings("unchecked")
+    public synchronized E pop() {
 		try {
 			int index = elementCount - 1;
 			E obj = (E)elementData[index];

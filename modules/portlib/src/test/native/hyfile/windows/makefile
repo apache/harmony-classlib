@@ -20,9 +20,10 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 EXENAME=..\hyfile.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\hycunit
 
 BUILDFILES = $(SHAREDSUB)hyfile.obj
+BUILDFILES = $(BUILDFILES) ..\..\hycunit\hycunit.obj
 MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
 
 !IF "$(HY_NO_THR)" == "true"
@@ -31,5 +32,6 @@ MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
 
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
+CLEANFILES=..\TEST-*.xml
 
 !include <$(HY_HDK)\build\make\rules.mak>

@@ -1444,17 +1444,19 @@ hythread_cancel (hythread_t thread)
 
 #define CDEV_CURRENT_FUNCTION hythread_detach
 /**
- * Detach a thread from the threading library.
+ * Detaches the current thread from the threading library.
  * 
- * @note Assumes that the thread being detached is already attached.<br>
+ * Detach must only be called by an attached thread.  The actual parameter
+ * must be the the current thread's hythread_t, or NULL (in which case this
+ * function retrieves and uses the current thread's hythread_t).  This
+ * function cannot be used to detach an arbitrary thread.
+ *
+ * When detached, internal resources associated with the thread are freed
+ * and the hythread_t structure becomes invalid.
  * 
- * If the thread is an attached thread, then detach should only be called by the thread
- * itself. Internal resources associated with the thread are freed.
- * 
- * If the thread is already dead, this call will destroy it.
- * 
- * @param[in] thread a hythread_t representing the thread to be detached.
- * If this is NULL, the current thread is detached.
+ * @param[in] thread
+ *            the hythread_t of the current thread to be detached, or NULL
+ *            meaning the current thread struct is looked-up and detached.
  * @return none
  * 
  * @see hythread_attach

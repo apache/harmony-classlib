@@ -28,7 +28,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 
 import org.apache.harmony.kernel.vm.VM;

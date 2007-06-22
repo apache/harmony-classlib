@@ -39,6 +39,10 @@ import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
 
 
 public abstract class FontManager {
+
+    static {
+        java.awt.Toolkit.getDefaultToolkit();
+    }
     
     public static final boolean IS_FONTLIB = "true".equals(System.getProperty("java.awt.fontlib")) || 
         GraphicsEnvironment.isHeadless();

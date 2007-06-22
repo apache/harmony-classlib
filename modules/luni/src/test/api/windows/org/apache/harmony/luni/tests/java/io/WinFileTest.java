@@ -15,6 +15,69 @@ public class WinFileTest extends TestCase {
 
 	private File testDir;	
 
+    /**
+     * @tests java.io.File#mkdir() 
+     * @throws IOException
+     */
+    public void test_mkdir() throws IOException {
+        // Test for method boolean java.io.File.mkdir() in Windows Platform
+
+        String base = System.getProperty("user.dir");
+        // Old test left behind "garbage files" so this time it creates a
+        // directory
+        // that is guaranteed not to already exist (and deletes it afterward.)
+        int dirNumber = 1;
+        boolean dirExists = true;
+        File dir = new File(base, String.valueOf(dirNumber));
+        while (dirExists) {
+            if (dir.exists()) {
+                dirNumber++;
+                dir = new File(base, String.valueOf(dirNumber));
+            } else {
+                dirExists = false;
+            }
+        }
+        assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+        dir.deleteOnExit();        
+        String newbase = new String(dir + File.separator);
+        
+        dir = new File(newbase, ".abcd");
+        assertTrue("mkdir " + dir.getCanonicalPath() + " failed",
+                dir.mkdir() && dir.exists() && !(new File(newbase,"abcd")).exists());
+        dir.deleteOnExit();        
+
+        String []ss1 = {
+                ".abcd" + File.separator + "." + File.separator + "dir1",
+                ".abcd" + File.separator + ".." + File.separator + "dir2",
+                ".abcd" + File.separator + "." + File.separator + "." + File.separator + "dir3",
+                "12" + File.separator + "34" + File.separator + ".." + File.separator + ".." + File.separator + "dir4",
+                "12" + File.separator + ".." + File.separator + "34" + File.separator + ".." + File.separator + "dir5",
+                ".abcd." + File.separator + ".." + File.separator + "dir6.",
+                ".abcd.." + File.separator + "dir7",
+                ".abcd.." + File.separator + ".." + File.separator + "dir8"
+        };
+        String []ss2 = {
+                ".abcd" + File.separator + "dir1",
+                "dir2",
+                ".abcd" + File.separator + "dir3",
+                "dir4",
+                "dir5",
+                "dir6",
+                ".abcd" + File.separator + "dir7",
+                "dir8"                
+        };
+        for (int i=0; i<ss1.length; i++)
+        {
+            dir = new File(newbase, ss1[i]);
+            assertTrue("mkdir " + dir.getCanonicalPath() + " failed",
+                    dir.mkdir() && dir.exists());
+            dir = new File(newbase, ss2[i]);
+            assertTrue("mkdir " + dir.getCanonicalPath() + " failed",
+                    dir.exists());
+            dir.deleteOnExit();
+        }
+    }
+
 	/**
 	 * @tests java.io.File#canExecute()
 	 * 

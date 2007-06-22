@@ -157,12 +157,11 @@ public class EventHandler implements InvocationHandler {
         } else if (listenerMethodName.equals(method.getName())) {
             // method's name matches
             // no arguments in call are valid
-            if ((eventPropertyName == null)
-                    && ((arguments == null) || (arguments.length == 0))) {
+            if (eventPropertyName == null
+                    && (arguments == null || arguments.length == 0)) {
                 result = true;
-                // one-argument call is value
-            } else if ((eventPropertyName != null) && (arguments != null)
-                    && (arguments.length == 1)) {
+            // one-argument call is also valid
+            } else if (arguments != null && arguments.length == 1) {
                 result = true;
             } else {
                 result = false;
