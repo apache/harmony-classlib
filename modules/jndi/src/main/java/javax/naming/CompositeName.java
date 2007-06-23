@@ -28,100 +28,111 @@ import java.util.Vector;
 import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
- * A <code>CompositeName</code> represents a name in a naming service which 
- * spans multiple namespaces. For example the name 
- * "www.eclipse.org/index.html" spans the DNS and file system namespaces.
+ * A <code>CompositeName</code> represents a name in a naming service which
+ * spans multiple namespaces. For example the name "www.eclipse.org/index.html"
+ * spans the DNS and file system namespaces.
  * <p>
- * A <code>CompositeName</code> is a series of string elements. A composite 
- * name has a sequence of zero or more elements delimited by the '/' char.
- * Each element can be accessed using its position. The first element is at 
- * position 0.</p>
+ * A <code>CompositeName</code> is a series of string elements. A composite
+ * name has a sequence of zero or more elements delimited by the '/' char. Each
+ * element can be accessed using its position. The first element is at position
+ * 0.
+ * </p>
  * <p>
- * A <code>CompositeName</code> may be empty. An empty composite name has no 
- * elements. Elements may also be empty.</p>
+ * A <code>CompositeName</code> may be empty. An empty composite name has no
+ * elements. Elements may also be empty.
+ * </p>
  * <p>
- * <code>CompositeName</code>s are read from left to right unlike 
- * <code>CompoundName</code>s which may have their direction of ordering 
- * specified by properties.</p>
+ * <code>CompositeName</code>s are read from left to right unlike
+ * <code>CompoundName</code>s which may have their direction of ordering
+ * specified by properties.
+ * </p>
  * <p>
- * Special characters are as follows:</p>
+ * Special characters are as follows:
+ * </p>
  * <ul>
  * <li>The separator is /</li>
  * <li>The escape character is \</li>
  * <li>Quotes can be used - both single quotes and double quotes are allowed.
- * This allows you to quote strings which contain chars such as / which are
- * part of a <code>CompositeName</code> element to avoid them being read as a 
+ * This allows you to quote strings which contain chars such as / which are part
+ * of a <code>CompositeName</code> element to avoid them being read as a
  * separator.</li>
  * </ul>
  * <p>
- * See the examples for further clarification.</p>
+ * See the examples for further clarification.
+ * </p>
  * <p>
  * Some Examples:<br />
- * ==============</p>
+ * ==============
+ * </p>
  * <p>
  * The composite name "www.eclipse.org/index.html" has 2 elements.
- * "www.eclipse.org" is a name from the DNS namespace.
- * "index.html" is a name from the file system namespace.</p>
+ * "www.eclipse.org" is a name from the DNS namespace. "index.html" is a name
+ * from the file system namespace.
+ * </p>
  * <p>
- * Another example of a composite name is:
- * "www.eclipse.org/org/index.html".
+ * Another example of a composite name is: "www.eclipse.org/org/index.html".
  * This name has 3 elements "www.eclipse.org", "org" and "index.html".
- * www.eclipse.org is a name from the DNS namespace.
- * The last 2 elements are each from the file system namespace.</p>
+ * www.eclipse.org is a name from the DNS namespace. The last 2 elements are
+ * each from the file system namespace.
+ * </p>
  * <p>
- * Some more examples to clarify empty names and elements:</p>
+ * Some more examples to clarify empty names and elements:
+ * </p>
  * <p>
- * An empty CompositeName is the name "" and has no elements.</p>
+ * An empty CompositeName is the name "" and has no elements.
+ * </p>
  * <p>
- * A CompositeName with just one empty element is the name "/".</p>
+ * A CompositeName with just one empty element is the name "/".
+ * </p>
  * <p>
- * The name "/org/" has 3 elements. The first and last are empty.</p>
+ * The name "/org/" has 3 elements. The first and last are empty.
+ * </p>
  * <p>
- * The name "/a" has 2 elements. The first element is empty
- * and the second element is "a".</p>
+ * The name "/a" has 2 elements. The first element is empty and the second
+ * element is "a".
+ * </p>
  * <p>
- * The name "a//a" has 3 elements. The middle element is empty
- * and the first & third elements are both "a".</p>
+ * The name "a//a" has 3 elements. The middle element is empty and the first &
+ * third elements are both "a".
+ * </p>
  * <p>
- * The name "a/'b/a" is invalid as there is no closing quote for the ' 
- * character.</p>
+ * The name "a/'b/a" is invalid as there is no closing quote for the '
+ * character.
+ * </p>
  * <p>
- * The name "a/'a/b/b" is invalid as there is no closing quote for the ' 
- * character.</p>
+ * The name "a/'a/b/b" is invalid as there is no closing quote for the '
+ * character.
+ * </p>
  * <p>
  * The name "a/\"b/a" is interpreted as a/"b/a and is invalid as there is no
- * closing quote for the embedded escaped " character.</p>
+ * closing quote for the embedded escaped " character.
+ * </p>
  * <p>
  * The name "a/'b/c'/a" has 3 elements. The middle element is b/c.
  * <p>
- * The name "a/a'a/b'/b" has 4 elements:
- * Element 0 is "a".
- * Element 1 is "a'a".
- * Element 2 is "b'".
- * Element 3 is "b".</p>
+ * The name "a/a'a/b'/b" has 4 elements: Element 0 is "a". Element 1 is "a'a".
+ * Element 2 is "b'". Element 3 is "b".
+ * </p>
  * <p>
- * Interestingly the name "a/a'a/b/b" is valid and has 4 elements. This is 
- * because the single quote char ' is not a leading quote and is embedded in 
- * an element so is treated as a character.
- * Element 0 is "a".
- * Element 1 is "a'a".
- * Element 2 is "b".
- * Element 3 is "b".</p>
+ * Interestingly the name "a/a'a/b/b" is valid and has 4 elements. This is
+ * because the single quote char ' is not a leading quote and is embedded in an
+ * element so is treated as a character. Element 0 is "a". Element 1 is "a'a".
+ * Element 2 is "b". Element 3 is "b".
+ * </p>
  * <p>
- * The name "\"abcd" gives an <code>InvalidNameException</code> as there is 
- * no closing quote.</p>
+ * The name "\"abcd" gives an <code>InvalidNameException</code> as there is no
+ * closing quote.
+ * </p>
  * <p>
- * The name "'\"abcd'" gives one element of value "abcd.</p>
+ * The name "'\"abcd'" gives one element of value "abcd.
+ * </p>
  * <p>
- * The name "\\abcd" gives one element of value \abcd.</p>
- * <p>
- * "" is empty. It has no elements.
- * "/" has one empty element.
- * "//" has 2 empty elements.
- * "/a/" has 3 elements the middle one is set to a.
- * "///" has 3 empty elements.
- * "//a/" has 4 elements, the last but one is set to a.</p>
- *
+ * The name "\\abcd" gives one element of value \abcd.
+ * </p>
+ * <p> "" is empty. It has no elements. "/" has one empty element. "//" has 2
+ * empty elements. "/a/" has 3 elements the middle one is set to a. "///" has 3
+ * empty elements. "//a/" has 4 elements, the last but one is set to a.
+ * </p>
  */
 public class CompositeName implements Name {
 
@@ -141,8 +152,9 @@ public class CompositeName implements Name {
 
     /**
      * Private copy constructor.
-     *
-     * @param elements  a list of name elements
+     * 
+     * @param elements
+     *            a list of name elements
      */
     private CompositeName(List<String> elements) {
         super();
@@ -151,8 +163,9 @@ public class CompositeName implements Name {
 
     /**
      * Construct a composite name with given elements.
-     *
-     * @param elements  an enumeration of name elements
+     * 
+     * @param elements
+     *            an enumeration of name elements
      */
     protected CompositeName(Enumeration<String> elements) {
         super();
@@ -173,9 +186,11 @@ public class CompositeName implements Name {
     /**
      * This constructor takes the supplied name and breaks it down into its
      * elements.
-     *
-     * @param name  a string containing the full composite name
-     * @throws InvalidNameException if the supplied name is invalid
+     * 
+     * @param name
+     *            a string containing the full composite name
+     * @throws InvalidNameException
+     *             if the supplied name is invalid
      */
     public CompositeName(String name) throws InvalidNameException {
         super();
@@ -183,10 +198,11 @@ public class CompositeName implements Name {
     }
 
     /**
-     * Parse string name elements. Delimiter is "/".
-     * Escape is "\" and both single quote and double quote are supported.
+     * Parse string name elements. Delimiter is "/". Escape is "\" and both
+     * single quote and double quote are supported.
      */
-    private static Vector<String> parseName(String name) throws InvalidNameException {
+    private static Vector<String> parseName(String name)
+            throws InvalidNameException {
 
         Vector<String> l = new Vector<String>();
 
@@ -199,7 +215,8 @@ public class CompositeName implements Name {
         }
 
         // general simple case, without escape and quote
-        if (name.indexOf('"') < 0 && name.indexOf('\'') < 0 && name.indexOf('\\') < 0) {
+        if (name.indexOf('"') < 0 && name.indexOf('\'') < 0
+                && name.indexOf('\\') < 0) {
             int i = 0, j = 0;
             while ((j = name.indexOf('/', i)) >= 0) {
                 l.add(name.substring(i, j));
@@ -226,7 +243,7 @@ public class CompositeName implements Name {
                     continue;
                 }
                 // jndi.0C=End quote is not at the end of element
-                throw new InvalidNameException(Messages.getString("jndi.0C"));  //$NON-NLS-1$
+                throw new InvalidNameException(Messages.getString("jndi.0C")); //$NON-NLS-1$
             }
 
             if (c == '\\') {
@@ -241,7 +258,8 @@ public class CompositeName implements Name {
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
                     // jndi.0D=Escape cannot be at the end of element
-                    throw new InvalidNameException(Messages.getString("jndi.0D"));  //$NON-NLS-1$
+                    throw new InvalidNameException(Messages
+                            .getString("jndi.0D")); //$NON-NLS-1$
                 }
                 continue;
             }
@@ -272,7 +290,7 @@ public class CompositeName implements Name {
         // check end status
         if (status != OUT_OF_QUOTE && status != QUOTE_ENDED) {
             // jndi.0E=Wrong quote usage.
-            throw new InvalidNameException(Messages.getString("jndi.0E"));  //$NON-NLS-1$
+            throw new InvalidNameException(Messages.getString("jndi.0E")); //$NON-NLS-1$
         }
         return l;
     }
@@ -307,8 +325,8 @@ public class CompositeName implements Name {
             if (i > 0) {
                 buf.append("/"); //$NON-NLS-1$
             }
-            if (elem.indexOf('/') < 0 && elem.indexOf('\\') < 0 && elem.indexOf('\'') < 0
-                    && elem.indexOf('"') < 0) {
+            if (elem.indexOf('/') < 0 && elem.indexOf('\\') < 0
+                    && elem.indexOf('\'') < 0 && elem.indexOf('"') < 0) {
                 buf.append(elem);
             } else {
                 char chars[] = elem.toCharArray();
@@ -361,7 +379,7 @@ public class CompositeName implements Name {
         }
         if (!(name instanceof CompositeName)) {
             // jndi.0F=Must be a CompositeName
-            throw new InvalidNameException(Messages.getString("jndi.0F"));  //$NON-NLS-1$
+            throw new InvalidNameException(Messages.getString("jndi.0F")); //$NON-NLS-1$
         }
 
         Enumeration<String> enumeration = name.getAll();
@@ -377,7 +395,7 @@ public class CompositeName implements Name {
         }
         if (!(name instanceof CompositeName)) {
             // jndi.0F=Must be a CompositeName
-            throw new InvalidNameException(Messages.getString("jndi.0F"));  //$NON-NLS-1$
+            throw new InvalidNameException(Messages.getString("jndi.0F")); //$NON-NLS-1$
         }
 
         if (index < 0 || index > elems.size()) {
@@ -467,17 +485,18 @@ public class CompositeName implements Name {
     /**
      * Compare this <code>Name</code> with the one supplied as a parameter.
      * The elements of the names are compared in the same way as strings are
-     * compared to determine whether this <code>CompositeName</code> is less 
+     * compared to determine whether this <code>CompositeName</code> is less
      * than, greater than or equal to the supplied object <code>o</code>.
      * 
-     * @param o the object to compare, cannot be null
-     * @return  a negative number means this is less than the supplied object;
-     *          a positive number means this is greater than the supplied 
-     *          object; zero means this CompositeName equals the object as 
-     *          specified in the description for the equals method of 
-     *          <code>CompositeName</code>.
-     * @throws ClassCastException when <code>o</code> is not a 
-     *          <code>CompositeName</code>.
+     * @param o
+     *            the object to compare, cannot be null
+     * @return a negative number means this is less than the supplied object; a
+     *         positive number means this is greater than the supplied object;
+     *         zero means this CompositeName equals the object as specified in
+     *         the description for the equals method of
+     *         <code>CompositeName</code>.
+     * @throws ClassCastException
+     *             when <code>o</code> is not a <code>CompositeName</code>.
      */
     public int compareTo(Object o) {
         if (o instanceof CompositeName) {
@@ -501,8 +520,9 @@ public class CompositeName implements Name {
     }
 
     /**
-     * Create a copy of this composite name, a complete (deep) copy of the object.
-     *
+     * Create a copy of this composite name, a complete (deep) copy of the
+     * object.
+     * 
      * @return a complete (deep) copy of the object.
      */
     @Override
@@ -511,13 +531,13 @@ public class CompositeName implements Name {
     }
 
     /**
-     * Returns the string representation of this <code>CompositeName</code>. 
-     * This is generated by concatenating the elements together with the '/' 
-     * char added as the separator between each of them. It may be necessary 
-     * to add quotes and escape chars to preserve the meaning. The resulting 
-     * string should produce an equivalent <code>CompositeName</code> when 
-     * used to create a new instance.
-     *
+     * Returns the string representation of this <code>CompositeName</code>.
+     * This is generated by concatenating the elements together with the '/'
+     * char added as the separator between each of them. It may be necessary to
+     * add quotes and escape chars to preserve the meaning. The resulting string
+     * should produce an equivalent <code>CompositeName</code> when used to
+     * create a new instance.
+     * 
      * @return the string representation of this composite name.
      */
     @Override
@@ -526,12 +546,14 @@ public class CompositeName implements Name {
     }
 
     /**
-     * Check if this <code>CompositeName</code> is equal to the supplied object.
-     *
-     * @param o the <code>CompositeName</code> to compare - can be null but 
-     *          then returns false.
-     * @return  true if they have the same number of elements all of
-     *          which are equal. false if they are not equal.
+     * Check if this <code>CompositeName</code> is equal to the supplied
+     * object.
+     * 
+     * @param o
+     *            the <code>CompositeName</code> to compare - can be null but
+     *            then returns false.
+     * @return true if they have the same number of elements all of which are
+     *         equal. false if they are not equal.
      */
     @Override
     public boolean equals(Object o) {
@@ -568,7 +590,8 @@ public class CompositeName implements Name {
      * String for each element.
      * 
      * @param oos
-     * @throws IOException if an error is encountered writing to the stream.
+     * @throws IOException
+     *             if an error is encountered writing to the stream.
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
@@ -583,11 +606,12 @@ public class CompositeName implements Name {
      * Recreate a CompositeName from the data in the supplied stream.
      * 
      * @param ois
-     * @throws IOException if an error is encountered reading from the stream.
+     * @throws IOException
+     *             if an error is encountered reading from the stream.
      * @throws ClassNotFoundException.
      */
-    private void readObject(ObjectInputStream ois) throws OptionalDataException,
-            ClassNotFoundException, IOException {
+    private void readObject(ObjectInputStream ois)
+            throws OptionalDataException, ClassNotFoundException, IOException {
         ois.defaultReadObject();
 
         int size = ois.readInt();
@@ -596,4 +620,5 @@ public class CompositeName implements Name {
             elems.add((String) ois.readObject());
         }
     }
+
 }

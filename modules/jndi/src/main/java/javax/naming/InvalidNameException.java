@@ -15,49 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * An <code>InvalidNameException</code> is the <code>NamingException</code> 
- * used when a supplied name does not match the required format. 
+ * An <code>InvalidNameException</code> is the <code>NamingException</code>
+ * used when a supplied name does not match the required format.
  * <p>
- * Multithreaded access to a <code>InvalidNameException</code> instance is 
- * only safe when client code locks the object first.</p>
- * 
+ * Multithreaded access to a <code>InvalidNameException</code> instance is
+ * only safe when client code locks the object first.
+ * </p>
  */
 public class InvalidNameException extends NamingException {
 
     /*
-     * For serialization purposes, the following fields must appear in the
-     * order given and specified serialVersionUID must be used.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-    static final long serialVersionUID = -8370672380823801105L; // J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = -8370672380823801105L;
 
     /**
-     * Constructs an <code>InvalidNameException</code> instance 
-     * with all data initialized to null.
+     * Constructs an <code>InvalidNameException</code> instance with all data
+     * initialized to null.
      */
     public InvalidNameException() {
         super();
     }
 
     /**
-     * Constructs an <code>InvalidNameException</code> instance 
-     * with a specified error message.
+     * Constructs an <code>InvalidNameException</code> instance with a
+     * specified error message.
      * 
-     * @param msg The detail message for the exception. It may be null.
+     * @param msg
+     *            The detail message for the exception. It may be null.
      */
     public InvalidNameException(String msg) {
         super(msg);
     }
 
 }
-
-

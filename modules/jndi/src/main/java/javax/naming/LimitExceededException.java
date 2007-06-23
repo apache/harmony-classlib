@@ -15,42 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when a restriction is exceeded.
+ * This is the <code>NamingException</code> used when a restriction is
+ * exceeded.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class LimitExceededException extends NamingException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = -776898738660207856L; // J2SE 1.4.2
+    static final long serialVersionUID = -776898738660207856L;
 
     /**
-     * Constructs a <code>LimitExceededException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>LimitExceededException</code> instance with all data
+     * initialized to null.
      */
     public LimitExceededException() {
         super();
     }
 
     /**
-     * Constructs a <code>LimitExceededException</code> instance 
-     * with the specified message.
+     * Constructs a <code>LimitExceededException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public LimitExceededException(String s) {
         super(s);
     }
 
 }
-
-

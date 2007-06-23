@@ -53,25 +53,14 @@ public class PatternErrorTest extends TestCase {
 		Pattern.compile("foo", flags);
 
 		// add invalid flags - should get IllegalArgumentException
-		/*
-		 * TODO: Inconsistency between the reference JDK behaviour and spec - exception is
-		 * not thrown
-		 */
-		/*
-		 * Valid test is:
-		 * flags |= 0xFFFFFFFF;
-		 * try {
-		 *   Pattern.compile("foo",flags);
-		 * } catch (IllegalArgumentException e) {
-		 *   // This is the expected exception
-		 * } catch (Exception e) {
-		 *   fail();
-		 * }
-		 */
-
-        /* Workaround test is: */
+        // regression test for HARMONY-4248
 		flags |= 0xFFFFFFFF;
-        // No exception expected to match incorrect the reference behaviour
-		Pattern.compile("foo", flags);
+		try {
+		    Pattern.compile("foo",flags);
+		} catch (IllegalArgumentException e) {
+		    // This is the expected exception
+		} catch (Exception e) {
+		    fail();
+		}
 	}
 }

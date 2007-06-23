@@ -38,8 +38,10 @@ public class BinaryRefAddr extends RefAddr {
      * Constructs a <code>BinaryRefAddr</code> using the specified address
      * type and the full details of the supplied byte array.
      * 
-     * @param type the address type which cannot be null
-     * @param address the address itself which cannot be null
+     * @param type
+     *            the address type which cannot be null
+     * @param address
+     *            the address itself which cannot be null
      */
     public BinaryRefAddr(String type, byte[] address) {
         this(type, address, 0, address.length);
@@ -51,16 +53,21 @@ public class BinaryRefAddr extends RefAddr {
      * is specified by <code>size</code>. Additionally these bytes are taken
      * from a starting point specified by <code>index</code>.
      * 
-     * @param type the address type. It cannot be null.
-     * @param address the address itself. It cannot be null.
-     * @param index the starting point to copy bytes from. It must be greater
-     *        than or equal to zero and must be less than or equal to the size
-     *        of the byte array.
-     * @param size the number of bytes to copy. It must be greater than or equal
-     *        to zero and must be less than or equal to the size of the byte
-     *        array less the starting position.
-     * @throws ArrayIndexOutOfBoundsException If <code>size</code> or
-     *         <code>index</code> does not meet the constraints.
+     * @param type
+     *            the address type. It cannot be null.
+     * @param address
+     *            the address itself. It cannot be null.
+     * @param index
+     *            the starting point to copy bytes from. It must be greater than
+     *            or equal to zero and must be less than or equal to the size of
+     *            the byte array.
+     * @param size
+     *            the number of bytes to copy. It must be greater than or equal
+     *            to zero and must be less than or equal to the size of the byte
+     *            array less the starting position.
+     * @throws ArrayIndexOutOfBoundsException
+     *             If <code>size</code> or <code>index</code> does not meet
+     *             the constraints.
      */
     public BinaryRefAddr(String type, byte[] address, int index, int size) {
         super(type);
@@ -84,7 +91,8 @@ public class BinaryRefAddr extends RefAddr {
      * equal and the data in the buffers is of the same length and contains the
      * same bytes.
      * 
-     * @param o the object to compare with
+     * @param o
+     *            the object to compare with
      * @return true if this address is equal to <code>o</code>, otherwise
      *         false
      */
@@ -92,7 +100,8 @@ public class BinaryRefAddr extends RefAddr {
     public boolean equals(Object o) {
         if (o instanceof BinaryRefAddr) {
             BinaryRefAddr a = (BinaryRefAddr) o;
-            return this.addrType.equals(a.addrType) && Arrays.equals(this.buf, a.buf);
+            return this.addrType.equals(a.addrType)
+                    && Arrays.equals(this.buf, a.buf);
         }
         return false;
     }
@@ -133,4 +142,5 @@ public class BinaryRefAddr extends RefAddr {
 
         return s;
     }
+
 }

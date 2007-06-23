@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package javax.naming.ldap;
 
@@ -28,16 +28,16 @@ import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 
 /**
- * 
- * @ar.org.fitc.spec_ref
- * 
- * @version 0.0.1
- * 
+ * TODO: JavaDoc
  */
 public final class PagedResultsControl extends BasicControl {
 
+    private static final long serialVersionUID = 6684806685736844298L;
+
+    public static final String OID = "1.2.840.113556.1.4.319"; //$NON-NLS-1$
+
     /**
-     * static ASN1 Encoder for Paged Result Control using
+     * Static ASN1 Encoder for Paged Result Control using
      * PagedResultSearchControlValue
      */
     static ASN1Type ASN1_ENCODER = new ASN1Sequence(new ASN1Type[] {
@@ -56,7 +56,7 @@ public final class PagedResultsControl extends BasicControl {
             PagedResultSearchControlValue pg = (PagedResultSearchControlValue) object;
             values[0] = BigInteger.valueOf(pg.getSize()).toByteArray();
             if (pg.getCookie() == null) {
-                values[1] = "".getBytes();
+                values[1] = "".getBytes(); //$NON-NLS-1$
             } else {
                 values[1] = pg.getCookie();
             }
@@ -64,26 +64,13 @@ public final class PagedResultsControl extends BasicControl {
         }
     };
 
-    private static final long serialVersionUID = 6684806685736844298L;
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public static final String OID = "1.2.840.113556.1.4.319";
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public PagedResultsControl(int pageSize, boolean criticality)
             throws IOException {
         super(OID, criticality, null);
         this.value = ASN1_ENCODER.encode(new PagedResultSearchControlValue(
-                pageSize, "".getBytes()));
+                pageSize, "".getBytes())); //$NON-NLS-1$
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public PagedResultsControl(int pageSize, byte[] cookie, boolean criticality)
             throws IOException {
         super(OID, criticality, null);

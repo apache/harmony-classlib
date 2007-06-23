@@ -20,6 +20,7 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.3 $
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import java.util.Properties;
@@ -29,18 +30,14 @@ import javax.naming.Name;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
 
-
 /**
  * Parser for flat case-sensitive atomic names used by {@link RegistryContext}.
- *
- * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 public class AtomicNameParser implements NameParser {
 
     /**
-     * Syntax, defines a flat case-sensitive context,
-     * initialized in static initialization block.
+     * Syntax, defines a flat case-sensitive context, initialized in static
+     * initialization block.
      */
     private static final Properties syntax = new Properties();
 
@@ -54,20 +51,22 @@ public class AtomicNameParser implements NameParser {
     /**
      * Creates instance of this class.
      */
-    public AtomicNameParser() {}
+    public AtomicNameParser() {
+    }
 
     /**
      * Returns flat {@link CompoundName} constructed from the specified string.
-     *
-     * @param   name
-     *          Name to parse, cannot be <code>null</code>.
-     *
-     * @return  Flat {@link CompoundName} constructed from the specified string.
-     *
-     * @throws  NamingException
-     *          If some error occured.
+     * 
+     * @param name
+     *            Name to parse, cannot be <code>null</code>.
+     * 
+     * @return Flat {@link CompoundName} constructed from the specified string.
+     * 
+     * @throws NamingException
+     *             If some error occured.
      */
     public Name parse(String name) throws NamingException {
         return new CompoundName(name, syntax);
     }
+
 }

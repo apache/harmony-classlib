@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.directory;
 
 import java.io.IOException;
@@ -37,48 +36,38 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * <p>
  * A basic attribute does not have any schema associated with it, and attempts
  * to get the schema result in an <code>OperationNotSupportedException</code>
- * being thrown.</p>
+ * being thrown.
+ * </p>
  * <p>
  * The definition of <code>equals</code> for an attribute is simply <code>
- * Object.equals</code> on the value, except for values that are collections 
- * where the definition of <code>equals</code> is an equivalence test (i.e. the 
- * collection contains the same number of elements, and each has an equal 
- * element in the other collection). For an array, <code>Object.equals</code>
- * is used on each array element.</p>
+ * Object.equals</code>
+ * on the value, except for values that are collections where the definition of
+ * <code>equals</code> is an equivalence test (i.e. the collection contains
+ * the same number of elements, and each has an equal element in the other
+ * collection). For an array, <code>Object.equals</code> is used on each array
+ * element.
+ * </p>
  * <p>
  * Note that updates to a basic attribute do not update the directory itself --
  * updates to a directory are only possible through the {@link DirContext}
- * interface. <code>BasicAttribute</code> does not get its values dynamically 
+ * interface. <code>BasicAttribute</code> does not get its values dynamically
  * from the directory. It uses the values passed to the constructor or add and
- * remove methods.</p>
+ * remove methods.
+ * </p>
  * 
  * @see Attribute
- * 
  */
 public class BasicAttribute implements Attribute {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-
-    /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
-     */
-    static final long serialVersionUID = 0x5d95d32a668565beL; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = 0x5d95d32a668565beL;
 
     /**
-     * The attribute identifier. 
-     * It is initialized by the public constructors and is required to be not
-     * null.
+     * The attribute identifier. It is initialized by the public constructors
+     * and is required to be not null.
      * 
      * @serial
      */
@@ -87,40 +76,36 @@ public class BasicAttribute implements Attribute {
     /**
      * Flag showing whether the values of the attribute are ordered.
      * 
-     * @serial 
+     * @serial
      */
     protected boolean ordered;
 
     /**
-     * <code>Vector</code> containing the attribute's values. 
-     * This is initialized by the public constructor and is required to be not 
-     * null.
+     * <code>Vector</code> containing the attribute's values. This is
+     * initialized by the public constructor and is required to be not null.
      */
     protected transient Vector<Object> values = new Vector<Object>();
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Constructs an unordered <code>BasicAttribute</code> instance with the 
+     * Constructs an unordered <code>BasicAttribute</code> instance with the
      * supplied identifier and no values.
      * 
-     * @param id            the attribute ID
+     * @param id
+     *            the attribute ID
      */
     public BasicAttribute(String id) {
         this(id, false);
     }
 
     /**
-     * Constructs a <code>BasicAttribute</code> instance with the supplied 
-     * identifier and no values. 
-     * The supplied flag controls whether the values will be ordered or not.
+     * Constructs a <code>BasicAttribute</code> instance with the supplied
+     * identifier and no values. The supplied flag controls whether the values
+     * will be ordered or not.
      * 
-     * @param id            the attribute ID
-     * @param flag          Indicates whether the values are ordered or not.
+     * @param id
+     *            the attribute ID
+     * @param flag
+     *            Indicates whether the values are ordered or not.
      */
     public BasicAttribute(String id, boolean flag) {
         attrID = id;
@@ -128,24 +113,29 @@ public class BasicAttribute implements Attribute {
     }
 
     /**
-     * Constructs an unordered <code>BasicAttribute</code> instance with the 
+     * Constructs an unordered <code>BasicAttribute</code> instance with the
      * supplied identifier and one value.
-     *  
-     * @param id            the attribute ID
-     * @param val           the first attribute value
+     * 
+     * @param id
+     *            the attribute ID
+     * @param val
+     *            the first attribute value
      */
     public BasicAttribute(String id, Object val) {
         this(id, val, false);
     }
 
     /**
-     * Constructs a <code>BasicAttribute</code> instance with the supplied 
-     * identifier and one value. 
-     * The supplied flag controls whether the values will be ordered or not.
+     * Constructs a <code>BasicAttribute</code> instance with the supplied
+     * identifier and one value. The supplied flag controls whether the values
+     * will be ordered or not.
      * 
-     * @param id            the attribute ID
-     * @param val           the first attribute value
-     * @param flag          Indicates whether the values are ordered or not.
+     * @param id
+     *            the attribute ID
+     * @param val
+     *            the first attribute value
+     * @param flag
+     *            Indicates whether the values are ordered or not.
      */
     public BasicAttribute(String id, Object val, boolean flag) {
         this(id, flag);
@@ -153,24 +143,19 @@ public class BasicAttribute implements Attribute {
     }
 
     /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
-    /*
      * Determine whether two values belonging to the two array classes
      * respectively are possible to be equal.
      */
-    private boolean compareValueClasses(Class<? extends Object> c1, Class<? extends Object> c2) {
+    private boolean compareValueClasses(Class<? extends Object> c1,
+            Class<? extends Object> c2) {
         if ((c1.getName().startsWith("[L") || c1.getName().startsWith("[[")) && //$NON-NLS-1$ //$NON-NLS-2$
-            (c2.getName().startsWith("[L") || c2.getName().startsWith("[["))) { //$NON-NLS-1$ //$NON-NLS-2$
+                (c2.getName().startsWith("[L") || c2.getName().startsWith("[["))) { //$NON-NLS-1$ //$NON-NLS-2$
             /*
-             * If both Class are array of Object or array of array, the compare 
+             * If both Class are array of Object or array of array, the compare
              * result is true, even if their class name may not be the same.
              */
             return true;
-        } else if (c1.getName().equals(c2.getName())){
+        } else if (c1.getName().equals(c2.getName())) {
             /*
              * Otherwise, at least one of them must be array of basic types. If
              * both Class have the same Class name, the compare result is true.
@@ -186,8 +171,8 @@ public class BasicAttribute implements Attribute {
 
     /*
      * Determine whether the two values are equal with each other, considering
-     * the possibility that they might be both arrays so that each element of 
-     * them has to be compared. 
+     * the possibility that they might be both arrays so that each element of
+     * them has to be compared.
      */
     private boolean compareValues(Object obj1, Object obj2) {
         if (null == obj1 && null == obj2) {
@@ -198,21 +183,20 @@ public class BasicAttribute implements Attribute {
                 /*
                  * If both are array, compare each element if it is possible
                  * that they might be equal.
-                 */ 
+                 */
                 if (compareValueClasses(obj1.getClass(), obj2.getClass())) {
                     int i = Array.getLength(obj1);
                     Object val1;
                     Object val2;
-                                        
+
                     // Compare each element of the two arrays
                     if (Array.getLength(obj2) == i) {
                         // Do the compare only if their lengths are equal
                         for (i--; i >= 0; i--) {
                             val1 = Array.get(obj1, i);
                             val2 = Array.get(obj2, i);
-                            if (null == val1
-                                ? null != val2
-                                : !val1.equals(val2)) {
+                            if (null == val1 ? null != val2 : !val1
+                                    .equals(val2)) {
                                 /*
                                  * If any of their elements at the same position
                                  * are not equal,they are not equal.
@@ -238,9 +222,9 @@ public class BasicAttribute implements Attribute {
     }
 
     /*
-     * Get the hash code of an attribute value, which might be an array whose 
+     * Get the hash code of an attribute value, which might be an array whose
      * hash code is the sum of all its element. Base types are converted into
-     * corresponding wrapper class objects.     
+     * corresponding wrapper class objects.
      */
     private int hashCodeOfValue(Object obj) {
         int hashcode = 0;
@@ -265,19 +249,13 @@ public class BasicAttribute implements Attribute {
         return hashcode;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods of Interface Attribute
-     * -------------------------------------------------------------------
-     */
-
     public void add(int index, Object val) {
         if (ordered) {
             values.add(index, val);
         } else {
             if (contains(val)) {
                 // jndi.16=Value already exists.
-                throw new IllegalStateException(Messages.getString("jndi.16"));  //$NON-NLS-1$
+                throw new IllegalStateException(Messages.getString("jndi.16")); //$NON-NLS-1$
             }
             values.add(index, val);
         }
@@ -297,7 +275,7 @@ public class BasicAttribute implements Attribute {
         values.clear();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
         try {
@@ -306,7 +284,7 @@ public class BasicAttribute implements Attribute {
             return attr;
         } catch (CloneNotSupportedException e) {
             // jndi.17=Failed to clone object of BasicAttribute class.
-            throw new AssertionError(Messages.getString("jndi.17"));  //$NON-NLS-1$
+            throw new AssertionError(Messages.getString("jndi.17")); //$NON-NLS-1$
         }
     }
 
@@ -324,7 +302,7 @@ public class BasicAttribute implements Attribute {
     public Object get() throws NamingException {
         if (0 == values.size()) {
             // jndi.18=No values available.
-            throw new NoSuchElementException(Messages.getString("jndi.18"));  //$NON-NLS-1$
+            throw new NoSuchElementException(Messages.getString("jndi.18")); //$NON-NLS-1$
         }
         return values.get(0);
     }
@@ -339,12 +317,12 @@ public class BasicAttribute implements Attribute {
 
     public DirContext getAttributeDefinition() throws NamingException {
         // jndi.19=BasicAttribute does not support this operation.
-        throw new OperationNotSupportedException(Messages.getString("jndi.19"));  //$NON-NLS-1$
+        throw new OperationNotSupportedException(Messages.getString("jndi.19")); //$NON-NLS-1$
     }
 
     public DirContext getAttributeSyntaxDefinition() throws NamingException {
         // jndi.19=BasicAttribute does not support this operation.
-        throw new OperationNotSupportedException(Messages.getString("jndi.19"));  //$NON-NLS-1$
+        throw new OperationNotSupportedException(Messages.getString("jndi.19")); //$NON-NLS-1$
     }
 
     public String getID() {
@@ -374,7 +352,7 @@ public class BasicAttribute implements Attribute {
     public Object set(int index, Object val) {
         if (!ordered && contains(val)) {
             // jndi.16=Value already exists.
-            throw new IllegalStateException(Messages.getString("jndi.16"));  //$NON-NLS-1$
+            throw new IllegalStateException(Messages.getString("jndi.16")); //$NON-NLS-1$
         }
         return values.set(index, val);
     }
@@ -384,20 +362,12 @@ public class BasicAttribute implements Attribute {
     }
 
     /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
+     * Serialization of the BasicAttribute class is as follows: attribute
+     * identifier (String) ordered flag (boolean) number of values (int) list of
+     * value objects
      */
-
-    /*
-     * Serialization of the <code>BasicAttribute</code> class is as follows:
-     *      attribute identifier (String)
-     *      ordered flag (boolean)
-     *      number of values (int)
-     *      list of value objects
-     */
-    private void readObject(ObjectInputStream ois)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
         int size;
 
         ois.defaultReadObject();
@@ -409,11 +379,9 @@ public class BasicAttribute implements Attribute {
     }
 
     /*
-     * Serialization of the <code>BasicAttribute</code> class is as follows:
-     *      attribute identifier (String)
-     *      ordered flag (boolean)
-     *      number of values (int)
-     *      list of value objects
+     * Serialization of the BasicAttribute class is as follows: attribute
+     * identifier (String) ordered flag (boolean) number of values (int) list of
+     * value objects
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
@@ -424,18 +392,20 @@ public class BasicAttribute implements Attribute {
     }
 
     /**
-     * Returns true if this <code>BasicAttribute</code> instance is equal to the
-     * supplied object <code>obj</code>.
-     * Two attributes are considered equal if they have equal identifiers, 
-     * schemas and values. BasicAttribute uses no schema.
+     * Returns true if this <code>BasicAttribute</code> instance is equal to
+     * the supplied object <code>obj</code>. Two attributes are considered
+     * equal if they have equal identifiers, schemas and values. BasicAttribute
+     * uses no schema.
      * <p>
-     * <code>Object.equals</code> is used to test equality of identifiers and 
-     * values. For array values <code>Object.equals</code> is called on every 
-     * array element.</p>
-     *
-     * @param obj           the object to be compared with
-     * @return              true if this object is equal to <code>obj</code>,
-     *                      otherwise false
+     * <code>Object.equals</code> is used to test equality of identifiers and
+     * values. For array values <code>Object.equals</code> is called on every
+     * array element.
+     * </p>
+     * 
+     * @param obj
+     *            the object to be compared with
+     * @return true if this object is equal to <code>obj</code>, otherwise
+     *         false
      */
     @Override
     public boolean equals(Object obj) {
@@ -484,13 +454,12 @@ public class BasicAttribute implements Attribute {
     }
 
     /**
-     * Returns the hashcode for this <code>BasicAttribute</code> instance.
-     * The result is calculated by summing the hashcodes for the identifier
-     * and each of the values, except for array values, where the hashcodes
-     * for each array element are summed.
+     * Returns the hashcode for this <code>BasicAttribute</code> instance. The
+     * result is calculated by summing the hashcodes for the identifier and each
+     * of the values, except for array values, where the hashcodes for each
+     * array element are summed.
      * 
-     * @return              the hashcode of this <code>BasicAttribute</code>
-     *                      instance
+     * @return the hashcode of this <code>BasicAttribute</code> instance
      */
     @Override
     public int hashCode() {
@@ -510,10 +479,10 @@ public class BasicAttribute implements Attribute {
 
     /**
      * Returns the string representation of this <code>BasicAttribute</code>
-     * instance.
-     * The result contains the ID and the string representation of each value.
+     * instance. The result contains the ID and the string representation of
+     * each value.
      * 
-     * @return              the string representation of this object
+     * @return the string representation of this object
      */
     @Override
     public String toString() {
@@ -533,5 +502,3 @@ public class BasicAttribute implements Attribute {
     }
 
 }
-
-

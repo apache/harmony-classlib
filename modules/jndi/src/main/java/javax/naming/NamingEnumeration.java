@@ -15,51 +15,45 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 import java.util.Enumeration;
 import javax.naming.NamingException;
 
 /**
- * A <code>NamingEnumeration</code> interface is an <code>Enumeration</code> 
- * which has been extended to support <code>NamingException</code>s. They can 
- * be thrown when getting the next element, checking if the Enumeration has 
- * more elements or on closing the <code>Enumeration</code>.
- * 
+ * A <code>NamingEnumeration</code> interface is an <code>Enumeration</code>
+ * which has been extended to support <code>NamingException</code>s. They can
+ * be thrown when getting the next element, checking if the Enumeration has more
+ * elements or on closing the <code>Enumeration</code>.
  */
 public interface NamingEnumeration<T> extends Enumeration<T> {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Get the next element.
-     *
-     * @return  the next element - can be null.
-     * @exception NamingException if a naming error occurs
-     * @exception java.util.NoSuchElementException when no more elements exist.
+     * 
+     * @return the next element - can be null.
+     * @exception NamingException
+     *                if a naming error occurs
+     * @exception java.util.NoSuchElementException
+     *                when no more elements exist.
      */
     public T next() throws NamingException;
 
     /**
      * Check for more elements.
-     *
-     * @return  if more elements exist return true else return false.
-     * @exception NamingException if a naming error occurs
+     * 
+     * @return if more elements exist return true else return false.
+     * @exception NamingException
+     *                if a naming error occurs
      */
     public boolean hasMore() throws NamingException;
 
     /**
      * Close the enumeration.
      * 
-     * @exception NamingException if a naming error occurs
+     * @exception NamingException
+     *                if a naming error occurs
      */
     public void close() throws NamingException;
 
 }
-
-

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
@@ -23,31 +22,30 @@ package javax.naming;
  * incomplete result.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class PartialResultException extends NamingException {
 
     static final long serialVersionUID = 2572144970049426786L;
-    
+
     /**
-     * Constructs a <code>PartialResultException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>PartialResultException</code> instance with all data
+     * initialized to null.
      */
     public PartialResultException() {
         super();
     }
 
     /**
-     * Constructs a <code>PartialResultException</code> instance 
-     * with the specified message.
-     *  
-     * @param s The detail message for this exception. It may be null.
+     * Constructs a <code>PartialResultException</code> instance with the
+     * specified message.
+     * 
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     public PartialResultException(String s) {
         super(s);
     }
 
 }
-
-

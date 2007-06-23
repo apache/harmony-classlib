@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when trying to add a name 
+ * This is the <code>NamingException</code> used when trying to add a name
  * which is already bound.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class NameAlreadyBoundException extends NamingException {
 
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = -8491441000356780586L;
+    static final long serialVersionUID = -8491441000356780586L;
 
     /**
-     * Constructor a <code>NameAlreadyBoundException</code> instance 
-     * with all data initialized to null.
+     * Constructor a <code>NameAlreadyBoundException</code> instance with all
+     * data initialized to null.
      */
     public NameAlreadyBoundException() {
         super();
     }
 
     /**
-     * Constructor a <code>NameAlreadyBoundException</code> instance
-     * with the specified message. 
+     * Constructor a <code>NameAlreadyBoundException</code> instance with the
+     * specified message.
      * 
-     * @param arg0 The detail message for the exception. It may be null.
+     * @param arg0
+     *            The detail message for the exception. It may be null.
      */
     public NameAlreadyBoundException(String arg0) {
         super(arg0);
     }
 
 }
-
-

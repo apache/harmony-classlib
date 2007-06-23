@@ -15,39 +15,27 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import java.io.Serializable;
 
 /**
  * See RFC2251 for the definition of an <code>ExtendedResponse</code>.
- * 
- * 
  */
 public interface ExtendedResponse extends Serializable {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Gets the object ID assigned to this response.
-     * (see RFC2251)
+     * Gets the object ID assigned to this response. (see RFC2251)
      * 
-     * @return          the object ID assigned to the response
+     * @return the object ID assigned to the response
      */
     String getID();
 
     /**
      * Gets the response encoded using ASN.1 Basic Encoding Rules (BER).
      * 
-     * @return          the response encoded using ASN.1 BER
+     * @return the response encoded using ASN.1 BER
      */
     byte[] getEncodedValue();
 
 }
-
-

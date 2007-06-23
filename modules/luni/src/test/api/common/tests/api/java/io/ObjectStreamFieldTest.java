@@ -70,6 +70,14 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
 		assertTrue("Used to test", true);
 	}
 
+	public void test_equalsLjava_lang_Object() {
+	    // Regression test for HARMONY-4273
+	    assertTrue(samField.equals(samField));
+	    assertFalse(samField.equals(hamField));
+	    assertFalse(samField.equals("fish"));
+	    assertFalse(samField.equals(null));
+    }
+
 	/**
 	 * @tests java.io.ObjectStreamField#compareTo(java.lang.Object)
 	 */

@@ -29,14 +29,15 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * Represents a DNS pseudo URL.
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class DNSPseudoURL {
 
     private String host = "localhost"; //$NON-NLS-1$
+
     private int port = ProviderConstants.DEFAULT_DNS_PORT;
+
     private String domain = "."; //$NON-NLS-1$
+
     private boolean hostIpWasGiven = false;
 
     /**
@@ -45,16 +46,17 @@ public class DNSPseudoURL {
      * <code>dns:[//host[:port]][/domain]</code><br>
      * If no host information was given then <code>localhost</code> will be
      * used. If no port was given then the standard DNS server port
-     * <code>53</code> will be used. If no domain was given then the root domain
-     * will be used. All domain here are treated as absolute domains.
-     * @param DNS string representation of DNS URL 
-     * @throws IllegalArgumentException if the argument is not in acceptable
-     * format
-     * @throws NullPointerException if the argument is null 
+     * <code>53</code> will be used. If no domain was given then the root
+     * domain will be used. All domain here are treated as absolute domains.
+     * 
+     * @param DNS
+     *            string representation of DNS URL
+     * @throws IllegalArgumentException
+     *             if the argument is not in acceptable format
+     * @throws NullPointerException
+     *             if the argument is null
      */
-    public DNSPseudoURL(String strForm) throws IllegalArgumentException
-    
-    {
+    public DNSPseudoURL(String strForm) throws IllegalArgumentException {
         StringTokenizer st = null;
         StringTokenizer st2 = null;
         String token;
@@ -77,16 +79,18 @@ public class DNSPseudoURL {
         // host
         if (st.hasMoreTokens()) {
             token = st.nextToken();
-            if (!token.equals("/") || !st.hasMoreTokens()) {  //$NON-NLS-1$
+            if (!token.equals("/") || !st.hasMoreTokens()) { //$NON-NLS-1$
                 // jndi.6A=Bad URL syntax
-                throw new IllegalArgumentException(Messages.getString("jndi.6A")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages
+                        .getString("jndi.6A")); //$NON-NLS-1$
             }
             token = st.nextToken();
             if (token.equals("/")) { //$NON-NLS-1$
                 // host[:port] was given
                 if (!st.hasMoreElements()) {
                     // jndi.6A=Bad URL syntax
-                    throw new IllegalArgumentException(Messages.getString("jndi.6A")); //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages
+                            .getString("jndi.6A")); //$NON-NLS-1$
                 }
                 token = st.nextToken();
                 st2 = new StringTokenizer(token, ":"); //$NON-NLS-1$
@@ -106,7 +110,8 @@ public class DNSPseudoURL {
                     token = st.nextToken();
                     if (!token.equals("/") || !st.hasMoreTokens()) { //$NON-NLS-1$
                         // jndi.6A=Bad URL syntax
-                        throw new IllegalArgumentException(Messages.getString("jndi.6A")); //$NON-NLS-1$
+                        throw new IllegalArgumentException(Messages
+                                .getString("jndi.6A")); //$NON-NLS-1$
                     }
                     domain = ProviderMgr.normalizeName(st.nextToken());
                 }
@@ -117,8 +122,8 @@ public class DNSPseudoURL {
             // extra
             if (st.hasMoreTokens()) {
                 // jndi.66=Extra characters encountered at the end of the URL
-                throw new IllegalArgumentException(
-                        Messages.getString("jndi.66")); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages
+                        .getString("jndi.66")); //$NON-NLS-1$
             }
         }
     }
@@ -129,22 +134,26 @@ public class DNSPseudoURL {
     public String getDomain() {
         return domain;
     }
+
     /**
      * @return Returns the host.
      */
     public String getHost() {
         return host;
     }
+
     /**
      * @return Returns the hostIpWasGiven.
      */
     public boolean isHostIpGiven() {
         return hostIpWasGiven;
     }
+
     /**
      * @return Returns the port.
      */
     public int getPort() {
         return port;
     }
+
 }

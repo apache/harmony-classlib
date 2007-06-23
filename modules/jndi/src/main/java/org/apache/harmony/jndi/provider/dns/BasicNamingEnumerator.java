@@ -28,16 +28,16 @@ import java.util.Enumeration;
 
 /**
  * Trivial implementation of <code>NamingEnumeration</code> interface.
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class BasicNamingEnumerator<T> implements NamingEnumeration<T> {
-    
+
     private final Enumeration<T> enumeration;
-    
+
     /**
      * Constructs new enumerator from existing <code>Enumeration</code>.
-     * @param enumeration enumeration 
+     * 
+     * @param enumeration
+     *            enumeration
      */
     public BasicNamingEnumerator(Enumeration<T> newEnum) {
         this.enumeration = newEnum;
@@ -51,7 +51,8 @@ public class BasicNamingEnumerator<T> implements NamingEnumeration<T> {
         return enumeration.hasMoreElements();
     }
 
-    public void close() throws NamingException {}
+    public void close() throws NamingException {
+    }
 
     public T nextElement() {
         return enumeration.nextElement();
@@ -60,4 +61,5 @@ public class BasicNamingEnumerator<T> implements NamingEnumeration<T> {
     public boolean hasMoreElements() {
         return enumeration.hasMoreElements();
     }
+
 }

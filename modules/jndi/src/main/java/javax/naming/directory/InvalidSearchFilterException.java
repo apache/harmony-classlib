@@ -22,54 +22,44 @@ import javax.naming.NamingException;
 /**
  * Thrown when the search filter specification is invalid.
  * <p>
- * Search filters are part of the search API on a <code>DirContext</code>.
- * If the API is invoked with a search filter that has invalid syntax, or
- * an invalid parameter, etc. then the <code>InvalidSearchFilterException</code>
- * is thrown.</p>
+ * Search filters are part of the search API on a <code>DirContext</code>. If
+ * the API is invoked with a search filter that has invalid syntax, or an
+ * invalid parameter, etc. then the <code>InvalidSearchFilterException</code>
+ * is thrown.
+ * </p>
  * <p>
  * Serialization and multithreaded issues for <code>NamingException</code>
- * apply equally here.</p>
+ * apply equally here.
+ * </p>
  * 
  * @see NamingException
  */
 public class InvalidSearchFilterException extends NamingException {
-	
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
-	 	
-	/* Serialization information - start. */
-	private static final long serialVersionUID = 0x284877205a985231L;
-	/* Serialization information - end. */
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-	 
-	/**
-	 * Default constructor. 
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 */	 	 
-	public InvalidSearchFilterException() {
-		super();
-	}
-	
-	/**
-	 * Constructs an <code>InvalidSearchFilterException</code> instance 
-     * using the supplied text of the message.
+    private static final long serialVersionUID = 0x284877205a985231L;
+
+    /**
+     * Default constructor.
      * <p>
-	 * All fields are initialized to null.</p>
+     * All fields are initialized to null.
+     * </p>
+     */
+    public InvalidSearchFilterException() {
+        super();
+    }
+
+    /**
+     * Constructs an <code>InvalidSearchFilterException</code> instance using
+     * the supplied text of the message.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
      * 
-	 * @param s				message about the problem
-	 */
-	public InvalidSearchFilterException(String s) {
-		super(s);
-	}
+     * @param s
+     *            message about the problem
+     */
+    public InvalidSearchFilterException(String s) {
+        super(s);
+    }
+
 }
-
-

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
@@ -23,36 +22,29 @@ package javax.naming;
  * used when a security exception is encountered. There are other security
  * related exceptions which extend this one.
  * <p>
- * Multithreaded access to a <code>NamingSecurityException</code> instance is 
- * only safe when client code locks the object first.</p>
- * 
+ * Multithreaded access to a <code>NamingSecurityException</code> instance is
+ * only safe when client code locks the object first.
+ * </p>
  */
 public abstract class NamingSecurityException extends NamingException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-
     /**
-     * Constructs a <code>NamingSecurityException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>NamingSecurityException</code> instance with all
+     * data initialized to null.
      */
     public NamingSecurityException() {
         super();
     }
 
     /**
-     * Constructs a <code>NamingSecurityException</code> instance
-     * with the specified message.
+     * Constructs a <code>NamingSecurityException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for this exception. It may be null.
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     public NamingSecurityException(String s) {
         super(s);
     }
 
 }
-
-

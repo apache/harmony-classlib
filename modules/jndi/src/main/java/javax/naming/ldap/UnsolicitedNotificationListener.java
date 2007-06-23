@@ -15,33 +15,24 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import javax.naming.event.NamingListener;
 
 /**
- * A listener that wishes to receive unsolicited notifications.
- * See RFC2251 for the definition of an <code>UnsolicitedNotification</code>.
+ * A listener that wishes to receive unsolicited notifications. See RFC2251 for
+ * the definition of an <code>UnsolicitedNotification</code>.
  * 
  * @see UnsolicitedNotification
- * 
  */
 public interface UnsolicitedNotificationListener extends NamingListener {
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Accepts an unsolicited notification.
      * 
-     * @param e     an unsolicited notification
+     * @param e
+     *            an unsolicited notification
      */
     void notificationReceived(UnsolicitedNotificationEvent e);
 
 }
-
-

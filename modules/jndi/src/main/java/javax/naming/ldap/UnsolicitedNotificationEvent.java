@@ -15,90 +15,64 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import java.util.EventObject;
 
 /**
- * This event is fired when an LDAP server sends an unsolited notification.
- * (See RFC2251). 
- * 
- * 
+ * This event is fired when an LDAP server sends an unsolicited notification.
+ * (See RFC2251).
  */
 public class UnsolicitedNotificationEvent extends EventObject {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-
-    /* 
-     * This constant is used during deserialization to check the J2SE version 
-     * which created the serialized object.
-     */
-    static final long serialVersionUID = -2382603380799883705L; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = -2382603380799883705L;
 
     /**
      * The specific notification.
      * 
      * @serial
-     */ 
+     */
     private UnsolicitedNotification notice;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-    
     /**
      * Constructs an <code>UnsolicitedNotificationEvent</code> instance using
      * the supplied <code>UnsolicitedNotification</code> instance.
      * 
-     * @param o     the source of the event which cannot be null
-     * @param un    the <code>UnsolicitedNotification</code> instance which
-     *              cannot be null
-     */ 
+     * @param o
+     *            the source of the event which cannot be null
+     * @param un
+     *            the <code>UnsolicitedNotification</code> instance which
+     *            cannot be null
+     */
     public UnsolicitedNotificationEvent(Object o, UnsolicitedNotification un) {
         super(o);
         this.notice = un;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Returns the <code>UnsolicitedNotification</code> instance associated with
-     * this event. 
+     * Returns the <code>UnsolicitedNotification</code> instance associated
+     * with this event.
      * 
-     * @return      the <code>UnsolicitedNotification</code> instance associated 
-     *              with this event
+     * @return the <code>UnsolicitedNotification</code> instance associated
+     *         with this event
      */
     public UnsolicitedNotification getNotification() {
         return notice;
     }
 
     /**
-     * Uses this event to trigger a notification received on the supplied 
+     * Uses this event to trigger a notification received on the supplied
      * listener.
      * 
-     * @param unl   the listener to dispatch this event to. It cannot be null.
+     * @param unl
+     *            the listener to dispatch this event to. It cannot be null.
      */
     public void dispatch(UnsolicitedNotificationListener unl) {
         unl.notificationReceived(this);
     }
 
 }
-
-

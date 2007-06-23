@@ -15,39 +15,37 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when a size restriction is 
+ * This is the <code>NamingException</code> used when a size restriction is
  * exceeded.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class SizeLimitExceededException extends LimitExceededException {
-	
-	static final long serialVersionUID = 7129289564879168579L; // J2SE 1.4.2
+
+    static final long serialVersionUID = 7129289564879168579L;
 
     /**
-     * Constructs a <code>SizeLimitExceededException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>SizeLimitExceededException</code> instance with all
+     * data initialized to null.
      */
     public SizeLimitExceededException() {
         super();
     }
 
     /**
-     * Constructs a <code>SizeLimitExceededException</code> instance 
-     * with the specified message.  
+     * Constructs a <code>SizeLimitExceededException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for this exception. It may be null.
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     public SizeLimitExceededException(String s) {
         super(s);
     }
 
 }
-
-

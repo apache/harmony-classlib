@@ -23,7 +23,6 @@
 
 package org.apache.harmony.jndi.provider.dns;
 
-
 import java.util.Vector;
 import java.util.Enumeration;
 
@@ -32,14 +31,12 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 /**
  * This class represents a domain protocol message.
  * 
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  * @see RFC 1035
  */
 public class Message {
-    
+
     // header section fields
-    
+
     /** an ID */
     private int id = 0;
 
@@ -47,41 +44,43 @@ public class Message {
     private boolean qr = ProviderConstants.QR_QUERY;
 
     /** OPCODE; QUERY or IQUERY or STATUS */
-    private int opCode = 0; 
+    private int opCode = 0;
 
-    /** AA, Authoritative Answer*/
-    private boolean aa = false; 
+    /** AA, Authoritative Answer */
+    private boolean aa = false;
 
     /** TC, TrunCation */
-    private boolean tc = false; 
+    private boolean tc = false;
 
     /** RD, Recursion Desired */
-    private boolean rd = false; 
+    private boolean rd = false;
 
     /** RA, Recursion Available */
-    private boolean ra = false; 
+    private boolean ra = false;
 
     /** Z, always should be zero */
-    //private int z; 
-
+    // private int z;
     /** RCODE, Response CODE */
-    private int rCode = 0; 
+    private int rCode = 0;
 
     /** QDCOUNT, number of records in question section */
-    private int qdCount = 0; 
+    private int qdCount = 0;
 
     /** ANCOUNT, number of records in answer section */
-    private int anCount = 0; 
+    private int anCount = 0;
 
     /** NSCOUNT, number of records in authority records section */
-    private int nsCount = 0; 
+    private int nsCount = 0;
 
     /** ARCOUNT, number of records in additional section */
     private int arCount = 0;
 
     private Vector<QuestionRecord> questionRecords = null;
+
     private Vector<ResourceRecord> answerRRs = null;
+
     private Vector<ResourceRecord> authorityRRs = null;
+
     private Vector<ResourceRecord> additionalRRs = null;
 
     /** */
@@ -92,36 +91,37 @@ public class Message {
         additionalRRs = new Vector<ResourceRecord>();
     }
 
-    /** 
-     * Constructs Message object from given parameters 
-     *
-     * @param id ID
-     * @param qr QR
-     * @param opCode OPCODE
-     * @param aa AA
-     * @param tc TC
-     * @param rd RA
-     * @param ra RA
-     * @param rCode RCODE
-     * @param qdCount QDCOUNT
-     * @param anCount ANCOUNT
-     * @param nsCount NSCOUNT
-     * @param arCount ARCOUNT
+    /**
+     * Constructs Message object from given parameters
+     * 
+     * @param id
+     *            ID
+     * @param qr
+     *            QR
+     * @param opCode
+     *            OPCODE
+     * @param aa
+     *            AA
+     * @param tc
+     *            TC
+     * @param rd
+     *            RA
+     * @param ra
+     *            RA
+     * @param rCode
+     *            RCODE
+     * @param qdCount
+     *            QDCOUNT
+     * @param anCount
+     *            ANCOUNT
+     * @param nsCount
+     *            NSCOUNT
+     * @param arCount
+     *            ARCOUNT
      */
-    public Message(
-            int id,
-            boolean qr,
-            int opCode, 
-            boolean aa, 
-            boolean tc, 
-            boolean rd, 
-            boolean ra, 
-            int rCode, 
-            int qdCount, 
-            int anCount, 
-            int nsCount, 
-            int arCount)
-    {
+    public Message(int id, boolean qr, int opCode, boolean aa, boolean tc,
+            boolean rd, boolean ra, int rCode, int qdCount, int anCount,
+            int nsCount, int arCount) {
         this.id = id;
         this.qr = qr;
         this.opCode = opCode;
@@ -139,18 +139,20 @@ public class Message {
         authorityRRs = new Vector<ResourceRecord>();
         additionalRRs = new Vector<ResourceRecord>();
     }
-    
+
     /**
-     * Generates sequence of bytes that represents the message. 
+     * Generates sequence of bytes that represents the message.
      * 
-     * @param buffer the buffer to write bytes into
-     * @param startIdx the index of <code>buffer</code> to start writing at
+     * @param buffer
+     *            the buffer to write bytes into
+     * @param startIdx
+     *            the index of <code>buffer</code> to start writing at
      * @return updated index of the <code>buffer</code>
-     * @throws DomainProtocolException if something went wrong
+     * @throws DomainProtocolException
+     *             if something went wrong
      */
     public int writeBytes(byte[] buffer, int startIdx)
-            throws DomainProtocolException
-    {
+            throws DomainProtocolException {
         int idx = startIdx;
         int tmp = 0;
 
@@ -219,16 +221,19 @@ public class Message {
     /**
      * Parses given sequence of bytes and constructs a message object from it.
      * 
-     * @param mesBytes the byte array that should be parsed
-     * @param startIdx an index of <code>mesBytes</code> array to start the
-     *  parsing at
-     * @param mes an object to write a result to, should already be created
+     * @param mesBytes
+     *            the byte array that should be parsed
+     * @param startIdx
+     *            an index of <code>mesBytes</code> array to start the parsing
+     *            at
+     * @param mes
+     *            an object to write a result to, should already be created
      * @return updated index of <code>mesBytes</code> array
-     * @throws DomainProtocolException if some error has occured
+     * @throws DomainProtocolException
+     *             if some error has occurred
      */
-    public static int parseMessage(byte[] mesBytes, int startIdx,
-            Message mesObj) throws DomainProtocolException
-    {
+    public static int parseMessage(byte[] mesBytes, int startIdx, Message mesObj)
+            throws DomainProtocolException {
         int idx = startIdx;
         int tmp, tmp2;
         int qdCnt;
@@ -250,8 +255,7 @@ public class Message {
         // QR
         mesObj.setQR(ProviderMgr.checkBit(tmp, ProviderConstants.QR_MASK));
         // OPCODE
-        tmp2 = (tmp & ProviderConstants.OPCODE_MASK)
-                        >> ProviderConstants.OPCODE_SHIFT; 
+        tmp2 = (tmp & ProviderConstants.OPCODE_MASK) >> ProviderConstants.OPCODE_SHIFT;
         mesObj.setOpCode(tmp2);
         // AA
         mesObj.setAA(ProviderMgr.checkBit(tmp, ProviderConstants.AA_MASK));
@@ -262,8 +266,7 @@ public class Message {
         // RA
         mesObj.setRA(ProviderMgr.checkBit(tmp, ProviderConstants.RA_MASK));
         // RCODE
-        tmp2 = (tmp & ProviderConstants.RCODE_MASK)
-                        >> ProviderConstants.RCODE_SHIFT; 
+        tmp2 = (tmp & ProviderConstants.RCODE_MASK) >> ProviderConstants.RCODE_SHIFT;
         mesObj.setRCode(tmp2);
         // QDCOUNT
         qdCnt = ProviderMgr.parse16Int(mesBytes, idx);
@@ -309,199 +312,233 @@ public class Message {
     }
 
     /**
-     * @return string representation of this message 
+     * @return string representation of this message
      */
     @Override
+    @SuppressWarnings("nls")
     public String toString() {
         StringBuffer sb = new StringBuffer();
 
-        sb.append("ID=" + id + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append("ID=" + id + "\n");
         if (qr) {
-            sb.append(" QR"); //$NON-NLS-1$
+            sb.append(" QR");
         }
-        sb.append(" OPCODE=" + opCode); //$NON-NLS-1$
+        sb.append(" OPCODE=" + opCode);
         if (aa) {
-            sb.append(" AA"); //$NON-NLS-1$
+            sb.append(" AA");
         }
         if (tc) {
-            sb.append(" TC"); //$NON-NLS-1$
+            sb.append(" TC");
         }
         if (rd) {
-            sb.append(" RD"); //$NON-NLS-1$
+            sb.append(" RD");
         }
         if (ra) {
-            sb.append(" RA"); //$NON-NLS-1$
+            sb.append(" RA");
         }
-        sb.append(" RCODE=" + rCode); //$NON-NLS-1$
-        sb.append("\n"); //$NON-NLS-1$
-        sb.append("QDCOUNT=" + qdCount); //$NON-NLS-1$
+        sb.append(" RCODE=" + rCode);
+        sb.append("\n");
+        sb.append("QDCOUNT=" + qdCount);
         for (int i = 0; i < questionRecords.size(); i++) {
-            sb.append("\n"); //$NON-NLS-1$
+            sb.append("\n");
             sb.append(questionRecords.elementAt(i).toString());
         }
-        sb.append("\n"); //$NON-NLS-1$
-        sb.append(" ANCOUNT=" + anCount); //$NON-NLS-1$
+        sb.append("\n");
+        sb.append(" ANCOUNT=" + anCount);
         for (int i = 0; i < answerRRs.size(); i++) {
-            sb.append("\n"); //$NON-NLS-1$
+            sb.append("\n");
             sb.append(answerRRs.elementAt(i).toString());
         }
-        sb.append("\n"); //$NON-NLS-1$
-        sb.append(" NSCOUNT=" + nsCount); //$NON-NLS-1$
+        sb.append("\n");
+        sb.append(" NSCOUNT=" + nsCount);
         for (int i = 0; i < authorityRRs.size(); i++) {
-            sb.append("\n"); //$NON-NLS-1$
+            sb.append("\n");
             sb.append(authorityRRs.elementAt(i).toString());
         }
-        sb.append("\n"); //$NON-NLS-1$
-        sb.append(" ARCOUNT=" + arCount); //$NON-NLS-1$
+        sb.append("\n");
+        sb.append(" ARCOUNT=" + arCount);
         for (int i = 0; i < additionalRRs.size(); i++) {
-            sb.append("\n"); //$NON-NLS-1$
+            sb.append("\n");
             sb.append(additionalRRs.elementAt(i).toString());
         }
         return sb.toString();
     }
 
-    // setters and getters
-    
     /**
      * @return Returns the AA.
      */
     public boolean isAA() {
         return aa;
     }
+
     /**
-     * @param aa The AA to set.
+     * @param aa
+     *            The AA to set.
      */
     public void setAA(boolean aa) {
         this.aa = aa;
     }
+
     /**
      * @return Returns the anCount.
      */
     public int getANCount() {
         return anCount;
     }
+
     /**
-     * @param anCount The anCount to set.
+     * @param anCount
+     *            The anCount to set.
      */
     public void setANCount(int anCount) {
         this.anCount = anCount;
     }
+
     /**
      * @return Returns the arCount.
      */
     public int getARCount() {
         return arCount;
     }
+
     /**
-     * @param arCount The arCount to set.
+     * @param arCount
+     *            The arCount to set.
      */
     public void setARCount(int arCount) {
         this.arCount = arCount;
     }
+
     /**
      * @return Returns the id.
      */
     public int getId() {
         return id;
     }
+
     /**
-     * @param id The id to set.
+     * @param id
+     *            The id to set.
      */
     public void setId(int id) {
         this.id = id;
     }
+
     /**
      * @return Returns the nsCount.
      */
     public int getNSCount() {
         return nsCount;
     }
+
     /**
-     * @param nsCount The nsCount to set.
+     * @param nsCount
+     *            The nsCount to set.
      */
     public void setNSCount(int nsCount) {
         this.nsCount = nsCount;
     }
+
     /**
      * @return Returns the opCode.
      */
     public int getOpCode() {
         return opCode;
     }
+
     /**
-     * @param opCode The opCode to set.
+     * @param opCode
+     *            The opCode to set.
      */
     public void setOpCode(int opCode) {
         this.opCode = opCode;
     }
+
     /**
      * @return Returns the qdCount.
      */
     public int getQDCount() {
         return qdCount;
     }
+
     /**
-     * @param qdCount The qdCount to set.
+     * @param qdCount
+     *            The qdCount to set.
      */
     public void setQDCount(int qdCount) {
         this.qdCount = qdCount;
     }
+
     /**
      * @return Returns the QR.
      */
     public boolean getQR() {
         return qr;
     }
+
     /**
-     * @param qr The QR to set.
+     * @param qr
+     *            The QR to set.
      */
     public void setQR(boolean qr) {
         this.qr = qr;
     }
+
     /**
      * @return Returns the RA.
      */
     public boolean isRA() {
         return ra;
     }
+
     /**
-     * @param ra The RA to set.
+     * @param ra
+     *            The RA to set.
      */
     public void setRA(boolean ra) {
         this.ra = ra;
     }
+
     /**
      * @return Returns the rCode.
      */
     public int getRCode() {
         return rCode;
     }
+
     /**
-     * @param code The rCode to set.
+     * @param code
+     *            The rCode to set.
      */
     public void setRCode(int code) {
         rCode = code;
     }
+
     /**
      * @return Returns the RD.
      */
     public boolean isRD() {
         return rd;
     }
+
     /**
-     * @param rd The RD to set.
+     * @param rd
+     *            The RD to set.
      */
     public void setRD(boolean rd) {
         this.rd = rd;
     }
+
     /**
      * @return Returns the TC.
      */
     public boolean isTc() {
         return tc;
     }
+
     /**
-     * @param tc The TC to set.
+     * @param tc
+     *            The TC to set.
      */
     public void setTc(boolean tc) {
         this.tc = tc;
@@ -513,10 +550,12 @@ public class Message {
     public Enumeration<QuestionRecord> getQuestionRecords() {
         return questionRecords.elements();
     }
-    
+
     /**
      * Adds a new question record to the message.
-     * @param qr a record to add
+     * 
+     * @param qr
+     *            a record to add
      */
     public void addQuestionRecord(QuestionRecord qr) {
         questionRecords.addElement(qr);
@@ -531,7 +570,9 @@ public class Message {
 
     /**
      * Adds a new question record to the message.
-     * @param rr a record to add
+     * 
+     * @param rr
+     *            a record to add
      */
     public void addAnswerRR(ResourceRecord rr) {
         answerRRs.addElement(rr);
@@ -546,7 +587,9 @@ public class Message {
 
     /**
      * Adds a new question record to the message.
-     * @param rr a record to add
+     * 
+     * @param rr
+     *            a record to add
      */
     public void addAuthorityRR(ResourceRecord rr) {
         authorityRRs.addElement(rr);
@@ -561,7 +604,9 @@ public class Message {
 
     /**
      * Adds a new question record to the message.
-     * @param rr a record to add
+     * 
+     * @param rr
+     *            a record to add
      */
     public void addAdditionalRR(ResourceRecord rr) {
         additionalRRs.addElement(rr);

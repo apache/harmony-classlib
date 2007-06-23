@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.spi;
 
 import javax.naming.Name;
@@ -23,57 +22,52 @@ import javax.naming.NamingException;
 
 /**
  * The <code>Resolver</code> interface describes an intermediate context which
- * may be used in name resolution. In some context implementations, it is 
- * possible that subtypes of <code>Context</code> may not be supported; in such
- * cases, a class implementing the <code>Resolver</code> interface becomes 
- * useful to obtain a context which is of a specified subtype of 
+ * may be used in name resolution. In some context implementations, it is
+ * possible that subtypes of <code>Context</code> may not be supported; in
+ * such cases, a class implementing the <code>Resolver</code> interface
+ * becomes useful to obtain a context which is of a specified subtype of
  * <code>Context</code>.
- * 
  */
 public interface Resolver {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
+    /**
+     * Partially resolves the name specified by name <code>n</code> stopping
+     * at the first context object which is of the <code>Context</code>
+     * subtype specified by class <code>c</code>.
+     * 
+     * @param n
+     *            a name
+     * @param c
+     *            a context
+     * @return details of the resolved context object and the part of the name
+     *         remaining to be resolved in a non-null <code>ResolveResult</code>
+     *         object.
+     * @throws javax.naming.NotContextException
+     *             if no context of the specified subtype is found.
+     * @throws NamingException
+     *             if other naming errors occur
      */
+    ResolveResult resolveToClass(Name n, Class<? extends javax.naming.Context> c)
+            throws NamingException;
 
     /**
-     * Partially resolves the name specified by name <code>n</code> stopping 
-     * at the first context object which is of the <code>Context</code> subtype 
-     * specified by class <code>c</code>.
+     * Partially resolves the name specified by name <code>n</code> stopping
+     * at the first context object which is of the <code>Context</code>
+     * subtype specified by class <code>c</code>.
      * 
-     * @param n a name
-     * @param c a context
-     * @return  details of the resolved context object and the part of the name
-     *          remaining to be resolved in a non-null <code>ResolveResult</code>
-     *          object.
-     * @throws javax.naming.NotContextException if no context of the specified subtype is 
-     *          found.
-     * @throws NamingException if other naming errors occur
-     */
-    ResolveResult resolveToClass(Name n,
-                                 Class<? extends javax.naming.Context> c)
-        throws NamingException;
-
-    /**
-     * Partially resolves the name specified by name <code>n</code> stopping 
-     * at the first context object which is of the <code>Context</code> subtype 
-     * specified by class <code>c</code>.
-     * 
-     * @param n a name in string
-     * @param c a context
-     * @return  details of the resolved context object and the part of the name
-     *          remaining to be resolved in a non-null <code>ResolveResult</code>
-     *          object.
-     * @throws javax.naming.NotContextException if no context of the specified subtype is 
-     *          found.
-     * @throws NamingException if other naming errors occur
+     * @param n
+     *            a name in string
+     * @param c
+     *            a context
+     * @return details of the resolved context object and the part of the name
+     *         remaining to be resolved in a non-null <code>ResolveResult</code>
+     *         object.
+     * @throws javax.naming.NotContextException
+     *             if no context of the specified subtype is found.
+     * @throws NamingException
+     *             if other naming errors occur
      */
     ResolveResult resolveToClass(String n,
-                                 Class<? extends javax.naming.Context> c)
-        throws NamingException;
+            Class<? extends javax.naming.Context> c) throws NamingException;
 
 }
-
-

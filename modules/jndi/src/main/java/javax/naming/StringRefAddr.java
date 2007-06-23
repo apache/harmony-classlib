@@ -15,70 +15,46 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
  * A <code>StringRefAddr</code> refers to an address which is represented by a
  * string such as a URL or hostname.
- *
  */
 public class StringRefAddr extends RefAddr {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    /*
-     * This constant is used during deserialization to check the J2SE version which
+     * This constant is used during deserialization to check the version which
      * created the serialized object.
      */
-    static final long serialVersionUID = -8913762495138505527L; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = -8913762495138505527L;
 
     /**
-     * The address itself.
-     * For StringRefAddr the address is a string such as a URL or hostname.
+     * The address itself. For StringRefAddr the address is a string such as a
+     * URL or hostname.
      * 
      * @serial
      */
     private String contents;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Constructs a <code>StringRefAddr</code> object using the supplied 
+     * Constructs a <code>StringRefAddr</code> object using the supplied
      * address type and address.
      * 
-     * @param type      the address type which cannot be null
-     * @param address   the address itself which may be null
+     * @param type
+     *            the address type which cannot be null
+     * @param address
+     *            the address itself which may be null
      */
     public StringRefAddr(String type, String address) {
         super(type);
         this.contents = address;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class RefAddr
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Get the string containing this address.
      * 
-     * @return          a string containing this address which may be null
+     * @return a string containing this address which may be null
      */
     @Override
     public Object getContent() {
@@ -86,5 +62,3 @@ public class StringRefAddr extends RefAddr {
     }
 
 }
-
-

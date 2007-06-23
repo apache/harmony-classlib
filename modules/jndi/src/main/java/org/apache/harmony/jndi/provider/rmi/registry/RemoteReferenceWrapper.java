@@ -20,25 +20,21 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.2 $
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
 import java.rmi.server.UnicastRemoteObject;
 
 import javax.naming.Reference;
 
-
 /**
- * This class stores a {@link Reference}
- * and provides {@link Remote} access to it.
- *
- * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
+ * This class stores a {@link Reference} and provides {@link Remote} access to
+ * it.
  */
-public class RemoteReferenceWrapper extends UnicastRemoteObject
-        implements RemoteReference {
+public class RemoteReferenceWrapper extends UnicastRemoteObject implements
+        RemoteReference {
 
     /**
      * serialVersionUID
@@ -52,12 +48,12 @@ public class RemoteReferenceWrapper extends UnicastRemoteObject
 
     /**
      * Creates wrapper for the specified reference.
-     *
-     * @param   reference
-     *          Reference to wrap.
-     *
-     * @throws  RemoteException
-     *          If object export failed.
+     * 
+     * @param reference
+     *            Reference to wrap.
+     * 
+     * @throws RemoteException
+     *             If object export failed.
      */
     public RemoteReferenceWrapper(Reference reference) throws RemoteException {
         this.reference = reference;
@@ -65,10 +61,11 @@ public class RemoteReferenceWrapper extends UnicastRemoteObject
 
     /**
      * Returns the wrapped reference.
-     *
-     * @return  Wrapped reference.
+     * 
+     * @return Wrapped reference.
      */
     public Reference getReference() {
         return reference;
     }
+
 }

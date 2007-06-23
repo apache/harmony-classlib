@@ -15,58 +15,49 @@
  * limitations under the License.
  */
 
- package javax.naming.directory;
+package javax.naming.directory;
 
 import javax.naming.NamingException;
 
 /**
- * Thrown when an attempt is made to set attributes that are invalid for
- * the entry they are being targeted.
+ * Thrown when an attempt is made to set attributes that are invalid for the
+ * entry they are being targeted.
  * <p>
  * Examples include schema restrictions for attributes such as specific values
- * required, attributes that must be set exclusively of others, and so on.</p>
+ * required, attributes that must be set exclusively of others, and so on.
+ * </p>
  * <p>
- * The list of invalid cases is defined by the directory service provider.</p>
+ * The list of invalid cases is defined by the directory service provider.
+ * </p>
  * 
  * @see NamingException
- * 
  */
 public class InvalidAttributesException extends NamingException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
+    private static final long serialVersionUID = 0x24301a12642c8465L;
 
-	private static final long serialVersionUID = 0x24301a12642c8465L;
+    /**
+     * Default constructor.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     */
+    public InvalidAttributesException() {
+        super();
+    }
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-	
-	/**
-	 * Default constructor. 
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 */		
-	public InvalidAttributesException() {
-		super();
-	}
-
-	/**
-	 * Constructs an <code>InvalidAttributesException</code> instance using 
+    /**
+     * Constructs an <code>InvalidAttributesException</code> instance using
      * the supplied text of the message.
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 * 
-	 * @param s				message about the problem
-	 */ 
-	public InvalidAttributesException(String s) {
-		super(s);
-	}
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     * 
+     * @param s
+     *            message about the problem
+     */
+    public InvalidAttributesException(String s) {
+        super(s);
+    }
+
 }
-
-

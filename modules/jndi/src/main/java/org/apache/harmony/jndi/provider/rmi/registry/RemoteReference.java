@@ -20,6 +20,7 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.2 $
  */
+
 package org.apache.harmony.jndi.provider.rmi.registry;
 
 import java.rmi.Remote;
@@ -28,25 +29,22 @@ import java.rmi.RemoteException;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 
-
 /**
  * This interface provides access to a remote reference.
- *
- * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.2 $
  */
 public interface RemoteReference extends Remote {
 
     /**
      * Returns the remote reference.
-     *
-     * @return  Remote reference.
-     *
-     * @throws  NamingException
-     *          If naming exception occurs.
-     *
-     * @throws  RemoteException
-     *          If RMI remote exception occurs.
+     * 
+     * @return Remote reference.
+     * 
+     * @throws NamingException
+     *             If naming exception occurs.
+     * 
+     * @throws RemoteException
+     *             If RMI remote exception occurs.
      */
     public Reference getReference() throws NamingException, RemoteException;
+
 }

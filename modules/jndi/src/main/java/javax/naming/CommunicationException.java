@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when communication with the 
+ * This is the <code>NamingException</code> used when communication with the
  * naming or directory service fails.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class CommunicationException extends NamingException {
-    
-	/*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+
+    /*
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = 3618507780299986611L; // J2SE 1.4.2	
+    static final long serialVersionUID = 3618507780299986611L;
 
     /**
-     * Constructs a <code>CommunicationException</code> instance with all 
-     * data initialized to null.
+     * Constructs a <code>CommunicationException</code> instance with all data
+     * initialized to null.
      */
     public CommunicationException() {
         super();
     }
 
     /**
-     * Constructs a <code>CommunicationException</code> instance using the 
+     * Constructs a <code>CommunicationException</code> instance using the
      * specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public CommunicationException(String s) {
         super(s);
     }
 
 }
-
-

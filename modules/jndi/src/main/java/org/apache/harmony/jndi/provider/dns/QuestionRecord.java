@@ -25,12 +25,9 @@ package org.apache.harmony.jndi.provider.dns;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 
-
 /**
  * Represents domain protocol Question Record
  * 
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  * @see RFC 1035
  */
 public class QuestionRecord {
@@ -43,39 +40,38 @@ public class QuestionRecord {
 
     /** class of query */
     private int qClass;
-    
+
     /** Empty constructor */
-    public QuestionRecord() {}
+    public QuestionRecord() {
+    }
 
     /**
      * Constructs new question record with given parameters
      * 
-     * @param qName domain name
-     * @param qType question record type
-     * @param qClass question record class
+     * @param qName
+     *            domain name
+     * @param qType
+     *            question record type
+     * @param qClass
+     *            question record class
      */
-    public QuestionRecord(
-            String qName,
-            int qType,
-            int qClass)
-    {
+    public QuestionRecord(String qName, int qType, int qClass) {
         this.qName = qName;
         this.qType = qType;
         this.qClass = qClass;
     }
 
-   
     /**
      * Creates a sequence of bytes that represents the current question record.
-     *  
-     * @param buffer the buffer in which the result byte sequence will be
-     *  written
-     * @param startIdx the index in the buffer to start at
+     * 
+     * @param buffer
+     *            the buffer in which the result byte sequence will be written
+     * @param startIdx
+     *            the index in the buffer to start at
      * @return updated index of the buffer array
      */
     public int writeBytes(byte[] buffer, int startIdx)
-        throws DomainProtocolException
-    {
+            throws DomainProtocolException {
         int idx = startIdx;
 
         // basic checkings
@@ -94,22 +90,25 @@ public class QuestionRecord {
         idx = ProviderMgr.write16Int(qClass, buffer, idx);
         return idx;
     }
-    // getters and setters methods
 
+    // getters and setters methods
 
     /**
      * Parses given sequence of bytes and constructs a question record from it.
      * 
-     * @param mesBytes the byte array that should be parsed
-     * @param startIdx an index of <code>mesBytes</code> array to start the
-     *  parsing at
-     * @param resultQR an object the result of the operation will be stored into
+     * @param mesBytes
+     *            the byte array that should be parsed
+     * @param startIdx
+     *            an index of <code>mesBytes</code> array to start the parsing
+     *            at
+     * @param resultQR
+     *            an object the result of the operation will be stored into
      * @return updated index of <code>mesBytes</code> array
-     * @throws DomainProtocolException if something went wrong
+     * @throws DomainProtocolException
+     *             if something went wrong
      */
     public static int parseRecord(byte[] mesBytes, int startIdx,
-            QuestionRecord resultQR) throws DomainProtocolException
-    {
+            QuestionRecord resultQR) throws DomainProtocolException {
         int idx = startIdx;
         StringBuffer nameSB = new StringBuffer();
 
@@ -118,7 +117,7 @@ public class QuestionRecord {
             throw new NullPointerException(Messages.getString("jndi.33")); //$NON-NLS-1$
         }
         // name
-        idx = ProviderMgr.parseName(mesBytes, idx , nameSB);
+        idx = ProviderMgr.parseName(mesBytes, idx, nameSB);
         resultQR.setQName(nameSB.toString());
         // QTYPE
         resultQR.setQType(ProviderMgr.parse16Int(mesBytes, idx));
@@ -128,7 +127,7 @@ public class QuestionRecord {
         idx += 2;
         return idx;
     }
-   
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -158,34 +157,43 @@ public class QuestionRecord {
     public int getQClass() {
         return qClass;
     }
+
     /**
-     * @param class1 The qClass to set.
+     * @param class1
+     *            The qClass to set.
      */
     public void setQClass(int class1) {
         qClass = class1;
     }
+
     /**
      * @return Returns the qName.
      */
     public String getQName() {
         return qName;
     }
+
     /**
-     * @param name The qName to set.
+     * @param name
+     *            The qName to set.
      */
     public void setQName(String name) {
         qName = name;
     }
+
     /**
      * @return Returns the qType.
      */
     public int getQType() {
         return qType;
     }
+
     /**
-     * @param type The qType to set.
+     * @param type
+     *            The qType to set.
      */
     public void setQType(int type) {
         qType = type;
     }
+
 }
