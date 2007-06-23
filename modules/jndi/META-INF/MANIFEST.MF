@@ -35,12 +35,10 @@ Import-Package: java.applet,
  javax.net.ssl,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.security.asn1;version="1.0.0",
- org.apache.harmony.security.x509;version="1.0.0"
+ org.apache.harmony.security.x509;version="1.0.0",
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
 Export-Package: javax.naming,
  javax.naming.directory,
  javax.naming.event,
  javax.naming.ldap,
  javax.naming.spi
-Require-Bundle: org.apache.harmony.support
-
-

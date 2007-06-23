@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.directory;
 
 import javax.naming.NamingException;
@@ -25,37 +24,23 @@ import javax.naming.NamingException;
  */
 public class NoSuchAttributeException extends NamingException {
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */
-	 
-	/* Serialization information - start. */
-	private static final long serialVersionUID = 0x431e6668495bfb09L;
-	/* Serialization information - end. */
+    private static final long serialVersionUID = 0x431e6668495bfb09L;
 
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
-	 
-	/**
-	 * This is the default constructor. All fields are initialized to null.
-	 */		 
-	public NoSuchAttributeException() {
-		super();
-	}
+    /**
+     * This is the default constructor. All fields are initialized to null.
+     */
+    public NoSuchAttributeException() {
+        super();
+    }
 
-	/**
-	 * Construct a <code>NoSuchAttributeException</code> with given message.
-	 * @param s a message about the exception detail
-	 */
-	public NoSuchAttributeException(String s) {
-		super(s);
-	}
+    /**
+     * Construct a <code>NoSuchAttributeException</code> with given message.
+     * 
+     * @param s
+     *            a message about the exception detail
+     */
+    public NoSuchAttributeException(String s) {
+        super(s);
+    }
 
 }
-
-

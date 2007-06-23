@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.directory;
 
 import java.io.IOException;
@@ -33,60 +32,45 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 /**
  * A simple implementation of the <code>Attributes</code> interface.
  * <p>
- * The <code>BasicAttributes</code> provides operations on any types of 
+ * The <code>BasicAttributes</code> provides operations on any types of
  * attribute. When a new attribute is created the <code>BasicAttributes</code>
- * class will create a new <code>BasicAttribute</code> and add it to the 
- * attribute collection.</p>
+ * class will create a new <code>BasicAttribute</code> and add it to the
+ * attribute collection.
+ * </p>
  * <p>
- * A particular instance of <code>BasicAttributes</code> can be either 
+ * A particular instance of <code>BasicAttributes</code> can be either
  * case-sensitive or case-insensitive, as defined by the <code>isCaseIgnored()
- * </code> method.</p>
+ * </code>
+ * method.
+ * </p>
  * <p>
  * Note that changes to the <code>BasicAttributes</code> are local -- they do
  * not modify the directory. The directory is only modified by API calls on the
- * {@link DirContext} object.</p>
- *
- * @see Attributes
+ * {@link DirContext} object.
+ * </p>
  * 
+ * @see Attributes
  */
 public class BasicAttributes implements Attributes {
 
     /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-
-    /*
-     * This constant is used during deserialization to check the J2SE version 
-     * which created the serialized object.
-     */
-    static final long serialVersionUID = 0x451d18d6a95539d8L; //J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = 0x451d18d6a95539d8L;
 
     /**
      * Flag indicating whether the case of attribute identifier is ignored.
      * 
      * @serial
-     */ 
+     */
     private boolean ignoreCase;
 
     // A map, Id => Attribute
-    private transient Hashtable<String,Attribute> attrMap = new Hashtable<String,Attribute>();
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    private transient Hashtable<String, Attribute> attrMap = new Hashtable<String, Attribute>();
 
     /**
-     * Constructs a <code>BasicAttributes</code> instance which is 
+     * Constructs a <code>BasicAttributes</code> instance which is
      * case-sensitive.
      */
     public BasicAttributes() {
@@ -94,22 +78,24 @@ public class BasicAttributes implements Attributes {
     }
 
     /**
-     * Constructs a <code>BasicAttributes</code> instance which is 
+     * Constructs a <code>BasicAttributes</code> instance which is
      * case-sensitive if <code>flag</code> is false.
      * 
-     * @param flag          Indicates whether this instance is 
-     *                      case-insensitive.
+     * @param flag
+     *            Indicates whether this instance is case-insensitive.
      */
     public BasicAttributes(boolean flag) {
         this.ignoreCase = flag;
     }
 
     /**
-     * Constructs a case-sensitive <code>BasicAttributes</code> instance 
-     * with one attribute.
+     * Constructs a case-sensitive <code>BasicAttributes</code> instance with
+     * one attribute.
      * 
-     * @param attrId        the ID of the first attribute
-     * @param attrObj       the value of the first attribute
+     * @param attrId
+     *            the ID of the first attribute
+     * @param attrObj
+     *            the value of the first attribute
      */
     public BasicAttributes(String attrId, Object attrObj) {
         this(attrId, attrObj, false);
@@ -119,36 +105,26 @@ public class BasicAttributes implements Attributes {
      * Constructs a <code>BasicAttributes</code> instance with one attribute
      * which is case-sensitive if <code>flag</code> is false.
      * 
-     * @param attrId        the ID of the first attribute
-     * @param attrObj       the value of the first attribute
-     * @param flag          Indicates whether this instance is 
-     *                      case-insensitive.
+     * @param attrId
+     *            the ID of the first attribute
+     * @param attrObj
+     *            the value of the first attribute
+     * @param flag
+     *            Indicates whether this instance is case-insensitive.
      */
     public BasicAttributes(String attrId, Object attrObj, boolean flag) {
         this.ignoreCase = flag;
-        this.attrMap.put(convertId(attrId),
-            new BasicAttribute(attrId, attrObj));
+        this.attrMap
+                .put(convertId(attrId), new BasicAttribute(attrId, attrObj));
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-    
     /*
      * Convert an attribute ID to lower case if this attribute collection is
      * case-insensitive.
-     */ 
+     */
     private String convertId(String id) {
         return ignoreCase ? id.toLowerCase() : id;
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods of Interface Attributes
-     * -------------------------------------------------------------------
-     */
 
     public Attribute get(String id) {
         return attrMap.get(convertId(id));
@@ -194,24 +170,17 @@ public class BasicAttributes implements Attributes {
     }
 
     /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
-     */
-
-    /*
      * Serialization of the <code>BasicAttributes</code> class is as follows:
-     *      ignore attribute case (boolean)
-     *      number of attributes (int)
-     *      list of attribute objects
+     * ignore attribute case (boolean) number of attributes (int) list of
+     * attribute objects
      */
-    private void readObject(ObjectInputStream ois)
-        throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream ois) throws IOException,
+            ClassNotFoundException {
         int size;
 
         ois.defaultReadObject();
         size = ois.readInt();
-        attrMap = new Hashtable<String,Attribute>();
+        attrMap = new Hashtable<String, Attribute>();
         for (int i = 0; i < size; i++) {
             BasicAttribute attr = (BasicAttribute) ois.readObject();
             attrMap.put(convertId(attr.getID()), attr);
@@ -220,48 +189,50 @@ public class BasicAttributes implements Attributes {
 
     /*
      * Serialization of the <code>BasicAttributes</code> class is as follows:
-     *      ignore attribute case (boolean)
-     *      number of attributes (int)
-     *      list of attribute objects
+     * ignore attribute case (boolean) number of attributes (int) list of
+     * attribute objects
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
         oos.writeInt(attrMap.size());
-        for (Enumeration<Attribute> enumeration = attrMap.elements(); enumeration.hasMoreElements();) {
+        for (Enumeration<Attribute> enumeration = attrMap.elements(); enumeration
+                .hasMoreElements();) {
             oos.writeObject(enumeration.nextElement());
         }
     }
 
     /**
-     * Returns a deep copy of this attribute collection.
-     * The returned copy contains the same attribute objects. The attribute
-     * objects are not cloned.
-     *
-     * @return              a deep copy of this attribute collection
+     * Returns a deep copy of this attribute collection. The returned copy
+     * contains the same attribute objects. The attribute objects are not
+     * cloned.
+     * 
+     * @return a deep copy of this attribute collection
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
         try {
             BasicAttributes c = (BasicAttributes) super.clone();
-            c.attrMap = (Hashtable<String,Attribute>) this.attrMap.clone();
+            c.attrMap = (Hashtable<String, Attribute>) this.attrMap.clone();
             return c;
         } catch (CloneNotSupportedException e) {
             // jndi.15=Failed to clone object of BasicAttributes class.
-            throw new AssertionError(Messages.getString("jndi.15"));  //$NON-NLS-1$
+            throw new AssertionError(Messages.getString("jndi.15")); //$NON-NLS-1$
         }
     }
 
     /**
-     * Returns true if this <code>BasicAttributes</code> instance is equal to 
-     * the supplied object <code>obj</code>.
-     * They are considered equal if they handle case the same way and have equal
-     * attributes. <code>Attribute</code> equality is tested by calling <code>
-     * equals</code> on each attribute, which may be overridden.
+     * Returns true if this <code>BasicAttributes</code> instance is equal to
+     * the supplied object <code>obj</code>. They are considered equal if
+     * they handle case the same way and have equal attributes.
+     * <code>Attribute</code> equality is tested by calling <code>
+     * equals</code>
+     * on each attribute, which may be overridden.
      * 
-     * @param obj           the object to compare with
-     * @return              true if this object is equal to <code>obj</code>,
-     *                      otherwise false
+     * @param obj
+     *            the object to compare with
+     * @return true if this object is equal to <code>obj</code>, otherwise
+     *         false
      */
     @Override
     public boolean equals(Object obj) {
@@ -276,9 +247,10 @@ public class BasicAttributes implements Attributes {
         }
 
         // compare each attribute
-        Iterator<Map.Entry<String,Attribute>> it = attrMap.entrySet().iterator();
+        Iterator<Map.Entry<String, Attribute>> it = attrMap.entrySet()
+                .iterator();
         while (it.hasNext()) {
-            Map.Entry<String,Attribute> e = it.next();
+            Map.Entry<String, Attribute> e = it.next();
             if (!e.getValue().equals(o.get(e.getKey()))) {
                 return false;
             }
@@ -292,8 +264,7 @@ public class BasicAttributes implements Attributes {
      * The result is calculated by summing the hashcodes of all attributes,
      * incremented by one if this instance is not case-sensitive.
      * 
-     * @return              the hashcode of this <code>BasicAttributes</code>
-     *                      instance
+     * @return the hashcode of this <code>BasicAttributes</code> instance
      */
     @Override
     public int hashCode() {
@@ -309,18 +280,18 @@ public class BasicAttributes implements Attributes {
 
     /**
      * Returns the string representation of this <code>BasicAttributes</code>
-     * instance.
-     * The result contains the attribute identifiers and values' string
-     * representations.
+     * instance. The result contains the attribute identifiers and values'
+     * string representations.
      * 
-     * @return              the string representation of this object
+     * @return the string representation of this object
      */
     @Override
     public String toString() {
         String s = null;
-        Iterator<Map.Entry<String,Attribute>> it = attrMap.entrySet().iterator();
-        Map.Entry<String,Attribute> e = null;
-        
+        Iterator<Map.Entry<String, Attribute>> it = attrMap.entrySet()
+                .iterator();
+        Map.Entry<String, Attribute> e = null;
+
         if (it.hasNext()) {
             // If there are one or more attributes, print them all.
             e = it.next();

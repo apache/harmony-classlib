@@ -36,13 +36,10 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * Some useful utilities
- * 
- * @author Osvaldo C. Demo
- *
  */
 public class Util {
 
-    private static HashMap errorCodes = new HashMap(); 
+    private static HashMap errorCodes = new HashMap();
     
     static { 
         // TODO Add every needed LDAP errror code description and exception
@@ -65,17 +62,19 @@ public class Util {
     /**
      * Return the correct exception for a given error code
      * 
-     * @param code error code
-     * @return the correct NamingException 
+     * @param code
+     *            error code
+     * @return the correct NamingException
      */
     public static NamingException getExceptionFromErrorCode(int code) {
         if (code == 0) {
             return null;
         }
         if (errorCodes.get(code) == null) {
-            return new NamingException(Messages.getString("ldap.18")+" "+code+"]");    
-        } else {
-            return (NamingException)errorCodes.get(code);
+            return new NamingException(Messages.getString("ldap.18") + " "
+                    + code + "]");
         }
+        return (NamingException) errorCodes.get(code);
     }
+
 }

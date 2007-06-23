@@ -15,45 +15,37 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * An <code>AuthenticationException</code> is the 
+ * An <code>AuthenticationException</code> is the
  * <code>NamingSecurityException</code> used when authentication fails.
  * <p>
- * Multithreaded access to an <code>AuthenticationException</code> instance
- * is only safe when client code locks the object first.</p>
- * 
+ * Multithreaded access to an <code>AuthenticationException</code> instance is
+ * only safe when client code locks the object first.
+ * </p>
  */
 public class AuthenticationException extends NamingSecurityException {
 
     static final long serialVersionUID = 3678497619904568096L;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Constructs an <code>AuthenticationException</code> instance
-     * with all data initialized to null.
+     * Constructs an <code>AuthenticationException</code> instance with all
+     * data initialized to null.
      */
     public AuthenticationException() {
         super();
     }
 
     /**
-     * Constructs an <code>AuthenticationException</code> instance 
-     * using the specified message.
+     * Constructs an <code>AuthenticationException</code> instance using the
+     * specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public AuthenticationException(String s) {
         super(s);
     }
 
 }
-
-

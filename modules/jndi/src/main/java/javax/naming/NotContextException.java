@@ -15,38 +15,31 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
  * A <code>NotContextException</code> is the exception thrown by the naming
  * classes when an operation on a context object cannot proceed because the
- * resolved object is not a context type. If the operation requires a
- * particular subclass of a context type, such as an <code>LdapContext</code>,
- * and the resolved object is a context object, but not of the required 
- * subclass, then a <code>NotContextException</code> is thrown.
+ * resolved object is not a context type. If the operation requires a particular
+ * subclass of a context type, such as an <code>LdapContext</code>, and the
+ * resolved object is a context object, but not of the required subclass, then a
+ * <code>NotContextException</code> is thrown.
  * <p>
- * Multithreaded access to a <code>NotContextException</code> instance is only safe
- * when client code locks the object first.</p>
- * 
+ * Multithreaded access to a <code>NotContextException</code> instance is only
+ * safe when client code locks the object first.
+ * </p>
  */
 public class NotContextException extends NamingException {
 
     /*
-     * For serialization purposes, the following fields must appear in the
-     * order given and specified serialVersionUID must be used.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-    static final long serialVersionUID = 849752551644540417L; // J2SE 1.4.2
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    static final long serialVersionUID = 849752551644540417L;
 
     /**
-     * Constructs a <code>NotContextException</code> instance
-     * with all data initialized to null.
+     * Constructs a <code>NotContextException</code> instance with all data
+     * initialized to null.
      */
     public NotContextException() {
         super();
@@ -54,15 +47,14 @@ public class NotContextException extends NamingException {
     }
 
     /**
-     * Constructs a <code>NotContextException</code> instance 
-     * with a specified error message.
+     * Constructs a <code>NotContextException</code> instance with a specified
+     * error message.
      * 
-     * @param msg The detail message for this exception. It may be null.
+     * @param msg
+     *            The detail message for this exception. It may be null.
      */
     public NotContextException(String msg) {
         super(msg);
     }
 
 }
-
-

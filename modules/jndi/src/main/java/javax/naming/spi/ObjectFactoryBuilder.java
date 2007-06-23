@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming.spi;
 
 import java.util.Hashtable;
@@ -25,36 +24,30 @@ import javax.naming.NamingException;
  * An object factory builder creates an object factory, and an object factory
  * creates objects of a specified type. A variety of different objects may be
  * used by a JNDI application; these objects are meaningful to the application
- * and can be manipulated according to the methods available to the class of
- * the object, such as a printer object. The application uses
- * <code>NamingManager.setObjectFactoryBuilder()</code> to specify its own or 
- * its preferred builder to override JNDI default policies; any such builder 
+ * and can be manipulated according to the methods available to the class of the
+ * object, such as a printer object. The application uses
+ * <code>NamingManager.setObjectFactoryBuilder()</code> to specify its own or
+ * its preferred builder to override JNDI default policies; any such builder
  * must implement the <code>ObjectFactoryBuilder</code> interface.
- * 
  */
 public interface ObjectFactoryBuilder {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Returns an <code>ObjectFactory</code> customized by the 
-     * <code>envmt</code> parameter that is capable of creating instances
-     * of the object <code>o</code>. 
+     * Returns an <code>ObjectFactory</code> customized by the
+     * <code>envmt</code> parameter that is capable of creating instances of
+     * the object <code>o</code>.
      * 
-     * @param o     may be null
-     * @param envmt may be null
-     * @return      an <code>ObjectFactory</code> customized by the 
-     *              <code>envmt</code> parameter that is capable of creating
-     *              instances of the object <code>o</code>. 
-     * @throws NamingException if an object factory could not be created.
+     * @param o
+     *            may be null
+     * @param envmt
+     *            may be null
+     * @return an <code>ObjectFactory</code> customized by the
+     *         <code>envmt</code> parameter that is capable of creating
+     *         instances of the object <code>o</code>.
+     * @throws NamingException
+     *             if an object factory could not be created.
      */
     ObjectFactory createObjectFactory(Object o, Hashtable<?, ?> envmt)
-        throws NamingException;
+            throws NamingException;
 
 }
-
-

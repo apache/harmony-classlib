@@ -15,27 +15,18 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
 import java.io.Serializable;
 
 /**
- * A <code>Control</code> corresponds to a control used in LDAPv3. Controls are 
- * specified in RFC2251. A control provides extra information related to an 
- * operation on the server. It may be a request control which is sent when a 
- * request is made to the LDAPv3 server or it may be a response control which 
- * is received from the LDAPv3 server. 
- *
- * 
+ * A <code>Control</code> corresponds to a control used in LDAPv3. Controls
+ * are specified in RFC2251. A control provides extra information related to an
+ * operation on the server. It may be a request control which is sent when a
+ * request is made to the LDAPv3 server or it may be a response control which is
+ * received from the LDAPv3 server.
  */
 public interface Control extends Serializable {
-
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
 
     /**
      * The constant indicating that a <code>Control</code> is critical.
@@ -47,24 +38,18 @@ public interface Control extends Serializable {
      */
     public static final boolean NONCRITICAL = false;
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Returns the object ID assigned to this <code>Control</code> instance.
      * (see RFC2251).
      * 
-     * @return          the object ID assigned to the control
+     * @return the object ID assigned to the control
      */
     String getID();
 
     /**
      * Indicates whether this <code>Control</code> instance is critical.
      * 
-     * @return          true if critical, otherwise false
+     * @return true if critical, otherwise false
      */
     boolean isCritical();
 
@@ -72,10 +57,8 @@ public interface Control extends Serializable {
      * Returns the value of this <code>Control</code> instance encoded using
      * ASN.1 Basic Encoding Rules (BER).
      * 
-     * @return          the encoded value of this <code>Control</code> instance
+     * @return the encoded value of this <code>Control</code> instance
      */
     byte[] getEncodedValue();
 
 }
-
-

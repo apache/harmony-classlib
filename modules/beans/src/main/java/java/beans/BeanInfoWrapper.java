@@ -35,6 +35,10 @@ class BeanInfoWrapper implements BeanInfo {
     private BeanInfoImpl impl;
 
     private BeanInfoWrapper parentBeanInfoWrapper;
+    
+    private int defaultEventIndex = -1;
+    
+    private EventSetDescriptor[] events = null;
 
     public BeanInfoWrapper(BeanInfo info, BeanInfoImpl impl) {
         this.info = info;
@@ -151,11 +155,21 @@ class BeanInfoWrapper implements BeanInfo {
     public EventSetDescriptor[] getEventSetDescriptors() {
         EventSetDescriptor[] result = null;
         EventSetDescriptor[] infoResult = null;
+        String defaultEventName = null;
 
+        if (events != null) {
+        	return events;
+        }
+        
         if (info != null) {
             BeanInfo[] infos = info.getAdditionalBeanInfo();
+            int defIndex = info.getDefaultEventIndex();
 
             infoResult = info.getEventSetDescriptors();
+
+            if (defIndex >= 0 && defIndex < infoResult.length) {
+                defaultEventName = infoResult[defIndex].getName();
+            }
 
             if (infos != null) {
                 for (BeanInfo additionalInfo : infos) {
@@ -171,23 +185,26 @@ class BeanInfoWrapper implements BeanInfo {
 
         if (info == null || infoResult == null) {
             EventSetDescriptor[] implResult = impl.getEventSetDescriptors();
-
+            
             // merge with parent info
             if (parentBeanInfoWrapper != null) {
                 EventSetDescriptor[] parentResult = parentBeanInfoWrapper
                         .getEventSetDescriptors();
-                Map<String, FeatureDescriptor> hm = concatArraysUniqueByName(
-                        implResult, parentResult);
+                Map<String, FeatureDescriptor> hm;
+                Collection<FeatureDescriptor> values;
 
-                Collection<FeatureDescriptor> values = hm.values();
-                int idx = 0;
-
-                result = new EventSetDescriptor[values.size()];
-                
-                for (FeatureDescriptor fd : values) {
-                    result[idx++] = (EventSetDescriptor) fd;
+                if (defaultEventName == null) {
+                	int parentDefaultIdx = parentBeanInfoWrapper.getDefaultEventIndex();
+                	
+                	if (parentDefaultIdx >= 0 &&
+                			parentDefaultIdx < parentResult.length) {
+                		defaultEventName = parentResult[parentDefaultIdx].getName();
+                	}
                 }
 
+                hm = concatArraysUniqueByName(implResult, parentResult);
+                result = hm.values().toArray(new EventSetDescriptor[hm.size()]);
+                
                 Arrays.sort(result, new Comparator<EventSetDescriptor>() {
                     public int compare(EventSetDescriptor esd1,
                             EventSetDescriptor esd2) {
@@ -206,6 +223,14 @@ class BeanInfoWrapper implements BeanInfo {
             result = infoResult;
         }
 
+        if (defaultEventName != null) {
+            for (int i = 0; i < result.length; i++) {
+                if (result[i].getName().equals(defaultEventName)) {
+                    defaultEventIndex = i;
+                }
+            }
+        }
+        
         return result;
     }
 
@@ -256,15 +281,12 @@ class BeanInfoWrapper implements BeanInfo {
     }
 
     public int getDefaultEventIndex() {
-        int result = -1;
 
-        if (info != null) {
-            result = info.getDefaultEventIndex();
-        } else if (parentBeanInfoWrapper != null) {
-            result = parentBeanInfoWrapper.getDefaultEventIndex();
-        }
-
-        return result;
+    	if (events == null) {
+            events = getEventSetDescriptors();
+    	} 
+    	
+    	return defaultEventIndex;
     }
 
     void setParentToMerge(BeanInfoWrapper parentBeanInfoWrapper) {

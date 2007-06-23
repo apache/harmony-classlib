@@ -27,113 +27,121 @@ import java.util.Vector;
 import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
- * A <code>CompoundName</code> is a series of string elements, and it represents 
- * a name in a naming service within a single namespace. Typically these 
- * names have a structure which is hierarchical. 
+ * A <code>CompoundName</code> is a series of string elements, and it
+ * represents a name in a naming service within a single namespace. Typically
+ * these names have a structure which is hierarchical.
  * <p>
- * A <code>CompoundName</code> has a sequence of zero or more elements delimited 
- * by the char specified in the property "jndi.syntax.separator". This property 
- * is required except when the direction of the name is "flat" 
- * (see jndi.syntax.direction). The property "jndi.syntax.separator2" allows for 
- * the specification of an additional separator. A separator string will be 
- * treated as normal characters if it is preceded by the escape string or is 
- * within quotes.</p>
+ * A <code>CompoundName</code> has a sequence of zero or more elements
+ * delimited by the char specified in the property "jndi.syntax.separator". This
+ * property is required except when the direction of the name is "flat" (see
+ * jndi.syntax.direction). The property "jndi.syntax.separator2" allows for the
+ * specification of an additional separator. A separator string will be treated
+ * as normal characters if it is preceded by the escape string or is within
+ * quotes.
+ * </p>
  * <p>
- * The property "jndi.syntax.direction" specifies the direction in which the name
- * is read. Permitted values are "right_to_left", "left_to_right" and "flat". A 
- * flat name does not have a hierarchical structure. If this property is not 
- * specified then the default is "flat". If this property is specified with an 
- * invalid value then an <code>IllegalArgumentException</code> should be raised.</p>
+ * The property "jndi.syntax.direction" specifies the direction in which the
+ * name is read. Permitted values are "right_to_left", "left_to_right" and
+ * "flat". A flat name does not have a hierarchical structure. If this property
+ * is not specified then the default is "flat". If this property is specified
+ * with an invalid value then an <code>IllegalArgumentException</code> should
+ * be raised.
+ * </p>
  * <p>
- * Each element can be accessed using its position. The first element is at 
- * position 0. The direction of the name is important. When direction is 
- * "left_to_right" then the leftmost element is at position 0. Conversely when 
- * the direction is "right_to_left" then the rightmost element is at position 0.</p>
+ * Each element can be accessed using its position. The first element is at
+ * position 0. The direction of the name is important. When direction is
+ * "left_to_right" then the leftmost element is at position 0. Conversely when
+ * the direction is "right_to_left" then the rightmost element is at position 0.
+ * </p>
  * <p>
- * There are other properties which affect the syntax of a <code>CompoundName</code>. 
- * The following properties are all optional:
+ * There are other properties which affect the syntax of a
+ * <code>CompoundName</code>. The following properties are all optional:
  * <ul>
- * <li>
- * jndi.syntax.escape -     Escape sequence,The escape sequence is used to escape 
- *                          a quote, separator or escape. When preceded itself by 
- *                          the escape sequence it is treated as ordinary characters.
- *                          When it is followed by chars which are not quote or 
- *                          separator strings then it is treated as ordinary characters</li>
- * <li>
- * jndi.syntax.beginquote - Used as start of quoted string (Defaults to endquote)</li>
- * <li>
- * jndi.syntax.endquote -   Used as end of quoted string (Defaults to beginquote)</li>
- * <li>
- * jndi.syntax.beginquote2 -    Additionally used as start of quoted string 
- *                          (Defaults to endquote2)</li>
- * <li>
- * jndi.syntax.endquote2 -  Additionally used as end of quoted string 
- *                          (Defaults to beginquote2)</li>
+ * <li> jndi.syntax.escape - Escape sequence,The escape sequence is used to
+ * escape a quote, separator or escape. When preceded itself by the escape
+ * sequence it is treated as ordinary characters. When it is followed by chars
+ * which are not quote or separator strings then it is treated as ordinary
+ * characters</li>
+ * <li> jndi.syntax.beginquote - Used as start of quoted string (Defaults to
+ * endquote)</li>
+ * <li> jndi.syntax.endquote - Used as end of quoted string (Defaults to
+ * beginquote)</li>
+ * <li> jndi.syntax.beginquote2 - Additionally used as start of quoted string
+ * (Defaults to endquote2)</li>
+ * <li> jndi.syntax.endquote2 - Additionally used as end of quoted string
+ * (Defaults to beginquote2)</li>
  * </ul>
  * <p>
- * When a non-escaped quote appears at the start of an element it must be matched at the
- * end. That element can then be said to be quoted. When an escape sequence appears
- * within a quoted element then it is treated as normal characters unless it precedes
- * an occurrence of the quote in which case it is assumed that the quoted element
- * contains a quote which is escaped.</p>
+ * When a non-escaped quote appears at the start of an element it must be
+ * matched at the end. That element can then be said to be quoted. When an
+ * escape sequence appears within a quoted element then it is treated as normal
+ * characters unless it precedes an occurrence of the quote in which case it is
+ * assumed that the quoted element contains a quote which is escaped.
+ * </p>
  * <p>
- * If the element does not start with a quote, then any quote strings within that
- * element are just normal characters.</p>
+ * If the element does not start with a quote, then any quote strings within
+ * that element are just normal characters.
+ * </p>
  * <p>
  * <ul>
- * <li>
- * jndi.syntax.ignorecase - If 'true' then ignore case when name elements are compared.
- *                          If false or not set then case is important.</li>
- * <li>
- * jndi.syntax.trimblanks - If 'true' then ignore leading & trailing blanks when name elements are compared.
- *                          If false or not set then blanks are important.</li>
- * </ul></p>
+ * <li> jndi.syntax.ignorecase - If 'true' then ignore case when name elements
+ * are compared. If false or not set then case is important.</li>
+ * <li> jndi.syntax.trimblanks - If 'true' then ignore leading & trailing blanks
+ * when name elements are compared. If false or not set then blanks are
+ * important.</li>
+ * </ul>
+ * </p>
  * <p>
- * These 2 properties relate to names where the syntax includes attribute/content 
- * pairs.
+ * These 2 properties relate to names where the syntax includes
+ * attribute/content pairs.
  * <ul>
  * <li>jndi.syntax.separator.ava</li>
  * <li>jndi.syntax.separator.typeval</li>
  * </ul>
- * For example the LDAP name, "CN=Mandy Jennings, O=Apache, C=UK".
- * In this example the pair separator jndi.syntax.separator.ava is ',', and the 
- * character that separates pairs jndi.syntax.separator.typeval is '='. See 
- * RFC1779 for LDAP naming conventions.</p>
+ * For example the LDAP name, "CN=Mandy Jennings, O=Apache, C=UK". In this
+ * example the pair separator jndi.syntax.separator.ava is ',', and the
+ * character that separates pairs jndi.syntax.separator.typeval is '='. See
+ * RFC1779 for LDAP naming conventions.
+ * </p>
  * <p>
- * The jndi.syntax.separator.ava is not used when manipulating <code>CompoundName</code>. 
- * The jndi.syntax.separator is still used to separate elements.</p>
+ * The jndi.syntax.separator.ava is not used when manipulating
+ * <code>CompoundName</code>. The jndi.syntax.separator is still used to
+ * separate elements.
+ * </p>
  * <p>
- * The <code>CompoundName</code> needs to be aware of the jndi.syntax.separator.typeval
- * in case of the instance where a quoted string is used to provide the content
- * of a pair.</p>
+ * The <code>CompoundName</code> needs to be aware of the
+ * jndi.syntax.separator.typeval in case of the instance where a quoted string
+ * is used to provide the content of a pair.
+ * </p>
  * <p>
  * Consider the string "CN=$Mandy Jennings, O=Apache, C=UK" with
  * <ul>
- * <li>
- * jndi.syntax.direction         set to "right_to_left"</li>
- * <li>
- * jndi.syntax.separator         set to ","</li>
- * <li>
- * jndi.syntax.separator.typeval set to "="</li>
+ * <li> jndi.syntax.direction set to "right_to_left"</li>
+ * <li> jndi.syntax.separator set to ","</li>
+ * <li> jndi.syntax.separator.typeval set to "="</li>
  * </ul>
- * When no jndi.syntax.beginquote is set then this creates a valid <code>CompoundName</code>
- * with 3 elements.</p>
+ * When no jndi.syntax.beginquote is set then this creates a valid
+ * <code>CompoundName</code> with 3 elements.
+ * </p>
  * <p>
  * If jndi.syntax.beginquote is then set to "$" the name becomes invalid as the
- * content part of the pair CN=$Mandy Jennings has a mismatched quote.</p>
+ * content part of the pair CN=$Mandy Jennings has a mismatched quote.
+ * </p>
  * <p>
- * The string "CN=$Mandy Jennings$, O=Apache, C=UK" would be fine as the $ quotes
- * round Mandy Jennings now balance.</p>
+ * The string "CN=$Mandy Jennings$, O=Apache, C=UK" would be fine as the $
+ * quotes round Mandy Jennings now balance.
+ * </p>
  * <p>
- * A <code>CompoundName</code> may be empty. An empty <code>CompoundName</code> has no elements.
- * Elements may also be empty.</p> 
+ * A <code>CompoundName</code> may be empty. An empty
+ * <code>CompoundName</code> has no elements. Elements may also be empty.
+ * </p>
  * 
  * <pre>
  * Some Examples:
  * ==============
  * 
  * Consider the following compound name from the file system namespace:
- *     "home/jenningm-abc/.profile" 
+ *     &quot;home/jenningm-abc/.profile&quot; 
  * 
  * jndi.syntax.separator is set to '/' as in the UNIX filesystem.
  * This name has 3 elements:
@@ -141,85 +149,84 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * The direction should be left_to_right as in the UNIX filesystem
  * The element at position 0 would be home.
  * 
- * 
  * Consider if jndi.syntax.separator had been set to '-' then this name 
  * would have 2 elements:
  *     home/jenningm and abc/.profile
  * If the direction was right_to_left then the element at position 0
  * would be abc/.profile.
  * 
- * Consider the name "&lt;ab&lt;cd&gt;ef&gt;" where jndi.syntax.beginquote is &lt;
+ * Consider the name &quot;&lt;ab&lt;cd&gt;ef&gt;&quot; where jndi.syntax.beginquote is &lt;
  * and jndi.syntax.endquote is &gt;. This will give rise to an 
  * InvalidNameException because a close quote was encountered before
- * the end of an element. The same is also true for "&lt;abcd&gt;ef&gt;".
- * If the name was "ab&lt;cd&gt;ef" then this would be valid and there would
+ * the end of an element. The same is also true for &quot;&lt;abcd&gt;ef&gt;&quot;.
+ * If the name was &quot;ab&lt;cd&gt;ef&quot; then this would be valid and there would
  * be one element ab&lt;cd&gt;ef.
- * However if the name was "&lt;abcdef&gt;" there would be one element abcdef.
+ * However if the name was &quot;&lt;abcdef&gt;&quot; there would be one element abcdef.
  * 
- * An empty <code>CompoundName</code> is the name "" and has no elements.
+ * An empty
+ * <code>
+ * CompoundName
+ * </code>
+ *  is the name &quot;&quot; and has no elements.
  * 
- * When jndi.syntax.beginquote is set to " and beginquote2 is set to '
+ * When jndi.syntax.beginquote is set to &quot; and beginquote2 is set to '
  * the behaviour is similar to CompositeName - 
- * The name "\"abcd" gives an InvalidNameException as there is no closing quote.
- * The name "'\"abcd'" gives one element of value "abcd.
- * The name "\\abcd" gives one element of value \abcd. 
+ * The name &quot;\&quot;abcd&quot; gives an InvalidNameException as there is no closing quote.
+ * The name &quot;'\&quot;abcd'&quot; gives one element of value &quot;abcd.
+ * The name &quot;\\abcd&quot; gives one element of value \abcd. 
  *  
  * Assuming:
- *     jndi.syntax.separator is "/"
- *     jndi.syntax.direction is "left_to_right"
+ *     jndi.syntax.separator is &quot;/&quot;
+ *     jndi.syntax.direction is &quot;left_to_right&quot;
  * then
- *     "" is empty. It has no elements.
- *     "/" has one empty element.
- *     "//" has 2 empty elements.
- *     "/a/" has 3 elements the middle one is set to a.
- *     "///" has 3 empty elements.
- *     "//a/" has 4 elements, the last but one is set to a.
+ *     &quot;&quot; is empty. It has no elements.
+ *     &quot;/&quot; has one empty element.
+ *     &quot;//&quot; has 2 empty elements.
+ *     &quot;/a/&quot; has 3 elements the middle one is set to a.
+ *     &quot;///&quot; has 3 empty elements.
+ *     &quot;//a/&quot; has 4 elements, the last but one is set to a.
  * 
- *
+ * 
  * Assuming the only properties set are: 
- *     jndi.syntax.separator is "/"
- *     jndi.syntax.direction is "left_to_right"
+ *     jndi.syntax.separator is &quot;/&quot;
+ *     jndi.syntax.direction is &quot;left_to_right&quot;
  * then the String
- *     "\"" has one element with the value "
- *     "\\\"" has one element with the value \"
- *     "\\\"'" has one element with the value \"'
+ *     &quot;\&quot;&quot; has one element with the value &quot;
+ *     &quot;\\\&quot;&quot; has one element with the value \&quot;
+ *     &quot;\\\&quot;'&quot; has one element with the value \&quot;'
  * 
  * Assuming the only properties set are:
- *     jndi.syntax.separator is "/"
- *     jndi.syntax.direction is "left_to_right"
- *     jndi.syntax.beginquote is "\""
+ *     jndi.syntax.separator is &quot;/&quot;
+ *     jndi.syntax.direction is &quot;left_to_right&quot;
+ *     jndi.syntax.beginquote is &quot;\&quot;&quot;
  * 
  * then the String
- *     "\"" is invalid because of no closing quote
- *     "\\\"" has one element with the value \"
- *     "\\\"'" has one element with the value \"'
- * 
+ *     &quot;\&quot;&quot; is invalid because of no closing quote
+ *     &quot;\\\&quot;&quot; has one element with the value \&quot;
+ *     &quot;\\\&quot;'&quot; has one element with the value \&quot;'
  * 
  * Assuming the only properties set are:
- *     jndi.syntax.separator is "/"
- *     jndi.syntax.direction is "left_to_right"
- *     jndi.syntax.beginquote is "\""
- *     jndi.syntax.beginquote2 is "\'"
+ *     jndi.syntax.separator is &quot;/&quot;
+ *     jndi.syntax.direction is &quot;left_to_right&quot;
+ *     jndi.syntax.beginquote is &quot;\&quot;&quot;
+ *     jndi.syntax.beginquote2 is &quot;\'&quot;
  * then the String
- *     "\"" is invalid because of no closing quote
- *     "\\\"" has one element with the value \"
- *     "\\\"'" has one element with the value \"'
- *     "'\\" is invalid because of no closing quote
+ *     &quot;\&quot;&quot; is invalid because of no closing quote
+ *     &quot;\\\&quot;&quot; has one element with the value \&quot;
+ *     &quot;\\\&quot;'&quot; has one element with the value \&quot;'
+ *     &quot;'\\&quot; is invalid because of no closing quote
  * </pre>
- * 
- * 
  */
-
 public class CompoundName implements Name {
 
     /*
-     *Note: For serialization purposes, the specified serialVersionUID must be used.
-     *This class does not have serializable fields specified. Instead the readObject
-     *and writeObject methods are overridden.
+     * Note: For serialization purposes, the specified serialVersionUID must be
+     * used. This class does not have serializable fields specified. Instead the
+     * readObject and writeObject methods are overridden.
      */
-    private static final long serialVersionUID = 3513100557083972036L; // J2SE 1.4.2
+    private static final long serialVersionUID = 3513100557083972036L;
 
-    //const for property key
+    // const for property key
     private static final String SEPARATOR = "jndi.syntax.separator"; //$NON-NLS-1$
 
     private static final String SEPARATOR_AVA = "jndi.syntax.separator.ava"; //$NON-NLS-1$
@@ -244,7 +251,7 @@ public class CompoundName implements Name {
 
     private static final String SEPARATOR2 = "jndi.syntax.separator2"; //$NON-NLS-1$
 
-    //const for direction
+    // const for direction
     private static final String LEFT_TO_RIGHT = "left_to_right"; //$NON-NLS-1$
 
     private static final String RIGHT_TO_LEFT = "right_to_left"; //$NON-NLS-1$
@@ -254,7 +261,7 @@ public class CompoundName implements Name {
     // alphabets consts
     private static final String NULL_STRING = ""; //$NON-NLS-1$
 
-    //states consts
+    // states consts
     private static final int NORMAL_STATUS = 0;
 
     private static final int QUOTE1_STATUS = 1;
@@ -265,7 +272,7 @@ public class CompoundName implements Name {
 
     private static final int QUOTEEND_STATUS = 4;
 
-    //properties variables
+    // properties variables
     private transient String separatorString;
 
     private transient String separatorString2;
@@ -292,27 +299,29 @@ public class CompoundName implements Name {
 
     private transient boolean flat;
 
-    //elements of compound name
+    // elements of compound name
     private transient Vector<String> elem;
 
-    //property setting
+    // property setting
     protected transient Properties mySyntax;
-    
+
     /*
-     * The specification calls for a protected variable called 'impl' which is of a non-API
-     * type.  I believe this is an error in the spec, but to be complaint we have implemented
-     * this as a useless class (below).
+     * The specification calls for a protected variable called 'impl' which is
+     * of a non-API type. I believe this is an error in the spec, but to be
+     * complaint we have implemented this as a useless class (below).
      */
     protected transient javax.naming.NameImpl impl = new NameImpl();
 
     /**
-     * Constructs a <code>CompoundName</code> with supplied <code>Enumeration</code> 
-     * and <code>Properties</code>
+     * Constructs a <code>CompoundName</code> with supplied
+     * <code>Enumeration</code> and <code>Properties</code>
      * 
-     * @param elements      an enumeration of name elements, cannot be null
-     * @param props         the properties, cannot be null but may be empty. 
-     *                      If empty, the direction defaults to flat and no 
-     *                      other properties are required.
+     * @param elements
+     *            an enumeration of name elements, cannot be null
+     * @param props
+     *            the properties, cannot be null but may be empty. If empty, the
+     *            direction defaults to flat and no other properties are
+     *            required.
      */
     protected CompoundName(Enumeration<String> elements, Properties props) {
         if (null == props || null == elements) {
@@ -326,16 +335,19 @@ public class CompoundName implements Name {
     }
 
     /**
-     * Constructs a <code>CompoundName</code> with supplied <code>String</code> 
-     * and <code>Properties</code>,  taking the supplied <code>s</code> and 
-     * breaking it down into its elements. 
-     *
-     * @param s             a string containing the full compound name
-     * @param props         the properties, cannot be null but may be empty for a flat name
-     * @throws InvalidNameException 
-     *                      thrown if the supplied <code>String s</code> is invalid
-     * @throws NullPointerException 
-     *                      thrown if the supplied <code>String s</code> is null
+     * Constructs a <code>CompoundName</code> with supplied
+     * <code>String</code> and <code>Properties</code>, taking the supplied
+     * <code>s</code> and breaking it down into its elements.
+     * 
+     * @param s
+     *            a string containing the full compound name
+     * @param props
+     *            the properties, cannot be null but may be empty for a flat
+     *            name
+     * @throws InvalidNameException
+     *             thrown if the supplied <code>String s</code> is invalid
+     * @throws NullPointerException
+     *             thrown if the supplied <code>String s</code> is null
      */
     public CompoundName(String s, Properties props) throws InvalidNameException {
         if (null == s || null == props) {
@@ -354,31 +366,34 @@ public class CompoundName implements Name {
         this.mySyntax = props;
         String property;
 
-        //read property settings
+        // read property settings
         // direction's default value is FLAT
         direction = null == (property = props.getProperty(DIRECTION)) ? FLAT
                 : property;
-        //if direction value must equals to one of FLAT, LEFT_TO_RIGHT and RIGHT_TO_LEFT, exception threw 
+        // if direction value must equals to one of FLAT, LEFT_TO_RIGHT and
+        // RIGHT_TO_LEFT, exception threw
         if (!LEFT_TO_RIGHT.equals(direction)
                 && !RIGHT_TO_LEFT.equals(direction) && !FLAT.equals(direction)) {
-            // jndi.04=Illegal direction property value, which must be one of right_to_left, left_to_right or flat
-            throw new IllegalArgumentException(Messages.getString("jndi.04"));  //$NON-NLS-1$
+            // jndi.04=Illegal direction property value, which must be one of
+            // right_to_left, left_to_right or flat
+            throw new IllegalArgumentException(Messages.getString("jndi.04")); //$NON-NLS-1$
         }
         flat = FLAT.equals(direction);
 
         separatorString = flat ? NULL_STRING : props.getProperty(SEPARATOR);
-        //      if direction is not FLAT, separator must be set
+        // if direction is not FLAT, separator must be set
         if (null == separatorString && !flat) {
-            // jndi.05=jndi.syntax.separator property must be set when jndi.syntax.direction is not flat
-            throw new IllegalArgumentException(Messages.getString("jndi.05"));  //$NON-NLS-1$
+            // jndi.05=jndi.syntax.separator property must be set when
+            // jndi.syntax.direction is not flat
+            throw new IllegalArgumentException(Messages.getString("jndi.05")); //$NON-NLS-1$
         }
         separatorString2 = (flat || null == (property = props
                 .getProperty(SEPARATOR2))) ? NULL_STRING : property;
 
-        //ignorecase default value is false
+        // ignorecase default value is false
         ignoreCase = null == (property = props.getProperty(IGNORE_CASE)) ? false
                 : Boolean.valueOf(property).booleanValue();
-        //trimblanks default value is false
+        // trimblanks default value is false
         trimBlanks = null == (property = props.getProperty(TRIM_BLANKS)) ? false
                 : Boolean.valueOf(property).booleanValue();
         escapeString = null == (property = props.getProperty(ESCAPE)) ? NULL_STRING
@@ -387,17 +402,17 @@ public class CompoundName implements Name {
                 : property;
         beginQuoteString2 = null == (property = props.getProperty(BEGIN_QUOTE2)) ? NULL_STRING
                 : property;
-        //end quote string default value is begin quote string
+        // end quote string default value is begin quote string
         endQuoteString = null == (property = props.getProperty(END_QUOTE)) ? beginQuoteString
                 : property;
-        //begin quote string default value is end quote string
+        // begin quote string default value is end quote string
         if (NULL_STRING.equals(beginQuoteString)) {
             beginQuoteString = endQuoteString;
         }
-        //end quote string2 default value is begin quote string2
+        // end quote string2 default value is begin quote string2
         endQuoteString2 = null == (property = props.getProperty(END_QUOTE2)) ? beginQuoteString2
                 : property;
-        //begin quote string2 default value is end quote string2
+        // begin quote string2 default value is end quote string2
         if (NULL_STRING.equals(beginQuoteString2)) {
             beginQuoteString2 = endQuoteString2;
         }
@@ -418,7 +433,7 @@ public class CompoundName implements Name {
             return;
         }
 
-        //init variables
+        // init variables
         int status = INIT_STATUS;
         StringBuilder element = new StringBuilder();
         int pos = 0;
@@ -426,7 +441,7 @@ public class CompoundName implements Name {
         boolean hasNotNullElement = false;
         boolean includeQuote = false;
 
-        //scan name
+        // scan name
         while (pos < length) {
             if (startsWithFromPos(s, pos, endQuoteString)
                     && status == QUOTE1_STATUS) {
@@ -465,9 +480,10 @@ public class CompoundName implements Name {
             } else if (startsWithFromPos(s, pos, escapeString)) {
                 pos += escapeString.length();
                 if (pos == s.length()) {
-                    //if this escape char is last character, throw exception
+                    // if this escape char is last character, throw exception
                     // jndi.06=The {0} cannot be at end of the component
-                    throw new InvalidNameException(Messages.getString("jndi.06", escapeString));  //$NON-NLS-1$
+                    throw new InvalidNameException(Messages.getString(
+                            "jndi.06", escapeString)); //$NON-NLS-1$
                 }
                 // if one escape char followed by a special char, append the
                 // special char to current element
@@ -491,8 +507,9 @@ public class CompoundName implements Name {
                 pos += addBuffer(element, sepAvaString, true);
                 status = INIT_STATUS;
             } else if (status == QUOTEEND_STATUS) {
-                // jndi.07={0}: close quote must appears at end of component in quoted string
-                throw new InvalidNameException(Messages.getString("jndi.07", s));  //$NON-NLS-1$
+                // jndi.07={0}: close quote must appears at end of component in
+                // quoted string
+                throw new InvalidNameException(Messages.getString("jndi.07", s)); //$NON-NLS-1$
             } else {
                 status = status == INIT_STATUS ? NORMAL_STATUS : status;
                 element.append(s.charAt(pos++));
@@ -503,7 +520,7 @@ public class CompoundName implements Name {
             addElement(element);
         } else {
             // jndi.08={0}: close quote is required for quoted string
-            throw new InvalidNameException(Messages.getString("jndi.08", s));  //$NON-NLS-1$
+            throw new InvalidNameException(Messages.getString("jndi.08", s)); //$NON-NLS-1$
         }
         if (!hasNotNullElement) {
             elem.remove(elem.size() - 1);
@@ -521,7 +538,7 @@ public class CompoundName implements Name {
     }
 
     /*
-     * add current content of supplied string buffer as one element of this 
+     * add current content of supplied string buffer as one element of this
      * CompoundName and reset the string buffer to empty
      */
     private void addElement(StringBuilder element) {
@@ -534,8 +551,8 @@ public class CompoundName implements Name {
     }
 
     /*
-     * find string to be escaped, if cannot find special string(which means, 
-     * quote, separator and escape), return null 
+     * find string to be escaped, if cannot find special string(which means,
+     * quote, separator and escape), return null
      */
     private String extractEscapedString(String s, int pos, int status) {
         String result = null;
@@ -567,10 +584,6 @@ public class CompoundName implements Name {
 
     /*
      * justify if string src start with des from position pos
-     * @param src
-     * @param pos
-     * @param des
-     * @return
      */
     private boolean startsWithFromPos(String src, int pos, String des) {
         if (null == src || null == des || NULL_STRING.equals(des)
@@ -580,16 +593,11 @@ public class CompoundName implements Name {
         int length = des.length();
         int i = -1;
         while (++i < length && src.charAt(pos + i) == des.charAt(i)) {
-            //empty body
+            // empty body
         }
         return i == length;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods of interface Name
-     * -------------------------------------------------------------------
-     */
     public Enumeration<String> getAll() {
         return this.elem.elements();
     }
@@ -600,8 +608,8 @@ public class CompoundName implements Name {
     }
 
     /*
-     * validate the index, if isInclude is true, index which equals to this.size() 
-     * is considered as valid, otherwise invalid
+     * validate the index, if isInclude is true, index which equals to
+     * this.size() is considered as valid, otherwise invalid
      */
     private void validateIndex(int index, boolean isInclude) {
         if (0 > index || index > elem.size()
@@ -612,14 +620,14 @@ public class CompoundName implements Name {
 
     public Name getPrefix(int index) {
         validateIndex(index, true);
-        return new CompoundName(new Vector<String>(elem.subList(0, index)).elements(),
-                mySyntax);
+        return new CompoundName(new Vector<String>(elem.subList(0, index))
+                .elements(), mySyntax);
     }
 
     public Name getSuffix(int index) {
         validateIndex(index, false);
-        return new CompoundName(new Vector<String>(elem.subList(index, elem.size()))
-                .elements(), mySyntax);
+        return new CompoundName(new Vector<String>(elem.subList(index, elem
+                .size())).elements(), mySyntax);
     }
 
     public Name addAll(Name name) throws InvalidNameException {
@@ -633,7 +641,8 @@ public class CompoundName implements Name {
         }
         if (!(name instanceof CompoundName)) {
             // jndi.09={0} is not a compound name.
-            throw new InvalidNameException(Messages.getString("jndi.09", name.toString()));  //$NON-NLS-1$
+            throw new InvalidNameException(Messages.getString(
+                    "jndi.09", name.toString())); //$NON-NLS-1$
         }
         if (FLAT.equals(direction) && (this.size() + name.size() > 1)) {
             // jndi.0A=A flat name can only have a single component
@@ -662,15 +671,18 @@ public class CompoundName implements Name {
 
     /**
      * Insert an element within this CompoundName at the specified index.
-     * @return              this <code>CompoundName</code>.
-     * @param element       the String to insert
-     * @param index         the index of the element to insert - must be greater 
-     *                      than or equal to 0 and less than size().
-     * @throws ArrayIndexOutOfBoundsException 
-     *                      thrown when the index is invalid.
-     * @throws InvalidNameException 
-     *                      thrown if the insertion of the element results in 
-     *                      this <code>CompoundName</code> becoming invalid.
+     * 
+     * @return this <code>CompoundName</code>.
+     * @param element
+     *            the String to insert
+     * @param index
+     *            the index of the element to insert - must be greater than or
+     *            equal to 0 and less than size().
+     * @throws ArrayIndexOutOfBoundsException
+     *             thrown when the index is invalid.
+     * @throws InvalidNameException
+     *             thrown if the insertion of the element results in this
+     *             <code>CompoundName</code> becoming invalid.
      */
     public Name add(int index, String element) throws InvalidNameException {
         if (element == null) {
@@ -689,14 +701,15 @@ public class CompoundName implements Name {
     /**
      * Delete an element from this <code>CompoundName</code>.
      * 
-     * @return              the deleted element
-     * @param index         the index of the element to delete - must be greater 
-     *                      than or equal to 0 and less than size().
-     * @throws ArrayIndexOutOfBoundsException 
-     *                      thrown when the index is invalid.
-     * @throws InvalidNameException 
-     *                      thrown if the deletion of the element results in 
-     *                      this <code>CompoundName</code> becoming invalid.
+     * @return the deleted element
+     * @param index
+     *            the index of the element to delete - must be greater than or
+     *            equal to 0 and less than size().
+     * @throws ArrayIndexOutOfBoundsException
+     *             thrown when the index is invalid.
+     * @throws InvalidNameException
+     *             thrown if the deletion of the element results in this
+     *             <code>CompoundName</code> becoming invalid.
      */
     public Object remove(int index) throws InvalidNameException {
         validateIndex(index, false);
@@ -727,8 +740,7 @@ public class CompoundName implements Name {
         if (!(name instanceof CompoundName)) {
             return false;
         }
-        return equals(name, this.size() - name.size(), name
-                .size());
+        return equals(name, this.size() - name.size(), name.size());
     }
 
     /**
@@ -746,9 +758,11 @@ public class CompoundName implements Name {
 
     /**
      * Writes a serialized representation of the CompoundName. It starts with
-     * the properties, followed by an int which is the number of elements 
-     * in the name, and is followed by a String for each element. 
-     * @throws java.io.IOException if an error is encountered writing to the stream.
+     * the properties, followed by an int which is the number of elements in the
+     * name, and is followed by a String for each element.
+     * 
+     * @throws java.io.IOException
+     *             if an error is encountered writing to the stream.
      */
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
@@ -762,15 +776,15 @@ public class CompoundName implements Name {
 
     /**
      * Recreate a CompoundName from the data in the supplied stream.
-     * Additionally there are 2 protected fields which are not serializable.
-     * One of them is of a type which is a private class and cannot therefore
-     * be specified or implemented and so will be excluded from our deliverable.
+     * Additionally there are 2 protected fields which are not serializable. One
+     * of them is of a type which is a private class and cannot therefore be
+     * specified or implemented and so will be excluded from our deliverable.
      * The one protected field which we can spec and implement is as follows:
-     *      protected Properties mySyntax - The properties associated with a CompoundName.
-     
-     
+     * protected Properties mySyntax - The properties associated with a
+     * CompoundName.
      * 
-     * @throws java.io.IOException if an error is encountered reading from the stream.
+     * @throws java.io.IOException
+     *             if an error is encountered reading from the stream.
      * @throws ClassNotFoundException.
      */
     private void readObject(ObjectInputStream ois)
@@ -780,28 +794,30 @@ public class CompoundName implements Name {
         int size = ois.readInt();
         elem = new Vector<String>();
         for (int i = 0; i < size; i++) {
-            elem.add((String)ois.readObject());
+            elem.add((String) ois.readObject());
         }
     }
 
     /**
-     * Compare this <code>CompoundName</code> with the one supplied as a param.
+     * Compare this <code>CompoundName</code> with the one supplied as a
+     * param.
      * <p>
-     * See the definition of the <code>equals()</code> method to see how the 
-     * direction, ignorecase and trimblanks properties affect the comparison of 
-     * a <code>CompoundName</code>. Other than that the comparison is the same 
-     * as that for a <code>CompositeName</code>.</p>
+     * See the definition of the <code>equals()</code> method to see how the
+     * direction, ignorecase and trimblanks properties affect the comparison of
+     * a <code>CompoundName</code>. Other than that the comparison is the
+     * same as that for a <code>CompositeName</code>.
+     * </p>
      * 
-     * @return                  a negative number means this is less than the 
-     *                      supplied Object <code>o</code>. 
-     *                      a positive number means this is greater than the 
-     *                      supplied Object <code>o</code>.
-     *                      zero means the two objects are equal. 
-     * @param  o                the object to compare - cannot be null. 
-     * @throws ClassCastException 
-     *                      when <code>o</code> is not a compatible class that 
-     *                      can be compared or if the object to compare 
-     *                      <code>o</code> is null.
+     * @return a negative number means this is less than the supplied Object
+     *         <code>o</code>. a positive number means this is greater than
+     *         the supplied Object <code>o</code>. zero means the two objects
+     *         are equal.
+     * @param o
+     *            the object to compare - cannot be null.
+     * @throws ClassCastException
+     *             when <code>o</code> is not a compatible class that can be
+     *             compared or if the object to compare <code>o</code> is
+     *             null.
      */
     public int compareTo(Object o) {
         if (!(o instanceof CompoundName)) {
@@ -815,9 +831,10 @@ public class CompoundName implements Name {
         int i;
         for (i = 0; i < size() && otherEnum.hasMoreElements(); i++) {
             thisElement = preProcess(elem.get(i), ignoreCase, trimBlanks);
-            otherElement = preProcess(otherEnum.nextElement(), ignoreCase, trimBlanks);
-            result = (null == thisElement ? (null == otherElement ? 0 : -1) : thisElement
-                    .compareTo(otherElement));
+            otherElement = preProcess(otherEnum.nextElement(), ignoreCase,
+                    trimBlanks);
+            result = (null == thisElement ? (null == otherElement ? 0 : -1)
+                    : thisElement.compareTo(otherElement));
             if (0 != result) {
                 return result;
             }
@@ -831,23 +848,26 @@ public class CompoundName implements Name {
     }
 
     /**
-     * Calculate the hashcode of this <code>CompoundName</code> by summing 
-     * the hashcodes of all of its elements. 
+     * Calculate the hashcode of this <code>CompoundName</code> by summing the
+     * hashcodes of all of its elements.
      * <p>
-     * If jndi.syntax.trimblanks is set to true then remove any leading and 
-     * trailing blanks from the elements before calculating the hashcode. </p>
+     * If jndi.syntax.trimblanks is set to true then remove any leading and
+     * trailing blanks from the elements before calculating the hashcode.
+     * </p>
      * <p>
-     * If jndi.syntax.ignorecase is set to true then use the lowercase version 
-     * of the element to calculate its hashcode.</p>
+     * If jndi.syntax.ignorecase is set to true then use the lowercase version
+     * of the element to calculate its hashcode.
+     * </p>
      * 
-     * @return              the hashcode of this object.
+     * @return the hashcode of this object.
      */
     @Override
     public int hashCode() {
         int result = 0;
         Enumeration<String> enumeration = elem.elements();
         while (enumeration.hasMoreElements()) {
-            result += preProcess(enumeration.nextElement(), ignoreCase, trimBlanks).hashCode();
+            result += preProcess(enumeration.nextElement(), ignoreCase,
+                    trimBlanks).hashCode();
         }
         return result;
     }
@@ -873,23 +893,25 @@ public class CompoundName implements Name {
                 : endQuoteString;
         String separator = NULL_STRING.equals(separatorString) ? separatorString2
                 : separatorString;
-        if(RIGHT_TO_LEFT.equals(direction)){
+        if (RIGHT_TO_LEFT.equals(direction)) {
             for (int i = elem.size() - 1; i >= 0; i--) {
                 addElement(sb, i, separator, begin, end);
             }
-        }else{
+        } else {
             for (int i = 0; i < elem.size(); i++) {
                 addElement(sb, i, separator, begin, end);
             }
         }
         if (size() * separator.length() < sb.length()) {
-            //if the name contains non-empty element, delete the last separator char, which is abundant
+            // if the name contains non-empty element, delete the last separator
+            // char, which is abundant
             sb.setLength(sb.length() - separator.length());
         }
         return sb.toString();
     }
 
-    private void addElement(StringBuilder sb, int index, String separator, String begin, String end) {
+    private void addElement(StringBuilder sb, int index, String separator,
+            String begin, String end) {
         String elemString = elem.get(index);
         if (0 == elemString.length()) {
             // if empty element, append a separator and continue
@@ -976,22 +998,21 @@ public class CompoundName implements Name {
             return false;
         }
 
-        //compare size
+        // compare size
         CompoundName otherName = (CompoundName) o;
         final int size = otherName.size();
         if (size != this.size()) {
             return false;
         }
 
-        //compare every element
+        // compare every element
         return equals(otherName, 0, size);
     }
 
     /**
-     * compare this name to the supplied <code>name</code> from position 
+     * compare this name to the supplied <code>name</code> from position
      * <code>start</code> to position <code>start</code>+
-     * <code>length</code>-1 
-     *
+     * <code>length</code>-1
      */
     private boolean equals(Name name, int start, int length) {
         if (length > this.size()) {
@@ -1004,8 +1025,8 @@ public class CompoundName implements Name {
         for (int i = 0; i < length; i++) {
             thisElement = preProcess(elem.get(i + start), ignoreCase,
                     trimBlanks);
-            otherElement = preProcess(otherEnum.nextElement(),
-                    ignoreCase, trimBlanks);
+            otherElement = preProcess(otherEnum.nextElement(), ignoreCase,
+                    trimBlanks);
             if (!(null == thisElement ? null == otherElement : thisElement
                     .equals(otherElement))) {
                 return false;
@@ -1013,4 +1034,5 @@ public class CompoundName implements Name {
         }
         return true;
     }
+
 }

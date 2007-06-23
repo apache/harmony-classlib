@@ -13,15 +13,17 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package org.apache.harmony.jndi.internal;
 
 import java.io.Serializable;
 
 /**
- * Represents the following ASN1 Syntax to use with the Harmony ASN1 Parser:<br><br>
+ * Represents the following ASN1 Syntax to use with the Harmony ASN1 Parser:<br>
+ * <br>
  * 
+ * <pre>
  *  SortResult ::= SEQUENCE {
  *        sortResult  ENUMERATED {
  *            success                   (0), -- results are sorted
@@ -45,28 +47,27 @@ import java.io.Serializable;
  *            other                    (80)
  *            },
  *      attributeType [0] AttributeDescription OPTIONAL }
- * 
- * @author Osvaldo C. Demo
- *
+ * </pre>
  */
-public class SortResult implements Serializable{
-    
+public class SortResult implements Serializable {
+
     private static final long serialVersionUID = 3633917983682858021L;
-    
+
     private int sortresult;
+
     private String attributeType;
-    
+
     public SortResult(int sortresult, String attrtype) {
         this.sortresult = sortresult;
         this.attributeType = attrtype;
     }
-    
+
     public String getAttributeType() {
         return attributeType;
     }
-    
+
     public int getSortresult() {
         return sortresult;
     }
-    
+
 }

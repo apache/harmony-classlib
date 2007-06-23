@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
@@ -23,35 +22,34 @@ package javax.naming;
  * context which is not empty.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class ContextNotEmptyException extends NamingException {
 
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = 1090963683348219877L; // J2SE 1.4.2
+    static final long serialVersionUID = 1090963683348219877L;
 
     /**
-     * Constructs a <code>ContextNotEmptyException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>ContextNotEmptyException</code> instance with all
+     * data initialized to null.
      */
     public ContextNotEmptyException() {
         super();
     }
 
     /**
-     * Constructs a <code>ContextNotEmptyException</code> instance
-     * with the specified message.
+     * Constructs a <code>ContextNotEmptyException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for the exception. It may be null.
+     * @param s
+     *            The detail message for the exception. It may be null.
      */
     public ContextNotEmptyException(String s) {
         super(s);
     }
 
 }
-
-

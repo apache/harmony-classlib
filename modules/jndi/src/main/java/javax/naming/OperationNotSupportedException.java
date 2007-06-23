@@ -15,43 +15,41 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * This is the <code>NamingException</code> used when an operation is requested
- * which is not supported.
+ * This is the <code>NamingException</code> used when an operation is
+ * requested which is not supported.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class OperationNotSupportedException extends NamingException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = 5493232822427682064L;
+    static final long serialVersionUID = 5493232822427682064L;
 
     /**
-     * Constructs a <code>OperationNotSupportedException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>OperationNotSupportedException</code> instance with
+     * all data initialized to null.
      */
     public OperationNotSupportedException() {
         super();
     }
 
     /**
-     * Constructs a <code>OperationNotSupportedException</code> instance
-     * with the specified message. 
+     * Constructs a <code>OperationNotSupportedException</code> instance with
+     * the specified message.
      * 
-     * @param arg0 The detail message for this exception. It may be null.
+     * @param arg0
+     *            The detail message for this exception. It may be null.
      */
     public OperationNotSupportedException(String arg0) {
         super(arg0);
     }
 
 }
-
-

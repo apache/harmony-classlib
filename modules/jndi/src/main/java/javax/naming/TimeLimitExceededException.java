@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
@@ -23,35 +22,34 @@ package javax.naming;
  * exceeded.
  * <p>
  * Multithreaded access to an instance is only safe when client code locks the
- * object first.</p>
- * 
+ * object first.
+ * </p>
  */
 public class TimeLimitExceededException extends LimitExceededException {
-	
+
     /*
-     * This constant is used during deserialization to check the J2SE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
-	static final long serialVersionUID = -3597009011385034696L; // J2SE 1.4.2
+    static final long serialVersionUID = -3597009011385034696L;
 
     /**
-     * Constructs a <code>TimeLimitExceededException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>TimeLimitExceededException</code> instance with all
+     * data initialized to null.
      */
     public TimeLimitExceededException() {
         super();
     }
 
     /**
-     * Constructs a <code>TimeLimitExceededException</code> instance
-     * with the specified message.
-     *  
-     * @param s The detail message for this exception. It may be null.
+     * Constructs a <code>TimeLimitExceededException</code> instance with the
+     * specified message.
+     * 
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     public TimeLimitExceededException(String s) {
         super(s);
     }
 
 }
-
-

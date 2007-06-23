@@ -16,46 +16,42 @@
  */
 
 package javax.naming.event;
+
 /**
  * The listener interface to get notification of namespace change events.
  * <p>
- * These events include naming events with event type <code>OBJECT_ADDED</code>, 
- * <code>OBJECT_RENAMED</code>, or <code>OBJECT_REMOVED</code>. A service 
- * provider will call one of these interface methods to notify a listener of 
- * an event, passing in a <code>NamingEvent</code> parameter.
- * This <code>NamingEvent</code> provides methods to get various bits 
- * information about the event.</p>
- * 
- * 
+ * These events include naming events with event type <code>OBJECT_ADDED</code>,
+ * <code>OBJECT_RENAMED</code>, or <code>OBJECT_REMOVED</code>. A service
+ * provider will call one of these interface methods to notify a listener of an
+ * event, passing in a <code>NamingEvent</code> parameter. This
+ * <code>NamingEvent</code> provides methods to get various bits information
+ * about the event.
+ * </p>
  */
-public interface NamespaceChangeListener extends NamingListener{
-	
-	/*
-	 * -----------------------------------------
-	 * methods
-	 * -----------------------------------------
-	 */
-	 
-	/**
-	 * Called by a service provider when there is a new binding.
-	 * 
-	 * @param namingevent 	the event notification
-	 */
-	void objectAdded(NamingEvent namingevent);
+public interface NamespaceChangeListener extends NamingListener {
 
-	/**
-	 * Called by a service provider when a binding is removed.
-	 * 
-	 * @param namingevent 	the event notification
-	 */
-	void objectRemoved(NamingEvent namingevent);
-	
-	/**
-	 * Called by a service provider when a binding is renamed.
-	 * 
-	 * @param namingevent 	the event notification
-	 */
-	void objectRenamed(NamingEvent namingevent);
+    /**
+     * Called by a service provider when there is a new binding.
+     * 
+     * @param namingevent
+     *            the event notification
+     */
+    void objectAdded(NamingEvent namingevent);
+
+    /**
+     * Called by a service provider when a binding is removed.
+     * 
+     * @param namingevent
+     *            the event notification
+     */
+    void objectRemoved(NamingEvent namingevent);
+
+    /**
+     * Called by a service provider when a binding is renamed.
+     * 
+     * @param namingevent
+     *            the event notification
+     */
+    void objectRenamed(NamingEvent namingevent);
+
 }
-
-

@@ -162,7 +162,6 @@ public class Introspector {
         // ...
 
         wrapper = new BeanInfoWrapper(beanInfo, beanInfoImpl);
-
         parent = beanClass.getSuperclass();
         
         if (parent != null && parent != stopClass) {
@@ -176,7 +175,7 @@ public class Introspector {
 
         storeBeanInfoClassInCache(wrapper, beanClass, stopClass,
                 ignoreBeanClassBeanInfo, ignoreSuperClassBeanInfo);
-
+        
         return wrapper;
     }
 

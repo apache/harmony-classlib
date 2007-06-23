@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package org.apache.harmony.jndi.internal.parser;
 
@@ -23,9 +23,6 @@ import javax.naming.InvalidNameException;
 
 /**
  * Should be used when implementing a new Distinguished Name Parser
- * 
- * @author Juan Giannuzzo
- * 
  */
 public interface LdapParser {
 

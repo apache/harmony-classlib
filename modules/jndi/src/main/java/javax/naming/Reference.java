@@ -24,21 +24,22 @@ import java.util.Vector;
 import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
- * A <code>Reference</code> contains the class of the object which is referenced
- * together with a list of all the addresses at which this object may be found.
- * Additionally the <code>Reference</code> has the location of a factory which 
- * can create this object together with the classname used to create the object.
+ * A <code>Reference</code> contains the class of the object which is
+ * referenced together with a list of all the addresses at which this object may
+ * be found. Additionally the <code>Reference</code> has the location of a
+ * factory which can create this object together with the classname used to
+ * create the object.
  * <p>
- * The <code>Reference</code> class relates to objects which are not bound in a
- * naming service but which need to be accessed via javax.naming.
- * <code>Reference</code>, <code>RefAddr</code> and their subclasses provide a 
- * way to access objects other than those in naming and directory systems.</p> 
- * 
- * 
+ * The <code>Reference</code> class relates to objects which are not bound in
+ * a naming service but which need to be accessed via javax.naming.
+ * <code>Reference</code>, <code>RefAddr</code> and their subclasses
+ * provide a way to access objects other than those in naming and directory
+ * systems.
+ * </p>
  */
 public class Reference implements Cloneable, Serializable {
 
-    private static final long serialVersionUID = -1673475790065791735L; //J2SE 1.4.2
+    private static final long serialVersionUID = -1673475790065791735L;
 
     /**
      * The class of the object which is referenced.
@@ -48,38 +49,37 @@ public class Reference implements Cloneable, Serializable {
     protected String className;
 
     /**
-     * A list of the addresses provided for this object. 
-     * The default is null.
+     * A list of the addresses provided for this object. The default is null.
      * 
      * @serial
      */
     protected Vector<RefAddr> addrs;
 
     /**
-     * The class in a factory which is used to create an object of the type 
-     * which is referenced.
-     * The default is null.
+     * The class in a factory which is used to create an object of the type
+     * which is referenced. The default is null.
      * 
      * @serial
      */
     protected String classFactory;
 
     /**
-     * The location of class <code>classFactory</code>. 
-     * To find class files the URL of the classfile is given. If there is more
-     * than one URL for the class then a list of URLs appears in the string 
-     * using a space as a separator. The default is null.
+     * The location of class <code>classFactory</code>. To find class files
+     * the URL of the classfile is given. If there is more than one URL for the
+     * class then a list of URLs appears in the string using a space as a
+     * separator. The default is null.
      * 
      * @serial
      */
     protected String classFactoryLocation;
 
     /**
-     * Constructs a <code>Reference</code> instance with an empty list of 
-     * addresses using the supplied class name.  
-     *  
-     * @param className     the class of the object which is referenced. It
-     *                      cannot be null.
+     * Constructs a <code>Reference</code> instance with an empty list of
+     * addresses using the supplied class name.
+     * 
+     * @param className
+     *            the class of the object which is referenced. It cannot be
+     *            null.
      */
     public Reference(String className) {
         this(className, null, null);
@@ -87,29 +87,33 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Constructs a <code>Reference</code> instance with one entry of address.
-     *  
-     * @param className     the class of the object which is referenced. It 
-     *                      cannot be null. 
-     * @param addr          the object's address. It cannot be null.
+     * 
+     * @param className
+     *            the class of the object which is referenced. It cannot be
+     *            null.
+     * @param addr
+     *            the object's address. It cannot be null.
      */
     public Reference(String className, RefAddr addr) {
         this(className, addr, null, null);
     }
 
     /**
-     * Constructs a <code>Reference</code> instance with an empty list of 
-     * addresses using the supplied class name, factory class and factory 
-     * location. 
-     *  
-     * @param className     the class of the object which is referenced. It 
-     *                      cannot be null. 
-     * @param classFactory  the class in a factory which is used to create 
-     *                      an object of the type which is referenced. It may
-     *                      be null.
+     * Constructs a <code>Reference</code> instance with an empty list of
+     * addresses using the supplied class name, factory class and factory
+     * location.
+     * 
+     * @param className
+     *            the class of the object which is referenced. It cannot be
+     *            null.
+     * @param classFactory
+     *            the class in a factory which is used to create an object of
+     *            the type which is referenced. It may be null.
      * @param classFactoryLocation
-     *                      the location of the class file. It may be null.
+     *            the location of the class file. It may be null.
      */
-    public Reference(String className, String classFactory, String classFactoryLocation) {
+    public Reference(String className, String classFactory,
+            String classFactoryLocation) {
         super();
         this.className = className;
         this.classFactory = classFactory;
@@ -121,13 +125,16 @@ public class Reference implements Cloneable, Serializable {
      * Constructs a <code>Reference</code> instance with one entry of address
      * using the supplied class name, factory class and factory location.
      * 
-     * @param className the class of the object which is referenced. It cannot
-     *        be null.
-     * @param addr the object's address. It cannot be null.
-     * @param classFactory the class in a factory which is used to create an
-     *        object of the type which is referenced. It may be null.
-     * @param classFactoryLocation the location of the class file. It may be
-     *        null.
+     * @param className
+     *            the class of the object which is referenced. It cannot be
+     *            null.
+     * @param addr
+     *            the object's address. It cannot be null.
+     * @param classFactory
+     *            the class in a factory which is used to create an object of
+     *            the type which is referenced. It may be null.
+     * @param classFactoryLocation
+     *            the location of the class file. It may be null.
      */
     public Reference(String className, RefAddr addr, String classFactory,
             String classFactoryLocation) {
@@ -147,21 +154,19 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Gets the class in a factory which is used to create an object of the type
-     * which is referenced.
-     * The result may be null.
+     * which is referenced. The result may be null.
      * 
-     * @return              the class in a factory which is used to create the
-     *                      referenced object
+     * @return the class in a factory which is used to create the referenced
+     *         object
      */
     public String getFactoryClassName() {
         return this.classFactory;
     }
 
     /**
-     * Gets the location of the factory class.
-     * The result may be null.
+     * Gets the location of the factory class. The result may be null.
      * 
-     * @return              the location of the factory class
+     * @return the location of the factory class
      */
     public String getFactoryClassLocation() {
         return this.classFactoryLocation;
@@ -169,8 +174,8 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Gets all the addresses.
-     *  
-     * @return              an enumeration of all the addresses
+     * 
+     * @return an enumeration of all the addresses
      */
     public Enumeration<RefAddr> getAll() {
         return addrs.elements();
@@ -178,11 +183,12 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Gets an address where the address type matches the specified string.
-     * There may be more than one entry in the list with the same address type 
+     * There may be more than one entry in the list with the same address type
      * but this method returns the first one found in the list.
      * 
-     * @param type          the address type to look for
-     * @return              the first address whose type matches the string
+     * @param type
+     *            the address type to look for
+     * @return the first address whose type matches the string
      */
     public RefAddr get(String type) {
         Enumeration<RefAddr> elements = addrs.elements();
@@ -200,12 +206,12 @@ public class Reference implements Cloneable, Serializable {
     /**
      * Gets the address held at the specified index in the address list.
      * 
-     * @param index         the index of the required address. It must be 
-     *                      greater than or equal to 0 and less than the number
-     *                      of entries in the list.
-     * @return              the address held at the specified index
+     * @param index
+     *            the index of the required address. It must be greater than or
+     *            equal to 0 and less than the number of entries in the list.
+     * @return the address held at the specified index
      * @throws ArrayIndexOutOfBoundsException
-     *                      If the index is invalid.
+     *             If the index is invalid.
      */
     public RefAddr get(int index) {
         return addrs.get(index);
@@ -213,8 +219,9 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Appends an address to the list.
-     *  
-     * @param addr          the address to append. It cannot be null.
+     * 
+     * @param addr
+     *            the address to append. It cannot be null.
      */
     public void add(RefAddr addr) {
         addrs.add(addr);
@@ -222,14 +229,15 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Inserts an address within the list at the specified index.
-     *  
-     * @param addr         the address to insert into the list. It cannot be
-     *                      null. 
-     * @param index         the index where to insert the address. It must be 
-     *                      greater than or equal to 0 and less than or equal to 
-     *                      the number of entries in the list(size()).
+     * 
+     * @param addr
+     *            the address to insert into the list. It cannot be null.
+     * @param index
+     *            the index where to insert the address. It must be greater than
+     *            or equal to 0 and less than or equal to the number of entries
+     *            in the list(size()).
      * @throws ArrayIndexOutOfBoundsException
-     *                      If the index is invalid. 
+     *             If the index is invalid.
      */
     public void add(int index, RefAddr addr) {
         addrs.add(index, addr);
@@ -237,12 +245,13 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Removes an address from the address list.
-     *   
-     * @param index         the index of the address to remove. It must be 
-     *                      greater than or equal to 0 and less than size(). 
-     * @return              the removed address
-     * @throws ArrayIndexOutOfBoundsException 
-     *                      If the index is invalid.
+     * 
+     * @param index
+     *            the index of the address to remove. It must be greater than or
+     *            equal to 0 and less than size().
+     * @return the removed address
+     * @throws ArrayIndexOutOfBoundsException
+     *             If the index is invalid.
      */
     public Object remove(int index) {
         return addrs.remove(index);
@@ -250,15 +259,15 @@ public class Reference implements Cloneable, Serializable {
 
     /**
      * Gets the number of addresses in the address list.
-     *  
-     * @return              the size of the list
+     * 
+     * @return the size of the list
      */
     public int size() {
         return addrs.size();
     }
 
     /**
-     * Deletes all the addresses from the address list. 
+     * Deletes all the addresses from the address list.
      */
     public void clear() {
         addrs.clear();
@@ -267,9 +276,9 @@ public class Reference implements Cloneable, Serializable {
     /**
      * Returns a deep clone of this <code>Reference</code> instance.
      * 
-     * @return              a deep clone of this object
+     * @return a deep clone of this object
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public Object clone() {
         try {
@@ -278,38 +287,38 @@ public class Reference implements Cloneable, Serializable {
             return r;
         } catch (CloneNotSupportedException e) {
             // jndi.03=Failed to clone object of Reference class.
-            throw new AssertionError(Messages.getString("jndi.03"));  //$NON-NLS-1$
+            throw new AssertionError(Messages.getString("jndi.03")); //$NON-NLS-1$
         }
     }
 
     /**
-     * Returns true if this <code>Reference</code> instance is equal to the 
-     * supplied object <code>o</code>.
-     * They are considered equal if their class name and list of addresses are
-     * equivalent (including the order of the addresses in the list). The 
-     * factory class and location are ignored for the purposes of this 
-     * comparison.
+     * Returns true if this <code>Reference</code> instance is equal to the
+     * supplied object <code>o</code>. They are considered equal if their
+     * class name and list of addresses are equivalent (including the order of
+     * the addresses in the list). The factory class and location are ignored
+     * for the purposes of this comparison.
      * 
-     * @param o             the object to compare with
-     * @return              true if this object is equal to <code>o</code>,
-     *                      otherwise false
+     * @param o
+     *            the object to compare with
+     * @return true if this object is equal to <code>o</code>, otherwise
+     *         false
      */
     @Override
     public boolean equals(Object o) {
         if (o instanceof Reference) {
             Reference r = (Reference) o;
             return r.className.equals(this.className)
-                && r.addrs.equals(this.addrs);
+                    && r.addrs.equals(this.addrs);
         }
         return false;
     }
 
     /**
-     * Returns the hashcode for this <code>Reference</code> instance.
-     * The result is calculated by summing the hashcode of the class name and 
-     * the hash codes of each of the addresses in the address list.
+     * Returns the hashcode for this <code>Reference</code> instance. The
+     * result is calculated by summing the hashcode of the class name and the
+     * hash codes of each of the addresses in the address list.
      * 
-     * @return              the hashcode of this <code>Reference</code> instance
+     * @return the hashcode of this <code>Reference</code> instance
      */
     @Override
     public int hashCode() {
@@ -323,10 +332,10 @@ public class Reference implements Cloneable, Serializable {
     }
 
     /**
-     * Returns the string representation of the class name together with the 
+     * Returns the string representation of the class name together with the
      * list of addresses.
      * 
-     * @return              the string representation of this object
+     * @return the string representation of this object
      */
     @Override
     public String toString() {
@@ -339,4 +348,5 @@ public class Reference implements Cloneable, Serializable {
         }
         return s + "\n"; //$NON-NLS-1$
     }
+
 }

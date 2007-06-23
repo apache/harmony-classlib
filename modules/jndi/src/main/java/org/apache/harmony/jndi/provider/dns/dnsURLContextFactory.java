@@ -32,40 +32,45 @@ import javax.naming.spi.ObjectFactory;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 
-
 /**
  * Factory to create DNS URL contexts.
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  */
 public class dnsURLContextFactory implements ObjectFactory {
-    
+
     /**
      * Returns new instance of DNS URL context.
-     * @param obj either <code>null</code>, URL in string form or array
-     * of URL in string form  
-     * @param name ignored
-     * @param nameCtx ignored
-     * @param environment is passed to the context being created
+     * 
+     * @param obj
+     *            either <code>null</code>, URL in string form or array of
+     *            URL in string form
+     * @param name
+     *            ignored
+     * @param nameCtx
+     *            ignored
+     * @param environment
+     *            is passed to the context being created
      * @return created DNS context, an instance of either
-     *  <code>dnsURLContext</code> or <code>DNSContext</code> class
-     * @throws IllegalArgumentException if bad <code>obj</code> is given
-     * @throws NamingException if such exception was encountered 
+     *         <code>dnsURLContext</code> or <code>DNSContext</code> class
+     * @throws IllegalArgumentException
+     *             if bad <code>obj</code> is given
+     * @throws NamingException
+     *             if such exception was encountered
      * @see ObjectFactory#getObjectInstance(Object, Name, Context, Hashtable)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public Object getObjectInstance(Object obj, Name name, Context nameCtx,
-            Hashtable<?, ?> environment) throws NamingException
-    {
+            Hashtable<?, ?> environment) throws NamingException {
         if (obj == null) {
             return new dnsURLContext(environment);
         } else if (obj instanceof String) {
-            Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment.clone();
+            Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment
+                    .clone();
 
             newEnv.put(Context.PROVIDER_URL, obj);
             return new DNSContext(newEnv);
         } else if (obj instanceof String[]) {
-            Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment.clone();
+            Hashtable<Object, Object> newEnv = (Hashtable<Object, Object>) environment
+                    .clone();
             StringBuffer sb = new StringBuffer();
             String urlArr[] = (String[]) obj;
 

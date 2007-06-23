@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
- 
- package javax.naming.directory;
+package javax.naming.directory;
 
 import javax.naming.NamingException;
 
@@ -24,51 +23,37 @@ import javax.naming.NamingException;
  * Thrown when the identifier part of an attribute is invalid.
  * <p>
  * Directory service providers may restrict the characteristics of the attribute
- * identifier.  If an attempt is made to set the attribute with an invalid
- * attribute the provider will throw an 
- * <code>InvalidAttributeIdentifierException</code>.</p>
- * 
- * 
+ * identifier. If an attempt is made to set the attribute with an invalid
+ * attribute the provider will throw an
+ * <code>InvalidAttributeIdentifierException</code>.
+ * </p>
  */
 public class InvalidAttributeIdentifierException extends NamingException {
-	
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */	
 
-	/* Serialization information - start. */
-	private static final long serialVersionUID = 0x829668e5be4a058dL;
-	/* Serialization information - end. */
-	
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */	
-	
-	/**
-	 * Default constructor. 
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 */	 	
-	public InvalidAttributeIdentifierException() {
-		super();
-	}
+    private static final long serialVersionUID = 0x829668e5be4a058dL;
 
-	/**
-	 * Constructs an <code>InvalidAttributeIdentifierException</code> 
-     * instance using the supplied text of the message.
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 * 
-	 * @param s				message about the problem
-	 */
-	public InvalidAttributeIdentifierException(String s) {
-		super(s);
-	}
+    /**
+     * Default constructor.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     */
+    public InvalidAttributeIdentifierException() {
+        super();
+    }
+
+    /**
+     * Constructs an <code>InvalidAttributeIdentifierException</code> instance
+     * using the supplied text of the message.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     * 
+     * @param s
+     *            message about the problem
+     */
+    public InvalidAttributeIdentifierException(String s) {
+        super(s);
+    }
 
 }
-
-

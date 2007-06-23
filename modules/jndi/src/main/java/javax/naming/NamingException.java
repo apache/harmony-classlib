@@ -42,20 +42,19 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * It can also refer to the object that is associated with the resolved name.
  * </p>
  * <p>
- * Additionally it can refer to another exception, which may be the root cause of
- * this exception.
+ * Additionally it can refer to another exception, which may be the root cause
+ * of this exception.
  * </p>
  * <p>
  * Multithreaded access to a <code>NamingException</code> instance is only
  * safe when client code locks the object first.
  * </p>
- * 
  */
 public class NamingException extends Exception {
 
     /*
-     * This constant is used during deserialization to check the JSE version
-     * which created the serialized object.
+     * This constant is used during deserialization to check the version which
+     * created the serialized object.
      */
     private static final long serialVersionUID = -1299181962103167177L;
 
@@ -299,19 +298,23 @@ public class NamingException extends Exception {
         return this.toStringImpl(false);
     }
 
+    @SuppressWarnings("nls")
     private String toStringImpl(boolean flag) {
         StringBuffer sb = new StringBuffer();
         sb.append(super.toString());
         if (null != rootException) {
-            sb.append(" [Root exception is ").append(rootException.toString()).append( //$NON-NLS-1$
-                            "]"); //$NON-NLS-1$
+            sb.append(" [Root exception is ").append(rootException.toString())
+                    .append("]");
         }
         if (null != remainingName) {
-            sb.append("; Remaining name: '").append(remainingName.toString()).append("'"); //$NON-NLS-1$//$NON-NLS-2$
+            sb.append("; Remaining name: '").append(remainingName.toString())
+                    .append("'");
         }
         if (flag && null != resolvedObj) {
-            sb.append("; Resolved object: '").append(resolvedObj.toString()).append("'"); //$NON-NLS-1$ //$NON-NLS-2$
+            sb.append("; Resolved object: '").append(resolvedObj.toString())
+                    .append("'");
         }
         return sb.toString();
     }
+
 }

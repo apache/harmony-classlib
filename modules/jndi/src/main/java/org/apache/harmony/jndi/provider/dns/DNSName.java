@@ -24,28 +24,24 @@
 package org.apache.harmony.jndi.provider.dns;
 
 import java.util.Enumeration;
-import java.util.Vector;
-//import java.util.logging.Level;
+import java.util.Vector; // import java.util.logging.Level;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 
-
 /**
  * Represents the name in Domain Name System. The most significant part is the
  * rightmost part of string representation.
  * 
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
  * TODO add escapes checking for name components (?)
  */
 public class DNSName implements Name, Cloneable {
 
     private static final long serialVersionUID = -5931312723719884197L;
-    
+
     private Vector<String> components;
-    
+
     /**
      * Constructs an empty DNS name.
      */
@@ -57,7 +53,8 @@ public class DNSName implements Name, Cloneable {
     /**
      * Constructs new DNS name with given components.
      * 
-     * @param compVect the vector of name components
+     * @param compVect
+     *            the vector of name components
      */
     DNSName(Vector<String> compVect) {
         components = compVect;
@@ -80,8 +77,8 @@ public class DNSName implements Name, Cloneable {
     }
 
     /**
-     * @return <code>true</code> if this name is an absolute DNS name,
-     *  i.e. starts with empty label 
+     * @return <code>true</code> if this name is an absolute DNS name, i.e.
+     *         starts with empty label
      */
     public boolean isAbsolute() {
         if (components.size() > 0) {
@@ -96,6 +93,7 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Returns clone of the current name.
+     * 
      * @see java.lang.Object#clone()
      */
     @Override
@@ -111,9 +109,11 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Removes component with specified number.
-     * @param posn index of component to remove
-     * @throws ArrayIndexOutOfBoundsException if <code>posn</code> index is
-     *  out of range 
+     * 
+     * @param posn
+     *            index of component to remove
+     * @throws ArrayIndexOutOfBoundsException
+     *             if <code>posn</code> index is out of range
      * @see javax.naming.Name#remove(int)
      */
     public Object remove(int posn) throws InvalidNameException {
@@ -121,18 +121,21 @@ public class DNSName implements Name, Cloneable {
     }
 
     /**
-     * Compares the specified name with the current name. It checks all components
-     * beginning at the most significant one. The method
-     *  <code>compareToIgnoreCase</code>
-     * of underlying <code>String</code> object will be used for the real
-     * comparison of components.
-     * If two names have different sizes and the longer name begins with
-     * the shorter name then the longer name will be "bigger" than shorter.
-     * @param name the name to compare with
+     * Compares the specified name with the current name. It checks all
+     * components beginning at the most significant one. The method
+     * <code>compareToIgnoreCase</code> of underlying <code>String</code>
+     * object will be used for the real comparison of components. If two names
+     * have different sizes and the longer name begins with the shorter name
+     * then the longer name will be "bigger" than shorter.
+     * 
+     * @param name
+     *            the name to compare with
      * @return negative number; zero or positive number
-     * @throws ClassCastException if the <code>name</code> has class other than
-     * <code>DNSName</code>
-     * @throws NullPointerException if the <code>name</code> is null
+     * @throws ClassCastException
+     *             if the <code>name</code> has class other than
+     *             <code>DNSName</code>
+     * @throws NullPointerException
+     *             if the <code>name</code> is null
      * @see javax.naming.Name#compareTo(java.lang.Object)
      * @see java.lang.String#compareToIgnoreCase(java.lang.String)
      */
@@ -173,18 +176,20 @@ public class DNSName implements Name, Cloneable {
     }
 
     /**
-     * @param posn index of the component to return
-     * @return name component at index <code>posn</code> 
-     * @throws ArrayIndexOutOfBoundsException if <code>posn</code> index is
-     *  out of range 
+     * @param posn
+     *            index of the component to return
+     * @return name component at index <code>posn</code>
+     * @throws ArrayIndexOutOfBoundsException
+     *             if <code>posn</code> index is out of range
      * @see javax.naming.Name#get(int)
      */
     public String get(int posn) {
-        return components.elementAt(posn); 
+        return components.elementAt(posn);
     }
 
     /**
      * Returns all components of the current name.
+     * 
      * @return enumeration of strings
      * @see javax.naming.Name#getAll()
      */
@@ -193,12 +198,13 @@ public class DNSName implements Name, Cloneable {
     }
 
     /**
-     * @param posn index to stop at
-     * @return a <code>DNSName</code> object that consists of components of the
-     * current name with indexes from <code>0</code> to and not including
-     *  <code>posn</code>.
-     * @throws ArrayIndexOutOfBoundsException if <code>posn</code> index is
-     *  out of range 
+     * @param posn
+     *            index to stop at
+     * @return a <code>DNSName</code> object that consists of components of
+     *         the current name with indexes from <code>0</code> to and not
+     *         including <code>posn</code>.
+     * @throws ArrayIndexOutOfBoundsException
+     *             if <code>posn</code> index is out of range
      * @see javax.naming.Name#getPrefix(int)
      */
     public Name getPrefix(int posn) {
@@ -211,12 +217,13 @@ public class DNSName implements Name, Cloneable {
     }
 
     /**
-     * @param posn index to start at
-     * @return a <code>DNSName</code> object that consists of components of the
-     * current name with indexes from <code>posn</code> to and not including
-     *  <code>#size()</code>.
-     * @throws ArrayIndexOutOfBoundsException if <code>posn</code> index is
-     *  out of range 
+     * @param posn
+     *            index to start at
+     * @return a <code>DNSName</code> object that consists of components of
+     *         the current name with indexes from <code>posn</code> to and not
+     *         including <code>#size()</code>.
+     * @throws ArrayIndexOutOfBoundsException
+     *             if <code>posn</code> index is out of range
      * @see javax.naming.Name#getSuffix(int)
      */
     public Name getSuffix(int posn) {
@@ -232,7 +239,9 @@ public class DNSName implements Name, Cloneable {
      * Checks if the current name ends with the given name. Returns
      * <code>false</code> if the given name is <code>null</code> or not an
      * instance of <code>DNSName</code> class.
-     * @param name the name to compare the end of the current message with
+     * 
+     * @param name
+     *            the name to compare the end of the current message with
      * @return <code>true</code> or <code>false</code>
      * @see javax.naming.Name#endsWith(javax.naming.Name)
      */
@@ -254,10 +263,9 @@ public class DNSName implements Name, Cloneable {
                 k = this.compareTo(name);
             } catch (ClassCastException e) {
                 // impossible case
-                //ProviderMgr.logger.log(Level.SEVERE, "impossible case", e);
+                // ProviderMgr.logger.log(Level.SEVERE, "impossible case", e);
             }
-        }
-        else if (len1 > len2) {
+        } else if (len1 > len2) {
             Name suffix = this.getSuffix(len1 - len2);
 
             k = suffix.compareTo(name);
@@ -269,7 +277,9 @@ public class DNSName implements Name, Cloneable {
      * Checks if the current name starts with the given name. Returns
      * <code>false</code> if the given name is <code>null</code> or not an
      * instance of <code>DNSName</code> class.
-     * @param name the name to compare the beginning of the current message with
+     * 
+     * @param name
+     *            the name to compare the beginning of the current message with
      * @return <code>true</code> or <code>false</code>
      * @see javax.naming.Name#startsWith(javax.naming.Name)
      */
@@ -293,8 +303,7 @@ public class DNSName implements Name, Cloneable {
                 // impossible case
                 // ProviderMgr.logger.log(Level.SEVERE, "impossible error", e);
             }
-        }
-        else if (len1 > len2) {
+        } else if (len1 > len2) {
             Name prefix = this.getPrefix(len2);
 
             k = prefix.compareTo(name);
@@ -304,14 +313,17 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Adds the given component to the list of components at the specified
-     *  index.
-     * @param posn an index to insert at
-     * @param comp the component to insert
+     * index.
+     * 
+     * @param posn
+     *            an index to insert at
+     * @param comp
+     *            the component to insert
      * @return updated name (<code>this</code> object)
-     * @throws InvalidNameException if the given string can't be used as a
-     *  DNS name component 
-     * @throws ArrayIndexOutOfBoundsException if <code>posn</code> index is
-     *  out of range 
+     * @throws InvalidNameException
+     *             if the given string can't be used as a DNS name component
+     * @throws ArrayIndexOutOfBoundsException
+     *             if <code>posn</code> index is out of range
      * @see javax.naming.Name#add(int, java.lang.String)
      */
     public Name add(int posn, String comp) throws InvalidNameException {
@@ -325,15 +337,17 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Adds the given component to the end of the current name.
-     * @param comp the component to insert
+     * 
+     * @param comp
+     *            the component to insert
      * @return updated name (<code>this</code> object)
-     * @throws InvalidNameException if the given string can't be used as a
-     *  DNS name component 
+     * @throws InvalidNameException
+     *             if the given string can't be used as a DNS name component
      * @see javax.naming.Name#add(java.lang.String)
      */
     public Name add(String comp) throws InvalidNameException {
         if (!componentIsOk(comp)) {
-            // jndi.30={0} can't be used as a component for DNS name 
+            // jndi.30={0} can't be used as a component for DNS name
             throw new InvalidNameException(Messages.getString("jndi.30", comp));//$NON-NLS-1$
         }
         components.addElement(comp);
@@ -342,11 +356,15 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Add given components to the current name. The order is preserved.
-     * @param posn the index at which given components should be added 
-     * @param name components this name should be added
+     * 
+     * @param posn
+     *            the index at which given components should be added
+     * @param name
+     *            components this name should be added
      * @return <code>this</code> object
-     * @throws InvalidNameException if the name given is not an instance of
-     *  <code>DNSName</code> class
+     * @throws InvalidNameException
+     *             if the name given is not an instance of <code>DNSName</code>
+     *             class
      * @see javax.naming.Name#addAll(int, javax.naming.Name)
      */
     public Name addAll(int posn, Name name) throws InvalidNameException {
@@ -363,10 +381,13 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Add given components to the end of current name. The order is preserved.
-     * @param name components this name should be added
+     * 
+     * @param name
+     *            components this name should be added
      * @return <code>this</code> object
-     * @throws InvalidNameException if the name given is not an instance of
-     *  <code>DNSName</code> class
+     * @throws InvalidNameException
+     *             if the name given is not an instance of <code>DNSName</code>
+     *             class
      * @see javax.naming.Name#addAll(javax.naming.Name)
      */
     public Name addAll(Name name) throws InvalidNameException {
@@ -383,13 +404,13 @@ public class DNSName implements Name, Cloneable {
 
     /**
      * Returns the string representation of this DNS name.
+     * 
      * @return DNS name in string form
      */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
 
-        
         for (int i = components.size() - 1; i >= 0; i--) {
             String comp = components.elementAt(i);
             if (sb.length() > 0 || i == 0) {
@@ -401,16 +422,17 @@ public class DNSName implements Name, Cloneable {
         }
         return sb.toString();
     }
-    
+
     /**
      * Checks if the given string is a correct DNS name component.
-     * @param comp the string component to check
+     * 
+     * @param comp
+     *            the string component to check
      * @return <code>true</code> or <code>false</code>
      */
     static boolean componentIsOk(String comp) {
         if (comp.indexOf(".") != -1 || comp.length() > //$NON-NLS-1$
-                ProviderConstants.LABEL_MAX_CHARS)
-        {
+                ProviderConstants.LABEL_MAX_CHARS) {
             return false;
         }
         return true;

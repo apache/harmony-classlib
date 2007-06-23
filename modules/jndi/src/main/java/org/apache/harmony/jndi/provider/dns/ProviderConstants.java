@@ -27,9 +27,7 @@ import javax.naming.InvalidNameException;
 
 /**
  * Contains various constants that are used in the provider classes.
- * 
- * @author Alexei Zakharov
- * @version $Revision: 1.1.2.4 $
+ *
  * @see RFC 1035
  */
 public class ProviderConstants {

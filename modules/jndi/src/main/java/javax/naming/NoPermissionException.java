@@ -15,45 +15,38 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * An <code>NoPermissionException</code> is the <code>NamingSecurityException</code> 
- * used when a server refuses permission to the client.
+ * An <code>NoPermissionException</code> is the
+ * <code>NamingSecurityException</code> used when a server refuses permission
+ * to the client.
  * <p>
- * Multithreaded access to an <code>NoPermissionException</code> instance is 
- * only safe when client code locks the object first.</p>
- * 
+ * Multithreaded access to an <code>NoPermissionException</code> instance is
+ * only safe when client code locks the object first.
+ * </p>
  */
 public class NoPermissionException extends NamingSecurityException {
 
     static final long serialVersionUID = 8395332708699751775L;
-    
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */
 
     /**
-     * Constructs a <code>NoPermissionException</code> instance 
-     * with all data initialized to null.
+     * Constructs a <code>NoPermissionException</code> instance with all data
+     * initialized to null.
      */
     public NoPermissionException() {
         super();
     }
 
     /**
-     * Constructs a <code>NoPermissionException</code> instance 
-     * with the specified message. 
+     * Constructs a <code>NoPermissionException</code> instance with the
+     * specified message.
      * 
-     * @param s The detail message for this exception. It may be null.
+     * @param s
+     *            The detail message for this exception. It may be null.
      */
     public NoPermissionException(String s) {
         super(s);
     }
 
 }
-
-

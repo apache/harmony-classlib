@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package org.apache.harmony.jndi.internal.parser;
 
@@ -31,9 +31,6 @@ import javax.naming.ldap.Rdn;
 /**
  * A Distinguised Name Parser according with the RFC2253 and RFC1779 for use
  * with LdapName only
- * 
- * @author Osvaldo C. Demo
- * @author Juan Giannuzzo
  */
 public class LdapNameParser implements NameParser, LdapParser {
     private String s = null;
@@ -76,7 +73,7 @@ public class LdapNameParser implements NameParser, LdapParser {
         for (int i = 0; i < c.length; i++) {
             if ((c[i] == ',' || c[i] == ';') && c[i - 1] != '\\') {
 
-                String sub = s.substring(from, i); 
+                String sub = s.substring(from, i);
                 if (sub.equals("")) {
                     throw new InvalidNameException("Invalid name: " + s);
                 }

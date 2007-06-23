@@ -15,36 +15,25 @@
  * limitations under the License.
  */
 
-
 package javax.naming.ldap;
 
-import java.io.Serializable;
 import javax.naming.NamingException;
 
 /**
- * Objects implementing this interface can return an array of <code>Control</code>
- * instances.
+ * Objects implementing this interface can return an array of
+ * <code>Control</code> instances.
  * 
  * @see Control
- * 
  */
 public interface HasControls {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Returns an array of <code>Control</code> instances which may be null.
-     *  
-     * @return                  an array of <code>Control</code> instances which
-     *                          may be null
-     * @throws NamingException  If an error is encountered.
+     * 
+     * @return an array of <code>Control</code> instances which may be null
+     * @throws NamingException
+     *             If an error is encountered.
      */
     Control[] getControls() throws NamingException;
 
 }
-
-

@@ -20,6 +20,7 @@
  * @author  Vasily Zakharov
  * @version $Revision: 1.1.2.3 $
  */
+
 package org.apache.harmony.jndi.provider.rmi;
 
 import java.util.Hashtable;
@@ -34,12 +35,8 @@ import org.apache.harmony.jndi.provider.GenericURLContext;
 
 import org.apache.harmony.jndi.provider.rmi.registry.RegistryContext;
 
-
 /**
  * RMI URL context implementation.
- *
- * @author  Vasily Zakharov
- * @version $Revision: 1.1.2.3 $
  */
 public class rmiURLContext extends GenericURLContext {
 
@@ -52,38 +49,38 @@ public class rmiURLContext extends GenericURLContext {
 
     /**
      * Creates instance of this context with specified environment.
-     *
-     * @param   environment
-     *          Environment to copy.
+     * 
+     * @param environment
+     *            Environment to copy.
      */
     public rmiURLContext(Hashtable<?, ?> environment) {
         super(environment);
     }
 
     /**
-     * Determines the proper {@link RegistryContext} from the specified URL
-     * and returns the {@link ResolveResult} object with that context
-     * as resolved object and the rest of the URL as remaining name.
-     *
-     * @param   url
-     *          URL.
-     *
-     * @param   environment
-     *          Environment.
-     *
-     * @return  {@link ResolveResult} object with resolved context
-     *          as resolved object the rest of the URL as remaining name.
-     *
-     * @throws  NamingException
-     *          If some naming error occurs.
+     * Determines the proper {@link RegistryContext} from the specified URL and
+     * returns the {@link ResolveResult} object with that context as resolved
+     * object and the rest of the URL as remaining name.
+     * 
+     * @param url
+     *            URL.
+     * 
+     * @param environment
+     *            Environment.
+     * 
+     * @return {@link ResolveResult} object with resolved context as resolved
+     *         object the rest of the URL as remaining name.
+     * 
+     * @throws NamingException
+     *             If some naming error occurs.
      */
     @Override
-    protected ResolveResult getRootURLContext(
-            String url, Hashtable<?, ?> environment) throws NamingException {
+    protected ResolveResult getRootURLContext(String url,
+            Hashtable<?, ?> environment) throws NamingException {
         if (!url.startsWith(RegistryContext.RMI_URL_PREFIX)) {
             // jndi.74=Not an RMI URL, incorrect prefix: {0}
-            throw new IllegalArgumentException(
-                    Messages.getString("jndi.74", url)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "jndi.74", url)); //$NON-NLS-1$
         }
         int length = url.length();
         int start = RegistryContext.RMI_URL_PREFIX.length();
@@ -120,9 +117,9 @@ public class rmiURLContext extends GenericURLContext {
                         port = Integer.parseInt(url.substring(portStart, end));
                     } catch (NumberFormatException e) {
                         // jndi.75=Invalid port number in URL: {0}
-                        throw (IllegalArgumentException)
-                                new IllegalArgumentException(Messages.getString("jndi.75", //$NON-NLS-1$
-                                    url)).initCause(e);
+                        throw (IllegalArgumentException) new IllegalArgumentException(
+                                Messages.getString("jndi.75", //$NON-NLS-1$
+                                        url)).initCause(e);
                     }
                 }
 
@@ -137,7 +134,8 @@ public class rmiURLContext extends GenericURLContext {
             name.add(url.substring(start));
         }
 
-        return new ResolveResult(
-                new RegistryContext(hostName, port, environment), name);
+        return new ResolveResult(new RegistryContext(hostName, port,
+                environment), name);
     }
+
 }

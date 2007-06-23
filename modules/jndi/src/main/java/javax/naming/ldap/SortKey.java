@@ -13,17 +13,12 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package javax.naming.ldap;
 
-
 /**
- * 
- * @ar.org.fitc.spec_ref
- * 
- * @version 0.0.1
- * 
+ * TODO: JavaDoc
  */
 public class SortKey {
 
@@ -33,40 +28,25 @@ public class SortKey {
 
     boolean ascendingOrder;
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public SortKey(String attrID) {
         this.attrID = attrID;
         this.ascendingOrder = true;
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public SortKey(String attrID, boolean ascendingOrder, String matchingRuleID) {
         this.attrID = attrID;
         this.ascendingOrder = ascendingOrder;
         this.matchingRuleID = matchingRuleID;
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public String getAttributeID() {
         return attrID;
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public String getMatchingRuleID() {
         return matchingRuleID;
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public boolean isAscending() {
         return ascendingOrder;
     }

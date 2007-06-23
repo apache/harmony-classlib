@@ -15,50 +15,32 @@
  * limitations under the License.
  */
 
- 
 package javax.naming;
 
 /**
  * Binding extends <code>NameClassPair</code> to associate an object in a
- * naming service with its name, specified class name and relative flag.
- * As with <code>NameClassPair</code>, a class name is only specified when 
- * it is necessary to override the real class name of the associated object.
+ * naming service with its name, specified class name and relative flag. As with
+ * <code>NameClassPair</code>, a class name is only specified when it is
+ * necessary to override the real class name of the associated object.
  * <p>
- * Multithreaded access to a <code>Binding</code> instance is only safe when 
- * client code locks the object first.</p>
- * 
+ * Multithreaded access to a <code>Binding</code> instance is only safe when
+ * client code locks the object first.
+ * </p>
  */
 public class Binding extends NameClassPair {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
-
-    // J2SE 1.4.2
     private static final long serialVersionUID = 8839217842691845890L;
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
 
     private Object boundObj;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Construct a <code>Binding</code> from a name and a class.
-     * Relative flag is true.
-     *
-     * @param name  a name, may not be <code>null</code>.
-     * @param obj   an object bound with the name, may be <code>null</code>.
+     * Construct a <code>Binding</code> from a name and a class. Relative flag
+     * is true.
+     * 
+     * @param name
+     *            a name, may not be <code>null</code>.
+     * @param obj
+     *            an object bound with the name, may be <code>null</code>.
      */
     public Binding(String name, Object obj) {
         this(name, null, obj, true);
@@ -67,10 +49,13 @@ public class Binding extends NameClassPair {
     /**
      * Construct a <code>Binding</code> from a name, an object and a relative
      * flag.
-     *
-     * @param name      a name, which may not be <code>null</code>.
-     * @param obj       an object bound with the name, may be <code>null</code>.
-     * @param relative  a relative flag
+     * 
+     * @param name
+     *            a name, which may not be <code>null</code>.
+     * @param obj
+     *            an object bound with the name, may be <code>null</code>.
+     * @param relative
+     *            a relative flag
      */
     public Binding(String name, Object obj, boolean relative) {
         this(name, null, obj, relative);
@@ -78,12 +63,14 @@ public class Binding extends NameClassPair {
 
     /**
      * Construct a <code>Binding</code> from a name, a class, and an object.
-     * The class and object parameters may be null.
-     * Relative flag is true.
-     *
-     * @param name      a name, which may not be <code>null</code>.
-     * @param className a class name, may be <code>null</code>.
-     * @param obj       an object bound with the name, may be <code>null</code>.
+     * The class and object parameters may be null. Relative flag is true.
+     * 
+     * @param name
+     *            a name, which may not be <code>null</code>.
+     * @param className
+     *            a class name, may be <code>null</code>.
+     * @param obj
+     *            an object bound with the name, may be <code>null</code>.
      */
     public Binding(String name, String className, Object obj) {
         this(name, className, obj, true);
@@ -92,36 +79,29 @@ public class Binding extends NameClassPair {
     /**
      * Construct a <code>Binding</code> from a name, a class, an object and a
      * relative flag. The class and object parameters may be null.
-     *
-     * @param name      a name, which may not be <code>null</code>.
-     * @param className a class name, may be <code>null</code>.
-     * @param obj       an object bound with the name, may be <code>null</code>.
-     * @param relative  a relative flag
+     * 
+     * @param name
+     *            a name, which may not be <code>null</code>.
+     * @param className
+     *            a class name, may be <code>null</code>.
+     * @param obj
+     *            an object bound with the name, may be <code>null</code>.
+     * @param relative
+     *            a relative flag
      */
-    public Binding(
-        String name,
-        String className,
-        Object obj,
-        boolean relative) {
+    public Binding(String name, String className, Object obj, boolean relative) {
         super(name, className, relative);
         this.boundObj = obj;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Get the class name of this <code>Binding</code>.
-     * It may have been specified, in which case the class name field is set,
-     * and that is the string returned by this method.
-     * If the class name field has not been specified then the object 
-     * associated with this <code>Binding</code> is interrogated to find its 
-     * actual class name. If there is no class name field specified and no 
-     * associated object then this method returns null.
-     *
+     * Get the class name of this <code>Binding</code>. It may have been
+     * specified, in which case the class name field is set, and that is the
+     * string returned by this method. If the class name field has not been
+     * specified then the object associated with this <code>Binding</code> is
+     * interrogated to find its actual class name. If there is no class name
+     * field specified and no associated object then this method returns null.
+     * 
      * @return the class name
      */
     @Override
@@ -136,11 +116,11 @@ public class Binding extends NameClassPair {
     }
 
     /**
-     * Get the object associated with this <code>Binding</code>. May return 
+     * Get the object associated with this <code>Binding</code>. May return
      * null.
      * 
-     * @return the object associated with this <code>Binding</code>. 
-     *          May return null.
+     * @return the object associated with this <code>Binding</code>. May
+     *         return null.
      */
     public Object getObject() {
         return boundObj;
@@ -150,21 +130,16 @@ public class Binding extends NameClassPair {
      * Set the object o associated with this <code>Binding</code>. The object
      * may be null.
      * 
-     * @param object    an object
+     * @param object
+     *            an object
      */
     public void setObject(Object object) {
         this.boundObj = object;
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods override parent class Object
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Provide a string representation of this object. This is the same as for
-     * <code>NameClassPair</code> but with the string representation of the 
+     * <code>NameClassPair</code> but with the string representation of the
      * <code>Binding</code> object appended to the end.
      * 
      * @return a string representation of this <code>Binding</code>
@@ -175,5 +150,3 @@ public class Binding extends NameClassPair {
     }
 
 }
-
-

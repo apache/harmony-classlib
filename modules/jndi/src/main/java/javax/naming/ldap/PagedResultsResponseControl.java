@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package javax.naming.ldap;
 
@@ -22,28 +22,18 @@ import java.io.IOException;
 import org.apache.harmony.jndi.internal.PagedResultSearchControlValue;
 
 /**
- * 
- * @ar.org.fitc.spec_ref
- * 
- * @version 0.0.1
- * @author Osvaldo C. Demo
- * 
+ * TODO: JavaDoc
  */
 public final class PagedResultsResponseControl extends BasicControl {
 
     private static final long serialVersionUID = -8819778744844514666L;
-    
+
+    public static final String OID = "1.2.840.113556.1.4.319"; //$NON-NLS-1$
+
     private int resultSize;
+
     private byte[] cookie;
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public static final String OID = "1.2.840.113556.1.4.319";
-
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public PagedResultsResponseControl(String id, boolean criticality,
             byte[] value) throws IOException {
         super(id, criticality, value);
@@ -53,20 +43,13 @@ public final class PagedResultsResponseControl extends BasicControl {
         cookie = pgscv.getCookie();
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public byte[] getCookie() {
         if (cookie.length == 0) {
             return null;
-        } else {
-            return cookie;
         }
+        return cookie;
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public int getResultSize() {
         return resultSize;
     }

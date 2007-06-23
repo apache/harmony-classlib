@@ -13,36 +13,23 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
  *  See the License for the specific language governing permissions and 
  *  limitations under the License. 
- */ 
+ */
 
 package javax.naming.ldap;
 
 /**
- * 
- * @ar.org.fitc.spec_ref
- * 
- * @version 0.0.1
- * @author Osvaldo C. Demo
+ * TODO: JavaDoc
  */
 public final class ManageReferralControl extends BasicControl {
 
     private static final long serialVersionUID = 3017756160149982566L;
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
-    public static final String OID = "2.16.840.1.113730.3.4.2";
+    public static final String OID = "2.16.840.1.113730.3.4.2"; //$NON-NLS-1$
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public ManageReferralControl() {
         super(OID, Control.CRITICAL, null);
     }
 
-    /**
-     * @ar.org.fitc.spec_ref
-     */
     public ManageReferralControl(boolean criticality) {
         super(OID, criticality, null);
     }

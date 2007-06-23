@@ -20,53 +20,38 @@ package javax.naming.directory;
 import javax.naming.NamingException;
 
 /**
- * Thrown when the <code>SearchControls</code> for a given search are
- * invalid.
+ * Thrown when the <code>SearchControls</code> for a given search are invalid.
  * <p>
- * For example, the search controls would be invalid if the scope is not
- * one of the defined class constants.</p> 
- * 
- * 
+ * For example, the search controls would be invalid if the scope is not one of
+ * the defined class constants.
+ * </p>
  */
 public class InvalidSearchControlsException extends NamingException {
-	
-	/*
-	 * -------------------------------------------------------------------
-	 * Constants
-	 * -------------------------------------------------------------------
-	 */	
 
-	/* Serialization information - start. */
-	private static final long serialVersionUID = 0xb8e38210910fe94fL;
-	/* Serialization information - end. */
-	
-	/*
-	 * -------------------------------------------------------------------
-	 * Constructors
-	 * -------------------------------------------------------------------
-	 */	
-	
-	/**
-	 * Default constructor. 
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 */	 	
-	public InvalidSearchControlsException() {
-		super();
-	}
-	
-	/**
-	 * Constructs an <code>InvalidSearchControlsException</code> instance 
+    private static final long serialVersionUID = 0xb8e38210910fe94fL;
+
+    /**
+     * Default constructor.
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     */
+    public InvalidSearchControlsException() {
+        super();
+    }
+
+    /**
+     * Constructs an <code>InvalidSearchControlsException</code> instance
      * using the supplied text of the message.
-	 * <p>
-	 * All fields are initialized to null.</p>
-	 * 
-	 * @param s				message about the problem
-	 */
-	public InvalidSearchControlsException(String s) {
-		super(s);
-	}
+     * <p>
+     * All fields are initialized to null.
+     * </p>
+     * 
+     * @param s
+     *            message about the problem
+     */
+    public InvalidSearchControlsException(String s) {
+        super(s);
+    }
 
 }
-
-

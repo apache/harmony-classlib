@@ -83,6 +83,17 @@ public final class Pattern implements Serializable {
     public static final int CANON_EQ = 1 << 7;
     
     static final int BACK_REF_NUMBER = 10;
+    
+    /**
+     * Bit mask that includes all defined match flags
+     */
+    static final int flagsBitMask = Pattern.UNIX_LINES | 
+                                    Pattern.CASE_INSENSITIVE | 
+                                    Pattern.COMMENTS | 
+                                    Pattern.MULTILINE |  
+                                    Pattern.DOTALL | 
+                                    Pattern.UNICODE_CASE | 
+                                    Pattern.CANON_EQ;
 
     /**
      * Current <code>pattern</code> to be compiled;
@@ -259,6 +270,13 @@ public final class Pattern implements Serializable {
 	 */
     public static Pattern compile(String regex, int flags)
             throws PatternSyntaxException {
+    	
+    	if ((flags != 0) &&
+    	   	((flags | flagsBitMask) != flagsBitMask)) {
+    	        	
+    	    throw new IllegalArgumentException(Messages.getString("regex.1C"));
+    	}
+    	
         AbstractSet.counter = 1;
 
         return new Pattern().compileImpl(regex, flags);

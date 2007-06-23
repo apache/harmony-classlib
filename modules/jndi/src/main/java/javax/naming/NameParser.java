@@ -15,37 +15,29 @@
  * limitations under the License.
  */
 
-
 package javax.naming;
 
 /**
- * A <code>NameParser</code> is used to validate and decompose a name from a 
- * particular namespace. It is implemented by classes provided in spi
- * implementations. 
- * 
+ * A <code>NameParser</code> is used to validate and decompose a name from a
+ * particular namespace. It is implemented by classes provided in SPI
+ * implementations.
  */
 public interface NameParser {
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     /**
-     * Takes a name in a <code>String s</code> and validates it according to 
-     * the rules for the namespace. (See <code>CompoundName</code> for the 
-     * guidelines on name format and system parameters which affect the 
-     * translation of a name.) The name is then decomposed into its elements 
-     * and returned as a <code>Name</code>. 
+     * Takes a name in a <code>String s</code> and validates it according to
+     * the rules for the namespace. (See <code>CompoundName</code> for the
+     * guidelines on name format and system parameters which affect the
+     * translation of a name.) The name is then decomposed into its elements and
+     * returned as a <code>Name</code>.
      * 
-     * @param s the name to be examined - cannot be null
-     * @return  a <code>Name</code> instance, cannot be null.
-     * @throws InvalidNameException when the supplied string violates format 
-     *          rules
+     * @param s
+     *            the name to be examined - cannot be null
+     * @return a <code>Name</code> instance, cannot be null.
+     * @throws InvalidNameException
+     *             when the supplied string violates format rules
      * @throws NamingException
      */
     public Name parse(String s) throws InvalidNameException, NamingException;
+
 }
-
-
