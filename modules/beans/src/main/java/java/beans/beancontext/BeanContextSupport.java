@@ -699,7 +699,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             throw new IllegalArgumentException("Not a child of this context");
         }
 
-        return getClass().getClassLoader().getResource(resourceName);
+        return ClassLoader.getSystemResource(resourceName);
     }
 
     /* (non-Javadoc)
@@ -714,7 +714,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
             throw new IllegalArgumentException("Not a child of this context");
         }
 
-        return getClass().getClassLoader().getResourceAsStream(resourceName);
+        return ClassLoader.getSystemResourceAsStream(resourceName);
     }
 
     /**
