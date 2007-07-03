@@ -199,6 +199,16 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
                     "IndexOutOfBoundsException rather than a subclass expected",
                     IndexOutOfBoundsException.class, t.getClass());
         }
+        
+        // Regression for HARMONY-4311
+        try {
+            pis = new PipedInputStream();
+            PipedOutputStream out = new PipedOutputStream(pis);
+            out.write(null, -10, 10);
+            fail("should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        } 
     }
 
 	/**
