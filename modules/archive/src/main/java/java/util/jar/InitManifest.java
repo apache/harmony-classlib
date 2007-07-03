@@ -77,8 +77,10 @@ class InitManifest {
 
         list.clear();
         byte[] chunk = null;
-        while (chunks == null ? readLines(is, list) : (chunk = nextChunk(is,
-                list)) != null) {
+        while (chunks == null ? readLines(is, list) : (chunk = nextChunk(is, list)) != null) {
+            if (list.size() == 0) {
+                continue;
+            }
             it = list.iterator();
             String line = it.next();
             if (line.length() < 7

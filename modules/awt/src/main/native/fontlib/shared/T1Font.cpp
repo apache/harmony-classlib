@@ -20,7 +20,9 @@
  */
 
 #include <string>
-
+#if defined(LINUX)
+#include <ctype.h>
+#endif
 #include "T1Font.h"
 #include "T1Glyph.h"
 
