@@ -164,7 +164,8 @@ public class ByteArrayOutputStreamTest extends TestCase {
 	/**
 	 * @tests java.io.ByteArrayOutputStream#toString(int)
 	 */
-	public void test_toStringI() {
+	@SuppressWarnings("deprecation")
+    public void test_toStringI() {
 		// Test for method java.lang.String
 		// java.io.ByteArrayOutputStream.toString(int)
 		java.io.ByteArrayOutputStream bos = null;
