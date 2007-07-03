@@ -283,6 +283,7 @@
                 <src>
 		    <pathelement location="${hy.luni.src.test.api}/common"/>
 	            <pathelement location="${hy.luni.src.test.api.java.platform}"/>
+                <pathelement location="${hy.luni.src.test}/impl"/>
                 </src>
                 <include name="**/*.java" />
             </javac-elements>
