@@ -1165,6 +1165,11 @@ public class BeanContextSupportTest extends TestCase {
         final String RESOURCE_NAME = "org/apache/harmony/beans/tests/support/beancontext/mock/mockdata.txt";
         URL url = support.getResource(RESOURCE_NAME, child);
         assertTrue(url.toString().endsWith(RESOURCE_NAME));
+        
+        BeanContextSupport beanContextSupport = new BeanContextSupport();
+        beanContextSupport.add(child);
+        url = beanContextSupport.getResource(RESOURCE_NAME, child);
+        assertTrue(url.toString().endsWith(RESOURCE_NAME));
     }
 
     public void testGetResourceAsStream_NullParam() {

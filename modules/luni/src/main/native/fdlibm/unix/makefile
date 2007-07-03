@@ -45,7 +45,7 @@ BUILDFILES = \
 	$(FDLIBM_DIST)w_scalb.o $(FDLIBM_DIST)w_sinh.o $(FDLIBM_DIST)w_sqrt.o
 
 # OPTS is overriden
-OPTS := -O0 -ffloat-store -fpic
+OPT = -O0 -ffloat-store -fpic
 DEFINES += -D_IEEE_LIBM
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a
