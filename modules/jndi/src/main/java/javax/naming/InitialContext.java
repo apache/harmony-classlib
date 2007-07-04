@@ -351,6 +351,9 @@ public class InitialContext implements Context {
         String scheme = UrlParser.getScheme(name);
         Context ctx = null;
         if (null != scheme) {
+            if ("java".equals(scheme)) {
+                return getDefaultInitCtx();
+            }
             // So the first component is a valid URL
             ctx = NamingManager.getURLContext(scheme, myProps);
         }
