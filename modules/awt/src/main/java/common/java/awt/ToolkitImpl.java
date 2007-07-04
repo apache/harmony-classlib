@@ -31,12 +31,15 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.harmony.awt.gl.font.FontMetricsImpl;
 import org.apache.harmony.awt.datatransfer.DTK;
 import org.apache.harmony.awt.gl.*;
 import org.apache.harmony.awt.gl.image.*;
 
 class ToolkitImpl extends Toolkit {
     static final Hashtable<Serializable, Image> imageCache = new Hashtable<Serializable, Image>();
+
+    static final FontMetrics cacheFM[] =  new FontMetrics[10];
 
     @Override
     public void sync() {
@@ -126,13 +129,37 @@ class ToolkitImpl extends Toolkit {
         }
     }
 
+    /**
+     * Returns FontMetrics object that keeps metrics of the specified font.
+     * 
+     * @param font specified Font
+     * @return FontMetrics object corresponding to the specified Font object
+     */
     @SuppressWarnings("deprecation")
     @Override
     @Deprecated
     public FontMetrics getFontMetrics(Font font) {
         lockAWT();
         try {
-            return getGraphicsFactory().getFontMetrics(font);
+            FontMetrics fm;
+            for (FontMetrics element : cacheFM) {
+                fm = element;
+                if (fm == null){
+                    break;
+                }
+
+                if (fm.getFont().equals(font)){
+                    return fm;
+                }
+            }
+            fm = new FontMetricsImpl(font);
+
+            System.arraycopy(cacheFM, 0, cacheFM, 1, cacheFM.length -1);
+            cacheFM[0] = fm;
+
+            return fm;
+
+//            return getGraphicsFactory().getFontMetrics(font);
         } finally {
             unlockAWT();
         }
