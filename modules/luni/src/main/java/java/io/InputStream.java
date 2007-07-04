@@ -141,7 +141,7 @@ public abstract class InputStream extends Object implements Closeable {
      */
     public int read(byte b[], int offset, int length) throws IOException {
         // avoid int overflow, check null b
-        if (offset < 0 || offset > b.length || length < 0
+        if (offset > b.length || offset < 0 || length < 0
                 || length > b.length - offset) {
             throw new ArrayIndexOutOfBoundsException();
         }
