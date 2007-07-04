@@ -27,13 +27,14 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@SuppressWarnings( { "serial", "unused" })
 public class SerializationStressTest5 extends SerializationStressTest {
 
 	transient Throwable current;
 
 	// Use this for retrieving a list of any Throwable Classes that did not get
 	// tested.
-	transient Vector missedV = new Vector();
+	transient Vector<Class> missedV = new Vector<Class>();
 
 	transient Class[][] params = new Class[][] { { String.class },
 			{ Throwable.class }, { Exception.class },
@@ -66,7 +67,7 @@ public class SerializationStressTest5 extends SerializationStressTest {
 
 		File javaDir = findJavaDir();
 
-		Vector classFilesVector = new Vector();
+		Vector<File> classFilesVector = new Vector<File>();
 		if (javaDir != null)
 			findClassFiles(javaDir, classFilesVector);
 		else
@@ -100,7 +101,7 @@ public class SerializationStressTest5 extends SerializationStressTest {
 		int instanceOfSep = -1;
 		int nextInstance = classPath.indexOf(File.pathSeparatorChar,
 				instanceOfSep + 1);
-		Vector elms = new Vector();
+		Vector<File> elms = new Vector<File>();
 		while (nextInstance != -1) {
 			elms.add(new File(classPath.substring(instanceOfSep + 1,
 					nextInstance)));
@@ -138,7 +139,7 @@ public class SerializationStressTest5 extends SerializationStressTest {
 		return null;
 	}
 
-	private void findClassFiles(File dir, Vector v) {
+	private void findClassFiles(File dir, Vector<File> v) {
 		String[] classFileNames = dir.list();
 		for (int i = 0; i < classFileNames.length; i++) {
 			File file = new File(dir, classFileNames[i]);
@@ -150,8 +151,8 @@ public class SerializationStressTest5 extends SerializationStressTest {
 	}
 
 	private Class[] findThrowableClasses(File[] files) {
-		Class thrClass = Throwable.class;
-		Vector resultVector = new Vector();
+		Class<Throwable> thrClass = Throwable.class;
+		Vector<Class> resultVector = new Vector<Class>();
 		String slash = System.getProperty("file.separator");
 		String begTarget = slash + "java" + slash;
 		String endTarget = ".class";
@@ -284,7 +285,7 @@ public class SerializationStressTest5 extends SerializationStressTest {
 		}
 	}
 
-	private void findClassFilesFromZip(Vector v) {
+	private void findClassFilesFromZip(Vector<File> v) {
 		String slash = System.getProperty("file.separator");
 		String javaHome = System.getProperty("java.home");
 		if (!javaHome.endsWith(slash))

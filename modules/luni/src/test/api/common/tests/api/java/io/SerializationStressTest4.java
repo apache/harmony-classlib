@@ -32,22 +32,13 @@ import java.security.cert.Certificate;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
+
 
 import tests.support.Support_Configuration;
 import tests.support.Support_Proxy_I1;
 
+@SuppressWarnings( { "serial", "unused" })
 public class SerializationStressTest4 extends SerializationStressTest {
 	// -----------------------------------------------------------------------------------
 	private static class GuardImplementation implements java.security.Guard,
@@ -104,15 +95,15 @@ public class SerializationStressTest4 extends SerializationStressTest {
 
 		try {
 			objToSave = null;
-			objToSave = new java.security.PermissionCollection() {
+			objToSave = new PermissionCollection() {
 				boolean added = false;
 
 				public void add(java.security.Permission p1) {
 					added = true;
 				}
 
-				public java.util.Enumeration elements() {
-					return (new java.util.Vector()).elements();
+				public Enumeration elements() {
+					return (new Vector()).elements();
 				}
 
 				public boolean implies(java.security.Permission p1) {
@@ -329,7 +320,7 @@ public class SerializationStressTest4 extends SerializationStressTest {
 		Object objLoaded = null;
 
 		try {
-			objToSave = java.util.Collections.unmodifiableCollection(SET);
+			objToSave = Collections.unmodifiableCollection(SET);
 			if (DEBUG)
 				System.out.println("Obj = " + objToSave);
 			objLoaded = dumpAndReload(objToSave);
@@ -587,7 +578,8 @@ public class SerializationStressTest4 extends SerializationStressTest {
 
 	}
 
-	public void test_writeObject_String_CaseInsensitiveComparator() {
+	@SuppressWarnings("unchecked")
+    public void test_writeObject_String_CaseInsensitiveComparator() {
 		// Test for method void
 		// java.io.ObjectOutputStream.writeObject(java.lang.String.CaseInsensitiveComparator)
 
@@ -1731,7 +1723,8 @@ public class SerializationStressTest4 extends SerializationStressTest {
 
 	}
 
-	public void test_writeObject_Permissions() {
+	@SuppressWarnings("unchecked")
+    public void test_writeObject_Permissions() {
 		// Test for method void
 		// java.io.ObjectOutputStream.writeObject(java.security.Permissions)
 
@@ -1776,8 +1769,8 @@ public class SerializationStressTest4 extends SerializationStressTest {
 					}
 				};
 
-				java.util.Arrays.sort(perms1, comparator);
-				java.util.Arrays.sort(perms2, comparator);
+				Arrays.sort(perms1, comparator);
+				Arrays.sort(perms2, comparator);
 
 				for (int i = 0; i < length && equals; ++i)
 					equals = perms1[i].equals(perms2[i]);
@@ -1930,7 +1923,7 @@ public class SerializationStressTest4 extends SerializationStressTest {
 
 	}
 
-	public void test_writeObject_Stack() {
+    public void test_writeObject_Stack() {
 		// Test for method void
 		// java.io.ObjectOutputStream.writeObject(java.util.Stack)
 
@@ -1939,8 +1932,8 @@ public class SerializationStressTest4 extends SerializationStressTest {
 
 		try {
 			objToSave = new java.util.Stack();
-			((java.util.Stack) objToSave).push("String 1");
-			((java.util.Stack) objToSave).push("String 2");
+			((Stack) objToSave).push("String 1");
+			((Stack) objToSave).push("String 2");
 			if (DEBUG)
 				System.out.println("Obj = " + objToSave);
 			objLoaded = dumpAndReload(objToSave);

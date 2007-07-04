@@ -62,6 +62,7 @@ import java.util.Vector;
  * Automated Test Suite for class java.io.ObjectOutputStream
  * 
  */
+@SuppressWarnings("serial")
 public class SerializationStressTest extends junit.framework.TestCase implements
 		Serializable {
 
@@ -92,14 +93,14 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 	// -----------------------------------------------------------------------------------
 
 	private static class ObjectInputStreamSubclass extends ObjectInputStream {
-		private Vector resolvedClasses = new Vector();
+		private Vector<Class> resolvedClasses = new Vector<Class>();
 
 		public ObjectInputStreamSubclass(InputStream in) throws IOException,
 				StreamCorruptedException {
 			super(in);
 		}
 
-		public Class resolveClass(ObjectStreamClass osClass)
+		public Class<?> resolveClass(ObjectStreamClass osClass)
 				throws IOException, ClassNotFoundException {
 			Class result = super.resolveClass(osClass);
 			resolvedClasses.addElement(result);
@@ -111,25 +112,24 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 					.size()]);
 		}
 	}
+	static final Map<String , String> TABLE = new Hashtable<String , String>();
 
-	static final Map TABLE = new Hashtable();
+	static final Map<String , String> MAP = new HashMap<String , String>();
 
-	static final Map MAP = new HashMap();
+	static final SortedMap<String , String> TREE = new TreeMap<String , String>();
 
-	static final SortedMap TREE = new TreeMap();
+	static final LinkedHashMap<String , String> LINKEDMAP = new LinkedHashMap<String , String>();
 
-	static final LinkedHashMap LINKEDMAP = new LinkedHashMap();
+	static final LinkedHashSet<String> LINKEDSET = new LinkedHashSet<String>();
 
-	static final LinkedHashSet LINKEDSET = new LinkedHashSet();
+	static final IdentityHashMap<String , String> IDENTITYMAP = new IdentityHashMap<String , String>();
 
-	static final IdentityHashMap IDENTITYMAP = new IdentityHashMap();
-
-	static final List ALIST = Arrays.asList(new String[] { "a", "list", "of",
+	static final List<String> ALIST = Arrays.asList(new String[] { "a", "list", "of",
 			"strings" });
 
-	static final List LIST = new ArrayList(ALIST);
+	static final List<String> LIST = new ArrayList<String>(ALIST);
 
-	static final Set SET = new HashSet(Arrays.asList(new String[] { "one",
+	static final Set<String> SET = new HashSet<String>(Arrays.asList(new String[] { "one",
 			"two", "three" }));
 
 	static final Permission PERM = new PropertyPermission("file.encoding",
@@ -137,7 +137,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 
 	static final PermissionCollection PERMCOL = PERM.newPermissionCollection();
 
-	static final SortedSet SORTSET = new TreeSet(Arrays.asList(new String[] {
+	static final SortedSet<String> SORTSET = new TreeSet<String>(Arrays.asList(new String[] {
 			"one", "two", "three" }));
 
 	static final java.text.DateFormat DATEFORM = java.text.DateFormat
@@ -152,7 +152,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 	static final java.text.MessageFormat MESSAGE = new java.text.MessageFormat(
 			"the time: {0,time} and date {0,date}");
 
-	static final LinkedList LINKEDLIST = new LinkedList(Arrays
+	static final LinkedList<String> LINKEDLIST = new LinkedList<String>(Arrays
 			.asList(new String[] { "a", "linked", "list", "of", "strings" }));
 
 	static final SimpleTimeZone TIME_ZONE = new SimpleTimeZone(3600000,
@@ -396,7 +396,6 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 	public void test_7_write() {
 		// Test for method void java.io.ObjectOutputStream.write(int)
 		try {
-			byte[] buf = new byte[10];
 			oos.write('T');
 			oos.close();
 			ois = new ObjectInputStream(loadStream());
@@ -945,7 +944,7 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 
 	public void test_1_writeReplace() {
 		try {
-			Vector v = new Vector();
+			Vector<Object> v = new Vector<Object>();
 			v.addElement(new WriteReplaceTestA());
 			v.addElement(new WriteReplaceTestB());
 			v.addElement(new WriteReplaceTestB());

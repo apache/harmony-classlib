@@ -19,9 +19,10 @@ package tests.api.java.io;
 
 import java.io.StringBufferInputStream;
 
+@SuppressWarnings("deprecation")
 public class StringBufferInputStreamTest extends junit.framework.TestCase {
 
-	StringBufferInputStream sbis;
+    StringBufferInputStream sbis;
 
 	/**
 	 * @tests java.io.StringBufferInputStream#StringBufferInputStream(java.lang.String)
