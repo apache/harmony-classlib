@@ -18,6 +18,7 @@
 package org.apache.harmony.sql.tests.java.sql;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -30,6 +31,7 @@ import java.sql.SQLException;
 import java.sql.SQLPermission;
 import java.util.Enumeration;
 import java.util.Properties;
+import tests.support.Support_Exec;
 
 import junit.framework.TestCase;
 
@@ -601,6 +603,16 @@ public class DriverManagerTest extends TestCase {
         }
         Driver d = DriverManager.getDriver("jdbc:dummy_protocol:dummy_subname");
         assertNotNull(d);
+    }
+    
+    /**
+     * Regression for HARMONY-4303
+     */
+    public void test_initClass() throws Exception {
+        String[] arg = new String[1];
+        arg[0] = "org/apache/harmony/sql/tests/java/sql/TestMainForDriver";
+        String result = Support_Exec.execJava(arg, null, true);
+        assertEquals("", result);
     }
     
     private static class BadDummyDriver extends DummyDriver {
