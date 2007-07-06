@@ -90,7 +90,7 @@ public abstract class OutputStream implements Closeable, Flushable {
      */
     public void write(byte buffer[], int offset, int count) throws IOException {
         // avoid int overflow, check null buffer
-        if (offset < 0 || offset > buffer.length || count < 0
+        if (offset > buffer.length || offset < 0 || count < 0
                 || count > buffer.length - offset) {
             throw new IndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
         }

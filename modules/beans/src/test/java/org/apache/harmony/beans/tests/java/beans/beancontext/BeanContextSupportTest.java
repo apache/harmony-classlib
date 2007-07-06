@@ -823,6 +823,12 @@ public class BeanContextSupportTest extends TestCase {
                 Integer.class));
         assertFalse(MockBeanContextSupport.publicClassEquals(Integer.class,
                 Double.class));
+        try {
+            MockBeanContextSupport.publicClassEquals(null, null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected.
+        }
     }
 
     public void testClear() {

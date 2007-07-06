@@ -61,7 +61,8 @@ public class SequenceInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.SequenceInputStream#SequenceInputStream(java.util.Enumeration)
 	 */
-	public void test_ConstructorLjava_util_Enumeration() {
+	@SuppressWarnings("unchecked")
+    public void test_ConstructorLjava_util_Enumeration() {
 		// Test for method java.io.SequenceInputStream(java.util.Enumeration)
 		class StreamEnumerator implements Enumeration {
 			InputStream streams[] = new InputStream[2];

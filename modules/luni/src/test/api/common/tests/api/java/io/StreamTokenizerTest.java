@@ -26,10 +26,6 @@ import java.io.StreamTokenizer;
 import java.io.StringBufferInputStream;
 
 import tests.support.Support_StringReader;
-// TODO: most of the assertTrue calls in this test case should be
-// replaced with assertEquals (possibly two assertEquals) see
-// test_ConstructorLjava_io_InputStream for example.
-// This gives much more helpful error messages.
 
 public class StreamTokenizerTest extends junit.framework.TestCase {
 	Support_StringReader r;
@@ -41,7 +37,8 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.StreamTokenizer#StreamTokenizer(java.io.InputStream)
 	 */
-	public void test_ConstructorLjava_io_InputStream() throws IOException {
+	@SuppressWarnings("deprecation")
+    public void test_ConstructorLjava_io_InputStream() throws IOException {
 		st = new StreamTokenizer(new StringBufferInputStream(
 				"/comments\n d 8 'h'"));
 
@@ -151,7 +148,8 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.StreamTokenizer#nextToken()
 	 */
-	public void test_nextToken() throws IOException {
+	@SuppressWarnings("deprecation")
+    public void test_nextToken() throws IOException {
 		// SM.
 		setTest("\r\n/* fje fje 43.4 f \r\n f g */  456.459 \r\n"
 				+ "Hello  / 	\r\n \r\n \n \r \257 Hi \'Hello World\'");

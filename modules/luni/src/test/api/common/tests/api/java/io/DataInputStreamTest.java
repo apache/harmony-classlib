@@ -457,7 +457,8 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.DataInputStream#readLine()
 	 */
-	public void test_readLine() {
+	@SuppressWarnings("deprecation")
+    public void test_readLine() {
 		// Test for method java.lang.String java.io.DataInputStream.readLine()
 		try {
 			os.writeBytes("Hello");

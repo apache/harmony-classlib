@@ -40,10 +40,10 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.harmony.luni.tests.java.lang.ClassTest;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
+@SuppressWarnings("serial")
 public class ObjectInputStreamTest extends junit.framework.TestCase implements
         Serializable {
 
@@ -408,6 +408,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
     /**
      * @tests java.io.ObjectInputStream#readLine()
      */
+    @SuppressWarnings("deprecation")
     public void test_readLine() throws IOException {
         // Test for method java.lang.String java.io.ObjectInputStream.readLine()
         oos.writeBytes("HelloWorld\nSecondLine");
@@ -747,6 +748,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
             super(in);
         }
 
+        @SuppressWarnings("unchecked")
         protected Class resolveClass(ObjectStreamClass desc)
                 throws IOException, ClassNotFoundException {
             if (desc.getName().equals(
@@ -947,6 +949,7 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
     }
     
     private static class RegisterValidationClass implements Serializable {
+        @SuppressWarnings("unused")
         private A a = new A();
         private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
             stream.defaultReadObject();

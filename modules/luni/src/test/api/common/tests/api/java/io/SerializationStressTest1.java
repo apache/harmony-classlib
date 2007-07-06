@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.Vector;
 
+@SuppressWarnings( { "serial", "unused" })
 public class SerializationStressTest1 extends SerializationStressTest {
 
 	// The purpose of these two classes is to test if serialization, when
@@ -110,7 +113,7 @@ public class SerializationStressTest1 extends SerializationStressTest {
 		private void readObject(java.io.ObjectInputStream in)
 				throws java.io.IOException, ClassNotFoundException {
 			calledReadObject = true;
-			String s = ((String) in.readObject());
+			in.readObject();
 		}
 
 		private void writeObject(java.io.ObjectOutputStream out)
@@ -135,7 +138,7 @@ public class SerializationStressTest1 extends SerializationStressTest {
 		public void readObject(java.io.ObjectInputStream in)
 				throws java.io.IOException, ClassNotFoundException {
 			calledReadObject = true;
-			String s = ((String) in.readObject());
+			in.readObject();
 		}
 
 		public void writeObject(java.io.ObjectOutputStream out)
@@ -638,7 +641,7 @@ public class SerializationStressTest1 extends SerializationStressTest {
 		// java.io.ObjectOutputStream.writeObject(java.lang.Object)
 
 		Object objToSave = null;
-		Object objLoaded;
+        Object objLoaded;
 
 		try {
 
@@ -1089,7 +1092,7 @@ public class SerializationStressTest1 extends SerializationStressTest {
 		Object objLoaded;
 
 		try {
-			java.util.Vector vector = new java.util.Vector(1);
+			Vector<String> vector = new Vector<String>(1);
 			vector.add(FOO);
 			objToSave = vector;
 			if (DEBUG)
@@ -1119,10 +1122,11 @@ public class SerializationStressTest1 extends SerializationStressTest {
 		Object objLoaded;
 
 		try {
-			java.util.Hashtable hashTable = new java.util.Hashtable(5);
-			hashTable.put(FOO, FOO);
-			objToSave = hashTable;
-			if (DEBUG)
+			Hashtable<String, String> hashTable = new Hashtable<String, String>(
+                    5);
+            hashTable.put(FOO, FOO);
+            objToSave = hashTable;
+            if (DEBUG)
 				System.out.println("Obj = " + objToSave);
 			objLoaded = dumpAndReload(objToSave);
 			java.util.Hashtable loadedHashTable = (java.util.Hashtable) objLoaded;

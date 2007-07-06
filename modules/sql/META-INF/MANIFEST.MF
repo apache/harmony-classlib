@@ -27,7 +27,8 @@ Import-Package: java.io,
  javax.naming,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.luni.util,
- org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
+ tests.support;hy_usage=test;resolution:=optional
 Export-Package: java.sql,
  javax.sql,
  javax.sql.rowset,

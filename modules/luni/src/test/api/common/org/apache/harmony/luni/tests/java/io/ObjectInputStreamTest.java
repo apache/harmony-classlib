@@ -84,7 +84,8 @@ public class ObjectInputStreamTest extends TestCase {
 		SerializationTest.verifySelf(longString);
 	}
 	
-	private static class LongString implements Serializable{
+	@SuppressWarnings("serial")
+    private static class LongString implements Serializable{
 		String lString;
 		
 		public LongString() {
@@ -160,6 +161,7 @@ public class ObjectInputStreamTest extends TestCase {
             super(in);
         }
 
+        @SuppressWarnings("unchecked")
         protected Class resolveClass(ObjectStreamClass desc)
                 throws IOException, ClassNotFoundException {
             if (desc.getName().endsWith("ObjectInputStreamTest$TestClass1")) {
@@ -196,7 +198,7 @@ public class ObjectInputStreamTest extends TestCase {
         ois = new TestObjectInputStream(bais);
 
         try {
-            TestClass2 to2 = (TestClass2) ois.readObject();
+            ois.readObject();
 
             fail("Should throw InvalidClassException");
         } catch (InvalidClassException ice) {

@@ -425,6 +425,9 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * @return true if two class objects are equal or their class names are equal.
      */
     protected static final boolean classEquals(Class clz1, Class clz2) {
+        if (clz1 == null || clz2 == null) {
+            throw new NullPointerException();
+        }
         return clz1 == clz2 || clz1.getName().equals(clz2.getName());
     }
 

@@ -196,18 +196,8 @@ public class LineNumberReader extends BufferedReader {
     @Override
     public String readLine() throws IOException {
         synchronized (lock) {
-            /* Typical Line Length */
-            StringBuilder result = new StringBuilder(80);
-            while (true) {
-                int character = read();
-                if (character == -1) {
-                    return result.length() != 0 ? result.toString() : null;
-                }
-                if (character == '\n') {
-                    return result.toString();
-                }
-                result.append((char) character);
-            }
+            lineNumber++;
+            return super.readLine();
         }
     }
 
