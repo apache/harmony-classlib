@@ -34,7 +34,6 @@ import org.apache.harmony.awt.gl.font.FontManager;
  * and font stuff instances factories.
  */
 public interface GraphicsFactory {
-    static final FontMetrics cacheFM[] =  new FontMetrics[10];
     
     /**
      * This method creates Graphics2D instance for specified native window.
@@ -70,7 +69,6 @@ public interface GraphicsFactory {
     GraphicsEnvironment createGraphicsEnvironment(WindowFactory wf);
     
     // Font methods
-    FontMetrics getFontMetrics(Font font);
     FontManager getFontManager();
     FontPeer getFontPeer(Font font);
     Font embedFont(String fontFilePath);

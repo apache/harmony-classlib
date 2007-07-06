@@ -36,6 +36,7 @@ import java.util.PropertyPermission;
 import java.util.TimeZone;
 import java.util.Vector;
 
+@SuppressWarnings( { "serial", "unused" })
 public class SerializationStressTest3 extends SerializationStressTest {
 
 	// -----------------------------------------------------------------------------------
@@ -322,7 +323,7 @@ public class SerializationStressTest3 extends SerializationStressTest {
 				new ObjectStreamField("object1", Vector.class),
 				new ObjectStreamField("int1", Integer.TYPE) };
 
-		private static Vector v1 = new Vector(Arrays.asList(new String[] {
+		private static Vector v1 = new Vector<String>(Arrays.asList(new String[] {
 				"1st", "2nd" }));
 
 		private boolean passed = false;
@@ -342,7 +343,8 @@ public class SerializationStressTest3 extends SerializationStressTest {
 			passed = int1 == 0xA9 && object1.equals(v1);
 		}
 
-		private void writeObject(java.io.ObjectOutputStream out)
+		@SuppressWarnings("deprecation")
+        private void writeObject(java.io.ObjectOutputStream out)
 				throws java.io.IOException, ClassNotFoundException {
 			ObjectOutputStream.PutField fields = out.putFields();
 			fields.put("object1", v1);

@@ -1312,7 +1312,93 @@ public class BeanContextServicesSupportTest extends TestCase {
                 (BeanContextServicesSupport) SerializationTester
                         .getDeserilizedObject(support));
     }
+    
 
+    static int serviceRevoked = 0;
+
+	static int serviceAvailable = 0;
+
+	private static class MyListener implements BeanContextServicesListener {
+
+		public void serviceRevoked(BeanContextServiceRevokedEvent event) {
+			serviceRevoked++;
+		}
+
+		public void serviceAvailable(BeanContextServiceAvailableEvent event) {
+			serviceAvailable++;
+		}
+
+	}
+
+	private static class MySupport extends BeanContextServicesSupport {
+
+		public void serviceRevoked(BeanContextServiceRevokedEvent event) {
+			serviceRevoked++;
+		}
+		
+		public void serviceAvailable(BeanContextServiceAvailableEvent event) {
+			serviceAvailable++;
+		}
+	}
+
+	private static class MyProvider implements BeanContextServiceProvider {
+
+		public void releaseService(BeanContextServices s, Object requestor,
+				Object service) {
+		}
+
+		public Iterator getCurrentServiceSelectors(BeanContextServices s,
+				Class serviceClass) {
+
+			return null;
+		}
+
+		public Object getService(BeanContextServices s, Object requestor,
+				Class serviceClass, Object serviceSelector) {
+
+			return null;
+
+		}
+
+	}
+
+	public void test_serviceRevoked_LBeanContextServiceRevokedEvent() {
+		BeanContextServicesSupport support = new BeanContextServicesSupport();
+
+		support.add(new MySupport());
+		support.addBeanContextServicesListener(new MyListener());
+		Class c = Object.class;
+
+		support.addService(c, new MyProvider());
+
+		BeanContextServiceRevokedEvent revokeEvent = new BeanContextServiceRevokedEvent(
+				support, c, false);
+
+		support.serviceRevoked(revokeEvent);
+        assertEquals(0, serviceRevoked);
+        assertEquals(2, serviceAvailable);
+        
+	}
+
+	public void test_serviceAvailable_LBeanContextServiceRevokedEvent() {
+		BeanContextServicesSupport support = new BeanContextServicesSupport();
+
+		support.add(new MySupport());
+		support.addBeanContextServicesListener(new MyListener());
+		Class c = Object.class;
+
+		support.addService(c, new MyProvider());
+
+		BeanContextServiceAvailableEvent availableEvent = new BeanContextServiceAvailableEvent(
+				support, c);
+	    support.serviceAvailable(availableEvent);
+        assertEquals(0, serviceRevoked);
+        assertEquals(2, serviceAvailable);
+        
+	}
+	
+    
+	
      public void testSerialization_Compatibility() throws Exception {
          BeanContextServicesSupport support = new BeanContextServicesSupport(
                  null, Locale.ITALY, true, true);
@@ -1427,5 +1513,15 @@ public class BeanContextServicesSupportTest extends TestCase {
         public void releaseService(BeanContextServices arg0, Object arg1,
                 Object arg2) {
         }
+    }
+    
+    /*
+     * @see TestCase#setUp()
+     */
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        serviceRevoked = 0;
+        serviceAvailable = 0;
     }
 }

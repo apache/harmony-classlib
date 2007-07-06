@@ -340,7 +340,7 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 
             public void run() {
                 try {
-                    int one = pis.read();
+                    pis.read();
                     pass = true;
                 } catch (IOException e) {}
             }

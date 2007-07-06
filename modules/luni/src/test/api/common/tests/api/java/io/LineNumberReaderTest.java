@@ -17,7 +17,9 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 
@@ -125,9 +127,10 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.io.LineNumberReader#readLine()
 	 */
-	public void test_readLine() {
+	public void test_readLine() throws IOException {
 		// Test for method java.lang.String java.io.LineNumberReader.readLine()
 		lnr = new LineNumberReader(new StringReader(text));
 		assertEquals("Returned incorrect line number", 0, lnr.getLineNumber());
@@ -141,6 +144,17 @@ public class LineNumberReaderTest extends junit.framework.TestCase {
 		assertEquals("Returned incorrect string", "1", line);
 		assertTrue("Returned incorrect line number :" + lnr.getLineNumber(),
 				lnr.getLineNumber() == 2);
+        
+        //Regression for HARMONY-4294
+        byte[] buffer = new byte[] { '\r', '\n' };
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(
+                new ByteArrayInputStream(buffer)));
+        assertEquals('\n',reader.read());
+        assertEquals(-1,reader.read());
+        reader = new LineNumberReader(new InputStreamReader(
+                new ByteArrayInputStream(buffer)));
+        assertNotNull(reader.readLine());
+        assertNull(reader.readLine());
 	}
 
 	/**

@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+@SuppressWarnings( { "serial", "unused" })
 public class SerializationStressTest2 extends SerializationStressTest {
 
 	private static class ReadWriteObjectAndPrimitiveData implements
@@ -402,7 +403,7 @@ public class SerializationStressTest2 extends SerializationStressTest {
 
 			InitializerFieldsTest inst = (InitializerFieldsTest) obj;
 			return inst.toBeSerialized.equals(this.toBeSerialized)
-					&& inst.toBeNotSerialized.equals(this.toBeNotSerialized2);
+					&& InitializerFieldsTest.toBeNotSerialized.equals(toBeNotSerialized2);
 		}
 	}
 
@@ -444,7 +445,7 @@ public class SerializationStressTest2 extends SerializationStressTest {
 					&& inst.toBeSerialized3.equals(this.toBeSerialized3)
 					&& inst.toBeSerialized4.equals(this.toBeSerialized4)
 					&& inst.toBeSerialized5.equals(this.toBeSerialized5)
-					&& inst.toBeNotSerialized.equals(this.toBeNotSerialized2);
+					&& InitializerFieldsTest2.toBeNotSerialized.equals(toBeNotSerialized2);
 		}
 	}
 
@@ -490,8 +491,8 @@ public class SerializationStressTest2 extends SerializationStressTest {
 							.equals(this.sub_toBeSerialized4)
 					&& inst.sub_toBeSerialized5
 							.equals(this.sub_toBeSerialized5)
-					&& inst.sub_toBeNotSerialized
-							.equals(this.sub_toBeNotSerialized2);
+					&& InitializerFieldsTest3.sub_toBeNotSerialized
+							.equals(sub_toBeNotSerialized2);
 		}
 	}
 
@@ -1156,7 +1157,7 @@ public class SerializationStressTest2 extends SerializationStressTest {
 
 		try {
 
-			ArrayList list = new ArrayList(Arrays.asList(new String[] { "a",
+			ArrayList list = new ArrayList<String>(Arrays.asList(new String[] { "a",
 					"list", "of", "strings" }));
 			objToSave = list;
 			if (DEBUG)

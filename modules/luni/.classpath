@@ -6,7 +6,7 @@
 	<classpathentry output="bin/test" kind="src" path="src/test/api/unix"/>
 	<classpathentry output="bin/main" kind="src" path="src/main/resources"/>
 	<classpathentry output="bin/test" kind="src" path="src/test/resources"/>
-    <classpathentry kind="src" path="src/test/impl"/>
+    <classpathentry output="bin/test" kind="src" path="src/test/impl"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<accessrules>
 			<accessrule kind="accessible" pattern="**/*"/>

@@ -17,9 +17,7 @@
 
 package tests.api.java.io;
 
-import java.io.ByteArrayOutputStream;
 import java.io.NotActiveException;
-import java.io.ObjectOutputStream;
 
 public class NotActiveExceptionTest extends junit.framework.TestCase {
 

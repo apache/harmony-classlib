@@ -24,7 +24,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.peer.FontPeer;
 
-import org.apache.harmony.awt.gl.font.FontMetricsImpl;
 import org.apache.harmony.awt.wtk.GraphicsFactory;
 
 /**
@@ -36,33 +35,7 @@ public abstract class CommonGraphics2DFactory implements GraphicsFactory {
     // static instance of CommonGraphics2DFactory
     public static CommonGraphics2DFactory inst;
 
-    /**
-     * Returns FontMetrics object that keeps metrics of the specified font.
-     * 
-     * @param font specified Font
-     * @return FontMetrics object corresponding to the specified Font object
-     */
-    public FontMetrics getFontMetrics(Font font) {
-        FontMetrics fm;
-        for (FontMetrics element : cacheFM) {
-            fm = element;
-            if (fm == null){
-                break;
-            }
-
-            if (fm.getFont().equals(font)){
-                return fm;
-            }
-        }
-        fm = new FontMetricsImpl(font);
-
-        System.arraycopy(cacheFM, 0, cacheFM, 1, cacheFM.length -1);
-        cacheFM[0] = fm;
-
-        return fm;
-    }
     // Font methods
-
     public FontPeer getFontPeer(Font font) {
         return getFontManager().getFontPeer(font.getName(), font.getStyle(), font.getSize());
     }

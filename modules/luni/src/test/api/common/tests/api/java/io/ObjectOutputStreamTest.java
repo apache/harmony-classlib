@@ -39,6 +39,7 @@ import java.io.WriteAbortedException;
 import java.security.Permission;
 import java.util.Arrays;
 
+@SuppressWarnings( { "unused", "serial" })
 public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 		Serializable {
 
@@ -100,7 +101,7 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
 		}
 	}
 
-	private static class SerializationTestSubclass1 extends SerializationTest
+    private static class SerializationTestSubclass1 extends SerializationTest
 			implements Serializable {
 		String aString = INIT_STR_VALUE;
 

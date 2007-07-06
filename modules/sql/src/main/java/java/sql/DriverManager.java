@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Set;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.Vector;
+import java.security.AccessController;
+import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.sql.internal.nls.Messages;
 import org.apache.harmony.kernel.vm.VM;
 
@@ -70,7 +70,9 @@ public class DriverManager {
      * it is defined.
      */
     private static void loadInitialDrivers() {
-        String theDriverList = System.getProperty("jdbc.drivers", null); //$NON-NLS-1$
+        String theDriverList = AccessController
+                .doPrivileged(new PriviAction<String>("jdbc.drivers", null)); //$NON-NLS-1$
+
         if (theDriverList == null) {
             return;
         }
