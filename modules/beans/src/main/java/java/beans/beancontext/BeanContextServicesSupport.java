@@ -919,6 +919,9 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
         if (null == event) {
             throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
         }
+        if(services.containsKey(event.serviceClass)) {
+        	return;
+        }
         fireServiceAdded(event);
         Object childs[] = copyChildren();
         for (int i = 0; i < childs.length; i++) {
@@ -937,6 +940,9 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
     public void serviceRevoked(BeanContextServiceRevokedEvent event) {
         if (null == event) {
             throw new NullPointerException(Messages.getString("beans.1C")); //$NON-NLS-1$
+        }
+        if(services.containsKey(event.serviceClass)) {
+        	return;
         }
         fireServiceRevoked(event);
         Object childs[] = copyChildren();
