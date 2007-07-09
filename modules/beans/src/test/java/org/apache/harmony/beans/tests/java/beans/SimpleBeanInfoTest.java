@@ -91,6 +91,10 @@ public class SimpleBeanInfoTest extends TestCase {
         info = new SimpleBeanInfo() {};
         image = info.loadImage("testB.jpg");
         assertNotNull(image);
+        
+        info = new SimpleBeanInfo();
+        image = info.loadImage(null);
+        assertNull(image);
     }
 
 }
