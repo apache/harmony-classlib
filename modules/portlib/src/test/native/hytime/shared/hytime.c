@@ -31,15 +31,15 @@ int test_hytime_usec_clock(struct HyPortLibrary *hyportLibrary);
 int test_hytime_shutdown(struct HyPortLibrary *hyportLibrary);
 int test_hytime_startup(struct HyPortLibrary *hyportLibrary);
 
+#ifdef HY_NO_THR
+HyThreadLibrary *privateThreadLibrary;
+#endif
+
 int main (int argc, char **argv, char **envp)
 {
   HyPortLibrary hyportLibrary;
   HyPortLibraryVersion portLibraryVersion;
   int ret;
-
-#ifdef HY_NO_THR
-  HyThreadLibrary *privateThreadLibrary;
-#endif
 
   printf("hytime:\n");
 
