@@ -122,7 +122,7 @@ public class EventHandlerTest extends TestCase {
 
         Method m = SampleListener.class.getMethod("fireSampleEvent",
                 new Class[] { SampleEvent.class });
-        handler.invoke(proxy, m, new Object[] {new SampleEvent("")});
+        handler.invoke(proxy, m, new Object[] { new SampleEvent("") });
 
         assertEquals(invocationObject, handler.getTarget());
         assertEquals("doSomething", getMethodName());
@@ -225,10 +225,11 @@ public class EventHandlerTest extends TestCase {
      * 
      */
     public static Test suite() {
-//        TestSuite suite = new TestSuite();
-//
-//        suite.addTest(new EventHandlerTest("testCreateClassObjectStringStringString_PropertyNull"));
-//        return suite;
+        // TestSuite suite = new TestSuite();
+        //
+        // suite.addTest(new
+        // EventHandlerTest("testCreateClassObjectStringStringString_PropertyNull"));
+        // return suite;
         return new TestSuite(EventHandlerTest.class);
     }
 
@@ -317,13 +318,19 @@ public class EventHandlerTest extends TestCase {
     public void testCreateClassObjectString_MethodNull() {
         MockTarget target = new MockTarget();
         MockButton button = new MockButton();
+        try {
+            PropertyChangeListener proxy = EventHandler.create(
+                    PropertyChangeListener.class, target, null);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+        }
         PropertyChangeListener proxy = EventHandler.create(
-                PropertyChangeListener.class, target, null);
+                PropertyChangeListener.class, target, "");
         button.addPropertyChangeListener(proxy);
         try {
             button.setLabel("new label value");
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
     }
@@ -339,8 +346,8 @@ public class EventHandlerTest extends TestCase {
         button.addPropertyChangeListener(proxy);
         try {
             button.setLabel("new label value");
-            fail("Should throw IndexOutOfBoundsException.");
-        } catch (IndexOutOfBoundsException e) {
+            fail("Should throw RuntimeException.");
+        } catch (RuntimeException e) {
         }
         assertTrue(Proxy.isProxyClass(proxy.getClass()));
     }
@@ -393,17 +400,13 @@ public class EventHandlerTest extends TestCase {
     public void testCreateClassObjectStringString_ActionNull() {
         MockTarget target = new MockTarget();
         MockButton button = new MockButton();
-        PropertyChangeListener proxy = EventHandler.create(
-                PropertyChangeListener.class, target, null, "source.label");
-        assertTrue(Proxy.isProxyClass(proxy.getClass()));
-
-        button.addPropertyChangeListener(proxy);
-        String newLabel = "New Value: set text.";
         try {
-            button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
+            PropertyChangeListener proxy = EventHandler.create(
+                    PropertyChangeListener.class, target, null, "source.label");
+            fail("should throw NPE");
         } catch (NullPointerException e) {
-        }
+
+        }    
     }
 
     /*
@@ -506,8 +509,8 @@ public class EventHandlerTest extends TestCase {
     public void testCreateClassObjectStringStringString_ClassInvalid() {
         MockTarget target = new MockTarget();
         try {
-            EventHandler.create(String.class, target, "text",
-                    "source.label", "propertyChange");
+            EventHandler.create(String.class, target, "text", "source.label",
+                    "propertyChange");
             fail("Should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {
         }
@@ -531,18 +534,14 @@ public class EventHandlerTest extends TestCase {
     public void testCreateClassObjectStringStringString_ActionNull() {
         MockTarget target = new MockTarget();
         MockButton button = new MockButton();
-        PropertyChangeListener proxy = EventHandler.create(
-                PropertyChangeListener.class, target, null, "source.label",
-                "propertyChange");
-        assertTrue(Proxy.isProxyClass(proxy.getClass()));
-
-        button.addPropertyChangeListener(proxy);
-        String newLabel = "New Value: set text.";
         try {
-            button.setLabel(newLabel);
-            fail("Should throw NullPointerException.");
+            PropertyChangeListener proxy = EventHandler.create(
+                    PropertyChangeListener.class, target, null, "source.label",
+                    "propertyChange");
+            fail("should throw NPE");
         } catch (NullPointerException e) {
-        }
+
+        }        
     }
 
     /*
@@ -666,12 +665,13 @@ public class EventHandlerTest extends TestCase {
         String action = "text";
         String eventPropertyName = "source.label";
         String listenerMethodName = "propertyChange";
-        EventHandler handler = new EventHandler(null, action,
-                eventPropertyName, listenerMethodName);
-        assertNull(handler.getTarget());
-        assertSame(action, handler.getAction());
-        assertSame(eventPropertyName, handler.getEventPropertyName());
-        assertSame(listenerMethodName, handler.getListenerMethodName());
+        try {
+            EventHandler handler = new EventHandler(null, action,
+                    eventPropertyName, listenerMethodName);
+            fail("should throw NPE");
+        } catch (NullPointerException e) {
+
+        }
     }
 
     /*
@@ -681,10 +681,17 @@ public class EventHandlerTest extends TestCase {
         MockTarget target = new MockTarget();
         String eventPropertyName = "source.label";
         String listenerMethodName = "propertyChange";
-        EventHandler handler = new EventHandler(target, null,
+        try {
+            EventHandler handler = new EventHandler(target, null,
+                    eventPropertyName, listenerMethodName);
+            fail("should throw NPE");
+        } catch (NullPointerException e) {
+
+        }
+        EventHandler handler = new EventHandler(target, "action",
                 eventPropertyName, listenerMethodName);
         assertSame(target, handler.getTarget());
-        assertNull(handler.getAction());
+        assertEquals("action", handler.getAction());
         assertSame(eventPropertyName, handler.getEventPropertyName());
         assertSame(listenerMethodName, handler.getListenerMethodName());
     }
@@ -863,7 +870,7 @@ public class EventHandlerTest extends TestCase {
         PropertyChangeSupport support = new PropertyChangeSupport(fish);
         Object proxy = EventHandler.create(PropertyChangeListener.class,
                 target, "a", "source.booleanObject");
-        
+
         support.addPropertyChangeListener((PropertyChangeListener) proxy);
         PropertyChangeEvent event = new PropertyChangeEvent(fish, "name", "1",
                 "5");
@@ -972,54 +979,58 @@ public class EventHandlerTest extends TestCase {
                 .fireFredEvent(new FredEvent("bean2"));
     }
 
-    
     /**
-     * Checks some invalid property cases
-     * Regression for HARMONY-1884 
+     * Checks some invalid property cases Regression for HARMONY-1884
+     * 
+     * Note: this test fails on RI and it is considered as Non-Bug Difference, 
+     * please refer HARMONY-1884 for details
      */
     public void testInvalidProperties_HY1884() {
-        BeanWithInvalidProps bean = new BeanWithInvalidProps(); 
-        Object proxy;  
+        BeanWithInvalidProps bean = new BeanWithInvalidProps();
+        Object proxy;
 
-        // "prop1" and "prop2" is neither the name of valid property nor the 
-        // name of any public method 
-        
+        // "prop1" and "prop2" is neither the name of valid property nor the
+        // name of any public method
+
         // setter without parameter
-        proxy = EventHandler.create( 
-                PropertyChangeListener.class, bean, "prop1");
-        try { 
-            ((PropertyChangeListener) proxy).propertyChange( 
-                    new PropertyChangeEvent(bean, "prop1", "1", "2")); 
-            //fail(); 
-        } catch (Exception e) { 
-            // expected 
-        } 
+        proxy = EventHandler
+                .create(PropertyChangeListener.class, bean, "prop1");
+        try {
+            ((PropertyChangeListener) proxy)
+                    .propertyChange(new PropertyChangeEvent(bean, "prop1", "1",
+                            "2"));
+             fail();
+        } catch (Exception e) {
+            // expected
+        }
 
         // "is" prefix for big Boolean
-        proxy = EventHandler.create( 
-                PropertyChangeListener.class, bean, "goodProp3", "source.prop2");
-        try { 
-            ((PropertyChangeListener) proxy).propertyChange( 
-                    new PropertyChangeEvent(bean, "goodProp3", Boolean.TRUE, Boolean.FALSE)); 
-            fail(); 
-        } catch (Exception e) { 
-            // expected 
-        } 
+        proxy = EventHandler.create(PropertyChangeListener.class, bean,
+                "goodProp3", "source.prop2");
+        try{
+            ((PropertyChangeListener) proxy)
+                    .propertyChange(new PropertyChangeEvent(bean, "goodProp3",
+                            Boolean.TRUE, Boolean.FALSE));
+            fail("Should throw NPE");
+        }catch(NullPointerException e){
+        }
     }
-    
+
     public static class BeanWithInvalidProps {
         // setter should have a parameter
-        public void setProp1() {}
-        
-        // Introspector doesn't support "is" prefix for big Boolean 
+        public void setProp1() {
+        }
+
+        // Introspector doesn't support "is" prefix for big Boolean
         public Boolean isProp2() {
             return new Boolean(true);
         }
 
         // needed to test prop2
-        public void setGoodProp3(boolean value) {}
+        public void setGoodProp3(boolean value) {
+        }
     }
-    
+
     public interface FredListener extends EventListener {
 
         public void fireFredEvent(FredEvent event);
