@@ -64,5 +64,32 @@ public class AbstractSequentialListTest extends TestCase {
         al.addAll(c);
         assertTrue("Should return true", al.addAll(2, c)); //$NON-NLS-1$
     }
+    
+    public void test_set() throws Exception {
+		MyAbstractSequentialList list = new MyAbstractSequentialList();
+		try {
+			list.set(0, new Object());
+			fail("should throw IndexOutOfBoundsException");
+		} catch (IndexOutOfBoundsException e) {
+			// expected
+		}
+	}
 
+	public static class MyAbstractSequentialList extends AbstractSequentialList {
+
+		private LinkedList list = new LinkedList();
+
+		public ListIterator listIterator(int index) {
+			ListIterator iter = list.listIterator();
+			for (int i = 0; i < index; i++) {
+				iter.next();
+			}
+			return iter;
+		}
+
+		@Override
+		public int size() {
+			return list.size();
+		}
+	}
 }
