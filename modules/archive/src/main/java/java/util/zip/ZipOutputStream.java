@@ -370,7 +370,7 @@ public class ZipOutputStream extends DeflaterOutputStream implements
     public void write(byte[] buffer, int off, int nbytes)
 			throws java.io.IOException {
 		// avoid int overflow, check null buf
-		if ((off > buffer.length) || (nbytes < 0) || (off < 0)
+		if ((off < 0 || (nbytes < 0) || off > buffer.length)
 				|| (buffer.length - off < nbytes)) {
 			throw new IndexOutOfBoundsException();
 		}
