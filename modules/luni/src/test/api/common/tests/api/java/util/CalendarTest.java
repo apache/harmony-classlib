@@ -142,6 +142,15 @@ public class CalendarTest extends junit.framework.TestCase {
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
 		assertTrue("Incorrect result 1b: " + cal.getTime(), cal.getTime()
 				.getTime() == 1015822800000L);
+        // Regression for HARMONY-4384
+        // Set DAY_OF_WEEK without DATE
+        cal.clear();
+        cal.set(Calendar.YEAR, 2002);
+        cal.set(Calendar.MONTH, Calendar.MARCH);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+        assertEquals("Incorrect result 1b: " + cal.getTime(), 1015304400000L, cal.getTime()
+                .getTime());
+        
 
 		// WEEK_OF_MONTH has priority
 		cal.clear();

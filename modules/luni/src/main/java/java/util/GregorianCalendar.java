@@ -694,6 +694,9 @@ public class GregorianCalendar extends Calendar {
                                         - (days + daysInMonth(leapYear, month) - 3))
                                 + fields[DAY_OF_WEEK_IN_MONTH] * 7;
                     }
+                } else if (isSet[DAY_OF_WEEK]) {
+                    int skew = mod7(days - 3 - (getFirstDayOfWeek() - 1));
+                    days += mod7(mod7(skew + dayOfWeek - (days - 3)) - skew);
                 }
             }
         } else {
