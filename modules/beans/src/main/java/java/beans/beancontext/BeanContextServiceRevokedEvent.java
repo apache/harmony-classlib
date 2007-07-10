@@ -36,8 +36,7 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
         super(bcs);
         this.serviceClass = sc;
-        this.invalidateRefs = invalidate;
-        setPropagatedFrom(bcs);
+        this.invalidateRefs = invalidate;        
     }
 
     public Class getServiceClass() {
@@ -45,7 +44,7 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
     }
 
     public BeanContextServices getSourceAsBeanContextServices() {
-        return (BeanContextServices) super.propagatedFrom;
+        return (BeanContextServices) super.getBeanContext();
     }
 
     public boolean isCurrentServiceInvalidNow() {

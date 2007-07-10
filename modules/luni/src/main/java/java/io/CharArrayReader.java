@@ -79,6 +79,7 @@ public class CharArrayReader extends Reader {
         }
         this.buf = buf;
         this.pos = offset;
+        this.markedPos = offset;
 
         /* This is according to spec */
         this.count = this.pos + length < buf.length ? length : buf.length;

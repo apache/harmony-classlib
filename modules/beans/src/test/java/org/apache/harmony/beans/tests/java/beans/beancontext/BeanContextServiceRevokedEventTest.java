@@ -161,6 +161,7 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
         assertEqualsSerially(event,
                 (BeanContextServiceRevokedEvent) SerializationTester
                         .getDeserilizedObject(event));
+
     }
 
      public void testSerialization_Compatibility() throws Exception {
@@ -174,6 +175,19 @@ public class BeanContextServiceRevokedEventTest extends TestCase {
              }
          });
      }
+     
+     public void testConstructor() throws Exception {
+        BeanContextServices bcs = new MockBeanContextServices();
+        BeanContextServiceRevokedEvent event = new BeanContextServiceRevokedEvent(
+                bcs, ArrayList.class, true);
+        assertEquals(null, event.getPropagatedFrom());
+        assertEquals(ArrayList.class, event.getServiceClass());
+        assertSame(bcs, event.getSource());
+        assertSame(bcs, event.getBeanContext());
+        assertSame(bcs, event.getSourceAsBeanContextServices());
+        assertFalse(event.isPropagated());
+    }
+     
     private void assertEqualsSerially(BeanContextServiceRevokedEvent orig,
             BeanContextServiceRevokedEvent ser) {
         assertNull(ser.getSource());

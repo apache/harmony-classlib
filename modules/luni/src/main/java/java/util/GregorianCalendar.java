@@ -1152,7 +1152,7 @@ public class GregorianCalendar extends Calendar {
                 int newWeek = mod(fields[field] - 1 + value, maxWeeks) + 1;
                 if (newWeek == maxWeeks) {
                     if (fields[day] + (newWeek - fields[field]) * 7 > days) {
-                        set(day, days);
+                        set(field, 1);
                     } else {
                         set(field, newWeek);
                     }

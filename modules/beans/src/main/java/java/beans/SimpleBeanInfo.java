@@ -26,6 +26,10 @@ public class SimpleBeanInfo implements BeanInfo {
     public SimpleBeanInfo() {}
 
     public Image loadImage(String resourceName) {
+        if (null == resourceName) {
+            return null;
+        }
+        
         URL file = getClass().getResource(resourceName);
         
         if (file != null) {

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.math.BigInteger;
 
 /**
  * HashMap is an implementation of Map. All optional operations are supported,
@@ -192,7 +191,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                     entry = associatedMap.findNullKeyEntry();
                 } else {
                     int hash = key.hashCode();
-                    int index = (hash & 0x7FFFFFFF) % associatedMap.elementData.length;
+                    int index = hash & (associatedMap.elementData.length - 1);
                     entry = associatedMap.findNonNullKeyEntry(key, index, hash);
                 }
                 return object.equals(entry);
@@ -241,13 +240,30 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public HashMap(int capacity) {
         if (capacity >= 0) {
+            capacity = caculateCapacity(capacity);
             elementCount = 0;
-            elementData = newElementArray(capacity == 0 ? 1 : capacity);
+            elementData = newElementArray(capacity);
             loadFactor = 0.75f; // Default load factor of 0.75
             computeMaxSize();
         } else {
             throw new IllegalArgumentException();
         }
+    }
+    
+    private static final int caculateCapacity(int x) {
+        if(x >= 1 << 30){
+            return 1 << 30;
+        }
+        if(x == 0){
+            return 16;
+        }
+        x = x -1;
+        x |= x >> 1;
+        x |= x >> 2;
+        x |= x >> 4;
+        x |= x >> 8;
+        x |= x >> 16;
+        return x + 1;
     }
 
     /**
@@ -346,7 +362,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             m = findNullKeyEntry();
         } else {
             int hash = key.hashCode();
-            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            int index = hash & (elementData.length - 1);
             m = findNonNullKeyEntry(key, index, hash);
         }
         return m != null;
@@ -412,7 +428,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             m = findNullKeyEntry();
         } else {
             int hash = key.hashCode();
-            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            int index = hash & (elementData.length - 1);
             m = findNonNullKeyEntry(key, index, hash);
         }
         if (m != null) {
@@ -522,13 +538,13 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             }
         } else {
             int hash = key.hashCode();
-            int index = (hash & 0x7FFFFFFF) % elementData.length;
+            int index = hash & (elementData.length - 1);
             entry = findNonNullKeyEntry(key, index, hash);
             if (entry == null) {
                 modCount++;
                 if (++elementCount > threshold) {
                     rehash();
-                    index = (hash & 0x7FFFFFFF) % elementData.length;
+                    index = hash & (elementData.length - 1);
                 }
                 entry = createHashedEntry(key, index, hash);
             }
@@ -580,27 +596,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
 
-    private static final int PRIMES[] = { 7, 37, 79, 163, 331, 673, 1361, 2729,
-            5471, 10949, 21911, 43853, 87719, 175447, 350899, 701819 };
-
-    private int nextLength(int capacity) {
-        int nextNumber = capacity << 1;
-        for (int i = 0; i < PRIMES.length; i++) {
-            if (nextNumber < PRIMES[i]) {
-                return PRIMES[i];
-            }
-        }
-        // This could overflow an int, but in practice never will.
-        return BigInteger.valueOf(nextNumber).nextProbablePrime().intValue();
-    }
-
     void rehash(int capacity) {
-        int length = nextLength(capacity);
+        int length = caculateCapacity((capacity == 0 ? 1 : capacity << 1));
+
         Entry<K, V>[] newData = newElementArray(length);
         for (int i = 0; i < elementData.length; i++) {
             Entry<K, V> entry = elementData[i];
             while (entry != null) {
-                int index = (entry.origKeyHash & 0x7FFFFFFF) % length;
+                int index = entry.origKeyHash & (length - 1);
                 Entry<K, V> next = entry.next;
                 entry.next = newData[index];
                 newData[index] = entry;
@@ -638,7 +641,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Entry<K, V> last = null;
         if (key != null) {
             int hash = key.hashCode();
-            index = (hash & 0x7FFFFFFF) % elementData.length;
+            index = hash & (elementData.length - 1);
             entry = elementData[index];
             while (entry != null && !(entry.origKeyHash == hash && key.equals(entry.key))) {
                 last = entry;
@@ -736,8 +739,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         elementCount = stream.readInt();
         for (int i = elementCount; --i >= 0;) {
             K key = (K) stream.readObject();
-            int index = (null == key) ? 0 : (key.hashCode() & 0x7FFFFFFF)
-                    % length;
+            int index = (null == key) ? 0 : (key.hashCode() & (length - 1));
             createEntry(key, index, (V) stream.readObject());
         }
     }

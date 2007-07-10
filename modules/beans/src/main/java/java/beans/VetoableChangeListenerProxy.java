@@ -37,8 +37,6 @@ public class VetoableChangeListenerProxy extends EventListenerProxy implements
     public void vetoableChange(PropertyChangeEvent evt)
             throws PropertyVetoException {
         VetoableChangeListener listener = (VetoableChangeListener) getListener();
-        if (listener != null) {
             listener.vetoableChange(evt);
-        }
     }
 }
