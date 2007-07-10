@@ -576,6 +576,34 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         assertEquals("Wrong month: " + cal.getTime(), Calendar.JANUARY, cal
                 .get(Calendar.MONTH));
         assertEquals("Wrong date: " + cal.getTime(), 7, cal.get(Calendar.DATE));
+        
+        cal.roll(Calendar.WEEK_OF_YEAR, true);
+        assertEquals("Wrong year: " + cal.getTime(), 1994, cal
+                .get(Calendar.YEAR));
+        assertEquals("Wrong month: " + cal.getTime(), Calendar.JANUARY, cal
+                .get(Calendar.MONTH));
+        assertEquals("Wrong date: " + cal.getTime(), 14, cal.get(Calendar.DATE));
+        
+        cal.roll(Calendar.WEEK_OF_YEAR, false);
+        assertEquals("Wrong year: " + cal.getTime(), 1994, cal
+                .get(Calendar.YEAR));
+        assertEquals("Wrong month: " + cal.getTime(), Calendar.JANUARY, cal
+                .get(Calendar.MONTH));
+        assertEquals("Wrong date: " + cal.getTime(), 7, cal.get(Calendar.DATE));
+        
+        cal.roll(Calendar.WEEK_OF_YEAR, false);
+        assertEquals("Wrong year: " + cal.getTime(), 1994, cal
+                .get(Calendar.YEAR));
+        assertEquals("Wrong month: " + cal.getTime(), Calendar.DECEMBER, cal
+                .get(Calendar.MONTH));
+        assertEquals("Wrong date: " + cal.getTime(), 30, cal.get(Calendar.DATE));
+        
+        cal.roll(Calendar.WEEK_OF_YEAR, false);
+        assertEquals("Wrong year: " + cal.getTime(), 1994, cal
+                .get(Calendar.YEAR));
+        assertEquals("Wrong month: " + cal.getTime(), Calendar.DECEMBER, cal
+                .get(Calendar.MONTH));
+        assertEquals("Wrong date: " + cal.getTime(), 23, cal.get(Calendar.DATE));
 	}
 
 	/**
