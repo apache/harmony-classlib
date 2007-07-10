@@ -79,10 +79,7 @@ public class PropertyEditorSupport implements PropertyEditor {
         return newValue;
     }
 
-    public void setSource(Object source) {
-        if (source == null) {
-            throw new NullPointerException(Messages.getString("beans.0C")); //$NON-NLS-1$
-        }
+    public void setSource(Object source) {        
         this.source = source;
     }
 
@@ -115,15 +112,22 @@ public class PropertyEditorSupport implements PropertyEditor {
     }
 
     public void firePropertyChange() {
-        if (listeners.size() > 0) {
-            PropertyChangeEvent event = new PropertyChangeEvent(source, null,
-                    oldValue, newValue);
-            Iterator<PropertyChangeListener> iterator = listeners.iterator();
+        if (listeners.isEmpty()) {
+            return;
+        }
 
-            while (iterator.hasNext()) {
-                PropertyChangeListener listener = iterator.next();
-                listener.propertyChange(event);
-            }
+        List<PropertyChangeListener> copy = new ArrayList<PropertyChangeListener>(
+                listeners.size());
+        synchronized (listeners) {
+            copy.addAll(listeners);
+        }
+
+        PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(source,
+                null, null, null);
+        for (Iterator<PropertyChangeListener> listenersItr = copy.iterator(); listenersItr
+                .hasNext();) {
+            PropertyChangeListener listna = listenersItr.next();
+            listna.propertyChange(changeAllEvent);
         }
     }
 }
