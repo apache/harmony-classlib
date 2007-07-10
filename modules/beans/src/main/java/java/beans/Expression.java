@@ -67,8 +67,9 @@ public class Expression extends Statement {
     }
 
     public Object getValue() throws Exception {
-        if ((value == null) && !valueIsDefined) {
+        if (!valueIsDefined) {
             value = invokeMethod();
+            valueIsDefined = true;
         }
         return value;
     }

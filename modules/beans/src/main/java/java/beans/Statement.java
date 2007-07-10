@@ -22,19 +22,33 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
+
 import org.apache.harmony.beans.internal.nls.Messages;
 
 public class Statement {
+    private static final Object[] EMPTY_ARRAY = new Object[0];
+
     private Object target;
 
     private String methodName;
 
     private Object[] arguments;
+    
+    // the special method name donating constructors
+    static final String CONSTRUCTOR_NAME = "new"; //$NON-NLS-1$
+
+    // the special method name donating array "get"
+    static final String ARRAY_GET = "get"; //$NON-NLS-1$
+
+    // the special method name donating array "set"
+    static final String ARRAY_SET = "set"; //$NON-NLS-1$
 
     public Statement(Object target, String methodName, Object[] arguments) {
         this.target = target;
@@ -42,20 +56,21 @@ public class Statement {
         if (arguments != null) {
             this.arguments = arguments;
         } else {
-            this.arguments = new Object[0];
+            this.arguments = EMPTY_ARRAY;
         }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        Object target = getTarget();
+        String methodName = getMethodName();
+        Object[] arguments = getArguments();
         String targetVar = target != null ? convertClassName(target.getClass()) : "null"; //$NON-NLS-1$
-
         sb.append(targetVar);
         sb.append('.');
         sb.append(methodName);
         sb.append('(');
-
         if (arguments != null) {
             for (int i = 0; i < arguments.length; ++i) {
                 if (i > 0) {
@@ -74,7 +89,6 @@ public class Statement {
         }
         sb.append(')');
         sb.append(';');
-
         return sb.toString();
     }
 
@@ -96,36 +110,32 @@ public class Statement {
 
     Object invokeMethod() throws Exception {
         Object result = null;
-
         try {
+            Object target = getTarget();
+            String methodName = getMethodName();
+            Object[] arguments = getArguments();
             if (target.getClass().isArray()) {
-                Method method = findArrayMethod();
-                Object[] ama = getArrayMethodArguments();
-                result = method.invoke(null, ama);
+                Method method = findArrayMethod(methodName, arguments);
+                Object[] args = new Object[arguments.length + 1];
+                args[0] = target;
+                System.arraycopy(arguments, 0, args, 1, arguments.length);
+                result = method.invoke(null, args);
             } else if (methodName.equals("newInstance") //$NON-NLS-1$
                     && target == Array.class) {
                 Class<?> componentType = (Class) arguments[0];
-                int length = (Integer) arguments[1];
+                int length = ((Integer) arguments[1]).intValue();
                 result = Array.newInstance(componentType, length);
-            } else if (target instanceof Class &&
-                       (methodName.equals("new") || //$NON-NLS-1$
-                        methodName.equals("newInstance"))) { //$NON-NLS-1$
-                Constructor<?> constructor;
-                Class<?> clazz = (Class <?>) target;
-                
-                if (clazz.isArray()) {
-                    // special form for constructing arrays, 
-                    // can be passed from decoder
-                    result = Array.newInstance(clazz.getComponentType(),
-                            (Integer) arguments[0]);
-                } else {
-                    constructor = findConstructor();
+            } else if (methodName.equals("new") //$NON-NLS-1$
+                    || methodName.equals("newInstance")) { //$NON-NLS-1$
+                if (target instanceof Class) {
+                    Constructor<?> constructor = findConstructor((Class)target, arguments);
                     result = constructor.newInstance(arguments);
+                } else {
+                    throw new NoSuchMethodException(this.toString());
                 }
             } else if (target instanceof Class) {
                 Method method = null;
                 boolean found = false;
-
                 try {
                     /*
                      * Try to look for a static method of class described by the
@@ -139,7 +149,6 @@ public class Statement {
                     }
                 } catch (NoSuchMethodException e) {
                 }
-
                 if (!found) {
                     // static method was not found
                     // try to invoke method of Class object
@@ -157,17 +166,28 @@ public class Statement {
                         result = method.invoke(target, arguments);
                     }
                 }
+            } else if (target instanceof Iterator){
+            	final Iterator iterator = (Iterator) target;
+				final Method method = findMethod(target.getClass(), methodName,
+						arguments, false);
+				if (iterator.hasNext()) {
+					PrivilegedAction action = new PrivilegedAction() {
+
+						public Object run() {
+							try {
+								method.setAccessible(true);
+								return (method.invoke(iterator, new Object[0]));
+							} catch (Exception e) {
+								// ignore
+							} 
+							return null;
+						}
+						
+					};
+					result = action.run();
+				}
             } else {
                 Method method = findMethod(target.getClass(), methodName, arguments, false);
-                // XXX investigate: do we really need this?
-                // AccessController.doPrivileged(new PrivilegedAction<Object>()
-                // {
-                //      
-                // public Object run() {
-                // mtd.setAccessible(true);
-                // return null;
-                // }
-                // });
                 result = method.invoke(target, arguments);
             }
         } catch (InvocationTargetException ite) {
@@ -177,7 +197,7 @@ public class Statement {
         return result;
     }
 
-    private Method findArrayMethod() throws NoSuchMethodException {
+    private Method findArrayMethod(String methodName, Object[] arguments) throws NoSuchMethodException {
         // the code below reproduces exact RI exception throwing behavior
         if (!methodName.equals("set") && !methodName.equals("get")) { //$NON-NLS-1$ //$NON-NLS-2$
             throw new NoSuchMethodException(Messages.getString("beans.3C")); //$NON-NLS-1$
@@ -196,28 +216,14 @@ public class Statement {
                 int.class, Object.class });
     }
 
-    private Object[] getArrayMethodArguments() {
-        Object[] args = new Object[arguments.length + 1];
-
-        args[0] = target;
-        for (int i = 0; i < arguments.length; ++i) {
-            args[i + 1] = arguments[i];
-        }
-        return args;
-    }
-
-    private Constructor<?> findConstructor() throws NoSuchMethodException {
+    private Constructor<?> findConstructor(Class targetClass, Object[] arguments) throws NoSuchMethodException {
         Class<?>[] argClasses = getClasses(arguments);
-        Class<?> targetClass = (Class) target;
         Constructor<?> result = null;
         Constructor<?>[] constructors = targetClass.getConstructors();
-
         for (Constructor<?> constructor : constructors) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
-
             if (parameterTypes.length == argClasses.length) {
                 boolean found = true;
-
                 for (int j = 0; j < parameterTypes.length; ++j) {
                     boolean argIsNull = argClasses[j] == null;
                     boolean argIsPrimitiveWrapper = isPrimitiveWrapper(argClasses[j],
@@ -225,7 +231,6 @@ public class Statement {
                     boolean paramIsPrimitive = parameterTypes[j].isPrimitive();
                     boolean paramIsAssignable = argIsNull ? false : parameterTypes[j]
                             .isAssignableFrom(argClasses[j]);
-
                     if (!argIsNull && !paramIsAssignable && !argIsPrimitiveWrapper || argIsNull
                             && paramIsPrimitive) {
                         found = false;
@@ -252,35 +257,28 @@ public class Statement {
             boolean methodIsStatic) throws NoSuchMethodException {
         Class<?>[] argClasses = getClasses(arguments);
         Method[] methods = targetClass.getMethods();
-        Vector<Method> foundMethods = new Vector<Method>();
+        ArrayList<Method> foundMethods = new ArrayList<Method>();
         Method[] foundMethodsArr;
-
         for (Method method : methods) {
             int mods = method.getModifiers();
-
             if (method.getName().equals(methodName)
                     && (methodIsStatic ? Modifier.isStatic(mods) : true)) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
-
                 if (parameterTypes.length == argClasses.length) {
                     boolean found = true;
-
                     for (int j = 0; j < parameterTypes.length; ++j) {
                         boolean argIsNull = (argClasses[j] == null);
                         boolean argIsPrimitiveWrapper = isPrimitiveWrapper(argClasses[j],
                                 parameterTypes[j]);
-                        boolean paramIsPrimitive = parameterTypes[j].isPrimitive();
                         boolean paramIsAssignable = argIsNull ? false : parameterTypes[j]
                                 .isAssignableFrom(argClasses[j]);
-
-                        if (!argIsNull && !paramIsAssignable && !argIsPrimitiveWrapper
-                                || argIsNull && paramIsPrimitive) {
+                        if (!argIsNull && !paramIsAssignable && !argIsPrimitiveWrapper){
                             found = false;
                             break;
                         }
                     }
                     if (found) {
-                        foundMethods.addElement(method);
+                        foundMethods.add(method);
                     }
                 }
             }
@@ -288,19 +286,32 @@ public class Statement {
         if (foundMethods.size() == 0) {
             throw new NoSuchMethodException(Messages.getString("beans.41", methodName)); //$NON-NLS-1$
         }
+        if(foundMethods.size() == 1){
+            return foundMethods.get(0);
+        }
         foundMethodsArr = foundMethods.toArray(new Method[foundMethods.size()]);
-        Arrays.sort(foundMethodsArr, new MethodComparator(methodName, argClasses));
-        return foundMethodsArr[0];
+        //find the most relevant one
+        MethodComparator comparator = new MethodComparator(methodName, argClasses);
+        Method chosenOne = foundMethodsArr[0];
+        for (int i = 1; i < foundMethodsArr.length; i++) {
+            int difference = comparator.compare(chosenOne, foundMethodsArr[i]);
+            //if 2 methods have same relevance, throw exception
+            if(difference == 0){
+                throw new NoSuchMethodException("Cannot decide which method to call: "+methodName);
+            }
+            if(difference > 0){
+                chosenOne = foundMethodsArr[i];
+            }
+        }
+        return chosenOne;
     }
 
     static boolean isStaticMethodCall(Statement stmt) {
         Object target = stmt.getTarget();
         String mName = stmt.getMethodName();
-
         if (!(target instanceof Class)) {
             return false;
         }
-
         try {
             Statement.findMethod((Class) target, mName, stmt.getArguments(), true);
             return true;
@@ -408,29 +419,6 @@ public class Statement {
             result[i] = (arguments[i] == null) ? null : arguments[i].getClass();
         }
         return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Statement) {
-            Statement s = (Statement) o;
-            Object[] otherArguments = s.getArguments();
-            boolean argsEqual = (otherArguments.length == arguments.length);
-            if (argsEqual) {
-                for (int i = 0; i < arguments.length; ++i) {
-                    if (otherArguments[i] != arguments[i]) {
-                        argsEqual = false;
-                        break;
-                    }
-                }
-            }
-            if (!argsEqual) {
-                return false;
-            }
-            return (s.getTarget() == this.getTarget() && s.getMethodName().equals(
-                    this.getMethodName()));
-        }
-        return false;
     }
 
     /**
