@@ -24,7 +24,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -34,17 +36,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.harmony.luni.util.PriviAction;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * Properties is a Hashtable where the keys and values must be Strings. Each
@@ -97,7 +97,8 @@ public class Properties extends Hashtable<Object,Object> {
 		defaults = properties;
 	}
 
-	private void dumpString(StringBuilder buffer, String string, boolean key) {
+	@SuppressWarnings("nls")
+    private void dumpString(StringBuilder buffer, String string, boolean key) {
 		int i = 0;
 		if (!key && i < string.length() && string.charAt(i) == ' ') {
 			buffer.append("\\ "); //$NON-NLS-1$
@@ -255,6 +256,9 @@ public class Properties extends Hashtable<Object,Object> {
 	 * @throws IOException 
 	 */
 	public synchronized void load(InputStream in) throws IOException {
+		if (in == null) {
+			throw new NullPointerException();
+		}
 		int mode = NONE, unicode = 0, count = 0;
 		char nextChar, buf[] = new char[40];
 		int offset = 0, keyLength = -1;
@@ -283,7 +287,9 @@ public class Properties extends Hashtable<Object,Object> {
 					if (++count < 4) {
                         continue;
                     }
-				}
+				} else {
+                    throw new IllegalArgumentException();
+                }
 				mode = NONE;
 				buf[offset++] = (char) unicode;
 				if (nextChar != '\n') {
@@ -406,12 +412,177 @@ public class Properties extends Hashtable<Object,Object> {
 			put(temp.substring(0, keyLength), temp.substring(keyLength));
 		}
 	}
+    
+    /**
+     * Loads properties from the specified InputStream. The properties are of
+     * the form <code>key=value</code>, one property per line. It may be not
+     * encode as 'ISO-8859-1'.
+     * 
+     * @param reader
+     *            the input reader
+     * @throws IOException
+     * @since 1.6
+     */
+    public synchronized void load(Reader reader) throws IOException {
+        int mode = NONE, unicode = 0, count = 0;
+        char nextChar, buf[] = new char[40];
+        int offset = 0, keyLength = -1;
+        boolean firstChar = true;
+        char[] inbuf = new char[256];
+        int inbufCount = 0, inbufPos = 0;
+
+        while (true) {
+            if (inbufPos == inbufCount) {
+                if ((inbufCount = reader.read(inbuf)) == -1) {
+                    break;
+                }
+                inbufPos = 0;
+            }
+            nextChar = inbuf[inbufPos++];
+
+            if (offset == buf.length) {
+                char[] newBuf = new char[buf.length * 2];
+                System.arraycopy(buf, 0, newBuf, 0, offset);
+                buf = newBuf;
+            }
+            if (mode == UNICODE) {
+                int digit = Character.digit(nextChar, 16);
+                if (digit >= 0) {
+                    unicode = (unicode << 4) + digit;
+                    if (++count < 4) {
+                        continue;
+                    }
+                } else {
+                    throw new IllegalArgumentException();
+                }
+                mode = NONE;
+                buf[offset++] = (char) unicode;
+                if (nextChar != '\n') {
+                    continue;
+                }
+            }
+            if (mode == SLASH) {
+                mode = NONE;
+                switch (nextChar) {
+                case '\r':
+                    mode = CONTINUE; // Look for a following \n
+                    continue;
+                case '\n':
+                    mode = IGNORE; // Ignore whitespace on the next line
+                    continue;
+                case 'b':
+                    nextChar = '\b';
+                    break;
+                case 'f':
+                    nextChar = '\f';
+                    break;
+                case 'n':
+                    nextChar = '\n';
+                    break;
+                case 'r':
+                    nextChar = '\r';
+                    break;
+                case 't':
+                    nextChar = '\t';
+                    break;
+                case 'u':
+                    mode = UNICODE;
+                    unicode = count = 0;
+                    continue;
+                }
+            } else {
+                switch (nextChar) {
+                case '#':
+                case '!':
+                    if (firstChar) {
+                        while (true) {
+                            if (inbufPos == inbufCount) {
+                                if ((inbufCount = reader.read(inbuf)) == -1) {
+                                    inbufPos = -1;
+                                    break;
+                                }
+                                inbufPos = 0;
+                            }
+                            nextChar = (char) inbuf[inbufPos++]; // & 0xff
+                                                                    // not
+                                                                    // required
+                            if (nextChar == '\r' || nextChar == '\n') {
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                    break;
+                case '\n':
+                    if (mode == CONTINUE) { // Part of a \r\n sequence
+                        mode = IGNORE; // Ignore whitespace on the next line
+                        continue;
+                    }
+                // fall into the next case
+                case '\r':
+                    mode = NONE;
+                    firstChar = true;
+                    if (offset > 0) {
+                        if (keyLength == -1) {
+                            keyLength = offset;
+                        }
+                        String temp = new String(buf, 0, offset);
+                        put(temp.substring(0, keyLength), temp
+                                .substring(keyLength));
+                    }
+                    keyLength = -1;
+                    offset = 0;
+                    continue;
+                case '\\':
+                    if (mode == KEY_DONE) {
+                        keyLength = offset;
+                    }
+                    mode = SLASH;
+                    continue;
+                case ':':
+                case '=':
+                    if (keyLength == -1) { // if parsing the key
+                        mode = NONE;
+                        keyLength = offset;
+                        continue;
+                    }
+                    break;
+                }
+                if (Character.isWhitespace(nextChar)) {
+                    if (mode == CONTINUE) {
+                        mode = IGNORE;
+                    }
+                    // if key length == 0 or value length == 0
+                    if (offset == 0 || offset == keyLength || mode == IGNORE) {
+                        continue;
+                    }
+                    if (keyLength == -1) { // if parsing the key
+                        mode = KEY_DONE;
+                        continue;
+                    }
+                }
+                if (mode == IGNORE || mode == CONTINUE) {
+                    mode = NONE;
+                }
+            }
+            firstChar = false;
+            if (mode == KEY_DONE) {
+                keyLength = offset;
+                mode = NONE;
+            }
+            buf[offset++] = nextChar;
+        }
+        if (keyLength >= 0) {
+            String temp = new String(buf, 0, offset);
+            put(temp.substring(0, keyLength), temp.substring(keyLength));
+        }
+    }   
 
 	/**
-	 * Answers all of the property names that this Properties contains.
-	 * 
-	 * @return an Enumeration containing the names of all properties
-	 */
+     * Answers all of the property names that this Properties contains.
+     * 
+     * @return an Enumeration containing the names of all properties
+     */
 	public Enumeration<?> propertyNames() {
 		if (defaults == null) {
             return keys();
@@ -428,6 +599,32 @@ public class Properties extends Hashtable<Object,Object> {
 		}
 		return set.keys();
 	}
+    
+    /**
+     * Answers a set of keys in this property list whoes key and value are
+     * strings.
+     * 
+     * @return a set of keys in the property list
+     * 
+     * @since 1.6
+     */    
+    public Set<String> stringPropertyNames(){
+        HashSet<String> set = new HashSet<String>();        
+        Enumeration<?> keys = propertyNames();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();            
+            if (key instanceof String) {
+                Object value = this.get(key);
+                if (value == null){
+                    value = this.defaults.get(key);
+                }
+                if (value instanceof String){
+                    set.add((String)key);    
+                }
+            }           
+        }
+        return Collections.unmodifiableSet(set);
+    }
 
 	/**
 	 * Saves the mappings in this Properties to the specified OutputStream,
@@ -482,7 +679,7 @@ public class Properties extends Hashtable<Object,Object> {
 	 * @exception ClassCastException
 	 *                when the key or value of a mapping is not a String
 	 */
-	public synchronized void store(OutputStream out, String comment)
+	public synchronized void store(OutputStream out, String comments)
 			throws IOException {
 		if (lineSeparator == null) {
 			lineSeparator = AccessController
@@ -491,9 +688,9 @@ public class Properties extends Hashtable<Object,Object> {
 
 		StringBuilder buffer = new StringBuilder(200);
 		OutputStreamWriter writer = new OutputStreamWriter(out, "ISO8859_1"); //$NON-NLS-1$
-		if (comment != null) {
+		if (comments != null) {
             writer.write("#"); //$NON-NLS-1$
-            writer.write(comment);
+            writer.write(comments);
 			writer.write(lineSeparator); 
         }
         writer.write("#"); //$NON-NLS-1$
@@ -511,6 +708,46 @@ public class Properties extends Hashtable<Object,Object> {
 		}
 		writer.flush();
 	}
+    
+    /**
+     * Stores the mappings in this Properties to the specified OutputStream,
+     * putting the specified comment at the beginning. The output from this
+     * method is suitable for being read by the load() method.
+     * 
+     * @param writer
+     *            the writer
+     * @param comments
+     *            the comment
+     * @throws IOException 
+     *            if any I/O exception occurs
+     * @since 1.6 
+     */
+    public synchronized void store(Writer writer, String comments) throws IOException {
+        if (lineSeparator == null) {
+            lineSeparator = AccessController
+                    .doPrivileged(new PriviAction<String>("line.separator")); //$NON-NLS-1$
+        }
+        StringBuilder buffer = new StringBuilder(200);
+        if (comments != null) {
+            writer.write("#"); //$NON-NLS-1$
+            writer.write(comments);
+            writer.write(lineSeparator); 
+        }
+        writer.write("#"); //$NON-NLS-1$
+        writer.write(new Date().toString());
+        writer.write(lineSeparator); 
+
+        for (Map.Entry<Object, Object> entry : entrySet()) {
+            String key = (String) entry.getKey();
+            dumpString(buffer, key, true);
+            buffer.append('=');
+            dumpString(buffer, (String) entry.getValue(), false);
+            buffer.append(lineSeparator);
+            writer.write(buffer.toString());
+            buffer.setLength(0);
+        }
+        writer.flush();
+    }
 
     public synchronized void loadFromXML(InputStream in) 
             throws IOException, InvalidPropertiesFormatException {
