@@ -37,6 +37,9 @@ public class EventHandler implements InvocationHandler {
 
     public EventHandler(Object target, String action, String eventPropertyName,
             String listenerMethodName) {
+        if(target == null || action  == null){
+            throw new NullPointerException();
+        }
         this.target = target;
         this.action = action;
         this.eventPropertyName = eventPropertyName;
@@ -128,6 +131,9 @@ public class EventHandler implements InvocationHandler {
     @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action, String eventPropertyName, String listenerMethodName) {
+        if(action == null || target == null || listenerInterface == null){
+            throw new NullPointerException();
+        }
         return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
                 new Class[] { listenerInterface }, new EventHandler(target,
                         action, eventPropertyName, listenerMethodName));
@@ -136,17 +142,13 @@ public class EventHandler implements InvocationHandler {
     @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action, String eventPropertyName) {
-        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, eventPropertyName, null));
+        return create(listenerInterface, target, action, eventPropertyName, null);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> listenerInterface, Object target,
             String action) {
-        return (T) Proxy.newProxyInstance(target.getClass().getClassLoader(),
-                new Class[] { listenerInterface }, new EventHandler(target,
-                        action, null, null));
+        return create(listenerInterface, target, action, null, null);
     }
 
     private boolean isValidInvocation(Method method, Object[] arguments) {

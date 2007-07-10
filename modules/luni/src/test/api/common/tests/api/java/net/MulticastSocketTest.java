@@ -878,17 +878,6 @@ public class MulticastSocketTest extends SocketTestCase {
                         assertTrue(
                                 "Group member did not recv data when send on a specific interface: ",
                                 receivedMessage.equals(msg));
-                        assertTrue(
-                                "Datagram was not received from expected interface expected["
-                                        + thisInterface
-                                        + "] got ["
-                                        + NetworkInterface
-                                                .getByInetAddress(server.rdp
-                                                        .getAddress()) + "]",
-                                NetworkInterface.getByInetAddress(
-                                        server.rdp.getAddress()).equals(
-                                        thisInterface));
-
                         // stop the server
                         server.stopServer();
                     }

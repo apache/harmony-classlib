@@ -236,7 +236,7 @@ class ProxySelectorImpl extends ProxySelector {
      */
     private boolean isNonProxyHost(String host, String nonProxyHosts) {
         // nonProxyHosts is not set
-        if (null == nonProxyHosts) {
+        if (null == host || null == nonProxyHosts) {
             return false;
         }
         // Construct regex expression of nonProxyHosts

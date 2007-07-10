@@ -162,9 +162,10 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 	}
 
 	/**
+	 * @throws IOException 
 	 * @tests java.io.CharArrayReader#reset()
 	 */
-	public void test_reset() {
+	public void test_reset() throws IOException {
 		// Test for method void java.io.CharArrayReader.reset()
 		try {
 			cr = new CharArrayReader(hw);
@@ -177,7 +178,20 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 		} catch (IOException e) {
 			fail("Exception during reset test : " + e.getMessage());
 		}
-	}
+        
+        // Regression for HARMONY-4357
+        String str = "offsetHello world!";
+        char[] data = new char[str.length()];
+        str.getChars(0, str.length(), data, 0);
+        int offsetLength = 6;
+        int length = data.length - offsetLength;
+
+        CharArrayReader reader = new CharArrayReader(data, offsetLength, length);
+        reader.reset();
+        System.out.print("\nAfter reset(): ");
+        for (int i = 0; i < length; i++)
+            assertEquals(data[offsetLength + i], (char) reader.read());
+    }
 
 	/**
 	 * @tests java.io.CharArrayReader#skip(long)

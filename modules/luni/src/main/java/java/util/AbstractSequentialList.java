@@ -188,6 +188,9 @@ public abstract class AbstractSequentialList<E> extends AbstractList<E> {
 	@Override
     public E set(int location, E object) {
 		ListIterator<E> it = listIterator(location);
+		if (!it.hasNext()){
+			throw new IndexOutOfBoundsException();
+		}
 		E result = it.next();
 		it.set(object);
 		return result;

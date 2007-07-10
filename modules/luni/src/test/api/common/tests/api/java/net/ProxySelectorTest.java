@@ -200,7 +200,7 @@ public class ProxySelectorTest extends TestCase {
         // no proxy, return a proxyList only contains NO_PROXY
         proxyList = selector.select(httpUri);
         assertProxyEquals(proxyList, Proxy.NO_PROXY);
-
+        
         // set http proxy
         System.setProperty("http.proxyHost", HTTP_PROXY_HOST);
         System.setProperty("http.proxyPort", String.valueOf(HTTP_PROXY_PORT));
@@ -230,6 +230,26 @@ public class ProxySelectorTest extends TestCase {
         assertProxyEquals(proxyList, Proxy.Type.SOCKS, SOCKS_PROXY_HOST,
                 SOCKS_PROXY_PORT);
 
+    }
+    
+    //Regression for HARMONY-4281
+    public void test_selectLjava_net_URI_SelectExact_NullHost_withNoProxyHostsProperty(){
+        System.setProperty("http.nonProxyHosts", "localhost|127.0.0.1");
+        System.setProperty("http.proxyHost", HTTP_PROXY_HOST);
+        System.setProperty("http.proxyPort", String.valueOf(HTTP_PROXY_PORT));
+        // set https proxy
+        System.setProperty("https.proxyHost", HTTPS_PROXY_HOST);
+        System.setProperty("https.proxyPort", String.valueOf(HTTPS_PROXY_PORT));
+        // set ftp proxy
+        System.setProperty("ftp.proxyHost", FTP_PROXY_HOST);
+        System.setProperty("ftp.proxyPort", String.valueOf(FTP_PROXY_PORT));
+        // set socks proxy
+        System.setProperty("socksProxyHost", SOCKS_PROXY_HOST);
+        System.setProperty("socksProxyPort", String.valueOf(SOCKS_PROXY_PORT));
+
+        proxyList = selector.select(httpUri);
+        assertProxyEquals(proxyList, Proxy.Type.HTTP, HTTP_PROXY_HOST,
+                HTTP_PROXY_PORT);
     }
 
 	/**

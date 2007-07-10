@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -105,15 +106,11 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeListener[] listeners2 = support
                 .getVetoableChangeListeners(propertyName);
 
-        assertTrue(support.hasListeners(propertyName));
+        assertFalse(support.hasListeners(propertyName));
         assertFalse(support.hasListeners("text"));
 
-        assertEquals(1, listeners1.length);
-        assertEquals(propertyName,
-                ((VetoableChangeListenerProxy) listeners1[0]).getPropertyName());
-        assertNull(((VetoableChangeListenerProxy) listeners1[0]).getListener());
-        assertEquals(1, listeners2.length);
-        assertNull(listeners2[0]);
+        assertEquals(0, listeners1.length);
+        assertEquals(0, listeners2.length);
     }
 
     /*
@@ -182,11 +179,7 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeListener proxy = EventHandler.create(
                 VetoableChangeListener.class, source, "setText");
         String propertyName = null;
-        try {
             support.addVetoableChangeListener(propertyName, proxy);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-        }
     }
 
     /*
@@ -288,8 +281,8 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeSupport support = new VetoableChangeSupport(source);
         support.addVetoableChangeListener(null);
 
-        assertTrue(support.hasListeners("label"));
-        assertTrue(support.hasListeners("text"));
+        assertFalse(support.hasListeners("label"));
+        assertFalse(support.hasListeners("text"));
 
         VetoableChangeListener[] listeners1 = support
                 .getVetoableChangeListeners();
@@ -298,11 +291,9 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeListener[] listeners3 = support
                 .getVetoableChangeListeners("text");
 
-        assertEquals(1, listeners1.length);
+        assertEquals(0, listeners1.length);
         assertEquals(0, listeners2.length);
         assertEquals(0, listeners3.length);
-
-        assertNull(listeners1[0]);
     }
 
     /*
@@ -382,11 +373,18 @@ public class VetoableChangeSupportTest extends TestCase {
 
         VetoableChangeListenerProxy listenerProxy = new VetoableChangeListenerProxy(
                 propertyName, proxy);
-
-        support.addVetoableChangeListener(listenerProxy);
-
+        assertFalse(support.hasListeners("label"));
+        try{
+            support.addVetoableChangeListener(listenerProxy);
+            fail("should throw NPE");
+        }catch(NullPointerException e){
+            //expected
+            e.printStackTrace();
+        }
+        assertTrue(support.hasListeners("label"));
         assertTrue(support.hasListeners(propertyName));
         assertFalse(support.hasListeners("text"));
+        
         {
             VetoableChangeListener[] listeners1 = support
                     .getVetoableChangeListeners();
@@ -602,12 +600,7 @@ public class VetoableChangeSupportTest extends TestCase {
         support.addVetoableChangeListener(null);
         PropertyChangeEvent event = new PropertyChangeEvent(source, "label",
                 "Label: old", "Label: new");
-        try {
             support.fireVetoableChange(event);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-            // expected
-        }
     }
 
     /*
@@ -635,12 +628,7 @@ public class VetoableChangeSupportTest extends TestCase {
         VetoableChangeSupport support = new VetoableChangeSupport(source);
 
         support.addVetoableChangeListener(null);
-        try {
             support.fireVetoableChange("label", true, false);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-            // expected
-        }
     }
 
     /*
@@ -669,12 +657,7 @@ public class VetoableChangeSupportTest extends TestCase {
 
         EventHandler.create(VetoableChangeListener.class, source, "setText");
         support.addVetoableChangeListener("label", null);
-        try {
             support.fireVetoableChange("label", true, false);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-            // expected
-        }
     }
 
     /*
@@ -1282,14 +1265,13 @@ public class VetoableChangeSupportTest extends TestCase {
         String propertyName = "label";
         support.addVetoableChangeListener(propertyName, null);
 
-        assertTrue(support.hasListeners(propertyName));
-        assertEquals(1, support.getVetoableChangeListeners(propertyName).length);
+        assertFalse(support.hasListeners(propertyName));
+        assertEquals(0, support.getVetoableChangeListeners(propertyName).length);
 
         support.removeVetoableChangeListener(propertyName, proxy);
-        assertTrue(support.hasListeners(propertyName));
-        assertEquals(1, support.getVetoableChangeListeners(propertyName).length);
-        assertEquals(1, support.getVetoableChangeListeners().length);
-        assertNull(support.getVetoableChangeListeners(propertyName)[0]);
+        assertFalse(support.hasListeners(propertyName));
+        assertEquals(0, support.getVetoableChangeListeners(propertyName).length);
+        assertEquals(0, support.getVetoableChangeListeners().length);
     }
 
     /*
@@ -1325,12 +1307,7 @@ public class VetoableChangeSupportTest extends TestCase {
         String propertyName = "label";
         support.addVetoableChangeListener(propertyName, proxy);
         assertTrue(support.hasListeners(propertyName));
-        try {
             support.removeVetoableChangeListener(null, proxy);
-            fail("Should throw NullPointerException.");
-        } catch (NullPointerException e) {
-            // expected
-        }
     }
 
     /*
@@ -1381,7 +1358,7 @@ public class VetoableChangeSupportTest extends TestCase {
 
         String propertyName = "label";
         support.addVetoableChangeListener(propertyName, null);
-        assertTrue(support.hasListeners(propertyName));
+        assertFalse(support.hasListeners(propertyName));
 
         support.removeVetoableChangeListener(propertyName, null);
         assertFalse(support.hasListeners(propertyName));
@@ -1476,14 +1453,14 @@ public class VetoableChangeSupportTest extends TestCase {
         String propertyName = "label";
         support.addVetoableChangeListener(null);
 
-        assertTrue(support.hasListeners(propertyName));
-        assertEquals(1, support.getVetoableChangeListeners().length);
+        assertFalse(support.hasListeners(propertyName));
+        assertEquals(0, support.getVetoableChangeListeners().length);
 
         support.removeVetoableChangeListener(proxy);
 
-        assertTrue(support.hasListeners(propertyName));
+        assertFalse(support.hasListeners(propertyName));
         assertEquals(0, support.getVetoableChangeListeners(propertyName).length);
-        assertEquals(1, support.getVetoableChangeListeners().length);
+        assertEquals(0, support.getVetoableChangeListeners().length);
     }
 
     /*
@@ -1544,8 +1521,8 @@ public class VetoableChangeSupportTest extends TestCase {
         String propertyName = "label";
         support.addVetoableChangeListener(null);
 
-        assertTrue(support.hasListeners(propertyName));
-        assertEquals(1, support.getVetoableChangeListeners().length);
+        assertFalse(support.hasListeners(propertyName));
+        assertEquals(0, support.getVetoableChangeListeners().length);
 
         support.removeVetoableChangeListener(null);
 
@@ -1631,7 +1608,6 @@ public class VetoableChangeSupportTest extends TestCase {
                 deserializedSupport.getVetoableChangeListeners(propertyName1)[0]);
 
     }
-
 
      public void testSerialization_Compatibility() throws Exception {
          MockSource source = new MockSource();
@@ -1936,5 +1912,11 @@ public class VetoableChangeSupportTest extends TestCase {
         assertEquals(vcl, ((VetoableChangeListenerProxy) vcls[0]).getListener());
         assertEquals("property1", ((VetoableChangeListenerProxy) vcls[0])
                 .getPropertyName());
+    }
+    
+    
+    public void testSerializationForm(){
+        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(VetoableChangeSupport.class);
+        assertNotNull(objectStreamClass.getField("source"));
     }
 }
