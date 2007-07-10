@@ -233,7 +233,7 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
             zip.write(null, 0, -2);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
-            // ecpected
+            // expected
         }
     }
 
