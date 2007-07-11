@@ -76,8 +76,16 @@ public class Logger {
 
     /**
      * The global logger is provided as convenience for casual use.
+     *
+     * @deprecated Use Logger.getLogger(Logger.GLOBAL_LOGGER_NAME) instead.
      */
+    @Deprecated
     public final static Logger global = new Logger("global", null); //$NON-NLS-1$
+
+    /**
+     * @since 1.6
+     */
+    public static final String GLOBAL_LOGGER_NAME = "global";
 
     // the name of this logger
     private volatile String name;
@@ -1405,4 +1413,5 @@ public class Logger {
         handlerInited = false;
     }
 }
+
 
