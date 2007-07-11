@@ -125,6 +125,51 @@ public class InitialContext implements Context {
     protected Hashtable<Object, Object> myProps;
 
     /**
+     * A shortcut method for retrieving the named object by <code>Name</code>.
+     * It is equivalent to
+     * 
+     * <pre>
+     *    InitialContext icxt = new InitialContext();
+     *    T obj = icxt.lookup();
+     * </pre>
+     * 
+     * <p>
+     * Returns a new instance of this context when <code>name</code> is empty.
+     * The new instance represents the same naming context as this context, but
+     * may be accessed/modified independently and concurrently.
+     * </p>
+     * 
+     * @param name
+     *            the name to be looked up
+     * @return the object bound to <code>name</code>
+     * @throws NamingException
+     *             if a naming exception is encountered
+     * 
+     * @see #doLookup(String)
+     * @see #lookup(Name)
+     * @since 1.6
+     */
+    public static <T> T doLookup(Name name) throws NamingException {
+        return (T) new InitialContext().lookup(name);
+    }
+
+   /**
+     * A static method that retrieves the named object by <code>String</code>.
+     * 
+     * @param name
+     *            the name of the object being looked up
+     * @return the object bound to <code>name</code>
+     * @throws NamingException
+     *             if a naming exception is encountered
+     * 
+     * @see #doLookup(Name)
+     * @since 1.6
+     */
+    public static <T> T doLookup(String name) throws NamingException {
+        return (T) new InitialContext().lookup(name);
+    }
+
+    /**
      * Constructs an <code>InitialContext</code> instance without using any
      * environment properties. This constructor is effectively the same as using
      * constructor <code>InitialContext((Hashtable)null)</code>.
