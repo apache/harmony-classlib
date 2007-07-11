@@ -104,7 +104,7 @@ public class Level implements Serializable {
      * @throws IllegalArgumentException
      *             if <code>name</code> is not valid.
      */
-    public static final Level parse(String name) {
+    public static Level parse(String name) throws IllegalArgumentException {
         if (name == null) {
             // logging.1C=The 'name' parameter is null.
             throw new NullPointerException(Messages.getString("logging.1C")); //$NON-NLS-1$
