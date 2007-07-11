@@ -109,7 +109,6 @@ public interface CallableStatement extends PreparedStatement {
      * @deprecated Use getBigDecimal(int parameterIndex) or getBigDecimal(String
      *             parameterName)
      */
-    @Deprecated
     public BigDecimal getBigDecimal(int parameterIndex, int scale)
             throws SQLException;
 

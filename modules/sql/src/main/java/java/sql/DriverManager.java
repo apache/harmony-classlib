@@ -297,7 +297,6 @@ public class DriverManager {
      *             the JDBC Drivers.
      * @return the PrintStream used for logging activity
      */
-    @Deprecated
     public static PrintStream getLogStream() {
         return thePrintStream;
     }
