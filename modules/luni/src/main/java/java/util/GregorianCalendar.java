@@ -694,6 +694,9 @@ public class GregorianCalendar extends Calendar {
                                         - (days + daysInMonth(leapYear, month) - 3))
                                 + fields[DAY_OF_WEEK_IN_MONTH] * 7;
                     }
+                } else if (isSet[DAY_OF_WEEK]) {
+                    int skew = mod7(days - 3 - (getFirstDayOfWeek() - 1));
+                    days += mod7(mod7(skew + dayOfWeek - (days - 3)) - skew);
                 }
             }
         } else {
@@ -1151,15 +1154,16 @@ public class GregorianCalendar extends Calendar {
                 int maxWeeks = (days - 1 + mod) / 7 + 1;
                 int newWeek = mod(fields[field] - 1 + value, maxWeeks) + 1;
                 if (newWeek == maxWeeks) {
-                    if (fields[day] + (newWeek - fields[field]) * 7 > days) {
-                        set(field, 1);
+                    int addDays = (newWeek - fields[field]) * 7;
+                    if (fields[day] > addDays && fields[day] + addDays > days) {
+                            set(field, 1);
                     } else {
-                        set(field, newWeek);
+                        set(field, newWeek - 1);
                     }
                 } else if (newWeek == 1) {
                     int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
                     if (week > 1) {
-                        set(day, 1);
+                        set(field, 1);
                     } else {
                         set(field, newWeek);
                     }

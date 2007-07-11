@@ -163,6 +163,7 @@ public abstract class SignatureSpi {
 	 * @deprecated Use
 	 *             {@link SignatureSpi#engineSetParameter(AlgorithmParameterSpec) engineSetParameter}
 	 */
+    @Deprecated
     protected abstract void engineSetParameter(String param, Object value)
             throws InvalidParameterException;
 
@@ -188,6 +189,7 @@ public abstract class SignatureSpi {
 	 * 
 	 * @deprecated There is no generally accepted parameter naming convention.
 	 */
+    @Deprecated
     protected abstract Object engineGetParameter(String param)
             throws InvalidParameterException;
 

@@ -32,6 +32,7 @@ import org.apache.harmony.security.internal.nls.Messages;
  * 
  * @deprecated
  */
+@Deprecated
 public abstract class Identity implements Principal, Serializable {
     private static final long serialVersionUID = 3609922007826600659L;
 
