@@ -377,21 +377,21 @@ fint parseNameTable(FILE* tt_file, fwchar_t** familyName, fwchar_t** psName, Sty
 						}
 						subFamilyName[j] = 0;
 
-//#ifdef WIN32
+/*#ifdef WIN32
 
-#define COMPARE_IT		(!fwcscmp((fwchar_t *)subFamilyName,L"Italic"))
-#define COMPARE_BD		(!fwcscmp((fwchar_t *)subFamilyName,L"Bold"))
-#define COMPARE_BDIT	(!fwcscmp((fwchar_t *)subFamilyName,L"Bold Italic"))
-#define COMPARE_REG		(!fwcscmp((fwchar_t *)subFamilyName,L"Regular") || !fwcscmp((fwchar_t *)subFamilyName,L"Normal"))
+#define COMPARE_IT		(!_wcsicmp((fwchar_t *)subFamilyName,L"Italic"))
+#define COMPARE_BD		(!_wcsicmp((fwchar_t *)subFamilyName,L"Bold"))
+#define COMPARE_BDIT	(!_wcsicmp((fwchar_t *)subFamilyName,L"Bold Italic"))
+#define COMPARE_REG		(!_wcsicmp((fwchar_t *)subFamilyName,L"Regular") || !_wcsicmp((fwchar_t *)subFamilyName,L"Normal"))
 
-/*#else
+#else*/
 
 #define COMPARE_IT		(compare((fwchar_t *)subFamilyName, "Italic"))
 #define COMPARE_BD		(compare((fwchar_t *)subFamilyName, "Bold"))
 #define COMPARE_BDIT	(compare((fwchar_t *)subFamilyName, "Bold Italic"))
 #define COMPARE_REG		(compare((fwchar_t *)subFamilyName, "Regular") || compare((fwchar_t *)subFamilyName, "Normal"))
 
-#endif*/
+//#endif
 
 						if COMPARE_IT
 						{
