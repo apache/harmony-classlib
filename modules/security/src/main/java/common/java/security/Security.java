@@ -138,6 +138,7 @@ public final class Security {
 	 *
 	 * @deprecated	Use AlgorithmParameters and KeyFactory instead
 	 */
+    @Deprecated
     public static String getAlgorithmProperty(String algName, String propName) {
         if (algName == null || propName == null) {
             return null;

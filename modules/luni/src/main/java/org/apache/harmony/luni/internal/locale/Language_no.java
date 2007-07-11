@@ -57,7 +57,7 @@ protected Object[][] getContents() {
 		{"mk","Makedonsk",},
 		{"my","Burmesisk",},
 		{"nl","Nederlandsk",},
-		{"no","Norsk",},
+		{"no","norsk",},
 		{"pl","Polsk",},
 		{"pt","Portugisisk",},
 		{"ro","Rumensk",},

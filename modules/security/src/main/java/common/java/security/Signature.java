@@ -384,6 +384,7 @@ public abstract class Signature extends SignatureSpi {
      *  
      * @deprecated Use {@link Signature#setParameter(AlgorithmParameterSpec) setParameter}
      */
+    @Deprecated
     public final void setParameter(String param, Object value)
             throws InvalidParameterException {
         engineSetParameter(param, value);
@@ -411,6 +412,7 @@ public abstract class Signature extends SignatureSpi {
      * 
      * @deprecated There is no generally accepted parameter naming convention.
      */
+    @Deprecated
     public final Object getParameter(String param)
             throws InvalidParameterException {
         return engineGetParameter(param);

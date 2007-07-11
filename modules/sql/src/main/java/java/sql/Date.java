@@ -50,7 +50,6 @@ public class Date extends java.util.Date {
      * @param theDay
      *            the day in the month. Must be in the range 1 to 31.
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     public Date(int theYear, int theMonth, int theDay) {
         super(theYear, theMonth, theDay);
@@ -78,7 +77,6 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getHours() {
@@ -92,7 +90,6 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getMinutes() {
@@ -106,7 +103,6 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public int getSeconds() {
@@ -121,7 +117,6 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void setHours(int theHours) {
@@ -136,7 +131,6 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void setMinutes(int theMinutes) {
@@ -151,7 +145,6 @@ public class Date extends java.util.Date {
      * @throws IllegalArgumentException
      *             if this method is called
      */
-    @SuppressWarnings("deprecation")
     @Deprecated
     @Override
     public void setSeconds(int theSeconds) {

@@ -287,11 +287,24 @@ public class PropertyEditorSupportTest extends TestCase {
         support.setSource(source);
         assertSame(source, support.getSource());
 
-        try {
-            support.setSource(null);
-            fail("No expected NullPointerException");
-        } catch (NullPointerException e) {
-        }
+        support.setSource(null);
+    }
+    
+    public void testSetValue_Event() {
+        PropertyEditorSupport support = new PropertyEditorSupport();
+        Object source = new Object();
+        support.setSource(source);
+        MockPropertyChangeListener listener = new MockPropertyChangeListener();
+        support.addPropertyChangeListener(listener);
+        
+        support.setValue(new Object());        
+        PropertyChangeEvent event = listener.getEvent();
+        assertNotNull(event);
+        assertEquals(source, event.getSource());
+        assertNull(event.getNewValue());
+        assertNull(event.getOldValue());
+        assertNull(event.getPropagationId());
+        assertNull(event.getPropertyName());        
     }
 
     public static class MockSource {
@@ -411,5 +424,21 @@ public class PropertyEditorSupportTest extends TestCase {
                             : this.eventSource.equals(other.eventSource)) && (this.label == null ? other.label == null
                     : this.label.equals(other.label)));
         }
+    }
+    
+    public class MockPropertyChangeListener implements PropertyChangeListener
+    {
+
+        private PropertyChangeEvent event;        
+        public void propertyChange(PropertyChangeEvent event) {
+            
+            this.event = event;
+        }
+        
+        public PropertyChangeEvent getEvent()
+        {
+            return event;
+        }
+        
     }
 }

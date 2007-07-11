@@ -29,7 +29,7 @@ package java.security;
  *             {@link java.security.cert java.security.cert} package and
  *             {@link java.security.Principal Principal}
  */
-
+@Deprecated
 public abstract class Signer extends Identity {
 
     /**

@@ -169,6 +169,16 @@ public class LocaleTest extends junit.framework.TestCase {
 		// Regression for Harmony-1146
         Locale l_languageAE = new Locale("ae", ""); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Avestan", l_languageAE.getDisplayLanguage()); //$NON-NLS-1$
+        
+        // Regression for HARMONY-4402
+        Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale locale = new Locale("no", "NO");
+            Locale.setDefault(locale);
+            assertEquals("norsk", locale.getDisplayLanguage()); //$NON-NLS-1$
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
 	}
 
 	/**
