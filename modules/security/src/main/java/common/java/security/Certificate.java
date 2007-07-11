@@ -32,6 +32,7 @@ import java.io.OutputStream;
  * @deprecated Replaced by behavior in
  *             {@link javax.security.cert javax.security.cert}
  */
+@Deprecated
 public interface Certificate {
 
     /**

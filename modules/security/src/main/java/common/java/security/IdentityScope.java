@@ -24,13 +24,12 @@ package java.security;
 
 import java.util.Enumeration;
 
-import org.apache.harmony.security.SystemScope;
-
 
 /**
  * @com.intel.drl.spec_ref 
  * @deprecated
  */
+@Deprecated
 public abstract class IdentityScope extends Identity {
 
     /**
