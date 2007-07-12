@@ -20,6 +20,7 @@ package java.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 
 /**
  * PropertyResourceBundle loads resources from an InputStream. All resources are
@@ -42,9 +43,36 @@ public class PropertyResourceBundle extends ResourceBundle {
 	 * @throws IOException 
 	 */
 	public PropertyResourceBundle(InputStream stream) throws IOException {
+		if( null == stream ) {
+			throw new NullPointerException();
+		}
 		resources = new Properties();
 		resources.load(stream);
 	}
+    
+    /**
+     * Constructs a new instance of PropertyResourceBundle and loads the
+     * properties from the reader.
+     * 
+     * @param reader
+     *            the input reader
+     * @throws IOException
+     * @since 1.6
+     */
+    public PropertyResourceBundle(Reader reader) throws IOException {
+        resources = new Properties();
+        resources.load(reader);
+    }
+    
+    /**
+     * Answers a set of the keys in this ResourceBundle but not in its parents.
+     * 
+     * @return a set of the keys in this ResourceBundle but not in its parents.
+     * @since 1.6
+     */
+    protected Set<String> handleKeySet(){                
+        return resources.stringPropertyNames();
+    }
     
     @SuppressWarnings("unchecked")
     private Enumeration<String> getLocalKeys() {
