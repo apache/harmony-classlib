@@ -17,7 +17,6 @@
 
 package java.beans;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.harmony.beans.internal.nls.Messages;
@@ -57,8 +56,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
         // added for compatibility with RI
         if (out == null) {
-            throw new NullPointerException(
-                    Messages.getString("beans.4C")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("beans.4C")); //$NON-NLS-1$
         }
 
         // added for compatibility with RI
@@ -67,46 +65,83 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                     new NullPointerException(Messages.getString("beans.4A"))); //$NON-NLS-1$
             return;
         }
-      
+
+        // added for compatibility with RI
+        if (oldInstance == null) {
+            throw new NullPointerException(Messages.getString("beans.4C")); //$NON-NLS-1$
+        }
+
+        BeanInfo info = null;
         try {
-            PropertyDescriptor[] pds = Introspector.getBeanInfo(type)
-                    .getPropertyDescriptors();
+            info = Introspector.getBeanInfo(type);
+        } catch (IntrospectionException e) {
+            out.getExceptionListener().exceptionThrown(e);
+            return;
+        }
+        PropertyDescriptor[] pds = info.getPropertyDescriptors();
 
-            for (PropertyDescriptor pd : pds) {
-                if (!isTransient(pd)) {
-                    Method getter = pd.getReadMethod();
+        for (PropertyDescriptor pd : pds) {
+            if (!isTransient(pd)) {
+                Method getter = pd.getReadMethod();
 
-                    if (getter != null) {
-                        Method setter = pd.getWriteMethod();
+                if (getter != null) {
+                    Method setter = pd.getWriteMethod();
 
-                        if (setter != null) {
-                            Object oldValue = getter.invoke(oldInstance,
-                                    (Object[]) null);
-                            Object newValue = getter.invoke(newInstance,
-                                    (Object[]) null);
+                    if (setter != null) {
+                        Expression getterExp = new Expression(oldInstance, pd
+                                .getReadMethod().getName(), null);
+                        try {
+                            // Calculate the old value of the property
+                            Object oldValue = getterExp.getValue();
 
-                            if (oldValue != null && !oldValue.equals(newValue)
-                                    || oldValue == null && newValue != null) {
-                                String setterName = setter.getName();
-                                Statement s = new Statement(oldInstance,
-                                        setterName, new Object[] { oldValue });
+                            // Write the getter expression to the encoder
+                            out.writeExpression(getterExp);
 
-                                out.writeStatement(s);
+                            // Get the target value that exists in the new
+                            // environment
+                            Object targetVal = out.get(oldValue);
+
+                            Object newValue = new Expression(newInstance, pd
+                                    .getReadMethod().getName(), null)
+                                    .getValue();
+
+                            /*
+                             * Make the target value and current property value
+                             * equivalent in the new environment
+                             */
+                            if (null == targetVal) {
+                                if (null != newValue) {
+                                    // Set to null
+                                    Statement setterStm = new Statement(
+                                            oldInstance, pd.getWriteMethod()
+                                                    .getName(),
+                                            new Object[] { null });
+                                    out.writeStatement(setterStm);
+                                }
+                            } else {
+                                PersistenceDelegate delegate = out
+                                        .getPersistenceDelegate(targetVal
+                                                .getClass());
+                                if (!delegate.mutatesTo(targetVal, newValue)) {
+                                    Statement setterStm = new Statement(
+                                            oldInstance, pd.getWriteMethod()
+                                                    .getName(),
+                                            new Object[] { oldValue });
+                                    out.writeStatement(setterStm);
+                                }
                             }
-                        } else {
-                            // commented since the process should be
-                            // continued even if no setter is found
-                            // throw new Exception("no setter for " +
-                            // pd.getName() + " property.");
-                            continue;
+                        } catch (Exception ex) {
+                            out.getExceptionListener().exceptionThrown(ex);
                         }
+                    } else {
+                        // commented since the process should be
+                        // continued even if no setter is found
+                        // throw new Exception("no setter for " +
+                        // pd.getName() + " property.");
+                        continue;
                     }
                 }
             }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            out.getExceptionListener().exceptionThrown(e);
         }
     }
 
@@ -169,7 +204,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         if (oldInstance != null && constructorPropertyNames != null
                 && constructorPropertyNames.length > 0) {
 
-            //Get explicitly declared equals method.
+            // Get explicitly declared equals method.
             Method equalsMethod = null;
             try {
                 equalsMethod = oldInstance.getClass().getDeclaredMethod(
@@ -180,15 +215,15 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
             }
 
             if (equalsMethod != null) {
-                    Object result;
-                    try {
-                        result = equalsMethod.invoke(oldInstance,
-                                new Object[] { newInstance });
-                    } catch (Exception e) {
-                        //should not happen here.
-                        throw new Error(e);
-                    }
-                    return ((Boolean) result).booleanValue();
+                Object result;
+                try {
+                    result = equalsMethod.invoke(oldInstance,
+                            new Object[] { newInstance });
+                } catch (Exception e) {
+                    // should not happen here.
+                    throw new Error(e);
+                }
+                return ((Boolean) result).booleanValue();
             }
         }
         return super.mutatesTo(oldInstance, newInstance);

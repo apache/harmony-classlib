@@ -18,33 +18,47 @@
 package java.beans;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Vector;
 
 import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
 import org.apache.harmony.beans.NullPersistenceDelegate;
 import org.apache.harmony.beans.ObjectNode;
-import org.apache.harmony.beans.internal.nls.Messages;
 
 public class Encoder {
 
-    private ExceptionListener exceptionListener = null;
+    private ExceptionListener exceptionListener = defaultExListener;
 
-    private final HashMap<Class<?>, PersistenceDelegate> persistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
+    private static final ExceptionListener defaultExListener = new DefaultExceptionListener();
+
+    private static class DefaultExceptionListener implements ExceptionListener {
+
+        public void exceptionThrown(Exception exception) {
+            System.err.println("Exception during encoding:" + exception); //$NON-NLS-1$
+            System.err.println("Continue...");
+        }
+
+    }
+
+    private static final HashMap<Class<?>, PersistenceDelegate> persistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
 
     Vector<Object> roots = new Vector<Object>();
 
-    HashMap<Object, ObjectNode> nodes = new HashMap<Object, ObjectNode>();
+    IdentityHashMap<Object, ObjectNode> nodes = new IdentityHashMap<Object, ObjectNode>();
+
+    private IdentityHashMap oldNewMap = new IdentityHashMap();
 
     public Encoder() {
         super();
     }
 
     public Object get(Object oldInstance) {
-        if (oldInstance == null) {
-            return null;
+        if (oldInstance == null || oldInstance instanceof String
+                || oldInstance == String.class) {
+            return oldInstance;
         }
 
-        return getValue(nodes.get(oldInstance));
+        return oldNewMap.get(oldInstance);
     }
 
     public Object remove(Object oldInstance) {
@@ -53,7 +67,8 @@ public class Encoder {
             return null;
         }
 
-        return getValue(nodes.remove(oldInstance));
+        getValue(nodes.remove(oldInstance));
+        return oldNewMap.remove(oldInstance);
     }
 
     public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
@@ -77,6 +92,9 @@ public class Encoder {
 
     protected void writeObject(Object object) {
         roots.add(object);
+        if (object == null) {
+            return;
+        }
         doWriteObject(object);
     }
 
@@ -90,100 +108,98 @@ public class Encoder {
         }
 
         pd.writeObject(object, this);
-    }
-
-    public void writeStatement(Statement oldStm) {
-        ObjectNode node = nodes.get(oldStm.getTarget());
-
-        if (node != null) {
-            try {
-                Statement statement;
-                Object[] oldArgs = oldStm.getArguments();
-
-                // FIXME add target processing here
-                write(oldArgs);
-                statement = new Statement(node.getObjectValue(), oldStm
-                        .getMethodName(), oldArgs);
-                statement.execute();
-                node.addStatement(statement);
-            } catch (Exception e) {
-                getExceptionListener().exceptionThrown(e);
-            }
-        } else {
-            // FIXME incompatible with RI, default constructor should be
-            // called instead
-            System.out.println(Messages.getString(
-                    "beans.10", oldStm.getTarget())); //$NON-NLS-1$
+        if (isString(object.getClass())) {
+            nodes.put(object, new ObjectNode(pd.instantiate(object, this)));
         }
     }
 
+    private Object forceNew(Object old) {
+        if (old == null) {
+            return null;
+        }
+        Object nu = get(old);
+        if (nu != null) {
+            return nu;
+        }
+        writeObject(old);
+        return get(old);
+    }
+
+    private Object[] forceNewArray(Object oldArray[]) {
+        if (oldArray == null) {
+            return null;
+        }
+        Object newArray[] = new Object[oldArray.length];
+        for (int i = 0; i < oldArray.length; i++) {
+            newArray[i] = forceNew(oldArray[i]);
+        }
+        return newArray;
+    }
+
+    public void writeStatement(Statement oldStm) {
+        if (oldStm == null) {
+            throw new NullPointerException();
+        }
+        try {
+            // FIXME add target processing here
+            Object newTarget = forceNew(oldStm.getTarget());
+            Object newArgs[] = forceNewArray(oldStm.getArguments());
+            Statement statement = new Statement(newTarget, oldStm
+                    .getMethodName(), newArgs);
+            statement.execute();
+        } catch (Exception e) {
+            getExceptionListener().exceptionThrown(e);
+        }
+    }
+
+    private void put(Object old, Object nu) {
+        oldNewMap.put(old, nu);
+    }
+
     public void writeExpression(Expression oldExp) {
+        if (oldExp == null) {
+            throw new NullPointerException();
+        }
         try {
             Object oldValue = oldExp.getValue();
-            Object oldTarget = oldExp.getTarget();
-
-            ObjectNode valueNode = null;
-            Class<?> valueType = null;
-
-            // write target
-            if (!Statement.isPDConstructor(oldExp)
-                    && !Statement.isStaticMethodCall(oldExp)) {
-                ObjectNode parent;
-
-                // XXX investigate
-                // write(oldTarget);
-                parent = nodes.get(oldTarget);
-                if (parent != null) {
-                    parent.addExpression(oldExp);
-                }
+            if (oldValue == null || get(oldValue) != null) {
+                return;
             }
 
-            // write value
+            // copy to newExp
+            Object newTarget = forceNew(oldExp.getTarget());
+            Object newArgs[] = forceNewArray(oldExp.getArguments());
+            Expression newExp = new Expression(newTarget, oldExp
+                    .getMethodName(), newArgs);
 
-            if (oldValue != null) {
-                valueType = oldValue.getClass();
-                valueNode = nodes.get(oldValue);
+            // execute newExp
+            Object newValue = null;
+            try {
+                newValue = newExp.getValue();
+            } catch (IndexOutOfBoundsException ex) {
+                // Current Container does not have any component, newVal set
+                // to null
             }
 
-            if (valueNode == null) {
+            // relate oldValue to newValue
+            put(oldValue, newValue);
 
-                if (isNull(valueType) || isPrimitive(valueType)
-                        || isString(valueType)) {
-                    valueNode = new ObjectNode(oldExp);
-                } else {
-                    write(oldExp.getArguments());
-                    valueNode = new ObjectNode(oldExp, nodes);
-                }
-
-                nodes.put(oldValue, valueNode);
-            } else if (oldExp.getMethodName().equals("new")) { //$NON-NLS-1$
-                valueNode.addReference();
-            } else {
-                // XXX the information about referencedExpressions is not
-                // being used by anyone
-                // node.addReferencedExpression(oldExp);
-            }
+            // force same state
+            writeObject(oldValue);
         } catch (Exception e) {
             // TODO - remove written args
-            e.printStackTrace();
             getExceptionListener().exceptionThrown(e);
         }
     }
 
     public void setExceptionListener(ExceptionListener exceptionListener) {
+        if (exceptionListener == null) {
+            exceptionListener = defaultExListener;
+        }
         this.exceptionListener = exceptionListener;
     }
 
     public ExceptionListener getExceptionListener() {
-        if (exceptionListener == null) {
-            exceptionListener = new ExceptionListener() {
-
-                public void exceptionThrown(Exception e) {
-                    System.out.println(e.getClass() + ": " + e.getMessage()); //$NON-NLS-1$
-                }
-            };
-        }
-
         return exceptionListener;
     }
 
@@ -204,7 +220,7 @@ public class Encoder {
         return node.getObjectValue();
     }
 
-    private Object[] write(Object[] oldInstances) throws Exception {
+    Object[] write(Object[] oldInstances) throws Exception {
         if (oldInstances != null) {
             Object[] newInstances = new Object[oldInstances.length];
 

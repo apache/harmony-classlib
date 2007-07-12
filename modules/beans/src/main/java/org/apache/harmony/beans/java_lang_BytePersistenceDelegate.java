@@ -26,7 +26,7 @@ public class java_lang_BytePersistenceDelegate extends PersistenceDelegate {
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Byte value = (Byte) oldInstance;
         return new Expression(oldInstance, Byte.class, "new", //$NON-NLS-1$
-                new Object[] { value });
+                new Object[] { value.toString() });
     }
 
     @Override

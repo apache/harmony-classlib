@@ -17,13 +17,13 @@
 
 package org.apache.harmony.beans;
 
+import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.Expression;
-import java.beans.PersistenceDelegate;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-public class java_lang_reflect_ProxyPersistenceDelegate extends PersistenceDelegate {
+public class java_lang_reflect_ProxyPersistenceDelegate extends DefaultPersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         assert oldInstance instanceof Proxy : oldInstance;
@@ -39,11 +39,13 @@ public class java_lang_reflect_ProxyPersistenceDelegate extends PersistenceDeleg
         assert oldInstance instanceof Proxy : oldInstance;
         assert newInstance instanceof Proxy : newInstance;
         assert newInstance == oldInstance;
+        super.initialize(type, oldInstance, newInstance, out);
     }
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
         assert oldInstance instanceof Proxy : oldInstance;
-        return oldInstance == newInstance;
+        assert oldInstance == newInstance;
+        return super.mutatesTo(oldInstance, newInstance);
     }
 }

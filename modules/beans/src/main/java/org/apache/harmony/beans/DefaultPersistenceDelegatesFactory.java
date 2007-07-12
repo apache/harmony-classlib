@@ -25,7 +25,8 @@ import java.util.StringTokenizer;
 
 public final class DefaultPersistenceDelegatesFactory {
 
-    private static Map<String, PersistenceDelegate> persistenceDelegates = new HashMap<String, PersistenceDelegate>();
+    private static final DefaultPersistenceDelegate DEFAULT_PERSISTENCE_DELEGATE = new DefaultPersistenceDelegate();
+	private static Map<String, PersistenceDelegate> persistenceDelegates = new HashMap<String, PersistenceDelegate>();
 
     private static PersistenceDelegate createPersistenceDelegate(Class<?> type) {
         if (type == null) {
@@ -53,7 +54,7 @@ public final class DefaultPersistenceDelegatesFactory {
             }
 
             if (pd == null) {
-                pd = new DefaultPersistenceDelegate();
+                pd = DEFAULT_PERSISTENCE_DELEGATE;
             }
         }
         return pd;

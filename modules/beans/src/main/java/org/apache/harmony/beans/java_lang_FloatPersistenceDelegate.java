@@ -25,7 +25,7 @@ public class java_lang_FloatPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Float value = (Float) oldInstance;
-        return new Expression(oldInstance, Float.class, "new", new Object[] { value }); //$NON-NLS-1$
+        return new Expression(oldInstance, Float.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
     }
 
     @Override
