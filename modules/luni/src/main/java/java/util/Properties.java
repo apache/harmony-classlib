@@ -401,6 +401,9 @@ public class Properties extends Hashtable<Object,Object> {
 			}
 			buf[offset++] = nextChar;
 		}
+        if(keyLength==-1 && offset>0){
+            keyLength = offset;
+        }
 		if (keyLength >= 0) {
 			String temp = new String(buf, 0, offset);
 			put(temp.substring(0, keyLength), temp.substring(keyLength));
