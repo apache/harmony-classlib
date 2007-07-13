@@ -138,3 +138,6 @@ javax/swing/text/html/parser/DocumentParserTest.java
 javax/swing/text/html/parser/DTD401Test.java
 javax/swing/text/html/parser/DTDTest.java
 javax/swing/text/html/parser/TagElementTest.java
+
+#H-4008
+javax/swing/text/html/FormView_FormInputElementTest.java
