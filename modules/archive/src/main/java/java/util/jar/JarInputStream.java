@@ -132,9 +132,10 @@ public class JarInputStream extends ZipInputStream {
                             throw e;
                         }
                     } else {
-                        verifier.verifySignatures(
-                                (JarVerifier.VerifierEntry) verStream,
-                                jarEntry);
+                        verifier
+                                .verifySignatures(
+                                        (JarVerifier.VerifierEntry) verStream,
+                                        jarEntry);
                     }
                 }
             } else {

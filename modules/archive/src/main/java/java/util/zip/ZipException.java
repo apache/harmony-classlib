@@ -17,7 +17,6 @@
 
 package java.util.zip;
 
-
 import java.io.IOException;
 
 /**
@@ -29,24 +28,24 @@ import java.io.IOException;
  */
 public class ZipException extends IOException {
 
-	private static final long serialVersionUID = 8000196834066748623L;
+    private static final long serialVersionUID = 8000196834066748623L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ZipException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public ZipException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ZipException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public ZipException(String detailMessage) {
+        super(detailMessage);
+    }
 
 }

@@ -232,7 +232,7 @@ public class JarFile extends ZipFile {
 
             public JarEntry nextElement() {
                 JarEntry je = new JarEntry(ze.nextElement());
-                je.parentJar = jf;                
+                je.parentJar = jf;
                 return je;
             }
         }
@@ -260,7 +260,7 @@ public class JarFile extends ZipFile {
         if (manifest != null) {
             return manifest;
         }
-		try {
+        try {
             ByteArrayInputStream is = (ByteArrayInputStream) super
                     .getInputStream(manifestEntry);
             if (verifier != null) {
@@ -275,10 +275,10 @@ public class JarFile extends ZipFile {
             } finally {
                 is.close();
             }
-	        manifestEntry = null;
-		} catch(NullPointerException e) {
-			manifestEntry = null;
-		}
+            manifestEntry = null;
+        } catch (NullPointerException e) {
+            manifestEntry = null;
+        }
         return manifest;
     }
 
@@ -300,10 +300,14 @@ public class JarFile extends ZipFile {
                     if (verifier == null) {
                         break;
                     }
-                } else if (verifier != null && entryName.length() > dirLength
-                        && (Util.ASCIIIgnoreCaseRegionMatches(entryName, entryName.length() - 3, ".SF", 0 ,3) //$NON-NLS-1$
-                           || Util.ASCIIIgnoreCaseRegionMatches(entryName, entryName.length() - 4, ".DSA", 0 ,4) //$NON-NLS-1$
-                           || Util.ASCIIIgnoreCaseRegionMatches(entryName, entryName.length() - 4, ".RSA", 0 ,4))){ //$NON-NLS-1$
+                } else if (verifier != null
+                        && entryName.length() > dirLength
+                        && (Util.ASCIIIgnoreCaseRegionMatches(entryName,
+                                entryName.length() - 3, ".SF", 0, 3) //$NON-NLS-1$
+                                || Util.ASCIIIgnoreCaseRegionMatches(entryName,
+                                        entryName.length() - 4, ".DSA", 0, 4) //$NON-NLS-1$
+                        || Util.ASCIIIgnoreCaseRegionMatches(entryName,
+                                entryName.length() - 4, ".RSA", 0, 4))) { //$NON-NLS-1$
                     signed = true;
                     InputStream is = super.getInputStream(entry);
                     byte[] buf = new byte[is.available()];
@@ -373,7 +377,7 @@ public class JarFile extends ZipFile {
             return ze;
         }
         JarEntry je = new JarEntry(ze);
-        je.parentJar = this;        
+        je.parentJar = this;
         return je;
     }
 

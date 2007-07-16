@@ -51,7 +51,8 @@ class InitManifest {
 
     private final byte[] mainAttributesChunk;
 
-    InitManifest(InputStream is, Attributes main, Map<String, Attributes> entries, Map<String, byte[]> chunks,
+    InitManifest(InputStream is, Attributes main,
+            Map<String, Attributes> entries, Map<String, byte[]> chunks,
             String verString) throws IOException {
         encoding = AccessController.doPrivileged(new PriviAction<String>(
                 "manifest.read.encoding")); //$NON-NLS-1$
@@ -77,14 +78,16 @@ class InitManifest {
 
         list.clear();
         byte[] chunk = null;
-        while (chunks == null ? readLines(is, list) : (chunk = nextChunk(is, list)) != null) {
+        while (chunks == null ? readLines(is, list) : (chunk = nextChunk(is,
+                list)) != null) {
             if (list.size() == 0) {
                 continue;
             }
             it = list.iterator();
             String line = it.next();
             if (line.length() < 7
-                    || !Util.toASCIILowerCase(line.substring(0, 5)).equals("name:")) { //$NON-NLS-1$
+                    || !Util.toASCIILowerCase(line.substring(0, 5)).equals(
+                            "name:")) { //$NON-NLS-1$
                 throw new IOException(Messages.getString("archive.23")); //$NON-NLS-1$
             }
             // Name: length required space char

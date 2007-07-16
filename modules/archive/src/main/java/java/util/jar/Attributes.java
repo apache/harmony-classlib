@@ -40,8 +40,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
 
         public static final Name CLASS_PATH = new Name("Class-Path"); //$NON-NLS-1$
 
-        public static final Name MANIFEST_VERSION = new Name(
-                "Manifest-Version"); //$NON-NLS-1$
+        public static final Name MANIFEST_VERSION = new Name("Manifest-Version"); //$NON-NLS-1$
 
         public static final Name MAIN_CLASS = new Name("Main-Class"); //$NON-NLS-1$
 
@@ -137,7 +136,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      */
     @SuppressWarnings("unchecked")
     public Attributes(Attributes attrib) {
-        map = (Map<Object, Object>)((HashMap) attrib.map).clone();
+        map = (Map<Object, Object>) ((HashMap) attrib.map).clone();
     }
 
     /**
@@ -233,9 +232,10 @@ public class Attributes implements Cloneable, Map<Object, Object> {
      *                when key is not an Attributes.Name or value is not a
      *                String
      */
-    @SuppressWarnings("cast") // Require cast to force ClassCastException
+    @SuppressWarnings("cast")
+    // Require cast to force ClassCastException
     public Object put(Object key, Object value) {
-        return map.put((Name)key, (String)value);
+        return map.put((Name) key, (String) value);
     }
 
     /**

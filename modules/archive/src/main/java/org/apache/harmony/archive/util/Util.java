@@ -65,19 +65,19 @@ public class Util {
         }
         return buffer.toString();
     }
-    
-    public static final boolean equalsIgnoreCase(String s1, String s2){
+
+    public static final boolean equalsIgnoreCase(String s1, String s2) {
         if (s1 == s2) {
             return true;
         }
-        
+
         if (s1 == null || s2 == null || s1.length() != s2.length()) {
             return false;
         }
 
         char c1, c2;
-        
-        for (int i=0; i< s1.length(); i++) {
+
+        for (int i = 0; i < s1.length(); i++) {
             if ((c1 = s1.charAt(i)) != (c2 = s2.charAt(i))
                     && toASCIIUpperCase(c1) != toASCIIUpperCase(c2)) {
                 return false;
