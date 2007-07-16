@@ -32,7 +32,7 @@ public class x_windows_949 extends Charset {
         }
 
         public boolean contains(Charset cs) {
-            return cs.name().equalsIgnoreCase("IBM367") || cs.name().equalsIgnoreCase("US-ASCII") ;
+            return cs.name().equalsIgnoreCase("x-windows-949") || cs.name().equalsIgnoreCase("IBM367") || cs.name().equalsIgnoreCase("US-ASCII") ;
         }
 
         public CharsetDecoder newDecoder() {

@@ -125,4 +125,16 @@ public class SynthContext {
     static boolean isSelected(int verifiedState) {
         return (verifiedState & SynthConstants.SELECTED) != 0;
     }
+    
+    /**
+     * Used in UI's. Created to reduce code doubling
+     * */
+    static int getCommonComponentState(JComponent c) {
+        int result = c.isEnabled() ? SynthConstants.ENABLED
+                : SynthConstants.DISABLED;
+        if (c.isFocusOwner()) {
+            result |= SynthConstants.FOCUSED;
+        }
+        return result;
+    }
 }

@@ -80,6 +80,10 @@ public class ColorType {
      */
     static ColorType calculateColorType(String key) {
 
+        if (key == null) {
+            return null;
+        }
+
         key = key.toUpperCase().intern();
 
         if (key == "BACKGROUND") { //$NON-NLS-1$
@@ -93,7 +97,6 @@ public class ColorType {
         } else if (key == "FOCUS") { //$NON-NLS-1$
             return FOCUS;
         }
-
         throw new IllegalStateException(Messages.getString("swing.err.1C") //$NON-NLS-1$
                 + key);
     }

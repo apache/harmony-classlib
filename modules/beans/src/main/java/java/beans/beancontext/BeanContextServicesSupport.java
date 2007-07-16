@@ -129,7 +129,7 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
         /**
          * Delegate to the wrapped <code>BeanContextServices</code>.
          */
-        public Object getService(BeanContextServices bcs, Object requestor,
+        Object getService(BeanContextServices bcs, Object requestor,
                 Class serviceClass, Object serviceSelector,
                 BeanContextServiceRevokedListener listener)
                 throws TooManyListenersException {

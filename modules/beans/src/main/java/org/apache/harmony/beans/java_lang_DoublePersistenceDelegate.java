@@ -25,7 +25,7 @@ public class java_lang_DoublePersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Double value = (Double) oldInstance;
-        return new Expression(oldInstance, Double.class, "new", new Object[] { value }); //$NON-NLS-1$
+        return new Expression(oldInstance, Double.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
     }
 
     @Override

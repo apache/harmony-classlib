@@ -1919,6 +1919,70 @@ public class CollectionsTest extends junit.framework.TestCase {
    			assertEquals(errMsg, e.getCause().getMessage());
    		}
     }
+    
+    public void test_binarySearch_asymmetry_with_comparator() throws Exception{
+        List list = new ArrayList();
+        String s1 = new String("a");
+        String s2 = new String("aa");
+        String s3 = new String("aaa");        
+        list.add(s1);
+        list.add(s2);
+        list.add(s3);
+        Collections.sort(list);
+        Object o = Collections.binarySearch(list, 1, new StringComparator());
+        assertSame(0,o);
+    }
+    
+    public void test_binarySearch_asymmetry() throws Exception{
+        List list = new LinkedList();
+        String s1 = new String("a");
+        String s2 = new String("aa");
+        String s3 = new String("aaa");        
+        list.add(new MyComparable(s1));
+        list.add(new MyComparable(s2));
+        list.add(new MyComparable(s3));
+        Collections.sort(list);
+        Object o = Collections.binarySearch(list, 1);
+        assertSame(0,o);
+    }
+    
+    
+    private class MyComparable implements Comparable {
+
+        public String s;
+
+        public MyComparable(String s) {
+            this.s = s;
+
+        }
+
+        public int compareTo(Object another) {
+            int length = 0;
+            if (another instanceof MyComparable) {
+                length = (((MyComparable) another).s).length();
+            } else {
+                length = (Integer) another;
+            }
+            return s.length() - length;
+        }
+
+    }
+    
+    private class StringComparator implements Comparator {
+
+        public int compare(Object object1, Object object2) {
+            String s = (String) object1;
+            int length;
+            if(object2 instanceof String){
+                length = ((String)object2).length();
+            }
+            else
+            {
+                length = (Integer) object2;
+            }            
+            return s.length() - length;
+        }
+    }
 
 
     /**

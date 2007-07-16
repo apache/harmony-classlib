@@ -53,7 +53,7 @@ public class TextRunBreaker implements Cloneable {
 
     byte[] levels;
 
-    HashMap<Integer, Font> fonts;
+    HashMap<Integer, Object> fonts;
     HashMap<Integer, Decoration> decorations;
 
     // Related to default font substitution
@@ -193,7 +193,7 @@ public class TextRunBreaker implements Cloneable {
      */
     void createStyleRuns() {
         // TODO - implement fast and simple case
-        fonts = new HashMap<Integer, Font>();
+        fonts = new HashMap<Integer, Object>();
         decorations = new HashMap<Integer, Decoration>();
         ////
 
@@ -221,7 +221,8 @@ public class TextRunBreaker implements Cloneable {
             // Find appropriate font or place GraphicAttribute there
 
             // 1. Try to pick up CHAR_REPLACEMENT (compatibility)
-            Font value = (Font)attributes.get(TextAttribute.CHAR_REPLACEMENT);
+            Object value = (GraphicAttribute)
+                    attributes.get(TextAttribute.CHAR_REPLACEMENT);
 
             if (value == null) {
                 // 2. Try to Get FONT

@@ -25,7 +25,7 @@ public class java_lang_LongPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Long value = (Long) oldInstance;
-        return new Expression(oldInstance, Long.class, "new", new Object[] { value }); //$NON-NLS-1$
+        return new Expression(oldInstance, Long.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
     }
 
     @Override

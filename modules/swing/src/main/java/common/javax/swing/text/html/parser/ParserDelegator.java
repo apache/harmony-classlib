@@ -109,10 +109,9 @@ public class ParserDelegator extends HTMLEditorKit.Parser implements
             String oldName = dtd.name;
             // gets the location of the harcoded file that is located in the
             // classpath ...
-            URL bdtdURL = ParserDelegator.class.getResource(name + ".bdtd");
             // fills the DTD ...
             dtd.read(new DataInputStream(
-                    new FileInputStream(new File(bdtdURL.toURI()))));
+                    ParserDelegator.class.getResourceAsStream(name + ".bdtd")));
             dtd.name = oldName;
             DTD.putDTDHash(name, dtd);
         } catch (Exception e) {

@@ -19,7 +19,7 @@ package org.apache.harmony.beans;
 
 import java.beans.Expression;
 import java.beans.Statement;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class ObjectNode {
         this.nodes = null;
     }
 
-    public ObjectNode(Expression initializer, HashMap<Object, ObjectNode> nodes) {
+    public ObjectNode(Expression initializer, IdentityHashMap<Object, ObjectNode> nodes) {
         this.initializer = initializer;
         this.nodes = nodes;
     }

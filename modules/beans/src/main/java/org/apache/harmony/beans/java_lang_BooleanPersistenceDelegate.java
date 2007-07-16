@@ -27,7 +27,7 @@ public class java_lang_BooleanPersistenceDelegate extends PersistenceDelegate {
     protected Expression instantiate(Object oldInstance, Encoder out) {
         boolean value = ((Boolean) oldInstance).booleanValue();
         return new Expression(oldInstance, Boolean.class, "new", //$NON-NLS-1$
-                new Object[] { Boolean.valueOf(value) });
+                new Object[] { Boolean.valueOf(value).toString() });
     }
 
     @Override

@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.harmony.awt.FieldsAccessor;
 import org.apache.harmony.awt.internal.nls.Messages;
+import org.apache.harmony.awt.wtk.NativeWindow;
 
 
 public class BorderLayout implements LayoutManager2, Serializable {
@@ -481,16 +482,21 @@ public class BorderLayout implements LayoutManager2, Serializable {
         int middleY = clientRect.y;
 
         if (visibleComponents[N] != null) {
+            visibleComponents[N].setSize(clientRect.width, 
+                    prefCompSizes[N].height);
             visibleComponents[N].setBounds(clientRect.x, clientRect.y,
-                    clientRect.width, prefCompSizes[N].height);
+                    clientRect.width, prefCompSizes[N].height, 
+                    NativeWindow.BOUNDS_NOSIZE, true);
             middleY += prefCompSizes[N].height + vGap;
         }
         int middleHeight = clientRect.height - prefCompSizes[N].height
                 - prefCompSizes[S].height - vGapOverhead;
         middleHeight = Math.max(middleHeight, 0);
         if (visibleComponents[W] != null) {
+            visibleComponents[W].setSize(prefCompSizes[W].width, middleHeight);
             visibleComponents[W].setBounds(clientRect.x, middleY,
-                    prefCompSizes[W].width, middleHeight);
+                    prefCompSizes[W].width, middleHeight, 
+                    NativeWindow.BOUNDS_NOSIZE, true);
             centerX += prefCompSizes[W].width + hGap;
         }
         int middleWidth = clientRect.width - prefCompSizes[W].width -
@@ -500,14 +506,19 @@ public class BorderLayout implements LayoutManager2, Serializable {
             visibleComponents[C].setBounds(centerX, middleY, middleWidth, middleHeight);
         }
         if (visibleComponents[S] != null) {
+            visibleComponents[S].setSize(clientRect.width, 
+                    prefCompSizes[S].height);
             visibleComponents[S].setBounds(clientRect.x,
                     clientRect.y + clientRect.height - prefCompSizes[S].height,
-                    clientRect.width, prefCompSizes[S].height);
+                    clientRect.width, prefCompSizes[S].height, 
+                    NativeWindow.BOUNDS_NOSIZE, true);
         }
         if (visibleComponents[E] != null) {
+            visibleComponents[E].setSize(prefCompSizes[E].width, middleHeight);
             visibleComponents[E].setBounds(
                     clientRect.x + clientRect.width - prefCompSizes[E].width,
-                    middleY, prefCompSizes[E].width, middleHeight);
+                    middleY, prefCompSizes[E].width, middleHeight, 
+                    NativeWindow.BOUNDS_NOSIZE, true);
         }
     }
 

@@ -1473,12 +1473,12 @@ public class Collections {
             return -1;
         }
 
-        Comparable<T> key = (Comparable<T>) object;
+               
         if (!(list instanceof RandomAccess)) {
-            ListIterator<T> it = (ListIterator<T>) list.listIterator();
+            ListIterator<? extends Comparable<? super T>> it = list.listIterator();
             while (it.hasNext()) {
                 int result;
-                if ((result = key.compareTo(it.next())) <= 0) {
+                if ((result = -it.next().compareTo(object)) <= 0) {    
                     if (result == 0) {
                         return it.previousIndex();
                     }
@@ -1491,7 +1491,7 @@ public class Collections {
         int low = 0, mid = list.size(), high = mid - 1, result = -1;
         while (low <= high) {
             mid = (low + high) >> 1;
-            if ((result = key.compareTo((T) list.get(mid))) > 0) {
+            if ((result = -list.get(mid).compareTo(object)) > 0) {
                 low = mid + 1;
             } else if (result == 0) {
                 return mid;
@@ -1531,7 +1531,7 @@ public class Collections {
             ListIterator<? extends T> it = list.listIterator();
             while (it.hasNext()) {
                 int result;
-                if ((result = comparator.compare(object, it.next())) <= 0) {
+                if ((result = -comparator.compare(it.next(), object)) <= 0) {
                     if (result == 0) {
                         return it.previousIndex();
                     }
@@ -1544,7 +1544,7 @@ public class Collections {
         int low = 0, mid = list.size(), high = mid - 1, result = -1;
         while (low <= high) {
             mid = (low + high) >> 1;
-            if ((result = comparator.compare(object, list.get(mid))) > 0) {
+            if ((result = -comparator.compare(list.get(mid),object)) > 0) {
                 low = mid + 1;
             } else if (result == 0) {
                 return mid;

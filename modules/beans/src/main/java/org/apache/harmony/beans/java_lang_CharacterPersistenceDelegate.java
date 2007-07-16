@@ -25,9 +25,8 @@ public class java_lang_CharacterPersistenceDelegate extends PersistenceDelegate 
 
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        Character value = (Character) oldInstance;
-        return new Expression(oldInstance, Character.class, "new", //$NON-NLS-1$
-                new Object[] { value });
+        return new Expression(oldInstance, oldInstance.toString(),
+                "charAt", new Object[] { new Integer(0) });
     }
 
     @Override

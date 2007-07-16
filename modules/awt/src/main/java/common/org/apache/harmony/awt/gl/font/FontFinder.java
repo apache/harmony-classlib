@@ -103,7 +103,7 @@ public class FontFinder {
      * @param fonts - mapping of the font run starts to the fonts
      */
     static void findFonts(char text[], int runStart, int runLimit, List<Integer> runStarts,
-            Map<Integer, Font> fonts) {
+            Map<Integer, Object> fonts) {
         Font prevFont = null;
         Font currFont;
         for (int i = runStart; i < runLimit; i++) {

@@ -18,6 +18,7 @@
 package javax.swing.plaf.synth;
 
 import java.awt.Component;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -26,13 +27,19 @@ import javax.swing.JComponent;
 import javax.swing.UIDefaults;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicLookAndFeel;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.harmony.x.swing.internal.nls.Messages;
+import org.xml.sax.SAXException;
 
 import org.apache.harmony.luni.util.NotImplementedException;
-import org.apache.harmony.x.swing.internal.nls.Messages;
 
 public class SynthLookAndFeel extends BasicLookAndFeel implements Serializable {
 
-    private final static String packageName = "javax.swing.plaf.synth";
+    /** Path used in UIDefaults */
+    private final static String pathToSynthLaf = "javax.swing.plaf.synth.SynthLookAndFeel"; //$NON-NLS-1$
 
     private static SynthStyleFactory currentFactory;
 
@@ -53,31 +60,116 @@ public class SynthLookAndFeel extends BasicLookAndFeel implements Serializable {
     }
 
     /**
-     * Creates the Synth UI object corresponds JComponent given
+     * Creates the Synth UI object corresponds JComponent given. (This method
+     * used by UIManager because all the UIs classes are package-protected
+     * according to spec, so reference in defaults table points to
+     * SynthLookAndFeel)
+     * 
+     * @see SynthLookAndFeel#initClassDefaults(UIDefaults)
      */
-    public static ComponentUI createUI(JComponent c) {
+    @SuppressWarnings("nls")
+    public static ComponentUI createUI(JComponent c)
+            throws NotImplementedException {
 
-        try {
+        // Commented because UI's patch is not ready for now
 
-            return (ComponentUI) Class.forName(packageName + c.getUIClassID(),
-                    true, Thread.currentThread().getContextClassLoader())
-                    .getMethod("createUI", JComponent.class).invoke(null, c); //$NON-NLS-1$
-
-        } catch (Exception e) {
-
-            return null;
-        }
+        // String uiClassID = c.getUIClassID().intern();
+        //
+        // if (uiClassID == "InternalFrameUI") {
+        // return SynthInternalFrameUI.createUI(c);
+        // } else if (uiClassID == "ViewportUI") {
+        // return SynthViewportUI.createUI(c);
+        // } else if (uiClassID == "ScrollBarUI") {
+        // SynthScrollBarUI.createUI(c);
+        // } else if (uiClassID == "ToolTipUI") {
+        // return SynthToolTipUI.createUI(c);
+        // } else if (uiClassID == "MenuItemUI") {
+        // return SynthMenuItemUI.createUI(c);
+        // } else if (uiClassID == "MenuUI") {
+        // return SynthMenuUI.createUI(c);
+        // } else if (uiClassID == "TextAreaUI") {
+        // return SynthTextAreaUI.createUI(c);
+        // } else if (uiClassID == "PopupMenuUI") {
+        // return SynthPopupMenuUI.createUI(c);
+        // } else if (uiClassID == "ScrollPaneUI") {
+        // return SynthScrollPaneUI.createUI(c);
+        // } else if (uiClassID == "SliderUI") {
+        // return SynthSliderUI.createUI(c);
+        // } else if (uiClassID == "ComboBoxUI") {
+        // return SynthComboBoxUI.createUI(c);
+        // } else if (uiClassID == "RadioButtonUI") {
+        // return SynthRadioButtonUI.createUI(c);
+        // } else if (uiClassID == "FormattedTextFieldUI") {
+        // return SynthFormattedTextFieldUI.createUI(c);
+        // } else if (uiClassID == "TreeUI") {
+        // return SynthTreeUI.createUI(c);
+        // } else if (uiClassID == "MenuBarUI") {
+        // return SynthMenuBarUI.createUI(c);
+        // } else if (uiClassID == "RadioButtonMenuItemUI") {
+        // return SynthRadioButtonMenuItemUI.createUI(c);
+        // } else if (uiClassID == "ProgressBarUI") {
+        // return SynthProgressBarUI.createUI(c);
+        // } else if (uiClassID == "ToolBarUI") {
+        // return SynthToolBarUI.createUI(c);
+        // } else if (uiClassID == "ColorChooserUI") {
+        // return SynthColorChooserUI.createUI(c);
+        // } else if (uiClassID == "ToolBarSeparatorUI") {
+        // return SynthToolBarSeparatorUI.createUI(c);
+        // } else if (uiClassID == "TabbedPaneUI") {
+        // return SynthTabbedPaneUI.createUI(c);
+        // } else if (uiClassID == "DesktopPaneUI") {
+        // return SynthDesktopPaneUI.createUI(c);
+        // } else if (uiClassID == "TableUI") {
+        // return SynthTableUI.createUI(c);
+        // } else if (uiClassID == "PanelUI") {
+        // return SynthPanelUI.createUI(c);
+        // } else if (uiClassID == "CheckBoxMenuItemUI") {
+        // return SynthCheckBoxMenuItemUI.createUI(c);
+        // } else if (uiClassID == "PasswordFieldUI") {
+        // return SynthPasswordFieldUI.createUI(c);
+        // } else if (uiClassID == "CheckBoxUI") {
+        // return SynthCheckBoxUI.createUI(c);
+        // } else if (uiClassID == "TableHeaderUI") {
+        // return SynthTableHeaderUI.createUI(c);
+        // } else if (uiClassID == "SplitPaneUI") {
+        // return SynthSplitPaneUI.createUI(c);
+        // } else if (uiClassID == "EditorPaneUI") {
+        // return SynthEditorPaneUI.createUI(c);
+        // } else if (uiClassID == "ListUI") {
+        // return SynthListUI.createUI(c);
+        // } else if (uiClassID == "SpinnerUI") {
+        // return SynthSpinnerUI.createUI(c);
+        // } else if (uiClassID == "DesktopIconUI") {
+        // return SynthDesktopIconUI.createUI(c);
+        // } else if (uiClassID == "TextFieldUI") {
+        // return SynthTextFieldUI.createUI(c);
+        // } else if (uiClassID == "TextPaneUI") {
+        // return SynthTextPaneUI.createUI(c);
+        // } else if (uiClassID == "ButtonUI") {
+        // return SynthButtonUI.createUI(c);
+        // } else if (uiClassID == "LabelUI") {
+        // return SynthLabelUI.createUI(c);
+        // } else if (uiClassID == "ToggleButtonUI") {
+        // SynthToggleButtonUI.createUI(c);
+        // } else if (uiClassID == "OptionPaneUI") {
+        // return SynthOptionPaneUI.createUI(c);
+        // } else if (uiClassID == "PopupMenuSeparatorUI") {
+        // return SynthPopupMenuSeparatorUI.createUI(c);
+        // } else if (uiClassID == "RootPaneUI") {
+        // return SynthRootPaneUI.createUI(c);
+        // } else if (uiClassID == "SeparatorUI") {
+        // return SynthSeparatorUI.createUI(c);
+        // }
+        // compatible with RI
+        return null;
     }
 
     /**
      * Renew the synth styles for the JComponent. This method isn't fully
-     * correct, but does what needs
+     * correct, but does what needs (The method is unused in package)
      */
     public static void updateStyles(Component c) {
-
-        if (c instanceof JComponent) {
-            ((JComponent) c).revalidate();
-        }
+        c.setName(c.getName() + " "); //$NON-NLS-1$
     }
 
     /**
@@ -142,11 +234,26 @@ public class SynthLookAndFeel extends BasicLookAndFeel implements Serializable {
 
     @SuppressWarnings("unused")
     public void load(InputStream input, Class<?> resourceBase)
-            throws NotImplementedException, ParseException,
-            IllegalArgumentException {
-        /*
-         * This class will be implemented with XMLSynthParser
-         */
+            throws ParseException, IllegalArgumentException {
+
+        if (input == null || resourceBase == null) {
+            throw new IllegalArgumentException(Messages
+                    .getString("swing.err.1D")); //$NON-NLS-1$
+        }
+
+        try {
+
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(input, new XMLSynthParser(resourceBase));
+
+        } catch (ParserConfigurationException e) {
+            throw new ParseException(e.getMessage(), 0);
+        } catch (SAXException e) {
+            e.printStackTrace();
+            throw new ParseException(e.getMessage(), 0);
+        } catch (IOException e) {
+            throw new ParseException(e.getMessage(), 0);
+        }
     }
 
     /** The default implementation returns false */
@@ -158,49 +265,30 @@ public class SynthLookAndFeel extends BasicLookAndFeel implements Serializable {
     @SuppressWarnings("nls")
     @Override
     protected void initClassDefaults(UIDefaults defaults) {
-        Object[] initDefaults = { "InternalFrameUI",
-                packageName + "SynthInternalFrameUI", "ViewportUI",
-                packageName + "SynthViewportUI", "ScrollBarUI",
-                packageName + "SynthScrollBarUI", "ToolTipUI",
-                packageName + "SynthToolTipUI", "MenuItemUI",
-                packageName + "SynthMenuItemUI", "MenuUI",
-                packageName + "SynthMenuUI", "TextAreaUI",
-                packageName + "SynthTextAreaUI", "PopupMenuUI",
-                packageName + "SynthPopupMenuUI", "ScrollPaneUI",
-                packageName + "SynthScrollPaneUI", "SliderUI",
-                packageName + "SynthSliderUI", "ComboBoxUI",
-                packageName + "SynthComboBoxUI", "RadioButtonUI",
-                packageName + "SynthRadioButtonUI", "FormattedTextFieldUI",
-                packageName + "SynthFormattedTextFieldUI", "TreeUI",
-                packageName + "SynthTreeUI", "MenuBarUI",
-                packageName + "SynthMenuBarUI", "RadioButtonMenuItemUI",
-                packageName + "SynthRadioButtonMenuItemUI", "ProgressBarUI",
-                packageName + "SynthProgressBarUI", "ToolBarUI",
-                packageName + "SynthToolBarUI", "ColorChooserUI",
-                packageName + "SynthColorChooserUI", "ToolBarSeparatorUI",
-                packageName + "SynthToolBarSeparatorUI", "TabbedPaneUI",
-                packageName + "SynthTabbedPaneUI", "DesktopPaneUI",
-                packageName + "SynthDesktopPaneUI", "TableUI",
-                packageName + "SynthTableUI", "PanelUI",
-                packageName + "SynthPanelUI", "CheckBoxMenuItemUI",
-                packageName + "SynthCheckBoxMenuItemUI", "PasswordFieldUI",
-                packageName + "SynthPasswordFieldUI", "CheckBoxUI",
-                packageName + "SynthCheckBoxUI", "TableHeaderUI",
-                packageName + "SynthTableHeaderUI", "SplitPaneUI",
-                packageName + "SynthSplitPaneUI", "EditorPaneUI",
-                packageName + "SynthEditorPaneUI", "ListUI",
-                packageName + "SynthListUI", "SpinnerUI",
-                packageName + "SynthSpinnerUI", "DesktopIconUI",
-                packageName + "SynthDesktopIconUI", "TextFieldUI",
-                packageName + "SynthTextFieldUI", "TextPaneUI",
-                packageName + "SynthTextPaneUI", "LabelUI",
-                packageName + "SynthLabelUI", "ButtonUI",
-                packageName + "SynthButtonUI", "ToggleButtonUI",
-                packageName + "SynthToggleButtonUI", "OptionPaneUI",
-                packageName + "SynthOptionPaneUI", "PopupMenuSeparatorUI",
-                packageName + "SynthPopupMenuSeparatorUI", "RootPaneUI",
-                packageName + "SynthRootPaneUI", "SeparatorUI",
-                packageName + "SynthSeparatorUI" };
+        Object[] initDefaults = { "InternalFrameUI", pathToSynthLaf,
+                "ViewportUI", pathToSynthLaf, "ScrollBarUI", pathToSynthLaf,
+                "ToolTipUI", pathToSynthLaf, "MenuItemUI", pathToSynthLaf,
+                "MenuUI", pathToSynthLaf, "TextAreaUI", pathToSynthLaf,
+                "PopupMenuUI", pathToSynthLaf, "ScrollPaneUI", pathToSynthLaf,
+                "SliderUI", pathToSynthLaf, "ComboBoxUI", pathToSynthLaf,
+                "RadioButtonUI", pathToSynthLaf, "FormattedTextFieldUI",
+                pathToSynthLaf, "TreeUI", pathToSynthLaf, "MenuBarUI",
+                pathToSynthLaf, "RadioButtonMenuItemUI", pathToSynthLaf,
+                "ProgressBarUI", pathToSynthLaf, "ToolBarUI", pathToSynthLaf,
+                "ColorChooserUI", pathToSynthLaf, "ToolBarSeparatorUI",
+                pathToSynthLaf, "TabbedPaneUI", pathToSynthLaf,
+                "DesktopPaneUI", pathToSynthLaf, "TableUI", pathToSynthLaf,
+                "PanelUI", pathToSynthLaf, "CheckBoxMenuItemUI",
+                pathToSynthLaf, "PasswordFieldUI", pathToSynthLaf,
+                "CheckBoxUI", pathToSynthLaf, "TableHeaderUI", pathToSynthLaf,
+                "SplitPaneUI", pathToSynthLaf, "EditorPaneUI", pathToSynthLaf,
+                "ListUI", pathToSynthLaf, "SpinnerUI", pathToSynthLaf,
+                "DesktopIconUI", pathToSynthLaf, "TextFieldUI", pathToSynthLaf,
+                "TextPaneUI", pathToSynthLaf, "ButtonUI", pathToSynthLaf,
+                "LabelUI", pathToSynthLaf, "ToggleButtonUI", pathToSynthLaf,
+                "OptionPaneUI", pathToSynthLaf, "PopupMenuSeparatorUI",
+                pathToSynthLaf, "RootPaneUI", pathToSynthLaf, "SeparatorUI",
+                pathToSynthLaf };
         defaults.putDefaults(initDefaults);
     }
 

@@ -30,7 +30,14 @@ import junit.framework.TestCase;
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFooStop;
 
-
+import java.beans.XMLEncoder;
+import java.beans.XMLDecoder;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
 /**
  * Test java.beans.PersistenceDelegate
  */
@@ -206,7 +213,45 @@ public class PersistenceDelegateTest extends TestCase {
         assertFalse(pd.mutatesTo(null, "test"));
     }
 
-    
+    public void test_writeObject_Null_LXMLEncoder() throws Exception{
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(byteArrayOutputStream));
+        encoder.writeObject(null);
+        encoder.close();
+
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        assertNull(decoder.readObject());
+        stream = new DataInputStream(PersistenceDelegateTest.class.getResourceAsStream("/xml/null.xml"));
+        decoder = new XMLDecoder(stream);
+        assertNull(decoder.readObject());
+    }
+
+    class Bar {
+        public int value;
+        public void barTalk() {
+            System.out.println("Bar is coming!");
+        }
+    }
+    public void test_writeObject_java_lang_reflect_Field()
+			throws SecurityException, NoSuchFieldException, IOException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+				byteArrayOutputStream));
+		Field value = Bar.class.getField("value");
+		encoder.writeObject(value);
+		encoder.close();
+
+		DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+				byteArrayOutputStream.toByteArray()));
+		
+		XMLDecoder decoder = new XMLDecoder(stream); Field field = (Field)
+		decoder.readObject();
+
+        assertEquals(value, field);
+		assertEquals(value.getName(), field.getName());
+	}
+
     // <--
 
     private void assertWasAdded(Class<?> targetClass, String methodName,

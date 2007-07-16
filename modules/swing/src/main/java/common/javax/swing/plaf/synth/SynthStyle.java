@@ -30,28 +30,32 @@ import javax.swing.JComponent;
 public abstract class SynthStyle {
 
     /**
+     * Null style used by StyleFactory to represent styles that not found
+     */
+    static final SynthStyle NULL_STYLE = new SynthStyle() {
+
+        @Override
+        public SynthPainter getPainter(SynthContext context) {
+            return new SynthPainter() {
+                // Empty: Null painter nothing paints
+            };
+        }
+
+        @Override
+        protected Color getColorForState(SynthContext context, ColorType type) {
+            return null;
+        }
+
+        @Override
+        protected Font getFontForState(SynthContext context) {
+            return null;
+        }
+    };
+
+    /**
      * The default isOpaque value
      */
     private boolean isOpaque = true;
-
-    /**
-     * The default graphics utils
-     */
-    private static final SynthGraphicsUtils gUtils = new SynthGraphicsUtils();
-
-    /**
-     * The default Insets
-     */
-    private static final Insets insets = new Insets(0, 0, 0, 0);
-
-    static int getCommonComponentState(JComponent c) {
-        int result = c.isEnabled() ? SynthConstants.ENABLED
-                : SynthConstants.DISABLED;
-        if (c.isFocusOwner()) {
-            result |= SynthConstants.FOCUSED;
-        }
-        return result;
-    }
 
     /**
      * The default implementation returns null
@@ -72,39 +76,36 @@ public abstract class SynthStyle {
                 : defaultValue;
     }
 
-    /**
-     * Verifies the colors defined in component than calls getColorForState
-     */
     public Color getColor(SynthContext context, ColorType type) {
-        JComponent c = context.getComponent();
-        if (c.isEnabled()) {
+
+        Color result = getColorForState(context, type);
+
+        if (result == null) {
+
+            JComponent c = context.getComponent();
 
             if (type == ColorType.BACKGROUND) {
 
                 if (c.getBackground() != null) {
-                    return c.getBackground();
+                    result = c.getBackground();
                 }
 
             } else if (type == ColorType.FOREGROUND) {
 
                 if (c.getForeground() != null) {
-                    return c.getForeground();
+                    result = c.getForeground();
                 }
             }
         }
 
-        return getColorForState(context, type);
+        return result;
     }
 
     public Font getFont(SynthContext context) {
 
-        Font result = context.getComponent().getFont();
+        Font result = getFontForState(context);
 
-        if (result == null) {
-            return getFontForState(context);
-        }
-
-        return result;
+        return (result == null) ? context.getComponent().getFont() : result;
     }
 
     protected abstract Font getFontForState(SynthContext context);
@@ -127,14 +128,17 @@ public abstract class SynthStyle {
 
     }
 
+    /**
+     * The default implementation returns empty insets
+     */
     @SuppressWarnings("unused")
     public Insets getInsets(SynthContext context, Insets modified) {
 
         if (modified == null) {
-            return (Insets) insets.clone();
+            return new Insets(0, 0, 0, 0);
         }
 
-        modified.set(insets.top, insets.left, insets.bottom, insets.right);
+        modified.set(0, 0, 0, 0);
 
         return modified;
     }
@@ -150,8 +154,8 @@ public abstract class SynthStyle {
     /**
      * @return The default implementation returns null
      */
-    public SynthPainter getPainter(@SuppressWarnings("unused")
-    SynthContext context) {
+    @SuppressWarnings("unused")
+    public SynthPainter getPainter(SynthContext context) {
         return null;
     }
 
@@ -187,6 +191,7 @@ public abstract class SynthStyle {
      */
     public SynthGraphicsUtils getGraphicsUtils(@SuppressWarnings("unused")
     SynthContext context) {
-        return gUtils;
+        return new SynthGraphicsUtils();
     }
+
 }

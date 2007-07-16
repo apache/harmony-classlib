@@ -690,6 +690,17 @@ public class PropertiesTest extends junit.framework.TestCase {
                     .getProperty(nextKey).equals(myProps.getProperty(nextKey)));
         }
     }
+ 
+    /**
+     * if loading from single line like "hello" without "\n\r" neither "=", it should be same 
+     * as loading from "hello="
+     */
+    public void testLoadSingleLine() throws Exception{
+        Properties props = new Properties();
+        InputStream sr = new ByteArrayInputStream("hello".getBytes());
+        props.load(sr);
+        assertEquals(1, props.size());
+    }
 
     /**
      * Sets up the fixture, for example, open a network connection. This method
