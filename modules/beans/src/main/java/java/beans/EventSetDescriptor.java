@@ -162,11 +162,11 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
             for (Method element : listenerMethods) {
                 // XXX do we need this check?
-                //checkEventType(eventSetName, element);
-                if (checkMethod(listenerType, element)) {
-                    this.listenerMethodDescriptors.add(
-                            new MethodDescriptor(element));
-                }
+                // checkEventType(eventSetName, element);
+                // if (checkMethod(listenerType, element)) {
+                this.listenerMethodDescriptors
+                        .add(new MethodDescriptor(element));
+                // }
             }
         }
 
@@ -190,10 +190,10 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 Method listenerMethod = element.getMethod();
 
                 // XXX
-                //checkEventType(eventSetName, listenerMethod);
-                if (checkMethod(listenerType, listenerMethod)) {
-                    this.listenerMethodDescriptors.add(element);
-                }
+                // checkEventType(eventSetName, listenerMethod);
+                // if (checkMethod(listenerType, listenerMethod)) {
+                this.listenerMethodDescriptors.add(element);
+                //                }
             }
         }
     }
@@ -358,17 +358,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
             if (m.getName().equals(methodName)) {
                 Class[] paramTypes = m.getParameterTypes();
                 if (paramTypes.length == 1) {
-                    String paramTypeName = paramTypes[0].getName();
-                    paramTypeName = paramTypeName.substring(paramTypeName
-                            .lastIndexOf(".") + 1);
-                    if (paramTypeName.endsWith("Listener")) {
-                        paramTypeName = paramTypeName.substring(0,
-                                paramTypeName.length() - "Listener".length());
-                        if (expectedListenerTypeName.startsWith(paramTypeName)) {
+//                    String paramTypeName = paramTypes[0].getName();
+//                    paramTypeName = paramTypeName.substring(paramTypeName
+//                            .lastIndexOf(".") + 1);
+//                    if (paramTypeName.endsWith("Listener")) {
+//                        paramTypeName = paramTypeName.substring(0,
+//                                paramTypeName.length() - "Listener".length());
+//                        if (expectedListenerTypeName.startsWith(paramTypeName)) {
                             method = m;
                             break;
-                        }
-                    }
+//                        }
+//                    }
                 }
             }
         }
@@ -405,15 +405,23 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 listenerType.getPackage().getName().length() + 1);
         }
         String methodName = prefix + shortName + postfix;
-        Class listenerType = this.awtEventListener == null? this.listenerType:this.awtEventListener;
         try {
             if (prefix.equals("get")) { //$NON-NLS-1$
                 return sourceClass.getMethod(methodName);
             }
-            return sourceClass.getMethod(methodName, listenerType);
         } catch (NoSuchMethodException nsme) {
             return null;
         }
+        Method[] m = sourceClass.getMethods();
+        for(int i = 0; i < m.length; i++){
+            if(m[i].getName().equals(methodName)){
+                Class[] paramTypes = m[i].getParameterTypes();
+                if (paramTypes.length == 1) {
+                    return m[i];
+                }
+            }
+        }
+        return null;
     }
 
     private static boolean isUnicastByDefault(Method addMethod) {

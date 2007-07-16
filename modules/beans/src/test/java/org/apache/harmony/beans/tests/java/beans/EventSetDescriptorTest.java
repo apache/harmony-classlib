@@ -1286,6 +1286,22 @@ public class EventSetDescriptorTest extends TestCase {
             // expected
         }
     }
+    
+    public void testConstructor_withAnotherListener() throws Exception {
+        Method[] listenermethods = AnotherObjectListener.class
+                .getDeclaredMethods();
+
+        Method add = AnObject.class.getDeclaredMethod(
+                "addEventSetDescriptorTest$AnObjectListener",
+                AnObjectListener.class);
+        Method remove = AnObject.class.getDeclaredMethod(
+                "removeEventSetDescriptorTest$AnObjectListener",
+                AnObjectListener.class);
+
+        EventSetDescriptor esd = new EventSetDescriptor("something",
+                AnObjectListener.class, listenermethods, add, remove);
+        assertNotNull(esd);
+    }
 
     protected String getUnQualifiedClassName(Class<?> classType) {
         String qName = classType.getName();
@@ -1349,6 +1365,33 @@ public class EventSetDescriptorTest extends TestCase {
     
     private static class SomethingEvent {
     
+    }
+    
+    public static void main(String[] args) throws Exception {
+
+        try {
+                // No need to do anything clever, there's only one method and it's
+                // the one we want.
+                // Swap these two lines to make Harmony pass.
+                //Method[] listenermethods = AnObjectListener.class.getDeclaredMethods();
+                Method[] listenermethods = AnotherObjectListener.class.getDeclaredMethods();
+
+                Method add = AnObject.class.getDeclaredMethod( "addEventSetDescriptorTest3$AnObjectListener",
+                                                                AnObjectListener.class );
+                Method remove = AnObject.class.getDeclaredMethod( "removeEventSetDescriptorTest3$AnObjectListener",
+                                                                AnObjectListener.class );
+
+                EventSetDescriptor esd = new EventSetDescriptor("something",
+                    AnObjectListener.class, listenermethods, add, remove);
+            System.out.println("Test passed.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Test failed.");
+        }
+    }
+
+    private interface AnotherObjectListener {
+        public void anotherMethod(SomethingEvent s);
     }
 
 }
