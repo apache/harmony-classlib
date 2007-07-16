@@ -55,31 +55,31 @@ import org.apache.harmony.sql.tests.javax.sql.rowset.serial.SQLInputImplTest.Moc
 import junit.framework.TestCase;
 
 public class SQLOutputImplTest extends TestCase {
-    
+
     private static SQLOutputImpl impl;
-    
+
     private static Vector attr;
-    
+
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#SQLOutputImpl(Vector, Map)}
      */
     public void test_ConstructorLjava_util_VectorLjava_util_Map() {
         assertNotNull(impl);
-        
+
         try {
             new SQLOutputImpl(null, new HashMap());
             fail("should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
-        
+
         try {
             new SQLOutputImpl(null, null);
             fail("should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
-        
+
         try {
             new SQLOutputImpl(new Vector(), null);
             fail("should throw SQLException");
@@ -96,7 +96,7 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeArray(array);
         assertEquals(1, attr.size());
         assertTrue(attr.get(0) instanceof SerialArray);
-        
+
         impl.writeArray(null);
         assertNull(attr.get(1));
     }
@@ -109,7 +109,7 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeAsciiStream(stream);
         assertEquals(1, attr.size());
         assertEquals("abc", attr.get(0));
-        
+
         try {
             impl.writeAsciiStream(null);
             fail("should throw NullPointerException");
@@ -125,7 +125,7 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeBigDecimal(BigDecimal.ONE);
         impl.writeBigDecimal(BigDecimal.ONE);
         assertSame(attr.get(0), attr.get(1));
-        
+
         impl.writeBigDecimal(null);
         assertNull(attr.get(2));
     }
@@ -133,7 +133,8 @@ public class SQLOutputImplTest extends TestCase {
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeBinaryStream(InputStream)}
      */
-    public void test_writeBinaryStreamLjava_io_InputStream() throws SQLException {
+    public void test_writeBinaryStreamLjava_io_InputStream()
+            throws SQLException {
         InputStream stream = new ByteArrayInputStream("abc".getBytes());
         impl.writeBinaryStream(stream);
         assertEquals(1, attr.size());
@@ -148,7 +149,7 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeBlob(blob);
         assertEquals(1, attr.size());
         assertTrue(attr.get(0) instanceof SerialBlob);
-        
+
         impl.writeBlob(null);
         assertNull(attr.get(1));
     }
@@ -158,13 +159,13 @@ public class SQLOutputImplTest extends TestCase {
      */
     public void test_writeBooleanZ() throws SQLException {
         impl.writeBoolean(true);
-        assertTrue(((Boolean)attr.get(0)).booleanValue());
-        
+        assertTrue(((Boolean) attr.get(0)).booleanValue());
+
         impl.writeBoolean(false);
-        assertFalse(((Boolean)attr.get(1)).booleanValue());
-        
+        assertFalse(((Boolean) attr.get(1)).booleanValue());
+
         impl.writeBoolean(true);
-        assertTrue(((Boolean)attr.get(2)).booleanValue());
+        assertTrue(((Boolean) attr.get(2)).booleanValue());
     }
 
     /**
@@ -172,26 +173,26 @@ public class SQLOutputImplTest extends TestCase {
      */
     public void test_writeByteB() throws SQLException {
         assertEquals(0, attr.size());
-        impl.writeByte((byte)1);
+        impl.writeByte((byte) 1);
         assertEquals(1, attr.size());
-        assertEquals(Byte.parseByte("1"), ((Byte)attr.get(0)).byteValue());
-        
+        assertEquals(Byte.parseByte("1"), ((Byte) attr.get(0)).byteValue());
+
         impl.writeByte((byte) 256);
         assertEquals(2, attr.size());
-        assertEquals(Byte.parseByte("0"), ((Byte)attr.get(1)).byteValue());
+        assertEquals(Byte.parseByte("0"), ((Byte) attr.get(1)).byteValue());
     }
 
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeBytes(byte[])}
      */
     public void test_writeBytes$B() throws SQLException {
-        byte[] bytes = new byte[] {4, 5, (byte)256};
+        byte[] bytes = new byte[] { 4, 5, (byte) 256 };
         impl.writeBytes(bytes);
         assertEquals(1, attr.size());
-        
-        byte[] attrBytes = (byte[])attr.get(0);
-        assertEquals((byte)4, attrBytes[0]);
-        assertEquals((byte)0, attrBytes[2]);
+
+        byte[] attrBytes = (byte[]) attr.get(0);
+        assertEquals((byte) 4, attrBytes[0]);
+        assertEquals((byte) 0, attrBytes[2]);
     }
 
     /**
@@ -201,7 +202,7 @@ public class SQLOutputImplTest extends TestCase {
         Reader stream = new StringReader("abc");
         impl.writeCharacterStream(stream);
         assertEquals(1, attr.size());
-        assertEquals("abc", attr.get(0));        
+        assertEquals("abc", attr.get(0));
     }
 
     /**
@@ -232,9 +233,9 @@ public class SQLOutputImplTest extends TestCase {
         attr.add(obj);
         impl.writeDouble(3.1415926);
         assertEquals(2, attr.size());
-        
+
         assertEquals(obj, attr.get(0));
-        assertEquals(3.1415926, ((Double)attr.get(1)).doubleValue(), 0);
+        assertEquals(3.1415926, ((Double) attr.get(1)).doubleValue(), 0);
     }
 
     /**
@@ -254,7 +255,7 @@ public class SQLOutputImplTest extends TestCase {
      */
     public void test_writeIntI() throws SQLException {
         impl.writeInt(Integer.MAX_VALUE);
-        assertEquals(Integer.MAX_VALUE, ((Integer)attr.get(0)).intValue());
+        assertEquals(Integer.MAX_VALUE, ((Integer) attr.get(0)).intValue());
     }
 
     /**
@@ -263,9 +264,9 @@ public class SQLOutputImplTest extends TestCase {
     public void test_writeLongJ() throws SQLException {
         impl.writeInt(Integer.MIN_VALUE);
         impl.writeLong(Long.MAX_VALUE);
-        assertEquals(Long.MAX_VALUE, ((Long)attr.get(1)).longValue());
-    }   
-    
+        assertEquals(Long.MAX_VALUE, ((Long) attr.get(1)).longValue());
+    }
+
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeObject(java.sql.SQLData)}
      */
@@ -285,7 +286,7 @@ public class SQLOutputImplTest extends TestCase {
         assertEquals(sqlData.fourthAttribute, attributes[3]);
         assertEquals("harmonytests.MockSQLData", struct.getSQLTypeName());
     }
-    
+
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeRef(Ref)}
      */
@@ -315,7 +316,7 @@ public class SQLOutputImplTest extends TestCase {
         impl.writeString("def");
         assertEquals("def", ((String) attr.get(1)));
     }
-    
+
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeStruct(java.sql.Struct)}
      */
@@ -336,7 +337,7 @@ public class SQLOutputImplTest extends TestCase {
         Time time = new Time(200);
         impl.writeTime(time);
         assertEquals(1, attr.size());
-        assertEquals(attr.get(0), time);  
+        assertEquals(attr.get(0), time);
     }
 
     /**
@@ -346,20 +347,21 @@ public class SQLOutputImplTest extends TestCase {
         Timestamp time = new Timestamp(200);
         impl.writeTimestamp(time);
         assertEquals(1, attr.size());
-        assertEquals(attr.get(0), time);  
+        assertEquals(attr.get(0), time);
 
     }
 
     /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeURL(URL)}
      */
-    public void test_writeURLLjava_net_URL() throws MalformedURLException, SQLException {
+    public void test_writeURLLjava_net_URL() throws MalformedURLException,
+            SQLException {
         URL url = new URL("http://www.apache.org");
         impl.writeURL(url);
         assertEquals(1, attr.size());
-        assertTrue(attr.get(0) instanceof SerialDatalink);  
-        assertEquals(url, ((SerialDatalink)attr.get(0)).getDatalink());
-        
+        assertTrue(attr.get(0) instanceof SerialDatalink);
+        assertEquals(url, ((SerialDatalink) attr.get(0)).getDatalink());
+
         impl.writeURL(null);
         assertNull(attr.get(1));
     }

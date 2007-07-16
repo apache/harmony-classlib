@@ -25,50 +25,49 @@ import junit.framework.TestCase;
  * JUnit Testcase for the java.sql.SQLPermission class
  * 
  * Note that the SQLPermission class only defines 2 constructors and all other
- * methods are inherited. This testcase explicitly tets the constructors but also
- * implicitly tests some of the inherited query methods.
+ * methods are inherited. This testcase explicitly tets the constructors but
+ * also implicitly tests some of the inherited query methods.
  * 
  */
 
 public class SQLPermissionTest extends TestCase {
 
-	/*
-	 * Constructor test
-	 */
-	public void testSQLPermissionStringString() {
-		String validName = "setLog";
-		String validActions = "theActions";
+    /*
+     * Constructor test
+     */
+    public void testSQLPermissionStringString() {
+        String validName = "setLog";
+        String validActions = "theActions";
 
-		SQLPermission thePermission = new SQLPermission(validName, validActions);
+        SQLPermission thePermission = new SQLPermission(validName, validActions);
 
-		assertNotNull(thePermission);
-		assertEquals(validName, thePermission.getName());
-		// System.out.println("The actions: " + thePermission.getActions() + "."
-		// );
-		assertEquals("", thePermission.getActions());
-	} // end method testSQLPermissionStringString
+        assertNotNull(thePermission);
+        assertEquals(validName, thePermission.getName());
+        // System.out.println("The actions: " + thePermission.getActions() + "."
+        // );
+        assertEquals("", thePermission.getActions());
+    } // end method testSQLPermissionStringString
 
-	/*
-	 * Constructor test
-	 */
-	public void testSQLPermissionString() {
-		String validName = "setLog";
+    /*
+     * Constructor test
+     */
+    public void testSQLPermissionString() {
+        String validName = "setLog";
 
-		SQLPermission thePermission = new SQLPermission(validName);
+        SQLPermission thePermission = new SQLPermission(validName);
 
-		assertNotNull(thePermission);
-		assertEquals(validName, thePermission.getName());
+        assertNotNull(thePermission);
+        assertEquals(validName, thePermission.getName());
 
-		// Set an invalid name ... 
-		String invalidName = "foo";
+        // Set an invalid name ...
+        String invalidName = "foo";
 
-		thePermission = new SQLPermission(invalidName);
+        thePermission = new SQLPermission(invalidName);
 
-		assertNotNull(thePermission);
-		assertEquals(invalidName, thePermission.getName());
-		assertEquals("", thePermission.getActions());
-	} // end method testSQLPermissionString
+        assertNotNull(thePermission);
+        assertEquals(invalidName, thePermission.getName());
+        assertEquals("", thePermission.getActions());
+    } // end method testSQLPermissionString
 
 } // end class SQLPermissionTest
-
 

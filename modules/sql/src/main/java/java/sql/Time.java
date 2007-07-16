@@ -204,18 +204,21 @@ public class Time extends Date {
         }
         int firstIndex = timeString.indexOf(':');
         int secondIndex = timeString.indexOf(':', firstIndex + 1);
-        // secondIndex == -1 means none or only one separator '-' has been found.
+        // secondIndex == -1 means none or only one separator '-' has been
+        // found.
         // The string is separated into three parts by two separator characters,
         // if the first or the third part is null string, we should throw
         // IllegalArgumentException to follow RI
-        if (secondIndex == -1|| firstIndex == 0 || secondIndex + 1 == timeString.length()) {
+        if (secondIndex == -1 || firstIndex == 0
+                || secondIndex + 1 == timeString.length()) {
             throw new IllegalArgumentException();
         }
         // parse each part of the string
         int hour = Integer.parseInt(timeString.substring(0, firstIndex));
-        int minute = Integer.parseInt(timeString.substring(firstIndex + 1, secondIndex));
-        int second = Integer.parseInt(timeString.substring(secondIndex + 1, timeString
-                .length()));
+        int minute = Integer.parseInt(timeString.substring(firstIndex + 1,
+                secondIndex));
+        int second = Integer.parseInt(timeString.substring(secondIndex + 1,
+                timeString.length()));
         return new Time(hour, minute, second);
     }
 }

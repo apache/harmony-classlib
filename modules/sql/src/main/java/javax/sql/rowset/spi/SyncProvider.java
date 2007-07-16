@@ -55,7 +55,8 @@ public abstract class SyncProvider {
 
     public abstract int getProviderGrade();
 
-    public abstract void setDataSourceLock(int dataSourceLock) throws SyncProviderException;
+    public abstract void setDataSourceLock(int dataSourceLock)
+            throws SyncProviderException;
 
     public abstract int getDataSourceLock() throws SyncProviderException;
 

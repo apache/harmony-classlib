@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
 public class SerialExceptionTest extends TestCase {
-	/**
+    /**
      * @tests serialization/deserialization compatibility.
      */
     public void testSerializationSelf() throws Exception {

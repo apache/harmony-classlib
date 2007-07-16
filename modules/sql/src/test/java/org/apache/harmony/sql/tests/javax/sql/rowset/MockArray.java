@@ -52,8 +52,7 @@ public class MockArray implements Array {
         return null;
     }
 
-    public ResultSet getResultSet(long index, int count)
-            throws SQLException {
+    public ResultSet getResultSet(long index, int count) throws SQLException {
         return null;
     }
 

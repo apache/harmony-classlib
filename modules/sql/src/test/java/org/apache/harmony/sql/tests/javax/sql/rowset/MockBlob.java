@@ -62,7 +62,8 @@ public class MockBlob implements Blob {
     public void free() throws SQLException {
     }
 
-    public InputStream getBinaryStream(long pos, long length) throws SQLException {
+    public InputStream getBinaryStream(long pos, long length)
+            throws SQLException {
         return null;
     }
 }

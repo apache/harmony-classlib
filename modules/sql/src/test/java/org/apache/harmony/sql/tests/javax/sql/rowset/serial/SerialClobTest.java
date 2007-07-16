@@ -71,8 +71,8 @@ public class SerialClobTest extends TestCase {
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
-        }        
-        
+        }
+
         try {
             new SerialClob((Clob) null);
             fail("should throw SQLException");
@@ -94,28 +94,28 @@ public class SerialClobTest extends TestCase {
         InputStream is = serialClob.getAsciiStream();
         assertTrue(mockClob.isGetAsciiStreamInvoked);
         assertEquals(mockClob.asciiInputStream, is);
-        
+
         try {
             serialClob = new SerialClob("helloo".toCharArray());
             serialClob.getAsciiStream();
             fail("should throw SerialException");
         } catch (SerialException e) {
-            // expected 
-         }
+            // expected
+        }
 
     }
 
     public void testGetCharacterStream() throws Exception {
         char[] buf = "helloo".toCharArray();
         SerialClob serialClob = new SerialClob(buf);
-        
+
         Reader reader = serialClob.getCharacterStream();
         char[] data = new char[buf.length];
         int read = reader.read(data);
         assertEquals(buf.length, read);
         assertTrue(Arrays.equals(buf, data));
         assertFalse(reader.ready());
-        
+
         MockSerialClob mockClob = new MockSerialClob();
         mockClob.characterStreamReader = new CharArrayReader(mockClob.buf);
         mockClob.asciiInputStream = new ByteArrayInputStream(new byte[] { 1 });
@@ -144,21 +144,21 @@ public class SerialClobTest extends TestCase {
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             sub = serialClob.getSubString(7, 1);
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             sub = serialClob.getSubString(1, 7);
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             sub = serialClob.getSubString(1, -2);
             fail("should throw SerialException");
@@ -171,10 +171,10 @@ public class SerialClobTest extends TestCase {
         } catch (SerialException e) {
             // expected
         }
-        
+
         LongLengthClob longClob = new LongLengthClob();
         serialClob = new SerialClob(longClob);
-        
+
         try {
             serialClob.getSubString(1, 3);
             fail("should throw SerialException");
@@ -189,56 +189,56 @@ public class SerialClobTest extends TestCase {
         SerialClob searchClob = new SerialClob("llo".toCharArray());
         long pos = serialClob.position(searchClob, 1);
         assertEquals(3, pos);
-        
+
         pos = serialClob.position(searchClob, 3);
         assertEquals(3, pos);
-        
+
         searchClob = new SerialClob("o".toCharArray());
         pos = serialClob.position(searchClob, 6);
         assertEquals(6, pos);
-        
+
         searchClob = new SerialClob("ooooooo".toCharArray());
         pos = serialClob.position(searchClob, 1);
         assertEquals(-1, pos);
-        
+
         searchClob = new SerialClob("llo".toCharArray());
         pos = serialClob.position(searchClob, 4);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position(searchClob, 0);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position(searchClob, -1);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position(searchClob, 10);
         assertEquals(-1, pos);
     }
 
     public void testPositionLStringJ() throws Exception {
         SerialClob serialClob = new SerialClob("helloo".toCharArray());
-        
+
         long pos = serialClob.position("llo", 1);
         assertEquals(3, pos);
-        
+
         pos = serialClob.position("llo", 3);
         assertEquals(3, pos);
-        
+
         pos = serialClob.position("o", 6);
         assertEquals(6, pos);
-        
+
         pos = serialClob.position("ooooooo", 1);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position("llo", 4);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position("llo", 0);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position("llo", -1);
         assertEquals(-1, pos);
-        
+
         pos = serialClob.position("llo", 10);
         assertEquals(-1, pos);
     }
@@ -260,14 +260,14 @@ public class SerialClobTest extends TestCase {
         assertNotNull(os);
         assertTrue(mockClob.isSetAsciiStreamInvoked);
         assertEquals(mockClob.asciiOutputStream, os);
-        
+
         try {
             serialClob = new SerialClob("helloo".toCharArray());
             // Harmony-3491, non bug difference from RI
             serialClob.setAsciiStream(1);
             fail("should throw SerialException");
         } catch (SerialException e) {
-            // expected 
+            // expected
         }
     }
 
@@ -280,14 +280,14 @@ public class SerialClobTest extends TestCase {
         Writer writer = serialClob.setCharacterStream(1);
         assertTrue(mockClob.isSetCharacterStreamInvoked);
         assertEquals(mockClob.characterStreamWriter, writer);
-        
+
         try {
             serialClob = new SerialClob("helloo".toCharArray());
             // Harmony-3491, non bug difference from RI
             serialClob.setCharacterStream(1);
             fail("should throw SerialException");
         } catch (SerialException e) {
-            // expected 
+            // expected
         }
     }
 
@@ -295,31 +295,31 @@ public class SerialClobTest extends TestCase {
         String s = "hello";
         char[] buf = s.toCharArray();
         SerialClob serialClob = new SerialClob(buf);
-        
+
         int count = serialClob.setString(1, "olleh");
         String sub = serialClob.getSubString(1, 5);
         assertEquals("olleh", sub);
         assertEquals(5, count);
-        
+
         count = serialClob.setString(2, "mm");
         sub = serialClob.getSubString(1, 5);
         assertEquals("ommeh", sub);
         assertEquals(2, count);
-        
+
         try {
             serialClob.setString(-1, "hello");
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             serialClob.setString(6, "hello");
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         // Harmony-3335, non bug difference from RI
         try {
             serialClob.setString(2, "hello");
@@ -335,34 +335,34 @@ public class SerialClobTest extends TestCase {
         String sub = serialClob.getSubString(1, 5);
         assertEquals("olleh", sub);
         assertEquals(5, count);
-        
-        count = serialClob.setString(2, "mmnn",1, 2);
+
+        count = serialClob.setString(2, "mmnn", 1, 2);
         sub = serialClob.getSubString(1, 5);
         // RI's bug
         assertEquals(2, count);
         assertEquals("omneh", sub);
-        
+
         try {
             serialClob.setString(-1, "hello", 0, 5);
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             serialClob.setString(6, "hello", 0, 5);
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             serialClob.setString(1, "hello", 0, 6);
             fail("should throw SerialException");
         } catch (SerialException e) {
             // expected
         }
-        
+
         // Harmony-3335, non bug difference from RI
         try {
             serialClob.setString(2, "hello", 0, 5);
@@ -370,7 +370,7 @@ public class SerialClobTest extends TestCase {
         } catch (SerialException e) {
             // expected
         }
-        
+
         try {
             // Harmony-3335
             serialClob.setString(1, "hello", -1, 5);
@@ -404,10 +404,11 @@ public class SerialClobTest extends TestCase {
             // expected
         }
     }
+
     private static class LongLengthClob extends MockClob {
         @Override
         public long length() throws SQLException {
-            return (long)Integer.MAX_VALUE * (long)2 + 4;
+            return (long) Integer.MAX_VALUE * (long) 2 + 4;
         }
     }
 
@@ -416,15 +417,15 @@ public class SerialClobTest extends TestCase {
         public char[] buf = { 1, 2, 3 };
 
         public Reader characterStreamReader;
-        
+
         public Writer characterStreamWriter;
 
         public InputStream asciiInputStream;
-        
+
         public OutputStream asciiOutputStream;
-        
+
         public boolean isGetAsciiStreamInvoked;
-        
+
         public boolean isSetAsciiStreamInvoked;
 
         public boolean isSetCharacterStreamInvoked;

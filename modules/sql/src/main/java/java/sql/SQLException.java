@@ -143,7 +143,7 @@ public class SQLException extends Exception implements Serializable {
      * @param ex
      *            the new SQLException to be added to the end of the chain
      */
-    public void setNextException(SQLException ex) {    
+    public void setNextException(SQLException ex) {
         if (next != null) {
             next.setNextException(ex);
         } else {

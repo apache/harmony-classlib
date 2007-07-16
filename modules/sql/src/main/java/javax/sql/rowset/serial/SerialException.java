@@ -26,13 +26,13 @@ import java.sql.SQLException;
  */
 
 public class SerialException extends SQLException {
-	private static final long serialVersionUID = -489794565168592690L;
+    private static final long serialVersionUID = -489794565168592690L;
 
-	public SerialException() {
-		super();
-	}
+    public SerialException() {
+        super();
+    }
 
-	public SerialException(String msg) {
-		super(msg);
-	}
+    public SerialException(String msg) {
+        super(msg);
+    }
 }

@@ -32,147 +32,147 @@ import junit.framework.TestCase;
  */
 public class SerialRefTest extends TestCase {
 
-	private SerialRef sr;
+    private SerialRef sr;
 
-	private SerialRef sr2;
+    private SerialRef sr2;
 
-	private MockRef ref;
+    private MockRef ref;
 
-	@Override
+    @Override
     protected void setUp() throws Exception {
-		super.setUp();
-		ref = new MockRef();
-		sr = new SerialRef(ref);
+        super.setUp();
+        ref = new MockRef();
+        sr = new SerialRef(ref);
 
-		MockAbnormalRef maf = new MockAbnormalRef();
-		sr2 = new SerialRef(maf);
-	}
+        MockAbnormalRef maf = new MockAbnormalRef();
+        sr2 = new SerialRef(maf);
+    }
 
-	/**
-	 * @tests javax.sql.rowset.serial.SerialRef#SerialRef(Ref ref)
-	 */
-	public void testConstructorRef() throws SerialException, SQLException {
-		try {
-			new SerialRef(null);
-			fail("should throw SQLException");
-		} catch (SQLException e) {
-			// expected
-		}
+    /**
+     * @tests javax.sql.rowset.serial.SerialRef#SerialRef(Ref ref)
+     */
+    public void testConstructorRef() throws SerialException, SQLException {
+        try {
+            new SerialRef(null);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
 
-		try {
-			ref.setBaseTypeName(null);
-			new SerialRef(ref);
-			fail("should throw SQLException");
-		} catch (SQLException e) {
-			// expected
-		}
-	}
+        try {
+            ref.setBaseTypeName(null);
+            new SerialRef(ref);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
 
-	/**
-	 * @tests javax.sql.rowset.serial.SerialRef#getBaseTypeName()
-	 */
-	public void testGetBaseTypeName() throws SQLException {
-		assertEquals(MockRef.BASE_TYPE_NAME, sr.getBaseTypeName());
-	}
+    /**
+     * @tests javax.sql.rowset.serial.SerialRef#getBaseTypeName()
+     */
+    public void testGetBaseTypeName() throws SQLException {
+        assertEquals(MockRef.BASE_TYPE_NAME, sr.getBaseTypeName());
+    }
 
-	/**
-	 * @tests javax.sql.rowset.serial.SerialRef#getObject()
-	 */
-	public void testGetObject() throws SQLException {
-		assertSame(ref.obj1, sr.getObject());
+    /**
+     * @tests javax.sql.rowset.serial.SerialRef#getObject()
+     */
+    public void testGetObject() throws SQLException {
+        assertSame(ref.obj1, sr.getObject());
 
-		sr.setObject(null);
-		assertNull(sr.getObject());
+        sr.setObject(null);
+        assertNull(sr.getObject());
 
-		Object obj = new Object();
-		sr.setObject(obj);
-		assertSame(obj, sr.getObject());
+        Object obj = new Object();
+        sr.setObject(obj);
+        assertSame(obj, sr.getObject());
 
-		try {
-			sr2.getObject();
-			fail("should throw SerialException");
-		} catch (SerialException e) {
-			// expected
-		}
+        try {
+            sr2.getObject();
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
 
-		try {
-			sr2.setObject(obj);
-			fail("should throw SerialException");
-		} catch (SerialException e) {
-			// expected
-		}
+        try {
+            sr2.setObject(obj);
+            fail("should throw SerialException");
+        } catch (SerialException e) {
+            // expected
+        }
 
-	}
+    }
 
-	/**
-	 * @tests javax.sql.rowset.serial.SerialRef#getObject(Map)
-	 */
-	public void testGetObjectLjava_util_Map() throws SQLException {
-		try {
-			assertNull(sr.getObject(null));
-			fail("should throw NullPointerException");
-		} catch (NullPointerException e) {
-			// expected
-		}
+    /**
+     * @tests javax.sql.rowset.serial.SerialRef#getObject(Map)
+     */
+    public void testGetObjectLjava_util_Map() throws SQLException {
+        try {
+            assertNull(sr.getObject(null));
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
 
-		Map<String, Class<?>> map = new Hashtable<String, Class<?>>();
-		assertNull(sr.getObject(map));
+        Map<String, Class<?>> map = new Hashtable<String, Class<?>>();
+        assertNull(sr.getObject(map));
 
-		map.put("MockRef", MockRef.class);
-		assertNull(sr.getObject(map));
+        map.put("MockRef", MockRef.class);
+        assertNull(sr.getObject(map));
 
-		sr.setObject("MockRef1");
-		assertNull(sr.getObject(map));
+        sr.setObject("MockRef1");
+        assertNull(sr.getObject(map));
 
-		sr.setObject("MockRef");
-		assertSame(MockRef.class, sr.getObject(map));
-	}
+        sr.setObject("MockRef");
+        assertSame(MockRef.class, sr.getObject(map));
+    }
 
-	static class MockRef implements Ref {
-		private static final String BASE_TYPE_NAME = "MockBaseTypeName";
+    static class MockRef implements Ref {
+        private static final String BASE_TYPE_NAME = "MockBaseTypeName";
 
-		String baseTypeName = BASE_TYPE_NAME;
+        String baseTypeName = BASE_TYPE_NAME;
 
-		Object obj1 = new Object();
+        Object obj1 = new Object();
 
-		Object obj2 = new Object();
+        Object obj2 = new Object();
 
-		public String getBaseTypeName() throws SQLException {
-			return baseTypeName;
-		}
+        public String getBaseTypeName() throws SQLException {
+            return baseTypeName;
+        }
 
-		public Object getObject() throws SQLException {
-			return obj1;
-		}
-
-		public Object getObject(Map<String, Class<?>> map) throws SQLException {
-			return obj2;
-		}
-
-		public void setObject(Object value) throws SQLException {
-			obj1 = value;
-		}
-
-		public void setBaseTypeName(String name) {
-			baseTypeName = name;
-		}
-	};
-
-	static class MockAbnormalRef extends MockRef {
-		@Override
         public Object getObject() throws SQLException {
-			throw new SQLException();
-		}
+            return obj1;
+        }
 
-		@Override
         public Object getObject(Map<String, Class<?>> map) throws SQLException {
-			throw new SQLException();
-		}
+            return obj2;
+        }
 
-		@Override
         public void setObject(Object value) throws SQLException {
-			throw new SQLException();
-		}
-	};
+            obj1 = value;
+        }
+
+        public void setBaseTypeName(String name) {
+            baseTypeName = name;
+        }
+    };
+
+    static class MockAbnormalRef extends MockRef {
+        @Override
+        public Object getObject() throws SQLException {
+            throw new SQLException();
+        }
+
+        @Override
+        public Object getObject(Map<String, Class<?>> map) throws SQLException {
+            throw new SQLException();
+        }
+
+        @Override
+        public void setObject(Object value) throws SQLException {
+            throw new SQLException();
+        }
+    };
 
 }

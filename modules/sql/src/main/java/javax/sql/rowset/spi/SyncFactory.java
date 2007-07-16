@@ -37,7 +37,7 @@ import org.apache.harmony.sql.internal.nls.Messages;
  * three places to search SyncProviders: system properties, resource files and
  * the JNDI context.
  * 
- * Applications can also use it to add and remove SyncProviders at runtime. 
+ * Applications can also use it to add and remove SyncProviders at runtime.
  */
 public class SyncFactory {
     public static String ROWSET_SYNC_PROVIDER = "rowset.provider.classname"; //$NON-NLS-1$
@@ -54,15 +54,16 @@ public class SyncFactory {
 
     private static Context ctx;
 
-    private static String resLocation;    
-    
-    //TODO: the default provider hasn't been implemented yet
+    private static String resLocation;
+
+    // TODO: the default provider hasn't been implemented yet
     private static String defaultProviderName = "org.apache.harmony.sql.rowset.providers.RIOptimisticProvider"; //$NON-NLS-1$
 
-    private static ProviderImpl defaultProvider = new ProviderImpl(defaultProviderName);
-    
+    private static ProviderImpl defaultProvider = new ProviderImpl(
+            defaultProviderName);
+
     private static Logger logger;
-    
+
     private static boolean initialized;
 
     static {
@@ -86,13 +87,13 @@ public class SyncFactory {
     private static Enumeration<SyncProvider> getRegisteredProvidersImpl() {
         if (!initialized) {
             // 1. load from System property
-        	String rowsetPropStr = System.getProperty(ROWSET_SYNC_PROVIDER);
-        	if (rowsetPropStr != null) {
-        		String[] sysProviders = rowsetPropStr.split(":"); //$NON-NLS-1$    			
-				for (String sysProvider : sysProviders) {
-					providers.put(sysProvider, new ProviderImpl(sysProvider));
-				}   		
-        	}
+            String rowsetPropStr = System.getProperty(ROWSET_SYNC_PROVIDER);
+            if (rowsetPropStr != null) {
+                String[] sysProviders = rowsetPropStr.split(":"); //$NON-NLS-1$    			
+                for (String sysProvider : sysProviders) {
+                    providers.put(sysProvider, new ProviderImpl(sysProvider));
+                }
+            }
 
             // 2. looks in the resource file
             Properties rowsetProp = new Properties();
@@ -137,7 +138,7 @@ public class SyncFactory {
         }
         return providers.elements();
     }
-    
+
     /**
      * Initializes the registeration table if it is still empty.
      */
@@ -236,7 +237,7 @@ public class SyncFactory {
      *            the logging object
      */
     public static void setLogger(Logger logger) {
-        SyncFactory.logger = logger; 
+        SyncFactory.logger = logger;
     }
 
     /**

@@ -25,19 +25,20 @@ import org.apache.harmony.sql.internal.nls.Messages;
 
 public class SerialJavaObject implements Serializable, Cloneable {
 
-	private static final long serialVersionUID = -1465795139032831023L;
+    private static final long serialVersionUID = -1465795139032831023L;
 
-	/**
-	 * obj and chain are defined in serialized form.
-	 */
-	private Object obj;
+    /**
+     * obj and chain are defined in serialized form.
+     */
+    private Object obj;
 
-	@SuppressWarnings({ "unchecked", "unused" }) // Required by serialized form
+    @SuppressWarnings( { "unchecked", "unused" })
+    // Required by serialized form
     private Vector chain;
 
-	private transient Field[] fields;
+    private transient Field[] fields;
 
-	public SerialJavaObject(Object obj) throws SerialException {
+    public SerialJavaObject(Object obj) throws SerialException {
         if (null == obj) {
             throw new NullPointerException();
         }
@@ -47,14 +48,14 @@ public class SerialJavaObject implements Serializable, Cloneable {
         this.obj = obj;
     }
 
-	public Field[] getFields() throws SerialException {
-		if (fields == null) {
-			fields = obj.getClass().getFields();
-		}
-		return fields;
-	}
+    public Field[] getFields() throws SerialException {
+        if (fields == null) {
+            fields = obj.getClass().getFields();
+        }
+        return fields;
+    }
 
-	public Object getObject() throws SerialException {
-		return obj;
-	}
+    public Object getObject() throws SerialException {
+        return obj;
+    }
 }
