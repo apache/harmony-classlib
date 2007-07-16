@@ -399,8 +399,11 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     private Method findMethodByPrefix(Class<?> sourceClass,
             String prefix, String postfix) {
-        String shortName = BeanInfoImpl.extractShortClassName(
-                listenerType.getName());
+        String shortName = listenerType.getName();
+        if(listenerType.getPackage()!= null){
+            shortName = shortName.substring(
+                listenerType.getPackage().getName().length() + 1);
+        }
         String methodName = prefix + shortName + postfix;
         Class listenerType = this.awtEventListener == null? this.listenerType:this.awtEventListener;
         try {

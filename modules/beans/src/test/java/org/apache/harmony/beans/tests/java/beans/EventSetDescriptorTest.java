@@ -36,6 +36,7 @@ import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent;
 import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener;
 import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeValidListener;
 
+
 /**
  * Unit test for EventSetDescriptor
  */
@@ -88,6 +89,9 @@ public class EventSetDescriptorTest extends TestCase {
         assertEquals(listenerType, esd.getListenerType());
         assertTrue(esd.isInDefaultEventSet());
         assertFalse(esd.isUnicast());
+        
+        esd = new EventSetDescriptor(AnObject.class, "something",
+                AnObjectListener.class, "aMethod");
     }
 
     public void testEventSetDescriptorClassStringClassString2()
@@ -1334,6 +1338,17 @@ public class EventSetDescriptorTest extends TestCase {
         // No removeActionListener() method
     }
     
+    private interface AnObjectListener {
+        public void aMethod( SomethingEvent s );
+    }
+
+    private static class AnObject {
+            public void addEventSetDescriptorTest$AnObjectListener( AnObjectListener l ) {}
+            public void removeEventSetDescriptorTest$AnObjectListener( AnObjectListener l ) {}
+    }
     
+    private static class SomethingEvent {
+    
+    }
 
 }
