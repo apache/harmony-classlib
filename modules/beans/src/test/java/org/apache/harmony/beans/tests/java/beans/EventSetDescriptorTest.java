@@ -34,6 +34,7 @@ import org.apache.harmony.beans.tests.support.SampleListener;
 import org.apache.harmony.beans.tests.support.mock.MockFakeListener;
 import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent;
 import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener;
+import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeValidListener;
 
 /**
  * Unit test for EventSetDescriptor
@@ -479,6 +480,21 @@ public class EventSetDescriptorTest extends TestCase {
             fail("Should throw IntrospectionException.");
         } catch (IntrospectionException e) {
         }
+    }
+    
+    public void testEventSetDescriptorClassStringClassStringArrayStringString_listenerMethodNamesValid()
+            throws Exception {
+        Class<MockSourceClass> sourceClass = MockSourceClass.class;
+        String eventSetName = "MockPropertyChange";
+        Class<?> listenerType = MockPropertyChangeValidListener.class;
+        String[] listenerMethodNames = { "mockPropertyChange_Valid",
+                "mockPropertyChange2", };
+        String addMethod = "addMockPropertyChangeListener";
+        String removeMethod = "removeMockPropertyChangeListener";
+        EventSetDescriptor eventSetDescriptor = new EventSetDescriptor(
+                sourceClass, eventSetName, listenerType, listenerMethodNames,
+                addMethod, removeMethod);
+        assertEquals(2, eventSetDescriptor.getListenerMethods().length);
     }
 
     public void testEventSetDescriptorClassStringClassStringArrayStringString_listenerMethodNamesEmpty()
