@@ -21,6 +21,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Vector;
+
+import org.apache.harmony.beans.BeansUtils;
 import org.apache.harmony.beans.internal.nls.Messages;
 
 public class PropertyDescriptor extends FeatureDescriptor {
@@ -171,6 +173,15 @@ public class PropertyDescriptor extends FeatureDescriptor {
                     && constrainedPropertyAreEqual;
         }
         return result;
+    }
+    
+    @Override
+    public int hashCode() {
+        return BeansUtils.getHashCode(getter) + BeansUtils.getHashCode(setter)
+                + BeansUtils.getHashCode(getPropertyType())
+                + BeansUtils.getHashCode(getPropertyEditorClass())
+                + BeansUtils.getHashCode(isBound())
+                + BeansUtils.getHashCode(isConstrained());
     }
 
     public void setPropertyEditorClass(Class<?> propertyEditorClass) {

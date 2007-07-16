@@ -1129,5 +1129,25 @@ public class PropertyDescriptorTest extends TestCase {
         public InvalidPropertyEditor2() {
         }
     }
+    
+    //Regression Test
+    
+    private class MockBean {
+        int a;
+        public int getA() {
+            return a;
+        }
 
+        public void setA(int a) {
+            this.a = a;
+        }
+    }
+    
+    public void testHashCode() throws IntrospectionException,
+            SecurityException, NoSuchMethodException {
+        PropertyDescriptor pd1 = new PropertyDescriptor("a",MockBean.class);
+        PropertyDescriptor pd2 = new PropertyDescriptor("a",MockBean.class);
+        assertEquals(pd1, pd2);
+        assertEquals(pd1.hashCode(), pd2.hashCode());
+    }
 }
