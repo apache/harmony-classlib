@@ -345,12 +345,18 @@ public class LogManager {
         // find children
         //TODO: performance can be improved here?
         Collection<Logger> allLoggers = loggers.values();
-        for (Logger child : allLoggers) {
+        for (final Logger child : allLoggers) {
             Logger oldParent = child.getParent();
             if (parent == oldParent
                     && (name.length() == 0 || child.getName().startsWith(
                             name + '.'))) {
-                child.setParent(logger);
+                final Logger thisLogger = logger;
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        child.setParent(thisLogger);
+                        return null;
+                    }
+                });
                 if (null != oldParent) {
                     //-- remove from old parent as the parent has been changed
                     oldParent.removeChild(child);
