@@ -59,7 +59,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         removeListenerMethod = findMethodByPrefix(
                 sourceClass, "remove", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-        if (addListenerMethod == null && removeListenerMethod == null) {
+        if (addListenerMethod == null || removeListenerMethod == null) {
             throw new IntrospectionException(
                     Messages.getString("beans.38")); //$NON-NLS-1$
         }

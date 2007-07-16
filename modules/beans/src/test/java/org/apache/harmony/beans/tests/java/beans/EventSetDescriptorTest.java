@@ -17,6 +17,7 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.event.ActionListener;
 import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
@@ -1254,6 +1255,17 @@ public class EventSetDescriptorTest extends TestCase {
         }
 
     }
+    
+    //Regression Test
+    public void testConstructor_withLackRemoveActionBean() throws Exception {
+        try {
+            new EventSetDescriptor(LackRemoveActionBean.class, "action",
+                    ActionListener.class, "actionPerformed");
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+    }
 
     protected String getUnQualifiedClassName(Class<?> classType) {
         String qName = classType.getName();
@@ -1299,5 +1311,13 @@ public class EventSetDescriptorTest extends TestCase {
 
         }
     }
+    
+    public class LackRemoveActionBean {
+        public void addActionListener(ActionListener al) {
+        }
+        // No removeActionListener() method
+    }
+    
+    
 
 }
