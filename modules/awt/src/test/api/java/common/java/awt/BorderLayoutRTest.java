@@ -110,5 +110,49 @@ public class BorderLayoutRTest extends TestCase {
         assertEquals(defSize, layout.preferredLayoutSize(emptyContainer));
     }   
     
-    
+    /**
+     * Regression for HARMONY-4085
+     */
+    public final void testHarmony4085() {
+        final Frame f = new Frame();
+        final boolean[] isInvoked = new boolean[4];
+
+        f.add(new Component() {
+            @Override
+            public void setSize(int width, int height) {
+                isInvoked[0] = true;
+                super.setSize(width, height);
+            }
+        }, BorderLayout.EAST);
+        f.add(new Component() {
+            @Override
+            public void setSize(int width, int height) {
+                isInvoked[1] = true;
+                super.setSize(width, height);
+            }
+        }, BorderLayout.WEST);
+        f.add(new Component() {
+            @Override
+            public void setSize(int width, int height) {
+                isInvoked[2] = true;
+                super.setSize(width, height);
+            }
+        }, BorderLayout.NORTH);
+        f.add(new Component() {
+            @Override
+            public void setSize(int width, int height) {
+                isInvoked[3] = true;
+                super.setSize(width, height);
+            }
+        }, BorderLayout.SOUTH);
+
+        f.setSize(100, 100);
+        f.setVisible(true);
+        f.dispose();
+
+        assertTrue(isInvoked[0]);
+        assertTrue(isInvoked[1]);
+        assertTrue(isInvoked[2]);
+        assertTrue(isInvoked[3]);
+    }
 }

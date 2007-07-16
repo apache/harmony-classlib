@@ -25,7 +25,7 @@ public class java_lang_ShortPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Short value = (Short) oldInstance;
-        return new Expression(oldInstance, Short.class, "new", new Object[] { value }); //$NON-NLS-1$
+        return new Expression(oldInstance, Short.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
     }
 
     @Override

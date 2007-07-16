@@ -76,17 +76,15 @@ public class SynthGraphicsUtils {
     @SuppressWarnings("unused")
     public void drawLine(SynthContext context, Object paintKey, Graphics g,
             int x1, int y1, int x2, int y2) {
-        Color oldColor = g.getColor();
         g.setColor(context.getStyle().getColor(context, ColorType.FOREGROUND));
         g.drawLine(x1, y1, x2, y2);
-        g.setColor(oldColor);
     }
 
     /**
      * Calculates the maximum size for the component with given parameters
      */
     @SuppressWarnings("unused")
-    public Dimension getMaximumSize(SynthContext ss, Font font, String text,
+    public Dimension getPreferredSize(SynthContext ss, Font font, String text,
             Icon icon, int hAlign, int vAlign, int hTextPosition,
             int vTextPosition, int iconTextGap, int mnemonicIndex) {
 
@@ -105,18 +103,18 @@ public class SynthGraphicsUtils {
             Icon icon, int hAlign, int vAlign, int hTextPosition,
             int vTextPosition, int iconTextGap, int mnemonicIndex) {
 
-        return getMaximumSize(ss, font, text, icon, hAlign, vAlign,
+        return getPreferredSize(ss, font, text, icon, hAlign, vAlign,
                 hTextPosition, vTextPosition, iconTextGap, mnemonicIndex);
     }
 
     /**
      * Calculates the preferred size for the component with given parameters
      */
-    public Dimension getPreferredSize(SynthContext ss, Font font, String text,
+    public Dimension getMaximumSize(SynthContext ss, Font font, String text,
             Icon icon, int hAlign, int vAlign, int hTextPosition,
             int vTextPosition, int iconTextGap, int mnemonicIndex) {
 
-        return getMaximumSize(ss, font, text, icon, hAlign, vAlign,
+        return getPreferredSize(ss, font, text, icon, hAlign, vAlign,
                 hTextPosition, vTextPosition, iconTextGap, mnemonicIndex);
     }
 
@@ -126,7 +124,7 @@ public class SynthGraphicsUtils {
     public String layoutText(SynthContext ss, FontMetrics fm, String text,
             Icon icon, int hAlign, int vAlign, int hTextPosition,
             int vTextPosition, Rectangle viewR, Rectangle iconR,
-            final Rectangle textR, int iconTextGap) {
+            Rectangle textR, int iconTextGap) {
 
         fm = computeFontMetrics(ss, fm);
 
@@ -153,11 +151,11 @@ public class SynthGraphicsUtils {
         layoutText(ss, metrics, text, icon, hAlign, vAlign, hTextPosition,
                 vTextPosition, viewR, iconR, textR, iconTextGap);
 
-        textR.x += textOffset;
-        textR.y += textOffset;
+        textR.translate(textOffset, textOffset);
 
         ButtonCommons.paintText(g, metrics, text, mnemonicIndex, textR, text,
                 color);
+
     }
 
     public void paintText(SynthContext ss, Graphics g, String text, int x,
@@ -225,7 +223,10 @@ public class SynthGraphicsUtils {
 
         if (!Utilities.isEmptyString(text)) {
             Dimension stringDim = Utilities.getStringSize(text, fm);
-            return new Rectangle(stringDim.width, Utilities.getTextY(fm, new Rectangle(stringDim)));
+            Dimension size = new Dimension(stringDim.width, Utilities.getTextY(
+                    fm, new Rectangle(stringDim)));
+
+            return new Rectangle(size);
         }
 
         return new Rectangle();
@@ -243,6 +244,7 @@ public class SynthGraphicsUtils {
         SwingUtilities.layoutCompoundLabel(fm, text, icon, SwingConstants.TOP,
                 SwingConstants.LEFT, verticalTextPosition,
                 horizontalTextPosition, viewR, iconR, textR, iconTextGap);
+
         result.width = Math.max(iconR.x + iconR.width, textR.x + textR.width);
         result.height = Math
                 .max(iconR.y + iconR.height, textR.y + textR.height);

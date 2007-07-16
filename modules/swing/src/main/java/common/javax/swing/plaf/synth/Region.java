@@ -210,9 +210,10 @@ public class Region {
      */
     static Region getRegionFromUIID(String ui) {
 
+        // Possible improvement:
         // This method creates additional object(substring) but possibly faster
         // way is the creating two HashMaps that contains the same values but
-        // the different keys: ui and name
+        // the different keys: UI and name
         return regionsMap.get(ui.substring(0, (ui.length() - 2)));
     }
 

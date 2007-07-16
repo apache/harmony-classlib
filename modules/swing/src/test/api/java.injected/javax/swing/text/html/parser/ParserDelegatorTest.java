@@ -15,31 +15,19 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package javax.swing.text.html.parser;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
+import javax.swing.JEditorPane;
 
-public class java_lang_IntegerPersistenceDelegate extends PersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        Integer value = (Integer) oldInstance;
-        return new Expression(oldInstance, Integer.class,
-				"new", new Object[] { value.toString() }); //$NON-NLS-1$
-    }
+import junit.framework.TestCase;
 
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
-    }
-    
-    /*
-     * Two Integer objects are regarded mutatable if they are equal.
+public class ParserDelegatorTest extends TestCase {
+
+    /**
+     * Regression for HARMONY-4008
      */
-    protected boolean mutatesTo(Object o1, Object o2) {
-        if (null == o2) {
-            return false;
-        }
-        return o1.equals(o2);
+    public void testHarmony4008() {
+        new JEditorPane("text/html", "<html><body><table><tr><td>Hello world!" //$NON-NLS-1$//$NON-NLS-2$
+                + "</td></tr></table></body></html>"); //$NON-NLS-1$
     }
 }

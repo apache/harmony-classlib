@@ -490,8 +490,8 @@ public final class System {
 
         systemProperties.put("file.encoding", fileEncoding);
 
-        systemProperties.put("java.version", "1.4.2 subset");
-        systemProperties.put("java.specification.version", "1.4");
+        systemProperties.put("java.version", "1.5 subset");
+        systemProperties.put("java.specification.version", "1.5");
 
         systemProperties.put("java.specification.vendor", "Sun Microsystems Inc.");
         systemProperties.put("java.specification.name", "Java Platform API Specification");

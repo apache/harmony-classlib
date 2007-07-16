@@ -86,7 +86,7 @@ public class TextMetricsCalculator {
      */
     public void checkBaselines() {
         // Take baseline offsets of the first font and normalize them
-        HashMap<Integer, Font> fonts = breaker.fonts;
+        HashMap<Integer, Object> fonts = breaker.fonts;
 
         Object val = fonts.get(new Integer(0));
 

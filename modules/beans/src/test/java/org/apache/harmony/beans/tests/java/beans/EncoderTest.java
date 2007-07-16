@@ -381,7 +381,7 @@ public class EncoderTest extends TestCase {
         Encoder enc = new Encoder();
         PersistenceDelegate pd = enc
                 .getPersistenceDelegate(MockFooLiYang.class);
-        assertTrue(pd instanceof VerbosePD);
+        assertTrue(pd instanceof DefaultPersistenceDelegate);
     }
 
     public void testGetPersistenceDelegate_Default() {

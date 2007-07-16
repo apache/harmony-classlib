@@ -32,7 +32,7 @@ public class java_lang_reflect_FieldPersistenceDelegate extends PersistenceDeleg
         assert oldInstance instanceof Field : oldInstance;
         Field oldField = (Field) oldInstance;
         Class<?> declClass = oldField.getDeclaringClass();
-        return new Expression(oldField, declClass, "getDeclaredField", //$NON-NLS-1$
+        return new Expression(oldField, declClass, "getField", //$NON-NLS-1$
                 new Object[] { oldField.getName() });
     }
 

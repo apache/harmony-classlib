@@ -624,8 +624,7 @@ public class CharsetProviderImpl extends CharsetProvider {
                                                             "x-MS950-HKSCS",
                                                             "MS950_HKSCS" } },
 
-            { "additional.x_windows_949",         null, new String[] { "KSC_5601",
-                                                            "x-windows-949",
+            { "additional.x_windows_949",         null, new String[] { "x-windows-949",
                                                             "MS949" } },
 
             { "additional.GB18030",                null, new String[] { "GB18030",

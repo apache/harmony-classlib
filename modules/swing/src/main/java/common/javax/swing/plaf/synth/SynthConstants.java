@@ -24,7 +24,7 @@ package javax.swing.plaf.synth;
  */
 public interface SynthConstants {
 
-    /** The component (usual a button) is marked as default (additional) */
+    /** The component (a JButton) is marked as default (additional) */
     static int DEFAULT = 1024;
 
     /** The component is disabled (primary) */

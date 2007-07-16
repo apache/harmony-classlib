@@ -53,6 +53,71 @@ public class XMLEncoder extends Encoder {
     public Object getOwner() {
         return owner;
     }
+    
+    @Override
+    public void writeExpression(Expression oldExp) {
+
+		Object oldValue = null;
+		try {
+			oldValue = oldExp.getValue();
+		} catch (Exception e) {
+			getExceptionListener()
+					.exceptionThrown(
+							new Exception("failed to execute expression: "
+									+ oldExp, e));
+			return;
+		}
+		
+		if (get(oldValue) != null) {
+			return;
+		}
+		
+		Object oldTarget = oldExp.getTarget();
+
+		ObjectNode valueNode = null;
+		Class<?> valueType = null;
+
+		// write target
+		if (!Statement.isPDConstructor(oldExp)
+				&& !Statement.isStaticMethodCall(oldExp)) {
+			ObjectNode parent;
+
+			// XXX investigate
+			// write(oldTarget);
+			parent = nodes.get(oldTarget);
+			if (parent != null) {
+				parent.addExpression(oldExp);
+			}
+		}
+
+		// write value
+		valueType = oldValue.getClass();
+		valueNode = nodes.get(oldValue);
+
+		if (valueNode == null) {
+
+			if (isNull(valueType) || isPrimitive(valueType)
+					|| isString(valueType)) {
+				valueNode = new ObjectNode(oldExp);
+			} else {
+				try {
+					write((Object[])oldExp.getArguments());
+				} catch (Exception e) {
+					getExceptionListener().exceptionThrown(e);
+				}
+				valueNode = new ObjectNode(oldExp, nodes);
+			}
+
+			nodes.put(oldValue, valueNode);
+		} else if (oldExp.getMethodName().equals("new")) { //$NON-NLS-1$
+			valueNode.addReference();
+		} else {
+			// XXX the information about referencedExpressions is not
+			// being used by anyone
+			// node.addReferencedExpression(oldExp);
+		}
+		super.writeExpression(oldExp);
+	}
 
     @Override
     public void writeStatement(Statement oldStm) {
@@ -97,9 +162,9 @@ public class XMLEncoder extends Encoder {
             if (object != null) {
                 ObjectNode node = nodes.get(object);
 
-                printObjectTag(0, object, node);
+                printObjectTag(1, object, node);
             } else {
-                printNullTag(0);
+                printNullTag(1);
             }
         }
 
@@ -174,7 +239,8 @@ public class XMLEncoder extends Encoder {
                         tag.addAttr("length", ((Integer) arguments[1]) //$NON-NLS-1$
                                 .toString());
                     } else {
-                        tag.addAttr("class", node.getObjectType().getName()); //$NON-NLS-1$
+                        tag.addAttr("class", ((Class)node.getInitializer().getTarget()).getName()); //$NON-NLS-1$
+                        tag.addAttr("method", node.getInitializer().getMethodName());
                     }
                 } catch (Exception e) {
                     getExceptionListener().exceptionThrown(e);
@@ -389,7 +455,7 @@ public class XMLEncoder extends Encoder {
             String result = ""; //$NON-NLS-1$
 
             for (int i = 0; i < tabCount; ++i) {
-                result += '\t';
+                result += ' ';
             }
             result = result + s + "\n"; //$NON-NLS-1$
             out.write(result.getBytes("UTF-8")); //$NON-NLS-1$

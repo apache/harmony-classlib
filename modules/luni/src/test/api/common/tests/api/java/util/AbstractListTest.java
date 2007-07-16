@@ -20,10 +20,12 @@ package tests.api.java.util;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
 public class AbstractListTest extends junit.framework.TestCase {
@@ -195,6 +197,75 @@ public class AbstractListTest extends junit.framework.TestCase {
             // expected
         }
     }
+
+    class MockArrayList<E> extends AbstractList<E> {
+    	/**
+    	 * 
+    	 */
+    	private static final long serialVersionUID = 1L;
+    	
+    	ArrayList<E> list = new ArrayList<E>();
+    	
+    	public E remove(int idx) {
+    		modCount++;
+    		return list.remove(idx);
+    	}
+
+    	@Override
+    	public E get(int index) {
+    		return list.get(index);
+    	}
+
+    	@Override
+    	public int size() {
+    		return list.size();
+    	}
+    	
+    	public void add(int idx, E o) {
+    		modCount++;
+    		list.add(idx, o);
+    	}
+    }
+    
+    /*
+     * Regression test for HY-4398
+     */
+    public void test_iterator_next() {
+		MockArrayList<String> t = new MockArrayList<String>();
+		t.list.add("a");
+		t.list.add("b");
+		
+		Iterator it = t.iterator();
+		
+		while (it.hasNext()) {
+			it.next();
+		}
+		try {
+            it.next();
+            fail("Should throw NoSuchElementException");
+        } catch (NoSuchElementException cme) {
+            // expected
+        }
+
+        t.add("c");
+        try {
+            it.remove();
+            fail("Should throw NoSuchElementException");
+        } catch (ConcurrentModificationException cme) {
+            // expected
+		}
+		
+		it = t.iterator();
+		try {
+			it.remove();
+			fail("Should throw IllegalStateException");
+		} catch (IllegalStateException ise) {
+			// expected
+		}
+
+		Object value = it.next();
+		assertEquals("a", value);
+	}
 
     /**
      * @tests java.util.AbstractList#subList(int, int)

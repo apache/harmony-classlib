@@ -29,6 +29,13 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
         Field fld = null;
         final String TYPE = "TYPE"; //$NON-NLS-1$
         Expression result;
+        /*
+         * Special treatment to String.class to prevent endless loop of
+         * instantiation.
+         */
+        if (value == String.class) {
+            return new Expression(value, "", "getClass", null);  //$NON-NLS-1$//$NON-NLS-2$
+        }
         try {
             if (value.equals(Integer.TYPE)) {
                 fld = Integer.class.getField(TYPE);
@@ -56,7 +63,7 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
             // we have primitive type
             result = new Expression(oldInstance, fld, "get", new Object[] { null }); //$NON-NLS-1$
         } else {
-            result = new Expression(oldInstance, Class.class, "forName", //$NON-NLS-1$ 
+            result = new Expression(oldInstance, String.class, "forName", //$NON-NLS-1$ 
                     new Object[] { value.getName() });
         }
         return result;

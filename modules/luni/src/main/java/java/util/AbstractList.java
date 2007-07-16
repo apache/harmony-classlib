@@ -62,13 +62,14 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         public void remove() {
             if (expectedModCount == modCount) {
                 try {
-                    AbstractList.this.remove(lastPosition);
-                } catch (IndexOutOfBoundsException e) {
-                    throw new IllegalStateException();
-                }
-                if (modCount != expectedModCount) {
-                    expectedModCount++;
-                }
+					AbstractList.this.remove(lastPosition);
+				} catch (IndexOutOfBoundsException e) {
+					throw new IllegalStateException();
+				} finally {
+					if (modCount != expectedModCount) {
+						expectedModCount++;
+					}
+				}
                 if (pos == lastPosition) {
                     pos--;
                 }

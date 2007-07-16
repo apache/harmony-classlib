@@ -68,9 +68,7 @@ public abstract class PersistenceDelegate {
         if (mutatesTo(oldInstance, newInstance)) {
             initialize(oldInstance.getClass(), oldInstance, newInstance, out);
         } else {
-            if (newInstance != null) {
-                out.remove(newInstance);
-            }
+        	out.remove(oldInstance);
 
             out.writeExpression(instantiate(oldInstance, out));
             newInstance = out.get(oldInstance);
