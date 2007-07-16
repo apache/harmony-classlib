@@ -32,7 +32,7 @@ public class java_lang_reflect_MethodPersistenceDelegate extends PersistenceDele
         assert oldInstance instanceof Method : oldInstance;
         Method oldMethod = (Method) oldInstance;
         Class<?> declClass = oldMethod.getDeclaringClass();
-        return new Expression(oldMethod, declClass, "getDeclaredMethod", //$NON-NLS-1$
+        return new Expression(oldMethod, declClass, "getMethod", //$NON-NLS-1$
                 new Object[] { oldMethod.getName(), oldMethod.getParameterTypes() });
     }
 
