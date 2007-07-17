@@ -17,6 +17,7 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.applet.Applet;
 import java.awt.Component;
 import java.beans.AppletInitializer;
 import java.beans.Beans;
@@ -444,6 +445,13 @@ public class BeansTest extends TestCase {
             // expected
         }
     }
+    
+    //Regression for HARMONY-3777
+    public void test_instantiate_with_applet() throws Exception{
+		Applet applet = (Applet) Beans.instantiate(null, "java.applet.Applet");
+		assertNotNull(applet.getAppletContext());
+		assertTrue(applet.isActive());
+	}
 
     /**
      * 
