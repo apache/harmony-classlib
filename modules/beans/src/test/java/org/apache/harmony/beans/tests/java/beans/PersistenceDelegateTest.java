@@ -21,23 +21,22 @@ import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
 import java.beans.Statement;
-
-import java.util.Stack;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.EmptyStackException;
+import java.util.Stack;
 
 import junit.framework.TestCase;
 
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFooStop;
-
-import java.beans.XMLEncoder;
-import java.beans.XMLDecoder;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
 /**
  * Test java.beans.PersistenceDelegate
  */
@@ -251,6 +250,23 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(value, field);
 		assertEquals(value.getName(), field.getName());
 	}
+    
+    public void test_writeObject_java_lang_reflect_Method() throws SecurityException, NoSuchMethodException{
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Method method = Bar.class.getMethod("barTalk", (Class[])null);
+
+        encoder.writeObject(method);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Method aMethod = (Method) decoder.readObject();
+        assertEquals(method, aMethod);
+        assertEquals(method.getName(), aMethod.getName());
+        assertEquals("barTalk", aMethod.getName());
+    }
 
     // <--
 

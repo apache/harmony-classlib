@@ -69,57 +69,59 @@ public class SerialArray implements Array, Serializable, Cloneable {
             transferElements(baseType, element);
         }
     }
-    
+
     /**
-	 * Transfers primitive objects to SerialXXX objects according to the given
-	 * type.
-     * @throws SQLException 
-	 */
-    private void transferElements(int type, Object[] element) throws SQLException {
-    	switch (type) {
-		case Types.STRUCT:
-			elements = DefaultUDTMap.processStruct(element);
-			break;
-		case Types.ARRAY:
-			elements = DefaultUDTMap.processArray(element);
-			break;
-		case Types.CLOB:
-			elements = DefaultUDTMap.processClob(element);
-			break;
-		case Types.BLOB:
-			elements = DefaultUDTMap.processBlob(element);
-			break;
-		case Types.DATALINK:
-			elements = DefaultUDTMap.processDatalink(element);
-			break;
-		case Types.JAVA_OBJECT:
-			elements = DefaultUDTMap.processObject(element);
-			break;
-		default:
-			elements = new Object[element.length];
-			for (int i = 0; i < element.length; i++) {
-				elements[i] = element[i];
-			}
-		}
+     * Transfers primitive objects to SerialXXX objects according to the given
+     * type.
+     * 
+     * @throws SQLException
+     */
+    private void transferElements(int type, Object[] element)
+            throws SQLException {
+        switch (type) {
+        case Types.STRUCT:
+            elements = DefaultUDTMap.processStruct(element);
+            break;
+        case Types.ARRAY:
+            elements = DefaultUDTMap.processArray(element);
+            break;
+        case Types.CLOB:
+            elements = DefaultUDTMap.processClob(element);
+            break;
+        case Types.BLOB:
+            elements = DefaultUDTMap.processBlob(element);
+            break;
+        case Types.DATALINK:
+            elements = DefaultUDTMap.processDatalink(element);
+            break;
+        case Types.JAVA_OBJECT:
+            elements = DefaultUDTMap.processObject(element);
+            break;
+        default:
+            elements = new Object[element.length];
+            for (int i = 0; i < element.length; i++) {
+                elements[i] = element[i];
+            }
+        }
     }
 
     /**
-	 * The constructor
-	 * 
-	 * @param array
-	 *            array to be serializated
-	 * @throws SerialException
-	 *             when any error occurs during serializing
-	 * @throws SQLException
-	 *             if array is null
-	 */
+     * The constructor
+     * 
+     * @param array
+     *            array to be serializated
+     * @throws SerialException
+     *             when any error occurs during serializing
+     * @throws SQLException
+     *             if array is null
+     */
     public SerialArray(Array array) throws SerialException, SQLException {
-    	if (null == array || null == array.getArray()) {
+        if (null == array || null == array.getArray()) {
             throw new SQLException(Messages.getString("sql.39")); //$NON-NLS-1$
         }
         baseType = array.getBaseType();
         baseTypeName = array.getBaseTypeName();
-        
+
         Object[] element = (Object[]) array.getArray();
         if (element.length == 0) {
             elements = new Object[0];
@@ -178,7 +180,7 @@ public class SerialArray implements Array, Serializable, Cloneable {
      */
     public Object getArray(long index, int count, Map<String, Class<?>> map)
             throws SerialException {
-        if (index < 0 || count + index > elements.length ) {
+        if (index < 0 || count + index > elements.length) {
             throw new SerialException(Messages.getString("sql.40")); //$NON-NLS-1$
         }
         Object[] ret = new Object[count];

@@ -28,12 +28,14 @@ public class BufferedImageTest extends TestCase {
     
     public final void testGetWritableTile(){
         BufferedImage bi = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-        WritableRaster tile = null;
-        try{
-            tile = bi.getWritableTile(1, 1);
-            assertTrue(true);
-        }catch(ArrayIndexOutOfBoundsException e){
-            fail("Unexpected ArrayIndexOutOfBoundsException was thrown");
+        bi.getWritableTile(1, 1);
+        
+        //Regression test for HARMONY-1658
+        BufferedImage img = new BufferedImage(10, 16, BufferedImage.TYPE_4BYTE_ABGR);
+        try {
+            img.isTileWritable(1,1);
+            fail("IllegalArgumentException is expected");
+        } catch (IllegalArgumentException iae) {
         }
     }
 

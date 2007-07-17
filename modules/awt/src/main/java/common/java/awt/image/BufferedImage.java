@@ -596,7 +596,7 @@ Image implements WritableRenderedImage, Transparency{
             return true;
         }
         // awt.226=Both tileX and tileY are not equal to 0
-        throw new ArrayIndexOutOfBoundsException(Messages.getString("awt.226")); //$NON-NLS-1$
+        throw new IllegalArgumentException(Messages.getString("awt.226")); //$NON-NLS-1$
     }
 
     public void releaseWritableTile(int tileX, int tileY) {

@@ -17,6 +17,7 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.event.ActionListener;
 import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
@@ -33,6 +34,8 @@ import org.apache.harmony.beans.tests.support.SampleListener;
 import org.apache.harmony.beans.tests.support.mock.MockFakeListener;
 import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeEvent;
 import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeListener;
+import org.apache.harmony.beans.tests.support.mock.MockPropertyChangeValidListener;
+
 
 /**
  * Unit test for EventSetDescriptor
@@ -86,6 +89,9 @@ public class EventSetDescriptorTest extends TestCase {
         assertEquals(listenerType, esd.getListenerType());
         assertTrue(esd.isInDefaultEventSet());
         assertFalse(esd.isUnicast());
+        
+        esd = new EventSetDescriptor(AnObject.class, "something",
+                AnObjectListener.class, "aMethod");
     }
 
     public void testEventSetDescriptorClassStringClassString2()
@@ -478,6 +484,21 @@ public class EventSetDescriptorTest extends TestCase {
             fail("Should throw IntrospectionException.");
         } catch (IntrospectionException e) {
         }
+    }
+    
+    public void testEventSetDescriptorClassStringClassStringArrayStringString_listenerMethodNamesValid()
+            throws Exception {
+        Class<MockSourceClass> sourceClass = MockSourceClass.class;
+        String eventSetName = "MockPropertyChange";
+        Class<?> listenerType = MockPropertyChangeValidListener.class;
+        String[] listenerMethodNames = { "mockPropertyChange_Valid",
+                "mockPropertyChange2", };
+        String addMethod = "addMockPropertyChangeListener";
+        String removeMethod = "removeMockPropertyChangeListener";
+        EventSetDescriptor eventSetDescriptor = new EventSetDescriptor(
+                sourceClass, eventSetName, listenerType, listenerMethodNames,
+                addMethod, removeMethod);
+        assertEquals(2, eventSetDescriptor.getListenerMethods().length);
     }
 
     public void testEventSetDescriptorClassStringClassStringArrayStringString_listenerMethodNamesEmpty()
@@ -1254,6 +1275,33 @@ public class EventSetDescriptorTest extends TestCase {
         }
 
     }
+    
+    //Regression Test
+    public void testConstructor_withLackRemoveActionBean() throws Exception {
+        try {
+            new EventSetDescriptor(LackRemoveActionBean.class, "action",
+                    ActionListener.class, "actionPerformed");
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+    }
+    
+    public void testConstructor_withAnotherListener() throws Exception {
+        Method[] listenermethods = AnotherObjectListener.class
+                .getDeclaredMethods();
+
+        Method add = AnObject.class.getDeclaredMethod(
+                "addEventSetDescriptorTest$AnObjectListener",
+                AnObjectListener.class);
+        Method remove = AnObject.class.getDeclaredMethod(
+                "removeEventSetDescriptorTest$AnObjectListener",
+                AnObjectListener.class);
+
+        EventSetDescriptor esd = new EventSetDescriptor("something",
+                AnObjectListener.class, listenermethods, add, remove);
+        assertNotNull(esd);
+    }
 
     protected String getUnQualifiedClassName(Class<?> classType) {
         String qName = classType.getName();
@@ -1298,6 +1346,52 @@ public class EventSetDescriptorTest extends TestCase {
         public void removeMockFakeListener(MockFakeListener listener) {
 
         }
+    }
+    
+    public class LackRemoveActionBean {
+        public void addActionListener(ActionListener al) {
+        }
+        // No removeActionListener() method
+    }
+    
+    private interface AnObjectListener {
+        public void aMethod( SomethingEvent s );
+    }
+
+    private static class AnObject {
+            public void addEventSetDescriptorTest$AnObjectListener( AnObjectListener l ) {}
+            public void removeEventSetDescriptorTest$AnObjectListener( AnObjectListener l ) {}
+    }
+    
+    private static class SomethingEvent {
+    
+    }
+    
+    public static void main(String[] args) throws Exception {
+
+        try {
+                // No need to do anything clever, there's only one method and it's
+                // the one we want.
+                // Swap these two lines to make Harmony pass.
+                //Method[] listenermethods = AnObjectListener.class.getDeclaredMethods();
+                Method[] listenermethods = AnotherObjectListener.class.getDeclaredMethods();
+
+                Method add = AnObject.class.getDeclaredMethod( "addEventSetDescriptorTest3$AnObjectListener",
+                                                                AnObjectListener.class );
+                Method remove = AnObject.class.getDeclaredMethod( "removeEventSetDescriptorTest3$AnObjectListener",
+                                                                AnObjectListener.class );
+
+                EventSetDescriptor esd = new EventSetDescriptor("something",
+                    AnObjectListener.class, listenermethods, add, remove);
+            System.out.println("Test passed.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Test failed.");
+        }
+    }
+
+    private interface AnotherObjectListener {
+        public void anotherMethod(SomethingEvent s);
     }
 
 }

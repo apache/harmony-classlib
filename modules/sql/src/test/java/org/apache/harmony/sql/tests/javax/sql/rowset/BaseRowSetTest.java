@@ -41,7 +41,7 @@ public class BaseRowSetTest extends TestCase {
         assertNotNull(params);
         assertEquals(0, params.length);
     }
-    
+
     /**
      * @tests {@link javax.sql.rowset.BaseRowSet#getFetchDirection()}
      */
@@ -49,7 +49,7 @@ public class BaseRowSetTest extends TestCase {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         assertEquals(ResultSet.FETCH_FORWARD, brs.getFetchDirection());
     }
-    
+
     /**
      * @tests {@link javax.sql.rowset.BaseRowSet#getTypeMap()}
      */
@@ -57,7 +57,7 @@ public class BaseRowSetTest extends TestCase {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         assertNull(brs.getTypeMap());
     }
-    
+
     public void testSetNullintint() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         try {
@@ -65,25 +65,25 @@ public class BaseRowSetTest extends TestCase {
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.initParams();
-        
+
         try {
             brs.setNull(0, Types.BINARY);
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.setNull(1, Types.BINARY);
         Object[] params = brs.getParams();
         assertNotNull(params);
-        Object[] param = (Object[])params[0];
+        Object[] param = (Object[]) params[0];
         assertNotNull(param);
         assertEquals(2, param.length);
         assertNull(param[0]);
         assertEquals(Integer.valueOf(Types.BINARY), param[1]);
     }
-    
+
     public void testSetNullintintString() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         try {
@@ -91,26 +91,26 @@ public class BaseRowSetTest extends TestCase {
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.initParams();
-        
+
         try {
             brs.setNull(0, Types.BINARY, "java.lang.Boolean");
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.setNull(1, Types.BINARY, "java.lang.Boolean");
         Object[] params = brs.getParams();
         assertNotNull(params);
-        Object[] param = (Object[])params[0];
+        Object[] param = (Object[]) params[0];
         assertNotNull(param);
         assertEquals(3, param.length);
         assertNull(param[0]);
         assertEquals(Integer.valueOf(Types.BINARY), param[1]);
         assertEquals("java.lang.Boolean", param[2]);
     }
-    
+
     public void testSetBoolean() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         try {
@@ -118,105 +118,105 @@ public class BaseRowSetTest extends TestCase {
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.initParams();
-        
+
         try {
             brs.setBoolean(0, true);
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.setBoolean(1, true);
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
         assertEquals(Boolean.TRUE, params[0]);
     }
-    
+
     public void testSetByte() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         try {
-            brs.setByte(1, (byte)1);
+            brs.setByte(1, (byte) 1);
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.initParams();
-        
+
         try {
-            brs.setByte(0, (byte)1);
+            brs.setByte(0, (byte) 1);
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
-        brs.setByte(1, (byte)1);
+
+        brs.setByte(1, (byte) 1);
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
-        assertEquals(Byte.valueOf((byte)1), params[0]);
+        assertEquals(Byte.valueOf((byte) 1), params[0]);
     }
-    
+
     public void testSetShort() throws Exception {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         try {
-            brs.setShort(1, (short)1);
+            brs.setShort(1, (short) 1);
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
+
         brs.initParams();
-        
+
         try {
-            brs.setShort(0, (short)1);
+            brs.setShort(0, (short) 1);
             fail("sql exception expected");
         } catch (SQLException e) {
         }
-        
-        brs.setShort(1, (byte)1);
+
+        brs.setShort(1, (byte) 1);
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
-        assertEquals(Short.valueOf((short)1), params[0]);
+        assertEquals(Short.valueOf((short) 1), params[0]);
     }
-    
+
     /**
      * @tests {@link javax.sql.rowset.BaseRowSet#setFetchDirection(int)}
      */
     public void testSetFetchDirectionI() throws SQLException {
-    	BaseRowSetImpl brs = new BaseRowSetImpl();
-    	brs.setFetchDirection(ResultSet.FETCH_FORWARD);
-    	assertEquals(ResultSet.FETCH_FORWARD, brs.getFetchDirection());
-    	
-    	brs.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
-    	brs.setFetchDirection(ResultSet.FETCH_UNKNOWN);
-    	assertEquals(ResultSet.FETCH_UNKNOWN, brs.getFetchDirection());
-    	
-    	brs.setType(ResultSet.TYPE_FORWARD_ONLY);
-    	try {
-    		brs.setFetchDirection(ResultSet.FETCH_REVERSE);
-    		fail("should throw SQLException");
-    	} catch (SQLException e) {
-    		// expected
-    	}
-    	
-    	try {
-    		brs.setFetchDirection(1100);
-    		fail("should throw SQLException");
-    	} catch (SQLException e) {
-    		// expected
-    	}
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.setFetchDirection(ResultSet.FETCH_FORWARD);
+        assertEquals(ResultSet.FETCH_FORWARD, brs.getFetchDirection());
+
+        brs.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
+        brs.setFetchDirection(ResultSet.FETCH_UNKNOWN);
+        assertEquals(ResultSet.FETCH_UNKNOWN, brs.getFetchDirection());
+
+        brs.setType(ResultSet.TYPE_FORWARD_ONLY);
+        try {
+            brs.setFetchDirection(ResultSet.FETCH_REVERSE);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            brs.setFetchDirection(1100);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
     }
-    
+
     /**
      * @tests {@link javax.sql.rowset.BaseRowSet#setTypeMap(java.util.Map)}
      */
     public void testSetTypeMap() {
-    	BaseRowSetImpl brs = new BaseRowSetImpl();
-    	brs.setTypeMap(null);
-    	assertNull(brs.getTypeMap());
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.setTypeMap(null);
+        assertNull(brs.getTypeMap());
     }
-    
+
     public void testSetArray() throws SQLException {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         brs.initParams();
@@ -225,9 +225,10 @@ public class BaseRowSetTest extends TestCase {
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
-        assertTrue("Should have stored a SerialArray", params[0] instanceof SerialArray);
+        assertTrue("Should have stored a SerialArray",
+                params[0] instanceof SerialArray);
     }
-    
+
     public void testSetBlob() throws SQLException {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         brs.initParams();
@@ -236,9 +237,10 @@ public class BaseRowSetTest extends TestCase {
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
-        assertTrue("Should have stored a SerialBlob", params[0] instanceof SerialBlob);
+        assertTrue("Should have stored a SerialBlob",
+                params[0] instanceof SerialBlob);
     }
-    
+
     public void testSetClob() throws SQLException {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         brs.initParams();
@@ -248,9 +250,10 @@ public class BaseRowSetTest extends TestCase {
         assertNotNull(params);
         assertEquals(1, params.length);
         assertTrue(c != params[0]);
-        assertTrue("Should have stored a SerialClob", params[0] instanceof SerialClob);
+        assertTrue("Should have stored a SerialClob",
+                params[0] instanceof SerialClob);
     }
-    
+
     public void testSetRef() throws SQLException {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         brs.initParams();
@@ -260,9 +263,10 @@ public class BaseRowSetTest extends TestCase {
         assertNotNull(params);
         assertEquals(1, params.length);
         assertTrue(r != params[0]);
-        assertTrue("Should have stored a SerialRef", params[0] instanceof SerialRef);        
+        assertTrue("Should have stored a SerialRef",
+                params[0] instanceof SerialRef);
     }
-    
+
     private static final class BaseRowSetImpl extends BaseRowSet {
         private static final long serialVersionUID = 1L;
 

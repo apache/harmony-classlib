@@ -28,7 +28,9 @@ import java.sql.SQLException;
 public class MockClob implements Clob {
 
     public Reader characterStreamReader = new StringReader("xys");
-    public InputStream asciiInputStream = new ByteArrayInputStream("hello".getBytes());
+
+    public InputStream asciiInputStream = new ByteArrayInputStream("hello"
+            .getBytes());
 
     public InputStream getAsciiStream() throws SQLException {
         return asciiInputStream;

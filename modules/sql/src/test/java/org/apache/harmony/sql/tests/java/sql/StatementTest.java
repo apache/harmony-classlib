@@ -25,68 +25,68 @@ import junit.framework.TestCase;
 
 public class StatementTest extends TestCase {
 
-	/*
-	 * Public statics test
-	 */
-	public void testPublicStatics() {
+    /*
+     * Public statics test
+     */
+    public void testPublicStatics() {
 
-		HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
-		thePublicStatics.put("NO_GENERATED_KEYS", new Integer(2));
-		thePublicStatics.put("RETURN_GENERATED_KEYS", new Integer(1));
-		thePublicStatics.put("EXECUTE_FAILED", new Integer(-3));
-		thePublicStatics.put("SUCCESS_NO_INFO", new Integer(-2));
-		thePublicStatics.put("CLOSE_ALL_RESULTS", new Integer(3));
-		thePublicStatics.put("KEEP_CURRENT_RESULT", new Integer(2));
-		thePublicStatics.put("CLOSE_CURRENT_RESULT", new Integer(1));
+        HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
+        thePublicStatics.put("NO_GENERATED_KEYS", new Integer(2));
+        thePublicStatics.put("RETURN_GENERATED_KEYS", new Integer(1));
+        thePublicStatics.put("EXECUTE_FAILED", new Integer(-3));
+        thePublicStatics.put("SUCCESS_NO_INFO", new Integer(-2));
+        thePublicStatics.put("CLOSE_ALL_RESULTS", new Integer(3));
+        thePublicStatics.put("KEEP_CURRENT_RESULT", new Integer(2));
+        thePublicStatics.put("CLOSE_CURRENT_RESULT", new Integer(1));
 
-		/*
-		 * System.out.println( "NO_GENERATED_KEYS: " +
-		 * Statement.NO_GENERATED_KEYS ); System.out.println(
-		 * "RETURN_GENERATED_KEYS: " + Statement.RETURN_GENERATED_KEYS );
-		 * System.out.println( "EXECUTE_FAILED: " + Statement.EXECUTE_FAILED );
-		 * System.out.println( "SUCCESS_NO_INFO: " + Statement.SUCCESS_NO_INFO );
-		 * System.out.println( "CLOSE_ALL_RESULTS: " +
-		 * Statement.CLOSE_ALL_RESULTS ); System.out.println(
-		 * "KEEP_CURRENT_RESULT: " + Statement.KEEP_CURRENT_RESULT );
-		 * System.out.println( "CLOSE_CURRENT_RESULT: " +
-		 * Statement.CLOSE_CURRENT_RESULT );
-		 */
+        /*
+         * System.out.println( "NO_GENERATED_KEYS: " +
+         * Statement.NO_GENERATED_KEYS ); System.out.println(
+         * "RETURN_GENERATED_KEYS: " + Statement.RETURN_GENERATED_KEYS );
+         * System.out.println( "EXECUTE_FAILED: " + Statement.EXECUTE_FAILED );
+         * System.out.println( "SUCCESS_NO_INFO: " + Statement.SUCCESS_NO_INFO );
+         * System.out.println( "CLOSE_ALL_RESULTS: " +
+         * Statement.CLOSE_ALL_RESULTS ); System.out.println(
+         * "KEEP_CURRENT_RESULT: " + Statement.KEEP_CURRENT_RESULT );
+         * System.out.println( "CLOSE_CURRENT_RESULT: " +
+         * Statement.CLOSE_CURRENT_RESULT );
+         */
 
-		Class<?> statementClass;
-		try {
-			statementClass = Class.forName("java.sql.Statement");
-		} catch (ClassNotFoundException e) {
-			fail("java.sql.Statement class not found!");
-			return;
-		} // end try
+        Class<?> statementClass;
+        try {
+            statementClass = Class.forName("java.sql.Statement");
+        } catch (ClassNotFoundException e) {
+            fail("java.sql.Statement class not found!");
+            return;
+        } // end try
 
-		Field[] theFields = statementClass.getDeclaredFields();
-		int requiredModifier = Modifier.PUBLIC + Modifier.STATIC
-				+ Modifier.FINAL;
+        Field[] theFields = statementClass.getDeclaredFields();
+        int requiredModifier = Modifier.PUBLIC + Modifier.STATIC
+                + Modifier.FINAL;
 
-		int countPublicStatics = 0;
-		for (Field element : theFields) {
-			String fieldName = element.getName();
-			int theMods = element.getModifiers();
-			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
-				try {
-					Object fieldValue = element.get(null);
-					Object expectedValue = thePublicStatics.get(fieldName);
-					if (expectedValue == null) {
-						fail("Field " + fieldName + " missing!");
-					} // end
-					assertEquals("Field " + fieldName + " value mismatch: ",
-							expectedValue, fieldValue);
-					assertEquals("Field " + fieldName + " modifier mismatch: ",
-							requiredModifier, theMods);
-					countPublicStatics++;
-				} catch (IllegalAccessException e) {
-					fail("Illegal access to Field " + fieldName);
-				} // end try
-			} // end if
-		} // end for
+        int countPublicStatics = 0;
+        for (Field element : theFields) {
+            String fieldName = element.getName();
+            int theMods = element.getModifiers();
+            if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
+                try {
+                    Object fieldValue = element.get(null);
+                    Object expectedValue = thePublicStatics.get(fieldName);
+                    if (expectedValue == null) {
+                        fail("Field " + fieldName + " missing!");
+                    } // end
+                    assertEquals("Field " + fieldName + " value mismatch: ",
+                            expectedValue, fieldValue);
+                    assertEquals("Field " + fieldName + " modifier mismatch: ",
+                            requiredModifier, theMods);
+                    countPublicStatics++;
+                } catch (IllegalAccessException e) {
+                    fail("Illegal access to Field " + fieldName);
+                } // end try
+            } // end if
+        } // end for
 
-	} // end method testPublicStatics
+    } // end method testPublicStatics
 
 } // end class StatementTest
 

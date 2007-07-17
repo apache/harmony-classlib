@@ -99,7 +99,7 @@ public class PropertyEditorManager {
         return editor;
     }
 
-    public static synchronized void setEditorSearchPath(String[] apath) {
+    public static void setEditorSearchPath(String[] apath) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPropertiesAccess();
@@ -107,7 +107,9 @@ public class PropertyEditorManager {
         if(apath == null){
             apath = new String[0];
         }
-        path = apath;
+        synchronized(PropertyEditorManager.class){
+            path = apath;
+        }
     }
 
     public static synchronized String[] getEditorSearchPath() {

@@ -64,12 +64,12 @@ public class PermissionCollection_ImplTest extends TestCase {
         // no elements
         PermissionCollection pc = new RealPermissionCollection(null);
         String superString = pc.getClass().getName() + "@" + Integer.toHexString(pc.hashCode());
-        assertEquals("no elements", superString + " (\n)", pc.toString());
+        assertEquals("no elements", superString + " (\n)\n", pc.toString());
         
         // several elements
         pc = new RealPermissionCollection(Arrays.asList(new Object[]{"aaa", "bbb", "ccc"}));
         superString = pc.getClass().getName() + "@" + Integer.toHexString(pc.hashCode());
-        assertEquals("several elements", superString + " (\n  aaa\n  bbb\n  ccc\n)", pc.toString());
+        assertEquals("several elements", superString + " (\n aaa\n bbb\n ccc\n)\n", pc.toString());
     }
    
 }

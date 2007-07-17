@@ -26,9 +26,9 @@ public class TestMainForDriver {
         // Install SecurityManager
         System.setSecurityManager(new SecurityManager());
         // Load java.sql.DriverManager and it will invoke its <clinit> method
-        try{
+        try {
             Class.forName("java.sql.DriverManager");
-        }catch (ExceptionInInitializerError e){
+        } catch (ExceptionInInitializerError e) {
             // ExceptionInInitializerError is caused by AccessControlException
             throw e.getException();
         }

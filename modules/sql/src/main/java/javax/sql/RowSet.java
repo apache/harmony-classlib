@@ -154,8 +154,8 @@ public interface RowSet extends ResultSet {
     public int getMaxRows() throws SQLException;
 
     /**
-     * Gets the value of the password property for this RowSet. This property
-     * is used when making a connection to the database and should be set before
+     * Gets the value of the password property for this RowSet. This property is
+     * used when making a connection to the database and should be set before
      * invoking the <code>execute</code> method.
      * 
      * @return a String containing the value of the password property.
@@ -187,8 +187,8 @@ public interface RowSet extends ResultSet {
     /**
      * Gets the custom mapping of SQL types for this RowSet, if any.
      * 
-     * @return a Map holding the custom mappings of SQL types to Java classes for
-     *         this RowSet. By default, the Map is empty.
+     * @return a Map holding the custom mappings of SQL types to Java classes
+     *         for this RowSet. By default, the Map is empty.
      * @throws SQLException
      *             if an error occurs accessing the database.
      */
@@ -452,7 +452,8 @@ public interface RowSet extends ResultSet {
      * @param theDate
      *            the Date to use
      * @param theCalendar
-     *            the Calendar to use in converting the Date to an SQL DATE value
+     *            the Calendar to use in converting the Date to an SQL DATE
+     *            value
      * @throws SQLException
      *             if an error occurs accessing the database.
      */

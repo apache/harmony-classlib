@@ -116,10 +116,12 @@ public class Beans {
         guiAvailable = isGuiAvailable;
     }
 
-    public static synchronized void setDesignTime(boolean isDesignTime)
+    public static void setDesignTime(boolean isDesignTime)
             throws SecurityException {
         checkPropertiesAccess();
-        designTime = isDesignTime;
+        synchronized(Beans.class){
+            designTime = isDesignTime;
+        }
     }
 
     public static synchronized boolean isGuiAvailable() {

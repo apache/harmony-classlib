@@ -17,7 +17,6 @@
 
 package java.util.zip;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -39,229 +38,237 @@ import org.apache.harmony.luni.util.Util;
 
 public class ZipFile implements ZipConstants {
 
-	String fileName;
+    String fileName;
 
-	long descriptor = -1;
+    long descriptor = -1;
 
-	private int size = -1;
+    private int size = -1;
 
-	private int mode;
-	static {
+    private int mode;
+    static {
         System.loadLibrary("hyarchive"); //$NON-NLS-1$
-		ntvinit();
-	}
+        ntvinit();
+    }
 
-	/**
-	 * Open zip file for read.
-	 */
-	public static final int OPEN_READ = 1;
+    /**
+     * Open zip file for read.
+     */
+    public static final int OPEN_READ = 1;
 
-	/**
-	 * Delete zip file when closed.
-	 */
-	public static final int OPEN_DELETE = 4;
+    /**
+     * Delete zip file when closed.
+     */
+    public static final int OPEN_DELETE = 4;
 
-	/**
-	 * Constructs a new ZipFile opened on the specified File.
-	 * 
-	 * @param file
-	 *            the File
-	 */
-	public ZipFile(File file) throws ZipException, IOException {
-		this(file.getPath());
-	}
+    /**
+     * Constructs a new ZipFile opened on the specified File.
+     * 
+     * @param file
+     *            the File
+     */
+    public ZipFile(File file) throws ZipException, IOException {
+        this(file.getPath());
+    }
 
-	/**
-	 * Constructs a new ZipFile opened on the specified File using the specified
-	 * mode.
-	 * 
-	 * @param file
-	 *            the File
-	 * @param mode
-	 *            the mode to use, either OPEN_READ or OPEN_READ | OPEN_DELETE
-	 */
-	public ZipFile(File file, int mode) throws IOException {
-		if (mode == OPEN_READ || mode == (OPEN_READ | OPEN_DELETE)) {
-			fileName = file.getPath();
-			SecurityManager security = System.getSecurityManager();
-			if (security != null) {
-				security.checkRead(fileName);
-				if ((mode & OPEN_DELETE) != 0) {
-					security.checkDelete(fileName);
-				}
-			}
-			this.mode = mode;
-			openZip();
-		} else {
+    /**
+     * Constructs a new ZipFile opened on the specified File using the specified
+     * mode.
+     * 
+     * @param file
+     *            the File
+     * @param mode
+     *            the mode to use, either OPEN_READ or OPEN_READ | OPEN_DELETE
+     */
+    public ZipFile(File file, int mode) throws IOException {
+        if (mode == OPEN_READ || mode == (OPEN_READ | OPEN_DELETE)) {
+            fileName = file.getPath();
+            SecurityManager security = System.getSecurityManager();
+            if (security != null) {
+                security.checkRead(fileName);
+                if ((mode & OPEN_DELETE) != 0) {
+                    security.checkDelete(fileName);
+                }
+            }
+            this.mode = mode;
+            openZip();
+        } else {
             throw new IllegalArgumentException();
         }
-	}
+    }
 
-	/**
-	 * Constructs a new ZipFile opened on the specified file path name.
-	 * 
-	 * @param filename
-	 *            the file path name
-	 */
-	public ZipFile(String filename) throws IOException {
-		SecurityManager security = System.getSecurityManager();
-		if (security != null) {
-			security.checkRead(filename);
-		}
-		fileName = filename;
-		openZip();
-	}
+    /**
+     * Constructs a new ZipFile opened on the specified file path name.
+     * 
+     * @param filename
+     *            the file path name
+     */
+    public ZipFile(String filename) throws IOException {
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkRead(filename);
+        }
+        fileName = filename;
+        openZip();
+    }
 
-	private void openZip() throws IOException {
-		int result = openZipImpl(Util.getBytes(fileName));
-		if (result != 0) {
-			switch (result) {
-			case 1:
-				throw new ZipException(Messages.getString("archive.24", fileName)); //$NON-NLS-1$
-			case 2:
-				throw new ZipException(Messages.getString("archive.25", fileName)); //$NON-NLS-1$
-			default:
-				throw new OutOfMemoryError();
-			}
-		}
-	}
+    private void openZip() throws IOException {
+        int result = openZipImpl(Util.getBytes(fileName));
+        if (result != 0) {
+            switch (result) {
+            case 1:
+                throw new ZipException(Messages.getString(
+                        "archive.24", fileName)); //$NON-NLS-1$
+            case 2:
+                throw new ZipException(Messages.getString(
+                        "archive.25", fileName)); //$NON-NLS-1$
+            default:
+                throw new OutOfMemoryError();
+            }
+        }
+    }
 
-	@Override
+    @Override
     protected void finalize() throws IOException {
-		close();
-	}
+        close();
+    }
 
-	/**
-	 * Closes this ZipFile.
-	 */
-	public synchronized void close() throws IOException {
-		if (descriptor != -1 && fileName != null) {
-			// Only close initialized instances
-			closeZipImpl(descriptor);
-			if ((mode & OPEN_DELETE) != 0) {
-				AccessController.doPrivileged(new PrivilegedAction<Object>() {
-					public Object run() {
-						new File(fileName).delete();
-						return null;
-					}
-				});
-			}
-		}
-	}
+    /**
+     * Closes this ZipFile.
+     */
+    public synchronized void close() throws IOException {
+        if (descriptor != -1 && fileName != null) {
+            // Only close initialized instances
+            closeZipImpl(descriptor);
+            if ((mode & OPEN_DELETE) != 0) {
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        new File(fileName).delete();
+                        return null;
+                    }
+                });
+            }
+        }
+    }
 
-	/**
-	 * Answers all of the zip entries contained in this ZipFile.
-	 * 
-	 * @return an Enumeration of the zip entries
-	 */
-	public Enumeration<? extends ZipEntry> entries() {
-		return new ZFEnum<ZipEntry>();
-	}
+    /**
+     * Answers all of the zip entries contained in this ZipFile.
+     * 
+     * @return an Enumeration of the zip entries
+     */
+    public Enumeration<? extends ZipEntry> entries() {
+        return new ZFEnum<ZipEntry>();
+    }
 
-	/**
-	 * Gets the zip entry with the specified name from this ZipFile.
-	 * 
-	 * @param entryName
-	 *            the name of the entry in the zip file
-	 * @return a ZipEntry or null if the entry name does not exist in the zip
-	 *         file
-	 */
-	public ZipEntry getEntry(String entryName) {
-		if (entryName != null) {
-			ZipEntry entry = getEntryImpl(descriptor, entryName);
-			return entry;
-		}
-		throw new NullPointerException();
-	}
+    /**
+     * Gets the zip entry with the specified name from this ZipFile.
+     * 
+     * @param entryName
+     *            the name of the entry in the zip file
+     * @return a ZipEntry or null if the entry name does not exist in the zip
+     *         file
+     */
+    public ZipEntry getEntry(String entryName) {
+        if (entryName != null) {
+            ZipEntry entry = getEntryImpl(descriptor, entryName);
+            return entry;
+        }
+        throw new NullPointerException();
+    }
 
-	/**
-	 * Answers an input stream on the data of the specified ZipEntry.
-	 * 
-	 * @param entry
-	 *            the ZipEntry
-	 * @return an input stream on the ZipEntry data
-	 */
-	public InputStream getInputStream(ZipEntry entry) throws IOException {
-		if(descriptor == -1) {
-			/* the descriptor is set to -1 by native code to indicate the zip was closed */
-			throw new IllegalStateException();
-		}
-		byte[] buf = inflateEntryImpl2(descriptor, entry.getName());
-		if (buf == null) {
+    /**
+     * Answers an input stream on the data of the specified ZipEntry.
+     * 
+     * @param entry
+     *            the ZipEntry
+     * @return an input stream on the ZipEntry data
+     */
+    public InputStream getInputStream(ZipEntry entry) throws IOException {
+        if (descriptor == -1) {
+            /*
+             * the descriptor is set to -1 by native code to indicate the zip
+             * was closed
+             */
+            throw new IllegalStateException();
+        }
+        byte[] buf = inflateEntryImpl2(descriptor, entry.getName());
+        if (buf == null) {
             return null;
         }
-		return new ByteArrayInputStream(buf);
-}
+        return new ByteArrayInputStream(buf);
+    }
 
-	/**
-	 * Gets the file name of this ZipFile.
-	 * 
-	 * @return the file name of this ZipFile
-	 */
-	public String getName() {
-		return fileName;
-	}
+    /**
+     * Gets the file name of this ZipFile.
+     * 
+     * @return the file name of this ZipFile
+     */
+    public String getName() {
+        return fileName;
+    }
 
-	private synchronized native int openZipImpl(byte[] fileName1);
+    private synchronized native int openZipImpl(byte[] fileName1);
 
-	private native void closeZipImpl(long descriptor1) throws IOException;
+    private native void closeZipImpl(long descriptor1) throws IOException;
 
-	private native ZipEntry getEntryImpl(long descriptor1, String entryName);
+    private native ZipEntry getEntryImpl(long descriptor1, String entryName);
 
-	private native byte[] inflateEntryImpl2(long descriptor1, String entryName)
-			throws ZipException;
+    private native byte[] inflateEntryImpl2(long descriptor1, String entryName)
+            throws ZipException;
 
-	/**
-	 * Returns the number of ZipEntries in this ZipFile.
-	 * 
-	 * @return Number of entries in this file
-	 */
-	public int size() {
-		if (size != -1) {
+    /**
+     * Returns the number of ZipEntries in this ZipFile.
+     * 
+     * @return Number of entries in this file
+     */
+    public int size() {
+        if (size != -1) {
             return size;
         }
 
-		size = 0;
-		Enumeration<?> e = entries();
-		while (e.hasMoreElements()) {
-			size++;
-			e.nextElement();
-		}
-		return size;
+        size = 0;
+        Enumeration<?> e = entries();
+        while (e.hasMoreElements()) {
+            size++;
+            e.nextElement();
+        }
+        return size;
 
-	}
+    }
 
-	private static native void ntvinit();
+    private static native void ntvinit();
 
-	class ZFEnum<T extends ZipEntry> implements Enumeration<T> {
-		private final long nextEntryPointer;
+    class ZFEnum<T extends ZipEntry> implements Enumeration<T> {
+        private final long nextEntryPointer;
 
-		private T current;
+        private T current;
 
-		ZFEnum() {
-			nextEntryPointer = resetZip(descriptor);
-			current = getNextEntry(descriptor, nextEntryPointer);
-		}
+        ZFEnum() {
+            nextEntryPointer = resetZip(descriptor);
+            current = getNextEntry(descriptor, nextEntryPointer);
+        }
 
-		private native long resetZip(long descriptor1);
+        private native long resetZip(long descriptor1);
 
-		private native T getNextEntry(long descriptor1, long nextEntryPointer1);
+        private native T getNextEntry(long descriptor1, long nextEntryPointer1);
 
-		public boolean hasMoreElements() {
-			if(descriptor == -1) {
-				/* the descriptor is set to -1 by native code to indicate the zip was closed */
-				throw new IllegalStateException();
-			}
-			return current != null;
-		}
+        public boolean hasMoreElements() {
+            if (descriptor == -1) {
+                /*
+                 * the descriptor is set to -1 by native code to indicate the
+                 * zip was closed
+                 */
+                throw new IllegalStateException();
+            }
+            return current != null;
+        }
 
-		public T nextElement() {
-			if (current == null) {
+        public T nextElement() {
+            if (current == null) {
                 throw new NoSuchElementException();
             }
-			T ze = current;
-			current = getNextEntry(descriptor, nextEntryPointer);
-			return ze;
-		}
-	}
+            T ze = current;
+            current = getNextEntry(descriptor, nextEntryPointer);
+            return ze;
+        }
+    }
 }

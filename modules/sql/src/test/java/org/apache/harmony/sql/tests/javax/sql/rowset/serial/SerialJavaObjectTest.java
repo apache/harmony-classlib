@@ -26,8 +26,8 @@ import javax.sql.rowset.serial.SerialJavaObject;
 import junit.framework.TestCase;
 
 public class SerialJavaObjectTest extends TestCase {
-	public void test_Constructor() throws Exception {
-		TransientFieldClass tfc = new TransientFieldClass();
+    public void test_Constructor() throws Exception {
+        TransientFieldClass tfc = new TransientFieldClass();
         SerialJavaObject sjo;
         try {
             sjo = new SerialJavaObject(tfc);
@@ -41,39 +41,44 @@ public class SerialJavaObjectTest extends TestCase {
             fail("should throw SerialException");
         } catch (SerialException e) {
             // excepted
-        }		
-		
-		SerializableClass sc = new SerializableClass();
-		sjo = new SerialJavaObject(sc);
-		assertSame(sc, sjo.getObject());
-		Arrays.equals(sjo.getFields(), sc.getClass().getFields());
-        
+        }
+
+        SerializableClass sc = new SerializableClass();
+        sjo = new SerialJavaObject(sc);
+        assertSame(sc, sjo.getObject());
+        Arrays.equals(sjo.getFields(), sc.getClass().getFields());
+
         try {
             new SerialJavaObject(null);
             fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
-	}
-	
-	static class TransientFieldClass {
-		transient int i;
-		String s;
-	}
-	
-	static class NonSerialiableClass {
-		int i;
-		String s;
-	}
-	
-	static class StaticFieldClass {
-		static int i;
-		String s;
-	}
-	
-	static class SerializableClass implements Serializable {
-		private static final long serialVersionUID = 0L;
-		int i;
-		String s;
-	}
+    }
+
+    static class TransientFieldClass {
+        transient int i;
+
+        String s;
+    }
+
+    static class NonSerialiableClass {
+        int i;
+
+        String s;
+    }
+
+    static class StaticFieldClass {
+        static int i;
+
+        String s;
+    }
+
+    static class SerializableClass implements Serializable {
+        private static final long serialVersionUID = 0L;
+
+        int i;
+
+        String s;
+    }
 }

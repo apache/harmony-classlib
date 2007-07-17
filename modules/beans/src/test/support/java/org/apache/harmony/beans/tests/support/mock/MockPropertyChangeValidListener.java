@@ -15,25 +15,36 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.sql.tests.javax.sql;
+package org.apache.harmony.beans.tests.support.mock;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import javax.sql.ConnectionEventListener;
-import javax.sql.PooledConnection;
+import java.util.EventListener;
 
-class Impl_PooledConnection implements PooledConnection {
-    public void addConnectionEventListener(ConnectionEventListener theListener) {
-    }
+public interface MockPropertyChangeValidListener extends EventListener {
+    /*
+     * fire MockPropertyChange event.
+     */
 
-    public void close() throws SQLException {
-    }
+    public void mockPropertyChange(MockPropertyChangeEvent e);
 
-    public Connection getConnection() throws SQLException {
-        return null;
-    }
+    public void mockPropertyChange2(MockPropertyChangeEvent e);
 
-    public void removeConnectionEventListener(
-            ConnectionEventListener theListener) {
-    }
+    public void mockPropertyChange3(MockPropertyChangeEvent e);
+
+    public void mockNotAEventObject(MockFakeEvent event);
+
+    public void mockPropertyChange_Valid(MockEvent event); 
+    
+    public void mockPropertyChange_Valid(Mock2Event event);
+    
+    public void mockPropertyChange_Valid(MockPropertyChangeEvent event);
+   
+
+}
+
+class MockEvent 
+{
+}
+
+class Mock2Event
+{
 }

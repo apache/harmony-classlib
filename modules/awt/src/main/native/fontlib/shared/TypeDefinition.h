@@ -30,6 +30,7 @@ typedef short fshort;
 typedef unsigned short fwchar_t;
 
 fint fwcslen(fwchar_t* str);
+fint fwcscmp(fwchar_t* str1, fchar* str2);
 fint fwcscmp(fwchar_t* str1, fwchar_t* str2);
 
 #endif

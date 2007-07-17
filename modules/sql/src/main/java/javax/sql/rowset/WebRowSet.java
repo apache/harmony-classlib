@@ -37,7 +37,8 @@ public interface WebRowSet extends CachedRowSet, Joinable, ResultSet, RowSet {
 
     void writeXml(ResultSet rs, Writer writer) throws SQLException;
 
-    void writeXml(ResultSet rs, OutputStream oStream) throws SQLException, IOException;
+    void writeXml(ResultSet rs, OutputStream oStream) throws SQLException,
+            IOException;
 
     void writeXml(Writer writer) throws SQLException;
 

@@ -76,9 +76,9 @@ public class LoggerTest extends TestCase {
 	 * Reset the log manager.
 	 */
 	protected void tearDown() throws Exception {
-		super.tearDown();
         CallVerificationStack.getInstance().clear();
 		Locale.setDefault(oldLocale);
+        super.tearDown();
 	}
 
 	/**
@@ -3414,6 +3414,42 @@ public class LoggerTest extends TestCase {
         } catch (MissingResourceException ex) {
             // Expected exception is precisely a MissingResourceException
             assertTrue(ex.getClass() == MissingResourceException.class);
+        }
+    }
+    
+    /**
+     * @tests java.util.logging.Logger#logrb(Level, String, String, String,
+     *        String, Object)
+     */
+    public void test_init_logger()
+            throws Exception {
+        Properties p = new Properties();
+        p.put("testGetLogger_Normal_ANewLogger2.level", "ALL");
+        LogManager.getLogManager().readConfiguration(
+                EnvironmentHelper.PropertiesToInputStream(p));
+
+        assertNull(LogManager.getLogManager().getLogger(
+                "testGetLogger_Normal_ANewLogger2"));
+        SecurityManager originalSecurityManager = System.getSecurityManager();
+        try {
+            System.setSecurityManager(new SecurityManager());
+            // should not throw expection
+            Logger logger = Logger.getLogger("testGetLogger_Normal_ANewLogger2");
+            // should thrpw exception
+            try{
+                logger.setLevel(Level.ALL);
+                fail("should throw SecurityException");
+            } catch (SecurityException e){
+                // expected
+            }
+            try{
+                logger.setParent(Logger.getLogger("root"));
+                fail("should throw SecurityException");
+            } catch (SecurityException e){
+                // expected
+            }
+        } finally {
+            System.setSecurityManager(originalSecurityManager);
         }
     }
 

@@ -34,31 +34,31 @@ public class ConnectionEventTest extends TestCase {
             fail("illegal argument exception expected");
         } catch (IllegalArgumentException e) {
         }
-        
+
         Impl_PooledConnection ipc = new Impl_PooledConnection();
         ConnectionEvent ce = new ConnectionEvent(ipc);
         assertSame(ipc, ce.getSource());
         assertNull(ce.getSQLException());
     }
-    
+
     public void testConstructorConnectionSQLException() {
         try {
             new ConnectionEvent(null, null);
             fail("illegal argument exception expected");
         } catch (IllegalArgumentException e) {
         }
-        
+
         Impl_PooledConnection ipc = new Impl_PooledConnection();
         ConnectionEvent ce = new ConnectionEvent(ipc, null);
         assertSame(ipc, ce.getSource());
         assertNull(ce.getSQLException());
-        
+
         SQLException e = new SQLException();
         ce = new ConnectionEvent(ipc, e);
         assertSame(ipc, ce.getSource());
         assertSame(e, ce.getSQLException());
     }
-    
+
     /**
      * @tests serialization/deserialization compatibility.
      */
@@ -111,5 +111,4 @@ public class ConnectionEventTest extends TestCase {
         }
 
     };
-}   
-
+}

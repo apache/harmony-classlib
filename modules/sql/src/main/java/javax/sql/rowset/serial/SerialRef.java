@@ -25,60 +25,60 @@ import java.util.Map;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class SerialRef implements Ref, Serializable, Cloneable {
-	private static final long serialVersionUID = -4727123500609662274L;
+    private static final long serialVersionUID = -4727123500609662274L;
 
-	/**
-	 * required by serialized form
-	 */
-	private String baseTypeName;
+    /**
+     * required by serialized form
+     */
+    private String baseTypeName;
 
-	/**
-	 * store <code> reference </code> as an object, required by serialized form.
-	 */
-	private Object object;
+    /**
+     * store <code> reference </code> as an object, required by serialized form.
+     */
+    private Object object;
 
-	/**
-	 * required by serialized form
-	 */
-	private Ref reference;
+    /**
+     * required by serialized form
+     */
+    private Ref reference;
 
-	public SerialRef(Ref ref) throws SerialException, SQLException {
-		if (ref == null) {
-			throw new SQLException(Messages.getString("sql.9")); //$NON-NLS-1$
-		}
-		reference = ref;
-		object = ref;
-		baseTypeName = ref.getBaseTypeName();
-		if (baseTypeName == null) {
-			throw new SQLException(Messages.getString("sql.10"));//$NON-NLS-1$
-		}
-	}
+    public SerialRef(Ref ref) throws SerialException, SQLException {
+        if (ref == null) {
+            throw new SQLException(Messages.getString("sql.9")); //$NON-NLS-1$
+        }
+        reference = ref;
+        object = ref;
+        baseTypeName = ref.getBaseTypeName();
+        if (baseTypeName == null) {
+            throw new SQLException(Messages.getString("sql.10"));//$NON-NLS-1$
+        }
+    }
 
-	public String getBaseTypeName() throws SerialException {
-		return baseTypeName;
-	}
+    public String getBaseTypeName() throws SerialException {
+        return baseTypeName;
+    }
 
-	public Object getObject() throws SerialException {
-		try {
-			return reference.getObject();
-		} catch (SQLException e) {
-			throw new SerialException(Messages.getString(
-					"sql.11", e.getMessage())); //$NON-NLS-1$
-		}
-	}
+    public Object getObject() throws SerialException {
+        try {
+            return reference.getObject();
+        } catch (SQLException e) {
+            throw new SerialException(Messages.getString(
+                    "sql.11", e.getMessage())); //$NON-NLS-1$
+        }
+    }
 
-	public Object getObject(Map<String, Class<?>> map) throws SerialException {
-		return map.get(object);
-	}
+    public Object getObject(Map<String, Class<?>> map) throws SerialException {
+        return map.get(object);
+    }
 
-	public void setObject(Object value) throws SerialException {
-		try {
-			reference.setObject(value);
-			object = value;
-		} catch (SQLException e) {
-			throw new SerialException(Messages.getString(
-					"sql.11", e.getMessage())); //$NON-NLS-1$
-		}
-	}
+    public void setObject(Object value) throws SerialException {
+        try {
+            reference.setObject(value);
+            object = value;
+        } catch (SQLException e) {
+            throw new SerialException(Messages.getString(
+                    "sql.11", e.getMessage())); //$NON-NLS-1$
+        }
+    }
 
 }

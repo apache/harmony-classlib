@@ -39,7 +39,7 @@ public class DefaultUDTMap<T> {
             throws SerialException {
         SerialDatalink[] ret = new SerialDatalink[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = new SerialDatalink((URL)elements[i]);
+            ret[i] = new SerialDatalink((URL) elements[i]);
         }
         return ret;
     }
@@ -48,7 +48,7 @@ public class DefaultUDTMap<T> {
             throws SerialException {
         Struct[] ret = new Struct[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = (Struct)elements[i];
+            ret[i] = (Struct) elements[i];
         }
         return ret;
     }
@@ -57,7 +57,7 @@ public class DefaultUDTMap<T> {
             throws SerialException {
         Array[] ret = new Array[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = (Array)elements[i];
+            ret[i] = (Array) elements[i];
         }
         return ret;
     }
@@ -65,7 +65,7 @@ public class DefaultUDTMap<T> {
     public static Clob[] processClob(Object[] elements) throws SQLException {
         Clob[] ret = new Clob[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = new SerialClob((Clob)elements[i]);
+            ret[i] = new SerialClob((Clob) elements[i]);
         }
         return ret;
     }
@@ -73,7 +73,7 @@ public class DefaultUDTMap<T> {
     public static Blob[] processBlob(Object[] elements) throws SQLException {
         Blob[] ret = new Blob[elements.length];
         for (int i = 0; i < elements.length; i++) {
-            ret[i] = new SerialBlob((Blob)elements[i]);
+            ret[i] = new SerialBlob((Blob) elements[i]);
         }
         return ret;
     }
@@ -90,4 +90,3 @@ public class DefaultUDTMap<T> {
         return ret;
     }
 }
-

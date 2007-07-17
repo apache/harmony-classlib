@@ -30,7 +30,8 @@ import java.util.Map;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
- * The Manifest class is used to obtain attribute information for a JarFile and its entries.
+ * The Manifest class is used to obtain attribute information for a JarFile and
+ * its entries.
  * 
  */
 public class Manifest implements Cloneable {
@@ -38,7 +39,8 @@ public class Manifest implements Cloneable {
 
     private static final byte[] LINE_SEPARATOR = new byte[] { '\r', '\n' };
 
-    private static final Attributes.Name NAME_ATTRIBUTE = new Attributes.Name("Name"); //$NON-NLS-1$
+    private static final Attributes.Name NAME_ATTRIBUTE = new Attributes.Name(
+            "Name"); //$NON-NLS-1$
 
     private Attributes mainAttributes = new Attributes();
 
@@ -47,7 +49,8 @@ public class Manifest implements Cloneable {
     private HashMap<String, byte[]> chunks;
 
     /**
-     * The data chunk of Main Attributes in the manifest is needed in verification.
+     * The data chunk of Main Attributes in the manifest is needed in
+     * verification.
      */
     private byte[] mainAttributesChunk;
 
@@ -61,9 +64,11 @@ public class Manifest implements Cloneable {
     /**
      * Constructs a new Manifest instance using the attributes obtained from is.
      * 
-     * @param is InputStream to parse for attributes
+     * @param is
+     *            InputStream to parse for attributes
      * 
-     * @throws IOException if an IO error occurs while creating this Manifest
+     * @throws IOException
+     *             if an IO error occurs while creating this Manifest
      * 
      */
     public Manifest(InputStream is) throws IOException {
@@ -72,15 +77,17 @@ public class Manifest implements Cloneable {
     }
 
     /**
-     * Constructs a new Manifest instance. The new instance will have the same attributes as
-     * those found in the parameter Manifest.
+     * Constructs a new Manifest instance. The new instance will have the same
+     * attributes as those found in the parameter Manifest.
      * 
-     * @param man Manifest instance to obtain attributes from
+     * @param man
+     *            Manifest instance to obtain attributes from
      */
     @SuppressWarnings("unchecked")
     public Manifest(Manifest man) {
         mainAttributes = (Attributes) man.mainAttributes.clone();
-        entryAttributes = (HashMap<String, Attributes>) man.entryAttributes.clone();
+        entryAttributes = (HashMap<String, Attributes>) man.entryAttributes
+                .clone();
     }
 
     Manifest(InputStream is, boolean readChunks) throws IOException {
@@ -91,8 +98,8 @@ public class Manifest implements Cloneable {
     }
 
     /**
-     * Resets the both the mainAttributes as well as the entry Attributes associated with this
-     * Manifest.
+     * Resets the both the mainAttributes as well as the entry Attributes
+     * associated with this Manifest.
      */
     public void clear() {
         entryAttributes.clear();
@@ -102,7 +109,8 @@ public class Manifest implements Cloneable {
     /**
      * Returns the Attributes associated with the parameter entry name
      * 
-     * @param name The name of the entry to obtain Attributes for.
+     * @param name
+     *            The name of the entry to obtain Attributes for.
      * @return The Attributes for the entry or null if the entry does not exist.
      */
     public Attributes getAttributes(String name) {
@@ -128,8 +136,8 @@ public class Manifest implements Cloneable {
     }
 
     /**
-     * Creates a copy of this Manifest. The returned Manifest will equal the Manifest from which
-     * it was cloned.
+     * Creates a copy of this Manifest. The returned Manifest will equal the
+     * Manifest from which it was cloned.
      * 
      * @return A copy of the receiver.
      */
@@ -139,26 +147,31 @@ public class Manifest implements Cloneable {
     }
 
     /**
-     * Writes out the attribute information of the receiver to the specified OutputStream
+     * Writes out the attribute information of the receiver to the specified
+     * OutputStream
      * 
-     * @param os The OutputStream to write to.
+     * @param os
+     *            The OutputStream to write to.
      * 
-     * @throws IOException If an error occurs writing the Manifest
+     * @throws IOException
+     *             If an error occurs writing the Manifest
      */
     public void write(OutputStream os) throws IOException {
         write(this, os);
     }
 
     /**
-     * Constructs a new Manifest instance obtaining Attribute information from the parameter
-     * InputStream.
+     * Constructs a new Manifest instance obtaining Attribute information from
+     * the parameter InputStream.
      * 
-     * @param is The InputStream to read from
-     * @throws IOException If an error occurs reading the Manifest.
+     * @param is
+     *            The InputStream to read from
+     * @throws IOException
+     *             If an error occurs reading the Manifest.
      */
     public void read(InputStream is) throws IOException {
-        InitManifest initManifest = new InitManifest(is, mainAttributes, entryAttributes,
-                chunks, null);
+        InitManifest initManifest = new InitManifest(is, mainAttributes,
+                entryAttributes, chunks, null);
         mainAttributesChunk = initManifest.getMainAttributesChunk();
     }
 
@@ -173,11 +186,14 @@ public class Manifest implements Cloneable {
     }
 
     /**
-     * Determines if the receiver is equal to the parameter Object. Two Manifests are equal if
-     * they have identical main Attributes as well as identical entry Attributes.
+     * Determines if the receiver is equal to the parameter Object. Two
+     * Manifests are equal if they have identical main Attributes as well as
+     * identical entry Attributes.
      * 
-     * @param o The Object to compare against.
-     * @return <code>true</code> if the manifests are equal, <code>false</code> otherwise
+     * @param o
+     *            The Object to compare against.
+     * @return <code>true</code> if the manifests are equal,
+     *         <code>false</code> otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -206,31 +222,37 @@ public class Manifest implements Cloneable {
     }
 
     /**
-     * Writes out the attribute information of the receiver to the specified OutputStream
+     * Writes out the attribute information of the receiver to the specified
+     * OutputStream
      * 
-     * @param manifest the attribute information of the receiver
-     * @param out The OutputStream to write to.
+     * @param manifest
+     *            the attribute information of the receiver
+     * @param out
+     *            The OutputStream to write to.
      * 
-     * @throws IOException If an error occurs writing the Manifest
+     * @throws IOException
+     *             If an error occurs writing the Manifest
      */
     static void write(Manifest manifest, OutputStream out) throws IOException {
         Charset charset = null;
-        String encoding = AccessController.doPrivileged(new PriviAction<String>(
-                "manifest.write.encoding")); //$NON-NLS-1$
+        String encoding = AccessController
+                .doPrivileged(new PriviAction<String>("manifest.write.encoding")); //$NON-NLS-1$
         if (encoding != null) {
             if (encoding.length() == 0) {
                 encoding = "UTF8"; //$NON-NLS-1$
             }
             charset = Charset.forName(encoding);
         }
-        String version = manifest.mainAttributes.getValue(Attributes.Name.MANIFEST_VERSION);
+        String version = manifest.mainAttributes
+                .getValue(Attributes.Name.MANIFEST_VERSION);
         if (version != null) {
             writeEntry(out, charset, Attributes.Name.MANIFEST_VERSION, version);
             Iterator<?> entries = manifest.mainAttributes.keySet().iterator();
             while (entries.hasNext()) {
                 Attributes.Name name = (Attributes.Name) entries.next();
                 if (!name.equals(Attributes.Name.MANIFEST_VERSION)) {
-                    writeEntry(out, charset, name, manifest.mainAttributes.getValue(name));
+                    writeEntry(out, charset, name, manifest.mainAttributes
+                            .getValue(name));
                 }
             }
         }
@@ -249,8 +271,8 @@ public class Manifest implements Cloneable {
         }
     }
 
-    private static void writeEntry(OutputStream os, Charset charset, Attributes.Name name,
-            String value) throws IOException {
+    private static void writeEntry(OutputStream os, Charset charset,
+            Attributes.Name name, String value) throws IOException {
         int offset = 0;
         int limit = LINE_LENGTH_LIMIT;
         byte[] out = (name.toString() + ": ").getBytes("ISO8859_1"); //$NON-NLS-1$ //$NON-NLS-2$

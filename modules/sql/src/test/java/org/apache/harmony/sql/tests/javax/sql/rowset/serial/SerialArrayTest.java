@@ -41,7 +41,7 @@ public class SerialArrayTest extends TestCase {
     Object[] testElements = new Object[4];
 
     Map<String, Class<?>> map = new HashMap<String, Class<?>>();
-    
+
     Map<String, Class<?>> badmap = new HashMap<String, Class<?>>();
 
     @Override
@@ -51,8 +51,8 @@ public class SerialArrayTest extends TestCase {
         testElements[0] = "test1";
         testElements[1] = "test2";
         testElements[2] = new SQLException();
-        testElements[3] = new HashMap();       
-        sa = new SerialArray(mock);     
+        testElements[3] = new HashMap();
+        sa = new SerialArray(mock);
         map = new HashMap<String, Class<?>>();
         map.put("String", MockStringSQLData.class);
         map.put("Object", null);
@@ -71,12 +71,12 @@ public class SerialArrayTest extends TestCase {
             fail("should throw SQLException");
         } catch (SQLException e) {
             // expected
-        }        
+        }
         testElements = new Object[5];
         testElements[0] = "test1";
         testElements[1] = "test2";
         testElements[2] = new SQLException();
-        testElements[3] = new HashMap();  
+        testElements[3] = new HashMap();
         try {
             sa = new SerialArray(mock);
             fail("should throw NullPointerException");
@@ -92,7 +92,7 @@ public class SerialArrayTest extends TestCase {
             // expected
         }
     }
-    
+
     public void testConstructor_IntArray() throws SQLException {
         mock.basetype = Types.INTEGER;
         // OK
@@ -129,10 +129,10 @@ public class SerialArrayTest extends TestCase {
             fail("should throw SQLException");
         } catch (SQLException e) {
             // expected
-        }     
-        //OK        
-        sa = new SerialArray(mock,map);
-        sa = new SerialArray(mock,badmap);
+        }
+        // OK
+        sa = new SerialArray(mock, map);
+        sa = new SerialArray(mock, badmap);
     }
 
     public void testGetArray() throws SerialException {
@@ -151,9 +151,9 @@ public class SerialArrayTest extends TestCase {
         for (int i = 0; i < testElements.length; i++) {
             assertSame(testElements[i], ((Object[]) sa.getArray(badmap))[i]);
         }
-        
+
     }
-    
+
     public void testGetArrayLongInt() throws SerialException {
         for (int i = 0; i < testElements.length; i++) {
             assertEquals(testElements[i], ((Object[]) sa.getArray(i, 1))[0]);
@@ -168,7 +168,8 @@ public class SerialArrayTest extends TestCase {
             assertSame(testElements[i], ((Object[]) sa.getArray(i, 1, map))[0]);
         }
         for (int i = 0; i < testElements.length; i++) {
-            assertSame(testElements[i], ((Object[]) sa.getArray(i, 1, badmap))[0]);
+            assertSame(testElements[i],
+                    ((Object[]) sa.getArray(i, 1, badmap))[0]);
         }
         mock.returnNull = true;
         // elements force deeper copy
@@ -237,9 +238,9 @@ public class SerialArrayTest extends TestCase {
     }
 
     class MockArray implements Array {
-        
+
         public boolean returnNull = false;
-        
+
         public int basetype = Types.JAVA_OBJECT;
 
         public Object getArray() throws SQLException {
@@ -268,7 +269,7 @@ public class SerialArrayTest extends TestCase {
         }
 
         public Object getArray(Map<String, Class<?>> map) throws SQLException {
-            if (!returnNull){
+            if (!returnNull) {
                 return testElements;
             } else {
                 return null;
@@ -387,7 +388,7 @@ public class SerialArrayTest extends TestCase {
             return;
         }
     }
-    
+
     private static class SQLArray implements java.sql.Array {
 
         Object[] array;
@@ -408,9 +409,10 @@ public class SerialArrayTest extends TestCase {
             return java.sql.Types.CLOB;
         }
 
-        /** Everything below here is just supplied to satisfy
-         the interface and is not part of this testcase.
-         **/
+        /**
+         * Everything below here is just supplied to satisfy the interface and
+         * is not part of this testcase.
+         */
 
         public Object getArray(long index, int count) {
             return null;
