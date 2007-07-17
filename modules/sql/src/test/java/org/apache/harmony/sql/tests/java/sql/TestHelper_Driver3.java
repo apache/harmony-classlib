@@ -17,20 +17,19 @@
 
 package org.apache.harmony.sql.tests.java.sql;
 
-
 /**
  * TODO Type description
  * 
  */
 public class TestHelper_Driver3 extends TestHelper_Driver1 {
 
-	/*
-	 * This driver does NOT automatically register itself...
-	 */
+    /*
+     * This driver does NOT automatically register itself...
+     */
 
-	public TestHelper_Driver3() {
-		super();
-		baseURL = "jdbc:mikes3";
-	} // end constructor TestHelper_Driver1()
+    public TestHelper_Driver3() {
+        super();
+        baseURL = "jdbc:mikes3";
+    } // end constructor TestHelper_Driver1()
 
 } // end class TestHelper_Driver3

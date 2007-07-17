@@ -40,54 +40,54 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
     private static final int DEFAULT_COLUMN_COUNT = 5;
 
     private static final long serialVersionUID = 6893806403181801867L;
-        
+
     private int colCount;
 
     private ColInfo[] colInfo;
 
     /**
-     * The default constructor. 
+     * The default constructor.
      */
     public RowSetMetaDataImpl() {
         // do nothing
     }
-    
+
     private void checkNegativeValue(int value, String msg) throws SQLException {
         if (value < 0) {
             throw new SQLException(Messages.getString(msg));
         }
     }
-    
+
     private void checkColumnIndex(int columnIndex) throws SQLException {
         if (null == colInfo || columnIndex < 1 || columnIndex >= colInfo.length) {
             throw new SQLException(Messages
                     .getString("sql.27", columnIndex + 1)); //$NON-NLS-1$
         }
-        // lazy initialization        
+        // lazy initialization
         if (null == colInfo[columnIndex]) {
             colInfo[columnIndex] = new ColInfo();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      * @see javax.sql.RowSetMetaData#setColumnCount(int)
      */
-    public void setColumnCount(int columnCount) throws SQLException {        
+    public void setColumnCount(int columnCount) throws SQLException {
         if (columnCount <= 0) {
             throw new SQLException(Messages.getString("sql.26")); //$NON-NLS-1$
         }
         try {
             if (columnCount + 1 > 0) {
-                colInfo = new ColInfo[columnCount + 1];                
+                colInfo = new ColInfo[columnCount + 1];
             } else {
                 colInfo = new ColInfo[DEFAULT_COLUMN_COUNT];
             }
         } catch (OutOfMemoryError e) {
             // For compatibility, use same default value as RI
             colInfo = new ColInfo[DEFAULT_COLUMN_COUNT];
-        }                        
+        }
         colCount = columnCount;
     }
 
@@ -170,7 +170,7 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
     public void setColumnDisplaySize(int columnIndex, int size)
             throws SQLException {
         checkNegativeValue(size, "sql.30"); //$NON-NLS-1$
-        
+
         checkColumnIndex(columnIndex);
         colInfo[columnIndex].columnDisplaySize = size;
     }
@@ -218,7 +218,7 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
     public void setPrecision(int columnIndex, int precision)
             throws SQLException {
         checkNegativeValue(precision, "sql.31"); //$NON-NLS-1$
-        
+
         checkColumnIndex(columnIndex);
         colInfo[columnIndex].precision = precision;
     }
@@ -230,7 +230,7 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
      */
     public void setScale(int columnIndex, int scale) throws SQLException {
         checkNegativeValue(scale, "sql.32"); //$NON-NLS-1$
-        
+
         checkColumnIndex(columnIndex);
         colInfo[columnIndex].scale = scale;
     }
@@ -266,8 +266,8 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
      */
     public void setColumnType(int columnIndex, int SQLType) throws SQLException {
         SqlUtil.validateType(SQLType);
-        
-        checkColumnIndex(columnIndex);        
+
+        checkColumnIndex(columnIndex);
         colInfo[columnIndex].colType = SQLType;
     }
 
@@ -299,7 +299,7 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
      */
     public boolean isAutoIncrement(int columnIndex) throws SQLException {
         checkColumnIndex(columnIndex);
-        return colInfo[columnIndex].autoIncrement; 
+        return colInfo[columnIndex].autoIncrement;
     }
 
     /**
@@ -468,24 +468,24 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
      */
     public boolean isWritable(int columnIndex) throws SQLException {
         checkColumnIndex(columnIndex);
-        return colInfo[columnIndex].writeable; 
+        return colInfo[columnIndex].writeable;
     }
 
     /**
      * {@inheritDoc}
      * 
      * @see java.sql.ResultSetMetaData#isDefinitelyWritable(int)
-     */    
+     */
     public boolean isDefinitelyWritable(int columnIndex) throws SQLException {
         checkColumnIndex(columnIndex);
-        return colInfo[columnIndex].definiteWritable; 
+        return colInfo[columnIndex].definiteWritable;
     }
 
     /**
      * {@inheritDoc}
      * 
      * @see java.sql.ResultSetMetaData#getColumnClassName(int)
-     */    
+     */
     public String getColumnClassName(int columnIndex) throws SQLException {
         return SqlUtil.getClassNameByType(getColumnType(columnIndex));
     }
@@ -494,13 +494,13 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
      * The inner class to store meta information of columns.
      */
     private class ColInfo implements Serializable {
-        
+
         private static final long serialVersionUID = 5490834817919311283L;
 
         public boolean autoIncrement;
 
         public boolean caseSensitive;
-        
+
         public boolean currency;
 
         public boolean signed;
@@ -510,7 +510,7 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         public boolean writeable = true;
 
         public boolean definiteWritable = true;
-        
+
         public String columnLabel;
 
         public String columnName;
@@ -520,17 +520,17 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
         public String colTypeName;
 
         public int colType;
-        
+
         public int nullable;
-        
+
         public int columnDisplaySize;
-        
+
         public int precision;
-        
+
         public int scale;
-        
+
         public String tableName = EMPTY_STRING;
-        
+
         public String catalogName = EMPTY_STRING;
     }
 

@@ -17,13 +17,12 @@
 
 package java.util.zip;
 
-
 public interface Checksum {
-	public long getValue();
+    public long getValue();
 
-	public void reset();
+    public void reset();
 
-	public void update(int val);
+    public void update(int val);
 
-	public void update(byte[] buf, int off, int nbytes);
+    public void update(byte[] buf, int off, int nbytes);
 }

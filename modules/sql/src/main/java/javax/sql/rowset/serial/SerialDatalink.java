@@ -39,8 +39,10 @@ public class SerialDatalink implements Serializable, Cloneable {
     /**
      * Constructor.
      * 
-     * @param url The URL to link to.
-     * @throws SerialException if <code>url</code> is null
+     * @param url
+     *            The URL to link to.
+     * @throws SerialException
+     *             if <code>url</code> is null
      */
     public SerialDatalink(URL url) throws SerialException {
         if (url == null) {
@@ -52,9 +54,10 @@ public class SerialDatalink implements Serializable, Cloneable {
     /**
      * Gets a copied url object of this SerialDatalink object.
      * 
-     * @return a url object in the java programming language which represents this
-     *         SerialDatalink object.
-     * @throws SerialException if <code>url</code> can not be copied.
+     * @return a url object in the java programming language which represents
+     *         this SerialDatalink object.
+     * @throws SerialException
+     *             if <code>url</code> can not be copied.
      */
     public URL getDatalink() throws SerialException {
         URL copyUrl;

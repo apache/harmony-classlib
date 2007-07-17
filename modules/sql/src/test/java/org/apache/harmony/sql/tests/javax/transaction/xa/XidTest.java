@@ -25,50 +25,50 @@ import junit.framework.TestCase;
 
 public class XidTest extends TestCase {
 
-	/*
-	 * Public statics test
-	 */
-	public void testPublicStatics() {
+    /*
+     * Public statics test
+     */
+    public void testPublicStatics() {
 
-		HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
-		thePublicStatics.put("MAXBQUALSIZE", new Integer(64));
-		thePublicStatics.put("MAXGTRIDSIZE", new Integer(64));
+        HashMap<String, Integer> thePublicStatics = new HashMap<String, Integer>();
+        thePublicStatics.put("MAXBQUALSIZE", new Integer(64));
+        thePublicStatics.put("MAXGTRIDSIZE", new Integer(64));
 
-		Class<?> xidClass;
-		try {
-			xidClass = Class.forName("javax.transaction.xa.Xid");
-		} catch (ClassNotFoundException e) {
-			fail("javax.transaction.xa.Xid class not found!");
-			return;
-		} // end try
+        Class<?> xidClass;
+        try {
+            xidClass = Class.forName("javax.transaction.xa.Xid");
+        } catch (ClassNotFoundException e) {
+            fail("javax.transaction.xa.Xid class not found!");
+            return;
+        } // end try
 
-		Field[] theFields = xidClass.getDeclaredFields();
-		int requiredModifier = Modifier.PUBLIC + Modifier.STATIC
-				+ Modifier.FINAL;
+        Field[] theFields = xidClass.getDeclaredFields();
+        int requiredModifier = Modifier.PUBLIC + Modifier.STATIC
+                + Modifier.FINAL;
 
-		int countPublicStatics = 0;
-		for (Field element : theFields) {
-			String fieldName = element.getName();
-			int theMods = element.getModifiers();
-			if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
-				try {
-					Object fieldValue = element.get(null);
-					Object expectedValue = thePublicStatics.get(fieldName);
-					if (expectedValue == null) {
-						fail("Field " + fieldName + " missing!");
-					} // end
-					assertEquals("Field " + fieldName + " value mismatch: ",
-							expectedValue, fieldValue);
-					assertEquals("Field " + fieldName + " modifier mismatch: ",
-							requiredModifier, theMods);
-					countPublicStatics++;
-				} catch (IllegalAccessException e) {
-					fail("Illegal access to Field " + fieldName);
-				} // end try
-			} // end if
-		} // end for
+        int countPublicStatics = 0;
+        for (Field element : theFields) {
+            String fieldName = element.getName();
+            int theMods = element.getModifiers();
+            if (Modifier.isPublic(theMods) && Modifier.isStatic(theMods)) {
+                try {
+                    Object fieldValue = element.get(null);
+                    Object expectedValue = thePublicStatics.get(fieldName);
+                    if (expectedValue == null) {
+                        fail("Field " + fieldName + " missing!");
+                    } // end
+                    assertEquals("Field " + fieldName + " value mismatch: ",
+                            expectedValue, fieldValue);
+                    assertEquals("Field " + fieldName + " modifier mismatch: ",
+                            requiredModifier, theMods);
+                    countPublicStatics++;
+                } catch (IllegalAccessException e) {
+                    fail("Illegal access to Field " + fieldName);
+                } // end try
+            } // end if
+        } // end for
 
-	} // end method testPublicStatics
+    } // end method testPublicStatics
 
 } // end class XidTest
 

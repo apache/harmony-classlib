@@ -45,8 +45,8 @@ import javax.sql.rowset.serial.SerialClob;
 import javax.sql.rowset.serial.SerialRef;
 
 public abstract class BaseRowSet implements Cloneable, Serializable {
-    private static final long serialVersionUID = 4886719666485113312L ;
-    
+    private static final long serialVersionUID = 4886719666485113312L;
+
     public static final int UNICODE_STREAM_PARAM = 0;
 
     public static final int BINARY_STREAM_PARAM = 1;
@@ -215,15 +215,15 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
 
     public void setType(int type) throws SQLException {
         switch (type) {
-            case ResultSet.TYPE_FORWARD_ONLY:
-            case ResultSet.TYPE_SCROLL_INSENSITIVE:
-            case ResultSet.TYPE_SCROLL_SENSITIVE: {
-                this.rowSetType = type;
-                return;
-            }
-            default: {
-                throw new SQLException();
-            }
+        case ResultSet.TYPE_FORWARD_ONLY:
+        case ResultSet.TYPE_SCROLL_INSENSITIVE:
+        case ResultSet.TYPE_SCROLL_SENSITIVE: {
+            this.rowSetType = type;
+            return;
+        }
+        default: {
+            throw new SQLException();
+        }
         }
     }
 
@@ -233,14 +233,14 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
 
     public void setConcurrency(int concurrency) throws SQLException {
         switch (concurrency) {
-            case ResultSet.CONCUR_READ_ONLY:
-            case ResultSet.CONCUR_UPDATABLE: {
-                this.concurrency = concurrency;
-                return;
-            }
-            default: {
-                throw new SQLException();
-            }
+        case ResultSet.CONCUR_READ_ONLY:
+        case ResultSet.CONCUR_UPDATABLE: {
+            this.concurrency = concurrency;
+            return;
+        }
+        default: {
+            throw new SQLException();
+        }
         }
     }
 
@@ -262,17 +262,17 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
 
     public void setTransactionIsolation(int level) throws SQLException {
         switch (level) {
-            case Connection.TRANSACTION_NONE:
-            case Connection.TRANSACTION_READ_UNCOMMITTED:
-            case Connection.TRANSACTION_READ_COMMITTED:
-            case Connection.TRANSACTION_REPEATABLE_READ:
-            case Connection.TRANSACTION_SERIALIZABLE: {
-                this.isolation = level;
-                return;
-            }
-            default: {
-                throw new SQLException();
-            }
+        case Connection.TRANSACTION_NONE:
+        case Connection.TRANSACTION_READ_UNCOMMITTED:
+        case Connection.TRANSACTION_READ_COMMITTED:
+        case Connection.TRANSACTION_REPEATABLE_READ:
+        case Connection.TRANSACTION_SERIALIZABLE: {
+            this.isolation = level;
+            return;
+        }
+        default: {
+            throw new SQLException();
+        }
         }
     }
 
@@ -330,19 +330,19 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
 
     public void setFetchDirection(int direction) throws SQLException {
         switch (direction) {
-            case ResultSet.FETCH_REVERSE:
-            case ResultSet.FETCH_UNKNOWN: {
-                if (rowSetType == ResultSet.TYPE_FORWARD_ONLY) {
-                    throw new SQLException();
-                }
-            }
-            case ResultSet.FETCH_FORWARD: {
-                this.fetchDir = direction;
-                return;
-            }
-            default: {
+        case ResultSet.FETCH_REVERSE:
+        case ResultSet.FETCH_UNKNOWN: {
+            if (rowSetType == ResultSet.TYPE_FORWARD_ONLY) {
                 throw new SQLException();
             }
+        }
+        case ResultSet.FETCH_FORWARD: {
+            this.fetchDir = direction;
+            return;
+        }
+        default: {
+            throw new SQLException();
+        }
         }
     }
 
@@ -376,7 +376,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
-    public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
+    public void setNull(int parameterIndex, int sqlType, String typeName)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -459,7 +460,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), Double.valueOf(x));
     }
 
-    public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
+    public void setBigDecimal(int parameterIndex, BigDecimal x)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -509,7 +511,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), x);
     }
 
-    public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
+    public void setTimestamp(int parameterIndex, Timestamp x)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -579,8 +582,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
-    public void setObject(int parameterIndex, Object x, int targetSqlType, int scale)
-            throws SQLException {
+    public void setObject(int parameterIndex, Object x, int targetSqlType,
+            int scale) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -594,7 +597,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
-    public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
+    public void setObject(int parameterIndex, Object x, int targetSqlType)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -657,7 +661,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), new SerialArray(array));
     }
 
-    public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
+    public void setDate(int parameterIndex, Date x, Calendar cal)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -670,7 +675,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
-    public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
+    public void setTime(int parameterIndex, Time x, Calendar cal)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }
@@ -683,7 +689,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
-    public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
+    public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal)
+            throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
         }

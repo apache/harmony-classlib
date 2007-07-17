@@ -38,22 +38,24 @@ import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 /**
- * A concrete implementation of SQLInput. The readXXX methods will be called
- * by SQLData.readSQL, which read different objects such as Array, BigDecimal
- * from this SQLInputImpl object.
+ * A concrete implementation of SQLInput. The readXXX methods will be called by
+ * SQLData.readSQL, which read different objects such as Array, BigDecimal from
+ * this SQLInputImpl object.
  * 
  * Different JDBC drivers may have their own implementation of SQLInput and
  * won't use this class.
  */
 public class SQLInputImpl implements SQLInput {
-    
+
     private Object[] attributes;
-    private Map<String,Class<?>> map;
+
+    private Map<String, Class<?>> map;
+
     private int readPosition = 0;
-    
+
     /**
      * Constructs a new SQLInputImpl object using an array of attributes and a
-     * custom name-type map. 
+     * custom name-type map.
      * 
      * @param attributes -
      *            the array of given attribute objects.
@@ -62,7 +64,8 @@ public class SQLInputImpl implements SQLInput {
      * @throws SQLException -
      *             if the attributes or the map is null
      */
-    public SQLInputImpl(Object[] attributes, Map<String,Class<?>> map)throws SQLException {
+    public SQLInputImpl(Object[] attributes, Map<String, Class<?>> map)
+            throws SQLException {
         if (null == attributes || null == map) {
             throw new SQLException(Messages.getString("sql.34")); //$NON-NLS-1$
         }
@@ -76,10 +79,10 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readArray()
      */
     public Array readArray() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];        
+        Object o = attributes[readPosition++];
         return (Array) o;
     }
 
@@ -89,7 +92,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readAsciiStream()
      */
     public InputStream readAsciiStream() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -102,7 +105,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readBigDecimal()
      */
     public BigDecimal readBigDecimal() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -115,7 +118,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readBinaryStream()
      */
     public InputStream readBinaryStream() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -128,7 +131,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readBlob()
      */
     public Blob readBlob() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -141,7 +144,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readBoolean()
      */
     public boolean readBoolean() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -154,10 +157,10 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readByte()
      */
     public byte readByte() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];        
+        Object o = attributes[readPosition++];
         return o == null ? (byte) 0 : ((Byte) o).byteValue();
     }
 
@@ -167,10 +170,10 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readBytes()
      */
     public byte[] readBytes() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];        
+        Object o = attributes[readPosition++];
         return (byte[]) o;
     }
 
@@ -180,23 +183,23 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readCharacterStream()
      */
     public Reader readCharacterStream() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
         return (Reader) o;
     }
 
-    /** 
+    /**
      * {@inheritDoc}
      * 
      * @see java.sql.SQLInput#readClob()
      */
     public Clob readClob() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];       
+        Object o = attributes[readPosition++];
         return (Clob) o;
     }
 
@@ -206,7 +209,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readDate()
      */
     public Date readDate() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -219,7 +222,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readDouble()
      */
     public double readDouble() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -232,7 +235,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readFloat()
      */
     public float readFloat() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -245,7 +248,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readInt()
      */
     public int readInt() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -258,7 +261,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readLong()
      */
     public long readLong() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -271,18 +274,19 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readObject()
      */
     public Object readObject() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
         if (o instanceof Struct) {
-            Struct structuredType = (Struct)o;
+            Struct structuredType = (Struct) o;
             String typeName = structuredType.getSQLTypeName();
             Class<?> c = map.get(typeName);
-            if(c != null) {
+            if (c != null) {
                 try {
-                    SQLData data = (SQLData)c.newInstance();
-                    SQLInputImpl input = new SQLInputImpl(structuredType.getAttributes(), map);
+                    SQLData data = (SQLData) c.newInstance();
+                    SQLInputImpl input = new SQLInputImpl(structuredType
+                            .getAttributes(), map);
                     data.readSQL(input, typeName);
                     return data;
                 } catch (IllegalAccessException e) {
@@ -290,7 +294,7 @@ public class SQLInputImpl implements SQLInput {
                 } catch (InstantiationException e) {
                     throw new SQLException(e.getMessage());
                 }
-                
+
             }
         }
         return o;
@@ -302,10 +306,10 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readRef()
      */
     public Ref readRef() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];        
+        Object o = attributes[readPosition++];
         return (Ref) o;
     }
 
@@ -315,7 +319,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readShort()
      */
     public short readShort() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -328,10 +332,10 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readString()
      */
     public String readString() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
-        Object o = attributes[readPosition++];        
+        Object o = attributes[readPosition++];
         return (String) o;
     }
 
@@ -341,7 +345,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readTime()
      */
     public Time readTime() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -354,7 +358,7 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readTimestamp()
      */
     public Timestamp readTimestamp() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         Object o = attributes[readPosition++];
@@ -367,9 +371,9 @@ public class SQLInputImpl implements SQLInput {
      * @see java.sql.SQLInput#readURL()
      */
     public URL readURL() throws SQLException {
-        if(readPosition >= attributes.length) {
+        if (readPosition >= attributes.length) {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
-        } 
+        }
         throw new SQLException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 

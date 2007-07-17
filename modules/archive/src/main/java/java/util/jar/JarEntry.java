@@ -34,13 +34,13 @@ public class JarEntry extends ZipEntry {
     private Attributes attributes;
 
     JarFile parentJar;
-   
+
     CodeSigner signers[];
 
     // Cached factory used to build CertPath-s in <code>getCodeSigners()</code>.
     private CertificateFactory factory;
 
-    private boolean isFactoryChecked = false;     
+    private boolean isFactoryChecked = false;
 
     /**
      * Create a new JarEntry named name
@@ -111,7 +111,7 @@ public class JarEntry extends ZipEntry {
     public JarEntry(JarEntry je) {
         super(je);
         parentJar = je.parentJar;
-        attributes = je.attributes;        
+        attributes = je.attributes;
         signers = je.signers;
     }
 
@@ -137,7 +137,7 @@ public class JarEntry extends ZipEntry {
     }
 
     private CodeSigner[] getCodeSigners(Certificate[] certs) {
-        if(null == certs) {
+        if (null == certs) {
             return null;
         }
 

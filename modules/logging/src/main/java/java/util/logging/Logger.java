@@ -1385,10 +1385,15 @@ public class Logger {
             handlerInited  = false;
         }
         //init level here, but let handlers be for lazy loading
-        String configedLevel = manager.getProperty(name+ ".level"); //$NON-NLS-1$
+        final String configedLevel = manager.getProperty(name+ ".level"); //$NON-NLS-1$
         if (null != configedLevel) {
             try {
-                setLevel(Level.parse(configedLevel));
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        setLevel(Level.parse(configedLevel));
+                        return null;
+                    }
+                });
             } catch (IllegalArgumentException e) {
                 //ignore
             }

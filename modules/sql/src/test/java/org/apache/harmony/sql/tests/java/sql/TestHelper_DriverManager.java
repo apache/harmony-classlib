@@ -31,83 +31,80 @@ import junit.framework.TestCase;
  */
 public class TestHelper_DriverManager extends TestCase {
 
-	static Driver testDriver = null;
+    static Driver testDriver = null;
 
-	static TestHelper_DriverManager theHelper;
+    static TestHelper_DriverManager theHelper;
 
-	static {
-		theHelper = new TestHelper_DriverManager();
-		// theHelper.testDeregister();
-	} // end static
+    static {
+        theHelper = new TestHelper_DriverManager();
+        // theHelper.testDeregister();
+    } // end static
 
-	public TestHelper_DriverManager() {
-		super();
-	} // end constructor TestHelper_DriverManager()
+    public TestHelper_DriverManager() {
+        super();
+    } // end constructor TestHelper_DriverManager()
 
-	public static void setDriver(Driver theDriver) {
-		testDriver = theDriver;
-		// System.out.println("TestHelper_DriverManager: Test Driver set!");
+    public static void setDriver(Driver theDriver) {
+        testDriver = theDriver;
+        // System.out.println("TestHelper_DriverManager: Test Driver set!");
 
-		theHelper.checkDeregister();
-	} // end method setDriver( Driver )
+        theHelper.checkDeregister();
+    } // end method setDriver( Driver )
 
-	public void checkDeregister() {
+    public void checkDeregister() {
 
-		String baseURL = "jdbc:mikes1";
+        String baseURL = "jdbc:mikes1";
 
-		// System.out.println("Calling checkDeregister in
-		// TestHelper_DriverManager....");
+        // System.out.println("Calling checkDeregister in
+        // TestHelper_DriverManager....");
 
-		Driver aDriver;
+        Driver aDriver;
 
-		// System.out.println("checkDeregister classloader: " +
-		// this.getClass().getClassLoader() );
+        // System.out.println("checkDeregister classloader: " +
+        // this.getClass().getClassLoader() );
 
-		// Try to get a driver from the general pool... this should fail
-		try {
-			aDriver = DriverManager.getDriver(baseURL);
-			fail(
-					"testDeregisterDriver: Didn't get exception when getting valid driver from other classloader.");
-		} catch (SQLException e) {
-			// e.printStackTrace();
-			assertTrue(
-					"testDeregisterDriver: Got exception when getting valid driver from other classloader.",
-					true);
-			// return;
-		} // end try
+        // Try to get a driver from the general pool... this should fail
+        try {
+            aDriver = DriverManager.getDriver(baseURL);
+            fail("testDeregisterDriver: Didn't get exception when getting valid driver from other classloader.");
+        } catch (SQLException e) {
+            // e.printStackTrace();
+            assertTrue(
+                    "testDeregisterDriver: Got exception when getting valid driver from other classloader.",
+                    true);
+            // return;
+        } // end try
 
-		// OK, now THIS driver was loaded by someone else....
-		aDriver = testDriver;
+        // OK, now THIS driver was loaded by someone else....
+        aDriver = testDriver;
 
-		// printClassLoader( aDriver );
+        // printClassLoader( aDriver );
 
-		// Deregister this driver
-		try {
-			DriverManager.deregisterDriver(aDriver);
-			// We shouldn't get here - but if we do, we need to re-register the
-			// driver to
-			// prevent subsequent tests from failing due to inability to get to
-			// this driver...
-			DriverManager.registerDriver(aDriver);
-			fail(
-					"checkDeregisterDriver: Didn't get Security Exception deregistering invalid driver.");
-		} catch (SecurityException s) {
-			// This is the exception we should get...
-			// System.out.println("checkDeregisterDriver: got expected Security
-			// Exception");
-		} catch (Exception e) {
-			fail(
-					"checkDeregisterDriver: Got wrong exception type when deregistering invalid driver.");
-		} // end try
+        // Deregister this driver
+        try {
+            DriverManager.deregisterDriver(aDriver);
+            // We shouldn't get here - but if we do, we need to re-register the
+            // driver to
+            // prevent subsequent tests from failing due to inability to get to
+            // this driver...
+            DriverManager.registerDriver(aDriver);
+            fail("checkDeregisterDriver: Didn't get Security Exception deregistering invalid driver.");
+        } catch (SecurityException s) {
+            // This is the exception we should get...
+            // System.out.println("checkDeregisterDriver: got expected Security
+            // Exception");
+        } catch (Exception e) {
+            fail("checkDeregisterDriver: Got wrong exception type when deregistering invalid driver.");
+        } // end try
 
-	} // end method testDeRegister
+    } // end method testDeRegister
 
-	static void printClassLoader(Object theObject) {
-		Class<? extends Object> theClass = theObject.getClass();
-		ClassLoader theClassLoader = theClass.getClassLoader();
-		System.out.println("ClassLoader is: " + theClassLoader.toString()
-				+ " for object: " + theObject.toString());
-	} // end method printClassLoader( Object )
+    static void printClassLoader(Object theObject) {
+        Class<? extends Object> theClass = theObject.getClass();
+        ClassLoader theClassLoader = theClass.getClassLoader();
+        System.out.println("ClassLoader is: " + theClassLoader.toString()
+                + " for object: " + theObject.toString());
+    } // end method printClassLoader( Object )
 
 } // end class TestHelper_DriverManager
 

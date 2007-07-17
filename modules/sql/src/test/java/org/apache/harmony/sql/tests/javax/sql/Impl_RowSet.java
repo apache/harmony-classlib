@@ -103,34 +103,38 @@ class Impl_RowSet implements RowSet {
     public void removeRowSetListener(RowSetListener theListener) {
     }
 
-    public void setArray(int parameterIndex, Array theArray) throws SQLException {
-    }
-
-    public void setAsciiStream(int parameterIndex, InputStream theInputStream, int length)
+    public void setArray(int parameterIndex, Array theArray)
             throws SQLException {
     }
 
-    public void setBigDecimal(int parameterIndex, BigDecimal theBigDecimal) throws SQLException {
+    public void setAsciiStream(int parameterIndex, InputStream theInputStream,
+            int length) throws SQLException {
     }
 
-    public void setBinaryStream(int parameterIndex, InputStream theInputStream, int length)
+    public void setBigDecimal(int parameterIndex, BigDecimal theBigDecimal)
             throws SQLException {
+    }
+
+    public void setBinaryStream(int parameterIndex, InputStream theInputStream,
+            int length) throws SQLException {
     }
 
     public void setBlob(int parameterIndex, Blob theBlob) throws SQLException {
     }
 
-    public void setBoolean(int parameterIndex, boolean theBoolean) throws SQLException {
+    public void setBoolean(int parameterIndex, boolean theBoolean)
+            throws SQLException {
     }
 
     public void setByte(int parameterIndex, byte theByte) throws SQLException {
     }
 
-    public void setBytes(int parameterIndex, byte[] theByteArray) throws SQLException {
+    public void setBytes(int parameterIndex, byte[] theByteArray)
+            throws SQLException {
     }
 
-    public void setCharacterStream(int parameterIndex, Reader theReader, int length)
-            throws SQLException {
+    public void setCharacterStream(int parameterIndex, Reader theReader,
+            int length) throws SQLException {
     }
 
     public void setClob(int parameterIndex, Clob theClob) throws SQLException {
@@ -152,13 +156,15 @@ class Impl_RowSet implements RowSet {
     public void setDate(int parameterIndex, Date theDate) throws SQLException {
     }
 
-    public void setDouble(int parameterIndex, double theDouble) throws SQLException {
+    public void setDouble(int parameterIndex, double theDouble)
+            throws SQLException {
     }
 
     public void setEscapeProcessing(boolean enable) throws SQLException {
     }
 
-    public void setFloat(int parameterIndex, float theFloat) throws SQLException {
+    public void setFloat(int parameterIndex, float theFloat)
+            throws SQLException {
     }
 
     public void setInt(int parameterIndex, int theInteger) throws SQLException {
@@ -173,21 +179,23 @@ class Impl_RowSet implements RowSet {
     public void setMaxRows(int max) throws SQLException {
     }
 
-    public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
+    public void setNull(int parameterIndex, int sqlType, String typeName)
+            throws SQLException {
     }
 
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
     }
 
-    public void setObject(int parameterIndex, Object theObject, int targetSqlType, int scale)
-            throws SQLException {
+    public void setObject(int parameterIndex, Object theObject,
+            int targetSqlType, int scale) throws SQLException {
     }
 
-    public void setObject(int parameterIndex, Object theObject, int targetSqlType)
-            throws SQLException {
+    public void setObject(int parameterIndex, Object theObject,
+            int targetSqlType) throws SQLException {
     }
 
-    public void setObject(int parameterIndex, Object theObject) throws SQLException {
+    public void setObject(int parameterIndex, Object theObject)
+            throws SQLException {
     }
 
     public void setPassword(String password) throws SQLException {
@@ -202,10 +210,12 @@ class Impl_RowSet implements RowSet {
     public void setRef(int parameterIndex, Ref theRef) throws SQLException {
     }
 
-    public void setShort(int parameterIndex, short theShort) throws SQLException {
+    public void setShort(int parameterIndex, short theShort)
+            throws SQLException {
     }
 
-    public void setString(int parameterIndex, String theString) throws SQLException {
+    public void setString(int parameterIndex, String theString)
+            throws SQLException {
     }
 
     public void setTime(int parameterIndex, Time theTime, Calendar theCalendar)
@@ -215,11 +225,12 @@ class Impl_RowSet implements RowSet {
     public void setTime(int parameterIndex, Time theTime) throws SQLException {
     }
 
-    public void setTimestamp(int parameterIndex, Timestamp theTimestamp, Calendar theCalendar)
-            throws SQLException {
+    public void setTimestamp(int parameterIndex, Timestamp theTimestamp,
+            Calendar theCalendar) throws SQLException {
     }
 
-    public void setTimestamp(int parameterIndex, Timestamp theTimestamp) throws SQLException {
+    public void setTimestamp(int parameterIndex, Timestamp theTimestamp)
+            throws SQLException {
     }
 
     public void setTransactionIsolation(int level) throws SQLException {
@@ -228,7 +239,8 @@ class Impl_RowSet implements RowSet {
     public void setType(int type) throws SQLException {
     }
 
-    public void setTypeMap(Map<String, Class<?>> theTypeMap) throws SQLException {
+    public void setTypeMap(Map<String, Class<?>> theTypeMap)
+            throws SQLException {
     }
 
     public void setUrl(String theURL) throws SQLException {
@@ -283,7 +295,8 @@ class Impl_RowSet implements RowSet {
         return null;
     }
 
-    public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
+    public BigDecimal getBigDecimal(int columnIndex, int scale)
+            throws SQLException {
         return null;
     }
 
@@ -291,7 +304,8 @@ class Impl_RowSet implements RowSet {
         return null;
     }
 
-    public BigDecimal getBigDecimal(String columnName, int scale) throws SQLException {
+    public BigDecimal getBigDecimal(String columnName, int scale)
+            throws SQLException {
         return null;
     }
 
@@ -423,7 +437,8 @@ class Impl_RowSet implements RowSet {
         return null;
     }
 
-    public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
+    public Object getObject(int columnIndex, Map<String, Class<?>> map)
+            throws SQLException {
         return null;
     }
 
@@ -431,7 +446,8 @@ class Impl_RowSet implements RowSet {
         return null;
     }
 
-    public Object getObject(String columnName, Map<String, Class<?>> map) throws SQLException {
+    public Object getObject(String columnName, Map<String, Class<?>> map)
+            throws SQLException {
         return null;
     }
 
@@ -487,7 +503,8 @@ class Impl_RowSet implements RowSet {
         return null;
     }
 
-    public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
+    public Timestamp getTimestamp(int columnIndex, Calendar cal)
+            throws SQLException {
         return null;
     }
 
@@ -495,7 +512,8 @@ class Impl_RowSet implements RowSet {
         return null;
     }
 
-    public Timestamp getTimestamp(String columnName, Calendar cal) throws SQLException {
+    public Timestamp getTimestamp(String columnName, Calendar cal)
+            throws SQLException {
         return null;
     }
 
@@ -603,10 +621,12 @@ class Impl_RowSet implements RowSet {
             throws SQLException {
     }
 
-    public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
+    public void updateBigDecimal(int columnIndex, BigDecimal x)
+            throws SQLException {
     }
 
-    public void updateBigDecimal(String columnName, BigDecimal x) throws SQLException {
+    public void updateBigDecimal(String columnName, BigDecimal x)
+            throws SQLException {
     }
 
     public void updateBinaryStream(int columnIndex, InputStream x, int length)
@@ -645,8 +665,8 @@ class Impl_RowSet implements RowSet {
             throws SQLException {
     }
 
-    public void updateCharacterStream(String columnName, Reader reader, int length)
-            throws SQLException {
+    public void updateCharacterStream(String columnName, Reader reader,
+            int length) throws SQLException {
     }
 
     public void updateClob(int columnIndex, Clob x) throws SQLException {
@@ -691,13 +711,15 @@ class Impl_RowSet implements RowSet {
     public void updateNull(String columnName) throws SQLException {
     }
 
-    public void updateObject(int columnIndex, Object x, int scale) throws SQLException {
+    public void updateObject(int columnIndex, Object x, int scale)
+            throws SQLException {
     }
 
     public void updateObject(int columnIndex, Object x) throws SQLException {
     }
 
-    public void updateObject(String columnName, Object x, int scale) throws SQLException {
+    public void updateObject(String columnName, Object x, int scale)
+            throws SQLException {
     }
 
     public void updateObject(String columnName, Object x) throws SQLException {
@@ -730,10 +752,12 @@ class Impl_RowSet implements RowSet {
     public void updateTime(String columnName, Time x) throws SQLException {
     }
 
-    public void updateTimestamp(int columnIndex, Timestamp x) throws SQLException {
+    public void updateTimestamp(int columnIndex, Timestamp x)
+            throws SQLException {
     }
 
-    public void updateTimestamp(String columnName, Timestamp x) throws SQLException {
+    public void updateTimestamp(String columnName, Timestamp x)
+            throws SQLException {
     }
 
     public boolean wasNull() throws SQLException {

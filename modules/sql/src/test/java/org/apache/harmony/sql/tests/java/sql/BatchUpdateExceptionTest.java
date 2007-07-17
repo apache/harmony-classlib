@@ -28,265 +28,265 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 public class BatchUpdateExceptionTest extends TestCase {
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testBatchUpdateException() {
+    /*
+     * ConstructorTest
+     */
+    public void testBatchUpdateException() {
 
-		int[] theFinalStates1 = { 0 }; // Error Code state
-		int[][] theFinalStates2 = { null }; // Update Counts array state
-		String[] theFinalStates3 = { null }; // SQL State state value
-		String[] theFinalStates4 = { null }; // Message state
+        int[] theFinalStates1 = { 0 }; // Error Code state
+        int[][] theFinalStates2 = { null }; // Update Counts array state
+        String[] theFinalStates3 = { null }; // SQL State state value
+        String[] theFinalStates4 = { null }; // Message state
 
-		Exception[] theExceptions = { null };
+        Exception[] theExceptions = { null };
 
-		BatchUpdateException aBatchUpdateException;
-		int loopCount = 1;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aBatchUpdateException = new BatchUpdateException();
-				if (theExceptions[i] != null) {
+        BatchUpdateException aBatchUpdateException;
+        int loopCount = 1;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aBatchUpdateException = new BatchUpdateException();
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getErrorCode(),
-						theFinalStates1[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getUpdateCounts(),
-						theFinalStates2[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getSQLState(), theFinalStates3[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getMessage(), theFinalStates4[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getErrorCode(),
+                        theFinalStates1[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getUpdateCounts(),
+                        theFinalStates2[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getSQLState(), theFinalStates3[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testBatchUpdateException
+    } // end method testBatchUpdateException
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testBatchUpdateExceptionintArray() {
+    /*
+     * ConstructorTest
+     */
+    public void testBatchUpdateExceptionintArray() {
 
-		int[][] init1 = { { 1, 2, 3 }, null };
+        int[][] init1 = { { 1, 2, 3 }, null };
 
-		int[] theFinalStates1 = { 0, 0 }; // Error Code state
-		int[][] theFinalStates2 = init1; // Update Counts array state
-		String[] theFinalStates3 = { null, null }; // SQL State state value
-		String[] theFinalStates4 = { null, null }; // Message state
+        int[] theFinalStates1 = { 0, 0 }; // Error Code state
+        int[][] theFinalStates2 = init1; // Update Counts array state
+        String[] theFinalStates3 = { null, null }; // SQL State state value
+        String[] theFinalStates4 = { null, null }; // Message state
 
-		Exception[] theExceptions = { null, null };
+        Exception[] theExceptions = { null, null };
 
-		BatchUpdateException aBatchUpdateException;
-		int loopCount = init1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aBatchUpdateException = new BatchUpdateException(init1[i]);
-				if (theExceptions[i] != null) {
+        BatchUpdateException aBatchUpdateException;
+        int loopCount = init1.length;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aBatchUpdateException = new BatchUpdateException(init1[i]);
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getErrorCode(),
-						theFinalStates1[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getUpdateCounts(),
-						theFinalStates2[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getSQLState(), theFinalStates3[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getMessage(), theFinalStates4[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getErrorCode(),
+                        theFinalStates1[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getUpdateCounts(),
+                        theFinalStates2[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getSQLState(), theFinalStates3[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testBatchUpdateExceptionintArray
+    } // end method testBatchUpdateExceptionintArray
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testBatchUpdateExceptionStringintArray() {
+    /*
+     * ConstructorTest
+     */
+    public void testBatchUpdateExceptionStringintArray() {
 
-		String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
-				".", "a" };
-		int[][] init2 = { { 1, 2, 3 }, {}, { 3 }, null, { 5, 5 }, { 6 },
-				{ 121, 2, 1 }, { 1 }, { 1, 2 } };
+        String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
+                ".", "a" };
+        int[][] init2 = { { 1, 2, 3 }, {}, { 3 }, null, { 5, 5 }, { 6 },
+                { 121, 2, 1 }, { 1 }, { 1, 2 } };
 
-		int[] theFinalStates1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // Error Code
-																// state
-		// Update Counts array state
-		int[][] theFinalStates2 = init2;
-		// SQL State state value
-		String[] theFinalStates3 = { null, null, null, null, null, null, null,
-				null, null };
-		String[] theFinalStates4 = init1; // Message state
+        int[] theFinalStates1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // Error Code
+        // state
+        // Update Counts array state
+        int[][] theFinalStates2 = init2;
+        // SQL State state value
+        String[] theFinalStates3 = { null, null, null, null, null, null, null,
+                null, null };
+        String[] theFinalStates4 = init1; // Message state
 
-		Exception[] theExceptions = { null, null, null, null, null, null, null,
-				null, null };
+        Exception[] theExceptions = { null, null, null, null, null, null, null,
+                null, null };
 
-		BatchUpdateException aBatchUpdateException;
-		int loopCount = init1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aBatchUpdateException = new BatchUpdateException(init1[i],
-						init2[i]);
-				if (theExceptions[i] != null) {
+        BatchUpdateException aBatchUpdateException;
+        int loopCount = init1.length;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aBatchUpdateException = new BatchUpdateException(init1[i],
+                        init2[i]);
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getErrorCode(),
-						theFinalStates1[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getUpdateCounts(),
-						theFinalStates2[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getSQLState(), theFinalStates3[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getMessage(), theFinalStates4[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getErrorCode(),
+                        theFinalStates1[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getUpdateCounts(),
+                        theFinalStates2[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getSQLState(), theFinalStates3[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testBatchUpdateExceptionStringintArray
+    } // end method testBatchUpdateExceptionStringintArray
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testBatchUpdateExceptionStringStringintArray() {
+    /*
+     * ConstructorTest
+     */
+    public void testBatchUpdateExceptionStringStringintArray() {
 
-		String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
-				".", "a", "a" };
-		String[] init2 = { "a", "1", "valid1", "----", "&valid*", "a", null,
-				"", ".", "a" };
-		int[][] init3 = { { 1, 2, 3 }, {}, { 3 }, { 5, 5 }, { 6 },
-				{ 121, 2, 1 }, { 1 }, { 1, 2 }, { 1 }, { 2 }, null };
+        String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
+                ".", "a", "a" };
+        String[] init2 = { "a", "1", "valid1", "----", "&valid*", "a", null,
+                "", ".", "a" };
+        int[][] init3 = { { 1, 2, 3 }, {}, { 3 }, { 5, 5 }, { 6 },
+                { 121, 2, 1 }, { 1 }, { 1, 2 }, { 1 }, { 2 }, null };
 
-		int[] theFinalStates1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // Error
-																		// Code
-																		// state
-		// Update Counts array state
-		int[][] theFinalStates2 = init3;
-		// SQL State state value
-		String[] theFinalStates3 = init2;
-		String[] theFinalStates4 = init1; // Message state
+        int[] theFinalStates1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // Error
+        // Code
+        // state
+        // Update Counts array state
+        int[][] theFinalStates2 = init3;
+        // SQL State state value
+        String[] theFinalStates3 = init2;
+        String[] theFinalStates4 = init1; // Message state
 
-		Exception[] theExceptions = { null, null, null, null, null, null, null,
-				null, null, null, null };
+        Exception[] theExceptions = { null, null, null, null, null, null, null,
+                null, null, null, null };
 
-		BatchUpdateException aBatchUpdateException;
-		int loopCount = init1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aBatchUpdateException = new BatchUpdateException(init1[i],
-						init2[i], init3[i]);
-				if (theExceptions[i] != null) {
+        BatchUpdateException aBatchUpdateException;
+        int loopCount = init1.length;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aBatchUpdateException = new BatchUpdateException(init1[i],
+                        init2[i], init3[i]);
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getErrorCode(),
-						theFinalStates1[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getUpdateCounts(),
-						theFinalStates2[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getSQLState(), theFinalStates3[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getMessage(), theFinalStates4[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getErrorCode(),
+                        theFinalStates1[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getUpdateCounts(),
+                        theFinalStates2[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getSQLState(), theFinalStates3[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testBatchUpdateExceptionStringStringintArray
+    } // end method testBatchUpdateExceptionStringStringintArray
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testBatchUpdateExceptionStringStringintintArray() {
+    /*
+     * ConstructorTest
+     */
+    public void testBatchUpdateExceptionStringStringintintArray() {
 
-		String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
-				".", "a", "a" };
-		String[] init2 = { "a", "1", "valid1", "----", "&valid*", "a", null,
-				"", ".", "a" };
-		int[] init3 = { -2147483648, 2147483647, 0, -492417162, -156220255,
-				-173012890, -631026360, -2147483648, -2147483648, -2147483648,
-				-2147483648 };
-		int[][] init4 = { { 1, 2, 3 }, {}, { 3 }, { 5, 5 }, { 6 },
-				{ 121, 2, 1 }, { 1 }, { 1, 2 }, { 1 }, { 2 }, null };
+        String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
+                ".", "a", "a" };
+        String[] init2 = { "a", "1", "valid1", "----", "&valid*", "a", null,
+                "", ".", "a" };
+        int[] init3 = { -2147483648, 2147483647, 0, -492417162, -156220255,
+                -173012890, -631026360, -2147483648, -2147483648, -2147483648,
+                -2147483648 };
+        int[][] init4 = { { 1, 2, 3 }, {}, { 3 }, { 5, 5 }, { 6 },
+                { 121, 2, 1 }, { 1 }, { 1, 2 }, { 1 }, { 2 }, null };
 
-		int[] theFinalStates1 = init3; // Error Code state
-		// Update Counts array state
-		int[][] theFinalStates2 = init4;
-		// SQL State state value
-		String[] theFinalStates3 = init2;
-		String[] theFinalStates4 = init1; // Message state
+        int[] theFinalStates1 = init3; // Error Code state
+        // Update Counts array state
+        int[][] theFinalStates2 = init4;
+        // SQL State state value
+        String[] theFinalStates3 = init2;
+        String[] theFinalStates4 = init1; // Message state
 
-		Exception[] theExceptions = { null, null, null, null, null, null, null,
-				null, null, null, null };
+        Exception[] theExceptions = { null, null, null, null, null, null, null,
+                null, null, null, null };
 
-		BatchUpdateException aBatchUpdateException;
-		int loopCount = init1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aBatchUpdateException = new BatchUpdateException(init1[i],
-						init2[i], init3[i], init4[i]);
-				if (theExceptions[i] != null) {
+        BatchUpdateException aBatchUpdateException;
+        int loopCount = init1.length;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aBatchUpdateException = new BatchUpdateException(init1[i],
+                        init2[i], init3[i], init4[i]);
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getErrorCode(),
-						theFinalStates1[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getUpdateCounts(),
-						theFinalStates2[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getSQLState(), theFinalStates3[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getMessage(), theFinalStates4[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getErrorCode(),
+                        theFinalStates1[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getUpdateCounts(),
+                        theFinalStates2[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getSQLState(), theFinalStates3[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testBatchUpdateExceptionStringStringintintArray
+    } // end method testBatchUpdateExceptionStringStringintintArray
 	
 	/**
 	 * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(Throwable)}
@@ -377,59 +377,59 @@ public class BatchUpdateExceptionTest extends TestCase {
 		assertNull(batchUpdateException.getCause());
 	}
 
-	/*
-	 * Method test for getUpdateCounts
-	 */
-	public void testGetUpdateCounts() {
+    /*
+     * Method test for getUpdateCounts
+     */
+    public void testGetUpdateCounts() {
 
-		BatchUpdateException aBatchUpdateException;
-		int[][] init1 = { { 1, 2, 3 }, {}, null };
+        BatchUpdateException aBatchUpdateException;
+        int[][] init1 = { { 1, 2, 3 }, {}, null };
 
-		int[] theReturn;
-		int[][] theReturns = init1;
+        int[] theReturn;
+        int[][] theReturns = init1;
 
-		int[] theFinalStates1 = { 0, 0, 0 }; // Error Code state
-		int[][] theFinalStates2 = init1; // Update Counts array state
-		String[] theFinalStates3 = { null, null, null }; // SQL State state
-															// value
-		String[] theFinalStates4 = { null, null, null }; // Message state
+        int[] theFinalStates1 = { 0, 0, 0 }; // Error Code state
+        int[][] theFinalStates2 = init1; // Update Counts array state
+        String[] theFinalStates3 = { null, null, null }; // SQL State state
+        // value
+        String[] theFinalStates4 = { null, null, null }; // Message state
 
-		Exception[] theExceptions = { null, null, null };
+        Exception[] theExceptions = { null, null, null };
 
-		int loopCount = init1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aBatchUpdateException = new BatchUpdateException(init1[i]);
-				theReturn = aBatchUpdateException.getUpdateCounts();
-				if (theExceptions[i] != null) {
+        int loopCount = init1.length;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aBatchUpdateException = new BatchUpdateException(init1[i]);
+                theReturn = aBatchUpdateException.getUpdateCounts();
+                if (theExceptions[i] != null) {
                     fail(i + "Exception missed");
                 }
-				assertEquals(i + "Return value mismatch", theReturn,
-						theReturns[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getErrorCode(),
-						theFinalStates1[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getUpdateCounts(),
-						theFinalStates2[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getSQLState(), theFinalStates3[i]);
-				assertEquals(i + " Final state mismatch: ",
-						aBatchUpdateException.getMessage(), theFinalStates4[i]);
+                assertEquals(i + "Return value mismatch", theReturn,
+                        theReturns[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getErrorCode(),
+                        theFinalStates1[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getUpdateCounts(),
+                        theFinalStates2[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getSQLState(), theFinalStates3[i]);
+                assertEquals(i + " Final state mismatch: ",
+                        aBatchUpdateException.getMessage(), theFinalStates4[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testGetUpdateCounts
-    
+    } // end method testGetUpdateCounts
+
     /**
      * @tests serialization/deserialization compatibility.
      */

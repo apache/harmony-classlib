@@ -56,7 +56,8 @@ public class DriverManager {
     private static final List<Driver> theDrivers = new ArrayList<Driver>(10);
 
     // Permission for setting log
-    private static final SQLPermission logPermission = new SQLPermission("setLog"); //$NON-NLS-1$
+    private static final SQLPermission logPermission = new SQLPermission(
+            "setLog"); //$NON-NLS-1$
 
     /*
      * Load drivers on initialization
@@ -122,7 +123,8 @@ public class DriverManager {
         ClassLoader callerClassLoader = VM.callerClassLoader();
 
         if (!DriverManager.isClassFromClassLoader(driver, callerClassLoader)) {
-            // sql.1=DriverManager: calling class not authorized to deregister JDBC driver
+            // sql.1=DriverManager: calling class not authorized to deregister
+            // JDBC driver
             throw new SecurityException(Messages.getString("sql.1")); //$NON-NLS-1$
         } // end if
         synchronized (theDrivers) {
@@ -208,10 +210,10 @@ public class DriverManager {
     public static Connection getConnection(String url, String user,
             String password) throws SQLException {
         Properties theProperties = new Properties();
-        if(null != user){
+        if (null != user) {
             theProperties.setProperty("user", user); //$NON-NLS-1$
         }
-        if(null != password){
+        if (null != password) {
             theProperties.setProperty("password", password); //$NON-NLS-1$
         }
         return getConnection(url, theProperties);
@@ -248,8 +250,8 @@ public class DriverManager {
         }
         // If no drivers understand the URL, throw an SQLException
         // sql.6=No suitable driver
-        //SQLState: 08 - connection exception
-        //001 - SQL-client unable to establish SQL-connection
+        // SQLState: 08 - connection exception
+        // 001 - SQL-client unable to establish SQL-connection
         throw new SQLException(Messages.getString("sql.6"), "08001"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -414,13 +416,13 @@ public class DriverManager {
      */
     private static boolean isClassFromClassLoader(Object theObject,
             ClassLoader theClassLoader) {
-    
+
         if ((theObject == null) || (theClassLoader == null)) {
             return false;
         }
-    
+
         Class<?> objectClass = theObject.getClass();
-    
+
         try {
             Class<?> checkClass = Class.forName(objectClass.getName(), true,
                     theClassLoader);

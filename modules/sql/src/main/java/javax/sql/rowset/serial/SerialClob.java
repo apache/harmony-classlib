@@ -61,9 +61,9 @@ public class SerialClob implements Clob, Serializable, Cloneable {
             throw new SQLException(Messages.getString("sql.19"));//$NON-NLS-1$
         }
         if ((characterStream = clob.getCharacterStream()) == null
-				&& (asciiStream = clob.getAsciiStream()) == null) {
-			throw new SQLException(Messages.getString("sql.20"));//$NON-NLS-1$
-		}
+                && (asciiStream = clob.getAsciiStream()) == null) {
+            throw new SQLException(Messages.getString("sql.20"));//$NON-NLS-1$
+        }
 
         this.clob = clob;
         origLen = clob.length();
@@ -72,8 +72,8 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         try {
             characterStream.read(buf);
         } catch (IOException e) {
-            SerialException se = new SerialException(
-                    "SerialClob: " + e.getMessage());
+            SerialException se = new SerialException("SerialClob: "
+                    + e.getMessage());
 
             se.initCause(e);
             throw se;
@@ -116,12 +116,13 @@ public class SerialClob implements Clob, Serializable, Cloneable {
     public long position(Clob searchClob, long start) throws SerialException,
             SQLException {
         checkValidation();
-        String searchString = searchClob.getSubString(1, (int)searchClob.length());
+        String searchString = searchClob.getSubString(1, (int) searchClob
+                .length());
         return position(searchString, start);
     }
 
-    public long position(String searchString, long start) throws SerialException,
-            SQLException {
+    public long position(String searchString, long start)
+            throws SerialException, SQLException {
         checkValidation();
         if (start < 1 || len - (start - 1) < searchString.length()) {
             return -1;
@@ -156,7 +157,7 @@ public class SerialClob implements Clob, Serializable, Cloneable {
             throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
         }
         OutputStream os = clob.setAsciiStream(pos);
-        if(os == null){
+        if (os == null) {
             throw new SerialException(Messages.getString("sql.46")); // $NON-NLS-1$
         }
         return os;
@@ -169,7 +170,7 @@ public class SerialClob implements Clob, Serializable, Cloneable {
             throw new SerialException(Messages.getString("sql.25")); // $NON-NLS-1$
         }
         Writer writer = clob.setCharacterStream(pos);
-        if(writer == null){
+        if (writer == null) {
             throw new SerialException(Messages.getString("sql.45")); // $NON-NLS-1$
         }
         return writer;
@@ -186,29 +187,29 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         if (pos < 1 || length < 0 || pos > (len - length + 1)) {
             throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
         }
-        if (offset < 0  || offset > (str.length() - length)) {
+        if (offset < 0 || offset > (str.length() - length)) {
             throw new SerialException(Messages.getString("sql.21")); // $NON-NLS-1$
         }
         if (length > len + offset) {
             throw new SerialException(Messages.getString("sql.23")); // $NON-NLS-1$
         }
-        str.getChars(offset, offset+length, buf, (int)pos-1);
+        str.getChars(offset, offset + length, buf, (int) pos - 1);
         return length;
     }
 
     public void truncate(long length) throws SerialException {
         checkValidation();
-        if(length > len || length < 0) {
+        if (length > len || length < 0) {
             throw new SerialException(Messages.getString("sql.24"));
         }
         char[] truncatedBuffer = new char[(int) length];
-        System.arraycopy(buf, 0, truncatedBuffer, 0, (int)length);
+        System.arraycopy(buf, 0, truncatedBuffer, 0, (int) length);
         buf = truncatedBuffer;
-        len = length;   
+        len = length;
     }
-    
+
     private void checkValidation() throws SerialException {
-        if(len == -1){
+        if (len == -1) {
             throw new SerialException(Messages.getString("sql.38")); //$NON-NLS-1$
         }
     }

@@ -122,8 +122,8 @@ public abstract class PermissionCollection implements Serializable {
         StringBuffer result = new StringBuffer(totalLength).append(superStr)
             .append(" ("); //$NON-NLS-1$
         for (int i = 0; i < esize; i++) {
-            result.append("\n  ").append(elist.get(i).toString()); //$NON-NLS-1$
+            result.append("\n ").append(elist.get(i).toString()); //$NON-NLS-1$
         }
-        return result.append("\n)").toString(); //$NON-NLS-1$
+        return result.append("\n)\n").toString(); //$NON-NLS-1$
     }
 }

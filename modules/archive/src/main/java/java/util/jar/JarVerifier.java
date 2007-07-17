@@ -40,12 +40,12 @@ import org.apache.harmony.security.utils.JarUtils;
 import org.apache.harmony.archive.util.Util;
 
 /**
- * Non-public class used by {@link JarFile} and
- * {@link JarInputStream} to manage the verification of signed
- * jars. <code>JarFile</code> and <code>JarInputStream</code> objects will
- * be expected to have a <code>JarVerifier</code> instance member which can be
- * used to carry out the tasks associated with verifying a signed jar. These
- * tasks would typically include:
+ * Non-public class used by {@link JarFile} and {@link JarInputStream} to manage
+ * the verification of signed jars. <code>JarFile</code> and
+ * <code>JarInputStream</code> objects will be expected to have a
+ * <code>JarVerifier</code> instance member which can be used to carry out the
+ * tasks associated with verifying a signed jar. These tasks would typically
+ * include:
  * <ul>
  * <li>verification of all signed signature files
  * <li>confirmation that all signed data was signed only by the party or
@@ -63,14 +63,13 @@ class JarVerifier {
 
     private HashMap<String, byte[]> metaEntries = new HashMap<String, byte[]>(5);
 
-    private final Hashtable<String, HashMap<String, Attributes>> signatures =
-        new Hashtable<String, HashMap<String, Attributes>>(5);
+    private final Hashtable<String, HashMap<String, Attributes>> signatures = new Hashtable<String, HashMap<String, Attributes>>(
+            5);
 
-    private final Hashtable<String, Certificate[]> certificates =
-        new Hashtable<String, Certificate[]>(5);
+    private final Hashtable<String, Certificate[]> certificates = new Hashtable<String, Certificate[]>(
+            5);
 
-    private final Hashtable<String, Certificate[]> verifiedEntries =
-        new Hashtable<String, Certificate[]>();
+    private final Hashtable<String, Certificate[]> verifiedEntries = new Hashtable<String, Certificate[]>();
 
     byte[] mainAttributesChunk;
 
@@ -150,8 +149,8 @@ class JarVerifier {
         }
 
         Vector<Certificate> certs = new Vector<Certificate>();
-        Iterator<Map.Entry<String, HashMap<String, Attributes>>> it =
-            signatures.entrySet().iterator();
+        Iterator<Map.Entry<String, HashMap<String, Attributes>>> it = signatures
+                .entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, HashMap<String, Attributes>> entry = it.next();
             HashMap<String, Attributes> hm = entry.getValue();
@@ -275,7 +274,7 @@ class JarVerifier {
                     new ByteArrayInputStream(sBlockBytes));
             /*
              * Recursive call in loading security provider related class which
-             * is in a signed jar. 
+             * is in a signed jar.
              */
             if (null == metaEntries) {
                 return;
@@ -287,8 +286,8 @@ class JarVerifier {
             return;
         } catch (GeneralSecurityException e) {
             /* [MSG "archive.30", "{0} failed verification of {1}"] */
-            throw new SecurityException(
-                    Messages.getString("archive.30", jarName, signatureFile)); //$NON-NLS-1$
+            throw new SecurityException(Messages.getString(
+                    "archive.30", jarName, signatureFile)); //$NON-NLS-1$
         }
 
         // Verify manifest hash in .sf file
@@ -317,8 +316,8 @@ class JarVerifier {
             if (!verify(attributes, digestAttribute, mainAttributesChunk,
                     false, true)) {
                 /* [MSG "archive.30", "{0} failed verification of {1}"] */
-                throw new SecurityException(
-                        Messages.getString("archive.30", jarName, signatureFile)); //$NON-NLS-1$
+                throw new SecurityException(Messages.getString(
+                        "archive.30", jarName, signatureFile)); //$NON-NLS-1$
             }
         }
 
@@ -340,10 +339,14 @@ class JarVerifier {
                 }
                 if (!verify(entry.getValue(), "-Digest", chunk, //$NON-NLS-1$
                         createdBySigntool, false)) {
-                    /* [MSG "archive.31", "{0} has invalid digest for {1} in {2}"] */
-                    throw new SecurityException(
-                        Messages.getString("archive.31", //$NON-NLS-1$
-                            new Object[] { signatureFile, entry.getKey(), jarName }));
+                    /*
+                     * [MSG "archive.31", "{0} has invalid digest for {1} in
+                     * {2}"]
+                     */
+                    throw new SecurityException(Messages.getString(
+                            "archive.31", //$NON-NLS-1$
+                            new Object[] { signatureFile, entry.getKey(),
+                                    jarName }));
                 }
             }
         }
@@ -382,7 +385,8 @@ class JarVerifier {
         byte[] digest = entry.digest.digest();
         if (!MessageDigest.isEqual(digest, Base64.decode(entry.hash))) {
             /* [MSG "archive.31", "{0} has invalid digest for {1} in {2}"] */
-            throw new SecurityException(Messages.getString("archive.31", new Object[] { //$NON-NLS-1$
+            throw new SecurityException(Messages.getString(
+                    "archive.31", new Object[] { //$NON-NLS-1$
                     JarFile.MANIFEST_NAME, zipEntry.getName(), jarName }));
         }
         verifiedEntries.put(zipEntry.getName(), entry.certificates);

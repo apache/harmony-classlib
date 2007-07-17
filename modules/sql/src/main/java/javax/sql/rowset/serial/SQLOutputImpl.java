@@ -46,7 +46,7 @@ public class SQLOutputImpl implements SQLOutput {
     private Vector attributes;
 
     private Map map;
-    
+
     /**
      * Constructs a new SQLOutputImpl object using a list of attributes and a
      * custom name-type map. JDBC drivers will use this map to identify which
@@ -102,7 +102,7 @@ public class SQLOutputImpl implements SQLOutput {
             attributes.addElement(stringBuffer.toString());
         } catch (IOException e) {
             throw new SQLException();
-        } 
+        }
     }
 
     /**
@@ -137,19 +137,19 @@ public class SQLOutputImpl implements SQLOutput {
     @SuppressWarnings("unchecked")
     public void writeBlob(Blob theBlob) throws SQLException {
         if (theBlob != null) {
-            SerialBlob serialBlob = new SerialBlob (theBlob);
+            SerialBlob serialBlob = new SerialBlob(theBlob);
             attributes.addElement(serialBlob);
         } else {
             attributes.addElement(theBlob);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      * @see java.sql.SQLOutput#writeBoolean(boolean)
      */
-    @SuppressWarnings({ "boxing", "unchecked" })
+    @SuppressWarnings( { "boxing", "unchecked" })
     public void writeBoolean(boolean theFlag) throws SQLException {
         attributes.addElement(theFlag);
     }
@@ -159,7 +159,7 @@ public class SQLOutputImpl implements SQLOutput {
      * 
      * @see java.sql.SQLOutput#writeByte(byte)
      */
-    @SuppressWarnings({ "boxing", "unchecked" })
+    @SuppressWarnings( { "boxing", "unchecked" })
     public void writeByte(byte theByte) throws SQLException {
         attributes.addElement(theByte);
     }
@@ -169,7 +169,7 @@ public class SQLOutputImpl implements SQLOutput {
      * 
      * @see java.sql.SQLOutput#writeBytes(byte[])
      */
-    @SuppressWarnings({ "boxing", "unchecked" })
+    @SuppressWarnings( { "boxing", "unchecked" })
     public void writeBytes(byte[] theBytes) throws SQLException {
         attributes.addElement(theBytes);
     }
@@ -193,7 +193,7 @@ public class SQLOutputImpl implements SQLOutput {
             attributes.addElement(stringBuffer.toString());
         } catch (IOException e) {
             throw new SQLException();
-        } 
+        }
     }
 
     /**
@@ -220,7 +220,7 @@ public class SQLOutputImpl implements SQLOutput {
     public void writeDate(Date theDate) throws SQLException {
         attributes.addElement(theDate);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -268,10 +268,11 @@ public class SQLOutputImpl implements SQLOutput {
      */
     @SuppressWarnings("unchecked")
     public void writeObject(SQLData theObject) throws SQLException {
-        if(theObject == null) {
+        if (theObject == null) {
             attributes.addElement(null);
         } else {
-            attributes.addElement(new SerialStruct(theObject, new HashMap(map)));
+            attributes
+                    .addElement(new SerialStruct(theObject, new HashMap(map)));
         }
     }
 

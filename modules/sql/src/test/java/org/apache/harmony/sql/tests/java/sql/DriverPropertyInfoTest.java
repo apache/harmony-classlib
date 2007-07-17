@@ -29,79 +29,79 @@ import junit.framework.TestCase;
 
 public class DriverPropertyInfoTest extends TestCase {
 
-	/*
-	 * Public statics test
-	 */
-	public void testPublicStatics() {
+    /*
+     * Public statics test
+     */
+    public void testPublicStatics() {
 
-	} // end method testPublicStatics
+    } // end method testPublicStatics
 
-	/*
-	 * Constructor test
-	 */
-	public void testDriverPropertyInfoStringString() {
+    /*
+     * Constructor test
+     */
+    public void testDriverPropertyInfoStringString() {
 
-		DriverPropertyInfo aDriverPropertyInfo = new DriverPropertyInfo(
-				validName, validValue);
+        DriverPropertyInfo aDriverPropertyInfo = new DriverPropertyInfo(
+                validName, validValue);
 
-		assertNotNull(aDriverPropertyInfo);
+        assertNotNull(aDriverPropertyInfo);
 
-		aDriverPropertyInfo = new DriverPropertyInfo(null, null);
+        aDriverPropertyInfo = new DriverPropertyInfo(null, null);
 
-	} // end method testDriverPropertyInfoStringString
+    } // end method testDriverPropertyInfoStringString
 
-	/*
-	 * Public fields test
-	 */
-	static String validName = "testname";
+    /*
+     * Public fields test
+     */
+    static String validName = "testname";
 
-	static String validValue = "testvalue";
+    static String validValue = "testvalue";
 
-	static String[] updateChoices = { "Choice1", "Choice2", "Choice3" };
+    static String[] updateChoices = { "Choice1", "Choice2", "Choice3" };
 
-	static String updateValue = "updateValue";
+    static String updateValue = "updateValue";
 
-	static boolean updateRequired = true;
+    static boolean updateRequired = true;
 
-	static String updateDescription = "update description";
+    static String updateDescription = "update description";
 
-	static String updateName = "updateName";
+    static String updateName = "updateName";
 
-	public void testPublicFields() {
+    public void testPublicFields() {
 
-		// Constructor here...
-		DriverPropertyInfo aDriverPropertyInfo = new DriverPropertyInfo(
-				validName, validValue);
+        // Constructor here...
+        DriverPropertyInfo aDriverPropertyInfo = new DriverPropertyInfo(
+                validName, validValue);
 
-		assertTrue(Arrays.equals(testChoices, aDriverPropertyInfo.choices));
-		assertEquals(testValue, aDriverPropertyInfo.value);
-		assertEquals(testRequired, aDriverPropertyInfo.required);
-		assertEquals(testDescription, aDriverPropertyInfo.description);
-		assertEquals(testName, aDriverPropertyInfo.name);
+        assertTrue(Arrays.equals(testChoices, aDriverPropertyInfo.choices));
+        assertEquals(testValue, aDriverPropertyInfo.value);
+        assertEquals(testRequired, aDriverPropertyInfo.required);
+        assertEquals(testDescription, aDriverPropertyInfo.description);
+        assertEquals(testName, aDriverPropertyInfo.name);
 
-		aDriverPropertyInfo.choices = updateChoices;
-		aDriverPropertyInfo.value = updateValue;
-		aDriverPropertyInfo.required = updateRequired;
-		aDriverPropertyInfo.description = updateDescription;
-		aDriverPropertyInfo.name = updateName;
+        aDriverPropertyInfo.choices = updateChoices;
+        aDriverPropertyInfo.value = updateValue;
+        aDriverPropertyInfo.required = updateRequired;
+        aDriverPropertyInfo.description = updateDescription;
+        aDriverPropertyInfo.name = updateName;
 
-		assertTrue(Arrays.equals(updateChoices, aDriverPropertyInfo.choices));
-		assertEquals(updateValue, aDriverPropertyInfo.value);
-		assertEquals(updateRequired, aDriverPropertyInfo.required);
-		assertEquals(updateDescription, aDriverPropertyInfo.description);
-		assertEquals(updateName, aDriverPropertyInfo.name);
+        assertTrue(Arrays.equals(updateChoices, aDriverPropertyInfo.choices));
+        assertEquals(updateValue, aDriverPropertyInfo.value);
+        assertEquals(updateRequired, aDriverPropertyInfo.required);
+        assertEquals(updateDescription, aDriverPropertyInfo.description);
+        assertEquals(updateName, aDriverPropertyInfo.name);
 
-	} // end method testPublicFields
+    } // end method testPublicFields
 
-	// Default values...
-	static String[] testChoices = null;
+    // Default values...
+    static String[] testChoices = null;
 
-	static java.lang.String testValue = validValue;
+    static java.lang.String testValue = validValue;
 
-	static boolean testRequired = false;
+    static boolean testRequired = false;
 
-	static java.lang.String testDescription = null;
+    static java.lang.String testDescription = null;
 
-	static java.lang.String testName = validName;
+    static java.lang.String testName = validName;
 
 } // end class DriverPropertyInfoTest

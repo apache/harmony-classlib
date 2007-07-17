@@ -33,10 +33,29 @@ fint fwcslen(fwchar_t* str)
 	return counter;
 }
 
+fint fwcscmp(fwchar_t* str1, fchar* str2)
+{
+    if (str1 == 0 || str2 == 0)
+        return (fint)(str1 - (fwchar_t*)str2);
+        
+	fwchar_t* tmpstr1 = str1; 
+	fchar* tmpstr2 = str2;
+	while(*tmpstr1 != 0 || *tmpstr2 !=0)
+	{
+        if (*tmpstr1 != (fwchar_t)(*tmpstr2))
+			return -1;
+
+		tmpstr1++;
+		tmpstr2++;
+	}
+
+	return 0;
+}
+
 fint fwcscmp(fwchar_t* str1, fwchar_t* str2)
 {
     if (str1 == 0 || str2 == 0)
-        return str1 - str2;
+        return (fint)(str1 - str2);
         
 	fwchar_t* tmpstr1 = str1; 
 	fwchar_t* tmpstr2 = str2;

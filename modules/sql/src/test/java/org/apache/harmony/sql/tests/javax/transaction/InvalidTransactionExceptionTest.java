@@ -23,76 +23,77 @@ import junit.framework.TestCase;
 
 public class InvalidTransactionExceptionTest extends TestCase {
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testInvalidTransactionExceptionString() {
+    /*
+     * ConstructorTest
+     */
+    public void testInvalidTransactionExceptionString() {
 
-		String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "", "\u0000" };
+        String[] init1 = { "a", "1", "valid1", "----", "&valid*", null, "",
+                "\u0000" };
 
-		String[] theFinalStates1 = init1;
+        String[] theFinalStates1 = init1;
 
-		Exception[] theExceptions = { null, null, null, null, null, null, null,
-				null };
+        Exception[] theExceptions = { null, null, null, null, null, null, null,
+                null };
 
-		InvalidTransactionException aInvalidTransactionException;
-		int loopCount = init1.length;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aInvalidTransactionException = new InvalidTransactionException(
-						init1[i]);
-				if (theExceptions[i] != null) {
+        InvalidTransactionException aInvalidTransactionException;
+        int loopCount = init1.length;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aInvalidTransactionException = new InvalidTransactionException(
+                        init1[i]);
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + "  Final state mismatch",
-						aInvalidTransactionException.getMessage(),
-						theFinalStates1[i]);
+                assertEquals(i + "  Final state mismatch",
+                        aInvalidTransactionException.getMessage(),
+                        theFinalStates1[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testInvalidTransactionExceptionString
+    } // end method testInvalidTransactionExceptionString
 
-	/*
-	 * ConstructorTest
-	 */
-	public void testInvalidTransactionException() {
+    /*
+     * ConstructorTest
+     */
+    public void testInvalidTransactionException() {
 
-		String[] theFinalStates1 = { null };
+        String[] theFinalStates1 = { null };
 
-		Exception[] theExceptions = { null };
+        Exception[] theExceptions = { null };
 
-		InvalidTransactionException aInvalidTransactionException;
-		int loopCount = 1;
-		for (int i = 0; i < loopCount; i++) {
-			try {
-				aInvalidTransactionException = new InvalidTransactionException();
-				if (theExceptions[i] != null) {
+        InvalidTransactionException aInvalidTransactionException;
+        int loopCount = 1;
+        for (int i = 0; i < loopCount; i++) {
+            try {
+                aInvalidTransactionException = new InvalidTransactionException();
+                if (theExceptions[i] != null) {
                     fail();
                 }
-				assertEquals(i + "  Final state mismatch",
-						aInvalidTransactionException.getMessage(),
-						theFinalStates1[i]);
+                assertEquals(i + "  Final state mismatch",
+                        aInvalidTransactionException.getMessage(),
+                        theFinalStates1[i]);
 
-			} catch (Exception e) {
-				if (theExceptions[i] == null) {
+            } catch (Exception e) {
+                if (theExceptions[i] == null) {
                     fail(i + "Unexpected exception");
                 }
-				assertEquals(i + "Exception mismatch", e.getClass(),
-						theExceptions[i].getClass());
-				assertEquals(i + "Exception mismatch", e.getMessage(),
-						theExceptions[i].getMessage());
-			} // end try
-		} // end for
+                assertEquals(i + "Exception mismatch", e.getClass(),
+                        theExceptions[i].getClass());
+                assertEquals(i + "Exception mismatch", e.getMessage(),
+                        theExceptions[i].getMessage());
+            } // end try
+        } // end for
 
-	} // end method testInvalidTransactionException
+    } // end method testInvalidTransactionException
 
 } // end class InvalidTransactionExceptionTest

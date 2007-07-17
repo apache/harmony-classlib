@@ -166,7 +166,7 @@ public class XAException extends Exception implements Serializable {
      * global transaction.
      */
     public static final int XAER_OUTSIDE = -9;
-    
+
     /**
      * The errorCode which details the error that has occurred
      */

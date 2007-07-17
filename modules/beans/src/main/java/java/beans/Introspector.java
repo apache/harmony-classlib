@@ -83,14 +83,15 @@ public class Introspector {
         return getBeanInfo(beanClass, stopClass, false, false);
     }
 
-    public static synchronized void setBeanInfoSearchPath(String[] searchPath) {
+    public static void setBeanInfoSearchPath(String[] searchPath) {
         SecurityManager sm = System.getSecurityManager();
 
         if (sm != null) {
             sm.checkPropertiesAccess();
         }
-        
-        path = searchPath;
+        synchronized(Introspector.class) {
+            path = searchPath;
+        }
     }
 
     public static synchronized String[] getBeanInfoSearchPath() {

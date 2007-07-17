@@ -318,7 +318,7 @@ public class Timestamp extends Date {
         decimalFormat.setMaximumIntegerDigits(9);
         String theNanos = decimalFormat.format(nanos);
         theNanos = stripTrailingZeros(theNanos);
-        
+
         String year = format((getYear() + 1900), 4);
         String month = format((getMonth() + 1), 2);
         String date = format(getDate(), 2);
@@ -336,11 +336,11 @@ public class Timestamp extends Date {
     private String format(int date, int digits) {
         StringBuilder dateStringBuffer = new StringBuilder(String.valueOf(date));
         while (dateStringBuffer.length() < digits) {
-            dateStringBuffer = dateStringBuffer.insert(0,'0');
+            dateStringBuffer = dateStringBuffer.insert(0, '0');
         }
         return dateStringBuffer.toString();
     }
-    
+
     /*
      * Private method to strip trailing '0' characters from a string. @param
      * inputString the starting string @return a string with the trailing zeros
@@ -439,7 +439,8 @@ public class Timestamp extends Date {
             // Require the next character to be a "."
             if (s.charAt(position) != '.') {
                 // sql.4=Bad input string format: expected '.' not {0}
-                throw new NumberFormatException(Messages.getString("sql.4", s.charAt(position))); //$NON-NLS-1$
+                throw new NumberFormatException(Messages.getString(
+                        "sql.4", s.charAt(position))); //$NON-NLS-1$
             }
             // Get the length of the number string - need to account for the '.'
             int nanoLength = s.length() - position - 1;

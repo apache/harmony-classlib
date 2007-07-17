@@ -15,26 +15,15 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.sql.tests.javax.sql.rowset.serial;
+package org.apache.harmony.beans;
 
-import javax.sql.rowset.serial.SerialException;
-
-import junit.framework.TestCase;
-
-import org.apache.harmony.testframework.serialization.SerializationTest;
-
-public class SerialExceptionTest extends TestCase {
-    /**
-     * @tests serialization/deserialization compatibility.
-     */
-    public void testSerializationSelf() throws Exception {
-        SerializationTest.verifySelf(new SerialException());
+public class BeansUtils {
+    
+    public static final int getHashCode(Object o) {
+        return o != null ? o.hashCode() : 0;
     }
-
-    /**
-     * @tests serialization/deserialization compatibility with RI.
-     */
-    public void testSerializationCompatibility() throws Exception {
-        SerializationTest.verifyGolden(this, new SerialException());
+    
+    public static final int getHashCode(boolean b) {
+        return b?1:0;
     }
 }

@@ -23,7 +23,6 @@
 
 package org.apache.harmony.archive.internal.nls;
 
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Locale;
@@ -138,13 +137,13 @@ public class Messages {
             try {
                 format = bundle.getString(msg);
             } catch (MissingResourceException e) {
-                //ignore
+                // ignore
             }
         }
 
         return format(format, args);
     }
-    
+
     /**
      * Generates a formatted text string given a source string containing
      * "argument markers" of the form "{argNum}" where each argNum must be in
@@ -167,7 +166,7 @@ public class Messages {
         String[] argStrings = new String[args.length];
         for (int i = 0; i < args.length; ++i) {
             if (args[i] == null)
-                argStrings[i] = "<null>";	//$NON-NLS-1$
+                argStrings[i] = "<null>"; //$NON-NLS-1$
             else
                 argStrings[i] = args[i].toString();
         }
@@ -191,16 +190,16 @@ public class Messages {
                             10);
                     if (argnum < 0 || format.charAt(i + 2) != '}') {
                         // Bad format, just print and loop.
-						answer.append(format.substring(lastI, i + 1));
-						lastI = i + 1;
+                        answer.append(format.substring(lastI, i + 1));
+                        lastI = i + 1;
                     } else {
                         // Got a good one!
                         answer.append(format.substring(lastI, i));
                         if (argnum >= argStrings.length)
-                            answer.append("<missing argument>");	//$NON-NLS-1$
+                            answer.append("<missing argument>"); //$NON-NLS-1$
                         else
                             answer.append(argStrings[argnum]);
-						lastI = i + 3;
+                        lastI = i + 3;
                     }
                 }
             }
@@ -224,11 +223,12 @@ public class Messages {
                     .doPrivileged(new PrivilegedAction<Object>() {
                         public Object run() {
                             return ResourceBundle.getBundle(resource, locale,
-                                    loader != null ? loader : ClassLoader.getSystemClassLoader());
+                                    loader != null ? loader : ClassLoader
+                                            .getSystemClassLoader());
                         }
                     });
         } catch (MissingResourceException e) {
-            //ignore
+            // ignore
         }
         return null;
     }

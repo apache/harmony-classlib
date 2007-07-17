@@ -27,18 +27,18 @@ import java.sql.SQLException;
  */
 public class TestHelper_Driver5 extends TestHelper_Driver4 {
 
-	static {
-		Driver theDriver = new TestHelper_Driver5();
-		try {
-			DriverManager.registerDriver(theDriver);
-		} catch (SQLException e) {
-			System.out.println("Failed to register driver!");
-		}
-	} // end static block initializer
+    static {
+        Driver theDriver = new TestHelper_Driver5();
+        try {
+            DriverManager.registerDriver(theDriver);
+        } catch (SQLException e) {
+            System.out.println("Failed to register driver!");
+        }
+    } // end static block initializer
 
-	protected TestHelper_Driver5() {
-		super();
-		baseURL = "jdbc:mikes5";
-	} // end constructor TestHelper_Driver5()
+    protected TestHelper_Driver5() {
+        super();
+        baseURL = "jdbc:mikes5";
+    } // end constructor TestHelper_Driver5()
 
 } // end class TestHelper_Driver5
