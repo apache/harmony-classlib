@@ -30,7 +30,7 @@ package java.sql;
  * To have multiple ResultSet objects open concurrently, multiple Statement
  * objects must be used.
  */
-public interface Statement extends Wrapper{
+public interface Statement extends Wrapper {
 
     /**
      * Passing this constant to getMoreResults implies that all ResultSet

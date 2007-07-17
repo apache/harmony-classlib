@@ -237,7 +237,7 @@ public class SerialArrayTest extends TestCase {
             // expected
         }
     }
-    
+
     public void test_free() throws Exception {
         try {
             sa.free();
@@ -329,7 +329,7 @@ public class SerialArrayTest extends TestCase {
         }
 
         public void free() throws SQLException {
-            
+
         }
     }
 
@@ -381,7 +381,7 @@ public class SerialArrayTest extends TestCase {
         }
 
         public void free() throws SQLException {
-            
+
         }
 
     }
@@ -479,7 +479,7 @@ public class SerialArrayTest extends TestCase {
                 Map<String, Class<?>> map) {
             return null;
         }
-        
+
         public void free() throws SQLException {
 
         }

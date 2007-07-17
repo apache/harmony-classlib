@@ -17,8 +17,5 @@
 
 package java.sql;
 
-/**
- * TODO Javadoc
- */
 public interface NClob extends Clob {
 }

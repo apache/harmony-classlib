@@ -66,7 +66,7 @@ public interface SQLData {
      * ordered as the are the SQL definition.</li>
      * <li>Assign the data to the appropriate fields or elements. This is done
      * by calling the relevant reader method for the type involved (eg.
-     * SQLInput.readString, SQLInputreadBigDecimal). If the type is distinct,
+     * SQLInput.readString, SQLInput.readBigDecimal). If the type is distinct,
      * then read its only data entry. For structured types, read every entry.</li>
      * </ul>
      * The supplied input stream is typically initialized by the calling JDBC

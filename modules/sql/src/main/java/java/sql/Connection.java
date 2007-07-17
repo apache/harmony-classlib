@@ -24,7 +24,7 @@ import java.util.Map;
  * statements and results are returned within the context of a connection.
  * 
  */
-public interface Connection extends Wrapper{
+public interface Connection extends Wrapper {
 
     /**
      * A constant indicating that transactions are not supported.

@@ -30,21 +30,21 @@ import javax.xml.transform.Source;
  */
 public interface SQLXML {
 
-	void free() throws SQLException;
+    void free() throws SQLException;
 
-	InputStream getBinaryStream() throws SQLException;
+    InputStream getBinaryStream() throws SQLException;
 
-	OutputStream setBinaryStream() throws SQLException;
+    OutputStream setBinaryStream() throws SQLException;
 
-	Reader getCharacterStream() throws SQLException;
+    Reader getCharacterStream() throws SQLException;
 
-	Writer setCharacterStream() throws SQLException;
+    Writer setCharacterStream() throws SQLException;
 
-	String getString() throws SQLException;
+    String getString() throws SQLException;
 
-	void setString(String value) throws SQLException;
-	
-	<T extends Source> T getSource(Class<T> sourceClass) throws SQLException;
-	
-	<T extends Result> T setResult(Class<T> resultClass) throws SQLException;
+    void setString(String value) throws SQLException;
+
+    <T extends Source> T getSource(Class<T> sourceClass) throws SQLException;
+
+    <T extends Result> T setResult(Class<T> resultClass) throws SQLException;
 }

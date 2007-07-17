@@ -111,7 +111,7 @@ public class SQLException extends Exception implements Iterable<Throwable> {
      * @param theCause
      *            the Throwable object for the underlying reason this
      *            SQLException
-     *            
+     * 
      * @since 1.6
      */
     public SQLException(Throwable theCause) {
@@ -127,7 +127,7 @@ public class SQLException extends Exception implements Iterable<Throwable> {
      * @param theCause
      *            the Throwable object for the underlying reason this
      *            SQLException
-     *            
+     * 
      * @since 1.6
      */
     public SQLException(String theReason, Throwable theCause) {
@@ -225,6 +225,7 @@ public class SQLException extends Exception implements Iterable<Throwable> {
             next = ex;
         }
     }
+
     /**
      * Answer an iterator over the chained SQLExceptions.
      */

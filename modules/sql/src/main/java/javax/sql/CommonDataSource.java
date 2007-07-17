@@ -22,7 +22,7 @@ import java.sql.SQLException;
 
 /**
  * Interface that defines the methods which are common between DataSource,
- * XADataSource and ConnectionPoolDataSource.	
+ * XADataSource and ConnectionPoolDataSource.
  * 
  * @since 1.6
  */

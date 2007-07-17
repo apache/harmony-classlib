@@ -18,77 +18,77 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
  */
 public class StatementEventTest extends TestCase {
 
-	private static PooledConnection pc = new Impl_PooledConnection();
+    private static PooledConnection pc = new Impl_PooledConnection();
 
-	private static StatementEvent st = new StatementEvent(pc, null);
+    private static StatementEvent st = new StatementEvent(pc, null);
 
-	/**
-	 * @tests {@link javax.sql.StatementEvent#StatementEvent(PooledConnection, java.sql.PreparedStatement)}
-	 */
-	public void testStatementEventPooledConnectionPreparedStatementSQLException() {
-		SQLException e = new SQLException();
-		StatementEvent st2 = new StatementEvent(pc, null, e);
-		assertNotNull(st2);
+    /**
+     * @tests {@link javax.sql.StatementEvent#StatementEvent(PooledConnection, java.sql.PreparedStatement)}
+     */
+    public void testStatementEventPooledConnectionPreparedStatementSQLException() {
+        SQLException e = new SQLException();
+        StatementEvent st2 = new StatementEvent(pc, null, e);
+        assertNotNull(st2);
 
-		assertEquals(e, st2.getSQLException());
-	}
+        assertEquals(e, st2.getSQLException());
+    }
 
-	/**
-	 * @tests {@link javax.sql.StatementEvent#StatementEvent(PooledConnection, java.sql.PreparedStatement)}
-	 */
-	public void testStatementEventPooledConnectionPreparedStatement() {
-		assertNotNull(st);
+    /**
+     * @tests {@link javax.sql.StatementEvent#StatementEvent(PooledConnection, java.sql.PreparedStatement)}
+     */
+    public void testStatementEventPooledConnectionPreparedStatement() {
+        assertNotNull(st);
 
-		try {
-			new StatementEvent(null, null);
-			fail("should throw IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
-	}
+        try {
+            new StatementEvent(null, null);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
 
-	/**
-	 * @tests {@link javax.sql.StatementEvent#getStatement()}
-	 */
-	public void testGetStatement() {
-		assertNull(st.getStatement());
-	}
+    /**
+     * @tests {@link javax.sql.StatementEvent#getStatement()}
+     */
+    public void testGetStatement() {
+        assertNull(st.getStatement());
+    }
 
-	/**
-	 * @tests {@link javax.sql.StatementEvent#getSQLException()}
-	 */
-	public void testGetSQLException() {
-		assertNull(st.getSQLException());
-	}
+    /**
+     * @tests {@link javax.sql.StatementEvent#getSQLException()}
+     */
+    public void testGetSQLException() {
+        assertNull(st.getSQLException());
+    }
 
-	/**
-	 * @tests serialization/deserialization compatibility.
-	 */
-	public void testSerializationSelf() throws Exception {
-		SerializationTest.verifySelf(st, STATEMENTEVENT_COMPARATOR);
-	}
+    /**
+     * @tests serialization/deserialization compatibility.
+     */
+    public void testSerializationSelf() throws Exception {
+        SerializationTest.verifySelf(st, STATEMENTEVENT_COMPARATOR);
+    }
 
-	/**
-	 * @tests serialization/deserialization compatibility with RI.
-	 */
-	public void testSerializationCompatibility() throws Exception {
-		StatementEvent st3 = new StatementEvent(pc, null, new SQLException(
-				"test message"));
-		SerializationTest.verifyGolden(this, st3, STATEMENTEVENT_COMPARATOR);
-	}
+    /**
+     * @tests serialization/deserialization compatibility with RI.
+     */
+    public void testSerializationCompatibility() throws Exception {
+        StatementEvent st3 = new StatementEvent(pc, null, new SQLException(
+                "test message"));
+        SerializationTest.verifyGolden(this, st3, STATEMENTEVENT_COMPARATOR);
+    }
 
-	private static final SerializableAssert STATEMENTEVENT_COMPARATOR = new SerializableAssert() {
+    private static final SerializableAssert STATEMENTEVENT_COMPARATOR = new SerializableAssert() {
 
-		public void assertDeserialized(Serializable initial,
-				Serializable deserialized) {
-			StatementEvent iniSt = (StatementEvent) initial;
-			StatementEvent dserSt = (StatementEvent) deserialized;
-			if (null != iniSt.getSQLException()) {
-				assertEquals(iniSt.getSQLException().getMessage(), dserSt
-						.getSQLException().getMessage());
-			}
-			assertEquals(iniSt.getStatement(), dserSt.getStatement());
-		}
+        public void assertDeserialized(Serializable initial,
+                Serializable deserialized) {
+            StatementEvent iniSt = (StatementEvent) initial;
+            StatementEvent dserSt = (StatementEvent) deserialized;
+            if (null != iniSt.getSQLException()) {
+                assertEquals(iniSt.getSQLException().getMessage(), dserSt
+                        .getSQLException().getMessage());
+            }
+            assertEquals(iniSt.getStatement(), dserSt.getStatement());
+        }
 
-	};
+    };
 }

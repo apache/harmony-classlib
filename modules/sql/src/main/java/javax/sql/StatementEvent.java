@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.EventObject;
 
-
 /**
  * A statement event that a PreparedStatement is closed
  * 
@@ -29,11 +28,11 @@ import java.util.EventObject;
  */
 public class StatementEvent extends EventObject {
 
-	private static final long serialVersionUID = -8089573731826608315L;
+    private static final long serialVersionUID = -8089573731826608315L;
 
-	private SQLException exception;
+    private SQLException exception;
 
-	private PreparedStatement statement;
+    private PreparedStatement statement;
 
     /**
      * the constructor

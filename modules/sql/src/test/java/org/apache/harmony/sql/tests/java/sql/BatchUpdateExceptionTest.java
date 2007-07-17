@@ -287,95 +287,95 @@ public class BatchUpdateExceptionTest extends TestCase {
         } // end for
 
     } // end method testBatchUpdateExceptionStringStringintintArray
-	
-	/**
-	 * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(Throwable)}
-	 * 
-	 * @since 1.6
-	 */
-	public void testBatchUpdateExceptionLThrowable() {
-		Throwable cause = new Exception("MYTHROWABLE");
-		BatchUpdateException batchUpdateException = new BatchUpdateException(
-				cause);
-		assertNotNull(batchUpdateException);
-		assertEquals("java.lang.Exception: MYTHROWABLE", batchUpdateException
-				.getMessage());
-		assertNull(batchUpdateException.getSQLState());
-		assertEquals(0, batchUpdateException.getErrorCode());
-		assertEquals(cause, batchUpdateException.getCause());
-	}
-	
-	/**
-	 * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(int[], Throwable)}
-	 * 
-	 * @since 1.6
-	 */
-	public void testBatchUpdateException$ILThrowable() {
-		Throwable cause = new Exception("MYTHROWABLE");
-		int[] updateCounts = new int[] {1, 2, 3};
-		BatchUpdateException batchUpdateException = new BatchUpdateException(
-				updateCounts, cause);
-		assertNotNull(batchUpdateException);
-		assertEquals("java.lang.Exception: MYTHROWABLE", batchUpdateException
-				.getMessage());
-		int[] result = batchUpdateException.getUpdateCounts();
-		for (int i = 0; i < updateCounts.length; i++) {
-			assertEquals(updateCounts[i], result[i]);
-		}
-		assertEquals(cause, batchUpdateException.getCause());
-	}
-	
-	/**
-	 * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(String, int[], Throwable)}
-	 * 
-	 * @since 1.6
-	 */
-	public void testBatchUpdateExceptionLString$ILThrowable() {
-		Throwable cause = new Exception("MYTHROWABLE");
-		int[] updateCounts = new int[] {1, 2, 3};
-		BatchUpdateException batchUpdateException = new BatchUpdateException(
-				"MYTESTSTRING1", "MYTESTSTRING2", updateCounts, cause);
-		assertNotNull(batchUpdateException);
-		assertEquals("MYTESTSTRING2", batchUpdateException.getSQLState());
-		assertEquals("MYTESTSTRING1", batchUpdateException.getMessage());
-		assertEquals(0, batchUpdateException.getErrorCode());
-		int[] result = batchUpdateException.getUpdateCounts();
-		for (int i = 0; i < updateCounts.length; i++) {
-			assertEquals(updateCounts[i], result[i]);
-		}
-		assertEquals(cause, batchUpdateException.getCause());
-	}
-	
-	/**
-	 * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(String, String, int[], Throwable)}
-	 * 
-	 * @since 1.6
-	 */
-	public void testBatchUpdateExceptionLStringLStringILThrowable() {
-		int[] updateCounts = new int[] { 1, 2, 3 };
-		BatchUpdateException batchUpdateException = new BatchUpdateException(
-				null, null, updateCounts, null);
-		assertNotNull(batchUpdateException);
-		assertNull(batchUpdateException.getSQLState());
-		assertNull(batchUpdateException.getMessage());
-		assertEquals(0, batchUpdateException.getErrorCode());
-		assertNull(batchUpdateException.getCause());
-	}
-	
-	/**
-	 * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(String, String, int, int[], Throwable)}
-	 * 
-	 * @since 1.6
-	 */
-	public void testBatchUpdateExceptionLStringLStringI$ILThrowable() {
-		BatchUpdateException batchUpdateException = new BatchUpdateException(
-				"MYTESTSTRING1", "MYTESTSTRING2", 1, null);
-		assertNotNull(batchUpdateException);
-		assertEquals("MYTESTSTRING2", batchUpdateException.getSQLState());
-		assertEquals("MYTESTSTRING1", batchUpdateException.getMessage());
-		assertEquals(batchUpdateException.getErrorCode(), 1);
-		assertNull(batchUpdateException.getCause());
-	}
+
+    /**
+     * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(Throwable)}
+     * 
+     * @since 1.6
+     */
+    public void testBatchUpdateExceptionLThrowable() {
+        Throwable cause = new Exception("MYTHROWABLE");
+        BatchUpdateException batchUpdateException = new BatchUpdateException(
+                cause);
+        assertNotNull(batchUpdateException);
+        assertEquals("java.lang.Exception: MYTHROWABLE", batchUpdateException
+                .getMessage());
+        assertNull(batchUpdateException.getSQLState());
+        assertEquals(0, batchUpdateException.getErrorCode());
+        assertEquals(cause, batchUpdateException.getCause());
+    }
+
+    /**
+     * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(int[], Throwable)}
+     * 
+     * @since 1.6
+     */
+    public void testBatchUpdateException$ILThrowable() {
+        Throwable cause = new Exception("MYTHROWABLE");
+        int[] updateCounts = new int[] { 1, 2, 3 };
+        BatchUpdateException batchUpdateException = new BatchUpdateException(
+                updateCounts, cause);
+        assertNotNull(batchUpdateException);
+        assertEquals("java.lang.Exception: MYTHROWABLE", batchUpdateException
+                .getMessage());
+        int[] result = batchUpdateException.getUpdateCounts();
+        for (int i = 0; i < updateCounts.length; i++) {
+            assertEquals(updateCounts[i], result[i]);
+        }
+        assertEquals(cause, batchUpdateException.getCause());
+    }
+
+    /**
+     * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(String, int[], Throwable)}
+     * 
+     * @since 1.6
+     */
+    public void testBatchUpdateExceptionLString$ILThrowable() {
+        Throwable cause = new Exception("MYTHROWABLE");
+        int[] updateCounts = new int[] { 1, 2, 3 };
+        BatchUpdateException batchUpdateException = new BatchUpdateException(
+                "MYTESTSTRING1", "MYTESTSTRING2", updateCounts, cause);
+        assertNotNull(batchUpdateException);
+        assertEquals("MYTESTSTRING2", batchUpdateException.getSQLState());
+        assertEquals("MYTESTSTRING1", batchUpdateException.getMessage());
+        assertEquals(0, batchUpdateException.getErrorCode());
+        int[] result = batchUpdateException.getUpdateCounts();
+        for (int i = 0; i < updateCounts.length; i++) {
+            assertEquals(updateCounts[i], result[i]);
+        }
+        assertEquals(cause, batchUpdateException.getCause());
+    }
+
+    /**
+     * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(String, String, int[], Throwable)}
+     * 
+     * @since 1.6
+     */
+    public void testBatchUpdateExceptionLStringLStringILThrowable() {
+        int[] updateCounts = new int[] { 1, 2, 3 };
+        BatchUpdateException batchUpdateException = new BatchUpdateException(
+                null, null, updateCounts, null);
+        assertNotNull(batchUpdateException);
+        assertNull(batchUpdateException.getSQLState());
+        assertNull(batchUpdateException.getMessage());
+        assertEquals(0, batchUpdateException.getErrorCode());
+        assertNull(batchUpdateException.getCause());
+    }
+
+    /**
+     * @tests {@link java.sql.BatchUpdateException#BatchUpdateException(String, String, int, int[], Throwable)}
+     * 
+     * @since 1.6
+     */
+    public void testBatchUpdateExceptionLStringLStringI$ILThrowable() {
+        BatchUpdateException batchUpdateException = new BatchUpdateException(
+                "MYTESTSTRING1", "MYTESTSTRING2", 1, null);
+        assertNotNull(batchUpdateException);
+        assertEquals("MYTESTSTRING2", batchUpdateException.getSQLState());
+        assertEquals("MYTESTSTRING1", batchUpdateException.getMessage());
+        assertEquals(batchUpdateException.getErrorCode(), 1);
+        assertNull(batchUpdateException.getCause());
+    }
 
     /*
      * Method test for getUpdateCounts

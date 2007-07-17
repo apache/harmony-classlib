@@ -29,31 +29,31 @@ import java.sql.SQLException;
  */
 public interface ConnectionPoolDataSource extends CommonDataSource {
 
-	/**
-	 * Create a connection to a database which can then be used as a pooled
-	 * connection.
-	 * 
-	 * @return a PooledConnection which represents the connection to the
-	 *         database
-	 * @throws SQLException
-	 *             if there is a problem accessing the database.
-	 */
-	public PooledConnection getPooledConnection() throws SQLException;
+    /**
+     * Create a connection to a database which can then be used as a pooled
+     * connection.
+     * 
+     * @return a PooledConnection which represents the connection to the
+     *         database
+     * @throws SQLException
+     *             if there is a problem accessing the database.
+     */
+    public PooledConnection getPooledConnection() throws SQLException;
 
-	/**
-	 * Create a connection to a database, using a supplied Username and
-	 * Password, which can then be used as a pooled connection.
-	 * 
-	 * @param theUser
-	 *            a String containing a User Name for the database
-	 * @param thePassword
-	 *            a String containing the Password for the user identified by
-	 *            <code>theUser</code>
-	 * @return a PooledConnection which represents the connection to the
-	 *         database
-	 * @throws SQLException
-	 *             if there is a problem accessing the database.
-	 */
-	public PooledConnection getPooledConnection(String theUser,
-			String thePassword) throws SQLException;
+    /**
+     * Create a connection to a database, using a supplied Username and
+     * Password, which can then be used as a pooled connection.
+     * 
+     * @param theUser
+     *            a String containing a User Name for the database
+     * @param thePassword
+     *            a String containing the Password for the user identified by
+     *            <code>theUser</code>
+     * @return a PooledConnection which represents the connection to the
+     *         database
+     * @throws SQLException
+     *             if there is a problem accessing the database.
+     */
+    public PooledConnection getPooledConnection(String theUser,
+            String thePassword) throws SQLException;
 }

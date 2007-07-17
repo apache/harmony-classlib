@@ -19,9 +19,9 @@ package java.sql;
 
 /**
  * An enumeration to describe the life-time of RowID.
- *  
+ * 
  * @since 1.6
  */
 public enum RowIdLifetime {
-	ROWID_UNSUPPORTED, ROWID_VALID_OTHER, ROWID_VALID_SESSION, ROWID_VALID_TRANSACTION, ROWID_VALID_FOREVER,
+    ROWID_UNSUPPORTED, ROWID_VALID_OTHER, ROWID_VALID_SESSION, ROWID_VALID_TRANSACTION, ROWID_VALID_FOREVER,
 }

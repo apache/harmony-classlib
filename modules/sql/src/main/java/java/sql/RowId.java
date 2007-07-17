@@ -17,16 +17,13 @@
 
 package java.sql;
 
-/**
- * TODO Javadoc
- */
 public interface RowId {
 
-	boolean equals(Object obj);
+    boolean equals(Object obj);
 
-	byte[] getBytes();
+    byte[] getBytes();
 
-	String toString();
+    String toString();
 
-	int hashCode();
+    int hashCode();
 }

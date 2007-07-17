@@ -92,20 +92,20 @@ public class DataTruncationTest extends TestCase {
         } // end for
 
     } // end method testDataTruncationintbooleanbooleanintint
-	
-	/**
-	 * @tests {@link java.sql.DataTruncation#DataTruncation(int, boolean, boolean, int, int, Throwable)}
-	 * 
-	 * @since 1.6
-	 */
-	public void testConstructor_IBBIILjava_lang_Throwable() {
-		Exception e = new Exception("error message");
-		DataTruncation dataTruncation = new DataTruncation(2147483647, true,
-				false, 0, 2147483647, e);
-		assertNotNull(dataTruncation);
-		assertEquals(e, dataTruncation.getCause());
-		assertEquals("error message", dataTruncation.getCause().getMessage());
-	}
+
+    /**
+     * @tests {@link java.sql.DataTruncation#DataTruncation(int, boolean, boolean, int, int, Throwable)}
+     * 
+     * @since 1.6
+     */
+    public void testConstructor_IBBIILjava_lang_Throwable() {
+        Exception e = new Exception("error message");
+        DataTruncation dataTruncation = new DataTruncation(2147483647, true,
+                false, 0, 2147483647, e);
+        assertNotNull(dataTruncation);
+        assertEquals(e, dataTruncation.getCause());
+        assertEquals("error message", dataTruncation.getCause().getMessage());
+    }
 
     /*
      * Method test for getIndex

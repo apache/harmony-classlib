@@ -350,7 +350,7 @@ public class SerialBlobTest extends TestCase {
             // expected
         }
     }
-    
+
     public void test_free() throws Exception {
         MockSerialBlob mockBlob = new MockSerialBlob();
         mockBlob.binaryStream = new ByteArrayOutputStream();
@@ -362,25 +362,24 @@ public class SerialBlobTest extends TestCase {
             // expected
         }
     }
-    
+
     public void testGetBinaryStreamJJ() throws Exception {
         byte[] buf = { 1, 2, 3, 4, 5, 6, 7, 8 };
         SerialBlob serialBlob = new SerialBlob(buf);
-        try{
-            serialBlob.getBinaryStream(0,4);
+        try {
+            serialBlob.getBinaryStream(0, 4);
             fail("Should throw SQLException");
-        }catch(SQLException e){
+        } catch (SQLException e) {
             // expected
         }
-        try{
-            serialBlob.getBinaryStream(3,8);
+        try {
+            serialBlob.getBinaryStream(3, 8);
             fail("Should throw SQLException");
-        }catch(SQLException e){
+        } catch (SQLException e) {
             // expected
         }
-        
-        
-        InputStream is = serialBlob.getBinaryStream(2,4);
+
+        InputStream is = serialBlob.getBinaryStream(2, 4);
         int i = 0;
         while (true) {
             int b = is.read();
@@ -394,7 +393,7 @@ public class SerialBlobTest extends TestCase {
             if (i > 4) {
                 fail("returned input stream contains too much data");
             }
-            assertEquals(buf[2+i++], b);
+            assertEquals(buf[2 + i++], b);
         }
     }
 
@@ -578,10 +577,11 @@ public class SerialBlobTest extends TestCase {
         }
 
         public void free() throws SQLException {
-            
+
         }
 
-        public InputStream getBinaryStream(long pos, long length) throws SQLException {
+        public InputStream getBinaryStream(long pos, long length)
+                throws SQLException {
             return null;
         }
 

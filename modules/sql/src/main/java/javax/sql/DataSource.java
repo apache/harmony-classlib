@@ -50,7 +50,7 @@ import java.sql.Wrapper;
  * loaded via a JNDI lookup process. A driver loaded in this way does not
  * register itself with the <code>DriverManager</code>.
  */
-public interface DataSource extends CommonDataSource, Wrapper{
+public interface DataSource extends CommonDataSource, Wrapper {
 
     /**
      * Creates a connection to the database represented by this DataSource.
@@ -75,5 +75,5 @@ public interface DataSource extends CommonDataSource, Wrapper{
      *             if there is a problem accessing the database.
      */
     public Connection getConnection(String theUsername, String thePassword)
-            throws SQLException;    
+            throws SQLException;
 }

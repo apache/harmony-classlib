@@ -32,7 +32,7 @@ package java.sql;
  * that argument's criteria are dropped from the search.
  * 
  */
-public interface DatabaseMetaData extends Wrapper{
+public interface DatabaseMetaData extends Wrapper {
 
     /**
      * States that it may not be permitted to store <code>NULL</code> values.
@@ -290,9 +290,10 @@ public interface DatabaseMetaData extends Wrapper{
      * States that the version column may be a pseudo column or not.
      */
     public static final int versionColumnUnknown = 0;
-    
+
     /**
-     * States that the method DatabaseMetaData.getSQLStateType may returns  an SQLSTATE value or not.
+     * States that the method DatabaseMetaData.getSQLStateType may returns an
+     * SQLSTATE value or not.
      */
     public static final int sqlStateSQL = 2;
 
@@ -319,8 +320,8 @@ public interface DatabaseMetaData extends Wrapper{
     /**
      * States that the parameter of function is unknown
      */
-    public static final int  functionColumnUnknown = 0;
-    
+    public static final int functionColumnUnknown = 0;
+
     /**
      * States that the parameter or column is a column in a result set
      */
@@ -342,7 +343,8 @@ public interface DatabaseMetaData extends Wrapper{
     public static final int functionNullableUnknown = 2;
 
     /**
-     * States that it is not known whether the function returns a result or a table
+     * States that it is not known whether the function returns a result or a
+     * table
      */
     public static final int functionResultUnknown = 0;
 

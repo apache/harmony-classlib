@@ -157,7 +157,7 @@ public interface Blob {
      *             if an error occurs accessing the Blob
      */
     public void truncate(long len) throws SQLException;
-    
+
     /**
      * TODO Javadoc
      * 
@@ -170,5 +170,6 @@ public interface Blob {
      * 
      * @throws SQLException
      */
-    public InputStream getBinaryStream(long pos, long length) throws SQLException;
+    public InputStream getBinaryStream(long pos, long length)
+            throws SQLException;
 }

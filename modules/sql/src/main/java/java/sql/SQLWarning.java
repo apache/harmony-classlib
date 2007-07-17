@@ -90,7 +90,7 @@ public class SQLWarning extends SQLException implements Serializable {
         }
         throw new Error(Messages.getString("sql.8")); //$NON-NLS-1$
     }
-    
+
     /**
      * Creates an SQLWarning object. The Reason string is set to null, the
      * SQLState string is set to null and the Error Code is set to 0, cause is
