@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EmptyStackException;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import junit.framework.TestCase;
@@ -266,6 +267,27 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(method, aMethod);
         assertEquals(method.getName(), aMethod.getName());
         assertEquals("barTalk", aMethod.getName());
+    }
+    
+    public void test_writeObject_java_util_Collection() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        LinkedList<Integer> list = new LinkedList<Integer>();
+        list.add(10);
+        list.addFirst(2);
+        System.out.println(encoder.getPersistenceDelegate(LinkedList.class));
+
+        encoder.writeObject(list);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        LinkedList<Integer> l = (LinkedList<Integer>) decoder.readObject();
+        assertEquals(list, l);
+        assertEquals(2, l.size());
+        assertEquals(new Integer(10), l.get(1));
+        
     }
 
     // <--

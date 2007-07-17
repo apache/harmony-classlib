@@ -17,287 +17,364 @@
 
 package java.beans;
 
-import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Collection;
+import java.util.Hashtable;
 import java.util.IdentityHashMap;
-import java.util.Vector;
 
-import org.apache.harmony.beans.DefaultPersistenceDelegatesFactory;
-import org.apache.harmony.beans.NullPersistenceDelegate;
-import org.apache.harmony.beans.ObjectNode;
+import org.apache.harmony.beans.*;
 
+/**
+ * The <code>Encoder</code>, together with <code>PersistenceDelegate</code>
+ * s, can encode an object into a series of java statements. By executing these
+ * statements, a new object can be created and it will has the same state as the
+ * original object which has been passed to the encoder. Here "has the same
+ * state" means the two objects are indistinguishable from their public API.
+ * <p>
+ * The <code>Encoder</code> and <code>PersistenceDelegate</code> s do this
+ * by creating copies of the input object and all objects it references. The
+ * copy process continues recursively util every object in the object graph has
+ * its new copy and the new version has the same state as the old version. All
+ * statements used to create those new objects and executed on them during the
+ * process form the result of encoding.
+ * </p>
+ * 
+ */
+@SuppressWarnings("unchecked")
 public class Encoder {
 
-    private ExceptionListener exceptionListener = defaultExListener;
+	private static final Hashtable delegates = new Hashtable();
 
-    private static final ExceptionListener defaultExListener = new DefaultExceptionListener();
+	private static final DefaultPersistenceDelegate defaultPD = new DefaultPersistenceDelegate();
 
-    private static class DefaultExceptionListener implements ExceptionListener {
+	private static final ArrayPersistenceDelegate arrayPD = new ArrayPersistenceDelegate();
 
-        public void exceptionThrown(Exception exception) {
-            System.err.println("Exception during encoding:" + exception); //$NON-NLS-1$
-            System.err.println("Continue...");
+	private static final java_lang_reflect_ProxyPersistenceDelegate proxyPD = new java_lang_reflect_ProxyPersistenceDelegate();
+    
+    private static final NullPersistenceDelegate nullPD = new NullPersistenceDelegate();
+
+	private static final ExceptionListener defaultExListener = new DefaultExceptionListener();
+    
+	private static class DefaultExceptionListener implements ExceptionListener {
+
+		public void exceptionThrown(Exception exception) {
+			System.err.println("Exception during encoding:" + exception); //$NON-NLS-1$
+			System.err.println("Continue...");
+		}
+
+	}
+
+	static {
+		PersistenceDelegate ppd = new PrimitiveWrapperPersistenceDelegate();
+		delegates.put(Boolean.class, ppd);
+		delegates.put(Byte.class, ppd);
+		delegates.put(Character.class, ppd);
+		delegates.put(Double.class, ppd);
+		delegates.put(Float.class, ppd);
+		delegates.put(Integer.class, ppd);
+		delegates.put(Long.class, ppd);
+		delegates.put(Short.class, ppd);
+
+		delegates.put(Class.class, new java_lang_ClassPersistenceDelegate());
+		delegates.put(Field.class, new java_lang_reflect_FieldPersistenceDelegate());
+		delegates.put(Method.class, new java_lang_reflect_MethodPersistenceDelegate());
+		delegates.put(String.class, new java_lang_StringPersistenceDelegate());
+		delegates.put(Proxy.class, new java_lang_reflect_ProxyPersistenceDelegate());
+	}
+
+	private ExceptionListener listener = defaultExListener;
+
+	private IdentityHashMap oldNewMap = new IdentityHashMap();
+
+	/**
+	 * Construct a new encoder.
+	 */
+	public Encoder() {
+		super();
+	}
+
+	/**
+	 * Clear all the new objects have been created.
+	 */
+	void clear() {
+		oldNewMap.clear();
+	}
+
+	/**
+	 * Gets the new copy of the given old object.
+	 * <p>
+	 * Strings are special objects which have their new copy by default, so if
+	 * the old object is a string, it is returned directly.
+	 * </p>
+	 * 
+	 * @param old
+	 *            an old object
+	 * @return the new copy of the given old object, or null if there is not
+	 *         one.
+	 */
+	public Object get(Object old) {
+		if (old == null || old instanceof String) {
+			return old;
+		}
+		return oldNewMap.get(old);
+	}
+
+	/**
+	 * Returns the exception listener of this encoder.
+	 * <p>
+	 * An encoder always have a non-null exception listener. A default exception
+	 * listener is used when the encoder is created.
+	 * </p>
+	 * 
+	 * @return the exception listener of this encoder
+	 */
+	public ExceptionListener getExceptionListener() {
+		return listener;
+	}
+
+	/**
+	 * Returns a <code>PersistenceDelegate</code> for the given class type.
+	 * <p>
+	 * The <code>PersistenceDelegate</code> is determined as following:
+	 * <ol>
+	 * <li>If a <code>PersistenceDelegate</code> has been registered by
+	 * calling <code>setPersistenceDelegate</code> for the given type, it is
+	 * returned.</li>
+	 * <li>If the given type is an array class, a special
+	 * <code>PersistenceDelegate</code> for array types is returned.</li>
+	 * <li>If the given type is a proxy class, a special
+	 * <code>PersistenceDelegate</code> for proxy classes is returned.</li>
+	 * <li><code>Introspector</code> is used to check the bean descriptor
+	 * value "persistenceDelegate". If one is set, it is returned.</li>
+	 * <li>If none of the above applies, the
+	 * <code>DefaultPersistenceDelegate</code> is returned.</li>
+	 * </ol>
+	 * </p>
+	 * 
+	 * @param type
+	 *            a class type
+	 * @return a <code>PersistenceDelegate</code> for the given class type
+	 */
+	public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
+		if (type == null) {
+			return nullPD; // may be return a special PD?
+		}
+
+        // registered delegate
+		PersistenceDelegate registeredPD = (PersistenceDelegate) delegates
+				.get(type);
+		if (registeredPD != null) {
+			return registeredPD;
+		}
+		
+        if (Collection.class.isAssignableFrom(type)) {
+            return new UtilCollectionPersistenceDelegate();
         }
+        
+		if (type.isArray()) {
+			return arrayPD;
+		}
+		if (Proxy.isProxyClass(type)) {
+			return proxyPD;
+		}
 
-    }
+		// check "persistenceDelegate" property
+		try {
+			BeanInfo binfo = Introspector.getBeanInfo(type);
+			if (binfo != null) {
+				PersistenceDelegate pd = (PersistenceDelegate) binfo
+						.getBeanDescriptor().getValue("persistenceDelegate"); //$NON-NLS-1$
+				if (pd != null) {
+					return pd;
+				}
+			}
+		} catch (Exception e) {
+			// ignore
+		}
 
-    private static final HashMap<Class<?>, PersistenceDelegate> persistenceDelegates = new HashMap<Class<?>, PersistenceDelegate>();
+		// default persistence delegate
+		return defaultPD;
+	}
 
-    Vector<Object> roots = new Vector<Object>();
+	private void put(Object old, Object nu) {
+		oldNewMap.put(old, nu);
+	}
 
-    IdentityHashMap<Object, ObjectNode> nodes = new IdentityHashMap<Object, ObjectNode>();
+	/**
+	 * Remvoe the existing new copy of the given old object.
+	 * 
+	 * @param old
+	 *            an old object
+	 * @return the removed new version of the old object, or null if there is
+	 *         not one
+	 */
+	public Object remove(Object old) {
+		return oldNewMap.remove(old);
+	}
 
-    private IdentityHashMap oldNewMap = new IdentityHashMap();
+	/**
+	 * Sets the exception listener of this encoder.
+	 * 
+	 * @param listener
+	 *            the exception listener to set
+	 */
+	public void setExceptionListener(ExceptionListener listener) {
+		if (listener == null) {
+			listener = defaultExListener;
+		}
+		this.listener = listener;
+	}
 
-    public Encoder() {
-        super();
-    }
+	/**
+	 * Register the <code>PersistenceDelegate</code> of the specified type.
+	 * 
+	 * @param type
+	 * @param delegate
+	 */
+	public void setPersistenceDelegate(Class<?> type, PersistenceDelegate delegate) {
+		if (type == null || delegate == null) {
+			throw new NullPointerException();
+		}
+		delegates.put(type, delegate);
+	}
 
-    public Object get(Object oldInstance) {
-        if (oldInstance == null || oldInstance instanceof String
-                || oldInstance == String.class) {
-            return oldInstance;
-        }
+	private Object forceNew(Object old) {
+		if (old == null) {
+			return null;
+		}
+		Object nu = get(old);
+		if (nu != null) {
+			return nu;
+		}
+		writeObject(old);
+		return get(old);
+	}
 
-        return oldNewMap.get(oldInstance);
-    }
+	private Object[] forceNewArray(Object oldArray[]) {
+		if (oldArray == null) {
+			return null;
+		}
+		Object newArray[] = new Object[oldArray.length];
+		for (int i = 0; i < oldArray.length; i++) {
+			newArray[i] = forceNew(oldArray[i]);
+		}
+		return newArray;
+	}
 
-    public Object remove(Object oldInstance) {
-        // TODO - notify references on node deletion
-        if (oldInstance == null) {
-            return null;
-        }
+	/**
+	 * Write an expression of old objects.
+	 * <p>
+	 * The implementation first check the return value of the expression. If
+	 * there exists a new version of the object, simply return.
+	 * </p>
+	 * <p>
+	 * A new expression is created using the new versions of the target and the
+	 * arguments. If any of the old objects do not have its new version yet,
+	 * <code>writeObject()</code> is called to create the new version.
+	 * </p>
+	 * <p>
+	 * The new expression is then executed to obtained a new copy of the old
+	 * return value.
+	 * </p>
+	 * <p>
+	 * Call <code>writeObject()</code> with the old return value, so that more
+	 * statements will be executed on its new version to change it into the same
+	 * state as the old value.
+	 * </p>
+	 * 
+	 * @param oldExp
+	 *            the expression to write. The target, arguments, and return
+	 *            value of the expression are all old objects.
+	 */
+	public void writeExpression(Expression oldExp) {
+		if (oldExp == null) {
+			throw new NullPointerException();
+		}
+		try {
+			// if oldValue exists, noop
+			Object oldValue = oldExp.getValue();
+			if (oldValue == null || get(oldValue) != null) {
+				return;
+			}
 
-        getValue(nodes.remove(oldInstance));
-        return oldNewMap.remove(oldInstance);
-    }
+			// copy to newExp
+			Object newTarget = forceNew(oldExp.getTarget());
+			Object newArgs[] = forceNewArray(oldExp.getArguments());
+			Expression newExp = new Expression(newTarget, oldExp
+					.getMethodName(), newArgs);
 
-    public PersistenceDelegate getPersistenceDelegate(Class<?> type) {
-        PersistenceDelegate result = persistenceDelegates.get(type);
+			// execute newExp
+			Object newValue = null;
+			try {
+				newValue = newExp.getValue();
+			} catch (IndexOutOfBoundsException ex) {
+				// Current Container does not have any component, newVal set
+				// to null
+			}
 
-        if (result == null) {
-            result = DefaultPersistenceDelegatesFactory
-                    .getPersistenceDelegate(type);
-        }
+			// relate oldValue to newValue
+			put(oldValue, newValue);
 
-        return result;
-    }
+			// force same state
+			writeObject(oldValue);
+		} catch (Exception e) {
+			listener.exceptionThrown(new Exception(
+					"failed to write expression: " + oldExp, e)); //$NON-NLS-1$
+		}
+	}
 
-    public void setPersistenceDelegate(Class<?> type,
-            PersistenceDelegate persistenceDelegate) {
-        if (type == null || persistenceDelegate == null) {
-            throw new NullPointerException();
-        }
-        persistenceDelegates.put(type, persistenceDelegate);
-    }
+	/**
+	 * Encode the given object into a series of statements and expressions.
+	 * <p>
+	 * The implementation simply finds the <code>PersistenceDelegate</code>
+	 * responsible for the object's class, and delegate the call to it.
+	 * </p>
+	 * 
+	 * @param o
+	 *            the object to encode
+	 */
+	protected void writeObject(Object o) {
+		if (o == null) {
+			return;
+		}
+		Class type = o.getClass();
+		getPersistenceDelegate(type).writeObject(o, this);
+	}
 
-    protected void writeObject(Object object) {
-        roots.add(object);
-        if (object == null) {
-            return;
-        }
-        doWriteObject(object);
-    }
+	/**
+	 * Write a statement of old objects.
+	 * <p>
+	 * A new statement is created by using the new versions of the target and
+	 * arguments. If any of the objects do not have its new copy yet,
+	 * <code>writeObject()</code> is called to create one.
+	 * </p>
+	 * <p>
+	 * The new statement is then executed to change the state of the new object.
+	 * </p>
+	 * 
+	 * @param oldStat
+	 *            a statement of old objects
+	 */
+	public void writeStatement(Statement oldStat) {
+		if (oldStat == null) {
+			throw new NullPointerException();
+		}
+		try {
+			// copy to newStat
+			Object newTarget = forceNew(oldStat.getTarget());
+			Object newArgs[] = forceNewArray(oldStat.getArguments());
+			Statement newStat = new Statement(newTarget, oldStat
+					.getMethodName(), newArgs);
 
-    void doWriteObject(Object object) {
-        PersistenceDelegate pd = (object != null) ? getPersistenceDelegate(object
-                .getClass())
-                : new NullPersistenceDelegate();
+			// execute newStat
+			newStat.execute();
+		} catch (Exception e) {
+			listener.exceptionThrown(new Exception(
+					"failed to write statement: " + oldStat, e)); //$NON-NLS-1$
+		}
+	}
 
-        if (pd == null) {
-            pd = new DefaultPersistenceDelegate();
-        }
-
-        pd.writeObject(object, this);
-        if (isString(object.getClass())) {
-            nodes.put(object, new ObjectNode(pd.instantiate(object, this)));
-        }
-    }
-
-    private Object forceNew(Object old) {
-        if (old == null) {
-            return null;
-        }
-        Object nu = get(old);
-        if (nu != null) {
-            return nu;
-        }
-        writeObject(old);
-        return get(old);
-    }
-
-    private Object[] forceNewArray(Object oldArray[]) {
-        if (oldArray == null) {
-            return null;
-        }
-        Object newArray[] = new Object[oldArray.length];
-        for (int i = 0; i < oldArray.length; i++) {
-            newArray[i] = forceNew(oldArray[i]);
-        }
-        return newArray;
-    }
-
-    public void writeStatement(Statement oldStm) {
-        if (oldStm == null) {
-            throw new NullPointerException();
-        }
-        try {
-            // FIXME add target processing here
-            Object newTarget = forceNew(oldStm.getTarget());
-            Object newArgs[] = forceNewArray(oldStm.getArguments());
-            Statement statement = new Statement(newTarget, oldStm
-                    .getMethodName(), newArgs);
-            statement.execute();
-        } catch (Exception e) {
-            getExceptionListener().exceptionThrown(e);
-        }
-    }
-
-    private void put(Object old, Object nu) {
-        oldNewMap.put(old, nu);
-    }
-
-    public void writeExpression(Expression oldExp) {
-        if (oldExp == null) {
-            throw new NullPointerException();
-        }
-        try {
-            Object oldValue = oldExp.getValue();
-            if (oldValue == null || get(oldValue) != null) {
-                return;
-            }
-
-            // copy to newExp
-            Object newTarget = forceNew(oldExp.getTarget());
-            Object newArgs[] = forceNewArray(oldExp.getArguments());
-            Expression newExp = new Expression(newTarget, oldExp
-                    .getMethodName(), newArgs);
-
-            // execute newExp
-            Object newValue = null;
-            try {
-                newValue = newExp.getValue();
-            } catch (IndexOutOfBoundsException ex) {
-                // Current Container does not have any component, newVal set
-                // to null
-            }
-
-            // relate oldValue to newValue
-            put(oldValue, newValue);
-
-            // force same state
-            writeObject(oldValue);
-        } catch (Exception e) {
-            // TODO - remove written args
-            getExceptionListener().exceptionThrown(e);
-        }
-    }
-
-    public void setExceptionListener(ExceptionListener exceptionListener) {
-        if (exceptionListener == null) {
-            exceptionListener = defaultExListener;
-        }
-        this.exceptionListener = exceptionListener;
-    }
-
-    public ExceptionListener getExceptionListener() {
-        return exceptionListener;
-    }
-
-    private Object write(Object oldInstance) throws Exception {
-        if (oldInstance == null) {
-            return null;
-        }
-
-        ObjectNode node = nodes.get(oldInstance);
-
-        if (node == null) {
-            doWriteObject(oldInstance);
-            node = nodes.get(oldInstance);
-        } else {
-            node.addReference();
-        }
-
-        return node.getObjectValue();
-    }
-
-    Object[] write(Object[] oldInstances) throws Exception {
-        if (oldInstances != null) {
-            Object[] newInstances = new Object[oldInstances.length];
-
-            for (int i = 0; i < oldInstances.length; ++i) {
-                newInstances[i] = write(oldInstances[i]);
-            }
-            return newInstances;
-        }
-        return null;
-    }
-
-    /*
-     * @param node node to return the value for @return tentative object value
-     * for given node
-     */
-    private Object getValue(ObjectNode node) {
-        if (node != null) {
-            try {
-                Object result = node.getObjectValue();
-
-                return result;
-            } catch (Exception e) {
-                getExceptionListener().exceptionThrown(e);
-            }
-        }
-        return null;
-    }
-
-    static boolean isNull(Class<?> type) {
-        return type == null;
-    }
-
-    static boolean isPrimitive(Class<?> type) {
-        return type == Boolean.class || type == Byte.class
-                || type == Character.class || type == Double.class
-                || type == Float.class || type == Integer.class
-                || type == Long.class || type == Short.class;
-    }
-
-    static boolean isString(Class<?> type) {
-        return type == String.class;
-
-    }
-
-    static boolean isClass(Class<?> type) {
-        return type == Class.class;
-    }
-
-    static boolean isArray(Class<?> type) {
-        return type.isArray();
-    }
-
-    static String getPrimitiveName(Class<?> type) {
-        String result = null;
-
-        if (type == Boolean.class) {
-            result = "boolean"; //$NON-NLS-1$
-        } else if (type == Byte.class) {
-            result = "byte"; //$NON-NLS-1$
-        } else if (type == Character.class) {
-            result = "char"; //$NON-NLS-1$
-        } else if (type == Double.class) {
-            result = "double"; //$NON-NLS-1$
-        } else if (type == Float.class) {
-            result = "float"; //$NON-NLS-1$
-        } else if (type == Integer.class) {
-            result = "int"; //$NON-NLS-1$
-        } else if (type == Long.class) {
-            result = "long"; //$NON-NLS-1$
-        } else if (type == Short.class) {
-            result = "short"; //$NON-NLS-1$
-        } else if (type == String.class) {
-            result = "string"; //$NON-NLS-1$
-        } else if (type == Class.class) {
-            result = "class"; //$NON-NLS-1$
-        }
-
-        return result;
-    }
 }
+
