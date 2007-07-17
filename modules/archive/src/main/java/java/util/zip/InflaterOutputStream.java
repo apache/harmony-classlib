@@ -156,6 +156,11 @@ public class InflaterOutputStream extends FilterOutputStream {
      *             if the stream has been closed or some I/O error occurs.
      * @throws ZipException
      *             if a zip exception occurs.
+     * @throws NullPointerException
+     *             if the byte array is null.
+     * @throws IndexOutOfBoundsException
+     *             if the off less than zero or len less than zero or off + len
+     *             is greater than the byte array length.
      */
     @Override
     public void write(byte[] b, int off, int len) throws IOException,
