@@ -413,6 +413,22 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertEquals(String.class, ipd.getIndexedPropertyType());
     }
 
+    private class MyClass {
+        private int[] a;
+
+        public void setA(int v, int i) {
+            a[i] = v;
+        }
+
+        public void setA(int[] a) {
+            this.a = a;
+        }
+
+        public int[] getA() {
+            return a;
+        }
+    }
+    
     /*
      * Class under test for void IndexedPropertyDescriptor(String, Class,
      * String, String, String, String)
@@ -457,7 +473,59 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertFalse(ipd.isExpert());
         assertFalse(ipd.isHidden());
         assertFalse(ipd.isPreferred());
-
+        
+        //empty method name
+        new IndexedPropertyDescriptor(
+                propertyName, beanClass, "get" + propertyName, "set"
+                        + propertyName, "", "set"
+                        + propertyName);
+        
+        try {
+            new IndexedPropertyDescriptor("a", MyClass.class, "getA", "setA",
+                    "", "setA");
+            fail("Shoule throw exception");
+        } catch (IntrospectionException e) {
+        	// expected
+        }
+        
+        try {
+            new IndexedPropertyDescriptor(propertyName, beanClass, "",
+                    "set" + propertyName, "get" + propertyName, "set"
+                            + propertyName);
+            fail("Shoule throw exception");
+        } catch (IntrospectionException e) {
+        	// expected
+        }
+        try {
+            new IndexedPropertyDescriptor(propertyName, beanClass, "get"
+                    + propertyName, "", "get" + propertyName, "set"
+                    + propertyName);
+            fail("Shoule throw exception");
+        } catch (IntrospectionException e) {
+        	// expected
+        }
+        try {
+            new IndexedPropertyDescriptor(propertyName, beanClass, "get"
+                    + propertyName, "set" + propertyName, "get" + propertyName,
+                    "");
+            fail("Shoule throw exception");
+        } catch (IntrospectionException e) {
+        	// expected
+        }
+        
+        //null method name
+        new IndexedPropertyDescriptor(
+                propertyName, beanClass, "get" + propertyName, "set"
+                        + propertyName, null, "set" + propertyName);
+        new IndexedPropertyDescriptor(
+                propertyName, beanClass, null, "set" + propertyName, "get"
+                        + propertyName, "set" + propertyName);
+        new IndexedPropertyDescriptor(
+                propertyName, beanClass, "get" + propertyName, null, "get"
+                        + propertyName, "set" + propertyName);
+        new IndexedPropertyDescriptor(
+                propertyName, beanClass, "get" + propertyName, "set"
+                        + propertyName, "get" + propertyName, null);
     }
 
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_propNull()
@@ -534,6 +602,16 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertNotNull(ipd.getReadMethod());
         assertNull(ipd.getWriteMethod());
         assertEquals(String.class, ipd.getIndexedPropertyType());
+        
+        new IndexedPropertyDescriptor(
+                propertyName, beanClass, "get" + propertyName, "set"+propertyName, "", "set" + propertyName);
+        
+        try{
+            new IndexedPropertyDescriptor(
+                propertyName, beanClass, "get" + propertyName, "set"+propertyName, "get" + propertyName, "");
+        fail();
+        }catch(Exception e){
+        }
     }
 
     public void testIndexedPropertyDescriptorStringClassStringStringStringString_IndexedReadMethodNull()
@@ -987,7 +1065,17 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertEquals(propertyName, ipd.getName());
         assertEquals(String[].class, ipd.getPropertyType());
         assertEquals(String.class, ipd.getIndexedPropertyType());
-
+        
+        indexedReadMethod = beanClass.getMethod("get" + anotherProp,
+                new Class[] { Integer.TYPE, Integer.TYPE });
+        try {
+            new IndexedPropertyDescriptor(
+                    propertyName, readMethod, writeMethod, indexedReadMethod,
+                    indexedWriteMethod);
+            fail("should throw IntrosecptionException");
+        } catch (IntrospectionException e) {
+        	// expected
+        }
     }
 
     public void testSetIndexedReadMethod() throws SecurityException,

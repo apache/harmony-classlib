@@ -38,8 +38,40 @@ public class MockJavaBean implements Serializable {
     private String[] propertyFive;
 
     private Integer[] propertySix;
+    
+    private String[] propertySeven;
 
     private String protectedProp;
+    
+    private String propertyWithoutSet;
+    
+    private boolean booleanProperty;
+    
+    private int propertyWithoutGet;
+    
+    private String propertyWithDifferentGetSet;
+    
+    private int propertyWithInvalidGet;
+    
+    private int propertyWithoutPublicGet;
+    
+    private int propertyWithGet1Param;
+
+    private int propertyWithIs1Param;
+    
+    private int propertyWithSet2Param;
+    
+    private int propertyWithIsGet;
+    
+    private int propertyWithVoidGet;
+
+    public Void getPropertyWithVoidGet() {
+        return null;
+    }
+
+    public void setPropertyWithVoidGet(int propertyWithVoidGet) {
+        this.propertyWithVoidGet = propertyWithVoidGet;
+    }
 
     public MockJavaBean() {
         this.beanName = getClass().getName();
@@ -47,6 +79,34 @@ public class MockJavaBean implements Serializable {
 
     public MockJavaBean(String beanName) {
         this.beanName = beanName;
+    }
+    
+    public String getXXX(){
+        return propertyThree;
+    }
+    
+    public String getPropertyWithDifferentGetSet(){
+        return propertyWithDifferentGetSet;
+    }
+    
+    public void setPropertyWithDifferentGetSet(int value){
+        this.propertyWithDifferentGetSet = String.valueOf(value);
+    }
+    
+    public String getPropertyWithoutSet(){
+        return propertyWithoutSet;
+    }
+    
+    public void setPropertyWithoutGet(int value){
+        this.propertyWithoutGet = value;
+    }
+    
+    public String getPropertyWithInvalidGet(){
+        return String.valueOf(propertyWithInvalidGet);
+    }
+    
+    public void setPropertyWithInvalidGet(String value){
+        propertyWithInvalidGet = Integer.valueOf(value);
     }
 
     /**
@@ -78,7 +138,7 @@ public class MockJavaBean implements Serializable {
     public void setPropertyOne(String propertyOne) {
         this.propertyOne = propertyOne;
     }
-
+    
     /**
      * @return Returns the propertyTwo.
      */
@@ -135,6 +195,10 @@ public class MockJavaBean implements Serializable {
     }
 
     public String getPropertyFour(int i) {
+        return getPropertyFour()[i];
+    }
+    
+    public String getPropertyFive(int i, int j) {
         return getPropertyFour()[i];
     }
 
@@ -227,5 +291,85 @@ public class MockJavaBean implements Serializable {
     public void removeMockPropertyChangeListener(
             MockPropertyChangeListener listener) {
 
+    }
+    
+    int isPropertyWithoutPublicGet() {
+        return propertyWithoutPublicGet;
+    }
+
+    int getPropertyWithoutPublicGet() {
+        return propertyWithoutPublicGet;
+    }
+
+    public void setPropertyWithoutPublicGet(int propertyWithoutPublicGet) {
+        this.propertyWithoutPublicGet = propertyWithoutPublicGet;
+    }
+    
+    public int isPropertyWithIs1Param(int i) {
+        return propertyWithIs1Param;
+    }
+    
+    public int getPropertyWithIs1Param() {
+        return propertyWithIs1Param;
+    }
+
+    public void setPropertyWithIs1Param(int value) {
+        this.propertyWithIs1Param = value;
+    }
+
+    public int getPropertyWithGet1Param(int i) {
+        return propertyWithGet1Param;
+    }
+
+    public void setPropertyWithGet1Param(int propertyWithGet1Param) {
+        this.propertyWithGet1Param = propertyWithGet1Param;
+    }
+
+    public int getPropertyWithSet2Param() {
+        return propertyWithSet2Param;
+    }
+
+    public void setPropertyWithSet2Param(int propertyWithSet2Param, int j) {
+        this.propertyWithSet2Param = propertyWithSet2Param;
+    }
+
+    public int isPropertyWithIsGet() {
+        return propertyWithIsGet;
+    }
+    
+    public int getPropertyWithIsGet() {
+        return propertyWithIsGet;
+    }
+
+    public void setPropertyWithIsGet(int propertyWithIsGet) {
+        this.propertyWithIsGet = propertyWithIsGet;
+    }
+
+    public boolean isBooleanProperty() {
+        return booleanProperty;
+    }
+    
+    public boolean getBooleanProperty() {
+        return booleanProperty;
+    }
+
+    public void setbooleanProperty(boolean booleanProperty) {
+        this.booleanProperty = booleanProperty;
+    }
+    
+    public Integer getPropertySeven(int i){
+        return Integer.valueOf(propertySeven[i]);
+    }
+    
+    public void setPropertySeven(int i, Integer I){
+        propertySeven[i] = String.valueOf(I);
+    }
+
+    public String[] getPropertySeven() {
+        return propertySeven;
+    }
+
+    public void setPropertySeven(String[] propertySeven) {
+        this.propertySeven = propertySeven;
     }
 }
