@@ -669,13 +669,17 @@ public class BasicSliderUI extends SliderUI {
     protected void calculateTrackBuffer() {
         if (slider.getPaintLabels()) {
             if ((slider.getOrientation() == JSlider.HORIZONTAL)) {
-                trackBuffer = getWidthOfHighValueLabel() > getWidthOfLowValueLabel()
-                                                ? getWidthOfHighValueLabel() / 2
-                                                : getWidthOfLowValueLabel() / 2;
+                int widthOfHighValueLabel = getWidthOfHighValueLabel();
+                int widthOfLowValueLabel = getWidthOfLowValueLabel();
+                trackBuffer = widthOfHighValueLabel > widthOfLowValueLabel 
+                                                ? widthOfHighValueLabel / 2
+                                                : widthOfLowValueLabel / 2;
             } else {
-                trackBuffer = getHeightOfHighValueLabel() > getHeightOfLowValueLabel()
-                                                ? getHeightOfHighValueLabel() / 2
-                                                : getHeightOfLowValueLabel() / 2;
+                int heightOfHighValueLabel = getHeightOfHighValueLabel();
+                int heightOfLowValueLabel = getHeightOfLowValueLabel();
+                trackBuffer = heightOfHighValueLabel > heightOfLowValueLabel
+                                                ? heightOfHighValueLabel / 2
+                                                : heightOfLowValueLabel / 2;
             }
         } else {
             trackBuffer = (slider.getOrientation() == JSlider.HORIZONTAL)
@@ -789,19 +793,27 @@ public class BasicSliderUI extends SliderUI {
     }
 
     protected int getWidthOfHighValueLabel() {
-        return getHighestValueLabel() == null ? 0 : getHighestValueLabel().getWidth();
+        Component label = getHighestValueLabel();
+
+        return label == null? 0: label.getWidth();
     }
 
-    protected int getWidthOfLowValueLabel() {
-        return getLowestValueLabel() == null ? 0 : getLowestValueLabel().getWidth();
+    protected int getWidthOfLowValueLabel() {        
+        Component label = getLowestValueLabel();
+
+        return label == null? 0: label.getWidth();
     }
 
     protected int getHeightOfHighValueLabel() {
-        return getHighestValueLabel() == null ? 0 : getHighestValueLabel().getHeight();
+        Component label = getHighestValueLabel();
+
+        return label == null? 0: label.getHeight();
     }
 
-    protected int getHeightOfLowValueLabel() {
-        return getLowestValueLabel() == null ? 0 : getLowestValueLabel().getHeight();
+    protected int getHeightOfLowValueLabel() {        
+        Component label = getLowestValueLabel();
+
+        return label == null? 0: label.getHeight();
     }
 
     protected Component getLowestValueLabel() {
