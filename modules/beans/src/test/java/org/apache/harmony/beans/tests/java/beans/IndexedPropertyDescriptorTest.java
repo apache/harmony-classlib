@@ -19,6 +19,7 @@ package org.apache.harmony.beans.tests.java.beans;
 
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
@@ -1378,6 +1379,69 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             fail("Should throw IntrospectionException");
         } catch (IntrospectionException e) {
         }
+        
+        ipd = new IndexedPropertyDescriptor("data", NormalBean.class);
+        ipd.setIndexedReadMethod(null);
+        try {
+            ipd.setIndexedWriteMethod(NormalBean.class.getMethod("setData", Integer.TYPE, Integer.TYPE));
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+    }
+    
+    public void testSetIndexedMethodNullNull() throws Exception {
+        try {
+            IndexedPropertyDescriptor i = new IndexedPropertyDescriptor("a",
+                    NormalBean.class, "getData", "setData", null,
+                    "setData");
+            i.setIndexedWriteMethod(null);
+            fail("should throw IntrospectionException.");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+        try {
+            IndexedPropertyDescriptor i = new IndexedPropertyDescriptor("a",
+                    NormalBean.class, "getData", "setData",
+                    "getData", null);
+            i.setIndexedReadMethod(null);
+            fail("should throw IntrospectionException.");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+    }
+
+    
+    public void testSetIndexedReadMethodFollowANullValue() throws Exception {
+        try {
+            IndexedPropertyDescriptor i = new IndexedPropertyDescriptor("a",
+                    DummyBean.class, "readMethod", "writeMethod", null,
+                    "indexedReadMethod");
+            Method irm = DummyBean.class.getDeclaredMethod("indexedReadMethod",
+                    Integer.TYPE);
+            i.setIndexedReadMethod(irm);
+            fail("should throw IntrospectionException.");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+    }
+
+    static class DummyBean {
+
+        public int[] readMehtod() {
+            return null;
+        }
+
+        public void writeMethod(int[] a) {
+        }
+
+        public double indexedReadMethod(int i) {
+            return 0;
+        }
+
+        public void indexedWriteMethod(int i, int j) {
+        }
+
     }
 
     class NotJavaBean {
@@ -1407,5 +1471,114 @@ public class IndexedPropertyDescriptorTest extends TestCase {
             this.propertyOne[i] = value;
         }
 
+    }
+    
+    //Regression Test
+    class InCompatibleGetterSetterBean
+    {
+        private Object[] data = new Object[10];
+        public void setData(Object[] data) {
+            this.data = data;
+        }
+        public Object[] getDate() {
+            return data;
+        }
+        public void setData(int index, Object o) {
+            this.data[index] = o;
+        }
+    }
+    
+    public void testInCompatibleGetterSetterBean() {
+        try {
+            new IndexedPropertyDescriptor("data",
+                    InCompatibleGetterSetterBean.class);
+            fail("should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+            // expected
+        }
+    }
+    
+    class NormalBean {
+        private Object[] data = new Object[10];
+
+        public Object[] getData() {
+            return data;
+        }
+
+        public void setData(Object[] data) {
+            this.data = data;
+        }
+
+        public void setData(int index, Object o) {
+            data[index] = o;
+        }
+        
+        public void setData(int index, int value) {
+            // do nothing
+        }
+
+        public Object getData(int index) {
+            return data[index];
+        }
+    }
+    
+    public void testEquals_superClass() throws Exception {
+        PropertyDescriptor propertyDescriptor = new PropertyDescriptor("data",
+                NormalBean.class);
+        IndexedPropertyDescriptor indexedPropertyDescriptor = new IndexedPropertyDescriptor(
+                "data", NormalBean.class);
+        assertFalse(indexedPropertyDescriptor.equals(propertyDescriptor));
+        assertTrue(propertyDescriptor.equals(indexedPropertyDescriptor));
+    }
+    
+    public void testHashCode() throws Exception {
+        String propertyName = "PropertyFour";
+        Class<MockJavaBean> beanClass = MockJavaBean.class;
+
+        Method readMethod = beanClass.getMethod("get" + propertyName,
+                (Class[]) null);
+        Method writeMethod = beanClass.getMethod("set" + propertyName,
+                new Class[] { String[].class });
+        Method indexedReadMethod = beanClass.getMethod("get" + propertyName,
+                new Class[] { Integer.TYPE });
+        Method indexedWriteMethod = beanClass.getMethod("set" + propertyName,
+                new Class[] { Integer.TYPE, String.class });
+
+        IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor(
+                propertyName, readMethod, writeMethod, indexedReadMethod,
+                indexedWriteMethod);
+
+        IndexedPropertyDescriptor ipd2 = new IndexedPropertyDescriptor(
+                propertyName, beanClass);
+
+        assertEquals(ipd, ipd2);
+        assertEquals(ipd.hashCode(), ipd2.hashCode());
+    }
+    
+    public void testIncompatibleGetterAndIndexedGetterBean() {
+        try {
+            new IndexedPropertyDescriptor("data",
+                    IncompatibleGetterAndIndexedGetterBean.class);
+            fail("should throw IntrospectionException");
+
+        } catch (IntrospectionException e) {
+            //expected
+        }
+    }
+
+    private class IncompatibleGetterAndIndexedGetterBean {
+        private int[] data;
+
+        public int getData() {
+            return data[0];
+        }
+
+        public int getData(int index) {
+            return data[index];
+        }
+        
+        public void setData(int index, int data) {
+            this.data[index] = data;
+        }
     }
 }

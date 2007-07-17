@@ -18,8 +18,8 @@
 package java.beans;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import org.apache.harmony.beans.internal.nls.Messages;
+
+import org.apache.harmony.beans.BeansUtils;
 
 public class IndexedPropertyDescriptor extends PropertyDescriptor {
 
@@ -145,107 +145,92 @@ public class IndexedPropertyDescriptor extends PropertyDescriptor {
                 .concat(initialUpperCase(propertyName)));
     }
 
+    /**
+     * Sets the indexed getter as the specified method.
+     * 
+     * @param indexedGetter
+     *            the specified indexed getter.
+     * @throws IntrospectionException
+     */
     public void setIndexedReadMethod(Method indexedGetter)
             throws IntrospectionException {
-        if (indexedGetter != null) {
-            int modifiers = indexedGetter.getModifiers();
-            Class<?>[] parameterTypes;
-            Class<?> returnType;
-            Class<?> indexedPropertyType;
-
-            if (!Modifier.isPublic(modifiers)) {
-                throw new IntrospectionException(Messages.getString("beans.21")); //$NON-NLS-1$
-            }
-            parameterTypes = indexedGetter.getParameterTypes();
-            if (parameterTypes.length != 1) {
-                throw new IntrospectionException(Messages.getString("beans.22")); //$NON-NLS-1$
-            }
-            if (!parameterTypes[0].equals(int.class)) {
-                throw new IntrospectionException(Messages.getString("beans.23")); //$NON-NLS-1$
-            }
-            returnType = indexedGetter.getReturnType();
-            indexedPropertyType = getIndexedPropertyType();
-            if ((indexedPropertyType != null)
-                    && !returnType.equals(indexedPropertyType)) {
-                throw new IntrospectionException(Messages.getString("beans.24")); //$NON-NLS-1$
-            }
-        }
-        this.indexedGetter = indexedGetter;
+        this.internalSetIndexedReadMethod(indexedGetter);
     }
 
+    /**
+     * Sets the indexed setter as the specified method.
+     * 
+     * @param indexedSetter
+     *            the specified indexed setter.
+     * @throws IntrospectionException
+     */
     public void setIndexedWriteMethod(Method indexedSetter)
             throws IntrospectionException {
-        if (indexedSetter != null) {
-            int modifiers = indexedSetter.getModifiers();
-            Class<?>[] parameterTypes;
-            Class<?> firstParameterType;
-            Class<?> secondParameterType;
-            Class<?> propType;
-
-            if (!Modifier.isPublic(modifiers)) {
-                throw new IntrospectionException(Messages.getString("beans.25")); //$NON-NLS-1$
-            }
-            parameterTypes = indexedSetter.getParameterTypes();
-            if (parameterTypes.length != 2) {
-                throw new IntrospectionException(Messages.getString("beans.26")); //$NON-NLS-1$
-            }
-            firstParameterType = parameterTypes[0];
-            if (!firstParameterType.equals(int.class)) {
-                throw new IntrospectionException(Messages.getString("beans.27")); //$NON-NLS-1$
-            }
-            secondParameterType = parameterTypes[1];
-            propType = getIndexedPropertyType();
-            if (propType != null && !secondParameterType.equals(propType)) {
-                throw new IntrospectionException(Messages.getString("beans.28")); //$NON-NLS-1$
-            }
-        }
-        this.indexedSetter = indexedSetter;
+        this.internalSetIndexedWriteMethod(indexedSetter, false);
     }
 
+    /**
+     * Obtains the indexed setter.
+     * 
+     * @return the indexed setter.
+     */
     public Method getIndexedWriteMethod() {
         return indexedSetter;
     }
 
+    /**
+     * Obtains the indexed getter.
+     * 
+     * @return the indexed getter.
+     */
     public Method getIndexedReadMethod() {
         return indexedGetter;
     }
 
+    /**
+     * Determines if this <code>IndexedPropertyDescriptor</code> is equal to
+     * the specified object. Two <code>IndexedPropertyDescriptor</code> s are
+     * equal if the reader, indexed reader, writer, indexed writer, property
+     * types, indexed property type, property editor and flags are equal.
+     * 
+     * @param obj
+     * @return true if this indexed property descriptor is equal to the
+     *         specified object.
+     */
     @Override
     public boolean equals(Object obj) {
-        boolean result = super.equals(obj);
-
-        if (result) {
-            IndexedPropertyDescriptor pd = (IndexedPropertyDescriptor) obj;
-
-            if (indexedGetter != null) {
-                result = indexedGetter.equals(pd.getIndexedReadMethod());
-            } else if (result && indexedGetter == null) {
-                result = pd.getIndexedReadMethod() == null;
-            }
-
-            if (result) {
-                if (indexedSetter != null) {
-                    result = indexedSetter.equals(pd.getIndexedWriteMethod());
-                } else if (indexedSetter == null) {
-                    result = pd.getIndexedWriteMethod() == null;
-                }
-            }
+        if (!(obj instanceof IndexedPropertyDescriptor)) {
+            return false;
         }
 
-        return result;
+        IndexedPropertyDescriptor other = (IndexedPropertyDescriptor) obj;
+
+        return (super.equals(other)
+                && (indexedPropertyType == null ? other.indexedPropertyType == null
+                        : indexedPropertyType.equals(other.indexedPropertyType))
+                && (indexedGetter == null ? other.indexedGetter == null
+                        : indexedGetter.equals(other.indexedGetter)) && (indexedSetter == null ? other.indexedSetter == null
+                : indexedSetter.equals(other.indexedSetter)));
     }
+    
+    /**
+     * HashCode of the IndexedPropertyDescriptor
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode() + BeansUtils.getHashCode(indexedPropertyType)
+                + BeansUtils.getHashCode(indexedGetter)
+                + BeansUtils.getHashCode(indexedSetter);
+    }
+    
 
+    /**
+     * Obtains the Class object of the indexed property type.
+     * 
+     * @return the Class object of the indexed property type.
+     */
     public Class<?> getIndexedPropertyType() {
-        Class<?> result = null;
-
-        if (indexedGetter != null) {
-            result = indexedGetter.getReturnType();
-        } else if (indexedSetter != null) {
-            Class<?>[] parameterTypes = indexedSetter.getParameterTypes();
-
-            result = parameterTypes[1];
-        }
-        return result;
+        return indexedPropertyType;
     }
 
     private void setIndexedReadMethod(Class beanClass, String indexedGetterName)
