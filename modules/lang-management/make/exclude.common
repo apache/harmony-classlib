@@ -1,1 +1,3 @@
 org/apache/harmony/lang/management/tests/java/lang/management/ThreadMXBeanTest.java
+org/apache/harmony/lang/management/tests/java/lang/management/ManagementFactoryTest.java
+
