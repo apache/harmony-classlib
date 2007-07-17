@@ -18,6 +18,7 @@
 package javax.naming.ldap;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.harmony.security.asn1.ASN1Boolean;
@@ -61,7 +62,12 @@ public final class SortControl extends BasicControl {
         public void getValues(Object object, Object values[]) {
             SortKey sk = (SortKey) object;
 
-            values[0] = sk.getAttributeID().getBytes();
+            try {
+                values[0] = sk.getAttributeID().getBytes("utf-8");
+            } catch (UnsupportedEncodingException e) {
+                //FIXME: is this right thing to do?
+                values[0] = sk.getAttributeID().getBytes();
+            }
             values[1] = sk.getMatchingRuleID();
             values[2] = Boolean.valueOf(!sk.isAscending());
         }
@@ -93,7 +99,11 @@ public final class SortControl extends BasicControl {
         super(OID, criticality, null);
         ArrayList<SortKey> list = new ArrayList<SortKey>();
         for (int i = 0; i < sortBy.length; i++) {
-            list.add(new SortKey(sortBy[i], true, null));
+            if(sortBy[i] != null){
+                list.add(new SortKey(sortBy[i], true, null));
+            }else{
+                list.add(new SortKey("", true, null));
+            }
         }
         value = ASN1_SORTKEYLIST.encode(list);
     }
