@@ -167,15 +167,19 @@ public class BasicSliderUI extends SliderUI {
         private Point mousePoint = new Point();
 
         public TrackListener() {
+            
             trackTimer = new Timer(150, new ActionListener() {
+            
                 public void actionPerformed(final ActionEvent e) {
+                
                     Point current = new Point(thumbRect.x, thumbRect.y);
                     Point next = new Point(currentMouseX, currentMouseY);
                     int dir = calculateDirection(current, next);
-
-                    if (!thumbRect.contains(currentMouseX, currentMouseY)) {
+                    //Changed in H-4480
+                    if (shouldScroll(dir)) {
                         scrollDueToClickInTrack(dir);
                     }
+                    
                 }
             });
         }
@@ -232,24 +236,38 @@ public class BasicSliderUI extends SliderUI {
         }
 
         public boolean shouldScroll(final int direction) {
+            // The class has been unused in TrackListener before H4480
+            // Now the behaviour has been changed and this method used in timer
             if (slider.getOrientation() == JSlider.HORIZONTAL) {
+              
                 if (direction == POSITIVE_SCROLL) {
-                    return mousePoint.x - (thumbRect.x + getThumbSize().width / 2) > 1;
+                
+                    return mousePoint.x
+                            - (thumbRect.x + computeIncrement() + getThumbSize().width) > 1;
                 }
+                
                 if (direction == NEGATIVE_SCROLL) {
-                    return mousePoint.x - (thumbRect.x + getThumbSize().width / 2) < -1;
+                
+                    return mousePoint.x - (thumbRect.x - computeIncrement()) < -1;
                 }
+                
             } else {
+               
                 if (direction == POSITIVE_SCROLL) {
-                    return mousePoint.y - (thumbRect.y - getThumbSize().height / 2) > 1;
+                
+                    return mousePoint.y
+                            - (thumbRect.y + computeIncrement() + getThumbSize().height / 2) > 1;
                 }
+                
                 if (direction == NEGATIVE_SCROLL) {
-                    return mousePoint.y - (thumbRect.y - getThumbSize().height / 2) < -1;
+                
+                    return mousePoint.y
+                            - (thumbRect.y + computeIncrement() + getThumbSize().height / 2) < -1;
                 }
             }
             return false;
         }
-
+        
         @Override
         public void mouseDragged(final MouseEvent e) {
             mousePoint = e.getPoint();
@@ -669,13 +687,17 @@ public class BasicSliderUI extends SliderUI {
     protected void calculateTrackBuffer() {
         if (slider.getPaintLabels()) {
             if ((slider.getOrientation() == JSlider.HORIZONTAL)) {
-                trackBuffer = getWidthOfHighValueLabel() > getWidthOfLowValueLabel()
-                                                ? getWidthOfHighValueLabel() / 2
-                                                : getWidthOfLowValueLabel() / 2;
+                int widthOfHighValueLabel = getWidthOfHighValueLabel();
+                int widthOfLowValueLabel = getWidthOfLowValueLabel();
+                trackBuffer = widthOfHighValueLabel > widthOfLowValueLabel 
+                                                ? widthOfHighValueLabel / 2
+                                                : widthOfLowValueLabel / 2;
             } else {
-                trackBuffer = getHeightOfHighValueLabel() > getHeightOfLowValueLabel()
-                                                ? getHeightOfHighValueLabel() / 2
-                                                : getHeightOfLowValueLabel() / 2;
+                int heightOfHighValueLabel = getHeightOfHighValueLabel();
+                int heightOfLowValueLabel = getHeightOfLowValueLabel();
+                trackBuffer = heightOfHighValueLabel > heightOfLowValueLabel
+                                                ? heightOfHighValueLabel / 2
+                                                : heightOfLowValueLabel / 2;
             }
         } else {
             trackBuffer = (slider.getOrientation() == JSlider.HORIZONTAL)
@@ -789,19 +811,27 @@ public class BasicSliderUI extends SliderUI {
     }
 
     protected int getWidthOfHighValueLabel() {
-        return getHighestValueLabel() == null ? 0 : getHighestValueLabel().getWidth();
+        Component label = getHighestValueLabel();
+
+        return label == null? 0: label.getWidth();
     }
 
-    protected int getWidthOfLowValueLabel() {
-        return getLowestValueLabel() == null ? 0 : getLowestValueLabel().getWidth();
+    protected int getWidthOfLowValueLabel() {        
+        Component label = getLowestValueLabel();
+
+        return label == null? 0: label.getWidth();
     }
 
     protected int getHeightOfHighValueLabel() {
-        return getHighestValueLabel() == null ? 0 : getHighestValueLabel().getHeight();
+        Component label = getHighestValueLabel();
+
+        return label == null? 0: label.getHeight();
     }
 
-    protected int getHeightOfLowValueLabel() {
-        return getLowestValueLabel() == null ? 0 : getLowestValueLabel().getHeight();
+    protected int getHeightOfLowValueLabel() {        
+        Component label = getLowestValueLabel();
+
+        return label == null? 0: label.getHeight();
     }
 
     protected Component getLowestValueLabel() {
@@ -1027,18 +1057,25 @@ public class BasicSliderUI extends SliderUI {
         thumbRect.setLocation(x, y);
     }
 
-    public void scrollByBlock(final int direction) {
-        int increment;
+    int computeIncrement() {
+        
         if (slider.getMajorTickSpacing() != 0) {
-            increment = slider.getMajorTickSpacing();
+            
+            return slider.getMajorTickSpacing();
+            
         } else {
-            increment = (slider.getMaximum() - slider.getMinimum()) / 10;
+            
+            int increment = (slider.getMaximum() - slider.getMinimum()) / 10;
             if (increment <= 0) {
                 increment = 1;
             }
+            return increment;
         }
+    }
 
-        scrollByIncrement(direction, increment);
+    public void scrollByBlock(final int direction) {
+        //Changed in H-4480
+        scrollByIncrement(direction, computeIncrement());
     }
 
     public void scrollByUnit(final int direction) {

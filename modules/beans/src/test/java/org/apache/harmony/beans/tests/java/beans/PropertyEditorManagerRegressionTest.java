@@ -105,4 +105,13 @@ public class PropertyEditorManagerRegressionTest extends TestCase {
             //expected.
         }
     }
+    String[] defaultSearchPath;
+    
+    public void setUp(){
+        defaultSearchPath = PropertyEditorManager.getEditorSearchPath();
+    }
+    
+    public void tearDown(){
+        PropertyEditorManager.setEditorSearchPath(defaultSearchPath);
+    }
 }

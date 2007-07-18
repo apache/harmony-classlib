@@ -232,8 +232,75 @@ public class PropertyDescriptorTest extends TestCase {
         assertFalse(pd.isExpert());
         assertFalse(pd.isHidden());
         assertFalse(pd.isPreferred());
-    }
+        
+        propertyName = "propertyWithoutGet";
+        try{
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        }catch(IntrospectionException e){
+        }
+        
+        try{
+            new PropertyDescriptor(propertyName, beanClass, "getPropertyWithoutGet", "setPropertyWithoutGet");
+            fail("Should throw IntrospectionException");
+        }catch(IntrospectionException e){
+        }
+        
+        propertyName = "propertyWithoutSet";
+        beanClass = MockJavaBean.class;
+        try{
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        }catch(IntrospectionException e){
+        }
+        
+        propertyName = "propertyWithDifferentGetSet";
+        try{
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        }catch(IntrospectionException e){
+        }
+        
+        propertyName = "propertyWithInvalidGet";
+            new PropertyDescriptor(propertyName, beanClass);
+        
+        propertyName = "propertyWithoutPublicGet";
+        try{
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        }catch(IntrospectionException e){
+        }
+        
+        propertyName = "propertyWithGet1Param";
+        try{
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        }catch(IntrospectionException e){
+        }
+        
+        propertyName = "propertyWithIs1Param";
+        PropertyDescriptor pd2 = new PropertyDescriptor(propertyName, beanClass);
+        assertEquals("getPropertyWithIs1Param", pd2.getReadMethod().getName());
 
+        propertyName = "propertyWithSet2Param";
+        try {
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+        }
+
+        propertyName = "propertyWithIsGet";
+        PropertyDescriptor pd3 = new PropertyDescriptor(propertyName, beanClass);
+        assertEquals("isPropertyWithIsGet", pd3.getReadMethod().getName());
+
+        propertyName = "propertyWithVoidGet";
+        try {
+            new PropertyDescriptor(propertyName, beanClass);
+            fail("Should throw IntrospectionException");
+        } catch (IntrospectionException e) {
+        }
+    }
+    
     public void testPropertyDescriptorStringClass_PropertyNameCapital()
             throws IntrospectionException {
         String propertyName = "PropertyOne";
@@ -369,18 +436,23 @@ public class PropertyDescriptorTest extends TestCase {
         assertFalse(pd.isExpert());
         assertFalse(pd.isHidden());
         assertFalse(pd.isPreferred());
+        
+        try{
+            pd = new PropertyDescriptor(propertyName, beanClass,
+                "", "set" + propertyName);
+            fail("should throw exception");
+        }catch(IntrospectionException e){
+        }
     }
 
     public void testPropertyDescriptorStringClassStringString_ReadMethodInvalid()
             throws IntrospectionException {
-        String propertyName = "PropertyTwo";
+        String propertyName = "booleanProperty";
         Class<MockJavaBean> beanClass = MockJavaBean.class;
-        try {
-            new PropertyDescriptor(propertyName, beanClass, "getXX", "set"
-                    + propertyName);
-            fail("Should throw IntrospectionException.");
-        } catch (IntrospectionException e) {
-        }
+        PropertyDescriptor pd = new PropertyDescriptor(propertyName, beanClass, "getXX", "set"
+                + propertyName);
+        assertEquals("getBooleanProperty", pd.getReadMethod().getName());
+        assertEquals("setbooleanProperty", pd.getWriteMethod().getName());
     }
 
     public void testPropertyDescriptorStringClassStringString_WriteMethodNull()
