@@ -926,7 +926,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * @throws IllegalArgumentException if the child is null
      * @throws IllegalStateException if the child is not valid to remove
      */
-    public boolean remove(Object child, boolean setChildBC) {
+    protected boolean remove(Object child, boolean setChildBC) {
         if (child == null) {
             throw new IllegalArgumentException("null child");
         }

@@ -46,6 +46,7 @@
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
+        <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
     </target>
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
@@ -337,7 +338,11 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            
         <download-one-file src="${servlet-api.url}" dest="${servlet-api.jar}"
                            md5="${servlet-api.md5}" />
-
+                           
+    <mkdir dir="${dejavu-fonts.dir}" />
+    <download-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}"
+                           md5="${dejavu-fonts.md5}" />
+    <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
     </target>
 
     <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">

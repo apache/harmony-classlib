@@ -84,6 +84,32 @@ public class SortControlTest extends TestCase {
         assertEquals("30 10 30 0e 04 04 70 65 70 65 80 03 6c 65 6f 81 01 ff",
                 toHexString(sc.getEncodedValue()));
     }
+    
+    public void testEncodedValueOfSortControlNull() throws Exception{
+        String[] sk = {"pepe", null, "", "haha" };
+
+        SortControl sc = new SortControl(sk, true);
+        assertEquals("30 18 30 06 04 04 70 65 70 65 30 02 04 00 30 02 04 00 30 06 04 04 68 61 68 61",
+                toHexString(sc.getEncodedValue()));
+        
+        String[] sk2 = {"pepe", "", "haha" };
+        sc = new SortControl(sk2, true);
+        assertEquals("30 14 30 06 04 04 70 65 70 65 30 02 04 00 30 06 04 04 68 61 68 61",
+                toHexString(sc.getEncodedValue()));
+        
+        SortKey[] sk3 = {new SortKey("pepe", false, "haha"), null, new SortKey("", true, "haha2"), new SortKey("haah", true, "pepe")};
+        try{
+            sc = new SortControl(sk3, true);
+            fail("should throw NPE");
+        }catch(NullPointerException e){
+        }
+        
+        SortKey[] sk4 = {new SortKey("pepe", false, "haha"), new SortKey("", true, "haha2"), new SortKey("haah", true, "pepe")};
+        sc = new SortControl(sk4, true);
+        assertEquals("30 2a 30 0f 04 04 70 65 70 65 80 04 68 61 68 61 81 01 ff 30 09 04 00 80 05 68 61 68 61 32 30 0c 04 04 68 61 61 68 80 04 70 65 70 65",
+                toHexString(sc.getEncodedValue()));
+
+    }
 
     /**
      * <p>

@@ -286,6 +286,17 @@ ${built.files.list}
                 <include name="rowset.properties" />
             </fileset>
         </copy>
+        
+        <mkdir dir="${hy.jdk}/jre/lib/fonts" />
+        <copy todir="${hy.jdk}/jre/lib/fonts">
+            <fileset dir="${dejavu-fonts.fonts.dir}">
+                <include name="DejaVuSans.ttf" />
+                <include name="DejaVuSans-*.ttf" />
+                <exclude name="DejaVuSans-ExtraLight.ttf" />
+                <include name="DejaVuSerif.ttf" />
+                <include name="DejaVuSerif-*.ttf" />
+            </fileset>
+        </copy>
     </target>
 
 

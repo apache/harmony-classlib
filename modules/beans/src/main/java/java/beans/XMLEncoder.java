@@ -15,48 +15,818 @@
  *  limitations under the License.
  */
 
+
 package java.beans;
 
-import java.io.IOException;
+import java.awt.SystemColor;
+import java.awt.font.TextAttribute;
 import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Vector;
+import java.util.List;
 
-import org.apache.harmony.beans.ObjectNode;
-import org.apache.harmony.beans.internal.nls.Messages;
-
+/**
+ * <code>XMLEncoder</code> exnteds <code>Encoder</code> to write out the
+ * encoded statements and expressions in xml format. The xml can be read by
+ * <code>XMLDecoder</code> later to restore objects and their states.
+ * <p>
+ * The API is similar to <code>ObjectOutputStream</code>.
+ * </p>
+ * 
+ */
 public class XMLEncoder extends Encoder {
 
-    private OutputStream out;
+	/*
+	 * Every object written by the encoder has a record.
+	 */
+	private static class Record {
+		boolean born = false;
 
-    private Object owner;
+		// The expression by which the object is created or obtained.
+		Expression exp = null;
 
-    private final Vector<ObjectNode> printed = new Vector<ObjectNode>();
+		// Id of the object, if it is referenced more than once.
+		String id = null;
 
-    public XMLEncoder(OutputStream out) {
-        this.out = out;
-        this.owner = null;
-    }
+		// Count of the references of the object.
+		int refCount = 0;
 
-    @Override
-    public void writeObject(Object object) {
-        super.writeObject(object);
-    }
+		// A list of statements that execute on the object.
+		ArrayList stats = new ArrayList();
+	}
 
-    public void setOwner(Object owner) {
-        this.owner = owner;
-    }
+	private static final int INDENT_UNIT = 1;
 
-    public Object getOwner() {
-        return owner;
-    }
-    
-    @Override
-    public void writeExpression(Expression oldExp) {
+	private static final boolean isStaticConstantsSupported = true;
 
+	// the main record of all root objects
+	private ArrayList flushPending = new ArrayList();
+
+	// the record of root objects with a void tag
+	private ArrayList flushPendingStat = new ArrayList();
+
+	// keep the pre-required objects for each root object
+	private ArrayList flushPrePending = new ArrayList();
+
+	private boolean hasXmlHeader = false;
+
+	private int idSerialNo = 0;
+
+	/*
+	 * if any expression or statement references owner, it is set true in method
+	 * recordStatement() or recordExpressions(), and, at the first time
+	 * flushObject() meets an owner object, it calls the flushOwner() method and
+	 * then set needOwner to false, so that all succeeding flushing of owner
+	 * will call flushExpression() or flushStatement() normally, which will get
+	 * a reference of the owner property.
+	 */
+	private boolean needOwner = false;
+
+	private PrintWriter out;
+
+	private Object owner = null;
+
+	private IdentityHashMap records = new IdentityHashMap();
+
+	private boolean writingObject = false;
+
+	/**
+	 * Construct a <code>XMLEncoder</code>.
+	 * 
+	 * @param out
+	 *            the output stream where xml is writtern to
+	 */
+	public XMLEncoder(OutputStream out) {
+		if (null != out) {
+            try {
+                this.out = new PrintWriter(
+                        new OutputStreamWriter(out, "UTF-8"), true);
+            } catch (UnsupportedEncodingException e) {
+                // never occur
+                e.printStackTrace();
+            }
+        }
+	}
+
+	/**
+	 * Call <code>flush()</code> first, then write out xml footer and close
+	 * the underlying output stream.
+	 */
+	public void close() {
+		flush();
+		out.println("</java>");
+		out.close();
+	}
+
+	private StringBuffer decapitalize(String s) {
+		StringBuffer buf = new StringBuffer(s);
+		buf.setCharAt(0, Character.toLowerCase(buf.charAt(0)));
+		return buf;
+	}
+
+	/**
+	 * Writes out all objects since last flush to the output stream.
+	 * <p>
+	 * The implementation write the xml header first if it has not been
+	 * writtern. Then all pending objects since last flush are writtern.
+	 * </p>
+	 */
+	public void flush() {
+		synchronized (this) {
+			// write xml header
+			if (!hasXmlHeader) {
+				out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+				out.println("<java version=\""
+						+ System.getProperty("java.version")
+						+ "\" class=\"java.beans.XMLDecoder\">");
+				hasXmlHeader = true;
+			}
+
+			// preprocess pending objects
+			for (Iterator iter = flushPending.iterator(); iter.hasNext();) {
+				Object o = iter.next();
+				Record rec = (Record) records.get(o);
+				if (rec != null) {
+					preprocess(o, rec);
+				}
+			}
+
+			// flush pending objects
+			for (Iterator iter = flushPending.iterator(); iter.hasNext();) {
+				Object o = iter.next();
+				flushObject(o, INDENT_UNIT);
+				// remove flushed obj
+				iter.remove();
+			}
+
+			// clear statement records
+			records.clear();
+			flushPendingStat.clear();
+
+			// remove all old->new mappings
+			super.clear();
+		}
+	}
+
+	private void flushBasicObject(Object obj, int indent) {
+		if( obj instanceof Proxy) {
+			return;
+		}
+		flushIndent(indent);
+		if (obj == null) {
+			out.println("<null />");
+		} else if (obj instanceof String) {
+			Record rec = (Record) records.get(obj);
+			if( null != rec) {
+				if (flushPendingStat.contains(obj)) {
+					flushExpression(obj, rec, indent - 3, true);
+				} else {
+					flushExpression(obj, rec, indent - 3, false);
+				}
+				return;
+			}
+			out.print("<string>");
+			flushString((String) obj);
+			out.println("</string>");
+		} else if (obj instanceof Class) {
+			out.print("<class>");
+			out.print(((Class) obj).getName());
+			out.println("</class>");
+		} else if (obj instanceof Boolean) {
+			out.print("<boolean>");
+			out.print(obj);
+			out.println("</boolean>");
+		} else if (obj instanceof Byte) {
+			out.print("<byte>");
+			out.print(obj);
+			out.println("</byte>");
+		} else if (obj instanceof Character) {
+			out.print("<char>");
+			out.print(obj);
+			out.println("</char>");
+		} else if (obj instanceof Double) {
+			out.print("<double>");
+			out.print(obj);
+			out.println("</double>");
+		} else if (obj instanceof Float) {
+			out.print("<float>");
+			out.print(obj);
+			out.println("</float>");
+		} else if (obj instanceof Integer) {
+			out.print("<int>");
+			out.print(obj);
+			out.println("</int>");
+		} else if (obj instanceof Long) {
+			out.print("<long>");
+			out.print(obj);
+			out.println("</long>");
+		} else if (obj instanceof Short) {
+			out.print("<short>");
+			out.print(obj);
+			out.println("</short>");
+		} else {
+			getExceptionListener().exceptionThrown(
+					new Exception("Unknown basic object: " + obj));
+		}
+	}
+
+	private void flushExpression(Object obj, Record rec, int indent,
+			boolean asStatement) {
+		// not first time, use idref
+		if (rec.id != null) {
+			flushIndent(indent);
+			out.print("<object idref=\"");
+			out.print(rec.id);
+			out.println("\" />");
+			return;
+		}
+
+		// generate id, if necessary
+		if (rec.refCount > 1) {
+			rec.id = nameForClass(obj.getClass()) + idSerialNo;
+			idSerialNo++;
+		}
+
+		// flush
+		Statement stat = asStatement ? new Statement(rec.exp.getTarget(),
+				rec.exp.getMethodName(), rec.exp.getArguments()) : rec.exp;
+		flushStatement(stat, rec.id, rec.stats, indent);
+	}
+
+	private void flushIndent(int indent) {
+		for (int i = 0; i < indent; i++) {
+			out.print(" ");
+		}
+	}
+
+	private void flushObject(Object obj, int indent) {
+		Record rec = (Record) records.get(obj);
+		if (rec == null && !isBasicType(obj))
+			return;
+
+		if (obj == owner && this.needOwner) {
+			flushOwner(obj, rec, indent);
+			this.needOwner = false;
+			return;
+		}
+
+		if (isBasicType(obj)) {
+			flushBasicObject(obj, indent);
+		} else {
+			if (flushPendingStat.contains(obj)) {
+				flushExpression(obj, rec, indent, true);
+			} else {
+				flushExpression(obj, rec, indent, false);
+			}
+		}
+	}
+
+	private void flushOwner(Object obj, Record rec, int indent) {
+		if (rec.refCount > 1) {
+			rec.id = nameForClass(obj.getClass()) + idSerialNo;
+			idSerialNo++;
+		}
+
+		flushIndent(indent);
+		String tagName = "void";
+		out.print("<");
+		out.print(tagName);
+
+		// id attribute
+		if (rec.id != null) {
+			out.print(" id=\"");
+			out.print(rec.id);
+			out.print("\"");
+		}
+
+		out.print(" property=\"owner\"");
+
+		// open tag, end
+		if (rec.exp.getArguments().length == 0 && rec.stats.isEmpty()) {
+			out.println("/>");
+			return;
+		}
+		out.println(">");
+
+		// arguments
+		for (int i = 0; i < rec.exp.getArguments().length; i++) {
+			flushObject(rec.exp.getArguments()[i], indent + INDENT_UNIT);
+		}
+
+		// sub statements
+		flushSubStatements(rec.stats, indent);
+
+		// close tag
+		flushIndent(indent);
+		out.print("</");
+		out.print(tagName);
+		out.println(">");
+	}
+
+	private void flushStatArray(Statement stat, String id, List subStats,
+			int indent) {
+		// open tag, begin
+		flushIndent(indent);
+		out.print("<array");
+
+		// id attribute
+		if (id != null) {
+			out.print(" id=\"");
+			out.print(id);
+			out.print("\"");
+		}
+
+		// class & length
+		out.print(" class=\"");
+		out.print(((Class) stat.getArguments()[0]).getName());
+		out.print("\" length=\"");
+		out.print(stat.getArguments()[1]);
+		out.print("\"");
+
+		// open tag, end
+		if (subStats.isEmpty()) {
+			out.println("/>");
+			return;
+		}
+		out.println(">");
+
+		// sub statements
+		flushSubStatements(subStats, indent);
+
+		// close tag
+		flushIndent(indent);
+		out.println("</array>");
+	}
+
+	private void flushStatCommon(Statement stat, String id, List subStats,
+			int indent) {
+		// open tag, begin
+		flushIndent(indent);
+		String tagName = stat instanceof Expression ? "object" : "void";
+		out.print("<");
+		out.print(tagName);
+
+		// id attribute
+		if (id != null) {
+			out.print(" id=\"");
+			out.print(id);
+			out.print("\"");
+		}
+
+		// special class attribute
+		if (stat.getTarget() instanceof Class) {
+			out.print(" class=\"");
+			out.print(((Class) stat.getTarget()).getName());
+			out.print("\"");
+		}
+
+		// method attribute
+		if (!"new".equals(stat.getMethodName())) {
+			out.print(" method=\"");
+			out.print(stat.getMethodName());
+			out.print("\"");
+		}
+
+		// open tag, end
+		if (stat.getArguments().length == 0 && subStats.isEmpty()) {
+			out.println("/>");
+			return;
+		}
+		out.println(">");
+
+		// arguments
+		for (int i = 0; i < stat.getArguments().length; i++) {
+			flushObject(stat.getArguments()[i], indent + INDENT_UNIT);
+		}
+
+		// sub statements
+		flushSubStatements(subStats, indent);
+
+		// close tag
+		flushIndent(indent);
+		out.print("</");
+		out.print(tagName);
+		out.println(">");
+	}
+
+	private void flushStatement(Statement stat, String id, List subStats,
+			int indent) {
+		Object target = stat.getTarget();
+		String method = stat.getMethodName();
+		Object args[] = stat.getArguments();
+
+		// special case for array
+		if (Array.class == target && "newInstance".equals(method)) {
+			flushStatArray(stat, id, subStats, indent);
+			return;
+		}
+		// special case for get(int) and set(int, Object)
+		if (isGetArrayStat(target, method, args)
+				|| isSetArrayStat(target, method, args)) {
+			flushStatIndexed(stat, id, subStats, indent);
+			return;
+		}
+		// special case for getProperty() and setProperty(Object)
+		if (isGetPropertyStat(method, args) || isSetPropertyStat(method, args)) {
+			flushStatGetterSetter(stat, id, subStats, indent);
+			return;
+		}
+
+		if (isStaticConstantsSupported
+				&& "getField".equals(stat.getMethodName())) {
+			flushStatField(stat, id, subStats, indent);
+			return;
+		}
+
+		// common case
+		flushStatCommon(stat, id, subStats, indent);
+	}
+
+	private void flushStatField(Statement stat, String id, List subStats,
+			int indent) {
+		// open tag, begin
+		flushIndent(indent);
+		String tagName = "object";
+		out.print("<");
+		out.print(tagName);
+
+		// id attribute
+		if (id != null) {
+			out.print(" id=\"");
+			out.print(id);
+			out.print("\"");
+		}
+
+		// special class attribute
+		if (stat.getTarget() instanceof Class) {
+			out.print(" class=\"");
+			out.print(((Class) stat.getTarget()).getName());
+			out.print("\"");
+		}
+
+		Object target = stat.getTarget();
+		if(target == SystemColor.class || target == TextAttribute.class) {
+			out.print(" field=\"");
+			out.print(stat.getArguments()[0]);
+			out.print("\"");
+			out.println("/>");
+
+		}
+		else {
+			out.print(" method=\"");
+			out.print(stat.getMethodName());
+			out.print("\"");
+			out.println(">");
+			Object fieldName = (String) stat.getArguments()[0];
+			flushObject(fieldName, indent + INDENT_UNIT);
+			flushIndent(indent);
+			out.println("</object>");
+		}
+	}
+
+	private void flushStatGetterSetter(Statement stat, String id,
+			List subStats, int indent) {
+		// open tag, begin
+		flushIndent(indent);
+		String tagName = stat instanceof Expression ? "object" : "void";
+		out.print("<");
+		out.print(tagName);
+
+		// id attribute
+		if (id != null) {
+			out.print(" id=\"");
+			out.print(id);
+			out.print("\"");
+		}
+
+		// special class attribute
+		if (stat.getTarget() instanceof Class) {
+			out.print(" class=\"");
+			out.print(((Class) stat.getTarget()).getName());
+			out.print("\"");
+		}
+
+		// property attribute
+		out.print(" property=\"");
+		out.print(decapitalize(stat.getMethodName().substring(3)));
+		out.print("\"");
+
+		// open tag, end
+		if (stat.getArguments().length == 0 && subStats.isEmpty()) {
+			out.println("/>");
+			return;
+		}
+		out.println(">");
+
+		// arguments
+		for (int i = 0; i < stat.getArguments().length; i++) {
+			flushObject(stat.getArguments()[i], indent + INDENT_UNIT);
+		}
+
+		// sub statements
+		flushSubStatements(subStats, indent);
+
+		// close tag
+		flushIndent(indent);
+		out.print("</");
+		out.print(tagName);
+		out.println(">");
+	}
+
+	private void flushStatIndexed(Statement stat, String id, List subStats,
+			int indent) {
+		// open tag, begin
+		flushIndent(indent);
+		String tagName = stat instanceof Expression ? "object" : "void";
+		out.print("<");
+		out.print(tagName);
+
+		// id attribute
+		if (id != null) {
+			out.print(" id=\"");
+			out.print(id);
+			out.print("\"");
+		}
+
+		// special class attribute
+		if (stat.getTarget() instanceof Class) {
+			out.print(" class=\"");
+			out.print(((Class) stat.getTarget()).getName());
+			out.print("\"");
+		}
+
+		// index attribute
+		out.print(" index=\"");
+		out.print(stat.getArguments()[0]);
+		out.print("\"");
+
+		// open tag, end
+		if (stat.getArguments().length == 1 && subStats.isEmpty()) {
+			out.println("/>");
+			return;
+		}
+		out.println(">");
+
+		// arguments
+		for (int i = 1; i < stat.getArguments().length; i++) {
+			flushObject(stat.getArguments()[i], indent + INDENT_UNIT);
+		}
+
+		// sub statements
+		flushSubStatements(subStats, indent);
+
+		// close tag
+		flushIndent(indent);
+		out.print("</");
+		out.print(tagName);
+		out.println(">");
+	}
+
+	private void flushString(String s) {
+		char c;
+		for (int i = 0; i < s.length(); i++) {
+			c = s.charAt(i);
+			if (c == '<') {
+				out.print("&lt;");
+			} else if (c == '>') {
+				out.print("&gt;");
+			} else if (c == '&') {
+				out.print("&amp;");
+			} else if (c == '\'') {
+				out.print("&apos;");
+			} else if (c == '"') {
+				out.print("&quot;");
+			} else {
+				out.print(c);
+			}
+		}
+	}
+
+	private void flushSubStatements(List subStats, int indent) {
+		for (int i = 0; i < subStats.size(); i++) {
+			Statement subStat = (Statement) subStats.get(i);
+			try {
+				if (subStat instanceof Expression) {
+					Expression subExp = (Expression) subStat;
+					Object obj = subExp.getValue();
+					Record rec = (Record) records.get(obj);
+					flushExpression(obj, rec, indent + INDENT_UNIT, true);
+				} else {
+					flushStatement(subStat, null, Collections.EMPTY_LIST,
+							indent + INDENT_UNIT);
+				}
+			} catch (Exception e) {
+				// should not happen
+				getExceptionListener().exceptionThrown(e);
+			}
+		}
+	}
+
+	/**
+	 * Returns the owner of this encoder.
+	 * 
+	 * @return the owner of this encoder
+	 */
+	public Object getOwner() {
+		return owner;
+	}
+
+	private boolean isBasicType(Object value) {
+		return value == null || value instanceof Boolean
+				|| value instanceof Byte || value instanceof Character
+				|| value instanceof Class || value instanceof Double
+				|| value instanceof Float || value instanceof Integer
+				|| value instanceof Long || value instanceof Short
+				|| value instanceof String || value instanceof Proxy;
+	}
+
+	private boolean isGetArrayStat(Object target, String method, Object[] args) {
+		return ("get".equals(method) && args.length == 1
+				&& args[0] instanceof Integer && target.getClass().isArray());
+	}
+
+	private boolean isGetPropertyStat(String method, Object[] args) {
+		return (method.startsWith("get") && method.length() > 3 && args.length == 0);
+	}
+
+	private boolean isSetArrayStat(Object target, String method, Object[] args) {
+		return ("set".equals(method) && args.length == 2
+				&& args[0] instanceof Integer && target.getClass().isArray());
+	}
+
+	private boolean isSetPropertyStat(String method, Object[] args) {
+		return (method.startsWith("set") && method.length() > 3 && args.length == 1);
+	}
+
+	private String nameForClass(Class c) {
+		if (c.isArray()) {
+			return nameForClass(c.getComponentType()) + "Array";
+		} else {
+			String name = c.getName();
+			int i = name.lastIndexOf('.');
+			if (-1 == i) {
+				return name;
+			} else {
+				return name.substring(i + 1);
+			}
+		}
+	}
+
+	/*
+	 * The preprocess removes unused statements and counts references of every
+	 * object
+	 */
+	private void preprocess(Object obj, Record rec) {
+		if (isBasicType(obj) && writingObject) {
+			return;
+		}
+
+		// count reference
+		rec.refCount++;
+
+		// do things only one time for each record
+		if (rec.refCount > 1) {
+			return;
+		}
+
+		// deal with 'field' property
+		try {
+			if (isStaticConstantsSupported
+					&& "getField".equals(((Record) records.get(rec.exp
+							.getTarget())).exp.getMethodName())) {
+				records.remove(obj);
+			}
+		} catch (NullPointerException e) {
+			// do nothing, safely
+		}
+
+		// do it recursively
+		if (null != rec.exp) {
+			Object args[] = rec.exp.getArguments();
+			for (int i = 0; i < args.length; i++) {
+				Record argRec = (Record) records.get(args[i]);
+				if (argRec != null) {
+					preprocess(args[i], argRec);
+				}
+			}
+		}
+
+		for (Iterator iter = rec.stats.iterator(); iter.hasNext();) {
+			Statement subStat = (Statement) iter.next();
+			if (subStat instanceof Expression) {
+				try {
+					Expression subExp = (Expression) subStat;
+					Record subRec = (Record) records.get(subExp.getValue());
+					if (subRec == null || subRec.exp == null
+							|| subRec.exp != subExp) {
+						iter.remove();
+						continue;
+					}
+					preprocess(subExp.getValue(), subRec);
+					if (subRec.stats.isEmpty()) {
+						if (isGetArrayStat(subExp.getTarget(), subExp
+								.getMethodName(), subExp.getArguments())
+								|| isGetPropertyStat(subExp.getMethodName(),
+										subExp.getArguments())) {
+							iter.remove();
+							continue;
+						}
+					}
+				} catch (Exception e) {
+					getExceptionListener().exceptionThrown(e);
+					iter.remove();
+				}
+				continue;
+			}
+
+			Object subStatArgs[] = subStat.getArguments();
+			for (int i = 0; i < subStatArgs.length; i++) {
+				Record argRec = (Record) records.get(subStatArgs[i]);
+				if (argRec != null) {
+					preprocess(subStatArgs[i], argRec);
+				}
+			}
+		}
+	}
+
+	private void recordExpression(Object value, Expression exp) {
+		// record how a new object is created or obtained
+		Record rec = (Record) records.get(value);
+		if (rec == null) {
+			rec = new Record();
+			records.put(value, rec);
+		}
+
+		if (rec.exp == null) {
+			// it is generated by its sub stats
+			for (Iterator iter = rec.stats.iterator(); iter.hasNext();) {
+				Statement stat = (Statement) iter.next();
+				try {
+					if (stat instanceof Expression) {
+						Expression expr = (Expression) stat;
+						Object subObj = expr.getValue();
+						// if(expr.getTarget().getClass() ==
+						// Class.class.getClass())
+						flushPrePending.add(value);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+		rec.exp = exp;
+
+		// deal with 'owner' property
+		if (value == owner && owner != null) {
+			needOwner = true;
+		}
+
+		// also record as a statement
+		recordStatement(exp);
+	}
+
+	private void recordStatement(Statement stat) {
+		// deal with 'owner' property
+		if (stat.getTarget() == owner && owner != null) {
+			needOwner = true;
+		}
+
+		// record how a statement affects the target object
+		Record rec = (Record) records.get(stat.getTarget());
+		if (rec == null) {
+			rec = new Record();
+			records.put(stat.getTarget(), rec);
+		}
+		rec.stats.add(stat);
+	}
+
+	/**
+	 * Sets the owner of this encoder.
+	 * 
+	 * @param owner
+	 *            the owner to set
+	 */
+	public void setOwner(Object owner) {
+		this.owner = owner;
+	}
+
+	/**
+	 * Records the expression so that it can be writtern out later, then calls
+	 * super implementation.
+	 */
+	public void writeExpression(Expression oldExp) {
+	    boolean oldWritingObject = writingObject;
+	    writingObject = true;
+		// get expression value
 		Object oldValue = null;
 		try {
 			oldValue = oldExp.getValue();
@@ -67,551 +837,66 @@ public class XMLEncoder extends Encoder {
 									+ oldExp, e));
 			return;
 		}
-		
-		if (get(oldValue) != null) {
+
+		// check existence
+		if (get(oldValue) != null && (!(oldValue instanceof String) || oldWritingObject)) {
 			return;
 		}
-		
-		Object oldTarget = oldExp.getTarget();
 
-		ObjectNode valueNode = null;
-		Class<?> valueType = null;
-
-		// write target
-		if (!Statement.isPDConstructor(oldExp)
-				&& !Statement.isStaticMethodCall(oldExp)) {
-			ObjectNode parent;
-
-			// XXX investigate
-			// write(oldTarget);
-			parent = nodes.get(oldTarget);
-			if (parent != null) {
-				parent.addExpression(oldExp);
-			}
+		// record how the object is obtained
+		if (!isBasicType(oldValue) || (oldValue instanceof String && !oldWritingObject)) {
+			recordExpression(oldValue, oldExp);
 		}
 
-		// write value
-		valueType = oldValue.getClass();
-		valueNode = nodes.get(oldValue);
-
-		if (valueNode == null) {
-
-			if (isNull(valueType) || isPrimitive(valueType)
-					|| isString(valueType)) {
-				valueNode = new ObjectNode(oldExp);
-			} else {
-				try {
-					write((Object[])oldExp.getArguments());
-				} catch (Exception e) {
-					getExceptionListener().exceptionThrown(e);
-				}
-				valueNode = new ObjectNode(oldExp, nodes);
-			}
-
-			nodes.put(oldValue, valueNode);
-		} else if (oldExp.getMethodName().equals("new")) { //$NON-NLS-1$
-			valueNode.addReference();
-		} else {
-			// XXX the information about referencedExpressions is not
-			// being used by anyone
-			// node.addReferencedExpression(oldExp);
-		}
 		super.writeExpression(oldExp);
+		writingObject = oldWritingObject;
 	}
 
-    @Override
-    public void writeStatement(Statement oldStm) {
-        try {
-            super.writeStatement(oldStm);
-        } catch (NullPointerException ignore) {
-            // ignore exception like RI does
-            ignore.printStackTrace();
-        }
-    }
+	/**
+	 * Records the object so that it can be writtern out later, then calls super
+	 * implementation.
+	 */
+	public void writeObject(Object o) {
+		synchronized (this) {
+			boolean oldWritingObject = writingObject;
+			writingObject = true;
+			try {
+				super.writeObject(o);
+			} finally {
+				writingObject = oldWritingObject;
+			}
+
+			// root object?
+			if (!writingObject) {
+				// add to pending
+				flushPending.addAll(flushPrePending);
+				flushPendingStat.addAll(flushPrePending);
+				flushPrePending.clear();
+				if (flushPending.contains(o)) {
+					flushPrePending.remove(o);
+					flushPendingStat.remove(o);
+				} else {
+					flushPending.add(o);
+				}
+				if (needOwner) {
+					this.flushPending.remove(owner);
+					this.flushPending.add(0, owner);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Records the statement so that it can be writtern out later, then calls
+	 * super implementation.
+	 */
+	public void writeStatement(Statement oldStat) {
+		// record how the object is changed
+		recordStatement(oldStat);
+
+		super.writeStatement(oldStat);
+	}
 
-    public void flush() {
-        writeAll();
-    }
-
-    public void close() {
-        try {
-            flush();
-            out.close();
-        } catch (Exception e) {
-            getExceptionListener().exceptionThrown(e);
-        }
-    }
-
-    private void writeAll() {
-        Tag mainTag = new Tag("java"); //$NON-NLS-1$
-        Enumeration<Object> e;
-
-        printed.clear();
-        NameMaker.clear();
-
-        mainTag.addAttr("version", System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-        mainTag.addAttr("class", "java.beans.XMLDecoder"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        printBytes(0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
-        printBytes(0, mainTag.toStringOnOpen());
-
-        e = roots.elements();
-        while (e.hasMoreElements()) {
-            Object object = e.nextElement();
-
-            if (object != null) {
-                ObjectNode node = nodes.get(object);
-
-                printObjectTag(1, object, node);
-            } else {
-                printNullTag(1);
-            }
-        }
-
-        printBytes(0, mainTag.toStringOnClose());
-    }
-
-    // FIXME processing of default constructor: investigate
-    private void printObjectTag(int tabCount, Object object, ObjectNode node) {
-        Class<?> nodeType = null;
-
-        try {
-            nodeType = node.getObjectType();
-        } catch (Exception e) {
-            Exception e2 = new Exception(Messages.getString(
-                    "beans.3B", node.getInitializer())); //$NON-NLS-1$
-
-            e2.initCause(e);
-            getExceptionListener().exceptionThrown(e2);
-            return;
-        }
-
-        if (isPrimitive(nodeType) || isString(nodeType) || isClass(nodeType)) {
-            String tagName = getPrimitiveName(nodeType);
-            Object arg = node.getObjectArguments()[0];
-            Tag tag = new Tag(tagName, arg.toString());
-
-            printBytes(tabCount, tag.toString());
-        } else { // if array or complex object
-            Tag tag = null;
-            Object[] arguments = node.getObjectArguments();
-            boolean objectPrinted = false;
-            boolean isReferenced = node.getReferencesNumber() > 0;
-
-            if (isArray(nodeType)) {
-                tag = new Tag("array"); //$NON-NLS-1$
-            } else {
-                tag = new Tag("object"); //$NON-NLS-1$
-            }
-
-            // check if the object presents references
-            if (isReferenced) {
-                if (printed.contains(node)) {
-                    String nodeId = node.getId();
-
-                    if (nodeId != null) {
-                        tag.addAttr("idref", node.getId()); //$NON-NLS-1$
-                    }
-
-                    objectPrinted = true;
-                } else { // if(printed.contains(node) == false
-                    try {
-                        Class<?> type = node.getObjectType();
-
-                        if (type != null) {
-                            // check if it is necessary to assign
-                            // and display *id* attribute to the object
-                            String objectName = NameMaker.getInstanceName(type);
-
-                            node.setId(objectName);
-                            tag.addAttr("id", objectName); //$NON-NLS-1$
-                        }
-                    } catch (Exception e) {
-                        getExceptionListener().exceptionThrown(e);
-                    }
-                }
-            }
-
-            if (!objectPrinted) {
-                try {
-                    if (isArray(nodeType)) {
-                        tag.addAttr("class", ((Class) arguments[0]).getName()); //$NON-NLS-1$
-                        tag.addAttr("length", ((Integer) arguments[1]) //$NON-NLS-1$
-                                .toString());
-                    } else {
-                        tag.addAttr("class", ((Class)node.getInitializer().getTarget()).getName()); //$NON-NLS-1$
-                        tag.addAttr("method", node.getInitializer().getMethodName());
-                    }
-                } catch (Exception e) {
-                    getExceptionListener().exceptionThrown(e);
-                }
-            }
-
-            // preprocessing is done, print it!
-            if (objectPrinted) {
-                // if object has already been printed then only print the
-                // reference
-                printBytes(tabCount, tag.toStringShortForm());
-            } else if (isArray(nodeType) && !node.statements().hasNext()) {
-                // if we have an empty array
-                printBytes(tabCount, tag.toStringShortForm());
-            } else if (arguments.length == 0 && !node.statements().hasNext()
-                    && !node.expressions().hasNext()) {
-                // if given tag has no children print the short form of the tag
-                printBytes(tabCount, tag.toStringShortForm());
-            } else {
-                // the tag has not been printed and contains children,
-                // let's print them
-
-                printBytes(tabCount, tag.toStringOnOpen());
-
-                printed.add(node);
-
-                if (isArray(nodeType)) { // if array
-                    Iterator<Statement> it = node.statements();
-
-                    while (it.hasNext()) {
-                        Statement s = it.next();
-
-                        printVoidTag(++tabCount, s);
-                        --tabCount;
-                    }
-                } else { // if object
-                    Iterator<Expression> i1;
-                    Iterator<Statement> i2;
-
-                    for (Object element : arguments) {
-                        if (element != null) {
-                            ObjectNode succNode = nodes.get(element);
-
-                            printObjectTag(++tabCount, element, succNode);
-                        } else {
-                            printNullTag(++tabCount);
-                        }
-
-                        --tabCount;
-                    }
-
-                    i1 = node.expressions();
-                    while (i1.hasNext()) {
-                        Expression e = i1.next();
-
-                        printVoidTag(++tabCount, e);
-                        --tabCount;
-                    }
-
-                    i2 = node.statements();
-                    while (i2.hasNext()) {
-                        Statement s = i2.next();
-
-                        printVoidTag(++tabCount, s);
-                        --tabCount;
-                    }
-                } // if object
-
-                printBytes(tabCount, tag.toStringOnClose());
-            }
-        } // if node is of non-trivial type
-    }
-
-    private void printVoidTag(int tabCount, Expression expr) {
-        Object exprValue = null;
-
-        try {
-            Enumeration<ObjectNode> enumeration;
-            Tag tag;
-            String objectName;
-            String methodName;
-            ObjectNode node;
-            Object[] args;
-
-            exprValue = expr.getValue();
-
-            // find out, if this object is already printed
-            enumeration = printed.elements();
-            while (enumeration.hasMoreElements()) {
-                ObjectNode node2 = enumeration.nextElement();
-
-                if (node2.getObjectValue() == exprValue) {
-                    return;
-                }
-            }
-
-            node = nodes.get(exprValue);
-
-            // find out, if this object has no references to be printed
-            // System.out.println("---- node.getReferencesNumber() = " +
-            // node.getReferencesNumber());
-            // System.out.println("---- node.getReferencedExpressionsNumber() =
-            // " + node.getReferencedExpressionsNumber());
-
-            if (node.getReferencesNumber() == 0) {
-                return;
-            }
-
-            tag = new Tag("void"); //$NON-NLS-1$
-            objectName = NameMaker.getInstanceName(exprValue.getClass());
-
-            node.setId(objectName);
-            tag.addAttr("id", objectName); //$NON-NLS-1$
-
-            methodName = expr.getMethodName();
-            args = expr.getArguments();
-
-            if (methodName.startsWith("get") //$NON-NLS-1$
-                    && (args.length == 0 || args.length == 1
-                            && args[0].getClass() == Integer.class)
-                    || methodName.startsWith("set") //$NON-NLS-1$
-                    && (args.length == 1 || args.length == 2
-                            && args[0].getClass() == Integer.class)) {
-                String propertyName = methodName.substring(3);
-
-                if (propertyName.length() > 0) {
-                    tag.addAttr("property", Introspector //$NON-NLS-1$
-                            .decapitalize(propertyName));
-                }
-
-                if (methodName.startsWith("get") && args.length == 1 //$NON-NLS-1$
-                        || methodName.startsWith("set") && args.length == 2) { //$NON-NLS-1$
-                    tag.addAttr("index", args[0].toString()); //$NON-NLS-1$
-                }
-            } else {
-                tag.addAttr("method", expr.getMethodName()); //$NON-NLS-1$
-            }
-
-            printBytes(tabCount, tag.toStringOnOpen());
-
-            for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) { //$NON-NLS-1$
-                if (args[i] != null) {
-                    ObjectNode node2 = nodes.get(args[i]);
-
-                    printObjectTag(++tabCount, args[i], node2);
-                } else {
-                    printNullTag(++tabCount);
-                }
-
-                --tabCount;
-            }
-
-            printBytes(tabCount, tag.toStringOnClose());
-
-            printed.add(node);
-        } catch (Exception e) {
-            // TODO - signal problem with expr.getValue()
-        }
-
-    }
-
-    private void printVoidTag(int tabCount, Statement stat) {
-        Tag tag = new Tag("void"); //$NON-NLS-1$
-
-        String methodName = stat.getMethodName();
-        Object[] args = stat.getArguments();
-
-        if (methodName.startsWith("get") //$NON-NLS-1$
-                && (args.length == 0 || args.length == 1
-                        && args[0].getClass() == Integer.class)
-                || methodName.startsWith("set") //$NON-NLS-1$
-                && (args.length == 1 || args.length == 2
-                        && args[0].getClass() == Integer.class)) {
-            String propertyName = methodName.substring(3);
-
-            if (propertyName.length() > 0) {
-                tag.addAttr("property", Introspector //$NON-NLS-1$
-                        .decapitalize(propertyName));
-            }
-
-            if (methodName.startsWith("get") && args.length == 1 //$NON-NLS-1$
-                    || methodName.startsWith("set") && args.length == 2) { //$NON-NLS-1$
-                tag.addAttr("index", args[0].toString()); //$NON-NLS-1$
-            }
-        } else {
-            tag.addAttr("method", stat.getMethodName()); //$NON-NLS-1$
-        }
-
-        printBytes(tabCount, tag.toStringOnOpen());
-
-        for (int i = tag.hasAttr("index") ? 1 : 0; i < args.length; ++i) { //$NON-NLS-1$
-            if (args[i] != null) {
-                ObjectNode node = nodes.get(args[i]);
-
-                printObjectTag(++tabCount, args[i], node);
-            } else {
-                printNullTag(++tabCount);
-            }
-
-            --tabCount;
-        }
-
-        printBytes(tabCount, tag.toStringOnClose());
-    }
-
-    private void printNullTag(int tabCount) {
-        printBytes(tabCount, "<null/>"); //$NON-NLS-1$
-    }
-
-    private void printBytes(int tabCount, String s) {
-        try {
-            String result = ""; //$NON-NLS-1$
-
-            for (int i = 0; i < tabCount; ++i) {
-                result += ' ';
-            }
-            result = result + s + "\n"; //$NON-NLS-1$
-            out.write(result.getBytes("UTF-8")); //$NON-NLS-1$
-        } catch (IOException ioe) {
-            ExceptionListener listener = getExceptionListener();
-
-            if (listener != null) {
-                listener.exceptionThrown(ioe);
-            }
-        }
-    }
-
-    /**
-     * Escapes '&', '<', '>', '\'', '"' chars.
-     * 
-     * @param input
-     *            input string to be escaped
-     * @return string with escaped characters
-     */
-    static String escapeChars(String input) {
-        StringBuffer sb = new StringBuffer();
-
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-
-            switch (c) {
-                case '&':
-                    sb.append("&amp;"); //$NON-NLS-1$
-                    break;
-                case '<':
-                    sb.append("&lt;"); //$NON-NLS-1$
-                    break;
-                case '>':
-                    sb.append("&gt;"); //$NON-NLS-1$
-                    break;
-                case '\'':
-                    sb.append("&apos;"); //$NON-NLS-1$
-                    break;
-                case '"':
-                    sb.append("&quot;"); //$NON-NLS-1$
-                    break;
-                default:
-                    sb.append(c);
-                    break;
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * This class is used by XMLEncoder to store XML tag information.
-     */
-    static class Tag {
-
-        String name;
-
-        LinkedHashMap<String, String> attrs;
-
-        String characters;
-
-        public Tag(String name) {
-            this.name = name;
-            this.attrs = new LinkedHashMap<String, String>();
-            this.characters = null;
-        }
-
-        public Tag(String name, String characters) {
-            this.name = name;
-            this.attrs = new LinkedHashMap<String, String>();
-            this.characters = characters;
-        }
-
-        public boolean hasAttr(String attrName) {
-            return attrs.get(attrName) != null;
-        }
-
-        public void addAttr(String attrName, String attrValue) {
-            attrs.put(attrName, attrValue);
-        }
-
-        public String toStringOnOpenUnfinished() {
-            String result = "<" + name; //$NON-NLS-1$
-            Iterator<String> i = attrs.keySet().iterator();
-
-            while (i.hasNext()) {
-                String attrName = i.next();
-                String attrValue = attrs.get(attrName);
-
-                result += " " + attrName + "=\"" + attrValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-            return result;
-        }
-
-        public String toStringOnOpen() {
-            return toStringOnOpenUnfinished() + ">"; //$NON-NLS-1$
-        }
-
-        public String toStringShortForm() {
-            return toStringOnOpenUnfinished() + "/>"; //$NON-NLS-1$
-        }
-
-        public String toStringOnClose() {
-            return "</" + name + ">"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
-        public String toStringOnCharacters() {
-            return XMLEncoder.escapeChars(characters);
-        }
-
-        @Override
-        public String toString() {
-            return toStringOnOpen() + toStringOnCharacters()
-                    + toStringOnClose();
-        }
-    }
-
-    static class NameMaker {
-
-        private static final HashMap<String, Integer> numOfExemplars = new HashMap<String, Integer>();
-
-        public static void clear() {
-            numOfExemplars.clear();
-        }
-
-        private static String getCompName(Class<?> clz) {
-            if (clz.isArray()) {
-                return getCompName(clz.getComponentType()) + "Array"; //$NON-NLS-1$
-            }
-            return clz.getName().substring(clz.getName().lastIndexOf(".") + 1); //$NON-NLS-1$
-        }
-
-        public static String getInstanceName(Class<?> type) {
-            String result = null;
-
-            String fullName;
-            String shortName;
-            Integer iNum;
-
-            if (type.isArray()) {
-                fullName = getCompName(type);
-                shortName = fullName;
-            } else {
-                fullName = type.getName();
-                shortName = fullName.substring(fullName.lastIndexOf(".") + 1); //$NON-NLS-1$
-            }
-            iNum = numOfExemplars.get(shortName);
-            if (iNum == null) {
-                numOfExemplars.put(shortName, new Integer(0));
-                result = shortName + "0"; //$NON-NLS-1$
-            } else {
-                int newValue = iNum.intValue() + 1;
-
-                result = shortName + Integer.toString(newValue);
-                numOfExemplars.put(shortName, new Integer(newValue));
-            }
-            return result;
-        }
-    }
 }
+
+
