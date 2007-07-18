@@ -17,220 +17,299 @@
 
 package java.beans;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.HashMap;
 
-import org.apache.harmony.beans.internal.nls.Messages;
+/**
+ * Default PersistenceDelegate for normal classes. The instances of this class
+ * are used when other customized PersistenceDelegate is not set in the encoders
+ * for a particular type.
+ * <p>
+ * This PersistenceDelegate assumes that the bean to be made persistent has a
+ * default constructor that takes no parameters or a constructor that takes some
+ * properties as its parameters. Only the properties that can be got or set
+ * based on the knowledge gained through an introspection will be made
+ * persistent. In the case that a bean is constructed with some properties, the
+ * value of these properties should be available via the conventional getter
+ * method.
+ * </p>
+ * 
+ * @see Encoder
+ */
 
 public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
-    private String[] constructorPropertyNames;
+    // shared empty property name array
+    private static String[] EMPTY_PROPERTIES = new String[0];
 
-    public DefaultPersistenceDelegate(String[] constructorPropertyNames) {
-        String[] arr = null;
+    // names of the properties accepted by the bean's constructor
+    private String[] propertyNames = EMPTY_PROPERTIES;
 
-        // convert first letters of property names to lower case
-        if (constructorPropertyNames != null) {
-            arr = new String[constructorPropertyNames.length];
-            for (int i = 0; i < constructorPropertyNames.length; i++) {
-                if (constructorPropertyNames[i] != null
-                        && constructorPropertyNames[i].length() > 0) {
-                    arr[i] = constructorPropertyNames[i].substring(0, 1)
-                            .toLowerCase()
-                            + constructorPropertyNames[i].substring(1);
-                } else {
-                    arr[i] = constructorPropertyNames[i];
-                }
-            }
-        }
-
-        this.constructorPropertyNames = arr;
-    }
-
+    /**
+     * Constructs a <code>DefaultPersistenceDelegate</code> instance that
+     * supports the persistence of a bean which has a default constructor.
+     *  
+     */
     public DefaultPersistenceDelegate() {
-        this.constructorPropertyNames = null;
+        // empty
     }
 
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder out) {
-
-        // added for compatibility with RI
-        if (out == null) {
-            throw new NullPointerException(Messages.getString("beans.4C")); //$NON-NLS-1$
+    /**
+     * Constructs a <code>DefaultPersistenceDelegate</code> instance that
+     * supports the persistence of a bean which is constructed with some
+     * properties.
+     * 
+     * @param propertyNames
+     *            the name of the properties that are taken as parameters by the
+     *            bean's constructor
+     */
+    public DefaultPersistenceDelegate(String[] propertyNames) {
+        if (null != propertyNames) {
+            this.propertyNames = propertyNames;
         }
+    }
 
-        // added for compatibility with RI
-        if (newInstance == null) {
-            out.getExceptionListener().exceptionThrown(
-                    new NullPointerException(Messages.getString("beans.4A"))); //$NON-NLS-1$
+    /**
+     * Initializes the new instance in the new environment so that it becomes
+     * equivalent with the old one, meanwhile recording this process in the
+     * encoder.
+     * <p>
+     * This is done by inspecting each property of the bean. The property value
+     * from the old bean instance and the value from the new bean instance are
+     * both retrieved and examined to see whether the latter mutates to the
+     * former, and if not, issue a call to the write method to set the
+     * equivalent value for the new instance. Exceptions occured during this
+     * process are reported to the exception listener of the encoder.
+     * </p>
+     * 
+     * @param type
+     *            the type of the bean
+     * @param oldInstance
+     *            the original bean object to be recorded
+     * @param newInstance
+     *            the simmulating new bean object to be initialized
+     * @param enc
+     *            the encoder to write the outputs to
+     */
+    protected void initialize(Class<?> type, Object oldInstance,
+            Object newInstance, Encoder enc) {
+        // Call the initialization of the super type
+        super.initialize(type, oldInstance, newInstance, enc);
+        // Continue only if initializing the "current" type
+        if (type != oldInstance.getClass()) {
             return;
         }
 
-        // added for compatibility with RI
-        if (oldInstance == null) {
-            throw new NullPointerException(Messages.getString("beans.4C")); //$NON-NLS-1$
-        }
-
+        // Get all bean properties
         BeanInfo info = null;
         try {
             info = Introspector.getBeanInfo(type);
-        } catch (IntrospectionException e) {
-            out.getExceptionListener().exceptionThrown(e);
+        } catch (IntrospectionException ex) {
+            enc.getExceptionListener().exceptionThrown(ex);
             return;
         }
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
 
-        for (PropertyDescriptor pd : pds) {
-            if (!isTransient(pd)) {
-                Method getter = pd.getReadMethod();
+        // Initialize each found non-transient property
+        for (int i = 0; i < pds.length; i++) {
+            // Skip a property whose transient attribute is true
+            if (Boolean.TRUE.equals(pds[i].getValue("transient"))) { //$NON-NLS-1$
+                continue;
+            }
+            // Skip a property having no setter or getter
+            if (null == pds[i].getWriteMethod()
+                    || null == pds[i].getReadMethod()) {
+                continue;
+            }
 
-                if (getter != null) {
-                    Method setter = pd.getWriteMethod();
-
-                    if (setter != null) {
-                        Expression getterExp = new Expression(oldInstance, pd
-                                .getReadMethod().getName(), null);
-                        try {
-                            // Calculate the old value of the property
-                            Object oldValue = getterExp.getValue();
-
-                            // Write the getter expression to the encoder
-                            out.writeExpression(getterExp);
-
-                            // Get the target value that exists in the new
-                            // environment
-                            Object targetVal = out.get(oldValue);
-
-                            Object newValue = new Expression(newInstance, pd
-                                    .getReadMethod().getName(), null)
-                                    .getValue();
-
-                            /*
-                             * Make the target value and current property value
-                             * equivalent in the new environment
-                             */
-                            if (null == targetVal) {
-                                if (null != newValue) {
-                                    // Set to null
-                                    Statement setterStm = new Statement(
-                                            oldInstance, pd.getWriteMethod()
-                                                    .getName(),
-                                            new Object[] { null });
-                                    out.writeStatement(setterStm);
-                                }
-                            } else {
-                                PersistenceDelegate delegate = out
-                                        .getPersistenceDelegate(targetVal
-                                                .getClass());
-                                if (!delegate.mutatesTo(targetVal, newValue)) {
-                                    Statement setterStm = new Statement(
-                                            oldInstance, pd.getWriteMethod()
-                                                    .getName(),
-                                            new Object[] { oldValue });
-                                    out.writeStatement(setterStm);
-                                }
-                            }
-                        } catch (Exception ex) {
-                            out.getExceptionListener().exceptionThrown(ex);
-                        }
-                    } else {
-                        // commented since the process should be
-                        // continued even if no setter is found
-                        // throw new Exception("no setter for " +
-                        // pd.getName() + " property.");
-                        continue;
+            // Get the value of the property in the old instance
+            Expression getterExp = new Expression(oldInstance, pds[i]
+                    .getReadMethod().getName(), null);
+            try {
+                // Calculate the old value of the property
+                Object oldVal = getterExp.getValue();
+                // Write the getter expression to the encoder
+                enc.writeExpression(getterExp);
+                // Get the target value that exists in the new environment
+                Object targetVal = enc.get(oldVal);
+                // Get the current property value in the new environment
+                Object newVal = new Expression(newInstance, pds[i]
+                        .getReadMethod().getName(), null).getValue();
+                /*
+                 * Make the target value and current property value equivalent
+                 * in the new environment
+                 */
+                if (null == targetVal) {
+                    if (null != newVal) {
+                        // Set to null
+                        Statement setterStm = new Statement(oldInstance, pds[i]
+                                .getWriteMethod().getName(),
+                                new Object[] { null });
+                        enc.writeStatement(setterStm);
+                    }
+                } else {
+                    PersistenceDelegate pd = enc
+                            .getPersistenceDelegate(targetVal.getClass());
+                    if (!pd.mutatesTo(targetVal, newVal)) {
+                        Statement setterStm = new Statement(oldInstance, pds[i]
+                                .getWriteMethod().getName(),
+                                new Object[] { oldVal });
+                        enc.writeStatement(setterStm);
                     }
                 }
+            } catch (Exception ex) {
+                enc.getExceptionListener().exceptionThrown(ex);
             }
         }
     }
 
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
+    /*
+     * Get the field value of an object using privileged code.
+     */
+    private Object getFieldValue(Object oldInstance, String fieldName)
+            throws NoSuchFieldException, IllegalAccessException {
+        Class c = oldInstance.getClass();
+        final Field f = c.getDeclaredField(fieldName);
+        AccessController.doPrivileged(new PrivilegedAction() {
+            public Object run() {
+                f.setAccessible(true);
+                return null;
+            }
+        });
+        return f.get(oldInstance);
+    }
+
+    /*
+     * Get the value for the specified property of the given bean instance.
+     */
+    private Object getPropertyValue(HashMap proDscMap, Object oldInstance,
+            String propName) throws Exception {
+        // Try to get the read method for the property
+        Method getter = null;
+        if (null != proDscMap) {
+            PropertyDescriptor pd = (PropertyDescriptor) proDscMap
+                    .get(Introspector.decapitalize(propName));
+            if (null != pd) {
+                getter = pd.getReadMethod();
+            }
+        }
+
+        // Invoke read method to get the value if found
+        if (null != getter) {
+            return getter.invoke(oldInstance, (Object[])null);
+        }
+
+        // Otherwise, ry to access the field directly
+        try {
+            return getFieldValue(oldInstance, propName);
+        } catch (Exception ex) {
+            // Fail, throw an exception
+            throw new NoSuchMethodException(
+                    "The getter method for the property " //$NON-NLS-1$
+                            + propName + " can't be found."); //$NON-NLS-1$
+        }
+
+    }
+
+    /**
+     * Returns an expression that represents a call to the bean's constructor.
+     * The constructor may take zero or more parameters, as specified when this
+     * <code>DefaultPersistenceDelegate</code> is constructed.
+     * 
+     * @param oldInstance
+     *            the old instance
+     * @param enc
+     *            the encoder that wants to record the old instance
+     * @return an expression for instantiating an object of the same type as the
+     *         old instance
+     */
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
         Object[] args = null;
 
-        if (constructorPropertyNames == null
-                || constructorPropertyNames.length == 0) {
-            args = new Object[] {};
-        } else {
-            args = new Object[constructorPropertyNames.length];
-
+        // Set the constructor arguments if any property names exist
+        if (this.propertyNames.length > 0) {
+            // Prepare the property descriptors for finding getter method later
+            BeanInfo info = null;
+            HashMap proDscMap = null;
             try {
-                PropertyDescriptor[] pds = Introspector.getBeanInfo(
-                        oldInstance.getClass()).getPropertyDescriptors();
+                info = Introspector.getBeanInfo(oldInstance.getClass(),
+                        Introspector.IGNORE_ALL_BEANINFO);
+                proDscMap = internalAsMap(info
+                        .getPropertyDescriptors());
+            } catch (IntrospectionException ex) {
+                enc.getExceptionListener().exceptionThrown(ex);
+                throw new Error(ex);
+            }
 
-                for (int i = 0; i < constructorPropertyNames.length; ++i) {
-
-                    boolean found = false;
-
-                    for (PropertyDescriptor element : pds) {
-
-                        if (constructorPropertyNames[i].equals(element
-                                .getName())) {
-                            Method getter = element.getReadMethod();
-
-                            if (getter != null) {
-                                args[i] = getter.invoke(oldInstance,
-                                        (Object[]) null);
-                                found = true;
-                                break;
-                            }
-
-                            throw new NoSuchMethodException(Messages.getString(
-                                    "beans.00", element.getName())); //$NON-NLS-1$
-
-                        }
-                    }
-
-                    if (found == false) {
-                        throw new NoSuchMethodException(Messages.getString(
-                                "beans.01", constructorPropertyNames[i])); //$NON-NLS-1$
-                    }
-
+            // Get the arguments values
+            args = new Object[this.propertyNames.length];
+            for (int i = 0; i < this.propertyNames.length; i++) {
+                String propertyName = propertyNames[i];
+                if (null == propertyName || 0 == propertyName.length()) {
+                    continue;
                 }
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                out.getExceptionListener().exceptionThrown(e);
-            }
-
-        }
-
-        return new Expression(oldInstance, oldInstance.getClass(), "new", args); //$NON-NLS-1$
-    }
-
-    @Override
-    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        if (oldInstance != null && constructorPropertyNames != null
-                && constructorPropertyNames.length > 0) {
-
-            // Get explicitly declared equals method.
-            Method equalsMethod = null;
-            try {
-                equalsMethod = oldInstance.getClass().getDeclaredMethod(
-                        "equals", new Class[] { Object.class }); //$NON-NLS-1$
-
-            } catch (NoSuchMethodException e) {
-                // does not declare explicitly an equals method.
-            }
-
-            if (equalsMethod != null) {
-                Object result;
+                
+                // Get the value for each property of the given instance
                 try {
-                    result = equalsMethod.invoke(oldInstance,
-                            new Object[] { newInstance });
-                } catch (Exception e) {
-                    // should not happen here.
-                    throw new Error(e);
+                    args[i] = getPropertyValue(proDscMap, oldInstance,
+                            this.propertyNames[i]);
+                } catch (Exception ex) {                  
+                        enc.getExceptionListener().exceptionThrown(ex);
                 }
-                return ((Boolean) result).booleanValue();
             }
         }
-        return super.mutatesTo(oldInstance, newInstance);
+
+        return new Expression(oldInstance, oldInstance.getClass(),
+                Statement.CONSTRUCTOR_NAME, args);
+    }
+    
+    private static HashMap<String, PropertyDescriptor> internalAsMap(PropertyDescriptor[] propertyDescs) {
+        HashMap<String, PropertyDescriptor> map = new HashMap<String, PropertyDescriptor>();
+        for (int i = 0; i < propertyDescs.length; i++) {
+            map.put(propertyDescs[i].getName(), propertyDescs[i]);
+        }
+        return map;
     }
 
-    private static boolean isTransient(PropertyDescriptor pd) {
-        Boolean isTransient = (Boolean) pd.getValue("transient"); //$NON-NLS-1$
-        return (isTransient != null) && isTransient.equals(Boolean.TRUE);
+    /**
+     * Determines whether one object mutates to the other object. If this
+     * <code>DefaultPersistenceDelegate</code> is constructed with one or more
+     * property names, and the class of <code>o1</code> overrides the
+     * "equals(Object)" method, then <code>o2</code> is considered to mutate
+     * to <code>o1</code> if <code>o1</code> equals to <code>o2</code>.
+     * Otherwise, the result is the same as the definition in
+     * <code>PersistenceDelegate</code>.
+     * 
+     * @param o1
+     *            one object
+     * @param o2
+     *            the other object
+     * @return true if second object mutates to the first object, otherwise
+     *         false
+     */
+    protected boolean mutatesTo(Object o1, Object o2) {
+        if (null == o1 || null == o2) {
+            return false;
+        }
+        Class c = o1.getClass();
+        if (this.propertyNames.length > 0) {
+            // Check the "equals" method has been declared
+            Method equalMethod = null;
+            try {
+                equalMethod = c.getDeclaredMethod("equals", //$NON-NLS-1$
+                        new Class[] { Object.class });
+            } catch (NoSuchMethodException ex) {
+                // ignore
+            }
+
+            if (null != equalMethod) {
+                return o1.equals(o2);
+            }
+        }
+
+        return super.mutatesTo(o1, o2);
     }
 }

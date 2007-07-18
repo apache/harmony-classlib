@@ -28,7 +28,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,7 +92,7 @@ public class XMLEncoder extends Encoder {
 
 	private Object owner = null;
 
-	private IdentityHashMap records = new IdentityHashMap();
+	private ReferenceMap records = new ReferenceMap();
 
 	private boolean writingObject = false;
 

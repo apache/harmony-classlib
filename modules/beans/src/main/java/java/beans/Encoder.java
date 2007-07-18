@@ -17,12 +17,13 @@
 
 package java.beans;
 
+import java.awt.*;
+import java.awt.font.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.IdentityHashMap;
 
 import org.apache.harmony.beans.*;
 
@@ -82,11 +83,15 @@ public class Encoder {
 		delegates.put(Method.class, new java_lang_reflect_MethodPersistenceDelegate());
 		delegates.put(String.class, new java_lang_StringPersistenceDelegate());
 		delegates.put(Proxy.class, new java_lang_reflect_ProxyPersistenceDelegate());
+        
+        delegates.put(Choice.class, new AwtChoicePersistenceDelegate());
+        delegates.put(Color.class, new AwtColorPersistenceDelegate());
+        delegates.put(Rectangle.class, new AwtRectanglePersistenceDelegate());
 	}
 
 	private ExceptionListener listener = defaultExListener;
 
-	private IdentityHashMap oldNewMap = new IdentityHashMap();
+	private ReferenceMap oldNewMap = new ReferenceMap();
 
 	/**
 	 * Construct a new encoder.
