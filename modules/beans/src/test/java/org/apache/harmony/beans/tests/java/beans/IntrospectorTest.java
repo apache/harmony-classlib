@@ -26,6 +26,7 @@ import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.Permission;
 import java.util.ArrayList;
@@ -125,9 +126,6 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] mds = info.getMethodDescriptors();
         assertNotNull(mds);
         assertEquals(11, mds.length);
-        assertEquals("wait", mds[8].getName());
-        assertEquals("wait", mds[9].getName());
-        assertEquals("wait", mds[10].getName());
     }
 
     /**
@@ -279,9 +277,10 @@ public class IntrospectorTest extends TestCase {
      */
     public void testAdditionalBeanInfo() throws IntrospectionException {
         BeanInfo info = Introspector.getBeanInfo(StandardBean2.class);
+        assertNull(info.getAdditionalBeanInfo());
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        assertEquals(1, pds.length);
-        assertEquals("grannyText", pds[0].getName());
+        assertEquals(2, pds.length);
+        assertEquals("class", pds[0].getName());
     }
 
     /**
@@ -437,6 +436,12 @@ public class IntrospectorTest extends TestCase {
         assertTrue(contains("setName", mds));
         assertTrue(contains("getComplexLabel", mds));
         assertTrue(contains("setComplexLabel", mds));
+        try{
+            BeanInfo info2 = Introspector.getBeanInfo(MockFoo.class,
+                    Serializable.class);
+            fail("Shoule throw exception, stopclass must be superclass of given bean");
+        }catch(IntrospectionException e){
+        }
     }
 
     public void testGetBeanInfoClassClass_StopNull()
@@ -666,11 +671,28 @@ public class IntrospectorTest extends TestCase {
             assertEquals(pds[i], pds2[i]);
         }
     }
+    
+    public void testSetBeanInfoSearchPath_null() throws IntrospectionException{
+        String[] oldPath = Introspector.getBeanInfoSearchPath();
+        try{
+            Introspector.setBeanInfoSearchPath(null);
+            try{
+                Introspector.getBeanInfoSearchPath();
+                fail("should throw NPE");
+            }catch(NullPointerException e){
+            }
+            String[] newPath = new String[]{"mock", null, ""};
+            Introspector.setBeanInfoSearchPath(newPath);
+            Introspector.getBeanInfo(this.getClass());
+        }finally{
+            Introspector.setBeanInfoSearchPath(oldPath);
+        }
+    }
 
     public void testGetBeanInfoSearchPath() {
         String[] path = Introspector.getBeanInfoSearchPath();
         assertEquals(1, path.length);
-        assertEquals("org.apache.harmony.beans.infos", path[0]);
+        assertTrue(path[0].endsWith("beans.infos"));
     }
 
     public void testGetBeanInfoSearchPath_Default()
@@ -679,11 +701,11 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         BeanDescriptor beanDesc;
 
-        assertEquals(1, pds.length);
-        assertEquals("text.MockFooButtonBeanInfo", pds[0].getName());
+        assertEquals(2, pds.length);
+        assertEquals("class", pds[0].getName());
 
         beanDesc = info.getBeanDescriptor();
-        assertEquals("MockFooButton.MockFooButtonBeanInfo", beanDesc.getName());
+        assertEquals("MockFooButton", beanDesc.getName());
     }
 
     public void testSetBeanInfoSearchPath() throws IntrospectionException {
@@ -809,10 +831,10 @@ public class IntrospectorTest extends TestCase {
                 assertNotNull(element.getReadMethod());
             } else {
                 assertEquals("fox301", element.getName());
-                assertEquals(String.class.getName(), element
+                assertEquals(Integer.class.getName(), element
                         .getPropertyType().getName());
-                assertNotNull(element.getWriteMethod());
-                assertNull(element.getReadMethod());
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }

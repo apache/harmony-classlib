@@ -96,4 +96,14 @@ public class MethodDescriptor extends FeatureDescriptor {
     public ParameterDescriptor[] getParameterDescriptors() {
         return parameterDescriptors;
     }
+    
+    void merge(MethodDescriptor anotherMethod){
+        super.merge(anotherMethod);
+        if(method == null){
+            method = anotherMethod.method;
+        }
+        if(parameterDescriptors == null){
+            parameterDescriptors = anotherMethod.parameterDescriptors;
+        }
+    }
 }

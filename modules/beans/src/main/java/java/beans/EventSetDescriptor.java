@@ -436,46 +436,27 @@ public class EventSetDescriptor extends FeatureDescriptor {
         return false;
     }
 
+    void merge(EventSetDescriptor event) {
+        super.merge(event);
+        if (addListenerMethod == null) {
+            addListenerMethod = event.addListenerMethod;
+        }
+        if (getListenerMethod == null) {
+            getListenerMethod = event.getListenerMethod;
+        }
+        if (listenerMethodDescriptors == null) {
+            listenerMethodDescriptors = event.listenerMethodDescriptors;
+        }
+        if (listenerMethods == null) {
+            listenerMethods = event.listenerMethods;
+        }
+        if (listenerType == null) {
+            listenerType = event.listenerType;
+        }
 
-//TODO investigate, do we need the following code?
-
-//    private static Method checkRegistrationMethod(Class<?> listenerType,
-//            Method registrationMethod) throws IntrospectionException {
-//        if (registrationMethod == null) {
-//            return null;
-//        }
-//        Class<?> returnType = registrationMethod.getReturnType();
-//        Class<?>[] parameterTypes;
-//        if (returnType != void.class) {
-//            throw new IntrospectionException(Messages.getString(
-//                    "beans.33", registrationMethod.getName())); //$NON-NLS-1$
-//        }
-//        parameterTypes = registrationMethod.getParameterTypes();
-//        if (parameterTypes == null || parameterTypes.length != 1) {
-//            throw new IntrospectionException(Messages.getString(
-//                    "beans.34", registrationMethod.getName())); //$NON-NLS-1$
-//        } else if (parameterTypes[0] != listenerType) {
-//            throw new IntrospectionException(Messages.getString(
-//                    "beans.35", listenerType.getName())); //$NON-NLS-1$
-//        } else {
-//            return registrationMethod;
-//        }
-//    }
-
-//    private static Method checkGetListenerMethod(Class<?> listenerType, Method getListenerMethod)
-//            throws IntrospectionException {
-//        if (getListenerMethod == null) {
-//            return null;
-//        }
-//        Class<?>[] parameterTypes = getListenerMethod.getParameterTypes();
-//        Class<?> returnType;
-//        if (parameterTypes.length != 0) {
-//            throw new IntrospectionException(Messages.getString("beans.36")); //$NON-NLS-1$
-//        }
-//        returnType = getListenerMethod.getReturnType();
-//        if (returnType.isArray() && returnType.getComponentType() == listenerType) {
-//            return getListenerMethod;
-//        }
-//        throw new IntrospectionException(Messages.getString("beans.37")); //$NON-NLS-1$
-//    }
+        if (removeListenerMethod == null) {
+            removeListenerMethod = event.removeListenerMethod;
+        }
+        inDefaultEventSet &= event.inDefaultEventSet;
+    }
 }

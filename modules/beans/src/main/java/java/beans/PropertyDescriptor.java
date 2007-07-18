@@ -31,9 +31,9 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
     private Class<?> propertyEditorClass;
 
-    private boolean constrained;
+    boolean constrained;
 
-    private boolean bound;
+    boolean bound;
 
     public PropertyDescriptor(String propertyName, Class<?> beanClass, String getterName,
             String setterName) throws IntrospectionException {
