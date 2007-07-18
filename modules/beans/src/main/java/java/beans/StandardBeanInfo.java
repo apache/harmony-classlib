@@ -577,8 +577,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
                             null, null, indexedGet, indexedSet);
                 }
             }
-            //RI set propretyDescriptor as bound.
-            propertyDesc.setBound(true);
+            //RI set propretyDescriptor as bound. FIXME
+            propertyDesc.setBound(false);
             propertyList.add(propertyDesc);
         }
 

@@ -2015,4 +2015,40 @@ public class IntrospectorTest extends TestCase {
             return new MethodDescriptor[] { md };
         }
     }
+    public void testProperty() throws IntrospectionException {
+        Class<MockSubClassForPorpertiesStandard> beanClass = MockSubClassForPorpertiesStandard.class;
+        BeanInfo info = Introspector.getBeanInfo(beanClass);
+        assertEquals(-1, info.getDefaultEventIndex());
+        assertEquals(-1, info.getDefaultPropertyIndex());
+        PropertyDescriptor[] pds = info.getPropertyDescriptors();
+        for (PropertyDescriptor pd : pds) {
+            assertFalse(pd.isBound());
+            assertFalse(pd.isConstrained());
+            assertFalse(pd.isExpert());
+            assertFalse(pd.isHidden());
+            assertFalse(pd.isPreferred());
+        }
+        assertEquals(2, info.getPropertyDescriptors().length);
+    }
+
+    static class MockBaseClassForPorpertiesStandard {
+        int a = 0;
+
+        int b = 1;
+    }
+
+    static class MockSubClassForPorpertiesStandard extends
+            MockBaseClassForPorpertiesStandard {
+        int a = 2;
+
+        int b = 3;
+
+        public int getName() {
+            return a;
+        }
+
+        public void setName(int i) {
+            a = i;
+        }
+    }
 }
