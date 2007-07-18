@@ -617,4 +617,15 @@ public interface Statement extends Wrapper {
      *             if an error occurs accessing the database or if seconds <0.
      */
     public void setQueryTimeout(int seconds) throws SQLException;
+
+    /**
+     * TODO Javadoc
+     * 
+     * @return
+     */
+    public boolean isClosed() throws SQLException;
+
+    public void setPoolable(boolean poolable) throws SQLException;
+
+    public boolean isPoolable() throws SQLException;
 }

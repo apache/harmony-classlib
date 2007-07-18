@@ -3145,4 +3145,95 @@ public interface DatabaseMetaData extends Wrapper {
      *             a database error occurred
      */
     public boolean usesLocalFiles() throws SQLException;
+
+    /**
+     * Answers the lifetime for which a RowId object remains valid if this data
+     * source supports the SQL ROWID type
+     * 
+     * @return the time of a RowId object that remains valid.
+     * @throws SQLException
+     *             if any error occurs
+     */
+    RowIdLifetime getRowIdLifetime() throws SQLException;
+
+    /**
+     * Answers the schema names ordered by TABLE_CATALOG and TABLE_SCHEM.
+     * 
+     * @param catalog
+     *            the catalog
+     * @param schemaPattern
+     *            the schema pattern
+     * @return the schema names
+     * @throws SQLException
+     *             if any error occurs
+     */
+    ResultSet getSchemas(String catalog, String schemaPattern)
+            throws SQLException;
+
+    /**
+     * Determin if this database supports invoking user-defined or vendor
+     * functions using the stored procedure escape syntax.
+     * 
+     * @return true if this database supports invoking user-defined or vendor
+     *         functions using the stored procedure escape syntax.
+     * @throws SQLException
+     *             if any error occurs
+     */
+    boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException;
+
+    /**
+     * Determin if a SQLException while autoCommit is true inidcates that all
+     * open ResultSets are closed, even ones that are holdable
+     * 
+     * @return true if all open ResultSets are closed
+     * @throws SQLException
+     *             if any error occurs
+     */
+    boolean autoCommitFailureClosesAllResultSets() throws SQLException;
+
+    /**
+     * Answers a list of the client info properties of the driver.
+     * 
+     * @return a list of the client info
+     * @throws SQLException
+     *             if any error occurs
+     */
+    ResultSet getClientInfoProperties() throws SQLException;
+
+    /**
+     * Answers a description of the system and user functions available
+     * according to the given catalog.
+     * 
+     * @param catalog
+     *            the given catalong
+     * @param schemaPattern
+     *            the schema pattern
+     * @param functionNamePattern
+     *            the function name pattern
+     * @return user functions
+     * @throws SQLException
+     *             if any error occurs
+     */
+    ResultSet getFunctions(String catalog, String schemaPattern,
+            String functionNamePattern) throws SQLException;
+
+    /**
+     * Answers a description according to the given catalog's system or user
+     * function parameters and return type.
+     * 
+     * @param catalog
+     *            the given catalong
+     * @param schemaPattern
+     *            the schema pattern
+     * @param functionNamePattern
+     *            the function name pattern
+     * @param columnNamePattern
+     *            the column name pattern
+     * @return a description of user functions
+     * @throws SQLException
+     *             if any error occurs
+     */
+    ResultSet getFunctionColumns(String catalog, String schemaPattern,
+            String functionNamePattern, String columnNamePattern)
+            throws SQLException;
 }

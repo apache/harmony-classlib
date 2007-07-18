@@ -207,6 +207,19 @@ public class SerialClob implements Clob, Serializable, Cloneable {
         len = length;
     }
 
+    public void free() throws SQLException {
+        if (this.len != -1) {
+            this.len = -1;
+            this.clob = null;
+            this.buf = null;
+        }
+    }
+
+    public Reader getCharacterStream(long pos, long length) throws SQLException {
+        checkValidation();
+        return new CharArrayReader(buf, (int) pos, (int) length);
+    }
+
     private void checkValidation() throws SerialException {
         if (len == -1) {
             throw new SerialException(Messages.getString("sql.38")); //$NON-NLS-1$

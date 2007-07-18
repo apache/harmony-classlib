@@ -18,8 +18,8 @@
 package java.sql;
 
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.Writer;
 
 /**
@@ -171,4 +171,13 @@ public interface Clob {
      *             if an error occurs accessing the Clob
      */
     public void truncate(long len) throws SQLException;
+
+    /**
+     * TODO Javadoc
+     * 
+     * @throws SQLException
+     */
+    public void free() throws SQLException;
+
+    public Reader getCharacterStream(long pos, long length) throws SQLException;
 }
