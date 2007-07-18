@@ -202,7 +202,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
             return getter.invoke(oldInstance, (Object[])null);
         }
 
-        // Otherwise, ry to access the field directly
+        // Otherwise, try to access the field directly
         try {
             return getFieldValue(oldInstance, propName);
         } catch (Exception ex) {
