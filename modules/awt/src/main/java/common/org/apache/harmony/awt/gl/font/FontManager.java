@@ -52,7 +52,7 @@ public abstract class FontManager {
      */
     public String[] allFamilies;
 
-    public static final String DEFAULT_NAME = IS_FONTLIB ? "Luxi Sans" : "Default"; /* Default font name */ //$NON-NLS-1$
+    public static final String DEFAULT_NAME = IS_FONTLIB ? "DejaVu Sans" : "Default"; /* Default font name */ //$NON-NLS-1$
     public static final String DIALOG_NAME = "Dialog";  /* Dialog font name */ //$NON-NLS-1$
 
     /**
