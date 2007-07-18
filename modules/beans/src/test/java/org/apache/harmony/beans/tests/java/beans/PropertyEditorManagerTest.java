@@ -724,4 +724,14 @@ public class PropertyEditorManagerTest extends TestCase {
         assertNotNull("No property editor found", pe);
         assertTrue(pe instanceof AnotherSamplePropertyEditor);
     }
+    
+    String[] defaultSearchPath;
+    
+    public void setUp(){
+        defaultSearchPath = PropertyEditorManager.getEditorSearchPath();
+    }
+    
+    public void tearDown(){
+        PropertyEditorManager.setEditorSearchPath(defaultSearchPath);
+    }
 }
