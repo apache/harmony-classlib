@@ -55,13 +55,12 @@ public class SerialClob implements Clob, Serializable, Cloneable {
 
     public SerialClob(Clob clob) throws SerialException, SQLException {
         Reader characterStream;
-        InputStream asciiStream;
 
         if (clob == null) {
             throw new SQLException(Messages.getString("sql.19"));//$NON-NLS-1$
         }
         if ((characterStream = clob.getCharacterStream()) == null
-                && (asciiStream = clob.getAsciiStream()) == null) {
+                && clob.getAsciiStream() == null) {
             throw new SQLException(Messages.getString("sql.20"));//$NON-NLS-1$
         }
 

@@ -28,10 +28,13 @@ import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
+import java.sql.NClob;
 import java.sql.Ref;
+import java.sql.RowId;
 import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLOutput;
+import java.sql.SQLXML;
 import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -39,9 +42,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
+/**
+ * A concrete implementation of SQLOutput. The writeXXX methods will be called
+ * by SQLData.writeSQL, which write different objects such as Array, BigDecimal
+ * to this SQLOutputImpl object.
+ * 
+ * Different JDBC drivers may have their own implementation of SQLOutput and
+ * won't use this class.
+ */
 public class SQLOutputImpl implements SQLOutput {
     private Vector attributes;
 
@@ -359,5 +369,53 @@ public class SQLOutputImpl implements SQLOutput {
         } else {
             attributes.addElement(theURL);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeNClob(NClob)
+     * 
+     * @since 1.6
+     */
+    @SuppressWarnings("unchecked")
+    public void writeNClob(NClob x) throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeNString(String)
+     * 
+     * @since 1.6
+     */
+    @SuppressWarnings("unchecked")
+    public void writeNString(String x) throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeRowId(RowId)
+     * 
+     * @since 1.6
+     */
+    @SuppressWarnings("unchecked")
+    public void writeRowId(RowId x) throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLOutput#writeSQLXML(SQLXML)
+     * 
+     * @since 1.6
+     */
+    @SuppressWarnings("unchecked")
+    public void writeSQLXML(SQLXML x) throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 }

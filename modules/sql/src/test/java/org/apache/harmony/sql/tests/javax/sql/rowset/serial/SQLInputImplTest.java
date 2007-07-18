@@ -28,11 +28,14 @@ import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
+import java.sql.NClob;
 import java.sql.Ref;
+import java.sql.RowId;
 import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLInput;
 import java.sql.SQLOutput;
+import java.sql.SQLXML;
 import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -47,7 +50,10 @@ import junit.framework.TestCase;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockArray;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockBlob;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockClob;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockNClob;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockRef;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockRowId;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockSQLXML;
 
 public class SQLInputImplTest extends TestCase {
 
@@ -554,6 +560,7 @@ public class SQLInputImplTest extends TestCase {
 
     /**
      * @tests {@link javax.sql.rowset.serial.SQLInputImpl#wasNull()}
+     * 
      */
     public void testWasNull() throws SQLException {
         Object[] attributes = new Object[] { null, "hello" };
@@ -572,6 +579,133 @@ public class SQLInputImplTest extends TestCase {
         }
         assertFalse(impl.wasNull());
         assertFalse(impl.wasNull());
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLInputImpl#readNClob()}
+     * 
+     * @since 1.6
+     */
+    public void testReadNClob() throws SQLException {
+        NClob nclob = new MockNClob();
+        Object[] attributes = new Object[] { null, nclob };
+        SQLInputImpl impl = new SQLInputImpl(attributes,
+                new HashMap<String, Class<?>>());
+        try {
+            impl.readNClob();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readNClob();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readNClob();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLInputImpl#readNString()}
+     * 
+     * @since 1.6
+     */
+    public void testReadNString() throws SQLException {
+        Object[] attributes = new Object[] { null, "hello" };
+        SQLInputImpl impl = new SQLInputImpl(attributes,
+                new HashMap<String, Class<?>>());
+        try {
+            impl.readNString();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readNString();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readNString();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLInputImpl#readRowId()}
+     * 
+     * @since 1.6
+     */
+    public void testReadRowId() throws SQLException {
+        RowId rowId = new MockRowId();
+        Object[] attributes = new Object[] { null, rowId };
+        SQLInputImpl impl = new SQLInputImpl(attributes,
+                new HashMap<String, Class<?>>());
+        try {
+            impl.readRowId();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readRowId();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readRowId();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLInputImpl#readSQLXML()}
+     * 
+     * @since 1.6
+     */
+    public void testReadSQLXML() throws SQLException {
+        SQLXML sqlXML = new MockSQLXML();
+        Object[] attributes = new Object[] { null, sqlXML };
+        SQLInputImpl impl = new SQLInputImpl(attributes,
+                new HashMap<String, Class<?>>());
+        try {
+            impl.readSQLXML();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readSQLXML();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.readSQLXML();
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
     }
 
     /*

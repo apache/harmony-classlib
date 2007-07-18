@@ -277,4 +277,17 @@ public interface SQLOutput {
      *             if a database error occurs
      */
     public void writeURL(URL theURL) throws SQLException;
+
+    /**
+     * TODO Javadoc
+     * 
+     * @return
+     */
+    public void writeNString(String x) throws SQLException;
+
+    public void writeNClob(NClob x) throws SQLException;
+
+    public void writeRowId(RowId x) throws SQLException;
+
+    public void writeSQLXML(SQLXML x) throws SQLException;
 }

@@ -57,7 +57,7 @@ public class SerialStruct implements Struct, Serializable, Cloneable {
         } catch (SQLException e) {
             throw new SerialException(e.getMessage());
         }
-        Vector v = new Vector();
+        Vector<Object> v = new Vector<Object>();
         try {
             SQLOutput out = new SQLOutputImpl(v, map);
             in.writeSQL(out);

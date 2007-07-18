@@ -25,16 +25,18 @@ import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
+import java.sql.NClob;
 import java.sql.Ref;
+import java.sql.RowId;
 import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLInput;
+import java.sql.SQLXML;
 import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 /**
@@ -290,9 +292,9 @@ public class SQLInputImpl implements SQLInput {
                     data.readSQL(input, typeName);
                     return data;
                 } catch (IllegalAccessException e) {
-                    throw new SQLException(e.getMessage());
+                    throw new SQLException(e);
                 } catch (InstantiationException e) {
-                    throw new SQLException(e.getMessage());
+                    throw new SQLException(e);
                 }
 
             }
@@ -387,6 +389,50 @@ public class SQLInputImpl implements SQLInput {
             throw new SQLException(Messages.getString("sql.35")); //$NON-NLS-1$
         }
         return readPosition == 0 ? false : attributes[readPosition - 1] == null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLInput#readNClob()
+     * 
+     * @since 1.6
+     */
+    public NClob readNClob() throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLInput#readNString()
+     * 
+     * @since 1.6
+     */
+    public String readNString() throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLInput#readRowId()
+     * 
+     * @since 1.6
+     */
+    public RowId readRowId() throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.sql.SQLInput#readSQLXML()
+     * 
+     * @since 1.6
+     */
+    public SQLXML readSQLXML() throws SQLException {
+        throw new UnsupportedOperationException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 
 }

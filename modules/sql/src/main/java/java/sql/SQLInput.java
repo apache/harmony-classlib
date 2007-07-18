@@ -277,4 +277,17 @@ public interface SQLInput {
      *             if there is a database error
      */
     public URL readURL() throws SQLException;
+
+    /**
+     * TODO Javadoc
+     * 
+     * @return
+     */
+    public NClob readNClob() throws SQLException;
+
+    public String readNString() throws SQLException;
+
+    public SQLXML readSQLXML() throws SQLException;
+
+    public RowId readRowId() throws SQLException;
 }

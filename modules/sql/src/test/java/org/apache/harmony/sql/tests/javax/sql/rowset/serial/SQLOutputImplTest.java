@@ -45,14 +45,17 @@ import javax.sql.rowset.serial.SerialDatalink;
 import javax.sql.rowset.serial.SerialRef;
 import javax.sql.rowset.serial.SerialStruct;
 
+import junit.framework.TestCase;
+
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockArray;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockBlob;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockClob;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockNClob;
 import org.apache.harmony.sql.tests.javax.sql.rowset.MockRef;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockRowId;
+import org.apache.harmony.sql.tests.javax.sql.rowset.MockSQLXML;
 import org.apache.harmony.sql.tests.javax.sql.rowset.serial.SQLInputImplTest.MockSQLData;
 import org.apache.harmony.sql.tests.javax.sql.rowset.serial.SQLInputImplTest.MockStruct;
-
-import junit.framework.TestCase;
 
 public class SQLOutputImplTest extends TestCase {
 
@@ -259,6 +262,48 @@ public class SQLOutputImplTest extends TestCase {
     }
 
     /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeNClob(java.sql.NClob)}
+     * 
+     * @since 1.6
+     */
+    public void test_writeNClobLjava_sql_NClob() throws SQLException {
+        try {
+            impl.writeNClob(null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.writeNClob(new MockNClob());
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeNString(String)}
+     * 
+     * @since 1.6
+     */
+    public void test_writeNStringLjava_sql_String() throws SQLException {
+        try {
+            impl.writeNString(null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.writeNString("testString");
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeLong(long)}
      */
     public void test_writeLongJ() throws SQLException {
@@ -298,6 +343,27 @@ public class SQLOutputImplTest extends TestCase {
     }
 
     /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeRowId(java.sql.RowId)}
+     * 
+     * @since 1.6
+     */
+    public void test_writeRowIdLjava_sql_RowId() throws SQLException {
+        try {
+            impl.writeRowId(null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.writeRowId(new MockRowId());
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    /**
      * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeShort(short)}
      */
     public void test_writeShortS() throws SQLException {
@@ -305,6 +371,27 @@ public class SQLOutputImplTest extends TestCase {
         assertEquals((short) 12823, ((Short) attr.get(0)).shortValue());
         impl.writeShort((short) 32768);
         assertEquals((short) -32768, ((Short) attr.get(1)).shortValue());
+    }
+
+    /**
+     * @tests {@link javax.sql.rowset.serial.SQLOutputImpl#writeSQLXML(java.sql.SQLXML)}
+     * 
+     * @since 1.6
+     */
+    public void test_writeSQLXMLLjava_sql_SQLXML() throws SQLException {
+        try {
+            impl.writeSQLXML(null);
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+
+        try {
+            impl.writeSQLXML(new MockSQLXML());
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
     }
 
     /**
