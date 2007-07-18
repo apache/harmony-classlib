@@ -20,66 +20,126 @@ package org.apache.harmony.beans.editors;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Panel;
 import java.awt.Rectangle;
-import java.beans.PropertyEditorSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyEditor;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class FontEditor extends PropertyEditorSupport {
-
+public class FontEditor extends Panel implements PropertyEditor {
+    
+    List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    
+    private Font value;
+    
+    private Object source;
+    
     public FontEditor(Object source) {
-        super(source);
+        if(source== null){
+            throw new NullPointerException();
+        }
+        this.source = (Font)source;
     }
 
     public FontEditor() {
         super();
     }
 
-    @Override
     public Component getCustomEditor() {
-        return null;
+        return this;
     }
 
-    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
 
-    @Override
     public String getJavaInitializationString() {
         String result = null;
-        Font font = (Font) getValue();
-        if (font != null) {
-            String name = font.getName();
-            int style = font.getStyle();
-            int size = font.getSize();
+        if (value!= null) {
+            String name = value.getName();
+            int style = value.getStyle();
+            int size = value.getSize();
             result = "new Font(" + name + "," + style + "," + size + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         return result;
     }
 
-    @Override
     public String[] getTags() {
         return null;
     }
 
-    @Override
-    public void setValue(Object value) {
-        if (value instanceof Font) {
-            super.setValue(value);
+    public void setValue(Object newValue) {
+        if(newValue == null){
+            throw new NullPointerException();
+        }
+        Object oldValue = value;
+        value = (Font)newValue;
+        PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(this,
+                "value", oldValue, value);
+        PropertyChangeListener[] copy = new PropertyChangeListener[listeners.size()];
+        listeners.toArray(copy);
+        for (PropertyChangeListener listener : copy) {
+            listener.propertyChange(changeAllEvent);
         }
     }
 
-    @Override
     public boolean isPaintable() {
         return true;
     }
 
-    @Override
     public void paintValue(Graphics gfx, Rectangle box) {
         Font font = (Font) getValue();
         if (font != null) {
             gfx.setFont(font);
             gfx.drawBytes("Hello".getBytes(), box.x, box.y, box.x + box.width, //$NON-NLS-1$
                     box.y + box.height);
+        }
+    }
+
+    public String getAsText() {
+        return null;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setAsText(String text) throws IllegalArgumentException {
+        throw new IllegalArgumentException(text==null?text:value.toString());
+    }
+    
+    public synchronized void removePropertyChangeListener(
+            PropertyChangeListener listener) {
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    public synchronized void addPropertyChangeListener(
+            PropertyChangeListener listener) {
+        listeners.add(listener);
+    }
+    
+    public void firePropertyChange() {
+        if (listeners.isEmpty()) {
+            return;
+        }
+
+        List<PropertyChangeListener> copy = new ArrayList<PropertyChangeListener>(
+                listeners.size());
+        synchronized (listeners) {
+            copy.addAll(listeners);
+        }
+
+        PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(source,
+                null, null, null);
+        for (Iterator<PropertyChangeListener> listenersItr = copy.iterator(); listenersItr
+                .hasNext();) {
+            PropertyChangeListener listna = listenersItr.next();
+            listna.propertyChange(changeAllEvent);
         }
     }
 }

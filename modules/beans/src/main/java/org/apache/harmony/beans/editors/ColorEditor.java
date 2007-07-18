@@ -68,6 +68,17 @@ public class ColorEditor extends PropertyEditorSupport {
         }
     }
     
+    public String getAsText(){
+        Color c = (Color)getValue();
+        StringBuilder sb = new StringBuilder(14);
+        sb.append(c.getRed());
+        sb.append(",");
+        sb.append(c.getGreen());
+        sb.append(",");
+        sb.append(c.getBlue());
+        return sb.toString();
+    }
+    
     @Override
     public void setAsText(String text) {
         if (null == text) {
