@@ -17,6 +17,9 @@
 
 package java.beans;
 
+import static java.beans.Introspector.decapitalize;
+
+import java.awt.Image;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -27,8 +30,6 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TooManyListenersException;
-
-import static java.beans.Introspector.decapitalize;
 
 class StandardBeanInfo extends SimpleBeanInfo {
     
@@ -71,15 +72,12 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private static PropertyComparator comparator = new PropertyComparator();
 
-    StandardBeanInfo(Class beanClass) {
-        super();
-        this.beanClass = beanClass;
-
-    }
+	private Image[] icon = new Image[4];
     
     StandardBeanInfo(Class beanClass,
             BeanInfo explicitBeanInfo) throws IntrospectionException {
-        this(beanClass);
+		assert (beanClass != null);
+		this.beanClass = beanClass;
         /*--------------------------------------------------------------------------------------
          * There are 3 aspects of BeanInfo that must be supplied:
          * a) PropertyDescriptors
@@ -105,6 +103,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
             this.defaultEventIndex = explicitBeanInfo.getDefaultEventIndex();
             this.defaultPropertyIndex = explicitBeanInfo.getDefaultPropertyIndex();
             additionalBeanInfo = explicitBeanInfo.getAdditionalBeanInfo();
+			for (int i = 0; i < 4; i++) {
+				icon[i] = explicitBeanInfo.getIcon(i + 1);
+			}
             
             if (events != null)
                 explicitEvents = true;
@@ -166,6 +167,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return this.defaultPropertyIndex;
     }
     
+	public Image getIcon(int iconKind) {
+		return icon[iconKind - 1];
+	}
     
     void mergeBeanInfo(BeanInfo superBeanInfo, boolean force) throws IntrospectionException{
         if(force){

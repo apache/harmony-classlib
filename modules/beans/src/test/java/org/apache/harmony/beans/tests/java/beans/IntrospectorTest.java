@@ -17,6 +17,8 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.EventSetDescriptor;
@@ -2050,5 +2052,118 @@ public class IntrospectorTest extends TestCase {
         public void setName(int i) {
             a = i;
         }
+    }
+    static class MockBaseClassForPorperties {
+        int a = 0;
+
+        int b = 1;
+    }
+
+    static class MockSubClassForPorperties extends MockBaseClassForPorperties {
+        int a = 2;
+
+        int b = 3;
+
+        int c = 3;
+
+        public int getName() {
+            return a;
+        }
+
+        public void setName(int i) {
+            a = i;
+        }
+    }
+
+    public void testGetIcon() throws IntrospectionException {
+        Class<MockSubClassForPorperties> beanClass = MockSubClassForPorperties.class;
+        BeanInfo info = Introspector.getBeanInfo(beanClass);
+        assertNotNull(info.getIcon(BeanInfo.ICON_COLOR_16x16));
+    }
+
+    public static class MockBaseClassForPorpertiesBeanInfo extends
+            SimpleBeanInfo {
+
+        @Override
+        public MethodDescriptor[] getMethodDescriptors() {
+            MethodDescriptor md = null;
+            try {
+                Class<MockSubClassForPorperties> clz = MockSubClassForPorperties.class;
+                Method m = clz.getMethod("getName", new Class[] {});
+                md = new MethodDescriptor(m);
+            } catch (Exception e) {
+
+            }
+            return new MethodDescriptor[] { md };
+        }
+
+        @Override
+        public PropertyDescriptor[] getPropertyDescriptors() {
+            PropertyDescriptor[] pds = new PropertyDescriptor[2];
+            Class<MockSubClassForPorperties> clazz = MockSubClassForPorperties.class;
+            try {
+                Method getter = clazz.getMethod("getName");
+                Method setter = clazz.getMethod("setName", Integer.TYPE);
+                pds[0] = new PropertyDescriptor("a", getter, setter);
+                pds[0].setConstrained(true);
+                pds[0].setBound(true);
+                pds[0].setExpert(true);
+                pds[0].setHidden(true);
+                pds[1] = new PropertyDescriptor("b", getter, setter);
+            } catch (IntrospectionException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+            return pds;
+        }
+
+        public Image getIcon(int iconKind) {
+            return null;
+        }
+    }
+
+    public static class MockSubClassForPorpertiesBeanInfo extends
+            SimpleBeanInfo {
+
+        @Override
+        public MethodDescriptor[] getMethodDescriptors() {
+            MethodDescriptor md = null;
+            try {
+                Class<MockSubClassForPorperties> clz = MockSubClassForPorperties.class;
+                Method m = clz.getMethod("getName", new Class[] {});
+                md = new MethodDescriptor(m);
+            } catch (Exception e) {
+
+            }
+            return new MethodDescriptor[] { md };
+        }
+
+        @Override
+        public PropertyDescriptor[] getPropertyDescriptors() {
+            PropertyDescriptor[] pds = new PropertyDescriptor[2];
+            Class<MockSubClassForPorperties> clazz = MockSubClassForPorperties.class;
+            try {
+                Method getter = clazz.getMethod("getName");
+                Method setter = clazz.getMethod("setName", Integer.TYPE);
+                pds[0] = new PropertyDescriptor("a", getter, setter);
+                pds[1] = new PropertyDescriptor("b", getter, setter);
+            } catch (IntrospectionException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return pds;
+        }
+
+        public Image getIcon(int iconKind) {
+            return new BufferedImage(16, 16, 1);
+        }
+
     }
 }
