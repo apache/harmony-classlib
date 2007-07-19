@@ -35,8 +35,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
 
     boolean bound;
 
-    public PropertyDescriptor(String propertyName, Class<?> beanClass, String getterName,
-            String setterName) throws IntrospectionException {
+    public PropertyDescriptor(String propertyName, Class<?> beanClass,
+            String getterName, String setterName) throws IntrospectionException {
         super();
         if (beanClass == null) {
             throw new IntrospectionException(Messages.getString("beans.03")); //$NON-NLS-1$
@@ -46,18 +46,21 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
         this.setName(propertyName);
         if (getterName != null) {
-            if(getterName.length() == 0){
-                throw new IntrospectionException("read or write method cannot be empty."); //$NON-NLS-1$    
+            if (getterName.length() == 0) {
+                throw new IntrospectionException(
+                        "read or write method cannot be empty."); //$NON-NLS-1$    
             }
-            try{
+            try {
                 setReadMethod(beanClass, getterName);
-            }catch(IntrospectionException e){
-                setReadMethod(beanClass, createDefaultMethodName(propertyName, "get")); //$NON-NLS-1$
+            } catch (IntrospectionException e) {
+                setReadMethod(beanClass, createDefaultMethodName(propertyName,
+                        "get")); //$NON-NLS-1$
             }
         }
         if (setterName != null) {
-            if(setterName.length() == 0){
-                throw new IntrospectionException("read or write method cannot be empty."); //$NON-NLS-1$    
+            if (setterName.length() == 0) {
+                throw new IntrospectionException(
+                        "read or write method cannot be empty."); //$NON-NLS-1$    
             }
             setWriteMethod(beanClass, setterName);
         }
@@ -84,11 +87,13 @@ public class PropertyDescriptor extends FeatureDescriptor {
         }
         this.setName(propertyName);
         try {
-            setReadMethod(beanClass, createDefaultMethodName(propertyName, "is")); //$NON-NLS-1$
+            setReadMethod(beanClass,
+                    createDefaultMethodName(propertyName, "is")); //$NON-NLS-1$
         } catch (Exception e) {
-            setReadMethod(beanClass, createDefaultMethodName(propertyName, "get")); //$NON-NLS-1$
+            setReadMethod(beanClass, createDefaultMethodName(propertyName,
+                    "get")); //$NON-NLS-1$
         }
-        
+
         setWriteMethod(beanClass, createDefaultMethodName(propertyName, "set")); //$NON-NLS-1$
     }
 
@@ -146,22 +151,26 @@ public class PropertyDescriptor extends FeatureDescriptor {
         boolean result = object instanceof PropertyDescriptor;
         if (result) {
             PropertyDescriptor pd = (PropertyDescriptor) object;
-            boolean gettersAreEqual = (this.getter == null) && (pd.getReadMethod() == null)
-                    || (this.getter != null) && (this.getter.equals(pd.getReadMethod()));
-            boolean settersAreEqual = (this.setter == null) && (pd.getWriteMethod() == null)
-                    || (this.setter != null) && (this.setter.equals(pd.getWriteMethod()));
-            boolean propertyTypesAreEqual = this.getPropertyType() == pd.getPropertyType();
-            boolean propertyEditorClassesAreEqual = this.getPropertyEditorClass() == pd
-                    .getPropertyEditorClass();
+            boolean gettersAreEqual = (this.getter == null)
+                    && (pd.getReadMethod() == null) || (this.getter != null)
+                    && (this.getter.equals(pd.getReadMethod()));
+            boolean settersAreEqual = (this.setter == null)
+                    && (pd.getWriteMethod() == null) || (this.setter != null)
+                    && (this.setter.equals(pd.getWriteMethod()));
+            boolean propertyTypesAreEqual = this.getPropertyType() == pd
+                    .getPropertyType();
+            boolean propertyEditorClassesAreEqual = this
+                    .getPropertyEditorClass() == pd.getPropertyEditorClass();
             boolean boundPropertyAreEqual = this.isBound() == pd.isBound();
-            boolean constrainedPropertyAreEqual = this.isConstrained() == pd.isConstrained();
-            result = gettersAreEqual && settersAreEqual && propertyTypesAreEqual
-                    && propertyEditorClassesAreEqual && boundPropertyAreEqual
-                    && constrainedPropertyAreEqual;
+            boolean constrainedPropertyAreEqual = this.isConstrained() == pd
+                    .isConstrained();
+            result = gettersAreEqual && settersAreEqual
+                    && propertyTypesAreEqual && propertyEditorClassesAreEqual
+                    && boundPropertyAreEqual && constrainedPropertyAreEqual;
         }
         return result;
     }
-    
+
     @Override
     public int hashCode() {
         return BeansUtils.getHashCode(getter) + BeansUtils.getHashCode(setter)
@@ -216,24 +225,27 @@ public class PropertyDescriptor extends FeatureDescriptor {
         return result;
     }
 
-    void setReadMethod(Class<?> beanClass, String getterName) throws IntrospectionException {
+    void setReadMethod(Class<?> beanClass, String getterName)
+            throws IntrospectionException {
         try {
-            Method readMethod = beanClass.getMethod(getterName, new Class[]{});
+            Method readMethod = beanClass.getMethod(getterName, new Class[] {});
             setReadMethod(readMethod);
         } catch (Exception e) {
             throw new IntrospectionException(e.getLocalizedMessage());
         }
     }
 
-    void setWriteMethod(Class<?> beanClass, String setterName) throws IntrospectionException {
+    void setWriteMethod(Class<?> beanClass, String setterName)
+            throws IntrospectionException {
         Method writeMethod = null;
         try {
-            if(getter != null){
-                writeMethod = beanClass.getMethod(setterName, new Class[]{getter.getReturnType()});
-            }else{
+            if (getter != null) {
+                writeMethod = beanClass.getMethod(setterName,
+                        new Class[] { getter.getReturnType() });
+            } else {
                 Method[] methods = beanClass.getMethods();
                 for (Method method : methods) {
-                    if(method.getName().equals(setterName)){
+                    if (method.getName().equals(setterName)) {
                         writeMethod = method;
                         break;
                     }
@@ -268,7 +280,8 @@ public class PropertyDescriptor extends FeatureDescriptor {
             }
         } catch (Exception e) {
             // beans.47=Unable to instantiate property editor
-            RuntimeException re = new RuntimeException(Messages.getString("beans.47"), e); //$NON-NLS-1$
+            RuntimeException re = new RuntimeException(Messages
+                    .getString("beans.47"), e); //$NON-NLS-1$
             throw re;
         }
         return editor;

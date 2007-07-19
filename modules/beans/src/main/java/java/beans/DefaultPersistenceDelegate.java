@@ -51,7 +51,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     /**
      * Constructs a <code>DefaultPersistenceDelegate</code> instance that
      * supports the persistence of a bean which has a default constructor.
-     *  
+     * 
      */
     public DefaultPersistenceDelegate() {
         // empty
@@ -169,6 +169,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     /*
      * Get the field value of an object using privileged code.
      */
+    @SuppressWarnings("unchecked")
     private Object getFieldValue(Object oldInstance, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
         Class c = oldInstance.getClass();
@@ -199,7 +200,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
 
         // Invoke read method to get the value if found
         if (null != getter) {
-            return getter.invoke(oldInstance, (Object[])null);
+            return getter.invoke(oldInstance, (Object[]) null);
         }
 
         // Otherwise, try to access the field directly
@@ -237,8 +238,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
             try {
                 info = Introspector.getBeanInfo(oldInstance.getClass(),
                         Introspector.IGNORE_ALL_BEANINFO);
-                proDscMap = internalAsMap(info
-                        .getPropertyDescriptors());
+                proDscMap = internalAsMap(info.getPropertyDescriptors());
             } catch (IntrospectionException ex) {
                 enc.getExceptionListener().exceptionThrown(ex);
                 throw new Error(ex);
@@ -251,13 +251,13 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
                 if (null == propertyName || 0 == propertyName.length()) {
                     continue;
                 }
-                
+
                 // Get the value for each property of the given instance
                 try {
                     args[i] = getPropertyValue(proDscMap, oldInstance,
                             this.propertyNames[i]);
-                } catch (Exception ex) {                  
-                        enc.getExceptionListener().exceptionThrown(ex);
+                } catch (Exception ex) {
+                    enc.getExceptionListener().exceptionThrown(ex);
                 }
             }
         }
@@ -265,8 +265,9 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         return new Expression(oldInstance, oldInstance.getClass(),
                 Statement.CONSTRUCTOR_NAME, args);
     }
-    
-    private static HashMap<String, PropertyDescriptor> internalAsMap(PropertyDescriptor[] propertyDescs) {
+
+    private static HashMap<String, PropertyDescriptor> internalAsMap(
+            PropertyDescriptor[] propertyDescs) {
         HashMap<String, PropertyDescriptor> map = new HashMap<String, PropertyDescriptor>();
         for (int i = 0; i < propertyDescs.length; i++) {
             map.put(propertyDescs[i].getName(), propertyDescs[i]);
