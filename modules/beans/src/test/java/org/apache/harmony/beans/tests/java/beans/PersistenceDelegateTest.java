@@ -19,6 +19,8 @@ package org.apache.harmony.beans.tests.java.beans;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.TextAttribute;
+import java.awt.dnd.DropTarget;
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
@@ -36,7 +38,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Stack;
+
+import javax.swing.JTabbedPane;
+import javax.swing.LayoutFocusTraversalPolicy;
 
 import junit.framework.TestCase;
 
@@ -433,6 +439,367 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(choice.getName(), aChoice.getName());
 
         assertEquals(choice.getItem(0), aChoice.getItem(0));
+    }
+    
+    public void test_writeObject_java_awt_SystemColor() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        encoder.writeObject(SystemColor.activeCaption);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        SystemColor color = (SystemColor) decoder.readObject();
+        assertEquals(SystemColor.activeCaption, color);
+    }
+
+    public void test_writeObject_java_awt_font_TextAttribute() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        encoder.writeObject(TextAttribute.BACKGROUND);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        TextAttribute attribute = (TextAttribute) decoder.readObject();
+        assertEquals(TextAttribute.BACKGROUND, attribute);
+    }
+
+    public void test_writeObject_java_awt_MenuShortcut() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        MenuShortcut shortCut = new MenuShortcut(2);
+
+        encoder.writeObject(shortCut);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        MenuShortcut aMenuShortcut = (MenuShortcut) decoder.readObject();
+        assertEquals(shortCut, aMenuShortcut);
+        assertEquals(shortCut.getKey(), aMenuShortcut.getKey());
+    }
+
+    public static class MockComponent extends Component {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+    }
+    public void test_writeObject_java_awt_Component() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        
+        Component component = new MockComponent();
+        component.add(new PopupMenu("PopupMenu"));
+        component.setBackground(Color.black);
+        component.setBounds(new Rectangle(1, 1, 10, 10));
+        component.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        component.setEnabled(true);
+        component.setFocusable(true);
+        component.setFont(new Font("Arial", 1, 1));
+        component.setForeground(Color.blue);
+        component.setIgnoreRepaint(true);
+        component.setLocale(Locale.CANADA);
+        component.setName("MockComponent");
+        component.setVisible(true);
+        component.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+        component.setDropTarget(new DropTarget());
+
+        encoder.writeObject(component);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Component aComponent = (Component) decoder.readObject();
+        assertEquals(component.getBackground(), aComponent.getBackground());
+        assertEquals(component.getForeground(), aComponent.getForeground());
+        assertEquals(component.getFont().getFamily(), aComponent.getFont().getFamily());
+        assertEquals(component.getFont().getStyle(), aComponent.getFont().getStyle());
+        assertEquals(component.getFont().getSize(), aComponent.getFont().getSize());
+        assertEquals(component.getName(), aComponent.getName());
+        assertEquals(component.getBounds(), aComponent.getBounds());
+    }
+
+    public void test_writeObject_java_awt_Container() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Container container = new Container();
+        container.setBackground(Color.blue);
+        container.setFocusTraversalKeysEnabled(true);
+        container.setBounds(0, 0, 10, 10);
+        container.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        container.setComponentZOrder(new Label("label"), 0);
+        container.setComponentZOrder(new JTabbedPane(), 1);
+        container.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        container.setFocusTraversalKeysEnabled(true);
+        container.setFocusable(true);
+        container.setFocusTraversalPolicyProvider(true);
+        container.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy());
+        container.setFont(new Font("Arial Bold", Font.ITALIC, 0));
+        container.setForeground(Color.green);
+        container.setIgnoreRepaint(true);
+        container.setLocation(1, 2);
+        container.setName("container");
+        container.setSize(new Dimension(200, 100));
+        container.setEnabled(true);
+        container.setFocusCycleRoot(true);
+        container.setLayout(new BorderLayout());
+        container.setLocale(Locale.CANADA);
+        container.setVisible(true);
+        container.add(new Label("label"));
+        container.add(new JTabbedPane());
+
+        encoder.writeObject(container);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Container aContainer = (Container) decoder.readObject();
+        assertEquals(container.getFocusTraversalKeysEnabled(), aContainer
+                .getFocusTraversalKeysEnabled());
+        assertEquals(Color.blue, aContainer.getBackground());
+        assertEquals(new Rectangle(1, 2, 200, 100), aContainer.getBounds());
+        
+        // ComponentOrientation is not persistent
+        assertTrue(aContainer.getComponentOrientation().isLeftToRight());
+        Component [] components = aContainer.getComponents();
+        assertTrue(components[0] instanceof Label);
+        assertEquals(0, aContainer.getComponentZOrder(components[0]));
+        assertTrue(components[1] instanceof JTabbedPane);
+        assertEquals(1, aContainer.getComponentZOrder(components[1]));
+        
+        // Cursor will not be persisted
+        assertEquals(Cursor.DEFAULT_CURSOR, aContainer.getCursor().getType());
+        // DropTarget will not be persisted
+        assertNull(aContainer.getDropTarget());
+        
+        assertEquals(container.getFocusTraversalPolicy().getClass(), aContainer
+                .getFocusTraversalPolicy().getClass());
+        assertEquals(container.getName(), aContainer.getName());
+
+        container = new Container();
+        container.setFocusCycleRoot(true);
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        encoder.writeObject(container);
+        encoder.close();
+        stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        decoder = new XMLDecoder(stream);
+        aContainer = (Container) decoder.readObject();
+        assertTrue(aContainer.isFocusCycleRoot());
+        
+    }
+    
+    public void test_writeObject_java_awt_Menu() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Menu menu = new Menu();
+        String action = "menu action command";
+        menu.setActionCommand(action);
+        menu.setEnabled(true);
+        menu.setFont(new Font("Arial Black", Font.BOLD, 10));
+        menu.setLabel("menu");
+        menu.setName("menu");
+        menu.setShortcut(new MenuShortcut(10));
+        menu.insertSeparator(1);
+
+        encoder.writeObject(menu);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Menu aMenu = (Menu) decoder.readObject();
+        assertTrue(aMenu.isEnabled());
+        assertEquals(action, aMenu.getActionCommand());
+        assertEquals(menu.getFont().getSize(), aMenu.getFont().getSize());
+        assertEquals(menu.getFont().getStyle(), aMenu.getFont().getStyle());
+        assertEquals(menu.getLabel(), aMenu.getLabel());
+        assertEquals(menu.getName(), aMenu.getName());
+        assertEquals(menu.getShortcut().getKey(), aMenu.getShortcut().getKey());
+        assertEquals(1, menu.getItemCount());
+        assertEquals(menu.getItem(0).getLabel(), aMenu.getItem(0).getLabel());
+        assertEquals(menu.getItem(0).getName(), aMenu.getItem(0).getName());
+        assertEquals(menu.getItem(0).getFont().getStyle(), aMenu.getItem(0).getFont().getStyle());
+        assertEquals(menu.getFont().getSize(), aMenu.getItem(0).getFont().getSize());
+        
+    }
+
+    public void test_writeObject_java_awt_MenuBar() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+ 
+        MenuBar bar = new MenuBar();
+        bar.add(new Menu("menu1"));
+
+        encoder.writeObject(bar);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        MenuBar aBar = (MenuBar) decoder.readObject();
+        assertEquals(bar.getMenu(0).getName(), aBar.getMenu(0).getName());
+        
+    }
+
+    public void test_writeObject_java_awt_List() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        java.awt.List list = new List();
+        list.setBounds(0, 0, 10, 10);
+        list.add(new PopupMenu("popupMenu"));
+        list.add("1");
+        list.add("2", 2);
+        list.setBackground(Color.BLUE);
+        encoder.writeObject(list);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        List aList = (List) decoder.readObject();
+        assertEquals(list.getItem(0), aList.getItem(0));
+        assertEquals(list.getHeight(), aList.getHeight());
+        assertEquals(list.getBackground(), aList.getBackground());
+    }
+
+    public void test_writeObject_java_awt_BorderLayout(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        BorderLayout layout = new BorderLayout();
+        layout.setHgap(2);
+        layout.setVgap(3);
+        encoder.writeObject(layout);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        BorderLayout aLayout = (BorderLayout) decoder.readObject();
+        assertEquals(layout.getHgap(), aLayout.getHgap());
+        assertEquals(layout.getVgap(), aLayout.getVgap());
+    }
+
+    public void test_writeObject_java_awt_CardLayout(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        
+        CardLayout layout = new CardLayout();
+        layout.addLayoutComponent(new Label("label"), "constraints");
+        layout.setHgap(2);
+        layout.setVgap(3);
+        encoder.writeObject(layout);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        CardLayout aLayout = (CardLayout) decoder.readObject();
+        assertEquals(layout.getHgap(), aLayout.getHgap());
+        assertEquals(layout.getVgap(), aLayout.getVgap());
+    }
+
+    public void test_writeObject_java_awt_GridBagLayout() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        GridBagLayout layout = new GridBagLayout();
+        layout.addLayoutComponent(new Label("label"), new GridBagConstraints(0,
+                0, 100, 60, 0.1, 0.1, GridBagConstraints.WEST,
+                GridBagConstraints.NONE, new Insets(0,0, 99, 59), 0, 0));
+        encoder.writeObject(layout);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        GridBagLayout aLayout = (GridBagLayout) decoder.readObject();
+        assertEquals(layout.getConstraints(new Label("label")).weightx, aLayout
+                .getConstraints(new Label("label")).weightx);
+        assertEquals(layout.getConstraints(new Label("label")).insets.left, aLayout
+                .getConstraints(new Label("label")).insets.left);
+    }
+    
+    public void test_writeObject_java_awt_Cursor() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Cursor cursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+
+        encoder.writeObject(cursor);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Cursor aCursor = (Cursor) decoder.readObject();
+        assertEquals(cursor.getName(), aCursor
+                .getName());
+        assertEquals(cursor.getType(), aCursor.getType());
+    }
+    
+    public void test_writeObject_java_awt_Insets() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Insets inset = new Insets(0, 0, 10, 10);
+
+        encoder.writeObject(inset);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Insets aInset = (Insets) decoder.readObject();
+        assertEquals(inset.left, aInset.left);
+        assertEquals(inset.top, aInset.top);
+    }
+    
+    public void test_writeObject_java_awt_point() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Point point = new Point(10, 20);
+        
+        encoder.writeObject(point);
+        encoder.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Point aPoint = (Point) decoder.readObject();
+        assertEquals(point, aPoint);
+    }
+
+    public void test_writeObject_java_awt_ScrollPane() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        ScrollPane scrollPane = new ScrollPane();
+        
+        encoder.writeObject(scrollPane);
+        encoder.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        ScrollPane aScrollPane = (ScrollPane) decoder.readObject();
+        assertEquals(scrollPane.getAlignmentX(), aScrollPane.getAlignmentX());
+        assertEquals(scrollPane.getAlignmentY(), aScrollPane.getAlignmentY());
+        assertEquals(scrollPane.getScrollbarDisplayPolicy(), aScrollPane
+                .getScrollbarDisplayPolicy());
     }
 
     // <--
