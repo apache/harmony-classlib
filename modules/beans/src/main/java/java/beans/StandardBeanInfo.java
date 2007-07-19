@@ -55,11 +55,11 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private BeanInfo explicitBeanInfo = null;
 
-    private EventSetDescriptor[] events = new EventSetDescriptor[0];
+	private EventSetDescriptor[] events = null;
 
-    private MethodDescriptor[] methods = new MethodDescriptor[0];
+	private MethodDescriptor[] methods = null;
 
-    private PropertyDescriptor[] properties = new PropertyDescriptor[0];
+	private PropertyDescriptor[] properties = null;
 
     BeanInfo[] additionalBeanInfo = null;
 
@@ -73,7 +73,10 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private Image[] icon = new Image[4];
 
-    StandardBeanInfo(Class beanClass, BeanInfo explicitBeanInfo)
+	private boolean canAddPropertyChangeListener;
+
+	private boolean canRemovePropertyChangeListener;
+	StandardBeanInfo(Class beanClass, BeanInfo explicitBeanInfo, Class stopClass)
             throws IntrospectionException {
         assert (beanClass != null);
         this.beanClass = beanClass;
@@ -99,9 +102,15 @@ class StandardBeanInfo extends SimpleBeanInfo {
             events = explicitBeanInfo.getEventSetDescriptors();
             methods = explicitBeanInfo.getMethodDescriptors();
             properties = explicitBeanInfo.getPropertyDescriptors();
-            this.defaultEventIndex = explicitBeanInfo.getDefaultEventIndex();
-            this.defaultPropertyIndex = explicitBeanInfo
-                    .getDefaultPropertyIndex();
+			defaultEventIndex = explicitBeanInfo.getDefaultEventIndex();
+			if (defaultEventIndex < 0 || defaultEventIndex >= events.length) {
+				defaultEventIndex = -1;
+			}
+			defaultPropertyIndex = explicitBeanInfo.getDefaultPropertyIndex();
+			if (defaultPropertyIndex < 0
+					|| defaultPropertyIndex >= properties.length) {
+				defaultPropertyIndex = -1;
+			}
             additionalBeanInfo = explicitBeanInfo.getAdditionalBeanInfo();
             for (int i = 0; i < 4; i++) {
                 icon[i] = explicitBeanInfo.getIcon(i + 1);
@@ -115,17 +124,17 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 explicitProperties = true;
         }
 
-        if (!explicitMethods) {
-            methods = introspectMethods(beanClass);
-        }
+		if (methods == null) {
+			methods = introspectMethods();
+		}
 
-        if (!explicitProperties) {
-            properties = introspectProperties(beanClass);
-        }
+		if (properties == null) {
+			properties = introspectProperties(stopClass);
+		}
 
-        if (!explicitEvents) {
-            events = introspectEvents(beanClass);
-        }
+		if (events == null) {
+			events = introspectEvents();
+		}
     }
 
     public BeanInfo[] getAdditionalBeanInfo() {
@@ -140,15 +149,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return methods;
     }
 
-    @SuppressWarnings("unchecked")
-    public PropertyDescriptor[] getPropertyDescriptors() {
-        PropertyDescriptor[] sortedProperties = properties;
-
-        if (sortedProperties != null) {
-            Arrays.sort(sortedProperties, comparator);
-        }
-        return sortedProperties;
-    }
+	public PropertyDescriptor[] getPropertyDescriptors() {
+		return properties;
+	}
 
     public BeanDescriptor getBeanDescriptor() {
         if (explicitBeanInfo != null) {
@@ -172,102 +175,61 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return icon[iconKind - 1];
     }
 
-    void mergeBeanInfo(BeanInfo superBeanInfo, boolean force)
-            throws IntrospectionException {
-        if (force) {
-            if (superBeanInfo.getPropertyDescriptors() != null) {
-                PropertyDescriptor[] superDescs = superBeanInfo
-                        .getPropertyDescriptors();
-                if (getPropertyDescriptors() != null) {
-                    if (explicitProperties == false)
-                        properties = mergeProps(superDescs);
-                } else {
-                    if (explicitProperties == false)
-                        properties = superDescs;
-                }
-            }
+	void mergeBeanInfo(BeanInfo beanInfo, boolean force)
+			throws IntrospectionException {
+		if (force || !explicitProperties) {
+			PropertyDescriptor[] superDescs = beanInfo.getPropertyDescriptors();
+			if (superDescs != null) {
+				if (getPropertyDescriptors() != null) {
+					properties = mergeProps(superDescs, beanInfo
+							.getDefaultPropertyIndex());
+				} else {
+					properties = superDescs;
+					defaultPropertyIndex = beanInfo.getDefaultPropertyIndex();
+				}
+			}
+		}
 
-            // merge MethodDescriptors
-            if (superBeanInfo.getMethodDescriptors() != null) {
-                if (getMethodDescriptors() != null) {
-                    if (explicitMethods == false)
-                        methods = mergeMethods(superBeanInfo
-                                .getMethodDescriptors(), getMethodDescriptors());
-                } else {
-                    if (explicitMethods == false)
-                        methods = superBeanInfo.getMethodDescriptors();
-                }
-            }
+		if (force || !explicitMethods) {
+			MethodDescriptor[] superMethods = beanInfo.getMethodDescriptors();
+			if (superMethods != null) {
+				if (methods != null) {
+					methods = mergeMethods(superMethods);
+				} else {
+					methods = superMethods;
+				}
+			}
+		}
 
-            // merge EventSetDescriptors
-            if (superBeanInfo.getEventSetDescriptors() != null) {
-                if (getEventSetDescriptors() != null) {
-                    if (explicitEvents == false)
-                        events = mergeEvents(superBeanInfo
-                                .getEventSetDescriptors());
-                } else {
-                    if (explicitEvents == false)
-                        events = superBeanInfo.getEventSetDescriptors();
-                }
-            }
-        }
-        mergeBeanInfo(superBeanInfo);
-    }
-
-    void mergeBeanInfo(BeanInfo superBeanInfo) throws IntrospectionException {
-        // FIXME: the merge principle seems very different with RI's behavior
-        // merge PropertyDescriptors
-        if ((!explicitProperties)
-                && (superBeanInfo.getPropertyDescriptors() != null)) {
-            PropertyDescriptor[] superDescs = superBeanInfo
-                    .getPropertyDescriptors();
-            if (getPropertyDescriptors() != null) {
-                properties = mergeProps(superDescs);
-            } else {
-                properties = superDescs;
-            }
-        }
-
-        // merge MethodDescriptors
-        if ((!explicitMethods)
-                && (superBeanInfo.getMethodDescriptors() != null)) {
-            if (getMethodDescriptors() != null) {
-                methods = mergeMethods(superBeanInfo.getMethodDescriptors(),
-                        getMethodDescriptors());
-            } else {
-                methods = superBeanInfo.getMethodDescriptors();
-            }
-        }
-
-        // merge EventSetDescriptors
-        if ((!explicitEvents)
-                && (superBeanInfo.getEventSetDescriptors() != null)) {
-            if (getEventSetDescriptors() != null) {
-                events = mergeEvents(superBeanInfo.getEventSetDescriptors());
-            } else {
-                events = superBeanInfo.getEventSetDescriptors();
-            }
-        }
-
-        // merge defaultPropertyIndex, and defaultEventIndex
-        if ((getDefaultEventIndex() == -1)
-                && (superBeanInfo.getDefaultEventIndex() != -1)) {
-            defaultEventIndex = superBeanInfo.getDefaultEventIndex();
-        }
-
-        if ((getDefaultPropertyIndex() == -1)
-                && (superBeanInfo.getDefaultPropertyIndex() != -1)) {
-            defaultPropertyIndex = superBeanInfo.getDefaultPropertyIndex();
-        }
-
-    }
-
+		if (force || !explicitEvents) {
+			EventSetDescriptor[] superEvents = beanInfo
+					.getEventSetDescriptors();
+			if (superEvents != null) {
+				if (events != null) {
+					events = mergeEvents(superEvents, beanInfo
+							.getDefaultEventIndex());
+				} else {
+					events = superEvents;
+					defaultEventIndex = beanInfo.getDefaultEventIndex();
+				}
+			}
+		}
+	}
     /*
      * merge the PropertyDescriptor with superclass
      */
-    private PropertyDescriptor[] mergeProps(PropertyDescriptor[] superDescs)
-            throws IntrospectionException {
-        HashMap<String, PropertyDescriptor> subMap = internalAsMap(getPropertyDescriptors());
+	private PropertyDescriptor[] mergeProps(PropertyDescriptor[] superDescs,
+			int superDefaultIndex) throws IntrospectionException {
+		// FIXME:change to OO way as EventSetD and MethodD
+		HashMap<String, PropertyDescriptor> subMap = internalAsMap(properties);
+		String defaultPropertyName = null;
+		if (defaultPropertyIndex >= 0
+				&& defaultPropertyIndex < properties.length) {
+			defaultPropertyName = properties[defaultPropertyIndex].getName();
+		} else if (superDefaultIndex >= 0
+				&& superDefaultIndex < superDescs.length) {
+			defaultPropertyName = superDescs[superDefaultIndex].getName();
+		}
 
         for (int i = 0; i < superDescs.length; i++) {
             PropertyDescriptor superDesc = superDescs[i];
@@ -381,60 +343,90 @@ class StandardBeanInfo extends SimpleBeanInfo {
         PropertyDescriptor[] theDescs = new PropertyDescriptor[subMap.size()];
         subMap.values().toArray(theDescs);
 
+		if (defaultPropertyName != null && !explicitProperties) {
+			for (int i = 0; i < theDescs.length; i++) {
+				if (defaultPropertyName.equals(theDescs[i].getName())) {
+					defaultPropertyIndex = i;
+					break;
+				}
+			}
+		}
         return theDescs;
     }
 
-    private static void mergeAttributes(PropertyDescriptor subDesc,
-            PropertyDescriptor superDesc) {
-        subDesc.hidden |= superDesc.hidden;
-        subDesc.expert |= superDesc.expert;
-        subDesc.preferred |= superDesc.preferred;
-        subDesc.name = superDesc.name;
-        if (superDesc.shortDescription != null) {
-            subDesc.shortDescription = superDesc.shortDescription;
-        }
-        if (superDesc.displayName != null) {
-            subDesc.displayName = superDesc.displayName;
-        }
-    }
+	private static void mergeAttributes(PropertyDescriptor subDesc,
+			PropertyDescriptor superDesc) {
+		// FIXME: this is just temp workaround, need more elegant solution to
+		// handle this
+		subDesc.hidden |= superDesc.hidden;
+		subDesc.expert |= superDesc.expert;
+		subDesc.preferred |= superDesc.preferred;
+		subDesc.bound |= superDesc.bound;
+		subDesc.constrained |= superDesc.constrained;
+		subDesc.name = superDesc.name;
+		if (subDesc.shortDescription == null
+				&& superDesc.shortDescription != null) {
+			subDesc.shortDescription = superDesc.shortDescription;
+		}
+		if (subDesc.displayName == null && superDesc.displayName != null) {
+			subDesc.displayName = superDesc.displayName;
+		}
+	}
 
     /*
      * merge the MethodDescriptor
      */
-    private static MethodDescriptor[] mergeMethods(
-            MethodDescriptor[] superDescs, MethodDescriptor[] subDescs) {
-        HashMap<String, MethodDescriptor> subMap = internalAsMap(subDescs);
+	private MethodDescriptor[] mergeMethods(MethodDescriptor[] superDescs) {
+		HashMap<String, MethodDescriptor> subMap = internalAsMap(methods);
 
-        for (int i = 0; i < superDescs.length; i++) {
-            MethodDescriptor superDesc = superDescs[i];
-            String methodName = getQualifiedName(superDesc.getMethod());
-            if (subMap.containsKey(methodName)) {
-                continue;
-            }
-            subMap.put(methodName, superDesc);
-        }
+		for (MethodDescriptor superMethod : superDescs) {
+			String methodName = getQualifiedName(superMethod.getMethod());
+			MethodDescriptor method = subMap.get(methodName);
+			if (method == null) {
+				subMap.put(methodName, superMethod);
+			} else {
+				method.merge(superMethod);
+			}
+		}
+		MethodDescriptor[] theMethods = new MethodDescriptor[subMap.size()];
+		subMap.values().toArray(theMethods);
+		return theMethods;
+	}
 
-        MethodDescriptor[] theMethods = new MethodDescriptor[subMap.size()];
-        subMap.values().toArray(theMethods);
-        return theMethods;
-    }
+	private EventSetDescriptor[] mergeEvents(EventSetDescriptor[] otherEvents,
+			int otherDefaultIndex) {
+		HashMap<String, EventSetDescriptor> subMap = internalAsMap(events);
+		String defaultEventName = null;
+		if (defaultEventIndex >= 0 && defaultEventIndex < events.length) {
+			defaultEventName = events[defaultEventIndex].getName();
+		} else if (otherDefaultIndex >= 0
+				&& otherDefaultIndex < otherEvents.length) {
+			defaultEventName = otherEvents[otherDefaultIndex].getName();
+		}
 
-    private EventSetDescriptor[] mergeEvents(EventSetDescriptor[] otherEvents) {
-        HashMap<String, EventSetDescriptor> subMap = internalAsMap(this
-                .getEventSetDescriptors());
+		for (EventSetDescriptor event : otherEvents) {
+			String eventName = event.getName();
+			EventSetDescriptor subEvent = subMap.get(eventName);
+			if (subEvent == null) {
+				subMap.put(eventName, event);
+			} else {
+				subEvent.merge(event);
+			}
+		}
 
-        for (int i = 0; i < otherEvents.length; i++) {
-            String eventName = otherEvents[i].getName();
-            if (subMap.containsKey(eventName)) {
-                continue;
-            }
-            subMap.put(eventName, otherEvents[i]);
-        }
+		EventSetDescriptor[] theEvents = new EventSetDescriptor[subMap.size()];
+		subMap.values().toArray(theEvents);
 
-        EventSetDescriptor[] theMethods = new EventSetDescriptor[subMap.size()];
-        subMap.values().toArray(theMethods);
-        return theMethods;
-    }
+		if (defaultEventName != null && !explicitEvents) {
+			for (int i = 0; i < theEvents.length; i++) {
+				if (defaultEventName.equals(theEvents[i].getName())) {
+					defaultEventIndex = i;
+					break;
+				}
+			}
+		}
+		return theEvents;
+	}
 
     private static HashMap<String, PropertyDescriptor> internalAsMap(
             PropertyDescriptor[] propertyDescs) {
@@ -484,15 +476,20 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * @return An array of MethodDescriptors with the public methods. null if
      *         there are no public methods
      */
-    private static MethodDescriptor[] introspectMethods(Class beanClass) {
+	private MethodDescriptor[] introspectMethods() {
+		return introspectMethods(false, beanClass);
+	}
 
-        MethodDescriptor[] theMethods = null;
+	private MethodDescriptor[] introspectMethods(boolean includeSuper) {
+		return introspectMethods(includeSuper, beanClass);
+	}
 
-        if (beanClass == null)
-            return null;
+	private MethodDescriptor[] introspectMethods(boolean includeSuper,
+			Class introspectorClass) {
 
-        // Get the list of methods belonging to this class
-        Method[] basicMethods = beanClass.getDeclaredMethods();
+		// Get the list of methods belonging to this class
+		Method[] basicMethods = includeSuper ? introspectorClass.getMethods()
+				: introspectorClass.getDeclaredMethods();
 
         if (basicMethods == null || basicMethods.length == 0)
             return null;
@@ -513,6 +510,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
         // Get the list of public methods into the returned array
         int methodCount = methodList.size();
+		MethodDescriptor[] theMethods = null;
         if (methodCount > 0) {
             theMethods = new MethodDescriptor[methodCount];
             theMethods = (MethodDescriptor[]) methodList.toArray(theMethods);
@@ -530,13 +528,11 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * @return The list of Properties as an array of PropertyDescriptors
      * @throws IntrospectionException
      */
-    private static PropertyDescriptor[] introspectProperties(Class beanClass)
-            throws IntrospectionException {
-        if (beanClass == null)
-            return null;
+	private PropertyDescriptor[] introspectProperties(Class stopClass)
+			throws IntrospectionException {
 
         // Get descriptors for the public methods
-        MethodDescriptor[] theMethods = introspectMethods(beanClass);
+		MethodDescriptor[] theMethods = introspectMethods();
 
         if (theMethods == null)
             return null;
@@ -550,6 +546,25 @@ class StandardBeanInfo extends SimpleBeanInfo {
             introspectSet(theMethods[i].getMethod(), propertyTable);
         }
 
+		// If there are listener methods, should be bound.
+		MethodDescriptor[] allMethods = introspectMethods(true);
+		if (stopClass != null) {
+			MethodDescriptor[] excludeMethods = introspectMethods(true,
+					stopClass);
+			if (excludeMethods != null) {
+				ArrayList<MethodDescriptor> tempMethods = new ArrayList<MethodDescriptor>();
+				for (MethodDescriptor method : allMethods) {
+					if(!isInSuper(method, excludeMethods)){
+						tempMethods.add(method);
+					}
+				}
+				allMethods = (MethodDescriptor[]) tempMethods
+						.toArray(new MethodDescriptor[0]);
+			}
+		}
+		for (int i = 0; i < allMethods.length; i++) {
+			introspectPropertyListener(allMethods[i].getMethod());
+		}
         // Put the properties found into the PropertyDescriptor array
         ArrayList<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 
@@ -587,8 +602,16 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 }
             }
             // RI set propretyDescriptor as bound. FIXME
-            propertyDesc.setBound(false);
-            propertyList.add(propertyDesc);
+			// propertyDesc.setBound(true);
+			if (canAddPropertyChangeListener && canRemovePropertyChangeListener) {
+				propertyDesc.setBound(true);
+			} else {
+				propertyDesc.setBound(false);
+			}
+			if (table.get("isConstrained") == Boolean.TRUE) {
+				propertyDesc.setConstrained(true);
+			}
+			propertyList.add(propertyDesc);
         }
 
         PropertyDescriptor[] theProperties = new PropertyDescriptor[propertyList
@@ -597,7 +620,29 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return theProperties;
     }
 
-    @SuppressWarnings("unchecked")
+	private boolean isInSuper(MethodDescriptor method,
+			MethodDescriptor[] excludeMethods) {
+		for (MethodDescriptor m : excludeMethods) {
+			if (method.getMethod().equals(m.getMethod())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void introspectPropertyListener(Method theMethod) {
+		String methodName = theMethod.getName();
+		Class[] param = theMethod.getParameterTypes();
+		if (param.length != 1) {
+			return;
+		}
+		if (methodName.equals("addPropertyChangeListener")
+				&& param[0].equals(PropertyChangeListener.class))
+			canAddPropertyChangeListener = true;
+		if (methodName.equals("removePropertyChangeListener")
+				&& param[0].equals(PropertyChangeListener.class))
+			canRemovePropertyChangeListener = true;
+	}
     private static void introspectGet(Method theMethod,
             HashMap<String, HashMap> propertyTable) {
         String methodName = theMethod.getName();
@@ -745,6 +790,14 @@ class StandardBeanInfo extends SimpleBeanInfo {
         table.put(tag + "set", theMethod); //$NON-NLS-1$
         table.put(tag + "PropertyType", propertyType); //$NON-NLS-1$
 
+		// handle constrained
+		boolean isConstrained = false;
+		Class[] exceptions = theMethod.getExceptionTypes();
+		for (Class e : exceptions) {
+			if (e.equals(PropertyVetoException.class)) {
+				table.put("isConstrained", Boolean.TRUE);
+			}
+		}
         propertyTable.put(propertyName, table);
     }
 
@@ -756,13 +809,11 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * @return the events
      * @throws IntrospectionException
      */
-    private static EventSetDescriptor[] introspectEvents(Class beanClass)
-            throws IntrospectionException {
-        if (beanClass == null)
-            return null;
-
-        // Get descriptors for the public methods
-        MethodDescriptor[] theMethods = introspectMethods(beanClass);
+	private EventSetDescriptor[] introspectEvents()
+			throws IntrospectionException {
+		// Get descriptors for the public methods
+		// FIXME: performance
+		MethodDescriptor[] theMethods = introspectMethods();
 
         if (theMethods == null)
             return null;
@@ -944,15 +995,37 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return (propertyName != null) && (propertyName.length() != 0);
     }
 
-    private static class PropertyComparator implements Comparator {
+	private static class PropertyComparator implements
+			Comparator<PropertyDescriptor> {
+		public int compare(PropertyDescriptor object1,
+				PropertyDescriptor object2) {
+			return object1.getName().compareTo(object2.getName());
+		}
 
-        public int compare(Object object1, Object object2) {
-            PropertyDescriptor theDesc = (PropertyDescriptor) object1;
-            PropertyDescriptor otherDesc = (PropertyDescriptor) object2;
+	}
 
-            return theDesc.getName().compareTo(otherDesc.getName());
-        }
+	// TODO
+	void init() {
+		if (this.events == null) {
+			events = new EventSetDescriptor[0];
+		}
+		if (this.properties == null) {
+			this.properties = new PropertyDescriptor[0];
+		}
 
-    }
-
+		if (properties != null) {
+			String defaultPropertyName = (defaultPropertyIndex != -1 ? properties[defaultPropertyIndex]
+					.getName()
+					: null);
+			Arrays.sort(properties, comparator);
+			if (null != defaultPropertyName) {
+				for (int i = 0; i < properties.length; i++) {
+					if (defaultPropertyName.equals(properties[i].getName())) {
+						defaultPropertyIndex = i;
+						break;
+					}
+				}
+			}
+		}
+	}
 }

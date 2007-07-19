@@ -133,7 +133,7 @@ public class Introspector extends java.lang.Object {
      * @param clazz
      *            the specified bean class
      */
-    public static void flushFromCaches(Class clazz) {
+    public static void flushFromCaches(Class<?> clazz) {
         if(clazz == null){
             throw new NullPointerException();
         }
@@ -155,11 +155,11 @@ public class Introspector extends java.lang.Object {
 	 * @return the <code>BeanInfo</code> of the bean class.
 	 * @throws IntrospectionException
 	 */
-    public static BeanInfo getBeanInfo(Class beanClass)
+    public static BeanInfo getBeanInfo(Class<?> beanClass)
             throws IntrospectionException {
         StandardBeanInfo beanInfo = theCache.get(beanClass);
         if (beanInfo == null) {
-            beanInfo = getBeanInfoImpl(beanClass, null, USE_ALL_BEANINFO);
+            beanInfo = getBeanInfoImplAndInit(beanClass, null, USE_ALL_BEANINFO);
             theCache.put(beanClass, beanInfo);
         }
         return beanInfo;
@@ -184,13 +184,13 @@ public class Introspector extends java.lang.Object {
      * @return the <code>BeanInfo</code> of the bean class.
      * @throws IntrospectionException
      */
-    public static BeanInfo getBeanInfo(Class beanClass, Class stopClass)
+    public static BeanInfo getBeanInfo(Class<?> beanClass, Class<?> stopClass)
             throws IntrospectionException {
         if(stopClass == null){
             //try to use cache
             return getBeanInfo(beanClass);
         }
-        return getBeanInfoImpl(beanClass, stopClass, USE_ALL_BEANINFO);
+        return getBeanInfoImplAndInit(beanClass, stopClass, USE_ALL_BEANINFO);
     }
 
     /**
@@ -221,13 +221,13 @@ public class Introspector extends java.lang.Object {
      * @return the <code>BeanInfo</code> of the bean class.
      * @throws IntrospectionException
      */
-    public static BeanInfo getBeanInfo(Class beanClass, int flags)
+    public static BeanInfo getBeanInfo(Class<?> beanClass, int flags)
             throws IntrospectionException {
         if(flags == USE_ALL_BEANINFO){
             //try to use cache            
             return getBeanInfo(beanClass);
         }
-        return getBeanInfoImpl(beanClass, null, flags);
+        return getBeanInfoImplAndInit(beanClass, null, flags);
     }
 
     /**
@@ -259,8 +259,15 @@ public class Introspector extends java.lang.Object {
         if (flags == USE_ALL_BEANINFO) {
             explicitInfo = getExplicitBeanInfo(beanClass);
         }
-        StandardBeanInfo beanInfo = new StandardBeanInfo(beanClass, explicitInfo);
+        StandardBeanInfo beanInfo = new StandardBeanInfo(beanClass, explicitInfo, stopClass);
 
+        if (beanInfo.additionalBeanInfo != null) {
+            for (int i = beanInfo.additionalBeanInfo.length-1; i >=0; i--) {
+                BeanInfo info = beanInfo.additionalBeanInfo[i];
+                beanInfo.mergeBeanInfo(info, true);
+            }
+        }
+        
         // recursive get beaninfo for super classes
         Class beanSuperClass = beanClass.getSuperclass();
         if (beanSuperClass != stopClass) {
@@ -272,12 +279,7 @@ public class Introspector extends java.lang.Object {
             BeanInfo superBeanInfo = getBeanInfoImpl(beanSuperClass, stopClass,
                     superflags);
             if (superBeanInfo != null) {
-                beanInfo.mergeBeanInfo(superBeanInfo);
-            }
-        }
-        if (beanInfo.additionalBeanInfo != null) {
-            for (BeanInfo info : beanInfo.additionalBeanInfo) {
-                beanInfo.mergeBeanInfo(info, true);
+                beanInfo.mergeBeanInfo(superBeanInfo, false);
             }
         }
         return beanInfo;
@@ -293,7 +295,7 @@ public class Introspector extends java.lang.Object {
             //fall through
         }
         int index = beanInfoClassName.lastIndexOf('.');
-        String beanInfoName = index>=0? beanInfoClassName.substring(index):beanInfoClassName;
+        String beanInfoName = index>=0? beanInfoClassName.substring(index+1):beanInfoClassName;
         for (int i = 0; i < searchPath.length; i++) {
             beanInfoClassName = searchPath[i] + "." + beanInfoName;
             try{
@@ -322,8 +324,11 @@ public class Introspector extends java.lang.Object {
     private static BeanInfo loadBeanInfo(String beanInfoClassName,
         Class beanClass) throws Exception{
         try {
-            return (BeanInfo) Class.forName(beanInfoClassName, true,
+            ClassLoader cl = beanClass.getClassLoader();
+            if(cl != null){
+                return (BeanInfo) Class.forName(beanInfoClassName, true,
                     beanClass.getClassLoader()).newInstance();
+            }
         } catch (Exception e) {
             // fall through
         }
@@ -336,9 +341,14 @@ public class Introspector extends java.lang.Object {
         return (BeanInfo) Class.forName(beanInfoClassName, true,
                 Thread.currentThread().getContextClassLoader()).newInstance();
     }
-    
-    
 
+    private static StandardBeanInfo getBeanInfoImplAndInit(Class beanClass,
+            Class stopClass, int flag) throws IntrospectionException {
+        StandardBeanInfo standardBeanInfo = getBeanInfoImpl(beanClass,
+                stopClass, flag);
+        standardBeanInfo.init();
+        return standardBeanInfo;
+    }  
 }
 
 

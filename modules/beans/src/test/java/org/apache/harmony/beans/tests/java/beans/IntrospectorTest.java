@@ -26,6 +26,7 @@ import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 import java.io.Serializable;
@@ -2033,6 +2034,21 @@ public class IntrospectorTest extends TestCase {
         assertEquals(2, info.getPropertyDescriptors().length);
     }
 
+    public void testDefaultEvent() throws IntrospectionException {
+        Class beanClass = MockClassForDefaultEvent.class;
+        BeanInfo info = Introspector.getBeanInfo(beanClass);
+        assertEquals(-1, info.getDefaultEventIndex());
+        assertEquals(-1, info.getDefaultPropertyIndex());
+        EventSetDescriptor[] events = info.getEventSetDescriptors();
+        for (EventSetDescriptor event : events) {
+            assertFalse(event.isUnicast());
+            assertTrue(event.isInDefaultEventSet());
+            assertFalse(event.isExpert());
+            assertFalse(event.isHidden());
+            assertFalse(event.isPreferred());
+        }
+    }
+
     static class MockBaseClassForPorpertiesStandard {
         int a = 0;
 
@@ -2051,6 +2067,13 @@ public class IntrospectorTest extends TestCase {
 
         public void setName(int i) {
             a = i;
+        }
+    }
+    static class MockClassForDefaultEvent {
+        public void addPropertyChangeListener(PropertyChangeListener a) {
+        }
+
+        public void removePropertyChangeListener(PropertyChangeListener a) {
         }
     }
     static class MockBaseClassForPorperties {
