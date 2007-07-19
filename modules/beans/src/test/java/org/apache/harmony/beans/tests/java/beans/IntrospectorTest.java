@@ -17,6 +17,8 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 import java.beans.EventSetDescriptor;
@@ -24,8 +26,10 @@ import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.security.Permission;
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ import org.apache.harmony.beans.tests.support.mock.FakeFox01;
 import org.apache.harmony.beans.tests.support.mock.FakeFox011;
 import org.apache.harmony.beans.tests.support.mock.FakeFox01BeanInfo;
 import org.apache.harmony.beans.tests.support.mock.FakeFox02;
+import org.apache.harmony.beans.tests.support.mock.FakeFox031;
 import org.apache.harmony.beans.tests.support.mock.MockButton;
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFooButton;
@@ -57,6 +62,7 @@ import org.apache.harmony.beans.tests.support.mock.MockFooStop;
 import org.apache.harmony.beans.tests.support.mock.MockFooSub;
 import org.apache.harmony.beans.tests.support.mock.MockFooSubSub;
 import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+import org.apache.harmony.beans.tests.support.mock.MockSubClass;
 
 /**
  * Unit test for Introspector.
@@ -125,9 +131,6 @@ public class IntrospectorTest extends TestCase {
         MethodDescriptor[] mds = info.getMethodDescriptors();
         assertNotNull(mds);
         assertEquals(11, mds.length);
-        assertEquals("wait", mds[8].getName());
-        assertEquals("wait", mds[9].getName());
-        assertEquals("wait", mds[10].getName());
     }
 
     /**
@@ -279,9 +282,10 @@ public class IntrospectorTest extends TestCase {
      */
     public void testAdditionalBeanInfo() throws IntrospectionException {
         BeanInfo info = Introspector.getBeanInfo(StandardBean2.class);
+        assertNull(info.getAdditionalBeanInfo());
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        assertEquals(1, pds.length);
-        assertEquals("grannyText", pds[0].getName());
+        assertEquals(2, pds.length);
+        assertEquals("class", pds[0].getName());
     }
 
     /**
@@ -437,6 +441,11 @@ public class IntrospectorTest extends TestCase {
         assertTrue(contains("setName", mds));
         assertTrue(contains("getComplexLabel", mds));
         assertTrue(contains("setComplexLabel", mds));
+        try {
+            Introspector.getBeanInfo(MockFoo.class, Serializable.class);
+            fail("Shoule throw exception, stopclass must be superclass of given bean");
+        } catch (IntrospectionException e) {
+        }
     }
 
     public void testGetBeanInfoClassClass_StopNull()
@@ -666,11 +675,28 @@ public class IntrospectorTest extends TestCase {
             assertEquals(pds[i], pds2[i]);
         }
     }
+    
+    public void testSetBeanInfoSearchPath_null() throws IntrospectionException{
+        String[] oldPath = Introspector.getBeanInfoSearchPath();
+        try{
+            Introspector.setBeanInfoSearchPath(null);
+            try{
+                Introspector.getBeanInfoSearchPath();
+                fail("should throw NPE");
+            }catch(NullPointerException e){
+            }
+            String[] newPath = new String[]{"mock", null, ""};
+            Introspector.setBeanInfoSearchPath(newPath);
+            Introspector.getBeanInfo(this.getClass());
+        }finally{
+            Introspector.setBeanInfoSearchPath(oldPath);
+        }
+    }
 
     public void testGetBeanInfoSearchPath() {
         String[] path = Introspector.getBeanInfoSearchPath();
         assertEquals(1, path.length);
-        assertEquals("org.apache.harmony.beans.infos", path[0]);
+        assertTrue(path[0].endsWith("beans.infos"));
     }
 
     public void testGetBeanInfoSearchPath_Default()
@@ -679,11 +705,11 @@ public class IntrospectorTest extends TestCase {
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
         BeanDescriptor beanDesc;
 
-        assertEquals(1, pds.length);
-        assertEquals("text.MockFooButtonBeanInfo", pds[0].getName());
+        assertEquals(2, pds.length);
+        assertEquals("class", pds[0].getName());
 
         beanDesc = info.getBeanDescriptor();
-        assertEquals("MockFooButton.MockFooButtonBeanInfo", beanDesc.getName());
+        assertEquals("MockFooButton", beanDesc.getName());
     }
 
     public void testSetBeanInfoSearchPath() throws IntrospectionException {
@@ -809,10 +835,10 @@ public class IntrospectorTest extends TestCase {
                 assertNotNull(element.getReadMethod());
             } else {
                 assertEquals("fox301", element.getName());
-                assertEquals(String.class.getName(), element
+                assertEquals(Integer.class.getName(), element
                         .getPropertyType().getName());
-                assertNotNull(element.getWriteMethod());
-                assertNull(element.getReadMethod());
+                assertNull(element.getWriteMethod());
+                assertNotNull(element.getReadMethod());
             }
         }
     }
@@ -1256,6 +1282,41 @@ public class IntrospectorTest extends TestCase {
         assertNotNull(pds[1].getWriteMethod());
     }
 
+    public void testGetBeanInfoComplexHierarchy() throws Exception {
+        Introspector.flushCaches();
+        BeanInfo subinfo = Introspector.getBeanInfo(MockSubClass.class);
+        PropertyDescriptor[] allProps = subinfo.getPropertyDescriptors();
+        boolean propFound = false;
+        for (int i = 0; i < allProps.length; i++) {
+            if (allProps[i].getName().equals("value")) {
+                assertTrue(allProps[i].isExpert());
+                assertTrue(allProps[i].isHidden());
+                assertTrue(allProps[i].isBound());
+                assertFalse(allProps[i].isConstrained());
+                assertEquals("adddisplay", allProps[i].getDisplayName());
+                assertEquals("subdesc", allProps[i].getShortDescription());
+                propFound = true;
+                break;
+            }
+        }
+        assertTrue(propFound);
+
+        boolean eventFound = false;
+        EventSetDescriptor[] events = subinfo.getEventSetDescriptors();
+        for (int i = 0; i < events.length; i++) {
+            if (events[i].getName().equals("mockPropertyChange")) {
+                assertTrue(events[i].isExpert());
+                assertTrue(events[i].isHidden());
+                assertFalse(events[i].isUnicast());
+                assertFalse(events[i].isInDefaultEventSet());
+                assertEquals("adddisplay", events[i].getDisplayName());
+                assertEquals("subdesc", events[i].getShortDescription());
+                eventFound = true;
+                break;
+            }
+        }
+        assertTrue(eventFound);
+    }
     static class FakeFoxInfo {
 
         public int getProp6(boolean i) {
@@ -1992,5 +2053,185 @@ public class IntrospectorTest extends TestCase {
             }
             return new MethodDescriptor[] { md };
         }
+    }
+    public void testProperty() throws IntrospectionException {
+        Class<MockSubClassForPorpertiesStandard> beanClass = MockSubClassForPorpertiesStandard.class;
+        BeanInfo info = Introspector.getBeanInfo(beanClass);
+        assertEquals(-1, info.getDefaultEventIndex());
+        assertEquals(-1, info.getDefaultPropertyIndex());
+        PropertyDescriptor[] pds = info.getPropertyDescriptors();
+        for (PropertyDescriptor pd : pds) {
+            assertFalse(pd.isBound());
+            assertFalse(pd.isConstrained());
+            assertFalse(pd.isExpert());
+            assertFalse(pd.isHidden());
+            assertFalse(pd.isPreferred());
+        }
+        assertEquals(2, info.getPropertyDescriptors().length);
+    }
+
+    public void testDefaultEvent() throws IntrospectionException {
+        Class beanClass = MockClassForDefaultEvent.class;
+        BeanInfo info = Introspector.getBeanInfo(beanClass);
+        assertEquals(-1, info.getDefaultEventIndex());
+        assertEquals(-1, info.getDefaultPropertyIndex());
+        EventSetDescriptor[] events = info.getEventSetDescriptors();
+        for (EventSetDescriptor event : events) {
+            assertFalse(event.isUnicast());
+            assertTrue(event.isInDefaultEventSet());
+            assertFalse(event.isExpert());
+            assertFalse(event.isHidden());
+            assertFalse(event.isPreferred());
+        }
+    }
+
+    public void testDefaultIndex() throws IntrospectionException {
+        Introspector
+                .setBeanInfoSearchPath(new String[] { "org.apache.harmony.beans.tests.support" });
+
+        BeanInfo dummyInfo = Introspector.getBeanInfo(FakeFox031.class);
+        assertEquals(-1, dummyInfo.getDefaultPropertyIndex());
+        assertEquals(-1, dummyInfo.getDefaultEventIndex());
+    }
+
+    static class MockBaseClassForPorpertiesStandard {
+        int a = 0;
+
+        int b = 1;
+    }
+
+    static class MockSubClassForPorpertiesStandard extends
+            MockBaseClassForPorpertiesStandard {
+        int a = 2;
+
+        int b = 3;
+
+        public int getName() {
+            return a;
+        }
+
+        public void setName(int i) {
+            a = i;
+        }
+    }
+    static class MockClassForDefaultEvent {
+        public void addPropertyChangeListener(PropertyChangeListener a) {
+        }
+
+        public void removePropertyChangeListener(PropertyChangeListener a) {
+        }
+    }
+    static class MockBaseClassForPorperties {
+        int a = 0;
+
+        int b = 1;
+    }
+
+    static class MockSubClassForPorperties extends MockBaseClassForPorperties {
+        int a = 2;
+
+        int b = 3;
+
+        int c = 3;
+
+        public int getName() {
+            return a;
+        }
+
+        public void setName(int i) {
+            a = i;
+        }
+    }
+
+    public void testGetIcon() throws IntrospectionException {
+        Class<MockSubClassForPorperties> beanClass = MockSubClassForPorperties.class;
+        BeanInfo info = Introspector.getBeanInfo(beanClass);
+        assertNotNull(info.getIcon(BeanInfo.ICON_COLOR_16x16));
+    }
+
+    public static class MockBaseClassForPorpertiesBeanInfo extends
+            SimpleBeanInfo {
+
+        @Override
+        public MethodDescriptor[] getMethodDescriptors() {
+            MethodDescriptor md = null;
+            try {
+                Class<MockSubClassForPorperties> clz = MockSubClassForPorperties.class;
+                Method m = clz.getMethod("getName", new Class[] {});
+                md = new MethodDescriptor(m);
+            } catch (Exception e) {
+
+            }
+            return new MethodDescriptor[] { md };
+        }
+
+        @Override
+        public PropertyDescriptor[] getPropertyDescriptors() {
+            PropertyDescriptor[] pds = new PropertyDescriptor[2];
+            Class<MockSubClassForPorperties> clazz = MockSubClassForPorperties.class;
+            try {
+                Method getter = clazz.getMethod("getName");
+                Method setter = clazz.getMethod("setName", Integer.TYPE);
+                pds[0] = new PropertyDescriptor("a", getter, setter);
+                pds[0].setConstrained(true);
+                pds[0].setBound(true);
+                pds[0].setExpert(true);
+                pds[0].setHidden(true);
+                pds[1] = new PropertyDescriptor("b", getter, setter);
+            } catch (IntrospectionException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+            return pds;
+        }
+
+        public Image getIcon(int iconKind) {
+            return null;
+        }
+    }
+
+    public static class MockSubClassForPorpertiesBeanInfo extends
+            SimpleBeanInfo {
+
+        @Override
+        public MethodDescriptor[] getMethodDescriptors() {
+            MethodDescriptor md = null;
+            try {
+                Class<MockSubClassForPorperties> clz = MockSubClassForPorperties.class;
+                Method m = clz.getMethod("getName", new Class[] {});
+                md = new MethodDescriptor(m);
+            } catch (Exception e) {
+
+            }
+            return new MethodDescriptor[] { md };
+        }
+
+        @Override
+        public PropertyDescriptor[] getPropertyDescriptors() {
+            PropertyDescriptor[] pds = new PropertyDescriptor[2];
+            Class<MockSubClassForPorperties> clazz = MockSubClassForPorperties.class;
+            try {
+                Method getter = clazz.getMethod("getName");
+                Method setter = clazz.getMethod("setName", Integer.TYPE);
+                pds[0] = new PropertyDescriptor("a", getter, setter);
+                pds[1] = new PropertyDescriptor("b", getter, setter);
+            } catch (IntrospectionException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            return pds;
+        }
+
+        public Image getIcon(int iconKind) {
+            return new BufferedImage(16, 16, 1);
+        }
+
     }
 }

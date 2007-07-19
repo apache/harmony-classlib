@@ -89,8 +89,6 @@ public class FLFontManager extends FontManager {
                 allFonts.add(newFont);
             }
         }
-        
-        allFamilies = getAllFamilies();        
     }
 
     @Override
