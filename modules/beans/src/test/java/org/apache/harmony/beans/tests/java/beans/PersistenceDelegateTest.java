@@ -17,9 +17,15 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.font.TextAttribute;
+import java.awt.dnd.DropTarget;
 import java.beans.Encoder;
 import java.beans.Expression;
 import java.beans.PersistenceDelegate;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.Statement;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -32,12 +38,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Stack;
+import java.util.TreeMap;
+
+import javax.swing.*;
 
 import junit.framework.TestCase;
 
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFooStop;
+
 /**
  * Test java.beans.PersistenceDelegate
  */
@@ -59,7 +70,7 @@ public class PersistenceDelegateTest extends TestCase {
         MockFoo foo = new MockFoo();
 
         pd.writeObject(foo, enc);
-        
+
         assertEquals("initialize", pd.popMethod());
         assertEquals("mutatesTo", pd.popMethod());
     }
@@ -74,7 +85,7 @@ public class PersistenceDelegateTest extends TestCase {
         MockFoo foo = new MockFoo();
 
         pd.writeObject(foo, enc);
-        
+
         assertEquals("instantiate", pd.popMethod());
         assertEquals("mutatesTo", pd.popMethod());
         assertWasAdded(MockFoo.class.getClass(), "new", null, enc);
@@ -84,8 +95,8 @@ public class PersistenceDelegateTest extends TestCase {
      * Tests writeObject() when object is null.
      */
     public void testWriteObject_NullObject() {
-		MockPersistenceDelegate2 pd = new MockPersistenceDelegate2();
-		Encoder enc = new Encoder();
+        MockPersistenceDelegate2 pd = new MockPersistenceDelegate2();
+        Encoder enc = new Encoder();
 
         try {
             pd.writeObject(null, enc);
@@ -99,7 +110,7 @@ public class PersistenceDelegateTest extends TestCase {
      * Tests writeObject() when encoder is null.
      */
     public void testWriteObject_NullEncoder() {
-		MockPersistenceDelegate2 pd = new MockPersistenceDelegate2();
+        MockPersistenceDelegate2 pd = new MockPersistenceDelegate2();
 
         try {
             pd.writeObject(new MockFoo(), null);
@@ -116,17 +127,18 @@ public class PersistenceDelegateTest extends TestCase {
         DummyPersistenceDelegate pd = new DummyPersistenceDelegate();
         MockPersistenceDelegate3 pd3 = new MockPersistenceDelegate3();
         Encoder enc = new Encoder();
-        
+
         enc.setPersistenceDelegate(MockFooStop.class, pd3);
         pd.initialize(MockFoo.class, new MockFoo(), new MockFoo(), enc);
         assertEquals("initialize", pd3.popMethod());
         assertFalse("Extra statement has been detected", pd3.hasMoreMethods());
-        
+
         // test interface
         pd3 = new MockPersistenceDelegate3();
         enc.setPersistenceDelegate(MockInterface.class, pd3);
-        pd.initialize(MockObject.class, new MockObject(), new MockObject(),
-                      enc);
+        pd
+                .initialize(MockObject.class, new MockObject(),
+                        new MockObject(), enc);
         assertFalse("Extra statement has been detected", pd3.hasMoreMethods());
     }
 
@@ -139,7 +151,7 @@ public class PersistenceDelegateTest extends TestCase {
 
         enc.setPersistenceDelegate(MockFooStop.class,
                 new DummyPersistenceDelegate());
-    
+
         try {
             pd.initialize(null, new Object(), new Object(), enc);
             fail("Should throw NullPointerException!");
@@ -176,13 +188,13 @@ public class PersistenceDelegateTest extends TestCase {
     }
 
     /**
-     * Circular redundancy check. Should not hang. 
-     * Regression test for HARMONY-2073
+     * Circular redundancy check. Should not hang. Regression test for
+     * HARMONY-2073
      */
     public void testInitialize_circularRedundancy() {
         Encoder enc = new Encoder();
         DummyPersistenceDelegate pd = new DummyPersistenceDelegate();
-        
+
         enc.setPersistenceDelegate(MockFooStop.class, pd);
         pd.initialize(MockFoo.class, new MockFoo(), new MockFoo(), enc);
     }
@@ -213,50 +225,56 @@ public class PersistenceDelegateTest extends TestCase {
         assertFalse(pd.mutatesTo(null, "test"));
     }
 
-    public void test_writeObject_Null_LXMLEncoder() throws Exception{
+    public void test_writeObject_Null_LXMLEncoder() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(byteArrayOutputStream));
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+                byteArrayOutputStream));
         encoder.writeObject(null);
         encoder.close();
 
-        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
         XMLDecoder decoder = new XMLDecoder(stream);
         assertNull(decoder.readObject());
-        stream = new DataInputStream(PersistenceDelegateTest.class.getResourceAsStream("/xml/null.xml"));
+        stream = new DataInputStream(PersistenceDelegateTest.class
+                .getResourceAsStream("/xml/null.xml"));
         decoder = new XMLDecoder(stream);
         assertNull(decoder.readObject());
     }
 
     class Bar {
         public int value;
+
         public void barTalk() {
             System.out.println("Bar is coming!");
         }
     }
+
     public void test_writeObject_java_lang_reflect_Field()
-			throws SecurityException, NoSuchFieldException, IOException {
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
-				byteArrayOutputStream));
-		Field value = Bar.class.getField("value");
-		encoder.writeObject(value);
-		encoder.close();
-
-		DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
-				byteArrayOutputStream.toByteArray()));
-		
-		XMLDecoder decoder = new XMLDecoder(stream); Field field = (Field)
-		decoder.readObject();
-
-        assertEquals(value, field);
-		assertEquals(value.getName(), field.getName());
-	}
-    
-    public void test_writeObject_java_lang_reflect_Method() throws SecurityException, NoSuchMethodException{
+            throws SecurityException, NoSuchFieldException, IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
-            byteArrayOutputStream));
-        Method method = Bar.class.getMethod("barTalk", (Class[])null);
+                byteArrayOutputStream));
+        Field value = Bar.class.getField("value");
+        encoder.writeObject(value);
+        encoder.close();
+
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Field field = (Field) decoder.readObject();
+
+        assertEquals(value, field);
+        assertEquals(value.getName(), field.getName());
+    }
+
+    public void test_writeObject_java_lang_reflect_Method()
+            throws SecurityException, NoSuchMethodException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+                byteArrayOutputStream));
+        Method method = Bar.class.getMethod("barTalk", (Class[]) null);
 
         encoder.writeObject(method);
         encoder.close();
@@ -268,11 +286,12 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(method.getName(), aMethod.getName());
         assertEquals("barTalk", aMethod.getName());
     }
-    
+
+    @SuppressWarnings("unchecked")
     public void test_writeObject_java_util_Collection() {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
-            byteArrayOutputStream));
+                byteArrayOutputStream));
         LinkedList<Integer> list = new LinkedList<Integer>();
         list.add(10);
         list.addFirst(2);
@@ -287,13 +306,523 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(list, l);
         assertEquals(2, l.size());
         assertEquals(new Integer(10), l.get(1));
+
+    }
+
+    public void test_writeObject_java_awt_Choice() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+                byteArrayOutputStream));
+        Choice choice = new Choice();
+        choice.setBackground(Color.blue);
+        choice.setFocusTraversalKeysEnabled(true);
+        choice.setBounds(0, 0, 10, 10);
+        choice.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        choice.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        choice.setFocusTraversalKeysEnabled(true);
+        choice.setFocusable(true);
+        choice.setFont(new Font("Arial Bold", Font.ITALIC, 0));
+        choice.setForeground(Color.green);
+        choice.setIgnoreRepaint(true);
+        choice.setLocation(1, 2);
+        choice.setName("choice");
+        choice.setSize(new Dimension(200, 100));
+        choice.addItem("addItem");
+        choice.add("add");
+
+        ComponentListener cl = new ComponentAdapter() {
+        };
+        choice.addComponentListener(cl);
+        FocusListener fl = new FocusAdapter() {
+        };
+        choice.addFocusListener(fl);
+        HierarchyBoundsListener hbl = new HierarchyBoundsAdapter() {
+        };
+        choice.addHierarchyBoundsListener(hbl);
+        HierarchyListener hl = new HierarchyListener() {
+            public void hierarchyChanged(HierarchyEvent e) {
+            }
+        };
+        choice.addHierarchyListener(hl);
+        InputMethodListener il = new InputMethodListener() {
+            public void caretPositionChanged(InputMethodEvent e) {
+            }
+
+            public void inputMethodTextChanged(InputMethodEvent e) {
+            }
+        };
+        choice.addInputMethodListener(il);
+        ItemListener il2 = new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+            }
+        };
+        choice.addItemListener(il2);
+        KeyListener kl = new KeyAdapter() {
+        };
+        choice.addKeyListener(kl);
+        MouseListener ml = new MouseAdapter() {
+        };
+        choice.addMouseListener(ml);
+        MouseMotionListener mml = new MouseMotionAdapter() {
+        };
+        choice.addMouseMotionListener(mml);
+        MouseWheelListener mwl = new MouseWheelListener() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+            }
+        };
+        choice.addMouseWheelListener(mwl);
+        PropertyChangeListener pcl = new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent event) {
+            }
+        };
+        choice.addPropertyChangeListener(pcl);
+        System.out.println(encoder.getPersistenceDelegate(Choice.class));
+        encoder.writeObject(choice);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Choice aChoice = (Choice) decoder.readObject();
+        assertEquals(choice.getFocusTraversalKeysEnabled(), aChoice
+                .getFocusTraversalKeysEnabled());
+        assertEquals(Color.blue, aChoice.getBackground());
+        assertEquals(new Rectangle(1, 2, 200, 100), aChoice.getBounds());
+        // ComponentOrientation is not persistent
+        assertTrue(aChoice.getComponentOrientation().isLeftToRight());
+
+        // Cursor will not be persisted
+        assertEquals(Cursor.DEFAULT_CURSOR, aChoice.getCursor().getType());
+        // DropTarget will not be persisted
+        assertNull(aChoice.getDropTarget());
+
+        assertEquals(choice.getName(), aChoice.getName());
+
+        assertEquals(choice.getItem(0), aChoice.getItem(0));
+        assertEquals(1, choice.getComponentListeners().length);
+        assertEquals(0, aChoice.getComponentListeners().length);
+        assertEquals(1, choice.getFocusListeners().length);
+        assertEquals(0, aChoice.getFocusListeners().length);
+        assertEquals(1, choice.getHierarchyBoundsListeners().length);
+        assertEquals(0, aChoice.getHierarchyBoundsListeners().length);
+        assertEquals(1, choice.getInputMethodListeners().length);
+        assertEquals(0, aChoice.getInputMethodListeners().length);
+        assertEquals(1, choice.getItemListeners().length);
+        assertEquals(0, aChoice.getItemListeners().length);
+        assertEquals(1, choice.getKeyListeners().length);
+        assertEquals(0, aChoice.getKeyListeners().length);
+        assertEquals(1, choice.getMouseListeners().length);
+        assertEquals(0, aChoice.getMouseListeners().length);
+        assertEquals(1, choice.getMouseMotionListeners().length);
+        assertEquals(0, aChoice.getMouseMotionListeners().length);
+        assertEquals(1, choice.getMouseWheelListeners().length);
+        assertEquals(0, aChoice.getMouseWheelListeners().length);
+        assertEquals(1, choice.getPropertyChangeListeners().length);
+        assertEquals(0, aChoice.getPropertyChangeListeners().length);
+
+        stream = new DataInputStream(PersistenceDelegateTest.class
+                .getResourceAsStream("/xml/Choice.xml"));
+
+        decoder = new XMLDecoder(stream);
+        aChoice = (Choice) decoder.readObject();
+        assertEquals(choice.getFocusTraversalKeysEnabled(), aChoice
+                .getFocusTraversalKeysEnabled());
+        assertEquals(Color.blue, aChoice.getBackground());
+        assertEquals(new Rectangle(1, 2, 200, 100), aChoice.getBounds());
+        // ComponentOrientation is not persistent
+        assertTrue(aChoice.getComponentOrientation().isLeftToRight());
+
+        // Cursor will not be persisted
+        assertEquals(Cursor.DEFAULT_CURSOR, aChoice.getCursor().getType());
+        // DropTarget will not be persisted
+        assertNull(aChoice.getDropTarget());
+
+        assertEquals(choice.getName(), aChoice.getName());
+
+        assertEquals(choice.getItem(0), aChoice.getItem(0));
+    }
+    
+    public void test_writeObject_java_awt_SystemColor() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        encoder.writeObject(SystemColor.activeCaption);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        SystemColor color = (SystemColor) decoder.readObject();
+        assertEquals(SystemColor.activeCaption, color);
+    }
+
+    public void test_writeObject_java_awt_font_TextAttribute() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        encoder.writeObject(TextAttribute.BACKGROUND);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        TextAttribute attribute = (TextAttribute) decoder.readObject();
+        assertEquals(TextAttribute.BACKGROUND, attribute);
+    }
+
+    public void test_writeObject_java_awt_MenuShortcut() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        MenuShortcut shortCut = new MenuShortcut(2);
+
+        encoder.writeObject(shortCut);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        MenuShortcut aMenuShortcut = (MenuShortcut) decoder.readObject();
+        assertEquals(shortCut, aMenuShortcut);
+        assertEquals(shortCut.getKey(), aMenuShortcut.getKey());
+    }
+
+    public static class MockComponent extends Component {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+    }
+    public void test_writeObject_java_awt_Component() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
         
+        Component component = new MockComponent();
+        component.add(new PopupMenu("PopupMenu"));
+        component.setBackground(Color.black);
+        component.setBounds(new Rectangle(1, 1, 10, 10));
+        component.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        component.setEnabled(true);
+        component.setFocusable(true);
+        component.setFont(new Font("Arial", 1, 1));
+        component.setForeground(Color.blue);
+        component.setIgnoreRepaint(true);
+        component.setLocale(Locale.CANADA);
+        component.setName("MockComponent");
+        component.setVisible(true);
+        component.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+        component.setDropTarget(new DropTarget());
+
+        encoder.writeObject(component);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Component aComponent = (Component) decoder.readObject();
+        assertEquals(component.getBackground(), aComponent.getBackground());
+        assertEquals(component.getForeground(), aComponent.getForeground());
+        assertEquals(component.getFont().getFamily(), aComponent.getFont().getFamily());
+        assertEquals(component.getFont().getStyle(), aComponent.getFont().getStyle());
+        assertEquals(component.getFont().getSize(), aComponent.getFont().getSize());
+        assertEquals(component.getName(), aComponent.getName());
+        assertEquals(component.getBounds(), aComponent.getBounds());
+    }
+
+    public void test_writeObject_java_awt_Container() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Container container = new Container();
+        container.setBackground(Color.blue);
+        container.setFocusTraversalKeysEnabled(true);
+        container.setBounds(0, 0, 10, 10);
+        container.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        container.setComponentZOrder(new Label("label"), 0);
+        container.setComponentZOrder(new JTabbedPane(), 1);
+        container.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        container.setFocusTraversalKeysEnabled(true);
+        container.setFocusable(true);
+        container.setFocusTraversalPolicyProvider(true);
+        container.setFocusTraversalPolicy(new LayoutFocusTraversalPolicy());
+        container.setFont(new Font("Arial Bold", Font.ITALIC, 0));
+        container.setForeground(Color.green);
+        container.setIgnoreRepaint(true);
+        container.setLocation(1, 2);
+        container.setName("container");
+        container.setSize(new Dimension(200, 100));
+        container.setEnabled(true);
+        container.setFocusCycleRoot(true);
+        container.setLayout(new BorderLayout());
+        container.setLocale(Locale.CANADA);
+        container.setVisible(true);
+        container.add(new Label("label"));
+        container.add(new JTabbedPane());
+
+        encoder.writeObject(container);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Container aContainer = (Container) decoder.readObject();
+        assertEquals(container.getFocusTraversalKeysEnabled(), aContainer
+                .getFocusTraversalKeysEnabled());
+        assertEquals(Color.blue, aContainer.getBackground());
+        assertEquals(new Rectangle(1, 2, 200, 100), aContainer.getBounds());
+        
+        // ComponentOrientation is not persistent
+        assertTrue(aContainer.getComponentOrientation().isLeftToRight());
+        Component [] components = aContainer.getComponents();
+        assertTrue(components[0] instanceof Label);
+        assertEquals(0, aContainer.getComponentZOrder(components[0]));
+        assertTrue(components[1] instanceof JTabbedPane);
+        assertEquals(1, aContainer.getComponentZOrder(components[1]));
+        
+        // Cursor will not be persisted
+        assertEquals(Cursor.DEFAULT_CURSOR, aContainer.getCursor().getType());
+        // DropTarget will not be persisted
+        assertNull(aContainer.getDropTarget());
+        
+        assertEquals(container.getFocusTraversalPolicy().getClass(), aContainer
+                .getFocusTraversalPolicy().getClass());
+        assertEquals(container.getName(), aContainer.getName());
+
+        container = new Container();
+        container.setFocusCycleRoot(true);
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        encoder.writeObject(container);
+        encoder.close();
+        stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        decoder = new XMLDecoder(stream);
+        aContainer = (Container) decoder.readObject();
+        assertTrue(aContainer.isFocusCycleRoot());
+        
+    }
+    
+    public void test_writeObject_java_awt_Menu() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Menu menu = new Menu();
+        String action = "menu action command";
+        menu.setActionCommand(action);
+        menu.setEnabled(true);
+        menu.setFont(new Font("Arial Black", Font.BOLD, 10));
+        menu.setLabel("menu");
+        menu.setName("menu");
+        menu.setShortcut(new MenuShortcut(10));
+        menu.insertSeparator(1);
+
+        encoder.writeObject(menu);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Menu aMenu = (Menu) decoder.readObject();
+        assertTrue(aMenu.isEnabled());
+        assertEquals(action, aMenu.getActionCommand());
+        assertEquals(menu.getFont().getSize(), aMenu.getFont().getSize());
+        assertEquals(menu.getFont().getStyle(), aMenu.getFont().getStyle());
+        assertEquals(menu.getLabel(), aMenu.getLabel());
+        assertEquals(menu.getName(), aMenu.getName());
+        assertEquals(menu.getShortcut().getKey(), aMenu.getShortcut().getKey());
+        assertEquals(1, menu.getItemCount());
+        assertEquals(menu.getItem(0).getLabel(), aMenu.getItem(0).getLabel());
+        assertEquals(menu.getItem(0).getName(), aMenu.getItem(0).getName());
+        assertEquals(menu.getItem(0).getFont().getStyle(), aMenu.getItem(0).getFont().getStyle());
+        assertEquals(menu.getFont().getSize(), aMenu.getItem(0).getFont().getSize());
+        
+    }
+
+    public void test_writeObject_java_awt_MenuBar() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+ 
+        MenuBar bar = new MenuBar();
+        bar.add(new Menu("menu1"));
+
+        encoder.writeObject(bar);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        MenuBar aBar = (MenuBar) decoder.readObject();
+        assertEquals(bar.getMenu(0).getName(), aBar.getMenu(0).getName());
+        
+    }
+
+    public void test_writeObject_java_awt_List() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        java.awt.List list = new List();
+        list.setBounds(0, 0, 10, 10);
+        list.add(new PopupMenu("popupMenu"));
+        list.add("1");
+        list.add("2", 2);
+        list.setBackground(Color.BLUE);
+        encoder.writeObject(list);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        List aList = (List) decoder.readObject();
+        assertEquals(list.getItem(0), aList.getItem(0));
+        assertEquals(list.getHeight(), aList.getHeight());
+        assertEquals(list.getBackground(), aList.getBackground());
+    }
+
+    public void test_writeObject_java_awt_BorderLayout(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        BorderLayout layout = new BorderLayout();
+        layout.setHgap(2);
+        layout.setVgap(3);
+        encoder.writeObject(layout);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        BorderLayout aLayout = (BorderLayout) decoder.readObject();
+        assertEquals(layout.getHgap(), aLayout.getHgap());
+        assertEquals(layout.getVgap(), aLayout.getVgap());
+    }
+
+    public void test_writeObject_java_awt_CardLayout(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        
+        CardLayout layout = new CardLayout();
+        layout.addLayoutComponent(new Label("label"), "constraints");
+        layout.setHgap(2);
+        layout.setVgap(3);
+        encoder.writeObject(layout);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        CardLayout aLayout = (CardLayout) decoder.readObject();
+        assertEquals(layout.getHgap(), aLayout.getHgap());
+        assertEquals(layout.getVgap(), aLayout.getVgap());
+    }
+
+    public void test_writeObject_java_awt_GridBagLayout() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        GridBagLayout layout = new GridBagLayout();
+        layout.addLayoutComponent(new Label("label"), new GridBagConstraints(0,
+                0, 100, 60, 0.1, 0.1, GridBagConstraints.WEST,
+                GridBagConstraints.NONE, new Insets(0,0, 99, 59), 0, 0));
+        encoder.writeObject(layout);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        GridBagLayout aLayout = (GridBagLayout) decoder.readObject();
+        assertEquals(layout.getConstraints(new Label("label")).weightx, aLayout
+                .getConstraints(new Label("label")).weightx);
+        assertEquals(layout.getConstraints(new Label("label")).insets.left, aLayout
+                .getConstraints(new Label("label")).insets.left);
+    }
+    
+    public void test_writeObject_java_awt_Cursor() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Cursor cursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
+
+        encoder.writeObject(cursor);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Cursor aCursor = (Cursor) decoder.readObject();
+        assertEquals(cursor.getName(), aCursor
+                .getName());
+        assertEquals(cursor.getType(), aCursor.getType());
+    }
+    
+    public void test_writeObject_java_awt_Insets() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Insets inset = new Insets(0, 0, 10, 10);
+
+        encoder.writeObject(inset);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Insets aInset = (Insets) decoder.readObject();
+        assertEquals(inset.left, aInset.left);
+        assertEquals(inset.top, aInset.top);
+    }
+    
+    public void test_writeObject_java_awt_point() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Point point = new Point(10, 20);
+        
+        encoder.writeObject(point);
+        encoder.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Point aPoint = (Point) decoder.readObject();
+        assertEquals(point, aPoint);
+    }
+
+    public void test_writeObject_java_awt_ScrollPane() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        ScrollPane scrollPane = new ScrollPane();
+        
+        encoder.writeObject(scrollPane);
+        encoder.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        ScrollPane aScrollPane = (ScrollPane) decoder.readObject();
+        assertEquals(scrollPane.getAlignmentX(), aScrollPane.getAlignmentX());
+        assertEquals(scrollPane.getAlignmentY(), aScrollPane.getAlignmentY());
+        assertEquals(scrollPane.getScrollbarDisplayPolicy(), aScrollPane
+                .getScrollbarDisplayPolicy());
+    }
+    
+    public void test_writeObject_java_util_Map(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        TreeMap<Integer, String> map = new TreeMap<Integer, String>();
+        map.put(new Integer(10), "first element");
+
+        encoder.writeObject(map);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        TreeMap aMap = (TreeMap) decoder.readObject();
+        assertEquals(map.size(), aMap.size());
+        assertEquals(map.get(10), aMap.get(10));
     }
 
     // <--
 
     private void assertWasAdded(Class<?> targetClass, String methodName,
-                                 Object[] args, MockEncoder2 enc) {
+            Object[] args, MockEncoder2 enc) {
         try {
             while (true) {
                 Statement stmt = enc.pop();
@@ -308,8 +837,8 @@ public class PersistenceDelegateTest extends TestCase {
     }
 
     private boolean equals(Statement stmt, Class<?> targetClass,
-                              String methodName, Object[] args) {
-           
+            String methodName, Object[] args) {
+
         if (stmt == null || !methodName.equals(stmt.getMethodName())) {
             return false;
         }
@@ -324,10 +853,10 @@ public class PersistenceDelegateTest extends TestCase {
                 return false;
             }
         }
-        
+
         if (args != null) {
-            if (stmt.getArguments() == null ||
-                args.length != stmt.getArguments().length) {
+            if (stmt.getArguments() == null
+                    || args.length != stmt.getArguments().length) {
                 return false;
             }
 
@@ -348,7 +877,7 @@ public class PersistenceDelegateTest extends TestCase {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -368,7 +897,7 @@ public class PersistenceDelegateTest extends TestCase {
 
     static class MockEncoder2 extends Encoder {
         Stack<Statement> stmts = new Stack<Statement>();
-        
+
         @Override
         public void writeExpression(Expression expr) {
             stmts.push(expr);
@@ -380,7 +909,7 @@ public class PersistenceDelegateTest extends TestCase {
             stmts.push(stmt);
             super.writeStatement(stmt);
         }
-        
+
         @Override
         public void writeObject(Object obj) {
             super.writeObject(obj);
@@ -394,10 +923,12 @@ public class PersistenceDelegateTest extends TestCase {
 
     static class MockPersistenceDelegate2 extends PersistenceDelegate {
         private Boolean mutatesToFlag = null;
+
         Stack<String> methods = new Stack<String>();
 
-        public MockPersistenceDelegate2() {}
-        
+        public MockPersistenceDelegate2() {
+        }
+
         public MockPersistenceDelegate2(boolean mutatesToFlag) {
             this.mutatesToFlag = Boolean.valueOf(mutatesToFlag);
         }
@@ -408,13 +939,13 @@ public class PersistenceDelegateTest extends TestCase {
             methods.push("initialize");
             super.initialize(type, oldInstance, newInstance, enc);
         }
-        
+
         @Override
         public Expression instantiate(Object oldInstance, Encoder out) {
             methods.push("instantiate");
             return new Expression(oldInstance.getClass(), "new", null);
         }
-        
+
         @Override
         public boolean mutatesTo(Object oldInstance, Object newInstance) {
             methods.push("mutatesTo");
@@ -424,11 +955,11 @@ public class PersistenceDelegateTest extends TestCase {
             }
             return super.mutatesTo(oldInstance, newInstance);
         }
-        
+
         String popMethod() {
             return methods.pop();
         }
-        
+
         boolean hasMoreMethods() {
             return !methods.empty();
         }

@@ -17,7 +17,9 @@
 
 package org.apache.harmony.beans.tests.java.beans;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeListener;
@@ -723,6 +725,37 @@ public class PropertyEditorManagerTest extends TestCase {
 
         assertNotNull("No property editor found", pe);
         assertTrue(pe instanceof AnotherSamplePropertyEditor);
+    }
+    
+    public void testFontEditor() throws Exception{
+        PropertyEditor e2 = PropertyEditorManager.findEditor(Font.class);
+        Font font = new Font("Helvetica", Font.PLAIN, 12);
+        e2.setValue(font);
+        assertNull(e2.getAsText());
+        assertNull(e2.getTags());
+        assertSame(font, e2.getValue());
+        assertTrue(e2.isPaintable());
+        Component c = (Component) e2.getCustomEditor();
+        assertSame(c, e2);
+    }
+    
+    public void testColorEditor() throws Exception{
+        PropertyEditor e2 = PropertyEditorManager.findEditor(Color.class);
+        e2.setValue(Color.RED);
+        e2.setAsText(e2.getAsText());
+        assertNull(e2.getTags());
+        assertNotSame(Color.RED, e2.getValue());
+        assertEquals(Color.RED, e2.getValue());
+        assertTrue(e2.isPaintable());
+    }
+    
+    public void testGetSetEditorPath() throws Exception{
+      String[] s = new String[]{"path1", "path2"};
+      PropertyEditorManager.setEditorSearchPath(s);
+      s[1] = "path3";
+      String[] s2 = PropertyEditorManager.getEditorSearchPath();
+      assertFalse(s==s2);
+      assertEquals("path1", s2[0]);
     }
     
     String[] defaultSearchPath;

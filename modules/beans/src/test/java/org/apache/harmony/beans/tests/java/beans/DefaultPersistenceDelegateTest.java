@@ -26,27 +26,27 @@ import java.beans.PersistenceDelegate;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 import java.beans.Statement;
-
-import java.util.Vector;
 import java.util.Iterator;
+import java.util.Vector;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFoo2;
-import org.apache.harmony.beans.tests.support.mock.MockFooStop;
 import org.apache.harmony.beans.tests.support.mock.MockFooLabel;
+import org.apache.harmony.beans.tests.support.mock.MockFooStop;
 
 import tests.util.CallVerificationStack;
 
 /**
- * Tests the class java.beans.DefaultPersistenceDelegate
- * TODO refactor the class and remove all references to CallVerificationStack 
+ * Tests the class java.beans.DefaultPersistenceDelegate TODO refactor the class
+ * and remove all references to CallVerificationStack
  */
 public class DefaultPersistenceDelegateTest extends TestCase {
-    
-    public DefaultPersistenceDelegateTest() {}
+
+    public DefaultPersistenceDelegateTest() {
+    }
 
     public DefaultPersistenceDelegateTest(String s) {
         super(s);
@@ -61,13 +61,13 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         Introspector.flushCaches();
         CallVerificationStack.getInstance().clear();
     }
-    
+
     public static TestSuite suite() {
-//        TestSuite suite = new TestSuite();
+        // TestSuite suite = new TestSuite();
         TestSuite suite = new TestSuite(DefaultPersistenceDelegateTest.class);
-  
-//        suite.addTest(new DefaultPersistenceDelegateTest(
-//              "testInitialize_NotRegularGetter"));
+
+        // suite.addTest(new DefaultPersistenceDelegateTest(
+        // "testInitialize_NotRegularGetter"));
         return suite;
     }
 
@@ -158,12 +158,13 @@ public class DefaultPersistenceDelegateTest extends TestCase {
                 "prop1", null });
         MockBean b = new MockBean();
         b.setAll("bean1", 2);
-        try {
-            pd.instantiate(b, new Encoder());
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        pd.instantiate(b, new Encoder());
+        
+        pd = new MockPersistenceDelegate(new String[] {
+                "prop1", null, "prop2"});
+        MockBean b2 = new MockBean();
+        b2.setAll("bean1", 2);
+        pd.instantiate(b2, new Encoder());
     }
 
     /*
@@ -174,12 +175,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
                 "prop1", "" });
         MockBean b = new MockBean();
         b.setAll("bean1", 2);
-        try {
-            pd.instantiate(b, null);
-            fail("Should throw NullPointerException!");
-        } catch (NullPointerException ex) {
-            // expected
-        }
+        pd.instantiate(b, null);
     }
 
     /*
@@ -366,8 +362,8 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      * method, defined by its beaninfo.
      */
     public void testInstantiate_NotRegularGetter() throws Exception {
-        MockPersistenceDelegate pd = new MockPersistenceDelegate(new String[] {
-                "prop"});
+        MockPersistenceDelegate pd = new MockPersistenceDelegate(
+                new String[] { "prop" });
         MockFoo2 b = new MockFoo2(2);
         Expression e = pd.instantiate(b, new Encoder());
 
@@ -375,16 +371,15 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertSame(MockFoo2.class, e.getTarget());
         assertEquals("new", e.getMethodName());
         assertEquals(1, e.getArguments().length);
-        assertEquals(new Integer(2), e.getArguments()[0]);
+        assertNull(e.getArguments()[0]);
     }
-        
 
     /*
      * Tests mutatesTo() under normal conditions without any properties.
      */
     public void testMutatesTo_NormalNoProperty() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
-        
+
         assertTrue(pd.mutatesTo("test1", "test1"));
         assertFalse(pd.mutatesTo(new Object(), new Object() {
             @Override
@@ -428,7 +423,7 @@ public class DefaultPersistenceDelegateTest extends TestCase {
      */
     public void testMutatesTo_NormalWithEmptyPropertyPublicEqualMethod() {
         MockPersistenceDelegate pd = new MockPersistenceDelegate(new String[0]);
-        
+
         assertTrue(pd.mutatesTo("test1", "test1"));
     }
 
@@ -487,6 +482,31 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertTrue(o1.equalsCalled);              
     }
     
+    public void test_mutatesTo_Object() {
+        Object o1 = new Object();
+        Object o2 = new Object();
+        MockPersistenceDelegate mockPersistenceDelegate = new MockPersistenceDelegate();
+        assertTrue(mockPersistenceDelegate.mutatesTo(o1, o2));
+    }
+    
+    public void test_initialize() {
+        MockBean3 bean1 = new MockBean3();
+        bean1.setValue("bean1");
+        MockBean3 bean2 = new MockBean3();
+        bean2.setValue("bean2");
+
+        // clear flags
+        bean1.setValueCalled = false;
+        bean2.setValueCalled = false;
+
+        MockPersistenceDelegate mockPersistenceDelegate = new MockPersistenceDelegate();
+        mockPersistenceDelegate.initialize(MockBean3.class, bean1, bean2,
+                new Encoder());
+        assertEquals("bean1", bean1.getValue());
+        assertEquals("bean2", bean2.getValue());
+        assertFalse(bean1.setValueCalled);
+        assertFalse(bean2.setValueCalled);
+    }
     
     public void test_mutates_with_equals_false() {
         MyObjectEqualsFalse o1 = new MyObjectEqualsFalse();
@@ -579,12 +599,12 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         pd.writeObject(oldBean, enc);
         enc.clearCache();
         pd.initialize(MockFoo.class, oldBean, new MockFoo(), enc);
-        
+
         assertNotNull(findStatement(enc.statements(), oldBean, "setName",
                 new Object[] { oldBean.getName() }));
         assertNotNull(findStatement(enc.statements(), oldBean, "setLabel",
                 new Object[] { oldBean.getLabel() }));
-        
+
         enc = new CollectingEncoder();
         oldBean = new MockFoo();
         oldBean.setComplexLabel(new MockFooLabel("myComplexLabel"));
@@ -613,34 +633,32 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         pd.initialize(MockFoo2.class, b, b2, enc);
 
         // XXX RI stores much more statements to the stream
-        iter = enc.statements();     
-//        assertNotNull("required statement not found",
-//                findStatement(iter, b, "myget", null));
-        assertNotNull("required statement not found",
-                findStatement(iter, null, "myset",
-                        new Object[] {new Integer(2)}));
+        iter = enc.statements();
+        // assertNotNull("required statement not found",
+        // findStatement(iter, b, "myget", null));
+        assertNotNull("required statement not found", findStatement(iter, null,
+                "myset", new Object[] { new Integer(2) }));
     }
 
     /*
-     * Test initialize() when oldInstance == newInstance.
-     * XXX The current implementation outputs nothing to the stream. And this
-     * seems to be correct from the spec point of view since we need not to do
-     * any actions to convert the object to itself. However, RI outputs a lot
-     * of stuff to the stream here. 
+     * Test initialize() when oldInstance == newInstance. XXX The current
+     * implementation outputs nothing to the stream. And this seems to be
+     * correct from the spec point of view since we need not to do any actions
+     * to convert the object to itself. However, RI outputs a lot of stuff to
+     * the stream here.
      */
-//    public void testInitialize_SameInstance() throws Exception {
-//        CollectingEncoder enc = new CollectingEncoder();
-//        MockPersistenceDelegate pd = new MockPersistenceDelegate();
-//        MockFoo b = new MockFoo();
-//        Iterator<Statement> iter;
-//        
-//        b.setName("mymyName");
-//        // b.setLabel("myLabel");
-//
-//        pd.initialize(MockFoo.class, b, b, enc);
-//
-//    }
-
+    // public void testInitialize_SameInstance() throws Exception {
+    // CollectingEncoder enc = new CollectingEncoder();
+    // MockPersistenceDelegate pd = new MockPersistenceDelegate();
+    // MockFoo b = new MockFoo();
+    // Iterator<Statement> iter;
+    //        
+    // b.setName("mymyName");
+    // // b.setLabel("myLabel");
+    //
+    // pd.initialize(MockFoo.class, b, b, enc);
+    //
+    // }
     /*
      * Test initialize() with a bean with a transient property.
      */
@@ -648,14 +666,14 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         CollectingEncoder enc = new CollectingEncoder();
         MockPersistenceDelegate pd = new MockPersistenceDelegate();
         MockTransientBean b = new MockTransientBean();
-        
+
         b.setName("myName");
         pd.writeObject(b, enc);
         enc.clearCache();
         pd.initialize(MockTransientBean.class, b, new MockTransientBean(), enc);
-        assertFalse("transient fields should not be affected",
-                enc.statements().hasNext());
-        
+        assertFalse("transient fields should not be affected", enc.statements()
+                .hasNext());
+
         // set transient to false
         Introspector.flushCaches();
         MockTransientBeanBeanInfo.setTransient(false);
@@ -1061,7 +1079,9 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 
     /**
      * Searches for the statement with given parameters.
-     * @param iter iterator to search through, null means ignore this parameter
+     * 
+     * @param iter
+     *            iterator to search through, null means ignore this parameter
      * @param target
      * @param methodName
      * @param args
@@ -1072,29 +1092,26 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 
         while (iter.hasNext()) {
             Statement stmt = iter.next();
-            
+
             if (target != null && stmt.getTarget() != target) {
                 continue;
             }
-            
-            if (methodName != null && !methodName.equals(stmt.getMethodName()))
-            {
+
+            if (methodName != null && !methodName.equals(stmt.getMethodName())) {
                 continue;
             }
 
             if (args != null) {
-                if ((stmt.getArguments() != null &&
-                         args.length != stmt.getArguments().length)
-                         || stmt.getArguments() == null)
-                {
+                if ((stmt.getArguments() != null && args.length != stmt
+                        .getArguments().length)
+                        || stmt.getArguments() == null) {
                     continue;
-                } 
-                
+                }
+
                 for (int i = 0; i < args.length; i++) {
-                    if ((args[i] == null && stmt.getArguments()[i] != null) ||
-                        (args[i] != null && stmt.getArguments()[i] == null) ||
-                        !args[i].equals(stmt.getArguments()[i]))
-                    {
+                    if ((args[i] == null && stmt.getArguments()[i] != null)
+                            || (args[i] != null && stmt.getArguments()[i] == null)
+                            || !args[i].equals(stmt.getArguments()[i])) {
                         continue;
                     }
                 }
@@ -1102,13 +1119,13 @@ public class DefaultPersistenceDelegateTest extends TestCase {
 
             return stmt;
         }
-        
+
         return null;
     }
-    
+
     public static class CollectingEncoder extends Encoder {
         private Vector<Statement> statements = new Vector<Statement>();
-        
+
         @Override
         public void writeExpression(Expression exp) {
             statements.add(exp);
@@ -1120,13 +1137,29 @@ public class DefaultPersistenceDelegateTest extends TestCase {
             statements.add(stm);
             super.writeStatement(stm);
         }
-        
+
         public Iterator<Statement> statements() {
             return statements.iterator();
         }
-        
+
         public void clearCache() {
             statements = new Vector<Statement>();
+        }
+    }
+    
+    public static class MockBean3
+    {
+        public boolean setValueCalled = false;
+        
+        public String value;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+            setValueCalled = true;
         }
     }
 }

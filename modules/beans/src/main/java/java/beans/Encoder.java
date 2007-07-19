@@ -17,12 +17,14 @@
 
 package java.beans;
 
+import java.awt.*;
+import java.awt.font.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Hashtable;
-import java.util.IdentityHashMap;
 
 import org.apache.harmony.beans.*;
 
@@ -82,11 +84,29 @@ public class Encoder {
 		delegates.put(Method.class, new java_lang_reflect_MethodPersistenceDelegate());
 		delegates.put(String.class, new java_lang_StringPersistenceDelegate());
 		delegates.put(Proxy.class, new java_lang_reflect_ProxyPersistenceDelegate());
+        
+        delegates.put(Choice.class, new AwtChoicePersistenceDelegate());
+        delegates.put(Color.class, new AwtColorPersistenceDelegate());
+        delegates.put(Container.class, new AwtContainerPersistenceDelegate());
+        delegates.put(Component.class, new AwtComponentPersistenceDelegate());
+        delegates.put(Cursor.class, new AwtCursorPersistenceDelegate());
+        delegates.put(Dimension.class, new AwtDimensionPersistenceDelegate());
+        delegates.put(Font.class, new AwtFontPersistenceDelegate());
+        delegates.put(Insets.class, new AwtInsetsPersistenceDelegate());
+        delegates.put(List.class, new AwtListPersistenceDelegate());
+        delegates.put(Menu.class, new AwtMenuPersistenceDelegate());
+        delegates.put(MenuBar.class, new AwtMenuBarPersistenceDelegate());
+        delegates.put(MenuShortcut.class, new AwtMenuShortcutPersistenceDelegate());
+        delegates.put(Point.class, new AwtPointPersistenceDelegate());
+        delegates.put(Rectangle.class, new AwtRectanglePersistenceDelegate());
+        delegates.put(SystemColor.class, new AwtSystemColorPersistenceDelegate());
+        delegates.put(TextAttribute.class, new AwtFontTextAttributePersistenceDelegate());
+        
 	}
 
 	private ExceptionListener listener = defaultExListener;
 
-	private IdentityHashMap oldNewMap = new IdentityHashMap();
+	private ReferenceMap oldNewMap = new ReferenceMap();
 
 	/**
 	 * Construct a new encoder.
@@ -171,6 +191,10 @@ public class Encoder {
 		
         if (Collection.class.isAssignableFrom(type)) {
             return new UtilCollectionPersistenceDelegate();
+        }
+        
+        if (Map.class.isAssignableFrom(type)) {
+            return new UtilMapPersistenceDelegate();
         }
         
 		if (type.isArray()) {

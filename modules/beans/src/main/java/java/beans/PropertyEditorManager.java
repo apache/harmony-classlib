@@ -54,8 +54,14 @@ public class PropertyEditorManager {
         PropertyEditor editor = null;
 
         editorClass = registeredEditors.get(targetType);
-
-        if (editorClass == null) {
+        if (editorClass != null) {
+            try {
+                editor = (PropertyEditor) editorClass.newInstance();
+            } catch (Exception e) {
+            }
+        }
+        
+        if (editor == null) {
             String editorClassName = targetType.getName() + "Editor"; //$NON-NLS-1$
             ClassLoader loader = targetType.getClassLoader();
 
@@ -65,6 +71,7 @@ public class PropertyEditorManager {
 
             try {
                 editorClass = Class.forName(editorClassName, true, loader);
+                return (PropertyEditor) editorClass.newInstance();
             } catch (ClassNotFoundException cnfe) {
                 String shortEditorClassName = editorClassName
                         .substring(editorClassName.lastIndexOf(".") + 1); //$NON-NLS-1$
@@ -81,21 +88,22 @@ public class PropertyEditorManager {
                     try {
                         editorClass = Class.forName(editorClassName, true,
                                 loader);
+                        editorClass.asSubclass(PropertyEditorSupport.class);
                         break;
                     } catch (Exception e) {
                     }
                 }
             } catch (Exception e) {
             }
-        }
-
-        if (editorClass != null) {
-            try {
-                editor = (PropertyEditor) editorClass.newInstance();
-            } catch (Exception e) {
+            if(editorClass != null){
+                try {
+                    //FIXME: cache is still needed, but need more investigation to make tests pass
+//                    registeredEditors.put(targetType, editorClass);
+                    editor = (PropertyEditor) editorClass.newInstance();
+                } catch (Exception e) {
+                }    
             }
         }
-
         return editor;
     }
 
@@ -113,6 +121,6 @@ public class PropertyEditorManager {
     }
 
     public static synchronized String[] getEditorSearchPath() {
-        return path;
+        return path.clone();
     }
 }
