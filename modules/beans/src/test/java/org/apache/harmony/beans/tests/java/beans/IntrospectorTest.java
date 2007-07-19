@@ -53,6 +53,7 @@ import org.apache.harmony.beans.tests.support.mock.FakeFox01;
 import org.apache.harmony.beans.tests.support.mock.FakeFox011;
 import org.apache.harmony.beans.tests.support.mock.FakeFox01BeanInfo;
 import org.apache.harmony.beans.tests.support.mock.FakeFox02;
+import org.apache.harmony.beans.tests.support.mock.FakeFox031;
 import org.apache.harmony.beans.tests.support.mock.MockButton;
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFooButton;
@@ -2047,6 +2048,15 @@ public class IntrospectorTest extends TestCase {
             assertFalse(event.isHidden());
             assertFalse(event.isPreferred());
         }
+    }
+
+    public void testDefaultIndex() throws IntrospectionException {
+        Introspector
+                .setBeanInfoSearchPath(new String[] { "org.apache.harmony.beans.tests.support" });
+
+        BeanInfo dummyInfo = Introspector.getBeanInfo(FakeFox031.class);
+        assertEquals(-1, dummyInfo.getDefaultPropertyIndex());
+        assertEquals(-1, dummyInfo.getDefaultEventIndex());
     }
 
     static class MockBaseClassForPorpertiesStandard {
