@@ -45,7 +45,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
             throw new IntrospectionException(Messages.getString("beans.04")); //$NON-NLS-1$
         }
         this.setName(propertyName);
-        this.setDisplayName(propertyName);
         if (getterName != null) {
             if(getterName.length() == 0){
                 throw new IntrospectionException("read or write method cannot be empty."); //$NON-NLS-1$    
@@ -71,7 +70,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
             throw new IntrospectionException(Messages.getString("beans.04")); //$NON-NLS-1$
         }
         this.setName(propertyName);
-        this.setDisplayName(propertyName);
         setReadMethod(getter);
         setWriteMethod(setter);
     }
@@ -85,7 +83,6 @@ public class PropertyDescriptor extends FeatureDescriptor {
             throw new IntrospectionException(Messages.getString("beans.04")); //$NON-NLS-1$
         }
         this.setName(propertyName);
-        this.setDisplayName(propertyName);
         try {
             setReadMethod(beanClass, createDefaultMethodName(propertyName, "is")); //$NON-NLS-1$
         } catch (Exception e) {

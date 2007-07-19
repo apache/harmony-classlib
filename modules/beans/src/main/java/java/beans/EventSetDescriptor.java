@@ -52,7 +52,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 listenerMethodName);
 
         setName(eventSetName);
-        setDisplayName(eventSetName);
         this.listenerType = listenerType;
         m = findListenerMethodByName(listenerMethodName);
         checkEventType(eventSetName, m);
@@ -92,7 +91,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
                 listenerMethodNames);
 
         setName(eventSetName);
-        setDisplayName(eventSetName);
         this.listenerType = listenerType;
 
         listenerMethodDescriptors = new ArrayList<MethodDescriptor>();
@@ -153,7 +151,6 @@ public class EventSetDescriptor extends FeatureDescriptor {
             throws IntrospectionException {
 
         setName(eventSetName);
-        setDisplayName(eventSetName);
         this.listenerType = listenerType;
 
         this.listenerMethods = listenerMethods;

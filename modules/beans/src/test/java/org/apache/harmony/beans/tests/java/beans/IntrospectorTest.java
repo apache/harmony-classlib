@@ -62,6 +62,7 @@ import org.apache.harmony.beans.tests.support.mock.MockFooStop;
 import org.apache.harmony.beans.tests.support.mock.MockFooSub;
 import org.apache.harmony.beans.tests.support.mock.MockFooSubSub;
 import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+import org.apache.harmony.beans.tests.support.mock.MockSubClass;
 
 /**
  * Unit test for Introspector.
@@ -440,11 +441,10 @@ public class IntrospectorTest extends TestCase {
         assertTrue(contains("setName", mds));
         assertTrue(contains("getComplexLabel", mds));
         assertTrue(contains("setComplexLabel", mds));
-        try{
-            BeanInfo info2 = Introspector.getBeanInfo(MockFoo.class,
-                    Serializable.class);
+        try {
+            Introspector.getBeanInfo(MockFoo.class, Serializable.class);
             fail("Shoule throw exception, stopclass must be superclass of given bean");
-        }catch(IntrospectionException e){
+        } catch (IntrospectionException e) {
         }
     }
 
@@ -1282,6 +1282,41 @@ public class IntrospectorTest extends TestCase {
         assertNotNull(pds[1].getWriteMethod());
     }
 
+    public void testGetBeanInfoComplexHierarchy() throws Exception {
+        Introspector.flushCaches();
+        BeanInfo subinfo = Introspector.getBeanInfo(MockSubClass.class);
+        PropertyDescriptor[] allProps = subinfo.getPropertyDescriptors();
+        boolean propFound = false;
+        for (int i = 0; i < allProps.length; i++) {
+            if (allProps[i].getName().equals("value")) {
+                assertTrue(allProps[i].isExpert());
+                assertTrue(allProps[i].isHidden());
+                assertTrue(allProps[i].isBound());
+                assertFalse(allProps[i].isConstrained());
+                assertEquals("adddisplay", allProps[i].getDisplayName());
+                assertEquals("subdesc", allProps[i].getShortDescription());
+                propFound = true;
+                break;
+            }
+        }
+        assertTrue(propFound);
+
+        boolean eventFound = false;
+        EventSetDescriptor[] events = subinfo.getEventSetDescriptors();
+        for (int i = 0; i < events.length; i++) {
+            if (events[i].getName().equals("mockPropertyChange")) {
+                assertTrue(events[i].isExpert());
+                assertTrue(events[i].isHidden());
+                assertFalse(events[i].isUnicast());
+                assertFalse(events[i].isInDefaultEventSet());
+                assertEquals("adddisplay", events[i].getDisplayName());
+                assertEquals("subdesc", events[i].getShortDescription());
+                eventFound = true;
+                break;
+            }
+        }
+        assertTrue(eventFound);
+    }
     static class FakeFoxInfo {
 
         public int getProp6(boolean i) {
