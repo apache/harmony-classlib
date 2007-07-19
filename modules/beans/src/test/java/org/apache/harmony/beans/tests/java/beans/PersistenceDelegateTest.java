@@ -40,9 +40,9 @@ import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Stack;
+import java.util.TreeMap;
 
-import javax.swing.JTabbedPane;
-import javax.swing.LayoutFocusTraversalPolicy;
+import javax.swing.*;
 
 import junit.framework.TestCase;
 
@@ -800,6 +800,23 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(scrollPane.getAlignmentY(), aScrollPane.getAlignmentY());
         assertEquals(scrollPane.getScrollbarDisplayPolicy(), aScrollPane
                 .getScrollbarDisplayPolicy());
+    }
+    
+    public void test_writeObject_java_util_Map(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        TreeMap<Integer, String> map = new TreeMap<Integer, String>();
+        map.put(new Integer(10), "first element");
+
+        encoder.writeObject(map);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        TreeMap aMap = (TreeMap) decoder.readObject();
+        assertEquals(map.size(), aMap.size());
+        assertEquals(map.get(10), aMap.get(10));
     }
 
     // <--

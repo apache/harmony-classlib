@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Hashtable;
 
 import org.apache.harmony.beans.*;
@@ -190,6 +191,10 @@ public class Encoder {
 		
         if (Collection.class.isAssignableFrom(type)) {
             return new UtilCollectionPersistenceDelegate();
+        }
+        
+        if (Map.class.isAssignableFrom(type)) {
+            return new UtilMapPersistenceDelegate();
         }
         
 		if (type.isArray()) {
