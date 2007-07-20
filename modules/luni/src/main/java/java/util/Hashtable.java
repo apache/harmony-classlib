@@ -228,8 +228,8 @@ public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>,
             if (entry != null) {
                 return true;
             }
-            while (--start >= firstSlot) {
-                if (elementData[start] != null) {
+            while (start > firstSlot) {
+                if (elementData[--start] != null) {
                     entry = elementData[start];
                     return true;
                 }
