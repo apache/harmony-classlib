@@ -21,26 +21,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.TextAttribute;
 import java.awt.dnd.DropTarget;
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.Statement;
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.EmptyStackException;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Stack;
-import java.util.TreeMap;
+import java.beans.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -659,7 +643,7 @@ public class PersistenceDelegateTest extends TestCase {
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
             byteArrayOutputStream));
 
-        java.awt.List list = new List();
+        java.awt.List list = new java.awt.List();
         list.setBounds(0, 0, 10, 10);
         list.add(new PopupMenu("popupMenu"));
         list.add("1");
@@ -670,7 +654,7 @@ public class PersistenceDelegateTest extends TestCase {
         DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
                 byteArrayOutputStream.toByteArray()));
         XMLDecoder decoder = new XMLDecoder(stream);
-        List aList = (List) decoder.readObject();
+        java.awt.List aList = (java.awt.List) decoder.readObject();
         assertEquals(list.getItem(0), aList.getItem(0));
         assertEquals(list.getHeight(), aList.getHeight());
         assertEquals(list.getBackground(), aList.getBackground());
@@ -817,6 +801,85 @@ public class PersistenceDelegateTest extends TestCase {
         TreeMap aMap = (TreeMap) decoder.readObject();
         assertEquals(map.size(), aMap.size());
         assertEquals(map.get(10), aMap.get(10));
+    }
+    
+    public void test_writeObject_java_util_List() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Vector vector = new Vector();
+        vector.add("test");
+        vector.add(1);
+
+        encoder.writeObject(vector);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Vector aVector = (Vector) decoder.readObject();
+        assertEquals(vector, aVector);
+        assertEquals(2, aVector.size());
+        assertEquals(vector.get(0), aVector.get(0));
+        assertEquals(1, aVector.get(1));
+        
+        Vector v = new Vector();
+        v.add("The first item.");
+        v.add("The second item.");
+        Vector v2 = new Vector();
+        v2.add("A nested item.");
+        v.add(v2);
+        
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        encoder = new XMLEncoder(byteArrayOutputStream);
+        encoder.writeObject(v);
+        encoder.flush();
+        encoder.close();
+        
+        stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        decoder = new XMLDecoder(stream);
+        aVector = (Vector) decoder.readObject();
+        assertEquals(v, aVector);
+        assertEquals(3, aVector.size());
+        assertEquals(v.get(0), aVector.get(0));
+        assertEquals(v.get(2), aVector.get(2));
+    }
+
+    public void test_writeObject_java_util_AbstractList(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        ArrayList<Integer> arrayList = new ArrayList<Integer>();
+        arrayList.add(10);
+
+        encoder.writeObject(arrayList);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        ArrayList aList = (ArrayList) decoder.readObject();
+        assertEquals(arrayList.size(), aList.size());
+        assertEquals(arrayList.get(0), arrayList.get(0));
+    }
+
+    public void test_writeObject_java_util_AbstractMap() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        HashMap<Integer, String> hMap = new HashMap<Integer, String>();
+        hMap.put(1, "1");
+        hMap.put(2, "test");
+
+        encoder.writeObject(hMap);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        HashMap aHmap = (HashMap) decoder.readObject();
+        assertEquals(hMap.size(), aHmap.size());
+        assertEquals(hMap.get(1), aHmap.get(1));
+        assertEquals("test", aHmap.get(2));
     }
 
     // <--

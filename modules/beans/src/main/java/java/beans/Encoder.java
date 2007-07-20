@@ -188,6 +188,10 @@ public class Encoder {
 		if (registeredPD != null) {
 			return registeredPD;
 		}
+        
+        if (java.util.List.class.isAssignableFrom(type)) {
+            return new UtilListPersistenceDelegate();
+        }
 		
         if (Collection.class.isAssignableFrom(type)) {
             return new UtilCollectionPersistenceDelegate();
