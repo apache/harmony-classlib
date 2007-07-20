@@ -112,7 +112,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         Method method = null;
         Method[] methods = listenerType.getMethods();
         for (Method m : methods) {
-            if (m.getName().equals(listenerMethodName)) {
+            if (listenerMethodName.equals(m.getName())) {
                 Class[] paramTypes = m.getParameterTypes();
                 if (paramTypes.length == 1
                         && paramTypes[0].getName().endsWith("Event")) {
