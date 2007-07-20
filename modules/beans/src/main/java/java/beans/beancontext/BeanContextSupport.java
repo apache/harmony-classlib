@@ -103,7 +103,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * A list of registered membership listeners.
      * All access to this object should be synchronized on itself.
      */
-    transient protected ArrayList bcmListeners;
+    transient protected ArrayList<BeanContextMembershipListener> bcmListeners;
 
     /**
      * A map of children - key is child instance, value is <code>BCSChild</code> instance.
@@ -214,6 +214,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * @throws IllegalStateException if the child is not valid to add
      * @see java.util.Collection#add(java.lang.Object)
      */
+    @SuppressWarnings("unchecked")
     public boolean add(Object child) {
         if (child == null) {
             throw new IllegalArgumentException("null child");
@@ -460,6 +461,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * @return true if given objects are children of this context
      * @see java.util.Collection#containsAll(java.util.Collection)
      */
+    @SuppressWarnings("unchecked")
     public boolean containsAll(Collection collection) {
         synchronized (children) {
             return children.keySet().containsAll(collection);
@@ -511,6 +513,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * @throws IOException if I/O exception occurs
      * @throws ClassNotFoundException if class of any read object is not found
      */
+    @SuppressWarnings("unchecked")
     protected final void deserialize(ObjectInputStream ois,
             Collection collection) throws IOException, ClassNotFoundException {
         int size = ois.readInt();
@@ -726,7 +729,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      */
     protected void initialize() {
         // init transient fields
-        bcmListeners = new ArrayList();
+        bcmListeners = new ArrayList<BeanContextMembershipListener>();
         children = new HashMap();
         serializing = false;
         inNeedsGui = false;
@@ -865,6 +868,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
 	 * @throws ClassNotFoundException
 	 *             if class of read object is not found
 	 */
+    @SuppressWarnings("unchecked")
     public final void readChildren(ObjectInputStream ois) throws IOException,
             ClassNotFoundException {
         synchronized (children) {
@@ -1125,6 +1129,7 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * @return an array of children of this context
      * @see java.util.Collection#toArray(java.lang.Object[])
      */
+    @SuppressWarnings("unchecked")
     public Object[] toArray(Object[] array) {
         synchronized (children) {
             return children.keySet().toArray(array);

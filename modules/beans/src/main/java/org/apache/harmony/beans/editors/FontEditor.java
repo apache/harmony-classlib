@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class FontEditor extends Panel implements PropertyEditor {
     
     List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();

@@ -36,6 +36,8 @@ public class PropertyChangeSupport implements Serializable {
 
     private Object source;
 
+    @SuppressWarnings("unused")
+    // for serialization compatibility
     private int propertyChangeSupportSerializedDataVersion = 1;
 
     public PropertyChangeSupport(Object sourceBean) {
