@@ -58,7 +58,7 @@ public class FakeFox01BeanInfo extends SimpleBeanInfo {
         getDesc.setDisplayName(getDesc.getDisplayName() + suffix);
         MethodDescriptor setDesc = new MethodDescriptor(set);
         setDesc.setDisplayName(setDesc.getDisplayName() + suffix);
-        return new MethodDescriptor[] { getDesc, setDesc };
+        return new MethodDescriptor[] { setDesc, getDesc };
     }
 
     @Override
