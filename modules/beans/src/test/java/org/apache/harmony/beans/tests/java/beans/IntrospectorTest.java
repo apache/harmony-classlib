@@ -54,6 +54,8 @@ import org.apache.harmony.beans.tests.support.mock.FakeFox011;
 import org.apache.harmony.beans.tests.support.mock.FakeFox01BeanInfo;
 import org.apache.harmony.beans.tests.support.mock.FakeFox02;
 import org.apache.harmony.beans.tests.support.mock.FakeFox031;
+import org.apache.harmony.beans.tests.support.mock.FakeFox041;
+import org.apache.harmony.beans.tests.support.mock.FakeFox0411;
 import org.apache.harmony.beans.tests.support.mock.MockButton;
 import org.apache.harmony.beans.tests.support.mock.MockFoo;
 import org.apache.harmony.beans.tests.support.mock.MockFooButton;
@@ -62,6 +64,7 @@ import org.apache.harmony.beans.tests.support.mock.MockFooStop;
 import org.apache.harmony.beans.tests.support.mock.MockFooSub;
 import org.apache.harmony.beans.tests.support.mock.MockFooSubSub;
 import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+import org.apache.harmony.beans.tests.support.mock.MockNullSubClass;
 import org.apache.harmony.beans.tests.support.mock.MockSubClass;
 
 /**
@@ -1317,6 +1320,17 @@ public class IntrospectorTest extends TestCase {
         }
         assertTrue(eventFound);
     }
+
+    public void testGetBeanInfoExplicitNull() throws Exception {
+        Introspector.flushCaches();
+        BeanInfo subinfo = Introspector.getBeanInfo(MockNullSubClass.class);
+        assertNotNull(subinfo.getPropertyDescriptors());
+        assertNotNull(subinfo.getEventSetDescriptors());
+        assertNotNull(subinfo.getMethodDescriptors());
+        assertEquals(-1, subinfo.getDefaultEventIndex());
+        assertEquals(-1, subinfo.getDefaultPropertyIndex());
+    }
+
     static class FakeFoxInfo {
 
         public int getProp6(boolean i) {
@@ -2068,6 +2082,31 @@ public class IntrospectorTest extends TestCase {
             assertFalse(pd.isPreferred());
         }
         assertEquals(2, info.getPropertyDescriptors().length);
+        
+        BeanInfo dummyInfo = Introspector.getBeanInfo(FakeFox041.class);
+        PropertyDescriptor[] p = dummyInfo.getPropertyDescriptors();
+        assertFalse(p[0].isBound());
+        assertFalse(p[0].isConstrained());
+        assertFalse(p[1].isBound());
+        assertFalse(p[1].isConstrained());
+        assertTrue(p[2].isBound());
+        assertTrue(p[2].isConstrained());
+        
+        dummyInfo = Introspector.getBeanInfo(FakeFox0411.class);
+        p = dummyInfo.getPropertyDescriptors();
+        assertFalse(p[0].isBound());
+        assertFalse(p[0].isConstrained());
+        assertFalse(p[1].isBound());
+        assertFalse(p[1].isConstrained());
+        assertTrue(p[2].isBound());
+        assertFalse(p[2].isConstrained());
+        assertTrue(p[3].isBound());
+        assertTrue(p[3].isConstrained());
+        
+        dummyInfo = Introspector.getBeanInfo(FakeFox0411.class, FakeFox041.class);
+        p = dummyInfo.getPropertyDescriptors();
+        assertFalse(p[0].isBound());
+        assertFalse(p[0].isConstrained());
     }
 
     public void testDefaultEvent() throws IntrospectionException {
@@ -2114,6 +2153,7 @@ public class IntrospectorTest extends TestCase {
             a = i;
         }
     }
+    
     static class MockClassForDefaultEvent {
         public void addPropertyChangeListener(PropertyChangeListener a) {
         }
