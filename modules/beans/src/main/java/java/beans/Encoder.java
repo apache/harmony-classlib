@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Hashtable;
 
+import javax.swing.*;
+
 import org.apache.harmony.beans.*;
 
 /**
@@ -101,6 +103,12 @@ public class Encoder {
         delegates.put(Rectangle.class, new AwtRectanglePersistenceDelegate());
         delegates.put(SystemColor.class, new AwtSystemColorPersistenceDelegate());
         delegates.put(TextAttribute.class, new AwtFontTextAttributePersistenceDelegate());
+        
+        delegates.put(Box.class, new SwingBoxPersistenceDelegate());
+        delegates.put(JFrame.class, new SwingJFramePersistenceDelegate());
+        delegates.put(JTabbedPane.class, new SwingJTabbedPanePersistenceDelegate());
+        delegates.put(DefaultComboBoxModel.class, new SwingDefaultComboBoxModelPersistenceDelegate());
+        delegates.put(ToolTipManager.class, new SwingToolTipManagerPersistenceDelegate());
         
 	}
 

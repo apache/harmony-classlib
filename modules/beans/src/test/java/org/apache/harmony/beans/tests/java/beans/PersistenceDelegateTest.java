@@ -27,6 +27,9 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicComboBoxUI.ListDataHandler;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import junit.framework.TestCase;
 
@@ -880,6 +883,95 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(hMap.size(), aHmap.size());
         assertEquals(hMap.get(1), aHmap.get(1));
         assertEquals("test", aHmap.get(2));
+    }
+    
+    public void test_writeObject_javax_swing_JFrame() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        
+        JFrame frame = new JFrame("JFrame"); 
+        frame.setAlwaysOnTop(true);
+        frame.setBounds(1, 1, 100, 100);
+        frame.add(new JMenu("JMenu"));
+        encoder.writeObject(frame);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        JFrame aFrame = (JFrame) decoder.readObject();
+        assertEquals(frame.getTitle(), aFrame.getTitle());
+        assertEquals(frame.getBounds(), aFrame.getBounds());
+    }
+
+    public void test_writeObject_javax_swing_DefaultListModel() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        DefaultListModel model = new DefaultListModel();
+        model.add(0, 1);
+        model.add(1, 2);
+        ListDataHandler listDataHandler = new BasicComboBoxUI().new ListDataHandler();
+        model.addListDataListener(listDataHandler);
+        
+        encoder.writeObject(model);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        DefaultListModel aModel = (DefaultListModel) decoder.readObject();
+        assertEquals(model.getSize(), aModel.getSize());
+    }
+
+    public void test_writeObject_javax_swing_DefaultComboBoxModel() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Object a[] = {1, 2};
+        DefaultComboBoxModel model = new DefaultComboBoxModel(a);
+
+        encoder.writeObject(model);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        DefaultComboBoxModel aModel = (DefaultComboBoxModel) decoder.readObject();
+        assertEquals(model.getSize(), aModel.getSize());
+        assertEquals(model.getElementAt(0), aModel.getElementAt(0));
+        assertEquals(model.getElementAt(1), aModel.getElementAt(1));
+    }
+
+    public void test_writeObject_javax_swing_tree_DefaultMutableTreeNode() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(1);
+
+        encoder.writeObject(node);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) decoder.readObject();
+        assertEquals(node.getUserObject(), aNode.getUserObject());
+    }
+
+    public void test_writeObject_javax_swing_ToolTipManager() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        ToolTipManager manager = ToolTipManager.sharedInstance();
+        manager.setDismissDelay(10);
+
+        encoder.writeObject(manager);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        ToolTipManager aManager = (ToolTipManager) decoder.readObject();
+        assertEquals(manager, aManager);
+        assertEquals(manager.getDismissDelay(), aManager.getDismissDelay());
     }
 
     // <--
