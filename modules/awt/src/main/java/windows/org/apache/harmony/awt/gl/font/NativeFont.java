@@ -468,10 +468,8 @@ public class NativeFont {
      */
     public static Font embedFont(String absolutePath) throws IOException {
         String familyName = embedFontNative(absolutePath);
-        if (familyName == null) {
-            System.err.println("Exception!");
+        if (familyName == null)
             throw new IOException(Messages.getString("awt.299"));
-        }
 
         return new Font(familyName, Font.PLAIN, 1);
     }
