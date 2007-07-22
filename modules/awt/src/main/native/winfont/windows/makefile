@@ -22,7 +22,7 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-HYCFLAGS = $(HYCFLAGS) /Iinclude /I..\..\gl\windows\include /I..\..\fontlib\shared \
+HYCFLAGS = $(HYCFLAGS) /Iinclude /I..\..\gl\windows\include /I..\..\fontlib\shared /I..\..\fontlib\windows \
   -DUNICODE -D_UNICODE
 
 BUILDFILES = winFont.obj
