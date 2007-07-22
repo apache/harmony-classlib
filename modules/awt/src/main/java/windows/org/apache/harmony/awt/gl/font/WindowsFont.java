@@ -30,6 +30,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Locale;
 
@@ -340,7 +341,7 @@ public class WindowsFont extends FontPeerImpl{
     /**
      * Return Font object if it was successfully embedded in the system.
      */
-    public static Font embedFont(String absolutePath){
+    public static Font embedFont(String absolutePath) throws IOException {
         return NativeFont.embedFont(absolutePath);
     }
 
