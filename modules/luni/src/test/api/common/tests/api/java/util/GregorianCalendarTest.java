@@ -604,6 +604,21 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         assertEquals("Wrong month: " + cal.getTime(), Calendar.DECEMBER, cal
                 .get(Calendar.MONTH));
         assertEquals("Wrong date: " + cal.getTime(), 23, cal.get(Calendar.DATE));
+        
+        // Regression for HARMONY-4510
+        cal.set(1999, Calendar.DECEMBER, 31, 23, 59, 59);
+        cal.roll(GregorianCalendar.WEEK_OF_YEAR, true);
+        assertEquals("Wrong year: " + cal.getTime(), 1999, cal
+                .get(Calendar.YEAR));
+        assertEquals("Wrong month: " + cal.getTime(), Calendar.JANUARY, cal
+                .get(Calendar.MONTH));
+        assertEquals("Wrong date: " + cal.getTime(), 8, cal.get(Calendar.DATE));
+        cal.roll(GregorianCalendar.WEEK_OF_YEAR, false);
+        assertEquals("Wrong year: " + cal.getTime(), 1999, cal
+                .get(Calendar.YEAR));
+        assertEquals("Wrong month: " + cal.getTime(), Calendar.DECEMBER, cal
+                .get(Calendar.MONTH));
+        assertEquals("Wrong date: " + cal.getTime(), 31, cal.get(Calendar.DATE));
 	}
 
 	/**
