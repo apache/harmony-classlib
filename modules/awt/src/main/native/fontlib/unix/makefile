@@ -30,6 +30,7 @@ BUILDFILES = \
   $(SHAREDSUB)T1Glyph.o \
   $(SHAREDSUB)TTCurve.o \
   $(SHAREDSUB)TTFont.o \
+  FontLibExports.o \
   $(SHAREDSUB)TypeDefinition.o
 
 ifneq ($(HY_ZIP_API),true)

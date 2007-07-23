@@ -21,10 +21,12 @@
 package org.apache.harmony.awt.gl.font;
 
 import java.awt.Font;
+import java.io.IOException;
 
 import java.util.*;
 
 import org.apache.harmony.awt.gl.font.FontPeerImpl;
+import org.apache.harmony.awt.internal.nls.Messages;
 
 /**
  *
@@ -50,7 +52,7 @@ public class LinuxNativeFont {
      *   
      * @param absolutePath absolute path to the font.
      */
-    public synchronized static native boolean embedFontNative(String absolutePath);
+    public synchronized static native String embedFontNative(String absolutePath);
 
     /**
      * Initiailzes native Xft font object from specified parameters and returns 
@@ -690,9 +692,12 @@ public class LinuxNativeFont {
      *  
      * @param absolutePath absolute path to the font resource file
      */
-    public static Font embedFont(String absolutePath){
-        // TODO: implement method
-        return null;
+    public static Font embedFont(String absolutePath) throws IOException {
+        String familyName = embedFontNative(absolutePath);
+        if (familyName == null)
+            throw new IOException(Messages.getString("awt.299"));
+
+        return new Font(familyName, Font.PLAIN, 1);
     }
 
     /** flag, returns true if native linuxfont was loaded */
