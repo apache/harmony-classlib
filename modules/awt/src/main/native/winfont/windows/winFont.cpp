@@ -33,6 +33,8 @@
 #include "org_apache_harmony_awt_gl_font_WinGlyph.h"
 #include "exceptions.h"
 
+#include <FontLibExports.h> // Font file tables parsing routines for embedFontNative method
+
 static LCIDS lcidTable;
 static FontRecords fonts;           /* Cached system fonts data             */
 static int famSize = 256;           /* Size of families array               */
@@ -457,7 +459,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_enumSystem
 * Signature: (Ljava/lang/String;)Z
 * Description: Returns TRUE if Font resource from font file added successfully to a system.
 */
-JNIEXPORT jboolean JNICALL 
+JNIEXPORT jstring JNICALL 
 Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *env, jclass obj, jstring absPath) {
 
     jboolean iscopy;
@@ -465,12 +467,24 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *env, jcla
     const TCHAR * path;
     path = (TCHAR *)(env->GetStringCritical(absPath, &iscopy));
 
-    fontAdded = AddFontResource(path);
+    fontAdded = AddFontResourceEx(path, FR_PRIVATE, 0);
+    
+    fwchar_t *familyName = 0;
 
-    // message to other applications about installed font
-    //  SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
+    if (fontAdded) {
+        getFontFamilyName((fwchar_t *)path, &familyName);
+    }    
+
     env->ReleaseStringCritical(absPath, (const jchar *)path);
-    return fontAdded;
+    
+    jstring res = 0;
+    if (fontAdded && familyName) {
+        int len = wcslen(familyName);
+        res = env->NewString((jchar *)familyName, len);
+        delete familyName;
+    }
+    
+    return res;
 }
 
 /*

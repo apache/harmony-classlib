@@ -24,6 +24,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.peer.FontPeer;
 
+import java.io.IOException;
+
 import org.apache.harmony.awt.wtk.GraphicsFactory;
 
 /**
@@ -46,6 +48,6 @@ public abstract class CommonGraphics2DFactory implements GraphicsFactory {
      * @param fontFilePath path to the font file 
      * @return Font object that was created from the file.
      */
-    public abstract Font embedFont(String fontFilePath);
+    public abstract Font embedFont(String fontFilePath) throws IOException;
 
 }

@@ -138,7 +138,9 @@
     </target>
 
     <target name="build-native"
-        depends="-build-native-unix,-build-native-windows">
+        depends="-build-native-common,-build-native-unix,-build-native-windows" />
+        
+    <target name="-build-native-common">
         <make dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">

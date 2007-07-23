@@ -35,6 +35,7 @@ import java.util.TooManyListenersException;
 
 import org.apache.harmony.awt.datatransfer.DTK;
 import org.apache.harmony.awt.internal.nls.Messages;
+import org.apache.harmony.luni.util.NotImplementedException;
 
 public class DropTarget implements DropTargetListener, Serializable {
 
@@ -49,17 +50,14 @@ public class DropTarget implements DropTargetListener, Serializable {
             point = p;
         }
 
-        protected void stop() {
-            // TODO implement
+        protected void stop() throws NotImplementedException{
         }
 
-        protected void updateLocation(Point newLocn) {
+        protected void updateLocation(Point newLocn) throws NotImplementedException {
             point = (Point)newLocn.clone();
-            // TODO implement
         }
 
-        public void actionPerformed(ActionEvent e) {
-            // TODO implement
+        public void actionPerformed(ActionEvent e) throws NotImplementedException{
         }
 
     }
@@ -112,12 +110,11 @@ public class DropTarget implements DropTargetListener, Serializable {
         return new DropTargetAutoScroller(c, p);
     }
 
-    public void removeNotify(ComponentPeer peer) {
+    public void removeNotify(ComponentPeer peer) throws NotImplementedException{
         context.removeNotify();
-        // TODO: implement
     }
 
-    public void addNotify(ComponentPeer peer) {
+    public void addNotify(ComponentPeer peer) throws NotImplementedException {
         if(component == null) {
             return;
         }
@@ -125,7 +122,6 @@ public class DropTarget implements DropTargetListener, Serializable {
         DTK dtk = DTK.getDTK();
         DropTargetContextPeer dtp = dtk.createDropTargetContextPeer(context);
         context.addNotify(dtp);
-        // TODO: implement
     }
 
     public synchronized void removeDropTargetListener(DropTargetListener dtl) {

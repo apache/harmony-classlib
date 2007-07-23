@@ -63,7 +63,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFontFamiliesNames(JNIEnv *, jc
 /*
  * Method: org.apache.harmony.awt.gl.font.NativeFont.embedFontNative(Ljava/lang/String;)Z
  */
-JNIEXPORT jboolean JNICALL
+JNIEXPORT jstring JNICALL
 Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *, jclass, 
     jstring);
 

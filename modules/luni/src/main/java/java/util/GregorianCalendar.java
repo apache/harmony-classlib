@@ -1133,73 +1133,90 @@ public class GregorianCalendar extends Calendar {
         isCached = false;
 
         complete();
+        int days, day, mod, maxWeeks, newWeek;
         int max = -1;
         switch (field) {
-            case YEAR:
-                max = maximums[field];
-                break;
-            case WEEK_OF_YEAR:
-            case WEEK_OF_MONTH:
-                int days,
-                day;
-                if (field == WEEK_OF_YEAR) {
-                    days = daysInYear(fields[YEAR]);
-                    day = DAY_OF_YEAR;
+        case YEAR:
+            max = maximums[field];
+            break;
+        case WEEK_OF_YEAR:
+            days = daysInYear(fields[YEAR]);
+            day = DAY_OF_YEAR;
+            mod = mod7(fields[DAY_OF_WEEK] - fields[day]
+                    - (getFirstDayOfWeek() - 1));
+            maxWeeks = (days - 1 + mod) / 7 + 1;
+            newWeek = mod(fields[field] - 1 + value, maxWeeks) + 1;
+            if (newWeek == maxWeeks) {
+                int addDays = (newWeek - fields[field]) * 7;
+                if (fields[day] > addDays && fields[day] + addDays > days) {
+                    set(field, 1);
                 } else {
-                    days = daysInMonth();
-                    day = DATE;
+                    set(field, newWeek - 1);
                 }
-                int mod = mod7(fields[DAY_OF_WEEK] - fields[day]
-                        - (getFirstDayOfWeek() - 1));
-                int maxWeeks = (days - 1 + mod) / 7 + 1;
-                int newWeek = mod(fields[field] - 1 + value, maxWeeks) + 1;
-                if (newWeek == maxWeeks) {
-                    int addDays = (newWeek - fields[field]) * 7;
-                    if (fields[day] > addDays && fields[day] + addDays > days) {
-                            set(field, 1);
-                    } else {
-                        set(field, newWeek - 1);
-                    }
-                } else if (newWeek == 1) {
-                    int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
-                    if (week > 1) {
-                        set(field, 1);
-                    } else {
-                        set(field, newWeek);
-                    }
+            } else if (newWeek == 1) {
+                int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
+                if (week > 1) {
+                    set(field, 1);
                 } else {
                     set(field, newWeek);
                 }
-                break;
-            case DATE:
-                max = daysInMonth();
-                break;
-            case DAY_OF_YEAR:
-                max = daysInYear(fields[YEAR]);
-                break;
-            case DAY_OF_WEEK:
-                max = maximums[field];
-                lastDateFieldSet = WEEK_OF_MONTH;
-                break;
-            case DAY_OF_WEEK_IN_MONTH:
-                max = (fields[DATE] + ((daysInMonth() - fields[DATE]) / 7 * 7) - 1) / 7 + 1;
-                break;
-
-            case ERA:
-            case MONTH:
-            case AM_PM:
-            case HOUR:
-            case HOUR_OF_DAY:
-            case MINUTE:
-            case SECOND:
-            case MILLISECOND:
-                set(field, mod(fields[field] + value, maximums[field] + 1));
-                if (field == MONTH && fields[DATE] > daysInMonth()) {
-                    set(DATE, daysInMonth());
-                } else if (field == AM_PM) {
-                    lastTimeFieldSet = HOUR;
+            } else {
+                set(field, newWeek);
+            }
+            break;
+        case WEEK_OF_MONTH:
+            days = daysInMonth();
+            day = DATE;
+            mod = mod7(fields[DAY_OF_WEEK] - fields[day]
+                    - (getFirstDayOfWeek() - 1));
+            maxWeeks = (days - 1 + mod) / 7 + 1;
+            newWeek = mod(fields[field] - 1 + value, maxWeeks) + 1;
+            if (newWeek == maxWeeks) {
+                if (fields[day] + (newWeek - fields[field]) * 7 > days) {
+                    set(day, days);
+                } else {
+                    set(field, newWeek);
                 }
-                break;
+            } else if (newWeek == 1) {
+                int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
+                if (week > 1) {
+                    set(day, 1);
+                } else {
+                    set(field, newWeek);
+                }
+            } else {
+                set(field, newWeek);
+            }
+            break;
+        case DATE:
+            max = daysInMonth();
+            break;
+        case DAY_OF_YEAR:
+            max = daysInYear(fields[YEAR]);
+            break;
+        case DAY_OF_WEEK:
+            max = maximums[field];
+            lastDateFieldSet = WEEK_OF_MONTH;
+            break;
+        case DAY_OF_WEEK_IN_MONTH:
+            max = (fields[DATE] + ((daysInMonth() - fields[DATE]) / 7 * 7) - 1) / 7 + 1;
+            break;
+
+        case ERA:
+        case MONTH:
+        case AM_PM:
+        case HOUR:
+        case HOUR_OF_DAY:
+        case MINUTE:
+        case SECOND:
+        case MILLISECOND:
+            set(field, mod(fields[field] + value, maximums[field] + 1));
+            if (field == MONTH && fields[DATE] > daysInMonth()) {
+                set(DATE, daysInMonth());
+            } else if (field == AM_PM) {
+                lastTimeFieldSet = HOUR;
+            }
+            break;
         }
         if (max != -1) {
             set(field, mod(fields[field] - 1 + value, max) + 1);

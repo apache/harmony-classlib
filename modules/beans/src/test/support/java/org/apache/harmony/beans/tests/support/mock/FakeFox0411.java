@@ -17,12 +17,15 @@
 
 package org.apache.harmony.beans.tests.support.mock;
 
-public class FakeFox03 {
-    public int getOther() {
 
-        return 0;
+public class FakeFox0411 extends FakeFox041 {
 
+    public int[] getThreeProp() {
+        return null;
     }
 
-    public void setOther(int other) {}
+    // throwing PropertyVetoException makes this property constrained.
+    public void setThreeProp(int[] i) {
+    }
+
 }

@@ -22,6 +22,8 @@ package org.apache.harmony.awt.gl.windows;
 
 import java.awt.*;
 
+import java.io.IOException;
+
 import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.opengl.OGLGraphics2D;
@@ -70,7 +72,7 @@ public class WinGraphics2DFactory extends CommonGraphics2DFactory {
     }
 
     @Override
-    public Font embedFont(String fontFilePath) {
+    public Font embedFont(String fontFilePath) throws IOException {
         return WindowsFont.embedFont(fontFilePath);
     }
 

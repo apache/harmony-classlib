@@ -22,15 +22,15 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-HYCFLAGS = $(HYCFLAGS) /Iinclude /I..\..\gl\windows\include \
+HYCFLAGS = $(HYCFLAGS) /Iinclude /I..\..\gl\windows\include /I..\..\fontlib\shared /I..\..\fontlib\windows \
   -DUNICODE -D_UNICODE
 
 BUILDFILES = winFont.obj
 
 VIRTFILES = $(LIBBASE).res
-SYSLIBFILES = ws2_32.lib Iphlpapi.lib gdi32.lib GdiPlus.lib advapi32.lib
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib gdi32.lib GdiPlus.lib advapi32.lib 
 
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LIBPATH)FL$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 COMMENT=/comment:"Win32 Font native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

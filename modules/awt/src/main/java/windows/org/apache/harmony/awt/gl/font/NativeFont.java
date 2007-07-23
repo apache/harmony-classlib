@@ -21,9 +21,12 @@
 package org.apache.harmony.awt.gl.font;
 
 import java.awt.Font;
+import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Hashtable;
+
+import org.apache.harmony.awt.internal.nls.Messages;
 
 public class NativeFont {
 
@@ -70,7 +73,7 @@ public class NativeFont {
      *  
      * @param absolutePath String that represent absolute path to the font resource. 
      */
-    public static native boolean embedFontNative(String absolutePath);
+    public static native String embedFontNative(String absolutePath);
 
     /** 
      * Initialize native GDI font object and return font handle, also sets font 
@@ -463,9 +466,12 @@ public class NativeFont {
      *  
      * @param absolutePath absolute path to the font resource file
      */
-    public static Font embedFont(String absolutePath){
-        // TODO: implement method
-        return null;
+    public static Font embedFont(String absolutePath) throws IOException {
+        String familyName = embedFontNative(absolutePath);
+        if (familyName == null)
+            throw new IOException(Messages.getString("awt.299"));
+
+        return new Font(familyName, Font.PLAIN, 1);
     }
     
     /**

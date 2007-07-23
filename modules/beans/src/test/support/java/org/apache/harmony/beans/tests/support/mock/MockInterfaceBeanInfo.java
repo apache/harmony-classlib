@@ -19,7 +19,6 @@ package org.apache.harmony.beans.tests.support.mock;
 
 import java.beans.EventSetDescriptor;
 import java.beans.IntrospectionException;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 

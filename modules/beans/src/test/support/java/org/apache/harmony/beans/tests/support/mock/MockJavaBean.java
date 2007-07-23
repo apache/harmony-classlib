@@ -47,6 +47,7 @@ public class MockJavaBean implements Serializable {
     
     private boolean booleanProperty;
     
+    @SuppressWarnings("unused")
     private int propertyWithoutGet;
     
     private String propertyWithDifferentGetSet;
@@ -63,6 +64,7 @@ public class MockJavaBean implements Serializable {
     
     private int propertyWithIsGet;
     
+    @SuppressWarnings("unused")
     private int propertyWithVoidGet;
 
     public Void getPropertyWithVoidGet() {
