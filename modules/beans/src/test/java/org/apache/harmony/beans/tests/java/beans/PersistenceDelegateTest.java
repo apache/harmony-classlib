@@ -973,6 +973,75 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(manager, aManager);
         assertEquals(manager.getDismissDelay(), aManager.getDismissDelay());
     }
+    
+    public static class DummyBean {
+
+        private String value;
+
+        public DummyBean() {
+        }
+
+        public DummyBean(String s) {
+            value = s;
+        }
+
+        public String getDummyValue() {
+            return value;
+        }
+
+        public void setDummyValue(String s) {
+            value = s;
+        }
+        
+        public boolean equals(Object bean) {
+            if (!(bean instanceof DummyBean)) {
+                return false;
+            }
+            DummyBean aBean = (DummyBean) bean;
+            
+            if (aBean.value == null && value != null || value != null
+                    && aBean.value == null) {
+                return false;
+            } else if(value != null && aBean.value != null){
+                return value.equals(aBean.value);
+            }
+            return true;
+        }
+    }
+    public void test_writeExpression_writeObject() {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder( output );
+
+        Date date = new Date(2007, 06, 26);
+        Expression expression = new Expression( date, "toString", null );
+        String date_string = null;
+        try {
+                date_string = (String) expression.getValue();
+        } catch (Exception e ) {
+                System.out.println("Failed to get the date value.");
+                e.printStackTrace();
+        }
+        DummyBean bean = new DummyBean( date_string );
+        // The expression knows about the date object.
+        encoder.writeExpression( expression );
+        encoder.writeObject( date );
+        // The value for the bean is already part of the expression
+        // so instead of writing the value we write a reference to
+        // the extpression.
+        encoder.writeObject( bean );
+
+        encoder.flush();
+        encoder.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                output.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Date aDate = (Date) decoder.readObject();
+        assertEquals(date, aDate);
+        
+        DummyBean aBean = (DummyBean) decoder.readObject();
+        assertEquals(bean, aBean);
+    }
 
     // <--
 

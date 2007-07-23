@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Hashtable;
 
@@ -109,6 +110,8 @@ public class Encoder {
         delegates.put(JTabbedPane.class, new SwingJTabbedPanePersistenceDelegate());
         delegates.put(DefaultComboBoxModel.class, new SwingDefaultComboBoxModelPersistenceDelegate());
         delegates.put(ToolTipManager.class, new SwingToolTipManagerPersistenceDelegate());
+        
+        delegates.put(Date.class, new UtilDatePersistenceDelegate());
         
 	}
 
