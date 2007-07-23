@@ -25,6 +25,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.peer.FontPeer;
+import java.io.IOException;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.font.FontManager;
 
@@ -71,5 +72,5 @@ public interface GraphicsFactory {
     // Font methods
     FontManager getFontManager();
     FontPeer getFontPeer(Font font);
-    Font embedFont(String fontFilePath);
+    Font embedFont(String fontFilePath) throws IOException;
 }

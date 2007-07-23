@@ -17,12 +17,14 @@
 
 package org.apache.harmony.beans.tests.support.mock;
 
-public class FakeFox03 {
-    public int getOther() {
 
-        return 0;
+public class FakeFox04 extends Object {
 
+    public int[] getOneProp() {
+        return null;
     }
 
-    public void setOther(int other) {}
+    public void setOneProp(int[] i) {
+    }
+
 }

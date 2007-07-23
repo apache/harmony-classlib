@@ -55,7 +55,7 @@ public class XMLDecoder {
 
         boolean inJavaElem = false;
 
-        HashMap idObjMap = new HashMap();
+        HashMap<String, Object> idObjMap = new HashMap<String, Object>();
 
         public void characters(char[] ch, int start, int length)
                 throws SAXException {
@@ -289,7 +289,7 @@ public class XMLDecoder {
 
         private Object executeCommon(Elem elem) throws Exception {
             // pop args
-            ArrayList args = new ArrayList(5);
+            ArrayList<Object> args = new ArrayList<Object>(5);
             while (readObjs.peek() != elem) {
                 Elem argElem = (Elem) readObjs.pop();
                 args.add(0, argElem.result);
@@ -415,7 +415,7 @@ public class XMLDecoder {
 
     private Object owner;
 
-    private Stack readObjs = new Stack();
+    private Stack<Elem> readObjs = new Stack<Elem>();
 
     private int readObjIndex = 0;
 

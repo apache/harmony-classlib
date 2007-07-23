@@ -23,6 +23,7 @@ public class MockBean4StaticField {
 
     @Override
     public boolean equals(Object o) {
+        if(!(o instanceof MockBean4StaticField))return false;
         return (o.getClass().equals(this.getClass()) && this.v == ((MockBean4StaticField) o).v);
     }
 

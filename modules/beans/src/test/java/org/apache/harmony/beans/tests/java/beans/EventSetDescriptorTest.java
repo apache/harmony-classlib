@@ -275,8 +275,8 @@ public class EventSetDescriptorTest extends TestCase {
                     listenerMethodName);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
+            // expected
         }
-
     }
 
     /*
@@ -463,8 +463,16 @@ public class EventSetDescriptorTest extends TestCase {
                     listenerMethodNames, addMethod, removeMethod);
             fail("Should throw NullPointerException.");
         } catch (NullPointerException e) {
+            // expected
         }
-
+        
+        try {
+            new EventSetDescriptor(sourceClass, eventSetName, listenerType,
+                    new String[] { null }, addMethod, removeMethod);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     /*

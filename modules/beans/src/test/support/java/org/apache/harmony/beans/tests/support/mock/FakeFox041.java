@@ -17,38 +17,26 @@
 
 package org.apache.harmony.beans.tests.support.mock;
 
-import java.beans.BeanDescriptor;
-import java.beans.BeanInfo;
-import java.beans.EventSetDescriptor;
-import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
 
-public class FakeFox031BeanInfo extends SimpleBeanInfo{
-    public FakeFox031BeanInfo() {
-        super();
+public class FakeFox041 extends FakeFox04 {
+
+    public int[] getTwoProp() {
+        return null;
     }
 
-    public BeanDescriptor getBeanDescriptor() {
-        BeanDescriptor descriptor = new BeanDescriptor(FakeFox031.class);
-        descriptor.setName("DummyBean Descriptor");
-        return descriptor;
+    // throwing PropertyVetoException makes this property constrained.
+    public void setTwoProp(int[] i) throws PropertyVetoException {
     }
 
-    public BeanInfo[] getAdditionalBeanInfo() {
-
-        return new BeanInfo[] { new FakeFox03BeanInfo() };
-
+    // being able to add/remove listeners makes this classes properties bound.
+    // but it does not bind properties in any superclasses.
+    // both add and remove methods are required.
+    public void addPropertyChangeListener(PropertyChangeListener l) {
     }
 
-    public PropertyDescriptor[] getPropertyDescriptors() {
-        return new PropertyDescriptor[] {};
+    public void removePropertyChangeListener(PropertyChangeListener l) {
     }
 
-    public EventSetDescriptor[] getEventSetDescriptors() {
-        return new EventSetDescriptor[] {};
-    }
-
-    PropertyDescriptor propdescr[];
-
-    EventSetDescriptor eventdescr[];
 }

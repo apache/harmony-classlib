@@ -58,7 +58,7 @@ public class XMLEncoder extends Encoder {
 		int refCount = 0;
 
 		// A list of statements that execute on the object.
-		ArrayList stats = new ArrayList();
+		ArrayList<Statement> stats = new ArrayList<Statement>();
 	}
 
 	private static final int INDENT_UNIT = 1;
@@ -66,13 +66,13 @@ public class XMLEncoder extends Encoder {
 	private static final boolean isStaticConstantsSupported = true;
 
 	// the main record of all root objects
-	private ArrayList flushPending = new ArrayList();
+	private ArrayList<Object> flushPending = new ArrayList<Object>();
 
 	// the record of root objects with a void tag
-	private ArrayList flushPendingStat = new ArrayList();
+	private ArrayList<Object> flushPendingStat = new ArrayList<Object>();
 
 	// keep the pre-required objects for each root object
-	private ArrayList flushPrePending = new ArrayList();
+	private ArrayList<Object> flushPrePending = new ArrayList<Object>();
 
 	private boolean hasXmlHeader = false;
 
@@ -769,10 +769,10 @@ public class XMLEncoder extends Encoder {
 				Statement stat = (Statement) iter.next();
 				try {
 					if (stat instanceof Expression) {
-						Expression expr = (Expression) stat;
-						Object subObj = expr.getValue();
-						// if(expr.getTarget().getClass() ==
-						// Class.class.getClass())
+                        // Expression expr = (Expression) stat;
+                        // Object subObj = expr.getValue();
+                        // if(expr.getTarget().getClass() ==
+                        // Class.class.getClass())
 						flushPrePending.add(value);
 					}
 				} catch (Exception e) {
