@@ -17,12 +17,24 @@
 
 package org.apache.harmony.sql.tests.javax.sql.rowset;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.net.URL;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Date;
+import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
+import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLXML;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 
 import javax.sql.rowset.BaseRowSet;
@@ -127,6 +139,12 @@ public class BaseRowSetTest extends TestCase {
         } catch (SQLException e) {
         }
 
+        try {
+            brs.setBoolean("Hello", true);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
         brs.setBoolean(1, true);
         Object[] params = brs.getParams();
         assertNotNull(params);
@@ -150,11 +168,47 @@ public class BaseRowSetTest extends TestCase {
         } catch (SQLException e) {
         }
 
+        try {
+            brs.setByte("Hello", (byte) 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
         brs.setByte(1, (byte) 1);
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
         assertEquals(Byte.valueOf((byte) 1), params[0]);
+    }
+
+    public void testSetBytes() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        byte[] theBytes = new byte[] { 1 };
+        try {
+            brs.setBytes(1, theBytes);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setBytes(0, theBytes);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setBytes("Hello", theBytes);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setBytes(1, theBytes);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(theBytes, params[0]);
     }
 
     public void testSetShort() throws Exception {
@@ -173,11 +227,282 @@ public class BaseRowSetTest extends TestCase {
         } catch (SQLException e) {
         }
 
-        brs.setShort(1, (byte) 1);
+        try {
+            brs.setShort("Hello", (short) 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setShort(1, (short) 1);
         Object[] params = brs.getParams();
         assertNotNull(params);
         assertEquals(1, params.length);
         assertEquals(Short.valueOf((short) 1), params[0]);
+    }
+
+    public void testSetInt() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setInt(1, 1);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setInt(0, 1);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setInt("Hello", 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setInt(1, 1);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(Integer.valueOf(1), params[0]);
+    }
+
+    public void testSetLong() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setLong(1, 1L);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setLong(0, 1L);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setLong("Hello", 1L);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setLong(1, 1L);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(Long.valueOf(1L), params[0]);
+    }
+
+    public void testSetFloat() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setFloat(1, 3.5F);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setFloat(0, 3.5F);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setFloat("Hello", 3.5F);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setFloat(1, 3.5F);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(Float.valueOf(3.5F), params[0]);
+    }
+
+    public void testSetDouble() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setDouble(1, 3.5);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setDouble(0, 3.5);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setDouble("Hello", 3.5);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setDouble(1, 3.5);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(Double.valueOf(3.5), params[0]);
+    }
+
+    public void testSetBigDecimal() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setBigDecimal(1, BigDecimal.TEN);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setBigDecimal(0, BigDecimal.TEN);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setBigDecimal("Hello", BigDecimal.TEN);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setBigDecimal(1, BigDecimal.TEN);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(BigDecimal.TEN, params[0]);
+    }
+
+    public void testSetString() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        String theString = "ABC";
+        try {
+            brs.setString(1, theString);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setString(0, theString);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setString("Hello", theString);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setString(1, theString);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(theString, params[0]);
+    }
+
+    public void testSetDate() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        Date theDate = new Date(200);
+        try {
+            brs.setDate(1, theDate);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setDate(0, theDate);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setDate("Hello", theDate);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setDate(1, theDate);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(theDate, params[0]);
+    }
+
+    public void testSetTime() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        Time theTime = new Time(200);
+        try {
+            brs.setTime(1, theTime);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setTime(0, theTime);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setTime("Hello", theTime);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setTime(1, theTime);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(theTime, params[0]);
+    }
+
+    public void testSetTimestamp() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        Timestamp theTimestamp = new Timestamp(200);
+        try {
+            brs.setTimestamp(1, theTimestamp);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setTimestamp(0, theTimestamp);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        try {
+            brs.setTimestamp("Hello", theTimestamp);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setTimestamp(1, theTimestamp);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(theTimestamp, params[0]);
     }
 
     /**
@@ -217,6 +542,306 @@ public class BaseRowSetTest extends TestCase {
         assertNull(brs.getTypeMap());
     }
 
+    public void testSetBinaryStream() throws Exception {
+        InputStream testStream = new InputStream() {
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setBinaryStream(0, testStream);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setBinaryStream("Hello", testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setBinaryStream(1, testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setBinaryStream(1, testStream, 1);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(testStream, ((Object[]) params[0])[0]);
+    }
+
+    public void testSetAsciiStream() throws Exception {
+        InputStream testStream = new InputStream() {
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setAsciiStream(0, testStream);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setAsciiStream("Hello", testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setAsciiStream(1, testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setAsciiStream(1, testStream, 1);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(testStream, ((Object[]) params[0])[0]);
+    }
+
+    public void testSetCharacterStream() throws Exception {
+        Reader testReader = new Reader() {
+            public void close() throws IOException {
+            }
+
+            public int read(char[] arg0, int arg1, int arg2) throws IOException {
+                return 0;
+            }
+        };
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setCharacterStream(0, testReader);
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setCharacterStream("Hello", testReader);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setCharacterStream(1, testReader);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setCharacterStream(1, testReader, 1);
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals(testReader, ((Object[]) params[0])[0]);
+    }
+
+    public void testSetNCharacterStream() throws Exception {
+        Reader testReader = new Reader() {
+            public void close() throws IOException {
+            }
+
+            public int read(char[] arg0, int arg1, int arg2) throws IOException {
+                return 0;
+            }
+        };
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+
+        try {
+            brs.setNCharacterStream("Hello", testReader);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setNCharacterStream(1, testReader);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setNCharacterStream(1, testReader, 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+    }
+
+    public void testSetNString() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setNString(0, "hello");
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setNString("Hello", "hello");
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setNString(1, "hello");
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+    }
+
+    public void testSetObject() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        try {
+            brs.setObject(0, "hello");
+            fail("sql exception expected");
+        } catch (SQLException e) {
+        }
+
+        brs.initParams();
+
+        try {
+            brs.setObject("Hello", "hello");
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setObject("Hello", "hello", 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setObject("Hello", "hello", 1, 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        brs.setObject(1, "hello");
+        Object[] params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(1, params.length);
+        assertEquals("hello", params[0]);
+        brs.setObject(2, "hello", 37);
+        params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(2, params.length);
+        assertEquals("hello", ((Object[]) params[1])[0]);
+        assertEquals(Integer.valueOf(37), ((Object[]) params[1])[1]);
+        brs.setObject(3, "hello", 37, 54);
+        params = brs.getParams();
+        assertNotNull(params);
+        assertEquals(3, params.length);
+        assertEquals("hello", ((Object[]) params[2])[0]);
+        assertEquals(Integer.valueOf(37), ((Object[]) params[2])[1]);
+        assertEquals(Integer.valueOf(54), ((Object[]) params[2])[2]);
+    }
+
+    public void testSetRowID() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        RowId rowid = new RowId() {
+
+            public byte[] getBytes() {
+                return null;
+            }
+        };
+        brs.initParams();
+
+        try {
+            brs.setRowId("Hello", rowid);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setRowId(1, rowid);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+    }
+
+    public void testSetSQLXML() throws SQLException {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        SQLXML sqlxml = new MockSQLXML() {
+
+            public byte[] getBytes() {
+                return null;
+            }
+        };
+        brs.initParams();
+
+        try {
+            brs.setSQLXML("Hello", sqlxml);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setSQLXML(1, sqlxml);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+    }
+
+    public void testSetNClob() throws Exception {
+        Reader testStream = new Reader() {
+            public void close() throws IOException {
+            }
+
+            public int read(char[] arg0, int arg1, int arg2) throws IOException {
+                return 0;
+            }
+        };
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+
+        try {
+            brs.setNClob("Hello", testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setNClob(1, testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setNClob(1, testStream, 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setNClob(1, (NClob) null);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+    }
+
+    public void testSetURL() throws Exception {
+        BaseRowSetImpl brs = new BaseRowSetImpl();
+        brs.initParams();
+        try {
+            brs.setURL(1, new URL("http:\\www.apache.org"));
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+    }
+
     public void testSetArray() throws SQLException {
         BaseRowSetImpl brs = new BaseRowSetImpl();
         brs.initParams();
@@ -239,6 +864,29 @@ public class BaseRowSetTest extends TestCase {
         assertEquals(1, params.length);
         assertTrue("Should have stored a SerialBlob",
                 params[0] instanceof SerialBlob);
+
+        InputStream testStream = new InputStream() {
+            public int read() throws IOException {
+                return 0;
+            }
+        };
+        try {
+            brs.setBlob("Hello", testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setBlob(1, testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setBlob(1, testStream, 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
     }
 
     public void testSetClob() throws SQLException {
@@ -252,6 +900,32 @@ public class BaseRowSetTest extends TestCase {
         assertTrue(c != params[0]);
         assertTrue("Should have stored a SerialClob",
                 params[0] instanceof SerialClob);
+
+        Reader testStream = new Reader() {
+            public void close() throws IOException {
+            }
+
+            public int read(char[] arg0, int arg1, int arg2) throws IOException {
+                return 0;
+            }
+        };
+        try {
+            brs.setClob("Hello", testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setClob(1, testStream);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
+
+        try {
+            brs.setClob(1, testStream, 1);
+            fail("feature not supported exception expected");
+        } catch (SQLFeatureNotSupportedException e) {
+        }
     }
 
     public void testSetRef() throws SQLException {
@@ -275,5 +949,4 @@ public class BaseRowSetTest extends TestCase {
             super.initParams();
         }
     }
-
 }

@@ -26,9 +26,13 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
+import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -390,6 +394,15 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
+    public void setNull(String parameterName, int sqlType) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNull(String parameterName, int sqlType, String typeName)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -398,6 +411,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), Boolean.valueOf(x));
+    }
+
+    public void setBoolean(String parameterName, boolean x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setByte(int parameterIndex, byte x) throws SQLException {
@@ -410,6 +427,14 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), Byte.valueOf(x));
     }
 
+    public void setByte(String parameterName, byte x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBytes(String parameterName, byte[] x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setShort(int parameterIndex, short x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -418,6 +443,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), Short.valueOf(x));
+    }
+
+    public void setShort(String parameterName, short x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setInt(int parameterIndex, int x) throws SQLException {
@@ -430,6 +459,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), Integer.valueOf(x));
     }
 
+    public void setInt(String parameterName, int x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setLong(int parameterIndex, long x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -438,6 +471,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), Long.valueOf(x));
+    }
+
+    public void setLong(String parameterName, long x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setFloat(int parameterIndex, float x) throws SQLException {
@@ -450,6 +487,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), Float.valueOf(x));
     }
 
+    public void setFloat(String parameterName, float x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setDouble(int parameterIndex, double x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -458,6 +499,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), Double.valueOf(x));
+    }
+
+    public void setDouble(String parameterName, double x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBigDecimal(int parameterIndex, BigDecimal x)
@@ -481,6 +526,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), x);
     }
 
+    public void setString(String parameterName, String x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setBytes(int parameterIndex, byte[] x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -501,6 +550,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), x);
     }
 
+    public void setDate(String parameterName, Date x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setTime(int parameterIndex, Time x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -509,6 +562,10 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), x);
+    }
+
+    public void setTime(String parameterName, Time x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setTimestamp(int parameterIndex, Timestamp x)
@@ -520,6 +577,16 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), x);
+    }
+
+    public void setTimestamp(String parameterName, Timestamp x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setAsciiStream(int parameterIndex, InputStream x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setAsciiStream(int parameterIndex, InputStream x, int length)
@@ -537,6 +604,26 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
+    public void setAsciiStream(String parameterName, InputStream x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setAsciiStream(String parameterName, InputStream x, int length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBigDecimal(String parameterName, BigDecimal x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBinaryStream(int parameterIndex, InputStream x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setBinaryStream(int parameterIndex, InputStream x, int length)
             throws SQLException {
         if (parameterIndex < 1) {
@@ -552,7 +639,19 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
-    @Deprecated
+    public void setBinaryStream(String parameterName, InputStream x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBinaryStream(String parameterName, InputStream x, int length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    /**
+     * @deprecated this method is deprecated by getCharacterStream
+     */
     public void setUnicodeStream(int parameterIndex, InputStream x, int length)
             throws SQLException {
         if (parameterIndex < 1) {
@@ -580,6 +679,49 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         value[0] = reader;
         value[1] = Integer.valueOf(length);
         params.put(Integer.valueOf(parameterIndex - 1), value);
+    }
+
+    public void setCharacterStream(int parameterIndex, Reader x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setCharacterStream(String parameterName, Reader x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setCharacterStream(String parameterName, Reader x, int length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNCharacterStream(int parameterIndex, Reader x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNCharacterStream(int parameterIndex, Reader x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNCharacterStream(String parameterName, Reader x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNCharacterStream(String parameterName, Reader x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNString(int parameterIndex, String x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNString(String parameterName, String x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setObject(int parameterIndex, Object x, int targetSqlType,
@@ -621,6 +763,20 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), x);
     }
 
+    public void setObject(String parameterName, Object x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setObject(String parameterName, Object x, int targetSqlType)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setObject(String parameterName, Object x, int targetSqlType,
+            int scale) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setRef(int parameterIndex, Ref ref) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -629,6 +785,22 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), new SerialRef(ref));
+    }
+
+    public void setRowId(int parameterIndex, RowId x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setRowId(String parameterName, RowId x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setSQLXML(int parameterIndex, SQLXML x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setSQLXML(String parameterName, SQLXML x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
@@ -641,6 +813,29 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), new SerialBlob(x));
     }
 
+    public void setBlob(int parameterIndex, InputStream x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBlob(int parameterIndex, InputStream x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBlob(String parameterName, InputStream x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBlob(String parameterName, InputStream x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setBlob(String parameterName, Blob x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setClob(int parameterIndex, Clob x) throws SQLException {
         if (parameterIndex < 1) {
             throw new SQLException();
@@ -649,6 +844,57 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         params.put(Integer.valueOf(parameterIndex - 1), new SerialClob(x));
+    }
+
+    public void setClob(int parameterIndex, Reader x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setClob(int parameterIndex, Reader x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setClob(String parameterName, Reader x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setClob(String parameterName, Reader x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setClob(String parameterName, Clob x) throws SQLException {
+        if (parameterName == null || params == null) {
+            throw new SQLException();
+        }
+        params.put(parameterName, x);
+    }
+
+    public void setNClob(int parameterIndex, Reader x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNClob(int parameterIndex, Reader x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNClob(int parameterIndex, NClob x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNClob(String parameterName, Reader x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNClob(String parameterName, Reader x, long length)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNClob(String parameterName, NClob x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void setArray(int parameterIndex, Array array) throws SQLException {
@@ -675,6 +921,11 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
+    public void setDate(String parameterName, Date x, Calendar cal)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setTime(int parameterIndex, Time x, Calendar cal)
             throws SQLException {
         if (parameterIndex < 1) {
@@ -689,6 +940,11 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         params.put(Integer.valueOf(parameterIndex - 1), value);
     }
 
+    public void setTime(String parameterName, Time x, Calendar cal)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
     public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal)
             throws SQLException {
         if (parameterIndex < 1) {
@@ -701,6 +957,15 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         value[0] = x;
         value[1] = cal;
         params.put(Integer.valueOf(parameterIndex - 1), value);
+    }
+
+    public void setTimestamp(String parameterName, Timestamp x, Calendar cal)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setURL(int parameterIndex, java.net.URL x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void clearParameters() throws SQLException {
