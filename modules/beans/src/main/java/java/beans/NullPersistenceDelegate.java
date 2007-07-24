@@ -15,31 +15,28 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
-
-public class java_lang_IntegerPersistenceDelegate extends PersistenceDelegate {
+class NullPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        Integer value = (Integer) oldInstance;
-        return new Expression(oldInstance, Integer.class,
-				"new", new Object[] { value.toString() }); //$NON-NLS-1$
+        assert oldInstance == null;
+        return new Expression(null, null, null, null);
     }
 
     @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
-    }
-    
     /*
-     * Two Integer objects are regarded mutatable if they are equal.
+     * It's unnecessary to do anything for initialization, because two mutatable
+     * strings are actually equivalent already.
      */
-    protected boolean mutatesTo(Object o1, Object o2) {
-        if (null == o2) {
-            return false;
-        }
-        return o1.equals(o2);
+    protected void initialize(Class<?> type, Object oldInstance,
+            Object newInstance, Encoder out) {
+        // do nothing
+    }
+
+    @Override
+    public void writeObject(Object oldInstance, Encoder out) {
+        assert oldInstance == null;
+        out.writeExpression(instantiate(null, out));
     }
 }

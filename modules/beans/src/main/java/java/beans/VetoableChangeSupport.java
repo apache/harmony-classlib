@@ -121,10 +121,10 @@ public class VetoableChangeSupport implements Serializable {
             result.addAll(globalListeners);
         }
 
-        for (Iterator iterator = children.keySet().iterator(); iterator
+        for (Iterator<String> iterator = children.keySet().iterator(); iterator
                 .hasNext();) {
-            String propertyName = (String) iterator.next();
-            VetoableChangeSupport namedListener = (VetoableChangeSupport) children
+            String propertyName = iterator.next();
+            VetoableChangeSupport namedListener = children
                     .get(propertyName);
             VetoableChangeListener[] childListeners = namedListener
                     .getVetoableChangeListeners();
@@ -133,7 +133,7 @@ public class VetoableChangeSupport implements Serializable {
                         childListeners[i]));
             }
         }
-        return (VetoableChangeListener[]) (result
+        return (result
                 .toArray(new VetoableChangeListener[result.size()]));
     }
 
@@ -167,6 +167,7 @@ public class VetoableChangeSupport implements Serializable {
         } while (listener != null);
     }
 
+    @SuppressWarnings("boxing")
     public void fireVetoableChange(String propertyName, boolean oldValue,
             boolean newValue) throws PropertyVetoException {
         PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
@@ -174,6 +175,7 @@ public class VetoableChangeSupport implements Serializable {
         doFirePropertyChange(event);
     }
 
+    @SuppressWarnings("boxing")
     public void fireVetoableChange(String propertyName, int oldValue,
             int newValue) throws PropertyVetoException {
         PropertyChangeEvent event = createPropertyChangeEvent(propertyName,
@@ -234,6 +236,7 @@ public class VetoableChangeSupport implements Serializable {
                 try {
                     listener.vetoableChange(revertEvent);
                 } catch (PropertyVetoException ignored) {
+                    // expected
                 }
             }
             throw pve;

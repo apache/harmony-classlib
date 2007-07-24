@@ -15,40 +15,37 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.lang.reflect.Field;
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
+import java.lang.reflect.Method;
 
 /**
- * This is a persistence delegate for the {@link java.lang.reflect.Field} class.
+ * Persistence delegate for {@link java.lang.reflect.Method} class.
  */
-public class java_lang_reflect_FieldPersistenceDelegate extends PersistenceDelegate {
+class java_lang_reflect_MethodPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        // should not be null or have a type other than Field
-        assert oldInstance instanceof Field : oldInstance;
-        Field oldField = (Field) oldInstance;
-        Class<?> declClass = oldField.getDeclaringClass();
-        return new Expression(oldField, declClass, "getField", //$NON-NLS-1$
-                new Object[] { oldField.getName() });
+        // should not be null or have a type other than Method
+        assert oldInstance instanceof Method : oldInstance;
+        Method oldMethod = (Method) oldInstance;
+        Class<?> declClass = oldMethod.getDeclaringClass();
+        return new Expression(oldMethod, declClass, "getMethod", //$NON-NLS-1$
+                new Object[] { oldMethod.getName(), oldMethod.getParameterTypes() });
     }
 
     @Override
     protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
         // check for consistency
-        assert oldInstance instanceof Field : oldInstance;
-        assert newInstance instanceof Field : newInstance;
+        assert oldInstance instanceof Method : oldInstance;
+        assert newInstance instanceof Method : newInstance;
         assert newInstance.equals(oldInstance);
     }
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        assert oldInstance instanceof Field : oldInstance;
-        if (!(newInstance instanceof Field)) {
-            // if null or not a Field
+        assert oldInstance instanceof Method : oldInstance;
+        if (!(newInstance instanceof Method)) {
+            // if null or not a Method
             return false;
         }
         return oldInstance.equals(newInstance);

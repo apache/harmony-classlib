@@ -47,7 +47,7 @@ public class XMLDecoder {
 
         public void exceptionThrown(Exception e) {
             e.printStackTrace();
-            System.err.println("Continue...");
+            System.err.println("Continue..."); //$NON-NLS-1$
         }
     }
 
@@ -57,13 +57,14 @@ public class XMLDecoder {
 
         HashMap<String, Object> idObjMap = new HashMap<String, Object>();
 
+        @Override
         public void characters(char[] ch, int start, int length)
                 throws SAXException {
             if (!inJavaElem) {
                 return;
             }
             if (readObjs.size() > 0) {
-                Elem elem = (Elem) readObjs.peek();
+                Elem elem = readObjs.peek();
                 if (elem.isBasicType) {
                     String str = new String(ch, start, length);
                     elem.methodName = elem.methodName == null ? str
@@ -72,6 +73,8 @@ public class XMLDecoder {
             }
         }
 
+        @SuppressWarnings("nls")
+        @Override
         public void startElement(String uri, String localName, String qName,
                 Attributes attributes) throws SAXException {
             if (!inJavaElem) {
@@ -100,7 +103,8 @@ public class XMLDecoder {
             }
         }
 
-        private void startObjectElem(Attributes attributes) throws SAXException {
+        @SuppressWarnings("nls")
+        private void startObjectElem(Attributes attributes) {
             Elem elem = new Elem();
             elem.isExpression = true;
             elem.id = attributes.getValue("id");
@@ -114,7 +118,7 @@ public class XMLDecoder {
         }
 
         private void obtainTarget(Elem elem, Attributes attributes) {
-            String className = attributes.getValue("class");
+            String className = attributes.getValue("class"); //$NON-NLS-1$
             if (className != null) {
                 try {
                     elem.target = classForName(className);
@@ -131,6 +135,7 @@ public class XMLDecoder {
             }
         }
 
+        @SuppressWarnings("nls")
         private void obtainMethod(Elem elem, Attributes attributes) {
             elem.methodName = attributes.getValue("method");
             if (elem.methodName != null) {
@@ -164,7 +169,8 @@ public class XMLDecoder {
             elem.methodName = "new"; // default method name
         }
 
-        private Class classForName(String className)
+        @SuppressWarnings("nls")
+        private Class<?> classForName(String className)
                 throws ClassNotFoundException {
             if ("boolean".equals(className)) {
                 return Boolean.TYPE;
@@ -189,13 +195,14 @@ public class XMLDecoder {
             }
         }
 
+        @SuppressWarnings("nls")
         private void startArrayElem(Attributes attributes) {
             Elem elem = new Elem();
             elem.isExpression = true;
             elem.id = attributes.getValue("id");
             try {
                 // find componet class
-                Class compClass = classForName(attributes.getValue("class"));
+                Class<?> compClass = classForName(attributes.getValue("class"));
                 // find length
                 int length = Integer.parseInt(attributes.getValue("length"));
                 // execute, new array instance
@@ -207,6 +214,7 @@ public class XMLDecoder {
             readObjs.push(elem);
         }
 
+        @SuppressWarnings("nls")
         private void startVoidElem(Attributes attributes) {
             Elem elem = new Elem();
             elem.id = attributes.getValue("id");
@@ -215,6 +223,7 @@ public class XMLDecoder {
             readObjs.push(elem);
         }
 
+        @SuppressWarnings("nls")
         private void startBasicElem(String tagName, Attributes attributes) {
             Elem elem = new Elem();
             elem.isBasicType = true;
@@ -225,12 +234,13 @@ public class XMLDecoder {
             readObjs.push(elem);
         }
 
+        @Override
         public void endElement(String uri, String localName, String qName)
                 throws SAXException {
             if (!inJavaElem) {
                 return;
             }
-            if ("java".equals(qName)) {
+            if ("java".equals(qName)) { //$NON-NLS-1$
                 inJavaElem = false;
                 return;
             }
@@ -252,7 +262,7 @@ public class XMLDecoder {
 
         private Elem latestUnclosedElem() {
             for (int i = readObjs.size() - 1; i >= 0; i--) {
-                Elem elem = (Elem) readObjs.get(i);
+                Elem elem = readObjs.get(i);
                 if (!elem.isClosed) {
                     return elem;
                 }
@@ -287,11 +297,12 @@ public class XMLDecoder {
             return elem.result;
         }
 
+        @SuppressWarnings("nls")
         private Object executeCommon(Elem elem) throws Exception {
             // pop args
             ArrayList<Object> args = new ArrayList<Object>(5);
             while (readObjs.peek() != elem) {
-                Elem argElem = (Elem) readObjs.pop();
+                Elem argElem = readObjs.pop();
                 args.add(0, argElem.result);
             }
             // decide method name
@@ -316,14 +327,13 @@ public class XMLDecoder {
 			if(elem.target == owner) {
 				if("getOwner".equals(method)) {
 					return owner;
-				} else {
-					Class[] c = new Class[args.size()];
-					for(int i = 0; i < args.size(); i++) {
-						c[i] = args.get(i).getClass();
-					}
-					Method m = owner.getClass().getMethod(method, c);
-					return m.invoke(owner, args.toArray());
 				}
+                Class[] c = new Class[args.size()];
+                for(int i = 0; i < args.size(); i++) {
+                	c[i] = args.get(i).getClass();
+                }
+                Method m = owner.getClass().getMethod(method, c);
+                return m.invoke(owner, args.toArray());
 			}
 			
             // execute
@@ -337,6 +347,7 @@ public class XMLDecoder {
             return buf.toString();
         }
 
+        @SuppressWarnings("nls")
         private Object executeBasic(Elem elem) throws Exception {
             String tag = (String) elem.target;
             String value = elem.methodName;
@@ -368,14 +379,17 @@ public class XMLDecoder {
             }
         }
 
+        @Override
         public void error(SAXParseException e) throws SAXException {
             listener.exceptionThrown(e);
         }
 
+        @Override
         public void fatalError(SAXParseException e) throws SAXException {
             listener.exceptionThrown(e);
         }
 
+        @Override
         public void warning(SAXParseException e) throws SAXException {
             listener.exceptionThrown(e);
         }
@@ -448,20 +462,17 @@ public class XMLDecoder {
     public XMLDecoder(InputStream inputStream, Object owner,
             ExceptionListener listener) {
         if (inputStream == null) {
-            throw new IllegalArgumentException("Input stream cannot be null");
-        }
-        if (listener == null) {
-            listener = new DefaultExceptionListener();
+            throw new IllegalArgumentException("Input stream cannot be null"); //$NON-NLS-1$
         }
         this.inputStream = inputStream;
         this.owner = owner;
-        this.listener = listener;
+        this.listener = (listener == null)? new DefaultExceptionListener(): listener;
 
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(inputStream,
                     new SAXHandler());
         } catch (Exception e) {
-            listener.exceptionThrown(e);
+            this.listener.exceptionThrown(e);
         }
     }
     
@@ -504,11 +515,12 @@ public class XMLDecoder {
      * @return the next object
      * @exception ArrayIndexOutOfBoundsException if no more objects to read
      */
+    @SuppressWarnings("nls")
     public Object readObject() {
         if (readObjIndex >= readObjs.size()) {
             throw new ArrayIndexOutOfBoundsException("no more objects to read");
         }
-        Elem elem = (Elem) readObjs.get(readObjIndex);
+        Elem elem = readObjs.get(readObjIndex);
         if (!elem.isClosed) {
             // bad element, error occured while parsing
             throw new ArrayIndexOutOfBoundsException("no more objects to read");

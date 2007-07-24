@@ -22,7 +22,9 @@ import javax.swing.DefaultComboBoxModel;
 
 class SwingDefaultComboBoxModelPersistenceDelegate extends
 		DefaultPersistenceDelegate {
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+    @SuppressWarnings({ "nls", "boxing" })
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		super.initialize(type, oldInstance, newInstance, enc);
 
@@ -42,7 +44,7 @@ class SwingDefaultComboBoxModelPersistenceDelegate extends
 				// Get the current property value in the new environment
 				Object newVal = null;
 				try {
-					newVal = new Expression(((DefaultComboBoxModel) newInstance), "getElementAt",
+					newVal = new Expression(newInstance, "getElementAt",
 							new Object[] { i }).getValue();
 				} catch (IndexOutOfBoundsException ex) {
 					// The newInstance has no elements, so current property

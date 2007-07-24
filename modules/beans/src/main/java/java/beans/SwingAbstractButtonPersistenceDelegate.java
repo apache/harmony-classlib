@@ -25,7 +25,9 @@ import javax.swing.JComponent;
  * 
  */
 class SwingAbstractButtonPersistenceDelegate extends DefaultPersistenceDelegate{
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+	@SuppressWarnings({ "boxing", "nls" })
+    protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
         // Call the initialization of the super type
         super.initialize(type, oldInstance, newInstance, enc);

@@ -54,7 +54,7 @@ public abstract class PersistenceDelegate {
      */
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
-        Class c = type.getSuperclass();
+        Class<?> c = type.getSuperclass();
         if (null != c) {
             PersistenceDelegate pd = enc.getPersistenceDelegate(c);
             pd.initialize(c, oldInstance, newInstance, enc);

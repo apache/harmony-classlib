@@ -23,11 +23,12 @@ import java.util.Iterator;
 class UtilCollectionPersistenceDelegate extends
         DefaultPersistenceDelegate {
     @Override
+    @SuppressWarnings("nls")
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
 
-        Collection oldList = (Collection) oldInstance, newList = (Collection)newInstance;
-        Iterator oldIterator = oldList.iterator(), newIterator = newList.iterator();
+        Collection<?> oldList = (Collection) oldInstance, newList = (Collection)newInstance;
+        Iterator<?> oldIterator = oldList.iterator(), newIterator = newList.iterator();
         for (; oldIterator.hasNext();) {
             Expression getterExp = new Expression(oldIterator, "next", null);
             try {

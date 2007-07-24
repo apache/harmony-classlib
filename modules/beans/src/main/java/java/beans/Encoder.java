@@ -29,7 +29,6 @@ import java.util.Hashtable;
 
 import javax.swing.*;
 
-import org.apache.harmony.beans.*;
 
 /**
  * The <code>Encoder</code>, together with <code>PersistenceDelegate</code>
@@ -66,7 +65,7 @@ public class Encoder {
 
 		public void exceptionThrown(Exception exception) {
 			System.err.println("Exception during encoding:" + exception); //$NON-NLS-1$
-			System.err.println("Continue...");
+			System.err.println("Continue..."); //$NON-NLS-1$
 		}
 
 	}
@@ -261,7 +260,8 @@ public class Encoder {
 	 */
 	public void setExceptionListener(ExceptionListener listener) {
 		if (listener == null) {
-			listener = defaultExListener;
+			this.listener = defaultExListener;
+            return;
 		}
 		this.listener = listener;
 	}

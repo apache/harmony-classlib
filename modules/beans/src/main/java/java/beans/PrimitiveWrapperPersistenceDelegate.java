@@ -16,11 +16,8 @@
  */
 
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
 
 /**
  * A special internal <code>PersistenceDelegate</code> for wrapper classes of
@@ -34,7 +31,7 @@ public class PrimitiveWrapperPersistenceDelegate extends PersistenceDelegate {
      * wrapper objects are actually equivalent already.
      */
     @Override
-    protected void initialize(Class type, Object oldInstance,
+    protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
         // do nothing
     }

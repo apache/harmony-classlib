@@ -19,7 +19,9 @@ package java.beans;
 
 class AwtComponentPersistenceDelegate extends DefaultPersistenceDelegate {
 
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+	@SuppressWarnings("nls")
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		// Call the initialization of the super type
 		super.initialize(type, oldInstance, newInstance, enc);
@@ -41,7 +43,8 @@ class AwtComponentPersistenceDelegate extends DefaultPersistenceDelegate {
 
 	}
 
-	static void writeProperty(Object oldInstance, Object newInstance,
+	@SuppressWarnings("nls")
+    static void writeProperty(Object oldInstance, Object newInstance,
 			Encoder enc, String property) {
 		StringBuilder builder = new StringBuilder();
 		Expression getterExp = new Expression(oldInstance, builder

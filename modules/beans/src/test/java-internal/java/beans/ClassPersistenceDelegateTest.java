@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
 import java.beans.Encoder;
 import java.beans.Expression;
+import java.beans.java_lang_ClassPersistenceDelegate;
 
 import junit.framework.TestCase;
 

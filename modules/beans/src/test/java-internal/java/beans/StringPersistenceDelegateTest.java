@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,47 +15,45 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
 import java.beans.Encoder;
 import java.beans.Expression;
-import java.lang.reflect.Array;
+import java.beans.java_lang_StringPersistenceDelegate;
 
 import junit.framework.TestCase;
 
 /**
- * Test the internal class java.beans.ArrayPersistenceDelegate.
+ * Test the internal class java.beans.StringPersistenceDelegate.
  */
-public class ArrayPersistenceDelegateTest extends TestCase {
+public class StringPersistenceDelegateTest extends TestCase {
 
-    private ArrayPersistenceDelegate pd = null;
+    private java_lang_StringPersistenceDelegate pd = null;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        pd = new ArrayPersistenceDelegate();
+        pd = new java_lang_StringPersistenceDelegate();
     }
 
     public void testMutates() {
-        assertFalse(pd.mutatesTo(new int[] { 1 }, null));
+        assertFalse(pd.mutatesTo("", null));
         assertFalse(pd.mutatesTo(null, null));
-        assertFalse(pd.mutatesTo(new int[1], new int[2]));
-        assertTrue(pd.mutatesTo(new int[] { 1, 3 }, new int[] { 1, 2 }));
+        assertFalse(pd.mutatesTo("str1", "str2"));
+        assertTrue(pd.mutatesTo("str1", "str1"));
     }
 
     public void testInitialize() {
-        // TBD
+        pd.initialize(null, null, null, null);
     }
 
     public void testInstantiate_Normal() throws Exception {
-        Object obj = new int[] { 1, 2, 3 };
-        Expression exp = pd.instantiate(obj, new Encoder());
-        assertSame(obj, exp.getValue());
-        assertSame(Array.class, exp.getTarget());
-        assertEquals("newInstance", exp.getMethodName());
-        assertEquals(2, exp.getArguments().length);
-        assertSame(Integer.TYPE, exp.getArguments()[0]);
-        assertEquals(new Integer(3), exp.getArguments()[1]);
-    }
+        Expression exp = pd.instantiate("str", new Encoder());
 
+        assertSame("str", exp.getValue());
+        assertSame(String.class, exp.getTarget());
+        assertEquals("new", exp.getMethodName());
+        assertEquals(1, exp.getArguments().length);
+        assertEquals("str", exp.getArguments()[0]);
+    }
 }

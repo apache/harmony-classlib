@@ -23,7 +23,9 @@ import java.net.URL;
 
 public class SimpleBeanInfo implements BeanInfo {
 
-    public SimpleBeanInfo() {}
+    public SimpleBeanInfo() {
+        // expected
+    }
 
     public Image loadImage(String resourceName) {
         if (null == resourceName) {
@@ -34,9 +36,8 @@ public class SimpleBeanInfo implements BeanInfo {
         
         if (file != null) {
             return Toolkit.getDefaultToolkit().createImage(file);
-        } else {
-            return null;
         }
+        return null;
     }
 
     public PropertyDescriptor[] getPropertyDescriptors() {

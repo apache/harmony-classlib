@@ -21,7 +21,9 @@ import java.awt.Menu;
 import java.awt.MenuItem;
 
 class AwtMenuPersistenceDelegate extends DefaultPersistenceDelegate {
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+	@SuppressWarnings({ "nls", "boxing" })
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		super.initialize(type, oldInstance, newInstance, enc);
 		if (type != oldInstance.getClass()) {

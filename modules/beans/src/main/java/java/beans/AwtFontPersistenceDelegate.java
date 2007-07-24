@@ -20,7 +20,9 @@ package java.beans;
 import java.awt.Font;
 
 class AwtFontPersistenceDelegate extends DefaultPersistenceDelegate {
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+    @Override
+	@SuppressWarnings("boxing")
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
 		Font font = (Font) oldInstance;
 		return new Expression(oldInstance, oldInstance.getClass(),
                 Statement.CONSTRUCTOR_NAME, new Object[] { font.getFontName(),

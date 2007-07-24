@@ -95,15 +95,15 @@ public class BeanDescriptor extends FeatureDescriptor {
      * Utility method for getting the unqualified name of a {@link Class}.
      * </p>
      * 
-     * @param beanClass
+     * @param leguminaClass
      *            The Class to get the name from.
      * @return A String instance or <code>null</code>.
      */
-    private String getShortClassName(Class<?> beanClass) {
+    private String getShortClassName(Class<?> leguminaClass) {
         String result = null;
 
-        if (beanClass != null) {
-            String beanClassName = beanClass.getName();
+        if (leguminaClass != null) {
+            String beanClassName = leguminaClass.getName();
             int idx = beanClassName.lastIndexOf("."); //$NON-NLS-1$
 
             result = (idx == -1) ? beanClassName : beanClassName

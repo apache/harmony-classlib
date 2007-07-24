@@ -20,7 +20,6 @@ package java.beans;
 import java.awt.Image;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -191,7 +190,6 @@ class BeanInfoWrapper implements BeanInfo {
                 EventSetDescriptor[] parentResult = parentBeanInfoWrapper
                         .getEventSetDescriptors();
                 Map<String, FeatureDescriptor> hm;
-                Collection<FeatureDescriptor> values;
 
                 if (defaultEventName == null) {
                 	int parentDefaultIdx = parentBeanInfoWrapper.getDefaultEventIndex();
@@ -417,6 +415,7 @@ class BeanInfoWrapper implements BeanInfo {
         return null;
     }
 
+    @SuppressWarnings("null")
     private static MethodDescriptor[] concatArraysToOneArray(
             MethodDescriptor[] childs, MethodDescriptor[] parents) {
 
@@ -552,7 +551,7 @@ class BeanInfoWrapper implements BeanInfo {
     }
     
     private static void copy(PropertyDescriptor target, 
-            PropertyDescriptor source) throws IntrospectionException {
+            PropertyDescriptor source) {
         target.setBound(source.isBound());
         target.setConstrained(source.isConstrained());
         target.setDisplayName(source.getDisplayName());

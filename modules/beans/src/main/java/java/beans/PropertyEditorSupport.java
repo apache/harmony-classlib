@@ -47,6 +47,7 @@ public class PropertyEditorSupport implements PropertyEditor {
     }
 
     public void paintValue(Graphics gfx, Rectangle box) {
+        // expected
     }
 
     public void setAsText(String text) throws IllegalArgumentException {

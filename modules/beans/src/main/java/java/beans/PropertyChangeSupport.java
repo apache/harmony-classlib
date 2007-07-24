@@ -184,7 +184,7 @@ public class PropertyChangeSupport implements Serializable {
         ArrayList<PropertyChangeListener> result = new ArrayList<PropertyChangeListener>(
                 globalListeners);
         for (String propertyName : children.keySet()) {
-            PropertyChangeSupport namedListener = (PropertyChangeSupport) children
+            PropertyChangeSupport namedListener = children
                     .get(propertyName);
             PropertyChangeListener[] listeners = namedListener
                     .getPropertyChangeListeners();
@@ -198,7 +198,7 @@ public class PropertyChangeSupport implements Serializable {
 
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
-        PropertyChangeListener[] gListeners = (PropertyChangeListener[]) globalListeners
+        PropertyChangeListener[] gListeners = globalListeners
                 .toArray(new PropertyChangeListener[0]);
         for (int i = 0; i < gListeners.length; i++) {
             if (gListeners[i] instanceof Serializable) {
@@ -236,11 +236,13 @@ public class PropertyChangeSupport implements Serializable {
         return new PropertyChangeEvent(source, propertyName, oldValue, newValue);
     }
 
+    @SuppressWarnings("boxing")
     private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
             boolean oldValue, boolean newValue) {
         return new PropertyChangeEvent(source, propertyName, oldValue, newValue);
     }
 
+    @SuppressWarnings("boxing")
     private PropertyChangeEvent createPropertyChangeEvent(String propertyName,
             int oldValue, int newValue) {
         return new PropertyChangeEvent(source, propertyName, oldValue, newValue);
@@ -254,7 +256,7 @@ public class PropertyChangeSupport implements Serializable {
         }
 
         // Collect up the global listeners
-        PropertyChangeListener[] gListeners = (PropertyChangeListener[]) globalListeners
+        PropertyChangeListener[] gListeners = globalListeners
                 .toArray(new PropertyChangeListener[0]);
         // Fire the events for global listeners
         for (int i = 0; i < gListeners.length; i++) {
@@ -263,7 +265,7 @@ public class PropertyChangeSupport implements Serializable {
 
         // Fire the events for the property specific listeners if any
         if (event.getPropertyName() != null) {
-            PropertyChangeSupport namedListener = (PropertyChangeSupport) children
+            PropertyChangeSupport namedListener = children
                     .get(event.getPropertyName());
             if (namedListener != null) {
                 namedListener.firePropertyChange(event);

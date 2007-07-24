@@ -21,16 +21,20 @@ import java.awt.Rectangle;
 
 class AwtRectanglePersistenceDelegate extends DefaultPersistenceDelegate {
 
-	protected boolean mutatesTo(Object o1, Object o2) {
+	@Override
+    protected boolean mutatesTo(Object o1, Object o2) {
 		return o1.equals(o2);
 	}
 
-	protected void initialize(Class<?> type, Object oldInstance,
+	@Override
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		return;
 	}
 	
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+	@Override
+	@SuppressWarnings("boxing")
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
 		Rectangle rect = (Rectangle) oldInstance;
 
         return new Expression(rect, rect.getClass(), Statement.CONSTRUCTOR_NAME,

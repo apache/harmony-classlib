@@ -21,7 +21,9 @@ import javax.swing.JTabbedPane;
 
 class SwingJTabbedPanePersistenceDelegate extends
 		DefaultPersistenceDelegate {
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+    @SuppressWarnings({ "nls", "boxing" })
+    protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
         // Call the initialization of the super type
         super.initialize(type, oldInstance, newInstance, enc);
@@ -66,11 +68,9 @@ class SwingJTabbedPanePersistenceDelegate extends
                         enc.writeStatement(setterStm);
                     }
                 } else {
-                    PersistenceDelegate pd = enc
-                            .getPersistenceDelegate(targetVal.getClass());
-                    	Statement setterStm = new Statement(oldInstance, "addTab",
-                                new Object[] { pane.getTitleAt(i), oldVal });
-                        enc.writeStatement(setterStm);
+                    Statement setterStm = new Statement(oldInstance, "addTab",
+                            new Object[] { pane.getTitleAt(i), oldVal });
+                    enc.writeStatement(setterStm);
                 }
             } catch (Exception ex) {
                 enc.getExceptionListener().exceptionThrown(ex);

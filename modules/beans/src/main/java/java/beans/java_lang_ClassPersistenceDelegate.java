@@ -15,14 +15,11 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
 import java.lang.reflect.Field;
 
-public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
+class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Class<?> value = (Class) oldInstance;
@@ -34,7 +31,7 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
          * instantiation.
          */
         if (value == String.class) {
-            return new Expression(value, "", "getClass", null);  //$NON-NLS-1$//$NON-NLS-2$
+            return new Expression(value, "", "getClass", null); //$NON-NLS-1$//$NON-NLS-2$
         }
         try {
             if (value.equals(Integer.TYPE)) {
@@ -61,7 +58,8 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
         }
         if (fld != null) {
             // we have primitive type
-            result = new Expression(oldInstance, fld, "get", new Object[] { null }); //$NON-NLS-1$
+            result = new Expression(oldInstance, fld,
+                    "get", new Object[] { null }); //$NON-NLS-1$
         } else {
             result = new Expression(oldInstance, String.class, "forName", //$NON-NLS-1$ 
                     new Object[] { value.getName() });
@@ -70,7 +68,13 @@ public class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
     }
 
     @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    /*
+     * It's unnecessary to do anything for initialization, because two mutatable
+     * class objects are actually the same.
+     */
+    protected void initialize(Class<?> type, Object oldInstance,
+            Object newInstance, Encoder out) {
+        // do nothing
     }
 
     @Override
