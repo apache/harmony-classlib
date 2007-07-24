@@ -58,7 +58,7 @@ HYDEBUGCFLAGS = -g
 endif
 
 ifndef HYRELEASECFLAGS  
-HYRELEASECFLAGS = -O1
+HYRELEASECFLAGS = -O1 -DNDEBUG
 endif
 
 ifeq ($(HY_CFG),release)
