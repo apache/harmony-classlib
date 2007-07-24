@@ -37,6 +37,10 @@ public class VetoableChangeSupport implements Serializable {
     private transient ArrayList<VetoableChangeListener> globalListeners = new ArrayList<VetoableChangeListener>();
 
     private Object source;
+    
+    @SuppressWarnings("unused")
+    // for serialization
+    private int vetoableChangeSupportSerializedDataVersion = 2;
 
     public VetoableChangeSupport(Object sourceBean) {
         if (sourceBean == null) {
