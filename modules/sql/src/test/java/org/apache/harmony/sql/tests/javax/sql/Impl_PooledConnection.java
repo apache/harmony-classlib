@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
+import javax.sql.StatementEventListener;
 
 class Impl_PooledConnection implements PooledConnection {
     public void addConnectionEventListener(ConnectionEventListener theListener) {
@@ -35,5 +36,11 @@ class Impl_PooledConnection implements PooledConnection {
 
     public void removeConnectionEventListener(
             ConnectionEventListener theListener) {
+    }
+    
+    public void addStatementEventListener(StatementEventListener listener) {
+    }
+
+    public void removeStatementEventListener(StatementEventListener listener) {
     }
 }
