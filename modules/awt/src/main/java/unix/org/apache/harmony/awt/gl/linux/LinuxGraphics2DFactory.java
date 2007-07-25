@@ -23,6 +23,7 @@ package org.apache.harmony.awt.gl.linux;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 
 import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 import org.apache.harmony.awt.gl.MultiRectArea;
@@ -67,7 +68,7 @@ public class LinuxGraphics2DFactory extends CommonGraphics2DFactory {
         return LinuxFontManager.inst;
     }
 
-    public Font embedFont(String fontFilePath) {
+    public Font embedFont(String fontFilePath) throws IOException {
         return LinuxFont.embedFont(fontFilePath);
     }
 

@@ -20,7 +20,9 @@ package java.beans;
 import java.awt.Choice;
 
 class AwtChoicePersistenceDelegate extends DefaultPersistenceDelegate {
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+	@SuppressWarnings({ "nls", "boxing" })
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		super.initialize(type, oldInstance, newInstance, enc);
 		if (type != oldInstance.getClass()) {

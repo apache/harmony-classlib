@@ -27,6 +27,7 @@ public class PropertyEditorManager {
     private static final Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
 
     public PropertyEditorManager() {
+        // expected
     }
 
     public static void registerEditor(Class<?> targetType, Class<?> editorClass) {
@@ -58,6 +59,7 @@ public class PropertyEditorManager {
             try {
                 editor = (PropertyEditor) editorClass.newInstance();
             } catch (Exception e) {
+                // expected
             }
         }
         
@@ -91,9 +93,11 @@ public class PropertyEditorManager {
                         editorClass.asSubclass(PropertyEditorSupport.class);
                         break;
                     } catch (Exception e) {
+                        // expected
                     }
                 }
             } catch (Exception e) {
+                // expected
             }
             if(editorClass != null){
                 try {
@@ -101,6 +105,7 @@ public class PropertyEditorManager {
 //                    registeredEditors.put(targetType, editorClass);
                     editor = (PropertyEditor) editorClass.newInstance();
                 } catch (Exception e) {
+                    // expected
                 }    
             }
         }
@@ -112,11 +117,8 @@ public class PropertyEditorManager {
         if (sm != null) {
             sm.checkPropertiesAccess();
         }
-        if(apath == null){
-            apath = new String[0];
-        }
         synchronized(PropertyEditorManager.class){
-            path = apath;
+            path = (apath == null)? new String[0] : apath;
         }
     }
 

@@ -104,7 +104,7 @@ public class DirectoryManager extends NamingManager {
      *             if any other exception is encountered
      */
     public static Object getObjectInstance(Object o, Name n, Context c,
-            Hashtable<?, ?> h, Attributes a) throws NamingException, Exception {
+            Hashtable<?, ?> h, Attributes a) throws Exception {
 
         // 1. try ObjectFactoryBuilder, if it is set
         if (null != ofb) {

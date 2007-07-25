@@ -115,7 +115,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
             if (listenerMethodName.equals(m.getName())) {
                 Class[] paramTypes = m.getParameterTypes();
                 if (paramTypes.length == 1
-                        && paramTypes[0].getName().endsWith("Event")) {
+                        && paramTypes[0].getName().endsWith("Event")) { //$NON-NLS-1$
                     method = m;
                     break;
                 }
@@ -131,15 +131,14 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             Method[] listenerMethods, Method addListenerMethod,
-            Method removeListenerMethod) throws IntrospectionException {
+            Method removeListenerMethod) {
         this(eventSetName, listenerType, listenerMethods, addListenerMethod,
                 removeListenerMethod, null);
     }
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             Method[] listenerMethods, Method addListenerMethod,
-            Method removeListenerMethod, Method getListenerMethod)
-            throws IntrospectionException {
+            Method removeListenerMethod, Method getListenerMethod) {
 
         setName(eventSetName);
         this.listenerType = listenerType;
@@ -166,8 +165,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             MethodDescriptor[] listenerMethodDescriptors,
-            Method addListenerMethod, Method removeListenerMethod)
-            throws IntrospectionException {
+            Method addListenerMethod, Method removeListenerMethod) {
         this(eventSetName, listenerType, null, addListenerMethod,
                 removeListenerMethod, null);
 
@@ -182,15 +180,16 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
 
     // ensures that there is no nulls
+    @SuppressWarnings("nls")
     private void checkNotNull(Object sourceClass, Object eventSetName,
-            Object listenerType, Object listenerMethodName) {
+            Object alistenerType, Object listenerMethodName) {
         if (sourceClass == null) {
             throw new NullPointerException(Messages.getString("beans.0C"));
         }
         if (eventSetName == null) {
             throw new NullPointerException(Messages.getString("beans.53"));
         }
-        if (listenerType == null) {
+        if (alistenerType == null) {
             throw new NullPointerException(Messages.getString("beans.54"));
         }
         if (listenerMethodName == null) {
@@ -316,7 +315,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
             return sourceClass.getMethod(methodName, listenerType);
         } catch (NoSuchMethodException e) {
             return findAddRemoveListnerMethodWithLessCheck(sourceClass,
-                    methodName, listenerType);
+                    methodName);
         } catch (Exception e) {
             throw new IntrospectionException(Messages.getString("beans.31", //$NON-NLS-1$
                     methodName, listenerType.getName()));
@@ -324,28 +323,19 @@ public class EventSetDescriptor extends FeatureDescriptor {
     }
 
     private Method findAddRemoveListnerMethodWithLessCheck(
-            Class<?> sourceClass, String methodName, Class listenerTYpe)
+            Class<?> sourceClass, String methodName)
             throws IntrospectionException {
         String expectedListenerTypeName = listenerType.getName();
         expectedListenerTypeName = expectedListenerTypeName
-                .substring(expectedListenerTypeName.lastIndexOf(".") + 1);
+                .substring(expectedListenerTypeName.lastIndexOf(".") + 1); //$NON-NLS-1$
         Method method = null;
         Method[] methods = sourceClass.getMethods();
         for (Method m : methods) {
             if (m.getName().equals(methodName)) {
                 Class[] paramTypes = m.getParameterTypes();
                 if (paramTypes.length == 1) {
-                    // String paramTypeName = paramTypes[0].getName();
-                    // paramTypeName = paramTypeName.substring(paramTypeName
-                    // .lastIndexOf(".") + 1);
-                    // if (paramTypeName.endsWith("Listener")) {
-                    // paramTypeName = paramTypeName.substring(0,
-                    // paramTypeName.length() - "Listener".length());
-                    // if (expectedListenerTypeName.startsWith(paramTypeName)) {
                     method = m;
                     break;
-                    // }
-                    // }
                 }
             }
         }

@@ -106,7 +106,7 @@ public class XMLEncoder extends Encoder {
 		if (null != out) {
             try {
                 this.out = new PrintWriter(
-                        new OutputStreamWriter(out, "UTF-8"), true);
+                        new OutputStreamWriter(out, "UTF-8"), true); //$NON-NLS-1$
             } catch (UnsupportedEncodingException e) {
                 // never occur
                 e.printStackTrace();
@@ -120,7 +120,7 @@ public class XMLEncoder extends Encoder {
 	 */
 	public void close() {
 		flush();
-		out.println("</java>");
+		out.println("</java>"); //$NON-NLS-1$
 		out.close();
 	}
 
@@ -137,7 +137,8 @@ public class XMLEncoder extends Encoder {
 	 * writtern. Then all pending objects since last flush are writtern.
 	 * </p>
 	 */
-	public void flush() {
+	@SuppressWarnings("nls")
+    public void flush() {
 		synchronized (this) {
 			// write xml header
 			if (!hasXmlHeader) {
@@ -149,7 +150,7 @@ public class XMLEncoder extends Encoder {
 			}
 
 			// preprocess pending objects
-			for (Iterator iter = flushPending.iterator(); iter.hasNext();) {
+			for (Iterator<Object> iter = flushPending.iterator(); iter.hasNext();) {
 				Object o = iter.next();
 				Record rec = (Record) records.get(o);
 				if (rec != null) {
@@ -158,7 +159,7 @@ public class XMLEncoder extends Encoder {
 			}
 
 			// flush pending objects
-			for (Iterator iter = flushPending.iterator(); iter.hasNext();) {
+			for (Iterator<Object> iter = flushPending.iterator(); iter.hasNext();) {
 				Object o = iter.next();
 				flushObject(o, INDENT_UNIT);
 				// remove flushed obj
@@ -174,7 +175,8 @@ public class XMLEncoder extends Encoder {
 		}
 	}
 
-	private void flushBasicObject(Object obj, int indent) {
+	@SuppressWarnings("nls")
+    private void flushBasicObject(Object obj, int indent) {
 		if( obj instanceof Proxy) {
 			return;
 		}
@@ -236,7 +238,8 @@ public class XMLEncoder extends Encoder {
 		}
 	}
 
-	private void flushExpression(Object obj, Record rec, int indent,
+	@SuppressWarnings("nls")
+    private void flushExpression(Object obj, Record rec, int indent,
 			boolean asStatement) {
 		// not first time, use idref
 		if (rec.id != null) {
@@ -261,7 +264,7 @@ public class XMLEncoder extends Encoder {
 
 	private void flushIndent(int indent) {
 		for (int i = 0; i < indent; i++) {
-			out.print(" ");
+			out.print(" "); //$NON-NLS-1$
 		}
 	}
 
@@ -287,7 +290,8 @@ public class XMLEncoder extends Encoder {
 		}
 	}
 
-	private void flushOwner(Object obj, Record rec, int indent) {
+	@SuppressWarnings("nls")
+    private void flushOwner(Object obj, Record rec, int indent) {
 		if (rec.refCount > 1) {
 			rec.id = nameForClass(obj.getClass()) + idSerialNo;
 			idSerialNo++;
@@ -329,7 +333,8 @@ public class XMLEncoder extends Encoder {
 		out.println(">");
 	}
 
-	private void flushStatArray(Statement stat, String id, List subStats,
+	@SuppressWarnings("nls")
+    private void flushStatArray(Statement stat, String id, List<?> subStats,
 			int indent) {
 		// open tag, begin
 		flushIndent(indent);
@@ -364,7 +369,8 @@ public class XMLEncoder extends Encoder {
 		out.println("</array>");
 	}
 
-	private void flushStatCommon(Statement stat, String id, List subStats,
+	@SuppressWarnings("nls")
+    private void flushStatCommon(Statement stat, String id, List<?> subStats,
 			int indent) {
 		// open tag, begin
 		flushIndent(indent);
@@ -415,7 +421,8 @@ public class XMLEncoder extends Encoder {
 		out.println(">");
 	}
 
-	private void flushStatement(Statement stat, String id, List subStats,
+	@SuppressWarnings("nls")
+    private void flushStatement(Statement stat, String id, List<?> subStats,
 			int indent) {
 		Object target = stat.getTarget();
 		String method = stat.getMethodName();
@@ -440,7 +447,7 @@ public class XMLEncoder extends Encoder {
 
 		if (isStaticConstantsSupported
 				&& "getField".equals(stat.getMethodName())) {
-			flushStatField(stat, id, subStats, indent);
+			flushStatField(stat, id, indent);
 			return;
 		}
 
@@ -448,7 +455,8 @@ public class XMLEncoder extends Encoder {
 		flushStatCommon(stat, id, subStats, indent);
 	}
 
-	private void flushStatField(Statement stat, String id, List subStats,
+	@SuppressWarnings("nls")
+    private void flushStatField(Statement stat, String id, 
 			int indent) {
 		// open tag, begin
 		flushIndent(indent);
@@ -483,15 +491,16 @@ public class XMLEncoder extends Encoder {
 			out.print(stat.getMethodName());
 			out.print("\"");
 			out.println(">");
-			Object fieldName = (String) stat.getArguments()[0];
+			Object fieldName = stat.getArguments()[0];
 			flushObject(fieldName, indent + INDENT_UNIT);
 			flushIndent(indent);
 			out.println("</object>");
 		}
 	}
 
-	private void flushStatGetterSetter(Statement stat, String id,
-			List subStats, int indent) {
+	@SuppressWarnings("nls")
+    private void flushStatGetterSetter(Statement stat, String id,
+			List<?> subStats, int indent) {
 		// open tag, begin
 		flushIndent(indent);
 		String tagName = stat instanceof Expression ? "object" : "void";
@@ -539,7 +548,8 @@ public class XMLEncoder extends Encoder {
 		out.println(">");
 	}
 
-	private void flushStatIndexed(Statement stat, String id, List subStats,
+	@SuppressWarnings("nls")
+    private void flushStatIndexed(Statement stat, String id, List<?> subStats,
 			int indent) {
 		// open tag, begin
 		flushIndent(indent);
@@ -588,7 +598,8 @@ public class XMLEncoder extends Encoder {
 		out.println(">");
 	}
 
-	private void flushString(String s) {
+	@SuppressWarnings("nls")
+    private void flushString(String s) {
 		char c;
 		for (int i = 0; i < s.length(); i++) {
 			c = s.charAt(i);
@@ -608,7 +619,7 @@ public class XMLEncoder extends Encoder {
 		}
 	}
 
-	private void flushSubStatements(List subStats, int indent) {
+	private void flushSubStatements(List<?> subStats, int indent) {
 		for (int i = 0; i < subStats.size(); i++) {
 			Statement subStat = (Statement) subStats.get(i);
 			try {
@@ -647,35 +658,33 @@ public class XMLEncoder extends Encoder {
 	}
 
 	private boolean isGetArrayStat(Object target, String method, Object[] args) {
-		return ("get".equals(method) && args.length == 1
+		return ("get".equals(method) && args.length == 1 //$NON-NLS-1$
 				&& args[0] instanceof Integer && target.getClass().isArray());
 	}
 
 	private boolean isGetPropertyStat(String method, Object[] args) {
-		return (method.startsWith("get") && method.length() > 3 && args.length == 0);
+		return (method.startsWith("get") && method.length() > 3 && args.length == 0); //$NON-NLS-1$
 	}
 
 	private boolean isSetArrayStat(Object target, String method, Object[] args) {
-		return ("set".equals(method) && args.length == 2
+		return ("set".equals(method) && args.length == 2 //$NON-NLS-1$
 				&& args[0] instanceof Integer && target.getClass().isArray());
 	}
 
 	private boolean isSetPropertyStat(String method, Object[] args) {
-		return (method.startsWith("set") && method.length() > 3 && args.length == 1);
+		return (method.startsWith("set") && method.length() > 3 && args.length == 1); //$NON-NLS-1$
 	}
 
-	private String nameForClass(Class c) {
+	private String nameForClass(Class<?> c) {
 		if (c.isArray()) {
-			return nameForClass(c.getComponentType()) + "Array";
-		} else {
-			String name = c.getName();
-			int i = name.lastIndexOf('.');
-			if (-1 == i) {
-				return name;
-			} else {
-				return name.substring(i + 1);
-			}
+			return nameForClass(c.getComponentType()) + "Array"; //$NON-NLS-1$
 		}
+        String name = c.getName();
+        int i = name.lastIndexOf('.');
+        if (-1 == i) {
+        	return name;
+        }
+        return name.substring(i + 1);
 	}
 
 	/*
@@ -698,7 +707,7 @@ public class XMLEncoder extends Encoder {
 		// deal with 'field' property
 		try {
 			if (isStaticConstantsSupported
-					&& "getField".equals(((Record) records.get(rec.exp
+					&& "getField".equals(((Record) records.get(rec.exp //$NON-NLS-1$
 							.getTarget())).exp.getMethodName())) {
 				records.remove(obj);
 			}
@@ -717,7 +726,7 @@ public class XMLEncoder extends Encoder {
 			}
 		}
 
-		for (Iterator iter = rec.stats.iterator(); iter.hasNext();) {
+		for (Iterator<?> iter = rec.stats.iterator(); iter.hasNext();) {
 			Statement subStat = (Statement) iter.next();
 			if (subStat instanceof Expression) {
 				try {
@@ -765,14 +774,10 @@ public class XMLEncoder extends Encoder {
 
 		if (rec.exp == null) {
 			// it is generated by its sub stats
-			for (Iterator iter = rec.stats.iterator(); iter.hasNext();) {
+			for (Iterator<?> iter = rec.stats.iterator(); iter.hasNext();) {
 				Statement stat = (Statement) iter.next();
 				try {
 					if (stat instanceof Expression) {
-                        // Expression expr = (Expression) stat;
-                        // Object subObj = expr.getValue();
-                        // if(expr.getTarget().getClass() ==
-                        // Class.class.getClass())
 						flushPrePending.add(value);
 					}
 				} catch (Exception e) {
@@ -822,7 +827,8 @@ public class XMLEncoder extends Encoder {
 	 * Records the expression so that it can be writtern out later, then calls
 	 * super implementation.
 	 */
-	public void writeExpression(Expression oldExp) {
+	@Override
+    public void writeExpression(Expression oldExp) {
 	    boolean oldWritingObject = writingObject;
 	    writingObject = true;
 		// get expression value
@@ -832,7 +838,7 @@ public class XMLEncoder extends Encoder {
 		} catch (Exception e) {
 			getExceptionListener()
 					.exceptionThrown(
-							new Exception("failed to execute expression: "
+							new Exception("failed to execute expression: " //$NON-NLS-1$
 									+ oldExp, e));
 			return;
 		}
@@ -855,7 +861,8 @@ public class XMLEncoder extends Encoder {
 	 * Records the object so that it can be writtern out later, then calls super
 	 * implementation.
 	 */
-	public void writeObject(Object o) {
+	@Override
+    public void writeObject(Object o) {
 		synchronized (this) {
 			boolean oldWritingObject = writingObject;
 			writingObject = true;
@@ -889,7 +896,8 @@ public class XMLEncoder extends Encoder {
 	 * Records the statement so that it can be writtern out later, then calls
 	 * super implementation.
 	 */
-	public void writeStatement(Statement oldStat) {
+	@Override
+    public void writeStatement(Statement oldStat) {
 		// record how the object is changed
 		recordStatement(oldStat);
 

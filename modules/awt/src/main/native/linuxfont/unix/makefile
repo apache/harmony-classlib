@@ -17,7 +17,7 @@ include $(HY_HDK)/build/make/defines.mk
 
 CFLAGS += -fpic
 INCLUDES += -I$(SHARED)common -I/usr/X11R6/include -I/usr/include/freetype2 \
-            -Iinclude # TOFIX move includes
+            -Iinclude -I../../fontlib/unix -I../../fontlib/shared # TOFIX move includes
 ifeq ($(HY_OS),freebsd)
 INCLUDES += -I/usr/local/include -I/usr/local/include/freetype2
 endif
@@ -32,7 +32,7 @@ MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
 endif
 
 MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX) ../../fontlib/libFL.so
 
 OSLIBS += $(XLIBS)
 

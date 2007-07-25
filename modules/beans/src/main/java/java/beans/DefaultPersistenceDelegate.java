@@ -94,6 +94,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
      * @param enc
      *            the encoder to write the outputs to
      */
+    @Override
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
         // Call the initialization of the super type
@@ -169,12 +170,11 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     /*
      * Get the field value of an object using privileged code.
      */
-    @SuppressWarnings("unchecked")
     private Object getFieldValue(Object oldInstance, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
-        Class c = oldInstance.getClass();
+        Class<? extends Object> c = oldInstance.getClass();
         final Field f = c.getDeclaredField(fieldName);
-        AccessController.doPrivileged(new PrivilegedAction() {
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
             public Object run() {
                 f.setAccessible(true);
                 return null;
@@ -186,12 +186,12 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     /*
      * Get the value for the specified property of the given bean instance.
      */
-    private Object getPropertyValue(HashMap proDscMap, Object oldInstance,
+    private Object getPropertyValue(HashMap<String, PropertyDescriptor> proDscMap, Object oldInstance,
             String propName) throws Exception {
         // Try to get the read method for the property
         Method getter = null;
         if (null != proDscMap) {
-            PropertyDescriptor pd = (PropertyDescriptor) proDscMap
+            PropertyDescriptor pd = proDscMap
                     .get(Introspector.decapitalize(propName));
             if (null != pd) {
                 getter = pd.getReadMethod();
@@ -227,6 +227,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
      * @return an expression for instantiating an object of the same type as the
      *         old instance
      */
+    @Override
     protected Expression instantiate(Object oldInstance, Encoder enc) {
         Object[] args = null;
 
@@ -234,7 +235,7 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
         if (this.propertyNames.length > 0) {
             // Prepare the property descriptors for finding getter method later
             BeanInfo info = null;
-            HashMap proDscMap = null;
+            HashMap<String, PropertyDescriptor> proDscMap = null;
             try {
                 info = Introspector.getBeanInfo(oldInstance.getClass(),
                         Introspector.IGNORE_ALL_BEANINFO);
@@ -291,11 +292,12 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
      * @return true if second object mutates to the first object, otherwise
      *         false
      */
+    @Override
     protected boolean mutatesTo(Object o1, Object o2) {
         if (null == o1 || null == o2) {
             return false;
         }
-        Class c = o1.getClass();
+        Class<? extends Object> c = o1.getClass();
         if (this.propertyNames.length > 0) {
             // Check the "equals" method has been declared
             Method equalMethod = null;

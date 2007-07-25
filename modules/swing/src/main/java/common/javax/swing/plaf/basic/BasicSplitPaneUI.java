@@ -76,8 +76,10 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                 int rightCompY = leftCompY;
                 int rightCompWidth = container.getWidth() - leftCompWidth - divWidth - insets.left - insets.right;
                 
-                if (rightCompWidth < components[RIGHT_COMPONENT_INDEX].getMinimumSize().width
-                    && leftCompWidth > components[LEFT_COMPONENT_INDEX].getMinimumSize().width) {
+                if ((components[RIGHT_COMPONENT_INDEX] != null)
+                        && (components[LEFT_COMPONENT_INDEX] != null)
+                        && rightCompWidth < components[RIGHT_COMPONENT_INDEX].getMinimumSize().width
+                        && leftCompWidth > components[LEFT_COMPONENT_INDEX].getMinimumSize().width) {
                     
                     rightCompWidth = components[RIGHT_COMPONENT_INDEX].getMinimumSize().width;
                     leftCompWidth = container.getWidth() - rightCompWidth - divWidth - insets.left - insets.right;
@@ -122,9 +124,13 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                 int rightCompY = divY + divHeight;
                 int rightCompHeight = container.getHeight() - leftCompHeight - divHeight - insets.top - insets.bottom;
                 
-                if (rightCompHeight < components[RIGHT_COMPONENT_INDEX].getMinimumSize().height
-                    && leftCompHeight > components[LEFT_COMPONENT_INDEX].getMinimumSize().height) {
-                        
+                if ((components[RIGHT_COMPONENT_INDEX] != null)
+                        && (components[LEFT_COMPONENT_INDEX] != null)
+                        && rightCompHeight < components[RIGHT_COMPONENT_INDEX]
+                                .getMinimumSize().height
+                        && leftCompHeight > components[LEFT_COMPONENT_INDEX]
+                                .getMinimumSize().height) {
+                    
                     rightCompHeight = components[RIGHT_COMPONENT_INDEX].getMinimumSize().height;
                     leftCompHeight = container.getHeight() - rightCompHeight - divHeight - insets.top - insets.bottom;
                     

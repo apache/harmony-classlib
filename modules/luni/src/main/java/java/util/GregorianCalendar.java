@@ -330,7 +330,7 @@ public class GregorianCalendar extends Calendar {
 
         int dayOfYear = computeYearAndDay(days, timeVal + zoneOffset);
         fields[DAY_OF_YEAR] = dayOfYear;
-        if(fields[YEAR] == changeYear && gregorianCutover < timeVal + zoneOffset){
+        if(fields[YEAR] == changeYear && gregorianCutover <= timeVal + zoneOffset){
             dayOfYear += currentYearSkew;
         }
         int month = dayOfYear / 32;
@@ -361,7 +361,7 @@ public class GregorianCalendar extends Calendar {
                 dayOfYear = computeYearAndDay(days, timeVal - zoneOffset
                         + dstOffset);
                 fields[DAY_OF_YEAR] = dayOfYear;
-                if(fields[YEAR] == changeYear && gregorianCutover < timeVal - zoneOffset + dstOffset){
+                if(fields[YEAR] == changeYear && gregorianCutover <= timeVal - zoneOffset + dstOffset){
                     dayOfYear += currentYearSkew;
                 }
                 month = dayOfYear / 32;

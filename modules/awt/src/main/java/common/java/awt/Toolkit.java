@@ -733,9 +733,15 @@ public abstract class Toolkit {
             throws IndexOutOfBoundsException, HeadlessException {
         lockAWT();
         try {
-            int w = img.getWidth(null), x = hotSpot.x;
-            int h = img.getHeight(null), y = hotSpot.y;
-            if (x < 0 || x >= w || y < 0 || y >= h) {
+            int w = img.getWidth(null);
+            int h = img.getHeight(null);
+
+            if (w < 0 || h < 0) {
+                // Fix for HARMONY-4491
+                hotSpot.x = 0;
+                hotSpot.y = 0;
+            } else if (hotSpot.x < 0 || hotSpot.x >= w
+                    || hotSpot.y < 0 || hotSpot.y >= h) {
                 // awt.7E=invalid hotSpot
                 throw new IndexOutOfBoundsException(Messages.getString("awt.7E")); //$NON-NLS-1$
             }

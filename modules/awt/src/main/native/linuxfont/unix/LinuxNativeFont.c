@@ -23,6 +23,10 @@
 #include <freetype/tttables.h>
 #include <freetype/t1tables.h>
 
+#include <jni.h>
+
+#include "FontLibExports.h"
+
 #if (FREETYPE_MAJOR >= 2 && FREETYPE_MINOR >= 2)
 
 #undef HAS_FREETYPE_INTERNAL
@@ -173,36 +177,37 @@ JNIEXPORT jobjectArray JNICALL
  * Methods checks if the number of system fonts changed after font configutation
  * was rebuilded.
  */
-JNIEXPORT jboolean JNICALL 
+JNIEXPORT jstring JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_embedFontNative(JNIEnv *env, jclass obj, jstring fName){
 
     int fontAdded = FALSE;
     FcConfig *config;
-    FcFontSet *set;
-    int numFonts;
 
     config = FcConfigGetCurrent();
     if (!config){
-        return fontAdded;
+        return 0;
     }
 
-    set = FcConfigGetFonts(config, FcSetSystem);
-    if (!set){
-        return fontAdded;
-    }
+    char *path = (char *)(*env)->GetStringUTFChars(env, fName, 0);
+    fontAdded = FcConfigAppFontAddFile(config, path);
 
-    numFonts = set->nfont;
+    unsigned short *familyName = 0;
 
-    fontAdded = FcConfigBuildFonts(config);
+    if (fontAdded) {
+        getFontFamilyName(path, &familyName);
+    }    
+
+    (*env)->ReleaseStringUTFChars(env, fName, path);    
     
-    set = FcConfigGetFonts(config, FcSetSystem);
-    if (!set){
-        return fontAdded;
+    jstring res = 0;
+    if (fontAdded && familyName) {
+        int len = 0;
+        for (; familyName[len] != 0; len++);
+        res = (*env)->NewString(env, (jchar *)familyName, len);
+        free(familyName);
     }
 
-    fontAdded = fontAdded && (numFonts < set->nfont);
-
-    return fontAdded;
+    return res;
 }
 
 /*

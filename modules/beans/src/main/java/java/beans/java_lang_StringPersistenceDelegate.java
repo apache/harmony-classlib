@@ -15,20 +15,31 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
-
-public class java_lang_FloatPersistenceDelegate extends PersistenceDelegate {
+class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        Float value = (Float) oldInstance;
-        return new Expression(oldInstance, Float.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
+        String value = (String) oldInstance;
+        return new Expression(oldInstance, String.class,
+                "new", new Object[] { value }); //$NON-NLS-1$
     }
 
     @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    /*
+     * It's unnecessary to do anything for initialization, because two mutatable
+     * strings are actually equivalent already.
+     */
+    protected void initialize(Class<?> type, Object oldInstance,
+            Object newInstance, Encoder out) {
+        // do nothing
+    }
+
+    @Override
+    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
+        if (oldInstance instanceof String && newInstance instanceof String) {
+            return newInstance.equals(oldInstance);
+        }
+        return super.mutatesTo(oldInstance, newInstance);
     }
 }

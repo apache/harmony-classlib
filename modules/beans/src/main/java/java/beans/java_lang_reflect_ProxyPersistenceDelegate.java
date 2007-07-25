@@ -15,42 +15,34 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
-/**
- * Persistence delegate for {@link java.lang.reflect.Method} class.
- */
-public class java_lang_reflect_MethodPersistenceDelegate extends PersistenceDelegate {
+class java_lang_reflect_ProxyPersistenceDelegate extends DefaultPersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        // should not be null or have a type other than Method
-        assert oldInstance instanceof Method : oldInstance;
-        Method oldMethod = (Method) oldInstance;
-        Class<?> declClass = oldMethod.getDeclaringClass();
-        return new Expression(oldMethod, declClass, "getMethod", //$NON-NLS-1$
-                new Object[] { oldMethod.getName(), oldMethod.getParameterTypes() });
+        assert oldInstance instanceof Proxy : oldInstance;
+        Class[] interfaces = oldInstance.getClass().getInterfaces();
+        InvocationHandler handler = Proxy.getInvocationHandler(oldInstance);
+        return new Expression(oldInstance, Proxy.class, "newProxyInstance", //$NON-NLS-1$
+                new Object[] { oldInstance.getClass().getClassLoader(), interfaces, handler });
     }
 
     @Override
     protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
         // check for consistency
-        assert oldInstance instanceof Method : oldInstance;
-        assert newInstance instanceof Method : newInstance;
-        assert newInstance.equals(oldInstance);
+        assert oldInstance instanceof Proxy : oldInstance;
+        assert newInstance instanceof Proxy : newInstance;
+        assert newInstance == oldInstance;
+        super.initialize(type, oldInstance, newInstance, out);
     }
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        assert oldInstance instanceof Method : oldInstance;
-        if (!(newInstance instanceof Method)) {
-            // if null or not a Method
-            return false;
-        }
-        return oldInstance.equals(newInstance);
+        assert oldInstance instanceof Proxy : oldInstance;
+        assert oldInstance == newInstance;
+        return super.mutatesTo(oldInstance, newInstance);
     }
 }

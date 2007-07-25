@@ -63,7 +63,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     BeanInfo[] additionalBeanInfo = null;
 
-    private Class beanClass;
+    private Class<?> beanClass;
 
     private int defaultEventIndex = -1;
 
@@ -77,7 +77,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private boolean canRemovePropertyChangeListener;
 
-    StandardBeanInfo(Class beanClass, BeanInfo explicitBeanInfo, Class stopClass)
+    StandardBeanInfo(Class<?> beanClass, BeanInfo explicitBeanInfo, Class<?> stopClass)
             throws IntrospectionException {
         assert (beanClass != null);
         this.beanClass = beanClass;
@@ -138,22 +138,27 @@ class StandardBeanInfo extends SimpleBeanInfo {
         }
     }
 
+    @Override
     public BeanInfo[] getAdditionalBeanInfo() {
         return null;
     }
 
+    @Override
     public EventSetDescriptor[] getEventSetDescriptors() {
         return events;
     }
 
+    @Override
     public MethodDescriptor[] getMethodDescriptors() {
         return methods;
     }
 
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors() {
         return properties;
     }
 
+    @Override
     public BeanDescriptor getBeanDescriptor() {
         if (explicitBeanInfo != null) {
             BeanDescriptor beanDesc = explicitBeanInfo.getBeanDescriptor();
@@ -164,14 +169,17 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return new BeanDescriptor(beanClass);
     }
 
+    @Override
     public int getDefaultEventIndex() {
         return this.defaultEventIndex;
     }
 
+    @Override
     public int getDefaultPropertyIndex() {
         return this.defaultPropertyIndex;
     }
 
+    @Override
     public Image getIcon(int iconKind) {
         return icon[iconKind - 1];
     }
@@ -248,10 +256,10 @@ class StandardBeanInfo extends SimpleBeanInfo {
             Method superGet = superDesc.getReadMethod();
             Method superSet = superDesc.getWriteMethod();
 
-            Class superType = superDesc.getPropertyType();
-            Class superIndexedType = null;
-            Class subType = ((PropertyDescriptor) value).getPropertyType();
-            Class subIndexedType = null;
+            Class<?> superType = superDesc.getPropertyType();
+            Class<?> superIndexedType = null;
+            Class<?> subType = ((PropertyDescriptor) value).getPropertyType();
+            Class<?> subIndexedType = null;
 
             if (value instanceof IndexedPropertyDescriptor) {
                 subIndexedType = ((IndexedPropertyDescriptor) value)
@@ -487,7 +495,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
     }
 
     private MethodDescriptor[] introspectMethods(boolean includeSuper,
-            Class introspectorClass) {
+            Class<?> introspectorClass) {
 
         // Get the list of methods belonging to this class
         Method[] basicMethods = includeSuper ? introspectorClass.getMethods()
@@ -515,7 +523,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
         MethodDescriptor[] theMethods = null;
         if (methodCount > 0) {
             theMethods = new MethodDescriptor[methodCount];
-            theMethods = (MethodDescriptor[]) methodList.toArray(theMethods);
+            theMethods = methodList.toArray(theMethods);
         }
 
         return theMethods;
@@ -530,7 +538,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * @return The list of Properties as an array of PropertyDescriptors
      * @throws IntrospectionException
      */
-    private PropertyDescriptor[] introspectProperties(Class stopClass)
+    @SuppressWarnings("unchecked")
+    private PropertyDescriptor[] introspectProperties(Class<?> stopClass)
             throws IntrospectionException {
 
         // Get descriptors for the public methods
@@ -560,7 +569,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
                         tempMethods.add(method);
                     }
                 }
-                allMethods = (MethodDescriptor[]) tempMethods
+                allMethods = tempMethods
                         .toArray(new MethodDescriptor[0]);
             }
         }
@@ -570,9 +579,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
         // Put the properties found into the PropertyDescriptor array
         ArrayList<PropertyDescriptor> propertyList = new ArrayList<PropertyDescriptor>();
 
-        Iterator keys = propertyTable.keySet().iterator();
+        Iterator<String> keys = propertyTable.keySet().iterator();
         while (keys.hasNext()) {
-            String propertyName = (String) keys.next();
+            String propertyName = keys.next();
             HashMap table = propertyTable.get(propertyName);
             if (table == null) {
                 continue;
@@ -610,7 +619,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             } else {
                 propertyDesc.setBound(false);
             }
-            if (table.get("isConstrained") == Boolean.TRUE) {
+            if (table.get("isConstrained") == Boolean.TRUE) { //$NON-NLS-1$
                 propertyDesc.setConstrained(true);
             }
             propertyList.add(propertyDesc);
@@ -632,6 +641,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
         return false;
     }
 
+    @SuppressWarnings("nls")
     private void introspectPropertyListener(Method theMethod) {
         String methodName = theMethod.getName();
         Class[] param = theMethod.getParameterTypes();
@@ -798,7 +808,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
         Class[] exceptions = theMethod.getExceptionTypes();
         for (Class e : exceptions) {
             if (e.equals(PropertyVetoException.class)) {
-                table.put("isConstrained", Boolean.TRUE);
+                table.put("isConstrained", Boolean.TRUE); //$NON-NLS-1$
             }
         }
         propertyTable.put(propertyName, table);
@@ -812,8 +822,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * @return the events
      * @throws IntrospectionException
      */
-    private EventSetDescriptor[] introspectEvents()
-            throws IntrospectionException {
+    @SuppressWarnings("unchecked")
+    private EventSetDescriptor[] introspectEvents() {
         // Get descriptors for the public methods
         // FIXME: performance
         MethodDescriptor[] theMethods = introspectMethods();
@@ -835,9 +845,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
         }
 
         ArrayList<EventSetDescriptor> eventList = new ArrayList<EventSetDescriptor>();
-        Iterator keys = eventTable.keySet().iterator();
+        Iterator<String> keys = eventTable.keySet().iterator();
         while (keys.hasNext()) {
-            String key = (String) keys.next();
+            String key = keys.next();
             HashMap table = eventTable.get(key);
             Method add = (Method) table.get(PREFIX_ADD);
             Method remove = (Method) table.get(PREFIX_REMOVE);
@@ -847,7 +857,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             }
 
             Method get = (Method) table.get(PREFIX_GET);
-            Class listenerType = (Class) table.get("listenerType"); //$NON-NLS-1$
+            Class<?> listenerType = (Class) table.get("listenerType"); //$NON-NLS-1$
             Method[] listenerMethods = (Method[]) table.get("listenerMethods"); //$NON-NLS-1$
             EventSetDescriptor eventSetDescriptor = new EventSetDescriptor(
                     decapitalize(key), listenerType, listenerMethods, add,
@@ -867,9 +877,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
     /*
      * find the add, remove listener method
      */
-    @SuppressWarnings( { "unchecked", "unchecked" })
+    @SuppressWarnings("unchecked")
     private static void introspectListenerMethods(String type,
-            Method theMethod, HashMap methodsTable) {
+            Method theMethod, HashMap<String, HashMap> methodsTable) {
         String methodName = theMethod.getName();
         if (methodName == null) {
             return;
@@ -892,7 +902,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             return;
         }
 
-        Class listenerType = paramTypes[0];
+        Class<?> listenerType = paramTypes[0];
 
         if (!EventListener.class.isAssignableFrom(listenerType)) {
             return;
@@ -902,7 +912,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             return;
         }
 
-        HashMap table = (HashMap) methodsTable.get(eventName);
+        HashMap table = methodsTable.get(eventName);
         if (table == null) {
             table = new HashMap();
         }
@@ -932,7 +942,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
         methodsTable.put(eventName, table);
     }
 
-    private static Method[] introspectListenerMethods(Class listenerType) {
+    private static Method[] introspectListenerMethods(Class<?> listenerType) {
         Method[] methods = listenerType.getDeclaredMethods();
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < methods.length; i++) {
@@ -952,7 +962,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     @SuppressWarnings("unchecked")
     private static void introspectGetListenerMethods(Method theMethod,
-            HashMap methodsTable) {
+            HashMap<String, HashMap> methodsTable) {
         String type = PREFIX_GET;
 
         String methodName = theMethod.getName();
@@ -985,7 +995,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             return;
         }
 
-        HashMap table = (HashMap) methodsTable.get(eventName);
+        HashMap table = methodsTable.get(eventName);
         if (table == null) {
             table = new HashMap();
         }

@@ -20,10 +20,12 @@ package java.beans;
 import java.util.List;
 
 class UtilListPersistenceDelegate extends DefaultPersistenceDelegate {
+    @Override
+    @SuppressWarnings({ "nls", "boxing" })
     protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
 
-        List list = (List) oldInstance;
+        List<?> list = (List) oldInstance;
         int size = list.size();
         for (int i = 0; i < size; i++) {
             Expression getterExp = new Expression(oldInstance, "get",

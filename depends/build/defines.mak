@@ -49,7 +49,7 @@ HYDEBUGCFLAGS = \
 
 !ifndef HYRELEASECFLAGS  
 HYRELEASECFLAGS = \
-  -Ogityb1
+  -Ogityb1 -DNDEBUG
 !endif
 
 !IF "$(HY_CFG)" == "debug"

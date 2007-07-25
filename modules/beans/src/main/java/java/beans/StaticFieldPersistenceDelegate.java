@@ -35,7 +35,7 @@ class StaticFieldPersistenceDelegate extends
 			try {
 				value = field[i].get(clz);
 			} catch (Exception e) {
-				// expected
+				return;
 			}
 			if (value.getClass() == clz) {
 				pairs.put(value, field[i].getName());
@@ -51,7 +51,7 @@ class StaticFieldPersistenceDelegate extends
 		} catch (Exception e) {
 			enc.getExceptionListener().exceptionThrown(e);
 		}
-		return new Expression(oldInstance, field, "get",
+		return new Expression(oldInstance, field, "get", //$NON-NLS-1$
 				new Object[] { oldInstance.getClass() });
 	}
 

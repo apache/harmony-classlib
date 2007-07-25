@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 JNIEXPORT void JNICALL getFontFamilyName(fwchar_t *path, fwchar_t **familyName) {
-    FILE *f = _wfopen(path, L"rb");
+    FILE *f = _wfopen((wchar_t*)path, L"rb");
     if (!f)
         return;
         

@@ -40,4 +40,14 @@ public class ToolkitTest extends TestCase {
         }
     }
 
+    public void testCreateCustomCursor() {
+        try {
+            // Regression for HARMONY-4491
+            Toolkit tk = Toolkit.getDefaultToolkit();            
+            Image img = tk.createImage(new byte[] { 0 } );
+            Cursor cursor = tk.createCustomCursor(img, new Point(0, 0), "");
+        } catch (IndexOutOfBoundsException e) {
+            fail("Unexpected IndexOutOfBoundsException");            
+        }
+    }
 }
