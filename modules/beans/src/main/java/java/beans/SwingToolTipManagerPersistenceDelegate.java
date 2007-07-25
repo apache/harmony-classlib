@@ -22,7 +22,7 @@ class SwingToolTipManagerPersistenceDelegate extends PersistenceDelegate {
 	@Override
 	protected Expression instantiate(Object oldInstance, Encoder enc) {
 		return new Expression(oldInstance, oldInstance.getClass(),
-				"sharedInstance", null);
+				"sharedInstance", null); //$NON-NLS-1$
 	}
 
 }

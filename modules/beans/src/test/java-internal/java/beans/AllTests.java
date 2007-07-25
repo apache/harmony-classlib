@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
+
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

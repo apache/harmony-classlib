@@ -63,27 +63,27 @@ public class Statement {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        Object target = getTarget();
-        String methodName = getMethodName();
-        Object[] arguments = getArguments();
-        String targetVar = target != null ? convertClassName(target.getClass()) : "null"; //$NON-NLS-1$
+        Object theTarget = getTarget();
+        String theMethodName = getMethodName();
+        Object[] theArguments = getArguments();
+        String targetVar = theTarget != null ? convertClassName(theTarget.getClass()) : "null"; //$NON-NLS-1$
         sb.append(targetVar);
         sb.append('.');
-        sb.append(methodName);
+        sb.append(theMethodName);
         sb.append('(');
-        if (arguments != null) {
-            for (int i = 0; i < arguments.length; ++i) {
+        if (theArguments != null) {
+            for (int i = 0; i < theArguments.length; ++i) {
                 if (i > 0) {
                     sb.append(", "); //$NON-NLS-1$
                 }
-                if (arguments[i] == null) {
+                if (theArguments[i] == null) {
                     sb.append("null"); //$NON-NLS-1$
-                } else if (arguments[i] instanceof String) {
+                } else if (theArguments[i] instanceof String) {
                     sb.append('"');
-                    sb.append(arguments[i].toString());
+                    sb.append(theArguments[i].toString());
                     sb.append('"');
                 } else {
-                    sb.append(convertClassName(arguments[i].getClass()));
+                    sb.append(convertClassName(theArguments[i].getClass()));
                 }
             }
         }
@@ -111,29 +111,29 @@ public class Statement {
     Object invokeMethod() throws Exception {
         Object result = null;
         try {
-            Object target = getTarget();
-            String methodName = getMethodName();
-            Object[] arguments = getArguments();
-            if (target.getClass().isArray()) {
-                Method method = findArrayMethod(methodName, arguments);
-                Object[] args = new Object[arguments.length + 1];
-                args[0] = target;
-                System.arraycopy(arguments, 0, args, 1, arguments.length);
+            Object theTarget = getTarget();
+            String theMethodName = getMethodName();
+            Object[] theArguments = getArguments();
+            if (theTarget.getClass().isArray()) {
+                Method method = findArrayMethod(theMethodName, theArguments);
+                Object[] args = new Object[theArguments.length + 1];
+                args[0] = theTarget;
+                System.arraycopy(theArguments, 0, args, 1, theArguments.length);
                 result = method.invoke(null, args);
-            } else if (methodName.equals("newInstance") //$NON-NLS-1$
-                    && target == Array.class) {
-                Class<?> componentType = (Class) arguments[0];
-                int length = ((Integer) arguments[1]).intValue();
+            } else if (theMethodName.equals("newInstance") //$NON-NLS-1$
+                    && theTarget == Array.class) {
+                Class<?> componentType = (Class) theArguments[0];
+                int length = ((Integer) theArguments[1]).intValue();
                 result = Array.newInstance(componentType, length);
-            } else if (methodName.equals("new") //$NON-NLS-1$
-                    || methodName.equals("newInstance")) { //$NON-NLS-1$
-                if (target instanceof Class) {
-                    Constructor<?> constructor = findConstructor((Class)target, arguments);
-                    result = constructor.newInstance(arguments);
+            } else if (theMethodName.equals("new") //$NON-NLS-1$
+                    || theMethodName.equals("newInstance")) { //$NON-NLS-1$
+                if (theTarget instanceof Class) {
+                    Constructor<?> constructor = findConstructor((Class)theTarget, theArguments);
+                    result = constructor.newInstance(theArguments);
                 } else {
                     throw new NoSuchMethodException(this.toString());
                 }
-            } else if (target instanceof Class) {
+            } else if (theTarget instanceof Class) {
                 Method method = null;
                 boolean found = false;
                 try {
@@ -142,36 +142,37 @@ public class Statement {
                      * given Class object at first process only if the class
                      * differs from Class itself
                      */
-                    if (target != Class.class) {
-                        method = findMethod((Class) target, methodName, arguments, true);
-                        result = method.invoke(null, arguments);
+                    if (theTarget != Class.class) {
+                        method = findMethod((Class) theTarget, theMethodName, theArguments, true);
+                        result = method.invoke(null, theArguments);
                         found = true;
                     }
                 } catch (NoSuchMethodException e) {
+                    // expected
                 }
                 if (!found) {
                     // static method was not found
                     // try to invoke method of Class object
-                    if (methodName.equals("forName") //$NON-NLS-1$
-                            && arguments.length == 1 && arguments[0] instanceof String) {
+                    if (theMethodName.equals("forName") //$NON-NLS-1$
+                            && theArguments.length == 1 && theArguments[0] instanceof String) {
                         // special handling of Class.forName(String)
                         try {
-                            result = Class.forName((String) arguments[0]);
+                            result = Class.forName((String) theArguments[0]);
                         } catch (ClassNotFoundException e2) {
-                            result = Class.forName((String) arguments[0], true, Thread
+                            result = Class.forName((String) theArguments[0], true, Thread
                                     .currentThread().getContextClassLoader());
                         }
                     } else {
-                        method = findMethod(target.getClass(), methodName, arguments, false);
-                        result = method.invoke(target, arguments);
+                        method = findMethod(theTarget.getClass(), theMethodName, theArguments, false);
+                        result = method.invoke(theTarget, theArguments);
                     }
                 }
-            } else if (target instanceof Iterator){
-            	final Iterator iterator = (Iterator) target;
-				final Method method = findMethod(target.getClass(), methodName,
-						arguments, false);
+            } else if (theTarget instanceof Iterator){
+            	final Iterator<?> iterator = (Iterator) theTarget;
+				final Method method = findMethod(theTarget.getClass(), theMethodName,
+						theArguments, false);
 				if (iterator.hasNext()) {
-					PrivilegedAction action = new PrivilegedAction() {
+					PrivilegedAction<Object> action = new PrivilegedAction<Object>() {
 
 						public Object run() {
 							try {
@@ -187,8 +188,8 @@ public class Statement {
 					result = action.run();
 				}
             } else {
-                Method method = findMethod(target.getClass(), methodName, arguments, false);
-                result = method.invoke(target, arguments);
+                Method method = findMethod(theTarget.getClass(), theMethodName, theArguments, false);
+                result = method.invoke(theTarget, theArguments);
             }
         } catch (InvocationTargetException ite) {
             Throwable t = ite.getCause();
@@ -197,18 +198,18 @@ public class Statement {
         return result;
     }
 
-    private Method findArrayMethod(String methodName, Object[] arguments) throws NoSuchMethodException {
+    private Method findArrayMethod(String theMethodName, Object[] theArguments) throws NoSuchMethodException {
         // the code below reproduces exact RI exception throwing behavior
-        if (!methodName.equals("set") && !methodName.equals("get")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!theMethodName.equals("set") && !theMethodName.equals("get")) { //$NON-NLS-1$ //$NON-NLS-2$
             throw new NoSuchMethodException(Messages.getString("beans.3C")); //$NON-NLS-1$
-        } else if (arguments.length > 0 && arguments[0].getClass() != Integer.class) {
+        } else if (theArguments.length > 0 && theArguments[0].getClass() != Integer.class) {
             throw new ClassCastException(Messages.getString("beans.3D")); //$NON-NLS-1$
-        } else if (methodName.equals("get") && (arguments.length != 1)) { //$NON-NLS-1$
+        } else if (theMethodName.equals("get") && (theArguments.length != 1)) { //$NON-NLS-1$
             throw new ArrayIndexOutOfBoundsException(Messages.getString("beans.3E")); //$NON-NLS-1$
-        } else if (methodName.equals("set") && (arguments.length != 2)) { //$NON-NLS-1$
+        } else if (theMethodName.equals("set") && (theArguments.length != 2)) { //$NON-NLS-1$
             throw new ArrayIndexOutOfBoundsException(Messages.getString("beans.3F")); //$NON-NLS-1$
         }
-        if (methodName.equals("get")) { //$NON-NLS-1$
+        if (theMethodName.equals("get")) { //$NON-NLS-1$
             return Array.class.getMethod("get", new Class[] { Object.class, //$NON-NLS-1$
                     int.class });
         }
@@ -216,8 +217,8 @@ public class Statement {
                 int.class, Object.class });
     }
 
-    private Constructor<?> findConstructor(Class targetClass, Object[] arguments) throws NoSuchMethodException {
-        Class<?>[] argClasses = getClasses(arguments);
+    private Constructor<?> findConstructor(Class<?> targetClass, Object[] theArguments) throws NoSuchMethodException {
+        Class<?>[] argClasses = getClasses(theArguments);
         Constructor<?> result = null;
         Constructor<?>[] constructors = targetClass.getConstructors();
         for (Constructor<?> constructor : constructors) {
@@ -297,7 +298,7 @@ public class Statement {
             int difference = comparator.compare(chosenOne, foundMethodsArr[i]);
             //if 2 methods have same relevance, throw exception
             if(difference == 0){
-                throw new NoSuchMethodException("Cannot decide which method to call: "+methodName);
+                throw new NoSuchMethodException("Cannot decide which method to call: "+methodName); //$NON-NLS-1$
             }
             if(difference > 0){
                 chosenOne = foundMethodsArr[i];

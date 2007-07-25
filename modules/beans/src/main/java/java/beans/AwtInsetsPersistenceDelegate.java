@@ -20,7 +20,9 @@ package java.beans;
 import java.awt.Insets;
 
 class AwtInsetsPersistenceDelegate extends DefaultPersistenceDelegate {
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+    @Override
+	@SuppressWarnings("boxing")
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
 		Insets inset = (Insets) oldInstance;
 		return new Expression(oldInstance, oldInstance.getClass(),
 				Statement.CONSTRUCTOR_NAME, new Object[] { inset.top, inset.left, inset.bottom,

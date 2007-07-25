@@ -66,7 +66,7 @@ public class LinuxFontManager extends FontManager {
      * font files should be installed.
      */
     public File getTempFontFile()throws IOException{
-        File fontFile = File.createTempFile("jFont", ".ttf", new File(System.getProperty("user.home") +"/.fonts")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        File fontFile = File.createTempFile("jFont", ".ttf"); //$NON-NLS-1$ //$NON-NLS-2$
         fontFile.deleteOnExit();
 
         return fontFile;

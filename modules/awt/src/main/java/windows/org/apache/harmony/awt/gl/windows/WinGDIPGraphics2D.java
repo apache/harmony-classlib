@@ -274,31 +274,6 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     public void drawString(String str, float x, float y) {
-//        XXX: GDITextRenderer provide faster text drawing,
-//             but there still conflict between GDI and GDI+ hdc usage.
-//             This problem is to be investigated.
-//        
-//        AffineTransform at = this.getTransform();
-//        AffineTransform fAT = this.getFont().getTransform();
-//        if (((at == null) || at.isIdentity() || 
-//             (at.getType() == AffineTransform.TYPE_TRANSLATION)) 
-//             && (fAT.isIdentity() || (fAT.getType() == AffineTransform.TYPE_TRANSLATION))){
-//
-//            // Set graphics hdc clip
-//            long hOldGDIRgn = 0;
-//            long gi = getGraphicsInfo();
-//
-//            if (clip != null && clip.rect[0] != 0 ){
-//                hOldGDIRgn = WinThemeGraphics.setGdiClip(gi, clip.rect, clip.rect[0]-1);
-//            } else {
-//                WinThemeGraphics.restoreGdiClip(gi, hOldGDIRgn);
-//            }
-//            gtr.drawString(this, str, (float)(x + fAT.getTranslateX()), (float)(y + fAT.getTranslateY()));
-//            
-//            // Restore graphics hdc clip
-//            WinThemeGraphics.restoreGdiClip(gi, hOldGDIRgn);
-//            return;
-//        }    
         jtr.drawString(this, str, x, y);
     }
 

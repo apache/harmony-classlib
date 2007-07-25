@@ -15,20 +15,19 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+#if !defined __FontLibExports_H__
+#define __FontLibExports_H__
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
+#include <jni.h>
 
-public class java_lang_ShortPersistenceDelegate extends PersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        Short value = (Short) oldInstance;
-        return new Expression(oldInstance, Short.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
-    }
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
-    }
+JNIEXPORT void JNICALL getFontFamilyName(char *path, unsigned short **familyName);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif

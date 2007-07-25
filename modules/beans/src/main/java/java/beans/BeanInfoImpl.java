@@ -97,6 +97,7 @@ class BeanInfoImpl implements BeanInfo {
                     addPropertyDescriptorsFromMethods(result, setters,
                             MT_SETTER);
                 } catch (Exception e) {
+                    // empty
                 }
 
                 values = result.values().toArray();
@@ -249,18 +250,13 @@ class BeanInfoImpl implements BeanInfo {
                                 // in event set descriptor pattern
                             }
 
-                            try {
-                                listenerCoreName = Introspector
-                                        .decapitalize(listenerCoreName);
-                                EventSetDescriptor esd = new EventSetDescriptor(
-                                        listenerCoreName, listenerType,
-                                        listenerMethods, addListenerMethod,
-                                        removeListenerMethod, getListenerMethod);
-                                result.put(listenerCoreName, esd);
-                            } catch (IntrospectionException ie) {
-                                System.out.println(Messages.getString(
-                                        "beans.39", listenerCoreName)); //$NON-NLS-1$
-                            }
+                            listenerCoreName = Introspector
+                                    .decapitalize(listenerCoreName);
+                            EventSetDescriptor esd = new EventSetDescriptor(
+                                    listenerCoreName, listenerType,
+                                    listenerMethods, addListenerMethod,
+                                    removeListenerMethod, getListenerMethod);
+                            result.put(listenerCoreName, esd);
 
                         } // if length of parameters list equals to 1
                     } // if no descriptors for given listener name yet
@@ -351,7 +347,7 @@ class BeanInfoImpl implements BeanInfo {
         String result = null;
 
         if (methodName.startsWith("set") //$NON-NLS-1$ 
-                || methodName.startsWith("get")) { //$NON-NLS-2$
+                || methodName.startsWith("get")) {  //$NON-NLS-1$
             result = methodName.substring(3);
             result = Introspector.decapitalize(result);
         } else if (methodName.startsWith("is")) { //$NON-NLS-1$

@@ -20,7 +20,9 @@ package java.beans;
 import java.awt.Container;
 
 class AwtContainerPersistenceDelegate extends AwtComponentPersistenceDelegate {
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+	@SuppressWarnings({ "nls", "boxing" })
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		// Call the initialization of the super type
 		super.initialize(type, oldInstance, newInstance, enc);

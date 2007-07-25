@@ -479,7 +479,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_embedFontNative(JNIEnv *env, jcla
     
     jstring res = 0;
     if (fontAdded && familyName) {
-        int len = wcslen(familyName);
+        int len = wcslen((wchar_t*)familyName);
         res = env->NewString((jchar *)familyName, len);
         delete familyName;
     }

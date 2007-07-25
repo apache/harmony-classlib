@@ -15,20 +15,16 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
+import java.util.Date;
 
-public class java_lang_DoublePersistenceDelegate extends PersistenceDelegate {
+class UtilDatePersistenceDelegate extends DefaultPersistenceDelegate {
     @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        Double value = (Double) oldInstance;
-        return new Expression(oldInstance, Double.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
-    }
-
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    @SuppressWarnings("boxing")
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
+        Date date = (Date) oldInstance;
+        return new Expression(oldInstance, oldInstance.getClass(),
+                Statement.CONSTRUCTOR_NAME, new Object[] { date.getTime() });
     }
 }

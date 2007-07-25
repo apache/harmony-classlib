@@ -20,7 +20,9 @@ import java.awt.ScrollPane;
 
 class AwtScrollPanePersistenceDelegate extends
 		DefaultPersistenceDelegate {
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+	@Override
+    @SuppressWarnings("boxing")
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
 		return new Expression(oldInstance, oldInstance.getClass(),
 				Statement.CONSTRUCTOR_NAME,
 				new Object[] { ((ScrollPane) oldInstance)

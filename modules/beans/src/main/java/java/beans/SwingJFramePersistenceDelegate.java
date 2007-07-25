@@ -22,7 +22,9 @@ import java.awt.Container;
 import javax.swing.JFrame;
 
 class SwingJFramePersistenceDelegate extends DefaultPersistenceDelegate {
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+    @SuppressWarnings("nls")
+    protected void initialize(Class<?> type, Object oldInstance,
             Object newInstance, Encoder enc) {
         // Call the initialization of the super type
         super.initialize(type, oldInstance, newInstance, enc);

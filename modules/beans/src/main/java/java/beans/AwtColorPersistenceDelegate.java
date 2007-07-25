@@ -20,7 +20,9 @@ package java.beans;
 import java.awt.Color;
 
 class AwtColorPersistenceDelegate extends DefaultPersistenceDelegate {
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+    @Override
+	@SuppressWarnings("boxing")
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
 		Color color = (Color) oldInstance;
 		return new Expression(oldInstance, oldInstance.getClass(),
                 Statement.CONSTRUCTOR_NAME, new Object[] { color.getRed(),

@@ -23,12 +23,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Hashtable;
 
 import javax.swing.*;
 
-import org.apache.harmony.beans.*;
 
 /**
  * The <code>Encoder</code>, together with <code>PersistenceDelegate</code>
@@ -65,7 +65,7 @@ public class Encoder {
 
 		public void exceptionThrown(Exception exception) {
 			System.err.println("Exception during encoding:" + exception); //$NON-NLS-1$
-			System.err.println("Continue...");
+			System.err.println("Continue..."); //$NON-NLS-1$
 		}
 
 	}
@@ -109,6 +109,8 @@ public class Encoder {
         delegates.put(JTabbedPane.class, new SwingJTabbedPanePersistenceDelegate());
         delegates.put(DefaultComboBoxModel.class, new SwingDefaultComboBoxModelPersistenceDelegate());
         delegates.put(ToolTipManager.class, new SwingToolTipManagerPersistenceDelegate());
+        
+        delegates.put(Date.class, new UtilDatePersistenceDelegate());
         
 	}
 
@@ -258,7 +260,8 @@ public class Encoder {
 	 */
 	public void setExceptionListener(ExceptionListener listener) {
 		if (listener == null) {
-			listener = defaultExListener;
+			this.listener = defaultExListener;
+            return;
 		}
 		this.listener = listener;
 	}

@@ -20,5 +20,6 @@ package java.beans;
 public class ParameterDescriptor extends FeatureDescriptor {
 
     public ParameterDescriptor() {
+        // do nothing
     }
 }

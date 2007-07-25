@@ -20,12 +20,15 @@ package java.beans;
 import javax.swing.Box;
 
 class SwingBoxPersistenceDelegate extends PersistenceDelegate {
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+	@Override
+    protected Expression instantiate(Object oldInstance, Encoder enc) {
 		return new Expression(oldInstance, oldInstance.getClass(),
-				"createVerticalBox", null);
+				"createVerticalBox", null); //$NON-NLS-1$
 	}
 
-	protected void initialize(Class<?> type, Object oldInstance,
+    @Override
+    @SuppressWarnings({ "nls", "boxing" })
+    protected void initialize(Class<?> type, Object oldInstance,
 			Object newInstance, Encoder enc) {
 		Box box = (Box) oldInstance;
 		Expression getterExp = new Expression(box.getAlignmentX(), box,

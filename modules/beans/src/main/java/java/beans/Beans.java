@@ -52,6 +52,7 @@ public class Beans {
      * Constructs a Beans instance.
      */
     public Beans() {
+        // expected
     }
 
     /**
@@ -218,7 +219,8 @@ public class Beans {
      *            the specified view type.
      * @return a type view of the given bean.
      */
-    public static Object getInstanceOf(Object bean, Class<?> targetType) {
+    public static Object getInstanceOf(Object bean, @SuppressWarnings("unused")
+    Class<?> targetType) {
         return bean;
     }
 
@@ -344,7 +346,7 @@ public class Beans {
         // If we can't get to the applet itself, the codebase and doc base are
         // left as null.
         if (objectUrl == null) {
-            applet.setStub(getAppletStub(applet, getStubAppletContext(applet),
+            applet.setStub(getAppletStub(getStubAppletContext(applet),
                     null, null));
             return;
         }
@@ -360,13 +362,12 @@ public class Beans {
         int docURLlength = urlString.lastIndexOf('/');
         URL docBase = safeURL(urlString.substring(0, docURLlength + 1));
 
-        applet.setStub(getAppletStub(applet, getStubAppletContext(applet),
+        applet.setStub(getAppletStub(getStubAppletContext(applet),
                 codeBase, docBase));
     }
     
     
-    private static AppletStub getAppletStub(final Applet target,
-            final AppletContext context, final URL codeBase, final URL docBase) {
+    private static AppletStub getAppletStub(final AppletContext context, final URL codeBase, final URL docBase) {
 
         return new AppletStub() {
             public boolean isActive() {

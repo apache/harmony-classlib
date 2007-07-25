@@ -15,15 +15,11 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
-import java.beans.Statement;
 import java.lang.reflect.Array;
 
-public class ArrayPersistenceDelegate extends PersistenceDelegate {
+class ArrayPersistenceDelegate extends PersistenceDelegate {
 
     private static PersistenceDelegate pd = null;
 

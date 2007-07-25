@@ -1918,5 +1918,7 @@ public class VetoableChangeSupportTest extends TestCase {
     public void testSerializationForm(){
         ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(VetoableChangeSupport.class);
         assertNotNull(objectStreamClass.getField("source"));
+        assertNotNull(objectStreamClass.getField("children"));
+        assertNotNull(objectStreamClass.getField("vetoableChangeSupportSerializedDataVersion"));
     }
 }

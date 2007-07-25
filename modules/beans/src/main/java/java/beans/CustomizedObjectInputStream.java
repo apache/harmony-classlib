@@ -73,7 +73,7 @@ class CustomizedObjectInputStream extends ObjectInputStream {
             } else if (postfix.equals("S")) { //$NON-NLS-1$
                 componentType = short.class;
             } else if (postfix.equals("V")) { //$NON-NLS-1$
-                componentType = null;
+                // expected, componentType is already null
             } else if (postfix.startsWith("L")) { //$NON-NLS-1$
                 componentType = cls.loadClass(postfix.substring(1, postfix
                         .length() - 1));

@@ -148,7 +148,7 @@ static size_t zeroMemBuffer(LPVOID f, size_t size) {
 static BOOL updateHeader(LPLCMSICCPROFILE Icc) {
   icHeader head;
 
-  Icc -> Read(&head, sizeof(icHeader), 1, Icc -> stream);
+  readMemBuffer(&head, sizeof(icHeader), 1, Icc -> stream);
 
   // Stop processing if data are corrupted
   if (swapBytes32(head.magic) != icMagicNumber) return FALSE;
@@ -295,17 +295,17 @@ void updateMemoryBuffer(LPLCMSICCPROFILE Icc) {
 
   allocMemBuffer(Icc->stream, profileSize);
 
-  Icc->Seek(Icc->stream, 0);
+  seekMemBuffer(Icc->stream, 0);
 
   tmp = swapBytes32((icInt32Number) profileSize);
 
-  Icc->Write(Icc->stream, sizeof(icInt32Number), &tmp);
+  writeMemBuffer(Icc->stream, sizeof(icInt32Number), (LPBYTE) &tmp);
 
   
 
   // Copy the rest of the header from the old buffer
 
-  Icc->Write(Icc->stream, 
+  writeMemBuffer(Icc->stream, 
 
              sizeof(icHeader) - sizeof(icInt32Number), 
 
@@ -317,7 +317,7 @@ void updateMemoryBuffer(LPLCMSICCPROFILE Icc) {
 
   tmp = swapBytes32(getValidTagCount(Icc));
 
-  Icc->Write(Icc->stream, sizeof(icInt32Number), &tmp);
+  writeMemBuffer(Icc->stream, sizeof(icInt32Number), (LPBYTE) &tmp);
 
 
 
@@ -335,7 +335,7 @@ void updateMemoryBuffer(LPLCMSICCPROFILE Icc) {
 
 
 
-      Icc->Write(Icc->stream, sizeof(icTag), &tag);
+      writeMemBuffer(Icc->stream, sizeof(icTag), (LPBYTE) &tag);
 
     }
 
@@ -349,13 +349,13 @@ void updateMemoryBuffer(LPLCMSICCPROFILE Icc) {
 
     if(Icc->TagNames[i]) {
 
-      Icc->Seek(Icc->stream, Icc->TagOffsets[i]);
+      seekMemBuffer(Icc->stream, Icc->TagOffsets[i]);
 
 
 
       if(Icc->TagPtrs[i]) {
 
-        Icc->Write(Icc->stream, Icc->TagSizes[i], Icc->TagPtrs[i]);
+        writeMemBuffer(Icc->stream, Icc->TagSizes[i], Icc->TagPtrs[i]);
 
         free(Icc->TagPtrs[i]);
 
@@ -363,7 +363,7 @@ void updateMemoryBuffer(LPLCMSICCPROFILE Icc) {
 
       } else {
 
-        Icc->Write(Icc->stream, Icc->TagSizes[i], oldBasePtr + oldTagOffsets[i]);
+        writeMemBuffer(Icc->stream, Icc->TagSizes[i], oldBasePtr + oldTagOffsets[i]);
 
       }
 
@@ -468,22 +468,7 @@ LPLCMSICCPROFILE cmmOpenProfile(LPBYTE dataPtr, DWORD dwSize) {
 
   // Get rid of LCMS IO
 
-  Icc->Close(Icc->stream); 
-
-
-
-  Icc->Read = readMemBuffer;
-
-  Icc->Write = writeMemBuffer;
-
-  Icc->Close = closeMemBuffer;
-
-  Icc->Seek = seekMemBuffer;
-
-  Icc->Tell = tellMemBuffer;
-
-
-
+  closeMemBuffer(Icc->stream);
   Icc->stream = openMemBuffer(dataPtr, dwSize);
 
   return Icc;
@@ -555,9 +540,9 @@ BOOL cmmGetProfileElement(
 
   } else {
 
-    hProfile->Seek(hProfile->stream, hProfile->TagOffsets[idx]);
+    seekMemBuffer(hProfile->stream, hProfile->TagOffsets[idx]);
 
-    hProfile->Read(data, 1, *dataSize, hProfile->stream);
+    readMemBuffer(data, 1, *dataSize, hProfile->stream);
 
   }
 
@@ -591,9 +576,9 @@ BOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t size) {
 
   size_t bytesToRead = MIN(size, sizeof(icHeader));
 
-  hProfile->Seek(hProfile->stream, 0);
+  seekMemBuffer(hProfile->stream, 0);
 
-  hProfile->Read(data, 1, bytesToRead, hProfile->stream);
+  readMemBuffer(data, 1, bytesToRead, hProfile->stream);
 
   return TRUE;
 
@@ -603,9 +588,9 @@ BOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t size) {
 
 BOOL cmmSetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data) {
 
-  hProfile->Seek(hProfile->stream, 0);
+  seekMemBuffer(hProfile->stream, 0);
 
-  hProfile->Write(hProfile->stream, sizeof(icHeader), data);
+  writeMemBuffer(hProfile->stream, sizeof(icHeader), data);
 
   
 

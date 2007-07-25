@@ -21,7 +21,8 @@ import java.awt.MenuShortcut;
 
 class AwtMenuShortcutPersistenceDelegate extends PersistenceDelegate {
 
-	@Override
+    @Override
+	@SuppressWarnings("boxing")
 	protected Expression instantiate(Object oldInstance, Encoder enc) {
 		MenuShortcut shortcut = (MenuShortcut) oldInstance;
 		int keyCode = shortcut.getKey();

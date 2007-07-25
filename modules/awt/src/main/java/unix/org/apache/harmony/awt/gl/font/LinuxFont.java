@@ -26,6 +26,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -290,7 +291,7 @@ public class LinuxFont extends FontPeerImpl {
     /**
      * Return Font object if it was successfully embedded in System
      */
-    public static Font embedFont(String absolutePath){
+    public static Font embedFont(String absolutePath) throws IOException {
         return LinuxNativeFont.embedFont(absolutePath);
     }
 

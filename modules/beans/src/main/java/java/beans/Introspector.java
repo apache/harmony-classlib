@@ -83,7 +83,7 @@ public class Introspector extends java.lang.Object {
     // The cache to store Bean Info objects that have been found or created
     private static final int DEFAULT_CAPACITY = 128;
 
-    private static Map<Class, StandardBeanInfo> theCache = Collections.synchronizedMap(new WeakHashMap<Class, StandardBeanInfo>(DEFAULT_CAPACITY));
+    private static Map<Class<?>, StandardBeanInfo> theCache = Collections.synchronizedMap(new WeakHashMap<Class<?>, StandardBeanInfo>(DEFAULT_CAPACITY));
 
     private Introspector() {
         super();
@@ -253,7 +253,7 @@ public class Introspector extends java.lang.Object {
         searchPath = path;
     }
 
-    private static StandardBeanInfo getBeanInfoImpl(Class beanClass, Class stopClass,
+    private static StandardBeanInfo getBeanInfoImpl(Class<?> beanClass, Class<?> stopClass,
             int flags) throws IntrospectionException {
         BeanInfo explicitInfo = null;
         if (flags == USE_ALL_BEANINFO) {
@@ -269,11 +269,11 @@ public class Introspector extends java.lang.Object {
         }
         
         // recursive get beaninfo for super classes
-        Class beanSuperClass = beanClass.getSuperclass();
+        Class<?> beanSuperClass = beanClass.getSuperclass();
         if (beanSuperClass != stopClass) {
             if (beanSuperClass == null)
                 throw new IntrospectionException(
-                        "Stop class is not super class of bean class");
+                        "Stop class is not super class of bean class"); //$NON-NLS-1$
             int superflags = flags == IGNORE_IMMEDIATE_BEANINFO ? USE_ALL_BEANINFO
                     : flags;
             BeanInfo superBeanInfo = getBeanInfoImpl(beanSuperClass, stopClass,
@@ -285,7 +285,7 @@ public class Introspector extends java.lang.Object {
         return beanInfo;
     }
 
-    private static BeanInfo getExplicitBeanInfo(Class beanClass) {
+    private static BeanInfo getExplicitBeanInfo(Class<?> beanClass) {
         BeanInfo theBeanInfo = null;
         String beanInfoClassName = beanClass.getName() + "BeanInfo"; //$NON-NLS-1$
         try{
@@ -297,7 +297,7 @@ public class Introspector extends java.lang.Object {
         int index = beanInfoClassName.lastIndexOf('.');
         String beanInfoName = index>=0? beanInfoClassName.substring(index+1):beanInfoClassName;
         for (int i = 0; i < searchPath.length; i++) {
-            beanInfoClassName = searchPath[i] + "." + beanInfoName;
+            beanInfoClassName = searchPath[i] + "." + beanInfoName; //$NON-NLS-1$
             try{
                 theBeanInfo = loadBeanInfo(beanInfoClassName, beanClass);
                 break;
@@ -322,7 +322,7 @@ public class Introspector extends java.lang.Object {
      *         are problems instantiating the instance
      */
     private static BeanInfo loadBeanInfo(String beanInfoClassName,
-        Class beanClass) throws Exception{
+        Class<?> beanClass) throws Exception{
         try {
             ClassLoader cl = beanClass.getClassLoader();
             if(cl != null){
@@ -342,8 +342,8 @@ public class Introspector extends java.lang.Object {
                 Thread.currentThread().getContextClassLoader()).newInstance();
     }
 
-    private static StandardBeanInfo getBeanInfoImplAndInit(Class beanClass,
-            Class stopClass, int flag) throws IntrospectionException {
+    private static StandardBeanInfo getBeanInfoImplAndInit(Class<?> beanClass,
+            Class<?> stopClass, int flag) throws IntrospectionException {
         StandardBeanInfo standardBeanInfo = getBeanInfoImpl(beanClass,
                 stopClass, flag);
         standardBeanInfo.init();

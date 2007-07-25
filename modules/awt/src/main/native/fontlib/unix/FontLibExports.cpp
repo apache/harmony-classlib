@@ -15,22 +15,15 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+#include "FontLibExports.h"
+#include "Tables.h"
+#include <stdio.h>
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
-
-public class java_lang_CharacterPersistenceDelegate extends PersistenceDelegate {
-
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        return new Expression(oldInstance, oldInstance.toString(),
-                "charAt", new Object[] { new Integer(0) });
-    }
-
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder out) {
-    }
+JNIEXPORT void JNICALL getFontFamilyName(char *path, unsigned short **familyName) {
+    FILE *f = fopen(path, "rb");
+    if (!f)
+        return;
+        
+    parseNameTable(f, familyName, 0, 0);
+    fclose(f);
 }
