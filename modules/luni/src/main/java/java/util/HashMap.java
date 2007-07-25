@@ -240,7 +240,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public HashMap(int capacity) {
         if (capacity >= 0) {
-            capacity = caculateCapacity(capacity);
+            capacity = calculateCapacity(capacity);
             elementCount = 0;
             elementData = newElementArray(capacity);
             loadFactor = 0.75f; // Default load factor of 0.75
@@ -250,7 +250,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
     
-    private static final int caculateCapacity(int x) {
+    private static final int calculateCapacity(int x) {
         if(x >= 1 << 30){
             return 1 << 30;
         }
@@ -282,7 +282,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public HashMap(int capacity, float loadFactor) {
         if (capacity >= 0 && loadFactor > 0) {
-        	capacity = caculateCapacity(capacity);
+            capacity = calculateCapacity(capacity);
             elementCount = 0;
             elementData = newElementArray(capacity == 0 ? 1 : capacity);
             this.loadFactor = loadFactor;
@@ -598,7 +598,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     void rehash(int capacity) {
-        int length = caculateCapacity((capacity == 0 ? 1 : capacity << 1));
+        int length = calculateCapacity((capacity == 0 ? 1 : capacity << 1));
 
         Entry<K, V>[] newData = newElementArray(length);
         for (int i = 0; i < elementData.length; i++) {
