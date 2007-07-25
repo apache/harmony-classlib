@@ -92,6 +92,52 @@ public abstract class Buffer {
 		}
 		this.capacity = this.limit = capacity;
 	}
+	
+	/**
+	 * Answers the array that backs this buffer.
+	 * 
+	 * It wants to allow array-backed buffers to be passed to native code more
+	 * efficiently. Subclasses provide more concrete return values for this
+	 * method.
+	 * 
+	 * Modifications to this buffer's content will cause the returned array's
+	 * content to be modified, and vice versa.
+	 * 
+	 * Invoking the <code>hasArray</code> method before invoking this method
+	 * can guarantee it to be called safely.
+	 * 
+	 * @return The array that backs this buffer
+	 * 
+	 * @throws ReadOnlyBufferException -
+	 *             If this buffer is backed by an array but is read-only
+	 *         UnsupportedOperationException - If this buffer is not backed
+	 *             by an accessible array
+	 * @since 1.6
+	 * 
+	 */
+	public abstract Object array();
+	
+	/**
+	 * Returns the offset within this buffer's backing array of the first
+	 * element of the buffer (optional operation).
+	 * 
+	 * If this buffer is backed by an array then buffer position p corresponds
+	 * to array index p + arrayOffset().
+	 * 
+	 * Invoke the hasArray method before invoking this method in order to ensure
+	 * that this buffer has an accessible backing array.
+	 * 
+	 * @return The offset within this buffer's array of the first element of the
+	 *         buffer
+	 * 
+	 * @throws ReadOnlyBufferException -
+	 *             If this buffer is backed by an array but is read-only
+	 *         UnsupportedOperationException - If this buffer is not backed
+	 *             by an accessible array
+	 * 
+	 * @since 1.6
+	 */
+	public abstract int arrayOffset();
 
 	/**
 	 * Returns the capacity of this buffer.
@@ -137,6 +183,19 @@ public abstract class Buffer {
 		mark = UNSET_MARK;
 		return this;
 	}
+	
+	/**
+	 * Answers if this buffer is backed by an available array.
+	 * 
+	 * If it returns true then the <code>array</code> and
+	 * <code>arrayOffset</code> methods can be called safely.
+	 * 
+	 * @return true if and only if this buffer is backed by an array and is
+	 *         not read-only.
+	 *         
+	 * @since 1.6
+	 */
+	public abstract boolean hasArray();
 
 	/**
 	 * Returns true if there are remaining element(s) in this buffer.
@@ -149,6 +208,15 @@ public abstract class Buffer {
 	public final boolean hasRemaining() {
 		return position < limit;
 	}
+	
+	/**
+	 * Answers if this buffer is direct.
+	 * 
+	 * @return true if and only if this buffer is direct
+	 * 
+	 * @since 1.6
+	 */
+	public abstract boolean isDirect();
 
 	/**
 	 * Returns whether this buffer is readonly or not.
