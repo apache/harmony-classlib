@@ -38,6 +38,6 @@ public interface NameParser {
      *             when the supplied string violates format rules
      * @throws NamingException
      */
-    public Name parse(String s) throws InvalidNameException, NamingException;
+    public Name parse(String s) throws NamingException;
 
 }
