@@ -282,6 +282,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     public HashMap(int capacity, float loadFactor) {
         if (capacity >= 0 && loadFactor > 0) {
+        	capacity = caculateCapacity(capacity);
             elementCount = 0;
             elementData = newElementArray(capacity == 0 ? 1 : capacity);
             this.loadFactor = loadFactor;
