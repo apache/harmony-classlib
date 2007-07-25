@@ -726,14 +726,15 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         assertEquals(11, gc.get(Calendar.MONTH));
         
         // Regression test for HARMONY-4513
-        gc = new GregorianCalendar(1582, Calendar.OCTOBER, 15);
+        gc = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        gc.set(1582, Calendar.OCTOBER, 15, 0, 0, 0);
         assertEquals(1582, gc.get(Calendar.YEAR));
         assertEquals(Calendar.OCTOBER, gc.get(Calendar.MONTH));
         assertEquals(15, gc.get(Calendar.DAY_OF_MONTH));
         assertEquals(0, gc.get(Calendar.HOUR_OF_DAY));
         assertEquals(0, gc.get(Calendar.MINUTE));
         assertEquals(0, gc.get(Calendar.SECOND));
-        gc = new GregorianCalendar(1582, Calendar.OCTOBER, 14);
+        gc.set(1582, Calendar.OCTOBER, 14, 0, 0, 0);
         assertEquals(24, gc.get(Calendar.DAY_OF_MONTH));
     }
 
