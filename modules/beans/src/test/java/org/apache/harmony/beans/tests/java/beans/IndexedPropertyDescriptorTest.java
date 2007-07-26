@@ -771,6 +771,33 @@ public class IndexedPropertyDescriptorTest extends TestCase {
         assertEquals(String[].class, ipd.getPropertyType());
         assertEquals("set" + anotherProp, ipd.getIndexedWriteMethod().getName());
     }
+    
+    public void testIndexedPropertyDescriptorStringClassStringStringStringString_WrongArgumentNumber()
+            throws IntrospectionException {
+        IndexedPropertyDescriptor ipd = new IndexedPropertyDescriptor("a", DummyClass.class, null, "setAI",
+                "getAI", "setAI");
+        assertNotNull(ipd);
+    }
+
+    private class DummyClass {
+        private int[] a;
+
+        public void setAI(int v, int i) {
+            a[i] = v;
+        }
+
+        public void setAI(int[] a) {
+            this.a = a;
+        }
+
+        public int[] getA() {
+            return a;
+        }
+
+        public int getAI(int i) {
+            return a[i];
+        }
+    }
 
     /*
      * Class under test for void IndexedPropertyDescriptor(String, Method,
