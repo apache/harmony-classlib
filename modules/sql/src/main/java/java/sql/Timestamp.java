@@ -73,8 +73,7 @@ public class Timestamp extends Date {
     @SuppressWarnings("deprecation")
     @Deprecated
     public Timestamp(int theYear, int theMonth, int theDate, int theHour,
-            int theMinute, int theSecond, int theNano)
-            throws IllegalArgumentException {
+            int theMinute, int theSecond, int theNano) {
         super(theYear, theMonth, theDate, theHour, theMinute, theSecond);
         if (theNano < 0 || theNano > 999999999) {
             throw new IllegalArgumentException();
@@ -176,7 +175,7 @@ public class Timestamp extends Date {
      *             if the supplied object is not a Timestamp object
      */
     @Override
-    public int compareTo(Date theObject) throws ClassCastException {
+    public int compareTo(Date theObject) {
         return this.compareTo((Timestamp) theObject);
     }
 
@@ -264,7 +263,7 @@ public class Timestamp extends Date {
     /**
      * Sets the nanosecond value for this timestamp
      */
-    public void setNanos(int n) throws IllegalArgumentException {
+    public void setNanos(int n) {
         if ((n < 0) || (n > 999999999)) {
             // sql.0=Value out of range
             throw new IllegalArgumentException(Messages.getString("sql.0")); //$NON-NLS-1$
@@ -377,7 +376,7 @@ public class Timestamp extends Date {
      * @return A timestamp object with time value as defined by the supplied
      *         String
      */
-    public static Timestamp valueOf(String s) throws IllegalArgumentException {
+    public static Timestamp valueOf(String s) {
         if (s == null) {
             // sql.3=Argument cannot be null
             throw new IllegalArgumentException(Messages.getString("sql.3")); //$NON-NLS-1$
