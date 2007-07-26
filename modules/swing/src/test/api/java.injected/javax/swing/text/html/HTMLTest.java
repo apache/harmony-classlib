@@ -20,6 +20,8 @@
  */
 package javax.swing.text.html;
 
+import java.net.URL;
+
 import javax.swing.BasicSwingTestCase;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
@@ -681,6 +683,47 @@ public class HTMLTest extends BasicSwingTestCase {
             assertSame("Static attribute for Tag " + tags[i] + ", index " + i,
                        tags[i],
                        StyleContext.getStaticAttribute(staticKey));
+        }
+    }
+
+    public void testResolveURL() {
+        try {
+            // Regression for HARMONY-4529
+            String base = "jar:file:test.jar!/root/current";
+            String relative = "dir/file";
+            String absolute = "http://host/file";
+            URL baseURL = new URL(base);
+            URL absoluteURL = new URL(absolute);
+            URL resolvedURL = new URL("jar:file:test.jar!/root/dir/file");
+
+            assertEquals(resolvedURL, HTML.resolveURL(relative, base));
+            assertEquals(resolvedURL, HTML.resolveURL(relative, baseURL));
+
+            assertEquals(absoluteURL, HTML.resolveURL(absolute, base));
+            assertEquals(absoluteURL, HTML.resolveURL(absolute, baseURL));
+            assertEquals(absoluteURL, HTML.resolveURL(absoluteURL, base));
+            assertEquals(absoluteURL, HTML.resolveURL(absoluteURL, baseURL));
+
+            assertEquals(absoluteURL, HTML.resolveURL(absolute, (URL) null));
+            assertEquals(absoluteURL, HTML.resolveURL(absolute, (String) null));
+            assertEquals(absoluteURL, HTML.resolveURL(absoluteURL, (URL) null));
+            assertEquals(absoluteURL, HTML.resolveURL(absoluteURL, (String) null));
+
+            assertNull(HTML.resolveURL("", base));
+            assertNull(HTML.resolveURL("", baseURL));
+            assertNull(HTML.resolveURL((URL) null, base));
+            assertNull(HTML.resolveURL((URL) null, baseURL));
+            assertNull(HTML.resolveURL((String) null, base));
+            assertNull(HTML.resolveURL((String) null, baseURL));
+
+            assertNull(HTML.resolveURL("", (URL) null));
+            assertNull(HTML.resolveURL("", (String) null));
+            assertNull(HTML.resolveURL((URL) null, (URL) null));
+            assertNull(HTML.resolveURL((URL) null, (String) null));
+            assertNull(HTML.resolveURL((String) null, (URL) null));
+            assertNull(HTML.resolveURL((String) null, (String) null));
+        } catch (Exception e) {
+            fail("Unexpected exception: " + e);
         }
     }
 }
