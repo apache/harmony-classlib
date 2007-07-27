@@ -873,7 +873,8 @@ public class File implements Serializable, Comparable<File> {
         }
         String result[] = new String[implList.length];
         for (int index = 0; index < implList.length; index++) {
-            result[index] = Util.toString(implList[index]);
+            result[index] = Util.toUTF8String(implList[index]);
+            //result[index] = Util.toString(implList[index]);
         }
         return result;
     }

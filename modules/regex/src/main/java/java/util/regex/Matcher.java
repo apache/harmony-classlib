@@ -15,10 +15,6 @@
  *  limitations under the License.
  */
 
-/**
- * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.22.2.2 $
- */
 package java.util.regex;
 
 import java.util.ArrayList;
@@ -26,11 +22,7 @@ import java.util.ArrayList;
 import org.apache.harmony.regex.internal.nls.Messages;
 
 /**
- * @com.intel.drl.spec_ref
- * 
  * Note: main functionality of this class is hidden into nodes match methods. 
- * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.22.2.2 $
  */
 public final class Matcher implements MatchResult {
 
@@ -295,7 +287,11 @@ public final class Matcher implements MatchResult {
         matchResult.reset();
         matchResult.setMode(Matcher.MODE_FIND);
         matchResult.setStartIndex(startIndex);
-        return start.find(startIndex, string, matchResult);
+        int foundIndex = start.find(startIndex, string, matchResult);
+        if (foundIndex == -1) {
+            matchResult.hitEnd = true;
+        }
+        return foundIndex;
     }
 
 	/**

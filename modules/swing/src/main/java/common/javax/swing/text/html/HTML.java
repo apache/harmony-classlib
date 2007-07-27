@@ -25,8 +25,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -554,14 +552,36 @@ public class HTML {
         if (url == null) {
             return null;
         }
-        return resolveURL(url.toString(), base != null ? base.toString() : null);
+
+        try {
+            return ((base != null) ? new URL(base, url.toString()) : url);
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 
     static URL resolveURL(final String url, final URL base) {
         if (Utilities.isEmptyString(url)) {
             return null;
         }
-        return resolveURL(url, base != null ? base.toString() : null);
+
+        try {
+            return ((base != null) ? new URL(base, url) : new URL(url));
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    static URL resolveURL(final URL url, final String base) {
+        if (url == null) {
+            return null;
+        }
+
+        try {
+            return ((base != null) ? new URL(new URL(base), url.toString()) : url);
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 
     static URL resolveURL(final String url, final String base) {
@@ -569,23 +589,10 @@ public class HTML {
             return null;
         }
 
-        URI uri = null;
-        if (base != null) {
-            try {
-                uri = new URI(base).resolve(url);
-            } catch (URISyntaxException e) { }
-        }
-
-        URL result = null;
         try {
-            if (uri != null) {
-                result = uri.toURL();
-            } else {
-                result = new URL(url);
-            }
-        } catch (final MalformedURLException e) { }
-
-        return result;
+            return ((base != null) ? new URL(new URL(base), url) : new URL(url));
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 }
-
