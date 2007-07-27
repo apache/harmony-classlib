@@ -246,8 +246,10 @@ public class PropertyDescriptor extends FeatureDescriptor {
                 Method[] methods = beanClass.getMethods();
                 for (Method method : methods) {
                     if (method.getName().equals(setterName)) {
-                        writeMethod = method;
-                        break;
+                        if (method.getParameterTypes().length == 1) {
+                            writeMethod = method;
+                            break;
+                        }
                     }
                 }
             }
