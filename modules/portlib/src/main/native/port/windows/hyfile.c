@@ -197,14 +197,17 @@ UDATA VMCALL
 hyfile_findfirst (struct HyPortLibrary *portLibrary, const char *path,
 		  char *resultbuf)
 {
-  WIN32_FIND_DATA lpFindFileData;
+  WIN32_FIND_DATAW lpFindFileDataW;
   char newPath[HyMaxPath];
   HANDLE result;
-
+  wchar_t *pathW;  
+  
   strcpy (newPath, path);
   strcat (newPath, "*");
+  
+  convert_path_to_unicode(portLibrary, newPath, &pathW);
 
-  result = FindFirstFile ((LPCTSTR) newPath, &lpFindFileData);
+  result = FindFirstFileW ((LPCWSTR) pathW, &lpFindFileDataW);
   if (result == INVALID_HANDLE_VALUE)
     {
       I_32 error = GetLastError ();
@@ -212,8 +215,7 @@ hyfile_findfirst (struct HyPortLibrary *portLibrary, const char *path,
 					 findError (error));
       return (UDATA) - 1;
     }
-
-  lstrcpy (resultbuf, lpFindFileData.cFileName);
+  WideCharToMultiByte(CP_UTF8, 0, lpFindFileDataW.cFileName, -1, resultbuf, HyMaxPath, NULL, NULL);  
   return (UDATA) result;
 }
 
@@ -234,16 +236,15 @@ I_32 VMCALL
 hyfile_findnext (struct HyPortLibrary * portLibrary, UDATA findhandle,
 		 char *resultbuf)
 {
-  WIN32_FIND_DATA lpFindFileData;
-  if (!FindNextFile ((HANDLE) findhandle, &lpFindFileData))
+  WIN32_FIND_DATAW lpFindFileDataW;  
+  if (!FindNextFileW ((HANDLE) findhandle, &lpFindFileDataW))
     {
       I_32 error = GetLastError ();
       portLibrary->error_set_last_error (portLibrary, error,
 					 findError (error));
       return -1;
     }
-
-  lstrcpy (resultbuf, lpFindFileData.cFileName);
+  WideCharToMultiByte(CP_UTF8, 0, lpFindFileDataW.cFileName, -1, resultbuf, HyMaxPath, NULL, NULL); 
   return 0;
 }
 
