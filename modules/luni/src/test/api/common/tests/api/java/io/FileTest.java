@@ -2267,6 +2267,31 @@ public class FileTest extends junit.framework.TestCase {
         assertEquals(String.class, objectStreamField.getType());
     }
     
+    //Regression test for HARMONY-4493
+    public void test_list_withUnicodeFileName() throws Exception {
+        File rootDir = new File("P");
+        if (!rootDir.exists()) {
+            rootDir.mkdir();
+            rootDir.deleteOnExit();
+        }
+
+        String dirName = new String("src\u3400");
+        File dir = new File(rootDir, dirName);
+        if (!dir.exists()) {
+            dir.mkdir();
+            dir.deleteOnExit();
+        }
+        boolean exist = false;
+        String[] fileNames = rootDir.list();
+        for (String fileName : fileNames) {
+            if (dirName.equals(fileName)) {
+                exist = true;
+                break;
+            }
+        }
+        assertTrue(exist);
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
