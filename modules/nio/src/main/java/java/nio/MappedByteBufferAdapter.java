@@ -21,7 +21,7 @@ import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.nio.internal.DirectBuffer;
 
 
-class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
+final class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 
     private static final int CHAR_SIZE = 2;
 
@@ -101,10 +101,9 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public byte get() {
-		if (this.position == this.limit) {
-			throw new BufferUnderflowException();
-		}
-		return this.wrapped.get(this.position++);
+		byte result = this.wrapped.get(); 
+		this.position++;
+		return result;
 	}
 
 	public byte get(int index) {
@@ -112,12 +111,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public char getChar() {
-		int newPosition = this.position + CHAR_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferUnderflowException();
-		}
-		char result = this.wrapped.getChar(this.position);
-		this.position = newPosition;
+		char result = this.wrapped.getChar();
+		this.position += CHAR_SIZE;
 		return result;
 	}
 
@@ -126,12 +121,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public double getDouble() {
-		int newPosition = this.position + DOUBLE_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferUnderflowException();
-		}
-		double result = this.wrapped.getDouble(this.position);
-		this.position = newPosition;
+		double result = this.wrapped.getDouble();
+		this.position += DOUBLE_SIZE;
 		return result;
 	}
 
@@ -144,12 +135,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public float getFloat() {
-		int newPosition = this.position + FLOAT_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferUnderflowException();
-		}
-		float result = this.wrapped.getFloat(this.position);
-		this.position = newPosition;
+		float result = this.wrapped.getFloat();
+		this.position += FLOAT_SIZE;
 		return result;
 	}
 
@@ -158,12 +145,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public int getInt() {
-		int newPosition = this.position + INTEGER_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferUnderflowException();
-		}
-		int result = this.wrapped.getInt(this.position);
-		this.position = newPosition;
+		int result = this.wrapped.getInt();
+		this.position += INTEGER_SIZE;
 		return result;
 	}
 
@@ -172,12 +155,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public long getLong() {
-		int newPosition = this.position + LONG_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferUnderflowException();
-		}
-		long result = this.wrapped.getLong(this.position);
-		this.position = newPosition;
+		long result = this.wrapped.getLong();
+		this.position += LONG_SIZE;
 		return result;
 	}
 
@@ -186,12 +165,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public short getShort() {
-		int newPosition = this.position + SHORT_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferUnderflowException();
-		}
-		short result = this.wrapped.getShort(this.position);
-		this.position = newPosition;
+		short result = this.wrapped.getShort();
+		this.position += SHORT_SIZE;
 		return result;
 	}
 
@@ -213,10 +188,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer put(byte b) {
-		if (this.position == this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.put(this.position++, b);
+		this.wrapped.put(b);
+		this.position++;
 		return this;
 	}
 
@@ -233,12 +206,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putChar(char value) {
-		int newPosition = this.position + CHAR_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.putChar(this.position, value);
-		this.position = newPosition;
+		this.wrapped.putChar(value);
+		this.position += CHAR_SIZE;
 		return this;
 	}
 
@@ -248,12 +217,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putDouble(double value) {
-		int newPosition = this.position + DOUBLE_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.putDouble(this.position, value);
-		this.position = newPosition;
+		this.wrapped.putDouble(value);
+		this.position += DOUBLE_SIZE;
 		return this;
 	}
 
@@ -263,12 +228,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putFloat(float value) {
-		int newPosition = this.position + FLOAT_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.putFloat(this.position, value);
-		this.position = newPosition;
+		this.wrapped.putFloat(value);
+		this.position += FLOAT_SIZE;
 		return this;
 	}
 
@@ -283,12 +244,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putInt(int value) {
-		int newPosition = this.position + INTEGER_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.putInt(this.position, value);
-		this.position = newPosition;
+		this.wrapped.putInt(value);
+		this.position += INTEGER_SIZE;
 		return this;
 	}
 
@@ -298,12 +255,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putLong(long value) {
-		int newPosition = this.position + LONG_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.putLong(this.position, value);
-		this.position = newPosition;
+		this.wrapped.putLong(value);
+		this.position += LONG_SIZE;
 		return this;
 	}
 
@@ -313,12 +266,8 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 	}
 
 	public ByteBuffer putShort(short value) {
-		int newPosition = this.position + SHORT_SIZE;
-		if (newPosition > this.limit) {
-			throw new BufferOverflowException();
-		}
-		this.wrapped.putShort(this.position, value);
-		this.position = newPosition;
+		this.wrapped.putShort(value);
+		this.position += SHORT_SIZE;
 		return this;
 	}
 
@@ -359,7 +308,7 @@ class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
 		this.wrapped.free();
 	}
         
-        public int getByteCapacity() {
-            return wrapped.getByteCapacity();
-        }
+    public int getByteCapacity() {
+        return wrapped.getByteCapacity();
+    }
 }
