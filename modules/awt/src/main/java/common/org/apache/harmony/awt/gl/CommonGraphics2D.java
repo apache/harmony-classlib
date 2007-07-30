@@ -664,14 +664,9 @@ public abstract class CommonGraphics2D extends Graphics2D {
         AffineTransform fontTransform = font.getTransform();
         at.concatenate(fontTransform);
 
-        double[] matrix = new double[6];
         if (!at.isIdentity()){
-
-            int atType = at.getType();
-            at.getMatrix(matrix);
-
             // TYPE_TRANSLATION
-            if (atType == AffineTransform.TYPE_TRANSLATION){
+            if (at.getType() == AffineTransform.TYPE_TRANSLATION){
                 jtr.drawString(this, str,
                         (float)(x+fontTransform.getTranslateX()),
                         (float)(y+fontTransform.getTranslateY()));
@@ -681,8 +676,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
             // in Graphics has transforms, we just fill outlines. New textrenderer
             // is to be implemented.
             Shape sh = font.createGlyphVector(this.getFontRenderContext(), str).getOutline(x, y);
-            this.fill(sh);
-
+            fill(sh);
         } else {
             jtr.drawString(this, str, x, y);
         }

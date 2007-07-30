@@ -394,7 +394,6 @@ public class Support_HttpServer {
 				OutputStream os = socket.getOutputStream();
 				if (!proxy) {
 					print(os, "HTTP/1.1 " + 305 + " Use Proxy\r\n");
-					// print(os, "Location: http://intl2000.ott.oti.com\r\n");
 					print(os, "Location: http://localhost:" + (port + 1)
 							+ "/otherTest.html\r\n");
 					print(os, "Content-Length: 9\r\n");
