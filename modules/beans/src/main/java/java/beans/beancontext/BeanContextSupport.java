@@ -103,12 +103,14 @@ public class BeanContextSupport extends BeanContextChildSupport implements
      * A list of registered membership listeners.
      * All access to this object should be synchronized on itself.
      */
-    transient protected ArrayList<BeanContextMembershipListener> bcmListeners;
+    @SuppressWarnings("unchecked")
+    transient protected ArrayList bcmListeners;
 
     /**
      * A map of children - key is child instance, value is <code>BCSChild</code> instance.
      * All access to this object should be synchronized on itself.
      */
+    @SuppressWarnings("unchecked")
     transient protected HashMap children;
 
     transient private boolean serializing;
