@@ -219,7 +219,8 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      * <code>BCSSServiceProvider</code> object. All access to this object
      * should be synchronized on itself.
      */
-    protected transient HashMap<Class, BCSSServiceProvider> services;
+    @SuppressWarnings("unchecked")
+    protected transient HashMap services;
 
     /**
      * The number of serializable service providers currently registered.
@@ -236,10 +237,11 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
      * A list of registered <code>BeanContextServicesListener</code>s. All
      * access to this object should be synchronized on itself.
      */
-    protected transient ArrayList<BeanContextServicesListener> bcsListeners;
+    @SuppressWarnings("unchecked")
+    protected transient ArrayList bcsListeners;
 
     /**
-     * Constructs a standload <code>BeanContextServicesSupport</code>.
+     * Constructs a standard <code>BeanContextServicesSupport</code>.
      */
     public BeanContextServicesSupport() {
         super();
