@@ -297,4 +297,45 @@ public class AbstractListTest extends junit.framework.TestCase {
     }
 
     protected void doneSuite() {}
+    
+    class MockRemoveFailureArrayList<E> extends AbstractList<E> {
+
+		@Override
+		public E get(int location) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int size() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+		public E remove(int idx) {
+    		modCount+=2;
+    		return null;
+    	}
+		
+		public int getModCount(){
+			return modCount;
+		}
+    }
+    
+    //test remove for failure by inconsistency of modCount and expectedModCount 
+    public void test_remove(){
+    	MockRemoveFailureArrayList<String> mrfal = new MockRemoveFailureArrayList<String>();
+    	Iterator<String> imrfal= mrfal.iterator();
+    	imrfal.next();
+    	imrfal.remove();
+    	try{
+    		imrfal.remove();
+    	}
+    	catch(ConcurrentModificationException e){
+    		fail("Excepted to catch IllegalStateException not ConcurrentModificationException");
+    	}
+    	catch(IllegalStateException e){
+    		//Excepted to catch IllegalStateException here
+    	}
+    }
 }

@@ -60,23 +60,25 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements
         }
 
         public void remove() {
-            if (expectedModCount == modCount) {
-                try {
-					AbstractList.this.remove(lastPosition);
-				} catch (IndexOutOfBoundsException e) {
-					throw new IllegalStateException();
-				} finally {
-					if (modCount != expectedModCount) {
-						expectedModCount++;
-					}
-				}
-                if (pos == lastPosition) {
-                    pos--;
-                }
-                lastPosition = -1;
-            } else {
+            if (this.lastPosition == -1) {
+                throw new IllegalStateException();
+            }
+
+            if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
             }
+
+            try {
+                AbstractList.this.remove(lastPosition);
+            } catch (IndexOutOfBoundsException e) {
+                throw new ConcurrentModificationException();
+            }
+            
+            expectedModCount = modCount;
+            if (pos == lastPosition) {
+                pos--;
+            }
+            lastPosition = -1;
         }
     }
 
