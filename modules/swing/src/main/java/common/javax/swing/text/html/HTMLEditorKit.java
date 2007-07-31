@@ -145,10 +145,10 @@ public class HTMLEditorKit extends StyledEditorKit implements Accessible {
                 return new HeadTagView(elem);
             }
 
-            // TODO: uncomment the next line and remove throw
-            // when all tags are supported
-//            return new LabelView(elem);
-            throw new UnsupportedOperationException(Messages.getString("swing.9F") + tag); //$NON-NLS-1$
+
+            // HARMONY-4570
+            // We should not throw exception on uknown tag
+            return new InlineView(elem);
         }
     }
 
