@@ -19,7 +19,7 @@ package java.beans;
 
 import java.beans.Encoder;
 import java.beans.Expression;
-import java.beans.java_lang_ClassPersistenceDelegate;
+import java.beans.ClassPersistenceDelegate;
 
 import junit.framework.TestCase;
 
@@ -28,12 +28,12 @@ import junit.framework.TestCase;
  */
 public class ClassPersistenceDelegateTest extends TestCase {
 
-    private java_lang_ClassPersistenceDelegate pd = null;
+    private ClassPersistenceDelegate pd = null;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        pd = new java_lang_ClassPersistenceDelegate();
+        pd = new ClassPersistenceDelegate();
     }
 
     public void testMutates() {
