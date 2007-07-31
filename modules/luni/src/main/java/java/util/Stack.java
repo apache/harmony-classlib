@@ -39,7 +39,7 @@ public class Stack<E> extends Vector<E> {
 	 * 
 	 * @return true if the stack is empty, false otherwise
 	 */
-	public boolean empty() {
+	public synchronized boolean empty() {
 		return elementCount == 0;
 	}
 
@@ -71,14 +71,14 @@ public class Stack<E> extends Vector<E> {
 	 */
 	@SuppressWarnings("unchecked")
     public synchronized E pop() {
-		try {
-			int index = elementCount - 1;
-			E obj = (E)elementData[index];
-			removeElementAt(index);
-			return obj;
-		} catch (IndexOutOfBoundsException e) {
-			throw new EmptyStackException();
-		}
+		if(elementCount == 0){
+            throw new EmptyStackException();
+        }
+		final int index = --elementCount;
+		final E obj = (E)elementData[index];
+		elementData[index] = null;
+        modCount++;
+		return obj;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Stack<E> extends Vector<E> {
 	 * @see #peek
 	 * @see #pop
 	 */
-	public synchronized E push(E object) {
+	public E push(E object) {
 		addElement(object);
 		return object;
 	}
