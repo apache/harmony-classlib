@@ -104,10 +104,22 @@ public class Stack<E> extends Vector<E> {
 	 * @param o
 	 *            the object to be searched
 	 */
-	public synchronized int search(Object o) {
-		int index = lastIndexOf(o);
-		if (index >= 0)
-			return (elementCount - index);
-		return -1;
+	public synchronized int search(Object object) {
+        final Object[] dumpArray = elementData;
+        final int size = elementCount;
+        if (object != null) {
+            for (int i = size - 1; i >= 0; i--) {
+                if (object.equals(dumpArray[i])) {
+                    return size - i;
+                }
+            }
+        } else {
+            for (int i = size - 1; i >= 0; i--) {
+                if (dumpArray[i] == null) {
+                    return size - i;
+                }
+            }
+        }
+        return -1;
 	}
 }
