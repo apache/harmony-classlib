@@ -59,7 +59,12 @@ public class Sasl {
 
     public static final String STRENGTH = "javax.security.sasl.strength"; //$NON-NLS-1$
 
-    public static final String SERVER_AUTH = "javax.security.sasl.server.authentication"; //$NON-NLS-1$
+    public static final String SERVER_AUTH = "javax.security.sasl.server.authentication"; //$NON-NLS-1$    
+    
+    /**
+     * @since 1.6
+     */
+    public static final String CREDENTIALS = "javax.security.sasl.credentials"; //$NON-NLS-1$
 
     // Default public constructor is overridden
     private Sasl() {
