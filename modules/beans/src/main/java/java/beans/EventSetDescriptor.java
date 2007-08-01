@@ -131,16 +131,14 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             Method[] listenerMethods, Method addListenerMethod,
-            Method removeListenerMethod) throws IntrospectionException {
-
+            Method removeListenerMethod) {
         this(eventSetName, listenerType, listenerMethods, addListenerMethod,
                 removeListenerMethod, null);
     }
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             Method[] listenerMethods, Method addListenerMethod,
-            Method removeListenerMethod, Method getListenerMethod)
-            throws IntrospectionException {
+            Method removeListenerMethod, Method getListenerMethod) {
 
         setName(eventSetName);
         this.listenerType = listenerType;
@@ -167,9 +165,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
 
     public EventSetDescriptor(String eventSetName, Class<?> listenerType,
             MethodDescriptor[] listenerMethodDescriptors,
-            Method addListenerMethod, Method removeListenerMethod)
-            throws IntrospectionException {
-
+            Method addListenerMethod, Method removeListenerMethod) {
         this(eventSetName, listenerType, null, addListenerMethod,
                 removeListenerMethod, null);
 
