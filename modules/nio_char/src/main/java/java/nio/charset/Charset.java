@@ -115,7 +115,8 @@ public abstract class Charset implements Comparable<Charset> {
     private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable = new HashMap<String, CharsetEncoder>();
 
     private CharsetEncoder cachedEncoder = null;
-    private CharsetDecoder cachedDecoder = null; 
+
+    private CharsetDecoder cachedDecoder = null;
 
     static {
         /*
@@ -401,7 +402,7 @@ public abstract class Charset implements Comparable<Charset> {
                                     systemClassLoader);
                             cp = c.newInstance();
                         } catch (SecurityException e) {
-                            throw e;  
+                            throw e;
                         } catch (Exception e) {
                             throw new Error(e.getMessage(), e);
                         }
@@ -449,7 +450,7 @@ public abstract class Charset implements Comparable<Charset> {
                 return cs;
             }
             // Try built-in charsets
-            if(_builtInProvider == null) {
+            if (_builtInProvider == null) {
                 _builtInProvider = new CharsetProviderImpl();
             }
             cs = _builtInProvider.charsetForName(charsetName);
@@ -640,7 +641,7 @@ public abstract class Charset implements Comparable<Charset> {
         if (cachedEncoder == null) {
             cachedEncoder = getCachedCharsetEncoder(canonicalName);
         }
-        
+
         try {
             synchronized (cachedEncoder) {
                 return cachedEncoder.encode(buffer);
@@ -655,8 +656,7 @@ public abstract class Charset implements Comparable<Charset> {
      */
     private CharsetEncoder getCachedCharsetEncoder(String name) {
         synchronized (cachedCharsetEncoderTable) {
-            CharsetEncoder e = cachedCharsetEncoderTable
-                    .get(name);
+            CharsetEncoder e = cachedCharsetEncoderTable.get(name);
             if (null == e) {
                 e = this.newEncoder();
                 e.onMalformedInput(CodingErrorAction.REPLACE);
@@ -713,8 +713,7 @@ public abstract class Charset implements Comparable<Charset> {
      */
     private CharsetDecoder getCachedCharsetDecoder(String name) {
         synchronized (cachedCharsetDecoderTable) {
-            CharsetDecoder d = cachedCharsetDecoderTable
-                    .get(name);
+            CharsetDecoder d = cachedCharsetDecoderTable.get(name);
             if (null == d) {
                 d = this.newDecoder();
                 d.onMalformedInput(CodingErrorAction.REPLACE);
