@@ -42,7 +42,7 @@ public class FontEditor extends Panel implements PropertyEditor {
         if(source== null){
             throw new NullPointerException();
         }
-        this.source = (Font)source;
+        this.source = source;
     }
 
     public FontEditor() {
@@ -73,13 +73,10 @@ public class FontEditor extends Panel implements PropertyEditor {
     }
 
     public void setValue(Object newValue) {
-        if(newValue == null){
-            throw new NullPointerException();
-        }
         Object oldValue = value;
         value = (Font)newValue;
         PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(this,
-                "value", oldValue, value);
+                "value", oldValue, value); //$NON-NLS-1$
         PropertyChangeListener[] copy = new PropertyChangeListener[listeners.size()];
         listeners.toArray(copy);
         for (PropertyChangeListener listener : copy) {
@@ -112,6 +109,7 @@ public class FontEditor extends Panel implements PropertyEditor {
         throw new IllegalArgumentException(text==null?text:value.toString());
     }
     
+    @Override
     public synchronized void removePropertyChangeListener(
             PropertyChangeListener listener) {
         if (listeners != null) {
@@ -119,6 +117,7 @@ public class FontEditor extends Panel implements PropertyEditor {
         }
     }
 
+    @Override
     public synchronized void addPropertyChangeListener(
             PropertyChangeListener listener) {
         listeners.add(listener);

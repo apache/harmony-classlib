@@ -21,7 +21,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Panel;
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
@@ -735,10 +737,39 @@ public class PropertyEditorManagerTest extends TestCase {
         assertNull(e2.getTags());
         assertSame(font, e2.getValue());
         assertTrue(e2.isPaintable());
-        Component c = (Component) e2.getCustomEditor();
+        Component c = e2.getCustomEditor();
         assertSame(c, e2);
+        e2.addPropertyChangeListener(new ExceptionPropertyChangeListener());
+
+        try {
+            e2.setValue(null);
+            fail("Should throw an error");
+        } catch (MockError e) {
+            // expected
+            assertNull(e2.getValue());
+        }
+        
+        try {
+            e2.setValue(new Font("Arial", Font.BOLD, 10));
+            fail("Should throw an error");
+        } catch (MockError e) {
+            // expected
+        }
     }
     
+    @SuppressWarnings("serial")
+    public static class MockError extends Error {
+        public MockError(String msg) {
+            super(msg);
+        }
+    }
+    public static class ExceptionPropertyChangeListener implements PropertyChangeListener {
+
+        public void propertyChange(PropertyChangeEvent event) {
+            throw new MockError("property changed");
+        }
+
+    }
     public void testColorEditor() throws Exception{
         PropertyEditor e2 = PropertyEditorManager.findEditor(Color.class);
         e2.setValue(Color.RED);
@@ -747,6 +778,47 @@ public class PropertyEditorManagerTest extends TestCase {
         assertNotSame(Color.RED, e2.getValue());
         assertEquals(Color.RED, e2.getValue());
         assertTrue(e2.isPaintable());
+        assertTrue(e2 instanceof Panel);
+        assertTrue(e2 instanceof PropertyEditor);
+        assertTrue(e2.supportsCustomEditor());
+        assertSame(e2, e2.getCustomEditor());
+        assertEquals("new java.awt.Color(255,0,0)", e2
+                .getJavaInitializationString());
+        assertNull(e2.getTags());
+
+        ExceptionPropertyChangeListener listener = new ExceptionPropertyChangeListener();
+        e2.addPropertyChangeListener(listener);
+
+        e2.setValue(null);
+        assertEquals(Color.RED.getRed(), ((Color) e2.getValue()).getRed());
+
+        try {
+            e2.setValue(Color.yellow);
+            fail("Should throw an error");
+        } catch (MockError e) {
+            // expected
+        }
+
+        assertEquals("255,255,0", e2.getAsText());
+
+        try {
+            e2.setAsText(null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            e2.setAsText("text");
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        e2.removePropertyChangeListener(listener);
+        e2.setAsText("255,255,255");
+        assertEquals("java.awt.Color[r=255,g=255,b=255]", ((Color) e2
+                .getValue()).toString());
     }
     
     public void testGetSetEditorPath() throws Exception{
