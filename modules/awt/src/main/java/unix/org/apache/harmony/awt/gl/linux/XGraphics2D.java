@@ -32,6 +32,7 @@ import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.Utils;
+import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.LinuxNativeFont;
 import org.apache.harmony.awt.wtk.NativeWindow;
 import org.apache.harmony.awt.nativebridge.Int8Pointer;
@@ -82,7 +83,9 @@ public class XGraphics2D extends CommonGraphics2D {
         blitter = XBlitter.getInstance();
         Rectangle bounds = clip.getBounds();
         dstSurf = new XSurface(this, bounds.width, bounds.height);
-//        jtr = DrawableTextRenderer.inst;
+        if (!FontManager.IS_FONTLIB) {
+            jtr = DrawableTextRenderer.inst;
+        }
 
         //setTransformedClip(clip);
         setClip(clip);
