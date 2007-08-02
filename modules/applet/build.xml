@@ -60,8 +60,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/applet-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.applet.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

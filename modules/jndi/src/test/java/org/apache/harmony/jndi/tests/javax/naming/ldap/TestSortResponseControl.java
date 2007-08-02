@@ -43,7 +43,7 @@ import org.apache.harmony.testframework.serialization.SerializationTest.Serializ
 
 /**        
  * <p>This Test class is testing the SortControl class.</p>
- * <p>In the next tables we are gonna see the methods that we test in this class:</p>
+ * <p>In the next tables we see the methods that we test in this class:</p>
  * <table class="t" cellspacing="0">
 	<tbody><th>Constructors:</th>
 		<tr>
@@ -84,7 +84,7 @@ public class TestSortResponseControl extends TestCase {
 
 
 	/**
-	 * <p>This method is not implemted.</p>
+	 * <p>This method is not implemented.</p>
 	 * @param args Possible parameter to help us initiate all tests.
 	 */
 	public static void main(String[] args) {
@@ -100,7 +100,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception like NullPointer.</p>
   	 */
 	public void testSortResponseControl001() {
@@ -120,7 +120,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception like NullPointer.</p>
   	 */
 	public void testSortResponseControl002() {
@@ -140,7 +140,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception like IOException.</p>
   	 */
 	public void testSortResponseControl003() {
@@ -158,7 +158,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception like IOException.</p>
   	 */
 	public void testSortResponseControl004() {
@@ -176,7 +176,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception like IOException.</p>
   	 */
 	public void testSortResponseControl005() {
@@ -194,7 +194,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an instance of the class.</p>
   	 */
 	public void testSortResponseControl006() {
@@ -212,7 +212,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
 	public void testSortResponseControl007() {
@@ -232,7 +232,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
 	public void testSortResponseControl008() {
@@ -252,7 +252,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
 	public void testSortResponseControl010() {
@@ -270,7 +270,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
 	public void testSortResponseControl011() {
@@ -288,7 +288,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
 	public void testSortResponseControl012() {
@@ -306,7 +306,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
 	public void testSortResponseControl013() {
@@ -323,7 +323,7 @@ public class TestSortResponseControl extends TestCase {
 	}
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an instance of the class.</p>
   	 */
 	public void testSortResponseControl014() {
@@ -341,7 +341,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request.</p>
+	 * <p>Here we are testing the constructor.</p>
 	 * <p>The expected result is an instance of the class.</p>
   	 */
 	public void testSortResponseControl015() {
@@ -359,7 +359,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request. With this test
+	 * <p>Here we are testing the constructor. With this test
 	 * we see that the string Id and the criticality does not matter, olny the BER value.</p>
 	 * <p>The expected result is an instance of the class.</p>
   	 */
@@ -378,7 +378,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request. With this test
+	 * <p>Here we are testing the constructor. With this test
 	 * we see that the string Id and the criticality does not matter, olny the BER value.</p>
 	 * <p>The expected result is an exception.</p>
   	 */
@@ -397,7 +397,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
-	 * <p>Here we are testing if this method constructs a control to indicate the outcome of a sort request. Notice here that 
+	 * <p>Here we are testing the constructor. Notice here that 
 	 * the ber value is not cloned so any change will affect the control.</p>
 	 * <p>The expected result is that a change in the ber value affect the control.</p>
   	 */
@@ -427,7 +427,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.isSorted()'</p>
-	 * <p>Here we are testing if this method determines if the search results have been successfully sorted.</p>
+	 * <p>Here we are testing if the isSorted method returns the correct answer for sorted results.</p>
 	 * <p>The expected result in this case is true.</p>
 	 */
 	public void testIsSorted001() {
@@ -443,7 +443,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.isSorted()'</p>
-	 * <p>Here we are testing if this method determines if the search results have been successfully sorted.</p>
+	 * <p>Here we are testing if the isSorted method returns the correct answer for unsorted results.</p>
 	 * <p>The expected result in this case is false.</p>
 	 */
 	public void testIsSorted002() {
@@ -460,7 +460,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getResultCode()'</p>
-	 * <p>Here we are testing if this method retrieves the LDAP result code of the sort operation.</p>
+	 * <p>Here we are testing if the correct result code is returned.</p>
 	 * <p>The expected result is zero.</p>
 	 */
 	public void testGetResultCode001() {
@@ -476,7 +476,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getResultCode()'</p>
-	 * <p>Here we are testing if this method retrieves the LDAP result code of the sort operation. Here the sort key does not exist
+	 * <p>Here we are testing if the correct result code is returned. Here the sort key does not exist
 	 * so the error must be no such attribute.</p>
 	 * <p>The expected result is 16.</p>
 	 */
@@ -493,7 +493,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getResultCode()'</p>
-	 * <p>Here we are testing if this method retrieves the LDAP result code of the sort operation. Here the sort key does exist
+	 * <p>Here we are testing if the correct result code is returned. Here the sort key does exist
 	 * but the error must be unwillingToPerform.</p>
 	 * <p>The expected result is 53.</p>
 	 */
@@ -510,7 +510,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getResultCode()'</p>
-	 * <p>Here we are testing if this method retrieves the LDAP result code of the sort operation. Here the sort key does exist
+	 * <p>Here we are testing if the correct result code is returned. Here the sort key does exist
 	 * but the error must be unwillingToPerform.</p>
 	 * <p>The expected result is 100.</p>
 	 */
@@ -527,7 +527,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getAttributeID()'</p>
-	 * <p>Here we are testing if this method retrieves the ID of the attribute that caused the sort to fail.</p>
+	 * <p>Here we are testing if this method gets the correct attribute ID.</p>
 	 * <p>The expected result is in this case is null because no ID was returned by the server.</p>
 	 */
 	public void testGetAttributeID001() {
@@ -543,7 +543,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p> 
 	 */
 	public void testGetException001() {
@@ -565,7 +565,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null NoSuchAttributeException.</p>
 	 */
 	public void testGetException002() {
@@ -588,7 +588,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a null exception.</p>
 	 */
 	public void testGetException003() {
@@ -607,7 +607,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException004() {
@@ -630,7 +630,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException005() {
@@ -653,7 +653,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException006() {
@@ -675,7 +675,7 @@ public class TestSortResponseControl extends TestCase {
 	}
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException007() {
@@ -698,7 +698,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException008() {
@@ -721,7 +721,7 @@ public class TestSortResponseControl extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException009() {
@@ -744,7 +744,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException010() {
@@ -767,7 +767,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException011() {
@@ -790,7 +790,7 @@ public class TestSortResponseControl extends TestCase {
 	
 	/**
 	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.getException()'</p>
-	 * <p>Here we are testing if this method retrieves the NamingException appropriate for the result code.</p>
+	 * <p>Here we are testing if this method gets the correct NamingException.</p>
 	 * <p>The expected result is a not null naming exception.</p>
 	 */
 	public void testGetException012() {

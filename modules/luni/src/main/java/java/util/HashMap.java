@@ -535,7 +535,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                 if (++elementCount > threshold) {
                     rehash();
                 }
-                entry = createHashedEntry(key, 0, 0);
+                entry = createHashedEntry(null, 0, 0);
             }
         } else {
             int hash = key.hashCode();

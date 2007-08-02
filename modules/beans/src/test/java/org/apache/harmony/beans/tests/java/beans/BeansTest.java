@@ -39,8 +39,10 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.apache.harmony.beans.tests.support.SampleBean;
+import org.apache.harmony.beans.tests.support.mock.CorruptedSerBean;
 import org.apache.harmony.beans.tests.support.mock.MockAppletInitializer;
 import org.apache.harmony.beans.tests.support.mock.MockJavaBean;
+import org.apache.harmony.beans.tests.support.mock.WrongSerBean;
 
 /**
  * Unit test for java.beans.Beans
@@ -345,7 +347,7 @@ public class BeansTest extends TestCase {
         try {
             Beans.setDesignTime(true);
             assertTrue(Beans.isDesignTime());
-            
+
             Beans.setDesignTime(false);
             assertFalse(Beans.isDesignTime());
         } finally {
@@ -358,16 +360,16 @@ public class BeansTest extends TestCase {
         try {
             Beans.setGuiAvailable(true);
             assertTrue(Beans.isGuiAvailable());
-            
+
             Beans.setGuiAvailable(false);
             assertFalse(Beans.isGuiAvailable());
         } finally {
             Beans.setGuiAvailable(value);
         }
     }
-    
+
     public void testIsGuiAvailableDefault() {
-        assertTrue("GUI is available by default", Beans.isGuiAvailable()); 
+        assertTrue("GUI is available by default", Beans.isGuiAvailable());
     }
 
     /**
@@ -427,42 +429,89 @@ public class BeansTest extends TestCase {
         targetType = null;
         assertFalse(Beans.isInstanceOf(bean, targetType));
     }
-    
-    public void test_instantiate_with_corrupted_serialization_file()
-            throws Exception {
-        final String BEANS_NAME = "TestBean";
 
-        // create a corrupted serialization file with name TestBean.ser
-        File file = new File(BEANS_NAME + ".ser");
-        file.deleteOnExit();
-        FileOutputStream fout = new FileOutputStream(file);
-        fout.close();       
+    public void test_instantiate_with_empty_serialization_file()
+            throws Exception {
+        final String BEANS_NAME = "org/apache/harmony/beans/tests/support/mock/EmptySerBean.ser";
 
         try {
             Beans.instantiate(null, BEANS_NAME);
-            fail("should throw IOException.");
-        } catch (IOException e) {
+            fail("should throw ClassNotFoundException.");
+        } catch (ClassNotFoundException e) {
             // expected
         }
     }
-    
-    //Regression for HARMONY-3777
-    public void test_instantiate_with_applet() throws Exception{
-		Applet applet = (Applet) Beans.instantiate(null, "java.applet.Applet");
-		assertNotNull(applet.getAppletContext());
-		assertTrue(applet.isActive());
-	}
 
-    /**
-     * 
+    // Regression for HARMONY-3777
+    public void test_instantiate_with_applet() throws Exception {
+        Applet applet = (Applet) Beans.instantiate(null, "java.applet.Applet");
+        assertNotNull(applet.getAppletContext());
+        assertTrue(applet.isActive());
+    }
+
+    /*
+     * Test instantiate a bean with corrupted .ser file. First failed to create
+     * an instance by deserialize from a corrupted .ser file, then successfully
+     * load the class and create an instance of it.
      */
+    public void test_instantiate_withCorruptedSer() throws IOException,
+            ClassNotFoundException {
+        Object bean = Beans.instantiate(null,
+                "org.apache.harmony.beans.tests.support.mock.CorruptedSerBean");
+        assertTrue(bean instanceof CorruptedSerBean);
+    }
+
+    /*
+     * Test instantiate a bean with wrong .ser file, which means the definition
+     * of the class changes after .ser file is created. First failed to create
+     * an instance by deserialize from a corrupted .ser file, which will cause a
+     * InvalidClassException, then successfully load the class and create an
+     * instance of it.
+     */
+    public void test_instantiate_withWrongSer() throws IOException,
+            ClassNotFoundException {
+        Object bean = Beans.instantiate(null,
+                "org.apache.harmony.beans.tests.support.mock.WrongSerBean");
+        assertTrue(bean instanceof WrongSerBean);
+    }
+
+    /*
+     * Test instantiate a bean with wrong but not corrupted .ser file First
+     * failed to create an instance by deserialize from a wrong .ser file, which
+     * will cause a ClassNotFoundException.
+     */
+    public void test_instantiate_ClassNotFoundExceptionThrowing()
+            throws IOException {
+        ClassLoader loader = new WrongSerClassLoader();
+        try {
+            Beans
+                    .instantiate(loader,
+                            "org.apache.harmony.beans.tests.support.mock.WrongSerBean2");
+            fail("Should throw a ClassNotFoundException");
+        } catch (ClassNotFoundException ex) {
+            // expected
+        }
+    }
+
+    /*
+     * Test instantiate bean with corrupted .ser file and wrong class name. This
+     * will cause an IOException.
+     */
+    public void test_instantiate_IOExceptionThrowing()
+            throws ClassNotFoundException {
+        ClassLoader loader = new CorruptedSerClassLoader();
+        try {
+            Beans.instantiate(loader, "NotExistBean2");
+            fail("Should throw a IOException");
+        } catch (IOException ex) {
+            // expected
+        }
+    }
+
     public static Test suite() {
         return new TestSuite(BeansTest.class);
     }
 
-    /**
-     * 
-     */
     public static void main(String[] args) {
         TestRunner.run(suite());
     }
@@ -529,4 +578,26 @@ public class BeansTest extends TestCase {
             return getResource(MOCK_JAVA_BEAN2_SFILE);
         }
     }
+
+    /*
+     * A classloader for loading NotExistBean.ser, of which coresponding
+     * NotExistBean.java file is deleted.
+     */
+    private class WrongSerClassLoader extends ClassLoader {
+        @Override
+        protected URL findResource(String name) {
+            return getResource("org/apache/harmony/beans/tests/support/mock/NotExistBean.ser");
+        }
+    }
+
+    /*
+     * A classloader for loading corrupted .ser file.
+     */
+    private class CorruptedSerClassLoader extends ClassLoader {
+        @Override
+        protected URL findResource(String name) {
+            return getResource("org/apache/harmony/beans/tests/support/mock/CorruptedSerBean.ser");
+        }
+    }
+
 }

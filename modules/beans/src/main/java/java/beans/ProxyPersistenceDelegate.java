@@ -17,37 +17,32 @@
 
 package java.beans;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
-/**
- * This is a persistence delegate for the {@link java.lang.reflect.Field} class.
- */
-class java_lang_reflect_FieldPersistenceDelegate extends PersistenceDelegate {
+class ProxyPersistenceDelegate extends DefaultPersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        // should not be null or have a type other than Field
-        assert oldInstance instanceof Field : oldInstance;
-        Field oldField = (Field) oldInstance;
-        Class<?> declClass = oldField.getDeclaringClass();
-        return new Expression(oldField, declClass, "getField", //$NON-NLS-1$
-                new Object[] { oldField.getName() });
+        assert oldInstance instanceof Proxy : oldInstance;
+        Class[] interfaces = oldInstance.getClass().getInterfaces();
+        InvocationHandler handler = Proxy.getInvocationHandler(oldInstance);
+        return new Expression(oldInstance, Proxy.class, "newProxyInstance", //$NON-NLS-1$
+                new Object[] { oldInstance.getClass().getClassLoader(), interfaces, handler });
     }
 
     @Override
     protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
         // check for consistency
-        assert oldInstance instanceof Field : oldInstance;
-        assert newInstance instanceof Field : newInstance;
-        assert newInstance.equals(oldInstance);
+        assert oldInstance instanceof Proxy : oldInstance;
+        assert newInstance instanceof Proxy : newInstance;
+        assert newInstance == oldInstance;
+        super.initialize(type, oldInstance, newInstance, out);
     }
 
     @Override
     protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        assert oldInstance instanceof Field : oldInstance;
-        if (!(newInstance instanceof Field)) {
-            // if null or not a Field
-            return false;
-        }
-        return oldInstance.equals(newInstance);
+        assert oldInstance instanceof Proxy : oldInstance;
+        assert oldInstance == newInstance;
+        return super.mutatesTo(oldInstance, newInstance);
     }
 }

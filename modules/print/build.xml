@@ -69,8 +69,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.print.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="clean-native" if="is.windows">

@@ -17,7 +17,7 @@
 
 package java.beans;
 
-class java_lang_StringPersistenceDelegate extends PersistenceDelegate {
+class StringPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         String value = (String) oldInstance;

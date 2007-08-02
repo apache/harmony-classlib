@@ -60,8 +60,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/sql-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.sql.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

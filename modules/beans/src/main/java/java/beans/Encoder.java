@@ -55,7 +55,7 @@ public class Encoder {
 
 	private static final ArrayPersistenceDelegate arrayPD = new ArrayPersistenceDelegate();
 
-	private static final java_lang_reflect_ProxyPersistenceDelegate proxyPD = new java_lang_reflect_ProxyPersistenceDelegate();
+	private static final ProxyPersistenceDelegate proxyPD = new ProxyPersistenceDelegate();
     
     private static final NullPersistenceDelegate nullPD = new NullPersistenceDelegate();
 
@@ -81,11 +81,11 @@ public class Encoder {
 		delegates.put(Long.class, ppd);
 		delegates.put(Short.class, ppd);
 
-		delegates.put(Class.class, new java_lang_ClassPersistenceDelegate());
-		delegates.put(Field.class, new java_lang_reflect_FieldPersistenceDelegate());
-		delegates.put(Method.class, new java_lang_reflect_MethodPersistenceDelegate());
-		delegates.put(String.class, new java_lang_StringPersistenceDelegate());
-		delegates.put(Proxy.class, new java_lang_reflect_ProxyPersistenceDelegate());
+		delegates.put(Class.class, new ClassPersistenceDelegate());
+		delegates.put(Field.class, new FieldPersistenceDelegate());
+		delegates.put(Method.class, new MethodPersistenceDelegate());
+		delegates.put(String.class, new StringPersistenceDelegate());
+		delegates.put(Proxy.class, new ProxyPersistenceDelegate());
         
         delegates.put(Choice.class, new AwtChoicePersistenceDelegate());
         delegates.put(Color.class, new AwtColorPersistenceDelegate());

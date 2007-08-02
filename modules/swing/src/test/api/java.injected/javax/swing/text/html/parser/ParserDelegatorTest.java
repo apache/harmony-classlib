@@ -30,4 +30,11 @@ public class ParserDelegatorTest extends TestCase {
         new JEditorPane("text/html", "<html><body><table><tr><td>Hello world!" //$NON-NLS-1$//$NON-NLS-2$
                 + "</td></tr></table></body></html>"); //$NON-NLS-1$
     }
+
+    /**
+     * Regression for HARMONY-4570
+     */
+    public void testHarmony4570() {
+        new JEditorPane("text/html", "<html><body><wrong></wrong</body></html>"); //$NON-NLS-1$//$NON-NLS-2$
+    }
 }

@@ -164,8 +164,7 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * Here in this case we are testing to construct an Rdn from the given
-     * attribute set. Here we are testing if we send a null attribute set.
+     * Here in this case we are testing the constructor with a null attribute set.
      * </p>
      * <p>
      * The expected result is a null pointer exception.
@@ -183,8 +182,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * Here in this case we are testing to construct an Rdn from the given
-     * attribute set. Here we are testing if we send an empty attribute set.
+     * Here in this case we are testing the constructor with an empty attribute
+     * set.
      * </p>
      * <p>
      * The expected result is an invalid name exception.
@@ -203,8 +202,7 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * Here in this case we are testing to construct an Rdn from the given
-     * attribute set. Here we are testing if we send a not empty attribute set,
+     * Here in this case we are testing to  the constructor with a non-empty attribute set,
      * but here we are testing if the values are used literally (not parsed) and
      * assumed to be unescaped.
      * </p>
@@ -223,9 +221,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
+     * This is a test for the constructor of the class Rdn, in this
      * case we are testing to construct an Rdn from the given attribute set.
-     * Here we are testing if we send a not empty attribute set, but here we are
+     * Here we are testing with a non-empty attribute set, but here we are
      * testing if the values are used literally (not parsed) and assumed to be
      * unescaped.
      * </p>
@@ -244,9 +242,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given attribute set.
-     * Here we are testing if we send a not empty attribute set but here we are
+     * This is a test method for the constructor of the class Rdn.
+     * Here we are testing with a non-empty attribute set but here we are
      * testing if the values are used literally (not parsed) and assumed to be
      * unescaped.
      * </p>
@@ -265,9 +262,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given attribute set.
-     * Here we are testing if we send a not empty attribute set but here we are
+     * This is a test method for the constructor of the class Rdn.
+     * Here we are testing with a non-empty attribute set but here we are
      * testing if the values are used literally (not parsed) and assumed to be
      * unescaped.
      * </p>
@@ -285,9 +281,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Attributes)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given attribute set.
-     * Here we are testing if we send a not empty attribute set.
+     * This is a test method for the constructor of the class Rdn.
+     * Here we are testing with a non-empty attribute set.
      * </p>
      * <p>
      * The expected result is an exception.
@@ -307,9 +302,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a null String.
+     * This is a test method for the constructor of the class Rdn. Here we
+     * are testing with a null String.
      * </p>
      * <p>
      * The expected result is a null pointer exception.
@@ -327,9 +321,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send an empty String.
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with an empty String.
      * </p>
      * <p>
      * The expected result is an instance of the class.
@@ -344,9 +337,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a non empty String but with no valid format.
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with a non-empty String but with an invalid format.
      * </p>
      * <p>
      * The expected result is invalid name exception.
@@ -371,14 +363,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a non empty String with a valid format, in this
-     * case we use the especial character "+", and we are given here a type with
-     * no value.
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with a non-empty String with a valid format, in this case we use
+     * the special character "+", and we are given here a type with no value.
      * </p>
      * <p>
-     * The expected result is an instance not null of Rdn.
+     * The expected result is a non-null instance of Rdn.
      * </p>
      */
     public void testRdnString006() throws Exception {
@@ -391,11 +381,10 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a non empty String but with valid format, in this
-     * case we use the especial character "=", and we are given here a type with
-     * no value, and type is quoted..
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with a non-empty String but with valid format, in this case we
+     * use the special character "=", and we are given here a type with no
+     * value, and type is quoted..
      * </p>
      * <p>
      * The expected result is an exception like Invalid name exception.
@@ -415,10 +404,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a non empty String but with valid format, in this
-     * case we use the especial character "=".
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with a non-empty String but with valid format, in this case we
+     * use the special character "=".
      * </p>
      * <p>
      * The expected result is an instance of rdn.
@@ -444,12 +432,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a non empty String but with valid format.
+     * This is a test for the constructor of the class Rdn. Here we
+     * are testing with a non-empty String but with valid format.
      * </p>
      * <p>
-     * The expected result is an instance of rdn.
+     * The expected result is an instance of Rdn.
      * </p>
      */
     public void testRdnString016() throws Exception {
@@ -529,12 +516,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String. Here we
-     * are testing if we send a non empty String but with invalid format.
+     * This is a test for the constructor of the class Rdn. Here we
+     * are testing with a non-empty String but with invalid format.
      * </p>
      * <p>
-     * The expected result is an invalid name exception.
+     * The expected result is an InvalidNameException.
      * </p>
      */
     public void testRdnString026() {
@@ -558,12 +544,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Rdn)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given Rdn. Here we are
-     * testing if we send a null Rdn.
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with a null Rdn.
      * </p>
      * <p>
-     * The expected result is a null pointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testRdnRdn001() {
@@ -578,12 +563,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(Rdn)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given Rdn. Here we are
-     * testing if we send a non null Rdn.
+     * This is a test for the constructor of the class Rdn. Here we are
+     * testing with a non-null Rdn.
      * </p>
      * <p>
-     * The expected result is another Rdn with a copy of the given one.
+     * The expected result is a new Rdn, which is a copy of the given one.
      * </p>
      */
     public void testRdnRdn002() throws Exception {
@@ -604,13 +588,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String, Object)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String and Object.
-     * Here we are testing if we send a null String and null object as the
+     * This is a test method for the constructor of the class Rdn.
+     * Here we are testing with a null String and null object as the
      * parameters.
      * </p>
      * <p>
-     * The expected result is a null pointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testRdnStringObject001() throws Exception {
@@ -640,10 +623,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String, Object)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String and Object.
-     * Here we are testing if we send a non null String with a non null object
-     * but the type here has a special character like "+" this must be permited.
+     * This is a test for the constructor of the class Rdn. Here we are testing
+     * with a non-null String and a non-null object but the type here has a
+     * special character like "+", which should be permited.
      * </p>
      * <p>
      * The expected result is an instance not null of Rdn.
@@ -663,13 +645,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String, Object)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String and Object.
-     * Here we are testing if we send a non empty String and this one not ok
-     * with diferents objects.
+     * This is a test for the constructor of the class Rdn. Here we are testing
+     * with a non-empty String and different objects.
      * </p>
      * <p>
-     * The expected result is an instance of the class with the diferents
+     * The expected result is an instance of the class with the different
      * arguments because the arguments are not parsed.
      * </p>
      */
@@ -684,10 +664,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String, Object)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String and Object.
-     * Here we are testing if we send a non empty String and this one not ok
-     * with diferents objects.
+     * This is a test for the constructor of the class Rdn. Here we are testing
+     * with a non-empty String and diferents objects.
      * </p>
      * <p>
      * The expected result is an instance of the class with the diferents
@@ -705,9 +683,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String, Object)'
      * </p>
      * <p>
-     * This is the test method for the constructor of the class Rdn, in this
-     * case we are testing to construct an Rdn from the given String and Object.
-     * Here we are testing if we send a non empty String and a non empty object.
+     * This is a test for the constructor of the class Rdn. Here we are testing
+     * with a non-empty String and a non-empty object.
      * </p>
      * <p>
      * The expected result is an instance of the class because the arguments are
@@ -726,13 +703,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.hashCode()'
      * </p>
      * <p>
-     * Here we are testing if this method returns the hash code of this RDN, in
-     * this case we are testing if the hashcode returned by this method is the
-     * correct one, the only hash that we know something is of the Rdn empty,
-     * this hash has to be zero.
+     * Here we are testing if the hashcode returned by this method is the
+     * correct one. The hashcode for an empty Rdn should be zero.
      * </p>
      * <p>
-     * The expected result is the hashcode of the rdn.
+     * The expected result is the hashcode of the Rdn.
      * </p>
      */
     public void testHashCode001() throws Exception {
@@ -769,8 +744,7 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares the specified Object with
-     * this Rdn for equality. In this case we are sending a null object.
+     * Here we are testing the equals method with a null object.
      * </p>
      * <p>
      * The expected result is false.
@@ -813,30 +787,29 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares the specified Object with
-     * this Rdn for equality. In this case we are sending equals rdns.
+     * Here we are testing the equals method with equal Rdns.
      * </p>
      * <p>
-     * The expected result is exception here.
+     * The expected result is an exception.
      * </p>
      */
     public void testEquals017() throws Exception {
         try {
             new Rdn("t", new char[] { 'a', 'v' }).equals(new Rdn("t",
                     new char[] { 'a', 'v' }));
-            fail("Should raise an exception.");
+            fail("Should throw an exception.");
         } catch (ClassCastException e) {}
 
         try {
             new Rdn("t", new int[] { 00 })
                     .equals(new Rdn("t", new int[] { 00 }));
-            fail("Should raise an exception.");
+            fail("Should throw an exception.");
         } catch (ClassCastException e) {}
 
         try {
             new Rdn("t", new BasicControl("t")).equals(new Rdn("t",
                     new BasicControl("t")));
-            fail("Should raise an exception.");
+            fail("Should throw an exception.");
         } catch (ClassCastException e) {}
     }
 
@@ -864,12 +837,12 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty.
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
-     * create the rdn.
+     * The expected result is an non-empty string an equal to the one used to
+     * create the Rdn.
      * </p>
      */
     public void testToString002() throws Exception {
@@ -884,14 +857,14 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn contains multi-values so the string must be a concatenation of the
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty. The Rdn in this test contains
+     * multiple values so the string returned must be a concatenation of the
      * strings.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
-     * create the rdn.
+     * The expected result is an non-empty string an equal to the one used by to
+     * create the Rdn.
      * </p>
      */
     public void testToString003() throws Exception {
@@ -905,15 +878,15 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toString()'
      * </p>
      * <p>
-     * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn contains multi-values and quoted values so the string must be a
-     * concatenation of strings and values quoted must in ascii.
+     * Here we are testing if this method returns the correct string of a Rdn
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty. The Rdn in this test contains
+     * multiple values so the string returned must be a concatenation of the
+     * strings and values quoted must be in Ascii.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
-     * create the rdn.
+     * The expected result is an non-empty string an equal to the one used by to
+     * create the Rdn.
      * </p>
      */
     public void testToString004() throws Exception {
@@ -927,13 +900,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toString()'
      * </p>
      * <p>
-     * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn contains quoted values so the string must be must in ascii.
+     * Here we are testing if this method returns the correct string of a Rdn
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty. Here the Rdn contains quoted
+     * values so the string returned must be in Ascii.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
+     * The expected result is an non-empty string an equal to the one used by to
      * create the rdn.
      * </p>
      */
@@ -949,14 +922,13 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn contains quoted values so the string must be must in ascii also
-     * contains two special characters but like character so they must be in the
-     * string.
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty. Here the rdn contains quoted
+     * values so the string must be in ascii. It also contains two special
+     * characters that must be in the string returned.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
+     * The expected result is an non-empty string an equal to the one used by to
      * create the rdn.
      * </p>
      */
@@ -972,9 +944,9 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn is created with an object that contains an array of primitives.
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty. Here the rdn is created with an
+     * object that contains an array of primitives.
      * </p>
      * <p>
      * The expected result is the string with the object parsed.
@@ -992,9 +964,9 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn is created with an object that contains an array of primitives.
+     * that we create, notice here that Rdn created by us is non-empty so the
+     * string returned must be also non-empty. Here the rdn is created with an
+     * object that contains an array of primitives.
      * </p>
      * <p>
      * The expected result is an exception.
@@ -1005,7 +977,7 @@ public class RdnTest extends TestCase {
         Rdn rdn = new Rdn("t", t);
         try {
             rdn.toString();
-            fail("Should raise an exception.");
+            fail("Should throw an exception.");
         } catch (ClassCastException e) {}
     }
 
@@ -1015,14 +987,14 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn contains multi-values and quoted values so the string must be a
-     * concatenation of strings and values quoted must in ascii.
+     * that we create, notice here that the Rdn created by us is non-empty so
+     * the string returned must be also non-empty. Here the Rdn contains
+     * multiple values and quoted values so the string must be a concatenation
+     * of the strings and quoted values must be in ascii.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
-     * create the rdn.
+     * The expected result is an non-empty string equal to the one used to
+     * create the Rdn.
      * </p>
      */
     public void testToString009() throws Exception {
@@ -1037,14 +1009,14 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * Here we are testing if this method give us the correct string of a Rdn
-     * that we create, notice here that Rdn created by us is not empty so the
-     * string returned must be also not empty. Here is the paricularity that the
-     * rdn contains multi-values and quoted values so the string must be a
-     * concatenation of strings and values quoted must in ascii.
+     * that we create, notice here that the Rdn created by us is non-empty so
+     * the string returned must be also non-empty. Here the Rdn contains
+     * multiple values and quoted values so the string must be a concatenation
+     * of the strings and quoted values must be in ascii.
      * </p>
      * <p>
-     * The expected result is an non empty string an eqaul to the one used by to
-     * create the rdn.
+     * The expected result is an non-empty string equal to the one used to
+     * create the Rdn.
      * </p>
      */
     public void testToString010() throws Exception {
@@ -1064,8 +1036,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getValue()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves one of this Rdn's value. In
-     * this case should raise an exception because the rdn is empty.
+     * Here we are testing if this method returns one of the Rdn's values. In
+     * this case it should throw an exception because the Rdn is empty.
      * </p>
      * <p>
      * The expected result is an exception.
@@ -1075,7 +1047,7 @@ public class RdnTest extends TestCase {
         Rdn rdn = new Rdn("");
         try {
             rdn.getValue();
-            fail("Should raise an exception.");
+            fail("Should throw an exception.");
         } catch (IndexOutOfBoundsException e) {}
     }
 
@@ -1084,8 +1056,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getValue()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves one of this Rdn's value. In
-     * this case if returns an object not null when a not empty name is created.
+     * Here we are testing if this method returns one of the Rdn's values. In this
+     * case it should return an Object that is not null when a non-empty name is
+     * used.
      * </p>
      */
     public void testGetValue002() throws Exception {
@@ -1110,8 +1083,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getValue()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves one of this Rdn's value. In
-     * this case if returns an object not null when a not empty name is created.
+     * Here we are testing if this method returns one of the Rdn's values. In this
+     * case it should return an Object that is not null when a non-empty name is
+     * used.
      * </p>
      */
     public void testGetValue014() throws Exception {
@@ -1128,11 +1102,11 @@ public class RdnTest extends TestCase {
 
     /**
      * <p>
-     * Test method for 'javax.naming.ldap.Rdn.getValue()'
+     * Test method for 'javax.naming.ldap.Rdn.getType()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves one of this Rdn's value. In
-     * this case should raise an exception because the rdn is empty.
+     * Here we are testing if this method returns one of the Rdn's types. In
+     * this case it should throw an exception because the Rdn is empty.
      * </p>
      * <p>
      * The expected result is an exception.
@@ -1151,12 +1125,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getType()'
      * </p>
      * <p>
-     * Here we are testing if the method retrieves one of this Rdn's type. In
-     * this case the Rdn is created not empty so the result must be not null and
-     * not empty.
+     * Here we are testing if this method returns one of the Rdn's types. In this
+     * case the Rdn is non-empty so the result must not be null and must be
+     * non-empty.
      * </p>
      * <p>
-     * The expected result is a not null and not empty String.
+     * The expected result is a non-null and non-empty String.
      * </p>
      */
     public void testGetType002() throws Exception {
@@ -1169,12 +1143,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getType()'
      * </p>
      * <p>
-     * Here we are testing if the method retrieves one of this Rdn's type. In
-     * this case the Rdn is created not empty so the result must be not null and
-     * not empty, also here we include a multivalue name.
+     * Here we are testing if this method returns one of the Rdn's types. In
+     * this case the Rdn is non-empty so the result must be non-null and
+     * non-empty, also here we test with a multivalue name.
      * </p>
      * <p>
-     * The expected result is a not null and not empty String.
+     * The expected result is a non-null and non-empty String.
      * </p>
      */
     public void testGetType003() throws Exception {
@@ -1187,12 +1161,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getType()'
      * </p>
      * <p>
-     * Here we are testing if the method retrieves one of this Rdn's type. In
-     * this case the Rdn is created not empty so the result must be not null and
-     * not empty, also here we include a multivalue name.
+     * Here we are testing if the method returns one of the Rdn's types. In
+     * this case the Rdn is created non-empty so the result must be non-null and
+     * non-empty, also here we test with a multivalue name.
      * </p>
      * <p>
-     * The expected result is a not null and not empty String.
+     * The expected result is a non-null and non-empty String.
      * </p>
      */
     public void testGetType004() throws Exception {
@@ -1205,12 +1179,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.getType()'
      * </p>
      * <p>
-     * Here we are testing if the method retrieves one of this Rdn's type. In
-     * this case the Rdn is created not empty so the result must be not null and
-     * not empty, also here we include a multivalue name.
+     * Here we are testing if the method returns one of the Rdn's types. In
+     * this case the Rdn is created non-empty so the result must be non-null and
+     * non-empty, also here we test with a multivalue name.
      * </p>
      * <p>
-     * The expected result is a not null and not empty String.
+     * The expected result is a non-null and not empty String.
      * </p>
      */
     public void testGetType005() throws Exception {
@@ -1223,11 +1197,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing two empty Rdn.
+     * Here we are testing if this method correctly compares an Rdn with
+     * another object. In this case we are comparing two empty Rdns.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo001() throws Exception {
@@ -1241,9 +1215,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing two Rdn one of them is
-     * empty in this case the second one.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing two Rdns, the second of which is
+     * empty.
      * </p>
      * <p>
      * The expected result is a positive number.
@@ -1260,9 +1234,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing two Rdn one of them is
-     * empty in this case the first one.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing two Rdns, the first of which is
+     * empty.
      * </p>
      * <p>
      * The expected result is a negative number.
@@ -1279,9 +1253,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing two Rdn one of them is
-     * null in this case the second one.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing two Rdns, the second of which is
+     * null.
      * </p>
      * <p>
      * The expected result is a ClassCastException.
@@ -1299,9 +1273,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing two Rdn one of them has
-     * two values, the other one has two values but one is empty.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing two Rdns, one of which has two
+     * values, and the other of which also has two values, one that is empty.
      * </p>
      * <p>
      * The expected result is a positive number.
@@ -1318,9 +1292,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing two Rdn one of them has
-     * two values, the other one has two values but one is empty.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing two Rdns, one of which has
+     * two values, the other of which also has two values, one that is empty.
      * </p>
      * <p>
      * The expected result is a negative number.
@@ -1337,9 +1311,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing with an object that is
-     * not an instance of Rdn.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing with an object that is not an
+     * instance of Rdn.
      * </p>
      * <p>
      * The expected result is a ClassCastException.
@@ -1357,9 +1331,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order. In this case we are comparing with an Rdn that is Upper
-     * case.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object. In this case we are comparing with an Rdn that is upper case.
      * </p>
      * <p>
      * The expected result is a 0.
@@ -1376,11 +1349,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object.
      * </p>
      * <p>
-     * The expected result is a 0.
+     * The expected result is 0.
      * </p>
      */
     public void testCompareTo009() throws Exception {
@@ -1394,11 +1367,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object.
      * </p>
      * <p>
-     * The expected result is a 0.
+     * The expected result is 0.
      * </p>
      */
     public void testCompareTo010() throws Exception {
@@ -1412,11 +1385,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this Rdn with the specified
-     * Object for order.
+     * Here we are testing if this method correctly compares an Rdn with another
+     * object.
      * </p>
      * <p>
-     * The expected result is a 0.
+     * The expected result is 0.
      * </p>
      */
     public void testCompareTo011() throws Exception {
@@ -1471,12 +1444,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the next
-     * form: "t=\\4C\\4c", notice that here the values are quoted.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with the string
+     * "t=\\4C\\4c", notice that here the values are quoted.
      * </p>
      * <p>
-     * The expected result is the map of the Rdn."
+     * The expected result is the map of the Rdn.
      * </p>
      */
     public void testToAttributes001() throws Exception {
@@ -1493,9 +1466,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the next
-     * form: "", notice that here the name is empty.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with the string
+     * "", notice that here the name is empty.
      * </p>
      * <p>
      * The expected result is the map of the Rdn not null but empty.
@@ -1513,9 +1486,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the next
-     * form: "t=hola", notice that here the values are not quoted.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with the string
+     * "t=hola", notice that here the values are not quoted.
      * </p>
      * <p>
      * The expected result is the map of the Rdn."
@@ -1535,9 +1508,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the next
-     * form: "t=", notice that here the values are not quoted.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with the string
+     * "t=", notice that here the values are not quoted.
      * </p>
      * <p>
      * The expected result is the map of the Rdn."
@@ -1557,9 +1530,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the next
-     * form: "t=test+a=test2+b=test3", notice that here the values are not
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with the string
+     * "t=test+a=test2+b=test3", notice that here the values are not
      * quoted.
      * </p>
      * <p>
@@ -1580,9 +1553,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the
-     * multivalue form.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with multiple
+     * values.
      * </p>
      * <p>
      * The expected result is the map of the Rdn.
@@ -1602,9 +1575,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the
-     * multivalue form.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with multiple
+     * values.
      * </p>
      * <p>
      * The expected result is the map of the Rdn.
@@ -1624,9 +1597,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the
-     * multivalue form.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with multiple
+     * values.
      * </p>
      * <p>
      * The expected result is the map of the Rdn.
@@ -1646,9 +1619,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the
-     * multivalue form.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with multiple
+     * values.
      * </p>
      * <p>
      * The expected result is the map of the Rdn.
@@ -1668,9 +1641,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.toAttributes()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the Attributes view of the
-     * type/value mappings contained in given Rdn wich is sended in the
-     * multivalue form.
+     * Here we are testing if this method correctly returns the Rdn's contents
+     * as an Attributes map. For this test the Rdn is created with multiple
+     * values.
      * </p>
      * <p>
      * The expected result is the map of the Rdn.
@@ -1690,11 +1663,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.size()'
      * </p>
      * <p>
-     * Here we are testing if the return of this method is the correct size of
-     * the given Rdn wich has one names.
+     * Here we are testing if this method returns the correct size of
+     * the given Rdn, which has one entry.
      * </p>
      * <p>
-     * The expected result is an integer with the value of one.
+     * The expected result is 1.
      * </p>
      */
     public void testSize001() throws Exception {
@@ -1707,11 +1680,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.size()'
      * </p>
      * <p>
-     * Here we are testing if the return of this method is the correct size of
+     * Here we are testing if this method returns the correct size of
      * the given empty Rdn.
      * </p>
      * <p>
-     * The expected result is an integer with the value of zero.
+     * The expected result is 0.
      * </p>
      */
     public void testSize002() throws Exception {
@@ -1724,11 +1697,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.size()'
      * </p>
      * <p>
-     * Here we are testing if the return of this method is the correct size of
-     * the given Rdn wich has three names.
+     * Here we are testing if this method returns the correct size of
+     * the given Rdn, which has three entries.
      * </p>
      * <p>
-     * The expected result is an integer with the value of three.
+     * The expected result is 3.
      * </p>
      */
     public void testSize003() throws Exception {
@@ -1741,11 +1714,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.size()'
      * </p>
      * <p>
-     * Here we are testing if the return of this method is the correct size of
-     * the given Rdn wich has three names.
+     * Here we are testing if this method returns the correct size of
+     * the given Rdn, which has three entries.
      * </p>
      * <p>
-     * The expected result is an integer with the value of three.
+     * The expected result is 3.
      * </p>
      */
     public void testSize004() throws Exception {
@@ -1758,13 +1731,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value could be
-     * like this "this, that" here the special character is ",".
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is "this, that" here
+     * the special character is ",".
      * </p>
      * <p>
-     * The expected result is like this "this\, that".
+     * The expected result is "this\, that".
      * </p>
      */
     public void testEscapeValue001() throws Exception {
@@ -1776,13 +1749,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value could be
-     * like this "this "that"", here the special character is """.
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is "this "that"",
+     * here the special character is """.
      * </p>
      * <p>
-     * The expected result is like this "this \"that\"".
+     * The expected result is "this \"that\"".
      * </p>
      */
     public void testEscapeValue002() {
@@ -1794,13 +1767,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value could be
-     * like this "this+that", here the special character is "+".
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is "this+that", here
+     * the special character is "+".
      * </p>
      * <p>
-     * The expected result is like this "this+that".
+     * The expected result is "this+that".
      * </p>
      */
     public void testEscapeValue003() {
@@ -1812,13 +1785,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value could be
-     * like this "this;that", here the special character is ";".
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is "this;that", here
+     * the special character is ";".
      * </p>
      * <p>
-     * The expected result is like this "this\;that".
+     * The expected result is "this\;that".
      * </p>
      */
     public void testEscapeValue004() {
@@ -1830,13 +1803,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value could be
-     * like this "this&lt;that", here the special character is "&lt;".
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is "this&lt;that",
+     * here the special character is "&lt;".
      * </p>
      * <p>
-     * The expected result is like this "this&lt;that".
+     * The expected result is "this&lt;that".
      * </p>
      */
     public void testEscapeValue005() {
@@ -1848,13 +1821,13 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value could be
-     * like this "this&gt;that", here the special character is "&gt;".
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is "this&gt;that",
+     * here the special character is "&gt;".
      * </p>
      * <p>
-     * The expected result is like this "this&gt;that".
+     * The expected result is "this&gt;that".
      * </p>
      */
     public void testEscapeValue006() {
@@ -1866,13 +1839,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value in this case
-     * is null.
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is null.
      * </p>
      * <p>
-     * The expected result is a null pointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testEscapeValue007() {
@@ -1887,13 +1859,12 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value in this case
-     * is not a string but a diferent object.
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is not a String.
      * </p>
      * <p>
-     * The expected result is a class cast exception.
+     * The expected result is a ClassCastException.
      * </p>
      */
     public void testEscapeValue008() {
@@ -1909,10 +1880,9 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.escapeValue(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method given the value of an attribute,
-     * returns a string escaped. In this case the method must be static so there
-     * is no need to create a previously instance of Rdn, the value in this case
-     * is a byte array.
+     * Here we are testing if this method returns a correctly escaped string for
+     * the given attribute value. In this case the method is static so there is
+     * no need to create an instance of Rdn. The test value is a byte array.
      * </p>
      * <p>
      * The expected result is the escape value for that array.
@@ -1928,8 +1898,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "," in the form "this\,that".
      * </p>
      * <p>
@@ -1945,8 +1915,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "+" in the form "this\+that".
      * </p>
      * <p>
@@ -1962,8 +1932,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * ";" in the form "this\;that".
      * </p>
      * <p>
@@ -1979,8 +1949,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "&lt;" in the form "this\&lt;that".
      * </p>
      * <p>
@@ -1996,8 +1966,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "&gt;" in the form "this\&gt;that".
      * </p>
      * <p>
@@ -2013,8 +1983,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "\" in the form "this\that".
      * </p>
      * <p>
@@ -2033,8 +2003,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "\" in the form "this\4C".
      * </p>
      * <p>
@@ -2050,11 +2020,11 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing if send a null.
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing with null.
      * </p>
      * <p>
-     * The expected result is a null pointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testUnescapeValue008() {
@@ -2071,8 +2041,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "#" in the form "#04".
      * </p>
      * <p>
@@ -2089,8 +2059,8 @@ public class RdnTest extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.unescapeValue(String)'
      * </p>
      * <p>
-     * Here we are testing if a given attribute value string formated, returns
-     * the unformated value. In this case we are testing the special character
+     * Here we are testing if his method returns a correctly unformatted string for
+     * the given attribute value. In this case we are testing the special character
      * "#" in the form "#GOFJMOII".
      * </p>
      * <p>

@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 /**
  * Persistence delegate for {@link java.lang.reflect.Method} class.
  */
-class java_lang_reflect_MethodPersistenceDelegate extends PersistenceDelegate {
+class MethodPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         // should not be null or have a type other than Method

@@ -299,9 +299,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive a
-     * non-null String, this string must be a valid string like
-     * SN=Lu\C4\8Di\C4\87.
+     * Here we are testing the constructor, this method should accept a non-null
+     * String, which must be a valid string like SN=Lu\C4\8Di\C4\87.
      * </p>
      * <p>
      * The expected result is an instance of LdapName.
@@ -319,7 +318,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive a
+     * Here we are testing the constructor, this method should accept a
      * non-null String, and the DNs must be case insensitive.
      * </p>
      * <p>
@@ -338,8 +337,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive a
-     * blank String.
+     * Here we are testing the constructor, this method should accept an
+     * empty String.
      * </p>
      * <p>
      * The expected result an empty name, not null, empty.
@@ -355,8 +354,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
-     * String with correct format like "a=b", In this case we are gonna test the
+     * Here we are testing the constructor, this method should accept a String
+     * with the correct format like "a=b", In this case we are testing the
      * special characters "<" and ">".
      * </p>
      * <p>
@@ -381,8 +380,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
-     * String with no correct format like "test".
+     * Here we are testing the constructor, this method should not accept a
+     * String with an incorrect format like "test".
      * </p>
      * <p>
      * The expected result is an InvalidNameException.
@@ -416,8 +415,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
-     * String with no correct format like "test".
+     * Here we are testing the constructor, this method should not accept a
+     * String with an incorrect format like "test".
      * </p>
      * <p>
      * The expected result is an InvalidNameException.
@@ -475,8 +474,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
-     * String with no correct format like "test".
+     * Here we are testing the constructor, this method should not accept a
+     * String with an incorrect format like "test".
      * </p>
      * <p>
      * The expected result is an InvalidNameException.
@@ -511,7 +510,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
+     * Here we are testing the constructor, this method should accept a
      * String notice here that here that we are testing the the special
      * character "<".
      * </p>
@@ -556,7 +555,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
+     * Here we are testing the constructor, this method should accept a
      * String notice here that here that we are testing the the special
      * character "\".
      * </p>
@@ -591,7 +590,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
+     * Here we are testing the constructor, this method should accept a
      * String notice here that here that we are testing the the special
      * character "+".
      * </p>
@@ -629,9 +628,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName(String)'
      * </p>
      * <p>
-     * Here we are testing the constructor method, this method should recive
-     * String notice here that here that we are testing if nothing is sended
-     * between ','.
+     * Here we are testing the constructor with a String containing two
+     * consecutive commas.
      * </p>
      * <p>
      * The expected result is an exception.
@@ -654,7 +652,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing the constructor method of LdapName reciving a list of
+     * Here we are testing the constructor of LdapName with a list of
      * valid names.
      * </p>
      * <p>
@@ -678,11 +676,10 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing the constructor method of LdapName reciving a null
-     * list.
+     * Here we are testing the constructor of LdapName with null.
      * </p>
      * <p>
-     * The expected result is an exception of the type NullPointerException.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testLdapNameListOfRdn002() {
@@ -699,8 +696,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing the constructor method of LdapName reciving a
-     * non-null list but empty one.
+     * Here we are testing the constructor of LdapName with a non-null but empty
+     * list.
      * </p>
      * <p>
      * The expected result is an instance of LdapName.
@@ -716,12 +713,12 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing the constructor method of LdapName reciving a list of
-     * valid names.
+     * Here we are testing the constructor of LdapName with a list of valid
+     * names.
      * </p>
      * <p>
-     * The expected result is an instance of an object of LdapName, and also
-     * that the indexing is made like the other way around.
+     * The expected result is an instance of LdapName, with the indexing
+     * correct.
      * </p>
      */
     public void testLdapNameListOfRdn004() throws Exception {
@@ -749,8 +746,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.LdapName(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing the constructor method of LdapName reciving a
-     * non-null list but here the list contains Rdns invalids.
+     * Here we are testing the constructor of LdapName with a
+     * non-null list containing invalid Rdns.
      * </p>
      * <p>
      * The expected result is an instance of LdapName.
@@ -810,8 +807,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.hashCode()'
      * </p>
      * <p>
-     * Here we are testing the computed hash code of a blank String and the RDN
-     * in the LdapName. The String is a valid imput.
+     * Here we are testing the hash code of an empty String and the RDN in the
+     * LdapName. The String is a valid input.
      * </p>
      * <p>
      * The expected result is zero.
@@ -826,8 +823,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.hashCode()'
      * </p>
      * <p>
-     * Here we are testing the computed hash code of a list of RDN and the
-     * hashcode of all LdapName. The list is a valid imput.
+     * Here we are testing the hash code of a list of RDNs and the
+     * hashcode of all LdapName. The list is a valid input.
      * </p>
      * <p>
      * The expected result is an assertion between the hashcode of the all RDNs
@@ -849,8 +846,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.hashCode()'
      * </p>
      * <p>
-     * Here we are testing the computed hash code of a list of RDN and the
-     * hashcode of all LdapName. The list is valid imput.
+     * Here we are testing the hash code of an LdapName created with a list of
+     * RDNs. The list is valid input.
      * </p>
      * <p>
      * The expected result is an assertion between the hashcode of the all RDNs
@@ -873,8 +870,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.hashCode()'
      * </p>
      * <p>
-     * Here we are testing the computed hash code of a non blank String and the
-     * RDN in the LdapName. The String is a valid imput.
+     * Here we are testing the hash code of a non-empty String and the
+     * RDN in the LdapName. The String is a valid input.
      * </p>
      * <p>
      * The expected result is the equals hash of two objects.
@@ -893,12 +890,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.equals(Object)'
      * </p>
      * <p>
-     * Here we are testing that two LDAP names are equal. If obj as a parameter
-     * is a LdapName Object, the expected result is the comparison between the
-     * two ldapnames.
+     * Here we are testing the equals method for two LdapNames that are not
+     * equal.
      * </p>
      * <p>
-     * The expected result is a false, the name are not eqaul.
+     * The expected result is false.
      * </p>
      */
     public void testEquals003() throws Exception {
@@ -911,8 +907,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.equals(Object)'
      * </p>
      * <p>
-     * Here we are testing that two LDAP names are equal. If obj as a parameter
-     * is a LdapName Object and the same,true is returned.
+     * Here we are testing the equals method for two equal LdapNames.
      * </p>
      * <p>
      * The expected result is true.
@@ -947,7 +942,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.clone()'
      * </p>
      * <p>
-     * Here we are testing if this method generates a new copy of this name.
+     * Here we are testing if this method correctly clones this LdapName.
      * </p>
      * <p>
      * The expected result in this case is if a change in primary object no
@@ -966,7 +961,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.clone()'
      * </p>
      * <p>
-     * Here we are testing if this method generates a new copy of this name.
+     * Here we are testing if this method correctly clones this LdapName.
      * </p>
      * <p>
      * The expected result in this case is if a change in the clone object no
@@ -985,7 +980,7 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.clone()'
      * </p>
      * <p>
-     * Here we are testing if this method generates a new copy of this name.
+     * Here we are testing if this method correctly clones this LdapName.
      * </p>
      * <p>
      * The expected result in this case is if clone of an empty object is equal
@@ -1003,8 +998,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.toString()'
      * </p>
      * <p>
-     * Here we are testing if the method returns a string representation of this
-     * LDAP name in a format defined by RFC 2253.
+     * Here we are testing if the method returns the correct string for an
+     * LdapName according to RFC 2253.
      * </p>
      * <p>
      * The expected results is a representation of this LDAP as we created it.
@@ -1020,8 +1015,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.toString()'
      * </p>
      * <p>
-     * Here we are testing if the method returns a string representation of this
-     * LDAP name in a format defined by RFC 2253.
+     * Here we are testing if the method returns the correct string for an
+     * LdapName according to RFC 2253.
      * </p>
      * <p>
      * The expected results is a representation of this LDAP as we created it,
@@ -1051,11 +1046,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.toString()'
      * </p>
      * <p>
-     * Here we are testing if the method returns a string representation of this
-     * LDAP name in a format defined by RFC 2253.
+     * Here we are testing if the method returns the correct string for an
+     * LdapName according to RFC 2253.
      * </p>
      * <p>
-     * The expected results is that the name returns a blank.
+     * The expected results is that the name returns an empty string.
      * </p>
      */
     public void testToString003() throws Exception {
@@ -1068,12 +1063,12 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.toString()'
      * </p>
      * <p>
-     * Here we are testing if the method returns a string representation of this
-     * LDAP name in a format defined by RFC 2253.
+     * Here we are testing if the method returns the correct string for an
+     * LdapName according to RFC 2253.
      * </p>
      * <p>
-     * The expected results is that the name returns the string just like it
-     * recived.
+     * The expected result is that the name returns the string exactly as given
+     * in the constructor.
      * </p>
      */
     public void testToString004() throws Exception {
@@ -1086,12 +1081,12 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.toString()'
      * </p>
      * <p>
-     * Here we are testing if the method returns a string representation of this
-     * LDAP name in a format defined by RFC 2253.
+     * Here we are testing if the method returns the correct string for an
+     * LdapName according to RFC 2253.
      * </p>
      * <p>
-     * The expected results is that the name returns the string just like it
-     * recived.
+     * The expected results is that the name returns the string exactly as given
+     * in the constructor.
      * </p>
      */
     public void testToString005() throws Exception {
@@ -1104,8 +1099,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.size()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the number of components in
-     * this LDAP name.
+     * Here we are testing if this method correctly returns the size of an
+     * LdapName.
      * </p>
      * <p>
      * The expected result is zero because the name is empty.
@@ -1121,8 +1116,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.size()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the number of components in
-     * this LDAP name.
+     * Here we are testing if this method correctly returns the size of an
+     * LdapName.
      * </p>
      * <p>
      * The expected result is the correct number of Rdns.
@@ -1139,8 +1134,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.size()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the number of components in
-     * this LDAP name.
+     * Here we are testing if this method correctly returns the size of an
+     * LdapName.
      * </p>
      * <p>
      * The expected result is the correct number of Rdns. In this case we are
@@ -1158,8 +1153,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.isEmpty()'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name is
-     * empty.
+     * Here we are testing if this method returns true when an LdapName is empty
+     * and false when it is not.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1174,8 +1169,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.isEmpty()'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name is
-     * empty.
+     * Here we are testing if this method returns true when an LdapName is empty
+     * and false when it is not. 
      * </p>
      * <p>
      * The expected result is a true.
@@ -1192,8 +1187,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.isEmpty()'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name is
-     * empty.
+     * Here we are testing if this method returns true when an LdapName is empty
+     * and false when it is not.
      * </p>
      * <p>
      * The expected result is a true.
@@ -1209,8 +1204,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getAll()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the components of this name
-     * as an enumeration of strings.
+     * Here we are testing if this method correctly returns all the RDNs that
+     * make up this LdapName as Strings.
      * </p>
      * <p>
      * The expected result is if an empty name returns a non-null enumeration.
@@ -1227,8 +1222,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getAll()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the components of this name
-     * as an enumeration of strings.
+     * Here we are testing if this method correctly returns all the RDNs that
+     * make up this LdapName as Strings.
      * </p>
      * <p>
      * The expected result is if a non empty name returns a non-null
@@ -1246,8 +1241,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getAll()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the components of this name
-     * as an enumeration of strings.
+     * Here we are testing if this method correctly returns all the RDNs that
+     * make up this LdapName as Strings.
      * </p>
      * <p>
      * The expected result is if a non empty name returns a non-null
@@ -1276,8 +1271,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is if the returned string by this method is the
@@ -1295,8 +1290,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is an index out of bounds exception.
@@ -1316,8 +1311,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index
      * </p>
      * <p>
      * The expected result is an index out of bounds exception.
@@ -1337,8 +1332,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is an index out of bounds exception.
@@ -1358,8 +1353,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is in this case the non null strings of the name that
@@ -1380,8 +1375,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is an exception like indexoutofbounds.
@@ -1411,8 +1406,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.get(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves a component of this LDAP
-     * name as a string, notice that the index must be in the range [0,size()).
+     * Here we are testing if this method correctly returns the part of the
+     * LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is if the returned string by this method is the
@@ -1434,8 +1429,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves an RDN of this LDAP name as
-     * an Rdn.
+     * Here we are testing if this method correctly returns the RDN contained in
+     * the LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is a non null Rdn.
@@ -1453,8 +1448,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves an RDN of this LDAP name as
-     * an Rdn.
+     * Here we are testing if this method correctly returns the RDN contained in
+     * the LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is an exception like IndexOutOfBounds.
@@ -1475,8 +1470,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves an RDN of this LDAP name as
-     * an Rdn.
+     * Here we are testing if this method correctly returns the RDN contained in
+     * the LdapName that is at the specified index.
      * </p>
      * <p>
      * The expected result is an exception like IndexOutOfBounds.
@@ -1497,11 +1492,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves an RDN of this LDAP name as
-     * an Rdn.
+     * Here we are testing if this method correctly returns the RDN contained in
+     * the LdapName that is at the specified index.
      * </p>
      * <p>
-     * The expected result is an exception like IndexOutOfBounds.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testGetRdn004() throws Exception {
@@ -1517,11 +1512,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdn(int)'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves an RDN of this LDAP name as
-     * an Rdn.
+     * Here we are testing if this method correctly returns the RDN contained in
+     * the LdapName that is at the specified index.
      * </p>
      * <p>
-     * The expected result is the rdn in the correct order.
+     * The expected result is the component RDNs returned in the correct order.
      * </p>
      */
     public void testGetRdn005() throws Exception {
@@ -1536,8 +1531,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getPrefix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a prefix of the components of this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * prefix of this LdapName.
      * </p>
      * <p>
      * The expected result is in the position zero an empty name and in the
@@ -1555,8 +1550,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getPrefix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a prefix of the components of this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * prefix of this LdapName.
      * </p>
      * <p>
      * The expected result is an IndexOutOfBaundsException if the range is not
@@ -1578,8 +1573,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getPrefix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a prefix of the components of this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * prefix of this LdapName.
      * </p>
      * <p>
      * The expected result is an IndexOutOfBaundsException if the range is not
@@ -1600,11 +1595,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getPrefix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a prefix of the components of this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * prefix of this LdapName.
      * </p>
      * <p>
-     * The expected result is if the method recives a correct index like the
+     * The expected result is if the method accepts a correct index like the
      * size(), the expected result is the complete prefix name.
      * </p>
      */
@@ -1619,11 +1614,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getPrefix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a prefix of the components of this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * prefix of this LdapName.
      * </p>
      * <p>
-     * The expected result is if the method recives a correct index like the
+     * The expected result is if the method accepts a correct index like the
      * size(), the expected result is the complete prefix name, in this case
      * blank.
      * </p>
@@ -1639,8 +1634,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is a not null name.
@@ -1658,8 +1653,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is a not null name but empty.
@@ -1676,8 +1671,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is the suffix with the correct index.
@@ -1694,8 +1689,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is an exception like IndexOutOfBounds.
@@ -1715,8 +1710,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is an exception like IndexOutOfBounds.
@@ -1736,8 +1731,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is the complete suffix with the correct index.
@@ -1754,8 +1749,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is the suffix with the correct index.
@@ -1772,8 +1767,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getSuffix(int)'
      * </p>
      * <p>
-     * Here we are testing if this method creates a name whose components
-     * consist of a suffix of the components in this LDAP name.
+     * Here we are testing if this method correctly returns a Name that is a
+     * suffix of this LdapName.
      * </p>
      * <p>
      * The expected result is a not null name but empty.
@@ -1791,8 +1786,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1810,8 +1805,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a true.
@@ -1829,8 +1824,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1848,8 +1843,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1867,8 +1862,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1885,8 +1880,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1903,8 +1898,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name
-     * starts with a specified LDAP name prefix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given prefix.
      * </p>
      * <p>
      * The expected result is a false.
@@ -1921,8 +1916,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a prefix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is false.
@@ -1938,8 +1933,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a prefix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is true.
@@ -1957,8 +1952,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a prefix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is true.
@@ -1974,8 +1969,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a prefix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is false.
@@ -1992,8 +1987,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a prefix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is true.
@@ -2009,8 +2004,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.startsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a prefix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * starts with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is true.
@@ -2032,8 +2027,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a false.
@@ -2051,8 +2046,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a true.
@@ -2070,8 +2065,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a true.
@@ -2089,8 +2084,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a true.
@@ -2107,8 +2102,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a true.
@@ -2125,8 +2120,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a false.
@@ -2143,8 +2138,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether this LDAP name ends
-     * with a specified LDAP name suffix.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given name.
      * </p>
      * <p>
      * The expected result is a false.
@@ -2163,8 +2158,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a suffix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is if a null list of Rdns is sended, is a false.
@@ -2180,8 +2175,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a suffix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is if a non null list of Rdns is sended, is a true.
@@ -2198,8 +2193,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a suffix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is if a non null list of Rdns is sended, is a true.
@@ -2215,8 +2210,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a suffix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is if a non null list of Rdns is sended, is a false.
@@ -2233,8 +2228,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a suffix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is if a non null list of Rdns is sended, is a true.
@@ -2250,8 +2245,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.endsWith(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method determines whether the specified RDN
-     * sequence forms a suffix of this LDAP name.
+     * Here we are testing if this method correctly returns true if an LdapName
+     * ends with the given list of RDNs.
      * </p>
      * <p>
      * The expected result is if a non null list of Rdns is sended, is a true.
@@ -2289,8 +2284,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the components of a name -- in
-     * order -- to the end of this name.
+     * Here we are testing if this method correctly appends the components of a
+     * name to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is if a null name is sended to add an
@@ -2311,8 +2306,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the components of a name -- in
-     * order -- to the end of this name.
+     * Here we are testing if this method correctly appends the components of a
+     * name to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is if a non null name is sended to add, it must be in
@@ -2330,8 +2325,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the components of a name -- in
-     * order -- to the end of this name.
+     * Here we are testing if this method correctly appends the components of a
+     * name to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is if a non null name is sended to add, it must be in
@@ -2349,8 +2344,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the components of a name -- in
-     * order -- to the end of this name.
+     * Here we are testing if this method correctly appends the components of a
+     * name to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is if a non null name is sended to add, it must be in
@@ -2368,8 +2363,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the components of a name -- in
-     * order -- to the end of this name.
+     * Here we are testing if this method correctly appends the components of a
+     * name to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is if a non null name is sended to add, it must be in
@@ -2387,8 +2382,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(Name)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the components of a name -- in
-     * order -- to the end of this name.
+     * Here we are testing if this method correctly appends the components of a
+     * name to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is if a non null name is sended to add, it must be in
@@ -2406,8 +2401,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * to the end of this name.
+     * Here we are testing if this method correctly appends the Rdns in the
+     * given List to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is NullPointerException.
@@ -2427,8 +2422,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * to the end of this name.
+     * Here we are testing if this method correctly appends the Rdns in the
+     * given List to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is the adding in the especified order.
@@ -2446,8 +2441,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * to the end of this name.
+     * Here we are testing if this method correctly appends the Rdns in the
+     * given List to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is the adding in the especified order.
@@ -2465,8 +2460,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * to the end of this name.
+     * Here we are testing if this method correctly appends the Rdns in the
+     * given List to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is the adding in the especified order.
@@ -2485,8 +2480,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * to the end of this name.
+     * Here we are testing if this method correctly appends the Rdns in the
+     * given List to the end of this LdapName.
      * </p>
      * <p>
      * The expected result is the adding in the especified order.
@@ -2506,8 +2501,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, Name)'
      * </p>
      * <p>
-     * Here we are testing if the method adds the components of a name -- in
-     * order -- at a specified position within this name.
+     * Here we are testing if this method correctly adds the components of the
+     * given Name to an LdapName at the given index.
      * <p>
      * The expected result is an IndexOutOfBounds Exception.
      * </p>
@@ -2525,8 +2520,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, Name)'
      * </p>
      * <p>
-     * Here we are testing if the method adds the components of a name -- in
-     * order -- at a specified position within this name.
+     * Here we are testing if this method correctly adds the components of the
+     * given Name to an LdapName at the given index.
      * <p>
      * The expected result is an IndexOutOfBounds Exception.
      * </p>
@@ -2544,8 +2539,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, Name)'
      * </p>
      * <p>
-     * Here we are testing if the method adds the components of a name -- in
-     * order -- at a specified position within this name.
+     * Here we are testing if this method correctly adds the components of the
+     * given Name to an LdapName at the given index.
      * <p>
      * The expected result is the adding of the name in the especified order.
      * </p>
@@ -2561,8 +2556,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, Name)'
      * </p>
      * <p>
-     * Here we are testing if the method adds the components of a name -- in
-     * order -- at a specified position within this name.
+     * Here we are testing if this method correctly adds the components of the
+     * given Name to an LdapName at the given index.
      * <p>
      * The expected result is an NullPointer Exception.
      * </p>
@@ -2581,10 +2576,10 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, Name)'
      * </p>
      * <p>
-     * Here we are testing if the method adds the components of a name -- in
-     * order -- at a specified position within this name.
+     * Here we are testing if this method correctly adds the components of the
+     * given Name to an LdapName at the given index.
      * <p>
-     * The expected result is the adding of the name in the especified order.
+     * The expected result is the adding of the name in the specified order.
      * </p>
      */
     public void testAddAllIntName005() throws Exception {
@@ -2598,8 +2593,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * at a specified position within this name.
+     * Here we are testing if this method correctly adds the Rdns to an LdapName
+     * at the given index.
      * </p>
      * <p>
      * The expected result is a NullPointerException.
@@ -2619,11 +2614,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * at a specified position within this name.
+     * Here we are testing if this method correctly adds the Rdns to an LdapName
+     * at the given index.
      * </p>
      * <p>
-     * The expected result is an IndexOutOfBounds Exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testAddAllIntListOfRdn002() throws Exception {
@@ -2642,8 +2637,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * at a specified position within this name.
+     * Here we are testing if this method correctly adds the Rdns to an LdapName
+     * at the given index.
      * </p>
      * <p>
      * The expected result is an IndexOutOfBounds Exception.
@@ -2666,11 +2661,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * at a specified position within this name.
+     * Here we are testing if this method correctly adds the Rdns to an LdapName
+     * at the given index.
      * </p>
      * <p>
-     * The expected result is the adding of the list in the correct order.
+     * The expected result is the Rdns added in the correct order.
      * </p>
      */
     public void testAddAllIntListOfRdn004() throws Exception {
@@ -2685,11 +2680,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * at a specified position within this name.
+     * Here we are testing if this method correctly adds the Rdns to an LdapName
+     * at the given index.
      * </p>
      * <p>
-     * The expected result is the adding of the list in the correct order.
+     * The expected result is the Rdns added in the correct order.
      * </p>
      */
     public void testAddAllIntListOfRdn005() throws Exception {
@@ -2705,11 +2700,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.addAll(int, List<Rdn>)'
      * </p>
      * <p>
-     * Here we are testing if this method adds the RDNs of a name -- in order --
-     * at a specified position within this name.
+     * Here we are testing if this method correctly adds the Rdns to an LdapName
+     * at the given index.
      * </p>
      * <p>
-     * The expected result is the adding of the list in the correct order.
+     * The expected result is the Rdns added in the correct order.
      * </p>
      */
     public void testAddAllIntListOfRdn006() throws Exception {
@@ -2724,11 +2719,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is null pointer exception.
+     * The expected result is NullPointerException.
      * </p>
      */
     public void testAddString001() throws Exception {
@@ -2744,11 +2739,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding of the single component.
+     * The expected result is the name added to the end of the LdapName.
      * </p>
      */
     public void testAddString002() throws Exception {
@@ -2762,11 +2757,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding of the single component.
+     * The expected result is the name added to the end of the LdapName.
      * </p>
      */
     public void testAddString003() throws Exception {
@@ -2781,11 +2776,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding of the single component.
+     * The expected result is the name added to the end of the LdapName.
      * </p>
      */
     public void testAddString004() throws Exception {
@@ -2799,11 +2794,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding of the single component.
+     * The expected result is the name added to the end of the LdapName.
      * </p>
      */
     public void testAddString005() throws Exception {
@@ -2818,11 +2813,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding of the single component.
+     * The expected result is the name added to the end of the LdapName.
      * </p>
      */
     public void testAddString006() throws Exception {
@@ -2837,11 +2832,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component to the end of
-     * this LDAP name.
+     * Here we are testing if this method correctly appends a name to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding of the single component.
+     * The expected result is the name added to the end of the LdapName.
      * </p>
      */
     public void testAddString007() throws Exception {
@@ -2858,11 +2853,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN to the end of this
-     * LDAP name.
+     * Here we are testing if this method correctly appends an RDN to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddRdn001() throws Exception {
@@ -2876,11 +2871,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN to the end of this
-     * LDAP name.
+     * Here we are testing if this method correctly appends an RDN to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddRdn002() throws Exception {
@@ -2894,11 +2889,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN to the end of this
-     * LDAP name.
+     * Here we are testing if this method correctly appends an RDN to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is a nullpointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testAddRdn003() throws Exception {
@@ -2915,11 +2910,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN to the end of this
-     * LDAP name.
+     * Here we are testing if this method correctly appends an RDN to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddRdn004() throws Exception {
@@ -2934,11 +2929,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN to the end of this
-     * LDAP name.
+     * Here we are testing if this method correctly appends an RDN to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddRdn005() throws Exception {
@@ -2953,11 +2948,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN to the end of this
-     * LDAP name.
+     * Here we are testing if this method correctly appends an RDN to the end of
+     * an LdapName.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddRdn006() throws Exception {
@@ -2972,11 +2967,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is an index out boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testAddIntString001() throws Exception {
@@ -2992,11 +2987,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is an index out boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testAddIntString002() throws Exception {
@@ -3012,11 +3007,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is a null pointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testAddIntString003() throws Exception {
@@ -3033,11 +3028,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the name being inserted in the correct position.
      * </p>
      */
     public void testAddIntString004() throws Exception {
@@ -3052,11 +3047,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the name being inserted in the correct position.
      * </p>
      */
     public void testAddIntString005() throws Exception {
@@ -3070,11 +3065,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the name being inserted in the correct position.
      * </p>
      */
     public void testAddIntString006() throws Exception {
@@ -3089,11 +3084,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the name being inserted in the correct position.
      * </p>
      */
     public void testAddIntString007() throws Exception {
@@ -3108,11 +3103,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, String)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single component at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds a name to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the name being inserted in the correct position.
      * </p>
      */
     public void testAddIntString008() throws Exception {
@@ -3127,11 +3122,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is an index out boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testAddIntRdn001() throws Exception {
@@ -3149,11 +3144,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is an index out boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testAddIntRdn002() throws Exception {
@@ -3170,11 +3165,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is a null pointer exception.
+     * The expected result is a NullPointerException.
      * </p>
      */
     public void testAddIntRdn003() throws Exception {
@@ -3191,11 +3186,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddIntRdn004() throws Exception {
@@ -3210,11 +3205,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddIntRdn005() throws Exception {
@@ -3229,11 +3224,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddIntRdn006() throws Exception {
@@ -3248,11 +3243,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+     * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddIntRdn007() throws Exception {
@@ -3266,11 +3261,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.add(int, Rdn)'
      * </p>
      * <p>
-     * Here we are testing if this method adds a single RDN at a specified
-     * position within this LDAP name.
+      * Here we are testing if this method correctly adds an RDN to an
+     * LdapName at the given index.
      * </p>
      * <p>
-     * The expected result is the adding in the correct order.
+     * The expected result is the Rdn being inserted in the correct position.
      * </p>
      */
     public void testAddIntRdn008() throws Exception {
@@ -3284,11 +3279,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.remove(int)'
      * </p>
      * <p>
-     * Here we are testing if this method removes a component from this LDAP
-     * name.
+     * Here we are testing if this method correctly removes the name at the
+     * specified index from an LdapName.
      * </p>
      * <p>
-     * The expected result is an index out of boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testRemove001() throws Exception {
@@ -3309,11 +3304,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.remove(int)'
      * </p>
      * <p>
-     * Here we are testing if this method removes a component from this LDAP
-     * name.
+     * Here we are testing if this method correctly removes the name at the
+     * specified index from an LdapName.
      * </p>
      * <p>
-     * The expected result is that the name remove the name in the given order.
+     * The expected result is that the name at the specified index is removed.
      * </p>
      */
     public void testRemove003() throws Exception {
@@ -3327,11 +3322,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.remove(int)'
      * </p>
      * <p>
-     * Here we are testing if this method removes a component from this LDAP
-     * name.
+     * Here we are testing if this method correctly removes the name at the
+     * specified index from an LdapName.
      * </p>
      * <p>
-     * The expected result is that the name remove the name in the given order.
+     * The expected result is that the name at the specified index is removed.
      * </p>
      */
     public void testRemove004() throws Exception {
@@ -3345,11 +3340,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.remove(int)'
      * </p>
      * <p>
-     * Here we are testing if this method removes a component from this LDAP
-     * name.
+     * Here we are testing if this method correctly removes the name at the
+     * specified index from an LdapName.
      * </p>
      * <p>
-     * The expected result is an index out of boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testRemove005() throws Exception {
@@ -3365,11 +3360,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.remove(int)'
      * </p>
      * <p>
-     * Here we are testing if this method removes a component from this LDAP
-     * name.
+     * Here we are testing if this method correctly removes the name at the
+     * specified index from an LdapName.
      * </p>
      * <p>
-     * The expected result is an index out of boundary exception.
+     * The expected result is an IndexOutOfBoundsException.
      * </p>
      */
     public void testRemove006() throws Exception {
@@ -3382,11 +3377,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdns()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the list of relative
-     * distinguished names.
+     * Here we are testing if this method correctly returns the contents of this
+     * LdapName as a list of Rdns.
      * </p>
      * <p>
-     * The expected result is the list of rdns.
+     * The expected result is the list of Rdns.
      * </p>
      */
     public void testGetRdns001() throws Exception {
@@ -3400,11 +3395,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.getRdns()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the list of relative
-     * distinguished names.
+     * Here we are testing if this method correctly returns the contents of this
+     * LdapName as a list of Rdns.
      * </p>
      * <p>
-     * The expected result is the list of rdns.
+     * The expected result is the list of Rdns.
      * </p>
      */
     public void testGetRdns002() throws Exception {
@@ -3427,8 +3422,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a classcastException.
@@ -3448,8 +3443,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a positive int.
@@ -3466,11 +3461,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares the LdapName with
+     * the given object.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo003() throws Exception {
@@ -3496,8 +3491,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a negative int.
@@ -3514,8 +3509,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a positive int.
@@ -3532,8 +3527,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a negative int.
@@ -3550,11 +3545,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo007() throws Exception {
@@ -3568,8 +3563,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a negative int.
@@ -3586,8 +3581,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a negative int.
@@ -3604,8 +3599,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a negative int.
@@ -3622,8 +3617,8 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
      * The expected result is a positive int.
@@ -3640,11 +3635,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo012() throws Exception {
@@ -3658,11 +3653,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo013() throws Exception {
@@ -3676,11 +3671,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo014() throws Exception {
@@ -3694,11 +3689,11 @@ public class LdapNameTest extends TestCase {
      * Test method for 'javax.naming.ldap.LdapName.compareTo(Object)'
      * </p>
      * <p>
-     * Here we are testing if this method compares this LdapName with the
-     * specified Object for order.
+     * Here we are testing if this method correctly compares an LdapName with
+     * the given object.
      * </p>
      * <p>
-     * The expected result is a zero.
+     * The expected result is zero.
      * </p>
      */
     public void testCompareTo015() throws Exception {

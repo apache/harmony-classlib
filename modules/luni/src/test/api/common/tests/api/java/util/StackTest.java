@@ -155,6 +155,45 @@ public class StackTest extends junit.framework.TestCase {
 		assertEquals("Search returned incorrect value for search for null--wanted -1",
 				-1, s.search(null));
 	}
+	
+	static class BugStack<E> extends Stack<E>{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9133762075342926141L;
+
+		/**
+		 * 
+		 */
+		public void setLength(int elementCount)
+		{
+			this.elementCount = elementCount;
+		}
+		
+		public int getLength()
+		{
+			return elementCount;
+		}
+	}
+	
+	//test for wrong exception threw by pop method
+	public void test_pop_modify_elementCount(){
+		BugStack<String> testStack = new BugStack<String>();
+		testStack.push("A");
+		testStack.push("B");
+		testStack.setLength(20);
+		try{
+			testStack.pop();
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+			//Expected to throw ArrayIndexOutOfBoundsException here
+		}
+		catch(EmptyStackException e)
+		{
+			fail("Should throw ArrayIndexOutOfBoundsException here");
+		}
+	}
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

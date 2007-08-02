@@ -62,8 +62,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/${hy.x-net.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.x-net.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

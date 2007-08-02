@@ -250,13 +250,18 @@ class BeanInfoImpl implements BeanInfo {
                                 // in event set descriptor pattern
                             }
 
-                            listenerCoreName = Introspector
-                                    .decapitalize(listenerCoreName);
-                            EventSetDescriptor esd = new EventSetDescriptor(
-                                    listenerCoreName, listenerType,
-                                    listenerMethods, addListenerMethod,
-                                    removeListenerMethod, getListenerMethod);
-                            result.put(listenerCoreName, esd);
+                            try {
+                                listenerCoreName = Introspector
+                                        .decapitalize(listenerCoreName);
+                                EventSetDescriptor esd = new EventSetDescriptor(
+                                        listenerCoreName, listenerType,
+                                        listenerMethods, addListenerMethod,
+                                        removeListenerMethod, getListenerMethod);
+                                result.put(listenerCoreName, esd);
+                            } catch (IntrospectionException ie) {
+                                System.out.println(Messages.getString(
+                                        "beans.39", listenerCoreName)); //$NON-NLS-1$
+                            }
 
                         } // if length of parameters list equals to 1
                     } // if no descriptors for given listener name yet

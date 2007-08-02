@@ -22,14 +22,12 @@
 package java.util.regex;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Represents group, which is alternation of other subexpression.
  * One should think about "group" in this model as JointSet opening
  * group and corresponding FSet closing group.
- * 
- * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.12.2.2 $
  */
 class JointSet extends AbstractSet {
     
@@ -53,6 +51,9 @@ class JointSet extends AbstractSet {
      */
     public int matches(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
+        if (children == null) {
+            return -1;
+        }
         int start = matchResult.getStart(groupIndex);
         matchResult.setStart(groupIndex, stringIndex);
         int size = children.size();
@@ -84,9 +85,11 @@ class JointSet extends AbstractSet {
     }
 
     public boolean first(AbstractSet set) {
-        for (java.util.Iterator i = children.iterator(); i.hasNext();) {
-            if (((AbstractSet) i.next()).first(set)) {
-                return true;
+        if (children != null) {
+            for (Iterator i = children.iterator(); i.hasNext();) {
+                if (((AbstractSet) i.next()).first(set)) {
+                    return true;
+                }
             }
         }
 

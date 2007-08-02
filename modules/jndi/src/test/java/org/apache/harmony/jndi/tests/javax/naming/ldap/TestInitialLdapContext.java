@@ -44,8 +44,7 @@ public class TestInitialLdapContext extends TestCase {
      * <p>
      * Test method for 'javax.naming.ldap.InitialLdapContext()'
      * <p>
-     * Here we are testing if this method constructs an initial context using no
-     * environment properties or connection request controls.
+     * Here we are testing the no argument constructor.
      * </p>
      * <p>
      * The expected result is an exception when we try to get the environment
@@ -72,9 +71,7 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use two null arguments.
+     * Here we are testing the constructor with two null arguments.
      * </p>
      * <p>
      * The expected result is an instance of this class.</p<
@@ -93,9 +90,7 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use two not null arguments.
+     * Here we are testing the constructor with two non-null arguments.
      * </p>
      * <p>
      * The expected result is an instance of this class.
@@ -119,10 +114,8 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use two not null arguments, and INITIAL_CONTEXT_FACTORY constant not
-     * reference to a correct class.
+     * Here we are testing the constructor with two non-null arguments, and the
+     * INITIAL_CONTEXT_FACTORY constant set to reference a non-existant class.
      * </p>
      * <p>
      * The expected result is an exception like "NoInitialContextException".
@@ -147,13 +140,11 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use and INITIAL_CONTEXT_FACTORY constant reference to a correct class,
-     * but with no controls.
+     * Here we are testing the constructor with the INITIAL_CONTEXT_FACTORY
+     * constant set to reference a correct class, but with no controls.
      * </p>
      * <p>
-     * The expected result is an exception of the class".
+     * The expected result is an exception.
      * </p>
      */
     public void testInitialLdapContextHashtableOfQQControlArray004()
@@ -174,12 +165,11 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use two not null arguments, and here the hashtable is empty.
+     * Here we are testing the constructor with two non-null arguments. In this
+     * case the hashtable is empty.
      * </p>
      * <p>
-     * The expected result is an instance of the context.
+     * The expected result is a new InitialLdapContext instance.
      * </p>
      */
     public void testInitialLdapContextHashtableOfQQControlArray005()
@@ -200,13 +190,12 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use two not null arguments, and here the hashtable is not empty but with
-     * data unsuitable and the controls is not empty.
+     * Here we are testing the constructor with two non-null arguments, and here
+     * the hashtable is not empty but contains unsuitable data, and the Control
+     * array is not empty.
      * </p>
      * <p>
-     * The expected result is an instance of the context.
+     * The expected result is a new InitialLdapContext instance.
      * </p>
      */
     public void testInitialLdapContextHashtableOfQQControlArray006()
@@ -231,13 +220,11 @@ public class TestInitialLdapContext extends TestCase {
      * ?>, Control[])'
      * </p>
      * <p>
-     * Here we are testing the method that constructs an initial context using
-     * environment properties and connection request controls, in this case we
-     * use two not null arguments, and here the hashtable is not empty but with
-     * data unsuitable.
+     * Here we are testing the constructor with two non-null arguments, and here
+     * the hashtable is not empty but contains unsuitable data.
      * </p>
      * <p>
-     * The expected result is an instance of the context.
+     * The expected result is a new InitialLdapContext instance.
      * </p>
      */
     public void testInitialLdapContextHashtableOfQQControlArray007()
@@ -259,11 +246,11 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.extendedOperation(ExtendedRequest)'
      * </p>
      * <p>
-     * Here we are testing if this method performs an extended operation. Here
-     * we send a null extended operation.
+     * Here we are testing if this method correctly executes the given
+     * operation. Here we send a null ExtendedRequest.
      * </p>
      * <p>
-     * The expected result is a "NullpointerException".
+     * The expected result is a "NullPointerException".
      * </p>
      */
     public void testExtendedOperation001() throws Exception {
@@ -283,11 +270,11 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.extendedOperation(ExtendedRequest)'
      * </p>
      * <p>
-     * Here we are testing if this method performs an extended operation. Here
-     * we send a not null extended operation.
+     * Here we are testing if this method correctly executes the given
+     * operation. Here we send a non-null ExtendedRequest.
      * </p>
      * <p>
-     * The expected result is an Extended Response.
+     * The expected result is an ExtendedResponse.
      * </p>
      */
     public void testExtendedOperation002() throws Exception {
@@ -305,12 +292,12 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.newInstance(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method creates a new instance of this context
-     * initialized using request controls. In this case we are using as a
-     * parameters null controls.
+     * Here we are testing if this method correctly creates a new
+     * InitialLdapContext instance. In this case we are using null as a
+     * parameter.
      * </p>
      * <p>
-     * The expected result is a not null initial ladp context.
+     * The expected result is a non-null InitialLdapContext.
      * </p>
      */
     public void testNewInstance001() throws Exception {
@@ -331,12 +318,12 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.newInstance(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method creates a new instance of this context
-     * initialized using request controls. In this case we are using as a
-     * parameters null controls.
+     * Here we are testing if this method correctly creates a new
+     * InitialLdapContext instance. In this case we are using a non-null
+     * parameter.
      * </p>
      * <p>
-     * The expected result is a not null initial ladp context.
+     * The expected result is a non-null InitialLdapContext.
      * </p>
      */
     public void testNewInstance002() throws Exception {
@@ -360,9 +347,8 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.reconnect(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method reconnects to the LDAP server using
-     * the supplied controls and this context's environment. In this case we are
-     * sending a set of null controls.
+     * Here we are testing if this method correctly reconnects to the LDAP
+     * server. In this case we are using a null argument.
      * </p>
      * <p>
      * The expected result is a reconection with no controls.
@@ -383,9 +369,8 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.reconnect(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method reconnects to the LDAP server using
-     * the supplied controls and this context's environment. In this case we are
-     * sending a set not null of controls.
+     * Here we are testing if this method correctly reconnects to the LDAP
+     * server In this case we are using a non-null argument.
      * </p>
      * <p>
      * The expected result is a reconection with the controls sended.
@@ -409,9 +394,9 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.reconnect(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method reconnects to the LDAP server using
-     * the supplied controls and this context's environment. In this case we are
-     * sending a new set of controls to reconection.
+     * Here we are testing if this method correctly reconnects to the LDAP
+     * server. In this case we are using a different set of controls for the
+     * reconnection.
      * </p>
      * <p>
      * The expected result is a reconection with the new set of controls.
@@ -439,9 +424,8 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.getConnectControls()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the connection request
-     * controls in effect for this context. In this case we use a null array
-     * control.
+     * Here we are testing if this method correctly returns the connection
+     * controls. In this case we are using a null control array.
      * </p>
      * <p>
      * The expected result is the controls that we use to create the context.
@@ -473,9 +457,8 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.getConnectControls()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the connection request
-     * controls in effect for this context. In this case we use a null array
-     * control.
+     * Here we are testing if this method correctly returns the connection
+     * controls. In this case we are using a null control array.
      * </p>
      * <p>
      * The expected result is the controls that we use to create the context.
@@ -496,11 +479,11 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.setRequestControls(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method sets the request controls for methods
-     * subsequently invoked on this context.
+     * Here we are testing if this method correctly sets the controls for
+     * requests.
      * </p>
      * <p>
-     * The expected result is that the context keep the new request controls.
+     * The expected result is that the context keeps the new request controls.
      * </p>
      */
     public void testSetRequestControls001() throws Exception {
@@ -526,11 +509,11 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.setRequestControls(Control[])'
      * </p>
      * <p>
-     * Here we are testing if this method sets the request controls for methods
-     * subsequently invoked on this context.
+     * Here we are testing if this method correctly sets the controls for
+     * requests.
      * </p>
      * <p>
-     * The expected result is that the context keep the new request controls.
+     * The expected result is that the context keeps the new request controls.
      * </p>
      */
     public void testSetRequestControls002() throws Exception {
@@ -559,8 +542,8 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.getRequestControls()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the request controls in
-     * effect for this context.
+     * Here we are testing if this method correctly returns the request
+     * controls.
      * </p>
      * <p>
      * The expected result is a null set of controls.
@@ -592,8 +575,8 @@ public class TestInitialLdapContext extends TestCase {
      * 'javax.naming.ldap.InitialLdapContext.getResponseControls()'
      * </p>
      * <p>
-     * Here we are testing if this method retrieves the response controls
-     * produced as a result of the last method invoked on this context.
+     * Here we are testing if this method correctly returns the response
+     * controls.
      * </p>
      * <p>
      * The expected result is a null set of controls.

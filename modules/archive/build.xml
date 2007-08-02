@@ -125,8 +125,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.archive.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
         <antcall target="clean-native-includes" />
     </target>
 
