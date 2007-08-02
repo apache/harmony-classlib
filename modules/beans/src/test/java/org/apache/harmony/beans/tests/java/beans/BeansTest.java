@@ -430,15 +430,9 @@ public class BeansTest extends TestCase {
         assertFalse(Beans.isInstanceOf(bean, targetType));
     }
 
-    public void test_instantiate_with_corrupted_serialization_file()
+    public void test_instantiate_with_empty_serialization_file()
             throws Exception {
-        final String BEANS_NAME = "TestBean";
-
-        // create a corrupted serialization file with name TestBean.ser
-        File file = new File(BEANS_NAME + ".ser");
-        file.deleteOnExit();
-        FileOutputStream fout = new FileOutputStream(file);
-        fout.close();
+        final String BEANS_NAME = "org/apache/harmony/beans/tests/support/mock/EmptySerBean.ser";
 
         try {
             Beans.instantiate(null, BEANS_NAME);
