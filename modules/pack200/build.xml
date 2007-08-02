@@ -68,8 +68,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/pack200-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.pack200.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

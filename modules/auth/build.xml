@@ -94,8 +94,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/${hy.auth.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.auth.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

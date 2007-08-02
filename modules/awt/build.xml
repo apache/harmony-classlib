@@ -75,8 +75,8 @@
         <delete dir="${hy.jdk}/jre/lib/cmm" quiet="true" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.awt.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

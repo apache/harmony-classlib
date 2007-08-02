@@ -61,8 +61,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/regex-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.regex.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

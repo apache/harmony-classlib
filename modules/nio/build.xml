@@ -83,8 +83,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/nio-src.jar" />
         <delete includeemptydirs="true" failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.nio.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <!-- Clean natives. -->
