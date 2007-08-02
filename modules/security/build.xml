@@ -112,8 +112,8 @@
         <delete dir="${tests.resources.dir}" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.security.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

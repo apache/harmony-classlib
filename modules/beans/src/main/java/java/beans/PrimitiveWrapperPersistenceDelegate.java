@@ -24,7 +24,7 @@ package java.beans;
  * primitive types like int.
  * 
  */
-public class PrimitiveWrapperPersistenceDelegate extends PersistenceDelegate {
+class PrimitiveWrapperPersistenceDelegate extends PersistenceDelegate {
 
     /*
      * It's unnecessary to do anything for initialization, because two mutatable

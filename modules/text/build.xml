@@ -79,8 +79,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/text-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.text.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

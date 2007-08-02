@@ -77,8 +77,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/prefs-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.prefs.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <!-- Clean natives. Currently there are only windows natives for

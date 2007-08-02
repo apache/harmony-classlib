@@ -60,8 +60,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/suncompat-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.suncompat.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java" depends="copy-resources">

@@ -203,8 +203,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/luni-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.luni.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
         <antcall target="clean-native-includes" />
     </target>
 

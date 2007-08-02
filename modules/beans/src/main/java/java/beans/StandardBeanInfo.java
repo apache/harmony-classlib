@@ -823,7 +823,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * @throws IntrospectionException
      */
     @SuppressWarnings("unchecked")
-    private EventSetDescriptor[] introspectEvents() {
+    private EventSetDescriptor[] introspectEvents() throws IntrospectionException {
         // Get descriptors for the public methods
         // FIXME: performance
         MethodDescriptor[] theMethods = introspectMethods();

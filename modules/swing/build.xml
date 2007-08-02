@@ -83,8 +83,8 @@
         <delete failonerror="false">
             <fileset refid="classes" />
             <fileset refid="hidden.classes"/>
-            <fileset dir="${hy.swing.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

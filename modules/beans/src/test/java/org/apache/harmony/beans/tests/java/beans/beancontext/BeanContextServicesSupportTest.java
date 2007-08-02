@@ -1037,6 +1037,17 @@ public class BeanContextServicesSupportTest extends TestCase {
         provider.records.assertEndOfRecords();
         assertNull(l.lastEvent);
     }
+    
+    /*
+     * regression test for HARMONY-4272
+     */
+    public void testReleaseService_WithNullServiceRecords()
+            throws TooManyListenersException {
+        MockBeanContextServicesSupport support = new MockBeanContextServicesSupport();
+        MockBeanContextChild child = new MockBeanContextChild();
+        support.add(child); 
+        support.releaseService(child, child, new Object()); 
+    }
 
     public void testReleaseService() throws TooManyListenersException,
             PropertyVetoException {

@@ -73,51 +73,32 @@ import org.apache.harmony.niochar.CharsetProviderImpl;
  * </p>
  * 
  * @see java.nio.charset.spi.CharsetProvider
- * 
  */
 public abstract class Charset implements Comparable<Charset> {
 
     /*
-     * --------------------------------------------------------------------
-     * Constants
-     * --------------------------------------------------------------------
-     */
-
-    /*
-     * the name of configuration files where charset provider class names can be
+     * The name of configuration files where charset provider class names can be
      * specified.
      */
     private static final String PROVIDER_CONFIGURATION_FILE_NAME = "META-INF/services/java.nio.charset.spi.CharsetProvider"; //$NON-NLS-1$
 
     /*
-     * the encoding of configuration files
+     * The encoding of configuration files
      */
     private static final String PROVIDER_CONFIGURATION_FILE_ENCODING = "UTF-8"; //$NON-NLS-1$
 
     /*
-     * the comment string used in configuration files
+     * The comment string used in configuration files
      */
     private static final String PROVIDER_CONFIGURATION_FILE_COMMENT = "#"; //$NON-NLS-1$
 
     private static ClassLoader systemClassLoader;
-
-    /*
-     * --------------------------------------------------------------------
-     * Class variables
-     * --------------------------------------------------------------------
-     */
 
     // built in provider instance, assuming thread-safe
     private static CharsetProviderImpl _builtInProvider = null;
 
     // cached built in charsets
     private static TreeMap<String, Charset> _builtInCharsets = null;
-
-    /*
-     * --------------------------------------------------------------------
-     * Instance variables
-     * --------------------------------------------------------------------
-     */
 
     private final String canonicalName;
 
@@ -134,15 +115,12 @@ public abstract class Charset implements Comparable<Charset> {
     private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable = new HashMap<String, CharsetEncoder>();
 
     private CharsetEncoder cachedEncoder = null;
-    private CharsetDecoder cachedDecoder = null; 
-    /*
-     * -------------------------------------------------------------------
-     * Global initialization
-     * -------------------------------------------------------------------
-     */
+
+    private CharsetDecoder cachedDecoder = null;
+
     static {
         /*
-         * create built-in charset provider even if no privilege to access
+         * Create built-in charset provider even if no privilege to access
          * charset provider.
          */
         _builtInProvider = AccessController
@@ -152,12 +130,6 @@ public abstract class Charset implements Comparable<Charset> {
                     }
                 });
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs a <code>Charset</code> object. Duplicated aliases are
@@ -171,11 +143,8 @@ public abstract class Charset implements Comparable<Charset> {
      *             on an illegal value being supplied for either
      *             <code>canonicalName</code> or for any element of
      *             <code>aliases</code>.
-     * 
      */
-    protected Charset(String canonicalName, String[] aliases)
-            throws IllegalCharsetNameException {
-        // throw IllegalArgumentException if name is null
+    protected Charset(String canonicalName, String[] aliases) {
         if (null == canonicalName) {
             throw new NullPointerException();
         }
@@ -191,12 +160,6 @@ public abstract class Charset implements Comparable<Charset> {
             }
         }
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /*
      * Checks whether a character is a special character that can be used in
@@ -439,7 +402,7 @@ public abstract class Charset implements Comparable<Charset> {
                                     systemClassLoader);
                             cp = c.newInstance();
                         } catch (SecurityException e) {
-                            throw e;  
+                            throw e;
                         } catch (Exception e) {
                             throw new Error(e.getMessage(), e);
                         }
@@ -487,7 +450,7 @@ public abstract class Charset implements Comparable<Charset> {
                 return cs;
             }
             // Try built-in charsets
-            if(_builtInProvider == null) {
+            if (_builtInProvider == null) {
                 _builtInProvider = new CharsetProviderImpl();
             }
             cs = _builtInProvider.charsetForName(charsetName);
@@ -557,8 +520,7 @@ public abstract class Charset implements Comparable<Charset> {
      * @throws UnsupportedCharsetException
      *             If the desired charset is not supported by this runtime.
      */
-    public static Charset forName(String charsetName)
-            throws IllegalCharsetNameException, UnsupportedCharsetException {
+    public static Charset forName(String charsetName) {
         Charset c = forNameInternal(charsetName);
         if (null == c) {
             throw new UnsupportedCharsetException(charsetName);
@@ -575,8 +537,7 @@ public abstract class Charset implements Comparable<Charset> {
      * @throws IllegalCharsetNameException
      *             If the specified charset name is illegal.
      */
-    public static boolean isSupported(String charsetName)
-            throws IllegalCharsetNameException {
+    public static boolean isSupported(String charsetName) {
         Charset cs = forNameInternal(charsetName);
         return (null != cs);
     }
@@ -680,7 +641,7 @@ public abstract class Charset implements Comparable<Charset> {
         if (cachedEncoder == null) {
             cachedEncoder = getCachedCharsetEncoder(canonicalName);
         }
-        
+
         try {
             synchronized (cachedEncoder) {
                 return cachedEncoder.encode(buffer);
@@ -695,8 +656,7 @@ public abstract class Charset implements Comparable<Charset> {
      */
     private CharsetEncoder getCachedCharsetEncoder(String name) {
         synchronized (cachedCharsetEncoderTable) {
-            CharsetEncoder e = cachedCharsetEncoderTable
-                    .get(name);
+            CharsetEncoder e = cachedCharsetEncoderTable.get(name);
             if (null == e) {
                 e = this.newEncoder();
                 e.onMalformedInput(CodingErrorAction.REPLACE);
@@ -753,8 +713,7 @@ public abstract class Charset implements Comparable<Charset> {
      */
     private CharsetDecoder getCachedCharsetDecoder(String name) {
         synchronized (cachedCharsetDecoderTable) {
-            CharsetDecoder d = cachedCharsetDecoderTable
-                    .get(name);
+            CharsetDecoder d = cachedCharsetDecoderTable.get(name);
             if (null == d) {
                 d = this.newDecoder();
                 d.onMalformedInput(CodingErrorAction.REPLACE);

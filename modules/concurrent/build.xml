@@ -68,8 +68,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/${hy.concurrent.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.concurrent.bin.test}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

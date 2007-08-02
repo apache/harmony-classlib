@@ -20,30 +20,43 @@ package org.apache.harmony.beans.editors;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Panel;
 import java.awt.Rectangle;
-import java.beans.PropertyEditorSupport;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyEditor;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class ColorEditor extends PropertyEditorSupport {
+@SuppressWarnings("serial")
+public class ColorEditor extends Panel implements PropertyEditor {
 
+List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    
+    private Color value;
+    
+    private Object source;
+    
     public ColorEditor(Object source) {
-        super(source);
+        if(null == source) {
+            throw new NullPointerException();
+        }
+        this.source = source;
     }
 
     public ColorEditor() {
         super();
     }
 
-    @Override
     public Component getCustomEditor() {
-        return null;
+        return this;
     }
 
-    @Override
     public boolean supportsCustomEditor() {
         return true;
     }
 
-    @Override
     public String getJavaInitializationString() {
         String result = null;
         Color color = (Color) getValue();
@@ -51,23 +64,31 @@ public class ColorEditor extends PropertyEditorSupport {
             int red = color.getRed();
             int green = color.getGreen();
             int blue = color.getBlue();
-            result = "new Color(" + red + "," + green + "," + blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            result = "new java.awt.Color(" + red + "," + green + "," + blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         return result;
     }
 
-    @Override
     public String[] getTags() {
         return null;
     }
 
-    @Override
     public void setValue(Object value) {
-        if (value instanceof Color) {
-            super.setValue(value);
+        if( null == value) {
+            return;
+        }
+        Object oldValue = this.value;
+        this.value = (Color) value;
+        PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(this,
+                "value", oldValue, value); //$NON-NLS-1$
+        PropertyChangeListener[] copy = new PropertyChangeListener[listeners.size()];
+        listeners.toArray(copy);
+        for (PropertyChangeListener listener : copy) {
+            listener.propertyChange(changeAllEvent);
         }
     }
     
+    @SuppressWarnings("nls")
     public String getAsText(){
         Color c = (Color)getValue();
         StringBuilder sb = new StringBuilder(14);
@@ -79,7 +100,7 @@ public class ColorEditor extends PropertyEditorSupport {
         return sb.toString();
     }
     
-    @Override
+    @SuppressWarnings("nls")
     public void setAsText(String text) {
         if (null == text) {
             throw new NullPointerException();
@@ -88,33 +109,69 @@ public class ColorEditor extends PropertyEditorSupport {
         int r = 0;
         int g = 0;
         int b = 0;
-
+        String aText = text;
         try {
             int index = text.indexOf(",");
             r = Integer.parseInt(text.substring(0, index));
-            text = text.substring(index + 1);
-            index = text.indexOf(",");
-            g = Integer.parseInt(text.substring(0, index));
-            text = text.substring(index + 1);
-            b = Integer.parseInt(text);
+            aText = text.substring(index + 1);
+            index = aText.indexOf(",");
+            g = Integer.parseInt(aText.substring(0, index));
+            aText = aText.substring(index + 1);
+            b = Integer.parseInt(aText);
             setValue(new Color(r, g, b));
         } catch (Exception e) {
-            throw new IllegalArgumentException(text);
+            throw new IllegalArgumentException(aText);
         }
     }
     
 
-    @Override
     public boolean isPaintable() {
         return true;
     }
 
-    @Override
     public void paintValue(Graphics gfx, Rectangle box) {
         Color color = (Color) getValue();
         if (color != null) {
             gfx.setColor(color);
             gfx.drawRect(box.x, box.y, box.x + box.width, box.y + box.height);
+        }
+    }
+
+    public Object getValue() {
+        return value;
+    }
+    
+    @Override
+    public synchronized void removePropertyChangeListener(
+            PropertyChangeListener listener) {
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    @Override
+    public synchronized void addPropertyChangeListener(
+            PropertyChangeListener listener) {
+        listeners.add(listener);
+    }
+    
+    public void firePropertyChange() {
+        if (listeners.isEmpty()) {
+            return;
+        }
+
+        List<PropertyChangeListener> copy = new ArrayList<PropertyChangeListener>(
+                listeners.size());
+        synchronized (listeners) {
+            copy.addAll(listeners);
+        }
+
+        PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(source,
+                null, null, null);
+        for (Iterator<PropertyChangeListener> listenersItr = copy.iterator(); listenersItr
+                .hasNext();) {
+            PropertyChangeListener listna = listenersItr.next();
+            listna.propertyChange(changeAllEvent);
         }
     }
 }

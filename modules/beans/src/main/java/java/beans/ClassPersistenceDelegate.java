@@ -19,7 +19,7 @@ package java.beans;
 
 import java.lang.reflect.Field;
 
-class java_lang_ClassPersistenceDelegate extends PersistenceDelegate {
+class ClassPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
         Class<?> value = (Class) oldInstance;

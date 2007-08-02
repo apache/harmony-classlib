@@ -837,11 +837,17 @@ public class BeanContextServicesSupport extends BeanContextSupport implements
     }
 
     /**
-     * Releases a service without checking the memebership of the child.
+     * Releases a service without checking the membership of the child.
      */
     private void releaseServiceWithoutCheck(BeanContextChild child,
             BCSSChild bcssChild, Object requestor, Object service,
             boolean callRevokedListener) {
+
+        if (bcssChild.serviceRecords == null
+                || bcssChild.serviceRecords.isEmpty()) {
+            return;
+        }
+
         synchronized (child) {
             // scan record
             for (Iterator iter = bcssChild.serviceRecords.iterator(); iter

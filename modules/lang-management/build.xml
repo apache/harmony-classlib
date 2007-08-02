@@ -58,9 +58,8 @@
         <delete file="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.lang-management.bin.test.api}" />
-            <fileset dir="${hy.lang-management.bin.test.impl}" />
         </delete>
+        <delete failonerror="false" dir="bin"/>
     </target>
 
     <target name="compile-java">

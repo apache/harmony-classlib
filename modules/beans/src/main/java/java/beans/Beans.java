@@ -161,34 +161,38 @@ public class Beans {
 
 		ClassLoader loader = null;
 
-		String beanResourceName = getBeanResourceName(beanName);
+		// First try to load it from a serialization file.
+        String beanResourceName = getBeanResourceName(beanName);
 
 		InputStream is = (cls == null) ? ClassLoader
 				.getSystemResourceAsStream(beanResourceName) : cls
 				.getResourceAsStream(beanResourceName);
 
-		if (is != null) {
-			ObjectInputStream ois = (cls == null) ? new ObjectInputStream(is)
-					: new CustomizedObjectInputStream(is, cls);
-			result = ois.readObject();
+		IOException serializationException = null;
+        if (is != null) {
+            try{
+                ObjectInputStream ois = (cls == null) ? new ObjectInputStream(is)
+					    : new CustomizedObjectInputStream(is, cls);
+                result = ois.readObject();
+            }catch(IOException exception){
+                //Not loadable - remember this as we may throw it later.
+                serializationException = exception;
+            }
 		}
 
-		if (result == null) {
+		//If that did not work, try to instantiate it from the given classloader.
+        if (result == null) {
 			deserialized = false;
 			try {
 				loader = cls == null ? ClassLoader.getSystemClassLoader() : cls;
 				Class<?> c = Class.forName(beanName, true, loader);
-
-				try {
-					result = c.newInstance();
-
-				} catch (IllegalAccessException iae) {
-					throw new ClassNotFoundException(iae.getClass() + ": " //$NON-NLS-1$
-							+ iae.getMessage());
-				}
-			} catch (InstantiationException ie) {
-				throw new ClassNotFoundException(ie.getClass() + ": " //$NON-NLS-1$
-						+ ie.getMessage());
+				result = c.newInstance();
+			} catch (Exception e) {
+                if (serializationException != null) {
+                    throw serializationException;
+                }
+				throw new ClassNotFoundException(e.getClass() + ": " //$NON-NLS-1$
+						+ e.getMessage());
 			}
 		}
 

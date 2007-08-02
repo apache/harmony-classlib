@@ -71,14 +71,14 @@ public class Stack<E> extends Vector<E> {
 	 */
 	@SuppressWarnings("unchecked")
     public synchronized E pop() {
-		try {
-			int index = elementCount - 1;
-			E obj = (E)elementData[index];
-			removeElementAt(index);
-			return obj;
-		} catch (IndexOutOfBoundsException e) {
-			throw new EmptyStackException();
-		}
+		if(elementCount == 0){
+            throw new EmptyStackException();
+        }
+		final int index = --elementCount;
+		final E obj = (E)elementData[index];
+		elementData[index] = null;
+        modCount++;
+		return obj;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Stack<E> extends Vector<E> {
 	 * @see #peek
 	 * @see #pop
 	 */
-	public synchronized E push(E object) {
+	public E push(E object) {
 		addElement(object);
 		return object;
 	}
@@ -104,10 +104,22 @@ public class Stack<E> extends Vector<E> {
 	 * @param o
 	 *            the object to be searched
 	 */
-	public synchronized int search(Object o) {
-		int index = lastIndexOf(o);
-		if (index >= 0)
-			return (elementCount - index);
-		return -1;
+	public synchronized int search(Object object) {
+        final Object[] dumpArray = elementData;
+        final int size = elementCount;
+        if (object != null) {
+            for (int i = size - 1; i >= 0; i--) {
+                if (object.equals(dumpArray[i])) {
+                    return size - i;
+                }
+            }
+        } else {
+            for (int i = size - 1; i >= 0; i--) {
+                if (dumpArray[i] == null) {
+                    return size - i;
+                }
+            }
+        }
+        return -1;
 	}
 }
