@@ -263,17 +263,11 @@ public class ImageViewTest extends BasicSwingTestCase {
         assertEquals(isHarmony() ? 18 : 38, icon.getIconHeight());
     }
 
-    public void testSetLoadsSynchronously() {
-        assertFalse(view.getLoadsSynchronously());
-
+    public void testSetGetLoadsSynchronously() {
         view.setLoadsSynchronously(true);
         assertTrue(view.getLoadsSynchronously());
 
         view.setLoadsSynchronously(false);
-        assertFalse(view.getLoadsSynchronously());
-    }
-
-    public void testGetLoadsSynchronously() {
         assertFalse(view.getLoadsSynchronously());
     }
 

@@ -53,9 +53,9 @@ public class ImageView extends View {
 
     private BackgroundImageLoader loader;
     private String src;
-    private URL imageURL;
 
-    private boolean synchronous;
+    //TODO We can load images only synchronously yet
+    private boolean synchronous = true;
 
     private Color color;
 
@@ -67,15 +67,12 @@ public class ImageView extends View {
     }
 
     public Image getImage() {
-        return loader.image;
+        return loader.getImage();
     }
 
     public URL getImageURL() {
-        if (imageURL == null) {
-            URL base = ((HTMLDocument)getDocument()).getBase();
-            imageURL = HTML.resolveURL(src, base);
-        }
-        return imageURL;
+        URL base = ((HTMLDocument)getDocument()).getBase();
+        return HTML.resolveURL(src, base);
     }
 
     public Icon getLoadingImageIcon() {
@@ -167,10 +164,8 @@ public class ImageView extends View {
         if (!loader.isReady()) {
             if (!synchronous) {
                 getLoadingImageIcon().paintIcon(null, g, rc.x, rc.y);
-            } else {
-                loader.waitForImage();
+                return;
             }
-            return;
         }
 
         g.drawImage(getImage(), rc.x, rc.y, rc.width, rc.height, loader);
@@ -242,8 +237,7 @@ public class ImageView extends View {
     }
 
     private void createImage(final int desiredWidth, final int desiredHeight) {
-        imageURL = null;
-        loader = new BackgroundImageLoader(getImageURL(),
+        loader = new BackgroundImageLoader(getImageURL(), synchronous,
                                            desiredWidth, desiredHeight) {
             protected void onReady() {
                 super.onReady();
