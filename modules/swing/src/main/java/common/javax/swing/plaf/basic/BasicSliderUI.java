@@ -700,28 +700,36 @@ public class BasicSliderUI extends SliderUI {
                                                 : heightOfLowValueLabel / 2;
             }
         } else {
-            trackBuffer = (slider.getOrientation() == JSlider.HORIZONTAL)
-                       ? getThumbSize().width / 2
-                       : getThumbSize().height / 2;
+            trackBuffer = 0;
         }
     }
 
     protected void calculateTrackRect() {
-        if (slider.getOrientation() == JSlider.HORIZONTAL) {
-            int width = contentRect.width - trackBuffer * 2 - thumbRect.width;
-            int x = contentRect.x + trackBuffer + thumbRect.width / 2;
-            int y = contentRect.y + contentRect.height / 2 - (thumbRect.height + labelRect.height + tickRect.height) / 2;
-            trackRect.setBounds(x, y, width, thumbRect.height);
-        } else {
-            int height = contentRect.height - trackBuffer * 2 - thumbRect.height;
-            int x;
+
+        if (slider.getOrientation() == JSlider.HORIZONTAL) {            
+            int width = contentRect.width - trackBuffer * 2
+                          - getThumbSize().width;
+            int x = contentRect.x + trackBuffer + getThumbSize().width / 2;
+            int y = contentRect.y + (contentRect.height - getThumbSize().height
+                          + labelRect.height + tickRect.height) / 2;
+            
+            trackRect.setBounds(x, y, width, getThumbSize().height);
+            
+        } else {            
+            int height = contentRect.height - trackBuffer * 2
+                          - getThumbSize().height;
             int sizeToCenter = (getThumbSize().width + labelRect.width + tickRect.width) / 2;
+            int y = contentRect.y + trackBuffer + getThumbSize().height / 2;
+            int x;
+            
             if (slider.getComponentOrientation().isLeftToRight()) {
                 x = contentRect.x + contentRect.width / 2 - sizeToCenter;
+                
             } else {
-                x = contentRect.x + contentRect.width / 2 + sizeToCenter - getThumbSize().width;
+                x = contentRect.x + contentRect.width / 2 + sizeToCenter
+                          - getThumbSize().width;
             }
-            int y = contentRect.y + trackBuffer + thumbRect.height / 2;
+            
             trackRect.setBounds(x, y, getThumbSize().width, height);
         }
     }
