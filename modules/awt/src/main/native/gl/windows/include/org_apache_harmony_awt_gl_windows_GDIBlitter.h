@@ -72,7 +72,7 @@ Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImage(JNIEnv *, jobject,
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGImage(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint jboolean);
+    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint, jboolean);
 
 
 #ifdef __cplusplus
