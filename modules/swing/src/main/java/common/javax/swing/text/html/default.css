@@ -87,3 +87,7 @@ small {
 big {
     font-size: larger;
 }
+
+center {
+    text-align: center;
+}
