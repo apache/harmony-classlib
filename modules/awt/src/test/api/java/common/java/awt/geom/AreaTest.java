@@ -46,14 +46,6 @@ public class AreaTest extends PathIteratorTestCase {
     
     public void testContainsPoint() {
         try {
-             Area area = new Area(new Ellipse2D.Double(200, 300, 400, 200));
-             assertTrue(area.contains(250, 350));
-             assertFalse(area.contains(200, 300));
-             assertFalse(area.contains(50, 50));
-             
-             assertTrue(area.contains(new Point2D.Double(500, 400)));
-             assertFalse(area.contains(new Point2D.Double(700, 400)));
-             
              // Regression test HARMONY-1404
              Area emptyArea = new Area();
              emptyArea.contains((Point2D)null);
@@ -61,6 +53,25 @@ public class AreaTest extends PathIteratorTestCase {
          } catch (NullPointerException e) {
              // expected
          }
+         
+         Area area = new Area(new Ellipse2D.Double(200, 300, 400, 200));
+         assertTrue(area.contains(250, 350));
+         assertFalse(area.contains(200, 300));
+         assertFalse(area.contains(50, 50));
+         
+         assertTrue(area.contains(new Point2D.Double(500, 400)));
+         assertFalse(area.contains(new Point2D.Double(700, 400)));
+         
+         // Regression test HARMONY-4612
+         GeneralPath path = new GeneralPath();
+         path.moveTo(50, 100);
+         path.lineTo(100, 50);
+         path.lineTo(150, 100);
+         path.lineTo(100, 150);
+         path.closePath();
+         
+         Area areaPath = new Area(path);
+         assertFalse(areaPath.contains(100, 50));
      }
 
      public void testContainsRect() {
