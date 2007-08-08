@@ -58,6 +58,10 @@ public class ImageView extends View {
     private boolean synchronous = true;
 
     private Color color;
+    
+    private int border;
+    private int vSpace;
+    private int hSpace;
 
     public ImageView(final Element element) {
         super(element);
@@ -97,23 +101,24 @@ public class ImageView extends View {
             FontMetrics metrics = null;
             if (alt != null) {
                 Font font = getStyleSheet().getFont(getAttributes());
-                metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
+                metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);                
             }
-
-            return axis == X_AXIS
-                   ? getNoImageIcon().getIconWidth()
-                     + (metrics != null ? metrics.stringWidth(alt) : 0)
-                   : Math.max(getNoImageIcon().getIconHeight(),
-                     (metrics != null ? metrics.getHeight() : 0));
+           
+            return axis == X_AXIS ? getNoImageIcon().getIconWidth()
+                        + 2 * border + 2 * hSpace
+                        + ((metrics == null) ? 0 : metrics.stringWidth(alt))
+                        : ((metrics == null) ? getNoImageIcon().getIconHeight()
+                                : Math.max(getNoImageIcon().getIconHeight(),metrics.getHeight())
+                                + 2 * border + 2 * vSpace);
         }
         if (!loader.isReady()) {
-            return axis == X_AXIS ? getLoadingImageIcon().getIconWidth()
-                                  : getLoadingImageIcon().getIconHeight();
+            return axis == X_AXIS ? getLoadingImageIcon().getIconWidth()+ 2 * border + 2 * hSpace
+                                  : getLoadingImageIcon().getIconHeight() + 2 * border + 2 * vSpace;
         }
         if (axis == X_AXIS) {
-            return loader.getWidth();
+            return loader.getWidth() + 2 * border + 2 * hSpace;
         }
-        return loader.getHeight();
+        return loader.getHeight() + 2 * border + 2 * vSpace;
     }
 
     public String getToolTipText(final float x, final float y,
@@ -126,9 +131,13 @@ public class ImageView extends View {
                        .getAttribute(HTML.Attribute.ALT);
     }
 
-    public void paint(final Graphics g, final Shape shape) {
+public void paint(final Graphics g, final Shape shape) {
+        
         Rectangle rc = shape.getBounds();
-
+        rc.setSize(rc.width - 2*(hSpace + border), rc.height - 2*(vSpace + border));
+        
+        
+        
         // TODO change layered highlight painting code
         JTextComponent tc = (JTextComponent)getContainer();
         Highlighter hl = tc.getHighlighter();
@@ -138,11 +147,20 @@ public class ImageView extends View {
                                                             getEndOffset(),
                                                             shape, tc, this);
         }
+        
+        Color oldColor = g.getColor();
+        g.setColor(color);
+        g.fillRect(rc.x + hSpace, rc.y + vSpace, rc.width + 2 * border,
+                rc.height + 2 * border);
+        g.setColor(oldColor);
+        g.fillRect(rc.x + hSpace + border, rc.y + vSpace + border, rc.width,
+                rc.height);
 
         if (loader.isError()) {
-            getNoImageIcon().paintIcon(null, g, rc.x, rc.y);
-            Color oldColor = g.getColor();
+            
             g.setColor(color);
+            
+            getNoImageIcon().paintIcon(null, g, rc.x + hSpace + border, rc.y+vSpace + border);
 
             String alt = getAltText();
             if (alt != null) {
@@ -151,12 +169,12 @@ public class ImageView extends View {
                 Font font = getStyleSheet().getFont(getAttributes());
                 g.setFont(font);
                 FontMetrics metrics = g.getFontMetrics();
-                g.drawString(alt, rc.x + getNoImageIcon().getIconWidth(),
-                             rc.y + metrics.getAscent());
-
+                g.drawString(alt, rc.x + hSpace + border
+                        + getNoImageIcon().getIconWidth(), rc.y + vSpace + border+ metrics.getAscent());
+                
                 g.setFont(oldFont);
             }
-            g.drawRect(rc.x, rc.y, rc.width - 1, rc.height - 1);
+            
             g.setColor(oldColor);
             return;
         }
@@ -168,7 +186,7 @@ public class ImageView extends View {
             }
         }
 
-        g.drawImage(getImage(), rc.x, rc.y, rc.width, rc.height, loader);
+        g.drawImage(getImage(), rc.x + hSpace + border, rc.y + vSpace + border, rc.width, rc.height, loader);
     }
 
     public Shape modelToView(final int pos, final Shape shape, final Bias bias)
@@ -217,8 +235,15 @@ public class ImageView extends View {
     protected void setPropertiesFromAttributes() {
         attrs = getStyleSheet().getViewAttributes(this);
 
-        src = (String)getElement().getAttributes()
-                      .getAttribute(HTML.Attribute.SRC);
+        AttributeSet elAttrs = getElement().getAttributes();
+
+        src = (String) elAttrs.getAttribute(HTML.Attribute.SRC);
+        
+        border = getIntProperty(elAttrs,HTML.Attribute.BORDER);
+        
+        hSpace = getIntProperty(elAttrs,HTML.Attribute.HSPACE);
+        
+        vSpace = getIntProperty(elAttrs,HTML.Attribute.VSPACE);
 
         Object size = getAttributes().getAttribute(CSS.Attribute.WIDTH);
         int desiredWidth = -1;
@@ -234,6 +259,21 @@ public class ImageView extends View {
         createImage(desiredWidth, desiredHeight);
 
         color = getStyleSheet().getForeground(getAttributes());
+    }
+    
+    private int getIntProperty(AttributeSet source, HTML.Attribute attr) {
+        String result = (String) source.getAttribute(attr);
+        // Null verification is added for possibly improved performance:
+        // throwing and
+        // catching an exception is slower than null verification
+        if (result != null) {
+            try {
+                return Integer.parseInt(result);
+            } catch (NumberFormatException nfe) {
+                // Ignored, return 0, according to RI's result
+            }
+        }
+        return 0;
     }
 
     private void createImage(final int desiredWidth, final int desiredHeight) {
