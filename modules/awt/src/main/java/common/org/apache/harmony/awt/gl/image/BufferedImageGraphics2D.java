@@ -23,11 +23,9 @@ package org.apache.harmony.awt.gl.image;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
-import java.awt.font.GlyphVector;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.Surface;
@@ -77,26 +75,5 @@ public class BufferedImageGraphics2D extends CommonGraphics2D {
 
     public WritableRaster getWritableRaster() {
         return bi.getRaster();
-    }
-    
-    @Override
-    public void drawString(String str, float x, float y) {
-        if (debugOutput) {
-            System.err.println("CommonGraphics2D.drawString("+str+", "+x+", "+y+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        }
-
-            // TODO: we use slow type of drawing strings when Font object
-            // in Graphics has transforms, we just fill outlines. New textrenderer
-            // is to be implemented.
-        Shape sh = font.createGlyphVector(this.getFontRenderContext(), str).getOutline(x, y);
-        fill(sh);
-    }
-
-    @Override
-    public void drawGlyphVector(GlyphVector gv, float x, float y) {
-
-        Shape sh = gv.getOutline(x, y);
-        this.fill(sh);
-
     }
 }

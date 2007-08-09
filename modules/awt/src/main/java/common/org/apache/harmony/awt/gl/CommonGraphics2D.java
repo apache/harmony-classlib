@@ -654,6 +654,70 @@ public abstract class CommonGraphics2D extends Graphics2D {
         drawString(str, (float)x, (float)y);
     }
 
+    @Override
+    public void drawString(String str, float x, float y) {
+        if (debugOutput) {
+            System.err.println("CommonGraphics2D.drawString("+str+", "+x+", "+y+")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        }
+
+        AffineTransform at = (AffineTransform)this.getTransform().clone();
+        AffineTransform fontTransform = font.getTransform();
+        at.concatenate(fontTransform);
+
+        if (!at.isIdentity()){
+            // TYPE_TRANSLATION
+            if (at.getType() == AffineTransform.TYPE_TRANSLATION){
+                jtr.drawString(this, str,
+                        (float)(x+fontTransform.getTranslateX()),
+                        (float)(y+fontTransform.getTranslateY()));
+                return;
+            }
+            // TODO: we use slow type of drawing strings when Font object
+            // in Graphics has transforms, we just fill outlines. New textrenderer
+            // is to be implemented.
+            Shape sh = font.createGlyphVector(this.getFontRenderContext(), str).getOutline(x, y);
+            fill(sh);
+        } else {
+            jtr.drawString(this, str, x, y);
+        }
+
+    }
+
+    @Override
+    public void drawGlyphVector(GlyphVector gv, float x, float y) {
+
+        AffineTransform at = gv.getFont().getTransform();
+
+        double[] matrix = new double[6];
+        if ((at != null) && (!at.isIdentity())){
+
+            int atType = at.getType();
+            at.getMatrix(matrix);
+
+            // TYPE_TRANSLATION
+            if ((atType == AffineTransform.TYPE_TRANSLATION) &&
+                ((gv.getLayoutFlags() & GlyphVector.FLAG_HAS_TRANSFORMS) == 0)){
+                jtr.drawGlyphVector(this, gv, (int)(x+matrix[4]), (int)(y+matrix[5]));
+                return;
+            }
+        } else {
+            if (((gv.getLayoutFlags() & GlyphVector.FLAG_HAS_TRANSFORMS) == 0)){
+                jtr.drawGlyphVector(this, gv, x, y);
+                return;
+            }
+        }
+
+        // TODO: we use slow type of drawing strings when Font object
+        // in Graphics has transforms, we just fill outlines. New textrenderer
+        // is to be implemented.
+
+        Shape sh = gv.getOutline(x, y);
+        this.fill(sh);
+
+        }
+
+
+
 
     /***************************************************************************
      *
