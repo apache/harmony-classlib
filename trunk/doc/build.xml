@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     Licensed to the Apache Software Foundation (ASF) under one or more
+     contributor license agreements.  See the NOTICE file distributed with
+     this work for additional information regarding copyright ownership.
+     The ASF licenses this file to You under the Apache License, Version 2.0
+     (the "License"); you may not use this file except in compliance with
+     the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<project name="Build-Harmony-Documentation" default="all" basedir=".">
+
+    <property name="vm.doc.dir" value="vm_doc" />
+    <property name="kernel.doc.dir" value="kernel_doc" />
+	<property name="classlib.doc.dir" value="classlib_doc" />
+
+    <!-- import share properties -->
+    <import file="${basedir}/../make/properties.xml" />
+
+    <!-- ================================= 
+          target: all
+         ================================= -->
+    <target name="all" 
+        description="Target to rebuild the Harmony doc from scratch." 
+        depends="doxygen-kernel, doxygen-classlib, doxygen-natives" />
+
+    <!-- ================================= 
+          target: properties
+         ================================= -->
+    <target name="properties" depends="windows-properties, unix-properties" />
+
+    <!-- ================================= 
+          target: windows-properties              
+         ================================= -->
+    <target name="windows-properties" if="is.windows">
+        <property name="target.platform" value="windows" />
+    </target>
+
+    <!-- ================================= 
+          target: unix-properties              
+         ================================= -->
+    <target name="unix-properties" if="is.unix">
+        <property name="target.platform" value="unix" />
+    </target>
+	
+    <!-- ================================= 
+          target: doxygen-kernel                      
+         ================================= -->
+    <target name="doxygen-kernel" 
+        depends="properties, clean-kernel" 
+        description="Invoke doxygen on contributed kernel source">
+        <exec executable="doxygen${exe.suffix}" dir="..">
+            <arg line="doc/kernel/kernel.cfg" />
+            <env key="HARMONY_DOC_DIR" value="${basedir}" />
+            <env key="HARMONY_OS" value="${hy.os.family}" />
+        </exec>
+    </target>
+
+	<!-- =================================
+	      target: doxygen-classlib
+	     ================================= -->
+	<target name="doxygen-classlib"
+		depends="properties, clean-classlib" 
+        description="Invoke doxygen on contributed classlib source">
+        <exec executable="doxygen${exe.suffix}" dir="..">
+            <arg line="doc/classlib/classlib.cfg" />
+            <env key="HARMONY_DOC_DIR" value="${basedir}" />
+            <env key="HARMONY_OS" value="${hy.os.family}" />
+        </exec>
+    </target>
+	
+    <!-- ================================= 
+          target: doxygen-natives                      
+         ================================= -->
+    <target name="doxygen-natives" 
+        depends="properties, clean-natives" 
+        description="Invoke doxygen on natives">
+        <exec executable="doxygen${exe.suffix}" dir="..">
+            <arg line="doc/vminterface/natives.cfg" />
+            <env key="HARMONY_DOC_DIR" value="${basedir}" />
+            <env key="HARMONY_LUNI_NATIVES_DIR" value="${basedir}/../modules/luni/src/main/native" />
+            <env key="HARMONY_ARCHIVE_NATIVES_DIR" value="${basedir}/../modules/archive/src/main/native" />
+            <env key="HARMONY_PORTLIB_NATIVES_DIR" value="${basedir}/../modules/portlib/src/main/native" />
+            <env key="HARMONY_TARGET_PLATFORM" value="${target.platform}" />
+        </exec>
+    </target>
+
+    <!-- ================================= 
+          target: clean-kernel    
+         ================================= -->
+    <target name="clean-kernel" description="Clean away the generated kernel documentation.">
+        <echo>Cleaning up kernel documentation directories</echo>
+        <delete failonerror="false" dir='${kernel.doc.dir}' />
+    	<delete failonerror="false" file='DoxygenKernelLog.txt' />
+    </target>
+	
+	<!-- ================================= 
+          target: clean-classlib    
+         ================================= -->
+    <target name="clean-classlib" description="Clean away the generated classlib documentation.">
+        <echo>Cleaning up classlib documentation directories</echo>
+        <delete failonerror="false" dir='${classlib.doc.dir}' />
+    	<delete failonerror="false" file='DoxygenClasslibLog.txt' />
+    </target>
+
+    <!-- ================================= 
+          target: clean-natives    
+         ================================= -->
+    <target name="clean-natives" description="Clean away the generated natives documentation.">
+        <echo>Cleaning up natives documentation directories</echo>
+        <delete failonerror="false" dir='${vm.doc.dir}' />
+    	<delete failonerror="false" file='DoxygenNativesLog.txt' />
+    </target>
+
+
+    <!-- ================================= 
+          target: clean         
+         ================================= -->
+    <target name="clean" 
+        depends="clean-kernel, clean-classlib, clean-natives" 
+        description="Clean away the generated documentation." />
+
+</project>

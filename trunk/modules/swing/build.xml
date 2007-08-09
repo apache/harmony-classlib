@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="SWING Build" default="build" basedir=".">
+    <description>Build for SWING component</description>
+
+    <!-- import common properties -->
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+
+    <property name="hy.swing.src.main.java.platform"
+              value="${hy.swing.src.main.java}/../${hy.os.family}" />
+
+    <property name="hy.swing.src.test.java.platform"
+              value="${hy.swing.src.test.java}/../${hy.os.family}" />
+
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.swing.src.main.java}" />
+            <present targetdir="${hy.swing.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="${hy.swing.src.main.java.platform}" />
+            <present targetdir="${hy.swing.src.main.java.platform}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+    </fileset>
+
+    <!-- List of private classes that cannot be mapped by above mappers -->
+    <fileset id="hidden.classes" dir="${hy.build}">
+        <include name="javax/swing/text/html/parser/ModelElement.class"/>
+        <include name="javax/swing/text/html/parser/Asn1ModelElement.class"/>
+        <include name="javax/swing/text/html/parser/Asn1ModelElement$1.class"/>
+        <include name="javax/swing/text/html/parser/CUP$ParserCup$actions.class"/>
+    </fileset>
+
+    <property file="../../make/depends.properties" />
+
+    <property name="swing.exclude.file" location="${hy.hdk}/build/swing.exclude" />
+
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, prepare-exclude, run-tests" />
+
+    <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+            <fileset refid="hidden.classes"/>
+        </delete>
+        <delete failonerror="false" dir="bin"/>
+    </target>
+
+    <target name="compile-java">
+        <echo message="Compiling SWING classes" />
+
+        <mkdir dir="${hy.build}" />
+
+        <javac sourcepath=""
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <src>
+                <pathelement location="${hy.swing.src.main.java}"/>
+                <pathelement location="${hy.swing.src.main.java.platform}" />
+            </src>
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="copy-resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.swing.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build-jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar"
+             manifest="${hy.swing}/META-INF/MANIFEST.MF">
+            <fileset refid="classes" />
+            <fileset refid="hidden.classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar">
+            <fileset dir="${hy.swing.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+    </target>
+
+    <target name="compile-tests">
+        <echo message="Compiling SWING tests" />
+
+        <mkdir dir="${hy.swing.bin.test}" />
+
+        <javac srcdir="${hy.swing.src.test.api}/java.injected"
+               destdir="${hy.swing.bin.test}"
+               sourcepath=""
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" /> 
+        </javac>
+    </target>
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="swing" dir="./make"
+                             result="${swing.exclude.file}"/>
+    </target>
+
+    <target name="run-tests" depends="compile-tests,copy-test-resources">
+
+        <mkdir dir="${hy.tests.reports}" />
+
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+        <junit fork="yes"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
+            <jvmarg line="${hy.test.vmargs}" />
+
+            <formatter type="xml" />
+
+            <jvmarg value="-Xbootclasspath/a:${hy.swing.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
+<!--            <jvmarg value="-Djava2d.opengl=true"/> -->
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+
+                <fileset dir="${hy.swing.src.test.api}/java.injected">
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${swing.exclude.file}" unless="test.case" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true">swing${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true">swing${line.separator}</echo>
+    </target>
+
+    <target name="copy-test-resources">
+        <mkdir dir="${hy.swing.bin.test}" />
+        <copy todir="${hy.swing.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.swing.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+</project>

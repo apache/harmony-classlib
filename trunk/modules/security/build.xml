@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="SECURITY Build" default="build" basedir=".">
+    <description>Build for SECURITY component</description>
+
+    <!-- import common properties -->
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+
+    <property name="hy.security.src.main.java.platform"
+              value="${hy.security.src.main.java}/../${hy.os.family}" />
+
+    <property name="hy.security.src.test.java.platform"
+              value="${hy.security.src.test.java}/../${hy.os.family}" />
+
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.security.src.main.java}" />
+            <present targetdir="${hy.security.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="${hy.security.src.main.java.platform}" />
+            <present targetdir="${hy.security.src.main.java.platform}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+    </fileset>
+
+    <fileset id="tests.api" dir="${hy.security.bin.test}/api"/>
+    <fileset id="tests.api.in" dir="${hy.security.bin.test}/api.injected"/>
+    <fileset id="tests.impl" dir="${hy.security.bin.test}/impl"/>
+    <fileset id="tests.impl.in" dir="${hy.security.bin.test}/impl.injected"/>
+    <fileset id="tests.support" dir="${hy.security.bin.test}/support"/>
+    <fileset id="resources" dir="${hy.security}/src/test/resources"/>
+
+    <property file="../../make/depends.properties" />
+
+    <property name="security.exclude.file" location="${hy.hdk}/build/security.exclude" />
+
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, compile-tests, test-jar, copy-tests-resources, prepare-exclude, run-tests" />
+
+    <!-- Build native code -->
+    <available file="${hy.security.src.main.native}/security/${hy.os.family}" property="native.present" />
+
+
+    <target name="build-native" if="native.present" >
+        <make dir="${hy.security.src.main.native}/security/${hy.os.family}" />
+
+        <!-- Copy the built shared libs over to the jre/bin dir -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.security.src.main.native}/security">
+                <include name="*${shlib.suffix}*"/>
+                <include name="*${progdb.suffix}*" if="is.windows" />
+                <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <!-- Clean natives -->
+    <target name="clean-native" if="native.present" >
+        <make dir="${hy.security.src.main.native}/security/${hy.os.family}" target="clean" />
+    </target>
+
+
+    <property name="tests.hdk.dir" value="${hy.hdk}/build/test" />
+    <property name="tests.resources.dir" value="${tests.hdk.dir}/resources/${hy.security.packaging.jarname}" />
+    <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar" />
+        <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api.jar" />
+        <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar" />
+        <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl.jar" />
+        <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl_in.jar" />
+        <delete file="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar" />
+        <delete dir="${tests.resources.dir}" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+        </delete>
+        <delete failonerror="false" dir="bin"/>
+    </target>
+
+    <target name="compile-java">
+        <echo message="Compiling SECURITY classes" />
+
+        <mkdir dir="${hy.build}" />
+
+        <javac sourcepath=""
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <src>
+                <pathelement location="${hy.security.src.main.java}"/>
+                <pathelement location="${hy.security.src.main.java.platform}" />
+            </src>
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="copy-resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.security.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build-jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}.jar"
+             manifest="${hy.security}/META-INF/MANIFEST.MF">
+            <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.security.packaging.jarname}-src.jar">
+            <fileset dir="${hy.security.src.main.java}" />
+            <fileset dir="${hy.security.src.main.java.platform}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+    </target>
+
+    <target name="test-jar" depends="svn-info">
+	<mkdir dir="${tests.hdk.dir}"/>
+        <jar destfile="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api.jar">
+            <fileset refid="tests.api" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar">
+            <fileset refid="tests.api.in" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl.jar">
+            <fileset refid="tests.impl" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl_in.jar">
+            <fileset refid="tests.impl.in" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+        <jar destfile="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar">
+            <fileset refid="tests.support" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="copy-tests-resources">
+        <mkdir dir="${tests.resources.dir}" />
+        <copy todir="${tests.resources.dir}" includeemptydirs="false">
+            <fileset refid="resources" />
+        </copy>
+    </target>
+
+    <target name="compile-tests">
+
+        <compile-tests description="test support files" destdir="${hy.security.bin.test}/support">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/support/common/java"/>
+                </src>
+                <include name="**/*.java" />
+            </javac-elements>
+        </compile-tests>
+
+
+        <compile-tests description="api tests" destdir="${hy.security.bin.test}/api">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/api/java"/>
+                </src>
+
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="api injected tests" destdir="${hy.security.bin.test}/api.injected">
+            <javac-elements>
+                <src path="${hy.security.src.test}/api/java.injected"/>
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="impl injected tests" destdir="${hy.security.bin.test}/impl.injected">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/impl/java.injected"/>
+                </src>
+
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+
+        <compile-tests description="impl tests" destdir="${hy.security.bin.test}/impl">
+            <javac-elements>
+                <src>
+                    <pathelement location="${hy.security.src.test}/impl/java"/>
+                </src>
+
+                <include name="**/*Test.java" />
+            </javac-elements>
+        </compile-tests>
+    </target>
+
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="security" dir="./make"
+                             result="${security.exclude.file}"/>
+    </target>
+
+    <target name="run-tests" depends="run-tests-api, run-tests-impl" />
+
+    <target name="run-tests-api">
+
+        <run-tests description="api tests">
+            <junit-elements>
+                <classpath>
+                    <pathelement path="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api.jar"/>
+                    <pathelement path="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
+                    <pathelement path="${tests.resources.dir}"/>
+                    <pathelement path="${hy.hdk}/build/test/support.jar" />
+                </classpath>
+
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                    <fileset dir="${hy.security.src.test}/api/java">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <run-tests description="api.injected tests">
+            <junit-elements>
+                <!-- to pick up junit.jar               -->
+                <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_api_in.jar${path.separator}../../${junit.jar}${path.separator}../../build/tests${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
+
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                    <fileset dir="${hy.security.src.test}/api/java.injected">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="run-tests-impl" unless="test.noimpl">
+        <run-tests description="impl tests">
+            <junit-elements>
+                <classpath>
+                    <pathelement path="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl.jar"/>
+                    <pathelement path="${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
+                    <pathelement path="${hy.hdk}/build/test/support.jar" />
+                </classpath>
+                
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                    <fileset dir="${hy.security.src.test}/impl/java">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <run-tests description="impl injected tests">
+            <junit-elements>
+                <!-- to pick up junit.jar               -->
+                <jvmarg value="-Xbootclasspath/a:${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_impl_in.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar${path.separator}${tests.hdk.dir}/${hy.security.packaging.jarname}_tests_support.jar"/>
+
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                    <fileset dir="${hy.security.src.test}/impl/java.injected">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${security.exclude.file}" unless="test.case" />
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true">security${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true">security${line.separator}</echo>
+    </target>
+
+    <macrodef name="compile-tests">
+        <attribute name="description" default="" />
+        <attribute name="destdir"  />
+        <element name="javac-elements" />
+        <sequential>
+            <echo message="Compiling SECURITY @{description}" />
+
+            <mkdir dir="@{destdir}" />
+
+            <javac destdir="@{destdir}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+                <javac-elements />
+
+                <compilerarg line="${build.compilerarg}" />
+
+                <bootclasspath>
+                    <fileset dir="${hy.jdk}/jre/lib/boot">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </bootclasspath>
+                <classpath location="${hy.security.bin.test}/support" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="run-tests">
+        <attribute name="description" default="" />
+        <element name="junit-elements" />
+        <sequential>
+            <echo message="Running SECURITY @{description}" />
+
+            <mkdir dir="${hy.tests.reports}" />
+
+            <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+            <junit fork="yes"
+                   forkmode="${hy.test.forkmode}"
+                   timeout="${hy.test.timeout}"
+                   printsummary="withOutAndErr"
+                   errorproperty="test.errors"
+                   failureproperty="test.failures"
+                   showoutput="on"
+                   dir="${basedir}"
+                   jvm="${test.jre.home}/bin/java">
+                <jvmarg line="${hy.test.vmargs}" />
+                <!-- Used by Support_Exec.execJava() -->
+                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+
+                <junit-elements />
+
+                <classpath>
+                    <pathelement path="${tests.resources.dir}"/>
+                </classpath>
+
+                <formatter type="xml" />
+            </junit>
+        </sequential>
+    </macrodef>
+
+</project>

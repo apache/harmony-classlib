@@ -1,0 +1,2 @@
+# excluded to avoid random failures 
+org/apache/harmony/auth/tests/module/Krb5LoginModuleTest.java

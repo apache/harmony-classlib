@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="LUNI Build" default="build" basedir=".">
+    <description>Build for LUNI component</description>
+
+    <!-- import common properties -->
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+
+    <property name="hy.luni.src.test.api.java.platform"
+	    value="${hy.luni.src.test.api}/${hy.os.family}" />
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.luni.src.main.java}" />
+            <present targetdir="${hy.luni.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+    </fileset>
+
+    <property file="../../make/depends.properties" />
+    <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
+
+    <property name="luni.exclude.file" location="${hy.hdk}/build/luni.exclude" />
+
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
+
+    <target name="copy-native-includes">
+        <copy todir="${hy.hdk}/include" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/include/shared">
+                <include name="vmi.h" />
+                <include name="hyvmls.h" />
+                <include name="hysocket.h" />
+                <include name="gp.h" />
+                <include name="iohelp.h" />
+                <include name="exceptions.h" />
+                <include name="libglob.h" />
+                <include name="strhelp.h" />            	
+                <include name="fdlibm.h" />
+                <include name="hymagic.h" />
+                <include name="jsig.h" />
+                <include name="hyzip.h"/>
+            </fileset>
+        </copy>
+        <copy todir="${hy.jdk}/include" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/include/shared">
+                <include name="jni.h" />
+                <include name="jni_types.h" />
+                <include name="jvmti.h" />
+                <include name="jvmti_types.h" />
+            </fileset>
+        </copy>
+
+        <antcall target="copy-native-includes-windows" />
+        <antcall target="copy-native-includes-unix" />
+    </target>
+
+    <target name="copy-native-includes-windows" if="is.windows">
+        <copy todir="${hy.hdk}/include" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/include/windows">
+                <include name="jclprots.h" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-native-includes-unix" if="is.unix">
+        <copy todir="${hy.hdk}/include" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/include/unix">
+                <include name="jclprots.h" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Build native code -->
+    <target name="build-native"
+            depends="build-native-core, build-native-secondary" />
+
+    <!-- Build the core luni native components -->
+    <target name="build-native-core" >
+
+        <!-- Build fdlibm lib -->
+        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" />
+
+        <!-- Build vmi dll -->
+        <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" />
+
+        <!-- On Linux we want to copy the libvmi.so into the
+             deploy/lib directory so that the natives can link
+             against it. This is only used at build time - at
+             runtime the libvmi.so provided by the VM
+             implementation is loaded
+          -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes" failonerror="false">
+            <fileset dir="${hy.luni.src.main.native}/vmi">
+                <include name="libvmi${shlib.suffix}"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Build secondary native luni components -->
+    <target name="build-native-secondary"
+        depends="-build-native-secondary,-build-hyzip,-build-native-secondary2"
+        />
+
+    <target name="-build-native-secondary" >
+        <!-- Build luni dll -->
+        <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" />
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/luni">
+                <include name="*${shlib.suffix}*" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
+                <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+
+        <!-- Build vmls lib -->
+        <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" />
+    </target>
+
+    <target name="-build-hyzip" unless="hy.skip.zip.api">
+        <!-- Build hyzip lib -->
+        <make dir="${hy.luni.src.main.native}/hyzip/${hy.os.family}" />
+    </target>
+
+    <target name="-build-native-secondary2" >
+
+        <!-- Build launcher executables -->
+        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}" />
+
+        <!-- Copy across the built executables -->
+        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/launcher">
+                <patternset includes="java${exe.suffix}" />
+                <patternset includes="javaw${exe.suffix}" />
+                <include name="*${progdb.suffix}*" if="is.windows" />
+            </fileset>
+        </copy>
+
+        <!-- Make sure the Linux launcher has execute permission -->
+        <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
+    </target>
+
+    <!-- Overlay OSS packages into their required locations -->
+    <target name="overlay-oss" >
+        <unzip src="${fdlibm.zip}" dest="${hy.luni.src.main.native}/fdlibm_dist" />
+        <chmod dir="${hy.luni.src.main.native}/fdlibm_dist" perm="ugo+r" />
+    </target>
+
+    <!-- Clean overlaid OSS packages -->
+    <target name="clean-overlay-oss" >
+        <delete dir="${hy.luni.src.main.native}/fdlibm_dist" quiet="true" />
+    </target>
+
+    <!-- Clean natives -->
+    <target name="clean-native">
+        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/vmi/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/luni/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/vmls/${hy.os.family}" target="clean" />
+        <make dir="${hy.luni.src.main.native}/hyzip/${hy.os.family}"
+              target="clean" />
+        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}"
+              target="clean" />
+    </target>
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+
+    <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/luni-src.jar" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+        </delete>
+        <delete failonerror="false" dir="bin"/>
+        <antcall target="clean-native-includes" />
+    </target>
+
+    <target name="clean-native-includes">
+        <delete failonerror="false">
+            <fileset dir="${hy.hdk}/include">
+                <include name="vmi.h" />
+                <include name="hyvmls.h" />
+                <include name="jclprots.h" />
+                <include name="hysocket.h" />
+                <include name="gp.h" />
+                <include name="iohelp.h" />
+                <include name="exceptions.h" />
+                <include name="libglob.h" />
+                <include name="fdlibm.h" />
+                <include name="hymagic.h" />
+                <include name="jsig.h" />
+            </fileset>
+        </delete>
+        <delete failonerror="false">
+            <fileset dir="${hy.jdk}/include">
+                <include name="jni.h" />
+                <include name="jni_types.h" />
+                <include name="jvmti.h" />
+                <include name="jvmti_types.h" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="compile-java">
+        <echo message="Compiling LUNI classes" />
+
+        <javac sourcepath=""
+               srcdir="${hy.luni.src.main.java}"
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="build-jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
+             manifest="${hy.luni}/META-INF/MANIFEST.MF">
+            <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/>
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/luni-src.jar">
+            <fileset dir="${hy.luni.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/>
+            </manifest>
+
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+    </target>
+
+    <target name="compile-tests" depends="copy-test-resources">
+        <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
+            <javac-elements>
+                <src>
+		    <pathelement location="${hy.luni.src.test.api}/common"/>
+	            <pathelement location="${hy.luni.src.test.api.java.platform}"/>
+                <pathelement location="${hy.luni.src.test}/impl"/>
+                </src>
+                <include name="**/*.java" />
+            </javac-elements>
+        </compile-tests>
+    </target>
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="luni" dir="./make"
+                             result="${luni.exclude.file}"/>
+    </target>
+
+    <target name="run-tests">
+        <run-tests description="JUnit Tests">
+            <junit-elements>
+                <classpath>
+                    <pathelement path="${hy.luni.bin.test}"/>
+                    <pathelement path="${hy.luni.src.test.resources}"/>
+                    <pathelement path="../../build/tests"/>
+		    <fileset dir="${hy.hdk}/build/test/">
+		        <include name="*.jar" />
+		    </fileset>
+                </classpath>
+                <!-- Required by various tests that set security manager etc -->
+                <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
+
+                <!-- Required for running the java.net unit tests -->
+                <jvmarg value="-Dtest.ini.file=../../support/src/test/resources/config/localhosttest.ini" />
+
+
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                    <fileset dir="${hy.luni.src.test.api}/common">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
+                    </fileset>
+                    <fileset dir="${hy.luni.src.test.api.java.platform}">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
+                    </fileset>
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true">luni${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true">luni${line.separator}</echo>
+    </target>
+
+    <target name="copy-resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.luni.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-test-resources">
+        <mkdir dir="${hy.luni.bin.test}" />
+        <copy todir="${hy.luni.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.luni.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <macrodef name="compile-tests">
+        <attribute name="description" default="" />
+        <attribute name="destdir"  />
+        <element name="javac-elements" />
+        <sequential>
+            <echo message="Compiling LUNI @{description}" />
+
+            <mkdir dir="@{destdir}" />
+
+            <javac destdir="@{destdir}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+                <compilerarg line="${build.compilerarg}" />
+
+                <javac-elements />
+
+                <bootclasspath>
+                    <fileset dir="${hy.jdk}/jre/lib/boot">
+                        <include name="**/*.jar" />
+                    </fileset>
+                </bootclasspath>
+                <classpath location="../../build/tests" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="run-tests">
+        <attribute name="description" default="" />
+        <element name="junit-elements" />
+        <sequential>
+            <echo message="Running LUNI @{description}" />
+
+            <mkdir dir="${hy.tests.reports}" />
+
+            <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+            <junit fork="yes"
+                   forkmode="${hy.test.forkmode}"
+                   timeout="${hy.test.timeout}"
+                   printsummary="withOutAndErr"
+                   errorproperty="test.errors"
+                   failureproperty="test.failures"
+                   showoutput="on"
+                   dir="${basedir}"
+                   jvm="${test.jre.home}/bin/java">
+
+                <jvmarg line="${hy.test.vmargs}" />
+                <!-- Used by Support_Exec.execJava() -->
+                <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+
+                <junit-elements />
+
+                <formatter type="xml" />
+            </junit>
+        </sequential>
+    </macrodef>
+</project>

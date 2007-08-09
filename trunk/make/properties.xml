@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+  implied.  See the License for the specific language governing
+  permissions and limitations under the License.
+
+ -->
+
+<project name="Top-Level property definitions" default="echo" basedir="..">
+    <description>
+        Ant file of common properties to be imported by other ant files
+    </description>
+
+    <property file="${user.home}/.harmony-classlib.properties" />
+
+    <!-- Debug or release version -->
+    <property name="hy.cfg" value="debug" />
+
+    <!-- Javac properties -->
+    <!-- Explicitly set to ECJ as the default compiler. -->
+    <property name="hy.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+    <property name="hy.javac.source" value="1.5" />
+    <property name="hy.javac.target" value="1.5" />
+    <property name="hy.javac.maxmem" value="384M" />
+
+    <!-- Temporarily always include class file debug info -->
+    <condition property="hy.javac.debug" value="on" else="on">
+        <equals arg1="${hy.cfg}" arg2="debug" />
+    </condition>
+
+    <!-- During packaging, these files must be copied into the meta-inf dir -->
+    <fileset id="hy.required.metainf-files" dir="${hy.hdk}">
+        <include name="NOTICE" />
+        <include name="LICENSE" />
+    </fileset>
+
+    <!-- Test run property -->
+    <property name="hy.test.forkmode" value="once" />
+    <property name="hy.test.timeout" value="900000" />
+    <property name="hy.test.vmargs" value="" />
+
+    <!-- Conditions for operating systems -->
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
+    <condition property="is.linux">
+        <os name="linux" />
+    </condition>
+    <condition property="is.macosx">
+        <os name="mac os x" />
+    </condition>
+    <condition property="is.freebsd">
+        <os name="freebsd" />
+    </condition>
+    <condition property="is.aix">
+        <os name="aix" />
+    </condition>
+    <condition property="is.unix">
+        <os family="unix" />
+    </condition>
+    <condition property="is.zos">
+        <os name="z/OS" />
+    </condition>
+
+    <!-- Normalized operating system family -->
+    <condition property="hy.os.family" value="windows">
+        <isset property="is.windows" />
+    </condition>
+    <property name="hy.os.family" value="unix" />
+
+    <!-- Normalized operating system name -->
+
+    <!-- this special case makes sense -->
+    <condition property="hy.os" value="windows">
+        <isset property="is.windows"/>
+    </condition>
+    <condition property="hy.os" value="linux">
+        <os name="linux" />
+    </condition>
+    <condition property="hy.os" value="freebsd">
+        <os name="freebsd" />
+    </condition>
+    <condition property="hy.os" value="macosx">
+        <isset property="is.macosx"/>
+    </condition>
+    <condition property="hy.os" value="aix">
+        <os name="aix" />
+    </condition>
+    <condition property="hy.os" value="zos">
+        <isset property="is.zos"/>
+    </condition>
+
+    <property name="hy.os" value="${os.name}" />
+
+
+
+    <!-- Conditions for different architectures -->
+    <condition property="is.x86_64">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}"/>
+            <equals arg1="amd64" arg2="${os.arch}"/>
+        </or>
+    </condition>
+    <condition property="is.x86">
+	<and>
+	    <not>
+                <isset property="is.x86_64" />
+            </not>
+            <or>
+                <equals arg1="x86" arg2="${os.arch}"/>
+                <equals arg1="i386" arg2="${os.arch}"/>
+            </or>
+        </and>
+    </condition>
+    <condition property="is.ia64">
+        <equals arg1="ia64" arg2="${os.arch}"/>
+    </condition>
+    <condition property="is.ppc32">
+        <or>
+            <equals arg1="${os.arch}" arg2="ppc32" />
+            <equals arg1="${os.arch}" arg2="ppc" />
+        </or>
+    </condition>
+    <condition property="is.ppc64">
+        <equals arg1="${os.arch}" arg2="ppc64" />
+    </condition>
+    <condition property="is.s390x">
+        <equals arg1="${os.arch}" arg2="s390x" />
+    </condition>
+    <condition property="is.s390">
+        <equals arg1="${os.arch}" arg2="s390" />
+    </condition>
+
+    <condition property="is.64bit">
+        <or>
+            <isset property="is.ia64" />
+            <isset property="is.x86_64" />
+            <isset property="is.ppc64" />
+            <isset property="is.s390x" />
+        </or>
+    </condition>
+    <condition property="is.32bit">
+        <or>
+            <isset property="is.x86" />
+            <isset property="is.ppc32" />
+            <isset property="is.s390" /> <!-- 31bit of course -->
+        </or>
+    </condition>
+    <condition property="hy.bits" value="32">
+        <isset property="is.32bit" />
+    </condition>
+    <property name="hy.bits" value="64" />
+
+    <!-- Normalized architecture name -->
+    <condition property="hy.arch" value="x86_64">
+        <isset property="is.x86_64" />
+    </condition>
+    <condition property="hy.arch" value="x86">
+        <and>
+            <isset property="is.x86" />
+            <isset property="is.32bit" />
+        </and>
+    </condition>
+    <condition property="hy.arch" value="ppc32">
+        <isset property="is.ppc32" />
+    </condition>
+    <property name="hy.arch" value="${os.arch}" />
+    
+    <!-- Normalized platform name -->
+    <property name="hy.platform" value="${hy.os}.${hy.arch}"/>
+    <property name="hy.platform.path" value="${hy.os}/${hy.arch}"/>
+
+    <condition property="exe.suffix" value=".exe">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="exe.suffix" value="" />
+
+    <condition property="shlib.prefix" value="">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="shlib.prefix" value="lib" />
+
+    <condition property="shlib.suffix" value=".dll">
+        <isset property="is.windows"/>
+    </condition>
+    <condition property="shlib.suffix" value=".dylib">
+        <isset property="is.macosx"/>
+    </condition>
+    <property name="shlib.suffix" value=".so" />
+
+    <condition property="progdb.suffix" value=".pdb">
+        <isset property="is.windows" />
+    </condition>
+
+    <condition property="linklib.suffix" value=".lib">
+        <isset property="is.windows"/>
+    </condition>
+    <condition property="linklib.suffix" value=".x">
+        <isset property="is.zos" />
+    </condition>
+    <condition property="linklib.suffix" value=".dylib">
+        <isset property="is.macosx"/>
+    </condition>
+    <property name="linklib.suffix" value=".so" />
+
+    <property name="manifest.suffix" value=".manifest" />
+
+    <condition property="make.command" value="nmake.exe">
+        <isset property="is.windows"/>
+    </condition>
+    <condition property="make.command" value="gmake">
+        <or>
+            <isset property="is.aix"/>
+            <isset property="is.freebsd"/>
+        </or>
+    </condition>
+    <property name="make.command" value="make" />
+
+    <condition property="make.arg" value="/nologo">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="make.arg" value="" />
+
+    <condition property="png.home" value="/usr/local">
+        <isset property="is.freebsd"/>
+    </condition>
+    <condition property="png.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
+    <property name="png.home" value="/usr" />
+
+    <condition property="lcms.home" value="/usr/local">
+        <isset property="is.freebsd"/>
+    </condition>
+    <condition property="lcms.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
+    <property name="lcms.home" value="/usr" />
+
+    <condition property="jpeg.home" value="/usr/local">
+        <isset property="is.freebsd"/>
+    </condition>
+    <condition property="jpeg.home" value="/sw">
+        <isset property="is.macosx"/>
+    </condition>
+    <property name="jpeg.home" value="/usr" />
+    
+    <property name="build.compilerarg" value="-warn:none" />
+
+    <!-- default property for call-modules macro - i.e. all modules -->
+    <property name="build.module" value="*" />
+    <property name="exclude.module" value="nothing" />
+
+    <!-- names of exclude lists, used by prepare-exclude-list macro -->
+    <property name="common.exclude.file" value="exclude.common" />
+    <property name="common.exclude.interm" value="exclude.interm" />
+    <property name="platform.exclude.file"
+              value="exclude.${hy.platform}.${hy.test.vm.name}" />
+    <property name="platform.exclude.interm"
+              value="exclude.${hy.platform}.${hy.test.vm.name}.interm" />
+
+    <!-- flags -->
+    <property name="hy.no.thr" value="false" />
+    <condition property="hy.skip.thr" value="true">
+        <not>
+            <equals arg1="${hy.no.thr}" arg2="false" />
+        </not>
+    </condition>
+
+    <property name="hy.no.sig" value="${hy.no.thr}" />
+    <condition property="hy.skip.sig" value="true">
+        <not>
+            <equals arg1="${hy.no.sig}" arg2="false" />
+        </not>
+    </condition>
+
+    <property name="hy.zip.api" value="false" />
+    <condition property="hy.skip.zip.api" value="true">
+        <not>
+            <equals arg1="${hy.zip.api}" arg2="true" />
+        </not>
+     </condition>
+
+    <condition property="hy.libstdc++.suffix" value=".libstdc++6">
+        <isset property="use.libstdc++6"/>
+    </condition>
+    <property name="hy.libstdc++.suffix" value="" />
+
+    <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
+            description="Display the properties defined by this ant file" >
+        <echo>
+Harmony release configuration property:
+
+  hy.cfg = ${hy.cfg}
+
+Harmony javac properties:
+
+  hy.javac.compiler = ${hy.javac.compiler}
+  hy.javac.target = ${hy.javac.target}
+  hy.javac.source = ${hy.javac.source}
+  hy.javac.debug  = ${hy.javac.debug}
+  hy.javac.maxmem = ${hy.javac.maxmem}
+
+Harmony test properties:
+
+    hy.test.forkmode = ${hy.test.forkmode}
+    hy.test.timeout = ${hy.test.timeout}
+    hy.test.vm.name = ${hy.test.vm.name}
+    hy.test.vmargs = ${hy.test.vmargs}
+
+Harmony platform properties:
+
+  hy.os = ${hy.os}
+  hy.os.family = ${hy.os.family}
+  hy.arch = ${hy.arch}
+  hy.bits = ${hy.bits}
+  hy.platform = ${hy.platform}
+  hy.platform.path = ${hy.platform.path}
+
+  is.windows = ${is.windows}
+  is.unix = ${is.unix}
+  is.linux = ${is.linux}
+  is.freebsd = ${is.freebsd}
+  is.macosx = ${is.macosx}
+  is.aix = ${is.aix}
+  is.zos = ${is.zos}
+  is.32bit = ${is.32bit}
+  is.64bit = ${is.64bit}
+  is.x86 = ${is.x86}
+  is.x86_64 = ${is.x86_64}
+  is.ia64 = ${is.ia64}
+  is.ppc32 = ${is.ppc32}
+  is.ppc64 = ${is.ppc64}
+  is.s390 = ${is.s390}
+  is.s390x = ${is.s390x}
+
+  exe.suffix = ${exe.suffix}
+  shlib.prefix = ${shlib.prefix}
+  shlib.suffix = ${shlib.suffix}
+  make.command = ${make.command}
+
+  hy.hdk = ${hy.hdk}
+
+
+The following property is only set if the "svn-prop" target has been
+called:
+
+  svn.revision = ${svn.revision}
+
+
+The following property is only set if the "svn-info" target has been
+called:
+
+  svn.info = ${svn.info}
+
+Ant native properties, for information, but please use Harmony
+properties in preference to these:
+
+  os.name = ${os.name}
+  os.arch = ${os.arch}
+
+        </echo>
+    </target>
+
+    <target name="svn-prop">
+        <exec executable="svn">
+            <arg value="--non-interactive" />
+            <arg value="info" />
+            <redirector outputproperty="svn.revision">
+                <outputfilterchain>
+                    <linecontains>
+                        <contains value="Revision: " />
+                    </linecontains>
+                    <tokenfilter>
+                        <replacestring from="Revision: " to=""/>
+                    </tokenfilter>
+                </outputfilterchain>
+            </redirector>
+        </exec>
+    </target>
+
+    <target name="svn-info">
+        <exec executable="svn"
+              failifexecutionfails="false"
+              resultproperty="svn.rc">
+            <arg value="info" />
+            <redirector outputproperty="svn.info.tmp">
+                <outputfilterchain>
+                    <linecontainsregexp>
+                        <regexp pattern="Repository Root:|Revision:" />
+                    </linecontainsregexp>
+                    <tokenfilter>
+                        <replacestring from="Repository Root: " to=""/>
+                        <replacestring from="Revision: " to=" "/>
+                    </tokenfilter>
+                    <striplinebreaks/>
+                </outputfilterchain>
+            </redirector>
+        </exec>
+        <condition property="svn.info" value="${svn.info.tmp}" >
+            <equals arg1="${svn.rc}" arg2="0" />
+        </condition>
+        <tstamp>
+            <format property="svn.info" pattern="'Unknown revision at' dd-MMM-yyyy hh:mm aa"/>
+        </tstamp>
+    </target>
+
+    <target name="test-jre-vm-info" depends="-get-test-vm-output">
+        <!-- Add other runtime names here -->
+        <condition property="hy.test.vm.name" value="ri" >
+            <contains string="${test.vm.info.tmp}" substring="HotSpot"/>
+        </condition>
+        <condition property="hy.test.vm.name" value="jr" >
+            <contains string="${test.vm.info.tmp}" substring="JRockit"/>
+        </condition>
+        <!-- FIXME current behavior relies on the fact that J9 VM doesn't
+             support -version parameter -->
+        <condition property="hy.test.vm.name" value="drl" else="ibm" >
+            <contains string="${test.vm.info.tmp}" substring="harmony" />
+        </condition>
+        <echo message="hy.test.vm.name = ${hy.test.vm.name}" />
+    </target>
+
+    <target name="-get-test-vm-output" if="test.jre.home">
+        <exec executable="${test.jre.home}/bin/java" failifexecutionfails="false">
+            <arg value="-version" />
+            <redirector outputproperty="test.vm.info.tmp"/>
+        </exec>
+    </target>
+
+    <macrodef name="call-modules">
+        <attribute name="target" />
+        <sequential>
+            <subant target="@{target}">
+                <property name="hy.test.vm.name" value="${hy.test.vm.name}"/>
+                <dirset dir="modules" includes="${build.module}" excludes="${exclude.module}" />
+            </subant>
+        </sequential>
+    </macrodef>
+
+    <!-- macros for modules -->
+    <!-- TOFIX move to a shared file in the HDK/build/make directory. -->
+
+    <macrodef name="make">
+        <attribute name="dir" />
+        <attribute name="target" default="" />
+        <sequential>
+            <exec failonerror="true"
+                  executable="${make.command}"
+                  dir="@{dir}">
+                <env key="HY_ZIP_API" value="${hy.zip.api}" />
+                <env key="HY_HDK" value="${hy.hdk}" />
+                <env key="HY_CFG" value="${hy.cfg}" />
+                <env key="HY_ARCH" value="${hy.arch}" />
+                <env key="HY_OS" value="${hy.os}" />
+                <env key="HY_PLATFORM" value="${hy.platform}" />
+                <env key="HY_NO_SIG" value="${hy.no.sig}" />
+                <env key="HY_NO_THR" value="${hy.no.thr}" />
+                <env key="HY_SHLIB_SUFFIX" value="${shlib.suffix}" />
+                <env key="HY_LINKLIB_SUFFIX" value="${linklib.suffix}" />
+                <arg line="${make.arg}" />
+                <arg line="@{target}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+
+    <!-- To use with -Dtest.case=... option                   -->
+    <!-- if ${test.case} is provided in package+class form    -->
+    <!-- it is converted to dir+filename form                 -->
+    <pathconvert property="converted.tc" >
+        <path path="${test.case}"/>
+        <compositemapper>
+            <unpackagemapper from="${basedir}${file.separator}*Test" to="*Test.java" />
+            <globmapper from="${basedir}${file.separator}*.java" to="*.java" />
+        </compositemapper>
+    </pathconvert>
+
+    <!-- Concatenate several exclude lists into single list -->
+    <macrodef name="prepare-exclude-list">
+       <attribute name="moduleName"/>
+       <!-- directory with exclude lists for the module -->
+       <attribute name="dir"/>
+       <!-- name of concatenated list, should be an absolute pathname -->
+       <attribute name="result"/>
+       <sequential>
+           <echo message="" file="@{result}"/>
+           <concat destfile="@{result}" force="yes" fixlastline="yes" append="true">
+               <fileset dir="@{dir}">
+                   <include name="${common.exclude.file}"/> 
+                   <include name="${platform.exclude.file}"/>
+                   <include name="${common.exclude.interm}" if="exclude.interm" />
+                   <include name="${platform.exclude.interm}" if="exclude.interm" />
+                   <size value="0" when="more"/>
+               </fileset>
+           </concat>
+       </sequential>
+   </macrodef>
+
+</project>

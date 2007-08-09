@@ -1,0 +1,8 @@
+javax/swing/JCheckBoxMenuItemTest.java
+javax/swing/Timer_MultithreadedTest.java
+javax/swing/text/AbstractDocument_AbstractElement_MASNoLockTest.java
+
+#HARMONY-3968
+javax/swing/text/html/FormViewTest.java
+#HARMONY-3969
+javax/swing/text/html/HTMLEditorKitTest.java

@@ -1,0 +1,4 @@
+org/apache/harmony/beans/tests/java/beans/VetoableChangeSupportTest.java
+org/apache/harmony/beans/tests/java/beans/XMLDecoderTest.java
+org/apache/harmony/beans/tests/java/beans/XMLEncoderTest.java
+

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="LANG-MANAGEMENT Build" default="build" basedir=".">
+    <description>Build for LANG-MANAGEMENT component</description>
+
+    <!-- import common properties -->
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.lang-management.src.main.java}" />
+            <present targetdir="${hy.lang-management.src.main.java}">
+                <mapper type="regexp" from="^(.*?)(\$$[^/\\\.]*)?\.class$$" to="\1.java" />
+            </present>
+        </or>
+    </fileset>
+
+    <property name="lang-management.exclude.file" location="${hy.hdk}/build/lang-management.exclude" />
+
+    <target name="build" depends="compile-java, build-jar" />
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+
+    <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}-src.jar" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+        </delete>
+        <delete failonerror="false" dir="bin"/>
+    </target>
+
+    <target name="compile-java">
+        <echo message="Compiling LANG-MANAGEMENT classes" />
+
+        <mkdir dir="${hy.build}" />
+
+        <javac sourcepath=""
+               srcdir="${hy.lang-management.src.main.java}"
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="build-jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}.jar"
+             manifest="${hy.lang-management}/META-INF/MANIFEST.MF">
+            <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}" />
+            </manifest>
+            <metainf refid="hy.required.metainf-files" />
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.lang-management.packaging.jarname}-src.jar">
+            <fileset dir="${hy.lang-management.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}" />
+            </manifest>
+            <metainf refid="hy.required.metainf-files" />
+        </jar>
+    </target>
+
+    <target name="compile-tests">
+        <antcall target="compile-tests-api" />
+        <antcall target="compile-tests-impl" />
+    </target>
+
+    <target name="compile-tests-api">
+        <echo message="Compiling LANG-MANAGEMENT API tests" />
+
+        <mkdir dir="${hy.lang-management.bin.test.api}" />
+
+        <javac srcdir="${hy.lang-management.src.test.api.java}"
+               destdir="${hy.lang-management.bin.test.api}"
+               sourcepath=""
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
+        </javac>
+    </target>
+
+    <target name="compile-tests-impl">
+        <echo message="Compiling LANG-MANAGEMENT Implementation tests" />
+
+        <mkdir dir="${hy.lang-management.bin.test.impl}" />
+
+        <javac srcdir="${hy.lang-management.src.test.impl.java}"
+               destdir="${hy.lang-management.bin.test.impl}"
+               sourcepath=""
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" />
+        </javac>
+    </target>
+
+    <target name="prepare-exclude">
+       <prepare-exclude-list moduleName="lang-management" dir="./make"
+                             result="${lang-management.exclude.file}"/>
+    </target>
+
+    <target name="run-tests">
+        <antcall target="run-tests-api" />
+        <antcall target="run-tests-impl" />
+    </target>
+
+    <target name="run-tests-api">
+        <mkdir dir="${hy.tests.reports}" />
+
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+        <junit fork="yes"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
+
+            <jvmarg line="${hy.test.vmargs}" />
+
+            <classpath>
+                <pathelement path="${hy.lang-management.bin.test.api}" />
+            </classpath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                <fileset dir="${hy.lang-management.src.test.api.java}" >
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case"/>
+                    <excludesfile name="${lang-management.exclude.file}" unless="test.case"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="run-tests-impl">
+        <mkdir dir="${hy.tests.reports}" />
+
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+        <junit fork="yes"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
+
+            <jvmarg line="${hy.test.vmargs}" />
+
+            <classpath>
+                <pathelement path="${hy.lang-management.bin.test.impl}" />
+            </classpath>
+            <classpath location="${hy.hdk}/build/test/support.jar" />
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                <fileset dir="${hy.lang-management.src.test.impl.java}">
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${lang-management.exclude.file}" unless="test.case" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures" append="true">lang-management${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors" append="true">lang-management${line.separator}</echo>
+    </target>
+
+</project>
