@@ -99,6 +99,11 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
         }
 
         bits = pfd.get_cColorBits();
+        if (bits == 0) { 
+            cm = null; 
+            return; 
+        }
+        
         redBits = pfd.get_cRedBits();
         redShift = pfd.get_cRedShift();
         rmask = (int)(Math.pow(2,redBits)-1) << redShift;

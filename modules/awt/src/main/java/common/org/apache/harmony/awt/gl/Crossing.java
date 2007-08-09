@@ -382,14 +382,9 @@ public class Crossing {
             }
         }
 
-        // START
-        if (x == x1) {
-            return x1 < x2 ? 0 : -1;
-        }
-
-        // END
-        if (x == x2) {
-            return x1 < x2 ? 1 : 0;
+        // START or END
+        if (x == x1 || x == x2) {
+            return 0;
         }
 
         // INSIDE-DOWN

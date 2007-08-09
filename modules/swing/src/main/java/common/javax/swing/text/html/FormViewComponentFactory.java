@@ -86,7 +86,7 @@ final class FormViewComponentFactory {
                 if (url == null) {
                     icon = HTMLIconFactory.getLoadingFailedIcon();
                 } else {
-                    loader = new BackgroundImageLoader(url, -1, -1) {
+                    loader = new BackgroundImageLoader(url, true, -1, -1) {
                         protected void onReady() {
                             super.onReady();
                             view.preferenceChanged(view, true, true);

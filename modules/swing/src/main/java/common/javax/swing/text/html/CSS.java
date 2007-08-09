@@ -528,7 +528,7 @@ public class CSS implements Serializable {
             if (path != null && imageLoader == null) {
 
                 final URL url = HTML.resolveURL(path, base);
-                imageLoader = new BackgroundImageLoader(url, -1, -1) {
+                imageLoader = new BackgroundImageLoader(url, true, -1, -1) {
                     protected void onReady() {
                         super.onReady();
                         notifyViews();
