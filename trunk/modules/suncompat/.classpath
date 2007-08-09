@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry path="src/main/java" kind="src" output="bin/main"/>
-	<classpathentry path="src/test/java" kind="src" output="bin/test"/>
-	<classpathentry path="org.eclipse.pde.core.requiredPlugins" kind="con"/>
-	<classpathentry path="JUNIT_HOME/junit.jar" kind="var" sourcepath="JUNIT_SRC_HOME/junitsrc.zip"/>
-	<classpathentry path="bin/main" kind="output"/>
-</classpath>

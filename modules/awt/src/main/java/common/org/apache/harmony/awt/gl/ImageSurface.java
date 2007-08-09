@@ -218,7 +218,7 @@ public class ImageSurface extends Surface implements DataBufferListener {
     }
 
     @Override
-    public void dispose() {
+    public synchronized void dispose() {
         if(surfaceDataPtr != 0L){
             dispose(surfaceDataPtr);
             surfaceDataPtr = 0L;

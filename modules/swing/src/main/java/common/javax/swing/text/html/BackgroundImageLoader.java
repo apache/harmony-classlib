@@ -40,16 +40,26 @@ class BackgroundImageLoader implements ImageObserver {
     private volatile boolean ready;
     private volatile boolean error;
 
-    BackgroundImageLoader(final URL url,
+    private boolean synchronous;
+    Object lock = new Object();
+
+    final Toolkit tk = Toolkit.getDefaultToolkit();
+
+    BackgroundImageLoader(final URL url, boolean synchronous,
                           final int desiredWidth, final int desiredHeight) {
         this.desiredWidth = desiredWidth;
         this.desiredHeight = desiredHeight;
 
+        this.synchronous = synchronous;
+
         error = url == null;
         if (!error) {
-            final Toolkit tk = Toolkit.getDefaultToolkit();
             image = tk.createImage(url);
-            tk.prepareImage(image, desiredWidth, desiredHeight, this);
+            if (synchronous){
+                waitForImage();
+            } else {
+                tk.prepareImage(image, desiredWidth, desiredHeight, this);
+            }
         } else {
             image = null;
         }
@@ -64,16 +74,22 @@ class BackgroundImageLoader implements ImageObserver {
         if ((flags & HEIGHT) != 0) {
             imageHeight = desiredHeight == -1 ? height : desiredHeight;
         }
-        if ((flags & ALLBITS) != 0) {
+        if ((flags & (FRAMEBITS | ALLBITS)) != 0) {
             ready = true;
             onReady();
         }
         if ((flags & (ERROR | ABORT)) != 0) {
             error = true;
             onError();
-            return false;
         }
-        return width == -1 || height == -1 || !ready;
+
+        if (synchronous){
+            synchronized (lock){
+                lock.notify();
+            }
+        }
+
+        return (flags & ALLBITS) == 0;
     }
 
     public final Image getImage() {
@@ -97,11 +113,15 @@ class BackgroundImageLoader implements ImageObserver {
     }
 
     public final void waitForImage() {
-        while (!ready && !error) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        synchronized (lock){
+            if (!tk.prepareImage(image, desiredWidth, desiredHeight, this)) {
+                while (!(error | ready)) {
+                    try {
+                        lock.wait(1000);
+                    } catch(InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
             }
         }
     }

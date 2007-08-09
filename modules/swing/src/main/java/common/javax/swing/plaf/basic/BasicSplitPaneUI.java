@@ -382,6 +382,18 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                     splitPane.setDividerLocation(dividerLocation);
                 }
             }
+            if ((components[RIGHT_COMPONENT_INDEX] != null) && (components[LEFT_COMPONENT_INDEX] == null)) {
+                dividerLocation = topLeft;
+                if (dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
+                    splitPane.setDividerLocation(dividerLocation);
+                }
+            }            
+            if ((components[RIGHT_COMPONENT_INDEX] == null) && (components[LEFT_COMPONENT_INDEX] != null)) {
+                dividerLocation = containerSize - bottomRight - dividerSize;
+                if (dividerLocation != splitPane.getDividerLocation() && isDisplayed) {
+                    splitPane.setDividerLocation(dividerLocation);
+                }
+            }            
         }
     }
 
