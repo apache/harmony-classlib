@@ -544,17 +544,8 @@ class Lexer implements java_cup.runtime.Scanner {
 						buffer.append(yytext());
 					break;
 					case LINE_TERMINATOR:
-						if (terminatorSkipped) {
-							buffer.append(yytext());
-						}  
-						/* 
-						* Collapses if there is only one last line terminator. 
-						* If there are more then doesn't do it (same as RI)
-						* FIXME 
-						*/
-						skipLastLineTerminator = !lastWasLineTerminator;
-						lastWasLineTerminator = true;
-						terminatorSkipped = true;
+					    buffer.append(yytext());
+					    terminatorSkipped = false;
 					break;
 					case TEXT:
 						buffer.append(yytext());
