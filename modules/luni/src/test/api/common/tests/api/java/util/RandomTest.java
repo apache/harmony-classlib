@@ -243,6 +243,17 @@ public class RandomTest extends junit.framework.TestCase {
 					"Reseting a random to its old seed did not result in the same chain of values as it gave before",
 					aRandom.nextLong() == randomArray[counter]);
 	}
+    
+    // two random create at a time should also generated different results
+    // regression test for Harmony 4616
+    public void test_random_generate() throws Exception {
+        for (int i = 0; i < 100; i++) {
+            Random random1 = new Random();
+            Random random2 = new Random();
+            assertFalse(random1.nextLong() == random2.nextLong());    
+        }
+    }
+
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

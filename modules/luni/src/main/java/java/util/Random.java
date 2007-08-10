@@ -59,7 +59,7 @@ public class Random implements Serializable {
      * @see #setSeed
      */
     public Random() {
-        setSeed(System.currentTimeMillis());
+        setSeed(System.currentTimeMillis() + hashCode());
     }
 
     /**
