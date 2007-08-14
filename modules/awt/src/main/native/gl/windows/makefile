@@ -23,7 +23,7 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)include /I$(SHAREDSUB) \
+HYCFLAGS = $(HYCFLAGS) /D_WIN32_WINNT=0x0500 /I$(SHAREDSUB)include /I$(SHAREDSUB) \
            /I$(PNG_DIR) /Iinclude
 
 BUILDFILES = \
@@ -32,6 +32,7 @@ BUILDFILES = \
   WinGDIPGraphics2D.obj \
   WinGraphicsEnvironment.obj \
   WinThemeGraphics.obj \
+  LockingKeys.obj \
   $(SHAREDSUB)blitter.obj \
   $(SHAREDSUB)gifdecoder.obj \
   $(SHAREDSUB)LUTTables.obj \

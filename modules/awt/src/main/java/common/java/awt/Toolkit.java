@@ -28,6 +28,7 @@ import java.awt.dnd.peer.DragSourceContextPeer;
 import java.awt.event.AWTEventListener;
 import java.awt.event.AWTEventListenerProxy;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.im.InputMethodHighlight;
 import java.awt.image.ColorModel;
 import java.awt.image.ImageObserver;
@@ -795,16 +796,16 @@ public abstract class Toolkit {
         }
     }
 
-    public boolean getLockingKeyState(int a0) throws UnsupportedOperationException, org.apache.harmony.luni.util.NotImplementedException {
-        lockAWT();
-        try {
-        } finally {
-            unlockAWT();
+    public boolean getLockingKeyState(int keyCode) throws UnsupportedOperationException {
+
+        if (keyCode != KeyEvent.VK_CAPS_LOCK &&
+            keyCode != KeyEvent.VK_NUM_LOCK &&
+            keyCode != KeyEvent.VK_SCROLL_LOCK &&
+            keyCode != KeyEvent.VK_KANA_LOCK) {
+            throw new IllegalArgumentException();
         }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return true;
+
+        return wtk.getLockingState(keyCode);
     }
 
     public int getMaximumCursorColors() throws HeadlessException {
@@ -952,16 +953,16 @@ public abstract class Toolkit {
         }
     }
 
-    public void setLockingKeyState(int a0, boolean a1) throws UnsupportedOperationException, org.apache.harmony.luni.util.NotImplementedException {
-        lockAWT();
-        try {
-        } finally {
-            unlockAWT();
+    public void setLockingKeyState(int keyCode, boolean on) throws UnsupportedOperationException  {
+
+        if (keyCode != KeyEvent.VK_CAPS_LOCK &&
+            keyCode != KeyEvent.VK_NUM_LOCK &&
+            keyCode != KeyEvent.VK_SCROLL_LOCK &&
+            keyCode != KeyEvent.VK_KANA_LOCK) {
+            throw new IllegalArgumentException();
         }
-        if (true) {
-            throw new RuntimeException("Method is not implemented"); //TODO: implement //$NON-NLS-1$
-        }
-        return;
+
+        wtk.setLockingState(keyCode, on);
     }
 
     void onQueueEmpty() {

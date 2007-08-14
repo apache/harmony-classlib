@@ -27,6 +27,10 @@ import org.apache.harmony.awt.wtk.*;
 
 public class WinWTK extends WTK {
 
+    static {
+        System.loadLibrary("gl"); //$NON-NLS-1$
+    }
+
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getGraphicsFactory()
      */
@@ -97,6 +101,10 @@ public class WinWTK extends WTK {
         }
         return im;
     }
+
+    public native boolean getLockingState(int keyCode);
+
+    public native void setLockingState(int keyCode, boolean on);
 
     private final WinSystemProperties systemProperties = new WinSystemProperties();
     private final WinEventQueue eventQueue = new WinEventQueue(systemProperties);
