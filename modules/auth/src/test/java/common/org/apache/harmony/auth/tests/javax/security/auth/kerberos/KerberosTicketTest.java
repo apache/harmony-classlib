@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
+import javax.security.auth.DestroyFailedException;
 import javax.security.auth.RefreshFailedException;
 import javax.security.auth.kerberos.KerberosKey;
 import javax.security.auth.kerberos.KerberosPrincipal;
@@ -519,6 +520,48 @@ public class KerberosTicketTest extends TestCase {
         }
 
         // TODO test: ticket refreshing 
+    }
+    
+    /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#equals(java.lang.Object)
+     */
+    public void test_equals() throws Exception {
+        KerberosTicket krbTicket1 = new KerberosTicket(ticket, pClient,
+                pServer, sessionKey, KEY_TYPE, flags, authTime, startTime,
+                endTime, renewTill, addesses);
+        KerberosTicket krbTicket2 = new KerberosTicket(ticket, pClient,
+                pServer, sessionKey, KEY_TYPE, flags, authTime, startTime,
+                endTime, renewTill, addesses);
+        KerberosTicket krbTicket3 = new KerberosTicket(ticket, pClient,
+                pServer, sessionKey, KEY_TYPE, new boolean[] { true, false },
+                authTime, startTime, endTime, renewTill, addesses);
+        assertEquals("krbTicket1 and krbTicket2 should be equivalent ",
+                krbTicket1, krbTicket2);
+        assertFalse("krbTicket1 and krbTicket3 sholudn't be equivalent ",
+                krbTicket1.equals(krbTicket3));
+        try {
+            krbTicket2.destroy();
+        } catch (DestroyFailedException e) {
+            fail("krbTicket2 destroy failed");
+        }
+        assertFalse("Destroyed krbTicket sholudn't be equivalent ", krbTicket1
+                .equals(krbTicket2));
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosTicket#hashCode()
+     */
+    public void test_hashCode() {
+        KerberosTicket krbTicket1 = new KerberosTicket(ticket, pClient,
+                pServer, sessionKey, KEY_TYPE, flags, authTime, startTime,
+                endTime, renewTill, addesses);
+        KerberosTicket krbTicket2 = new KerberosTicket(ticket, pClient,
+                pServer, sessionKey, KEY_TYPE, flags, authTime, startTime,
+                endTime, renewTill, addesses);
+        assertEquals("krbTicket1 and krbTicket2 should be equivalent",
+                krbTicket1, krbTicket2);
+        assertEquals("hashCode should be equivalent", krbTicket1.hashCode(),
+                krbTicket2.hashCode());
     }
 
     // Hands-created ticket encoding:

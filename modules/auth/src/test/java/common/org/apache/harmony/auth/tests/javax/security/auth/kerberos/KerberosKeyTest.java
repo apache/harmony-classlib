@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+import javax.security.auth.DestroyFailedException;
 import javax.security.auth.kerberos.KerberosKey;
 import javax.security.auth.kerberos.KerberosPrincipal;
 
@@ -224,5 +225,38 @@ public class KerberosKeyTest extends TestCase {
             fail("No expected IllegalStateException");
         } catch (IllegalStateException e) {
         }
+    }
+    
+    /**
+     * @tests javax.security.auth.kerberos.KerberosKey#equals(java.lang.Object)
+     */
+    public void test_equals() {
+        KerberosKey kerberosKey1 = new KerberosKey(principal, keyBytes, 1, 123);
+        KerberosKey kerberosKey2 = new KerberosKey(principal, keyBytes, 1, 123);
+        KerberosKey kerberosKey3 = new KerberosKey(principal, new byte[] { 1,
+                3, 4, 5 }, 1, 123);
+        assertEquals("kerberosKey1 and kerberosKey2 should be equivalent ",
+                kerberosKey1, kerberosKey2);
+        assertFalse("kerberosKey1 and kerberosKey3 sholudn't be equivalent ",
+                kerberosKey1.equals(kerberosKey3));
+        try {
+            kerberosKey2.destroy();
+        } catch (DestroyFailedException e) {
+            fail("kerberosKey2 destroy failed");
+        }
+        assertFalse("Destroyed kerberosKey sholudn't be equivalent ",
+                kerberosKey1.equals(kerberosKey2));
+    }
+
+    /**
+     * @tests javax.security.auth.kerberos.KerberosKey#hashCode()
+     */
+    public void test_hashCode() {
+        KerberosKey kerberosKey1 = new KerberosKey(principal, keyBytes, 1, 123);
+        KerberosKey kerberosKey2 = new KerberosKey(principal, keyBytes, 1, 123);
+        assertEquals("kerberosKey1 and kerberosKey2 should be equivalent ",
+                kerberosKey1, kerberosKey2);
+        assertEquals("hashCode should be equivalent", kerberosKey1.hashCode(),
+                kerberosKey2.hashCode());
     }
 }

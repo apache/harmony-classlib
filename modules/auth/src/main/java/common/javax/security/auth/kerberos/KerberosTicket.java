@@ -371,4 +371,73 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
             throw new IllegalStateException(Messages.getString("auth.43")); //$NON-NLS-1$
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if ((other instanceof KerberosTicket) && (!this.isDestroyed())) {
+            KerberosTicket that = (KerberosTicket) other;
+            if ((!that.isDestroyed()) && sessionKey.equals(that.sessionKey)
+                    && (authTime.equals(that.authTime))
+                    && (endTime.equals(that.endTime))
+                    && (startTime.equals(that.startTime))
+                    && (client.equals(that.client))
+                    && (server.equals(that.server))
+                    && (asn1Encoding.length == that.asn1Encoding.length)
+                    && (flags.length == that.flags.length)) {
+                for (int i = 0; i < asn1Encoding.length; i++) {
+                    if (asn1Encoding[i] != that.asn1Encoding[i]) {
+                        return false;
+                    }
+                }
+                for (int i = 0; i < flags.length; i++) {
+                    if (flags[i] != that.flags[i]) {
+                        return false;
+                    }
+                }
+                if (((renewTill != null) && (renewTill.equals(that.renewTill)))
+                        || ((renewTill == null) && that.renewTill == null)) {
+                    if ((clientAddresses != null)
+                            && (that.clientAddresses != null)) {
+                        for (int i = 0; i < clientAddresses.length; i++) {
+                            if ((clientAddresses[i] == null && that.clientAddresses[i] != null)
+                                    || (clientAddresses[i] != null && !clientAddresses[i]
+                                            .equals(that.clientAddresses[i]))) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    } else if ((clientAddresses == null)
+                            && (that.clientAddresses == null)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashcode = 0;
+        for (int i = 0; i < asn1Encoding.length; i++) {
+            hashcode += asn1Encoding[i];
+        }
+        hashcode += sessionKey.hashCode();
+        for (int i = 0; i < flags.length; i++) {
+            hashcode += (flags[i] ? 1 : 0);
+        }
+        hashcode += authTime.hashCode();
+        hashcode += startTime.hashCode();
+        hashcode += endTime.hashCode();
+        hashcode += (renewTill != null ? renewTill.hashCode() : 0);
+        hashcode += client.hashCode();
+        hashcode += server.hashCode();
+        if (clientAddresses != null) {
+            for (int i = 0; i < clientAddresses.length; i++) {
+                hashcode += (clientAddresses[i] != null ? clientAddresses[i]
+                        .hashCode() : 0);
+            }
+        }
+        return hashcode;
+    }
 }

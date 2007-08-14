@@ -117,4 +117,32 @@ public class KerberosKey implements SecretKey, Destroyable {
             throw new IllegalStateException(Messages.getString("auth.48")); //$NON-NLS-1$
         }
     }
+    
+    @Override
+    public boolean equals(Object other) {
+        if ((other instanceof KerberosKey) && (!this.isDestroyed())) {
+            KerberosKey that = (KerberosKey) other;
+            if ((!that.isDestroyed()) && (versionNum == that.versionNum)) {
+                if (key.equals(((KerberosKey) other).key)) {
+                    if (principal != null) {
+                        return principal.equals(that.principal);
+                    } else {
+                        return that.principal == null;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashcode = 0;
+        if (principal != null) {
+            hashcode += principal.hashCode();
+        }
+        hashcode += versionNum;
+        hashcode += key.hashCode();
+        return hashcode;
+    }
 }

@@ -316,4 +316,31 @@ public String toString() {
                 keyBytes));
         s.writeObject(enc);
     }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof KeyImpl && !this.isDestroyed()
+                && !((KeyImpl) other).isDestroyed()) {
+            if ((keyType == ((KeyImpl) other).keyType)
+                    && (keyBytes.length == ((KeyImpl) other).keyBytes.length)) {
+                for (int i = 0; i < keyBytes.length; i++) {
+                    if (keyBytes[i] != ((KeyImpl) other).keyBytes[i]) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashcode = 0;
+        for (int i = 0; i < keyBytes.length; i++) {
+            hashcode += keyBytes[i];
+        }
+        hashcode *= keyType;
+        return hashcode;
+    }
 }
