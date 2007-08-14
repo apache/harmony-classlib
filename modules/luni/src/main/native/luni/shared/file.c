@@ -181,6 +181,57 @@ Java_java_io_File_existsImpl (JNIEnv * env, jobject recv, jbyteArray path)
   return result >= 0;
 }
 
+JNIEXPORT jlong JNICALL
+Java_java_io_File_getTotalSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  char pathCopy[HyMaxPath];
+  jsize length = (*env)->GetArrayLength (env, path);
+  if(!Java_java_io_File_existsImpl(env, recv, path)) {
+	return 0l;
+  }
+  
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  return getPlatformTotal(env, pathCopy);
+}
+
+JNIEXPORT jlong JNICALL
+Java_java_io_File_getFreeSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  char pathCopy[HyMaxPath];
+  jsize length = (*env)->GetArrayLength (env, path);
+  if(!Java_java_io_File_existsImpl(env, recv, path)) {
+	return 0l;
+  }
+  
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  return getPlatformFreeTotal(env, pathCopy);
+}
+
+JNIEXPORT jlong JNICALL
+Java_java_io_File_getUsableSpaceImpl (JNIEnv * env, jobject recv, jbyteArray path)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  char pathCopy[HyMaxPath];
+  jsize length = (*env)->GetArrayLength (env, path);
+  if(!Java_java_io_File_existsImpl(env, recv, path)) {
+	return 0l;
+  }
+  
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  return getPlatformUsableTotal(env, pathCopy);
+}
+
 JNIEXPORT jboolean JNICALL
 Java_java_io_File_isFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
@@ -436,6 +487,36 @@ Java_java_io_File_setReadOnlyImpl (JNIEnv * env, jobject recv,
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
   return setPlatformReadOnly (env, pathCopy);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_java_io_File_setReadableImpl (JNIEnv * env, jobject recv,
+                                   jbyteArray path, jboolean readable, jboolean ownerOnly)
+{
+#if (defined(WIN32))
+   return readable;
+#else
+  jsize length = (*env)->GetArrayLength (env, path);
+  char pathCopy[HyMaxPath];
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  return setPlatformReadable (env, pathCopy, readable, ownerOnly);
+#endif
+}
+
+JNIEXPORT jboolean JNICALL
+Java_java_io_File_setWritableImpl (JNIEnv * env, jobject recv,
+                                   jbyteArray path, jboolean writable, jboolean ownerOnly)
+{
+  jsize length = (*env)->GetArrayLength (env, path);
+  char pathCopy[HyMaxPath];
+  length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
+  ((*env)->GetByteArrayRegion (env, path, 0, length, (jbyte *)pathCopy));
+  pathCopy[length] = '\0';
+  ioh_convertToPlatform (pathCopy);
+  return setPlatformWritable (env, pathCopy, writable, ownerOnly);
 }
 
 JNIEXPORT void JNICALL

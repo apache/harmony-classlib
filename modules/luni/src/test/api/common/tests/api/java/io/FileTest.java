@@ -1996,6 +1996,10 @@ public class FileTest extends junit.framework.TestCase {
 		File f1 = null;
 		File f2 = null;
 		try {
+			// if the user is 'root' on linux platform.
+			boolean root = System.getProperty("user.name").equals("root")
+			               && System.getProperty("os.name").equalsIgnoreCase("linux");
+			
 			f1 = File.createTempFile("hyts_tf", ".tmp");
 			f2 = File.createTempFile("hyts_tf", ".tmp");
 			// Assert is flawed because canWrite does not work.
@@ -2003,11 +2007,14 @@ public class FileTest extends junit.framework.TestCase {
 			f1.setReadOnly();
 			// Assert is flawed because canWrite does not work.
 			// assertTrue("File f1 Is Not Set To ReadOnly." , !f1.canWrite());
-			try {
-				// Attempt to write to a file that is setReadOnly.
-				new FileOutputStream(f1);
-				fail("IOException not thrown.");
-			} catch (IOException e) {
+			if (!root){
+				try {
+					// Attempt to write to a file that is setReadOnly.
+					new FileOutputStream(f1);
+					fail("IOException not thrown.");
+				} catch (IOException e) {
+					// expected
+				}				
 			}
 			Runtime r = Runtime.getRuntime();
 			Process p;
@@ -2041,13 +2048,16 @@ public class FileTest extends junit.framework.TestCase {
 			f2.setReadOnly();
 			// Assert is flawed because canWrite does not work.
 			// assertTrue("File f2 Is Not Set To ReadOnly." , !f2.canWrite());
-			try {
-				// Attempt to write to a file that has previously been written
-				// to.
-				// and is now set to read only.
-				fos = new FileOutputStream(f2);
-				fail("IOException not thrown.");
-			} catch (IOException e) {
+			if (!root) {
+				try {
+					// Attempt to write to a file that has previously been written
+					// to.
+					// and is now set to read only.
+					fos = new FileOutputStream(f2);
+					fail("IOException not thrown.");
+				} catch (IOException e) {
+					// expected
+				}
 			}
 			r = Runtime.getRuntime();
 			if (onUnix)

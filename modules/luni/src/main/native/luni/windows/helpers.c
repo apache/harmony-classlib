@@ -53,7 +53,9 @@ I_32 getPlatformIsReadOnly (JNIEnv * env, char *path);
 void setPlatformBindOptions (JNIEnv * env, hysocket_t socketP);
 I_32 setPlatformLastModified (JNIEnv * env, char *path, I_64 time);
 I_32 setPlatformReadOnly (JNIEnv * env, char *path);
-
+jlong getPlatformTotal (JNIEnv * env, char *path);
+jlong getPlatformUsableTotal (JNIEnv * env, char *path);
+jlong getPlatformFreeTotal (JNIEnv * env, char *path);
 UDATA platformFindfirst (char *path, char *resultbuf);
 int portCmp (const void **a, const void **b);
 static void unmangle (JNIEnv * env, LPWSTR data);
@@ -189,6 +191,29 @@ setPlatformReadOnly (JNIEnv * env, char *path)
 }
 
 /**
+ * Answer 1 if the writable attribute was set, 0 otherwise even in fail cases.
+ */
+I_32
+setPlatformWritable (JNIEnv * env, char *path, jboolean writable, jboolean ownerOnly)
+{
+  PORT_ACCESS_FROM_ENV (env);
+  I_32 attrs, result;
+
+  char *unicodePath;
+  unicodePath = path;
+
+  attrs = GetFileAttributes (unicodePath);
+  if(writable)
+      attrs &= (~FILE_ATTRIBUTE_READONLY);
+  else
+      attrs |= FILE_ATTRIBUTE_READONLY;
+
+  result = SetFileAttributes (unicodePath, attrs);
+
+  return result;
+}
+
+/**
  * Answer 1 if the file length was set, 0 otherwise even in fail cases.
  */
 I_32
@@ -205,6 +230,160 @@ setPlatformFileLength (JNIEnv * env, IDATA descriptor, jlong newLength)
   return SetEndOfFile ((HANDLE) descriptor);
 }
 
+/**
+ * Answers the total bytes of the partition designated by path.
+ */
+typedef BOOL (WINAPI *PGETDISKFREESPACEEX)(LPCSTR,
+   PULARGE_INTEGER, PULARGE_INTEGER, PULARGE_INTEGER);
+jlong getPlatformTotal (JNIEnv * env, char *path){
+	PGETDISKFREESPACEEX pGetDiskFreeSpaceEx;
+   __int64 i64FreeBytesToCaller, i64TotalBytes, i64FreeBytes;
+   
+   DWORD dwSectPerClust, 
+         dwBytesPerSect, 
+         dwFreeClusters, 
+         dwTotalClusters;
+
+   BOOL fResult;
+
+   LPCSTR drive;
+
+   pGetDiskFreeSpaceEx = (PGETDISKFREESPACEEX) GetProcAddress( 
+                           GetModuleHandle("kernel32.dll"),
+                          "GetDiskFreeSpaceExA");
+   drive = strtok(path, "\\");
+
+   if (pGetDiskFreeSpaceEx)
+   {
+      fResult = pGetDiskFreeSpaceEx (drive,
+                 (PULARGE_INTEGER)&i64FreeBytesToCaller,
+                 (PULARGE_INTEGER)&i64TotalBytes,
+                 (PULARGE_INTEGER)&i64FreeBytes);
+
+      // Process GetDiskFreeSpaceEx results.
+      if(fResult) 
+      {
+         return i64TotalBytes;
+      }
+   }
+
+   else 
+   {
+      fResult = GetDiskFreeSpaceA (drive, 
+                 &dwSectPerClust, 
+                 &dwBytesPerSect,
+                 &dwFreeClusters, 
+                 &dwTotalClusters);
+
+   // Process GetDiskFreeSpace results.
+      if(fResult) 
+      {
+         return
+             dwTotalClusters*dwSectPerClust*dwBytesPerSect;
+      }
+   }
+	return (__int64)0;
+}
+
+jlong getPlatformUsableTotal (JNIEnv * env, char *path) {
+    PGETDISKFREESPACEEX pGetDiskFreeSpaceEx;
+   __int64 i64FreeBytesToCaller, i64TotalBytes, i64FreeBytes;
+   
+   DWORD dwSectPerClust, 
+         dwBytesPerSect, 
+         dwFreeClusters, 
+         dwTotalClusters;
+
+   BOOL fResult;
+
+   LPCSTR drive;
+
+   pGetDiskFreeSpaceEx = (PGETDISKFREESPACEEX) GetProcAddress( 
+                           GetModuleHandle("kernel32.dll"),
+                          "GetDiskFreeSpaceExA");
+   drive = strtok(path, "\\");
+
+   if (pGetDiskFreeSpaceEx)
+   {
+      fResult = pGetDiskFreeSpaceEx (drive,
+                 (PULARGE_INTEGER)&i64FreeBytesToCaller,
+                 (PULARGE_INTEGER)&i64TotalBytes,
+                 (PULARGE_INTEGER)&i64FreeBytes);
+
+      // Process GetDiskFreeSpaceEx results.
+      if(fResult) 
+      {
+         return i64FreeBytesToCaller;
+      }
+   }
+
+   else 
+   {
+      fResult = GetDiskFreeSpaceA (drive, 
+                 &dwSectPerClust, 
+                 &dwBytesPerSect,
+                 &dwFreeClusters, 
+                 &dwTotalClusters);
+
+   // Process GetDiskFreeSpace results.
+      if(fResult) 
+      {
+         return
+             dwFreeClusters*dwSectPerClust*dwBytesPerSect;
+      }
+   }
+	return (__int64)0;
+}
+
+jlong getPlatformFreeTotal (JNIEnv * env, char *path) {
+	PGETDISKFREESPACEEX pGetDiskFreeSpaceEx;
+   __int64 i64FreeBytesToCaller, i64TotalBytes, i64FreeBytes;
+   
+   DWORD dwSectPerClust, 
+         dwBytesPerSect, 
+         dwFreeClusters, 
+         dwTotalClusters;
+
+   BOOL fResult;
+
+   LPCSTR drive;
+
+   pGetDiskFreeSpaceEx = (PGETDISKFREESPACEEX) GetProcAddress( 
+                           GetModuleHandle("kernel32.dll"),
+                          "GetDiskFreeSpaceExA");
+   drive = strtok(path, "\\");
+
+   if (pGetDiskFreeSpaceEx)
+   {
+      fResult = pGetDiskFreeSpaceEx (drive,
+                 (PULARGE_INTEGER)&i64FreeBytesToCaller,
+                 (PULARGE_INTEGER)&i64TotalBytes,
+                 (PULARGE_INTEGER)&i64FreeBytes);
+
+      // Process GetDiskFreeSpaceEx results.
+      if(fResult) 
+      {
+         return i64FreeBytes;
+      }
+   }
+
+   else 
+   {
+      fResult = GetDiskFreeSpaceA (drive, 
+                 &dwSectPerClust, 
+                 &dwBytesPerSect,
+                 &dwFreeClusters, 
+                 &dwTotalClusters);
+
+   // Process GetDiskFreeSpace results.
+      if(fResult) 
+      {
+         return
+             dwFreeClusters*dwSectPerClust*dwBytesPerSect;
+      }
+   }
+	return (__int64)0;
+}
 jbyteArray
 getPlatformPath (JNIEnv * env, jbyteArray path)
 {

@@ -155,6 +155,62 @@ public class WinFileTest extends TestCase {
 		assertTrue(testDir.canExecute());
 	}
 
+	/**
+	 * @tests java.io.File#setReadable(boolean, boolean)
+	 * 
+	 * @since 1.6
+	 */
+	public void test_setReadableZZ() throws Exception {
+		// setReadable(false, false/true) fails on Windows. Files on windows are
+		// always readable.
+		assertTrue(testFile.canRead());
+		assertFalse(testFile.setReadable(false, false));
+		assertTrue(testFile.canRead());
+		assertFalse(testFile.setReadable(false, true));
+		assertTrue(testFile.canRead());
+
+		assertFalse(testDir.setReadable(false, true));
+		assertFalse(testDir.setReadable(false, false));
+		assertTrue(testDir.canRead());
+
+		// setReadable(true, false/true) and set them in turn
+		assertTrue(testFile.setReadable(true, false));
+		assertTrue(testFile.canRead());
+		// setReadable(false) does not take effects on Windows.
+		assertFalse(testFile.setReadable(false, true));
+		assertTrue(testFile.canRead());
+		assertTrue(testFile.setReadable(true, true));
+		assertTrue(testFile.canRead());
+		assertFalse(testFile.setReadable(false, false));
+		assertTrue(testFile.canRead());
+
+		assertTrue(testDir.setReadable(true, false));
+		assertTrue(testDir.canRead());
+		assertTrue(testDir.setReadable(true, true));
+		assertTrue(testDir.canRead());
+	}
+
+	/**
+	 * @tests java.io.File#setReadable(boolean)
+	 * 
+	 * @since 1.6
+	 */
+	public void test_setReadableZ() {
+		// So far this method only deals with the situation that the user is the
+		// owner of the file
+		// setReadable(false) fails on Windows. canRead() always returns true.
+		assertFalse(testFile.setReadable(false));
+		assertTrue(testFile.canRead());
+		assertFalse(testDir.setReadable(false));
+		assertTrue(testDir.canRead());
+
+		// setReadable(true)
+		assertTrue(testFile.setReadable(true));
+		assertTrue(testFile.canRead());
+		assertTrue(testDir.setReadable(true));
+		assertTrue(testDir.canRead());
+	}
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();

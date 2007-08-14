@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/vfs.h>
 
 #include <utime.h>
 
@@ -147,6 +148,54 @@ setPlatformReadOnly (JNIEnv * env, char *path)
 }
 
 /**
+ * Answer 1 if the path is now readable, 0 otherwise even in fail cases.
+ */
+I_32
+setPlatformReadable (JNIEnv * env, char *path, jboolean readable, jboolean ownerOnly)
+{
+  struct stat buffer;
+  mode_t mode;
+  if (stat (path, &buffer))
+    {
+      return 0;
+    }
+  mode = buffer.st_mode;
+  if (readable && ownerOnly)
+	  mode |= S_IRUSR;
+  else if (readable) 
+	  mode |= (S_IRUSR | S_IRGRP | S_IROTH);
+  else if (ownerOnly)
+  	  mode &= (~S_IRUSR);
+  else
+      mode &= ~(S_IRUSR | S_IRGRP | S_IROTH);
+  return chmod (path, mode) == 0;
+}
+
+/**
+ * Answer 1 if the path is now writable, 0 otherwise even in fail cases.
+ */
+I_32
+setPlatformWritable (JNIEnv * env, char *path, jboolean writable, jboolean ownerOnly)
+{
+	
+  struct stat buffer;
+  mode_t mode;
+  if (stat (path, &buffer))
+    {
+      return 0;
+    }
+  mode = buffer.st_mode;
+  if (writable && ownerOnly)
+	  mode |= S_IWUSR;
+  else if (writable) 
+	  mode |= (S_IWUSR | S_IWGRP | S_IWOTH);
+  else if (ownerOnly)
+  	  mode &= (~S_IWUSR);
+  else
+      mode &= ~(S_IWUSR | S_IWGRP | S_IWOTH);
+  return chmod (path, mode) == 0;
+}
+/**
  * Answer 1 if the file length was set, 0 otherwise even in fail cases.
  */
 I_32
@@ -178,20 +227,7 @@ setPlatformBindOptions (JNIEnv * env, hysocket_t socketP)
 I_32
 getPlatformIsReadOnly (JNIEnv * env, char *path)
 {
-  I_32 result;
-  struct stat buffer;
-
-  result = stat (path, &buffer);
-  if (result == -1)
-    return 0;
-
-  if (buffer.st_uid == geteuid ())
-    return (buffer.st_mode & S_IWUSR) == 0;
-  else if (buffer.st_gid == getegid ())
-    return (buffer.st_mode & S_IWGRP) == 0;
-
-  return (buffer.st_mode & S_IWOTH) == 0;
-
+	return access(path, W_OK) !=0;
 }
 
 /**
@@ -200,20 +236,46 @@ getPlatformIsReadOnly (JNIEnv * env, char *path)
 I_32
 getPlatformIsWriteOnly (JNIEnv * env, char *path)
 {
-  I_32 result;
-  struct stat buffer;
+  return access(path, R_OK) !=0;
+}
 
-  result = stat (path, &buffer);
-  if (result == -1)
-    return 0;
+jlong getPlatformTotal (JNIEnv * env, char *path) {
+	struct statfs fs_buf;
+	jlong total_size;
+	int ret;
+	if((ret = statfs(path, &fs_buf) < 0))
+	{
+		return 0l;
+	}
+	total_size = fs_buf.f_blocks*(fs_buf.f_bsize/1024.0);
+	total_size *= 1024;
+	return total_size;
+}
 
-  if (buffer.st_uid == geteuid ())
-    return (buffer.st_mode & S_IRUSR) == 0;
-  else if (buffer.st_gid == getegid ())
-    return (buffer.st_mode & S_IRGRP) == 0;
+jlong getPlatformUsableTotal (JNIEnv * env, char *path) {
+    struct statfs fs_buf;
+	jlong total_size;
+	int ret;
+	if((ret = statfs(path, &fs_buf) < 0))
+	{
+		return 0l;
+	}
+	total_size = fs_buf.f_bavail*(fs_buf.f_bsize/1024.0);
+	total_size *= 1024;
+	return total_size;
+}
 
-  return (buffer.st_mode & S_IROTH) == 0;
-
+jlong getPlatformFreeTotal (JNIEnv * env, char *path) {
+	struct statfs fs_buf;
+	jlong total_size;
+	int ret;
+	if((ret = statfs(path, &fs_buf) < 0))
+	{
+		return 0l;
+	}
+	total_size = fs_buf.f_bfree*(fs_buf.f_bsize/1024.0);
+	total_size *= 1024;
+	return total_size;
 }
 
 /* Resolve link if it is a symbolic link and put the result in link. */

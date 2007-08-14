@@ -1,6 +1,10 @@
 package org.apache.harmony.luni.tests.java.io;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
 
@@ -15,7 +19,92 @@ public class UnixFileTest extends TestCase {
 	private File testFile;
 
 	private File testDir;
+	
+	private static final int TOTAL_SPACE_NUM = 0;
 
+	private static final int FREE_SPACE_NUM = 1;
+
+	private static final int USABLE_SPACE_NUM = 2;
+
+	private static class ConsoleResulter extends Thread {
+		Process proc;
+
+		InputStream is;
+
+		String resStr;
+
+		ConsoleResulter(Process p, InputStream in) {
+			proc = p;
+			is = in;
+		}
+
+		@Override
+		public void run() {
+			StringBuffer result = new StringBuffer();
+			synchronized (result) {
+				try {
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(is));
+					String line;
+					while ((line = br.readLine()) != null) {
+						result.append(line);
+					}
+					if (result.length() != 0) {
+						resStr = result.toString();
+					}
+
+					br.close();
+				} catch (IOException ioe) {
+					result = null;
+				}
+				synchronized (proc) {
+					proc.notifyAll();
+				}
+			}
+		}
+	}
+
+	private static long getLinuxSpace(int index, File file) throws Exception {
+		long[] result = new long[3];
+		String par = file.getAbsolutePath();
+		String osName = System.getProperty("os.name");
+		// in case the test case will run under other OS.
+		if (osName.toLowerCase().indexOf("linux") != -1) {
+			String[] cmd = new String[2];
+			cmd[0] = "df";
+			cmd[1] = par; // get the total space of file
+			Runtime rt = Runtime.getRuntime();
+
+			Process proc = rt.exec(cmd);
+			// get output from the command
+			ConsoleResulter outputResult = new ConsoleResulter(proc, proc
+					.getInputStream());
+
+			synchronized (proc) {
+				outputResult.start();
+				proc.wait();
+			}
+			// If there is no error, obtain the result
+			if (outputResult.resStr != null) {
+				// exit the subprocess safely
+				proc.waitFor();
+
+				// filter unnecessary information
+				String[] txtResult = outputResult.resStr
+						.split("\\D|\\p{javaLowerCase}|\\p{javaUpperCase}");
+				for (int i = 0, j = 0; i < txtResult.length; i++) {
+					if (txtResult[i].length() > 3) {
+						result[j++] = Long.parseLong(txtResult[i]) * 1024L;
+					}
+				}
+			}
+		}
+
+		// calculate free spaces according to df command
+		result[1] = result[0] - result[1];
+		return result[index];
+	}
+	
 	/**
 	 * @tests java.io.File#canExecute()
 	 * 
@@ -47,7 +136,57 @@ public class UnixFileTest extends TestCase {
 		assertTrue(testDir.setExecutable(true, false));
 		assertTrue(testDir.canExecute());
 	}
+	
+	/**
+	 * @tests java.io.File#getFreeSpace()
+	 * 
+	 * @since 1.6
+	 */
+	public void test_getFreeSpace() throws Exception {
+		long fileSpace = getLinuxSpace(FREE_SPACE_NUM, testFile);
+		long dirSpace = getLinuxSpace(FREE_SPACE_NUM, testDir);
+		// in case we cannot fetch the value from command line
+		if (fileSpace > 0) {
+			assertEquals(fileSpace, testFile.getFreeSpace());			
+		}
+		
+		if (dirSpace > 0) {
+			assertEquals(dirSpace, testDir.getFreeSpace());		
+		}		
+	}
 
+	/**
+	 * @tests java.io.File#getTotalSpace()
+	 * 
+	 * @since 1.6
+	 */
+	public void test_getTotalSpace() throws Exception {
+		long fileSpace = getLinuxSpace(TOTAL_SPACE_NUM, testFile);
+		long dirSpace = getLinuxSpace(TOTAL_SPACE_NUM, testDir);
+		if (fileSpace > 0) {
+			assertEquals(fileSpace, testFile.getTotalSpace());
+		}
+		if (dirSpace > 0) {
+			assertEquals(dirSpace, testDir.getTotalSpace());			
+		}
+	}
+
+	/**
+	 * @tests java.io.File#getUsableSpace()
+	 * 
+	 * @since 1.6
+	 */
+	public void test_getUsableSpace() throws Exception {
+		long fileSpace = getLinuxSpace(USABLE_SPACE_NUM, testFile);
+		long dirSpace = getLinuxSpace(USABLE_SPACE_NUM, testDir);
+		if (fileSpace > 0) {
+			assertEquals(fileSpace, testFile.getUsableSpace());
+		}
+		if (dirSpace > 0) {
+			assertEquals(dirSpace, testDir.getUsableSpace());			
+		}
+	}
+	
 	/**
 	 * @tests java.io.File#setExecutable(boolean, boolean)
 	 * 
@@ -116,6 +255,96 @@ public class UnixFileTest extends TestCase {
 		}		
 		assertTrue(testDir.setExecutable(true));
 		assertTrue(testDir.canExecute());
+	}
+	
+	/**
+	 * @tests java.io.File#setReadable(boolean, boolean)
+	 * 
+	 * @since 1.6
+	 */
+	public void test_setReadableZZ() throws Exception {
+		// setReadable(false, false/true) succeeds on Linux
+		// However, canRead() always returns true when the user is 'root'.
+		assertTrue(testFile.canRead());
+		assertTrue(testFile.setReadable(false, false));
+		if (root) {
+			assertTrue(testFile.canRead());
+		} else {
+			assertFalse(testFile.canRead());			
+		}
+		assertTrue(testFile.setReadable(false, true));
+		if (root) {
+			assertTrue(testFile.canRead());
+		} else {
+			assertFalse(testFile.canRead());			
+		}
+
+		// tests directory, setReadable(false, true/false)
+		assertTrue(testDir.canRead());
+		assertTrue(testDir.setReadable(false, true));
+		if (root) {
+			assertTrue(testDir.canRead());
+		} else {
+			assertFalse(testDir.canRead());			
+		}
+		assertTrue(testDir.setReadable(false, false));
+		if (root) {
+			assertTrue(testDir.canRead());
+		} else {
+			assertFalse(testDir.canRead());			
+		}
+
+		// setReadable(true, false/true) and set them in turn
+		assertTrue(testFile.setReadable(true, false));
+		assertTrue(testFile.canRead());
+		assertTrue(testFile.setReadable(false, true));
+		if (root) {
+			assertTrue(testFile.canRead());
+		} else {
+			assertFalse(testFile.canRead());			
+		}
+		assertTrue(testFile.setReadable(true, true));
+		assertTrue(testFile.canRead());
+		assertTrue(testFile.setReadable(false, true));
+		if (root) {
+			assertTrue(testFile.canRead());
+		} else {
+			assertFalse(testFile.canRead());			
+		}
+
+		// tests directory, setReadable(true, true/false)
+		assertTrue(testDir.setReadable(true, false));
+		assertTrue(testDir.canRead());
+		assertTrue(testDir.setReadable(true, true));
+		assertTrue(testDir.canRead());		
+	}
+
+	/**
+	 * @tests java.io.File#setReadable(boolean)
+	 * 
+	 * @since 1.6
+	 */
+	public void test_setReadableZ() {
+		// So far this method only deals with the situation that the user is the
+		// owner of the file. setReadable(false) succeeds on Linux
+		// However, canRead() always returns true when the user is 'root'.		
+		assertTrue(testFile.canRead());
+		assertTrue(testFile.setReadable(false));
+		if (root) {
+			assertTrue(testFile.canRead());
+		} else {
+			assertFalse(testFile.canRead());			
+		}		
+		assertTrue(testFile.setReadable(true));
+		assertTrue(testFile.canRead());
+
+		assertTrue(testDir.canRead());	
+		assertTrue(testDir.setReadable(false));
+		if (root) {
+			assertTrue(testDir.canRead());
+		} else {
+			assertFalse(testDir.canRead());			
+		}
 	}
 
 	@Override
