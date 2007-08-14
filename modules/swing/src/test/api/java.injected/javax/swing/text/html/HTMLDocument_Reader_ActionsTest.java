@@ -582,6 +582,19 @@ public class HTMLDocument_Reader_ActionsTest extends HTMLDocumentTestCase {
         assertEquals(13, pre.getElement(1).getEndOffset());
     }
     
+    public void testHarmony_4615() throws Exception {
+        final HTMLDocument doc = new HTMLDocument();
+
+        new HTMLEditorKit().read(new StringReader("<html><body><pre>line1\n" //$NON-NLS-1$
+                + "<font color='red'>line2 \n line3</font>" //$NON-NLS-1$
+                + "line3</pre>line4 \n line4</body></html>"), doc, 0); //$NON-NLS-1$
+
+        assertEquals("line1\n", doc.getText(1, 6)); //$NON-NLS-1$
+        assertEquals("line2 \n line3", doc.getText(7, 13)); //$NON-NLS-1$
+        assertEquals("line3", doc.getText(20, 5)); //$NON-NLS-1$
+        assertEquals("line4 line4", doc.getText(26, 11)); //$NON-NLS-1$
+    }
+    
     public void testTag_ContentWhitespaces() {
         SimpleAttributeSet attr = new SimpleAttributeSet();
         attr.addAttribute("aaaa", "bbbb");

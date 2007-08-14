@@ -381,6 +381,8 @@ class Lexer implements java_cup.runtime.Scanner {
 	private int offsetCDATA=0;
 	
 	private LexerTextStateType textState = LexerTextStateType.DEFAULT;
+	
+	private int preEntryCounter;
 
 	/**
 	 * Decsribes whether a piece of text (no white space) was parsed.
@@ -635,7 +637,7 @@ class Lexer implements java_cup.runtime.Scanner {
 		textParsed = false;
 		terminatorSkipped = false;
 		lastWasLineTerminator = false;
-		textState = LexerTextStateType.DEFAULT;
+		
 		return textToken;
 	}
 
@@ -792,7 +794,13 @@ class Lexer implements java_cup.runtime.Scanner {
    * @param newState the new lexical state
    */
   public final void yybegin(int newState) {
-    zzLexicalState = newState;
+      if ((newState == ENDTAG) && isPreformatted(yytext().substring(2))) {
+          preEntryCounter --;
+          textState = (preEntryCounter == 0) ? LexerTextStateType.DEFAULT : 
+              LexerTextStateType.PREFORMATTED;
+      }
+      
+      zzLexicalState = newState;
   }
 
 
@@ -1451,6 +1459,7 @@ class Lexer implements java_cup.runtime.Scanner {
 			yybegin(TAG_IGNORE_ATTS);
 		} else {
 			if (isPreformatted(tagName)) {
+			    preEntryCounter ++;
 				textState = LexerTextStateType.PREFORMATTED;
 			}
 			currentCDATAClosingTag = null;
