@@ -187,6 +187,17 @@ public class HashMapTest extends junit.framework.TestCase {
 		assertTrue("keySet() is identical", key2 != keys);
 		assertEquals("keySet() was not cloned", 
 				"key2", key2.iterator().next());
+        
+        // regresion test for HARMONY-4603
+        HashMap hashmap = new HashMap();
+        MockClonable mock = new MockClonable(1);
+        hashmap.put(1, mock);
+        assertEquals(1, ((MockClonable) hashmap.get(1)).i);
+        HashMap hm3 = (HashMap)hashmap.clone();
+        assertEquals(1, ((MockClonable) hm3.get(1)).i);
+        mock.i = 0;
+        assertEquals(0, ((MockClonable) hashmap.get(1)).i);
+        assertEquals(0, ((MockClonable) hm3.get(1)).i);
 	}
 
 	/**
@@ -477,6 +488,19 @@ public class HashMapTest extends junit.framework.TestCase {
 	    expected += key.hashCode() ^ val.hashCode();
 	    assertEquals(expected, map.hashCode());
 	} 
+    
+    class MockClonable implements Cloneable{
+        public int i;
+        
+        public MockClonable(int i) {
+            this.i = i;
+        }
+        
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            return new MockClonable(i);
+        }
+    }
 	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

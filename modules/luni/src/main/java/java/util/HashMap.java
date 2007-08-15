@@ -331,11 +331,16 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     public Object clone() {
         try {
             HashMap<K, V> map = (HashMap<K, V>) super.clone();
+            map.elementCount = 0;
             map.elementData = newElementArray(elementData.length);
             Entry<K, V> entry;
             for (int i = 0; i < elementData.length; i++) {
-                if ((entry = elementData[i]) != null) {
-                    map.elementData[i] = (Entry<K, V>) entry.clone();
+                if ((entry = elementData[i]) != null){
+                    map.putImpl(entry.getKey(), entry.getValue());
+                    while (entry.next != null){
+                        entry = entry.next;
+                        map.putImpl(entry.getKey(), entry.getValue());
+                    }
                 }
             }
             return map;
@@ -526,7 +531,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return putImpl(key, value);
     }
 
-    private V putImpl(K key, V value) {
+    V putImpl(K key, V value) {
         Entry<K,V> entry;
         if(key == null) {
             entry = findNullKeyEntry();

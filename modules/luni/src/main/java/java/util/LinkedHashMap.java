@@ -332,7 +332,20 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      */
     @Override
     public V put(K key, V value) {
+        V result = putImpl(key,value);
+
+        if (removeEldestEntry(head)) {
+            remove(head.key);
+        }
+
+        return result;
+    }
+    
+    V putImpl(K key, V value){
         LinkedHashMapEntry<K, V> m;
+        if (elementCount == 0){
+            head = tail = null;
+        }
         if (key == null) {
             m = (LinkedHashMapEntry<K, V>)findNullKeyEntry();
             if (m == null) {
@@ -352,7 +365,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
             int hash = key.hashCode();
             int index = (hash & 0x7FFFFFFF) % elementData.length;
             m = (LinkedHashMapEntry<K, V>)findNonNullKeyEntry(key, index, hash);
-            if (m == null) {
+            if (m == null) {                
                 modCount++;
                 if (++elementCount > threshold) {
                     rehash();
@@ -366,11 +379,6 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
 
         V result = m.value;
         m.value = value;
-
-        if (removeEldestEntry(head)) {
-            remove(head.key);
-        }
-
         return result;
     }
 
@@ -583,21 +591,4 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
         head = tail = null;
     }
 
-    /**
-     * Answers a new HashMap with the same mappings and size as this HashMap.
-     * 
-     * @return a shallow copy of this HashMap
-     * 
-     * @see java.lang.Cloneable
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object clone() {
-        LinkedHashMap<K, V> map = (LinkedHashMap<K, V>) super.clone();
-        map.clear();
-        for (Map.Entry<K, V> entry : entrySet()) {
-            map.put(entry.getKey(), entry.getValue());
-        }
-        return map;
-    }
 }

@@ -58,4 +58,10 @@ public abstract class WTK {
      * @return implementation of NativeIM
      */
     public abstract NativeIM getNativeIM();
+
+    /**
+     * Perform platform specific operations with locking keys.
+     */
+    public abstract boolean getLockingState(int keyCode);
+    public abstract void setLockingState(int keyCode, boolean on);
 }

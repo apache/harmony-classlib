@@ -371,6 +371,33 @@ public class LinkedHashMapTest extends junit.framework.TestCase {
 		assertEquals("keySet() was not cloned", 
 				"key2", key2.iterator().next());
 	}
+    
+    // regresion test for HARMONY-4603
+    public void test_clone_Mock() {
+        LinkedHashMap hashMap = new MockMap();
+        String value = "value a";
+        hashMap.put("key", value);
+        MockMap cloneMap = (MockMap) hashMap.clone();
+        assertEquals(value, cloneMap.get("key"));
+        assertEquals(hashMap, cloneMap);
+        assertEquals(1, cloneMap.num);
+
+        hashMap.put("key", "value b");
+        assertFalse(hashMap.equals(cloneMap));
+    }
+
+    class MockMap extends LinkedHashMap {
+        int num;
+
+        public Object put(Object k, Object v) {
+            num++;
+            return super.put(k, v);
+        }
+
+        protected boolean removeEldestEntry(Map.Entry e) {
+            return num > 1;
+        }
+    } 
 
 	/**
 	 * @tests java.util.LinkedHashMap#containsKey(java.lang.Object)

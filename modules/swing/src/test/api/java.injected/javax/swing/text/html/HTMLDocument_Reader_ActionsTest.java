@@ -20,10 +20,12 @@
 */
 package javax.swing.text.html;
 
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
@@ -543,9 +545,8 @@ public class HTMLDocument_Reader_ActionsTest extends HTMLDocumentTestCase {
         assertEquals(2, reader.parseBuffer.size());
         reader.handleText(text.toCharArray(), 0);
         
-        assertEquals(3, reader.parseBuffer.size());
-        ElementSpec spec = (ElementSpec)reader.parseBuffer.get(2);
-        assertEquals(text.length(), spec.getLength());
+        assertEquals(7, reader.parseBuffer.size());
+        ElementSpec spec = (ElementSpec)reader.parseBuffer.get(6);
         assertEquals(text.length(), spec.getArray().length);
     }
     
@@ -559,10 +560,39 @@ public class HTMLDocument_Reader_ActionsTest extends HTMLDocumentTestCase {
         assertEquals(2, reader.parseBuffer.size());
         reader.preContent(text.toCharArray());
         
-        assertEquals(3, reader.parseBuffer.size());
-        ElementSpec spec = (ElementSpec)reader.parseBuffer.get(2);
-        assertEquals(text.length(), spec.getLength());
+        assertEquals(7, reader.parseBuffer.size());
+        ElementSpec spec = (ElementSpec)reader.parseBuffer.get(6);
         assertEquals(text.length(), spec.getArray().length);
+    }
+    
+    public void testHarmony_4582() throws Exception {
+        final Element pre;
+        final HTMLDocument doc = new HTMLDocument();
+
+        new HTMLEditorKit().read(new StringReader("<html><body><pre>line1\n" //$NON-NLS-1$
+                + "line2</pre></body></html>"), doc, 0); //$NON-NLS-1$
+
+        assertEquals("line1", doc.getText(1, 5)); //$NON-NLS-1$
+        assertEquals("line2", doc.getText(7, 5)); //$NON-NLS-1$
+
+        pre = doc.getRootElements()[0].getElement(1).getElement(0);
+        assertEquals(1, pre.getElement(0).getStartOffset());
+        assertEquals(7, pre.getElement(0).getEndOffset());
+        assertEquals(7, pre.getElement(1).getStartOffset());
+        assertEquals(13, pre.getElement(1).getEndOffset());
+    }
+    
+    public void testHarmony_4615() throws Exception {
+        final HTMLDocument doc = new HTMLDocument();
+
+        new HTMLEditorKit().read(new StringReader("<html><body><pre>line1\n" //$NON-NLS-1$
+                + "<font color='red'>line2 \n line3</font>" //$NON-NLS-1$
+                + "line3</pre>line4 \n line4</body></html>"), doc, 0); //$NON-NLS-1$
+
+        assertEquals("line1\n", doc.getText(1, 6)); //$NON-NLS-1$
+        assertEquals("line2 \n line3", doc.getText(7, 13)); //$NON-NLS-1$
+        assertEquals("line3", doc.getText(20, 5)); //$NON-NLS-1$
+        assertEquals("line4 line4", doc.getText(26, 11)); //$NON-NLS-1$
     }
     
     public void testTag_ContentWhitespaces() {

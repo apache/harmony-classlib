@@ -456,6 +456,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Object oldValue = message;
         message = newMessage;
         firePropertyChange(MESSAGE_PROPERTY, oldValue, newMessage);
+		updateUI();
     }
 
     public Object getMessage() {
@@ -466,6 +467,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Icon oldValue = icon;
         icon = newIcon;
         firePropertyChange(ICON_PROPERTY, oldValue, newIcon);
+		updateUI();
     }
 
     public Icon getIcon() {
@@ -476,6 +478,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Object oldValue = value;
         value = newValue;
         firePropertyChange(VALUE_PROPERTY, oldValue, newValue);
+		updateUI();
     }
 
     public Object getValue() {
@@ -486,6 +489,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Object[] oldValue = options;
         options = newOptions;
         firePropertyChange(OPTIONS_PROPERTY, oldValue, newOptions);
+		updateUI();
     }
 
     public Object[] getOptions() {
@@ -496,6 +500,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Object oldValue = initialValue;
         initialValue = newValue;
         firePropertyChange(INITIAL_VALUE_PROPERTY, oldValue, newValue);
+		updateUI();
     }
 
     public Object getInitialValue() {
@@ -519,6 +524,7 @@ public class JOptionPane extends JComponent implements Accessible {
                     "JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE " + //$NON-NLS-1$
                     "or JOptionPane.PLAIN_MESSAGE"); //$NON-NLS-1$
         }
+		updateUI();
     }
 
     public int getMessageType() {
@@ -538,6 +544,7 @@ public class JOptionPane extends JComponent implements Accessible {
         default:
             throw new RuntimeException(Messages.getString("swing.20")); //$NON-NLS-1$
         }
+		updateUI();
     }
 
     public int getOptionType() {
@@ -549,6 +556,7 @@ public class JOptionPane extends JComponent implements Accessible {
         selectionValues = newValues;
         firePropertyChange(SELECTION_VALUES_PROPERTY, oldSelectionValues, newValues);
         setWantsInput(selectionValues != null);
+		updateUI();
     }
 
     public Object[] getSelectionValues() {
@@ -559,6 +567,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Object oldInitialSelectionValue = initialSelectionValue;
         initialSelectionValue = newValue;
         firePropertyChange(INITIAL_SELECTION_VALUE_PROPERTY, oldInitialSelectionValue, newValue);
+		updateUI();
     }
 
     public Object getInitialSelectionValue() {
@@ -569,6 +578,7 @@ public class JOptionPane extends JComponent implements Accessible {
         Object oldValue = inputValue;
         inputValue = newValue;
         firePropertyChange(INPUT_VALUE_PROPERTY, oldValue, newValue);
+		updateUI();
     }
 
     public Object getInputValue() {
@@ -583,6 +593,7 @@ public class JOptionPane extends JComponent implements Accessible {
         boolean oldValue = wantsInput;
         wantsInput = newValue;
         firePropertyChange(WANTS_INPUT_PROPERTY, oldValue, newValue);
+		updateUI();
     }
 
     public boolean getWantsInput() {
@@ -638,5 +649,6 @@ public class JOptionPane extends JComponent implements Accessible {
             return;
         }
         dialog.getRootPane().setWindowDecorationStyle(messageTypeToRootPaneDecoration(messageType));
+		//updateUI();
     }
 }
