@@ -313,4 +313,11 @@ public class OidTest extends TestCase {
         } catch (GSSException e) {
         }
     }
+    
+    public void test_KerberosV5() throws Exception {
+        Oid oid = new Oid("1.2.840.113554.1.2.2");
+        byte[] expectedDer = new byte[] { 6, 9, 42, -122, 72, -122, -9, 18, 1,
+                2, 2 };
+        assertTrue(Arrays.equals(expectedDer, oid.getDER()));
+    }
 }
