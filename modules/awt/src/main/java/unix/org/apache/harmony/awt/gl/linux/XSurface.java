@@ -100,8 +100,8 @@ public class XSurface extends Surface {
                     g2d.drawable,
                     pixmap,
                     g2d.imageGC,
-                    (int) (g2d.getTransform().getTranslateX() + roi.getX()),
-                    (int) (g2d.getTransform().getTranslateY() + roi.getY()),
+                    (int) roi.getX(),
+                    (int) roi.getY(),
                     (int) roi.getWidth(), (int) roi.getHeight(),
                     0, 0
             );
@@ -155,11 +155,9 @@ public class XSurface extends Surface {
                     (int) roi.getWidth(), (int) roi.getHeight(),
                     ~(0L), // All bits set to 1, should be same as XAllPlanes() result
                     X11Defs.ZPixmap,
-                    xImage,
-                    (int) (roi.getX()),
-                    (int) (roi.getY())
+                    xImage, 0, 0
             );
-
+            x11.XFreePixmap(g2d.display, pixmap);
             lastSnapshot = XVolatileImage.biFromXImage(xImage, g2d.xConfig);
 
             // Cleanup
@@ -167,16 +165,15 @@ public class XSurface extends Surface {
         } else {
             lastSnapshot = g2d.xConfig.createCompatibleImage(width, height);
         }
+
         return lastSnapshot.getRaster();
     }
 
-    void putImage(MultiRectArea clip) {
+    void putImage(MultiRectArea clip, int x, int y, int width, int height) {
         putImage(
                 clip,
                 lastSnapshot.getRaster(),
-                (int) g2d.getTransform().getTranslateX(),
-                (int) g2d.getTransform().getTranslateY(),
-                width, height
+                x, y, width, height 
         );
     }
 
