@@ -690,8 +690,22 @@ public class HTMLDocument extends DefaultStyledDocument {
             }
         }
 
-        protected void preContent(final char[] data) {
-            addContent(data, 0, data.length);
+        protected void preContent(char[] data) {
+            int offset = 0;
+
+            for (int i = 0; i < data.length; i++) {
+                if ((data[i] == '\n') || (data[i] == '\r')) {
+                    addContent(data, offset, i - offset);
+                    blockClose(HTML.Tag.IMPLIED);
+
+                    blockOpen(HTML.Tag.IMPLIED, new SimpleAttributeSet());
+                    offset = i + 1;
+                }
+            }
+
+            if (offset < data.length) {
+                addContent(data, offset, data.length - offset);
+            }
         }
 
         protected void addContent(final char[] data, final int offset,

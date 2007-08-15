@@ -89,6 +89,15 @@ public final class LinuxWTK extends WTK {
         return null;
     }
 
+    public boolean getLockingState(int keyCode) {
+        // TODO implement
+        return false;
+    }
+
+    public void setLockingState(int keyCode, boolean on) {
+        // TODO implement
+    }
+
     private final LinuxWindowFactory windowFactory = new LinuxWindowFactory();
     private final LinuxEventQueue eventQueue = new LinuxEventQueue(windowFactory);
     private final GraphicsFactory graphicsFactory = new org.apache.harmony.awt.gl.linux.LinuxGraphics2DFactory();

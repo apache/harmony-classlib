@@ -33,6 +33,7 @@
 #define TRANSPARENT_BLT 1
 #define ALPHA_BLEND     2
 #define NULL_BLT        3
+#define COMPOSITE_BLT   4
 
 void findNonExistColor(DWORD &, DWORD *, UINT);
 BOOL isRepeatColor(UINT , DWORD *, UINT);
@@ -41,4 +42,7 @@ BOOL initBlitData(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, UINT
                                 UCHAR srcConstAlpha, BLITSTRUCT *blitStruct);
 
 BOOL initBitmap(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, BOOL alphaPre);
+
+void CompositeBlt(HDC, jint, jint, jint, jint, SURFACE_STRUCTURE *, void *, jint, jint, UINT, UCHAR, PXFORM, PXFORM);
+
 #endif

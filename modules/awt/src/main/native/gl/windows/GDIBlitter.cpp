@@ -21,6 +21,7 @@
  */
  
 #include "SurfaceDataStructure.h"
+#include "bitmapSurface.h"
 #include "org_apache_harmony_awt_gl_windows_GDISurface.h"
 #include "org_apache_harmony_awt_gl_windows_GDIBlitter.h"
 #include "blitter.h"
@@ -68,7 +69,6 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
       HBRUSH brush = CreateSolidBrush(RGB(r, g, b));
       SelectObject(tmpDC, brush);
       PatBlt(tmpDC, 0, 0, w, h, PATCOPY);
-
       if(initBitmap(srcSurf, env, srcData, true)){
           BLENDFUNCTION bf;
           bf.AlphaFormat = AC_SRC_ALPHA;
@@ -214,24 +214,36 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
           env->ReleasePrimitiveArrayCritical(matrix, old_mtrx, 0);
 
           SetGraphicsMode(dstSurf->gi->hdc, GM_ADVANCED);
-          GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
-          SetWorldTransform(dstSurf->gi->hdc, &transform);
       }
 
       HRGN oldClip = setGdiClip(env, dstSurf->gi->hdc, clip, numVertex);
 
       switch(blitStruct.blitFunctintType){
           case ALPHA_BLEND:
+              GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+              SetWorldTransform(dstSurf->gi->hdc, &transform);
               AlphaBlend(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
                       srcX, srcY, width, height, blitStruct.blendFunc);
               break;
 
           case TRANSPARENT_BLT:
+              GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+              SetWorldTransform(dstSurf->gi->hdc, &transform);
               TransparentBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
                   srcX, srcY, width, height, srcSurf->rtc);
               break;
 
+          case COMPOSITE_BLT:
+              {
+                  void *srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
+                  CompositeBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf, srcDataPtr,
+                      srcX, srcY, compType, srca, &currentTransform, &transform);
+                  env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
+              }
+              break;
           default:
+              GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+              SetWorldTransform(dstSurf->gi->hdc, &transform);
               BitBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
                   srcX, srcY, blitStruct.rastOp);
               break;
@@ -413,18 +425,18 @@ BOOL initBlitData
                 blitStruct->rastOp = BLACKNESS;
                 return true;
             }
-                       if(srcSurf->invalidated || srcSurf->isAlphaPre != false){
-                               if(!initBitmap(srcSurf, env, srcData, false)) return false;
-                       }
+            if(srcSurf->invalidated || srcSurf->isAlphaPre != false){
+                if(!initBitmap(srcSurf, env, srcData, false)) return false;
+            }
             blitStruct->blitFunctintType = BIT_BLT;
             blitStruct->rastOp = SRCCOPY;
             return true;
 
         case COMPOSITE_SRC_OVER:
         case COMPOSITE_SRC_ATOP:
-                       if(srcSurf->invalidated || srcSurf->isAlphaPre != true){
-                               if(!initBitmap(srcSurf, env, srcData, true)) return false;
-                       }
+            if(srcSurf->invalidated || srcSurf->isAlphaPre != true){
+                if(!initBitmap(srcSurf, env, srcData, true)) return false;
+            }
             if(srcSurf->transparency != GL_OPAQUE || srcConstAlpha != 255){
                 blitStruct->blitFunctintType = ALPHA_BLEND;
                 blitStruct->blendFunc.AlphaFormat = srcSurf->transparency != GL_OPAQUE ? AC_SRC_ALPHA : 0;
@@ -448,18 +460,19 @@ BOOL initBlitData
                 blitStruct->rastOp = BLACKNESS;
                 return true;
             }
-            // TODO Need to check src alpha
-            return false;
+            blitStruct->blitFunctintType = COMPOSITE_BLT;
+            return true;
 
         case COMPOSITE_DST_OUT:
         case COMPOSITE_XOR:
+            if(srcConstAlpha != 255) return false; 
             if(srcConstAlpha == 255 && srcSurf->transparency == GL_OPAQUE){
                 blitStruct->blitFunctintType = BIT_BLT;
                 blitStruct->rastOp = BLACKNESS;
                 return true;
             }
-            // TODO Need to check src alpha
-            return false;
+            blitStruct->blitFunctintType = COMPOSITE_BLT;
+            return true;
 
         default:
             return false;
@@ -469,14 +482,106 @@ BOOL initBlitData
 BOOL initBitmap
 (SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, BOOL alphaPre){
 
-       HBITMAP srcBmp = srcSurf->bitmap;
+    HBITMAP srcBmp = srcSurf->bitmap;
     if(!srcBmp){
         return false;
     }
-       updateCache(srcSurf, env, srcData, alphaPre != 0);
-       SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+    updateCache(srcSurf, env, srcData, alphaPre != 0);
+    SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
     return true;
 }
 
+void CompositeBlt
+(HDC dstDC, jint dstX, jint dstY, jint width, jint height, SURFACE_STRUCTURE *srcSurf, 
+        void * srcData, jint srcX, jint srcY, UINT compType, UCHAR alpha, PXFORM currentTransform, 
+        PXFORM transform){
 
+    HDC dc = GetDC(NULL);
+    if(dc == NULL) return;
 
+    HDC tmpDC = CreateCompatibleDC(dc);
+    if(!tmpDC){
+        ReleaseDC(NULL, dc);
+        return;
+    }
+
+    HBITMAP tmpBitmap = CreateCompatibleBitmap(dc, width, height);
+    if(tmpBitmap == NULL){
+        ReleaseDC(NULL, dc);
+        DeleteDC(tmpDC);
+        return;
+    }
+
+    ReleaseDC(NULL, dc);
+
+    SelectObject(tmpDC, tmpBitmap);
+
+    GraphicsInfo *gi = (GraphicsInfo *)malloc(sizeof(GraphicsInfo));
+    if(gi == NULL){
+        DeleteObject(tmpBitmap);
+        DeleteDC(tmpDC);
+        return;
+    }
+    memset(gi, 0, sizeof(GraphicsInfo));
+
+    SURFACE_STRUCTURE *tmpSurf = (SURFACE_STRUCTURE *)malloc(sizeof(SURFACE_STRUCTURE));
+    if(tmpSurf == NULL){
+        DeleteObject(tmpBitmap);
+        DeleteDC(tmpDC);
+        free(gi);
+        return;
+    }
+    memset(tmpSurf, 0, sizeof(SURFACE_STRUCTURE));
+
+    gi->hdc = tmpDC;
+    gi->bmp = tmpBitmap;
+
+    tmpSurf->width = width;
+    tmpSurf->height = height;
+    tmpSurf->gi = (GraphicsInfo *)gi;
+    parseFormat(tmpSurf);
+    tmpSurf->bmpData = (BYTE *)malloc(tmpSurf->bmpInfo.bmiHeader.biSizeImage);
+    if(tmpSurf->bmpData == NULL){
+        DeleteObject(tmpBitmap);
+        DeleteDC(tmpDC);
+        free(gi);
+        free(tmpSurf);
+        return;
+    }
+
+    BitBlt(tmpDC, 0, 0, width, height, dstDC, dstX, dstY, SRCCOPY);
+
+    GetDIBits(tmpDC, tmpBitmap, 0, tmpSurf->height, tmpSurf->bmpData, 
+                          (BITMAPINFO *)&tmpSurf->bmpInfo, DIB_RGB_COLORS);
+
+    switch(compType){
+        case COMPOSITE_DST_IN:
+        case COMPOSITE_DST_ATOP:
+            dst_atop_custom(srcX, srcY, srcSurf, srcData, 0, 0, tmpSurf, 
+                    tmpSurf->bmpData, width, height, alpha);
+            break;
+
+        case COMPOSITE_DST_OUT:
+        case COMPOSITE_XOR:
+            dst_out_custom(srcX, srcY, srcSurf, srcData, 0, 0, tmpSurf, 
+                    tmpSurf->bmpData, width, height, alpha);
+    }
+
+    SetDIBits(tmpDC, tmpBitmap, 0, tmpSurf->height, tmpSurf->bmpData, (BITMAPINFO *)&tmpSurf->bmpInfo, DIB_RGB_COLORS);
+
+    GetWorldTransform(dstDC, currentTransform);
+    SetWorldTransform(dstDC, transform);
+    BitBlt(dstDC, dstX, dstY, width, height, tmpDC, 0, 0, SRCCOPY);
+
+    DeleteObject(tmpBitmap);
+    DeleteDC(tmpDC);
+
+    free(gi);
+    free(tmpSurf->bmpData);
+    if(tmpSurf->bits) free(tmpSurf->bits);
+    if(tmpSurf->colormap) free(tmpSurf->colormap);
+    if(tmpSurf->bank_indexes) free(tmpSurf->bank_indexes);
+    if(tmpSurf->band_offsets) free(tmpSurf->band_offsets);
+    free(tmpSurf);
+
+}

@@ -142,20 +142,7 @@ setPlatformBindOptions (JNIEnv * env, hysocket_t socketP)
 I_32
 getPlatformIsReadOnly (JNIEnv * env, char *path)
 {
-  I_32 result;
-  struct stat buffer;
-
-  result = stat (path, &buffer);
-  if (result == -1)
-    return 0;
-
-  if (buffer.st_uid == geteuid ())
-    return (buffer.st_mode & S_IWUSR) == 0;
-  else if (buffer.st_gid == getegid ())
-    return (buffer.st_mode & S_IWGRP) == 0;
-
-  return (buffer.st_mode & S_IWOTH) == 0;
-
+  return access(path, W_OK) !=0;
 }
 
 /**
@@ -164,20 +151,7 @@ getPlatformIsReadOnly (JNIEnv * env, char *path)
 I_32
 getPlatformIsWriteOnly (JNIEnv * env, char *path)
 {
-  I_32 result;
-  struct stat buffer;
-
-  result = stat (path, &buffer);
-  if (result == -1)
-    return 0;
-
-  if (buffer.st_uid == geteuid ())
-    return (buffer.st_mode & S_IRUSR) == 0;
-  else if (buffer.st_gid == getegid ())
-    return (buffer.st_mode & S_IRGRP) == 0;
-
-  return (buffer.st_mode & S_IROTH) == 0;
-
+  return access(path, R_OK) !=0;
 }
 
 /* Resolve link if it is a symbolic link and put the result in link. */

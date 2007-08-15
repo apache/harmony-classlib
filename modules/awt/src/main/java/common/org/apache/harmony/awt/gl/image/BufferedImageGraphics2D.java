@@ -23,6 +23,8 @@ package org.apache.harmony.awt.gl.image;
 import java.awt.Graphics;
 import java.awt.GraphicsConfiguration;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -75,5 +77,17 @@ public class BufferedImageGraphics2D extends CommonGraphics2D {
 
     public WritableRaster getWritableRaster() {
         return bi.getRaster();
+    }
+    
+    @Override
+    public void drawString(String str, float x, float y) {
+        Shape sh = font.createGlyphVector(this.getFontRenderContext(), str).getOutline(x, y);
+        fill(sh);
+    }
+
+    @Override
+    public void drawGlyphVector(GlyphVector gv, float x, float y) {
+        Shape sh = gv.getOutline(x, y);
+        this.fill(sh);
     }
 }
