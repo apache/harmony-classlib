@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.SwingTestCase;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -340,5 +341,57 @@ public class BasicSliderUITest extends SwingTestCase {
                 3, true);
         assertTrue(m.isEnabled());
     } 
+    
+    /**
+     * Regression test for HARMONY-4445
+     */
+    public void testMinMaxValue() {
+
+        slider.setMaximum(Integer.MAX_VALUE);
+        slider.setMinimum(0);
+        slider.setBounds(0,0,100,100);
+
+        int half = Integer.MAX_VALUE / 2;
+
+        // UI slightly modified to omit unneeded actions - no functional changes
+        // according to spec
+        BasicSliderUI tested = new BasicSliderUI(slider) {
+            @Override
+            protected void installKeyboardActions(JSlider unneded) {
+                // Empty. In real BasicSliderUI this method installs Keyboard
+                // actions
+            }
+
+            @Override
+            protected void installDefaults(JSlider unneded) {
+                // Empty. In real BasicSliderUI this method installs defaults
+                // (colors and fonts)
+            }
+
+            @Override
+            protected void installListeners(JSlider unneded) {
+                // Empty. In real BasicSliderUI this method installs listeners
+            }
+        };
+
+        tested.installUI(slider);
+        assertEquals(tested.xPositionForValue(half),
+                getCenterHorisontalPosition(tested));
+
+        slider.setOrientation(SwingConstants.VERTICAL);
+        tested.installUI(slider);
+
+        assertEquals(tested.yPositionForValue(half),
+                getCenterVerticalPosition(tested));
+        
+    }
+
+    private int getCenterVerticalPosition(BasicSliderUI ui) {
+        return ui.trackRect.y + (ui.trackRect.height / 2);
+    }
+
+    private int getCenterHorisontalPosition(BasicSliderUI ui) {
+        return ui.trackRect.x + (ui.trackRect.width / 2);
+    }
     
 }
