@@ -19,7 +19,7 @@ package org.apache.harmony.awt.geom;
 import org.apache.harmony.awt.gl.Crossing;
 
 public class GeometryUtil {
-    static final double EPSILON = Math.pow(10, -15);
+    public static final double EPSILON = Math.pow(10, -14);
 
     public static int intersectLinesWithParams(double x1, double y1, double x2, double y2,
                                                double x3, double y3, double x4, double y4,

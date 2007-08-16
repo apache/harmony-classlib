@@ -284,7 +284,7 @@ public class CrossingHelper {
         }
     }
     
-    private boolean containsPoint(double[] point) {
+    public boolean containsPoint(double[] point) {
     	IntersectPoint ipoint;
     	
     	for (Iterator i = isectPoints.iterator(); i.hasNext(); ) {
