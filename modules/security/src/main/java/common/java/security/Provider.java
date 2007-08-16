@@ -836,34 +836,39 @@ public abstract class Provider extends Properties {
                     throw result;
                 }
             }
-            if (constructorParameter == null) {
-                try {
-                    return implementation.newInstance();
-                } catch (Exception e) {
-                    throw new NoSuchAlgorithmException(Messages.getString("security.199", //$NON-NLS-1$
-                            type, algorithm), e);
-                }
-            } else {
-                if (!supportsParameter(constructorParameter)) {
-                    throw new InvalidParameterException(
-                            Messages.getString("security.12", type)); //$NON-NLS-1$
+            
+            Class[] parameterTypes = new Class[1];
+
+            if (constructorParameter != null
+                    && !supportsParameter(constructorParameter)) {
+                throw new InvalidParameterException(Messages.getString(
+                        "security.12", type)); //$NON-NLS-1$
+            }
+            Object[] initargs = { constructorParameter };
+
+            try {
+                if (type.equalsIgnoreCase("CertStore")) { //$NON-NLS-1$
+                    parameterTypes[0] = Class
+                            .forName("java.security.cert.CertStoreParameters"); //$NON-NLS-1$
+                } else if (type.equalsIgnoreCase("Configuration")) {
+                    parameterTypes[0] = Class
+                            .forName("javax.security.auth.login.Configuration$Parameters");
                 }
 
-                Class[] parameterTypes = new Class[1];
-                Object[] initargs = { constructorParameter };
-                try {
-                    if (type.equalsIgnoreCase("CertStore")) { //$NON-NLS-1$
-                        parameterTypes[0] = Class
-                                .forName("java.security.cert.CertStoreParameters"); //$NON-NLS-1$
+                if (parameterTypes[0] == null) {
+                    if (constructorParameter == null) {
+                        return implementation.newInstance();
                     } else {
                         parameterTypes[0] = constructorParameter.getClass();
                     }
-                    return implementation.getConstructor(parameterTypes)
-                            .newInstance(initargs);
-                } catch (Exception e) {
-                    throw new NoSuchAlgorithmException(Messages.getString("security.199", //$NON-NLS-1$
-                            type, algorithm), e);
                 }
+                return implementation.getConstructor(parameterTypes)
+                        .newInstance(initargs);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new NoSuchAlgorithmException(Messages.getString(
+                        "security.199", //$NON-NLS-1$
+                        type, algorithm), e);
             }
         }
 
