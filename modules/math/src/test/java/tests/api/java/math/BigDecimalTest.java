@@ -894,4 +894,26 @@ public class BigDecimalTest extends junit.framework.TestCase {
         assertEquals(bd.doubleValue(), nbd.doubleValue(), 0.0);
         assertEquals(bd.toString(), nbd.toString());
     }
+	
+	/**
+	 * @tests java.math.BigDecimal#stripTrailingZero(long)
+	 */
+	public void test_stripTrailingZero() {
+		BigDecimal sixhundredtest = new BigDecimal("600.0");
+		assertTrue("stripTrailingZero failed for 600.0",
+				((sixhundredtest.stripTrailingZeros()).scale() == -2)
+				);
+		
+		/* Single digit, no trailing zero, odd number */
+		BigDecimal notrailingzerotest = new BigDecimal("1");
+		assertTrue("stripTrailingZero failed for 1",
+				((notrailingzerotest.stripTrailingZeros()).scale() == 0)
+				);
+		
+		/* Zero */
+		BigDecimal zerotest = new BigDecimal("0.0000");
+		assertTrue("stripTrailingZero failed for 0.0000",
+				((zerotest.stripTrailingZeros()).scale() == 0)
+				);		
+	}	
 }
