@@ -247,7 +247,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         if (digits.length == 0) {
             sign = 0;
             numberLength = 1;
-            digits = new int[] { 0 };
+            this.digits = new int[] { 0 };
         } else {
             sign = signum;
             numberLength = digits.length;
