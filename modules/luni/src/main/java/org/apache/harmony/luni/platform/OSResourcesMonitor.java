@@ -22,30 +22,24 @@ public class OSResourcesMonitor {
 
     private static final int SLEEP_TIME = 50;
 
-    private static final long FREE_MEMORY_THRESHOLD = 64 * 1024 * 1024; // 64M.
-
-    private static final int MEMORY_LOAD_THRESHOLD = 80; // 80%
-                                                                            // left.
-
     public static void ensurePhysicalMemoryCapacity() {
-        if (!isSystemPhysicalMemoryLow()) {           
+        if (!isSystemPhysicalMemoryLow()) {
             return;
         }
         synchronized (OSResourcesMonitor.class) {
             int iteration = 0;
-            while (isSystemPhysicalMemoryLow()) {               
-                if (iteration > MAX_ITERATION_TIMES) {                    
+            while (isSystemPhysicalMemoryLow()) {
+                if (iteration > MAX_ITERATION_TIMES) {
                     return;
-                }                
+                }
                 iteration++;
-                System.gc();                
+                System.gc();
                 try {
                     Thread.sleep(SLEEP_TIME);
                 } catch (InterruptedException e) {
 
                 }
             }
-
         }
     }
 
