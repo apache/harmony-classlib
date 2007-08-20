@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Map;
 
 import org.apache.harmony.auth.internal.nls.Messages;
 import org.apache.harmony.security.x501.Name;
@@ -86,6 +87,22 @@ public final class X500Principal implements Serializable, Principal {
             throw iae;
         }
     }
+    
+    public X500Principal(String name, Map<String,String> keywordMap){
+        super();
+        if (name == null) {
+            throw new NullPointerException(Messages.getString("auth.00")); //$NON-NLS-1$
+        }
+        
+        try {
+            dn = new Name(substituteNameFromMap(name,keywordMap));
+        } catch (IOException e) {
+            IllegalArgumentException iae = new IllegalArgumentException(Messages
+                    .getString("auth.2D")); //$NON-NLS-1$
+            iae.initCause(e);
+            throw iae;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -113,6 +130,68 @@ public final class X500Principal implements Serializable, Principal {
     public String getName(String format) {
         return dn.getName(format);
     }
+    
+    public String getName(String format, Map<String, String> oidMap) {
+        String rfc1779Name = dn.getName(RFC1779);
+        String rfc2253Name = dn.getName(RFC2253);
+
+        if (format.toUpperCase().equals("RFC1779")) {
+            StringBuilder resultName = new StringBuilder(rfc1779Name);
+            int fromIndex = resultName.length();
+            int equalIndex = -1;
+            while (-1 != (equalIndex = resultName.lastIndexOf("=", fromIndex))) {
+                int commaIndex = resultName.lastIndexOf(",", equalIndex);
+                String subName = resultName.substring(commaIndex + 1,
+                        equalIndex).trim();
+                if (subName.length() > 4
+                        && subName.substring(0, 4).equals("OID.")) {
+                    String subSubName = subName.substring(4);
+                    if (oidMap.containsKey(subSubName)) {
+                        String replaceName = oidMap.get(subSubName);
+                        if(commaIndex > 0) replaceName = " " + replaceName;
+                        resultName.replace(commaIndex + 1, equalIndex, replaceName);
+                    }
+                }
+                fromIndex = commaIndex;
+            }
+            return resultName.toString();
+        } else if (format.toUpperCase().equals("RFC2253")) {
+            StringBuilder resultName = new StringBuilder(rfc2253Name);
+            StringBuilder subsidyName = new StringBuilder(rfc1779Name);
+
+            int fromIndex = resultName.length();
+            int subsidyFromIndex = subsidyName.length();
+            int equalIndex = -1;
+            int subsidyEqualIndex = -1;
+            while (-1 != (equalIndex = resultName.lastIndexOf("=", fromIndex))) {
+                subsidyEqualIndex = subsidyName.lastIndexOf("=",
+                        subsidyFromIndex);
+                int commaIndex = resultName.lastIndexOf(",", equalIndex);
+                String subName = resultName.substring(commaIndex + 1,
+                        equalIndex).trim();
+                if (oidMap.containsKey(subName)) {
+                    int subOrignalEndIndex = resultName
+                            .indexOf(",", equalIndex);
+                    if (subOrignalEndIndex == -1)
+                        subOrignalEndIndex = resultName.length();
+                    int subGoalEndIndex = subsidyName.indexOf(",",
+                            subsidyEqualIndex);
+                    if (subGoalEndIndex == -1)
+                        subGoalEndIndex = subsidyName.length();
+                    resultName.replace(equalIndex + 1, subOrignalEndIndex,
+                            subsidyName.substring(subsidyEqualIndex + 1,
+                                    subGoalEndIndex));
+                    resultName.replace(commaIndex + 1, equalIndex, oidMap
+                            .get(subName));
+                }
+                fromIndex = commaIndex;
+                subsidyFromIndex = subsidyEqualIndex - 1;
+            }
+            return resultName.toString();
+        } else {
+            throw new IllegalArgumentException("invalid format specified");
+        }
+    }
 
     @Override
     public int hashCode() {
@@ -131,5 +210,20 @@ public final class X500Principal implements Serializable, Principal {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 
         dn = (Name) Name.ASN1.decode((byte[]) in.readObject());
+    }
+    
+    private String substituteNameFromMap(String name, Map<String,String> keywordMap){
+        StringBuilder sbName = new StringBuilder(name);
+        int fromIndex = sbName.length();
+        int equalIndex = -1;
+        while(-1 != (equalIndex = sbName.lastIndexOf("=",fromIndex))){
+            int commaIndex = sbName.lastIndexOf(",",equalIndex);
+            String subName = sbName.substring(commaIndex+1, equalIndex).trim();
+            if(keywordMap.containsKey(subName)){
+                sbName.replace(commaIndex+1, equalIndex, keywordMap.get(subName));
+            }
+            fromIndex = commaIndex;
+        }
+        return sbName.toString();
     }
 }
