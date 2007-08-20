@@ -24,7 +24,7 @@
 #include "IMemorySystem.h"
 #include "exceptions.h"
 
-JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_malloc
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mallocNative
   (JNIEnv * env, jobject thiz, jlong size)
 {
   PORT_ACCESS_FROM_ENV (env);
