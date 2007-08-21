@@ -911,6 +911,7 @@ public class BigDecimalTest extends junit.framework.TestCase {
 				);
 		
 		/* Zero */
+        //regression for HARMONY-4623, NON-BUG DIFF with RI
 		BigDecimal zerotest = new BigDecimal("0.0000");
 		assertTrue("stripTrailingZero failed for 0.0000",
 				((zerotest.stripTrailingZeros()).scale() == 0)

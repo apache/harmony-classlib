@@ -224,11 +224,11 @@ class Logical {
     
     /** @see BigInteger#andNot(BigInteger) */
     static BigInteger andNot(BigInteger val, BigInteger that) {
-        if (val.sign == 0) {
-            return BigInteger.ZERO;
-        }
         if (that.sign == 0 ) {
             return val;
+        }
+        if (val.sign == 0) {
+            return BigInteger.ZERO;
         }
         if (val.equals(BigInteger.MINUS_ONE)) {
             return that.not();
@@ -239,7 +239,7 @@ class Logical {
         
         //if val == that, return 0
         
-                    if (val.sign > 0) {
+       if (val.sign > 0) {
             if (that.sign > 0) {
                 return andNotPositive(val, that);
             } else {
