@@ -21,7 +21,7 @@
 package javax.swing.text.html;
 
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -54,8 +54,7 @@ public class ImageView extends View {
     private BackgroundImageLoader loader;
     private String src;
 
-    //TODO We can load images only synchronously yet
-    private boolean synchronous = true;
+    private boolean synchronous = false;
 
     private Color color;
     
@@ -131,7 +130,7 @@ public class ImageView extends View {
                        .getAttribute(HTML.Attribute.ALT);
     }
 
-public void paint(final Graphics g, final Shape shape) {
+    public void paint(final Graphics g, final Shape shape) {
         
         Rectangle rc = shape.getBounds();
         rc.setSize(rc.width - 2*(hSpace + border), rc.height - 2*(vSpace + border));
@@ -281,12 +280,20 @@ public void paint(final Graphics g, final Shape shape) {
                                            desiredWidth, desiredHeight) {
             protected void onReady() {
                 super.onReady();
-                preferenceChanged(ImageView.this, true, true);
+                update();
             }
 
             protected void onError() {
                 super.onError();
+                update();
+            }
+
+            private void update() {
                 preferenceChanged(ImageView.this, true, true);
+                final Container component = getContainer();
+                if (component != null) {
+                    component.repaint();
+                }
             }
         };
     }
