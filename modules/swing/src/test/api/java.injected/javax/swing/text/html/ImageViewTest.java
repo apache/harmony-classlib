@@ -40,6 +40,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.View;
 import javax.swing.text.Position.Bias;
 
+@SuppressWarnings({"deprecation", "serial"})
 public class ImageViewTest extends BasicSwingTestCase {
     private static final String DEFAULT_SRC = "image.jpg";
     private static final String DEFAULT_ALT = "image description";
@@ -160,12 +161,14 @@ public class ImageViewTest extends BasicSwingTestCase {
     private int iconHeight;
     private static File imageFile;
 
+    @Override
     protected void setUp() throws Exception {
         super.setUp();
         setIgnoreNotImplemented(true);
         init();
     }
 
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
         if (imageFile != null) {
@@ -176,6 +179,7 @@ public class ImageViewTest extends BasicSwingTestCase {
     public void testImageView() {
         final Marker properties = new Marker();
         view = new ImageView(img) {
+            @Override
             protected void setPropertiesFromAttributes() {
                 properties.setOccurred();
                 super.setPropertiesFromAttributes();
@@ -377,6 +381,7 @@ public class ImageViewTest extends BasicSwingTestCase {
     public void testGetToolTipText02() {
         final Marker marker = new Marker();
         view = new ImageView(img) {
+            @Override
             public String getAltText() {
                 marker.setOccurred();
                 return null;
@@ -409,12 +414,14 @@ public class ImageViewTest extends BasicSwingTestCase {
     public void testGetAltText03() throws Exception {
         final Marker marker = new Marker();
         final AttributeSet vas = new SimpleAttributeSet() {
+            @Override
             public Object getAttribute(final Object key) {
                 marker.setOccurred();
                 return attrs.getAttribute(key);
             }
         };
         view = new ImageView(img) {
+            @Override
             public AttributeSet getAttributes() {
                 return vas;
             }
@@ -429,6 +436,7 @@ public class ImageViewTest extends BasicSwingTestCase {
 
         final String value = "attribute value";
         final AttributeSet eas = new SimpleAttributeSet() {
+            @Override
             public Object getAttribute(final Object key) {
                 marker.setOccurred();
                 if (key == HTML.Attribute.ALT) {
@@ -480,6 +488,7 @@ public class ImageViewTest extends BasicSwingTestCase {
     public void testSetParent() {
         final Marker properties = new Marker();
         view = new ImageView(img) {
+            @Override
             protected void setPropertiesFromAttributes() {
                 properties.setOccurred();
                 super.setPropertiesFromAttributes();
@@ -608,6 +617,7 @@ public class ImageViewTest extends BasicSwingTestCase {
     public void testChangedUpdate() {
         final Marker properties = new Marker(true);
         view = new ImageView(img) {
+            @Override
             protected void setPropertiesFromAttributes() {
                 properties.setOccurred();
                 super.setPropertiesFromAttributes();
@@ -652,9 +662,11 @@ public class ImageViewTest extends BasicSwingTestCase {
         final Marker color = new Marker(true);
         view = new ImageView(img) {
             private AttributeSet attributes;
+            @Override
             public AttributeSet getAttributes() {
                 if (attributes == null) {
                     attributes = new SimpleAttributeSet(super.getAttributes()) {
+                        @Override
                         public Object getAttribute(Object key) {
                             if (key == CSS.Attribute.COLOR) {
                                 color.setOccurred();
