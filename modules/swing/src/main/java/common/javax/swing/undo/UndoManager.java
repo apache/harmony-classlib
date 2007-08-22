@@ -49,7 +49,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
     public UndoManager() {
         indexOfNextAdd = 0;
         limit          = DEFAULT_LIMIT;
-        edits.ensureCapacity(100);
+        edits.ensureCapacity(DEFAULT_LIMIT);
     }
 
     @Override
