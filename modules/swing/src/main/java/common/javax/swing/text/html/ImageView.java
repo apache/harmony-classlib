@@ -46,9 +46,6 @@ import javax.swing.text.Position.Bias;
 import org.apache.harmony.x.swing.text.html.HTMLIconFactory;
 
 public class ImageView extends View {
-    private static Icon loadingImageIcon;
-    private static Icon noImageIcon;
-
     private AttributeSet attrs;
 
     private BackgroundImageLoader loader;
@@ -94,6 +91,7 @@ public class ImageView extends View {
         return synchronous;
     }
 
+    @Override
     public float getPreferredSpan(final int axis) {
         if (loader.isError()) {
             String alt = getAltText();
@@ -120,6 +118,7 @@ public class ImageView extends View {
         return loader.getHeight() + 2 * border + 2 * vSpace;
     }
 
+    @Override
     public String getToolTipText(final float x, final float y,
                                  final Shape shape) {
         return getAltText();
@@ -130,6 +129,7 @@ public class ImageView extends View {
                        .getAttribute(HTML.Attribute.ALT);
     }
 
+    @Override
     public void paint(final Graphics g, final Shape shape) {
         
         Rectangle rc = shape.getBounds();
@@ -188,6 +188,7 @@ public class ImageView extends View {
         g.drawImage(getImage(), rc.x + hSpace + border, rc.y + vSpace + border, rc.width, rc.height, loader);
     }
 
+    @Override
     public Shape modelToView(final int pos, final Shape shape, final Bias bias)
         throws BadLocationException {
 
@@ -198,6 +199,7 @@ public class ImageView extends View {
         return new Rectangle(rc.x + rc.width, rc.y, 0, rc.height);
     }
 
+    @Override
     public int viewToModel(final float x, final float y, final Shape shape,
                            final Bias[] bias) {
 
@@ -210,6 +212,7 @@ public class ImageView extends View {
         return getEndOffset();
     }
 
+    @Override
     public float getAlignment(final int axis) {
         if (axis == Y_AXIS) {
             return 1;
@@ -217,10 +220,12 @@ public class ImageView extends View {
         return super.getAlignment(axis);
     }
 
+    @Override
     public AttributeSet getAttributes() {
         return attrs;
     }
 
+    @Override
     public void changedUpdate(final DocumentEvent event, final Shape shape,
                               final ViewFactory factory) {
         setPropertiesFromAttributes();
@@ -278,11 +283,13 @@ public class ImageView extends View {
     private void createImage(final int desiredWidth, final int desiredHeight) {
         loader = new BackgroundImageLoader(getImageURL(), synchronous,
                                            desiredWidth, desiredHeight) {
+            @Override
             protected void onReady() {
                 super.onReady();
                 update();
             }
 
+            @Override
             protected void onError() {
                 super.onError();
                 update();
