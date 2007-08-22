@@ -24,6 +24,12 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 
 public class UndoManager extends CompoundEdit implements UndoableEditListener {
+    /**
+     * <b>Note:</b> The <code>serialVersionUID</code> fields are explicitly
+     * declared as a performance optimization, not as a guarantee of
+     * serialization compatibility.
+     */
+    private static final long serialVersionUID = -8731438423915672404L;
 
     /**
      * Index points to edit from the array of edits.
@@ -46,6 +52,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         edits.ensureCapacity(100);
     }
 
+    @Override
     public synchronized boolean addEdit(final UndoableEdit anEdit) {
         if (inProgress) {
             // we need to remove edits only when indexOfNextAdd < size - 1
@@ -124,12 +131,14 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
      *  Object obj = new UndoManager();
      *  System.out.println(obj.toString());
      */
+    @Override
     public String toString() {
         return super.toString()
             + " limit: " + limit
             + " indexOfNextAdd: " + indexOfNextAdd;
     }
 
+    @Override
     public synchronized String getUndoPresentationName() {
         if (inProgress) {
             UndoableEdit undoEdit = editToBeUndone();
@@ -150,6 +159,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         }
     }
 
+    @Override
     public synchronized String getRedoPresentationName() {
         if (inProgress) {
             UndoableEdit redoEdit = editToBeRedone();
@@ -189,6 +199,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         }
     }
 
+    @Override
     public synchronized boolean canUndo() {
         if (inProgress) {
             // find significant edit and call canUndo
@@ -199,7 +210,8 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         return super.canUndo();
     }
 
-     public synchronized boolean canRedo() {
+     @Override
+    public synchronized boolean canRedo() {
         if (inProgress) {
             // find significant edit and call canRedo
             UndoableEdit edit = editToBeRedone();
@@ -226,6 +238,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         }
     }
 
+    @Override
     public synchronized void undo() {
         if (inProgress) {
             // undo first significant edit before indexOfNextAdd
@@ -257,6 +270,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         }
     }
 
+    @Override
     public synchronized void redo() {
         if (inProgress) {
             // redoes last significant edit at index or later
@@ -272,6 +286,7 @@ public class UndoManager extends CompoundEdit implements UndoableEditListener {
         }
     }
 
+    @Override
     public synchronized void end() {
         // calls super's end
         super.end();
