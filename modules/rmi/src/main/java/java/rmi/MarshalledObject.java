@@ -26,7 +26,7 @@ import java.util.Arrays;
 import org.apache.harmony.rmi.MarshalledObjectInputStream;
 import org.apache.harmony.rmi.MarshalledObjectOutputStream;
 
-public final class MarshalledObject implements Serializable {
+public final class MarshalledObject<T> implements Serializable {
     private static final long serialVersionUID = 8988374069173025854L;
 
     private final byte[] objBytes;
@@ -35,7 +35,7 @@ public final class MarshalledObject implements Serializable {
 
     private final int hash;
 
-    public MarshalledObject(Object obj) throws IOException {
+    public MarshalledObject(T obj) throws IOException {
         ByteArrayOutputStream objStream = new ByteArrayOutputStream();
         MarshalledObjectOutputStream moStream = new MarshalledObjectOutputStream(objStream);
         moStream.writeObject(obj);
@@ -61,12 +61,12 @@ public final class MarshalledObject implements Serializable {
         return (hash == anotherObj.hash) || (Arrays.equals(objBytes, anotherObj.objBytes));
     }
 
-    public Object get() throws IOException, ClassNotFoundException {
+    public T get() throws IOException, ClassNotFoundException {
         if (objBytes == null) {
             return null;
         }
         MarshalledObjectInputStream moin = new MarshalledObjectInputStream(objBytes, locBytes);
-        return moin.readObject();
+        return (T) moin.readObject();
     }
 
     @Override

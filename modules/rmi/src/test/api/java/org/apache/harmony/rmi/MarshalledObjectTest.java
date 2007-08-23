@@ -56,6 +56,36 @@ public class MarshalledObjectTest extends TestCase {
     public MarshalledObjectTest(String name) {
         super(name);
     }
+    
+    /**
+     * @tests java.rmi.MarshalledObject<T>#MarshalledObject(T)
+     */
+    public void test_Constructor() throws Exception {
+        MarshalledObject marObject = 
+            new MarshalledObject<Integer>(new Integer(100));
+        assertNotNull(marObject);
+
+        Object object = null;
+        marObject = new MarshalledObject<Object>(object);
+        assertNotNull(marObject);
+    }
+
+    /**
+     * @tests java.rmi.MarshalledObject<T>#get()
+     */
+    public void test_get() throws Exception {
+        Hashtable object = new Hashtable();
+        object.put(new Integer(1), "One");
+        MarshalledObject<Hashtable> marObject = 
+            new MarshalledObject<Hashtable>(object);
+        assertEquals(object, marObject.get());
+        object.put(new Integer(2), "Two");
+        assertFalse(marObject.get().equals(object));
+        
+        object = null;
+        marObject = new MarshalledObject<Hashtable>(object);
+        assertNull(marObject.get());
+    }
 
     /**
      * Tests {@link MarshalledObject#equals(Object)} method.
