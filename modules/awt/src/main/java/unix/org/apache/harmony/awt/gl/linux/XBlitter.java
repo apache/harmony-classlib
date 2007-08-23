@@ -273,7 +273,8 @@ public class XBlitter implements Blitter {
                 makeClip(dstX, dstY, width, height, clip);
 
                 g2d.setXClip(clip, g2d.imageGC);
-                X11.getInstance().XCopyArea(
+                X11 x11 = X11.getInstance(); 
+                x11.XCopyArea(
                         g2d.display,
                         xSrcSurf.g2d.drawable, g2d.drawable,
                         g2d.imageGC,
@@ -281,6 +282,7 @@ public class XBlitter implements Blitter {
                         width, height,
                         dstX, dstY
                 );
+                x11.XFlush(g2d.display);
                 g2d.resetXClip(g2d.imageGC);
 
                 g2d.setImageGCFunction(X11Defs.GXcopy);
