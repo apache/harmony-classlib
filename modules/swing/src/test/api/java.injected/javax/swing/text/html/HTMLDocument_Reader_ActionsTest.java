@@ -248,9 +248,9 @@ public class HTMLDocument_Reader_ActionsTest extends HTMLDocumentTestCase {
         assertEquals(0, reader.parseBuffer.size());
         reader.handleEndTag(tag, 0);
         assertEquals(0, reader.charAttr.getAttributeCount());
-        assertEquals(2, reader.parseBuffer.size());
-        assertSpec((ElementSpec)reader.parseBuffer.get(0), ElementSpec.StartTagType, ElementSpec.OriginateDirection, 0, null);
-        checkImplicitContentSpec((ElementSpec)reader.parseBuffer.get(1));
+        // The rest part of the test is deleted because according to H-4574
+        // there is no underscore added if no text encountered. all the
+        // verification in that part occurs in the testAnchorStartTextEnd        
     }
 
     public void testAnchorStartTextEnd() {

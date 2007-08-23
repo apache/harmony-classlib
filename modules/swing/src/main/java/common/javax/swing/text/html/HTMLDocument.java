@@ -364,14 +364,11 @@ public class HTMLDocument extends DefaultStyledDocument {
             public void start(final Tag tag, final MutableAttributeSet attr) {
                 super.start(tag, attr);
                 openedBlocks.add(Tag.A);
-                anchorTextEncountered = false;
             }
             
             public void end(final Tag tag) {
-                if (openedBlocks.contains(Tag.A) && !anchorTextEncountered) {
-                    addContent(new char[] {' '}, 0, 1);
-                    anchorTextEncountered = true;
-                }
+                // According to H4574 Empty AncorTextEncoured verification has
+                // been removed
                 super.end(tag);
                 openedBlocks.remove(Tag.A);
             }
@@ -553,7 +550,6 @@ public class HTMLDocument extends DefaultStyledDocument {
         private final Set openedBlocks = new HashSet();
         private boolean impliedBlockOpen;
         private int numBlocksOpen;
-        private boolean anchorTextEncountered;
 
         private boolean needImpliedNewLine;
         private String styleRule;
@@ -628,9 +624,6 @@ public class HTMLDocument extends DefaultStyledDocument {
         }
 
         public void handleText(final char[] data, final int pos) {
-            if (openedBlocks.contains(Tag.A)) {
-                anchorTextEncountered = true;
-            }
             if (openedBlocks.contains(Tag.TITLE)) {
                 putProperty(TitleProperty, new String(data));
                 return;
