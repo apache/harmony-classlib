@@ -577,8 +577,7 @@ public class AttributedString {
                 it.previous();
                 break;
             } else if (start < range.end
-                    || (start == range.end && (value == null ? range.value == null
-                            : value.equals(range.value)))) {
+                    || (start == range.end && value.equals(range.value))) {
                 Range r1 = null, r3;
                 it.remove();
                 r1 = new Range(range.start, start, range.value);
@@ -588,8 +587,7 @@ public class AttributedString {
                     range = it.next();
                     if (end <= range.end) {
                         if (end > range.start
-                                || (end == range.start && (value == null ? range.value == null
-                                        : value.equals(range.value)))) {
+                                || (end == range.start && value.equals(range.value))) {
                             it.remove();
                             r3 = new Range(end, range.end, range.value);
                             break;
@@ -599,9 +597,8 @@ public class AttributedString {
                     }
                 }
 
-                if (value == null ? r1.value == null : value.equals(r1.value)) {
-                    if (value == null ? r3.value == null : value
-                            .equals(r3.value)) {
+                if (value.equals(r1.value)) {
+                    if (value.equals(r3.value)) {
                         it.add(new Range(r1.start < start ? r1.start : start,
                                 r3.end > end ? r3.end : end, r1.value));
                     } else {
@@ -612,8 +609,7 @@ public class AttributedString {
                         }
                     }
                 } else {
-                    if (value == null ? r3.value == null : value
-                            .equals(r3.value)) {
+                    if (value.equals(r3.value)) {
                         if (r1.start < r1.end) {
                             it.add(r1);
                         }
