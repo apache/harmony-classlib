@@ -357,7 +357,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
                 if (++elementCount > threshold) {
                     rehash();
                 }
-                    m = (LinkedHashMapEntry<K, V>) createHashedEntry(key, 0, 0);
+                    m = (LinkedHashMapEntry<K, V>) createHashedEntry(null, 0, 0);
             } else {
                 linkEntry(m);
             }
