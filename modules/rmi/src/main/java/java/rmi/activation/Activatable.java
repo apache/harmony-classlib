@@ -38,13 +38,13 @@ public abstract class Activatable extends RemoteServer {
 
     private ActivationID id;
 
-    protected Activatable(String codebase, MarshalledObject data, boolean restart, int port)
+    protected Activatable(String codebase, MarshalledObject<?> data, boolean restart, int port)
             throws ActivationException, RemoteException {
         super();
         id = exportObject(this, codebase, data, restart, port);
     }
 
-    protected Activatable(String codebase, MarshalledObject data, boolean restart, int port,
+    protected Activatable(String codebase, MarshalledObject<?> data, boolean restart, int port,
             RMIClientSocketFactory csf, RMIServerSocketFactory ssf) throws ActivationException,
             RemoteException {
         super();
@@ -81,7 +81,7 @@ public abstract class Activatable extends RemoteServer {
         return org.apache.harmony.rmi.remoteref.ActivatableRef.getStub(desc, aid);
     }
 
-    public static ActivationID exportObject(Remote obj, String location, MarshalledObject data,
+    public static ActivationID exportObject(Remote obj, String location, MarshalledObject<?> data,
             boolean restart, int port, RMIClientSocketFactory csf, RMIServerSocketFactory ssf)
             throws ActivationException, RemoteException {
         ActivationDesc adesc = new ActivationDesc(obj.getClass().getName(), location, data,
@@ -98,7 +98,7 @@ public abstract class Activatable extends RemoteServer {
     }
 
     public static ActivationID exportObject(Remote robj, String location,
-            MarshalledObject data, boolean restart, int port) throws ActivationException,
+            MarshalledObject<?> data, boolean restart, int port) throws ActivationException,
             RemoteException {
         ActivationDesc adesc = new ActivationDesc(robj.getClass().getName(), location, data,
                 restart);

@@ -43,14 +43,14 @@ public final class ActivationDesc implements Serializable {
     /**
      * @serial MarshalledObject that contain object-specific initialization data used during each activation.
      */
-    private MarshalledObject data;
+    private MarshalledObject<?> data;
 
     /**
      * @serial If the object requires restart service, restart should be true. If restart is false, the object is simply activated upon demand.
      */
     private boolean restart;
 
-    public ActivationDesc(String className, String location, MarshalledObject data)
+    public ActivationDesc(String className, String location, MarshalledObject<?> data)
             throws ActivationException {
         ActivationGroupID currentGID = ActivationGroup.currentGroupID();
         if (currentGID == null) {
@@ -64,7 +64,7 @@ public final class ActivationDesc implements Serializable {
         this.restart = false;
     }
 
-    public ActivationDesc(String className, String location, MarshalledObject data,
+    public ActivationDesc(String className, String location, MarshalledObject<?> data,
             boolean restart) throws ActivationException {
         ActivationGroupID currentGID = ActivationGroup.currentGroupID();
         if (currentGID == null) {
@@ -79,7 +79,7 @@ public final class ActivationDesc implements Serializable {
     }
 
     public ActivationDesc(ActivationGroupID groupID, String className, String location,
-            MarshalledObject data) {
+            MarshalledObject<?> data) {
         if (groupID == null) {
             // rmi.10=The groupID can't be null.
             throw new IllegalArgumentException(Messages.getString("rmi.10")); //$NON-NLS-1$
@@ -92,7 +92,7 @@ public final class ActivationDesc implements Serializable {
     }
 
     public ActivationDesc(ActivationGroupID groupID, String className, String location,
-            MarshalledObject data, boolean restart) {
+            MarshalledObject<?> data, boolean restart) {
         if (groupID == null) {
             // rmi.10=The groupID can't be null.
             throw new IllegalArgumentException(Messages.getString("rmi.10")); //$NON-NLS-1$
@@ -108,7 +108,7 @@ public final class ActivationDesc implements Serializable {
         return groupID;
     }
 
-    public MarshalledObject getData() {
+    public MarshalledObject<?> getData() {
         return data;
     }
 

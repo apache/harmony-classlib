@@ -176,7 +176,7 @@ public abstract class ActivationGroup extends UnicastRemoteObject
         this.groupID = groupID;
     }
 
-    protected void activeObject(ActivationID id, MarshalledObject mobj)
+    protected void activeObject(ActivationID id, MarshalledObject<? extends Remote> mobj)
             throws ActivationException, UnknownObjectException, RemoteException {        
         // rmi.log.14=ActivationGroup.activeObject: {0}; {1}
         rlog.log(RMILog.VERBOSE, Messages.getString("rmi.log.14", id, mobj)); //$NON-NLS-1$

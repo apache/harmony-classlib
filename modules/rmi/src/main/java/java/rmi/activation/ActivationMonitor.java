@@ -23,7 +23,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ActivationMonitor extends Remote {
-    void activeObject(ActivationID id, MarshalledObject data) throws UnknownObjectException,
+    void activeObject(ActivationID id, MarshalledObject<? extends Remote> data) throws UnknownObjectException,
             RemoteException;
 
     void inactiveObject(ActivationID id) throws UnknownObjectException, RemoteException;

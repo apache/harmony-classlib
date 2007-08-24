@@ -23,6 +23,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ActivationInstantiator extends Remote {
-    MarshalledObject newInstance(ActivationID id, ActivationDesc desc)
+    MarshalledObject<? extends Remote> newInstance(ActivationID id, ActivationDesc desc)
             throws ActivationException, RemoteException;
 }

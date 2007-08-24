@@ -56,7 +56,7 @@ public final class ActivationGroupDesc implements Serializable {
         this(null, null, null, props, env);
     }
 
-    public ActivationGroupDesc(String className, String codebase, MarshalledObject data,
+    public ActivationGroupDesc(String className, String codebase, MarshalledObject<?> data,
             Properties props, ActivationGroupDesc.CommandEnvironment env) {
         super();
         this.className = className;
@@ -74,7 +74,7 @@ public final class ActivationGroupDesc implements Serializable {
         return location;
     }
 
-    public MarshalledObject getData() {
+    public MarshalledObject<?> getData() {
         return data;
     }
 
