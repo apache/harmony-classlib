@@ -95,6 +95,9 @@ public class HTMLDocument extends DefaultStyledDocument {
     }
 
     public class HTMLReader extends HTMLEditorKit.ParserCallback {
+       
+        private boolean anchorReferenceEncountered = false;
+        
         public class TagAction {
             public void start(final Tag tag, final MutableAttributeSet attr) {
             }
@@ -362,6 +365,7 @@ public class HTMLDocument extends DefaultStyledDocument {
         
         class AnchorAction extends CharacterAction {
             public void start(final Tag tag, final MutableAttributeSet attr) {
+                anchorReferenceEncountered = attr.isDefined(HTML.Attribute.HREF);
                 super.start(tag, attr);
                 openedBlocks.add(Tag.A);
             }
@@ -371,6 +375,7 @@ public class HTMLDocument extends DefaultStyledDocument {
                 // been removed
                 super.end(tag);
                 openedBlocks.remove(Tag.A);
+                anchorReferenceEncountered = false;
             }
         }
         
@@ -429,6 +434,20 @@ public class HTMLDocument extends DefaultStyledDocument {
                     }
                 }
                 return null;
+            }
+        }
+        
+        class ImageAction extends SpecialAction {
+
+            @Override
+            public void start(Tag tag, MutableAttributeSet attr) {
+
+                if (anchorReferenceEncountered) {
+
+                    attr.addAttributes(charAttr.copyAttributes());
+                }
+
+                super.start(tag, attr);
             }
         }
         
@@ -975,7 +994,7 @@ public class HTMLDocument extends DefaultStyledDocument {
             tagActionMap.put(Tag.HTML, blockAction);
             tagActionMap.put(Tag.I, advancedCharacterAction);
             tagActionMap.put(Tag.IFRAME, hiddenAction);
-            tagActionMap.put(Tag.IMG, specialAction);
+            tagActionMap.put(Tag.IMG, new ImageAction());
             tagActionMap.put(Tag.INPUT, formAction);
             tagActionMap.put(Tag.INS, characterAction);
             tagActionMap.put(Tag.ISINDEX, new IsindexAction());

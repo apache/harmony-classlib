@@ -42,10 +42,12 @@ import javax.swing.text.LayeredHighlighter;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.Position.Bias;
+import javax.swing.text.html.CSS.ColorProperty;
 
 import org.apache.harmony.x.swing.text.html.HTMLIconFactory;
 
 public class ImageView extends View {
+   
     private AttributeSet attrs;
 
     private BackgroundImageLoader loader;
@@ -58,11 +60,18 @@ public class ImageView extends View {
     private int border;
     private int vSpace;
     private int hSpace;
+    
+    /** Not-found-property marker: Any negative number */
+    private final int INT_PROPERTY_NOT_FOUND = -1;
 
     public ImageView(final Element element) {
         super(element);
         if (element != null) { // Fix for HARMONY-1747, for compatibility with RI
             setPropertiesFromAttributes();
+            if (element.getAttributes().getAttribute(HTML.Tag.A) != null) {
+                setAnchorViewAttributes();
+            }
+            adjustBordersAndSpaces();
         }
     }
 
@@ -148,12 +157,14 @@ public class ImageView extends View {
         }
         
         Color oldColor = g.getColor();
-        g.setColor(color);
-        g.fillRect(rc.x + hSpace, rc.y + vSpace, rc.width + 2 * border,
-                rc.height + 2 * border);
-        g.setColor(oldColor);
-        g.fillRect(rc.x + hSpace + border, rc.y + vSpace + border, rc.width,
-                rc.height);
+        if (border > 0) {
+            g.setColor(color);
+            g.fillRect(rc.x + hSpace, rc.y + vSpace, rc.width + 2 * border,
+                    rc.height + 2 * border);
+            g.setColor(oldColor);
+            g.fillRect(rc.x + hSpace + border, rc.y + vSpace + border,
+                    rc.width, rc.height);
+        }
 
         if (loader.isError()) {
             
@@ -265,6 +276,10 @@ public class ImageView extends View {
         color = getStyleSheet().getForeground(getAttributes());
     }
     
+    /**
+     * Converts attribute value to number, correctly interprets by this view
+     * (i.e. null->negative number)
+     */
     private int getIntProperty(AttributeSet source, HTML.Attribute attr) {
         String result = (String) source.getAttribute(attr);
         // Null verification is added for possibly improved performance:
@@ -274,10 +289,10 @@ public class ImageView extends View {
             try {
                 return Integer.parseInt(result);
             } catch (NumberFormatException nfe) {
-                // Ignored, return 0, according to RI's result
+                // Ignored, according to RI's result
             }
         }
-        return 0;
+        return INT_PROPERTY_NOT_FOUND;
     }
 
     private void createImage(final int desiredWidth, final int desiredHeight) {
@@ -303,5 +318,33 @@ public class ImageView extends View {
                 }
             }
         };
+    }
+    
+    /**
+     * The method sets the 1px border (if the border is absent) and sets the
+     * color stated for &lt;a&gt; tag
+     */
+    private void setAnchorViewAttributes() {
+        if (border < 0) {
+            border = 1;
+        }
+        color = ((ColorProperty) getStyleSheet().getRule("a").getAttribute(
+                CSS.Attribute.COLOR)).getColor();
+    }
+
+    /**
+     * Sets negative properties to zero ones (negative property can either
+     * directly stated or returned by getIntProperty method)
+     */
+    private void adjustBordersAndSpaces() {
+        if (vSpace < 0) {
+            vSpace = 0;
+        }
+        if (hSpace < 0) {
+            hSpace = 0;
+        }
+        if (border < 0) {
+            border = 0;
+        }
     }
 }
