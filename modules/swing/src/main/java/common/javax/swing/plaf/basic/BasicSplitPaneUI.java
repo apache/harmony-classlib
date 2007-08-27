@@ -181,7 +181,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
                 components[RIGHT_COMPONENT_INDEX] = component;
             }
             
-            resetToPreferredSizes();
+            //resetToPreferredSizes();
         }
 
         public Dimension minimumLayoutSize(final Container container) {

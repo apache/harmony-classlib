@@ -20,8 +20,6 @@
  */
 package javax.swing.undo;
 
-import java.util.Hashtable;
-
 import javax.swing.UIManager;
 import javax.swing.event.UndoableEditEvent;
 
@@ -743,5 +741,10 @@ public class UndoManagerTest extends CompoundEditTest {
         // must be called:
         // 1) edit3.die
         // 2) edit2.die
+    }
+
+    @Override
+    public void testEditsCapacity() { // Regression for HARMONY-2649
+        assertEquals(100, um.edits.capacity());
     }
 }

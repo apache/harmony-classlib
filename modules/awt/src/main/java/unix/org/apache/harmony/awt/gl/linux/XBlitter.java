@@ -31,6 +31,7 @@ import java.awt.image.AffineTransformOp;
 
 import org.apache.harmony.awt.gl.*;
 import org.apache.harmony.awt.gl.render.Blitter;
+import org.apache.harmony.awt.gl.render.JavaBlitter;
 import org.apache.harmony.awt.gl.render.NativeImageBlitter;
 import org.apache.harmony.awt.nativebridge.linux.X11;
 import org.apache.harmony.awt.nativebridge.linux.X11Defs;
@@ -169,76 +170,49 @@ public class XBlitter implements Blitter {
             default:
                 XSurface xDstSurf = (XSurface) dstSurf;
 
-                BufferedImage compIm;
-                int w = srcSurf.getWidth();
-                int h = srcSurf.getHeight();
-
-                if (!(srcSurf instanceof ImageSurface)) {
-                    compIm = xDstSurf.g2d.xConfig.createCompatibleImage(w, h);
-
-                    NativeImageBlitter.getInstance().blit(
-                            srcX, srcY, srcSurf,
-                            srcX, srcY,
-                            AwtImageBackdoorAccessor.getInstance().getImageSurface(compIm),
-                            w, h,
-                            AlphaComposite.Src, null, null
-                    );
-                } else {
-                    ColorModel cm = srcSurf.getColorModel();
-                    compIm = new BufferedImage(
-                            cm,
-                            srcSurf.getRaster(),
-                            cm.isAlphaPremultiplied(),
-                            null
-                    );
-                }
-
-                WritableRaster compRaster = compIm.getRaster();
-
                 AffineTransform at = (AffineTransform) sysxform.clone();
 
-                AffineTransformOp atop =
-                        new AffineTransformOp(at, xDstSurf.g2d.getRenderingHints());
+                Rectangle transDstBounds = JavaBlitter.getBounds2D(at, new Rectangle(dstX, dstY, width, height)).getBounds();
+                int tWidth = transDstBounds.width;
+                int tHeight = transDstBounds.height;
+                dstX = transDstBounds.x;
+                dstY = transDstBounds.y;
 
-                Rectangle r = atop.getBounds2D(compRaster).getBounds();
-                int tWidth = r.width;
-                int tHeight = r.height;
+                ColorModel cm = srcSurf.getColorModel();
+                WritableRaster compRaster = srcSurf.getRaster();
+                BufferedImage compIm = new BufferedImage(
+                        cm,
+                        compRaster,
+                        cm.isAlphaPremultiplied(),
+                        null
+                );
 
-                BufferedImage transformed;
-                if (compIm.getColorModel().getTransparency() == Transparency.OPAQUE) {
-                    transformed = xDstSurf.g2d.xConfig.createCompatibleImage(tWidth, tHeight);
-                } else {
-                    ColorModel cm = compIm.getColorModel();
-                    transformed =
-                            new BufferedImage(
-                                    cm,
-                                    compIm.getRaster().createCompatibleWritableRaster(
-                                            tWidth,
-                                            tHeight
-                                    ),
-                                    cm.isAlphaPremultiplied(),
-                                    null
-                            );
-                }
+                BufferedImage transformed = new BufferedImage(tWidth, tHeight, BufferedImage.TYPE_INT_ARGB);
 
-                atop.filter(compIm, transformed);
+                Surface transfSurf = Surface.getImageSurface(transformed);
+                JavaBlitter.getInstance().blit(srcX, srcY, Surface.getImageSurface(compIm), 
+                        0, 0, transfSurf, width, height, at, AlphaComposite.Src, null, null);
 
                 if (dstX < 0){
                     tWidth += dstX;
+                    srcX = -dstX;
                     dstX = 0;
                 }
 
                 if (dstY < 0){
                     tHeight += dstY;
+                    srcY = -dstY;
                     dstY = 0;
                 }
 
+                if(tWidth <= 0 || tHeight <= 0 || srcX >= tWidth || srcY >= tHeight) return;
                 blit(
-                        0, 0, AwtImageBackdoorAccessor.getInstance().getImageSurface(transformed),
+                        srcX, srcY, transfSurf,
                         dstX, dstY, dstSurf,
                         tWidth, tHeight,
                         comp, bgcolor, clip
                 );
+
         }
     }
 
@@ -248,6 +222,7 @@ public class XBlitter implements Blitter {
             int width, int height,
             Composite comp, Color bgcolor, MultiRectArea clip
     ) {
+
         if (clip == null) {
             clip = new MultiRectArea(new Rectangle(dstX, dstY, width, height));
         } else {
@@ -298,7 +273,8 @@ public class XBlitter implements Blitter {
                 makeClip(dstX, dstY, width, height, clip);
 
                 g2d.setXClip(clip, g2d.imageGC);
-                X11.getInstance().XCopyArea(
+                X11 x11 = X11.getInstance(); 
+                x11.XCopyArea(
                         g2d.display,
                         xSrcSurf.g2d.drawable, g2d.drawable,
                         g2d.imageGC,
@@ -306,6 +282,7 @@ public class XBlitter implements Blitter {
                         width, height,
                         dstX, dstY
                 );
+                x11.XFlush(g2d.display);
                 g2d.resetXClip(g2d.imageGC);
 
                 g2d.setImageGCFunction(X11Defs.GXcopy);
@@ -384,8 +361,10 @@ public class XBlitter implements Blitter {
             MultiRectArea clip
     ) {
         XSurface xDstSurf = ((XSurface) dstSurf);
+
         boolean srcNoAlpha =
                 srcSurf.getColorModel().getTransparency() == Transparency.OPAQUE;
+
         if (comp instanceof AlphaComposite) {
             AlphaComposite acomp = (AlphaComposite) comp;
             if (
@@ -400,28 +379,27 @@ public class XBlitter implements Blitter {
             }
         }
 
-        AffineTransform t = xDstSurf.g2d.getTransform();
-        int tx = (int) t.getTranslateX();
-        int ty = (int) t.getTranslateY();
-
-        if (xDstSurf.needServerData) {
-            xDstSurf.setRoi(new Rectangle2D.Float(dstX - tx, dstY - ty, width, height));
-        }
-
-        clip.translate(-tx, -ty);
-
+        Rectangle2D roi = new Rectangle2D.Float(dstX, dstY, width, height); 
+        xDstSurf.setRoi(roi);
         NativeImageBlitter.getInstance().blit(
                 srcX, srcY, srcSurf,
-                dstX - tx, dstY - ty, xDstSurf.getImageSurface(),
+                0, 0, xDstSurf.getImageSurface(),
                 width, height,
-                comp, bgcolor, clip
+                comp, bgcolor, null
         );
 
-        clip.translate(tx, ty);
+        if (xDstSurf.needServerData) {
+            xDstSurf.putImage(clip,
+                    (int) (roi.getX()),
+                    (int) (roi.getY()),
+                    (int) roi.getWidth(), 
+                    (int) roi.getHeight()
+            );
 
-        // Get translated clip
-        makeClip(dstX, dstY, width, height, clip);
-        xDstSurf.putImage(clip);
+        } else {
+            xDstSurf.putImage(clip, dstX, dstY, width, height);
+        }
+
         xDstSurf.needServerData = true;
     }
 

@@ -1618,9 +1618,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         Integer oldHandle = descriptorHandle;
         descriptorHandle = Integer.valueOf(nextHandle());
         classDesc = readClassDescriptor();
-        if (descriptorHandle != null) {
-            registerObjectRead(classDesc, descriptorHandle, false);
-        }
+        registerObjectRead(classDesc, descriptorHandle, false);
         descriptorHandle = oldHandle;
         primitiveData = emptyStream;
         classDesc.setClass(resolveClass(classDesc));
@@ -1700,9 +1698,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         Integer oldHandle = descriptorHandle;
         descriptorHandle = Integer.valueOf(nextHandle());
         ObjectStreamClass newClassDesc = readClassDescriptor();
-        if (descriptorHandle != null) {
-            registerObjectRead(newClassDesc, descriptorHandle, unshared);
-        }
+        registerObjectRead(newClassDesc, descriptorHandle, unshared);
         descriptorHandle = oldHandle;
         primitiveData = emptyStream;
 
@@ -1792,7 +1788,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         descriptorHandle = (null == descriptorHandle ? Integer
                 .valueOf(nextHandle()) : descriptorHandle);
         registerObjectRead(newClassDesc, descriptorHandle, false);
-        descriptorHandle = null;
 
         readFieldDescriptors(newClassDesc);
         return newClassDesc;

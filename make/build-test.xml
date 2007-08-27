@@ -99,6 +99,9 @@
         <fileset dir="${jetty.dir}">
             <include name="*.jar" />
         </fileset>
+        <fileset dir="${derby.dir}">
+            <include name="*.jar" />
+        </fileset>
         </copy>
     </target>
 

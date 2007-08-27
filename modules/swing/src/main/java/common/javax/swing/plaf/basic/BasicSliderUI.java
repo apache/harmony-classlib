@@ -1095,21 +1095,29 @@ public class BasicSliderUI extends SliderUI {
     }
 
     protected int xPositionForValue(final int value) {
-        int size = slider.getMaximum() - slider.getMinimum();
-        int result = drawInverted() ^ !slider.getComponentOrientation().isLeftToRight()
-                           ? trackRect.x + trackRect.width - (trackRect.width * (value - slider.getMinimum()) / size)
-                           : trackRect.x + trackRect.width * (value - slider.getMinimum()) / size;
+        // Changed according to JIRA 4445
+        double valueToSizeRatio = (double) value
+                / (double) (slider.getMaximum() - slider.getMinimum());
 
-        return result;
+        if ((drawInverted() ^ !slider.getComponentOrientation().isLeftToRight())) {
+            return (int) (trackRect.x + trackRect.width - (trackRect.width * valueToSizeRatio));
+        } else {
+            return (int) (trackRect.x + trackRect.width * valueToSizeRatio);
+        }
+
     }
 
     protected int yPositionForValue(final int value) {
-        int size = slider.getMaximum() - slider.getMinimum();
-        int result = drawInverted() ^ (!slider.getComponentOrientation().isLeftToRight() && slider.getOrientation() == JSlider.HORIZONTAL)
-                           ? trackRect.y + trackRect.height * (value - slider.getMinimum()) / size
-                           : trackRect.y + trackRect.height - (trackRect.height * (value - slider.getMinimum()) / size);
+        // Changed according to JIRA 4445
+        double valueToSizeRatio = (double) value
+                / (double) (slider.getMaximum() - slider.getMinimum());
 
-        return result;
+        if ((drawInverted() ^ (!slider.getComponentOrientation()
+                .isLeftToRight() && slider.getOrientation() == JSlider.HORIZONTAL))) {
+            return (int) (trackRect.y + trackRect.height * valueToSizeRatio);
+        } else {
+            return (int) (trackRect.y + trackRect.height - (trackRect.height * valueToSizeRatio));
+        }
     }
 
     public int valueForYPosition(final int yPos) {

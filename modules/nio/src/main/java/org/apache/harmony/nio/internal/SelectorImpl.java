@@ -85,10 +85,6 @@ final class SelectorImpl extends AbstractSelector {
 
     private SelectionKey[] writableChannels;
 
-    private List<FileDescriptor> readableFDs = new ArrayList<FileDescriptor>();
-
-    private List<FileDescriptor> writableFDs = new ArrayList<FileDescriptor>();
-
     private FileDescriptor[] readable;
 
     private FileDescriptor[] writable;
@@ -110,11 +106,17 @@ final class SelectorImpl extends AbstractSelector {
      * @see java.nio.channels.spi.AbstractSelector#implCloseSelector()
      */
     protected void implCloseSelector() throws IOException {
-        doCancel();
-        for (SelectionKey sk : keys) {
-            deregister((AbstractSelectionKey) sk);
+        synchronized (this) {
+            synchronized (keys) {
+                synchronized (selectedKeys) {
+                    doCancel();
+                    for (SelectionKey sk : keys) {
+                        deregister((AbstractSelectionKey) sk);
+                    }
+                    wakeup();
+                }
+            }
         }
-        wakeup();
     }
 
     /*
@@ -189,9 +191,6 @@ final class SelectorImpl extends AbstractSelector {
                         }
                         readyChannels = Platform.getNetworkSystem().select(readable, writable, timeout);
                     } finally {
-                        // clear results for next select
-                        readableFDs.clear();
-                        writableFDs.clear();                        
                         if (isBlock) {
                             end();
                         }
@@ -212,13 +211,20 @@ final class SelectorImpl extends AbstractSelector {
 
     // Prepares and adds channels to list for selection
     private void prepareChannels() {
-        readableFDs.add(sourcefd);        
-        List<SelectionKey> readChannelList = new ArrayList<SelectionKey>();
+        int sizeGuess = keys.size();
+        List<SelectionKey> readChannelList = new ArrayList<SelectionKey>(sizeGuess + 1);
+        List<FileDescriptor> readableFDs = new ArrayList<FileDescriptor>(sizeGuess + 1);
+
+        List<SelectionKey> writeChannelList = new ArrayList<SelectionKey>(sizeGuess);
+        List<FileDescriptor> writableFDs = new ArrayList<FileDescriptor>(sizeGuess);
+
+        // Always add in the "wake-up" channel 
         readChannelList.add(source.keyFor(this));
-        List<SelectionKey> writeChannelList = new ArrayList<SelectionKey>();
+        readableFDs.add(sourcefd);
+
         synchronized (keysLock) {
-            for (Iterator<SelectionKey> i = keys.iterator(); i.hasNext();) {
-                SelectionKeyImpl key = (SelectionKeyImpl) i.next();
+            for (SelectionKey skey : keys) {
+                SelectionKeyImpl key = (SelectionKeyImpl) skey;
                 key.oldInterestOps = key.interestOps();
                 boolean isReadableChannel = ((SelectionKey.OP_ACCEPT | SelectionKey.OP_READ) & key.oldInterestOps) != 0;
                 boolean isWritableChannel = ((SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE) & key.oldInterestOps) != 0;
@@ -233,14 +239,18 @@ final class SelectorImpl extends AbstractSelector {
                 }
             }
         }
-        readableChannels = readChannelList.toArray(new SelectionKey[0]);
-        writableChannels = writeChannelList.toArray(new SelectionKey[0]);
-        readable = readableFDs.toArray(new FileDescriptor[0]);
-        writable = writableFDs.toArray(new FileDescriptor[0]);
+        readableChannels = readChannelList.toArray(new SelectionKey[readChannelList.size()]);
+        writableChannels = writeChannelList.toArray(new SelectionKey[writeChannelList.size()]);
+        readable = readableFDs.toArray(new FileDescriptor[readableFDs.size()]);
+        writable = writableFDs.toArray(new FileDescriptor[writableFDs.size()]);
     }
 
-    // Analyses selected channels and adds keys of ready channels to
-    // selectedKeys list
+    /* Analyses selected channels and adds keys of ready channels to
+     * selectedKeys list.
+     * 
+     * readyChannels are encoded as concatenated array of flags for
+     * readable channels followed by writable channels. 
+     */
     private int processSelectResult(int[] readyChannels) throws IOException {
         if (0 == readyChannels.length) {
             return 0;

@@ -167,6 +167,7 @@
                 <pathelement path="${hy.sql.bin.test}"/>
                 <pathelement path="${hy.sql.src.test.resources}"/>
                 <pathelement path="${hy.hdk}/build/test/support.jar"/>
+                <pathelement path="${hy.hdk}/build/test/derby.jar"/>
             </classpath>
             <classpath location="../../build/tests" />
 

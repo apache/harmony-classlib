@@ -17,6 +17,8 @@
 
 package org.apache.harmony.logging.tests.java.util.logging;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.security.Permission;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -50,6 +52,8 @@ public class LoggerTest extends TestCase {
 	private final static String VALID_RESOURCE_BUNDLE3 = "bundles/java/util/logging/res3";
 
 	private final static String INVALID_RESOURCE_BUNDLE = "impossible_not_existing";
+    
+    private final static String LOGGING_CONFIG_FILE= "src/test/resources/config/java/util/logging/logging.config";
 
 	private final static String VALID_KEY = "LOGGERTEST";
 
@@ -3451,6 +3455,20 @@ public class LoggerTest extends TestCase {
         } finally {
             System.setSecurityManager(originalSecurityManager);
         }
+    }
+    
+    /*
+     * test initHandler
+     */
+    public void test_initHandler() throws Exception {
+        File logProps = new File(LOGGING_CONFIG_FILE);
+        LogManager lm = LogManager.getLogManager();
+        lm.readConfiguration(new FileInputStream(logProps));
+
+        Logger log = Logger.getLogger("");
+        // can log properly
+        Handler[] handlers = log.getHandlers();
+        assertEquals(2, handlers.length);
     }
 
 	/*

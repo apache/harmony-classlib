@@ -241,26 +241,56 @@ public class Area implements Shape, Cloneable {
 	}
 
 	public void add(Area area) {
+    	if (area == null || area.isEmpty()) {
+    	    return;
+    	} else if (isEmpty()) {
+    	    copy(area, this);
+    		return;
+    	}
+
 		if (isPolygonal() && area.isPolygonal()) {
 			addPolygon(area);
 		} else {
 			addCurvePolygon(area);
 		}
+		
+		if (getAreaBoundsSquare() < GeometryUtil.EPSILON) {
+		    reset();
+		}
 	}
 	   
 	public void intersect(Area area) {
+		if (area == null) {
+		    return;
+		} else if (isEmpty() || area.isEmpty()) {
+		    reset();
+			return;		
+		}
+		
 		if (isPolygonal() && area.isPolygonal()) {
 			intersectPolygon(area);
 		} else {
 			intersectCurvePolygon(area);
 		}
+		
+		if (getAreaBoundsSquare() < GeometryUtil.EPSILON) {
+		    reset();
+		}
 	}
 	
 	public void subtract(Area area) {
+		if (area == null || isEmpty() || area.isEmpty()) {
+		    return;
+		}
+
 		if (isPolygonal() && area.isPolygonal()) {
 			subtractPolygon(area);
 		} else {
 			subtractCurvePolygon(area);
+		}
+		
+		if (getAreaBoundsSquare() < GeometryUtil.EPSILON) {
+		    reset();
 		}
 	}
 	
@@ -441,8 +471,9 @@ public class Area implements Shape, Cloneable {
             double[] coords = (isCurrentArea) ? this.coords : area.coords;
             int offset = 2 * point.getEndIndex(isCurrentArea);
  
-            if (nextPoint.getBegIndex(isCurrentArea) < 
-            		point.getEndIndex(isCurrentArea)) {
+            if ((offset >= 0) && 
+            	    (nextPoint.getBegIndex(isCurrentArea) < 
+            		    point.getEndIndex(isCurrentArea))) {
                 int coordSize = (isCurrentArea) ? this.coordsSize : 
                 	                              area.coordsSize;
                 int length = coordSize - offset;
@@ -458,14 +489,16 @@ public class Area implements Shape, Cloneable {
                 offset = 0;
             }
             
-            int length = 2 * nextPoint.getBegIndex(isCurrentArea) - offset + 2;
-            System.arraycopy(coords, offset, 
-            		         resultCoords, resultCoordPos, length);
+            if (offset >= 0) {
+                int length = 2 * nextPoint.getBegIndex(isCurrentArea) - offset + 2;
+                System.arraycopy(coords, offset, 
+            		             resultCoords, resultCoordPos, length);
             
-            for (int i = 0; i < length / 2; i++) {
-            	resultRules[resultRulesPos] = PathIterator.SEG_LINETO;
-            	resultOffsets[resultRulesPos++] = resultCoordPos;
-            	resultCoordPos += 2;
+                for (int i = 0; i < length / 2; i++) {
+            	    resultRules[resultRulesPos] = PathIterator.SEG_LINETO;
+            	    resultOffsets[resultRulesPos++] = resultCoordPos;
+            	    resultCoordPos += 2;
+                }
             }
 
             point = nextPoint;
@@ -814,21 +847,26 @@ public class Area implements Shape, Cloneable {
 				                                        area.coordsSize });
 		IntersectPoint[] intersectPoints = crossHelper.findCrossing();
 
-		if ((intersectPoints.length == 0) && (contains(area.getBounds2D()))) {
-			copy(area, this);
-			return;
-		} 
+		if (intersectPoints.length == 0) {
+		    if (contains(area.getBounds2D())) {
+		        copy(area, this);
+		        return;
+			} 
+		    return;
+		}
 
-        double[] resultCoords = new double[coordsSize + area.coordsSize + 
-                                                       intersectPoints.length];
-        int[] resultRules = new int[rulesSize + area.rulesSize + 
-                                                       intersectPoints.length];
-        int[] resultOffsets = new int[rulesSize + area.rulesSize + 
-                                                       intersectPoints.length];
+        double[] resultCoords = new double[2 * (coordsSize + area.coordsSize + 
+                                                       intersectPoints.length)];
+        int[] resultRules = new int[2 * (rulesSize + area.rulesSize + 
+                                                       intersectPoints.length)];
+        int[] resultOffsets = new int[2 * (rulesSize + area.rulesSize + 
+                                                       intersectPoints.length)];
         int resultCoordPos = 0;
         int resultRulesPos = 0;
         boolean isCurrentArea = true;
-        int count = 0;
+        int countPoints = 0;
+        boolean curArea = false;
+        boolean addArea = false;
 
         IntersectPoint point = intersectPoints[0];
         resultRules[resultRulesPos] = PathIterator.SEG_MOVETO;
@@ -842,14 +880,27 @@ public class Area implements Shape, Cloneable {
             int curIndex = point.getEndIndex(true);
             
             if ((curIndex < 0) || 
-            	(area.containsExact(coords[2 * curIndex], 
-            			            coords[2 * curIndex + 1]) > 0)) {
+            		(area.isVertex(coords[2 * curIndex], coords[2 * curIndex + 1]) && 
+            		     crossHelper.containsPoint(new double[] {coords[2 * curIndex], 
+            				                       coords[2 * curIndex + 1]}) && 
+            		(coords[2 * curIndex] != point.getX() || 
+            			 coords[2 * curIndex + 1] != point.getY()))) {
             	isCurrentArea = !isCurrentArea;
             } else if (area.containsExact(coords[2 * curIndex], 
             		                      coords[2 * curIndex + 1]) > 0) { 
             	isCurrentArea = false;
             } else {
             	isCurrentArea = true;
+            }
+            
+            if (countPoints >= intersectPoints.length) {
+                isCurrentArea = !isCurrentArea;
+            }
+            	 
+            if (isCurrentArea) {
+                curArea = true;
+            } else {
+                addArea = true;
             }
 
             IntersectPoint nextPoint = (isCurrentArea) ? 
@@ -916,27 +967,22 @@ public class Area implements Shape, Cloneable {
             }
 
             point = nextPoint;
-            count++;
-        } while (point != intersectPoints[0] && count <= intersectPoints.length);
+            countPoints++;
+        } while (point != intersectPoints[0] || !(curArea && addArea));
         
-        if (count > intersectPoints.length) {
-        	reset();
-        } else {
-            resultRules[resultRulesPos - 1] = PathIterator.SEG_CLOSE;
-            resultOffsets[resultRulesPos - 1] = resultCoordPos;
-		    coords = resultCoords;
-		    rules = resultRules;
-		    offsets = resultOffsets;
-		    coordsSize = resultCoordPos;
-		    rulesSize = resultRulesPos;
-        }
+        resultRules[resultRulesPos - 1] = PathIterator.SEG_CLOSE;
+        resultOffsets[resultRulesPos - 1] = resultCoordPos;
+	    coords = resultCoords;
+	    rules = resultRules;
+	    offsets = resultOffsets;
+	    coordsSize = resultCoordPos;
+	    rulesSize = resultRulesPos;
 	}
 	
-	   private IntersectPoint getNextIntersectPoint(IntersectPoint[] iPoints,
+	private IntersectPoint getNextIntersectPoint(IntersectPoint[] iPoints,
 			                                        IntersectPoint isectPoint, 
 			                                        boolean isCurrentArea) {
-		   
-		int endIndex = isectPoint.getEndIndex(isCurrentArea);
+	    int endIndex = isectPoint.getEndIndex(isCurrentArea);
 		if (endIndex < 0) {
 			return iPoints[Math.abs(endIndex) - 1];
 		}
@@ -1227,6 +1273,20 @@ public class Area implements Shape, Cloneable {
     	}
     }
     
+    private double getAreaBoundsSquare() {
+        Rectangle2D bounds = getBounds2D();
+        return bounds.getHeight() * bounds.getWidth();
+    }
+
+    private boolean isVertex(double x, double y) {
+        for (int i = 0; i < coordsSize;) {
+    	    if (x == coords[i++] && y == coords[i++]) {
+    		    return true;
+    		}
+    	}
+    	return false;
+    }
+
     // the internal class implements PathIterator
 	private class AreaPathIterator implements PathIterator {
 

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1310,7 +1311,7 @@ public class File implements Serializable, Comparable<File> {
 
     private static File genTempFile(String prefix, String suffix, File directory) {
         if (counter == 0) {
-            int newInt = new java.util.Random().nextInt();
+            int newInt = new SecureRandom().nextInt();
             counter = ((newInt / 65535) & 0xFFFF) + 0x2710;
         }
         StringBuilder newName = new StringBuilder();

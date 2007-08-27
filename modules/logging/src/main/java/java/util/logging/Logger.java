@@ -446,9 +446,12 @@ public class Logger {
                     if (null == handlerStr) {
                         return;
                     }
-                    StringTokenizer st = new StringTokenizer(handlerStr, " "); //$NON-NLS-1$
-                    while (st.hasMoreTokens()) {
-                        String handlerName = st.nextToken();
+                    String[] strs = handlerStr.split(",|\\s");
+                    for (int i = 0; i < strs.length; i++) {
+                        String handlerName = strs[i];
+                        if (handlerName.equals("")){
+                            continue;
+                        }
                         Handler handler = (Handler) LogManager
                                 .getInstanceByClass(handlerName);
                         handlers.add(handler);

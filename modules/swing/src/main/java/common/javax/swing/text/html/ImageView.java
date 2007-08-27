@@ -21,7 +21,7 @@
 package javax.swing.text.html;
 
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -42,31 +42,36 @@ import javax.swing.text.LayeredHighlighter;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.Position.Bias;
+import javax.swing.text.html.CSS.ColorProperty;
 
 import org.apache.harmony.x.swing.text.html.HTMLIconFactory;
 
 public class ImageView extends View {
-    private static Icon loadingImageIcon;
-    private static Icon noImageIcon;
-
+   
     private AttributeSet attrs;
 
     private BackgroundImageLoader loader;
     private String src;
 
-    //TODO We can load images only synchronously yet
-    private boolean synchronous = true;
+    private boolean synchronous = false;
 
     private Color color;
     
     private int border;
     private int vSpace;
     private int hSpace;
+    
+    /** Not-found-property marker: Any negative number */
+    private final int INT_PROPERTY_NOT_FOUND = -1;
 
     public ImageView(final Element element) {
         super(element);
         if (element != null) { // Fix for HARMONY-1747, for compatibility with RI
             setPropertiesFromAttributes();
+            if (element.getAttributes().getAttribute(HTML.Tag.A) != null) {
+                setAnchorViewAttributes();
+            }
+            adjustBordersAndSpaces();
         }
     }
 
@@ -95,6 +100,7 @@ public class ImageView extends View {
         return synchronous;
     }
 
+    @Override
     public float getPreferredSpan(final int axis) {
         if (loader.isError()) {
             String alt = getAltText();
@@ -121,6 +127,7 @@ public class ImageView extends View {
         return loader.getHeight() + 2 * border + 2 * vSpace;
     }
 
+    @Override
     public String getToolTipText(final float x, final float y,
                                  final Shape shape) {
         return getAltText();
@@ -131,7 +138,8 @@ public class ImageView extends View {
                        .getAttribute(HTML.Attribute.ALT);
     }
 
-public void paint(final Graphics g, final Shape shape) {
+    @Override
+    public void paint(final Graphics g, final Shape shape) {
         
         Rectangle rc = shape.getBounds();
         rc.setSize(rc.width - 2*(hSpace + border), rc.height - 2*(vSpace + border));
@@ -149,12 +157,14 @@ public void paint(final Graphics g, final Shape shape) {
         }
         
         Color oldColor = g.getColor();
-        g.setColor(color);
-        g.fillRect(rc.x + hSpace, rc.y + vSpace, rc.width + 2 * border,
-                rc.height + 2 * border);
-        g.setColor(oldColor);
-        g.fillRect(rc.x + hSpace + border, rc.y + vSpace + border, rc.width,
-                rc.height);
+        if (border > 0) {
+            g.setColor(color);
+            g.fillRect(rc.x + hSpace, rc.y + vSpace, rc.width + 2 * border,
+                    rc.height + 2 * border);
+            g.setColor(oldColor);
+            g.fillRect(rc.x + hSpace + border, rc.y + vSpace + border,
+                    rc.width, rc.height);
+        }
 
         if (loader.isError()) {
             
@@ -189,6 +199,7 @@ public void paint(final Graphics g, final Shape shape) {
         g.drawImage(getImage(), rc.x + hSpace + border, rc.y + vSpace + border, rc.width, rc.height, loader);
     }
 
+    @Override
     public Shape modelToView(final int pos, final Shape shape, final Bias bias)
         throws BadLocationException {
 
@@ -199,6 +210,7 @@ public void paint(final Graphics g, final Shape shape) {
         return new Rectangle(rc.x + rc.width, rc.y, 0, rc.height);
     }
 
+    @Override
     public int viewToModel(final float x, final float y, final Shape shape,
                            final Bias[] bias) {
 
@@ -211,6 +223,7 @@ public void paint(final Graphics g, final Shape shape) {
         return getEndOffset();
     }
 
+    @Override
     public float getAlignment(final int axis) {
         if (axis == Y_AXIS) {
             return 1;
@@ -218,10 +231,12 @@ public void paint(final Graphics g, final Shape shape) {
         return super.getAlignment(axis);
     }
 
+    @Override
     public AttributeSet getAttributes() {
         return attrs;
     }
 
+    @Override
     public void changedUpdate(final DocumentEvent event, final Shape shape,
                               final ViewFactory factory) {
         setPropertiesFromAttributes();
@@ -261,6 +276,10 @@ public void paint(final Graphics g, final Shape shape) {
         color = getStyleSheet().getForeground(getAttributes());
     }
     
+    /**
+     * Converts attribute value to number, correctly interprets by this view
+     * (i.e. null->negative number)
+     */
     private int getIntProperty(AttributeSet source, HTML.Attribute attr) {
         String result = (String) source.getAttribute(attr);
         // Null verification is added for possibly improved performance:
@@ -270,24 +289,62 @@ public void paint(final Graphics g, final Shape shape) {
             try {
                 return Integer.parseInt(result);
             } catch (NumberFormatException nfe) {
-                // Ignored, return 0, according to RI's result
+                // Ignored, according to RI's result
             }
         }
-        return 0;
+        return INT_PROPERTY_NOT_FOUND;
     }
 
     private void createImage(final int desiredWidth, final int desiredHeight) {
         loader = new BackgroundImageLoader(getImageURL(), synchronous,
                                            desiredWidth, desiredHeight) {
+            @Override
             protected void onReady() {
                 super.onReady();
-                preferenceChanged(ImageView.this, true, true);
+                update();
             }
 
+            @Override
             protected void onError() {
                 super.onError();
+                update();
+            }
+
+            private void update() {
                 preferenceChanged(ImageView.this, true, true);
+                final Container component = getContainer();
+                if (component != null) {
+                    component.repaint();
+                }
             }
         };
+    }
+    
+    /**
+     * The method sets the 1px border (if the border is absent) and sets the
+     * color stated for &lt;a&gt; tag
+     */
+    private void setAnchorViewAttributes() {
+        if (border < 0) {
+            border = 1;
+        }
+        color = ((ColorProperty) getStyleSheet().getRule("a").getAttribute(
+                CSS.Attribute.COLOR)).getColor();
+    }
+
+    /**
+     * Sets negative properties to zero ones (negative property can either
+     * directly stated or returned by getIntProperty method)
+     */
+    private void adjustBordersAndSpaces() {
+        if (vSpace < 0) {
+            vSpace = 0;
+        }
+        if (hSpace < 0) {
+            hSpace = 0;
+        }
+        if (border < 0) {
+            border = 0;
+        }
     }
 }

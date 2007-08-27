@@ -48,6 +48,7 @@
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
         <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
+        <check-one-file src="${derby.url}" dest="${derby.jar}" />
     </target>
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
@@ -348,6 +349,11 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}"
                            md5="${dejavu-fonts.md5}" />
     <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
+
+    <mkdir dir="${derby.dir}" />
+    <download-one-file src="${derby.url}"
+                       dest="${derby.jar}"
+                       md5="${derby.md5}" />
     </target>
 
     <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
@@ -364,7 +370,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${awtdeps.url}"
                        dest="${awtdeps.tar}"
                        md5="${awtdeps.md5}" />
-
     </target>
 
     <macrodef name="download-one-file">
