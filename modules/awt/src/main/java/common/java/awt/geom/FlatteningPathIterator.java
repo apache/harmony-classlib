@@ -207,9 +207,7 @@ public class FlatteningPathIterator implements PathIterator {
             if (bufEmpty) {
                 bufIndex = bufSize;
                 bufType = SEG_LINETO;
-            } else {
-                bufSubdiv--;
-            }
+            } 
             break;
         case SEG_CUBICTO:
             if (bufEmpty) {
@@ -251,9 +249,7 @@ public class FlatteningPathIterator implements PathIterator {
             if (bufEmpty) {
                 bufIndex = bufSize;
                 bufType = SEG_LINETO;
-            } else {
-                bufSubdiv--;
-            }
+            } 
             break;
         }
 

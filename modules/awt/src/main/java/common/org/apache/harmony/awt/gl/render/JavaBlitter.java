@@ -357,7 +357,7 @@ public class JavaBlitter implements Blitter {
         Rectangle dstBlitBounds = new Rectangle(dstX, dstY, srcR.getWidth(), srcR.getHeight());
 
         Rectangle transSrcBounds = getBounds2D(at, srcBounds).getBounds();
-        Rectangle transDstBlitBounds = getBounds2D(at, dstBlitBounds).getBounds();
+        Rectangle transDstBlitBounds = new Rectangle(0, 0, dstR.getWidth(), dstR.getHeight());
 
         int translateX = transDstBlitBounds.x - transSrcBounds.x;
         int translateY = transDstBlitBounds.y - transSrcBounds.y;
@@ -474,7 +474,7 @@ public class JavaBlitter implements Blitter {
 
     }
 
-    private Rectangle2D getBounds2D(AffineTransform at, Rectangle r) {
+    public static Rectangle2D getBounds2D(AffineTransform at, Rectangle r) {
         int x = r.x;
         int y = r.y;
         int width = r.width;

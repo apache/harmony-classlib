@@ -218,7 +218,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         String eventTypeName = prepareEventTypeName(eventSetName);
 
         if (params.length > 0) {
-            firstParamTypeName = BeanInfoImpl.extractShortClassName(params[0]
+            firstParamTypeName = extractShortClassName(params[0]
                     .getName());
         }
 
@@ -227,6 +227,17 @@ public class EventSetDescriptor extends FeatureDescriptor {
             throw new IntrospectionException(Messages.getString("beans.51", //$NON-NLS-1$
                     listenerMethod.getName(), eventTypeName));
         }
+    }
+
+    /**
+     * @param fullClassName full name of the class
+     * @return name with package and encapsulating class info omitted 
+     */
+    static String extractShortClassName(String fullClassName) {
+        int k = fullClassName.lastIndexOf('$');
+        
+        k = (k == -1 ? fullClassName.lastIndexOf('.') : k);
+        return fullClassName.substring(k + 1);
     }
 
     private static String prepareEventTypeName(String eventSetName) {

@@ -18,7 +18,6 @@
 package java.text;
 
 import java.io.IOException;
-import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
@@ -28,8 +27,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Currency;
 import java.util.Locale;
-
-import org.apache.harmony.text.internal.nls.Messages;
 
 /**
  * DecimalFormat is used to format and parse numbers, both integers and
@@ -706,44 +703,44 @@ public class DecimalFormat extends NumberFormat {
      *             if some I/O error occurs
      * @throws ClassNotFoundException
      */
+    @SuppressWarnings("nls")
     private void writeObject(ObjectOutputStream stream) throws IOException,
             ClassNotFoundException {
         ObjectOutputStream.PutField fields = stream.putFields();
-        fields.put("positivePrefix", dform.getPositivePrefix()); //$NON-NLS-1$
-        fields.put("positiveSuffix", dform.getPositiveSuffix()); //$NON-NLS-1$
-        fields.put("negativePrefix", dform.getNegativePrefix()); //$NON-NLS-1$
-        fields.put("negativeSuffix", dform.getNegativeSuffix()); //$NON-NLS-1$
+        fields.put("positivePrefix", dform.getPositivePrefix());
+        fields.put("positiveSuffix", dform.getPositiveSuffix());
+        fields.put("negativePrefix", dform.getNegativePrefix());
+        fields.put("negativeSuffix", dform.getNegativeSuffix());
         String posPrefixPattern = (String) this.getInternalField(
-                "posPrefixPattern", dform); //$NON-NLS-1$
-        fields.put("posPrefixPattern", posPrefixPattern); //$NON-NLS-1$
+                "posPrefixPattern", dform);
+        fields.put("posPrefixPattern", posPrefixPattern);
         String posSuffixPattern = (String) this.getInternalField(
-                "posSuffixPattern", dform); //$NON-NLS-1$
-        fields.put("posSuffixPattern", posSuffixPattern); //$NON-NLS-1$
+                "posSuffixPattern", dform);
+        fields.put("posSuffixPattern", posSuffixPattern);
         String negPrefixPattern = (String) this.getInternalField(
-                "negPrefixPattern", dform); //$NON-NLS-1$
-        fields.put("negPrefixPattern", negPrefixPattern); //$NON-NLS-1$
+                "negPrefixPattern", dform);
+        fields.put("negPrefixPattern", negPrefixPattern);
         String negSuffixPattern = (String) this.getInternalField(
-                "negSuffixPattern", dform); //$NON-NLS-1$
-        fields.put("negSuffixPattern", negSuffixPattern); //$NON-NLS-1$
-        fields.put("multiplier", dform.getMultiplier()); //$NON-NLS-1$
-        fields.put("groupingSize", (byte) dform.getGroupingSize()); //$NON-NLS-1$
-        fields.put("decimalSeparatorAlwaysShown", dform //$NON-NLS-1$
+                "negSuffixPattern", dform);
+        fields.put("negSuffixPattern", negSuffixPattern);
+        fields.put("multiplier", dform.getMultiplier());
+        fields.put("groupingSize", (byte) dform.getGroupingSize());
+        fields.put("decimalSeparatorAlwaysShown", dform
                 .isDecimalSeparatorAlwaysShown());
-        fields.put("parseBigDecimal", parseBigDecimal); //$NON-NLS-1$
-        fields.put("symbols", symbols); //$NON-NLS-1$
+        fields.put("parseBigDecimal", parseBigDecimal);
+        fields.put("symbols", symbols);
         boolean useExponentialNotation = ((Boolean) this.getInternalField(
-                "useExponentialNotation", dform)).booleanValue(); //$NON-NLS-1$
-        fields.put("useExponentialNotation", useExponentialNotation); //$NON-NLS-1$
+                "useExponentialNotation", dform)).booleanValue();
+        fields.put("useExponentialNotation", useExponentialNotation);
         byte minExponentDigits = ((Byte) this.getInternalField(
-                "minExponentDigits", dform)).byteValue(); //$NON-NLS-1$
-        fields.put("minExponentDigits", minExponentDigits); //$NON-NLS-1$
-        fields.put("maximumIntegerDigits", dform.getMaximumIntegerDigits()); //$NON-NLS-1$
-        fields.put("minimumIntegerDigits", dform.getMinimumIntegerDigits()); //$NON-NLS-1$
-        fields.put("maximumFractionDigits", dform.getMaximumFractionDigits()); //$NON-NLS-1$
-        fields.put("minimumFractionDigits", dform.getMinimumFractionDigits()); //$NON-NLS-1$
-        fields.put("serialVersionOnStream", CURRENT_SERIAL_VERTION); //$NON-NLS-1$
+                "minExponentDigits", dform)).byteValue();
+        fields.put("minExponentDigits", minExponentDigits);
+        fields.put("maximumIntegerDigits", dform.getMaximumIntegerDigits());
+        fields.put("minimumIntegerDigits", dform.getMinimumIntegerDigits());
+        fields.put("maximumFractionDigits", dform.getMaximumFractionDigits());
+        fields.put("minimumFractionDigits", dform.getMinimumFractionDigits());
+        fields.put("serialVersionOnStream", CURRENT_SERIAL_VERTION);
         stream.writeFields();
-
     }
 
     /**
@@ -757,52 +754,53 @@ public class DecimalFormat extends NumberFormat {
      * @throws ClassNotFoundException
      *             if some class of serialized objects or fields cannot be found
      */
+    @SuppressWarnings("nls")
     private void readObject(ObjectInputStream stream) throws IOException,
             ClassNotFoundException {
 
         ObjectInputStream.GetField fields = stream.readFields();
-        String positivePrefix = (String) fields.get("positivePrefix", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String positiveSuffix = (String) fields.get("positiveSuffix", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String negativePrefix = (String) fields.get("negativePrefix", "-"); //$NON-NLS-1$ //$NON-NLS-2$
-        String negativeSuffix = (String) fields.get("negativeSuffix", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String positivePrefix = (String) fields.get("positivePrefix", "");
+        String positiveSuffix = (String) fields.get("positiveSuffix", "");
+        String negativePrefix = (String) fields.get("negativePrefix", "-");
+        String negativeSuffix = (String) fields.get("negativeSuffix", "");
 
-        String posPrefixPattern = (String) fields.get("posPrefixPattern", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String posSuffixPattern = (String) fields.get("posSuffixPattern", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String negPrefixPattern = (String) fields.get("negPrefixPattern", "-"); //$NON-NLS-1$ //$NON-NLS-2$
-        String negSuffixPattern = (String) fields.get("negSuffixPattern", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String posPrefixPattern = (String) fields.get("posPrefixPattern", "");
+        String posSuffixPattern = (String) fields.get("posSuffixPattern", "");
+        String negPrefixPattern = (String) fields.get("negPrefixPattern", "-");
+        String negSuffixPattern = (String) fields.get("negSuffixPattern", "");
 
-        int multiplier = fields.get("multiplier", 1); //$NON-NLS-1$
-        byte groupingSize = fields.get("groupingSize", (byte) 3); //$NON-NLS-1$
+        int multiplier = fields.get("multiplier", 1);
+        byte groupingSize = fields.get("groupingSize", (byte) 3);
         boolean decimalSeparatorAlwaysShown = fields.get(
-                "decimalSeparatorAlwaysShown", false); //$NON-NLS-1$
-        boolean parseBigDecimal = fields.get("parseBigDecimal", false); //$NON-NLS-1$
-        symbols = (DecimalFormatSymbols) fields.get("symbols", null); //$NON-NLS-1$
+                "decimalSeparatorAlwaysShown", false);
+        boolean parseBigDecimal = fields.get("parseBigDecimal", false);
+        symbols = (DecimalFormatSymbols) fields.get("symbols", null);
 
-        boolean useExponentialNotation = fields.get("useExponentialNotation", //$NON-NLS-1$
+        boolean useExponentialNotation = fields.get("useExponentialNotation",
                 false);
-        byte minExponentDigits = fields.get("minExponentDigits", (byte) 0); //$NON-NLS-1$
+        byte minExponentDigits = fields.get("minExponentDigits", (byte) 0);
 
-        int maximumIntegerDigits = fields.get("maximumIntegerDigits", 309); //$NON-NLS-1$
-        int minimumIntegerDigits = fields.get("minimumIntegerDigits", 309); //$NON-NLS-1$
-        int maximumFractionDigits = fields.get("maximumFractionDigits", 340); //$NON-NLS-1$
-        int minimumFractionDigits = fields.get("minimumFractionDigits", 340); //$NON-NLS-1$
-        this.serialVersionOnStream = fields.get("serialVersionOnStream", 0); //$NON-NLS-1$
+        int maximumIntegerDigits = fields.get("maximumIntegerDigits", 309);
+        int minimumIntegerDigits = fields.get("minimumIntegerDigits", 309);
+        int maximumFractionDigits = fields.get("maximumFractionDigits", 340);
+        int minimumFractionDigits = fields.get("minimumFractionDigits", 340);
+        this.serialVersionOnStream = fields.get("serialVersionOnStream", 0);
 
-        Locale locale = (Locale) getInternalField("locale", symbols); //$NON-NLS-1$
-        dform = new com.ibm.icu.text.DecimalFormat("", //$NON-NLS-1$
+        Locale locale = (Locale) getInternalField("locale", symbols);
+        dform = new com.ibm.icu.text.DecimalFormat("",
                 new com.ibm.icu.text.DecimalFormatSymbols(locale));
-        setInternalField("useExponentialNotation", dform, new Boolean( //$NON-NLS-1$
-                useExponentialNotation));
-        setInternalField("minExponentDigits", dform, //$NON-NLS-1$
+        setInternalField("useExponentialNotation", dform, Boolean
+                .valueOf(useExponentialNotation));
+        setInternalField("minExponentDigits", dform,
                 new Byte(minExponentDigits));
         dform.setPositivePrefix(positivePrefix);
         dform.setPositiveSuffix(positiveSuffix);
         dform.setNegativePrefix(negativePrefix);
         dform.setNegativeSuffix(negativeSuffix);
-        setInternalField("posPrefixPattern", dform, posPrefixPattern); //$NON-NLS-1$
-        setInternalField("posSuffixPattern", dform, posSuffixPattern); //$NON-NLS-1$
-        setInternalField("negPrefixPattern", dform, negPrefixPattern); //$NON-NLS-1$
-        setInternalField("negSuffixPattern", dform, negSuffixPattern); //$NON-NLS-1$
+        setInternalField("posPrefixPattern", dform, posPrefixPattern);
+        setInternalField("posSuffixPattern", dform, posSuffixPattern);
+        setInternalField("negPrefixPattern", dform, negPrefixPattern);
+        setInternalField("negSuffixPattern", dform, negSuffixPattern);
         dform.setMultiplier(multiplier);
         dform.setGroupingSize(groupingSize);
         dform.setDecimalSeparatorAlwaysShown(decimalSeparatorAlwaysShown);
@@ -812,13 +810,6 @@ public class DecimalFormat extends NumberFormat {
         dform.setMaximumFractionDigits(maximumFractionDigits);
         this.setParseBigDecimal(parseBigDecimal);
 
-        if (super.getMaximumIntegerDigits() > Integer.MAX_VALUE
-                || super.getMinimumIntegerDigits() > Integer.MAX_VALUE
-                || super.getMaximumFractionDigits() > Integer.MAX_VALUE
-                || super.getMinimumIntegerDigits() > Integer.MAX_VALUE) {
-            // text.09=The deserialized date is invalid
-            throw new InvalidObjectException(Messages.getString("text.09")); //$NON-NLS-1$
-        }
         if (serialVersionOnStream < 3) {
             setMaximumIntegerDigits(super.getMaximumIntegerDigits());
             setMinimumIntegerDigits(super.getMinimumIntegerDigits());
@@ -826,7 +817,7 @@ public class DecimalFormat extends NumberFormat {
             setMinimumFractionDigits(super.getMinimumFractionDigits());
         }
         if (serialVersionOnStream < 1) {
-            this.setInternalField("useExponentialNotation", dform, //$NON-NLS-1$
+            this.setInternalField("useExponentialNotation", dform,
                     Boolean.FALSE);
         }
         serialVersionOnStream = 3;

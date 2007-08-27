@@ -121,6 +121,7 @@ public abstract class FlowView extends BoxView {
             int span = 0;
             int offset = pos;
             int weight = BadBreakWeight;
+            int fix=0;
             View view;
 
             do {
@@ -134,6 +135,7 @@ public abstract class FlowView extends BoxView {
                     if (weight >= ForcedBreakWeight) {
                         final View broken = view.breakView(flowAxis, offset, x, rowSpan);
                         if (view == broken && row.getViewCount() > 0) {
+                            fix=1;
                             break;
                         }
                         view = broken;
@@ -148,7 +150,7 @@ public abstract class FlowView extends BoxView {
                 adjustRow(fv, rowIndex, flowSpan, flowStart);
             }
 
-            return row.getEndOffset();
+            return row.getEndOffset()+fix;
         }
 
         protected View getLogicalView(final FlowView fv) {

@@ -194,21 +194,25 @@ public class BasicOptionPaneUI extends OptionPaneUI {
                 return;
             }
 
-            JOptionPane pane = BasicOptionPaneUI.this.optionPane;
-            if (JOptionPane.ICON_PROPERTY.equals(event.getPropertyName()) ||
-                JOptionPane.MESSAGE_PROPERTY.equals(event.getPropertyName()) ||
-                JOptionPane.OPTIONS_PROPERTY.equals(event.getPropertyName()) ||
-                JOptionPane.INITIAL_VALUE_PROPERTY.equals(event.getPropertyName())) {
+            final JOptionPane pane = BasicOptionPaneUI.this.optionPane;
+            final String propName = event.getPropertyName();
+            
+            if (JOptionPane.ICON_PROPERTY.equals(propName) ||
+                JOptionPane.MESSAGE_PROPERTY.equals(propName) ||
+                JOptionPane.OPTIONS_PROPERTY.equals(propName) ||
+                JOptionPane.INITIAL_VALUE_PROPERTY.equals(propName)) {
 
+                uninstallComponents();
+                installComponents();
                 pane.revalidate();
-            } else if (JOptionPane.SELECTION_VALUES_PROPERTY.equals(event.getPropertyName()) ||
-                       JOptionPane.WANTS_INPUT_PROPERTY.equals(event.getPropertyName())) {
+            } else if (JOptionPane.SELECTION_VALUES_PROPERTY.equals(propName) ||
+                       JOptionPane.WANTS_INPUT_PROPERTY.equals(propName)) {
 
                 initValues(pane);
                 pane.revalidate();
-            } else if (JOptionPane.INITIAL_SELECTION_VALUE_PROPERTY.equals(event.getPropertyName())) {
+            } else if (JOptionPane.INITIAL_SELECTION_VALUE_PROPERTY.equals(propName)) {
                 setInputValue(event.getNewValue());
-            } else if (StringConstants.ANCESTOR_PROPERTY_NAME.equals(event.getPropertyName())
+            } else if (StringConstants.ANCESTOR_PROPERTY_NAME.equals(propName)
                     && (event.getOldValue() == null)) {
 
                 selectInitialValue(pane);

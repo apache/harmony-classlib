@@ -174,6 +174,24 @@ public class AreaTest extends PathIteratorTestCase {
          checkPathRule(path, PathIterator.WIND_EVEN_ODD);
          checkPathDone(path, true);
      }
+     
+     public void testSubtract() {
+         // Regression test HARMONY-4410
+ 		Rectangle2D rect1 = new Rectangle2D.Double(300, 300, 200, 150);
+		Rectangle2D rect2 = new Rectangle2D.Double(350, 200, 300, 150);
+
+		Area area1 = new Area(rect1);
+		Area area2 = new Area(rect2);
+
+		Area a = (Area) area1.clone();
+		a.intersect(area2);
+		area1.add(area2);
+		area1.subtract(a);
+		
+		assertFalse(area1.contains(375, 325));
+		assertTrue(area1.contains(600, 300));
+		assertTrue(area1.contains(325, 325));
+     }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AreaTest.class);

@@ -447,4 +447,8 @@ public class CompoundEditTest extends AbstractUndoableEditTest {
         ce.undo();
         assertTrue(ce.canRedo());
     }
+
+    public void testEditsCapacity() { // Regression for HARMONY-2649
+        assertEquals(10, ce.edits.capacity());
+    }
 }

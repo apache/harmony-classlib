@@ -95,6 +95,9 @@ public class HTMLDocument extends DefaultStyledDocument {
     }
 
     public class HTMLReader extends HTMLEditorKit.ParserCallback {
+       
+        private boolean anchorReferenceEncountered = false;
+        
         public class TagAction {
             public void start(final Tag tag, final MutableAttributeSet attr) {
             }
@@ -362,18 +365,17 @@ public class HTMLDocument extends DefaultStyledDocument {
         
         class AnchorAction extends CharacterAction {
             public void start(final Tag tag, final MutableAttributeSet attr) {
+                anchorReferenceEncountered = attr.isDefined(HTML.Attribute.HREF);
                 super.start(tag, attr);
                 openedBlocks.add(Tag.A);
-                anchorTextEncountered = false;
             }
             
             public void end(final Tag tag) {
-                if (openedBlocks.contains(Tag.A) && !anchorTextEncountered) {
-                    addContent(new char[] {' '}, 0, 1);
-                    anchorTextEncountered = true;
-                }
+                // According to H4574 Empty AncorTextEncoured verification has
+                // been removed
                 super.end(tag);
                 openedBlocks.remove(Tag.A);
+                anchorReferenceEncountered = false;
             }
         }
         
@@ -432,6 +434,20 @@ public class HTMLDocument extends DefaultStyledDocument {
                     }
                 }
                 return null;
+            }
+        }
+        
+        class ImageAction extends SpecialAction {
+
+            @Override
+            public void start(Tag tag, MutableAttributeSet attr) {
+
+                if (anchorReferenceEncountered) {
+
+                    attr.addAttributes(charAttr.copyAttributes());
+                }
+
+                super.start(tag, attr);
             }
         }
         
@@ -553,7 +569,6 @@ public class HTMLDocument extends DefaultStyledDocument {
         private final Set openedBlocks = new HashSet();
         private boolean impliedBlockOpen;
         private int numBlocksOpen;
-        private boolean anchorTextEncountered;
 
         private boolean needImpliedNewLine;
         private String styleRule;
@@ -628,9 +643,6 @@ public class HTMLDocument extends DefaultStyledDocument {
         }
 
         public void handleText(final char[] data, final int pos) {
-            if (openedBlocks.contains(Tag.A)) {
-                anchorTextEncountered = true;
-            }
             if (openedBlocks.contains(Tag.TITLE)) {
                 putProperty(TitleProperty, new String(data));
                 return;
@@ -982,7 +994,7 @@ public class HTMLDocument extends DefaultStyledDocument {
             tagActionMap.put(Tag.HTML, blockAction);
             tagActionMap.put(Tag.I, advancedCharacterAction);
             tagActionMap.put(Tag.IFRAME, hiddenAction);
-            tagActionMap.put(Tag.IMG, specialAction);
+            tagActionMap.put(Tag.IMG, new ImageAction());
             tagActionMap.put(Tag.INPUT, formAction);
             tagActionMap.put(Tag.INS, characterAction);
             tagActionMap.put(Tag.ISINDEX, new IsindexAction());

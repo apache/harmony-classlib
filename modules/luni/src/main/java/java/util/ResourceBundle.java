@@ -243,7 +243,7 @@ public abstract class ResourceBundle {
         synchronized (cache) {
             loaderCache = cache.get(cacheKey);
             if (loaderCache == null) {
-                loaderCache = new Hashtable<String, ResourceBundle>(13);
+                loaderCache = new Hashtable<String, ResourceBundle>();
                 cache.put(cacheKey, loaderCache);
             }
         }

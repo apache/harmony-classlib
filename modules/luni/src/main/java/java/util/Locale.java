@@ -46,7 +46,7 @@ public final class Locale implements Cloneable, Serializable {
 	
 	private static final long serialVersionUID = 9149081749638150636L;
 
-	private static Locale[] availableLocales;
+	private static volatile Locale[] availableLocales;
 
 	// Initialize a default which is used during static
 	// initialization of the default for the platform.

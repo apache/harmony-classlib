@@ -1815,7 +1815,7 @@ public final class Character implements Serializable, Comparable<Character> {
             int mid = -1;
             int high = BLOCKS.length - 1;
             while (low <= high) {
-                mid = (low + high) >> 1;
+                mid = (low + high) >>> 1;
                 UnicodeBlock block = BLOCKS[mid];
                 if (codePoint > block.end) {
                     low = mid + 1;

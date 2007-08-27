@@ -178,7 +178,7 @@ public class Arrays {
     public static int binarySearch(byte[] array, byte value) {
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (value > array[mid]) {
                 low = mid + 1;
             } else if (value == array[mid]) {
@@ -208,7 +208,7 @@ public class Arrays {
     public static int binarySearch(char[] array, char value) {
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (value > array[mid]) {
                 low = mid + 1;
             } else if (value == array[mid]) {
@@ -238,7 +238,7 @@ public class Arrays {
         long longBits = Double.doubleToLongBits(value);
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (lessThan(array[mid], value)) {
                 low = mid + 1;
             } else if (longBits == Double.doubleToLongBits(array[mid])) {
@@ -268,7 +268,7 @@ public class Arrays {
         int intBits = Float.floatToIntBits(value);
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (lessThan(array[mid], value)) {
                 low = mid + 1;
             } else if (intBits == Float.floatToIntBits(array[mid])) {
@@ -297,7 +297,7 @@ public class Arrays {
     public static int binarySearch(int[] array, int value) {
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (value > array[mid]) {
                 low = mid + 1;
             } else if (value == array[mid]) {
@@ -326,7 +326,7 @@ public class Arrays {
     public static int binarySearch(long[] array, long value) {
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (value > array[mid]) {
                 low = mid + 1;
             } else if (value == array[mid]) {
@@ -365,7 +365,7 @@ public class Arrays {
         Comparable<Object> key = (Comparable<Object>) object;
         int low = 0, mid = 0, high = array.length - 1, result = 0;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if ((result = key.compareTo(array[mid])) > 0) {
                 low = mid + 1;
             } else if (result == 0) {
@@ -402,7 +402,7 @@ public class Arrays {
 
         int low = 0, mid = 0, high = array.length - 1, result = 0;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if ((result = comparator.compare(array[mid], object)) < 0) {
                 low = mid + 1;
             } else if (result == 0) {
@@ -428,7 +428,7 @@ public class Arrays {
     public static int binarySearch(short[] array, short value) {
         int low = 0, mid = -1, high = array.length - 1;
         while (low <= high) {
-            mid = (low + high) >> 1;
+            mid = (low + high) >>> 1;
             if (value > array[mid]) {
                 low = mid + 1;
             } else if (value == array[mid]) {
@@ -2420,7 +2420,7 @@ public class Arrays {
             }
             return;
         }
-        int med = (end + start) >> 1;
+        int med = (end + start) >>> 1;
         mergeSort(out, in, start, med);
         mergeSort(out, in, med, end);
 
@@ -2502,7 +2502,7 @@ public class Arrays {
             }
             return;
         }
-        int med = (end + start) >> 1;
+        int med = (end + start) >>> 1;
         mergeSort(out, in, start, med, c);
         mergeSort(out, in, med, end, c);
 
@@ -2584,7 +2584,7 @@ public class Arrays {
             d <<= 1;
         }
         while (l <= r) {
-            m = (l + r) >> 1;
+            m = (l + r) >>> 1;
             if (val.compareTo(arr[m]) > bnd) {
                 l = m + 1;
             } else {
@@ -2630,7 +2630,7 @@ public class Arrays {
             d <<= 1;
         }
         while (l <= r) {
-            m = (l + r) >> 1;
+            m = (l + r) >>> 1;
             if (c.compare(val, arr[m]) > bnd) {
                 l = m + 1;
             } else {

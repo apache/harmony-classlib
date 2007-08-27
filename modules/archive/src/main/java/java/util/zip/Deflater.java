@@ -17,6 +17,8 @@
 
 package java.util.zip;
 
+import org.apache.harmony.luni.platform.OSResourcesMonitor;
+
 /**
  * The Deflater class is used to compress bytes using the DEFLATE compression
  * algorithm. Deflation is performed by the ZLIB compression library.
@@ -110,7 +112,7 @@ public class Deflater {
             throw new IllegalArgumentException();
         }
         compressLevel = level;
-        streamHandle = createStream(compressLevel, strategy, noHeader);
+        streamHandle = createStreamWithMemoryEnsurance(compressLevel, strategy, noHeader);
     }
 
     /**
@@ -431,5 +433,9 @@ public class Deflater {
         return getTotalOutImpl(streamHandle);
     }
 
+    private long createStreamWithMemoryEnsurance(int level, int strategy1, boolean noHeader1){
+        OSResourcesMonitor.ensurePhysicalMemoryCapacity();
+        return createStream(level, strategy1, noHeader1);
+    }
     private native long createStream(int level, int strategy1, boolean noHeader1);
 }

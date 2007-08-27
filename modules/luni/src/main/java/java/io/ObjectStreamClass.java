@@ -232,6 +232,23 @@ public class ObjectStreamClass implements Serializable {
             result.setFields(new ObjectStreamField[0]);
         }
 
+        // Copy all fields to loadFields - they should be read by default in
+        // ObjectInputStream.defaultReadObject() method
+        ObjectStreamField[] fields = result.getFields();
+    
+        if (fields != null) {
+            ObjectStreamField[] loadFields = new ObjectStreamField[fields.length];
+
+            for (int i = 0; i < fields.length; ++i) {
+                loadFields[i] = new ObjectStreamField(fields[i].getName(),
+                        fields[i].getType(), fields[i].isUnshared());
+
+                // resolve type string to init typeString field in ObjectStreamField
+                loadFields[i].getTypeString();
+            }
+            result.setLoadFields(loadFields);
+        }
+
         byte flags = 0;
         boolean externalizable = isExternalizable(cl);
         if (externalizable) {
