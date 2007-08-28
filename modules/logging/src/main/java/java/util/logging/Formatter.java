@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.text.MessageFormat;
@@ -26,15 +25,8 @@ import java.util.ResourceBundle;
  * objects into a string representation. Head and tail strings are sometime used
  * to wrap a set of records. The <code>getHead</code> and <code>getTail</code>
  * methods are presented for this purpose.
- * 
  */
 public abstract class Formatter {
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs a <code>Formatter</code> object.
@@ -42,12 +34,6 @@ public abstract class Formatter {
     protected Formatter() {
         super();
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Formats a <code>LogRecord</code> object into a string representation.
@@ -128,6 +114,4 @@ public abstract class Formatter {
     public String getTail(Handler h) {
         return ""; //$NON-NLS-1$
     }
-
 }
-

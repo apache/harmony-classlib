@@ -42,7 +42,6 @@ package java.util.logging;
  * <p>
  * This class is not thread-safe.
  * </p>
- * 
  */
 public class ConsoleHandler extends StreamHandler {
 
@@ -65,12 +64,12 @@ public class ConsoleHandler extends StreamHandler {
     /**
      * Logs a record if necessary. A flush operation will be done.
      * 
-     * @param record the log record to be logged
+     * @param record
+     *            the log record to be logged
      */
     @Override
     public void publish(LogRecord record) {
         super.publish(record);
         super.flush();
-
     }
 }

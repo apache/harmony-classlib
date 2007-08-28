@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.io.Serializable;
@@ -27,20 +26,12 @@ import org.apache.harmony.logging.internal.nls.Messages;
 /**
  * The permission required to control the logging when run with a
  * <code>SecurityManager</code>.
- * 
  */
 public final class LoggingPermission extends BasicPermission implements Guard,
         Serializable {
 
-    //for serialization compatibility with J2SE 1.4.2
-    private static final long serialVersionUID =63564341580231582L;
-    
-    
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
+    // for serialization compatibility with J2SE 1.4.2
+    private static final long serialVersionUID = 63564341580231582L;
 
     /**
      * Constructs a <code>LoggingPermission</code> object required to control
@@ -65,4 +56,3 @@ public final class LoggingPermission extends BasicPermission implements Guard,
     }
 
 }
-

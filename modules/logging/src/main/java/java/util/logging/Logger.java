@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
 
 import org.apache.harmony.logging.internal.nls.Messages;
 
@@ -113,16 +112,10 @@ public class Logger {
     private boolean isNamed;
 
     private List<Logger> childs;
-    
+
     private LogManager manager;
 
     private boolean handlerInited;
-
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Constructs a <code>Logger</code> object with the supplied name and
@@ -153,24 +146,24 @@ public class Logger {
         // any logger is not anonymous by default
         this.isNamed = true;
 
-        //-- 'null' means that level will be inherited from parent (see getLevel)
-        //-- Level.INFO is default level if we don't set it. It will be
-        //-- changed to parent level or to configLevel after adding to the
-        //-- family tree. As of this, actually, setting to Level.INFO is
-        //-- not needed here.
+        // -- 'null' means that level will be inherited from parent (see
+        // getLevel)
+        // -- Level.INFO is default level if we don't set it. It will be
+        // -- changed to parent level or to configLevel after adding to the
+        // -- family tree. As of this, actually, setting to Level.INFO is
+        // -- not needed here.
         this.levelObjVal = null;
         this.levelIntVal = Level.INFO.intValue();
     }
 
-    //-- should be called under the lm lock
+    // -- should be called under the lm lock
     private void setLevelImpl(Level newLevel) {
         // update levels for the whole hierarchy
         int oldVal = levelIntVal;
         levelObjVal = newLevel;
         if (null == newLevel) {
-            levelIntVal = null != parent
-                    ? parent.levelIntVal
-                    : Level.INFO.intValue();
+            levelIntVal = null != parent ? parent.levelIntVal : Level.INFO
+                    .intValue();
         } else {
             levelIntVal = newLevel.intValue();
         }
@@ -179,7 +172,7 @@ public class Logger {
         }
     }
 
-    //-- should be called under the lm lock
+    // -- should be called under the lm lock
     private void forceChildsToInherit() {
         for (Logger child : childs) {
             if (null == child.levelObjVal) { // should inherit
@@ -187,12 +180,6 @@ public class Logger {
             }
         }
     }
-
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
 
     /**
      * Load the specified resource bundle, use privileged code.
@@ -205,8 +192,8 @@ public class Logger {
      */
     static ResourceBundle loadResourceBundle(String resourceBundleName) {
         // try context class loader to load the resource
-        ClassLoader cl = AccessController.doPrivileged(
-                new PrivilegedAction<ClassLoader>() {
+        ClassLoader cl = AccessController
+                .doPrivileged(new PrivilegedAction<ClassLoader>() {
                     public ClassLoader run() {
                         return Thread.currentThread().getContextClassLoader();
                     }
@@ -220,12 +207,11 @@ public class Logger {
             }
         }
         // try system class loader to load the resource
-        cl = AccessController.doPrivileged(
-                new PrivilegedAction<ClassLoader>() {
-                    public ClassLoader run() {
-                        return ClassLoader.getSystemClassLoader();
-                    }
-                });
+        cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+                return ClassLoader.getSystemClassLoader();
+            }
+        });
         if (null != cl) {
             try {
                 return ResourceBundle.getBundle(resourceBundleName, Locale
@@ -246,8 +232,8 @@ public class Logger {
         for (int i = 1; i < classes.length; i++) {
             final int index = i;
             try {
-                cl = AccessController.doPrivileged(
-                        new PrivilegedAction<ClassLoader>() {
+                cl = AccessController
+                        .doPrivileged(new PrivilegedAction<ClassLoader>() {
                             public ClassLoader run() {
                                 return classes[index].getClassLoader();
                             }
@@ -263,17 +249,17 @@ public class Logger {
         }
         // logging.8=Failed to load the specified resource bundle "{0}".
         throw new MissingResourceException(Messages.getString("logging.8", //$NON-NLS-1$
-                resourceBundleName), resourceBundleName, null);  
+                resourceBundleName), resourceBundleName, null);
     }
 
     /**
      * Gets an anonymous logger to use internally in a thread. Anonymous loggers
      * are not registered in the log manager's namespace. No security checks
-     * will be performed when updating an anonymous logger's control settings
-     * so that they can be used in applets.
+     * will be performed when updating an anonymous logger's control settings so
+     * that they can be used in applets.
      * <p>
-     * Anonymous loggers' parent is set to be the root logger. This enables
-     * them to inherit default logging level and handlers from the root logger.
+     * Anonymous loggers' parent is set to be the root logger. This enables them
+     * to inherit default logging level and handlers from the root logger.
      * </p>
      * 
      * @return a new instance of anonymous logger
@@ -285,11 +271,11 @@ public class Logger {
     /**
      * Gets an anonymous logger to use internally in a thread. Anonymous loggers
      * are not registered in the log manager's namespace. No security checks
-     * will be performed when updating an anonymous logger's control settings
-     * so that they can be used in applets.
+     * will be performed when updating an anonymous logger's control settings so
+     * that they can be used in applets.
      * <p>
-     * Anonymous loggers' parent is set to be the root logger. This enables
-     * them to inherit default logging level and handlers from the root logger.
+     * Anonymous loggers' parent is set to be the root logger. This enables them
+     * to inherit default logging level and handlers from the root logger.
      * </p>
      * 
      * @param resourceBundleName
@@ -306,33 +292,30 @@ public class Logger {
     }
 
     /*
-     * Check whether the same resource bundle has been specified.
-     * Synchronize to ensure the consistency between resource bundle
-     * and its name.
+     * Check whether the same resource bundle has been specified. Synchronize to
+     * ensure the consistency between resource bundle and its name.
      */
     private static void updateResourceBundle(Logger l, String resourceBundleName) {
         synchronized (l) {
             if (null == l.getResourceBundleName()) {
-                if(null == resourceBundleName){
+                if (null == resourceBundleName) {
                     return;
                 }
                 /*
-                 * load the resource bundle if none is specified
-                 * before
+                 * load the resource bundle if none is specified before
                  */
                 l.resBundle = loadResourceBundle(resourceBundleName);
                 l.resBundleName = resourceBundleName;
             } else if (!l.getResourceBundleName().equals(resourceBundleName)) {
                 /*
-                 * throw exception if the specified resource bundles
-                 * are inconsistent with each other, i.e., different
-                 * names
+                 * throw exception if the specified resource bundles are
+                 * inconsistent with each other, i.e., different names
                  */
-                // logging.9=The specified resource bundle name "{0}" is 
+                // logging.9=The specified resource bundle name "{0}" is
                 // inconsistent with the existing one "{1}".
                 throw new IllegalArgumentException(Messages.getString(
                         "logging.9", //$NON-NLS-1$
-                        resourceBundleName, l.getResourceBundleName())); 
+                        resourceBundleName, l.getResourceBundleName()));
             }
         }
     }
@@ -412,18 +395,18 @@ public class Logger {
             LogManager.getLogManager().checkAccess();
         }
         initHandler();
-        synchronized(this){
+        synchronized (this) {
             this.handlers.add(handler);
         }
     }
-    
+
     /*
-     * Be cautious to avoid deadlock when using this method, it gets lock on manager 
-     * at first, and then gets lock on this Logger, so any methods should not hold 
-     * lock on this Logger when invoking this method. 
+     * Be cautious to avoid deadlock when using this method, it gets lock on
+     * manager at first, and then gets lock on this Logger, so any methods
+     * should not hold lock on this Logger when invoking this method.
      */
     private void initHandler() {
-        if(!handlerInited){
+        if (!handlerInited) {
             synchronized (this) {
                 if (!handlerInited) {
                     if (handlers == null) {
@@ -438,10 +421,10 @@ public class Logger {
                     if (null == handlerStr) {
                         return;
                     }
-                    String[] strs = handlerStr.split(",|\\s");
+                    String[] strs = handlerStr.split(",|\\s"); //$NON-NLS-1$
                     for (int i = 0; i < strs.length; i++) {
                         String handlerName = strs[i];
-                        if (handlerName.equals("")){
+                        if (handlerName.equals("")) { //$NON-NLS-1$
                             continue;
                         }
                         Handler handler = (Handler) LogManager
@@ -466,7 +449,7 @@ public class Logger {
      */
     public Handler[] getHandlers() {
         initHandler();
-        synchronized(this){
+        synchronized (this) {
             return handlers.toArray(new Handler[handlers.size()]);
         }
     }
@@ -490,7 +473,7 @@ public class Logger {
             return;
         }
         initHandler();
-        synchronized(this){
+        synchronized (this) {
             this.handlers.remove(handler);
         }
     }
@@ -590,15 +573,16 @@ public class Logger {
 
     /**
      * Sets the parent of this logger in the namespace. This method should
-     * usually be used by the <code>LogManager</code> object only. This
-     * method does not check security.
+     * usually be used by the <code>LogManager</code> object only. This method
+     * does not check security.
      * 
      * @param newParent
      *            the parent logger to set
      */
     void internalSetParent(Logger newParent) {
-        //All hierarchy related modifications should get LogManager lock at first
-        synchronized(LogManager.getLogManager()){
+        // All hierarchy related modifications should get LogManager lock at
+        // first
+        synchronized (LogManager.getLogManager()) {
             parent = newParent;
             // -- update level after setting a parent.
             // -- if level == null we should inherit the parent's level
@@ -637,7 +621,6 @@ public class Logger {
         childs.remove(child);
     }
 
-
     /**
      * Gets the name of this logger.
      * 
@@ -669,9 +652,9 @@ public class Logger {
     }
 
     /**
-     * This method is for compatibility. Tests written to the reference 
-     * implementation API imply that the isLoggable() method is not called 
-     * directly. This behavior is important because subclass may override 
+     * This method is for compatibility. Tests written to the reference
+     * implementation API imply that the isLoggable() method is not called
+     * directly. This behavior is important because subclass may override
      * isLoggable() method, so that affect the result of log methods.
      */
     private boolean internalIsLoggable(Level l) {
@@ -785,14 +768,14 @@ public class Logger {
     public void entering(String sourceClass, String sourceMethod,
             Object[] params) {
         if (internalIsLoggable(Level.FINER)) {
-        	String msg = "ENTRY"; //$NON-NLS-1$
-			if (null != params) {
-				StringBuilder msgBuffer = new StringBuilder("ENTRY"); //$NON-NLS-1$
-				for (int i = 0; i < params.length; i++) {
-					msgBuffer.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				msg = msgBuffer.toString();
-			}
+            String msg = "ENTRY"; //$NON-NLS-1$
+            if (null != params) {
+                StringBuilder msgBuffer = new StringBuilder("ENTRY"); //$NON-NLS-1$
+                for (int i = 0; i < params.length; i++) {
+                    msgBuffer.append(" {" + i + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                msg = msgBuffer.toString();
+            }
             LogRecord record = new LogRecord(Level.FINER, msg);
             record.setLoggerName(this.name);
             record.setSourceClassName(sourceClass);
@@ -1084,8 +1067,7 @@ public class Logger {
             }
             initHandler();
             /*
-             * call the handlers of this logger, throw any exception that
-             * occurs
+             * call the handlers of this logger, throw any exception that occurs
              */
             Handler[] allHandlers = getHandlers();
             for (Handler element : allHandlers) {
@@ -1375,12 +1357,12 @@ public class Logger {
     }
 
     void setManager(LogManager manager) {
-        if(this.manager != manager){
+        if (this.manager != manager) {
             this.manager = manager;
-            handlerInited  = false;
+            handlerInited = false;
         }
-        //init level here, but let handlers be for lazy loading
-        final String configedLevel = manager.getProperty(name+ ".level"); //$NON-NLS-1$
+        // init level here, but let handlers be for lazy loading
+        final String configedLevel = manager.getProperty(name + ".level"); //$NON-NLS-1$
         if (null != configedLevel) {
             try {
                 AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -1390,15 +1372,15 @@ public class Logger {
                     }
                 });
             } catch (IllegalArgumentException e) {
-                //ignore
+                // ignore
             }
-        }        
+        }
     }
 
     synchronized void reset() {
         levelObjVal = null;
         levelIntVal = Level.INFO.intValue();
-        if(handlers != null){
+        if (handlers != null) {
             for (Handler element : handlers) {
                 // close all handlers, when unknown exceptions happen,
                 // ignore them and go on
@@ -1413,4 +1395,3 @@ public class Logger {
         handlerInited = false;
     }
 }
-

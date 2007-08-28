@@ -20,12 +20,10 @@ package java.util.logging;
 import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
- * <p>
  * An error reporting facility for {@link Handler} implementations to record any
  * error that may happen during logging. <code>Handlers</code> should report
  * errors to an <code>ErrorManager</code>, instead of throwing exceptions,
  * which would interfere with the log issuer's execution.
- * </p>
  */
 public class ErrorManager {
 
@@ -79,12 +77,10 @@ public class ErrorManager {
     }
 
     /**
-     * <p>
      * Reports an error using the given message, exception and error code. This
      * implementation will write out the message to {@link System#err} on the
      * first call and all subsequent calls are ignored. A subclass of this class
      * should override this method.
-     * </p>
      * 
      * @param message
      *            The error message, which may be <code>null</code>.
@@ -103,7 +99,7 @@ public class ErrorManager {
             called = true;
         }
         System.err.println(this.getClass().getName()
-            + ": " + FAILURES[errorCode]); //$NON-NLS-1$
+                + ": " + FAILURES[errorCode]); //$NON-NLS-1$
         if (message != null) {
             // logging.1E=Error message - {0}
             System.err.println(Messages.getString("logging.1E", message)); //$NON-NLS-1$
