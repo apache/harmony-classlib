@@ -260,7 +260,7 @@ public class Level implements Serializable {
                 if (value != level.value) {
                     continue;
                 }
-                if (!name.equals(name)) {
+                if (!name.equals(level.name)) {
                     continue;
                 }
                 if (resourceBundleName == level.resourceBundleName) {
