@@ -239,10 +239,6 @@ ${built.files.list}
 		<fileset dir="${hy.jdk}/jre/lib/boot/xerces-2_9_0"/>
 	</move>
 
-        <!-- delete these lines if BC version is greater than jdk15-134 -->
-        <!-- delete the original signed.bcprov.jar                      -->
-        <delete file="${hy.jdk}/jre/lib/ext/signed.bcprov.jar" />
-
         <!-- Copy across the extension dependency jars -->
         <copy todir="${hy.jdk}/jre/lib/ext" flatten="yes" overwrite="true">
             <fileset file="${bcprov.jar}" />
