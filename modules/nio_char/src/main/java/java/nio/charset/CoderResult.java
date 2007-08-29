@@ -112,8 +112,7 @@ public class CoderResult {
      * @throws IllegalArgumentException
      *             If <code>length</code> is non-positive.
      */
-    public static synchronized CoderResult malformedForLength(int length)
-            throws IllegalArgumentException {
+    public static synchronized CoderResult malformedForLength(int length) {
         if (length > 0) {
             Integer key = Integer.valueOf(length);
             synchronized (_malformedErrors) {
@@ -142,8 +141,7 @@ public class CoderResult {
      * @throws IllegalArgumentException
      *             If <code>length</code> is non-positive.
      */
-    public static synchronized CoderResult unmappableForLength(int length)
-            throws IllegalArgumentException {
+    public static synchronized CoderResult unmappableForLength(int length) {
         if (length > 0) {
             Integer key = Integer.valueOf(length);
             synchronized (_unmappableErrors) {
@@ -216,7 +214,7 @@ public class CoderResult {
      * @throws UnsupportedOperationException
      *             If this result is an overflow or underflow.
      */
-    public int length() throws UnsupportedOperationException {
+    public int length() {
         if (this.type == TYPE_MALFORMED_INPUT
                 || this.type == TYPE_UNMAPPABLE_CHAR) {
             return this.length;
@@ -241,9 +239,7 @@ public class CoderResult {
      * @throws CharacterCodingException
      *             The default exception.
      */
-    public void throwException() throws BufferUnderflowException,
-            BufferOverflowException, UnmappableCharacterException,
-            MalformedInputException, CharacterCodingException {
+    public void throwException() throws CharacterCodingException {
         switch (this.type) {
             case TYPE_UNDERFLOW:
                 throw new BufferUnderflowException();
