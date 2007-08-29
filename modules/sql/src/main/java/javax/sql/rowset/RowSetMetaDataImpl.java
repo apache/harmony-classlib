@@ -41,6 +41,8 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
 
     private static final long serialVersionUID = 6893806403181801867L;
 
+    private static RowSetMetaDataImpl instance = new RowSetMetaDataImpl();
+
     private int colCount;
 
     private ColInfo[] colInfo;
@@ -548,7 +550,8 @@ public class RowSetMetaDataImpl implements RowSetMetaData, Serializable {
      * 
      * @see java.sql.Wrapper#unwrap(Class)
      */
+    @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
+        return (T) instance;
     }
 }

@@ -1068,6 +1068,23 @@ public class RowSetMetaDataImplTest extends TestCase {
         SerializationTest.verifyGolden(this, impl, ROWSET_METADATA_COMPARATOR);
     }
 
+    /**
+     *  @test {@link javax.sql.rowset.RowSetMetaDataImpl#unWrap(Class<T>)}
+     */
+    public void test_unWrap_CClass() throws Exception {
+        Object o = metaDataImpl.unwrap(Integer.class);
+        assertNotNull(o);
+        assertTrue(o instanceof RowSetMetaDataImpl);
+        
+        o = metaDataImpl.unwrap(Comparable.class);
+        assertNotNull(o);
+        assertTrue(o instanceof RowSetMetaDataImpl);
+        
+        o = metaDataImpl.unwrap(null);
+        assertNotNull(o);
+        assertTrue(o instanceof RowSetMetaDataImpl);
+    }
+    
     @Override
     protected void setUp() throws Exception {
         super.setUp();
