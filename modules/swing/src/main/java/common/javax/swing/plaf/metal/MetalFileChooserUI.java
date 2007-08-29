@@ -849,8 +849,8 @@ public class MetalFileChooserUI extends BasicFileChooserUI {
                         fileNameField.setText(fileToText(getFileChooser().getCurrentDirectory()));
                     }
                 } else if (JFileChooser.ACCESSORY_CHANGED_PROPERTY.equals(changedProperty)) {
-		    final JComponent old = (JComponent) event.getOldValue();
-                    		    
+                    final JComponent old = (JComponent) event.getOldValue();
+                                    
                     if (old != null) {
                         getAccessoryPanel().remove(old);
                     }
@@ -1123,10 +1123,6 @@ public class MetalFileChooserUI extends BasicFileChooserUI {
                 }
 
                 super.processKeyEvent(event);
-            }
-            
-            public boolean getScrollableTracksViewportHeight() {
-                return true;
             }
         };
         table.setShowGrid(false);
