@@ -21,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import javax.security.auth.login.LoginException;
+
 import org.apache.harmony.auth.module.LoginModuleUtils;
 
 import junit.framework.TestCase;
@@ -72,6 +74,64 @@ public class LoginModuleUtilsTest extends TestCase {
         LoginModuleUtils.clearPassword(password);
         password = new char[0];
         LoginModuleUtils.clearPassword(password);
+    }
+    
+    public void testLoginModuleStatus() throws Exception {
+        LoginModuleUtils.LoginModuleStatus status = new LoginModuleUtils.LoginModuleStatus();
+        try {
+            status.checkLogin();
+        } catch (LoginException e) {
+            // expected
+        }
+
+        try {
+            status.checkCommit();
+        } catch (LoginException e) {
+            // expected
+        }
+
+        try {
+            status.checkLogout();
+        } catch (LoginException e) {
+            // expected
+        }
+
+        status.initialized();
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.login, status
+                .checkLogin());
+
+        try {
+            status.checkCommit();
+        } catch (LoginException e) {
+            // expected
+        }
+
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkLogout());
+
+        status.logined();
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkLogin());
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.commit, status
+                .checkCommit());
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkLogout());
+
+        status.committed();
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkLogin());
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkCommit());
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.logout, status
+                .checkLogout());
+
+        status.logined();
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkLogin());
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.commit, status
+                .checkCommit());
+        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+                status.checkLogout());
     }
 
 }

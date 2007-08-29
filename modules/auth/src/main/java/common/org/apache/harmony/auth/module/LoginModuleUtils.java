@@ -21,8 +21,80 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-public class LoginModuleUtils {
+import javax.security.auth.login.LoginException;
 
+public class LoginModuleUtils {
+    
+    public final static class LoginModuleStatus {        
+
+        private static enum PHASE {
+            uninitialized, initialized, logined, committed
+        };
+
+        public static enum ACTION {
+            no_action, login, commit, logout
+        };
+
+        private PHASE phase;
+        
+        public LoginModuleStatus(){
+            phase = PHASE.uninitialized;
+        }
+        
+        public void initialized(){
+            phase = PHASE.initialized;
+        }
+        
+        public void logined(){
+            phase = PHASE.logined;
+        }
+        
+        public void committed(){
+            phase = PHASE.committed;
+        }
+        
+        public void logouted(){
+            phase = PHASE.logined;
+        }
+
+        public ACTION checkLogin() throws LoginException {
+            switch (phase) {
+            case uninitialized:
+                throw new LoginException("Login Module is not initialized.");
+            case initialized:
+                return ACTION.login;
+            default:
+                return ACTION.no_action;
+            }
+        }
+
+        public ACTION checkCommit() throws LoginException {
+            switch (phase) {
+            case uninitialized:
+                throw new LoginException("Login Module is not initialized.");
+            case initialized:
+                return ACTION.logout;
+            case logined:
+                return ACTION.commit;
+            default:
+                return ACTION.no_action;
+            }
+        }
+
+        public ACTION checkLogout() throws LoginException {
+            switch (phase) {
+            case uninitialized:
+                throw new LoginException("Login Module is not initialized.");
+            case initialized:
+            case logined:
+                return ACTION.no_action;
+            default:
+                return ACTION.logout;
+            }
+        }
+    }
+    
+    
     /**
      * Reads the password stored in an inputstream to a char array.
      * 
