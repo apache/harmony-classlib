@@ -58,5 +58,20 @@ public class LoginModuleUtilsTest extends TestCase {
         String expectedString = PASSWORD_AS_STRING + "\r";
         assertTrue(Arrays.equals(expectedString.toCharArray(), password));
     }
+    
+    public void testClearPassword() throws Exception {
+        final String PASSWORD_AS_STRING = "TESTPASSWORD";
+
+        char[] password = PASSWORD_AS_STRING.toCharArray();
+        LoginModuleUtils.clearPassword(password);
+        for (char c : password) {
+            assertEquals('\0', c);
+        }
+
+        password = null;
+        LoginModuleUtils.clearPassword(password);
+        password = new char[0];
+        LoginModuleUtils.clearPassword(password);
+    }
 
 }

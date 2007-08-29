@@ -19,6 +19,7 @@ package org.apache.harmony.auth.module;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class LoginModuleUtils {
 
@@ -76,5 +77,18 @@ public class LoginModuleUtils {
         }
         dest[position] = c;
         return dest;
+    }
+    
+    /**
+     * Cleans the password stored in one char array.
+     * 
+     * @param password
+     *            the char array which contains password.
+     */
+    public static void clearPassword(char[] password) {
+        if (password == null || password.length == 0) {
+            return;
+        }
+        Arrays.fill(password, '\0');
     }
 }
