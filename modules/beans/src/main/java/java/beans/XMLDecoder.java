@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package java.beans;
 
 import java.io.InputStream;
@@ -36,13 +35,14 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * <code>XMLDecoder</code> reads objects from xml created by
  * <code>XMLEncoder</code>.
- * <p>The API is similar to <code>ObjectInputStream</code>.</p>
- *
+ * <p>
+ * The API is similar to <code>ObjectInputStream</code>.
+ * </p>
  */
 public class XMLDecoder {
 
     private ClassLoader defaultClassLoader = null;
-    
+
     private static class DefaultExceptionListener implements ExceptionListener {
 
         public void exceptionThrown(Exception e) {
@@ -113,7 +113,7 @@ public class XMLDecoder {
                 obtainTarget(elem, attributes);
                 obtainMethod(elem, attributes);
             }
-			
+
             readObjs.push(elem);
         }
 
@@ -127,10 +127,10 @@ public class XMLDecoder {
                 }
             } else {
                 Elem parent = latestUnclosedElem();
-				if(parent == null) {
-					elem.target = owner;
-					return;
-				}
+                if (parent == null) {
+                    elem.target = owner;
+                    return;
+                }
                 elem.target = execute(parent);
             }
         }
@@ -156,13 +156,13 @@ public class XMLDecoder {
 
             elem.methodName = attributes.getValue("field");
             if (elem.methodName != null) {
-				elem.fromField = true;
+                elem.fromField = true;
                 return;
             }
 
             elem.methodName = attributes.getValue("owner");
             if (elem.methodName != null) {
-				elem.fromOwner = true;
+                elem.fromOwner = true;
                 return;
             }
 
@@ -201,7 +201,7 @@ public class XMLDecoder {
             elem.isExpression = true;
             elem.id = attributes.getValue("id");
             try {
-                // find componet class
+                // find component class
                 Class<?> compClass = classForName(attributes.getValue("class"));
                 // find length
                 int length = Integer.parseInt(attributes.getValue("length"));
@@ -316,26 +316,27 @@ public class XMLDecoder {
                 args.add(0, index);
                 method = args.size() == 1 ? "get" : "set";
             }
-			if(elem.fromField) {
-				Field f = ((Class)elem.target).getField(method);
-		        return (new Expression(f, "get", new Object[] {null})).getValue();
-			}
-			if(elem.fromOwner) {
-				return owner;
-			}
-			
-			if(elem.target == owner) {
-				if("getOwner".equals(method)) {
-					return owner;
-				}
+            if (elem.fromField) {
+                Field f = ((Class) elem.target).getField(method);
+                return (new Expression(f, "get", new Object[] { null }))
+                        .getValue();
+            }
+            if (elem.fromOwner) {
+                return owner;
+            }
+
+            if (elem.target == owner) {
+                if ("getOwner".equals(method)) {
+                    return owner;
+                }
                 Class[] c = new Class[args.size()];
-                for(int i = 0; i < args.size(); i++) {
-                	c[i] = args.get(i).getClass();
+                for (int i = 0; i < args.size(); i++) {
+                    c[i] = args.get(i).getClass();
                 }
                 Method m = owner.getClass().getMethod(method, c);
                 return m.invoke(owner, args.toArray());
-			}
-			
+            }
+
             // execute
             Expression exp = new Expression(elem.target, method, args.toArray());
             return exp.getValue();
@@ -355,7 +356,7 @@ public class XMLDecoder {
             if ("null".equals(tag)) {
                 return null;
             } else if ("string".equals(tag)) {
-                return value;
+                return value == null ? "" : value;
             } else if ("class".equals(tag)) {
                 return classForName(value);
             } else if ("boolean".equals(tag)) {
@@ -396,7 +397,7 @@ public class XMLDecoder {
     }
 
     private static class Elem {
-		String id;
+        String id;
 
         String idref;
 
@@ -415,8 +416,8 @@ public class XMLDecoder {
         boolean fromProperty;
 
         boolean fromIndex;
-		
-		boolean fromField;
+
+        boolean fromField;
 
         boolean fromOwner;
 
@@ -435,8 +436,9 @@ public class XMLDecoder {
 
     /**
      * Create a decoder to read from specified input stream.
-     *
-     * @param inputStream   an input stream of xml
+     * 
+     * @param inputStream
+     *            an input stream of xml
      */
     public XMLDecoder(InputStream inputStream) {
         this(inputStream, null, null);
@@ -444,9 +446,11 @@ public class XMLDecoder {
 
     /**
      * Create a decoder to read from specified input stream.
-     *
-     * @param inputStream   an input stream of xml
-     * @param owner         the owner of this decoder
+     * 
+     * @param inputStream
+     *            an input stream of xml
+     * @param owner
+     *            the owner of this decoder
      */
     public XMLDecoder(InputStream inputStream, Object owner) {
         this(inputStream, owner, null);
@@ -454,10 +458,13 @@ public class XMLDecoder {
 
     /**
      * Create a decoder to read from specified input stream.
-     *
-     * @param inputStream   an input stream of xml
-     * @param owner         the owner of this decoder
-     * @param listener      listen to the exceptions thrown by the decoder
+     * 
+     * @param inputStream
+     *            an input stream of xml
+     * @param owner
+     *            the owner of this decoder
+     * @param listener
+     *            listen to the exceptions thrown by the decoder
      */
     public XMLDecoder(InputStream inputStream, Object owner,
             ExceptionListener listener) {
@@ -466,7 +473,8 @@ public class XMLDecoder {
         }
         this.inputStream = inputStream;
         this.owner = owner;
-        this.listener = (listener == null)? new DefaultExceptionListener(): listener;
+        this.listener = (listener == null) ? new DefaultExceptionListener()
+                : listener;
 
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(inputStream,
@@ -475,7 +483,7 @@ public class XMLDecoder {
             this.listener.exceptionThrown(e);
         }
     }
-    
+
     public XMLDecoder(InputStream inputStream, Object owner,
             ExceptionListener listener, ClassLoader cl) {
         this(inputStream, owner, listener);
@@ -495,6 +503,7 @@ public class XMLDecoder {
 
     /**
      * Returns the exception listener.
+     * 
      * @return the exception listener
      */
     public ExceptionListener getExceptionListener() {
@@ -503,6 +512,7 @@ public class XMLDecoder {
 
     /**
      * Returns the owner of this decoder.
+     * 
      * @return the owner of this decoder
      */
     public Object getOwner() {
@@ -511,9 +521,10 @@ public class XMLDecoder {
 
     /**
      * Reads the next object.
-     *
+     * 
      * @return the next object
-     * @exception ArrayIndexOutOfBoundsException if no more objects to read
+     * @exception ArrayIndexOutOfBoundsException
+     *                if no more objects to read
      */
     @SuppressWarnings("nls")
     public Object readObject() {
@@ -522,7 +533,7 @@ public class XMLDecoder {
         }
         Elem elem = readObjs.get(readObjIndex);
         if (!elem.isClosed) {
-            // bad element, error occured while parsing
+            // bad element, error occurred while parsing
             throw new ArrayIndexOutOfBoundsException("no more objects to read");
         }
         readObjIndex++;
@@ -531,8 +542,9 @@ public class XMLDecoder {
 
     /**
      * Sets the exception listener.
-     *
-     * @param listener  an exception listener
+     * 
+     * @param listener
+     *            an exception listener
      */
     public void setExceptionListener(ExceptionListener listener) {
         if (listener != null) {
@@ -542,12 +554,11 @@ public class XMLDecoder {
 
     /**
      * Sets the owner of this decoder.
-     *
-     * @param owner     the owner of this decoder
+     * 
+     * @param owner
+     *            the owner of this decoder
      */
     public void setOwner(Object owner) {
         this.owner = owner;
     }
 }
-
-

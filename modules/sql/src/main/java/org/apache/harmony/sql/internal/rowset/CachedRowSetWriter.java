@@ -14,22 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.harmony.sql.internal.rowset;
 
-package java.util.logging;
+import java.sql.SQLException;
 
-/**
- * A Filter provides a mechanism for exercising fine-grained control over what
- * records get logged.
- */
-public interface Filter {
+import javax.sql.RowSetInternal;
+import javax.sql.RowSetWriter;
 
-    /**
-     * Checks the {@link LogRecord} to determine if it should be logged.
-     * 
-     * @param record
-     *            The {@link LogRecord} to be checked.
-     * @return <code>true</code> if the supplied log record needs to be
-     *         logged, otherwise <code>false</code>
-     */
-    boolean isLoggable(LogRecord record);
+import org.apache.harmony.luni.util.NotImplementedException;
+
+public class CachedRowSetWriter implements RowSetWriter {
+
+    public boolean writeData(RowSetInternal theRowSet) throws SQLException {
+        throw new NotImplementedException();
+    }
 }

@@ -228,21 +228,22 @@ public class FileHandler extends StreamHandler {
         setOutputStream(output);
     }
 
+    @SuppressWarnings("nls")
     private void initProperties(String p, Boolean a, Integer l, Integer c) {
-        super.initProperties("ALL", null, "java.util.logging.XMLFormatter", //$NON-NLS-1$//$NON-NLS-2$
+        super.initProperties("ALL", null, "java.util.logging.XMLFormatter",
                 null);
         String className = this.getClass().getName();
-        pattern = (null == p) ? getStringProperty(className + ".pattern", //$NON-NLS-1$
+        pattern = (null == p) ? getStringProperty(className + ".pattern",
                 DEFAULT_PATTERN) : p;
-        if (null == pattern || "".equals(pattern)) { //$NON-NLS-1$
+        if (null == pattern || "".equals(pattern)) {
             // logging.19=Pattern cannot be empty
-            throw new NullPointerException(Messages.getString("logging.19")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("logging.19"));
         }
-        append = (null == a) ? getBooleanProperty(className + ".append", //$NON-NLS-1$
+        append = (null == a) ? getBooleanProperty(className + ".append",
                 DEFAULT_APPEND) : a.booleanValue();
-        count = (null == c) ? getIntProperty(className + ".count", //$NON-NLS-1$
+        count = (null == c) ? getIntProperty(className + ".count",
                 DEFAULT_COUNT) : c.intValue();
-        limit = (null == l) ? getIntProperty(className + ".limit", //$NON-NLS-1$
+        limit = (null == l) ? getIntProperty(className + ".limit",
                 DEFAULT_LIMIT) : l.intValue();
         count = count < 1 ? DEFAULT_COUNT : count;
         limit = limit < 0 ? DEFAULT_LIMIT : limit;

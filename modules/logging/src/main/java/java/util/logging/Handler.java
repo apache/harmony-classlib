@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.harmony.logging.internal.nls.Messages;
 
@@ -29,22 +28,10 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * A <code>Handler</code> object accepts a logging request and exports the
  * desired messages to a target, for example, a file, the console, etc. It can
  * be disabled by setting its logging level to <code>Level.OFF</code>.
- * 
  */
 public abstract class Handler {
 
-    /*
-     * -------------------------------------------------------------------
-     * Constants
-     * -------------------------------------------------------------------
-     */
     private static final Level DEFAULT_LEVEL = Level.ALL;
-
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
 
     // the error manager to report errors during logging
     private ErrorManager errorMan;
@@ -64,12 +51,6 @@ public abstract class Handler {
     // class name, used for property reading
     private String prefix;
 
-    /*
-     * -------------------------------------------------------------------
-     * Constructors
-     * -------------------------------------------------------------------
-     */
-
     /**
      * Constructs a <code>Handler</code> object with a default error manager,
      * the default encoding, and the default logging level
@@ -84,12 +65,6 @@ public abstract class Handler {
         this.prefix = this.getClass().getName();
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
-
     // get a instance from given class name, using Class.forName()
     private Object getDefaultInstance(String className) {
         Object result = null;
@@ -99,7 +74,7 @@ public abstract class Handler {
         try {
             result = Class.forName(className).newInstance();
         } catch (Exception e) {
-            //ignore
+            // ignore
         }
         return result;
     }
@@ -107,7 +82,8 @@ public abstract class Handler {
     // get a instance from given class name, using context classloader
     private Object getCustomizeInstance(final String className)
             throws Exception {
-        Class<?> c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+        Class<?> c = AccessController
+                .doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                     public Class<?> run() throws Exception {
                         ClassLoader loader = Thread.currentThread()
                                 .getContextClassLoader();
@@ -123,7 +99,8 @@ public abstract class Handler {
     // print error message in some format
     void printInvalidPropMessage(String key, String value, Exception e) {
         // logging.12=Invalid property value for
-        String msg = new StringBuilder().append(Messages.getString("logging.12"))  //$NON-NLS-1$
+        String msg = new StringBuilder().append(
+                Messages.getString("logging.12")) //$NON-NLS-1$
                 .append(prefix).append(":").append(key).append("/").append( //$NON-NLS-1$//$NON-NLS-2$
                         value).toString();
         errorMan.error(msg, e, ErrorManager.GENERIC_FAILURE);
@@ -138,7 +115,7 @@ public abstract class Handler {
             String defaultFormatter, String defaultEncoding) {
         LogManager manager = LogManager.getLogManager();
 
-        //set filter
+        // set filter
         final String filterName = manager.getProperty(prefix + ".filter"); //$NON-NLS-1$
         if (null != filterName) {
             try {
@@ -151,7 +128,7 @@ public abstract class Handler {
             filter = (Filter) getDefaultInstance(defaultFilter);
         }
 
-        //set level
+        // set level
         String levelName = manager.getProperty(prefix + ".level"); //$NON-NLS-1$
         if (null != levelName) {
             try {
@@ -164,7 +141,7 @@ public abstract class Handler {
             level = Level.parse(defaultLevel);
         }
 
-        //set formatter
+        // set formatter
         final String formatterName = manager.getProperty(prefix + ".formatter"); //$NON-NLS-1$
         if (null != formatterName) {
             try {
@@ -177,7 +154,7 @@ public abstract class Handler {
             formatter = (Formatter) getDefaultInstance(defaultFormatter);
         }
 
-        //set encoding
+        // set encoding
         final String encodingName = manager.getProperty(prefix + ".encoding"); //$NON-NLS-1$
         try {
             internalSetEncoding(encodingName);
@@ -417,4 +394,3 @@ public abstract class Handler {
         this.level = newLevel;
     }
 }
-

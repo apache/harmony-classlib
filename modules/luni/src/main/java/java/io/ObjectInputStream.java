@@ -476,7 +476,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         String nameC2 = c2.getName();
         int indexDotC1 = nameC1.lastIndexOf('.');
         int indexDotC2 = nameC2.lastIndexOf('.');
-        if (indexDotC1 != indexDotC1) {
+        if (indexDotC1 != indexDotC2) {
             return false; // cannot be in the same package if indices are not
         }
         // the same

@@ -41,7 +41,6 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * they expect to use them after passing the <code>LogRecord</code> object to
  * another thread or transmitting it over RMI.
  * </p>
- * 
  */
 public class LogRecord implements Serializable {
 
@@ -353,7 +352,7 @@ public class LogRecord implements Serializable {
     }
 
     /*
-     *  Init the sourceClass and sourceMethod fields.
+     * Init the sourceClass and sourceMethod fields.
      */
     private void initSource() {
         if (!sourceInited) {
@@ -366,8 +365,9 @@ public class LogRecord implements Serializable {
                     break FINDLOG;
                 }
             }
-            while(++i<elements.length && elements[i].getClassName().equals(current)) {
-            	// do nothing
+            while (++i < elements.length
+                    && elements[i].getClassName().equals(current)) {
+                // do nothing
             }
             if (i < elements.length) {
                 this.sourceClassName = elements[i].getClassName();
@@ -474,12 +474,12 @@ public class LogRecord implements Serializable {
         in.defaultReadObject();
         byte major = in.readByte();
         byte minor = in.readByte();
-        //only check MAJOR version
+        // only check MAJOR version
         if (major != MAJOR) {
             // logging.5=Different version - {0}.{1}
             throw new IOException(Messages.getString("logging.5", major, minor)); //$NON-NLS-1$ 
         }
-        
+
         int length = in.readInt();
         if (length >= 0) {
             parameters = new Object[length];

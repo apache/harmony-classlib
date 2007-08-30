@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
-import java.net.Socket;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 
 import org.apache.harmony.logging.internal.nls.Messages;
 
@@ -56,9 +55,9 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * <p>
  * This class is not thread-safe.
  * </p>
- * 
  */
 public class SocketHandler extends StreamHandler {
+
     // default level
     private static final String DEFAULT_LEVEL = "ALL"; //$NON-NLS-1$
 
@@ -154,8 +153,8 @@ public class SocketHandler extends StreamHandler {
         try {
             super.close();
             if (null != this.socket) {
-	            this.socket.close();
-	            this.socket = null;
+                this.socket.close();
+                this.socket = null;
             }
         } catch (Exception e) {
             // logging.F=Exception occurred when closing the socket handler.
@@ -175,5 +174,4 @@ public class SocketHandler extends StreamHandler {
         super.publish(record);
         super.flush();
     }
-
 }
