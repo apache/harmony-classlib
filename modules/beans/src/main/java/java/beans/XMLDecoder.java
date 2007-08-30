@@ -355,7 +355,7 @@ public class XMLDecoder {
             if ("null".equals(tag)) {
                 return null;
             } else if ("string".equals(tag)) {
-                return value;
+                return value == null ? "" : value;
             } else if ("class".equals(tag)) {
                 return classForName(value);
             } else if ("boolean".equals(tag)) {
