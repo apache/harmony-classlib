@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 package java.util.logging;
 
 import java.io.OutputStream;
@@ -46,9 +45,9 @@ import org.apache.harmony.logging.internal.nls.Messages;
  * <p>
  * This class is not thread-safe.
  * </p>
- * 
  */
 public class StreamHandler extends Handler {
+
     // the output stream this handler writes to
     private OutputStream os;
 
@@ -63,7 +62,7 @@ public class StreamHandler extends Handler {
      * does not have an associated output stream.
      */
     public StreamHandler() {
-        initProperties("INFO", null, "java.util.logging.SimpleFormatter",  //$NON-NLS-1$//$NON-NLS-2$
+        initProperties("INFO", null, "java.util.logging.SimpleFormatter", //$NON-NLS-1$//$NON-NLS-2$
                 null);
         this.os = null;
         this.writer = null;
@@ -158,7 +157,6 @@ public class StreamHandler extends Handler {
         this.os = newOs;
     }
 
-	
     /**
      * Sets the output stream this handler writes to. If there's an existing
      * output stream, the tail string of the associated formatter will be
@@ -196,8 +194,8 @@ public class StreamHandler extends Handler {
     @Override
     public void setEncoding(String encoding) throws SecurityException,
             UnsupportedEncodingException {
-		//flush first before set new encoding
-		this.flush();
+        // flush first before set new encoding
+        this.flush();
         super.setEncoding(encoding);
         // renew writer only if the writer exists
         if (null != this.writer) {
@@ -219,7 +217,8 @@ public class StreamHandler extends Handler {
 
     /**
      * Closes this handler, but the underlying output stream is only closed when
-     * <code>closeStream</code> is <code>true</code>. Security is not checked.
+     * <code>closeStream</code> is <code>true</code>. Security is not
+     * checked.
      * 
      * @param closeStream
      *            whether to close the underlying output stream
@@ -234,8 +233,8 @@ public class StreamHandler extends Handler {
                 this.writer.flush();
                 if (closeStream) {
                     this.writer.close();
-					this.writer = null;
-	                this.os = null;
+                    this.writer = null;
+                    this.os = null;
                 }
             } catch (Exception e) {
                 // logging.15=Exception occurred when closing the output stream.
@@ -274,7 +273,8 @@ public class StreamHandler extends Handler {
                     this.os.flush();
                 }
             } catch (Exception e) {
-                // logging.16=Exception occurred while flushing the output stream.
+                // logging.16=Exception occurred while flushing the output
+                // stream.
                 getErrorManager().error(Messages.getString("logging.16"), //$NON-NLS-1$
                         e, ErrorManager.FLUSH_FAILURE);
             }
@@ -309,7 +309,8 @@ public class StreamHandler extends Handler {
                 try {
                     msg = getFormatter().format(record);
                 } catch (Exception e) {
-                    // logging.17=Exception occurred while formatting the log record.
+                    // logging.17=Exception occurred while formatting the log
+                    // record.
                     getErrorManager().error(Messages.getString("logging.17"), //$NON-NLS-1$
                             e, ErrorManager.FORMAT_FAILURE);
                 }
@@ -334,13 +335,12 @@ public class StreamHandler extends Handler {
      */
     @Override
     public boolean isLoggable(LogRecord record) {
-    	if (null == record) {
-			return false;
-		}
+        if (null == record) {
+            return false;
+        }
         if (null != this.os && super.isLoggable(record)) {
             return true;
         }
         return false;
     }
-
 }

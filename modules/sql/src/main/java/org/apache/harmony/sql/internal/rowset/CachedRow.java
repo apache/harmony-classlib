@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.harmony.sql.internal.rowset;
 
-package java.util.logging;
+import java.util.BitSet;
 
-/**
- * A Filter provides a mechanism for exercising fine-grained control over what
- * records get logged.
- */
-public interface Filter {
+public class CachedRow {
+    private Object[] columnData;
 
-    /**
-     * Checks the {@link LogRecord} to determine if it should be logged.
-     * 
-     * @param record
-     *            The {@link LogRecord} to be checked.
-     * @return <code>true</code> if the supplied log record needs to be
-     *         logged, otherwise <code>false</code>
-     */
-    boolean isLoggable(LogRecord record);
+    private BitSet mask;
+
+    public CachedRow(Object[] columnData) {
+        this.columnData = columnData;
+        mask = new BitSet(columnData.length);
+    }
+
+    public boolean setUpdateMask(int i) {
+        return mask.get(i);
+    }
 }

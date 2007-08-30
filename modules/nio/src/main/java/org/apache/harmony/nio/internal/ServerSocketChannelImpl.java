@@ -73,7 +73,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
     boolean isBound = false;
 
     // lock for accept
-    private class AcceptLock {}
+    private static class AcceptLock {}
     private final Object acceptLock = new AcceptLock();
 
     // ----------------------------------------------------

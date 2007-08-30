@@ -20,260 +20,17 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Map;
 
 import javax.sql.RowSet;
-import javax.sql.RowSetEvent;
-import javax.sql.RowSetInternal;
-import javax.sql.RowSetMetaData;
 import javax.sql.rowset.BaseRowSet;
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetMetaDataImpl;
-import javax.sql.rowset.RowSetWarning;
-import javax.sql.rowset.spi.SyncProvider;
-import javax.sql.rowset.spi.SyncProviderException;
 
 import org.apache.harmony.luni.util.NotImplementedException;
-import org.apache.harmony.sql.internal.nls.Messages;
 
-public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
-        RowSetInternal {
+public class AbstractRowSetImpl extends BaseRowSet implements RowSet {
 
-    private ArrayList<CachedRow> rows;
-
-    private RowSetMetaData meta;
-
-    private CachedRow currentRow;
-
-    private int currentRowIndex;
-
-    public void setRows(ArrayList<CachedRow> data) {
-        this.rows = data;
-    }
-
-    public void acceptChanges() throws SyncProviderException {
-        throw new NotImplementedException();
-    }
-
-    public void acceptChanges(Connection con) throws SyncProviderException {
-        throw new NotImplementedException();
-    }
-
-    public boolean columnUpdated(int idx) throws SQLException {
-        if (currentRow == null || idx > meta.getColumnCount()) {
-            // rowset.0 = Not a valid position
-            throw new SQLException(Messages.getString("rowset.0"));
-        }
-        return currentRow.setUpdateMask(idx - 1);
-    }
-
-    public boolean columnUpdated(String columnName) throws SQLException {
-        return columnUpdated(getIndexByName(columnName));
-    }
-
-    private int getIndexByName(String columnName) throws SQLException {
-        for (int i = 1; i <= meta.getColumnCount(); i++) {
-            if (columnName.equals(meta.getColumnName(i))) {
-                return i;
-            }
-        }
-        // rowset.1=Not a valid column name
-        throw new SQLException(Messages.getString("rowset.1"));
-    }
-
-    public void commit() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public CachedRowSet createCopy() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public CachedRowSet createCopyNoConstraints() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public CachedRowSet createCopySchema() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public RowSet createShared() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void execute(Connection conn) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public int[] getKeyColumns() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public ResultSet getOriginal() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public ResultSet getOriginalRow() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public int getPageSize() {
-        throw new NotImplementedException();
-    }
-
-    public RowSetWarning getRowSetWarnings() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public SyncProvider getSyncProvider() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public String getTableName() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public boolean nextPage() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void populate(ResultSet data) throws SQLException {
-        populate(data, 0);
-    }
-
-    public void populate(ResultSet rs, int startRow) throws SQLException {
-        new CachedRowSetReader(rs, startRow).readData(this);
-        composeMetaData(rs.getMetaData());
-    }
-
-    private void composeMetaData(ResultSetMetaData metaData)
-            throws SQLException {
-        RowSetMetaDataImpl rowSetMetaData = new RowSetMetaDataImpl();
-        rowSetMetaData.setColumnCount(metaData.getColumnCount());
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            rowSetMetaData.setColumnName(i, metaData.getColumnName(i));
-        }
-        // TODO set other meta info when necessary
-        this.meta = rowSetMetaData;
-    }
-
-    public boolean previousPage() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void release() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void restoreOriginal() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void rollback() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void rollback(Savepoint s) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void rowSetPopulated(RowSetEvent event, int numRows)
-            throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setKeyColumns(int[] keys) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setMetaData(RowSetMetaData md) throws SQLException {
-        this.meta = md;
-    }
-
-    public void setOriginalRow() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setPageSize(int size) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setSyncProvider(String provider) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setTableName(String tabName) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public int size() {
-        throw new NotImplementedException();
-    }
-
-    public Collection<?> toCollection() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public Collection<?> toCollection(int column) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public Collection<?> toCollection(String column) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void undoDelete() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void undoInsert() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void undoUpdate() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public int[] getMatchColumnIndexes() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public String[] getMatchColumnNames() throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setMatchColumn(int columnIdx) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setMatchColumn(int[] columnIdxes) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setMatchColumn(String columnName) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void setMatchColumn(String[] columnNames) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void unsetMatchColumn(int columnIdx) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void unsetMatchColumn(int[] columnIdxes) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void unsetMatchColumn(String columnName) throws SQLException {
-        throw new NotImplementedException();
-    }
-
-    public void unsetMatchColumn(String[] columnName) throws SQLException {
+    public void execute() throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -333,8 +90,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public BigDecimal getBigDecimal(int columnIndex, int scale)
-            throws SQLException {
+    public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -342,8 +98,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public BigDecimal getBigDecimal(String columnName, int scale)
-            throws SQLException {
+    public BigDecimal getBigDecimal(String columnName, int scale) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -463,8 +218,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public Object getObject(int columnIndex, Map<String, Class<?>> map)
-            throws SQLException {
+    public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -472,8 +226,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public Object getObject(String columnName, Map<String, Class<?>> map)
-            throws SQLException {
+    public Object getObject(String columnName, Map<String, Class<?>> map) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -529,8 +282,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public Timestamp getTimestamp(int columnIndex, Calendar cal)
-            throws SQLException {
+    public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -538,8 +290,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public Timestamp getTimestamp(String columnName, Calendar cal)
-            throws SQLException {
+    public Timestamp getTimestamp(String columnName, Calendar cal) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -596,12 +347,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean next() throws SQLException {
-        currentRowIndex++;
-        if (rows.size() < currentRowIndex) {
-            return false;
-        }
-        currentRow = rows.get(currentRowIndex);
-        return true;
+        throw new NotImplementedException();
     }
 
     public boolean previous() throws SQLException {
@@ -636,33 +382,27 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public void updateAsciiStream(int columnIndex, InputStream x, int length)
-            throws SQLException {
+    public void updateAsciiStream(int columnIndex, InputStream x, int length) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateAsciiStream(String columnName, InputStream x, int length)
-            throws SQLException {
+    public void updateAsciiStream(String columnName, InputStream x, int length) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateBigDecimal(int columnIndex, BigDecimal x)
-            throws SQLException {
+    public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateBigDecimal(String columnName, BigDecimal x)
-            throws SQLException {
+    public void updateBigDecimal(String columnName, BigDecimal x) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateBinaryStream(int columnIndex, InputStream x, int length)
-            throws SQLException {
+    public void updateBinaryStream(int columnIndex, InputStream x, int length) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateBinaryStream(String columnName, InputStream x, int length)
-            throws SQLException {
+    public void updateBinaryStream(String columnName, InputStream x, int length) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -698,13 +438,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public void updateCharacterStream(int columnIndex, Reader x, int length)
-            throws SQLException {
+    public void updateCharacterStream(int columnIndex, Reader x, int length) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateCharacterStream(String columnName, Reader reader,
-            int length) throws SQLException {
+    public void updateCharacterStream(String columnName, Reader reader, int length) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -768,8 +506,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public void updateObject(int columnIndex, Object x, int scale)
-            throws SQLException {
+    public void updateObject(int columnIndex, Object x, int scale) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -777,8 +514,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public void updateObject(String columnName, Object x, int scale)
-            throws SQLException {
+    public void updateObject(String columnName, Object x, int scale) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -818,13 +554,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public void updateTimestamp(int columnIndex, Timestamp x)
-            throws SQLException {
+    public void updateTimestamp(int columnIndex, Timestamp x) throws SQLException {
         throw new NotImplementedException();
     }
 
-    public void updateTimestamp(String columnName, Timestamp x)
-            throws SQLException {
+    public void updateTimestamp(String columnName, Timestamp x) throws SQLException {
         throw new NotImplementedException();
     }
 
@@ -832,212 +566,285 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
-    public void execute() throws SQLException {
-        throw new NotImplementedException();
+    public int getHoldability() throws SQLException {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
-    public Connection getConnection() throws SQLException {
-        throw new NotImplementedException();
+    public Reader getNCharacterStream(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public void updateNCharacterStream(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+    public Reader getNCharacterStream(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateNCharacterStream(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public NClob getNClob(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateNCharacterStream(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public NClob getNClob(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateNCharacterStream(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public String getNString(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateCharacterStream(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+
+    public String getNString(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateCharacterStream(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public RowId getRowId(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateCharacterStream(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public RowId getRowId(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateCharacterStream(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public SQLXML getSQLXML(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateBinaryStream(String columnLabel, InputStream stream){
-        throw new NotImplementedException();
+
+    public SQLXML getSQLXML(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public void updateBinaryStream(int columnIndex, InputStream stream){
-        throw new NotImplementedException();
+
+    public boolean isClosed() throws SQLException {
+        // TODO Auto-generated method stub
+        return false;
     }
-    
-    public void updateBinaryStream(String columnLabel, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(int columnIndex, InputStream x, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateBinaryStream(int columnIndex, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(String columnLabel, InputStream x, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateRowId(String columnLabel, RowId x){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(int columnIndex, InputStream x)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateRowId(int columnIndex, RowId x){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(String columnLabel, InputStream x)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNClob(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(int columnIndex, InputStream x, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNClob(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(String columnLabel, InputStream x,
+            long length) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNClob(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(int columnIndex, InputStream x)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNClob(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(String columnLabel, InputStream x)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNClob(String columnLabel, NClob nClob){
-        throw new NotImplementedException();
+
+    public void updateBlob(int columnIndex, InputStream inputStream, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNClob(int columnIndex, NClob nClob){
-        throw new NotImplementedException();
+
+    public void updateBlob(String columnLabel, InputStream inputStream,
+            long length) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNString(String columnLabel, String nString){
-        throw new NotImplementedException();
+
+    public void updateBlob(int columnIndex, InputStream inputStream)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateNString(int columnIndex, String nString){
-        throw new NotImplementedException();
+
+    public void updateBlob(String columnLabel, InputStream inputStream)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateAsciiStream(String columnLabel, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(int columnIndex, Reader x, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateAsciiStream(int columnIndex, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(String columnLabel, Reader reader,
+            long length) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateAsciiStream(String columnLabel, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(int columnIndex, Reader x)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateAsciiStream(int columnIndex, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(String columnLabel, Reader reader)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateSQLXML(String columnLabel, SQLXML xmlObject){
-        throw new NotImplementedException();
+
+    public void updateClob(int columnIndex, Reader reader, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateSQLXML(int columnIndex, SQLXML xmlObject){
-        throw new NotImplementedException();
+
+    public void updateClob(String columnLabel, Reader reader, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateBlob(String columnLabel, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateClob(int columnIndex, Reader reader) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateBlob(int columnIndex, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateClob(String columnLabel, Reader reader)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateBlob(String columnLabel, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(int columnIndex, Reader x, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateBlob(int columnIndex, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(String columnLabel, Reader reader,
+            long length) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateClob(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(int columnIndex, Reader x)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateClob(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(String columnLabel, Reader reader)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateClob(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateNClob(int columnIndex, NClob clob) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public void updateClob(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateNClob(String columnLabel, NClob clob) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public String getNString(int columnIndex){
-        throw new NotImplementedException();
+
+    public void updateNClob(int columnIndex, Reader reader, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public String getNString(String columnLabel){
-        throw new NotImplementedException();
+
+    public void updateNClob(String columnLabel, Reader reader, long length)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public RowId getRowId(int columnIndex){
-        throw new NotImplementedException();
+
+    public void updateNClob(int columnIndex, Reader reader) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public RowId getRowId(String columnLabel){
-        throw new NotImplementedException();
+
+    public void updateNClob(String columnLabel, Reader reader)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public boolean isWrapperFor(Class<?> iface){
-        throw new NotImplementedException();
+
+    public void updateNString(int columnIndex, String string)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public Reader getNCharacterStream(int columnIndex){
-        throw new NotImplementedException();
+
+    public void updateNString(String columnLabel, String string)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public Reader getNCharacterStream(String columnLabel){
-        throw new NotImplementedException();
+
+    public void updateRowId(int columnIndex, RowId x) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public NClob getNClob(int columnIndex){
-        throw new NotImplementedException();
+
+    public void updateRowId(String columnLabel, RowId x) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public NClob getNClob(String columnLabel){
-        throw new NotImplementedException();
+
+    public void updateSQLXML(int columnIndex, SQLXML xmlObject)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public boolean isClosed(){
-        throw new NotImplementedException();
+
+    public void updateSQLXML(String columnLabel, SQLXML xmlObject)
+            throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
-    
-    public SQLXML getSQLXML(int columnIndex){
-        throw new NotImplementedException();
+
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        // TODO Auto-generated method stub
+        return false;
     }
-    
-    public SQLXML getSQLXML(String columnLabel){
-        throw new NotImplementedException();
+
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
-    public <T> T unwrap(Class<T> iface){
-        throw new NotImplementedException();
-    }
-    
-    public int getHoldability(){
-        throw new NotImplementedException();
-    }
+
 
 }

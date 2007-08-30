@@ -55,14 +55,15 @@ public class CachedRowSetImplTest extends TestCase {
         try {
             crset = (CachedRowSet) Class.forName(
                     "com.sun.rowset.CachedRowSetImpl").newInstance();
+            System.out.println("Testing RI");
         } catch (ClassNotFoundException e) {
-            System.out.println("Test Harmony");
+            System.out.println("Testing Harmony");
             crset = (CachedRowSet) Class.forName(
                     "org.apache.harmony.sql.internal.rowset.CachedRowSetImpl")
                     .newInstance();
         }
-//        crset.populate(rs);
-//        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        rs = st.executeQuery("select * from USER_INFO");
     }
 
     public void tearDown() throws SQLException {
@@ -71,32 +72,72 @@ public class CachedRowSetImplTest extends TestCase {
         }
     }
 
+    public void testColumnUpdatedInt() throws SQLException {
+        try {
+            assertFalse(crset.columnUpdated(1));
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        crset.next();
+        try {
+            crset.columnUpdated(-1);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected;
+        }
+        try {
+            crset.columnUpdated(0);
+            fail("should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected;
+        }
+        assertFalse(crset.columnUpdated(1));
+    }
+
+    public void testColumnUpdatedString() throws SQLException {
+        try {
+            assertFalse(crset.columnUpdated("ID"));
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        crset.next();
+        try {
+            assertFalse(crset.columnUpdated("Incorrect"));
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        assertFalse(crset.columnUpdated("NAME"));
+    }
+
     public void testAcceptChanges() throws SQLException {
-//        rs.next();
-//        assertEquals(1, rs.getInt(1));
-//        crset.next();
-//        assertEquals(1, crset.getInt(1));
-//        crset.updateInt(1, 3);
-//        assertEquals(3, crset.getInt(1));
-//        try {
-//            crset.acceptChanges();
-//            fail("should throw SyncProviderException");
-//        } catch (SQLException e) {
-//            // expected;
-//        }
+        // rs.next();
+        // assertEquals(1, rs.getInt(1));
+        // crset.next();
+        // assertEquals(1, crset.getInt(1));
+        // crset.updateInt(1, 3);
+        // assertEquals(3, crset.getInt(1));
+        // try {
+        // crset.acceptChanges();
+        // fail("should throw SyncProviderException");
+        // } catch (SQLException e) {
+        // // expected;
+        // }
     }
 
     public void testAcceptChangesConnection() throws SQLException {
-//        rs.next();
-//        assertEquals(1, rs.getInt(1));
-//        crset.first();
-//        assertEquals(1, crset.getInt(1));
-//        crset.updateInt(1, 3);
-//        assertEquals(3, crset.getInt(1));
-//        crset.updateRow();
-//        crset.acceptChanges(conn);
-//        rs = st.executeQuery("select * from USER_INFO");
-//        rs.next();
-//        assertEquals(3, rs.getInt(1));
+        // rs.next();
+        // assertEquals(1, rs.getInt(1));
+        // crset.first();
+        // assertEquals(1, crset.getInt(1));
+        // crset.updateInt(1, 3);
+        // assertEquals(3, crset.getInt(1));
+        // crset.updateRow();
+        // crset.acceptChanges(conn);
+        // rs = st.executeQuery("select * from USER_INFO");
+        // rs.next();
+        // assertEquals(3, rs.getInt(1));
     }
 }

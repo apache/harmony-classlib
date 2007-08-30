@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -33,12 +35,10 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
+
 import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import javax.management.ObjectInstance;
-import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 import org.apache.harmony.logging.internal.nls.Messages;
 
@@ -123,15 +123,14 @@ import org.apache.harmony.logging.internal.nls.Messages;
  */
 public class LogManager {
     /*
-     * -------------------------------------------------------------------
-     * Class variables
+     * ------------------------------------------------------------------- Class
+     * variables
      * -------------------------------------------------------------------
      */
 
     // The line separator of the underlying OS
     // Use privileged code to read the line.separator system property
-    private static final String lineSeparator =
-            getPrivilegedSystemProperty("line.separator"); //$NON-NLS-1$
+    private static final String lineSeparator = getPrivilegedSystemProperty("line.separator"); //$NON-NLS-1$
 
     // The shared logging permission
     private static final LoggingPermission perm = new LoggingPermission(
@@ -139,12 +138,13 @@ public class LogManager {
 
     // the singleton instance
     static LogManager manager;
-    
+
     /**
-     * <p>The String value of the {@link LoggingMXBean}'s ObjectName.</p>
+     * <p>
+     * The String value of the {@link LoggingMXBean}'s ObjectName.
+     * </p>
      */
-    public static final String LOGGING_MXBEAN_NAME =
-            "java.util.logging:type=Logging"; //$NON-NLS-1$
+    public static final String LOGGING_MXBEAN_NAME = "java.util.logging:type=Logging"; //$NON-NLS-1$
 
     /**
      * Get the <code>LoggingMXBean</code> instance
@@ -154,40 +154,35 @@ public class LogManager {
     public static LoggingMXBean getLoggingMXBean() {
         try {
             ObjectName loggingMXBeanName = new ObjectName(LOGGING_MXBEAN_NAME);
-            MBeanServer platformBeanServer =
-                    ManagementFactory.getPlatformMBeanServer();
+            MBeanServer platformBeanServer = ManagementFactory
+                    .getPlatformMBeanServer();
             Set loggingMXBeanSet = platformBeanServer.queryMBeans(
                     loggingMXBeanName, null);
 
             if (loggingMXBeanSet.size() != 1) {
                 // logging.21=There Can Be Only One logging MX bean.
-                throw new AssertionError(Messages.getString("logging.21"));
+                throw new AssertionError(Messages.getString("logging.21")); //$NON-NLS-1$
             }
 
             Iterator i = loggingMXBeanSet.iterator();
             ObjectInstance loggingMXBeanOI = (ObjectInstance) i.next();
             String lmxbcn = loggingMXBeanOI.getClassName();
             Class lmxbc = Class.forName(lmxbcn);
-            Method giMethod = lmxbc.getDeclaredMethod("getInstance");
+            Method giMethod = lmxbc.getDeclaredMethod("getInstance"); //$NON-NLS-1$
             giMethod.setAccessible(true);
-            LoggingMXBean lmxb = (LoggingMXBean)
-                    giMethod.invoke(null, new Object[] {});
+            LoggingMXBean lmxb = (LoggingMXBean) giMethod.invoke(null,
+                    new Object[] {});
 
             return lmxb;
         } catch (Exception e) {
-            //TODO
-            //e.printStackTrace();
+            // TODO
+            // e.printStackTrace();
         }
         // logging.22=Exception occurred while getting the logging MX bean.
         throw new AssertionError(Messages.getString("logging.22")); //$NON-NLS-1$
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Instance variables
-     * -------------------------------------------------------------------
-     */
-    //FIXME: use weak reference to avoid heap memory leak    
+    // FIXME: use weak reference to avoid heap memory leak
     private Hashtable<String, Logger> loggers;
 
     // the configuration properties
@@ -196,44 +191,38 @@ public class LogManager {
     // the property change listener
     private PropertyChangeSupport listeners;
 
-    /*
-     * -------------------------------------------------------------------
-     * Global initialization
-     * -------------------------------------------------------------------
-     */
-
     static {
-		// init LogManager singleton instance
-		AccessController.doPrivileged(new PrivilegedAction<Object>() {
-			public Object run() {
-				String className = System.getProperty(
-                        "java.util.logging.manager"); //$NON-NLS-1$
-                
-				if (null != className) {
-					manager = (LogManager) getInstanceByClass(className);
-				}
-				if (null == manager) {
-					manager = new LogManager();
-				}
+        // init LogManager singleton instance
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                String className = System
+                        .getProperty("java.util.logging.manager"); //$NON-NLS-1$
 
-				// read configuration
-				try {
-					manager.readConfiguration();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+                if (null != className) {
+                    manager = (LogManager) getInstanceByClass(className);
+                }
+                if (null == manager) {
+                    manager = new LogManager();
+                }
 
-				// if global logger has been initialized, set root as its parent
+                // read configuration
+                try {
+                    manager.readConfiguration();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // if global logger has been initialized, set root as its parent
                 Logger root = new Logger("", null); //$NON-NLS-1$
                 root.setLevel(Level.INFO);
                 Logger.global.setParent(root);
-                
+
                 manager.addLogger(root);
                 manager.addLogger(Logger.global);
                 return null;
-			}
-		});
-	}
+            }
+        });
+    }
 
     /**
      * Default constructor. This is not public because there should be only one
@@ -260,11 +249,6 @@ public class LogManager {
         });
     }
 
-    /*
-     * -------------------------------------------------------------------
-     * Methods
-     * -------------------------------------------------------------------
-     */
     /*
      * Package private utilities Returns the line separator of the underlying
      * OS.
@@ -319,7 +303,6 @@ public class LogManager {
         return true;
     }
 
-
     private void addToFamilyTree(Logger logger, String name) {
         Logger parent = null;
         // find parent
@@ -331,8 +314,8 @@ public class LogManager {
             if (parent != null) {
                 logger.internalSetParent(parent);
                 break;
-            } else if (getProperty(parentName+".level") != null || //$NON-NLS-1$
-                    getProperty(parentName+".handlers") != null) { //$NON-NLS-1$
+            } else if (getProperty(parentName + ".level") != null || //$NON-NLS-1$
+                    getProperty(parentName + ".handlers") != null) { //$NON-NLS-1$
                 parent = Logger.getLogger(parentName);
                 logger.internalSetParent(parent);
                 break;
@@ -343,7 +326,7 @@ public class LogManager {
         }
 
         // find children
-        //TODO: performance can be improved here?
+        // TODO: performance can be improved here?
         Collection<Logger> allLoggers = loggers.values();
         for (final Logger child : allLoggers) {
             Logger oldParent = child.getParent();
@@ -358,7 +341,7 @@ public class LogManager {
                     }
                 });
                 if (null != oldParent) {
-                    //-- remove from old parent as the parent has been changed
+                    // -- remove from old parent as the parent has been changed
                     oldParent.removeChild(child);
                 }
             }
@@ -406,8 +389,8 @@ public class LogManager {
     }
 
     /**
-     * Re-initialize the properties and configuration. The initialization process
-     * is same as the <code>LogManager</code> instantiation.
+     * Re-initialize the properties and configuration. The initialization
+     * process is same as the <code>LogManager</code> instantiation.
      * <p>
      * A <code>PropertyChangeEvent</code> must be fired.
      * </p>
@@ -421,19 +404,20 @@ public class LogManager {
     public void readConfiguration() throws IOException {
         checkAccess();
         // check config class
-        String configClassName = System.getProperty(
-                "java.util.logging.config.class"); //$NON-NLS-1$
-        if (null == configClassName || null == getInstanceByClass(configClassName)) {
-            // if config class failed, check config file       
-            String configFile = System.getProperty(
-                    "java.util.logging.config.file"); //$NON-NLS-1$
+        String configClassName = System
+                .getProperty("java.util.logging.config.class"); //$NON-NLS-1$
+        if (null == configClassName
+                || null == getInstanceByClass(configClassName)) {
+            // if config class failed, check config file
+            String configFile = System
+                    .getProperty("java.util.logging.config.file"); //$NON-NLS-1$
 
             if (null == configFile) {
                 // if cannot find configFile, use default logging.properties
                 configFile = new StringBuilder().append(
                         System.getProperty("java.home")).append(File.separator) //$NON-NLS-1$
                         .append("lib").append(File.separator).append( //$NON-NLS-1$
-                        "logging.properties").toString(); //$NON-NLS-1$
+                                "logging.properties").toString(); //$NON-NLS-1$
             }
 
             InputStream input = null;
@@ -468,13 +452,12 @@ public class LogManager {
             return clazz.newInstance();
         } catch (Exception e) {
             try {
-                Class<?> clazz = Thread.currentThread()
-                        .getContextClassLoader().loadClass(className);
+                Class<?> clazz = Thread.currentThread().getContextClassLoader()
+                        .loadClass(className);
                 return clazz.newInstance();
             } catch (Exception innerE) {
-                //logging.20=Loading class "{0}" failed
-                System.err.println(Messages.getString(
-                        "logging.20", className)); //$NON-NLS-1$
+                // logging.20=Loading class "{0}" failed
+                System.err.println(Messages.getString("logging.20", className)); //$NON-NLS-1$
                 System.err.println(innerE);
                 return null;
             }
@@ -487,7 +470,7 @@ public class LogManager {
             throws IOException {
         reset();
         props.load(ins);
-        
+
         // parse property "config" and apply setting
         String configs = props.getProperty("config"); //$NON-NLS-1$
         if (null != configs) {
@@ -497,19 +480,17 @@ public class LogManager {
                 getInstanceByClass(configerName);
             }
         }
-        
+
         // set levels for logger
         Collection<Logger> allLoggers = loggers.values();
-        for(Logger logger : allLoggers){
-            String property = props.getProperty(
-                    logger.getName()+".level"); //$NON-NLS-1$
-            if(null != property){
+        for (Logger logger : allLoggers) {
+            String property = props.getProperty(logger.getName() + ".level"); //$NON-NLS-1$
+            if (null != property) {
                 logger.setLevel(Level.parse(property));
             }
         }
         listeners.firePropertyChange(null, null, null);
     }
-
 
     /**
      * Re-initialize the properties and configuration from the given
@@ -547,10 +528,10 @@ public class LogManager {
         checkAccess();
         props = new Properties();
         Enumeration<String> names = getLoggerNames();
-        while(names.hasMoreElements()){
+        while (names.hasMoreElements()) {
             String name = names.nextElement();
             Logger logger = getLogger(name);
-            if(logger != null){
+            if (logger != null) {
                 logger.reset();
             }
         }
@@ -571,7 +552,7 @@ public class LogManager {
      *             not have the required permissions to perform this action
      */
     public void addPropertyChangeListener(PropertyChangeListener l) {
-        if(l == null){
+        if (l == null) {
             throw new NullPointerException();
         }
         checkAccess();

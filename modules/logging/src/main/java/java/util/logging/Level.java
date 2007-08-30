@@ -26,8 +26,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.harmony.logging.internal.nls.Messages;
 import org.apache.harmony.kernel.vm.VM;
+import org.apache.harmony.logging.internal.nls.Messages;
 
 /**
  * <code>Level</code> objects are used to indicate the level of logging. There
@@ -40,7 +40,6 @@ import org.apache.harmony.kernel.vm.VM;
  * ALL and OFF. ALL indicates logging all messages, and OFF indicates logging no
  * messages.
  * </p>
- * 
  */
 public class Level implements Serializable {
 
@@ -129,8 +128,8 @@ public class Level implements Serializable {
 
             if (isNameAnInt) {
                 /*
-                 * Loop through levels a second time, so that the
-                 * returned instance will be passed on the order of construction.
+                 * Loop through levels a second time, so that the returned
+                 * instance will be passed on the order of construction.
                  */
                 for (Level level : levels) {
                     if (nameAsInt == level.intValue()) {
@@ -142,7 +141,8 @@ public class Level implements Serializable {
 
         if (!isNameAnInt) {
             // logging.1D=Cannot parse this name: {0}
-            throw new IllegalArgumentException(Messages.getString("logging.1D", name)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "logging.1D", name)); //$NON-NLS-1$
         }
 
         return new Level(name, nameAsInt);
@@ -179,9 +179,12 @@ public class Level implements Serializable {
      * Constructs an instance of <code>Level</code> taking the supplied name
      * and level value.
      * 
-     * @param name name of the level
-     * @param level an integer value indicating the level
-     * @throws NullPointerException if <code>name</code> is <code>null</code>.
+     * @param name
+     *            name of the level
+     * @param level
+     *            an integer value indicating the level
+     * @throws NullPointerException
+     *             if <code>name</code> is <code>null</code>.
      */
     protected Level(String name, int level) {
         this(name, level, null);
@@ -191,10 +194,14 @@ public class Level implements Serializable {
      * Constructs an instance of <code>Level</code> taking the supplied name
      * and level value.
      * 
-     * @param name name of the level
-     * @param level an integer value indicating the level
-     * @param resourceBundleName the name of the resource bundle to use
-     * @throws NullPointerException if <code>name</code> is <code>null</code>.
+     * @param name
+     *            name of the level
+     * @param level
+     *            an integer value indicating the level
+     * @param resourceBundleName
+     *            the name of the resource bundle to use
+     * @throws NullPointerException
+     *             if <code>name</code> is <code>null</code>.
      */
     protected Level(String name, int level, String resourceBundleName) {
         if (name == null) {
@@ -206,8 +213,8 @@ public class Level implements Serializable {
         this.resourceBundleName = resourceBundleName;
         if (resourceBundleName != null) {
             try {
-                rb = ResourceBundle.getBundle(resourceBundleName, 
-                		Locale.getDefault(), VM.callerClassLoader());
+                rb = ResourceBundle.getBundle(resourceBundleName, Locale
+                        .getDefault(), VM.callerClassLoader());
             } catch (MissingResourceException e) {
                 rb = null;
             }
@@ -247,10 +254,8 @@ public class Level implements Serializable {
     }
 
     /**
-     * <p>
      * Serialization helper method to maintain singletons and add any new
      * levels.
-     * </p>
      * 
      * @return The resolved instance.
      */
@@ -260,7 +265,7 @@ public class Level implements Serializable {
                 if (value != level.value) {
                     continue;
                 }
-                if (!name.equals(name)) {
+                if (!name.equals(level.name)) {
                     continue;
                 }
                 if (resourceBundleName == level.resourceBundleName) {
@@ -277,12 +282,17 @@ public class Level implements Serializable {
     }
 
     /**
-     * <p>Serialization helper to setup transient resource bundle instance.</p>
-     * @param in The input stream to read the instance data from.
-     * @throws IOException if an IO error occurs.
-     * @throws ClassNotFoundException if a class is not found. 
+     * Serialization helper to setup transient resource bundle instance.
+     * 
+     * @param in
+     *            The input stream to read the instance data from.
+     * @throws IOException
+     *             if an IO error occurs.
+     * @throws ClassNotFoundException
+     *             if a class is not found.
      */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException {
         in.defaultReadObject();
         if (resourceBundleName != null) {
             try {
@@ -316,7 +326,8 @@ public class Level implements Serializable {
      * Compares two <code>Level</code> objects for equality. They are
      * considered to be equal if they have the same value.
      * 
-     * @param o the other object to be compared with
+     * @param o
+     *            the other object to be compared with
      * @return <code>true</code> if this object equals to the supplied object,
      *         otherwise <code>false</code>
      */
