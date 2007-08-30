@@ -97,7 +97,7 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-really-extract-mx4j,-really-extract-dejavu-fonts" />
+         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -106,13 +106,16 @@
         <uptodate property="mx4j.uptodate"
                   srcfile="${mx4j.zip}"
                   targetfile="${mx4j.jar}" />
+        <uptodate property="xerces.uptodate"
+                  srcfile="${xerces.zip}"
+                  targetfile="${xerces.dir}/xercesImpl.jar" />
     </target>
 
-    <target name="-really-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
+    <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
         <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
     </target>
 
-    <target name="-really-extract-mx4j" unless="mx4j.uptodate">
+    <target name="-extract-mx4j" unless="mx4j.uptodate">
 
         <!-- This doesn't work for me since my ant doesn't support
              mapper in unzip.
@@ -134,6 +137,18 @@
             </fileset>
         </copy>
         <delete dir="${mx4j.dir}.tmp" />
+    </target>
+
+    <target name="-extract-xerces" unless="xerces.uptodate">
+        <unzip src="${xerces.zip}" dest="${xerces.dir}.tmp" />
+        <copy todir="${xerces.dir}" flatten="yes">
+            <fileset dir="${xerces.dir}.tmp/xerces-2_9_0">
+                <include name="resolver.jar" />
+		<include name="xercesImpl.jar" />
+		<include name="xml-apis.jar" />
+            </fileset>
+        </copy>
+        <delete dir="${xerces.dir}.tmp" />
     </target>
 
     <!-- 
