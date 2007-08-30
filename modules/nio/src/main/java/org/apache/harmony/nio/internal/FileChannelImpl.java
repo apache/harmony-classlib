@@ -65,7 +65,7 @@ public abstract class FileChannelImpl extends FileChannel {
 	// The object that will track all outstanding locks on this channel.
 	private final LockManager lockManager = new LockManager();
 
-    private class RepositioningLock {}
+    static private class RepositioningLock {}
 	private final Object repositioningLock = new RepositioningLock();
 
 	private final Object stream;
