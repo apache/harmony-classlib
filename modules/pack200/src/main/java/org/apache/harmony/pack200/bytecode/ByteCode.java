@@ -289,10 +289,7 @@ public class ByteCode extends ClassFileEntry {
 	protected void doWrite(DataOutputStream dos) throws IOException {
 		// TODO operands?
 		for (int i = 0; i < rewrite.length; i++) {
-			if (opcode == 231 && i == 2)
-				dos.writeByte(8);
-			else
-				dos.writeByte(rewrite[i]);
+			dos.writeByte(rewrite[i]);
 		}
 	}
 
@@ -318,11 +315,7 @@ public class ByteCode extends ClassFileEntry {
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
-		if (opcode == 231) // TODO HACK
-			return new ClassFileEntry[] { new CPMethodRef("java/lang/Object",
-					"<init>:()V") };
-		else
-			return nested;
+		return nested;
 	}
 
 	public int getOpcode() {
@@ -334,6 +327,11 @@ public class ByteCode extends ClassFileEntry {
 		int result = 1;
 		result = prime * result + opcode;
 		return result;
+	}
+
+	protected void resolve(ClassConstantPool pool) {
+		// TODO Auto-generated method stub
+		super.resolve(pool);
 	}
 
 	public String toString() {

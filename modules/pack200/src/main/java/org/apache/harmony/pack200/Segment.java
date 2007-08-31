@@ -20,24 +20,27 @@ package org.apache.harmony.pack200;
 // NOTE: Do not extract strings as messages; this code is still a
 // work-in-progress
 // NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.harmony.pack200.bytecode.Attribute;
+import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPField;
 import org.apache.harmony.pack200.bytecode.CPMethod;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ClassFile;
 import org.apache.harmony.pack200.bytecode.ClassFileEntry;
+import org.apache.harmony.pack200.bytecode.CodeAttribute;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
@@ -147,15 +150,17 @@ public class Segment {
 			Pack200Exception {
 		Segment segment = new Segment();
 		// See if file is GZip compressed
-		if (in.markSupported()) {
-			in.mark(2);
-			if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
-				in.reset();
-				in = new GZIPInputStream(in);
-			} else {
-				in.reset();
-			}
-
+		if (!in.markSupported()) {
+			in = new BufferedInputStream(in);
+			if (!in.markSupported())
+				throw new IllegalStateException();
+		}
+		in.mark(2);
+		if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
+			in.reset();
+			in = new BufferedInputStream(new GZIPInputStream(in));
+		} else {
+			in.reset();
 		}
 		segment.parseSegment(in);
 		return segment;
@@ -227,6 +232,12 @@ public class Segment {
 	private String[] classSuper;
 
 	private String[] classThis;
+
+	private int[] codeHandlerCount;
+
+	private int[] codeMaxNALocals;
+
+	private int[] codeMaxStack;
 
 	private String[] cpClass;
 
@@ -318,6 +329,8 @@ public class Segment {
 
 	private ArrayList[][] methodAttributes;
 
+	private byte[][][] methodByteCodePacked;
+
 	private String[][] methodDescr;
 
 	private ExceptionsAttribute[][] methodExceptions;
@@ -332,7 +345,7 @@ public class Segment {
 
 	private int segmentsRemaining;
 
-	private ClassFile buildClassFile(int classNum) {
+	private ClassFile buildClassFile(int classNum) throws Pack200Exception {
 		ClassFile classFile = new ClassFile();
 		classFile.major = defaultClassMajorVersion; // TODO If
 		// classVersionMajor[] use
@@ -347,9 +360,16 @@ public class Segment {
 		int i = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then
 		// -1+1=0, so str.substring(0)
 		// == str
-		String fileName = fullName.substring(i) + ".java";
-		classFile.attributes = new Attribute[] { (Attribute) cp
-				.add(new SourceFileAttribute(fileName)) };
+		AttributeLayout SOURCE_FILE = attributeDefinitionMap
+				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
+						AttributeLayout.CONTEXT_CLASS);
+		if (SOURCE_FILE.matches(classFlags[classNum])) {
+			String fileName = fullName.substring(i) + ".java";
+			classFile.attributes = new Attribute[] { (Attribute) cp
+					.add(new SourceFileAttribute(fileName)) };
+		} else {
+			classFile.attributes = new Attribute[] {};
+		}
 		// this/superclass
 		ClassFileEntry cfThis = cp.add(new CPClass(fullName));
 		ClassFileEntry cfSuper = cp.add(new CPClass(classSuper[classNum]));
@@ -467,22 +487,21 @@ public class Segment {
 	 */
 	private long[] decodeBandLong(String name, InputStream in, BHSDCodec codec,
 			int count) throws IOException, Pack200Exception {
+		in.mark(count * codec.getB());
 		long[] result = codec.decode(count, in);
-		if (result.length > 0) {
+		if (result.length > 0 && !codec.equals(Codec.BYTE1)) {
 			int first = (int) result[0];
 			if (codec.isSigned() && first >= -256 && first <= -1) {
-				// TODO Well, switch codecs then ...
 				Codec weShouldHaveUsed = CodecEncoding.getCodec(-1 - first,
 						getBandHeadersInputStream(), codec);
-				throw new Error("Bugger. We should have switched codec to "
-						+ weShouldHaveUsed);
+				in.reset();
+				result = weShouldHaveUsed.decode(count, in);
 			} else if (!codec.isSigned() && first >= codec.getL()
 					&& first <= codec.getL() + 255) {
 				Codec weShouldHaveUsed = CodecEncoding.getCodec(first
 						- codec.getL(), getBandHeadersInputStream(), codec);
-				// TODO Well, switch codecs then ...
-				throw new Error("Bugger. We should have switched codec to "
-						+ weShouldHaveUsed);
+				in.reset();
+				result = weShouldHaveUsed.decode(count, in);
 			}
 		}
 		// TODO Remove debugging code
@@ -653,6 +672,7 @@ public class Segment {
 			for (int j = 0; j < methodFlags[i].length; j++) {
 				long flag = methodFlags[i][j];
 				if (layout.matches(flag)) {
+					// TODO This should be a decoeBand ...
 					numExceptions[i][j] = (int) codec.decode(in);
 				}
 			}
@@ -662,15 +682,17 @@ public class Segment {
 			for (int j = 0; j < methodFlags[i].length; j++) {
 				long flag = methodFlags[i][j];
 				int n = numExceptions[i][j];
-				CPClass[] exceptions = new CPClass[n];
-				if (layout.matches(flag)) {
-					for (int k = 0; k < n; k++) {
-						long result = codec.decode(in);
-						exceptions[k] = new CPClass(cpClass[(int) result]);
+				if (n > 0) {
+					CPClass[] exceptions = new CPClass[n];
+					if (layout.matches(flag)) {
+						for (int k = 0; k < n; k++) {
+							long result = codec.decode(in);
+							exceptions[k] = new CPClass(cpClass[(int) result]);
+						}
 					}
+					methodExceptions[i][j] = new ExceptionsAttribute(exceptions);
+					methodAttributes[i][j].add(methodExceptions[i][j]);
 				}
-				methodExceptions[i][j] = new ExceptionsAttribute(exceptions);
-				methodAttributes[i][j].add(methodExceptions[i][j]);
 			}
 		}
 	}
@@ -695,17 +717,146 @@ public class Segment {
 		debug("Parsing unknown attributes for " + name);
 		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
 				name, context);
-		for (int i = 0; i < flags.length; i++) {
-			for (int j = 0; j < flags[i].length; j++) {
-				if (layout.matches(flags[i][j]))
-					throw new Error("We've got data for " + name
-							+ " and we don't know what to do with it (yet)");
-			}
-		}
+		int count = SegmentUtils.countMatches(flags, layout);
+		if (count > 0)
+			throw new Error("We've got data for " + name
+					+ " and we don't know what to do with it (yet)");
 	}
 
-	private void parseBcBands(InputStream in) {
-		debug("Unimplemented bc_bands");
+	private void parseBcBands(InputStream in) throws IOException,
+			Pack200Exception {
+		int bcStringRefCount = 0;
+		int bcInitRefCount = 0;
+		int bcFieldRefCount = 0;
+		int bcThisFieldCount = 0;
+		int bcMethodRefCount = 0;
+		int bcIMethodRefCount = 0;
+
+		AttributeLayout abstractModifier = attributeDefinitionMap
+				.getAttributeLayout(AttributeLayout.ACC_ABSTRACT,
+						AttributeLayout.CONTEXT_METHOD);
+		AttributeLayout nativeModifier = attributeDefinitionMap
+				.getAttributeLayout(AttributeLayout.ACC_NATIVE,
+						AttributeLayout.CONTEXT_METHOD);
+		AttributeLayout staticModifier = attributeDefinitionMap
+				.getAttributeLayout(AttributeLayout.ACC_STATIC,
+						AttributeLayout.CONTEXT_METHOD);
+		methodByteCodePacked = new byte[classCount][][];
+		int bcParsed = 0;
+		for (int c = 0; c < classCount; c++) {
+			int numberOfMethods = methodFlags[c].length;
+			methodByteCodePacked[c] = new byte[numberOfMethods][];
+			for (int m = 0; m < numberOfMethods; m++) {
+				long methodFlag = methodFlags[c][m];
+				if (!abstractModifier.matches(methodFlag)
+						&& !nativeModifier.matches(methodFlag)) {
+					ByteArrayOutputStream codeBytes = new ByteArrayOutputStream();
+					byte code;
+					while ((code = (byte) (0xff & in.read())) != -1)
+						codeBytes.write(code);
+					methodByteCodePacked[c][m] = codeBytes.toByteArray();
+					bcParsed += methodByteCodePacked[c][m].length;
+					for (int i = 0; i < methodByteCodePacked[c][m].length; i++) {
+						int codePacked = 0xff & methodByteCodePacked[c][m][i];
+						// TODO a lot of this needs to be encapsulated in the
+						// place that
+						// calculates what the arguments are, since (a) it will
+						// need
+						// to know where to get them, and (b) what to do with
+						// them
+						// once they've been gotten. But that's for another
+						// time.
+						switch (codePacked) {
+						case 18: // (a)ldc
+							bcStringRefCount++;
+							break;
+						case 178: // getstatic
+						case 179: // putstatic
+						case 180: // getfield
+						case 181: // putfield
+							bcFieldRefCount++;
+							break;
+						case 182: // invokevirtual
+						case 183: // invokespecial
+						case 184: // invokestatic
+							bcMethodRefCount++;
+							break;
+						case 185: // invokeinterface
+							bcIMethodRefCount++;
+							break;
+						case 202: // getstatic_this
+						case 203: // putstatic_this
+						case 204: // getfield_this
+						case 205: // putfield_this
+							bcThisFieldCount++;
+							break;
+						case 231: // invoke_special_init
+							bcInitRefCount++;
+							break;
+
+						default: // unhandled specifically at this stage
+							debug("Found unhandled "
+									+ ByteCode.getByteCode(codePacked));
+						}
+					}
+				}
+			}
+		}
+		// other bytecode bands
+		debug("Parsed *bc_codes (" + bcParsed + ")");
+		debug("unimplemented bc_case_count");
+		debug("unimplemented bc_case_value");
+		debug("unimplemented bc_byte");
+		debug("unimplemented bc_short");
+		debug("unimplemented bc_local");
+		debug("unimplemented bc_label");
+		debug("unimplemented bc_intref");
+		debug("unimplemented bc_floatref");
+		debug("unimplemented bc_longref");
+		debug("unimplemented bc_doubleref");
+		int[] bcStringRef = decodeBandInt("bc_stringref", in, Codec.DELTA5,
+				bcStringRefCount);
+		debug("unimplemented bc_classref");
+		int[] bcFieldRef = decodeBandInt("bc_fieldref", in, Codec.DELTA5,
+				bcFieldRefCount);
+		int[] bcMethodRef = decodeBandInt("bc_methodref", in, Codec.UNSIGNED5,
+				bcMethodRefCount);
+		int[] bcIMethodRef = decodeBandInt("bc_imethodref", in, Codec.DELTA5,
+				bcIMethodRefCount);
+		int[] bcThisField = decodeBandInt("bc_thisfield", in, Codec.UNSIGNED5,
+				bcThisFieldCount);
+		debug("unimplemented bc_superfield");
+		debug("unimplemented bc_thismethod");
+		debug("unimplemented bc_supermethod");
+		debug("unimplemented bc_initref");
+		int[] bcInitRef = decodeBandInt("bc_initref", in, Codec.UNSIGNED5,
+				bcInitRefCount);
+		debug("unimplemented bc_escref");
+		debug("unimplemented bc_escrefsize");
+		debug("unimplemented bc_escsize");
+		debug("unimplemented bc_escbyte");
+		int i = 0;
+		for (int c = 0; c < classCount; c++) {
+			int numberOfMethods = methodFlags[c].length;
+			for (int m = 0; m < numberOfMethods; m++) {
+				long methodFlag = methodFlags[c][m];
+				if (!abstractModifier.matches(methodFlag)
+						&& !nativeModifier.matches(methodFlag)) {
+					int maxStack = codeMaxStack[i];
+					int maxLocal = codeMaxNALocals[i];
+					if (!staticModifier.matches(methodFlag))
+						maxLocal++; // one for 'this' parameter
+					maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
+					// TODO Move creation of code attribute until after constant
+					// pool resolved
+					CodeAttribute attr = new CodeAttribute(maxStack, maxLocal,
+							methodByteCodePacked[c][m]);
+					methodAttributes[c][m].add(attr);
+					i++;
+				}
+			}
+		}
+
 	}
 
 	private void parseClassAttrBands(InputStream in) throws IOException,
@@ -740,7 +891,7 @@ public class Segment {
 		debug("unimplemented class_EnclosingMethod_RC");
 		debug("unimplemented class_EnclosingMethod_RDN");
 		debug("unimplemented class_Signature_RS");
-		parseMetadataBands("class");
+		parseMetadataBands(AttributeLayout.CONTEXT_CLASS);
 		debug("unimplemented class_InnerClasses_N");
 		debug("unimplemented class_InnerClasses_RC");
 		debug("unimplemented class_InnerClasses_F");
@@ -759,10 +910,8 @@ public class Segment {
 		classInterfaces = new String[classCount][];
 		int[] classInterfaceLengths = decodeBandInt("class_interface_count",
 				in, Codec.DELTA5, classCount);
-		// for (int i = 0; i < classCount; i++) {
 		classInterfaces = parseReferences("class_interface", in, Codec.DELTA5,
 				classCount, classInterfaceLengths, cpClass);
-		// }
 		classFieldCount = decodeBandInt("class_field_count", in, Codec.DELTA5,
 				classCount);
 		classMethodCount = decodeBandInt("class_method_count", in,
@@ -803,23 +952,55 @@ public class Segment {
 		}
 	}
 
-	private void parseCodeBands(InputStream in) throws Pack200Exception {
-		// look through each method
-		int codeBands = 0;
+	private void parseCodeBands(InputStream in) throws Pack200Exception,
+			IOException {
 		AttributeLayout layout = attributeDefinitionMap.getAttributeLayout(
 				AttributeLayout.ATTRIBUTE_CODE, AttributeLayout.CONTEXT_METHOD);
 
-		for (int i = 0; i < classCount; i++) {
-			for (int j = 0; j < methodFlags[i].length; j++) {
-				long flag = methodFlags[i][j];
-				if (layout.matches(flag))
-					codeBands++;
+		int codeBands = SegmentUtils.countMatches(methodFlags, layout);
+		int[] codeHeaders = decodeBandInt("code_headers", in, Codec.BYTE1,
+				codeBands);
+		int codeSpecialHeader = 0;
+		for (int i = 0; i < codeBands; i++) {
+			if (codeHeaders[i] == 0)
+				codeSpecialHeader++;
+		}
+		int[] codeMaxStackSpecials = decodeBandInt("code_max_stack", in,
+				Codec.UNSIGNED5, codeSpecialHeader);
+		int[] codeMaxNALocalsSpecials = decodeBandInt("code_max_na_locals", in,
+				Codec.UNSIGNED5, codeSpecialHeader);
+		int[] codeHandlerCountSpecials = decodeBandInt("code_handler_count",
+				in, Codec.UNSIGNED5, codeSpecialHeader);
+
+		codeMaxStack = new int[codeBands];
+		codeMaxNALocals = new int[codeBands];
+		codeHandlerCount = new int[codeBands];
+		int special = 0;
+		for (int i = 0; i < codeBands; i++) {
+			int header = 0xff & codeHeaders[i];
+			if (header < 0) {
+				throw new IllegalStateException("Shouldn't get here");
+			} else if (header == 0) {
+				codeMaxStack[i] = codeMaxStackSpecials[special];
+				codeMaxNALocals[i] = codeMaxNALocalsSpecials[special];
+				codeHandlerCount[i] = codeHandlerCountSpecials[special];
+				special++;
+			} else if (header <= 144) {
+				codeMaxStack[i] = (header - 1) % 12;
+				codeMaxNALocals[i] = (header - 1) / 12;
+				codeHandlerCount[i] = 0;
+			} else if (header <= 208) {
+				codeMaxStack[i] = (header - 145) % 8;
+				codeMaxNALocals[i] = (header - 145) / 8;
+				codeHandlerCount[i] = 1;
+			} else if (header <= 255) {
+				codeMaxStack[i] = (header - 209) % 7;
+				codeMaxNALocals[i] = (header - 209) / 7;
+				codeHandlerCount[i] = 2;
+			} else {
+				throw new IllegalStateException("Shouldn't get here either");
 			}
 		}
-		if (codeBands > 0)
-			throw new Error(
-					"Can't handle non-abstract, non-native methods/initializers at the moment (found "
-							+ codeBands + " code bands)");
 		debug("unimplemented code_headers");
 		debug("unimplemented code_max_stack");
 		debug("unimplemented code_max_na_locals");
@@ -1176,7 +1357,7 @@ public class Segment {
 			}
 		}
 		debug("unimplemented field_Signature_RS");
-		parseMetadataBands("field");
+		parseMetadataBands(AttributeLayout.CONTEXT_FIELD);
 	}
 
 	/**
@@ -1197,15 +1378,15 @@ public class Segment {
 	 */
 	private void parseFileBands(InputStream in) throws IOException,
 			Pack200Exception {
-		if (false && System.getProperty("debug.pack200") != null) {
-			// TODO HACK
-			fileSize = new long[numberOfFiles];
-			fileModtime = new long[numberOfFiles];
-			fileOptions = new long[numberOfFiles];
-			fileName = new String[numberOfFiles];
-			Arrays.fill(fileName, "");
-			return;
-		}
+		// if (false && System.getProperty("debug.pack200") != null) {
+		// // TODO HACK
+		// fileSize = new long[numberOfFiles];
+		// fileModtime = new long[numberOfFiles];
+		// fileOptions = new long[numberOfFiles];
+		// fileName = new String[numberOfFiles];
+		// Arrays.fill(fileName, "");
+		// return;
+		// }
 		long last;
 		fileName = parseReferences("file_name", in, Codec.UNSIGNED5,
 				numberOfFiles, cpUTF8);
@@ -1298,39 +1479,49 @@ public class Segment {
 				cpUTF8);
 	}
 
-	private void parseMetadataBands(String unit) throws Pack200Exception {
+	private void parseMetadataBands(int context) throws Pack200Exception {
 		String[] RxA;
-		if ("method".equals(unit)) {
+		if (AttributeLayout.CONTEXT_METHOD == context) {
 			RxA = new String[] { "RVA", "RIA", "RVPA", "RIPA", "AD" };
-		} else if ("field".equals(unit) || "class".equals(unit)) {
+		} else if (AttributeLayout.CONTEXT_FIELD == context
+				|| AttributeLayout.CONTEXT_CLASS == context) {
 			RxA = new String[] { "RVA", "RIA" };
 		} else {
-			throw new Pack200Exception("Unknown type of metadata unit " + unit);
+			throw new Pack200Exception("Unknown type of metadata unit "
+					+ context);
 		}
+		// AttributeLayout layout =
+		// map.get(RuntimeVisibleAnnotations,class/field/method as int)
+		// foreachheader ...
+		// if layout.matches(header[n] or whatever)
+		String contextName = (AttributeLayout.CONTEXT_METHOD == context ? "method"
+				: (AttributeLayout.CONTEXT_FIELD == context ? "field"
+						: (AttributeLayout.CONTEXT_CLASS == context ? "class"
+								: "unkowon")));
 		for (int i = 0; i < RxA.length; i++) {
 			String rxa = RxA[i];
 			if (rxa.indexOf("P") >= 0) {
-				debug("unimplemented " + unit + "_" + rxa + "_param_NB");
+				debug("unimplemented " + contextName + "_" + rxa + "_param_NB");
 			}
 			if (!rxa.equals("AD")) {
-				debug("unimplemented " + unit + "_" + rxa + "_anno_N");
-				debug("unimplemented " + unit + "_" + rxa + "_type_RS");
-				debug("unimplemented " + unit + "_" + rxa + "_pair_N");
-				debug("unimplemented " + unit + "_" + rxa + "_name_RU");
+				debug("unimplemented " + contextName + "_" + rxa + "_anno_N");
+				debug("unimplemented " + contextName + "_" + rxa + "_type_RS");
+				debug("unimplemented " + contextName + "_" + rxa + "_pair_N");
+				debug("unimplemented " + contextName + "_" + rxa + "_name_RU");
 			}
-			debug("unimplemented " + unit + "_" + rxa + "_T");
-			debug("unimplemented " + unit + "_" + rxa + "_caseI_KI");
-			debug("unimplemented " + unit + "_" + rxa + "_caseD_KD");
-			debug("unimplemented " + unit + "_" + rxa + "_caseF_KF");
-			debug("unimplemented " + unit + "_" + rxa + "_caseJ_KJ");
-			debug("unimplemented " + unit + "_" + rxa + "_casec_RS");
-			debug("unimplemented " + unit + "_" + rxa + "_caseet_RS");
-			debug("unimplemented " + unit + "_" + rxa + "_caseec_RU");
-			debug("unimplemented " + unit + "_" + rxa + "_cases_RU");
-			debug("unimplemented " + unit + "_" + rxa + "_casearray_N");
-			debug("unimplemented " + unit + "_" + rxa + "_nesttype_RS");
-			debug("unimplemented " + unit + "_" + rxa + "_nestpair_N");
-			debug("unimplemented " + unit + "_" + rxa + "_nestname_RU");
+			debug("unimplemented " + contextName + "_" + rxa + "_T");
+			debug("unimplemented " + contextName + "_" + rxa + "_caseI_KI");
+			debug("unimplemented " + contextName + "_" + rxa + "_caseD_KD");
+			debug("unimplemented " + contextName + "_" + rxa + "_caseF_KF");
+			debug("unimplemented " + contextName + "_" + rxa + "_caseJ_KJ");
+			debug("unimplemented " + contextName + "_" + rxa + "_casec_RS");
+			debug("unimplemented " + contextName + "_" + rxa + "_caseet_RS");
+			debug("unimplemented " + contextName + "_" + rxa + "_caseec_RU");
+			debug("unimplemented " + contextName + "_" + rxa + "_cases_RU");
+			debug("unimplemented " + contextName + "_" + rxa + "_casearray_N");
+			debug("unimplemented " + contextName + "_" + rxa + "_nesttype_RS");
+			debug("unimplemented " + contextName + "_" + rxa + "_nestpair_N");
+			debug("unimplemented " + contextName + "_" + rxa + "_nestname_RU");
 		}
 	}
 
@@ -1363,7 +1554,7 @@ public class Segment {
 		}
 		parseAttributeMethodExceptions(in);
 		parseAttributeMethodSignature(in);
-		parseMetadataBands("method");
+		parseMetadataBands(AttributeLayout.CONTEXT_METHOD);
 	}
 
 	/**
@@ -1669,6 +1860,24 @@ public class Segment {
 		return archiveMajor + archiveMinor + cpLong.hashCode()
 				+ icName.hashCode() + icOuterClass.hashCode()
 				+ icThisClass.hashCode();
+	}
+
+	/**
+	 * Unpacks a packed stream (either .pack. or .pack.gz) into a corresponding
+	 * JarOuputStream.
+	 * 
+	 * @throws Pack200Exception
+	 *             if there is a problem unpacking
+	 * @throws IOException
+	 *             if there is a problem with I/O during unpacking
+	 */
+	public void unpack(InputStream in, JarOutputStream out) throws IOException,
+			Pack200Exception {
+		if (!in.markSupported())
+			in = new BufferedInputStream(in);
+		// TODO Can handle multiple concatenated streams, so should deal with
+		// that possibility
+		parse(in).unpack(in, out);
 	}
 
 	/**
