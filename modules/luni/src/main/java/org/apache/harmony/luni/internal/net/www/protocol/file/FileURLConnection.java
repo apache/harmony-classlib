@@ -132,10 +132,20 @@ public class FileURLConnection extends URLConnection {
             return "text/html"; //$NON-NLS-1$
         }
         String result = guessContentTypeFromName(url.getFile());
-        if (result == null) {
-            return MimeTable.UNKNOWN;
+        if (result != null) {
+            return result;
         }
-        return result;
+
+        try {
+            result = guessContentTypeFromStream(is);
+        } catch (IOException e) {
+            // Ignore
+        }
+        if (result != null) {
+            return result;
+        }
+
+        return MimeTable.UNKNOWN;
     }
 
     /**
