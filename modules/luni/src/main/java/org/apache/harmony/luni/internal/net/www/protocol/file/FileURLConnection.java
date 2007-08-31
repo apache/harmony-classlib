@@ -129,7 +129,7 @@ public class FileURLConnection extends URLConnection {
             return MimeTable.UNKNOWN;
         }
         if (isDir) {
-            return "text/html"; //$NON-NLS-1$
+            return "text/plain"; //$NON-NLS-1$
         }
         String result = guessContentTypeFromName(url.getFile());
         if (result != null) {
