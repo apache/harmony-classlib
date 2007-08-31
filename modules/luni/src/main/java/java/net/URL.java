@@ -259,8 +259,18 @@ public final class URL implements java.io.Serializable {
                 // According to RFC 2396 scheme part should match
                 // the following expression:
                 // alpha *( alpha | digit | "+" | "-" | "." )
-                if (!protocol.matches("\\A\\p{Alpha}[\\p{Alnum}+-.]*\\z") || //$NON-NLS-1$
-                        protocol.indexOf('/') >= 0) {
+                char c = protocol.charAt(0);
+                boolean valid = ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+                for (int i = 1; valid && (i < protocol.length()); i++) {
+                    c = protocol.charAt(i);
+                    valid = ('a' <= c && c <= 'z') ||
+                            ('A' <= c && c <= 'Z') ||
+                            ('0' <= c && c <= '9') ||
+                            (c == '+') ||
+                            (c == '-') ||
+                            (c == '.');
+                }
+                if (!valid) {
                     protocol = null;
                     index = -1;
                 } else {
