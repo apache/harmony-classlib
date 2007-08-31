@@ -18,6 +18,7 @@
 package tests.api.java.net;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilePermission;
@@ -887,28 +888,76 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		assertTrue("getUseCaches should have returned true", uc.getUseCaches());
 	}
 
-	/**
-	 * @tests java.net.URLConnection#guessContentTypeFromStream(java.io.InputStream)
-	 */
-	public void test_guessContentTypeFromStreamLjava_io_InputStream() throws IOException {
-        InputStream in = uc.getInputStream();
-        byte[] bytes = new byte[in.available()];
+    private byte[] toBOMBytes(String text, String enc) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        in.read(bytes, 0, bytes.length);
-        in.close();
-        // RI fails and it's a non-bug difference.
-        assertEquals("Should have returned text/html", "text/html",
-                URLConnection
-                        .guessContentTypeFromStream(new ByteArrayInputStream(
-                                bytes)));
+        if (enc.equals("UTF-8")) bos.write(new byte[] {(byte)0xEF, (byte)0xBB, (byte)0xBF});
+        if (enc.equals("UTF-16BE")) bos.write(new byte[] {(byte)0xFE, (byte)0xFF});
+        if (enc.equals("UTF-16LE")) bos.write(new byte[] {(byte)0xFF, (byte)0xFE});
+        if (enc.equals("UTF-32BE")) bos.write(new byte[] {(byte)0x00, (byte)0x00, (byte)0xFE, (byte)0xFF});
+        if (enc.equals("UTF-32LE")) bos.write(new byte[] {(byte)0xFF, (byte)0xFE, (byte)0x00, (byte)0x00});
 
-        try {
+        bos.write(text.getBytes(enc));
+        return bos.toByteArray();
+    }
+    
+    /**
+     * @tests java.net.URLConnection#guessContentTypeFromStream(java.io.InputStream)
+     */
+    public void test_guessContentTypeFromStreamLjava_io_InputStream() throws IOException {
+        String[] headers = new String[] {
+                "<html>",
+                "<head>",
+                " <head ",
+                "<body",
+                "<BODY ",
+                "<!DOCTYPE html",
+                "<?xml "
+        };
+        String[] expected = new String[] {
+                "text/html",
+                "text/html",
+                "text/html",
+                "text/html",
+                "text/html",
+                "text/html",
+                "application/xml"
+        };
+
+        String[] encodings = new String[] {"ASCII", "UTF-8", "UTF-16BE", "UTF-16LE", "UTF-32BE", "UTF-32LE"};
+        for (int i = 0; i < headers.length; i++) {
+            for (String enc : encodings) {
+                InputStream is = new ByteArrayInputStream(toBOMBytes(headers[i], enc));
+                String mime = URLConnection.guessContentTypeFromStream(is);
+                assertEquals("checking " + headers[i] + " with " + enc,
+                        expected[i], mime);
+            }
+        }
+
+        // Try simple case
+         try {
             URLConnection.guessContentTypeFromStream(null);
             fail("should throw NullPointerException");
         } catch (NullPointerException e){
             // expected
         }
+
+        // Test magic bytes
+        byte[][] bytes = new byte[][] {
+                { 'P', 'K' },
+                { 'G', 'I' }
+        };
+        expected = new String[] {
+                "application/zip",
+                "image/gif"
+        };
+
+        for (int i = 0; i < bytes.length; i++) {
+            InputStream is = new ByteArrayInputStream(bytes[i]);
+            assertEquals(expected[i], URLConnection.guessContentTypeFromStream(is));
+        }
     }
+
 
 	/**
 	 * @tests java.net.URLConnection#setAllowUserInteraction(boolean)
