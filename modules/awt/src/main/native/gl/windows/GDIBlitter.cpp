@@ -196,7 +196,10 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
       memset(&blitStruct, 0, sizeof(BLITSTRUCT));
 
       srcSurf->invalidated = invalidated != 0;
-      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)) return;
+
+      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)){
+           return;
+      }
 
       XFORM currentTransform, transform;
       if(matrix != NULL){
@@ -487,7 +490,11 @@ BOOL initBitmap
         return false;
     }
     updateCache(srcSurf, env, srcData, alphaPre != 0);
-    SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+    if(srcSurf->isTrueColor){
+        SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+    }else{
+        GdiFlush();
+    }
     return true;
 }
 
