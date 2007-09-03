@@ -112,6 +112,88 @@ public class CachedRowSetImplTest extends TestCase {
         assertFalse(crset.columnUpdated("NAME"));
     }
 
+    public void testGetPageSize() throws SQLException {
+        assertEquals(0, crset.getPageSize());
+        crset.setPageSize(1);
+        assertEquals(1, crset.getPageSize());
+    }
+
+    public void testSetPageSize() throws SQLException {
+        try {
+            crset.setPageSize(-1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        crset.setPageSize(0);
+        crset.setPageSize(Integer.MAX_VALUE);
+        assertEquals(Integer.MAX_VALUE, crset.getPageSize());
+    }
+
+    public void testGetTableName() throws SQLException {
+        assertEquals(null, crset.getTableName());
+        crset.setTableName("USER");
+        assertEquals("USER", crset.getTableName());
+    }
+
+    public void testSetTableName() throws SQLException {
+        try {
+            crset.setTableName(null);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+    }
+
+    public void testSize() {
+        assertEquals(2, crset.size());
+    }
+
+    public void testDeleteRow() throws SQLException {
+        try {
+            crset.deleteRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        crset.next();
+        assertFalse(crset.rowDeleted());
+        crset.deleteRow();
+        assertEquals(2, crset.size());
+        assertTrue(crset.rowDeleted());
+    }
+    
+    public void testRowDeleted() throws SQLException{
+        try {
+            crset.rowDeleted();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+    }
+    
+    public void testInsertRow() throws SQLException{
+        try {
+            crset.insertRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        crset.next();
+        try {
+            crset.insertRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected;
+        }
+        crset.moveToInsertRow();
+        crset.updateString("Name", "TonyWu");
+        crset.updateInt("ID", 3);
+        crset.insertRow();
+//        crset.moveToCurrentRow();
+//        assertTrue(crset.rowInserted());
+    }
+
     public void testAcceptChanges() throws SQLException {
         // rs.next();
         // assertEquals(1, rs.getInt(1));
