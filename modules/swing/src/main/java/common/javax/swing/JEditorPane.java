@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Hashtable;
@@ -201,6 +202,8 @@ public class JEditorPane extends JTextComponent {
 
     private static final String RTF_CONTENT_TYPE = "text/rtf";
 
+    private static final String RTF2_CONTENT_TYPE = "application/rtf";
+
     private static final String REFERENCE_TAIL_PATTERN = "#.*";
 
     private static final String RTF_HEADER = "{\\rtf";
@@ -212,8 +215,6 @@ public class JEditorPane extends JTextComponent {
 
     private static Map<String, EditorKit> localContentTypes =
             new Hashtable<String, EditorKit>();
-
-    private String contentType = PLAIN_CONTENT_TYPE;
 
     private EditorKit editorKit;
 
@@ -229,6 +230,8 @@ public class JEditorPane extends JTextComponent {
         contentTypes.put(HTML_CONTENT_TYPE,
                 new ContentTypeRegistration("javax.swing.text.html.HTMLEditorKit", null));
         contentTypes.put(RTF_CONTENT_TYPE,
+                new ContentTypeRegistration("javax.swing.text.rtf.RTFEditorKit", null));
+        contentTypes.put(RTF2_CONTENT_TYPE,
                 new ContentTypeRegistration("javax.swing.text.rtf.RTFEditorKit", null));
     }
 
@@ -327,7 +330,7 @@ public class JEditorPane extends JTextComponent {
 
     @Override
     public AccessibleContext getAccessibleContext() {
-        if (HTML_CONTENT_TYPE.equals(contentType)) {
+        if (HTML_CONTENT_TYPE.equals(getContentType())) {
             if (accessibleHTML == null) {
                 accessibleHTML = new AccessibleJEditorPaneHTML();
             }
@@ -340,7 +343,7 @@ public class JEditorPane extends JTextComponent {
     }
 
     public final String getContentType() {
-        return contentType;
+        return ((editorKit != null) ? editorKit.getContentType() : null);
     }
 
     public EditorKit getEditorKit() {
@@ -417,57 +420,19 @@ public class JEditorPane extends JTextComponent {
         return false;
     }
 
-    private String getContentTypeByInputStream(final InputStream stream) {
-        int bufferSize = RTF_HEADER.length();
-        byte[] bytes = new byte[bufferSize];
-        String buffer = null;
-        try {
-            int status = stream.read(bytes, 0, 1);
-            int index = 0;
-            boolean notRtf = false;
-            while (status > 0) {
-                if (bytes[0] == '<') {
-                    notRtf = true;
-                    status = stream.read(bytes, 0, bufferSize);
-                    if (status < 0 || status < bufferSize) {
-                        break;
-                    }
-                    buffer = new String(bytes);
-                    if (("<" + buffer.toLowerCase()).startsWith(HTML_HEADER)) {
-                        return HTML_CONTENT_TYPE;
-                    }
-                } else {
-                    if (index < RTF_HEADER.length() && !notRtf) {
-                        if ((char) bytes[0] != RTF_HEADER.charAt(index)) {
-                            notRtf = true;
-                        } else {
-                            if (index++ == RTF_HEADER.length() - 1) {
-                                return RTF_CONTENT_TYPE;
-                            }
-                        }
-                    }
-                    status = stream.read(bytes, 0, 1);
-                }
-            }
-        } catch (IOException e) {
-        }
-        return PLAIN_CONTENT_TYPE;
-    }
-
     private String getBaseURL(final String url) {
         return (url == null) ? null : url.replaceAll(REFERENCE_TAIL_PATTERN, "");
     }
 
     protected InputStream getStream(final URL url) throws IOException {
-        InputStream inputStream = url.openStream();
         if (url.getProtocol() == "http") {
             getDocument().putProperty(Document.StreamDescriptionProperty,
                     getBaseURL(url.toString()));
         }
-        setContentType(getContentTypeByInputStream(inputStream));
-        //Perhaps, it is not best solution. I'm going to think about this one
-        inputStream.close();
-        return url.openStream();
+        URLConnection connection = url.openConnection();
+        String contentType = connection.getContentType();
+        setContentType((contentType != null) ? contentType : PLAIN_CONTENT_TYPE);
+        return connection.getInputStream();
     }
 
     @Override
@@ -487,9 +452,9 @@ public class JEditorPane extends JTextComponent {
 
     @Override
     protected String paramString() {
-        return super.paramString() + "," + "contentType=" + contentType + "," + "editorKit="
-                + editorKit + "," + "document=" + getDocument() + "," + "currentPage="
-                + currentPage;
+        return (super.paramString() + "," + "contentType=" + getContentType() + ","
+                + "editorKit=" + editorKit + "," + "document=" + getDocument() + ","
+                + "currentPage=" + currentPage);
     }
 
     public void read(final InputStream stream, final Object type) throws IOException {
@@ -566,37 +531,26 @@ public class JEditorPane extends JTextComponent {
                  || (PLAIN_CONTENT_TYPE.equals(contentType) && editorKit instanceof PlainEditorKit));
     }
 
-    public final void setContentType(final String type) {
+    public final void setContentType(String type) {
         if (type == null) {
             throw new NullPointerException(Messages.getString("swing.03","Content type")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        contentType = (contentTypes.containsKey(type) ? type : PLAIN_CONTENT_TYPE);
+        int comma = type.indexOf(';');
 
-        if (changeEditorKit(contentType)) {
-            EditorKit kit = getEditorKitForContentType(contentType);
+        if (comma >= 0) {
+            type = type.substring(0, comma);
+        }
+        type = type.trim().toLowerCase();
+
+        if (!contentTypes.containsKey(type)) {
+            type = PLAIN_CONTENT_TYPE;
+        }
+
+        if (changeEditorKit(type)) {
+            EditorKit kit = getEditorKitForContentType(type);
             updateEditorKit((kit != null) ? kit : new PlainEditorKit());
             updateDocument(editorKit);
-        } 
-    }
-
-    private String getContentTypeByEditorKit(final EditorKit kit) {
-        if (kit == null) {
-            return PLAIN_CONTENT_TYPE;
         }
-
-        for (Map.Entry<String, EditorKit> entry : localContentTypes.entrySet()) {
-             if (kit.equals(entry.getValue())) {
-                 return entry.getKey();
-             }
-        }
-
-        for (Map.Entry<String, ContentTypeRegistration> entry : contentTypes.entrySet()) {
-             if (kit.getClass().getName().equals(entry.getValue().className)) {
-                 return entry.getKey();
-             }
-        }
-
-        return PLAIN_CONTENT_TYPE;
     }
 
     private void updateEditorKit(final EditorKit kit) {
@@ -618,10 +572,8 @@ public class JEditorPane extends JTextComponent {
     }
 
     public void setEditorKit(final EditorKit kit) {
-        String newContentType = getContentTypeByEditorKit(kit);
         updateEditorKit(kit);
         updateDocument(kit);
-        contentType = newContentType;
     }
 
     public void setEditorKitForContentType(final String type, final EditorKit kit) {
@@ -769,7 +721,7 @@ public class JEditorPane extends JTextComponent {
         StringReader reader = new StringReader(content == null ? "" : content);
 
         try {
-            read(reader, contentType);
+            read(reader, getContentType());
         } catch (IOException e) {
         }
     }
