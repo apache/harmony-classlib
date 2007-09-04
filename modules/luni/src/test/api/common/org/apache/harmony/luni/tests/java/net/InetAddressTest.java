@@ -203,6 +203,11 @@ public class InetAddressTest extends junit.framework.TestCase {
         assertEquals("Assert 0: No loopback address", 1, ia.length);
         assertTrue("Assert 1: getAllByName(null) not loopback",
                 ia[0].isLoopbackAddress());
+        
+        ia = InetAddress.getAllByName("");
+        assertEquals("Assert 2: No loopback address", 1, ia.length);
+        assertTrue("Assert 3: getAllByName(\"\") not loopback",
+                ia[0].isLoopbackAddress());
     }
 
     /**

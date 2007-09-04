@@ -168,12 +168,9 @@ public class InetAddress extends Object implements Serializable {
      */
     public static InetAddress[] getAllByName(String host)
             throws UnknownHostException {
-        if (host == null) {
+        if (host == null || 0 == host.length()) {
             return new InetAddress[] { preferIPv6Addresses() ? Inet6Address.LOOPBACK
                     : LOOPBACK };
-        }
-        if (0 == host.length()) {
-            throw new UnknownHostException(Msg.getString("K0038")); //$NON-NLS-1$
         }
 
         if (isHostName(host)) {
