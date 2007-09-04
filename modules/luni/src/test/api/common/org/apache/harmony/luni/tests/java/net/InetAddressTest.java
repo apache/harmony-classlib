@@ -150,7 +150,7 @@ public class InetAddressTest extends junit.framework.TestCase {
     /**
      * @tests java.net.InetAddress#getAddress()
      */
-    public void test_getAddress() {
+    public void test_getAddress() throws UnknownHostException {
         // Test for method byte [] java.net.InetAddress.getAddress()
         try {
             InetAddress ia = InetAddress
@@ -161,6 +161,12 @@ public class InetAddressTest extends junit.framework.TestCase {
                 assertTrue("Incorrect address returned", caddr[i] == addr[i]);
         } catch (java.net.UnknownHostException e) {
         }
+        
+        byte[] origBytes = new byte[] { 0, 1, 2, 3 };
+        InetAddress address = InetAddress.getByAddress(origBytes);
+        origBytes[0] = -1;
+        byte[] newBytes = address.getAddress();
+        assertSame((byte) 0, newBytes[0]);
     }
 
     /**

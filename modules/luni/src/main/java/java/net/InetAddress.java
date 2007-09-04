@@ -972,7 +972,7 @@ public class InetAddress extends Object implements Serializable {
             for (int i = 0; i < 4; i++) {
                 copy_address[i] = ipAddress[i];
             }
-            return new Inet4Address(ipAddress);
+            return new Inet4Address(copy_address);
         }
 
         if (ipAddress != null && ipAddress.length == 16) {
@@ -989,6 +989,8 @@ public class InetAddress extends Object implements Serializable {
             copy_address = ipAddress.clone();
             return new Inet6Address(copy_address, scope_id);
         }
+
+        // K0339=Invalid IP Address is neither 4 or 16 bytes
         throw new UnknownHostException(Msg.getString("K0339")); //$NON-NLS-1$
     }
 
