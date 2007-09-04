@@ -51,6 +51,7 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.SliderUI;
 
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.swing.StringConstants;
 import org.apache.harmony.x.swing.Utilities;
 
@@ -63,18 +64,28 @@ import org.apache.harmony.x.swing.internal.nls.Messages;
  */
 public class BasicSliderUI extends SliderUI {
 
+    /**
+     * This class isn't used since 1.3 and not implemented here (see
+     * HARMONY-4523 for details - the methods doesn't throw new
+     * NotImplementedException according to backward compatibility)
+     */
+    @SuppressWarnings("unused")
     public class ActionScroller extends AbstractAction {
         private static final long serialVersionUID = -3454576988589353120L;
 
-        public ActionScroller(final JSlider slider, final int dir, final boolean block) {
+        public ActionScroller(JSlider slider, int dir, boolean block)
+                throws NotImplementedException {
+            // Not implemented.
         }
 
-        public void actionPerformed(final ActionEvent e) {
+        public void actionPerformed(ActionEvent e)
+                throws NotImplementedException {
+            throw new NotImplementedException();
         }
 
         @Override
         public boolean isEnabled() {
-            return true;
+            return enabled;
         }
     }
 
