@@ -160,6 +160,26 @@ public class URLConnectionTest extends junit.framework.TestCase {
 		}
 	}
 
+        static String getContentType(String fileName) throws IOException {
+            String resourceName = "org/apache/harmony/luni/tests/" + fileName;
+            URL url = ClassLoader.getSystemClassLoader().getResource(resourceName);
+            assertNotNull("Cannot find test resource " + resourceName, url);
+            return url.openConnection().getContentType();
+        }
+
+        /**
+         * @tests java.net.URLConnection#getContentType()
+         */
+        public void test_getContentType_regression() throws IOException {
+            // Regression for HARMONY-4699
+            assertEquals(getContentType("test.rtf"), "application/rtf");
+            assertEquals(getContentType("test.java"), "text/plain");
+            assertEquals(getContentType("test.doc"), "application/msword"); // RI would return "content/unknown"
+            assertEquals(getContentType("test.htx"), "text/html");
+            assertEquals(getContentType("test.xml"), "application/xml");
+            assertEquals(getContentType("."), "text/plain");
+        }
+
 	/**
 	 * @tests java.net.URLConnection#getDate()
 	 */

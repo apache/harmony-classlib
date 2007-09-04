@@ -56,7 +56,7 @@
                 <include name="iohelp.h" />
                 <include name="exceptions.h" />
                 <include name="libglob.h" />
-                <include name="strhelp.h" />            	
+                <include name="strhelp.h" />
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
@@ -281,9 +281,9 @@
         <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
             <javac-elements>
                 <src>
-		    <pathelement location="${hy.luni.src.test.api}/common"/>
-	            <pathelement location="${hy.luni.src.test.api.java.platform}"/>
-                <pathelement location="${hy.luni.src.test}/impl"/>
+                    <pathelement location="${hy.luni.src.test.api}/common" />
+                    <pathelement location="${hy.luni.src.test.api.java.platform}" />
+                    <pathelement location="${hy.luni.src.test}/impl" />
                 </src>
                 <include name="**/*.java" />
             </javac-elements>
@@ -291,7 +291,7 @@
     </target>
 
     <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="luni" dir="./make"
+        <prepare-exclude-list moduleName="luni" dir="./make"
                              result="${luni.exclude.file}"/>
     </target>
 
@@ -302,9 +302,9 @@
                     <pathelement path="${hy.luni.bin.test}"/>
                     <pathelement path="${hy.luni.src.test.resources}"/>
                     <pathelement path="../../build/tests"/>
-		    <fileset dir="${hy.hdk}/build/test/">
-		        <include name="*.jar" />
-		    </fileset>
+                    <fileset dir="${hy.hdk}/build/test/">
+                        <include name="*.jar" />
+                    </fileset>
                 </classpath>
                 <!-- Required by various tests that set security manager etc -->
                 <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
@@ -359,9 +359,7 @@
     <target name="copy-test-resources">
         <mkdir dir="${hy.luni.bin.test}" />
         <copy todir="${hy.luni.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.luni.src.test.resources}">
-                <exclude name="**/*.java" />
-            </fileset>
+            <fileset dir="${hy.luni.src.test.resources}" />
         </copy>
     </target>
 
