@@ -48,49 +48,6 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapSurface_disp
     }
 }
 
-JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapBlitter_bltBGImage
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
-  jint bgcolor, jint compType, jfloat alpha, jintArray clip){
-
-  }
-
-JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapBlitter_bltBGBitmap
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
-  jint bgcolor, jint compType, jfloat alpha, jintArray clip){
-
-  }
-
-JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapBlitter_bltImage
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
-  jint compType, jfloat alpha, jintArray clip){
-
-  }
-
-JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapBlitter_bltBitmap
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
-  jint compType, jfloat alpha, jintArray clip){
-
-  }
-
-JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapBlitter_xorImage
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jintArray clip){
-
-  }
-
-JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_BitmapBlitter_xorBitmap
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jintArray clip){
-
-  }
-
-
 void parseFormat(SURFACE_STRUCTURE *surfStruct){
 
       surfStruct->bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);

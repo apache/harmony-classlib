@@ -369,15 +369,15 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
+  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint heigth, jint xorcolor, 
+  jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
 
   }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorBitmap
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jdoubleArray matrix, jintArray clip, jint numVertex){
+  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jint dstX, 
+  jint dstY, jlong dstSurfStruct, jint width, jint heigth, jint xorcolor, 
+  jdoubleArray matrix, jintArray clip, jint numVertex){
 
   }
 
