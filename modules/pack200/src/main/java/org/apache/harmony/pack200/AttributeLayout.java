@@ -20,7 +20,6 @@ package org.apache.harmony.pack200;
 // NOTE: Do not extract strings as messages; this code is still a
 // work-in-progress
 // NOTE: Also, don't get rid of 'else' statements for the hell of it ...
-import org.apache.harmony.pack200.Segment.SegmentConstantPool;
 
 public class AttributeLayout implements IMatcher {
 	static class Key {
@@ -111,9 +110,8 @@ public class AttributeLayout implements IMatcher {
 	private static final String[] contextNames = { "Class", "Field", "Method", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			"Code", }; //$NON-NLS-1$
 
-	private static Object getValue(String layout, long value, Segment segment)
+	private static Object getValue(String layout, long value, SegmentConstantPool pool)
 			throws Pack200Exception {
-		SegmentConstantPool pool = segment.getConstantPool();
 		if (layout.startsWith("R")) { //$NON-NLS-1$
 			// references
 			if (layout.indexOf('N') != -1)
@@ -210,25 +208,25 @@ public class AttributeLayout implements IMatcher {
 		return layout;
 	}
 
-	public Object getValue(long value, Segment segment) throws Pack200Exception {
-		return getValue(layout, value, segment);
+	public Object getValue(long value, SegmentConstantPool pool) throws Pack200Exception {
+		return getValue(layout, value, pool);
 	}
 
-	public Object getValue(long value, String type, Segment segment)
+	public Object getValue(long value, String type, SegmentConstantPool pool)
 			throws Pack200Exception {
 		// TODO This really needs to be better tested, esp. the different types
 		// TODO This should have the ability to deal with RUN stuff too, and
 		// unions
 		if (layout.startsWith("KQ")) { //$NON-NLS-1$
 			if (type.equals("Ljava/lang/String;")) { //$NON-NLS-1$
-				Object value2 = getValue("KS", value, segment); //$NON-NLS-1$
+				Object value2 = getValue("KS", value, pool); //$NON-NLS-1$
 				return value2;
 			} else {
 				return getValue("K" + type + layout.substring(2), value, //$NON-NLS-1$
-						segment);
+						pool);
 			}
 		} else {
-			return getValue(layout, value, segment);
+			return getValue(layout, value, pool);
 		}
 	}
 
