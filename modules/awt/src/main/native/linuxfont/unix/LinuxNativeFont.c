@@ -404,12 +404,11 @@ JNIEXPORT jlong JNICALL
     /* defining font type */
     face = XftLockFace(xftFnt);
     if ((face->face_flags & FT_FACE_FLAG_SCALABLE) &&
-            !(face->face_flags & FT_FACE_FLAG_FIXED_SIZES)){
-        if (face->face_flags & FT_FACE_FLAG_SFNT){
-            font_type = FONT_TYPE_TT;
-        } else {
+            !(face->face_flags & FT_FACE_FLAG_FIXED_SIZES) &&
+            !(face->face_flags & FT_FACE_FLAG_SFNT)) {
             font_type = FONT_TYPE_T1;
-        }
+    } else {
+        font_type = FONT_TYPE_TT;
     }
     XftUnlockFace(xftFnt);
 
