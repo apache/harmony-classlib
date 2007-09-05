@@ -145,6 +145,56 @@ public class IntegerTest extends TestCase {
             exception = true;
         }
         assertTrue("Failed to throw exception for 9999999999", exception);
+
+        try {
+            Integer.decode("-");
+            fail("Expected exception for -");
+        } catch (NumberFormatException e) {
+            // Expected
+        }
+
+        try {
+            Integer.decode("0x");
+            fail("Expected exception for 0x");
+        } catch (NumberFormatException e) {
+            // Expected
+        }
+
+        try {
+            Integer.decode("#");
+            fail("Expected exception for #");
+        } catch (NumberFormatException e) {
+            // Expected
+        }
+
+        try {
+            Integer.decode("x123");
+            fail("Expected exception for x123");
+        } catch (NumberFormatException e) {
+            // Expected
+        }
+
+        try {
+            Integer.decode(null);
+            fail("Expected exception for null");
+        } catch (NullPointerException e) {
+            // Expected
+        }
+
+        try {
+            Integer.decode("");
+            fail("Expected exception for empty string");
+        } catch (NumberFormatException ex) {
+            // Expected
+        }
+
+        try {
+            Integer.decode(" ");
+            fail("Expected exception for single space");
+        } catch (NumberFormatException ex) {
+            // Expected
+        }
+
     }
 
     /**

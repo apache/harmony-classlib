@@ -107,6 +107,19 @@ public class PrintStreamTest extends junit.framework.TestCase {
     }
 
     /**
+     * @tests java.io.PrintStream#PrintStream(java.io.OutputStream, boolean, String)
+     */
+    public void test_ConstructorLjava_io_OutputStreamZLjava_lang_String() {
+        try {
+            new PrintStream(new ByteArrayOutputStream(), false,
+                    "%Illegal_name!");
+            fail("Expected UnsupportedEncodingException");
+        } catch (UnsupportedEncodingException e) {
+            // expected
+        }
+    }
+
+    /**
      * @tests java.io.PrintStream#checkError()
      */
     public void test_checkError() throws Exception {

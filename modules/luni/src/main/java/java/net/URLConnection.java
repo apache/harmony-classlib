@@ -722,26 +722,83 @@ public abstract class URLConnection {
      * @throws IOException
      *             If an IO error occurs
      */
+    @SuppressWarnings("nls")
     public static String guessContentTypeFromStream(InputStream is)
             throws IOException {
+
         if (!is.markSupported()) {
             return null;
         }
-        is.mark(4);
-        char[] chars = new char[4];
-        for (int i = 0; i < chars.length; i++) {
-            chars[i] = (char) is.read();
-        }
+        // Look ahead up to 64 bytes for the longest encoded header
+        is.mark(64);
+        byte[] bytes = new byte[64];
+        int length = is.read(bytes);
         is.reset();
-        if ((chars[0] == 'P') && (chars[1] == 'K')) {
-            return "application/zip"; //$NON-NLS-1$
+
+        // Check for Unicode BOM encoding indicators
+        String encoding = "ASCII";
+        int start = 0;
+        if (length > 1) {
+            if ((bytes[0] == (byte) 0xFF) && (bytes[1] == (byte) 0xFE)) {
+                encoding = "UTF-16LE";
+                start = 2;
+                length -= length & 1;
+            }
+            if ((bytes[0] == (byte) 0xFE) && (bytes[1] == (byte) 0xFF)) {
+                encoding = "UTF-16BE";
+                start = 2;
+                length -= length & 1;
+            }
+            if (length > 2) {
+                if ((bytes[0] == (byte) 0xEF) && (bytes[1] == (byte) 0xBB)
+                        && (bytes[2] == (byte) 0xBF)) {
+                    encoding = "UTF-8";
+                    start = 3;
+                }
+                if (length > 3) {
+                    if ((bytes[0] == (byte) 0x00) && (bytes[1] == (byte) 0x00)
+                            && (bytes[2] == (byte) 0xFE)
+                            && (bytes[3] == (byte) 0xFF)) {
+                        encoding = "UTF-32BE";
+                        start = 4;
+                        length -= length & 3;
+                    }
+                    if ((bytes[0] == (byte) 0xFF) && (bytes[1] == (byte) 0xFE)
+                            && (bytes[2] == (byte) 0x00)
+                            && (bytes[3] == (byte) 0x00)) {
+                        encoding = "UTF-32LE";
+                        start = 4;
+                        length -= length & 3;
+                    }
+                }
+            }
         }
-        if ((chars[0] == 'G') && (chars[1] == 'I')) {
-            return "image/gif"; //$NON-NLS-1$
+
+        String header = new String(bytes, start, length - start, encoding);
+
+        // Check binary types
+        if (header.startsWith("PK")) {
+            return "application/zip";
         }
-        if (new String(chars).trim().startsWith("<")) { //$NON-NLS-1$
-            return "text/html"; //$NON-NLS-1$
+        if (header.startsWith("GI")) {
+            return "image/gif";
         }
+
+        // Check text types
+        String textHeader = header.trim().toUpperCase();
+        if (textHeader.startsWith("<!DOCTYPE HTML") ||
+                textHeader.startsWith("<HTML") ||
+                textHeader.startsWith("<HEAD") ||
+                textHeader.startsWith("<BODY") ||
+                textHeader.startsWith("<HEAD")) {
+            return "text/html";
+        }
+
+        if (textHeader.startsWith("<?XML")) {
+            return "application/xml";
+        }
+
+        // Give up
         return null;
     }
 

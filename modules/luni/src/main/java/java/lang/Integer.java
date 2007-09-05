@@ -160,19 +160,17 @@ public final class Integer extends Number implements Comparable<Integer> {
                 return valueOf(0);
             }
             if ((firstDigit = string.charAt(i)) == 'x' || firstDigit == 'X') {
-                if (i == length) {
+                if (++i == length) {
                     throw new NumberFormatException(string);
                 }
-                i++;
                 base = 16;
             } else {
                 base = 8;
             }
         } else if (firstDigit == '#') {
-            if (i == length) {
+            if (++i == length) {
                 throw new NumberFormatException(string);
             }
-            i++;
             base = 16;
         }
 

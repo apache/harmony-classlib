@@ -124,8 +124,8 @@ JNIEXPORT jbyteArray JNICALL
   localErrorCode = checkErrorCode (errorCode);
   RegCloseKey (hKey);
   hymem_free_memory (keyStr);
-  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, err, 0);
   err[java_util_prefs_RegistryPreferencesImpl_ERROR_CODE] = localErrorCode;
+  (*env)->ReleasePrimitiveArrayCritical (env, jErrorCode, err, 0);
   if (localErrorCode !=
       java_util_prefs_RegistryPreferencesImpl_RETURN_SUCCESS)
     {

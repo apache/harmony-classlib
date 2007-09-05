@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.IdentityHashMap;
 
+import org.apache.harmony.luni.util.Msg;
+
 /**
  * An ObjectOutputStream can be used to save Java objects into a stream where
  * the objects can be loaded later with an ObjectInputStream. Primitive data
@@ -771,10 +773,14 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      *             If an IO error occurs
      */
     public void useProtocolVersion(int version) throws IOException {
+        if (!objectsWritten.isEmpty()) {
+            // KA028=Cannot set protocol version when stream in use
+            throw new IllegalStateException(Msg.getString("KA028")); //$NON-NLS-1$
+        }
         if (version != ObjectStreamConstants.PROTOCOL_VERSION_1
                 && version != ObjectStreamConstants.PROTOCOL_VERSION_2) {
-            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("K00b3", version)); //$NON-NLS-1$
+            // K00b3=Unknown protocol\: {0}
+            throw new IllegalArgumentException(Msg.getString("K00b3", version)); //$NON-NLS-1$
         }
         protocolVersion = version;
     }

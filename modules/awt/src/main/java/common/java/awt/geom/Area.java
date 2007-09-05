@@ -1290,7 +1290,7 @@ public class Area implements Shape, Cloneable {
     // the internal class implements PathIterator
 	private class AreaPathIterator implements PathIterator {
 
-		AffineTransform t;
+		AffineTransform transform;
 		Area area;
 		int curRuleIndex = 0;
 		int curCoordIndex = 0;
@@ -1301,7 +1301,7 @@ public class Area implements Shape, Cloneable {
 
 		AreaPathIterator(Area area, AffineTransform t) {
 			this.area = area;
-			this.t = t;
+			this.transform = t;
 		}
 
 		public int getWindingRule() {
@@ -1332,18 +1332,29 @@ public class Area implements Shape, Cloneable {
 			if (isDone()) {
 				throw new NoSuchElementException(Messages.getString("awt.4B")); //$NON-NLS-1$
 			}
+			
+			int count = 0;
+			
 			switch (rules[curRuleIndex]) {
 				case PathIterator.SEG_CUBICTO:
 					c[4] = coords[curCoordIndex + 4];
 					c[5] = coords[curCoordIndex + 5];
+					count = 1;
 				case PathIterator.SEG_QUADTO:
 					c[2] = coords[curCoordIndex + 2];
 					c[3] = coords[curCoordIndex + 3];
+					count += 1;
 				case PathIterator.SEG_MOVETO:
 				case PathIterator.SEG_LINETO:
 					c[0] = coords[curCoordIndex];
 					c[1] = coords[curCoordIndex + 1];
+					count += 1;
 			}
+			
+			if(transform != null) {
+	            transform.transform(c, 0, c, 0, count);
+			}
+			
 			return rules[curRuleIndex];
 		}
 
