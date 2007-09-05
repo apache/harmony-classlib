@@ -23,7 +23,8 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 
 public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
-        Map<K, V>, Serializable, Cloneable {
+        Serializable, Cloneable {
+
     private static final long serialVersionUID = 458661240069192865L;
 
     private Class<K> keyType;
