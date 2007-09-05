@@ -220,8 +220,10 @@ public class DefaultButtonModel implements ButtonModel, Serializable {
             listeners[i].actionPerformed(event);
         }
     }
-
-    private void toggleState(int stateFlag) {
+    
+    void toggleState(int stateFlag) {
+        // visibility is changed from private to default because according to
+        // HARMONY-4658 patch the method is needed by ToggleButtonModel
         stateMask ^= stateFlag;
         fireStateChanged();
     }
