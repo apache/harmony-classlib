@@ -18,6 +18,7 @@
 package java.io;
 
 import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.security.AccessController;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
@@ -118,7 +119,11 @@ public class PrintStream extends FilterOutputStream implements Appendable,
             throw new NullPointerException();
         }
         this.autoflush = autoflush;
-        if (!Charset.isSupported(enc)) {
+        try {
+            if (!Charset.isSupported(enc)) {
+                throw new UnsupportedEncodingException(enc);
+            }
+        } catch (IllegalCharsetNameException e) {
             throw new UnsupportedEncodingException(enc);
         }
         encoding = enc;

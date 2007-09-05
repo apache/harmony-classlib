@@ -139,9 +139,9 @@ typedef struct _SURFACE_STRUCTURE{
     int *band_offsets;
 
        // Cached Data
-       long bmp_byte_stride;
+    long bmp_byte_stride;
     void *bmpData;
-       bool hasRealAlpha;
+    bool hasRealAlpha;
     bool invalidated;
     bool isAlphaPre;
 
@@ -153,6 +153,7 @@ typedef struct _SURFACE_STRUCTURE{
     HBITMAP bitmap;
     HDC srcDC;
     DWORD rtc;
+    BOOL isTrueColor;
 #endif
 
 

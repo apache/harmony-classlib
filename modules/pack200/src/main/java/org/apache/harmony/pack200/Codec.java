@@ -227,4 +227,32 @@ public abstract class Codec {
 		}
 		return result;
 	}
+    
+    /**
+     * Decodes a sequence of <code>n</code> values from <code>in</code>.
+     * 
+     * @param n
+     *            the number of values to decode
+     * @param in
+     *            the input stream to read from
+     * @param firstValue
+     *            the first value in the band if it has already been read
+     * @return an array of <code>long</code> values corresponding to values
+     *         decoded, with firstValue as the first value in the array.
+     * @throws IOException
+     *             if there is a problem reading from the underlying input
+     *             stream
+     * @throws Pack200Exception
+     *             if there is a problem decoding the value or that the value is
+     *             invalid
+     */
+    public long[] decode(int n, InputStream in, long firstValue) throws IOException,
+            Pack200Exception {
+        long result[] = new long[n + 1];
+        long last = 0;
+        for(int i=1;i<n+1;i++) {
+            result[i] = last = decode(in,last);
+        }
+        return result;
+    }
 }

@@ -191,7 +191,42 @@ public class AreaTest extends PathIteratorTestCase {
 		assertFalse(area1.contains(375, 325));
 		assertTrue(area1.contains(600, 300));
 		assertTrue(area1.contains(325, 325));
-     }
+    }
+     
+    public void testTransformPathIterator() {
+        // Regression test HARMONY-4680
+        AffineTransform transform = new AffineTransform(2.0, 0.0, 0.0, 200.0 / 140.0, 0.0, 0.0);
+        Area ar = new Area(new Rectangle2D.Double(100, 100, 50.0, 100.0));
+         
+        PathIterator path = ar.getPathIterator(null);
+        PathIterator transformedPath = ar.getPathIterator(transform);
+        double[] coords = new double[6];
+        double[] transformedCoords = new double[6];
+
+        while (!path.isDone() && !transformedPath.isDone()) {
+            int rule1 = path.currentSegment(coords);
+            int rule2 = transformedPath.currentSegment(transformedCoords);
+            assertTrue(rule1 == rule2);
+            switch (rule1) {
+                case PathIterator.SEG_MOVETO: {
+                    transform.transform(coords, 0, coords, 0, 1);
+                    assertTrue(coords[0] == transformedCoords[0] && coords[1] == transformedCoords[1]);
+                    break;
+                }
+                case PathIterator.SEG_LINETO: {
+                    transform.transform(coords, 0, coords, 0, 1);
+                    assertTrue(coords[0] == transformedCoords[0] && coords[1] == transformedCoords[1]);
+                    break;
+                }
+                case PathIterator.SEG_CLOSE: {
+                    break;
+                }
+            }
+            path.next();
+            transformedPath.next();
+        }
+        assertTrue(path.isDone() && transformedPath.isDone());
+    }   
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AreaTest.class);

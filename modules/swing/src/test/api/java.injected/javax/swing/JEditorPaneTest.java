@@ -724,6 +724,35 @@ public class JEditorPaneTest extends SwingTestCase {
         }
     }
 
+    static void checkContentType(String fileName, String expected) throws IOException {
+        if (!fileName.startsWith("http")) {
+            fileName = "content-type/" + fileName;
+            URL url = JEditorPaneTest.class.getResource(fileName);
+            assertNotNull("Resource not found: " + fileName, url);
+            fileName = url.toString();
+        }
+        JEditorPane pane = new JEditorPane(fileName);
+        assertEquals(pane.getContentType(), expected);
+        assertEquals(pane.getEditorKit().getContentType(), expected);
+    }
+
+    public void testGetContentType() throws IOException {
+        // Regression for HARMONY-4696
+        checkContentType("txt", "text/plain");
+        checkContentType("html", "text/html");
+        checkContentType("rtf", "text/plain");
+        checkContentType("txt.txt", "text/plain");
+        checkContentType("txt.html", "text/html");
+        checkContentType("txt.rtf", "text/plain");  // Change to "text/rtf" when RTFEditorKit becomes available.
+        checkContentType("html.txt", "text/plain");
+        checkContentType("html.html", "text/html");
+        checkContentType("html.rtf", "text/plain"); // Change to "text/rtf" when RTFEditorKit becomes available.
+        checkContentType("rtf.txt", "text/plain");
+        checkContentType("rtf.html", "text/html");
+        checkContentType("rtf.rtf", "text/plain");  // Change to "text/rtf" when RTFEditorKit becomes available.
+        checkContentType("http://www.apache.org", "text/html");
+    }
+
     private String getClassName(final Object obj) {
         assertNotNull(obj);
         return obj.getClass().getName();

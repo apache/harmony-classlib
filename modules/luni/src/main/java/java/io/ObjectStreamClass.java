@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -203,6 +204,10 @@ public class ObjectStreamClass implements Serializable {
 
         ObjectStreamClass result = new ObjectStreamClass();
 
+        boolean isProxy = Proxy.isProxyClass(cl);
+        boolean isEnum = Enum.class.isAssignableFrom(cl);
+        boolean isArray = cl.isArray();
+
         // Now we fill in the values
         result.setName(cl.getName());
         result.setClass(cl);
@@ -214,22 +219,24 @@ public class ObjectStreamClass implements Serializable {
         Field[] declaredFields = null;
         if (computeSUID) {
             // Lazy computation, to save speed & space
-            declaredFields = cl.getDeclaredFields();
-            result.setSerialVersionUID((cl.isEnum() || (cl == Enum.class)) ? 0
-                    : computeSerialVersionUID(cl, declaredFields));
+            if (isEnum || isProxy) {
+                result.setSerialVersionUID(0L);
+            } else {
+                declaredFields = cl.getDeclaredFields();
+                result.setSerialVersionUID(computeSerialVersionUID(cl, declaredFields));
+            }
         }
 
         boolean serializable = isSerializable(cl);
         // Serializables need field descriptors
-        if (serializable && !cl.isArray()) {
+        if (serializable && !isArray) {
             if (declaredFields == null) {
-
                 declaredFields = cl.getDeclaredFields();
             }
             result.buildFieldDescriptors(declaredFields);
         } else {
             // Externalizables or arrays do not need FieldDesc info
-            result.setFields(new ObjectStreamField[0]);
+            result.setFields(NO_FIELDS);
         }
 
         // Copy all fields to loadFields - they should be read by default in
@@ -669,7 +676,7 @@ public class ObjectStreamClass implements Serializable {
                 buildFieldDescriptors(forCl.getDeclaredFields());
             } else {
                 // Externalizables or arrays do not need FieldDesc info
-                setFields(new ObjectStreamField[0]);
+                setFields(NO_FIELDS);
             }
         }
         return fields;

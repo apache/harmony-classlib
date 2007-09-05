@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
+import java.io.ObjectStreamConstants;
 import java.io.ObjectStreamException;
 import java.io.ObjectStreamField;
 import java.io.OutputStream;
@@ -763,6 +764,16 @@ public class ObjectOutputStreamTest extends junit.framework.TestCase implements
         assertTrue(
                 "Cannot read/write PROTOCAL_VERSION_1 Externalizable objects: "
                         + t2.getValue(), t1.getValue().equals(t2.getValue()));
+
+        // Cannot set protocol version when stream in-flight
+        ObjectOutputStream out = new ObjectOutputStream(new ByteArrayOutputStream());
+        out.writeObject("hello world");
+        try {
+            out.useProtocolVersion(ObjectStreamConstants.PROTOCOL_VERSION_1);
+            fail("Expected IllegalStateException");
+        } catch (IllegalStateException e) {
+            // Expected
+        }
     }
 
 	/**

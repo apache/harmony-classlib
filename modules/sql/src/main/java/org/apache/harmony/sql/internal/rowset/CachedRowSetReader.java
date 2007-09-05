@@ -40,14 +40,14 @@ public class CachedRowSetReader implements RowSetReader {
 
     public void readData(RowSetInternal theCaller) throws SQLException {
         ArrayList<CachedRow> data = new ArrayList<CachedRow>();
+        int columnCount = metadata.getColumnCount();
         while (rs.next()) {
-            int columnCount = metadata.getColumnCount();
             Object[] columnData = new Object[columnCount];
             for (int i = 0; i < columnCount; i++) {
                 columnData[i] = rs.getObject(i+1);
             }
             data.add(new CachedRow(columnData));
         }
-        ((CachedRowSetImpl) theCaller).setRows(data);
+        ((CachedRowSetImpl) theCaller).setRows(data, columnCount);
     }
 }

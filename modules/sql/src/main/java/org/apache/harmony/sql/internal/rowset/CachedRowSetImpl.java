@@ -50,8 +50,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private int currentRowIndex;
 
-    public void setRows(ArrayList<CachedRow> data) {
+    private int pageSize;
+
+    private String tableName;
+
+    private int rememberedCursorPosition;
+
+    private CachedRow insertRow;
+
+    private int columnCount;
+
+    public void setRows(ArrayList<CachedRow> data, int cloumnCount) {
         this.rows = data;
+        this.columnCount = cloumnCount;
     }
 
     public void acceptChanges() throws SyncProviderException {
@@ -67,7 +78,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             // rowset.0 = Not a valid position
             throw new SQLException(Messages.getString("rowset.0"));
         }
-        return currentRow.setUpdateMask(idx - 1);
+        return currentRow.getUpdateMask(idx - 1);
     }
 
     public boolean columnUpdated(String columnName) throws SQLException {
@@ -76,7 +87,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private int getIndexByName(String columnName) throws SQLException {
         for (int i = 1; i <= meta.getColumnCount(); i++) {
-            if (columnName.equals(meta.getColumnName(i))) {
+            if (columnName.equalsIgnoreCase(meta.getColumnName(i))) {
                 return i;
             }
         }
@@ -121,7 +132,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int getPageSize() {
-        throw new NotImplementedException();
+        return pageSize;
     }
 
     public RowSetWarning getRowSetWarnings() throws SQLException {
@@ -133,7 +144,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public String getTableName() throws SQLException {
-        throw new NotImplementedException();
+        return tableName;
     }
 
     public boolean nextPage() throws SQLException {
@@ -198,7 +209,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void setPageSize(int size) throws SQLException {
-        throw new NotImplementedException();
+        if (size < 0) {
+            // rowset.2=Negative page size
+            throw new SQLException(Messages.getString("rowset.2"));
+        }
+        this.pageSize = size;
     }
 
     public void setSyncProvider(String provider) throws SQLException {
@@ -206,11 +221,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void setTableName(String tabName) throws SQLException {
-        throw new NotImplementedException();
+        if (tabName == null) {
+            // rowset.3=Table name should not be null
+            throw new SQLException("rowset.3");
+        }
+        this.tableName = tabName;
     }
 
     public int size() {
-        throw new NotImplementedException();
+        return rows.size();
     }
 
     public Collection<?> toCollection() throws SQLException {
@@ -302,7 +321,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void deleteRow() throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        currentRow.setDelete();
+    }
+
+    private void checkValidRow() throws SQLException {
+        if (currentRow == null) {
+            // rowset.0 = Not a valid position
+            throw new SQLException(Messages.getString("rowset.0"));
+        }
     }
 
     public int findColumn(String columnName) throws SQLException {
@@ -564,7 +591,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void insertRow() throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        if (currentRow != insertRow) {
+            throw new SQLException();
+        }
+        currentRow.setInsert();
+        rows.add(insertRow);
+        currentRowIndex++;
     }
 
     public boolean isAfterLast() throws SQLException {
@@ -588,11 +621,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void moveToCurrentRow() throws SQLException {
-        throw new NotImplementedException();
+        this.currentRowIndex = rememberedCursorPosition;
+        this.currentRow = rows.get(currentRowIndex);
     }
 
     public void moveToInsertRow() throws SQLException {
-        throw new NotImplementedException();
+        insertRow = new CachedRow(new Object[columnCount]);
+        this.currentRow = insertRow;
+        this.currentRowIndex = rows.size();
     }
 
     public boolean next() throws SQLException {
@@ -617,7 +653,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean rowDeleted() throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        return currentRow.getDelete();
     }
 
     public boolean rowInserted() throws SQLException {
@@ -741,11 +778,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateInt(int columnIndex, int x) throws SQLException {
-        throw new NotImplementedException();
+        currentRow.updateInt(columnIndex, x);
     }
 
     public void updateInt(String columnName, int x) throws SQLException {
-        throw new NotImplementedException();
+        currentRow.updateInt(getIndexByName(columnName), x);
     }
 
     public void updateLong(int columnIndex, long x) throws SQLException {
@@ -803,11 +840,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateString(int columnIndex, String x) throws SQLException {
-        throw new NotImplementedException();
+        currentRow.updateString(columnIndex, x);
     }
 
     public void updateString(String columnName, String x) throws SQLException {
-        throw new NotImplementedException();
+        currentRow.updateString(getIndexByName(columnName), x);
     }
 
     public void updateTime(int columnIndex, Time x) throws SQLException {

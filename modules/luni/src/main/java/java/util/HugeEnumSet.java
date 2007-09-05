@@ -83,6 +83,8 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
             currentElementMask = unProcessedBits[bitsPosition]
                     & (-unProcessedBits[bitsPosition]);
             unProcessedBits[bitsPosition] -= currentElementMask;
+            int index = Long.numberOfTrailingZeros(currentElementMask)
+                    + bitsPosition * BIT_IN_LONG;
             if (0 == unProcessedBits[bitsPosition]) {
                 int oldBitsPosition = bitsPosition;
                 findNextNoneZeroPosition(bitsPosition + 1);
@@ -90,8 +92,7 @@ final class HugeEnumSet<E extends Enum<E>> extends EnumSet<E> {
                     canProcess = false;
                 }
             }
-            return enums[Long.numberOfTrailingZeros(currentElementMask)
-                    + bitsPosition * BIT_IN_LONG];
+            return enums[index];
         }
 
         public void remove() {

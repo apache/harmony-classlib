@@ -558,7 +558,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
                 (transform.isIdentity() || transform.getType() == AffineTransform.TYPE_TRANSLATION)) {
             Point p = new Point(x, y);
             transform.transform(p, p);
-            MultiRectArea mra = JavaArcRasterizer.rasterize(x, y, width, height, 0, 360, clip);
+            MultiRectArea mra = JavaArcRasterizer.rasterize(p.x, p.y, width, height, 0, 360, clip);
             fillMultiRectArea(mra);
             return;
         }

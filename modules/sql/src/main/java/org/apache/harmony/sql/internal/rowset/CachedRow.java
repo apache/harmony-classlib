@@ -23,12 +23,46 @@ public class CachedRow {
 
     private BitSet mask;
 
+    private boolean isDelete;
+
+    private boolean insert;
+
     public CachedRow(Object[] columnData) {
         this.columnData = columnData;
         mask = new BitSet(columnData.length);
     }
 
-    public boolean setUpdateMask(int i) {
+    public boolean getUpdateMask(int i) {
         return mask.get(i);
+    }
+
+    public void setUpdateMask(int i) {
+        mask.set(i);
+    }
+
+    public void setDelete() {
+        this.isDelete = true;
+    }
+
+    public boolean getDelete() {
+        return isDelete;
+    }
+
+    public void setInsert() {
+        this.insert = true;
+    }
+
+    public boolean getInsert() {
+        return this.insert;
+    }
+
+    public void updateString(int columnIndex, String x) {
+        this.columnData[columnIndex - 1] = x;
+        setUpdateMask(columnIndex - 1);
+    }
+
+    public void updateInt(int columnIndex, int x) {
+        this.columnData[columnIndex - 1] = x;
+        setUpdateMask(columnIndex - 1);
     }
 }

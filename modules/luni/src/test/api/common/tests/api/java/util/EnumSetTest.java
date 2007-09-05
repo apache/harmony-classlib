@@ -1546,6 +1546,14 @@ public class EnumSetTest extends TestCase {
         assertFalse(hugeSet.contains(HugeEnum.a));
         // RI's bug, EnumFoo.b should not exist at the moment.
         assertFalse("Should return false", set.contains(EnumFoo.b)); //$NON-NLS-1$
+        
+        // Regression for HARMONY-4728
+        hugeSet = EnumSet.allOf(HugeEnum.class);
+        hIterator = hugeSet.iterator();
+        for( int i = 0; i < 63; i++) {
+            hIterator.next();
+        }
+        assertSame(HugeEnum.ll, hIterator.next());
     }
     
     /**

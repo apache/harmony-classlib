@@ -196,7 +196,10 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
       memset(&blitStruct, 0, sizeof(BLITSTRUCT));
 
       srcSurf->invalidated = invalidated != 0;
-      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)) return;
+
+      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)){
+           return;
+      }
 
       XFORM currentTransform, transform;
       if(matrix != NULL){
@@ -366,15 +369,15 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
+  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint heigth, jint xorcolor, 
+  jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
 
   }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorBitmap
-  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
-  jint xorcolor, jdoubleArray matrix, jintArray clip, jint numVertex){
+  (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jint dstX, 
+  jint dstY, jlong dstSurfStruct, jint width, jint heigth, jint xorcolor, 
+  jdoubleArray matrix, jintArray clip, jint numVertex){
 
   }
 
@@ -487,7 +490,11 @@ BOOL initBitmap
         return false;
     }
     updateCache(srcSurf, env, srcData, alphaPre != 0);
-    SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+    if(srcSurf->isTrueColor){
+        SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+    }else{
+        GdiFlush();
+    }
     return true;
 }
 

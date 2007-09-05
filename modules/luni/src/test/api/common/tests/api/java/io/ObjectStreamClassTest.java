@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
+import java.lang.reflect.Proxy;
 
 public class ObjectStreamClassTest extends junit.framework.TestCase {
 
@@ -186,17 +187,26 @@ public class ObjectStreamClassTest extends junit.framework.TestCase {
         assertEquals(0, osc.getFields().length);
     }
     
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
+    public void test_specialTypes() {
+        Class<?> proxyClass = Proxy.getProxyClass(this.getClass()
+                .getClassLoader(), new Class[] { Runnable.class });
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+        ObjectStreamClass proxyStreamClass = ObjectStreamClass
+                .lookup(proxyClass);
+
+        assertEquals("Proxy classes should have zero serialVersionUID", 0,
+                proxyStreamClass.getSerialVersionUID());
+        ObjectStreamField[] proxyFields = proxyStreamClass.getFields();
+        assertEquals("Proxy classes should have no serialized fields", 0,
+                proxyFields.length);
+
+        ObjectStreamClass enumStreamClass = ObjectStreamClass
+                .lookup(Thread.State.class);
+
+        assertEquals("Enum classes should have zero serialVersionUID", 0,
+                enumStreamClass.getSerialVersionUID());
+        ObjectStreamField[] enumFields = enumStreamClass.getFields();
+        assertEquals("Enum classes should have no serialized fields", 0,
+                enumFields.length);
+    }
 }
