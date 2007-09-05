@@ -4645,6 +4645,66 @@ public class X11 extends BasicLibWrapper {
     }
     public final native int XSetStandardProperties(long param_0, long param_1, long param_2, long param_3, long param_4, long param_5, int param_6, long param_7);
 
+    public final void Xutf8SetWMProperties(long param_0, long param_1, String param_2, String param_3, PointerPointer param_4, int param_5, X11.XSizeHints param_6, X11.XWMHints param_7, PointerPointer param_8) {
+        Int8Pointer _param_2 = null == param_2? null :  nb.createInt8Pointer(param_2, false);
+        long tmp_0 = _param_2 == null ? 0 : _param_2.longLockPointer();
+        Int8Pointer _param_3 = null == param_3? null :  nb.createInt8Pointer(param_3, false);
+        long tmp_1 = _param_3 == null ? 0 : _param_3.longLockPointer();
+        long tmp_2 = param_4 == null ? 0 : param_4.longLockPointer();
+        long tmp_3 = param_6 == null ? 0 : param_6.longLockPointer();
+        long tmp_4 = param_7 == null ? 0 : param_7.longLockPointer();
+        long tmp_5 = param_8 == null ? 0 : param_8.longLockPointer();
+        Xutf8SetWMProperties(param_0, param_1, tmp_0, tmp_1, tmp_2, param_5, tmp_3, tmp_4, tmp_5);
+        if (_param_2 != null) {
+            _param_2.unlock();
+            _param_2.free();
+        }
+        if (_param_3 != null) {
+            _param_3.unlock();
+            _param_3.free();
+        }
+        if (param_4 != null) {
+            param_4.unlock();
+        }
+        if (param_6 != null) {
+            param_6.unlock();
+        }
+        if (param_7 != null) {
+            param_7.unlock();
+        }
+        if (param_8 != null) {
+            param_8.unlock();
+        }
+    }
+    public final void Xutf8SetWMProperties(long param_0, long param_1, Int8Pointer param_2, Int8Pointer param_3, PointerPointer param_4, int param_5, X11.XSizeHints param_6, X11.XWMHints param_7, PointerPointer param_8) {
+        long tmp_0 = param_2 == null ? 0 : param_2.longLockPointer();
+        long tmp_1 = param_3 == null ? 0 : param_3.longLockPointer();
+        long tmp_2 = param_4 == null ? 0 : param_4.longLockPointer();
+        long tmp_3 = param_6 == null ? 0 : param_6.longLockPointer();
+        long tmp_4 = param_7 == null ? 0 : param_7.longLockPointer();
+        long tmp_5 = param_8 == null ? 0 : param_8.longLockPointer();
+        Xutf8SetWMProperties(param_0, param_1, tmp_0, tmp_1, tmp_2, param_5, tmp_3, tmp_4, tmp_5);
+        if (param_2 != null) {
+            param_2.unlock();
+        }
+        if (param_3 != null) {
+            param_3.unlock();
+        }
+        if (param_4 != null) {
+            param_4.unlock();
+        }
+        if (param_6 != null) {
+            param_6.unlock();
+        }
+        if (param_7 != null) {
+            param_7.unlock();
+        }
+        if (param_8 != null) {
+            param_8.unlock();
+        }
+    }
+    public final native void Xutf8SetWMProperties(long param_0, long param_1, long param_2, long param_3, long param_4, int param_5, long param_6, long param_7, long param_8);
+
     public final native long XDefaultColormap(long param_0, int param_1);
 
     public final native long XAllocSizeHints();
