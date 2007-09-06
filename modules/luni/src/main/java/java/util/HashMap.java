@@ -194,7 +194,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
                     int index = hash & (associatedMap.elementData.length - 1);
                     entry = associatedMap.findNonNullKeyEntry(key, index, hash);
                 }
-                return object.equals(entry);
+                return entry == null ? false : entry.equals(object);
             }
             return false;
         }
