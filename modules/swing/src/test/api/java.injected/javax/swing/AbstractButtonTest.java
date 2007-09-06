@@ -2067,6 +2067,23 @@ public class AbstractButtonTest extends SwingTestCase {
             assertEquals(name, listener.eventHappened.getActionCommand());
         }
     }
+    
+    /**
+     * Regression test for H4655: setMargin(null) causes to default margin
+     * */
+    public void testH4655() {
+
+        JRadioButton rb = new JRadioButton();
+        Insets newInsets = new Insets(10, 10, 10, 10);
+        Insets defaultInsets = rb.getMargin();
+
+        rb.setMargin(null);
+        assertEquals(defaultInsets, rb.getMargin());
+        rb.setMargin(newInsets);
+        assertEquals(newInsets, rb.getMargin());
+        rb.setMargin(null);
+        assertEquals(defaultInsets, rb.getMargin());
+    }
 
     protected int find(final Object[] array, final Object value) {
         int found = 0;

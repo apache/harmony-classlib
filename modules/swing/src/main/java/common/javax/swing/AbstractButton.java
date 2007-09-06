@@ -45,6 +45,8 @@ import javax.accessibility.AccessibleValue;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ButtonUI;
+import javax.swing.plaf.InsetsUIResource;
+import javax.swing.plaf.UIResource;
 import javax.swing.text.AttributeSet;
 
 import org.apache.harmony.x.swing.ButtonCommons;
@@ -367,6 +369,8 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     private int mnemonicIndex = -1;
 
     private long multiClickThreshhold;
+    
+    private InsetsUIResource defaultMargin;
 
     protected void init(String text, Icon icon) {
         if (text != null) {
@@ -707,6 +711,17 @@ public abstract class AbstractButton extends JComponent implements ItemSelectabl
     }
 
     public void setMargin(Insets margin) {
+
+        /* default values are obtained from UI (Harmony-4655) */
+        if (margin instanceof InsetsUIResource) {
+            defaultMargin = (InsetsUIResource) margin;
+        } else if (margin == null) {
+            /*
+             * According to spec if margin == null default value sets
+             * (Harmony-4655)
+             */
+            margin = defaultMargin;
+        }
         Insets oldValue = this.margin;
         this.margin = margin;
         firePropertyChange(MARGIN_CHANGED_PROPERTY, oldValue, margin);
