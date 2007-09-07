@@ -806,6 +806,9 @@ public abstract class Provider extends Properties {
         }
 
         Iterator<String> getAliases() {
+            if(aliases == null){
+                aliases = new ArrayList<String>(0);
+            }
             return aliases.iterator();
         }
 
