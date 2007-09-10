@@ -17,6 +17,7 @@
 
 package javax.naming;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import javax.naming.spi.NamingManager;
 
@@ -351,10 +352,20 @@ public class InitialContext implements Context {
         String scheme = UrlParser.getScheme(name);
         Context ctx = null;
         if (null != scheme) {
-            // So the first component is a valid URL
-            ctx = NamingManager.getURLContext(scheme, myProps);
+            synchronized (contextCache) {
+                if (contextCache.containsKey(scheme)) {
+                    return contextCache.get(scheme);
+                }
+
+                // So the first component is a valid URL
+                ctx = NamingManager.getURLContext(scheme, myProps);
+                if (null == ctx) {
+                    ctx = getDefaultInitCtx();
+                }
+                contextCache.put(scheme, ctx);                
+            }
         }
-        return null == ctx ? getDefaultInitCtx() : ctx;
+        return getDefaultInitCtx();
     }
 
     public Object lookup(Name name) throws NamingException {
@@ -493,13 +504,19 @@ public class InitialContext implements Context {
     }
 
     public Object addToEnvironment(String propName, Object propVal)
-            throws NamingException {
-        this.myProps.put(propName, propVal);
+            throws NamingException {        
+        synchronized (contextCache) {
+            myProps.put(propName, propVal);
+            contextCache.clear();
+        }
         return getDefaultInitCtx().addToEnvironment(propName, propVal);
     }
 
     public Object removeFromEnvironment(String propName) throws NamingException {
-        this.myProps.remove(propName);
+        synchronized (contextCache) {
+            myProps.remove(propName);
+            contextCache.clear();
+        }
         return getDefaultInitCtx().removeFromEnvironment(propName);
     }
 
@@ -516,5 +533,7 @@ public class InitialContext implements Context {
     public String getNameInNamespace() throws NamingException {
         return getDefaultInitCtx().getNameInNamespace();
     }
-
+    
+    
+    private HashMap<String, Context> contextCache = new HashMap<String, Context>();   
 }
