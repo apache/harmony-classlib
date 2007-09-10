@@ -295,15 +295,25 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		remote_addr.sin_port = 0;
                 remote_addr.sin_addr.s_addr = 0;
 		address = malloc(sizeof(jbyte)*4);
+                if (NULL == address) {
+                  goto clean;
+                }
 		bzero(address,sizeof(jbyte)*4);
 	} else {
 		if(AF_INET != remote_addr.sin_family || length != sizeof(struct sockaddr))	{
 			return NULL;
 		}
 		address = malloc(sizeof(jbyte)*4);
+                if (NULL == address) {
+                  goto clean;
+                }
 		memcpy (address, &(remote_addr.sin_addr.s_addr), 4);
 	}
 	sock = malloc(sizeof(hysocket_struct));
+        /* TODO: where is sock free'd? */
+        if (NULL == sock) {
+          goto clean;
+        }
 	sock->sock = socket;
 	sock->family = AF_INET;
 
@@ -314,10 +324,12 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		//socket
 		channel_class = (*env)->FindClass(env,"org/apache/harmony/nio/internal/SocketChannelImpl");
         	if(NULL == channel_class) {
+                    free(sock);
         	    goto clean;
 	        }
 		channel_object = getJavaNioChannelsSocketChannelImplObj(env,channel_class);
           	if(NULL == channel_object) {
+                    free(sock);
 	            goto clean;
         	}
 		// new and set FileDescript
@@ -340,6 +352,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 			(*env)->SetBooleanField(env,channel_object, bound_field,jtrue);
 		}
 	  } else {
+                // sock isn't used on this code path so we should free it
+                free(sock);
 		//serverSocket	
 		channel_class = (*env)->FindClass(env,"org/apache/harmony/nio/internal/ServerSocketChannelImpl");
         	if(NULL == channel_class) {
@@ -378,10 +392,12 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 	  // new DatagramChannel
 	  channel_class = (*env)->FindClass(env,"org/apache/harmony/nio/internal/DatagramChannelImpl");
           if(NULL == channel_class) {
+              free(sock);
               goto clean;
           }
           channel_object = getJavaNioChannelsSocketChannelImplObj(env,channel_class);
           if(NULL == channel_object) {
+              free(sock);
               goto clean;
           }
 	  // new and set FileDescript
@@ -395,10 +411,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		(*env)->SetBooleanField(env,channel_object, bound_field,jtrue);			
 	  }
         }	
-clean:
+ clean:
 	free(address);
 	free(localAddr);
 	return channel_object;
 }
-
-
