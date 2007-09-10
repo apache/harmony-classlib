@@ -208,6 +208,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   for (val=0; val<countReadC; val++) {
 	  gotFD	= (*env)->GetObjectArrayElement(env, readFDArray, val);
 	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+      (*env)->DeleteLocalRef(env, gotFD);
 
       my_pollfds[val].fd = hysocketP->sock;
       my_pollfds[val].events = POLLIN | POLLPRI;
@@ -217,6 +218,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   for (val=0; val<countWriteC; val++) {
 	  gotFD	= (*env)->GetObjectArrayElement(env, writeFDArray, val);
 	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+      (*env)->DeleteLocalRef(env, gotFD);
 
       my_pollfds[countReadC + val].fd = hysocketP->sock;
       my_pollfds[countReadC + val].events = POLLOUT;
@@ -398,4 +400,5 @@ clean:
 	free(localAddr);
 	return channel_object;
 }
+
 
