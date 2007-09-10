@@ -362,8 +362,9 @@ public class InitialContext implements Context {
                 if (null == ctx) {
                     ctx = getDefaultInitCtx();
                 }
-                contextCache.put(scheme, ctx);                
+                contextCache.put(scheme, ctx);               
             }
+            return ctx;
         }
         return getDefaultInitCtx();
     }
