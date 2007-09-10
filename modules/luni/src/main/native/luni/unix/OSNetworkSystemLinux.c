@@ -94,10 +94,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   }
 
   send_buf = (struct icmp*)malloc(sizeof(char)*ICMP_SIZE);
+  if (NULL == send_buf) {
+    ret = NOPRIVILEGE;
+    goto cleanup;
+  }
   recv_buf = (struct ip*)malloc(sizeof(char)*PACKET_SIZE);
-  if (NULL == send_buf || NULL == recv_buf){
-	  ret = NOPRIVILEGE;
-      goto cleanup;
+  if (NULL == recv_buf) {
+    ret = NOPRIVILEGE;
+    goto cleanup;
   }
   set_icmp_packet(send_buf, ICMP_SIZE);
 
