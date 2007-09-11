@@ -332,6 +332,16 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     }
 
     @Override
+    public void drawOval(int x, int y, int width, int height) {
+        if (!nativePen) {
+            super.drawOval(x, y, width, height);
+            return;
+        }
+
+        drawOval(gi, x, y, width, height);
+    }
+
+    @Override
     public void fill(Shape s) {
         if (!nativeBrush) {
             super.fill(s);
@@ -540,6 +550,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     // Draw native primitives
     private native void drawLine(long gi, int x1, int y1, int x2, int y2);
     private native void drawRect(long gi, int x, int y, int width, int height);
+    private native void drawOval(long gi, int x, int y, int width, int height);
 
     // Fill native primitives
     private native void fillRect(long gi, int x, int y, int width, int height);
