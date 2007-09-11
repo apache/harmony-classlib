@@ -308,9 +308,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   }
   ret = REACHABLE;
 cleanup:
-  hymem_allocate_memory(fdset_read);
-  hymem_allocate_memory(send_buf);
-  hymem_allocate_memory(recv_buf);
+  hymem_free_memory(fdset_read);
+  hymem_free_memory(send_buf);
+  hymem_free_memory(recv_buf);
   WSACleanup();	 
   return ret;
 }
