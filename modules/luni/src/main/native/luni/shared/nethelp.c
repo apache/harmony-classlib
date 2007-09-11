@@ -1007,6 +1007,7 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
   static jbyte IPv6ANY[16] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   U_32 i = 0;
+  jobject result;
 
   /* check if the address being returned is the any address.  If so we need to check the prefer flags to see how it should be returned
   (either as IPv4 Any or IPv6 ANY) */
@@ -1087,9 +1088,11 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
           /* create using the scope id */
           tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
           //tempClass = getJavaNetInetAddressClass(env);
-          return (*env)->CallStaticObjectMethod (env, tempClass,
+          result = (*env)->CallStaticObjectMethod (env, tempClass,
             tempMethodWithScope,
             byte_array, scope_id);
+          (*env)->ExceptionCheck(env);
+          return result;
         }
       else
         {
@@ -1099,8 +1102,10 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
             HARMONY_CACHE_GET (env,
             MID_java_net_InetAddress_getByAddress_byteArray);
           //tempMethod = getJavaNetInetAddressGetByAddressByteArray(env);
-          return (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
+          result = (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
             byte_array);
+          (*env)->ExceptionCheck(env);
+          return result;
         }
     }
   else
