@@ -229,7 +229,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   struct ICMPHeader* icmphdr;
   struct WSAData wsaData;
   int ret = UNREACHABLE;
-  U_32 length =  (*env)->GetArrayLength (env,address);
+  U_32 length;
 	      
   // start raw socket, return -1 for privilege can not be obtained
   if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {

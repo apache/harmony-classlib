@@ -65,7 +65,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   struct pollfd my_pollfd;
   int sockadd_size = sizeof (source);
   jbyte host[HYSOCK_INADDR6_LEN];
-  U_32 length =  (*env)->GetArrayLength (env,address);
+  U_32 length;
 
   int sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
   if (INVALID_SOCKET == sock){

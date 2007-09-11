@@ -754,10 +754,11 @@ netLookupErrorString (JNIEnv * env, I_32 anErrorNum)
 /**
  * Answer the 'address' field value from a java.net.InetAddress
  *
- * @param env           pointer to the JNI library
- * @param anInetAddress   the object to access the 'value' field of
+ * @param[in]  env            pointer to the JNI library
+ * @param[in]  anInetAddress  the object to access the 'value' field of
+ * @param[out] buffer         bytes from the address jbyte array
+ * @param[out] length         length of the address in stored in buffer
  *
- * @return  the 'address' field integer value (completion status is not returned)
  */
 
 void
