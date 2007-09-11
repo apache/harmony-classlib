@@ -611,10 +611,31 @@ public abstract class FontManager {
 
             pathname = javaHome + pathname;
 
-            pathname = pathname.replaceAll("Language", language). //$NON-NLS-1$
-                                replaceAll("Country", country). //$NON-NLS-1$
-                                replaceAll("Encoding", fileEncoding). //$NON-NLS-1$
-                                replaceAll("Version", version); //$NON-NLS-1$
+//            pathname = pathname.replaceAll("Language", language). //$NON-NLS-1$
+//                                replaceAll("Country", country). //$NON-NLS-1$
+//                                replaceAll("Encoding", fileEncoding). //$NON-NLS-1$
+//                                replaceAll("Version", version); //$NON-NLS-1$
+	     int curPos;
+            StringBuilder result = new StringBuilder(pathname);
+
+            curPos = result.indexOf("Language"); //$NON-NLS-1$
+            if (curPos >= 0) {
+            	result.replace( curPos, curPos+8, language);
+            }
+            curPos = result.indexOf("Country"); //$NON-NLS-1$
+            if (curPos >= 0) {
+            	result.replace( curPos, curPos+7, country);
+            }
+            curPos = result.indexOf("Encoding"); //$NON-NLS-1$
+            if (curPos >= 0) {
+            	result.replace( curPos, curPos+8, fileEncoding);
+            }
+            curPos = result.indexOf("Version"); //$NON-NLS-1$
+            if (curPos >= 0) {
+            	result.replace( curPos, curPos+7, version);
+            }
+            pathname =  result.toString();
+
 
             file = new File(pathname);
 
