@@ -74,7 +74,8 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_readI
   if(result == -1 && hyerror_last_error_number() == HYPORT_ERROR_FILE_LOCKED){
     throwNewExceptionByName(env, "java/io/IOException", netLookupErrorString(env, HYPORT_ERROR_FILE_LOCKED));
   }
-  (*env)->ReleaseByteArrayElements (env, byteArray, bytes, 0);
+  (*env)->ReleaseByteArrayElements (env, byteArray, bytes,
+                                    result==0 || result==-1 ? JNI_ABORT : 0);
 
   return result;
 }
