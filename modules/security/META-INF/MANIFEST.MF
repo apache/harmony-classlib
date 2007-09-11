@@ -33,7 +33,8 @@ Import-Package: java.io,
  org.apache.harmony.luni.util,
  org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
  tests.support;hy_usage=test;resolution:=optional,
- tests.support.resource;hy_usage=test;resolution:=optional
+ tests.support.resource;hy_usage=test;resolution:=optional,
+ tests.util;hy_usage=test;resolution:=optional
 Export-Package: java.security,
  java.security.acl,
  java.security.cert,
