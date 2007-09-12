@@ -55,6 +55,8 @@ public final class BHSDCodec extends Codec {
 	 * Represents signed numbers or not (0=unsigned,1/2=signed)
 	 */
 	private int s;
+    
+    private long cardinality;
 
 	/**
 	 * Constructs an unsigned, non-delta Codec with the given B and H values.
@@ -118,6 +120,11 @@ public final class BHSDCodec extends Codec {
 		this.s = s;
 		this.d = d;
 		this.l = 256 - h;
+        if(h == 1) {
+            cardinality = b * 255 + 1;
+        } else {
+            cardinality = (long) ((long)(l * (1-Math.pow(h, b))/(1-h)) + Math.pow(h,b));
+        }
 	}
 
 	/**
@@ -127,11 +134,7 @@ public final class BHSDCodec extends Codec {
 	 * @return the cardinality of this codec
 	 */
 	public long cardinality() {
-		if (h > 1) {
-			return (long) (l * Math.pow(1 - h, b) / (1 - h) + Math.pow(h, b));
-		} else {
-			return (b * 255) + 1;
-		}
+		return cardinality;
 	}
 
 	
@@ -152,26 +155,43 @@ public final class BHSDCodec extends Codec {
 			x = in.read();
 			if (x == -1)
 				throw new EOFException("End of stream reached whilst decoding");
-			z += x * Math.pow(h, n);
-		} while (++n < b && x >= l);
-		// This looks more complicated than it is
-		// When s=0, {1,2,3,4} is mapped to {1,2,3,4}
-		// When s=1, {1,2,3,4} is mapped to {-1,1,-2,2...}
-		// When s=2, {1,2,3,4} is mapped to {1,2,3,-1...}
-		if (isSigned()) {
-			int u = ((1 << s) - 1);
-			if ((z & u) == u) {
-				z = z >>> s ^ -1L;
-			} else {
-				z = z - (z >>> s);
-			}
-		}
+			z += x * Math.pow(h, n); 
+            n++;
+		} while (n < b & isHigh(x));
+        long u = z;
+        long twoPowS = (long)Math.pow(2, s);
+        double twoPowSMinusOne = twoPowS-1;
+        if(isSigned()) {
+            if(u % twoPowS < twoPowSMinusOne) {
+                if(cardinality < Math.pow(2, 32)) {
+                    z = (long) (u - (Math.floor(u/ twoPowS)));                    
+                } else {
+                    z = cast32((long) (u - (Math.floor(u/ twoPowS))));
+                }                
+            } else {
+                z = (long) (-Math.floor(u/ twoPowS) - 1);
+            }
+        } else {
+        // TODO: This is required in the spec, but it's making a test fail so needs more investigation.
+        //  z = cast32(u);
+        }
+        
+        
 		if (isDelta())
 			z += last;
 		return z;
 	}
 
-	/**
+	private long cast32(long u) {
+        u = (long) ((long) ((u + Math.pow(2, 31)) % Math.pow(2, 32)) - Math.pow(2, 31));
+        return u;
+    }
+
+    private boolean isHigh(long x) {
+        return x>=l;
+    }
+
+    /**
 	 * True if this encoding can code the given value
 	 * 
 	 * @param value
