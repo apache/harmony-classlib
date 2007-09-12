@@ -198,7 +198,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
     return;
   HARMONY_CACHE_SET (env, CLS_java_lang_Long, globalRef);
   fid = (*env)->GetFieldID (env, lookupClass, "value", "J");
-    if (!lookupClass)
+  if (!lookupClass)
     return;
   HARMONY_CACHE_SET (env, FID_java_lang_Long_value, fid);
   lookupClass = (*env)->FindClass (env, "java/net/Inet6Address");
