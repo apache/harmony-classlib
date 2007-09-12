@@ -47,7 +47,7 @@ Java_java_lang_reflect_Proxy_defineClassImpl (JNIEnv * env, jclass recvClass,
 
   returnClass = (*env)->DefineClass (env, name, classLoader, bytes, length);
 
-  (*env)->ReleaseByteArrayElements (env, classBytes, bytes, JNI_COMMIT);
+  (*env)->ReleaseByteArrayElements (env, classBytes, bytes, JNI_ABORT);
   (*env)->ReleaseStringUTFChars (env, className, name);
   return returnClass;
 }
