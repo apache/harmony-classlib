@@ -416,19 +416,31 @@ freeReferences (JNIEnv * env)
   /* clean up class references */
   classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Boolean);
   if (classRef)
-    (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
+    (*env)->DeleteGlobalRef (env, classRef);
 
   classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Byte);
   if (classRef)
-    (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
+    (*env)->DeleteGlobalRef (env, classRef);
 
   classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Integer);
   if (classRef)
-    (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
+    (*env)->DeleteGlobalRef (env, classRef);
 
   classRef = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
   if (classRef)
-    (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
+    (*env)->DeleteGlobalRef (env, classRef);
+
+  classRef = HARMONY_CACHE_GET (env, CLS_java_net_Socket);
+  if (classRef)
+    (*env)->DeleteGlobalRef (env, classRef);
+
+  classRef = HARMONY_CACHE_GET (env, CLS_java_lang_Long);
+  if (classRef)
+    (*env)->DeleteGlobalRef (env, classRef);
+
+  classRef = HARMONY_CACHE_GET (env, CLS_java_net_Inet6Address);
+  if (classRef)
+    (*env)->DeleteGlobalRef (env, classRef);
 
   classRef = HARMONY_CACHE_GET (env, CLS_array_of_byte);
   if (classRef)

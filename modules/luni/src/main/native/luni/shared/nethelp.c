@@ -43,7 +43,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/lang/Boolean");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(Z)V");
@@ -60,7 +60,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/lang/Byte");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(B)V");
@@ -77,7 +77,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/lang/Integer");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(I)V");
@@ -94,7 +94,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   fid = (*env)->GetFieldID (env, lookupClass, "ipaddress", "[B");
@@ -161,7 +161,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/net/Socket");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   mid =
@@ -188,7 +188,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/lang/Long");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   HARMONY_CACHE_SET (env, CLS_java_lang_Long, globalRef);
@@ -199,7 +199,7 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   lookupClass = (*env)->FindClass (env, "java/net/Inet6Address");
   if (!lookupClass)
     return;
-  globalRef = (*env)->NewWeakGlobalRef (env, lookupClass);
+  globalRef = (*env)->NewGlobalRef (env, lookupClass);
   if (!globalRef)
     return;
   HARMONY_CACHE_SET (env, CLS_java_net_Inet6Address, globalRef);
