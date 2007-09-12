@@ -112,6 +112,11 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
     return;
   HARMONY_CACHE_SET (env, MID_java_net_InetAddress_preferIPv6Addresses, mid);
 
+  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "()V");
+  if (!mid)
+    return;
+  HARMONY_CACHE_SET (env, MID_java_net_InetAddress_init, mid);
+
   if (ipv6_support)
     {
       /* static InetAddress getByAddress( String name, byte[] address ) */
@@ -198,11 +203,6 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   if (!globalRef)
     return;
   HARMONY_CACHE_SET (env, CLS_java_net_Inet6Address, globalRef);
-  lookupClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "()V");
-  if (!mid)
-    return;
-  HARMONY_CACHE_SET (env, MID_java_net_InetAddress_init, mid);
   
 }
 
