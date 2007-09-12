@@ -36,6 +36,11 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   jfieldID fid;
   jobject globalRef;
 
+  if (HARMONY_CACHE_GET (env, CLS_java_lang_Boolean)) {
+    /* Cache is already initialized */
+    return;
+  }
+
   /* Set the Harmony ID cache to use IPv6 address support */
   HARMONY_CACHE_SET (env, harmony_supports_ipv6, ipv6_support);
 
