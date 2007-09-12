@@ -304,7 +304,7 @@ Java_java_util_zip_ZipFile_ntvinit (JNIEnv * env, jclass cls)
   JCLZipFileLink *zipfileHandles;
 
   javaClass = (*env)->FindClass (env, "java/util/zip/ZipEntry");
-  weakJavaClass = (*env)->NewWeakGlobalRef (env, javaClass);
+  weakJavaClass = (*env)->NewGlobalRef (env, javaClass);
   if (!weakJavaClass)
     return;
   mid =
