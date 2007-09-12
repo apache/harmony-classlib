@@ -432,5 +432,5 @@ freeReferences (JNIEnv * env)
 
   classRef = HARMONY_CACHE_GET (env, CLS_array_of_byte);
   if (classRef)
-    (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
+    (*env)->DeleteGlobalRef (env, classRef);
 }
