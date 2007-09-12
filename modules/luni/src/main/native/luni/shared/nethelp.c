@@ -738,7 +738,7 @@ createAliasArray (JNIEnv * env, jbyte ** addresses, I_32 * family, U_32 count,
   U_32 i, length;
   jobjectArray aliases = NULL;
   jobject element;
-  jclass tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress); //(*env)->FindClass (env, "java/net/InetAddress");
+  jclass tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
 
   /* Number of structures */
   for (i = 0; i < count; i++)
