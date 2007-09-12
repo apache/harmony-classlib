@@ -206,89 +206,6 @@ netInitializeIDCaches (JNIEnv * env, jboolean ipv6_support)
   
 }
 
-
-/*--------------------------------------
-//reflect function
-----------------------------------------*/
-jclass 
-getJavaLangBooleanClass(JNIEnv * env);
-
-jmethodID
-getJavaLangBooleanInit(JNIEnv * env);
-
-jfieldID
-getJavaLangBooleanValue(JNIEnv * env);
-
-jclass
-getJavaLangByteClass(JNIEnv * env);
-
-jmethodID
-getJavaLangByteInit(JNIEnv * env);
-
-jfieldID
-getJavaLangByteValue(JNIEnv * env);
-
-jclass
-getJavaLangIntegerClass(JNIEnv * env);
-
-jmethodID
-getJavaLangIntegerInit(JNIEnv * env);
-
-jfieldID
-getJavaLangIntegerValue(JNIEnv * env);
-
-jclass
-getJavaNetInetAddressClass(JNIEnv * env);
-
-jfieldID
-getJavaNetInetAddressIpaddress(JNIEnv * env);
-
-jmethodID
-getJavaNetInetAddressPreferIPv6Addresses(JNIEnv * env);
-
-jmethodID
-getJavaNetInetAddressGetByAddressStringByte(JNIEnv * env);
-
-jmethodID
-getJavaNetInetAddressGetByAddressByteArray(JNIEnv * env);
-jmethodID
-getJavaNetInetAddressInitByteArray(JNIEnv * env);
-
-jmethodID
-getJavaNetInetAddressInitByteString(JNIEnv * env);
-
-jclass
-getJavaNetSocketClass(JNIEnv * env);
-
-jmethodID
-getJavaNetSocketPreferIPv4Stack(JNIEnv * env);
-
-jclass
-getJavaLangThreadClass(JNIEnv * env);
-
-jmethodID
-getJavaLangThreadYield(JNIEnv * env);
-
-jclass
-getJavaNetDatagramPacketClass(JNIEnv * env);
-
-jfieldID
-getJavaNetDatagramPacketAddress(JNIEnv * env);
-
-jfieldID
-getJavaNetDatagramPacketLength(JNIEnv * env);
-
-jfieldID
-getJavaNetDatagramPacketPort(JNIEnv * env);
-
-jfieldID
-getJavaNetSocketImplAddress(JNIEnv * env);
-
-jfieldID
-getJavaNetSocketImplPort(JNIEnv * env);
-
-
-
 /**
  * Set the exception state of the VM with a new java.lang.IllegalArgumentException.
  *
@@ -468,9 +385,7 @@ newJavaLangBoolean (JNIEnv * env, BOOLEAN aBool)
   jmethodID tempMethod;
 
   tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Boolean);
-  //tempClass = getJavaLangBooleanClass(env);
   tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Boolean_init);
-  //tempMethod = getJavaLangBooleanInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jboolean) aBool);
 }
 
@@ -491,8 +406,6 @@ newJavaLangByte (JNIEnv * env, U_8 aByte)
 
   tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Byte);
   tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Byte_init);
-  //tempClass = getJavaLangByteClass(env);
-  //tempMethod = getJavaLangByteInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jbyte) aByte);
 }
 
@@ -513,8 +426,6 @@ newJavaLangInteger (JNIEnv * env, I_32 anInt)
 
   tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Integer);
   tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Integer_init);
-  //tempClass = getJavaLangIntegerClass(env);
-  //tempMethod = getJavaLangIntegerInit(env);
   return (*env)->NewObject (env, tempClass, tempMethod, (jint) anInt);
 }
 
@@ -580,9 +491,6 @@ booleanValue (JNIEnv * env, jobject aBoolean)
         GetBooleanField (env, aBoolean,
              HARMONY_CACHE_GET (env,
                 FID_java_lang_Boolean_value)));
-  /*return (BOOLEAN) ((*env)->
-        GetBooleanField (env, aBoolean,
-             getJavaLangBooleanValue(env)));*/
 }
 
 /**
@@ -600,9 +508,6 @@ byteValue (JNIEnv * env, jobject aByte)
   return (U_8) ((*env)->
     GetByteField (env, aByte,
             HARMONY_CACHE_GET (env, FID_java_lang_Byte_value)));
-  /*return (U_8) ((*env)->
-    GetByteField (env, aByte,
-            getJavaLangByteValue(env)));*/
 }
 
 /**
@@ -621,9 +526,6 @@ intValue (JNIEnv * env, jobject anInteger)
      GetIntField (env, anInteger,
             HARMONY_CACHE_GET (env,
                FID_java_lang_Integer_value)));
-  /*return (I_32) ((*env)->
-     GetIntField (env, anInteger,
-            getJavaLangIntegerValue(env)));*/
 }
 
 /**
@@ -769,9 +671,6 @@ netGetJavaNetInetAddressValue (JNIEnv * env, jobject anInetAddress,
     (jbyteArray) ((*env)->GetObjectField (env, anInetAddress,
             HARMONY_CACHE_GET (env,
                FID_java_net_InetAddress_address)));
-  /*jbyteArray byte_array =
-    (jbyteArray) ((*env)->GetObjectField (env, anInetAddress,
-            getJavaNetInetAddressIpaddress(env)));*/
   *length = (*env)->GetArrayLength (env, byte_array);
   (*env)->GetByteArrayRegion (env, byte_array, 0, *length, (jbyte *)buffer);
 }
@@ -793,8 +692,6 @@ callThreadYield (JNIEnv * env)
   tempClass = HARMONY_CACHE_GET (env, CLS_java_lang_Thread);
   tempMethod = HARMONY_CACHE_GET (env, MID_java_lang_Thread_yield);
   
-  //tempClass = getJavaLangThreadClass(env);
-  //tempMethod = getJavaLangThreadYield(env);
   if (tempClass == 0)
     {
       tempClass = (*env)->FindClass (env, "java/lang/Thread");
@@ -1071,11 +968,6 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
             "getByAddress",
             "([BI)Ljava/net/InetAddress;");
           
-          /*tempMethodWithScope =
-            (*env)->GetStaticMethodID (env,
-            getJavaNetInetAddressClass(env),
-            "getByAddress",
-            "([BI)Ljava/net/InetAddress;");*/
           if ((*env)->ExceptionCheck (env))
             {
               (*env)->ExceptionClear (env);
@@ -1087,7 +979,6 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
         {
           /* create using the scope id */
           tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
-          //tempClass = getJavaNetInetAddressClass(env);
           result = (*env)->CallStaticObjectMethod (env, tempClass,
             tempMethodWithScope,
             byte_array, scope_id);
@@ -1097,11 +988,9 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
       else
         {
           tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
-          //tempClass = getJavaNetInetAddressClass(env);
           tempMethod =
             HARMONY_CACHE_GET (env,
             MID_java_net_InetAddress_getByAddress_byteArray);
-          //tempMethod = getJavaNetInetAddressGetByAddressByteArray(env);
           result = (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
             byte_array);
           (*env)->ExceptionCheck(env);
@@ -1113,8 +1002,6 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
       tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
       tempMethod =
         HARMONY_CACHE_GET (env, MID_java_net_InetAddress_init_byteArray);
-      //tempClass = getJavaNetInetAddressClass(env);
-      //tempMethod = getJavaNetInetAddressInitByteArray(env);
       return (*env)->NewObject (env, tempClass, tempMethod, byte_array);
     }
 }
@@ -1211,11 +1098,6 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
             "getByAddress",
             "(Ljava/lang/String;[BI)Ljava/net/InetAddress;");
           
-          /*tempMethodWithScope =
-            (*env)->GetStaticMethodID (env,
-            getJavaNetInetAddressClass(env),
-            "getByAddress",
-            "(Ljava/lang/String;[BI)Ljava/net/InetAddress;");*/
           if ((*env)->ExceptionCheck (env))
             {
               (*env)->ExceptionClear (env);
@@ -1227,7 +1109,6 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
         {
           /* create using the scope id */
           tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
-          //tempClass = getJavaNetInetAddressClass(env);
           return (*env)->CallStaticObjectMethod (env, tempClass,
             tempMethodWithScope, aString,
             byte_array, scope_id);
@@ -1239,8 +1120,6 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
             HARMONY_CACHE_GET (env,
             MID_java_net_InetAddress_getByAddress_Ljava_lang_String_byteArray);
           
-          //tempClass = getJavaNetInetAddressClass(env);
-          //tempMethod = getJavaNetInetAddressGetByAddressStringByte(env);
           return (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
             aString, byte_array);
         }
@@ -1252,8 +1131,6 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
           HARMONY_CACHE_GET (env,
           MID_java_net_InetAddress_init_byteArrayLjava_lang_String);
         
-        //tempClass = getJavaNetInetAddressClass(env);
-        //tempMethod = getJavaNetInetAddressInitByteString(env);        
         return (*env)->NewObject (env, tempClass, tempMethod, byte_array,
           aString);
     }
@@ -1321,10 +1198,6 @@ preferIPv4Stack (JNIEnv * env)
              HARMONY_CACHE_GET (env,
                 MID_java_net_Socket_preferIPv4Stack));
   
-  /*result =
-    (*env)->CallStaticBooleanMethod (env,
-             getJavaNetSocketClass(env),
-             getJavaNetSocketPreferIPv4Stack(env));*/
   if ((*env)->ExceptionCheck (env))
     {
       /* older JCLs do not have the right code for security checks so this may fail with an exception
@@ -1363,11 +1236,7 @@ preferIPv6Addresses (JNIEnv * env)
                 CLS_java_net_InetAddress),
              HARMONY_CACHE_GET (env,
                 MID_java_net_InetAddress_preferIPv6Addresses));
-  /*
-  result =
-    (*env)->CallStaticBooleanMethod (env,
-             getJavaNetInetAddressClass(env),
-             getJavaNetInetAddressPreferIPv6Addresses(env));*/ 
+
   if ((*env)->ExceptionCheck (env))
     {
       /* older JCLs do not have the right code for security checks so this may fail with an exception
@@ -1419,329 +1288,6 @@ netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
   /* clear any exception that might have occured */
   (*env)->ExceptionClear (env);
 
-}
-
-jclass 
-getJavaLangBooleanClass(JNIEnv * env){
-  jclass lookupClass = HARMONY_CACHE_GET(env,CLS_java_lang_Boolean);
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jmethodID
-getJavaLangBooleanInit(JNIEnv * env){
-  jmethodID mid;
-  mid = HARMONY_CACHE_GET(env,MID_java_lang_Boolean_init);;
-  if (!mid)
-    return NULL;
-  return mid;
-}
-
-jfieldID
-getJavaLangBooleanValue(JNIEnv * env){
-  jmethodID mid;
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Boolean");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(Z)V");
-  if (!mid)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "value", "Z");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-jclass
-getJavaLangByteClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Byte");
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jmethodID
-getJavaLangByteInit(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Byte");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(B)V");
-  if (!mid)
-    return NULL;
-  return mid;
-}
-
-jfieldID
-getJavaLangByteValue(JNIEnv * env){
-  jmethodID mid;
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Byte");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(B)V");
-  if (!mid)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "value", "B");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-jclass
-getJavaLangIntegerClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Integer");
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jmethodID
-getJavaLangIntegerInit(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Integer");
-  if (!lookupClass)
-    return NULL;
-  mid =  (*env)->GetMethodID (env, lookupClass, "<init>", "(I)V");
-  return mid;
-}
-
-jfieldID
-getJavaLangIntegerValue(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Integer");
-  if (!lookupClass)
-    return NULL;
-  fid =  (*env)->GetFieldID (env, lookupClass, "value", "I");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-/* already impl
-jmethodID
-getJavaLangByteInit(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Integer");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(I)V");
-  if (!mid)
-    return NULL;
-  return mid;
-}
-
-jfieldID
-getJavaLangByteValue(JNIEnv * env){
-  jmethodID mid;
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Integer");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "(I)V");
-  if (!mid)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "value", "I");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-*/
-
-jclass
-getJavaNetInetAddressClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jfieldID
-getJavaNetInetAddressIpaddress(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "ipaddress", "[B");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-jmethodID
-getJavaNetInetAddressPreferIPv6Addresses(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetStaticMethodID (env, lookupClass, "preferIPv6Addresses",
-             "()Z");
-  if (!mid)
-    return NULL;
-  return mid;
-}
-
-jmethodID
-getJavaNetInetAddressGetByAddressStringByte(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  mid =
-        (*env)->GetStaticMethodID (env, lookupClass, "getByAddress",
-        "(Ljava/lang/String;[B)Ljava/net/InetAddress;");
-  if (!mid)
-        return NULL;
-  return mid;
-}
-
-jmethodID
-getJavaNetInetAddressGetByAddressByteArray(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  mid =
-        (*env)->GetStaticMethodID (env, lookupClass, "getByAddress",
-        "([B)Ljava/net/InetAddress;");
-  if (!mid)
-        return NULL;
-  return mid;
-}
-jmethodID
-getJavaNetInetAddressInitByteArray(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>", "([B)V");
-  if (!mid)
-        return NULL;
-  return mid;
-}
-
-jmethodID
-getJavaNetInetAddressInitByteString(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/InetAddress");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetMethodID (env, lookupClass, "<init>",
-        "([BLjava/lang/String;)V");
-  if (!mid)
-        return NULL;
-  return mid;
-}
-
-jclass
-getJavaNetSocketClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/net/Socket");
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jmethodID
-getJavaNetSocketPreferIPv4Stack(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/Socket");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetStaticMethodID (env, lookupClass, "preferIPv4Stack", "()Z");
-  if (!mid)
-    return NULL;
-  return mid;
-}
-
-jclass
-getJavaLangThreadClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Thread");
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jmethodID
-getJavaLangThreadYield(JNIEnv * env){
-  jmethodID mid;
-  jclass lookupClass = (*env)->FindClass (env, "java/lang/Thread");
-  if (!lookupClass)
-    return NULL;
-  mid = (*env)->GetStaticMethodID (env, lookupClass, "yield", "()V");
-  if (!mid)
-    return NULL;
-  return mid;
-}
-
-jclass
-getJavaNetDatagramPacketClass(JNIEnv * env){
-  jclass lookupClass = (*env)->FindClass (env, "java/net/DatagramPacket");
-  if (!lookupClass)
-    return NULL;
-  return lookupClass;
-}
-
-jfieldID
-getJavaNetDatagramPacketAddress(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/DatagramPacket");
-  if (!lookupClass)
-    return NULL;
-  fid =
-    (*env)->GetFieldID (env, lookupClass, "address",
-      "Ljava/net/InetAddress;");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-jfieldID
-getJavaNetDatagramPacketLength(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/DatagramPacket");
-  if (!lookupClass)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "length", "I");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-jfieldID
-getJavaNetDatagramPacketPort(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/DatagramPacket");
-  if (!lookupClass)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "port", "I");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-
-jfieldID
-getJavaNetSocketImplAddress(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/SocketImpl");
-  if (!lookupClass)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "address", "Ljava/net/InetAddress;");
-  if (!fid)
-    return NULL;
-  return fid;
-}
-jfieldID
-getJavaNetSocketImplPort(JNIEnv * env){
-  jfieldID fid;
-  jclass lookupClass = (*env)->FindClass (env, "java/net/SocketImpl");
-  if (!lookupClass)
-    return NULL;
-  fid = (*env)->GetFieldID (env, lookupClass, "port", "I");
-  if (!fid)
-    return NULL;
-  return fid;
 }
 
 jfieldID
