@@ -606,7 +606,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void insertRow() throws SQLException {
         checkValidRow();
         if (currentRow != insertRow) {
-            throw new SQLException();
+            // rowset.4=Not an insert row
+            throw new SQLException(Messages.getString("rowset.4"));
         }
         currentRow.setInsert();
         rows.add(insertRow);
