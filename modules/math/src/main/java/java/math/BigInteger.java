@@ -25,10 +25,6 @@ import java.io.Serializable;
 
 import org.apache.harmony.math.internal.nls.Messages;
 
-/**
- * @author Intel Middleware Product Division
- * @author Instituto Tecnologico de Cordoba
- */
 public class BigInteger extends Number implements Comparable<BigInteger>,
         Serializable {
 
@@ -679,19 +675,29 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         return Multiplication.multiply(this, val);
     }
 
-    /** @ar.org.fitc.spec_ref */
     public BigInteger pow(int exp) {
-        if (exp < 0){
+        if (exp < 0) {
             // math.16=Negative exponent
             throw new ArithmeticException(Messages.getString("math.16")); //$NON-NLS-1$
         }
         if (exp == 0) {
             return ONE;
-        } else if(exp == 1 || equals(ONE) || equals(ZERO)) {
+        } else if (exp == 1 || equals(ONE) || equals(ZERO)) {
             return this;
         }
+
+        // if even take out 2^x factor which we can
+        // calculate by shifting.
+        if (!testBit(0)) {
+            int x = 1;
+            BigInteger factor = BigInteger.ONE.shiftLeft(exp);
+            while (!testBit(x)) {
+                factor = factor.shiftLeft(exp);
+                x++;
+            }
+            return factor.multiply(this.shiftRight(x).pow(exp));
+        }
         return Multiplication.pow(this, exp);
-        
     }
 
     /** @ar.org.fitc.spec_ref */
