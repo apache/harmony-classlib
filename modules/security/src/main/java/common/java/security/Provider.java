@@ -806,6 +806,9 @@ public abstract class Provider extends Properties {
         }
 
         Iterator<String> getAliases() {
+            if(aliases == null){
+                aliases = new ArrayList<String>(0);
+            }
             return aliases.iterator();
         }
 
@@ -864,8 +867,7 @@ public abstract class Provider extends Properties {
                 }
                 return implementation.getConstructor(parameterTypes)
                         .newInstance(initargs);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception e) {               
                 throw new NoSuchAlgorithmException(Messages.getString(
                         "security.199", //$NON-NLS-1$
                         type, algorithm), e);
