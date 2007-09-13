@@ -22,7 +22,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.RowSetReader;
+import javax.sql.RowSetWriter;
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.spi.SyncProvider;
+import javax.sql.rowset.spi.SyncProviderException;
 
 import junit.framework.TestCase;
 
@@ -55,9 +59,11 @@ public class CachedRowSetImplTest extends TestCase {
         try {
             crset = (CachedRowSet) Class.forName(
                     "com.sun.rowset.CachedRowSetImpl").newInstance();
+            System.setProperty("CachedRowSetImpl_Test_Signal", "Testing RI");
             System.out.println("Testing RI");
         } catch (ClassNotFoundException e) {
-            System.out.println("Testing Harmony");
+            System.setProperty("CachedRowSetImpl_Test_Signal",
+                    "Testing Harmony");
             crset = (CachedRowSet) Class.forName(
                     "org.apache.harmony.sql.internal.rowset.CachedRowSetImpl")
                     .newInstance();
@@ -70,6 +76,18 @@ public class CachedRowSetImplTest extends TestCase {
         if (rs != null) {
             rs.close();
         }
+    }
+
+    public void testCachedRowSetVersion() {
+        assertEquals(System.getProperty("CachedRowSetImpl_Test_Signal"),
+                "Testing Harmony");
+    }
+
+    public void testSetSyncProvider() throws Exception {
+        // String mySyncProvider = "org.apache.internal.SyncProviderImpl";
+        // crset.setSyncProvider(mySyncProvider);
+        // assertEquals(crset.getSyncProvider().getClass().getCanonicalName(),
+        // mySyncProvider);
     }
 
     public void testColumnUpdatedInt() throws SQLException {
@@ -162,8 +180,8 @@ public class CachedRowSetImplTest extends TestCase {
         assertEquals(2, crset.size());
         assertTrue(crset.rowDeleted());
     }
-    
-    public void testRowDeleted() throws SQLException{
+
+    public void testRowDeleted() throws SQLException {
         try {
             crset.rowDeleted();
             fail("should throw SQLException");
@@ -171,8 +189,8 @@ public class CachedRowSetImplTest extends TestCase {
             // expected;
         }
     }
-    
-    public void testInsertRow() throws SQLException{
+
+    public void testInsertRow() throws SQLException {
         try {
             crset.insertRow();
             fail("should throw SQLException");
@@ -190,17 +208,20 @@ public class CachedRowSetImplTest extends TestCase {
         crset.updateString("Name", "TonyWu");
         crset.updateInt("ID", 3);
         crset.insertRow();
-//        crset.moveToCurrentRow();
-//        assertTrue(crset.rowInserted());
+        assertEquals("TonyWu", crset.getString(2));
+        assertEquals("TonyWu", crset.getString("Name"));
+        assertEquals(3, crset.getInt(1));
+        assertEquals(3, crset.getInt("ID"));
+        assertTrue(crset.rowInserted());
     }
 
     public void testAcceptChanges() throws SQLException {
-        // rs.next();
-        // assertEquals(1, rs.getInt(1));
-        // crset.next();
-        // assertEquals(1, crset.getInt(1));
-        // crset.updateInt(1, 3);
-        // assertEquals(3, crset.getInt(1));
+        rs.next();
+        assertEquals(1, rs.getInt(1));
+        crset.next();
+        assertEquals(1, crset.getInt(1));
+        crset.updateInt(1, 3);
+        assertEquals(3, crset.getInt(1));
         // try {
         // crset.acceptChanges();
         // fail("should throw SyncProviderException");
@@ -210,13 +231,15 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testAcceptChangesConnection() throws SQLException {
-        // rs.next();
-        // assertEquals(1, rs.getInt(1));
-        // crset.first();
-        // assertEquals(1, crset.getInt(1));
-        // crset.updateInt(1, 3);
-        // assertEquals(3, crset.getInt(1));
-        // crset.updateRow();
+        rs.next();
+        assertEquals(1, rs.getInt(1));
+        crset.first();
+        assertEquals(1, crset.getInt(1));
+        crset.updateInt(1, 3);
+        assertEquals(3, crset.getInt(1));
+        crset.updateRow();
+        crset.moveToCurrentRow();
+        assertEquals(3, crset.getInt(1));
         // crset.acceptChanges(conn);
         // rs = st.executeQuery("select * from USER_INFO");
         // rs.next();

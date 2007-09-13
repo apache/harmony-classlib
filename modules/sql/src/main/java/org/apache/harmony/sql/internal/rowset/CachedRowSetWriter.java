@@ -22,10 +22,18 @@ import javax.sql.RowSetInternal;
 import javax.sql.RowSetWriter;
 
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.sql.internal.nls.Messages;
 
 public class CachedRowSetWriter implements RowSetWriter {
 
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
+        // use an optimistic concurrency control mechanism
+        if (checkConflict())
+            throw new SQLException(Messages.getString("rowset.4"));
+        return true;
+    }
+
+    private boolean checkConflict() {
         throw new NotImplementedException();
     }
 }

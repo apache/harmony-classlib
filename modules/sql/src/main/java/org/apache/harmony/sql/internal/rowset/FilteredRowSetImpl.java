@@ -20,10 +20,16 @@ import java.sql.SQLException;
 
 import javax.sql.rowset.FilteredRowSet;
 import javax.sql.rowset.Predicate;
+import javax.sql.rowset.spi.SyncFactoryException;
 
 import org.apache.harmony.luni.util.NotImplementedException;
 
 public class FilteredRowSetImpl extends WebRowSetImpl implements FilteredRowSet {
+
+    public FilteredRowSetImpl(String providerID) throws SyncFactoryException {
+        super(providerID);
+        // TODO Auto-generated constructor stub
+    }
 
     public Predicate getFilter() {
         throw new NotImplementedException();
@@ -32,6 +38,5 @@ public class FilteredRowSetImpl extends WebRowSetImpl implements FilteredRowSet 
     public void setFilter(Predicate p) throws SQLException {
         throw new NotImplementedException();
     }
-
 
 }

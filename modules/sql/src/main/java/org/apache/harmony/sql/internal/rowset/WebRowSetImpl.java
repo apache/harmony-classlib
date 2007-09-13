@@ -25,10 +25,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.rowset.WebRowSet;
+import javax.sql.rowset.spi.SyncFactoryException;
 
 import org.apache.harmony.luni.util.NotImplementedException;
 
 public class WebRowSetImpl extends CachedRowSetImpl implements WebRowSet {
+
+    public WebRowSetImpl(String providerID) throws SyncFactoryException {
+        super(providerID);
+    }
 
     public void readXml(Reader reader) throws SQLException {
         throw new NotImplementedException();
