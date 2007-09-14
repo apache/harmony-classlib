@@ -833,81 +833,103 @@ public abstract class AbstractDocument implements Document, Serializable {
     }
 
     private static class ReadWriteLock {
-        private List<Thread> readers = new ArrayList<Thread>();
-        private Thread writer;
-        private int writerCount;
-        private boolean callingListeners;
+        private boolean            callingListeners;
+        private int                writeAcquestCounter;
+        private int                waitingWritersCounter;
+        private Thread             activeWriter;
+        private final List<Thread> activeReaders = new ArrayList<Thread>();
+        private final Object       lock          = new Object();
 
-        public ReadWriteLock() {
-            super();
+        public final Thread getCurrentWriter() {
+            return activeWriter;
         }
 
-        public final synchronized Thread getCurrentWriter() {
-            return writer;
-        }
-
-        public final synchronized void readLock() {
+        public final void readLock() {
             final Thread thread = Thread.currentThread();
 
-            if (writer != thread) {
-                while (writerCount > 0) {
+            if (thread == activeWriter) {
+                return;
+            }
+
+            synchronized (lock) {
+                while ((activeWriter != null) || (waitingWritersCounter > 0)) {
                     try {
-                        wait();
-                    } catch (final InterruptedException e) { }
+                        lock.wait();
+                    } catch (final InterruptedException e) {
+                        return;
+                    }
                 }
-            }
 
-            readers.add(thread);
-        }
-
-        public final synchronized void readUnlock() {
-            final Thread currentThread = Thread.currentThread();
-            final int index = readers.indexOf(currentThread);
-
-            if (index == -1) {
-                throw new Error(Messages.getString("swing.err.10")); //$NON-NLS-1$
-            }
-
-            readers.remove(index);
-            if (readers.size() == 0) {
-                notify();
+                activeReaders.add(thread);
             }
         }
 
-        public final synchronized void setCallingListeners(final boolean flag) {
+        public final void readUnlock() {
+            final Thread thread = Thread.currentThread();
+
+            if (thread == activeWriter) {
+                return;
+            }
+
+            synchronized (lock) {
+                if (!activeReaders.remove(thread)) {
+                    throw new Error(Messages.getString("swing.err.10")); //$NON-NLS-1$
+                }
+
+                lock.notifyAll();
+            }
+        }
+
+        public final void setCallingListeners(final boolean flag) {
             callingListeners = flag;
         }
 
-        public final synchronized void writeLock() {
+        public final void writeLock() {
             if (callingListeners) {
                 throw new IllegalStateException(Messages.getString("swing.7E")); //$NON-NLS-1$
             }
 
             final Thread thread = Thread.currentThread();
 
-            while (readers.size() > 0
-                   || writer != null && writer != thread) {
-                try {
-                    wait();
-                } catch (final InterruptedException e) { }
+            if (thread == activeWriter) {
+                writeAcquestCounter++;
+                return;
             }
 
-            if (writerCount++ == 0) {
-                writer = thread;
+            synchronized (lock) {
+                if ((activeReaders.size() > 0) || (activeWriter != null)) {
+
+                    waitingWritersCounter++;
+
+                    while ((activeReaders.size() > 0) || (activeWriter != null)) {
+                        try {
+                            lock.wait();
+                        } catch (final InterruptedException e) {
+                            waitingWritersCounter--;
+                            return;
+                        }
+                    }
+
+                    waitingWritersCounter--;
+                }
+
+                writeAcquestCounter++;
+                activeWriter = thread;
             }
         }
 
-        public final synchronized void writeUnlock() {
-            if (writer != Thread.currentThread()) {
+        public final void writeUnlock() {
+            if (activeWriter != Thread.currentThread()) {
                 throw new Error(Messages.getString("swing.err.11")); //$NON-NLS-1$            }
             }
-            if (--writerCount == 0) {
-                writer = null;
-                readers.clear();
-                notifyAll();
+
+            if (--writeAcquestCounter == 0) {
+                synchronized (lock) {
+                    activeWriter = null;
+                    lock.notifyAll();
+                }
             }
         }
-
     }
 
     /**
