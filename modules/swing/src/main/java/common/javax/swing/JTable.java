@@ -1264,7 +1264,11 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
     }
 
     public int columnAtPoint(Point p) {
-        return getTableHeader().columnAtPoint(p);
+        int x = p.x;
+        if( !getComponentOrientation().isLeftToRight() ) {
+          x = getWidth() - x;
+        }
+        return getColumnModel().getColumnIndexAtX(x);
     }
 
     public int rowAtPoint(Point p) {
@@ -1645,7 +1649,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         if (getAutoResizeMode() == AUTO_RESIZE_OFF) {
             return;
         }
-        TableColumn resizingColumn = getTableHeader().getResizingColumn();
+        TableColumn resizingColumn = (getTableHeader() == null) ? null : getTableHeader().getResizingColumn();
         if (resizingColumn == null) {
             ResizableElements resizable = new ResizableElements() {
                 public int getElementsCount() {

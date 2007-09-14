@@ -172,18 +172,24 @@ public class BasicComboBoxUI extends ComboBoxUI {
     public class PropertyChangeHandler implements PropertyChangeListener {
         public void propertyChange(final PropertyChangeEvent event) {
             if (StringConstants.ENABLED_PROPERTY_CHANGED.equals(event.getPropertyName())) {
+                if (arrowButton != null) {
                 arrowButton.setEnabled(((Boolean)event.getNewValue()).booleanValue());
-                if (comboBox.isEditable()) {
+                }
+                if (comboBox.isEditable() && (editor != null)) {
                     editor.setEnabled(((Boolean)event.getNewValue()).booleanValue());
                 }
             } else if (StringConstants.TOOLTIP_PROPERTY_CHANGED.equals(event.getPropertyName())) {
+                if (arrowButton != null) {
                 arrowButton.setToolTipText((String)event.getNewValue());
+                }
                 if (comboBox.isEditable() && (editor instanceof JComponent)) {
                     ((JComponent)editor).setToolTipText((String)event.getNewValue());
                 }
             } else if (StringConstants.FONT_PROPERTY_CHANGED.equals(event.getPropertyName())) {
+                if (arrowButton != null) {
                 arrowButton.setFont((Font)event.getNewValue());
-                if (comboBox.isEditable()) {
+                }
+                if (comboBox.isEditable() && (editor != null)) {
                     editor.setFont((Font)event.getNewValue());
                 }
             } else if (StringConstants.EDITABLE_PROPERTY_CHANGED.equals(event.getPropertyName())) {
