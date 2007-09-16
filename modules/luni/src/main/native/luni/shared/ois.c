@@ -174,7 +174,14 @@ Java_java_io_ObjectInputStream_newInstance (JNIEnv * env, jclass clazz,
     }
   else
     {
-      return (jobject) (*env)->NewObject (env, instantiationClass, mid);        /* Instantiate an object of a given class */
+      /* Instantiate an object of a given class and constuct it using
+         the constructor of the other class. */
+      jobject obj;
+      obj = (*env)->AllocObject(env, instantiationClass);
+      if (obj != NULL) {
+        (*env)->CallVoidMethod(env, obj, mid);
+      }
+      return obj;
     }
 
 }

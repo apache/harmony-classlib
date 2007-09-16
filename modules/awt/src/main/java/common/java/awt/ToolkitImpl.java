@@ -35,6 +35,7 @@ import org.apache.harmony.awt.gl.font.FontMetricsImpl;
 import org.apache.harmony.awt.datatransfer.DTK;
 import org.apache.harmony.awt.gl.*;
 import org.apache.harmony.awt.gl.image.*;
+import java.awt.datatransfer.StringSelection;
 
 class ToolkitImpl extends Toolkit {
     static final Hashtable<Serializable, Image> imageCache = new Hashtable<Serializable, Image>();
@@ -495,6 +496,9 @@ class ToolkitImpl extends Toolkit {
             }
             if (systemClipboard == null) {
                 systemClipboard = DTK.getDTK().getNativeClipboard();
+            }
+            if (systemClipboard.getContents(null) == null) {
+                systemClipboard.setContents ( new StringSelection("") , null);
             }
             return systemClipboard;
         } finally {

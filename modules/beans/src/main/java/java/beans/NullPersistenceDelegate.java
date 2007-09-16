@@ -20,8 +20,7 @@ package java.beans;
 class NullPersistenceDelegate extends PersistenceDelegate {
     @Override
     protected Expression instantiate(Object oldInstance, Encoder out) {
-        assert oldInstance == null;
-        return new Expression(null, null, null, null);
+        return null;
     }
 
     @Override
@@ -36,7 +35,6 @@ class NullPersistenceDelegate extends PersistenceDelegate {
 
     @Override
     public void writeObject(Object oldInstance, Encoder out) {
-        assert oldInstance == null;
-        out.writeExpression(instantiate(null, out));
+        // do nothing
     }
 }

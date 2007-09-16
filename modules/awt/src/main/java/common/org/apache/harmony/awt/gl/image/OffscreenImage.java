@@ -28,6 +28,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -285,7 +286,17 @@ public class OffscreenImage extends Image implements ImageConsumer {
                 line++, lineOff += scansize, rof += scanline){
                 System.arraycopy(pixels, lineOff, data, rof, w);
             }
-        }else{
+        }else if(model == cm && model.getTransferType() == DataBuffer.TYPE_BYTE &&
+                cm instanceof ComponentColorModel){
+
+            int nc = cm.getNumComponents();
+            byte stride[] = new byte[scansize];
+            for (int sy = y, sOff = off; sy < y + h; sy++, sOff += scansize) {
+                System.arraycopy(pixels, sOff, stride, 0, scansize);
+                
+                raster.setDataElements(x, sy, w, 1, stride);
+            }
+        }else {
             for (int sy = y, sOff = off; sy < y + h; sy++, sOff += scansize) {
                 for (int sx = x, idx = 0; sx < x + w; sx++, idx++) {
                     int rgb = model.getRGB(pixels[sOff + idx] & 0xff);

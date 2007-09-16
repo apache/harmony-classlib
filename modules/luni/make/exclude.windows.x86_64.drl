@@ -1,2 +1,5 @@
 tests/api/java/net/MulticastSocketTest.java
 tests/api/java/util/ArrayListTest.java
+
+# HARMONY-4753
+org/apache/harmony/luni/tests/java/lang/SecurityManager2Test.java

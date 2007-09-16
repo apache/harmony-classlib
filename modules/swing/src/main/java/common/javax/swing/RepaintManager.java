@@ -188,6 +188,9 @@ public class RepaintManager {
         }
     }
 
+    // According to Spec as a offscreen buffer we can use offscreen image of any type,
+    // which can keep own content. Our implementation of VolatileImage based on GDI Bitmap and
+    // can't lost content. For performance reason as a offscreen buffer we use VolatileImage.
     public Image getOffscreenBuffer(final Component c, final int proposedWidth, final int proposedHeight) {
         int adjustedWidth = Math.min(proposedWidth, maximumSize.width);
         int adjustedHeight = Math.min(proposedHeight, maximumSize.height);
@@ -202,7 +205,7 @@ public class RepaintManager {
                 offscreenImage.flush();
             }
 
-            offscreenImage = c.createImage(adjustedWidth, adjustedHeight);
+            offscreenImage = c.createVolatileImage(adjustedWidth, adjustedHeight);
         }
 
         return offscreenImage;

@@ -22,6 +22,7 @@ import java.awt.event.*;
 import java.awt.font.TextAttribute;
 import java.awt.dnd.DropTarget;
 import java.beans.*;
+import java.beans.beancontext.BeanContextSupport;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -212,6 +213,43 @@ public class PersistenceDelegateTest extends TestCase {
         assertFalse(pd.mutatesTo(null, "test"));
     }
 
+    public void test_writeObject_LInteger_LXMLEncoder() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+                byteArrayOutputStream));
+
+        encoder.writeObject(1);
+        encoder.writeObject(Integer.SIZE);
+        encoder.writeObject(Integer.MAX_VALUE);
+        encoder.writeObject(Integer.MIN_VALUE);
+        encoder.close();
+
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Integer one  = (Integer) decoder.readObject();
+        Integer size = (Integer) decoder.readObject();
+        Integer max  = (Integer) decoder.readObject();
+        Integer min  = (Integer) decoder.readObject();
+        assertEquals(new Integer(1), one);
+        assertEquals(new Integer(Integer.SIZE), size);
+        assertEquals(new Integer(Integer.MAX_VALUE), max);
+        assertEquals(new Integer(Integer.MIN_VALUE), min);
+
+        stream = new DataInputStream(
+                PersistenceDelegateTest.class
+                        .getResourceAsStream("/xml/Integer.xml"));
+        decoder = new XMLDecoder(stream);
+        one  = (Integer) decoder.readObject();
+        size = (Integer) decoder.readObject();
+        max  = (Integer) decoder.readObject();
+        min  = (Integer) decoder.readObject();
+        assertEquals(new Integer(1), one);
+        assertEquals(new Integer(Integer.SIZE), size);
+        assertEquals(new Integer(Integer.MAX_VALUE), max);
+        assertEquals(new Integer(Integer.MIN_VALUE), min);
+    }
+    
     public void test_writeObject_Null_LXMLEncoder() throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
@@ -229,6 +267,114 @@ public class PersistenceDelegateTest extends TestCase {
         assertNull(decoder.readObject());
     }
 
+    public void test_writeObject_LArray_LXMLEncoder() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+                byteArrayOutputStream));
+        int[] intArray = new int[2];
+        intArray[0] = 1;
+        
+        encoder.writeObject(intArray);
+        encoder.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        
+        XMLDecoder decoder = new XMLDecoder(stream);
+        int[] array =  (int[]) decoder.readObject();
+        assertEquals(2, array.length);
+        assertEquals(1, array[0]);
+        
+        stream = new DataInputStream(PersistenceDelegateTest.class
+                .getResourceAsStream("/xml/Array.xml"));
+        
+        decoder = new XMLDecoder(stream);
+        array =  (int[]) decoder.readObject();
+        assertEquals(2, array.length);
+        assertEquals(1, array[0]);
+    }
+
+    public static interface Foo {
+        void say();
+        String toString();
+    };
+
+    public void test_writeObject_Ljava_Lang_reflect_Proxy() {
+        InvocationHandler handler = new InvocationHandler() {
+
+            public Object invoke(Object proxy, Method method, Object[] params)
+                    throws Throwable {
+                if(method.getName().contains("toString")) {
+                    return "FooProxy";
+                }
+                System.out.println(method.getName());
+                return null;
+            }
+
+        };
+        Foo f = (Foo) Proxy.newProxyInstance(Foo.class.getClassLoader(),
+                new Class[] { Foo.class }, handler);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+                byteArrayOutputStream));
+        
+        encoder.writeObject(f);
+        encoder.close();
+
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+
+        XMLDecoder decoder = new XMLDecoder(stream);
+        try {
+            decoder.readObject();
+            fail("Should throw Exception");
+        } catch (Exception ex) {
+            // expected
+        }
+        
+        stream = new DataInputStream(PersistenceDelegateTest.class
+                .getResourceAsStream("/xml/Proxy.xml"));
+
+        decoder = new XMLDecoder(stream);
+        try {
+            decoder.readObject();
+            fail("Should throw Exception");
+        } catch (Exception ex) {
+            // expected
+        }
+    }
+    
+    public void test_writeObject_java_lang_string(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        encoder.writeObject("test");
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Object object = decoder.readObject();
+        assertEquals("test", object);
+    }
+
+    public void test_writeObject_java_lang_class(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        encoder.writeObject(Class.class);
+        encoder.writeObject(2);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Class clz = (Class) decoder.readObject();
+        assertEquals(Class.class, clz);
+        Integer number = (Integer) decoder.readObject();
+        assertEquals(new Integer(2), number);
+    }
+
     class Bar {
         public int value;
 
@@ -238,7 +384,7 @@ public class PersistenceDelegateTest extends TestCase {
     }
 
     public void test_writeObject_java_lang_reflect_Field()
-            throws SecurityException, NoSuchFieldException, IOException {
+            throws SecurityException, NoSuchFieldException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
                 byteArrayOutputStream));
@@ -282,7 +428,6 @@ public class PersistenceDelegateTest extends TestCase {
         LinkedList<Integer> list = new LinkedList<Integer>();
         list.add(10);
         list.addFirst(2);
-        System.out.println(encoder.getPersistenceDelegate(LinkedList.class));
 
         encoder.writeObject(list);
         encoder.close();
@@ -363,7 +508,7 @@ public class PersistenceDelegateTest extends TestCase {
             }
         };
         choice.addPropertyChangeListener(pcl);
-        System.out.println(encoder.getPersistenceDelegate(Choice.class));
+
         encoder.writeObject(choice);
         encoder.close();
         DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
@@ -426,6 +571,40 @@ public class PersistenceDelegateTest extends TestCase {
         assertEquals(choice.getName(), aChoice.getName());
 
         assertEquals(choice.getItem(0), aChoice.getItem(0));
+    }
+    
+    
+    public void test_writeObject_java_util_HashTable(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+
+        Hashtable<Integer, String> hTable = new Hashtable<Integer, String>();
+        hTable.put(1, "1");
+
+        encoder.writeObject(hTable);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Hashtable aHtable = (Hashtable) decoder.readObject();
+        assertEquals(hTable.size(), aHtable.size());
+        assertEquals(hTable.get(1), aHtable.get(1));
+    }
+
+    public void test_writeObject_java_beans_beancontext_BeanContextSupport() throws PropertyVetoException{
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        BeanContextSupport support = new BeanContextSupport();
+
+        encoder.writeObject(support);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        BeanContextSupport aSupport = (BeanContextSupport) decoder.readObject();
+        assertEquals(Locale.getDefault(), aSupport.getLocale());
     }
     
     public void test_writeObject_java_awt_SystemColor() {
@@ -972,6 +1151,61 @@ public class PersistenceDelegateTest extends TestCase {
         ToolTipManager aManager = (ToolTipManager) decoder.readObject();
         assertEquals(manager, aManager);
         assertEquals(manager.getDismissDelay(), aManager.getDismissDelay());
+    }
+    
+    public void test_writeObject_javax_swing_Box() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        Box box = new Box(1);
+        box.setAlignmentX(12.21f);
+
+        encoder.writeObject(box);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Box aBox = (Box) decoder.readObject();
+        assertEquals(box.getAlignmentX(), aBox.getAlignmentX());
+    }
+
+    public void test_writeObject_javax_swing_JMenu(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
+            byteArrayOutputStream));
+        JMenu menu = new JMenu("menu");
+
+        encoder.writeObject(menu);
+        encoder.close();
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                byteArrayOutputStream.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        JMenu aMenu = (JMenu) decoder.readObject();
+        assertEquals(menu.getVerifyInputWhenFocusTarget(), aMenu
+                .getVerifyInputWhenFocusTarget());
+        assertEquals(menu.getName(), aMenu.getName());
+    }
+    
+    public void test_writeObject_Integer_Class() {
+        
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        System.err.println("Test 5");
+        Object[] objects5 = { Integer.class, Integer.TYPE };
+        XMLEncoder xmlEnc5 = new XMLEncoder(os);
+        for (int i = 0; i < objects5.length; i++) {
+            xmlEnc5.writeObject(objects5[i]);
+        }
+        xmlEnc5.flush();
+        xmlEnc5.close();
+        
+        DataInputStream stream = new DataInputStream(new ByteArrayInputStream(
+                os.toByteArray()));
+        XMLDecoder decoder = new XMLDecoder(stream);
+        Class intClass = (Class) decoder.readObject();
+        Class aIntClass = (Class) decoder.readObject();
+        assertEquals(Integer.class, intClass);
+        assertEquals(Integer.TYPE, aIntClass);
     }
     
     public static class DummyBean {

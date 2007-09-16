@@ -58,7 +58,6 @@ setDatagramPacketAddress (JNIEnv * env,	jobject	datagramPacket,
 	jobject	anInetAddress)
 {
   jfieldID fid = HARMONY_CACHE_GET (env, FID_java_net_DatagramPacket_address);
-  //jfieldID fid = getJavaNetDatagramPacketAddress(env);
   (*env)->SetObjectField (env, datagramPacket, fid, anInetAddress);
 }
 
@@ -74,7 +73,6 @@ void
 setDatagramPacketPort (JNIEnv *	env, jobject datagramPacket, U_16 hPort)
 {
   jfieldID fid = HARMONY_CACHE_GET (env, FID_java_net_DatagramPacket_port);  
-  //jfieldID fid = getJavaNetDatagramPacketPort(env);
   (*env)->SetIntField (env, datagramPacket, fid, hPort);
 }
 
@@ -90,7 +88,6 @@ void
 setDatagramPacketLength	(JNIEnv	* env, jobject datagramPacket, I_32 length)
 {
   jfieldID fid = HARMONY_CACHE_GET (env, FID_java_net_DatagramPacket_length);
-  //jfieldID fid = getJavaNetDatagramPacketLength(env);
   (*env)->SetIntField (env, datagramPacket, fid, length);
 }
 
@@ -146,15 +143,10 @@ updateAddress (JNIEnv *	env, hysockaddr_t sockaddrP, jobject senderAddress)
   	  HARMONY_CACHE_GET	(env,
   	     FID_java_net_InetAddress_address),	
   	  newJavaByteArray (env, ipv4Addr, length));
-  /* 
-    (*env)->SetObjectField (env, senderAddress,
-	getJavaNetInetAddressIpaddress(env),
-	newJavaByteArray (env, ipv4Addr, length));
-  */
-  if (harmony_supports_ipv6	(env) && (scope_id != 0))
+  if (harmony_supports_ipv6(env) && (scope_id != 0))
     {
-      jclass tempClass = getJavaNetInetAddressClass(env);
       jfieldID fid = NULL;
+      jclass tempClass = HARMONY_CACHE_GET(env, CLS_java_net_InetAddress);
 
       fid = (*env)->GetFieldID (env, tempClass,	"scope_id", "I");
       if ((*env)->ExceptionCheck (env))	
@@ -210,7 +202,6 @@ void
 setSocketImplAddress (JNIEnv * env, jobject socketImpl,	jobject	anInetAddress)
 {
   jfieldID fid = HARMONY_CACHE_GET (env, FID_java_net_SocketImpl_address);  
-  //jfieldID fid = getJavaNetSocketImplAddress(env);
   (*env)->SetObjectField (env, socketImpl, fid,	anInetAddress);	
 }
 
@@ -226,7 +217,6 @@ void
 setSocketImplPort (JNIEnv * env, jobject socketImpl, U_16 hPort)
 {
   jfieldID fid = HARMONY_CACHE_GET (env, FID_java_net_SocketImpl_port);  
-  //jfieldID fid = getJavaNetSocketImplPort( env);
   (*env)->SetIntField (env, socketImpl,	fid, hPort);
 }
 

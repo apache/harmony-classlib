@@ -20,136 +20,191 @@
  */
 package javax.imageio.stream;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
-/**
- * @author Rustem V. Rafikov
- * @version $Revision: 1.3 $
- */
 public abstract class ImageOutputStreamImpl extends ImageInputStreamImpl
-        implements ImageOutputStream {
+		implements ImageOutputStream {
 
-    public ImageOutputStreamImpl() {}
+	private final byte[] buff = new byte[8];
 
-    public abstract void write(int b) throws IOException;
+	public ImageOutputStreamImpl() {
+	}
 
-    public void write(byte[] b) throws IOException {
-        write(b, 0, b.length);
-    }
+	public abstract void write(int b) throws IOException;
 
-    public abstract void write(byte[] b, int off, int len) throws IOException;
+	public void write(byte[] b) throws IOException {
+		write(b, 0, b.length);
+	}
 
-    public void writeBoolean(boolean v) throws IOException {
-        write(v ? 1 : 0);
-    }
+	public abstract void write(byte[] b, int off, int len) throws IOException;
 
-    public void writeByte(int v) throws IOException {
-        write(v);
-    }
+	public void writeBoolean(boolean v) throws IOException {
+		write(v ? 1 : 0);
+	}
 
-    public void writeShort(int v) throws IOException {
-        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+	public void writeByte(int v) throws IOException {
+		write(v);
+	}
 
-        } else {
+	public void writeShort(int v) throws IOException {
+		if (byteOrder == ByteOrder.BIG_ENDIAN) {
+			buff[0] = (byte) (v >> 8);
+			buff[1] = (byte) v;
+		} else {
+			buff[1] = (byte) (v >> 8);
+			buff[0] = (byte) v;
+		}
 
-        }
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		write(buff, 0, 2);
+	}
 
-    public void writeChar(int v) throws IOException {
-        writeShort(v);
-    }
+	public void writeChar(int v) throws IOException {
+		writeShort(v);
+	}
 
-    public void writeInt(int v) throws IOException {
-        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+	public void writeInt(int v) throws IOException {
+		if (byteOrder == ByteOrder.BIG_ENDIAN) {
+			buff[0] = (byte) (v >> 24);
+			buff[1] = (byte) (v >> 16);
+			buff[2] = (byte) (v >> 8);
+			buff[3] = (byte) v;
+		} else {
+			buff[3] = (byte) (v >> 24);
+			buff[2] = (byte) (v >> 16);
+			buff[1] = (byte) (v >> 8);
+			buff[0] = (byte) v;
+		}
 
-        } else {
+		write(buff, 0, 4);
+	}
 
-        }
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeLong(long v) throws IOException {
+		if (byteOrder == ByteOrder.BIG_ENDIAN) {
+			buff[0] = (byte) (v >> 56);
+			buff[1] = (byte) (v >> 48);
+			buff[2] = (byte) (v >> 40);
+			buff[3] = (byte) (v >> 32);
+			buff[4] = (byte) (v >> 24);
+			buff[5] = (byte) (v >> 16);
+			buff[6] = (byte) (v >> 8);
+			buff[7] = (byte) (v);
+		} else {
+			buff[7] = (byte) (v >> 56);
+			buff[6] = (byte) (v >> 48);
+			buff[5] = (byte) (v >> 40);
+			buff[4] = (byte) (v >> 32);
+			buff[3] = (byte) (v >> 24);
+			buff[2] = (byte) (v >> 16);
+			buff[1] = (byte) (v >> 8);
+			buff[0] = (byte) (v);
+		}
 
-    public void writeLong(long v) throws IOException {
-        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+		write(buff, 0, 8);
+	}
 
-        } else {
+	public void writeFloat(float v) throws IOException {
+		writeInt(Float.floatToIntBits(v));
+	}
 
-        }
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeDouble(double v) throws IOException {
+		writeLong(Double.doubleToLongBits(v));
+	}
 
-    public void writeFloat(float v) throws IOException {
-        writeInt(Float.floatToIntBits(v));
-    }
+	public void writeBytes(String s) throws IOException {
+		write(s.getBytes());
+	}
 
-    public void writeDouble(double v) throws IOException {
-        writeLong(Double.doubleToLongBits(v));
-    }
+	public void writeChars(String s) throws IOException {
+		char[] chs = s.toCharArray();
+		writeChars(chs, 0, chs.length);
+	}
 
-    public void writeBytes(String s) throws IOException {
-        write(s.getBytes());
-    }
+	public void writeUTF(String s) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    public void writeChars(String s) throws IOException {
-        char[] chs = s.toCharArray();
-        writeChars(chs, 0, chs.length);
-    }
+		new DataOutputStream(baos).writeUTF(s);
+		write(baos.toByteArray(), 0, baos.size());
+	}
 
-    public void writeUTF(String s) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeShorts(short[] s, int off, int len) throws IOException {
+		if ((off < 0) || (len < 0) || (off + len > s.length)) {
+			throw new IndexOutOfBoundsException();
+		}
 
-    public void writeShorts(short[] s, int off, int len) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		for (int i = 0; i < len; i++) {
+			writeShort(s[off + i]);
+		}
+	}
 
-    public void writeChars(char[] c, int off, int len) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeChars(char[] c, int off, int len) throws IOException {
+		if ((off < 0) || (len < 0) || (off + len > c.length)) {
+			throw new IndexOutOfBoundsException();
+		}
 
-    public void writeInts(int[] i, int off, int len) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		for (int i = 0; i < len; i++) {
+			writeShort(c[off + i]);
+		}
+	}
 
-    public void writeLongs(long[] l, int off, int len) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeInts(int[] i, int off, int len) throws IOException {
+		if ((off < 0) || (len < 0) || (off + len > i.length)) {
+			throw new IndexOutOfBoundsException();
+		}
 
-    public void writeFloats(float[] f, int off, int len) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		for (int n = 0; n < len; n++) {
+			writeInt(i[off + n]);
+		}
+	}
 
-    public void writeDoubles(double[] d, int off, int len) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeLongs(long[] l, int off, int len) throws IOException {
+		if ((off < 0) || (len < 0) || (off + len > l.length)) {
+			throw new IndexOutOfBoundsException();
+		}
 
-    public void writeBit(int bit) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		for (int i = 0; i < len; i++) {
+			writeLong(l[off + i]);
+		}
+	}
 
-    public void writeBits(long bits, int numBits) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+	public void writeFloats(float[] f, int off, int len) throws IOException {
+		if ((off < 0) || (len < 0) || (off + len > f.length)) {
+			throw new IndexOutOfBoundsException();
+		}
 
-    protected final void flushBits() throws IOException {
-        if (bitOffset == 0) {
-            return;
-        }
-        
-        //-- TODO implement
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+		for (int i = 0; i < len; i++) {
+			writeFloat(f[off + i]);
+		}
+	}
+
+	public void writeDoubles(double[] d, int off, int len) throws IOException {
+		if ((off < 0) || (len < 0) || (off + len > d.length)) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		for (int i = 0; i < len; i++) {
+			writeDouble(d[off + i]);
+		}
+	}
+
+	public void writeBit(int bit) throws IOException {
+		// -- TODO implement
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+
+	public void writeBits(long bits, int numBits) throws IOException {
+		// -- TODO implement
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+
+	protected final void flushBits() throws IOException {
+		if (bitOffset == 0) {
+			return;
+		}
+
+		// -- TODO implement
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
 }

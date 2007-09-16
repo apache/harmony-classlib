@@ -25,14 +25,14 @@ import javax.security.auth.login.LoginException;
 
 public class LoginModuleUtils {
     
+    public static enum ACTION {
+        no_action, login, commit, logout
+    };
+    
     public final static class LoginModuleStatus {        
 
         private static enum PHASE {
             uninitialized, initialized, logined, committed
-        };
-
-        public static enum ACTION {
-            no_action, login, commit, logout
         };
 
         private PHASE phase;
@@ -56,7 +56,26 @@ public class LoginModuleUtils {
         public void logouted(){
             phase = PHASE.logined;
         }
+        
+        public boolean isLoggined(){
+            return phase.equals(PHASE.logined) || phase.equals(PHASE.committed);
+        }
+        
+        public boolean isCommitted(){
+            return phase.equals(PHASE.committed);
+        }
 
+        
+        public ACTION checkAbout() {
+            switch (phase) {
+            case uninitialized:
+            case initialized:
+                return ACTION.no_action;
+            default:
+                return ACTION.logout;
+            }
+        }
+        
         public ACTION checkLogin() throws LoginException {
             switch (phase) {
             case uninitialized:

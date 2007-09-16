@@ -39,11 +39,11 @@ void src_over_custom
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs = 255, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fd = 255 - MUL(alpha, sa);
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -67,13 +67,13 @@ void src_over_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
               fd = 255 - MUL(alpha, _sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -86,13 +86,13 @@ void src_custom
       unsigned char sr, sg, sb, sa;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-                          if(alpha == 0){
-                                  setRGB(_dx, _dy, dstStruct, dstData, 0, 0, 0, 0);
-                          }else{
-                                  setRGB(_dx, _dy, dstStruct, dstData, MUL(alpha, sr), MUL(alpha, sg), 
-                                          MUL(alpha, sb), MUL(alpha, sa));
-                          }
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              if(alpha == 0){
+                  setRGB(_dx, _dy, dstStruct, dstData, 0, 0, 0, 0, true);
+              }else{
+                  setRGB(_dx, _dy, dstStruct, dstData, MUL(alpha, sr), MUL(alpha, sg), 
+                      MUL(alpha, sb), MUL(alpha, sa), true);
+              }
           }
       }
   }
@@ -116,15 +116,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-                          fd = 255 - sa;
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-                          if(alpha == 0){
-                                  setRGB(_dx, _dy, dstStruct, dstData, 0, 0, 0, 0);
-                          }else{
-                                  setRGB(_dx, _dy, dstStruct, dstData, MUL(alpha, _sr), MUL(alpha, _sg), 
-                                          MUL(alpha, _sb), MUL(alpha, _sa));
-                          }
+              if(alpha == 0){
+                  setRGB(_dx, _dy, dstStruct, dstData, 0, 0, 0, 0, true);
+              }else{
+                  setRGB(_dx, _dy, dstStruct, dstData, MUL(alpha, _sr), MUL(alpha, _sg), 
+                      MUL(alpha, _sb), MUL(alpha, _sa), true);
+              }
           }
       }
   }
@@ -137,12 +137,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = 255 - MUL(alpha, sa);
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -166,15 +166,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = 255 - MUL(alpha, _sa);
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -187,12 +187,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = da;
               fd = 255 - MUL(alpha, sa);
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -216,15 +216,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = da;
               fd = 255 - MUL(alpha, _sa);
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -237,12 +237,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = da;
               fd = 0;
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -266,15 +266,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = da;
               fd = 0;
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -287,12 +287,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = 0;
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -316,15 +316,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = 0;
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -344,12 +344,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = MUL(alpha, sa);
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -373,15 +373,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = MUL(alpha, _sa);
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -394,12 +394,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 0;
               fd = MUL(alpha, sa);
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -423,15 +423,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 0;
               fd = MUL(alpha, _sa);
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -444,12 +444,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 0;
               fd = 255 - MUL(alpha, sa);
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -473,15 +473,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 0;
               fd = 255 - MUL(alpha, _sa);
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -494,12 +494,12 @@ void src_custom_bg
       unsigned char sr, sg, sb, sa, dr, dg, db, da, fs, fd;
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = 255;
               COMPOSE_EXT(sa, sr, sg, sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -523,15 +523,15 @@ void src_custom_bg
                           _sr = r;
                           _sg = g; 
                           _sb = b;
-              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa);
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, true);
                           fs = 255;
                           fd = 255 - sa;
               COMPOSE(sa, sr, sg, sb, fs, _sa, _sr, _sg, _sb, fd);
-              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
               fs = 255 - da;
               fd = 255;
               COMPOSE_EXT(_sa, _sr, _sg, _sb, fs, da, dr, dg, db, fd, alpha);
-              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, true);
           }
       }
   }
@@ -543,7 +543,7 @@ void src_custom_bg
 
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
-              setRGB(_dx, _dy, dstStruct, dstData, 0, 0, 0, 0);
+              setRGB(_dx, _dy, dstStruct, dstData, 0, 0, 0, 0, true);
           }
       }
   }
@@ -810,9 +810,31 @@ void src_over_byteindexed_intargb
       }
   }
 
+ void xor_mode_blt
+  (int srcX, int srcY, SURFACE_STRUCTURE *srcStruct, void *srcData,
+  int dstX, int dstY, SURFACE_STRUCTURE *dstStruct, void *dstData,
+  int width, int height, int xorcolor){
+
+      unsigned char r, g, b, sr, sg, sb, sa, dr, dg, db, da;
+      r = (unsigned char)((xorcolor >> 16) & 0xff);
+      g = (unsigned char)((xorcolor >> 8) & 0xff);
+      b = (unsigned char)(xorcolor & 0xff);
+
+      for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
+          for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
+              getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, false);
+              getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, false);
+              dr ^= (r ^ sr);
+              dg ^= (g ^ sg);
+              db ^= (b ^ sb);
+              setRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, false);
+          }
+      }
+  }
+
 void getRGB
   (int x, int y, SURFACE_STRUCTURE *surfStruct, void *data, 
-  unsigned char &r, unsigned char &g, unsigned char &b, unsigned char &a){
+  unsigned char &r, unsigned char &g, unsigned char &b, unsigned char &a, bool alphaPre){
 
       int type = surfStruct->ss_type;
       unsigned char *p, pixel;
@@ -834,9 +856,11 @@ void getRGB
               g = *p++;
               r = *p++;
               a = *p;
-              r = MUL(a, r);
-              g = MUL(a, g);
-              b = MUL(a, b);
+              if(alphaPre){
+                  r = MUL(a, r);
+                  g = MUL(a, g);
+                  b = MUL(a, b);
+              }
               return;
 
           case INT_ARGB_PRE:
@@ -845,6 +869,11 @@ void getRGB
               g = *p++;
               r = *p++;
               a = *p;
+              if(!alphaPre){
+                  r = DIV(a, r);
+                  g = DIV(a, g);
+                  b = DIV(a, b);
+              }
               return;
 
           case INT_BGR:
@@ -869,9 +898,11 @@ void getRGB
               b = *p++;
               g = *p++;
               r = *p;
-              r = MUL(a, r);
-              g = MUL(a, g);
-              b = MUL(a, b);
+              if(alphaPre){
+                  r = MUL(a, r);
+                  g = MUL(a, g);
+                  b = MUL(a, b);
+              }
               return;
 
           case BYTE_ABGR_PRE:
@@ -880,6 +911,11 @@ void getRGB
               b = *p++;
               g = *p++;
               r = *p;
+              if(!alphaPre){
+                  r = DIV(a, r);
+                  g = DIV(a, g);
+                  b = DIV(a, b);
+              }
               return;
 
           case USHORT_565:
@@ -956,9 +992,11 @@ void getRGB
                       break;
                   case GL_TRANSLUCENT:
                       a = (unsigned char)((rgb >> 24) & 0xff);
-                      r = MUL(a, r);
-                      g = MUL(a, g);
-                      b = MUL(a, b);
+                      if(alphaPre){
+                          r = MUL(a, r);
+                          g = MUL(a, g);
+                          b = MUL(a, b);
+                      }
               }
               return;
 
@@ -970,7 +1008,7 @@ void getRGB
 
 void setRGB
   (int x, int y, SURFACE_STRUCTURE *surfStruct, void *data, 
-  unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+  unsigned char r, unsigned char g, unsigned char b, unsigned char a, bool alphaPre){
 
       int type = surfStruct->ss_type;
       unsigned char *p, pixel = 0;
@@ -981,7 +1019,7 @@ void setRGB
       switch(type){
           case INT_RGB:
               p = (unsigned char *)data + ((y * surfStruct->scanline_stride + x) << 2);
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -994,7 +1032,7 @@ void setRGB
 
           case INT_ARGB:
               p = (unsigned char *)data + ((y * surfStruct->scanline_stride + x) << 2);
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1008,6 +1046,11 @@ void setRGB
 
           case INT_ARGB_PRE:
               p = (unsigned char *)data + ((y * surfStruct->scanline_stride + x) << 2);
+              if(!alphaPre){
+                  r = MUL(a, r);
+                  g = MUL(a, g);
+                  b = MUL(a, b);
+              }
               *p++ = b;
               *p++ = g;
               *p++ = r;
@@ -1016,7 +1059,7 @@ void setRGB
 
           case INT_BGR:
               p = (unsigned char *)data + ((y * surfStruct->scanline_stride + x) << 2);
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1029,7 +1072,7 @@ void setRGB
 
           case BYTE_BGR:
               p = (unsigned char *)data + y * surfStruct->scanline_stride + x * 3;
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1041,7 +1084,7 @@ void setRGB
 
           case BYTE_ABGR:
               p = (unsigned char *)data + y * surfStruct->scanline_stride + (x << 2);
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1054,6 +1097,11 @@ void setRGB
 
           case BYTE_ABGR_PRE:
               p = (unsigned char *)data + y * surfStruct->scanline_stride + (x << 2);
+              if(!alphaPre){
+                  r = MUL(a, r);
+                  g = MUL(a, g);
+                  b = MUL(a, b);
+              }
               *p++ = a;
               *p++ = b;
               *p++ = g;
@@ -1062,7 +1110,7 @@ void setRGB
 
           case USHORT_565:
               sp = (unsigned short *)data + y * surfStruct->scanline_stride + x;
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1076,7 +1124,7 @@ void setRGB
 
           case USHORT_555:
               sp = (unsigned short *)data + y * surfStruct->scanline_stride + x;
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1089,7 +1137,7 @@ void setRGB
 
           case BYTE_GRAY:
               p = (unsigned char *)data + y * surfStruct->scanline_stride + x;
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1103,7 +1151,7 @@ void setRGB
 
           case USHORT_GRAY:
               sp = (unsigned short *)data + y * surfStruct->scanline_stride + x;
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1119,7 +1167,7 @@ void setRGB
               gray = (int)(r * 0.299 + g * 0.587 + b * 0.114 + 0.5);
               minError = 255;
               error = 0;
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1149,7 +1197,7 @@ void setRGB
           case BYTE_INDEXED:
               p = (unsigned char *)data + y * surfStruct->scanline_stride + x;
 
-              if(a != 255){
+              if(alphaPre && a != 255){
                   r = DIV(a, r);
                   g = DIV(a, g);
                   b = DIV(a, b);
@@ -1417,46 +1465,48 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
 
-          int srcType = srcSurf->ss_type;
-          int dstType = dstSurf->ss_type;
-          if(srcType < 0 || dstType < 0) return;
+      int srcType = srcSurf->ss_type;
+      int dstType = dstSurf->ss_type;
+      if(srcType < 0 || dstType < 0) return;
 
       int a = (int)(alpha * 255 + 0.5);
 
       int *rects = (int *)env->GetPrimitiveArrayCritical(clip, 0);
       int numRects = *rects;
 
-          void *srcDataPtr, *dstDataPtr;
-          if(srcData == NULL){
-                  srcDataPtr = NULL;
+      void *srcDataPtr, *dstDataPtr;
+
+      if(srcData == NULL){
+          srcDataPtr = NULL;
 
 #ifdef _WIN32
-                  if(srcSurf->bmpData == NULL){
-                          srcSurf->bmpData = (BYTE *)malloc(srcSurf->bmpInfo.bmiHeader.biSizeImage);
-                  }
-                  GetDIBits(srcSurf->gi->hdc, srcSurf->gi->bmp, 0, srcSurf->height, srcSurf->bmpData, 
-                          (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
-                  srcDataPtr = srcSurf->bmpData;
+          if(srcSurf->bmpData == NULL){
+              srcSurf->bmpData = (BYTE *)malloc(srcSurf->bmpInfo.bmiHeader.biSizeImage);
+          }
+          GetDIBits(srcSurf->gi->hdc, srcSurf->gi->bmp, 0, srcSurf->height, srcSurf->bmpData, 
+              (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+          srcDataPtr = srcSurf->bmpData;
 
 #endif
 
-          }else{
-                  srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
-          }
+      }else{
+          srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
+      }
+
       dstDataPtr = env->GetPrimitiveArrayCritical((jarray)dstData, 0);
 
-          if(!numRects || !srcDataPtr || !dstDataPtr){
-                  if(clip){
-                          env->ReleasePrimitiveArrayCritical(clip, (void *)rects, 0);
-                  }
-                  if(srcData){
-                          env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
-                  }
-                  if(dstData){
-                          env->ReleasePrimitiveArrayCritical((jarray)dstData, dstDataPtr, 0);
-                  }
-                  return;
+      if(!numRects || !srcDataPtr || !dstDataPtr){
+          if(clip){
+              env->ReleasePrimitiveArrayCritical(clip, (void *)rects, 0);
           }
+          if(srcData){
+              env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
+          }
+          if(dstData){
+              env->ReleasePrimitiveArrayCritical((jarray)dstData, dstDataPtr, 0);
+          }
+          return;
+      }
 
       int srcW = srcSurf->width;
       int srcH = srcSurf->height;
@@ -1593,15 +1643,150 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_
 
       }
       env->ReleasePrimitiveArrayCritical(clip, (void *)rects, 0);
-          if(srcData) env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
-          env->ReleasePrimitiveArrayCritical((jarray)dstData, dstDataPtr, 0);
+      if(srcData) env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
+      env->ReleasePrimitiveArrayCritical((jarray)dstData, dstDataPtr, 0);
 
   }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_xor
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint heigth, 
+  jint dstX, jint dstY, jlong dstSurfStruct, jobject dstData, jint width, jint height, 
   jint xorcolor, jintArray clip, jboolean invalidated){
+
+      SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
+      SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
+
+      int srcType = srcSurf->ss_type;
+      int dstType = dstSurf->ss_type;
+      if(srcType < 0 || dstType < 0) return;
+
+      int *rects = (int *)env->GetPrimitiveArrayCritical(clip, 0);
+      int numRects = *rects;
+
+      void *srcDataPtr, *dstDataPtr;
+
+      if(srcData == NULL){
+          srcDataPtr = NULL;
+
+#ifdef _WIN32
+          if(srcSurf->bmpData == NULL){
+              srcSurf->bmpData = (BYTE *)malloc(srcSurf->bmpInfo.bmiHeader.biSizeImage);
+          }
+          GetDIBits(srcSurf->gi->hdc, srcSurf->gi->bmp, 0, srcSurf->height, srcSurf->bmpData, 
+              (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+          srcDataPtr = srcSurf->bmpData;
+
+#endif
+
+      }else{
+          srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
+      }
+
+      dstDataPtr = env->GetPrimitiveArrayCritical((jarray)dstData, 0);
+
+      if(!numRects || !srcDataPtr || !dstDataPtr){
+          if(clip){
+              env->ReleasePrimitiveArrayCritical(clip, (void *)rects, 0);
+          }
+          if(srcData){
+              env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
+          }
+          if(dstData){
+              env->ReleasePrimitiveArrayCritical((jarray)dstData, dstDataPtr, 0);
+          }
+          return;
+      }
+
+      int srcW = srcSurf->width;
+      int srcH = srcSurf->height;
+
+      int dstW = dstSurf->width;
+      int dstH = dstSurf->height;
+
+      int srcX2 = srcW - 1;
+      int srcY2 = srcH - 1;
+      int dstX2 = dstW - 1;
+      int dstY2 = dstH - 1;
+
+      if(srcX > srcX2 || srcY > srcY2) return;
+      if(dstX > dstX2 || dstY > dstY2) return;
+
+      if(srcX < 0){
+          width += srcX;
+          srcX = 0;
+      }
+      if(srcY < 0){
+          height += srcY;
+          srcY = 0;
+      }
+
+      if(dstX < 0){
+          width += dstX;
+          srcX -= dstX;
+          dstX = 0;
+      }
+      if(dstY < 0){
+          height += srcY;
+          srcY -= dstY;
+          dstY = 0;
+      }
+
+      if(srcX + width > srcX2) width = srcX2 - srcX + 1;
+      if(srcY + height > srcY2) height = srcY2 - srcY + 1;
+      if(dstX + width > dstX2) width = dstX2 - dstX + 1;
+      if(dstY + height > dstY2) height = dstY2 - dstY + 1;
+
+      if(width <= 0 || height <= 0) return;
+
+      for(int i = 1; i < numRects; i += 4){
+          int _sx = srcX;
+          int _sy = srcY;
+
+          int _dx = dstX;
+          int _dy = dstY;
+
+          int _w = width;
+          int _h = height;
+
+          int cx = rects[i];            // Clipping left top X
+          int cy = rects[i + 1];        // Clipping left top Y
+          int cx2 = rects[i + 2];       // Clipping right bottom X
+          int cy2 = rects[i + 3];       // Clipping right bottom Y
+
+          if(_dx > cx2 || _dy > cy2 || dstX2 < cx || dstY2 < cy) continue;
+
+          if(cx > _dx){
+              int shx = cx - _dx;
+              _w -= shx;
+              _dx = cx;
+              _sx += shx;
+          }
+
+          if(cy > _dy){
+              int shy = cy - _dy;
+              _h -= shy;
+              _dy = cy;
+              _sy += shy;
+          }
+
+          if(_dx + _w > cx2 + 1){
+              _w = cx2 - _dx + 1;
+          }
+
+          if(_dy + _h > cy2 + 1){
+              _h = cy2 - _dy + 1;
+          }
+
+          if(_sx > srcX2 || _sy > srcY2) continue;
+
+          xor_mode_blt(_sx, _sy, srcSurf, srcDataPtr,
+                      _dx, _dy, dstSurf, dstDataPtr, _w, _h, xorcolor);
+
+      }
+      env->ReleasePrimitiveArrayCritical(clip, (void *)rects, 0);
+      if(srcData) env->ReleasePrimitiveArrayCritical((jarray)srcData, srcDataPtr, 0);
+      env->ReleasePrimitiveArrayCritical((jarray)dstData, dstDataPtr, 0);
+
 
   }
 

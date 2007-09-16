@@ -233,7 +233,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
      * @param fullClassName full name of the class
      * @return name with package and encapsulating class info omitted 
      */
-    static String extractShortClassName(String fullClassName) {
+    private static String extractShortClassName(String fullClassName) {
         int k = fullClassName.lastIndexOf('$');
         
         k = (k == -1 ? fullClassName.lastIndexOf('.') : k);

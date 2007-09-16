@@ -23,10 +23,16 @@ import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.JoinRowSet;
 import javax.sql.rowset.Joinable;
+import javax.sql.rowset.spi.SyncFactoryException;
 
 import org.apache.harmony.luni.util.NotImplementedException;
 
 public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
+
+    public JoinRowSetImpl(String providerID) throws SyncFactoryException {
+        super(providerID);
+        // TODO Auto-generated constructor stub
+    }
 
     public void addRowSet(Joinable rowset) throws SQLException {
         throw new NotImplementedException();

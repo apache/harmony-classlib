@@ -501,6 +501,39 @@ public class HashMapTest extends junit.framework.TestCase {
             return new MockClonable(i);
         }
     }
+    
+    /*
+     * Regression test for HY-4750
+     */
+    public void test_EntrySet() {
+        HashMap map = new HashMap();
+        map.put(new Integer(1), "ONE");
+
+        Set entrySet = map.entrySet();
+        Iterator e = entrySet.iterator();
+        Object real = e.next();
+        Map.Entry copyEntry = new MockEntry();
+        assertEquals(real, copyEntry);
+        assertTrue(entrySet.contains(copyEntry));
+        
+        entrySet.remove(copyEntry);
+        assertFalse(entrySet.contains(copyEntry));
+    }
+
+    private static class MockEntry implements Map.Entry {
+
+        public Object getKey() {
+            return new Integer(1);
+        }
+
+        public Object getValue() {
+            return "ONE";
+        }
+
+        public Object setValue(Object object) {
+            return null;
+        }
+    }
 	
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

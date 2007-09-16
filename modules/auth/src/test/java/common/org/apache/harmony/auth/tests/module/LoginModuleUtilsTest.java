@@ -97,7 +97,7 @@ public class LoginModuleUtilsTest extends TestCase {
         }
 
         status.initialized();
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.login, status
+        assertEquals(LoginModuleUtils.ACTION.login, status
                 .checkLogin());
 
         try {
@@ -106,31 +106,31 @@ public class LoginModuleUtilsTest extends TestCase {
             // expected
         }
 
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkLogout());
 
         status.logined();
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkLogin());
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.commit, status
+        assertEquals(LoginModuleUtils.ACTION.commit, status
                 .checkCommit());
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkLogout());
 
         status.committed();
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkLogin());
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkCommit());
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.logout, status
+        assertEquals(LoginModuleUtils.ACTION.logout, status
                 .checkLogout());
 
         status.logined();
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkLogin());
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.commit, status
+        assertEquals(LoginModuleUtils.ACTION.commit, status
                 .checkCommit());
-        assertEquals(LoginModuleUtils.LoginModuleStatus.ACTION.no_action,
+        assertEquals(LoginModuleUtils.ACTION.no_action,
                 status.checkLogout());
     }
 

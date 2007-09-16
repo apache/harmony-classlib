@@ -249,7 +249,7 @@ public abstract class Codec {
     public long[] decode(int n, InputStream in, long firstValue) throws IOException,
             Pack200Exception {
         long result[] = new long[n + 1];
-        long last = 0;
+        long last = firstValue;
         for(int i=1;i<n+1;i++) {
             result[i] = last = decode(in,last);
         }

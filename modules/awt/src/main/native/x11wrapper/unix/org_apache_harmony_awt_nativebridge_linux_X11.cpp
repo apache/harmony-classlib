@@ -774,6 +774,15 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetS
     return (jint) (* p_nbridge_XSetStandardProperties)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (long) param_4, (void *) param_5, (int) param_6, (void *) param_7);
 }
 
+void (* p_nbridge_Xutf8SetWMProperties) (void *, long, void *, void *, void *, int, void *, void*, void*) = NULL;
+
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_Xutf8SetWMProperties( JNIEnv *env, jobject self, jlong param_0, jlong param_1, jlong param_2, jlong param_3, jlong param_4, jint param_5, jlong param_6, jlong param_7, jlong param_8) {
+    if (p_nbridge_Xutf8SetWMProperties == NULL) {
+        p_nbridge_Xutf8SetWMProperties = (void (*) (void *, long, void *, void *, void*, int, void*, void*, void*)) FindFunction(libX11, "Xutf8SetWMProperties");
+    }
+   (* p_nbridge_Xutf8SetWMProperties)((void *) param_0, (long) param_1, (void *) param_2, (void *) param_3, (void *) param_4, (int) param_5, (void *) param_6, (void *) param_7, (void *) param_8);
+}
+
 unsigned long  (* p_nbridge_XDefaultColormap) (void *, int) = NULL;
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDefaultColormap( JNIEnv *env, jobject self, jlong param_0, jint param_1) {

@@ -555,6 +555,31 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_
 
 /*
  * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    drawOval
+ * Signature: (JIIII)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawOval
+  (JNIEnv *env, jobject obj, jlong gip, jint x, jint y, jint width, jint height)
+{
+    if (width == 0) {
+        Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawLine(env, obj, gip, x, y, x, y+height);
+        return;
+    } else if (height == 0) {
+        Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawLine(env, obj, gip, x, y, x+width, y);
+        return;
+    }
+
+    GraphicsInfo *gi = (GraphicsInfo *)gip;
+    
+    gi->graphics->SetTransform(gi->matrix);
+
+    gi->graphics->DrawEllipse(gi->pen, x, y, width, height);
+
+    gi->graphics->ResetTransform();
+}
+ 
+/*
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
  * Method:    fillRect
  * Signature: (JIIII)V
  */

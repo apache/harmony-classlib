@@ -203,12 +203,7 @@ public class CpBands extends BandSet {
     private void parseCpInt(InputStream in) throws IOException,
             Pack200Exception {
         int cpIntCount = header.getCpIntCount();
-        cpInt = new int[cpIntCount];
-        long last = 0;
-        for (int i = 0; i < cpIntCount; i++) {
-            last = Codec.UDELTA5.decode(in, last);
-            cpInt[i] = (int) last;
-        }
+        cpInt = decodeBandInt("cpInt", in, Codec.UDELTA5, cpIntCount);
     }
 
     private void parseCpLong(InputStream in) throws IOException,
@@ -316,18 +311,9 @@ public class CpBands extends BandSet {
         // TODO Update codec.decode -> decodeScalar
         cpUTF8 = new String[cpUTF8Count];
         cpUTF8[0] = ""; //$NON-NLS-1$
-        int[] prefix = new int[cpUTF8Count];
         int[] suffix = new int[cpUTF8Count];
-        if (cpUTF8Count > 0) {
-            prefix[0] = 0;
-            suffix[0] = 0;
-            if (cpUTF8Count > 1)
-                prefix[1] = 0;
-        }
         long last = 0;
-        for (int i = 2; i < cpUTF8Count; i++) {
-            last = prefix[i] = (int) Codec.DELTA5.decode(in, last);
-        }
+        int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5, cpUTF8Count-2);
         int chars = 0;
         int bigSuffix = 0;
         for (int i = 1; i < cpUTF8Count; i++) {
@@ -366,10 +352,10 @@ public class CpBands extends BandSet {
             if (suffix[i] == 0) {
                 // The big suffix stuff hasn't been tested, and I'll be
                 // surprised if it works first time w/o errors ...
-                cpUTF8[i] = lastString.substring(0, prefix[i])
+                cpUTF8[i] = lastString.substring(0, i>1 ? prefix[i-2] : 0)
                         + new String(bigSuffixData[bigSuffix++]);
             } else {
-                cpUTF8[i] = lastString.substring(0, prefix[i])
+                cpUTF8[i] = lastString.substring(0, i>1 ? prefix[i-2]: 0)
                         + new String(data, chars, suffix[i]);
                 chars += suffix[i];
             }

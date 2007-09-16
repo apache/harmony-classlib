@@ -20,6 +20,7 @@
  */
 package org.apache.harmony.awt.gl.windows;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -332,9 +333,21 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     }
 
     @Override
+    public void drawOval(int x, int y, int width, int height) {
+        if (!nativePen) {
+            super.drawOval(x, y, width, height);
+            return;
+        }
+
+        drawOval(gi, x, y, width, height);
+    }
+
+    @Override
     public void fill(Shape s) {
-        if (!nativeBrush) {
-            super.fill(s);
+        if (!nativeBrush || composite != AlphaComposite.SrcOver) {
+            s = transform.createTransformedShape(s);
+            MultiRectArea mra = jsr.rasterize(s, 0.5);
+            super.fillMultiRectAreaPaint(mra);
             return;
         }
 
@@ -345,8 +358,10 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     public void fillRect(int x, int y, int width, int height) {
-        if (!nativeBrush) {
-            super.fillRect(x, y, width, height);
+        if (!nativeBrush || composite != AlphaComposite.SrcOver) {
+            Shape s = transform.createTransformedShape(new Rectangle(x, y, width, height));
+            MultiRectArea mra = jsr.rasterize(s, 0.5);
+            super.fillMultiRectAreaPaint(mra);
             return;
         }
 
@@ -540,6 +555,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     // Draw native primitives
     private native void drawLine(long gi, int x1, int y1, int x2, int y2);
     private native void drawRect(long gi, int x, int y, int width, int height);
+    private native void drawOval(long gi, int x, int y, int width, int height);
 
     // Fill native primitives
     private native void fillRect(long gi, int x, int y, int width, int height);

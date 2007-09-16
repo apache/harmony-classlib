@@ -46,6 +46,8 @@ public class JToggleButton extends AbstractButton implements Accessible {
     };
 
     public static class ToggleButtonModel extends DefaultButtonModel {
+        
+        @Override
         public void setPressed(final boolean pressed) {
             boolean oldPressed = isPressed();
             if (oldPressed != pressed && !pressed && isArmed()) {
@@ -54,13 +56,30 @@ public class JToggleButton extends AbstractButton implements Accessible {
             super.setPressed(pressed);
         }
 
-        public void setSelected(final boolean selected) {
-            if (group != null && group.getSelection() == this) {
-                return;
-            }
-            super.setSelected(selected);
-            if (selected && group != null) {
-                group.setSelected(this, true);
+        @Override
+        public void setSelected(boolean selected) {
+            // The method changed according to HARMONY-4658.
+            // Now super.setSelected(selected) divided if group!=null
+            if (group != null) {
+            
+                if (group.getSelection() == this) {
+                    return;
+                }
+                
+                toggleState(SELECTED);
+                
+                if (selected) {
+                    group.setSelected(this, true);
+                }
+                
+                int state = selected ? ItemEvent.SELECTED
+                        : ItemEvent.DESELECTED;
+                ItemEvent event = new ItemEvent(this,
+                        ItemEvent.ITEM_STATE_CHANGED, this, state);
+                fireItemStateChanged(event);
+                
+            } else {
+                super.setSelected(selected);
             }
         }
     }

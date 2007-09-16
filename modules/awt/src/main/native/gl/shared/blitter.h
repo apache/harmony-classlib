@@ -121,10 +121,10 @@ void src_over_byteindexed_intargb
 (int, int, SURFACE_STRUCTURE *, void *, int, int, SURFACE_STRUCTURE *, void *, int, int, int);
 
 void getRGB
-(int, int, SURFACE_STRUCTURE *, void *, unsigned char &, unsigned char &, unsigned char &, unsigned char &);
+(int, int, SURFACE_STRUCTURE *, void *, unsigned char &, unsigned char &, unsigned char &, unsigned char &, bool);
 
 void setRGB
-(int, int, SURFACE_STRUCTURE *, void *, unsigned char, unsigned char, unsigned char, unsigned char);
+(int, int, SURFACE_STRUCTURE *, void *, unsigned char, unsigned char, unsigned char, unsigned char, bool);
 
 extern void (* src_over_blt[14][14])(int, int, SURFACE_STRUCTURE *, void *, int, int, SURFACE_STRUCTURE *, void *, int, int, int);
 extern void (* src_blt[14][14])(int, int, SURFACE_STRUCTURE *, void *, int, int, SURFACE_STRUCTURE *, void *, int, int, int);

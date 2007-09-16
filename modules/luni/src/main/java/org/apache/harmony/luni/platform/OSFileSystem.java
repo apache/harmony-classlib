@@ -149,6 +149,14 @@ class OSFileSystem extends OSComponent implements IFileSystem {
 		}
 		long bytesRead = readImpl(fileDescriptor, bytes, offset, length);
 		if (bytesRead < -1) {
+                        /*
+                         * TODO: bytesRead is never less than -1 so this code
+                         * does nothing?
+                         * The native code throws an exception in only one case
+                         * so perhaps this should be 'bytesRead < 0' to handle
+                         * any other cases.  But the other cases have been
+                         * ignored until now so fixing this could break things
+                         */
 			throw new IOException();
 		}
 		return bytesRead;

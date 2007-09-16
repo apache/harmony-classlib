@@ -150,5 +150,5 @@ freeReferences (JNIEnv * env)
   /* clean up class references */
   classRef = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
   if (classRef)
-    (*env)->DeleteWeakGlobalRef (env, (jweak) classRef);
+    (*env)->DeleteGlobalRef (env, classRef);
 }
