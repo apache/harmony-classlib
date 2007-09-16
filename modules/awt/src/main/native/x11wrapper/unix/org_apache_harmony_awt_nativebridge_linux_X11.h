@@ -195,6 +195,8 @@ JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XTran
 
 JNIEXPORT jint  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XSetStandardProperties(JNIEnv *, jobject, jlong, jlong, jlong, jlong, jlong, jlong, jint, jlong);
 
+JNIEXPORT void  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_Xutf8SetWMProperties(JNIEnv *, jobject, jlong, jlong, jlong, jlong, jlong, jint, jlong, jlong, jlong);
+
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XDefaultColormap(JNIEnv *, jobject, jlong, jint);
 
 JNIEXPORT jlong  JNICALL Java_org_apache_harmony_awt_nativebridge_linux_X11_XAllocSizeHints(JNIEnv *, jobject);

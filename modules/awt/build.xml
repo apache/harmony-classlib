@@ -107,7 +107,7 @@
         </javac>
     </target>
 
-    <target name="copy-resources">
+    <target name="copy-resources" depends="-copy-win-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
             <fileset dir="${hy.awt.src.main.java}">
@@ -119,6 +119,12 @@
         <copy todir="${hy.jdk}/jre/lib/cmm">
             <fileset dir="${hy.awt.src.main.resources}/cmm"/>
         </copy>	
+    </target>
+    
+    <target name="-copy-win-resources" if="is.windows">
+        <mkdir dir="${hy.jdk}/jre/lib" />
+        <copy file="${hy.awt.src.main.resources}/font.properties.xp"
+              tofile="${hy.jdk}/jre/lib/font.properties"/>
     </target>
 
     <target name="build-jar" depends="svn-info">

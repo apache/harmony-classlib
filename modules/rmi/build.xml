@@ -204,6 +204,7 @@
                     </fileset>
                 </bootclasspath>
                 <classpath location="../../build/tests" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
             </javac>
         </sequential>
     </macrodef>
@@ -236,6 +237,7 @@
 
                 <classpath>
                     <pathelement path="${hy.rmi.src.test.resources}"/>
+                    <pathelement location="${hy.hdk}/build/test/support.jar"/>
                 </classpath>
 
                 <formatter type="xml" />

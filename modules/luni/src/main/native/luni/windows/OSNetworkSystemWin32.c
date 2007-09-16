@@ -59,6 +59,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   for (val = 0; val<countReadC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,readFDArray,val);
 	  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+      (*env)->DeleteLocalRef(env, gotFD);
+
 	  if (!hysock_socketIsValid (hysocketP)){
       		continue;
     	  }
@@ -78,6 +80,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   for (val = 0; val<countWriteC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,writeFDArray,val);
 	  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+      (*env)->DeleteLocalRef(env, gotFD);
+
 	  if (!hysock_socketIsValid (hysocketP)){
       		continue;
     	  }
@@ -119,6 +123,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	  for (val=0;val<countReadC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,readFDArray,val);
 		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+        (*env)->DeleteLocalRef(env, gotFD);
+
 		if (!hysock_socketIsValid (hysocketP)){
       			continue;
     	  	}
@@ -141,6 +147,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	  for (val=0;val<countWriteC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,writeFDArray,val);
 		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+        (*env)->DeleteLocalRef(env, gotFD);
+
 		if (!hysock_socketIsValid (hysocketP)){
       			continue;
     	  	}
@@ -206,6 +214,7 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
   (JNIEnv * env, jobject clz, jobject address,jobject localaddr, jint ttl, jint timeout){
+  PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
   struct ICMPHeader* send_buf = 0;
   struct IPHeader* recv_buf = 0;
@@ -220,7 +229,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   struct ICMPHeader* icmphdr;
   struct WSAData wsaData;
   int ret = UNREACHABLE;
-  U_32 length =  (*env)->GetArrayLength (env,address);
+  U_32 length;
 	      
   // start raw socket, return -1 for privilege can not be obtained
   if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -254,9 +263,12 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   }
   
   // set basic send and recv buf
-  send_buf = (struct ICMPHeader*)malloc(sizeof(char)*ICMP_SIZE);
-  recv_buf = (struct IPHeader*)malloc(sizeof(char)*PACKET_SIZE);
-  if (NULL == send_buf || NULL == recv_buf){
+  send_buf = (struct ICMPHeader*)hymem_allocate_memory(sizeof(char)*ICMP_SIZE);
+  if (NULL == send_buf) {
+	  goto cleanup;
+  }
+  recv_buf = (struct IPHeader*)hymem_allocate_memory(sizeof(char)*PACKET_SIZE);
+  if (NULL == recv_buf){
 	  goto cleanup;
   }
   set_icmp_packet(send_buf, ICMP_SIZE);
@@ -265,7 +277,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
             (struct sockaddr*)&dest, sizeof(dest))){
 	  goto cleanup;
   }
-  fdset_read = (fd_set *)malloc(sizeof (struct fd_set));
+  fdset_read = (fd_set *)hymem_allocate_memory(sizeof (struct fd_set));
   if (NULL == fdset_read){
   	  goto cleanup;
   }
@@ -296,9 +308,9 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   }
   ret = REACHABLE;
 cleanup:
-  free(fdset_read);
-  free(send_buf);
-  free(recv_buf);
+  hymem_free_memory(fdset_read);
+  hymem_free_memory(send_buf);
+  hymem_free_memory(recv_buf);
   WSACleanup();	 
   return ret;
 }
@@ -306,7 +318,7 @@ cleanup:
 // typical ip checksum
 unsigned short ip_checksum(unsigned short * buffer, int size)
 {
-	register unsigned short * buf = buffer;
+    register unsigned short * buf = buffer;
     register int bufleft = size;
     register unsigned long sum = 0;
     

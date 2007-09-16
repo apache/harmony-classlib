@@ -124,10 +124,6 @@ Java_java_io_File_listImpl (JNIEnv * env, jobject recv, jbyteArray path)
     return NULL;
 
   javaClass = HARMONY_CACHE_GET (env, CLS_array_of_byte);
-  javaClass = (*env)->NewLocalRef(env, javaClass);
-  if (javaClass == NULL) {
-      return NULL;
-  }
   answer =
     (*env)->NewObjectArray (env, numEntries, javaClass, NULL);
 cleanup:
@@ -525,7 +521,7 @@ Java_java_io_File_oneTimeInitialization (JNIEnv * env, jclass clazz)
   jclass arrayClass = (*env)->FindClass (env, "[B");
   if (arrayClass)
     {
-      jobject globalRef = (*env)->NewWeakGlobalRef (env, arrayClass);
+      jobject globalRef = (*env)->NewGlobalRef (env, arrayClass);
       if (globalRef)
         HARMONY_CACHE_SET (env, CLS_array_of_byte, globalRef);
     }

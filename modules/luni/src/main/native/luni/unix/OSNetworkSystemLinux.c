@@ -57,6 +57,7 @@ selectRead (JNIEnv * env,hysocket_t hysocketP, I_32 uSecTime, BOOLEAN accept){
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isReachableByICMPImpl
   (JNIEnv * env, jobject clz, jobject address, jobject localaddr,  jint ttl, jint timeout){
+  PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
   struct icmp * send_buf = 0;
   struct ip * recv_buf = 0;
@@ -64,7 +65,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   struct pollfd my_pollfd;
   int sockadd_size = sizeof (source);
   jbyte host[HYSOCK_INADDR6_LEN];
-  U_32 length =  (*env)->GetArrayLength (env,address);
+  U_32 length;
 
   int sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
   if (INVALID_SOCKET == sock){
@@ -93,11 +94,15 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
     bind(sock, (struct sockaddr *)& local, sizeof(local));
   }
 
-  send_buf = (struct icmp*)malloc(sizeof(char)*ICMP_SIZE);
-  recv_buf = (struct ip*)malloc(sizeof(char)*PACKET_SIZE);
-  if (NULL == send_buf || NULL == recv_buf){
-	  ret = NOPRIVILEGE;
-      goto cleanup;
+  send_buf = (struct icmp*)hymem_allocate_memory(sizeof(char)*ICMP_SIZE);
+  if (NULL == send_buf) {
+    ret = NOPRIVILEGE;
+    goto cleanup;
+  }
+  recv_buf = (struct ip*)hymem_allocate_memory(sizeof(char)*PACKET_SIZE);
+  if (NULL == recv_buf) {
+    ret = NOPRIVILEGE;
+    goto cleanup;
   }
   set_icmp_packet(send_buf, ICMP_SIZE);
 
@@ -138,11 +143,11 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
 cleanup:
 
   if (send_buf != NULL) {
-      free(send_buf);
+      hymem_free_memory(send_buf);
   }
 
   if (recv_buf != NULL) {
-      free(recv_buf);
+      hymem_free_memory(recv_buf);
   }
 
   return ret;
@@ -208,6 +213,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   for (val=0; val<countReadC; val++) {
 	  gotFD	= (*env)->GetObjectArrayElement(env, readFDArray, val);
 	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+      (*env)->DeleteLocalRef(env, gotFD);
 
       my_pollfds[val].fd = hysocketP->sock;
       my_pollfds[val].events = POLLIN | POLLPRI;
@@ -217,6 +223,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   for (val=0; val<countWriteC; val++) {
 	  gotFD	= (*env)->GetObjectArrayElement(env, writeFDArray, val);
 	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
+      (*env)->DeleteLocalRef(env, gotFD);
 
       my_pollfds[countReadC + val].fd = hysocketP->sock;
       my_pollfds[countReadC + val].events = POLLOUT;
@@ -253,6 +260,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_inheritedChannelImpl
   (JNIEnv * env , jobject clz){
+    PORT_ACCESS_FROM_ENV (env);
     int socket = 0;
     int opt;
     int length = sizeof(opt);
@@ -283,7 +291,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		if(AF_INET != local_addr.sin_family || length != sizeof(struct sockaddr)){
 			return NULL;
 		}
-		localAddr = malloc(sizeof(jbyte)*4);
+		localAddr = hymem_allocate_memory(sizeof(jbyte)*4);
 		if (NULL == localAddr){
 			return NULL;
 		}
@@ -292,16 +300,26 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 	if(0 != getpeername(socket,(struct sockaddr *)&remote_addr,(unsigned int *)&length))	{
 		remote_addr.sin_port = 0;
                 remote_addr.sin_addr.s_addr = 0;
-		address = malloc(sizeof(jbyte)*4);
+		address = hymem_allocate_memory(sizeof(jbyte)*4);
+                if (NULL == address) {
+                  goto clean;
+                }
 		bzero(address,sizeof(jbyte)*4);
 	} else {
 		if(AF_INET != remote_addr.sin_family || length != sizeof(struct sockaddr))	{
 			return NULL;
 		}
-		address = malloc(sizeof(jbyte)*4);
+		address = hymem_allocate_memory(sizeof(jbyte)*4);
+                if (NULL == address) {
+                  goto clean;
+                }
 		memcpy (address, &(remote_addr.sin_addr.s_addr), 4);
 	}
-	sock = malloc(sizeof(hysocket_struct));
+	sock = hymem_allocate_memory(sizeof(hysocket_struct));
+        /* TODO: where is sock free'd? */
+        if (NULL == sock) {
+          goto clean;
+        }
 	sock->sock = socket;
 	sock->family = AF_INET;
 
@@ -312,10 +330,12 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		//socket
 		channel_class = (*env)->FindClass(env,"org/apache/harmony/nio/internal/SocketChannelImpl");
         	if(NULL == channel_class) {
+                    hymem_free_memory(sock);
         	    goto clean;
 	        }
 		channel_object = getJavaNioChannelsSocketChannelImplObj(env,channel_class);
           	if(NULL == channel_object) {
+                    hymem_free_memory(sock);
 	            goto clean;
         	}
 		// new and set FileDescript
@@ -338,6 +358,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 			(*env)->SetBooleanField(env,channel_object, bound_field,jtrue);
 		}
 	  } else {
+                // sock isn't used on this code path so we should free it
+                hymem_free_memory(sock);
 		//serverSocket	
 		channel_class = (*env)->FindClass(env,"org/apache/harmony/nio/internal/ServerSocketChannelImpl");
         	if(NULL == channel_class) {
@@ -376,10 +398,12 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 	  // new DatagramChannel
 	  channel_class = (*env)->FindClass(env,"org/apache/harmony/nio/internal/DatagramChannelImpl");
           if(NULL == channel_class) {
+              hymem_free_memory(sock);
               goto clean;
           }
           channel_object = getJavaNioChannelsSocketChannelImplObj(env,channel_class);
           if(NULL == channel_object) {
+              hymem_free_memory(sock);
               goto clean;
           }
 	  // new and set FileDescript
@@ -393,9 +417,8 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_
 		(*env)->SetBooleanField(env,channel_object, bound_field,jtrue);			
 	  }
         }	
-clean:
-	free(address);
-	free(localAddr);
+ clean:
+	hymem_free_memory(address);
+	hymem_free_memory(localAddr);
 	return channel_object;
 }
-

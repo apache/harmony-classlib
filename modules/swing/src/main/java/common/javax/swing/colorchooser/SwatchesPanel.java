@@ -46,7 +46,24 @@ class SwatchesPanel extends AbstractColorChooserPanel {
     private SwatchPanel recentPanel;
     private SwatchPanel swatchPanel;
 
-    private static class SwatchPanel extends JPanel {
+    private final class SwatchPanelMouseInputAdapter extends MouseInputAdapter {
+    	private SwatchPanel panel;
+
+    	SwatchPanelMouseInputAdapter(final SwatchPanel panel) {
+    		this.panel = panel;
+    	}
+
+		public void mouseClicked(final MouseEvent e) {
+		    getColorSelectionModel().setSelectedColor(panel.getColorAtLocation(e.getX(), e.getY(), true));
+		}
+
+		public void mouseMoved(final MouseEvent e) {
+		    Color color = panel.getColorAtLocation(e.getX(), e.getY(), false);
+		    panel.setToolTipText(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
+		}
+	}
+
+	private static class SwatchPanel extends JPanel {
         int oneColorWidth;
         int oneColorHeight;
 
@@ -135,20 +152,15 @@ class SwatchesPanel extends AbstractColorChooserPanel {
 
         JPanel right = new JPanel(new BorderLayout());
         recentPanel = new SwatchPanel(createRecentColors(), null, recentSwatchSize);
-        
+        MouseInputAdapter swatchMouseAdapter = new SwatchPanelMouseInputAdapter(recentPanel);
+        recentPanel.addMouseListener(swatchMouseAdapter);
+        recentPanel.addMouseMotionListener(swatchMouseAdapter);
+
         right.add(BorderLayout.CENTER, new JLabel(UIManager.getString("ColorChooser.swatchesRecentText")));
         right.add(BorderLayout.SOUTH, recentPanel);
 
         swatchPanel = new SwatchPanel(MAIN_SWATCH_COLORS, recentPanel, swatchSize);
-        MouseInputAdapter swatchMouseAdapter = new MouseInputAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                getColorSelectionModel().setSelectedColor(swatchPanel.getColorAtLocation(e.getX(), e.getY(), true));
-            }
-            public void mouseMoved(MouseEvent e) {
-                Color color = swatchPanel.getColorAtLocation(e.getX(), e.getY(), false);
-                swatchPanel.setToolTipText(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
-            }
-        };
+        swatchMouseAdapter = new SwatchPanelMouseInputAdapter(swatchPanel);
         swatchPanel.addMouseListener(swatchMouseAdapter);
         swatchPanel.addMouseMotionListener(swatchMouseAdapter);
 

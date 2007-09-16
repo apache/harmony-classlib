@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry output="bin/main" kind="src" path="src/main/java/windows"/>
-	<classpathentry output="bin/main" kind="src" path="src/main/java/common"/>
-	<classpathentry output="bin/main" kind="src" path="src/main/java/unix"/>
-	<classpathentry output="bin/test" kind="src" path="src/test/java/common"/>
-	<classpathentry output="bin/test" kind="src" path="src/test/java/windows"/>
-	<classpathentry output="bin/test" kind="src" path="src/test/java/unix"/>
+	<classpathentry kind="src" output="bin/main" path="src/main/java/windows"/>
+	<classpathentry kind="src" output="bin/test" path="src/test/resources"/>
+	<classpathentry kind="src" output="bin/main" path="src/main/java/common"/>
+	<classpathentry kind="src" output="bin/main" path="src/main/java/unix"/>
+	<classpathentry kind="src" output="bin/test" path="src/test/java/common"/>
+	<classpathentry kind="src" output="bin/test" path="src/test/java/windows"/>
+	<classpathentry kind="src" output="bin/test" path="src/test/java/unix"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry sourcepath="JUNIT_SRC_HOME/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="output" path="bin/main"/>

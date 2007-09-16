@@ -131,7 +131,7 @@ public class SegmentHeader {
      */
     private void setArchiveMajorVersion(int version) throws Pack200Exception {
         if (version != 150)
-            throw new Pack200Exception("Invalid segment major version");
+            throw new Pack200Exception("Invalid segment major version: " + version);
         archiveMajor = version;
     }
     
@@ -354,8 +354,9 @@ public class SegmentHeader {
      */
     private long decodeScalar(String name, InputStream in, BHSDCodec codec)
             throws IOException, Pack200Exception {
-//        debug("Parsed #" + name + " (1)");
-        return codec.decode(in);
+        long ret =  codec.decode(in);
+        debug("Parsed #" + name + " as " + ret);
+        return ret;
     }
     
     public void setArchiveModtime(long archiveModtime) {
@@ -410,6 +411,12 @@ public class SegmentHeader {
     public int getBandHeadersSize() {
         return bandHeadersSize;
     }
+    
+    protected void debug(String message) {
+      if (System.getProperty("debug.pack200") != null) {
+          System.err.println(message);
+      }
+  }
 
 
 }

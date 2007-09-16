@@ -21,6 +21,8 @@ import java.util.BitSet;
 public class CachedRow {
     private Object[] columnData;
 
+    private Object[] originalColumnData;
+
     private BitSet mask;
 
     private boolean isDelete;
@@ -29,6 +31,7 @@ public class CachedRow {
 
     public CachedRow(Object[] columnData) {
         this.columnData = columnData;
+        this.originalColumnData = columnData;
         mask = new BitSet(columnData.length);
     }
 
@@ -64,5 +67,13 @@ public class CachedRow {
     public void updateInt(int columnIndex, int x) {
         this.columnData[columnIndex - 1] = x;
         setUpdateMask(columnIndex - 1);
+    }
+
+    public String getString(int columnIndex) {
+        return (String) this.columnData[columnIndex - 1];
+    }
+
+    public int getInt(int columnIndex) {
+        return (Integer) this.columnData[columnIndex - 1];
     }
 }

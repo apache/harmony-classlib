@@ -19,7 +19,24 @@ package org.apache.harmony.sql.internal.rowset;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.NClob;
+import java.sql.Ref;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.SQLXML;
+import java.sql.Savepoint;
+import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -29,10 +46,13 @@ import javax.sql.RowSet;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetInternal;
 import javax.sql.RowSetMetaData;
+import javax.sql.RowSetWriter;
 import javax.sql.rowset.BaseRowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.RowSetWarning;
+import javax.sql.rowset.spi.SyncFactory;
+import javax.sql.rowset.spi.SyncFactoryException;
 import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
 
@@ -48,6 +68,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private CachedRow currentRow;
 
+    // start from : 0 rather than 1.
     private int currentRowIndex;
 
     private int pageSize;
@@ -60,16 +81,40 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private int columnCount;
 
+    private SyncProvider syncProvider;
+
+    private String dataBaseURL;
+
+    public CachedRowSetImpl(String providerID) throws SyncFactoryException {
+        syncProvider = SyncFactory.getInstance(providerID);
+    }
+
+    public CachedRowSetImpl() throws SyncFactoryException {
+        // this("org.apache.harmony.sql.rowset.HYOptimisticProvider");
+    }
+
     public void setRows(ArrayList<CachedRow> data, int cloumnCount) {
         this.rows = data;
         this.columnCount = cloumnCount;
     }
 
     public void acceptChanges() throws SyncProviderException {
-        throw new NotImplementedException();
+        // TODO:
+        // ?? 1. use the provider
+        // 2. use the connections defined in the resultset
+        try {
+            RowSetWriter rowSetWriter = syncProvider.getRowSetWriter();
+            rowSetWriter.writeData(this);
+            // acceptChanges(this.getConnection());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SyncProviderException();
+        }
     }
 
     public void acceptChanges(Connection con) throws SyncProviderException {
+        if (currentRow == insertRow)
+            throw new SyncProviderException();
         throw new NotImplementedException();
     }
 
@@ -128,6 +173,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public ResultSet getOriginalRow() throws SQLException {
+        if (currentRow == null)
+            throw new SQLException();
+        // ResultSet originalRow.s
         throw new NotImplementedException();
     }
 
@@ -140,7 +188,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public SyncProvider getSyncProvider() throws SQLException {
-        throw new NotImplementedException();
+        return this.syncProvider;
     }
 
     public String getTableName() throws SQLException {
@@ -158,6 +206,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void populate(ResultSet rs, int startRow) throws SQLException {
         new CachedRowSetReader(rs, startRow).readData(this);
         composeMetaData(rs.getMetaData());
+        dataBaseURL = rs.getStatement().getConnection().getMetaData().getURL();
     }
 
     private void composeMetaData(ResultSetMetaData metaData)
@@ -217,7 +266,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void setSyncProvider(String provider) throws SQLException {
-        throw new NotImplementedException();
+        // If a different concurrency control mechanism is desired, a different
+        // implementation of SyncProvider can be plugged in using the method
+        // setSyncProvider
+        syncProvider = SyncFactory.getInstance(provider);
     }
 
     public void setTableName(String tabName) throws SQLException {
@@ -337,7 +389,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean first() throws SQLException {
-        throw new NotImplementedException();
+        if (rows.size() == 0)
+            return false;
+        this.currentRowIndex = 0;
+        this.currentRow = (CachedRow) rows.get(0);
+        return true;
     }
 
     public Array getArray(int columnIndex) throws SQLException {
@@ -467,11 +523,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int getInt(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        return this.currentRow.getInt(columnIndex);
     }
 
     public int getInt(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return this.currentRow.getInt(getIndexByName(columnName));
     }
 
     public long getLong(int columnIndex) throws SQLException {
@@ -528,12 +584,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
 
+    // columnIndex: from 1 rather than 0
     public String getString(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        return currentRow.getString(columnIndex);
     }
 
     public String getString(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return currentRow.getString(getIndexByName(columnName));
     }
 
     public Time getTime(int columnIndex) throws SQLException {
@@ -593,11 +650,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void insertRow() throws SQLException {
         checkValidRow();
         if (currentRow != insertRow) {
-            throw new SQLException();
+            // rowset.4=Not an insert row
+            throw new SQLException(Messages.getString("rowset.4"));
         }
         currentRow.setInsert();
         rows.add(insertRow);
         currentRowIndex++;
+        // TODO insert the data into database
+        // insertRowToDB(rows);
     }
 
     public boolean isAfterLast() throws SQLException {
@@ -628,6 +688,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void moveToInsertRow() throws SQLException {
         insertRow = new CachedRow(new Object[columnCount]);
         this.currentRow = insertRow;
+        this.rememberedCursorPosition = this.currentRowIndex;
         this.currentRowIndex = rows.size();
     }
 
@@ -636,7 +697,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         if (rows.size() < currentRowIndex) {
             return false;
         }
-        currentRow = rows.get(currentRowIndex);
+        currentRow = rows.get(currentRowIndex - 1);
         return true;
     }
 
@@ -658,7 +719,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean rowInserted() throws SQLException {
-        throw new NotImplementedException();
+        boolean sign = false;
+        for (int i = 0; i < meta.getColumnCount(); ++i)
+            sign = this.currentRow.getUpdateMask(i) | sign;
+        return sign;
     }
 
     public boolean rowUpdated() throws SQLException {
@@ -828,7 +892,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateRow() throws SQLException {
-        throw new NotImplementedException();
+        if ((currentRow == insertRow)
+                || (this.getConcurrency() == (ResultSet.CONCUR_READ_ONLY)))
+            throw new SQLException();
+        rows.set(currentRowIndex, currentRow);
     }
 
     public void updateShort(int columnIndex, short x) throws SQLException {
@@ -874,7 +941,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Connection getConnection() throws SQLException {
-        throw new NotImplementedException();
+        return DriverManager.getConnection(dataBaseURL);
     }
 
     public void updateNCharacterStream(String columnLabel, Reader reader){
@@ -1049,32 +1116,37 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         throw new NotImplementedException();
     }
     
-    public NClob getNClob(int columnIndex){
-        throw new NotImplementedException();
-    }
-    
-    public NClob getNClob(String columnLabel){
-        throw new NotImplementedException();
-    }
-    
-    public boolean isClosed(){
-        throw new NotImplementedException();
-    }
-    
-    public SQLXML getSQLXML(int columnIndex){
-        throw new NotImplementedException();
-    }
-    
-    public SQLXML getSQLXML(String columnLabel){
-        throw new NotImplementedException();
-    }
-    
     public <T> T unwrap(Class<T> iface){
         throw new NotImplementedException();
     }
     
     public int getHoldability(){
         throw new NotImplementedException();
+    }
+
+    public NClob getNClob(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public NClob getNClob(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public SQLXML getSQLXML(int columnIndex) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public SQLXML getSQLXML(String columnLabel) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isClosed() throws SQLException {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

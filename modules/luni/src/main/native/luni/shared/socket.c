@@ -266,7 +266,7 @@ mcastAddMembership (JNIEnv * env, hysocket_t hysocketP, jobject optVal,
   PORT_ACCESS_FROM_ENV (env);
   I_32 result;
   U_8 nipmcast[HYSOCK_INADDR6_LEN], nipInterface[HYSOCK_INADDR6_LEN];
-  U_32 length, lengthIF = HYSOCK_INADDR_LEN;
+  U_32 length, lengthIF;
   hyipmreq_struct ipmreqP;
   hysockaddr_struct sockaddrP;
   hyipv6_mreq_struct ipv6Mreq;

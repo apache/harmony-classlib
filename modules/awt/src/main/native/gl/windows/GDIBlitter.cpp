@@ -369,15 +369,113 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
-  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint heigth, jint xorcolor, 
+  jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, jint xorcolor, 
   jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
+
+      SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
+      SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
+
+      srcSurf->invalidated = invalidated != 0;
+      if(!initBitmap(srcSurf, env, srcData, false)) return;
+
+      BYTE r = (BYTE)((xorcolor >> 16) & 0xff);
+      BYTE g = (BYTE)((xorcolor >> 8) & 0xff);
+      BYTE b = (BYTE)(xorcolor & 0xff);
+
+      HBRUSH brush = CreateSolidBrush(RGB(r, g, b));
+
+
+      XFORM currentTransform, transform;
+      if(matrix != NULL){
+
+          jdouble * mtrx = (jdouble *)env->GetPrimitiveArrayCritical(matrix, 0);
+          jdouble * old_mtrx = mtrx;
+
+          transform.eM11 = (FLOAT)(*mtrx++);
+          transform.eM12 = (FLOAT)(*mtrx++);
+          transform.eM21 = (FLOAT)(*mtrx++);
+          transform.eM22 = (FLOAT)(*mtrx++);
+          transform.eDx = (FLOAT)(*mtrx++);
+          transform.eDy = (FLOAT)(*mtrx);
+
+          env->ReleasePrimitiveArrayCritical(matrix, old_mtrx, 0);
+
+          SetGraphicsMode(dstSurf->gi->hdc, GM_ADVANCED);
+          GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+          SetWorldTransform(dstSurf->gi->hdc, &transform);
+      }
+
+      HRGN oldClip = setGdiClip(env, dstSurf->gi->hdc, clip, numVertex);
+
+      HGDIOBJ oldBrush = SelectObject(dstSurf->gi->hdc, brush);
+
+      BitBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
+              srcX, srcY, 0x960169);
+
+      SelectObject(dstSurf->gi->hdc, oldBrush);
+
+
+      if(matrix){
+          SetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+          SetGraphicsMode(dstSurf->gi->hdc, GM_COMPATIBLE);
+      }
+      restoreGdiClip(dstSurf->gi->hdc, oldClip);
+
+      DeleteObject(brush);
 
   }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorBitmap
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jint dstX, 
-  jint dstY, jlong dstSurfStruct, jint width, jint heigth, jint xorcolor, 
+  jint dstY, jlong dstSurfStruct, jint width, jint height, jint xorcolor, 
   jdoubleArray matrix, jintArray clip, jint numVertex){
+
+      SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
+      SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
+
+      BYTE r = (BYTE)((xorcolor >> 16) & 0xff);
+      BYTE g = (BYTE)((xorcolor >> 8) & 0xff);
+      BYTE b = (BYTE)(xorcolor & 0xff);
+
+      HBRUSH brush = CreateSolidBrush(RGB(r, g, b));
+
+      XFORM currentTransform, transform;
+      if(matrix != NULL){
+
+          jdouble * mtrx = (jdouble *)env->GetPrimitiveArrayCritical(matrix, 0);
+          jdouble * old_mtrx = mtrx;
+
+          transform.eM11 = (FLOAT)(*mtrx++);
+          transform.eM12 = (FLOAT)(*mtrx++);
+          transform.eM21 = (FLOAT)(*mtrx++);
+          transform.eM22 = (FLOAT)(*mtrx++);
+          transform.eDx = (FLOAT)(*mtrx++);
+          transform.eDy = (FLOAT)(*mtrx);
+
+          env->ReleasePrimitiveArrayCritical(matrix, old_mtrx, 0);
+
+          SetGraphicsMode(dstSurf->gi->hdc, GM_ADVANCED);
+          GetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+          SetWorldTransform(dstSurf->gi->hdc, &transform);
+      }
+
+      HRGN oldClip = setGdiClip(env, dstSurf->gi->hdc, clip, numVertex);
+
+      HGDIOBJ oldBrush = SelectObject(dstSurf->gi->hdc, brush);
+
+      BitBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->gi->hdc,
+                  srcX, srcY, 0x00960169);
+      SelectObject(dstSurf->gi->hdc, oldBrush);
+
+
+      if(matrix){
+          SetWorldTransform(dstSurf->gi->hdc, &currentTransform);
+          SetGraphicsMode(dstSurf->gi->hdc, GM_COMPATIBLE);
+      }
+      restoreGdiClip(dstSurf->gi->hdc, oldClip);
+
+      DeleteObject(brush);
+
 
   }
 
@@ -483,13 +581,13 @@ BOOL initBlitData
 }
 
 BOOL initBitmap
-(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, BOOL alphaPre){
+(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre){
 
     HBITMAP srcBmp = srcSurf->bitmap;
     if(!srcBmp){
         return false;
     }
-    updateCache(srcSurf, env, srcData, alphaPre != 0);
+    updateCache(srcSurf, env, srcData, alphaPre);
     if(srcSurf->isTrueColor){
         SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
     }else{

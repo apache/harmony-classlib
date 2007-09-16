@@ -49,162 +49,190 @@ extern "C" {
 /* Native methods */
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.setNativeTransform(J[D)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    gdiPlusStartup
+ * Signature: ()J
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setNativeTransform(JNIEnv *, jobject, 
-    jlong, jdoubleArray);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_gdiPlusStartup
+  (JNIEnv *, jclass);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.resetClip(J)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    gdiPlusShutdown
+ * Signature: (J)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_resetClip(JNIEnv *, jobject, 
-    jlong);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_gdiPlusShutdown
+  (JNIEnv *, jclass, jlong);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.setClip(J[II)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    createGraphicsInfo
+ * Signature: (JIIII)J
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setClip(JNIEnv *, jobject, 
-    jlong, jintArray, jint);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createGraphicsInfo
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.fillRect(JIIII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    createCompatibleImageInfo
+ * Signature: (JII)J
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_fillRect(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createCompatibleImageInfo__JII
+  (JNIEnv *, jclass, jlong, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.drawRect(JIIII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    createCompatibleImageInfo
+ * Signature: ([BII)J
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawRect(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createCompatibleImageInfo___3BII
+  (JNIEnv *, jclass, jbyteArray, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.drawLine(JIIII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    copyImageInfo
+ * Signature: (J)J
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawLine(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_copyImageInfo
+  (JNIEnv *, jobject, jlong);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.fillShape(J[FII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    disposeGraphicsInfo
+ * Signature: (J)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_fillShape(JNIEnv *, jobject, 
-    jlong, jfloatArray, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_disposeGraphicsInfo
+  (JNIEnv *, jclass, jlong);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.drawShape(J[FII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    copyArea
+ * Signature: (JIIIIII)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawShape(JNIEnv *, jobject, 
-    jlong, jfloatArray, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_copyArea
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.deletePen(J)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    setSolidBrush
+ * Signature: (JIIII)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_deletePen(JNIEnv *, jobject, 
-    jlong);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setSolidBrush
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.setPen(JFIIF[FIF)Z
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    setLinearGradientBrush
+ * Signature: (JIIIIIIIIIIIIZ)V
  */
-JNIEXPORT jboolean JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setPen(JNIEnv *, jobject, 
-    jlong, jfloat, jint, jint, jfloat, jfloatArray, jint, jfloat);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setLinearGradientBrush
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jboolean);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.getDC(J)J
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    fillRects
+ * Signature: (J[II)V
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_getDC(JNIEnv *, jobject, 
-    jlong);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_fillRects
+  (JNIEnv *, jobject, jlong, jintArray, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.fillRects(J[II)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    getDC
+ * Signature: (J)J
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_fillRects(JNIEnv *, jobject, 
-    jlong, jintArray, jint);
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_getDC
+  (JNIEnv *, jobject, jlong);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.setLinearGradientBrush(JIIIIIIIIIIIIZ)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    setPen
+ * Signature: (JFIIF[FIF)Z
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setLinearGradientBrush(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint, jboolean);
+JNIEXPORT jboolean JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setPen
+  (JNIEnv *, jobject, jlong, jfloat, jint, jint, jfloat, jfloatArray, jint, jfloat);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.setSolidBrush(JIIII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    deletePen
+ * Signature: (J)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setSolidBrush(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_deletePen
+  (JNIEnv *, jobject, jlong);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.copyArea(JIIIIII)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    drawShape
+ * Signature: (J[FII)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_copyArea(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawShape
+  (JNIEnv *, jobject, jlong, jfloatArray, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.copyImageInfo(J)J
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    fillShape
+ * Signature: (J[FII)V
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_copyImageInfo(JNIEnv *, jobject, 
-    jlong);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_fillShape
+  (JNIEnv *, jobject, jlong, jfloatArray, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.createGraphicsInfo(JIIII)J
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    drawLine
+ * Signature: (JIIII)V
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createGraphicsInfo(JNIEnv *, jobject, 
-    jlong, jint, jint, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawLine
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.disposeGraphicsInfo(J)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    drawRect
+ * Signature: (JIIII)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_disposeGraphicsInfo(JNIEnv *, jclass, 
-    jlong);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawRect
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.createCompatibleImageInfo([BII)J
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    drawOval
+ * Signature: (JIIII)V
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createCompatibleImageInfo___3BII(JNIEnv *, jclass, 
-    jbyteArray, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_drawOval
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.createCompatibleImageInfo(JII)J
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    fillRect
+ * Signature: (JIIII)V
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createCompatibleImageInfo__JII(JNIEnv *, jclass, 
-    jlong, jint, jint);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_fillRect
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.gdiPlusShutdown(J)V
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    setClip
+ * Signature: (J[II)V
  */
-JNIEXPORT void JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_gdiPlusShutdown(JNIEnv *, jclass, 
-    jlong);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setClip
+  (JNIEnv *, jobject, jlong, jintArray, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D.gdiPlusStartup()J
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    resetClip
+ * Signature: (J)V
  */
-JNIEXPORT jlong JNICALL
-Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_gdiPlusStartup(JNIEnv *, jclass);
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_resetClip
+  (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    setNativeTransform
+ * Signature: (J[D)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_setNativeTransform
+  (JNIEnv *, jobject, jlong, jdoubleArray);
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif /* _ORG_APACHE_HARMONY_AWT_GL_WINDOWS_WINGDIPGRAPHICS2D_H */
-
+#endif

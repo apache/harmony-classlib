@@ -223,7 +223,9 @@ public class BasicMenuItemUITest extends SwingTestCase {
         assertNull(item.getForeground());
         assertNull(item.getFont());
         assertNull(item.getBorder());
-        assertNull(item.getMargin());
+        // Assertion below has been deleted because now we are compartible with
+        // RI in this point. For details see HARMONY-4655
+        // assertNull(item.getMargin());
         assertEquals(4, menuItemUI.defaultTextIconGap);
         if (isHarmony()) {
             assertFalse(menuItemUI.oldBorderPainted);
