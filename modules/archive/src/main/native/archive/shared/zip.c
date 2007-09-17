@@ -474,10 +474,6 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
     }
 
   javaClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
-  javaClass = (*env)->NewLocalRef(env, javaClass);
-  if (javaClass == NULL) {
-      return NULL;
-  }
   mid = JCL_CACHE_GET (env, MID_java_util_zip_ZipEntry_init);
   java_ZipEntry = ((*env)->NewObject (env, javaClass, mid, entryName, NULL,     /* comment */
                                       extra,
