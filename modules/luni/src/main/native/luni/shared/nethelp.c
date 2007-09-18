@@ -1038,6 +1038,7 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
   static jbyte IPv6ANY[16] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   U_32 i = 0;
+  jobject result = NULL;
 
   aString = (*env)->NewStringUTF (env, hostName);
 
@@ -1114,9 +1115,11 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
         {
           /* create using the scope id */
           tempClass = HARMONY_CACHE_GET (env, CLS_java_net_InetAddress);
-          return (*env)->CallStaticObjectMethod (env, tempClass,
-            tempMethodWithScope, aString,
-            byte_array, scope_id);
+          result = (*env)->CallStaticObjectMethod (env, tempClass,
+                                                   tempMethodWithScope, aString,
+                                                   byte_array, scope_id);
+          (*env)->ExceptionCheck(env);
+          return result;
         }
       else
         {
@@ -1125,8 +1128,10 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
             HARMONY_CACHE_GET (env,
             MID_java_net_InetAddress_getByAddress_Ljava_lang_String_byteArray);
           
-          return (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
-            aString, byte_array);
+          result = (*env)->CallStaticObjectMethod (env, tempClass, tempMethod,
+                                                   aString, byte_array);
+          (*env)->ExceptionCheck(env);
+          return result;
         }
       }
     else
@@ -1136,8 +1141,10 @@ newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
           HARMONY_CACHE_GET (env,
           MID_java_net_InetAddress_init_byteArrayLjava_lang_String);
         
-        return (*env)->NewObject (env, tempClass, tempMethod, byte_array,
-          aString);
+        result = (*env)->NewObject (env, tempClass, tempMethod, byte_array,
+                                    aString);
+        (*env)->ExceptionCheck(env);
+        return result;
     }
 }
 
