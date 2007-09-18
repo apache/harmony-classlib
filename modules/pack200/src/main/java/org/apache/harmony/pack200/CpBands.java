@@ -297,12 +297,7 @@ public class CpBands extends BandSet {
     private void parseCpString(InputStream in) throws IOException,
             Pack200Exception {
         int cpStringCount = header.getCpStringCount();
-        cpString = new String[cpStringCount];
-        long last = 0;
-        for (int i = 0; i < cpStringCount; i++) {
-            int index = (int) (last = Codec.UDELTA5.decode(in, last));
-            cpString[i] = cpUTF8[index];
-        }
+        cpString = parseReferences("cp_String", in, Codec.UDELTA5, cpStringCount, cpUTF8);
     }
 
     private void parseCpUtf8(InputStream in) throws IOException,

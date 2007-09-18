@@ -171,12 +171,7 @@ public final class BHSDCodec extends Codec {
             } else {
                 z = (long) (-Math.floor(u/ twoPowS) - 1);
             }
-        } else {
-        // TODO: This is required in the spec, but it's making a test fail so needs more investigation.
-        //  z = cast32(u);
         }
-        
-        
 		if (isDelta())
 			z += last;
 		return z;
