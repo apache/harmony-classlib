@@ -1302,17 +1302,11 @@ netGetJavaNetInetAddressScopeId (JNIEnv * env, jobject anInetAddress,
 
 }
 
-jfieldID
-getJavaIoFileDescriptorDescriptor (JNIEnv * env)
-{
-  return HARMONY_CACHE_GET (env, FID_java_io_FileDescriptor_descriptor);
-}
-
 void
 setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd,
                                           void *value)
 {
-  jfieldID fid = getJavaIoFileDescriptorDescriptor (env);
+  jfieldID fid = HARMONY_CACHE_GET(env, FID_java_io_FileDescriptor_descriptor);
   if (NULL != fid)
     {
       (*env)->SetLongField (env, fd, fid, (jlong) ((IDATA)value));
@@ -1322,12 +1316,12 @@ setJavaIoFileDescriptorContents (JNIEnv * env, jobject fd,
 void *
 getJavaIoFileDescriptorContentsAsAPointer (JNIEnv * env, jobject fd)
 {
-  jfieldID descriptorFID = getJavaIoFileDescriptorDescriptor (env);
-  if (NULL == descriptorFID)
+  jfieldID fid = HARMONY_CACHE_GET(env, FID_java_io_FileDescriptor_descriptor);
+  if (NULL == fid)
     {
       return (void *) -1;
     }
-  return (void *) ((IDATA)((*env)->GetLongField (env, fd, descriptorFID)));
+  return (void *) ((IDATA)((*env)->GetLongField (env, fd, fid)));
 }
 		
 jobject getJavaNioChannelsSocketChannelImplObj(JNIEnv * env, jclass channel_class){
