@@ -156,15 +156,15 @@ public class CharsetTest extends TestCase {
 	/*
      * test cached decoder
      */
-    public void test_DecodeLjava_nio_ByteBuffer() throws Exception{
-            MockCharsetForDecoder cs1 = new MockCharsetForDecoder("CachedCharset",null);
-            MockCharsetForDecoder cs2 = new MockCharsetForDecoder("CachedCharset",null);
-            ByteBuffer in = ByteBuffer.wrap(new byte[]{0x00});
-            cs1.decode(in);
-            in.flip();
-            cs2.decode(in);
-            in.flip();
-    }
+//    public void test_DecodeLjava_nio_ByteBuffer() throws Exception{
+//            MockCharsetForDecoder cs1 = new MockCharsetForDecoder("CachedCharset",null);
+//            MockCharsetForDecoder cs2 = new MockCharsetForDecoder("CachedCharset",null);
+//            ByteBuffer in = ByteBuffer.wrap(new byte[]{0x00});
+//            cs1.decode(in);
+//            in.flip();
+//            cs2.decode(in);
+//            in.flip();
+//    }
     /*
      * Mock Charset for cached decoder test
      */
@@ -218,14 +218,14 @@ public class CharsetTest extends TestCase {
     /*
      * test cached encoder
      */
-    public void test_EncodeLjava_nio_CharBuffer() throws Exception {
-            MockCharsetForEncoder cs1 = new MockCharsetForEncoder("CachedCharset", null);
-            MockCharsetForEncoder cs2 = new MockCharsetForEncoder("CachedCharset", null);
-            CharBuffer in = CharBuffer.wrap("A");
-            cs1.encode(in);
-            in.flip();
-            cs2.encode(in);
-    }
+//    public void test_EncodeLjava_nio_CharBuffer() throws Exception {
+//            MockCharsetForEncoder cs1 = new MockCharsetForEncoder("CachedCharset", null);
+//            MockCharsetForEncoder cs2 = new MockCharsetForEncoder("CachedCharset", null);
+//            CharBuffer in = CharBuffer.wrap("A");
+//            cs1.encode(in);
+//            in.flip();
+//            cs2.encode(in);
+//    }
 
     /*
      * Mock Charset for cached encoder test

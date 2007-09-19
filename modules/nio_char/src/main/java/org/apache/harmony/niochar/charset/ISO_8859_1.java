@@ -54,52 +54,66 @@ public class ISO_8859_1 extends Charset {
 		public native int nDecode(char[] array, int arrPosition, int remaining, long outAddr, int absolutePos);
 
 
-		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb){
-                        int cbRemaining = cb.remaining();
-
-		        if(bb.isDirect() && bb.hasRemaining() && cb.hasArray()){
-		            int toProceed = bb.remaining();
-		            boolean throwOverflow = false; 
-		            int cbPos = cb.position();
-		            int bbPos = bb.position();
-		            if( cbRemaining < toProceed ) { 
-		                toProceed = cbRemaining;
-                                throwOverflow = true;
-                            }
-                            int res = nDecode(cb.array(), cb.arrayOffset()+cbPos, toProceed, AddressUtil.getDirectBufferAddress(bb), bbPos);
-                            cb.position(cbPos+res);  
-                            bb.position(bbPos+res);
-                            if(throwOverflow) return CoderResult.OVERFLOW;
-                        }else{
-                        	if(bb.hasArray() && cb.hasArray()) {
-                                int rem = bb.remaining();
-                                rem = cbRemaining >= rem ? rem : cbRemaining;
-                                byte[] arr = bb.array();
-                                char[] cArr = cb.array();
-                                int bStart = bb.position();
-                                int cStart = cb.position();
-                                int i;
-                                for(i=bStart; i<bStart+rem; i++) {
-                                    cArr[cStart++] = (char)((int)arr[i] & 0xFF);
-                                }
-                                bb.position(i);
-                                cb.position(cStart);
-                                if(rem == cbRemaining && bb.hasRemaining()) return CoderResult.OVERFLOW;
-                        	} else {
-                                int rem = bb.remaining();
-                                rem = cbRemaining >= rem ? rem : cbRemaining;
-                                byte[] arr = new byte[rem];
-                                bb.get(arr);
-                                char[] cArr = new char[rem];
-                                for(int i=0; i<rem; i++) {
-                                    cArr[i] = (char)((int)arr[i] & 0xFF);
-                                }
-                                cb.put(cArr); if(cb.remaining() == 0) return CoderResult.OVERFLOW;
-                        	}
-			} 
-                        return CoderResult.UNDERFLOW;
+		protected CoderResult decodeLoop(ByteBuffer bb, CharBuffer cb) {
+			int bbRemaining = bb.remaining();
+			if (bbRemaining == 0) {
+				return CoderResult.UNDERFLOW;
+			}
+			int cbRemaining = cb.remaining();
+			boolean cbHasArray = cb.hasArray();
+			if (cbHasArray) {
+				if (bb.hasArray()) {
+					int rem = bbRemaining;
+					rem = cbRemaining >= rem ? rem : cbRemaining;
+					byte[] arr = bb.array();
+					char[] cArr = cb.array();
+					int bStart = bb.position();
+					int cStart = cb.position();
+					int i;
+					for (i = bStart; i < bStart + rem; i++) {
+						cArr[cStart++] = (char) ((int) arr[i] & 0xFF);
+					}
+					bb.position(i);
+					cb.position(cStart);
+					if (rem == cbRemaining && bb.hasRemaining()) {
+						return CoderResult.OVERFLOW;
+					}
+					return CoderResult.UNDERFLOW;
+				} else if (bb.isDirect()) {
+					int toProceed = bbRemaining;
+					boolean throwOverflow = false;
+					int cbPos = cb.position();
+					int bbPos = bb.position();
+					if (cbRemaining < toProceed) {
+						toProceed = cbRemaining;
+						throwOverflow = true;
+					}
+					int res = nDecode(cb.array(), cb.arrayOffset() + cbPos,
+							toProceed, AddressUtil.getDirectBufferAddress(bb),
+							bbPos);
+					cb.position(cbPos + res);
+					bb.position(bbPos + res);
+					if (throwOverflow) {
+						return CoderResult.OVERFLOW;
+					}
+					return CoderResult.UNDERFLOW;
+				}
+			}
+			int rem = bbRemaining;
+			rem = cbRemaining >= rem ? rem : cbRemaining;
+			byte[] arr = new byte[rem];
+			bb.get(arr);
+			char[] cArr = new char[rem];
+			for (int i = 0; i < rem; i++) {
+				cArr[i] = (char) ((int) arr[i] & 0xFF);
+			}
+			cb.put(cArr);
+			if (cb.remaining() == 0) {
+				return CoderResult.OVERFLOW;
+			}
+			return CoderResult.UNDERFLOW;
 		}
-        }
+	}
 
 	private final class Encoder extends CharsetEncoder{
 		private Encoder(Charset cs){
@@ -108,101 +122,116 @@ public class ISO_8859_1 extends Charset {
                    
 		private native void nEncode(long outAddr, int absolutePos, char[] array, int arrPosition, int[] res);
                                                                                                                           
-		protected CoderResult encodeLoop(CharBuffer cb, ByteBuffer bb){                                             
-                        int bbRemaining = bb.remaining();                                                                     
-                        if(bb.isDirect() && cb.hasRemaining() && cb.hasArray()){                                                
-		            int toProceed = cb.remaining();
-		            boolean throwOverflow = false; 
-		            int cbPos = cb.position();
-		            int bbPos = bb.position();
-		            if( bbRemaining < toProceed ) { 
-		                toProceed = bbRemaining;
-                                throwOverflow = true;
-                            }
-                            int[] res = {toProceed, 0};
-                            nEncode(AddressUtil.getDirectBufferAddress(bb), bbPos, cb.array(), cb.arrayOffset()+cbPos, res);
-                            if( res[0] <= 0 ) {                                                                                                                
-                                bb.position(bbPos-res[0]);                                                                                        
-                                cb.position(cbPos-res[0]);
-                                if(res[1]!=0) {
-                                    if(res[1] < 0)
-                                        return CoderResult.malformedForLength(-res[1]);
-                                    else 
-                                        return CoderResult.unmappableForLength(res[1]);
-                                }
-                            }else{                                          
-                                bb.position(bbPos+res[0]);               
-                                cb.position(cbPos+res[0]);                 
-                                if(throwOverflow) return CoderResult.OVERFLOW;
-                            }                                                     
-                        }else{
-                        	if(bb.hasArray() && cb.hasArray()) {
-                            	byte[] byteArr = bb.array();
-                            	char[] charArr = cb.array();
-                                int rem = cb.remaining();
-                                int byteArrStart = bb.position();
-                                rem = bbRemaining <= rem ? bbRemaining : rem;
-                                int x;
-                                for(x=cb.position(); x < cb.position()+rem; x++) {                                 
-                                    char c = charArr[x];              
-                                    if(c > (char)0x00FF){   
-                                        if (c >= 0xD800 && c <= 0xDFFF) {
-                                            if(x+1 < cb.limit()) {
-                                                char c1 = charArr[x+1];
-                                                if(c1 >= 0xD800 && c1 <= 0xDFFF) {
-                                                    bb.position(byteArrStart); cb.position(x);
-                                                    return CoderResult.unmappableForLength(2);             
-                                                } 
-                                            } else {
-                                                bb.position(byteArrStart); cb.position(x);
-                                                return CoderResult.UNDERFLOW;             
-                                            }
-                                            bb.position(byteArrStart); cb.position(x);
-                                            return CoderResult.malformedForLength(1);             
-                                        }
-                                        bb.position(byteArrStart); cb.position(x);
-                                        return CoderResult.unmappableForLength(1);             
-                                    }else{
-                                        byteArr[byteArrStart++] = (byte)c;
-                                    }                                                                  
-                                } 
-                                bb.position(byteArrStart);
-                                cb.position(x);
-                                if(rem == bbRemaining && cb.hasRemaining()) {
-                                	return CoderResult.OVERFLOW;
-                                }
-                        	} else {
-                                while(cb.hasRemaining()){                                 
-                                    if( bbRemaining == 0 ) return CoderResult.OVERFLOW;    
-                                    char c = cb.get();              
-                                    if(c > (char)0x00FF){   
-                                        if (c >= 0xD800 && c <= 0xDFFF) {
-                                            if(cb.hasRemaining()) {
-                                                char c1 = cb.get();
-                                                if(c1 >= 0xD800 && c1 <= 0xDFFF) {
-                                                    cb.position(cb.position()-2);
-                                                    return CoderResult.unmappableForLength(2);             
-                                                } else {
-                                                	cb.position(cb.position()-1);
-                                                }
-                                            } else {
-                                                cb.position(cb.position()-1);
-                                                return CoderResult.UNDERFLOW;             
-                                            }
-                                            cb.position(cb.position()-1);
-                                            return CoderResult.malformedForLength(1);             
-                                        }
-                                        cb.position(cb.position()-1);
-                                        return CoderResult.unmappableForLength(1);             
-                                    }else{                                                      
-                                        bb.put((byte)c);                                      
-                                        bbRemaining--;                                                
-                                    }                                                                  
-                                }                                                                       
-                        		
-                        	}
-			}                                                                            
-			return CoderResult.UNDERFLOW;                                                 
+		protected CoderResult encodeLoop(CharBuffer cb, ByteBuffer bb) {
+			int cbRemaining = cb.remaining();
+			if (cbRemaining == 0) {
+				return CoderResult.UNDERFLOW;
+			}
+			int bbRemaining = bb.remaining();
+			boolean cbHasArray = cb.hasArray();
+			boolean bbHasArray = bb.hasArray();
+			if (cbHasArray) {
+				if (bbHasArray) {
+					byte[] byteArr = bb.array();
+					char[] charArr = cb.array();
+					int byteArrStart = bb.position();
+					int rem = bbRemaining <= cbRemaining ? bbRemaining
+							: cbRemaining;
+					int cbPos = cb.position();
+					int x;
+					int jchar = 0;
+					for (x = cbPos; x < cbPos + rem; x++) {
+						jchar = (int) charArr[x];
+						if (jchar <= 0xFF) {
+							byteArr[byteArrStart++] = (byte) jchar;
+						} else {
+							break;
+						}
+					}
+					bb.position(byteArrStart);
+					cb.position(x);
+					if (x == cbPos + rem) {
+						// everything is ok
+						if (rem == bbRemaining && cb.hasRemaining()) {
+							return CoderResult.OVERFLOW;
+						}
+						return CoderResult.UNDERFLOW;
+					}
+					// here is jchar >0xFF
+					if (jchar >= 0xD800 && jchar <= 0xDFFF) {
+						if (x + 1 < cb.limit()) {
+							char c1 = charArr[x + 1];
+							if (c1 >= 0xD800 && c1 <= 0xDFFF) {
+								return CoderResult.unmappableForLength(2);
+							}
+						} else {
+							return CoderResult.UNDERFLOW;
+						}
+						return CoderResult.malformedForLength(1);
+					}
+					return CoderResult.unmappableForLength(1);
+				} else if (bb.isDirect()) {
+					int toProceed = cbRemaining;
+					boolean throwOverflow = false;
+					int cbPos = cb.position();
+					int bbPos = bb.position();
+					if (bbRemaining < toProceed) {
+						toProceed = bbRemaining;
+						throwOverflow = true;
+					}
+					int[] res = { toProceed, 0 };
+					nEncode(AddressUtil.getDirectBufferAddress(bb), bbPos, cb
+							.array(), cb.arrayOffset() + cbPos, res);
+					if (res[0] <= 0) {
+						bb.position(bbPos - res[0]);
+						cb.position(cbPos - res[0]);
+						if (res[1] != 0) {
+							if (res[1] < 0) {
+								return CoderResult.malformedForLength(-res[1]);
+							} else {
+								return CoderResult.unmappableForLength(res[1]);
+							}
+						}
+					} else {
+						bb.position(bbPos + res[0]);
+						cb.position(cbPos + res[0]);
+						if (throwOverflow) {
+							return CoderResult.OVERFLOW;
+						}
+					}
+					return CoderResult.UNDERFLOW;
+				}
+			}
+			while (cb.hasRemaining()) {
+				if (bbRemaining == 0) {
+					return CoderResult.OVERFLOW;
+				}
+				char c = cb.get();
+				if (c > (char) 0x00FF) {
+					if (c >= 0xD800 && c <= 0xDFFF) {
+						if (cb.hasRemaining()) {
+							char c1 = cb.get();
+							if (c1 >= 0xD800 && c1 <= 0xDFFF) {
+								cb.position(cb.position() - 2);
+								return CoderResult.unmappableForLength(2);
+							} else {
+								cb.position(cb.position() - 1);
+							}
+						} else {
+							cb.position(cb.position() - 1);
+							return CoderResult.UNDERFLOW;
+						}
+						cb.position(cb.position() - 1);
+						return CoderResult.malformedForLength(1);
+					}
+					cb.position(cb.position() - 1);
+					return CoderResult.unmappableForLength(1);
+				} else {
+					bb.put((byte) c);
+					bbRemaining--;
+				}
+			}
+			return CoderResult.UNDERFLOW;
 		}                                                                                     
                                                                                                       
 	}         
