@@ -1884,6 +1884,9 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 return null;
             }
             Graphics g = behaviour.getGraphics(0, 0, w, h);
+            if(g instanceof Graphics2D) {
+                ((Graphics2D)g).setBackground(this.getBackground());
+            }
             g.setColor(foreColor);
             g.setFont(font);
             return g;
