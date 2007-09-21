@@ -27,7 +27,7 @@ public class PortInfoTest extends TestCase {
         assertEquals("COMPACT_DISC source port", Port.Info.COMPACT_DISC.toString());
         assertEquals("LINE_OUT target port", Port.Info.LINE_OUT.toString());
 
-        Class cl = Port.class;
+        Class<Port> cl = Port.class;
         String name = "name";
         Port.Info pi1 = new Port.Info(cl, name, true);
         assertEquals(name, pi1.getName());

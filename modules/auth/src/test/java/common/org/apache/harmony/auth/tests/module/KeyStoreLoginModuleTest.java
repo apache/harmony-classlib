@@ -96,10 +96,10 @@ public class KeyStoreLoginModuleTest extends TestCase {
         }
         Set<Principal> principals = subject.getPrincipals();
         assertFalse("Should get at least one principal", principals.isEmpty());
-        Set subjects = subject.getPrivateCredentials();
+        Set<Object> subjects = subject.getPrivateCredentials();
         assertFalse("Should get at least one private credential", subjects
                 .isEmpty());
-        Set subjects2 = subject.getPublicCredentials();
+        Set<Object> subjects2 = subject.getPublicCredentials();
         assertFalse("Should get at least one public credential", subjects2
                 .isEmpty());
         subject = new Subject();
@@ -164,10 +164,10 @@ public class KeyStoreLoginModuleTest extends TestCase {
         }
         Set<Principal> principals = subject.getPrincipals();
         assertFalse("Should get at least one principal", principals.isEmpty());
-        Set subjects = subject.getPrivateCredentials();
+        Set<Object> subjects = subject.getPrivateCredentials();
         assertFalse("Should get at least one private credential", subjects
                 .isEmpty());
-        Set subjects2 = subject.getPublicCredentials();
+        Set<Object> subjects2 = subject.getPublicCredentials();
         assertFalse("Should get at least one public credential", subjects2
                 .isEmpty());
         try {
