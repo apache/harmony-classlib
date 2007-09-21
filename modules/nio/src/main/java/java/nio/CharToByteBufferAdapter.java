@@ -19,7 +19,6 @@ package java.nio;
 import org.apache.harmony.nio.internal.DirectBuffer;
 import org.apache.harmony.luni.platform.PlatformAddress;
 
-
 /**
  * This class wraps a byte buffer to be a char buffer.
  * <p>
@@ -35,172 +34,183 @@ import org.apache.harmony.luni.platform.PlatformAddress;
  */
 final class CharToByteBufferAdapter extends CharBuffer implements DirectBuffer {
 
-	static CharBuffer wrap(ByteBuffer byteBuffer) {
-		return new CharToByteBufferAdapter(byteBuffer.slice());
-	}
+    static CharBuffer wrap(ByteBuffer byteBuffer) {
+        return new CharToByteBufferAdapter(byteBuffer.slice());
+    }
 
-	private final ByteBuffer byteBuffer;
+    private final ByteBuffer byteBuffer;
 
-	CharToByteBufferAdapter(ByteBuffer byteBuffer) {
-		super((byteBuffer.capacity() >> 1));
-		this.byteBuffer = byteBuffer;
-		this.byteBuffer.clear();
-	}
-        
-        public int getByteCapacity() {
-            if (byteBuffer instanceof DirectBuffer) {
-                return ((DirectBuffer)byteBuffer).getByteCapacity();
-            } else {
-                assert false : byteBuffer;
-                return -1;
-            }            
+    CharToByteBufferAdapter(ByteBuffer byteBuffer) {
+        super((byteBuffer.capacity() >> 1));
+        this.byteBuffer = byteBuffer;
+        this.byteBuffer.clear();
+    }
+
+    public int getByteCapacity() {
+        if (byteBuffer instanceof DirectBuffer) {
+            return ((DirectBuffer) byteBuffer).getByteCapacity();
         }
-        
-        public PlatformAddress getEffectiveAddress() {
-            if (byteBuffer instanceof DirectBuffer) {
-                return ((DirectBuffer)byteBuffer).getEffectiveAddress();
-            } else {
-                assert false : byteBuffer;
-                return null;
-            }
+        assert false : byteBuffer;
+        return -1;
+    }
+
+    public PlatformAddress getEffectiveAddress() {
+        if (byteBuffer instanceof DirectBuffer) {
+            return ((DirectBuffer) byteBuffer).getEffectiveAddress();
         }
+        assert false : byteBuffer;
+        return null;
+    }
 
-        public PlatformAddress getBaseAddress() {
-            if (byteBuffer instanceof DirectBuffer) {
-                return ((DirectBuffer)byteBuffer).getBaseAddress();
-            } else {
-                assert false : byteBuffer;
-                return null;
-            }
+    public PlatformAddress getBaseAddress() {
+        if (byteBuffer instanceof DirectBuffer) {
+            return ((DirectBuffer) byteBuffer).getBaseAddress();
         }
-            
-        public boolean isAddressValid() {
-            if (byteBuffer instanceof DirectBuffer) {
-                return ((DirectBuffer)byteBuffer).isAddressValid();
-            } else {
-                assert false : byteBuffer;
-                return false;
-            }
+        assert false : byteBuffer;
+        return null;
+    }
+
+    public boolean isAddressValid() {
+        if (byteBuffer instanceof DirectBuffer) {
+            return ((DirectBuffer) byteBuffer).isAddressValid();
         }
+        assert false : byteBuffer;
+        return false;
+    }
 
-        public void addressValidityCheck() {
-            if (byteBuffer instanceof DirectBuffer) {
-                ((DirectBuffer)byteBuffer).addressValidityCheck();
-            } else {
-                assert false : byteBuffer;
-            }
+    public void addressValidityCheck() {
+        if (byteBuffer instanceof DirectBuffer) {
+            ((DirectBuffer) byteBuffer).addressValidityCheck();
+        } else {
+            assert false : byteBuffer;
         }
-            
-        public void free() {
-            if (byteBuffer instanceof DirectBuffer) {
-                ((DirectBuffer)byteBuffer).free();
-            } else {
-                assert false : byteBuffer;
-            }   
+    }
+
+    public void free() {
+        if (byteBuffer instanceof DirectBuffer) {
+            ((DirectBuffer) byteBuffer).free();
+        } else {
+            assert false : byteBuffer;
         }
+    }
 
-	public CharBuffer asReadOnlyBuffer() {
-		CharToByteBufferAdapter buf = new CharToByteBufferAdapter(byteBuffer
-				.asReadOnlyBuffer());
-		buf.limit = limit;
-		buf.position = position;
-		buf.mark = mark;
-		return buf;
-	}
+    @Override
+    public CharBuffer asReadOnlyBuffer() {
+        CharToByteBufferAdapter buf = new CharToByteBufferAdapter(byteBuffer
+                .asReadOnlyBuffer());
+        buf.limit = limit;
+        buf.position = position;
+        buf.mark = mark;
+        return buf;
+    }
 
-	public CharBuffer compact() {
-		if (byteBuffer.isReadOnly()) {
-			throw new ReadOnlyBufferException();
-		}
-		byteBuffer.limit(limit << 1);
-		byteBuffer.position(position << 1);
-		byteBuffer.compact();
-		byteBuffer.clear();
-		position = limit - position;
-		limit = capacity;
-		mark = UNSET_MARK;
-		return this;
-	}
+    @Override
+    public CharBuffer compact() {
+        if (byteBuffer.isReadOnly()) {
+            throw new ReadOnlyBufferException();
+        }
+        byteBuffer.limit(limit << 1);
+        byteBuffer.position(position << 1);
+        byteBuffer.compact();
+        byteBuffer.clear();
+        position = limit - position;
+        limit = capacity;
+        mark = UNSET_MARK;
+        return this;
+    }
 
-	public CharBuffer duplicate() {
-		CharToByteBufferAdapter buf = new CharToByteBufferAdapter(byteBuffer
-				.duplicate());
-		buf.limit = limit;
-		buf.position = position;
-		buf.mark = mark;
-		return buf;
-	}
+    @Override
+    public CharBuffer duplicate() {
+        CharToByteBufferAdapter buf = new CharToByteBufferAdapter(byteBuffer
+                .duplicate());
+        buf.limit = limit;
+        buf.position = position;
+        buf.mark = mark;
+        return buf;
+    }
 
-	public char get() {
-		if (position == limit) {
-			throw new BufferUnderflowException();
-		}
-		return byteBuffer.getChar(position++ << 1);
-	}
+    @Override
+    public char get() {
+        if (position == limit) {
+            throw new BufferUnderflowException();
+        }
+        return byteBuffer.getChar(position++ << 1);
+    }
 
-	public char get(int index) {
-		if (index < 0 || index >= limit) {
-			throw new IndexOutOfBoundsException();
-		}
-		return byteBuffer.getChar(index << 1);
-	}
+    @Override
+    public char get(int index) {
+        if (index < 0 || index >= limit) {
+            throw new IndexOutOfBoundsException();
+        }
+        return byteBuffer.getChar(index << 1);
+    }
 
-	public boolean isDirect() {
-		return byteBuffer.isDirect();
-	}
+    @Override
+    public boolean isDirect() {
+        return byteBuffer.isDirect();
+    }
 
-	public boolean isReadOnly() {
-		return byteBuffer.isReadOnly();
-	}
+    @Override
+    public boolean isReadOnly() {
+        return byteBuffer.isReadOnly();
+    }
 
-	public ByteOrder order() {
-		return byteBuffer.order();
-	}
+    @Override
+    public ByteOrder order() {
+        return byteBuffer.order();
+    }
 
-	protected char[] protectedArray() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    protected char[] protectedArray() {
+        throw new UnsupportedOperationException();
+    }
 
-	protected int protectedArrayOffset() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    protected int protectedArrayOffset() {
+        throw new UnsupportedOperationException();
+    }
 
-	protected boolean protectedHasArray() {
-		return false;
-	}
+    @Override
+    protected boolean protectedHasArray() {
+        return false;
+    }
 
-	public CharBuffer put(char c) {
-		if (position == limit) {
-			throw new BufferOverflowException();
-		}
-		byteBuffer.putChar(position++ << 1, c);
-		return this;
-	}
+    @Override
+    public CharBuffer put(char c) {
+        if (position == limit) {
+            throw new BufferOverflowException();
+        }
+        byteBuffer.putChar(position++ << 1, c);
+        return this;
+    }
 
-	public CharBuffer put(int index, char c) {
-		if (index < 0 || index >= limit) {
-			throw new IndexOutOfBoundsException();
-		}
-		byteBuffer.putChar(index << 1, c);
-		return this;
-	}
+    @Override
+    public CharBuffer put(int index, char c) {
+        if (index < 0 || index >= limit) {
+            throw new IndexOutOfBoundsException();
+        }
+        byteBuffer.putChar(index << 1, c);
+        return this;
+    }
 
-	public CharBuffer slice() {
-		byteBuffer.limit(limit << 1);
-		byteBuffer.position(position << 1);
-		CharBuffer result = new CharToByteBufferAdapter(byteBuffer.slice());
-		byteBuffer.clear();
-		return result;
-	}
+    @Override
+    public CharBuffer slice() {
+        byteBuffer.limit(limit << 1);
+        byteBuffer.position(position << 1);
+        CharBuffer result = new CharToByteBufferAdapter(byteBuffer.slice());
+        byteBuffer.clear();
+        return result;
+    }
 
-	public CharSequence subSequence(int start, int end) {
+    @Override
+    public CharSequence subSequence(int start, int end) {
         if (start < 0 || end < start || end > remaining()) {
             throw new IndexOutOfBoundsException();
         }
-        
-		CharBuffer result = duplicate();
-		result.limit(position + end);
-		result.position(position + start);
-		return result;
-	}
+
+        CharBuffer result = duplicate();
+        result.limit(position + end);
+        result.position(position + start);
+        return result;
+    }
 }

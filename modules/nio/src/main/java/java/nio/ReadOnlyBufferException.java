@@ -16,7 +16,6 @@
 
 package java.nio;
 
-
 /**
  * A <code>ReadOnlyBufferException</code> is thrown when some write operation
  * is called on a readonly buffer.
@@ -24,12 +23,12 @@ package java.nio;
  */
 public class ReadOnlyBufferException extends UnsupportedOperationException {
 
-	private static final long serialVersionUID = -1210063976496234090L;
+    private static final long serialVersionUID = -1210063976496234090L;
 
-	/**
-	 * Constructs a <code>ReadOnlyBufferException</code>.
-	 */
-	public ReadOnlyBufferException() {
-		super();
-	}
+    /**
+     * Constructs a <code>ReadOnlyBufferException</code>.
+     */
+    public ReadOnlyBufferException() {
+        super();
+    }
 }

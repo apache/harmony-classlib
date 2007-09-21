@@ -16,7 +16,6 @@
 
 package java.nio;
 
-
 import org.apache.harmony.luni.platform.Platform;
 
 /**
@@ -25,49 +24,50 @@ import org.apache.harmony.luni.platform.Platform;
  */
 public final class ByteOrder {
 
-	/**
-	 * This constant represents big endian.
-	 */
-	public static final ByteOrder BIG_ENDIAN = new ByteOrder("BIG_ENDIAN"); //$NON-NLS-1$
+    /**
+     * This constant represents big endian.
+     */
+    public static final ByteOrder BIG_ENDIAN = new ByteOrder("BIG_ENDIAN"); //$NON-NLS-1$
 
-	/**
-	 * This constant represents little endian.
-	 */
-	public static final ByteOrder LITTLE_ENDIAN = new ByteOrder("LITTLE_ENDIAN"); //$NON-NLS-1$
+    /**
+     * This constant represents little endian.
+     */
+    public static final ByteOrder LITTLE_ENDIAN = new ByteOrder("LITTLE_ENDIAN"); //$NON-NLS-1$
 
-	private static final ByteOrder NATIVE_ORDER;
+    private static final ByteOrder NATIVE_ORDER;
 
-	static {
-		if (Platform.getMemorySystem().isLittleEndian()) {
-			NATIVE_ORDER = LITTLE_ENDIAN;
-		} else {
-			NATIVE_ORDER = BIG_ENDIAN;
-		}
-	}
+    static {
+        if (Platform.getMemorySystem().isLittleEndian()) {
+            NATIVE_ORDER = LITTLE_ENDIAN;
+        } else {
+            NATIVE_ORDER = BIG_ENDIAN;
+        }
+    }
 
-	/**
-	 * Answers the current platform byte order.
-	 * 
-	 * @return the byte order object, which is either identical to LITTLE_ENDIAN
-	 *         or BIG_ENDIAN.
-	 */
-	public static ByteOrder nativeOrder() {
-		return NATIVE_ORDER;
-	}
+    /**
+     * Answers the current platform byte order.
+     * 
+     * @return the byte order object, which is either identical to LITTLE_ENDIAN
+     *         or BIG_ENDIAN.
+     */
+    public static ByteOrder nativeOrder() {
+        return NATIVE_ORDER;
+    }
 
-	private final String name;
+    private final String name;
 
-	private ByteOrder(String name) {
-		super();
-		this.name = name;
-	}
+    private ByteOrder(String name) {
+        super();
+        this.name = name;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString() {
-		return name;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return name;
+    }
 }

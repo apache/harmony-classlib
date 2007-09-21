@@ -20,8 +20,8 @@ package java.nio;
 import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.nio.internal.DirectBuffer;
 
-
-final class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBuffer {
+final class MappedByteBufferAdapter extends MappedByteBuffer implements
+        DirectBuffer {
 
     private static final int CHAR_SIZE = 2;
 
@@ -34,280 +34,325 @@ final class MappedByteBufferAdapter extends MappedByteBuffer implements DirectBu
     private static final int FLOAT_SIZE = 4;
 
     private static final int DOUBLE_SIZE = 8;
-    
+
     public MappedByteBufferAdapter(ByteBuffer buffer) {
-		super(buffer);
-	}
+        super(buffer);
+    }
 
-	public MappedByteBufferAdapter(PlatformAddress addr, int capa, int offset,
-			int mode) {
-		super(addr, capa, offset, mode);
-	}
+    public MappedByteBufferAdapter(PlatformAddress addr, int capa, int offset,
+            int mode) {
+        super(addr, capa, offset, mode);
+    }
 
-	public CharBuffer asCharBuffer() {
-		return this.wrapped.asCharBuffer();
-	}
+    @Override
+    public CharBuffer asCharBuffer() {
+        return this.wrapped.asCharBuffer();
+    }
 
-	public DoubleBuffer asDoubleBuffer() {
-		return this.wrapped.asDoubleBuffer();
-	}
+    @Override
+    public DoubleBuffer asDoubleBuffer() {
+        return this.wrapped.asDoubleBuffer();
+    }
 
-	public FloatBuffer asFloatBuffer() {
-		return this.wrapped.asFloatBuffer();
-	}
+    @Override
+    public FloatBuffer asFloatBuffer() {
+        return this.wrapped.asFloatBuffer();
+    }
 
-	public IntBuffer asIntBuffer() {
-		return this.wrapped.asIntBuffer();
-	}
+    @Override
+    public IntBuffer asIntBuffer() {
+        return this.wrapped.asIntBuffer();
+    }
 
-	public LongBuffer asLongBuffer() {
-		return this.wrapped.asLongBuffer();
-	}
+    @Override
+    public LongBuffer asLongBuffer() {
+        return this.wrapped.asLongBuffer();
+    }
 
-	public ByteBuffer asReadOnlyBuffer() {
-		MappedByteBufferAdapter buf = new MappedByteBufferAdapter(this.wrapped
-				.asReadOnlyBuffer());
-		buf.limit = this.limit;
-		buf.position = this.position;
-		buf.mark = this.mark;
-		return buf;
-	}
+    @Override
+    public ByteBuffer asReadOnlyBuffer() {
+        MappedByteBufferAdapter buf = new MappedByteBufferAdapter(this.wrapped
+                .asReadOnlyBuffer());
+        buf.limit = this.limit;
+        buf.position = this.position;
+        buf.mark = this.mark;
+        return buf;
+    }
 
-	public ShortBuffer asShortBuffer() {
-		return this.wrapped.asShortBuffer();
-	}
+    @Override
+    public ShortBuffer asShortBuffer() {
+        return this.wrapped.asShortBuffer();
+    }
 
-	public ByteBuffer compact() {
-		if (this.wrapped.isReadOnly()) {
-			throw new ReadOnlyBufferException();
-		}
-		this.wrapped.limit(this.limit);
-		this.wrapped.position(this.position);
-		this.wrapped.compact();
-		this.wrapped.clear();
-		this.position = this.limit - this.position;
-		this.limit = this.capacity;
-		this.mark = UNSET_MARK;
-		return this;
-	}
+    @Override
+    public ByteBuffer compact() {
+        if (this.wrapped.isReadOnly()) {
+            throw new ReadOnlyBufferException();
+        }
+        this.wrapped.limit(this.limit);
+        this.wrapped.position(this.position);
+        this.wrapped.compact();
+        this.wrapped.clear();
+        this.position = this.limit - this.position;
+        this.limit = this.capacity;
+        this.mark = UNSET_MARK;
+        return this;
+    }
 
-	public ByteBuffer duplicate() {
-		MappedByteBufferAdapter buf = new MappedByteBufferAdapter(this.wrapped
-				.duplicate());
-		buf.limit = this.limit;
-		buf.position = this.position;
-		buf.mark = this.mark;
-		return buf;
-	}
+    @Override
+    public ByteBuffer duplicate() {
+        MappedByteBufferAdapter buf = new MappedByteBufferAdapter(this.wrapped
+                .duplicate());
+        buf.limit = this.limit;
+        buf.position = this.position;
+        buf.mark = this.mark;
+        return buf;
+    }
 
-	public byte get() {
-		byte result = this.wrapped.get(); 
-		this.position++;
-		return result;
-	}
+    @Override
+    public byte get() {
+        byte result = this.wrapped.get();
+        this.position++;
+        return result;
+    }
 
-	public byte get(int index) {
-		return this.wrapped.get(index);
-	}
+    @Override
+    public byte get(int index) {
+        return this.wrapped.get(index);
+    }
 
-	public char getChar() {
-		char result = this.wrapped.getChar();
-		this.position += CHAR_SIZE;
-		return result;
-	}
+    @Override
+    public char getChar() {
+        char result = this.wrapped.getChar();
+        this.position += CHAR_SIZE;
+        return result;
+    }
 
-	public char getChar(int index) {
-		return this.wrapped.getChar(index);
-	}
+    @Override
+    public char getChar(int index) {
+        return this.wrapped.getChar(index);
+    }
 
-	public double getDouble() {
-		double result = this.wrapped.getDouble();
-		this.position += DOUBLE_SIZE;
-		return result;
-	}
+    @Override
+    public double getDouble() {
+        double result = this.wrapped.getDouble();
+        this.position += DOUBLE_SIZE;
+        return result;
+    }
 
-	public double getDouble(int index) {
-		return this.wrapped.getDouble(index);
-	}
+    @Override
+    public double getDouble(int index) {
+        return this.wrapped.getDouble(index);
+    }
 
-	public PlatformAddress getEffectiveAddress() {
-		return ((DirectBuffer) this.wrapped).getEffectiveAddress();
-	}
+    public PlatformAddress getEffectiveAddress() {
+        return ((DirectBuffer) this.wrapped).getEffectiveAddress();
+    }
 
-	public float getFloat() {
-		float result = this.wrapped.getFloat();
-		this.position += FLOAT_SIZE;
-		return result;
-	}
+    @Override
+    public float getFloat() {
+        float result = this.wrapped.getFloat();
+        this.position += FLOAT_SIZE;
+        return result;
+    }
 
-	public float getFloat(int index) {
-		return this.wrapped.getFloat(index);
-	}
+    @Override
+    public float getFloat(int index) {
+        return this.wrapped.getFloat(index);
+    }
 
-	public int getInt() {
-		int result = this.wrapped.getInt();
-		this.position += INTEGER_SIZE;
-		return result;
-	}
+    @Override
+    public int getInt() {
+        int result = this.wrapped.getInt();
+        this.position += INTEGER_SIZE;
+        return result;
+    }
 
-	public int getInt(int index) {
-		return this.wrapped.getInt(index);
-	}
+    @Override
+    public int getInt(int index) {
+        return this.wrapped.getInt(index);
+    }
 
-	public long getLong() {
-		long result = this.wrapped.getLong();
-		this.position += LONG_SIZE;
-		return result;
-	}
+    @Override
+    public long getLong() {
+        long result = this.wrapped.getLong();
+        this.position += LONG_SIZE;
+        return result;
+    }
 
-	public long getLong(int index) {
-		return this.wrapped.getLong(index);
-	}
+    @Override
+    public long getLong(int index) {
+        return this.wrapped.getLong(index);
+    }
 
-	public short getShort() {
-		short result = this.wrapped.getShort();
-		this.position += SHORT_SIZE;
-		return result;
-	}
+    @Override
+    public short getShort() {
+        short result = this.wrapped.getShort();
+        this.position += SHORT_SIZE;
+        return result;
+    }
 
-	public short getShort(int index) {
-		return this.wrapped.getShort(index);
-	}
+    @Override
+    public short getShort(int index) {
+        return this.wrapped.getShort(index);
+    }
 
-	public boolean isDirect() {
-		return true;
-	}
+    @Override
+    public boolean isDirect() {
+        return true;
+    }
 
-	public boolean isReadOnly() {
-		return this.wrapped.isReadOnly();
-	}
+    @Override
+    public boolean isReadOnly() {
+        return this.wrapped.isReadOnly();
+    }
 
-	ByteBuffer orderImpl(ByteOrder byteOrder) {
-		super.orderImpl(byteOrder);
-		return this.wrapped.order(byteOrder);
-	}
+    @Override
+    ByteBuffer orderImpl(ByteOrder byteOrder) {
+        super.orderImpl(byteOrder);
+        return this.wrapped.order(byteOrder);
+    }
 
-	public ByteBuffer put(byte b) {
-		this.wrapped.put(b);
-		this.position++;
-		return this;
-	}
+    @Override
+    public ByteBuffer put(byte b) {
+        this.wrapped.put(b);
+        this.position++;
+        return this;
+    }
 
-	public ByteBuffer put(byte[] src, int off, int len) {
-		this.wrapped.position(this.position);
-		this.wrapped.put(src, off, len);
-		this.position += len;
-		return this;
-	}
+    @Override
+    public ByteBuffer put(byte[] src, int off, int len) {
+        this.wrapped.position(this.position);
+        this.wrapped.put(src, off, len);
+        this.position += len;
+        return this;
+    }
 
-	public ByteBuffer put(int index, byte b) {
-		this.wrapped.put(index, b);
-		return this;
-	}
+    @Override
+    public ByteBuffer put(int index, byte b) {
+        this.wrapped.put(index, b);
+        return this;
+    }
 
-	public ByteBuffer putChar(char value) {
-		this.wrapped.putChar(value);
-		this.position += CHAR_SIZE;
-		return this;
-	}
+    @Override
+    public ByteBuffer putChar(char value) {
+        this.wrapped.putChar(value);
+        this.position += CHAR_SIZE;
+        return this;
+    }
 
-	public ByteBuffer putChar(int index, char value) {
-		this.wrapped.putChar(index, value);
-		return this;
-	}
+    @Override
+    public ByteBuffer putChar(int index, char value) {
+        this.wrapped.putChar(index, value);
+        return this;
+    }
 
-	public ByteBuffer putDouble(double value) {
-		this.wrapped.putDouble(value);
-		this.position += DOUBLE_SIZE;
-		return this;
-	}
+    @Override
+    public ByteBuffer putDouble(double value) {
+        this.wrapped.putDouble(value);
+        this.position += DOUBLE_SIZE;
+        return this;
+    }
 
-	public ByteBuffer putDouble(int index, double value) {
-		this.wrapped.putDouble(index, value);
-		return this;
-	}
+    @Override
+    public ByteBuffer putDouble(int index, double value) {
+        this.wrapped.putDouble(index, value);
+        return this;
+    }
 
-	public ByteBuffer putFloat(float value) {
-		this.wrapped.putFloat(value);
-		this.position += FLOAT_SIZE;
-		return this;
-	}
+    @Override
+    public ByteBuffer putFloat(float value) {
+        this.wrapped.putFloat(value);
+        this.position += FLOAT_SIZE;
+        return this;
+    }
 
-	public ByteBuffer putFloat(int index, float value) {
-		this.wrapped.putFloat(index, value);
-		return this;
-	}
+    @Override
+    public ByteBuffer putFloat(int index, float value) {
+        this.wrapped.putFloat(index, value);
+        return this;
+    }
 
-	public ByteBuffer putInt(int index, int value) {
-		this.wrapped.putInt(index, value);
-		return this;
-	}
+    @Override
+    public ByteBuffer putInt(int index, int value) {
+        this.wrapped.putInt(index, value);
+        return this;
+    }
 
-	public ByteBuffer putInt(int value) {
-		this.wrapped.putInt(value);
-		this.position += INTEGER_SIZE;
-		return this;
-	}
+    @Override
+    public ByteBuffer putInt(int value) {
+        this.wrapped.putInt(value);
+        this.position += INTEGER_SIZE;
+        return this;
+    }
 
-	public ByteBuffer putLong(int index, long value) {
-		this.wrapped.putLong(index, value);
-		return this;
-	}
+    @Override
+    public ByteBuffer putLong(int index, long value) {
+        this.wrapped.putLong(index, value);
+        return this;
+    }
 
-	public ByteBuffer putLong(long value) {
-		this.wrapped.putLong(value);
-		this.position += LONG_SIZE;
-		return this;
-	}
+    @Override
+    public ByteBuffer putLong(long value) {
+        this.wrapped.putLong(value);
+        this.position += LONG_SIZE;
+        return this;
+    }
 
-	public ByteBuffer putShort(int index, short value) {
-		this.wrapped.putShort(index, value);
-		return this;
-	}
+    @Override
+    public ByteBuffer putShort(int index, short value) {
+        this.wrapped.putShort(index, value);
+        return this;
+    }
 
-	public ByteBuffer putShort(short value) {
-		this.wrapped.putShort(value);
-		this.position += SHORT_SIZE;
-		return this;
-	}
+    @Override
+    public ByteBuffer putShort(short value) {
+        this.wrapped.putShort(value);
+        this.position += SHORT_SIZE;
+        return this;
+    }
 
-	public ByteBuffer slice() {
-		this.wrapped.limit(this.limit);
-		this.wrapped.position(this.position);
-		MappedByteBufferAdapter result = new MappedByteBufferAdapter(
-				this.wrapped.slice());
-		this.wrapped.clear();
-		return result;
-	}
+    @Override
+    public ByteBuffer slice() {
+        this.wrapped.limit(this.limit);
+        this.wrapped.position(this.position);
+        MappedByteBufferAdapter result = new MappedByteBufferAdapter(
+                this.wrapped.slice());
+        this.wrapped.clear();
+        return result;
+    }
 
-	byte[] protectedArray() {
-		return this.wrapped.protectedArray();
-	}
+    @Override
+    byte[] protectedArray() {
+        return this.wrapped.protectedArray();
+    }
 
-	int protectedArrayOffset() {
-		return this.wrapped.protectedArrayOffset();
-	}
+    @Override
+    int protectedArrayOffset() {
+        return this.wrapped.protectedArrayOffset();
+    }
 
-	boolean protectedHasArray() {
-		return this.wrapped.protectedHasArray();
-	}
+    @Override
+    boolean protectedHasArray() {
+        return this.wrapped.protectedHasArray();
+    }
 
-	public PlatformAddress getBaseAddress() {
-		return this.wrapped.getBaseAddress();
-	}
+    public PlatformAddress getBaseAddress() {
+        return this.wrapped.getBaseAddress();
+    }
 
-	public boolean isAddressValid() {
-		return this.wrapped.isAddressValid();
-	}
+    public boolean isAddressValid() {
+        return this.wrapped.isAddressValid();
+    }
 
-	public void addressValidityCheck() {
-		this.wrapped.addressValidityCheck();
-	}
+    public void addressValidityCheck() {
+        this.wrapped.addressValidityCheck();
+    }
 
-	public void free() {
-		this.wrapped.free();
-	}
-        
+    public void free() {
+        this.wrapped.free();
+    }
+
     public int getByteCapacity() {
         return wrapped.getByteCapacity();
     }
