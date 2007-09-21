@@ -183,12 +183,14 @@ public abstract class FloatBuffer extends Buffer implements Comparable<FloatBuff
 				: otherBuffer.remaining();
 		int thisPos = position;
 		int otherPos = otherBuffer.position;
-		float thisByte, otherByte;
+		float thisFloat, otherFloat;
 		while (compareRemaining > 0) {
-			thisByte = get(thisPos);
-			otherByte = otherBuffer.get(otherPos);
-			if (thisByte != otherByte) {
-				return thisByte < otherByte ? -1 : 1;
+			thisFloat = get(thisPos);
+			otherFloat = otherBuffer.get(otherPos);
+            // checks for float and NaN inequality
+            if ((thisFloat != otherFloat)
+                    && ((thisFloat == thisFloat) || (otherFloat == otherFloat))) {
+				return thisFloat < otherFloat ? -1 : 1;
 			}
 			thisPos++;
 			otherPos++;

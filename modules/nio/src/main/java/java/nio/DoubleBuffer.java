@@ -181,17 +181,19 @@ public abstract class DoubleBuffer extends Buffer implements Comparable<DoubleBu
 				: otherBuffer.remaining();
 		int thisPos = position;
 		int otherPos = otherBuffer.position;
-		double thisByte, otherByte;
+		double thisDouble, otherDouble;
 		while (compareRemaining > 0) {
-			thisByte = get(thisPos);
-			otherByte = otherBuffer.get(otherPos);
-			if (thisByte != otherByte) {
-				return thisByte < otherByte ? -1 : 1;
-			}
-			thisPos++;
-			otherPos++;
-			compareRemaining--;
-		}
+            thisDouble = get(thisPos);
+            otherDouble = otherBuffer.get(otherPos);
+            // checks for double and NaN inequality
+            if ((thisDouble != otherDouble)
+                    && ((thisDouble == thisDouble) || (otherDouble == otherDouble))) {
+                return thisDouble < otherDouble ? -1 : 1;
+            }
+            thisPos++;
+            otherPos++;
+            compareRemaining--;
+        }
 		return remaining() - otherBuffer.remaining();
 	}
 
