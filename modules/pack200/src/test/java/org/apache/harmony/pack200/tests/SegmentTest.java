@@ -51,5 +51,11 @@ public class SegmentTest extends TestCase {
 				.parse(Segment.class
 						.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack.gz")));
 	}
+    
+    public void testInterfaceOnly() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack")));
+    }
 
 }

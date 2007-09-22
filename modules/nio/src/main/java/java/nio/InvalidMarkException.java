@@ -16,7 +16,6 @@
 
 package java.nio;
 
-
 /**
  * A <code>InvalidMarkException</code> is thrown when <code>reset()</code>
  * is called on a buffer, but there is no mark set previously.
@@ -24,12 +23,12 @@ package java.nio;
  */
 public class InvalidMarkException extends IllegalStateException {
 
-	private static final long serialVersionUID = 1698329710438510774L;
+    private static final long serialVersionUID = 1698329710438510774L;
 
-	/**
-	 * Constructs an <code>InvalidMarkException</code>.
-	 */
-	public InvalidMarkException() {
-		super();
-	}
+    /**
+     * Constructs an <code>InvalidMarkException</code>.
+     */
+    public InvalidMarkException() {
+        super();
+    }
 }

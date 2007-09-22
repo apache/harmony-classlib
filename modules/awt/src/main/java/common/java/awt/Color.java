@@ -24,6 +24,7 @@ import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.ColorModel;
+import java.awt.image.DirectColorModel;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
@@ -560,10 +561,16 @@ public class Color implements Paint, Serializable {
 
     class ColorPaintContext implements PaintContext {
         int rgbValue;
-        WritableRaster savedRaster = null;
+        WritableRaster savedRaster;
+        ColorModel cm;
 
         protected ColorPaintContext(int rgb) {
             rgbValue = rgb;
+            if((rgb & 0xFF000000) == 0xFF000000){
+                cm = new DirectColorModel(24, 0xFF0000, 0xFF00, 0xFF);
+            } else {
+                cm = ColorModel.getRGBdefault();
+            }
         }
 
         public void dispose() {
@@ -571,7 +578,7 @@ public class Color implements Paint, Serializable {
         }
 
         public ColorModel getColorModel() {
-            return ColorModel.getRGBdefault();
+            return cm;
         }
 
         public Raster getRaster(int x, int y, int w, int h) {

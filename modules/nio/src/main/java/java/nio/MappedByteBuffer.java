@@ -21,7 +21,6 @@ import org.apache.harmony.luni.platform.MappedPlatformAddress;
 import org.apache.harmony.luni.platform.PlatformAddress;
 import org.apache.harmony.nio.internal.DirectBuffer;
 
-
 /**
  * <code>MappedByteBuffer</code> is a special kind of direct byte buffer,
  * which maps a region of file to memory.
@@ -58,37 +57,39 @@ public abstract class MappedByteBuffer extends ByteBuffer {
         super(capa);
         mapMode = mode;
         switch (mapMode) {
-        case IMemorySystem.MMAP_READ_ONLY:
-            wrapped = new ReadOnlyDirectByteBuffer(addr, capa, offset);
-            break;
-        case IMemorySystem.MMAP_READ_WRITE:
-        case IMemorySystem.MMAP_WRITE_COPY:
-            wrapped = new ReadWriteDirectByteBuffer(addr, capa, offset);
-            break;
-        default:
-            throw new IllegalArgumentException();
+            case IMemorySystem.MMAP_READ_ONLY:
+                wrapped = new ReadOnlyDirectByteBuffer(addr, capa, offset);
+                break;
+            case IMemorySystem.MMAP_READ_WRITE:
+            case IMemorySystem.MMAP_WRITE_COPY:
+                wrapped = new ReadWriteDirectByteBuffer(addr, capa, offset);
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
         addr.autoFree();
     }
 
-	/**
-	 * Returns true if this buffer's content is loaded.
-	 * 
-	 * @return True if this buffer's content is loaded.
-	 */
-	public final boolean isLoaded() {
-		return ((MappedPlatformAddress)((DirectBuffer) wrapped).getBaseAddress()).mmapIsLoaded();
-	}
+    /**
+     * Returns true if this buffer's content is loaded.
+     * 
+     * @return True if this buffer's content is loaded.
+     */
+    public final boolean isLoaded() {
+        return ((MappedPlatformAddress) ((DirectBuffer) wrapped)
+                .getBaseAddress()).mmapIsLoaded();
+    }
 
-	/**
-	 * Loads this buffer's content into memory.
-	 * 
-	 * @return This buffer
-	 */
-	public final MappedByteBuffer load() {
-		((MappedPlatformAddress)((DirectBuffer) wrapped).getBaseAddress()).mmapLoad();
-		return this;
-	}
+    /**
+     * Loads this buffer's content into memory.
+     * 
+     * @return This buffer
+     */
+    public final MappedByteBuffer load() {
+        ((MappedPlatformAddress) ((DirectBuffer) wrapped).getBaseAddress())
+                .mmapLoad();
+        return this;
+    }
 
     /**
      * Writes all changes of the buffer to the mapped file.
@@ -100,7 +101,8 @@ public abstract class MappedByteBuffer extends ByteBuffer {
      */
     public final MappedByteBuffer force() {
         if (mapMode == IMemorySystem.MMAP_READ_WRITE) {
-            ((MappedPlatformAddress)((DirectBuffer) wrapped).getBaseAddress()).mmapFlush();
+            ((MappedPlatformAddress) ((DirectBuffer) wrapped).getBaseAddress())
+                    .mmapFlush();
         }
         return this;
     }

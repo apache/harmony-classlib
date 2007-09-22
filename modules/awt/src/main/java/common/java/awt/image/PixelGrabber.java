@@ -204,32 +204,31 @@ public class PixelGrabber implements ImageConsumer {
         }
         int realOff = offset + (srcY - Y) * scanline + (srcX - X);
 
+        int mask = 0xFF;
+
         switch(dataType){
         case DATA_TYPE_UNDEFINED:
             cm = model;
             iData = new int[width * height];
             dataType = DATA_TYPE_INT;
-            if(cm == ColorModel.getRGBdefault()) {
-                isRGB = true;
-            } else {
-                isRGB = false;
-            }
+            isRGB = (cm == ColorModel.getRGBdefault());
 
         case DATA_TYPE_INT:
             if(cm == model){
                 for(int y = 0; y < srcH; y++){
-                    System.arraycopy(pixels, srcOff, bData, realOff, srcW);
+                    System.arraycopy(pixels, srcOff, iData, realOff, srcW);
                     srcOff += srcScan;
                     realOff += scanline;
                 }
                 break;
             }
+            mask = 0xFFFFFFFF;
 
         case DATA_TYPE_BYTE:
             forceToRGB();
             for(int y = 0; y < srcH; y++){
                 for(int x = 0; x < srcW; x++){
-                    iData[realOff++] = cm.getRGB(pixels[srcOff++] & 0xff);
+                    iData[realOff+x] = cm.getRGB(pixels[srcOff+x] & mask);
                 }
                 srcOff += srcScan;
                 realOff += scanline;
@@ -379,6 +378,9 @@ public class PixelGrabber implements ImageConsumer {
      * Force pixels to INT RGB mode
      */
     private void forceToRGB(){
+        if (isRGB)
+            return;
+    
         switch(dataType){
         case DATA_TYPE_BYTE:
             iData = new int[width * height];

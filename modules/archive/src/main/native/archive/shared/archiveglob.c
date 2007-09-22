@@ -123,8 +123,8 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
                   jclmem_free_memory (env, jclZipFile);
                   jclZipFile = next;
                 }
-              jclmem_free_memory (env, zipfileHandles);
               MUTEX_DESTROY (zipfileHandles->mutex);
+              jclmem_free_memory (env, zipfileHandles);
             }
 
           /* Free any global references */

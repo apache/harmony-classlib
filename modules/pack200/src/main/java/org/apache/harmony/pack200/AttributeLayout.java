@@ -16,60 +16,8 @@
  */
 package org.apache.harmony.pack200;
 
-// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-// NOTE: Do not extract strings as messages; this code is still a
-// work-in-progress
-// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 
 public class AttributeLayout implements IMatcher {
-	static class Key {
-		private final int context;
-
-		private final String name;
-
-		public Key(String name, int context) throws Pack200Exception {
-			if (name == null || name.length() == 0)
-				throw new Pack200Exception("Cannot have an unnamed layout");
-			if (context != CONTEXT_CLASS && context != CONTEXT_CODE
-					&& context != CONTEXT_FIELD && context != CONTEXT_METHOD)
-				throw new Pack200Exception("Attribute context out of range: "
-						+ context);
-			this.name = name;
-			this.context = context;
-
-		}
-
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			final Key other = (Key) obj;
-			if (context != other.context)
-				return false;
-			if (name == null) {
-				if (other.name != null)
-					return false;
-			} else if (!name.equals(other.name))
-				return false;
-			return true;
-		}
-
-		public int hashCode() {
-			final int PRIME = 31;
-			int result = 1;
-			result = PRIME * result + context;
-			result = PRIME * result + ((name == null) ? 0 : name.hashCode());
-			return result;
-		}
-
-		public String toString() {
-			return contextNames[context] + ": " + name;
-		}
-
-	}
 
 	public static final String ACC_ABSTRACT = "ACC_ABSTRACT"; //$NON-NLS-1$
 	public static final String ACC_ANNOTATION = "ACC_ANNOTATION"; //$NON-NLS-1$
@@ -103,11 +51,11 @@ public class AttributeLayout implements IMatcher {
 	public static final String ATTRIBUTE_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS = "RuntimeVisibleParameterAnnotations"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_SIGNATURE = "Signature"; //$NON-NLS-1$
 	public static final String ATTRIBUTE_SOURCE_FILE = "SourceFile"; //$NON-NLS-1$
-	public static final int CONTEXT_CLASS = 1 << 0;
-	public static final int CONTEXT_CODE = 1 << 4;
-	public static final int CONTEXT_FIELD = 1 << 2;
-	public static final int CONTEXT_METHOD = 1 << 3;
-	private static final String[] contextNames = { "Class", "Field", "Method", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	public static final int CONTEXT_CLASS = 0;
+	public static final int CONTEXT_CODE = 3;
+	public static final int CONTEXT_FIELD = 1;
+	public static final int CONTEXT_METHOD = 2;
+	public static final String[] contextNames = { "Class", "Field", "Method", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			"Code", }; //$NON-NLS-1$
 
 	private static Object getValue(String layout, long value, SegmentConstantPool pool)
@@ -139,27 +87,41 @@ public class AttributeLayout implements IMatcher {
 		}
 		throw new Pack200Exception("Unknown layout encoding: " + layout);
 	}
+    
+    
+    private int context;
 
-	Key key;
+    private int index;
 
 	private final String layout;
 
 	private long mask;
+    
+    private String name;
 
 	public AttributeLayout(String name, int context, String layout, int index)
 			throws Pack200Exception {
 		super();
-		this.key = new Key(name, context);
+        this.index = index;
+        this.context = context;
 		if (index >= 0) {
 			this.mask = 1L << index;
 		} else {
 			this.mask = 0;
 		}
+        if (context != CONTEXT_CLASS && context != CONTEXT_CODE
+                && context != CONTEXT_FIELD && context != CONTEXT_METHOD)
+            throw new Pack200Exception("Attribute context out of range: "
+                    + context);
 		if (layout == null) // || layout.length() == 0)
 			throw new Pack200Exception("Cannot have a null layout");
+        if (name == null || name.length() == 0)
+                throw new Pack200Exception("Cannot have an unnamed layout");
+        this.name = name;
 		this.layout = layout;
 	}
-
+    
+    
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -168,16 +130,20 @@ public class AttributeLayout implements IMatcher {
 		if (getClass() != obj.getClass())
 			return false;
 		final AttributeLayout other = (AttributeLayout) obj;
-		if (key == null) {
-			if (other.key != null)
-				return false;
-		} else if (!key.equals(other.key))
-			return false;
 		if (layout == null) {
 			if (other.layout != null)
 				return false;
 		} else if (!layout.equals(other.layout))
 			return false;
+        if(index != other.index) 
+            return false;
+        if(context != other.context)
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
 		return true;
 	}
 
@@ -231,23 +197,33 @@ public class AttributeLayout implements IMatcher {
 	}
 
 	public int hashCode() {
-		return key.hashCode();
+        int PRIME = 31;
+        int r = 1;
+        if(name != null) {
+            r = r * PRIME + name.hashCode();
+        }
+		if(layout != null) {
+            r = r* PRIME + layout.hashCode();
+        }
+        r = r * PRIME + index;
+        r = r * PRIME + context;
+        return r;
 	}
 
 	public boolean isClass() {
-		return key.context == CONTEXT_CLASS;
+		return context == CONTEXT_CLASS;
 	}
 
 	public boolean isCode() {
-		return key.context == CONTEXT_CODE;
+		return context == CONTEXT_CODE;
 	}
 
 	public boolean isField() {
-		return key.context == CONTEXT_FIELD;
+		return context == CONTEXT_FIELD;
 	}
 
 	public boolean isMethod() {
-		return key.context == CONTEXT_METHOD;
+		return context == CONTEXT_METHOD;
 	}
 
 	/* (non-Javadoc)
@@ -258,7 +234,19 @@ public class AttributeLayout implements IMatcher {
 	}
 
 	public String toString() {
-		return key.toString();
+        return contextNames[context] + ": " + name;
 	}
+
+    public int getContext() {
+        return context;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }
