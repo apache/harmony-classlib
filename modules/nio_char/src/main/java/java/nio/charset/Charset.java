@@ -108,16 +108,6 @@ public abstract class Charset implements Comparable<Charset> {
     // cached Charset table
     private static HashMap<String, Charset> cachedCharsetTable = new HashMap<String, Charset>();
 
-    // cached CharsetDecoder table
-    private static HashMap<String, CharsetDecoder> cachedCharsetDecoderTable = new HashMap<String, CharsetDecoder>();
-
-    // cached CharsetEncoder table
-    private static HashMap<String, CharsetEncoder> cachedCharsetEncoderTable = new HashMap<String, CharsetEncoder>();
-
-    private CharsetEncoder cachedEncoder = null;
-
-    private CharsetDecoder cachedDecoder = null;
-
     static {
         /*
          * Create built-in charset provider even if no privilege to access
@@ -637,33 +627,16 @@ public abstract class Charset implements Comparable<Charset> {
      *            the character buffer containing the content to be encoded
      * @return the result of the encoding
      */
-    synchronized public final ByteBuffer encode(CharBuffer buffer) {
-        if (cachedEncoder == null) {
-            cachedEncoder = getCachedCharsetEncoder(canonicalName);
-        }
-
-        try {
-            synchronized (cachedEncoder) {
-                return cachedEncoder.encode(buffer);
-            }
+    public final ByteBuffer encode(CharBuffer buffer) {
+        try 
+        {
+            return this.newEncoder()
+                     .onMalformedInput(CodingErrorAction.REPLACE)
+                     .onUnmappableCharacter(CodingErrorAction.REPLACE)
+                     .encode(buffer);
+                                     
         } catch (CharacterCodingException ex) {
             throw new Error(ex.getMessage(), ex);
-        }
-    }
-
-    /*
-     * get cached CharsetEncoder by canonical name
-     */
-    private CharsetEncoder getCachedCharsetEncoder(String name) {
-        synchronized (cachedCharsetEncoderTable) {
-            CharsetEncoder e = cachedCharsetEncoderTable.get(name);
-            if (null == e) {
-                e = this.newEncoder();
-                e.onMalformedInput(CodingErrorAction.REPLACE);
-                e.onUnmappableCharacter(CodingErrorAction.REPLACE);
-                cachedCharsetEncoderTable.put(name, e);
-            }
-            return e;
         }
     }
 
@@ -695,34 +668,17 @@ public abstract class Charset implements Comparable<Charset> {
      * @return a character buffer containing the output of the decoding
      */
     public final CharBuffer decode(ByteBuffer buffer) {
-        if (cachedDecoder == null) {
-            cachedDecoder = getCachedCharsetDecoder(canonicalName);
-        }
 
-        try {
-            synchronized (cachedDecoder) {
-                return cachedDecoder.decode(buffer);
-            }
-        } catch (CharacterCodingException ex) {
-            throw new Error(ex.getMessage(), ex);
-        }
-    }
+		try {
+			return this.newDecoder()
+					.onMalformedInput(CodingErrorAction.REPLACE)
+					.onUnmappableCharacter(CodingErrorAction.REPLACE)
+					.decode(buffer);
 
-    /*
-     * get cached CharsetDecoder by canonical name
-     */
-    private CharsetDecoder getCachedCharsetDecoder(String name) {
-        synchronized (cachedCharsetDecoderTable) {
-            CharsetDecoder d = cachedCharsetDecoderTable.get(name);
-            if (null == d) {
-                d = this.newDecoder();
-                d.onMalformedInput(CodingErrorAction.REPLACE);
-                d.onUnmappableCharacter(CodingErrorAction.REPLACE);
-                cachedCharsetDecoderTable.put(name, d);
-            }
-            return d;
-        }
-    }
+		} catch (CharacterCodingException ex) {
+			throw new Error(ex.getMessage(), ex);
+		}
+	}
 
     /*
      * -------------------------------------------------------------------

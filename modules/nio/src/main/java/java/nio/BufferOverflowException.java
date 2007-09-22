@@ -16,21 +16,19 @@
 
 package java.nio;
 
-
 /**
- * A <code>BufferOverflowException</code> is thrown when you try to write 
- * elements to a buffer, but there is not enough remaining space in the 
- * buffer.
+ * A <code>BufferOverflowException</code> is thrown when you try to write
+ * elements to a buffer, but there is not enough remaining space in the buffer.
  * 
  */
 public class BufferOverflowException extends RuntimeException {
 
-	private static final long serialVersionUID = -5484897634319144535L;
+    private static final long serialVersionUID = -5484897634319144535L;
 
-	/**
-	 * Constructs a <code>BufferOverflowException</code>.
-	 */
-	public BufferOverflowException() {
-		super();
-	}
+    /**
+     * Constructs a <code>BufferOverflowException</code>.
+     */
+    public BufferOverflowException() {
+        super();
+    }
 }

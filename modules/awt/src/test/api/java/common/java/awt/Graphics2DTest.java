@@ -57,4 +57,16 @@ public class Graphics2DTest extends TestCase {
         assertNotNull(g2d.getPaint());        
     }
 
+    public void testGetRenderingHint() {
+		// Regression test for HARMONY-4799
+		final Graphics2D g2d = (Graphics2D) frame.getGraphics();
+
+		assertEquals(
+				g2d.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING),
+				RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+		assertEquals(g2d.getRenderingHint(RenderingHints.KEY_ANTIALIASING),
+				RenderingHints.VALUE_ANTIALIAS_OFF);
+		assertEquals(g2d.getRenderingHint(RenderingHints.KEY_STROKE_CONTROL),
+				RenderingHints.VALUE_STROKE_DEFAULT);
+	}
 }

@@ -40,24 +40,24 @@ import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.Raster;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
-import java.awt.image.renderable.RenderableImage;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.Raster;
+import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
+import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.fontlib.FLTextRenderer;
 import org.apache.harmony.awt.gl.image.OffscreenImage;
@@ -125,9 +125,22 @@ import org.apache.harmony.awt.gl.render.NullBlitter;
  *
  */
 public abstract class CommonGraphics2D extends Graphics2D {
+	
+	private static final Map<RenderingHints.Key, Object> DEFAULT_RENDERING_HINTS;
+
+	static {
+		DEFAULT_RENDERING_HINTS = new HashMap<RenderingHints.Key, Object>();
+		DEFAULT_RENDERING_HINTS.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+		DEFAULT_RENDERING_HINTS.put(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_OFF);
+		DEFAULT_RENDERING_HINTS.put(RenderingHints.KEY_STROKE_CONTROL,
+				RenderingHints.VALUE_STROKE_DEFAULT);
+	}
+	
     protected Surface dstSurf = null;
     protected Blitter blitter = NullBlitter.getInstance();
-    protected RenderingHints hints = new RenderingHints(null);
+    protected RenderingHints hints = new RenderingHints(DEFAULT_RENDERING_HINTS);
 
     // Clipping things
     protected MultiRectArea clip = null;

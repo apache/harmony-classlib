@@ -412,15 +412,22 @@ public class FileTest extends junit.framework.TestCase {
         } catch (IOException e) {
             // expected;
         }
-        
-        // Test create an exist path
-        f1 = new File(base);
-        try {
-            assertFalse(f1.createNewFile());
-            fail("should throw IOE");
-        } catch (IOException e) {
-            // expected;
-        }
+
+        // This test is invalid.  createNewFile should return false
+        // not IOE when the file exists (in this case it exists and is
+        // a directory).  TODO: We should probably replace this test
+        // with some that cover this behaviour.  It might even be
+        // different on unix and windows since it directly reflects
+        // the open syscall behaviour.
+        //
+        // // Test create an exist path
+        // f1 = new File(base);
+        // try {
+        //     assertFalse(f1.createNewFile());
+        //     fail("should throw IOE");
+        // } catch (IOException e) {
+        //     // expected;
+        // }
     }
 
 	/**

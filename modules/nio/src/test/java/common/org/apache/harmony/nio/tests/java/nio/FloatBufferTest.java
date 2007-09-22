@@ -20,6 +20,7 @@ package org.apache.harmony.nio.tests.java.nio;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.InvalidMarkException;
 
@@ -184,6 +185,18 @@ public class FloatBufferTest extends AbstractBufferTest {
         other.limit(5);
         assertTrue(buf.compareTo(other) > 0);
         assertTrue(other.compareTo(buf) < 0);
+        
+        FloatBuffer fbuffer1 = FloatBuffer.wrap(new float[] { Float.NaN });
+        FloatBuffer fbuffer2 = FloatBuffer.wrap(new float[] { Float.NaN });
+        FloatBuffer fbuffer3 = FloatBuffer.wrap(new float[] { 42f });
+
+        assertEquals("Failed equal comparison with NaN entry", 0, fbuffer1
+                .compareTo(fbuffer2));
+        assertEquals("Failed greater than comparison with NaN entry", 1, fbuffer3
+                .compareTo(fbuffer1));
+        assertEquals("Failed greater than comparison with NaN entry", 1, fbuffer1
+                .compareTo(fbuffer3));
+
     }
 
     public void testDuplicate() {

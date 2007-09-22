@@ -119,46 +119,41 @@ public abstract class BandSet {
     }
     
     public long[] parseFlags(String name, InputStream in, int count,
-            Codec codec, boolean hasHi) throws IOException, Pack200Exception {
+            BHSDCodec codec, boolean hasHi) throws IOException, Pack200Exception {
         return parseFlags(name, in, 1, new int[] { count }, (hasHi ? codec
                 : null), codec)[0];
     }
 
     public long[][] parseFlags(String name, InputStream in, int count,
-            int counts[], Codec codec, boolean hasHi) throws IOException,
+            int counts[], BHSDCodec codec, boolean hasHi) throws IOException,
             Pack200Exception {
         return parseFlags(name, in, count, counts, (hasHi ? codec : null),
                 codec);
     }
 
     public long[][] parseFlags(String name, InputStream in, int count,
-            int counts[], Codec hiCodec, Codec loCodec) throws IOException,
+            int counts[], BHSDCodec hiCodec, BHSDCodec loCodec) throws IOException,
             Pack200Exception {
         // TODO Move away from decoding into a parseBand type structure
         if (count == 0) {
             return new long[][] { {} };
         }
         long[][] result = new long[count][];
-        // TODO What happens when the decode here indicates a different
-        // encoding?
-        // TODO Move this to a decodeBandInt
-        long last = 0;
         for (int j = 0; j < count; j++) {
-            result[j] = new long[counts[j]];
-            for (int i = 0; i < counts[j] && hiCodec != null; i++) {
-                last = hiCodec.decode(in, last);
-                result[j][i] = last << 32;
+            int[] hi;
+            if(hiCodec != null) {
+                hi = decodeBandInt(name, in, hiCodec, counts[j]);
+                result[j] = decodeBandLong(name, in, loCodec, counts[j]);
+                for (int i = 0; i < counts[j]; i++) {                    
+                    result[j][i] = (hi[i] << 32) |result[j][i];
+                }
+            } else {
+                result[j] = decodeBandLong(name, in, loCodec, counts[j]);
             }
         }
-        last = 0;
-        for (int j = 0; j < count; j++)
-            for (int i = 0; i < counts[j]; i++) {
-                last = loCodec.decode(in, last);
-                result[j][i] = result[j][i] | last;
-            }
         // TODO Remove debugging code
         debug("Parsed *" + name + " (" + result.length + ")");
-        return result;
+        return result;        
     }
     
     /**
@@ -263,9 +258,7 @@ public abstract class BandSet {
      * @deprecated this should be removed from production code
      */
     protected void debug(String message) {
-        if (System.getProperty("debug.pack200") != null) {
-            System.err.println(message);
-        }
+        segment.debug(message);
     }
 
 

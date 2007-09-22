@@ -38,7 +38,6 @@ typedef struct LUNIJniIDCache
   jfieldID FID_java_net_DatagramPacket_address;
   jfieldID FID_java_net_DatagramPacket_port;
   jfieldID FID_java_lang_ClassLoader_vmRef;
-  jfieldID FID_com_ibm_oti_vm_MemorySpace;
   /* Used by ObjectStreamClass */
   jmethodID MID_java_lang_reflect_Field_getSignature;
   jmethodID MID_java_lang_reflect_Method_getSignature;

@@ -32,7 +32,6 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
             jobjectArray arg2,
             jbyteArray dir)
 {
-  jbyteArray envString;
   jlongArray pVals = NULL;
   jlong npVals[4];
   char *envArray[256];
@@ -74,11 +73,12 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
         }
       (*env)->GetByteArrayRegion (env, element, 0, len, (jbyte *)command[i]);
       command[i][len] = 0;
+      (*env)->DeleteLocalRef(env, element);
     }
   if (envLength)
     for (i = 0; i < envLength; i++)
       {
-        envString = (*env)->GetObjectArrayElement (env, arg2, i);
+        jbyteArray envString = (*env)->GetObjectArrayElement (env, arg2, i);
         len = (*env)->GetArrayLength (env, envString);
         envArray[i] = jclmem_allocate_memory (env, len + 1);
         if (envArray[i] == NULL)
@@ -88,6 +88,7 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
           }
         (*env)->GetByteArrayRegion (env, envString, 0, len, (jbyte *)envArray[i]);
         envArray[i][len] = 0;
+        (*env)->DeleteLocalRef(env, envString);
       }
   /* NULL terminate for UNIX (does work on windows too; in fact, it doesn't care) */
   command[commandLineLength] = NULL;

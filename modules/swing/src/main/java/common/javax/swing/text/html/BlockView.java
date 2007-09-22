@@ -74,7 +74,12 @@ public class BlockView extends BoxView {
 
     public void paint(final Graphics g, final Shape allocation) {
         Rectangle rc = allocation.getBounds();
-        boxPainter.paint(g, rc.x, rc.y, rc.width, rc.height, this);
+
+        // Fix for HARMONY-4755, boxPainter is only initialized
+        // after setPropertiesFromAttributes() is called.
+        if (boxPainter != null) {
+            boxPainter.paint(g, rc.x, rc.y, rc.width, rc.height, this);
+        }
         super.paint(g, allocation);
     }
 

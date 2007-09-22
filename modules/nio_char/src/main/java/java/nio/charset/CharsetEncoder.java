@@ -343,31 +343,34 @@ public abstract class CharsetEncoder {
         CoderResult result = null;
         while (true) {
             result = encode(in, output, false);
-            checkCoderResult(result);
-            if (result.isUnderflow()) {
+            if (result==CoderResult.UNDERFLOW) {
                 break;
-            } else if (result.isOverflow()) {
+            } else if (result==CoderResult.OVERFLOW) {
                 output = allocateMore(output);
+                continue;
             }
+            checkCoderResult(result);
         }
         result = encode(in, output, true);
         checkCoderResult(result);
 
         while (true) {
             result = flush(output);
-            checkCoderResult(result);
-            if (result.isOverflow()) {
-                output = allocateMore(output);
-            } else {
+            if (result==CoderResult.UNDERFLOW) {
+                output.flip();
                 break;
+            } else if (result==CoderResult.OVERFLOW) {
+                output = allocateMore(output);
+                continue;
             }
-        }
-
+            checkCoderResult(result);
         output.flip();
         if (result.isMalformed()) {
             throw new MalformedInputException(result.length());
         } else if (result.isUnmappable()) {
             throw new UnmappableCharacterException(result.length());
+        }
+            break;
         }
         status = FLUSH;
         return output;
@@ -378,10 +381,9 @@ public abstract class CharsetEncoder {
      */
     private void checkCoderResult(CoderResult result)
             throws CharacterCodingException {
-        if (result.isMalformed() && malformAction == CodingErrorAction.REPORT) {
+        if (malformAction == CodingErrorAction.REPORT && result.isMalformed() ) {
             throw new MalformedInputException(result.length());
-        } else if (result.isUnmappable()
-                && unmapAction == CodingErrorAction.REPORT) {
+        } else if (unmapAction == CodingErrorAction.REPORT && result.isUnmappable()) {
             throw new UnmappableCharacterException(result.length());
         }
     }
@@ -478,16 +480,19 @@ public abstract class CharsetEncoder {
             } catch (BufferUnderflowException e) {
                 throw new CoderMalfunctionError(e);
             }
-            if (result.isUnderflow()) {
-                int remaining = in.remaining();
+            if (result==CoderResult.UNDERFLOW) {
                 status = endOfInput ? END : ONGOING;
-                if (endOfInput && remaining > 0) {
+                if (endOfInput) {
+                    int remaining = in.remaining();
+                    if( remaining > 0) {
                     result = CoderResult.malformedForLength(remaining);
                 } else {
                     return result;
                 }
+                } else {
+                    return result;
             }
-            if (result.isOverflow()) {
+            } else if (result==CoderResult.OVERFLOW) {
                 status = endOfInput ? END : ONGOING;
                 return result;
             }

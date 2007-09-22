@@ -216,8 +216,13 @@ public class HTMLDocument_Reader_ActionsTest extends HTMLDocumentTestCase {
 
     public void testAnchorStart() {
         SimpleAttributeSet attr = new SimpleAttributeSet();
-        attr.addAttribute("aaaa", "bbbb");
+        // If href attribute is absent, after 4606 handleStartTag(Tag.A) does
+        // nothing
+        reader.handleStartTag(Tag.A, attr, 0);
+        assertEquals(0, reader.charAttr.getAttributeCount());
+        // After addition the href attribute, Tag.A works as before
         reader.charAttr.addAttribute("bbbb", "aaaa");
+        attr.addAttribute(HTML.Attribute.HREF, "");
         reader.handleStartTag(Tag.A, attr, 0);
         assertEquals(0, reader.parseBuffer.size());
         assertEquals(2, reader.charAttr.getAttributeCount());
@@ -241,7 +246,9 @@ public class HTMLDocument_Reader_ActionsTest extends HTMLDocumentTestCase {
 
     public void testAnchorStartEnd() {
         SimpleAttributeSet attr = new SimpleAttributeSet();
-        attr.addAttribute("aaaa", "bbbb");
+        // If href attribute is absent, after 4606 handleStartTag(Tag.A) does
+        // nothing. After addition the href attribute, Tag.A works as before
+        attr.addAttribute(HTML.Attribute.HREF, "");
         final Tag tag = Tag.A;
         reader.handleStartTag(tag, attr, 0);
         assertEquals(1, reader.charAttr.getAttributeCount());

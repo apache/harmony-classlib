@@ -41,23 +41,24 @@ public class EventDispatchThreadRTest extends TestCase {
             }
         );
     }
-    
-    public void testHarmony2116() throws InterruptedException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final PrintStream err = System.err;
-        final Toolkit tk;
-
-        System.setErr(new PrintStream(out));
-        tk = new ToolkitImpl() {
-            protected EventQueue getSystemEventQueueImpl() {
-                return null;
-            }
-        };
-
-        Thread.sleep(100);
-        tk.dispatchThread.shutdown();
-        tk.dispatchThread.join(3000);
-        System.setErr(err);
-        assertEquals(0, out.size());
-    }
+  
+// FIXME: Test deemed to be invalid  
+//    public void testHarmony2116() throws InterruptedException {
+//        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        final PrintStream err = System.err;
+//        final Toolkit tk;
+//
+//        System.setErr(new PrintStream(out));
+//        tk = new ToolkitImpl() {
+//            protected EventQueue getSystemEventQueueImpl() {
+//                return null;
+//            }
+//        };
+//
+//        Thread.sleep(100);
+//        tk.dispatchThread.shutdown();
+//        tk.dispatchThread.join(3000);
+//        System.setErr(err);
+//        assertEquals(0, out.size());
+//    }
 }

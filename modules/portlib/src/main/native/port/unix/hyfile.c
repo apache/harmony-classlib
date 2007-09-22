@@ -176,10 +176,13 @@ hyfile_open (struct HyPortLibrary *portLibrary, const char *path, I_32 flags,
       return -1;
     }
 
-  if (!stat (path, &buffer))
+  if ( ( flags&HyOpenRead && !(flags&HyOpenWrite) )  && !stat (path, &buffer))
     {
       if (S_ISDIR (buffer.st_mode))
         {
+          portLibrary->error_set_last_error_with_message (portLibrary,
+                                                          findError (EEXIST),
+                                                          "Is a directory");
           Trc_PRT_file_open_Exit4 ();
           return -1;
         }

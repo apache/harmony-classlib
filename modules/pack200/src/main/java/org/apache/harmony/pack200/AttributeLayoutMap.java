@@ -21,6 +21,7 @@ package org.apache.harmony.pack200;
 // work-in-progress
 // NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -191,10 +192,16 @@ public class AttributeLayoutMap {
 						AttributeLayout.CONTEXT_METHOD, "*", 25) };
 	}
 
-	private final Map layouts;
+	private final Map classLayouts = new HashMap();
+    private final Map fieldLayouts = new HashMap();
+    private final Map methodLayouts = new HashMap();
+    private final Map codeLayouts = new HashMap();
+    
+    // The order of the maps in this array should not be changed as their indices correspond to
+    // the value of their context constants (AttributeLayout.CONTEXT_CLASS etc.)
+    private final Map[] layouts = new Map[] {classLayouts, fieldLayouts, methodLayouts, codeLayouts};
 
 	public AttributeLayoutMap() throws Pack200Exception {
-		this.layouts = new HashMap();
 		AttributeLayout[] defaultAttributeLayouts = getDefaultAttributeLayouts();
 		for (int i = 0; i < defaultAttributeLayouts.length; i++) {
 			add(defaultAttributeLayouts[i]);
@@ -202,12 +209,50 @@ public class AttributeLayoutMap {
 	}
 
 	public void add(AttributeLayout layout) {
-		layouts.put(layout.key, layout);
+        layouts[layout.getContext()].put(Integer.valueOf(layout.getIndex()), layout);
 	}
 
 	public AttributeLayout getAttributeLayout(String name, int context)
 			throws Pack200Exception {
-		return (AttributeLayout) layouts.get(new AttributeLayout.Key(name,
-				context));
+	    Map map = layouts[context];
+        for (Iterator iter = map.values().iterator(); iter.hasNext();) {
+            AttributeLayout layout = (AttributeLayout) iter.next();
+            if(layout.getName().equals(name)) {
+                return layout;
+            }            
+        }
+        return null;
 	}
+    
+    /**
+     * The map should not contain the same layout and name combination more than
+     * once for each context.
+     * @throws Pack200Exception 
+     *
+     */
+    public void checkMap() throws Pack200Exception {
+        for (int i = 0; i < layouts.length; i++) {
+            Map map = layouts[i];
+            for (Iterator iter = map.values().iterator(); iter.hasNext();) {
+                AttributeLayout layout1 = (AttributeLayout) iter.next();
+                for (Iterator iter2 = map.values().iterator(); iter2.hasNext();) {
+                    AttributeLayout layout2 = (AttributeLayout) iter2.next();
+                    if(layout1 != layout2) {
+                        if (layout1.getName().equals(layout2.getName())
+                                && layout1.getLayout().equals(
+                                        layout2.getLayout())) {
+                            throw new Pack200Exception(
+                                    "Same layout/name combination: "
+                                            + layout1.getLayout()
+                                            + "/"
+                                            + layout1.getName()
+                                            + " exists twice for context: "
+                                            + AttributeLayout.contextNames[layout1
+                                                    .getContext()]);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

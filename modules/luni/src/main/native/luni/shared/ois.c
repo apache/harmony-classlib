@@ -179,7 +179,7 @@ Java_java_io_ObjectInputStream_newInstance (JNIEnv * env, jclass clazz,
       jobject obj;
       obj = (*env)->AllocObject(env, instantiationClass);
       if (obj != NULL) {
-        (*env)->CallVoidMethod(env, obj, mid);
+        (*env)->CallNonvirtualVoidMethod(env, obj, constructorClass, mid);
       }
       return obj;
     }

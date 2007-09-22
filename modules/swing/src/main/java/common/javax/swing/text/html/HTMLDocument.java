@@ -366,16 +366,22 @@ public class HTMLDocument extends DefaultStyledDocument {
         class AnchorAction extends CharacterAction {
             public void start(final Tag tag, final MutableAttributeSet attr) {
                 anchorReferenceEncountered = attr.isDefined(HTML.Attribute.HREF);
-                super.start(tag, attr);
-                openedBlocks.add(Tag.A);
+                //anchorReferenceEncountered verification added according to H4606
+                if (anchorReferenceEncountered) {
+                    super.start(tag, attr);
+                    openedBlocks.add(Tag.A);
+                }
             }
             
             public void end(final Tag tag) {
                 // According to H4574 Empty AncorTextEncoured verification has
-                // been removed
-                super.end(tag);
-                openedBlocks.remove(Tag.A);
-                anchorReferenceEncountered = false;
+                // been removed, but according H4606 anchorReferenceEncountered
+                // has been added
+                if (anchorReferenceEncountered) {
+                    super.end(tag);
+                    openedBlocks.remove(Tag.A);
+                    anchorReferenceEncountered = false;
+                }
             }
         }
         

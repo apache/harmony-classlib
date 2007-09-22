@@ -212,35 +212,25 @@ class MouseDispatcher {
     }
 
     private void fall2Child(PointerInfo info) {
-        Insets insets = info.src.getInsets();
+		final Point pos = info.position;
+		final int x = pos.x;
+		final int y = pos.y;
 
-        final Point pos = info.position;
-        final int x = pos.x;
-        final int y = pos.y;
-        if ((x >= insets.left) && (y >= insets.top) &&
-                (x < (info.src.w - insets.right)) &&
-                (y < (info.src.h - insets.bottom)))
-        {
-            Component[] children = ((Container) info.src).getComponents();
+		for (Component child : ((Container) info.src).getComponents()) {
+			if (child.isShowing()) {
+				if (child.contains(x - child.x, y - child.y)) {
+					info.src = child;
+					pos.translate(-child.x, -child.y);
 
-            for (Component child : children) {
-                if (child.isShowing()) {
-                    if (child.contains(x - child.getX(),
-                            y - child.getY()))
-                    {
-                        info.src = child;
-                        pos.translate(-child.x, -child.y);
+					if (child instanceof Container) {
+						fall2Child(info);
+					}
 
-                        if (child instanceof Container) {
-                            fall2Child(info);
-                        }
-
-                        return;
-                    }
-                }
-            }
-        }
-    }
+					return;
+				}
+			}
+		}
+	}
 
     private void dispatchButtonEvent(PointerInfo info, NativeEvent event) {
         int button = event.getMouseButton();

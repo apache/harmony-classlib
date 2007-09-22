@@ -43,28 +43,18 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     private static final int DEFAULT_SIZE = 16;
 
     static class Entry<K, V> extends MapEntry<K, V> {
-        final int storedKeyHash;
+        final int origKeyHash;
 
         Entry<K, V> next;
 
         Entry(K theKey, int hash) {
             super(theKey, null);
-            if (theKey instanceof Integer) {
-                this.storedKeyHash = hash | 0x00000001;
-            } else {
-                this.storedKeyHash = hash & 0xFFFFFFFE;
-            }
+            this.origKeyHash = hash;
         }
 
         Entry(K theKey, V theValue) {
             super(theKey, theValue);
-            if (theKey == null) {
-                storedKeyHash = 0;
-            } else if (theKey instanceof Integer) {
-                storedKeyHash = theKey.hashCode() | 0x00000001;
-            } else {
-                storedKeyHash = theKey.hashCode() & 0xFFFFFFFE;
-            }
+            origKeyHash = (theKey == null ? 0 : theKey.hashCode());
         }
 
         @Override
@@ -261,16 +251,13 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
     
     private static final int calculateCapacity(int x) {
-        if (x >= 1 << 30) {
+        if(x >= 1 << 30){
             return 1 << 30;
         }
-        if (x == 0) {
+        if(x == 0){
             return 16;
         }
-        if (x == 1) {
-            return 2;
-        }
-        x = x - 1;
+        x = x -1;
         x |= x >> 1;
         x |= x >> 2;
         x |= x >> 4;
@@ -458,25 +445,16 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     final Entry<K,V> findNonNullKeyEntry(Object key, int index, int keyHash) {
         Entry<K,V> m = elementData[index];
-        if (key instanceof Integer) {
-            int storedKeyHash = keyHash | 0x00000001;
-            while (m != null && (m.storedKeyHash != storedKeyHash)) {
-                m = m.next;
-            }
-        } else {
-            int storedKeyHash = keyHash & 0xFFFFFFFE;
-            while (m != null && (m.storedKeyHash != storedKeyHash || !key.equals(m.key))) {
-                m = m.next;
-            }
+        while (m != null && (m.origKeyHash != keyHash || !key.equals(m.key))) {
+            m = m.next;
         }
         return m;
     }
   
     final Entry<K,V> findNullKeyEntry() {
         Entry<K,V> m = elementData[0];
-        while (m != null && m.key != null) {
+        while (m != null && m.key != null)
             m = m.next;
-        }
         return m;
     }
 
@@ -591,7 +569,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     }
 
     Entry<K,V> createHashedEntry(K key, int index, int hash) {
-        Entry<K,V> entry = new Entry<K,V>(key, hash);
+        Entry<K,V> entry = new Entry<K,V>(key,hash);
         entry.next = elementData[index];
         elementData[index] = entry;
         return entry;
@@ -631,8 +609,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         for (int i = 0; i < elementData.length; i++) {
             Entry<K, V> entry = elementData[i];
             while (entry != null) {
-                int actualHash = (i & 0x00000001) | (entry.storedKeyHash & 0xFFFFFFFE);
-                int index = actualHash & (length - 1);
+                int index = entry.origKeyHash & (length - 1);
                 Entry<K, V> next = entry.next;
                 entry.next = newData[index];
                 newData[index] = entry;
@@ -669,22 +646,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         Entry<K, V> entry;
         Entry<K, V> last = null;
         if (key != null) {
-            int keyHash = key.hashCode();
-            index = keyHash & (elementData.length - 1);
+            int hash = key.hashCode();
+            index = hash & (elementData.length - 1);
             entry = elementData[index];
-
-            if (key instanceof Integer) {
-                int storedKeyHash = keyHash | 0x00000001;
-                while (entry != null && (entry.storedKeyHash != storedKeyHash)) {
-                    last = entry;
-                    entry = entry.next;
-                }
-            } else {
-                int storedKeyHash = keyHash & 0xFFFFFFFE;
-                while (entry != null && (entry.storedKeyHash != storedKeyHash || !key.equals(entry.key))) {
-                    last = entry;
-                    entry = entry.next;
-                }
+            while (entry != null && !(entry.origKeyHash == hash && key.equals(entry.key))) {
+                last = entry;
+                entry = entry.next;
             }
         } else {
             entry = elementData[0];

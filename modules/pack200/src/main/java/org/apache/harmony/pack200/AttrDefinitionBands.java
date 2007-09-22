@@ -60,9 +60,24 @@ public class AttrDefinitionBands extends BandSet {
                 Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
         attributeDefinitionLayout = parseReferences("attr_definition_layout",
                 in, Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
-        if (attributeDefinitionCount > 0)
-            throw new Error("No idea what the adc is for yet");
+        
         attributeDefinitionMap = new AttributeLayoutMap();
+        
+        int overflowIndex = 32;
+        if(segment.getSegmentHeader().getOptions().hasClassFlagsHi()) {
+            overflowIndex = 63;
+        }
+        for (int i = 0; i < attributeDefinitionCount; i++) {
+            int context = attributeDefinitionHeader[i] & 0x03;
+            int index = (attributeDefinitionHeader[i] >> 2) - 1;
+            if(index == -1) {
+                index = overflowIndex++;
+            }
+            attributeDefinitionMap.add(new AttributeLayout(
+                    attributeDefinitionName[i], context,
+                    attributeDefinitionLayout[i], index));
+        }
+        attributeDefinitionMap.checkMap();
     }
 
     public AttributeLayoutMap getAttributeDefinitionMap() {

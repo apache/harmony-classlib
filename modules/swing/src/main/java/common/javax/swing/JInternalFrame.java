@@ -210,7 +210,7 @@ public class JInternalFrame extends JComponent implements Accessible, WindowCons
         @Override
         public void updateUI() {
             updateUIForIcon();
-            getInternalFrame().updateUIForFrame();
+            getInternalFrame().updateUI();
         }
 
         void updateUIForIcon() {
@@ -445,7 +445,7 @@ public class JInternalFrame extends JComponent implements Accessible, WindowCons
         enableEvents(AWTEvent.KEY_EVENT_MASK);
         setFocusTraversalPolicy(KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .getDefaultFocusTraversalPolicy());
-        updateUIForFrame();
+        updateUI();
         this.desktopIcon = new JDesktopIcon(this);
         setRootPaneCheckingEnabled(true);
         // non-selected internalFrame must have visible glassPane
@@ -555,14 +555,11 @@ public class JInternalFrame extends JComponent implements Accessible, WindowCons
      */
     @Override
     public void updateUI() {
-        updateUIForFrame();
+    	setUI((InternalFrameUI) UIManager.getUI(this));
+    	
         if (getDesktopIcon() != null) {
             getDesktopIcon().updateUIForIcon();
         }
-    }
-
-    void updateUIForFrame() {
-        setUI((InternalFrameUI) UIManager.getUI(this));
     }
 
     /**

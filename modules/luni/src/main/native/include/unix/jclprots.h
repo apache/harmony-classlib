@@ -28,18 +28,6 @@ extern "C" {
  ** COMPONENT: NativesCommon
  ************************************************************/
 
-/* NativesCommonComm*/
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_writeImpl PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle, jbyteArray jBuffer, jint offset, jint length));
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_readImpl PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle, jbyteArray jBuffer, jint offset, jint length));
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_getBaud PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle));
-void JNICALL Java_com_ibm_oti_connection_comm_Connection_closeImpl PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle));
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_openImpl PROTOTYPE((JNIEnv *env, jobject jThis, jint jPortNum));
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_setBaud PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle, jint baudrate));
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_openImpl2 PROTOTYPE((JNIEnv *env, jobject jThis, jstring portName));
-void JNICALL Java_com_ibm_oti_connection_comm_Connection_configureImpl PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle,
-jint baudrate, jint bitsPerChar, jint stopBits, jint parity, jboolean autoRTS, jboolean autoCTS, jint timeout));
-jint JNICALL Java_com_ibm_oti_connection_comm_Connection_availableImpl PROTOTYPE((JNIEnv *env, jobject jThis, jint osHandle));
-
 /* NativesCommonPlainServerSocketImpl*/
 void JNICALL Java_java_net_PlainServerSocketImpl_createServerStreamSocketImpl PROTOTYPE((
 	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
@@ -94,18 +82,6 @@ jlong JNICALL Java_java_util_zip_CRC32_updateByteImpl PROTOTYPE(( JNIEnv * env, 
 jlong JNICALL Java_java_util_zip_CRC32_updateImpl PROTOTYPE(( JNIEnv * env, jobject recv, jbyteArray buf, int off, int len, jlong crc));
 
 /* NativesCommonAnnotationHelper*/
-jobject JNICALL
-Java_com_ibm_oti_reflect_AnnotationHelper_getReturnValueForEntry PROTOTYPE((JNIEnv * env, jclass unusedClazz, jclass clazz, jlong entryValue, jstring mName));
-jobjectArray JNICALL
-Java_com_ibm_oti_reflect_AnnotationHelper_getAnnotationEntries PROTOTYPE((JNIEnv * env, jclass unusedClazz, jclass clazz, jint type, jobject obj));
-jobject JNICALL
-Java_com_ibm_oti_reflect_AnnotationHelper_getAnnotationClassNameForEntry PROTOTYPE((JNIEnv * env, jclass unusedClazz, jlong entryValue));
-jobject JNICALL
-Java_com_ibm_oti_reflect_AnnotationHelper_getReturnValueFromEntry PROTOTYPE((JNIEnv * env, jclass unusedClazz, jclass clazz, jclass annType, jlong entryValue, jstring mName));
-jobject JNICALL
-Java_com_ibm_oti_reflect_AnnotationHelper_getDefaultReturnValue PROTOTYPE((JNIEnv * env, jclass unusedClazz, jclass clazz, jobject obj));
-jobject JNICALL
-Java_com_ibm_oti_reflect_AnnotationHelper_getDefaultReturnValueFromMethod PROTOTYPE((JNIEnv * env, jclass unusedClazz, jclass clazz, jclass annType, jobject obj));
 
 /* NativesCommonSocketImpl*/
 void JNICALL Java_java_net_SocketImpl_listenStreamSocketImpl PROTOTYPE(( JNIEnv *env, jclass thisClz, jobject fileDescriptor, jint backlog));
@@ -254,12 +230,6 @@ jint JNICALL Java_java_io_ObjectOutputStream_getFieldInt PROTOTYPE((JNIEnv *env,
 jchar JNICALL Java_java_io_ObjectOutputStream_getFieldChar PROTOTYPE((JNIEnv *env, jclass clazz, jobject targetObject, jobject declaringClass, jobject fieldName));
 
 /* NativesCommonFileInputStream*/
-jint JNICALL Java_com_ibm_oti_connection_file_FileInputStream_readByteImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
-jint JNICALL Java_com_ibm_oti_connection_file_FileInputStream_readImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, jlong descriptor));
-jlong JNICALL Java_com_ibm_oti_connection_file_FileInputStream_skipImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong count, jlong descriptor));
-jlong JNICALL Java_com_ibm_oti_connection_file_FileInputStream_openImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray path));
-void JNICALL Java_com_ibm_oti_connection_file_FileInputStream_closeImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
-jint JNICALL Java_com_ibm_oti_connection_file_FileInputStream_availableImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
 
 /* NativesCommonSocket*/
 void createSocket PROTOTYPE((JNIEnv* env, jobject thisObjFD, int sockType, jboolean preferIPv4Stack));
@@ -301,12 +271,6 @@ jobjectArray JNICALL Java_java_net_InetAddress_getAliasesByAddrImpl PROTOTYPE((J
 
 /* NativesCommonTimeZone*/
 jstring JNICALL Java_java_util_TimeZone_getCustomTimeZone PROTOTYPE((JNIEnv *env, jclass clazz, jintArray tzinfo, jbooleanArray isCustomTimeZone));
-
-/* NativesCommonFileOutputStream*/
-void JNICALL Java_com_ibm_oti_connection_file_FileOutputStream_writeImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray buffer, jint offset, jint count, jlong descriptor));
-jlong JNICALL Java_com_ibm_oti_connection_file_FileOutputStream_openImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray path, jboolean append));
-void JNICALL Java_com_ibm_oti_connection_file_FileOutputStream_writeByteImpl PROTOTYPE((JNIEnv *env, jobject recv, jint c, jlong descriptor));
-void JNICALL Java_com_ibm_oti_connection_file_FileOutputStream_closeImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
 
 /* NativesCommonFloatParsing*/
 JNIEXPORT jfloat JNICALL Java_org_apache_harmony_luni_util_FloatingPointParser_parseFltImpl
@@ -363,46 +327,13 @@ void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv* env));
 
 /* NativesCommonSocket*/
 void throwSocketException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
-void JNICALL Java_com_ibm_oti_connection_socket_Connection_connectStreamImpl PROTOTYPE((
-	JNIEnv* env, jobject socket, jint localPort, jint remotePort, jbyteArray addr));
-jint JNICALL Java_com_ibm_oti_connection_socket_Connection_sendStreamImpl PROTOTYPE(( JNIEnv *env, jobject socket, jbyteArray data, jint offset, jint count));
-void JNICALL Java_com_ibm_oti_connection_socket_Connection_connectStreamImpl2 PROTOTYPE((
-	JNIEnv* env, jobject socket, jint localPort, jint remotePort, jbyteArray addr));
-jint JNICALL Java_com_ibm_oti_connection_datagram_Connection_sendDatagramImpl PROTOTYPE((
-	JNIEnv* env, jobject socket, jbyteArray data, jint offset, jint msgLength,
-	jbyteArray addr, jint targetPort));
-jstring JNICALL Java_com_ibm_oti_connection_socket_Socket_getHostByAddrImpl PROTOTYPE((JNIEnv* env, jclass clazz, jobject addr));
-jint JNICALL Java_com_ibm_oti_connection_datagram_Connection_nominalDatagramImpl PROTOTYPE((
-	JNIEnv* env, jobject socket));
-jobject JNICALL Java_com_ibm_oti_connection_socket_Socket_getHostByNameImpl PROTOTYPE((
-	JNIEnv* env, jclass clazz, jstring aName));
 I_32 conPollSelectRead PROTOTYPE((JNIEnv * env, jobject socket, jint timeout, BOOLEAN poll, BOOLEAN accept));
-jint JNICALL Java_com_ibm_oti_connection_datagram_Connection_netMaxDatagramImpl PROTOTYPE((
-	JNIEnv* env, jobject recv, jobject datagramSocket));
 void* getSocketDescriptor PROTOTYPE((JNIEnv *env, jobject fd));
-jint JNICALL Java_com_ibm_oti_connection_datagram_Connection_netNominalDatagramImpl PROTOTYPE((
-	JNIEnv* env, jobject recv, jobject datagramSocket));
 void setSocketDescriptor PROTOTYPE((JNIEnv * env, jobject fd, void *value));
-jint JNICALL Java_com_ibm_oti_connection_socket_Socket_getSocketOptionImpl PROTOTYPE((JNIEnv *env, jobject socket, jint anOption));
 jstring JNICALL Java_java_lang_System_getHostnameImpl PROTOTYPE((
 	JNIEnv* env, jclass clazz));
-void JNICALL Java_com_ibm_oti_connection_socket_Socket_setSocketOptionImpl PROTOTYPE((JNIEnv *env, jobject socket, jint anOption, jint aValue));
-void JNICALL Java_com_ibm_oti_connection_socket_Socket_socketCloseImpl PROTOTYPE(( JNIEnv * env, jobject socket));
-jint JNICALL Java_com_ibm_oti_connection_socket_Connection_availableStreamImpl PROTOTYPE(( JNIEnv *env, jobject socket));
 void conUpdateSocket PROTOTYPE((JNIEnv *env, hysockaddr_t sockaddrP, jobject socket, int remote));
-jint JNICALL Java_com_ibm_oti_connection_socket_Socket_getIPImpl  PROTOTYPE((
-	JNIEnv* env, jclass clazz, jstring aName));
-void JNICALL Java_com_ibm_oti_connection_datagram_Connection_bindDatagramImpl PROTOTYPE((
-	JNIEnv* env, jobject socket, jint localPort));
-jint JNICALL Java_com_ibm_oti_connection_datagram_Connection_maxDatagramImpl PROTOTYPE((
-	JNIEnv* env, jobject socket));
-jint JNICALL Java_com_ibm_oti_connection_socket_Socket_getSocketFlags PROTOTYPE((JNIEnv *env, jclass thisClz));
-void JNICALL Java_com_ibm_oti_connection_socket_Connection_shutdownSideImpl PROTOTYPE(( JNIEnv * env, jobject socket, jboolean inputSide));
-jint JNICALL Java_com_ibm_oti_connection_socket_Connection_receiveStreamImpl PROTOTYPE(( JNIEnv *env, jobject socket,
-	jbyteArray data, jint offset, jint count, jint timeout));
 hysocket_t createAndBindSocket PROTOTYPE((JNIEnv* env, jobject socket, int sockType, int localPort));
-jint JNICALL Java_com_ibm_oti_connection_datagram_Connection_receiveDatagramImpl PROTOTYPE(( JNIEnv *env,
-	jobject socket, jbyteArray data, jint offset, jint msgLength, jint timeout));
 
 /* NativesCommonFileDescriptor*/
 void JNICALL Java_java_io_FileDescriptor_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass fdClazz));
@@ -425,14 +356,6 @@ jlongArray JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_c
 	jobjectArray arg1, jobjectArray arg2, jbyteArray dir));
 void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl PROTOTYPE((JNIEnv *env, jobject recv, jobject arg1, jlong arg2));
 void JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz));
-
-/* NativesCommonServerSocket*/
-void JNICALL Java_com_ibm_oti_connection_serversocket_Connection_acceptStreamSocketImpl PROTOTYPE((JNIEnv *env,
-	jobject serversocket, jobject socket, jint timeout));
-void JNICALL Java_com_ibm_oti_connection_serversocket_Connection_listenStreamImpl PROTOTYPE((
-	JNIEnv* env, jobject serversocket, jint localPort, jint backlog));
-void JNICALL Java_com_ibm_oti_connection_serversocket_Connection_acceptStreamSocketImpl2 PROTOTYPE((JNIEnv *env,
-	jobject serversocket, jobject socket, jint timeout));
 
 /* NativesCommonPlainDatagramSocketImpl*/
 jint JNICALL Java_java_net_PlainDatagramSocketImpl_sendDatagramImpl2 PROTOTYPE((

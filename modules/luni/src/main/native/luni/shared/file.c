@@ -374,7 +374,6 @@ JNIEXPORT jint JNICALL
 Java_java_io_File_newFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
 {
   PORT_ACCESS_FROM_ENV (env);
-  I_32 result;
   IDATA portFD;
   jsize length = (*env)->GetArrayLength (env, path);
   char pathCopy[HyMaxPath];
@@ -383,18 +382,17 @@ Java_java_io_File_newFileImpl (JNIEnv * env, jobject recv, jbyteArray path)
   pathCopy[length] = '\0';
   ioh_convertToPlatform (pathCopy);
 
-  /* First check to see if file already exists */
-  result = hyfile_attr (pathCopy);
-  if (result == HyIsDir)
-    return 3;
-  if (result >= 0)
-    return 1;
-
   /* Now create the file and close it */
-  portFD =
-    hyfile_open (pathCopy, HyOpenCreate | HyOpenWrite | HyOpenTruncate, 0666);
-  if (portFD == -1)
+  portFD = hyfile_open (pathCopy,
+                        HyOpenCreateNew | HyOpenWrite | HyOpenTruncate,
+                        0666);
+  
+  if (portFD == -1) {
+    if (hyerror_last_error_number() == HYPORT_ERROR_FILE_EXIST) {
+      return 1;
+    }
     return 2;
+  }
   hyfile_close (portFD);
   return 0;
 }
