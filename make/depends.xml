@@ -40,7 +40,7 @@
         <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
-        <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
+        <check-one-file src="${bcprov.url}" dest="${bcprov.orig.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
         <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
@@ -97,7 +97,7 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces" />
+         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-idea-from-bcprov" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -109,6 +109,13 @@
         <uptodate property="xerces.uptodate"
                   srcfile="${xerces.zip}"
                   targetfile="${xerces.dir}/xercesImpl.jar" />
+        <uptodate property="bcprov.uptodate"
+                  targetfile="${bcprov.jar}">
+            <srcfiles file="${bcprov.orig.jar}" />
+            <srcfiles dir="depends/files/bcprov"
+                      includes="**/IDEAEngine.class" />
+        </uptodate>
+
     </target>
 
     <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
@@ -149,6 +156,18 @@
             </fileset>
         </copy>
         <delete dir="${xerces.dir}.tmp" />
+    </target>
+
+    <target name="-extract-idea-from-bcprov" unless="bcprov.uptodate">
+        <zip destfile="${bcprov.jar}">
+            <zipfileset src="${bcprov.orig.jar}">
+                <exclude name="**/BCKEY.*" />
+                <exclude name="**/IDEAEngine.class" />
+            </zipfileset>
+            <fileset dir="depends/files/bcprov">
+                <include name="**/IDEAEngine.class" />
+            </fileset>
+        </zip>
     </target>
 
     <!-- 
@@ -345,7 +364,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${junit.md5}" />
 
     <mkdir dir="${bcprov.dir}" />
-    <download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
+    <download-one-file src="${bcprov.url}" dest="${bcprov.orig.jar}"
                            md5="${bcprov.md5}" />
 
     <mkdir dir="${icu4j.dir}" />
