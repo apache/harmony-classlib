@@ -23,13 +23,17 @@ import org.bouncycastle.crypto.params.KeyParameter;
 public class IDEAEngine implements BlockCipher
 {
 
+    private static String message =
+        "IDEA not supported see "+
+          "http://harmony.apache.org/documentation/idea_algorithm.html";
+
     public IDEAEngine()
     {
     }
 
     public void init(boolean forEncryption, CipherParameters params)
     {
-        throw new IllegalArgumentException("IDEA not supported");
+        throw new IllegalArgumentException(message);
     }
 
     public String getAlgorithmName()
@@ -44,7 +48,7 @@ public class IDEAEngine implements BlockCipher
 
     public int processBlock(byte[] in, int inOff, byte[] out, int outOff)
     {
-        throw new IllegalStateException("IDEA not supported");
+        throw new IllegalStateException(message);
     }
 
     public void reset()
