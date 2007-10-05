@@ -41,6 +41,11 @@
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
+    <!-- Local variable tables should be available in debug, and unavailable in release modes. -->
+    <condition property="build.compilerarg" value="-warn:none" else="-warn:none -g:lines,source">
+        <equals arg1="${hy.cfg}" arg2="debug" />
+    </condition>
+
     <!-- During packaging, these files must be copied into the meta-inf dir -->
     <fileset id="hy.required.metainf-files" dir="${hy.hdk}">
         <include name="NOTICE" />
@@ -258,8 +263,6 @@
     </condition>
     <property name="jpeg.home" value="/usr" />
     
-    <property name="build.compilerarg" value="-warn:none" />
-
     <!-- default property for call-modules macro - i.e. all modules -->
     <property name="build.module" value="*" />
     <property name="exclude.module" value="nothing" />
@@ -313,6 +316,7 @@ Harmony javac properties:
   hy.javac.source = ${hy.javac.source}
   hy.javac.debug  = ${hy.javac.debug}
   hy.javac.maxmem = ${hy.javac.maxmem}
+  build.compilerarg = ${build.compilerarg}
 
 Harmony test properties:
 
@@ -509,5 +513,12 @@ properties in preference to these:
            </concat>
        </sequential>
    </macrodef>
+   
+   <presetdef name="hy.javac">
+       <javac target="${hy.javac.target}" source="${hy.javac.source}" 
+                compiler="${hy.javac.compiler}" debug="${hy.javac.debug}">
+           <compilerarg line="${build.compilerarg}" />
+       </javac>
+   </presetdef>
 
 </project>

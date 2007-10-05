@@ -122,14 +122,8 @@ ${built.files.list}
         </fail>
         <mkdir dir="${build.output}" />
 
-        <javac compiler="${hy.javac.compiler}"
-               destdir="${build.output}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}"
+        <hy.javac destdir="${build.output}"
                includeAntRuntime="no">
-            
-            <compilerarg line="${build.compilerarg}" />
             
             <src path="modules/accessibility/src/main/java/" />
             <src path="modules/annotation/src/main/java/" />
@@ -187,7 +181,7 @@ ${built.files.list}
                     <include name="**/mx4j.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
 
         <call-modules target="build" />
     </target>
