@@ -112,4 +112,16 @@ public class LabelTest extends TestCase {
         assertEquals(text, label.getText());
     }
 
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Component c = new Label() {
+            public void paint(Graphics g) {
+                count[0]++;
+                setEnabled(true);
+            }
+        };
+        
+        Tools.checkDeadLoop(c, count);
+    }
+    
 }

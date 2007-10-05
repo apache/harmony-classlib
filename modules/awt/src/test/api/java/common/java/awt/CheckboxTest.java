@@ -208,4 +208,18 @@ public class CheckboxTest extends TestCase {
         checkbox.removeItemListener(listener);
         assertEquals(0, checkbox.getListeners(cls).length);
     }
+    
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Component c = new Checkbox() {
+            public void paint(Graphics g) {
+                count[0]++;
+                setState(true);
+                setEnabled(true);
+            }
+        };
+        
+        Tools.checkDeadLoop(c, count);
+    }
+
 }

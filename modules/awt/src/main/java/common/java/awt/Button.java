@@ -166,11 +166,16 @@ public class Button extends Component implements Accessible {
     public void setLabel(String label) {
         toolkit.lockAWT();
         try {
-            this.label = label;
-            if (isDisplayable()) {
-                invalidate();
-                if (isShowing()) {
-                    repaint();
+            if (!(this.label == label ||
+                    (label != null && label.equals(this.label)))) {
+                // set new label only if it differs from the old one
+                // to avoid dead loop in repaint()
+                this.label = label;
+                if (isDisplayable()) {
+                    invalidate();
+                    if (isShowing()) {
+                        repaint();
+                    }
                 }
             }
         } finally {
@@ -296,8 +301,10 @@ public class Button extends Component implements Accessible {
 
     @Override
     void setEnabledImpl(boolean value) {
-        super.setEnabledImpl(value);
-        repaint();
+        if (isEnabled() != value) { // to avoid dead loop in repaint()
+            super.setEnabledImpl(value);
+            repaint();
+        }
     }
 
     void generateEvent(long timestamp, int modifiers) {

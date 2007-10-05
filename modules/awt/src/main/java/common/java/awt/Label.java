@@ -250,8 +250,10 @@ public class Label extends Component implements Accessible {
 
     @Override
     void setEnabledImpl(boolean value) {
-        super.setEnabledImpl(value);
-        repaint();
+        if (value != isEnabled()) { // to avoid dead loop in repaint()
+            super.setEnabledImpl(value);
+            repaint();
+        }
     }
 
     @Override
