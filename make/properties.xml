@@ -42,7 +42,7 @@
     </condition>
 
     <!-- Local variable tables should be available in debug, and unavailable in release modes. -->
-    <condition property="build.compilerarg" value="-warn:none" else="-warn:none -g:lines,source">
+    <condition property="build.compilerarg" value="-warn:none -g" else="-warn:none -g:lines,source">
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
