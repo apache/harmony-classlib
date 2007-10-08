@@ -15,11 +15,10 @@
  *  limitations under the License.
  */
 
+#include "hycomp.h"
 #include "rasthrsup.h"
 
 #include <pthread.h>
-
-#include "hycomp.h"
 
 UDATA
 Unix_GetKernelThreadID (void)
