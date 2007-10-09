@@ -357,16 +357,9 @@ public class Segment {
         return cpBands;
     }
 
-
     protected FileBands getFileBands() {
         return fileBands;
     }
-
-
-    protected SegmentHeader getHeader() {
-        return header;
-    }
-
 
     protected IcBands getIcBands() {
         return icBands;

@@ -240,11 +240,71 @@ public class ByteCode extends ClassFileEntry {
 		byteCodeArray[203] = new ByteCode(203, "putstatic_this", new int[] {
 				179, 0, 0 });
 		byteCodeArray[204] = new ByteCode(204, "getfield_this", new int[] {
-				180, 0, 0 });
-		byteCodeArray[205] = new ByteCode(205, "putfield_this", new int[] {
-				181, 0, 0 });
-		byteCodeArray[231] = new ByteCode(231, "invokespecial_super_init",
-				new int[] { 183, 0, 0 });
+                180, 0, 0 });
+        byteCodeArray[205] = new ByteCode(205, "putfield_this", new int[] {
+                181, 0, 0 });
+        byteCodeArray[206] = new ByteCode(206, "invokevirtual_this", new int[] {
+                182, 0, 0 });
+        byteCodeArray[207] = new ByteCode(207, "invokespecial_this", new int[] {
+                183, 0, 0 });
+        byteCodeArray[208] = new ByteCode(208, "invokestatic_this", new int[] {
+                184, 0, 0 });
+        byteCodeArray[209] = new ByteCode(209, "aload_0_getstatic_this",
+                new int[] { 42, 178, 0, 0 });
+        byteCodeArray[210] = new ByteCode(210, "aload_0_putstatic_this",
+                new int[] { 42, 179, 0, 0 });
+        byteCodeArray[211] = new ByteCode(211, "aload_0_getfield_this",
+                new int[] { 42, 180, 0, 0 });
+        byteCodeArray[212] = new ByteCode(212, "aload_0_putfield_this",
+                new int[] { 42, 181, 0, 0 });
+        byteCodeArray[213] = new ByteCode(213, "aload_0_invokevirtual_this",
+                new int[] { 42, 182, 0, 0 });
+        byteCodeArray[214] = new ByteCode(214, "aload_0_invokespecial_this",
+                new int[] { 42, 183, 0, 0 });
+        byteCodeArray[215] = new ByteCode(215, "aload_0_invokestatic_this",
+                new int[] { 42, 184, 0, 0 });
+        byteCodeArray[216] = new ByteCode(216, "getstatic_super", new int[] {
+                178, 0, 0 });
+        byteCodeArray[217] = new ByteCode(217, "putstatic_super", new int[] {
+                179, 0, 0 });
+        byteCodeArray[218] = new ByteCode(218, "getfield_super", new int[] {
+                180, 0, 0 });
+        byteCodeArray[219] = new ByteCode(219, "putfield_super", new int[] {
+                181, 0, 0 });
+        byteCodeArray[220] = new ByteCode(220, "invokevirtual_super",
+                new int[] { 182, 0, 0 });
+        byteCodeArray[221] = new ByteCode(221, "invokespecial_super",
+                new int[] { 183, 0, 0 });
+        byteCodeArray[222] = new ByteCode(222, "invokestatic_super", new int[] {
+                184, 0, 0 });
+        byteCodeArray[223] = new ByteCode(223, "aload_0_getstatic_super",
+                new int[] { 42, 178, 0, 0 });
+        byteCodeArray[224] = new ByteCode(224, "aload_0_putstatic_super",
+                new int[] { 42, 179, 0, 0 });
+        byteCodeArray[225] = new ByteCode(225, "aload_0_getfield_super",
+                new int[] { 42, 180, 0, 0 });
+        byteCodeArray[226] = new ByteCode(226, "aload_0_putfield_super",
+                new int[] { 42, 181, 0, 0 });
+        byteCodeArray[227] = new ByteCode(227, "aload_0_invokevirtual_super",
+                new int[] { 42, 182, 0, 0 });
+        byteCodeArray[228] = new ByteCode(228, "aload_0_invokespecial_super",
+                new int[] { 42, 183, 0, 0 });
+        byteCodeArray[229] = new ByteCode(229, "aload_0_invokestatic_super",
+                new int[] { 42, 184, 0, 0 });
+        byteCodeArray[230] = new ByteCode(230, "invokespecial_this_init",
+                new int[] { 183, 0, 0 });
+        byteCodeArray[231] = new ByteCode(231, "invokespecial_super_init",
+                new int[] { 183, 0, 0 });
+        byteCodeArray[232] = new ByteCode(232, "invokespecial_new_init",
+                new int[] { 184, 0, 0 });
+        byteCodeArray[233] = new ByteCode(233, "cldc", new int[] { 18, 0 });
+        byteCodeArray[234] = new ByteCode(234, "ildc", new int[] { 18, 0 });
+        byteCodeArray[235] = new ByteCode(235, "fldc", new int[] { 18, 0 });
+        byteCodeArray[236] = new ByteCode(236, "cldc_w", new int[] { 19, 0 });
+        byteCodeArray[237] = new ByteCode(237, "ildc_w", new int[] { 19, 0 });
+        byteCodeArray[238] = new ByteCode(238, "fldc_w", new int[] { 19, 0 });
+        byteCodeArray[239] = new ByteCode(239, "dldc2_w", new int[] { 20, 0 });
+        
 		// Reserved bytecodes
 		byteCodeArray[254] = new ByteCode(254, "impdep1");
 		byteCodeArray[255] = new ByteCode(255, "impdep2");
@@ -261,7 +321,7 @@ public class ByteCode extends ClassFileEntry {
 		ByteCode byteCode = (ByteCode) byteCodes
 				.get(new Integer(0xff & opcode));
 		if (byteCode == null)
-			throw new Error("Unknown bytecode");
+			throw new Error("Unknown bytecode: " + opcode);
 		return byteCode;
 	}
 

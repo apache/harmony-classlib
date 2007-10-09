@@ -71,6 +71,24 @@ public abstract class BandSet {
         return result;
     }
     
+    public int[][] decodeBandInt(String name, InputStream in, BHSDCodec defaultCodec, int[] counts) throws IOException, Pack200Exception {
+        int[][] result = new int[counts.length][];
+        int totalCount = 0;
+        for (int i = 0; i < counts.length; i++) {
+            totalCount += counts[i];
+        }
+        int[] twoDResult = decodeBandInt(name, in, defaultCodec, totalCount);
+        int index = 0;
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new int[counts[i]];
+            for(int j = 0; j < result[i].length; j++) {
+                result[i][j] = twoDResult[index];
+                index++;
+            }
+        }
+        return result;
+    }
+    
     /**
      * Decode a band and return an array of <code>long[]</code> values
      * 
@@ -184,7 +202,7 @@ public abstract class BandSet {
     public String[] parseReferences(String name, InputStream in,
             BHSDCodec codec, int count, String[] reference) throws IOException,
             Pack200Exception {
-        return parseReferences(name, in, codec, 1, new int[] { count },
+        return parseReferences(name, in, codec, new int[] { count },
                 reference)[0];
     }
     
@@ -214,9 +232,10 @@ public abstract class BandSet {
      *             if a problem occurs with an unexpected value or unsupported
      *             codec
      */
-    protected String[][] parseReferences(String name, InputStream in,
-            BHSDCodec codec, int count, int counts[], String[] reference)
+    public String[][] parseReferences(String name, InputStream in,
+            BHSDCodec codec, int counts[], String[] reference)
             throws IOException, Pack200Exception {
+        int count = counts.length;
         if (count == 0) {
             return new String[][] { {} };
         }

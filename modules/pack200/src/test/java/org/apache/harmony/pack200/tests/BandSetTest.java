@@ -34,13 +34,9 @@ public class BandSetTest extends TestCase {
     private BandSet bandSet = new BandSet(new Segment()) {
 
         public void pack(OutputStream outputStream) {
-            // TODO Auto-generated method stub
-            
         }
 
         public void unpack(InputStream inputStream) throws IOException, Pack200Exception {
-            // TODO Auto-generated method stub
-            
         }
     };
     
