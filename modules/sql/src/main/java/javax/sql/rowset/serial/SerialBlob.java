@@ -235,7 +235,7 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
     }
 
     public void free() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        throw new UnsupportedOperationException("Not supported");
     }
 
     public InputStream getBinaryStream(long pos, long length)
@@ -246,6 +246,6 @@ public class SerialBlob implements Blob, Serializable, Cloneable {
         if (pos < 1 || pos + length > len) {
             throw new SerialException(Messages.getString("sql.22"));
         }
-        return new ByteArrayInputStream(buf, (int) pos, (int) length);
+        return new ByteArrayInputStream(buf, (int) (pos - 1), (int) length);
     }
 }

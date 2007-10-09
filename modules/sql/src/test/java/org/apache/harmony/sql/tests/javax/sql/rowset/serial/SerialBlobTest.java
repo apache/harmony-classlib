@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.Arrays;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -357,8 +356,8 @@ public class SerialBlobTest extends TestCase {
         SerialBlob serialBlob = new SerialBlob(mockBlob);
         try {
             serialBlob.free();
-            fail("should throw SQLFeatureNotSupportedException");
-        } catch (SQLFeatureNotSupportedException e) {
+            fail("should throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException e) {
             // expected
         }
     }
@@ -393,7 +392,7 @@ public class SerialBlobTest extends TestCase {
             if (i > 4) {
                 fail("returned input stream contains too much data");
             }
-            assertEquals(buf[2 + i++], b);
+            assertEquals(buf[1 + i++], b);
         }
     }
 
