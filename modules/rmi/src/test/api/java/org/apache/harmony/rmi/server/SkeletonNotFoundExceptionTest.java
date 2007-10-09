@@ -18,12 +18,12 @@
 package org.apache.harmony.rmi.server;
 
 import java.io.Serializable;
-import java.rmi.server.ExportException;
+import java.rmi.server.SkeletonNotFoundException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-public class ExportExceptionTest extends junit.framework.TestCase {
+public class SkeletonNotFoundExceptionTest extends junit.framework.TestCase {
 
     private String errorMessage;
 
@@ -37,37 +37,37 @@ public class ExportExceptionTest extends junit.framework.TestCase {
      */
     @Override
     protected void setUp() {
-        errorMessage = "Connectin Error";
+        errorMessage = "Skeleton Not Found";
         causeMessage = "Caused Exception";
-        cause = new ExportException(causeMessage);
+        cause = new SkeletonNotFoundException(causeMessage);
     }
 
     /**
-     * @tests java.rmi.server.ExportException#ExportException(String)
+     * @tests java.rmi.server.SkeletonNotFoundException#SkeletonNotFoundException(String)
      */
     public void test_Constructor_String() {
-        ExportException e = new ExportException(errorMessage);
+        SkeletonNotFoundException e = new SkeletonNotFoundException(errorMessage);
         assertTrue(e instanceof java.rmi.RemoteException);
         assertEquals(errorMessage, e.getMessage());
     }
 
     /**
-     * @tests java.rmi.server.ExportException#ExportException(String,Exception)
+     * @tests java.rmi.server.SkeletonNotFoundException#SkeletonNotFoundException(String,Exception)
      */
     public void test_Constructor_String_Exception() {
-        ExportException e = new ExportException(errorMessage, cause);
+        SkeletonNotFoundException e = new SkeletonNotFoundException(errorMessage, cause);
         assertEquals(cause.getMessage(), e.getCause().getMessage());
     }
 
-    // comparator for ExportException objects
+    // comparator for SkeletonNotFoundException objects
     private static final SerializableAssert comparator = new SerializableAssert() {
         public void assertDeserialized(Serializable initial,
                 Serializable deserialized) {
 
             SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial, deserialized);
 
-            ExportException initEx = (ExportException) initial;
-            ExportException desrEx = (ExportException) deserialized;
+            SkeletonNotFoundException initEx = (SkeletonNotFoundException) initial;
+            SkeletonNotFoundException desrEx = (SkeletonNotFoundException) deserialized;
 
             assertEquals(initEx.getMessage(), desrEx.getMessage());
             assertEquals(initEx.getCause().getMessage(), desrEx.getCause().getMessage());
@@ -79,7 +79,7 @@ public class ExportExceptionTest extends junit.framework.TestCase {
      */
     public void testSerializationSelf() throws Exception {
 
-        SerializationTest.verifySelf(new ExportException(errorMessage, cause), comparator);
+        SerializationTest.verifySelf(new SkeletonNotFoundException(errorMessage, cause), comparator);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ExportExceptionTest extends junit.framework.TestCase {
      */
     public void testSerializationCompatibility() throws Exception {
 
-        SerializationTest.verifyGolden(this, new ExportException(errorMessage, cause), comparator);
+        SerializationTest.verifyGolden(this, new SkeletonNotFoundException(errorMessage, cause), comparator);
     }
 
 }

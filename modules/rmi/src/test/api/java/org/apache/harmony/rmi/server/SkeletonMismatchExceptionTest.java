@@ -18,59 +18,39 @@
 package org.apache.harmony.rmi.server;
 
 import java.io.Serializable;
-import java.rmi.server.ExportException;
+import java.rmi.RemoteException;
+import java.rmi.server.SkeletonMismatchException;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 import org.apache.harmony.testframework.serialization.SerializationTest.SerializableAssert;
 
-public class ExportExceptionTest extends junit.framework.TestCase {
+public class SkeletonMismatchExceptionTest extends junit.framework.TestCase {
 
-    private String errorMessage;
-
-    private String causeMessage;
-
-    private Exception cause;
+    private String errorMessage = "SkeletonMismatch Exception!";
+    private SkeletonMismatchException cause = new SkeletonMismatchException("cause");
 
     /**
-     * Sets up the fixture, for example, open a network connection. This method
-     * is called before a test is executed.
-     */
-    @Override
-    protected void setUp() {
-        errorMessage = "Connectin Error";
-        causeMessage = "Caused Exception";
-        cause = new ExportException(causeMessage);
-    }
-
-    /**
-     * @tests java.rmi.server.ExportException#ExportException(String)
+     * @tests java.rmi.server.SkeletonMismatchException#SkeletonMismatchException(String)
      */
     public void test_Constructor_String() {
-        ExportException e = new ExportException(errorMessage);
+        SkeletonMismatchException e = new SkeletonMismatchException(errorMessage);
         assertTrue(e instanceof java.rmi.RemoteException);
+        assertTrue(e instanceof RemoteException);
         assertEquals(errorMessage, e.getMessage());
+        assertNull(e.detail);
     }
 
-    /**
-     * @tests java.rmi.server.ExportException#ExportException(String,Exception)
-     */
-    public void test_Constructor_String_Exception() {
-        ExportException e = new ExportException(errorMessage, cause);
-        assertEquals(cause.getMessage(), e.getCause().getMessage());
-    }
-
-    // comparator for ExportException objects
+    // comparator for SkeletonMismatchException objects
     private static final SerializableAssert comparator = new SerializableAssert() {
         public void assertDeserialized(Serializable initial,
                 Serializable deserialized) {
 
             SerializationTest.THROWABLE_COMPARATOR.assertDeserialized(initial, deserialized);
 
-            ExportException initEx = (ExportException) initial;
-            ExportException desrEx = (ExportException) deserialized;
-
+            SkeletonMismatchException initEx = (SkeletonMismatchException) initial;
+            SkeletonMismatchException desrEx = (SkeletonMismatchException) deserialized;
             assertEquals(initEx.getMessage(), desrEx.getMessage());
-            assertEquals(initEx.getCause().getMessage(), desrEx.getCause().getMessage());
+            assertEquals(initEx.detail, desrEx.detail);
         }
     };
 
@@ -79,7 +59,7 @@ public class ExportExceptionTest extends junit.framework.TestCase {
      */
     public void testSerializationSelf() throws Exception {
 
-        SerializationTest.verifySelf(new ExportException(errorMessage, cause), comparator);
+        SerializationTest.verifySelf(new SkeletonMismatchException(errorMessage), comparator);
     }
 
     /**
@@ -87,7 +67,7 @@ public class ExportExceptionTest extends junit.framework.TestCase {
      */
     public void testSerializationCompatibility() throws Exception {
 
-        SerializationTest.verifyGolden(this, new ExportException(errorMessage, cause), comparator);
+        SerializationTest.verifyGolden(this, new SkeletonMismatchException(errorMessage), comparator);
     }
 
 }
