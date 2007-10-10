@@ -12,7 +12,10 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
-Import-Package: java.io,
+Import-Package: java.awt,
+ java.awt.event,
+ java.beans,
+ java.io,
  java.lang,
  java.math;resolution:=optional,
  java.net,
@@ -22,6 +25,7 @@ Import-Package: java.io,
  java.util,
  java.util.logging;resolution:=optional,
  java.util.zip,
+ javax.accessibility,
  javax.crypto,
  javax.crypto.spec,
  javax.naming,
