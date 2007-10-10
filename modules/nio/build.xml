@@ -26,6 +26,9 @@
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
+    <property name="hy.nio.src.main.java.platform"
+              value="${hy.nio.src.main.java}/../${hy.os.family}" />
+
     <property name="hy.nio.src.test.java.platform"
               value="${hy.nio.src.test.java}/../${hy.os.family}" />
 
@@ -100,7 +103,6 @@
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-            srcdir="${hy.nio.src.main.java}"
             destdir="${hy.build}"
             compiler="${hy.javac.compiler}"
             memoryMaximumSize="${hy.javac.maxmem}"
@@ -109,6 +111,11 @@
             debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
+
+            <src>
+                <pathelement location="${hy.nio.src.main.java}"/>
+                <pathelement location="${hy.nio.src.main.java.platform}" />
+            </src>
 
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">

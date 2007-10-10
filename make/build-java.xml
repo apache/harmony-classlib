@@ -146,7 +146,8 @@ ${built.files.list}
             <src path="modules/luni/src/main/java" />
             <src path="modules/math/src/main/java" />
             <src path="modules/misc/src/main/java" />
-            <src path="modules/nio/src/main/java" />
+            <src path="modules/nio/src/main/java/common" />
+            <src path="modules/nio/src/main/java/${hy.os.family}" />
             <src path="modules/nio_char/src/main/java" />
             <!-- pack200 uses customized build script and 
                  should not be built from top-level build.xml -->
