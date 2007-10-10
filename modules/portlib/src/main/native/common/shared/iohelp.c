@@ -155,61 +155,6 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
 }
 
 /**
- * This will write one byte
- */
-void
-ioh_writecharImpl (JNIEnv * env, jobject recv, jint c, IDATA descriptor)
-{
-  I_32 result = 0;
-  char buf[1];
-  PORT_ACCESS_FROM_ENV (env);
-
-  if (descriptor == -1)
-    {
-      throwJavaIoIOExceptionClosed (env);
-      return;
-    }
-
-  buf[0] = (char) c;
-
-  result = hyfile_write (descriptor, buf, 1);
-
-  if (result < 0)
-    throwJavaIoIOException (env, ioLookupErrorString (env, result));
-}
-
-/**
- * This will read a single character from the descriptor
- */
-jint
-ioh_readcharImpl (JNIEnv * env, jobject recv, IDATA descriptor)
-{
-  I_32 result;
-  char buf[1];
-  PORT_ACCESS_FROM_ENV (env);
-
-  if (descriptor == -1)
-    {
-      throwJavaIoIOExceptionClosed (env);
-      return 0;
-    }
-
-  if (descriptor == 0)
-    {
-      result = hytty_get_chars (buf, 1);
-    }
-  else
-    {
-      result = hyfile_read (descriptor, buf, 1);
-    }
-
-  if (result <= 0)
-    return -1;
-
-  return (jint) buf[0] & 0xFF;
-}
-
-/**
  * This will read a up to count bytes into buffer starting at offset
  */
 jint

@@ -557,8 +557,6 @@ extern "C"
                                           const char* name,
                                           const char* message));
   void throwNewOutOfMemoryError PROTOTYPE ((JNIEnv* env, const char* message));
-  jint ioh_readcharImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, IDATA descriptor));
   void throwJavaIoIOException PROTOTYPE ((JNIEnv* env, const char* message));
   void throwJavaIoIOExceptionClosed PROTOTYPE ((JNIEnv* env));
   void ioh_convertToPlatform PROTOTYPE ((char *path));
@@ -569,8 +567,6 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
                 jint count, IDATA descriptor));
   char *ioLookupErrorString PROTOTYPE ((JNIEnv * env, I_32 anErrorNum));
-  void ioh_writecharImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jint c, IDATA descriptor));
   jint ioh_readbytesImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
                 jint count, IDATA descriptor));

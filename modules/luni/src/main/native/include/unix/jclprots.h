@@ -311,7 +311,6 @@ void* getJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv *env, jobject f
 void throwNewExceptionByName PROTOTYPE((JNIEnv* env,
                                         const char* name, const char* message));
 void throwNewOutOfMemoryError PROTOTYPE((JNIEnv* env, const char* message));
-jint ioh_readcharImpl PROTOTYPE((JNIEnv * env, jobject recv, IDATA descriptor));
 void throwJavaIoIOException PROTOTYPE((JNIEnv* env, const char* message));
 void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv* env));
 void ioh_convertToPlatform PROTOTYPE((char *path));
@@ -319,7 +318,6 @@ void throwNPException PROTOTYPE((JNIEnv* env, const char* message));
 void setJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv * env, jobject fd, void *value));
 void ioh_writebytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
 char* ioLookupErrorString PROTOTYPE((JNIEnv* env, I_32 anErrorNum));
-void ioh_writecharImpl PROTOTYPE((JNIEnv *env, jobject recv, jint c, IDATA descriptor));
 jint ioh_readbytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
 void new_ioh_close PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
 void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv* env));
