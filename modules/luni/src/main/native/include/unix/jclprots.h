@@ -315,7 +315,6 @@ jint ioh_readcharImpl PROTOTYPE((JNIEnv * env, jobject recv, IDATA descriptor));
 void throwJavaIoIOException PROTOTYPE((JNIEnv* env, const char* message));
 void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv* env));
 void ioh_convertToPlatform PROTOTYPE((char *path));
-jint new_ioh_available PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
 void throwNPException PROTOTYPE((JNIEnv* env, const char* message));
 void setJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv * env, jobject fd, void *value));
 void ioh_writebytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));

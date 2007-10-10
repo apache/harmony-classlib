@@ -26,7 +26,6 @@
 void *getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd);
 jint ioh_readcharImpl (JNIEnv * env, jobject recv, IDATA descriptor);
 void ioh_convertToPlatform (char *path);
-jint new_ioh_available (JNIEnv * env, jobject recv, jfieldID fdFID);
 void setJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd,
                                                void *value);
 void ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,

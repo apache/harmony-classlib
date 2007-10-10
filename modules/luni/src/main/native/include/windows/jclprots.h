@@ -562,8 +562,6 @@ extern "C"
   void throwJavaIoIOException PROTOTYPE ((JNIEnv* env, const char* message));
   void throwJavaIoIOExceptionClosed PROTOTYPE ((JNIEnv* env));
   void ioh_convertToPlatform PROTOTYPE ((char *path));
-  jint new_ioh_available
-    PROTOTYPE ((JNIEnv * env, jobject recv, jfieldID fdFID));
   void throwNPException PROTOTYPE ((JNIEnv* env, const char* message));
   void setJavaIoFileDescriptorContentsAsPointer
     PROTOTYPE ((JNIEnv * env, jobject fd, void *value));

@@ -291,40 +291,6 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 }
 
 /**
-  * This will return the number of chars left in the file
-  */
-jint
-new_ioh_available (JNIEnv * env, jobject recv, jfieldID fdFID)
-{
-  jobject fd;
-  I_64 currentPosition, endOfFile;
-  IDATA descriptor;
-  PORT_ACCESS_FROM_ENV (env);
-
-  /* fetch the fd field from the object */
-  fd = (*env)->GetObjectField (env, recv, fdFID);
-
-  /* dereference the C pointer from the wrapper object */
-  descriptor = (IDATA) getJavaIoFileDescriptorContentsAsPointer (env, fd);
-  if (descriptor == -1)
-    {
-      throwJavaIoIOExceptionClosed (env);
-      return -1;
-    }
-   /**
-	 * If the descriptor represents StdIn, call the hytty port library.
-	 */
-  if (descriptor == 0)
-    {
-      return hytty_available ();
-    }
-  currentPosition = hyfile_seek (descriptor, 0, HySeekCur);
-  endOfFile = hyfile_seek (descriptor, 0, HySeekEnd);
-  hyfile_seek (descriptor, currentPosition, HySeekSet);
-  return (jint) (endOfFile - currentPosition);
-}
-
-/**
   * This will close a file descriptor
   */
 void
