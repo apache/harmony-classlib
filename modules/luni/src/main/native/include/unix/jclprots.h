@@ -314,10 +314,6 @@ void throwJavaIoIOException PROTOTYPE((JNIEnv* env, const char* message));
 void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv* env));
 void ioh_convertToPlatform PROTOTYPE((char *path));
 void throwNPException PROTOTYPE((JNIEnv* env, const char* message));
-void ioh_writebytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
-char* ioLookupErrorString PROTOTYPE((JNIEnv* env, I_32 anErrorNum));
-jint ioh_readbytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
-void new_ioh_close PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
 void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv* env));
 
 /* NativesCommonSocket*/

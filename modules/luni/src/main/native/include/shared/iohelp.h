@@ -24,11 +24,5 @@
 /* DIR_SEPARATOR is defined in hycomp.h */
 #define jclSeparator DIR_SEPARATOR
 void ioh_convertToPlatform (char *path);
-void ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
-                         jint offset, jint count, IDATA descriptor);
-char *ioLookupErrorString (JNIEnv * env, I_32 anErrorNum);
-jint ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
-                        jint offset, jint count, IDATA descriptor);
-void new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID);
 
 #endif /* iohelp_h */
