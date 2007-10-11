@@ -135,5 +135,17 @@ public class MySSLContextSpi extends SSLContextSpi {
                 int length, ByteBuffer dst) throws SSLException { 
             return null;
         }
+
+        @Override
+        public SSLParameters getSSLParameters() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void setSSLParameters(SSLParameters sslP) {
+            // TODO Auto-generated method stub
+
+        }
     }
 }

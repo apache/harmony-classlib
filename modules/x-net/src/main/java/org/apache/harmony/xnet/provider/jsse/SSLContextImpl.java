@@ -100,5 +100,36 @@ public class SSLContextImpl extends SSLContextSpi {
     public SSLSessionContext engineGetClientSessionContext() {
         return clientSessionContext;
     }
-}
 
+    @Override
+    protected javax.net.ssl.SSLParameters engineGetDefaultSSLParameters() {
+        SSLParameters providerSSLParameters = null;
+        try {
+            providerSSLParameters = SSLParameters.getDefault();
+        } catch (KeyManagementException e) {
+            
+        }
+        if (providerSSLParameters == null)
+            return null;
+
+        javax.net.ssl.SSLParameters sslParameters = new javax.net.ssl.SSLParameters();
+        sslParameters.setCipherSuites(providerSSLParameters
+                .getEnabledCipherSuites());
+        sslParameters.setProtocols(providerSSLParameters.getEnabledProtocols());
+        sslParameters.setNeedClientAuth(sslParameters.getNeedClientAuth());
+        sslParameters.setWantClientAuth(providerSSLParameters
+                .getWantClientAuth());
+        return sslParameters;
+    }
+
+    @Override
+    protected javax.net.ssl.SSLParameters engineGetSupportedSSLParameters() {
+        javax.net.ssl.SSLParameters sslParameters = new javax.net.ssl.SSLParameters();
+        sslParameters.setCipherSuites(CipherSuite
+                .getSupportedCipherSuiteNames());
+        sslParameters
+                .setProtocols((String[]) ProtocolVersion.supportedProtocols
+                        .clone());
+        return sslParameters;
+    }
+}

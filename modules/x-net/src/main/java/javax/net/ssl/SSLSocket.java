@@ -72,6 +72,10 @@ public abstract class SSLSocket extends Socket {
     public abstract void setWantClientAuth(boolean want);
     public abstract boolean getWantClientAuth();
     public abstract void setEnableSessionCreation(boolean flag);
+
+    public abstract void setSSLParameters(SSLParameters inputSSLParameters);
+    public abstract SSLParameters getSSLParameters();
+
     public abstract boolean getEnableSessionCreation();
     
 }

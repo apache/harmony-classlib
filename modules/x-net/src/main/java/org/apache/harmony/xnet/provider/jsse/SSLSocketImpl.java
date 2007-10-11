@@ -821,5 +821,23 @@ public class SSLSocketImpl extends SSLSocket {
         shutdown();
         throw reason;
     }
-}
 
+
+    @Override
+    public void setSSLParameters(javax.net.ssl.SSLParameters inputSSLParameters) {
+        setEnabledCipherSuites(inputSSLParameters.getCipherSuites());
+        setNeedClientAuth(inputSSLParameters.getNeedClientAuth());
+        setWantClientAuth(inputSSLParameters.getWantClientAuth());
+        setEnabledProtocols(inputSSLParameters.getProtocols());
+    }
+
+    @Override
+    public javax.net.ssl.SSLParameters getSSLParameters() {
+        javax.net.ssl.SSLParameters outputSSLParameters = new javax.net.ssl.SSLParameters();
+        outputSSLParameters.setCipherSuites(sslParameters.getEnabledCipherSuites());
+        outputSSLParameters.setProtocols(sslParameters.getEnabledProtocols());
+        outputSSLParameters.setNeedClientAuth(sslParameters.getNeedClientAuth());
+        outputSSLParameters.setWantClientAuth(sslParameters.getWantClientAuth());
+        return outputSSLParameters;
+    }
+}

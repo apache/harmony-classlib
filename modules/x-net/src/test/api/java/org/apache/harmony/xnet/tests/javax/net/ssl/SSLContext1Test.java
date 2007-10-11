@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
 
 import javax.net.ssl.KeyManager;
@@ -31,12 +32,16 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLContextSpi;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLPermission;
 import javax.net.ssl.SSLSessionContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.harmony.security.fortress.Services;
 import org.apache.harmony.security.tests.support.SpiEngUtils;
 import org.apache.harmony.xnet.tests.support.MySSLContextSpi;
 import junit.framework.TestCase;
@@ -77,6 +82,14 @@ public class SSLContext1Test extends TestCase {
         } else {
             defaultProtocol = null;
         }
+        
+        SSLParameters staticSupportSSLParameter = new SSLParameters(new String[] {
+                "TLS_RSA_WITH_RC4_128_MD5", "TLS_RSA_WITH_RC4_128_SHA" },
+                new String[] { "TLSv1", "SSLv3" });
+        
+        SSLParameters staticDefaultSSLParameter = new SSLParameters(new String[] {
+                "TLS_RSA_WITH_RC4_128_MD5", "TLS_RSA_WITH_RC4_128_SHA" },
+                new String[] { "TLSv1", "SSLv3" });
     }
 
     protected SSLContext[] createSSLCon() {
@@ -372,7 +385,7 @@ public class SSLContext1Test extends TestCase {
             return;
         }
         SSLContextSpi spi = new MySSLContextSpi();
-        SSLContext sslContext = new mySSLContext(spi, defaultProvider,
+        SSLContext sslContext = new MySSLContext(spi, defaultProvider,
                 defaultProtocol);
         assertTrue("Not CertStore object", sslContext instanceof SSLContext);
         assertEquals("Incorrect protocol", sslContext.getProtocol(),
@@ -390,7 +403,7 @@ public class SSLContext1Test extends TestCase {
         } catch (KeyManagementException e) {
         }
 
-        sslContext = new mySSLContext(null, null, null);
+        sslContext = new MySSLContext(null, null, null);
         assertTrue("Not CertStore object", sslContext instanceof SSLContext);
         assertNull("Incorrect protocol", sslContext.getProtocol());
         assertNull("Incorrect provider", sslContext.getProvider());
@@ -405,15 +418,91 @@ public class SSLContext1Test extends TestCase {
         } catch (NullPointerException e) {
         }
     }
+    
+    public void testGetDefault() throws Exception {
+        //TODO: Need evaluation
+        class PrivateClassLoader extends ClassLoader {}
+        try {
+            // register my provider and its service.
+            Security.addProvider(new MyProvider());
+            // FIXME 
+            ClassLoader privateClassLoader = new PrivateClassLoader();
+            Class class1 = privateClassLoader
+                    .loadClass("org.apache.harmony.xnet.tests.javax.net.ssl.MySSLContext");
+            SSLContext sslContext = (SSLContext) class1.newInstance();      
+            System.out.println(SSLContext.getInstance("Default"));
+            assertTrue((sslContext.getDefault()) instanceof SSLContext);
+        } catch (NoSuchAlgorithmException e) {
+            // expected            
+        }
+    }    
+    
 
+
+    
+    
+    public void testGetDefaultSSLParameters() throws Exception {
+        SSLContext[] sslContexts = createSSLCon();
+        assertNotNull("SSLContext objects were not created", sslContexts);
+
+        for (int i = 0; i < sslContexts.length; i++) {
+            sslContexts[i].init(null, null, null);
+            SSLParameters defaultSSLParameters = sslContexts[i]
+                    .getDefaultSSLParameters();
+            SSLSocket sslSocket = (SSLSocket) (sslContexts[i]
+                    .getSocketFactory().createSocket());
+
+            String[] enabledCipherSuites = sslSocket.getEnabledCipherSuites();
+            String[] enabledProtocols = sslSocket.getEnabledProtocols();
+
+            for (int j = 0; j < enabledCipherSuites.length; j++)
+                assertEquals((defaultSSLParameters.getCipherSuites())[j],
+                        enabledCipherSuites[j]);
+            for (int k = 0; k < enabledProtocols.length; k++)
+                assertEquals((defaultSSLParameters.getProtocols())[k],
+                        enabledProtocols[k]);
+        }
+    }
+
+    public void testGetSupportedSSLParameters() throws Exception {
+        SSLContext[] sslContexts = createSSLCon();
+        assertNotNull("SSLContext objects were not created", sslContexts);
+
+        for (int i = 0; i < sslContexts.length; i++) {
+            sslContexts[i].init(null, null, null);
+            SSLParameters defaultSSLParameters = sslContexts[i]
+                    .getSupportedSSLParameters();
+            SSLSocket sslSocket = (SSLSocket) (sslContexts[i]
+                    .getSocketFactory().createSocket());
+            String[] supportedCipherSuites = sslSocket.getSupportedCipherSuites();
+            String[] supportedProtocols = sslSocket.getSupportedProtocols();
+
+            for (int j = 0; j < supportedCipherSuites.length; j++)
+                assertEquals((defaultSSLParameters.getCipherSuites())[j],
+                        supportedCipherSuites[j]);
+            for (int k = 0; k < supportedProtocols.length; k++)
+                assertEquals((defaultSSLParameters.getProtocols())[k],
+                        supportedProtocols[k]);
+        }
+    }
 }
 
 /**
  * Addifional class to verify SSLContext constructor
  */
-
-class mySSLContext extends SSLContext {
-    public mySSLContext(SSLContextSpi spi, Provider prov, String alg) {
+class MyProvider extends Provider {    
+    MyProvider() {
+        super("MyProviderForSSLContextTest", 1.0, "Provider for testing");
+        put("SSLContext.Default", "org.apache.harmony.xnet.tests.javax.net.ssl.MySSLContext");
+    }
+}
+    
+class MySSLContext extends SSLContext {
+    public MySSLContext(SSLContextSpi spi, Provider prov, String alg) {
         super(spi, prov, alg);
+    }
+    
+    public MySSLContext(){
+        super(null, null, null);
     }
 }

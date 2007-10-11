@@ -204,6 +204,10 @@ public abstract class SSLEngine {
      */
     public abstract void setWantClientAuth(boolean want);
 
+    public abstract void setSSLParameters(SSLParameters sslP);
+
+    public abstract SSLParameters getSSLParameters();
+
     /**
      * @com.intel.drl.spec_ref
      *  

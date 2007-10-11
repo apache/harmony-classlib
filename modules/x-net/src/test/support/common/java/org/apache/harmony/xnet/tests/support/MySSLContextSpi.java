@@ -26,6 +26,7 @@ import javax.net.ssl.SSLContextSpi;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSessionContext;
 import javax.net.ssl.SSLServerSocketFactory;
@@ -141,5 +142,29 @@ public class MySSLContextSpi extends SSLContextSpi {
                 int length, ByteBuffer dst) throws SSLException { 
             return null;
         }
+
+        @Override
+        public SSLParameters getSSLParameters() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public void setSSLParameters(SSLParameters sslP) {
+            // TODO Auto-generated method stub
+
+        }
+    }    
+    
+    @Override
+    protected SSLParameters engineGetDefaultSSLParameters() {
+        return new SSLParameters(new String[] { "Default_SSL_Parameters_For_Test1" },
+                new String[] { "TLSv1" });
+    }
+
+    @Override
+    protected SSLParameters engineGetSupportedSSLParameters() {
+        return new SSLParameters(new String[] { "Default_SSL_Parameters_For_Test1",
+                "Default_SSL_Parameters_For_Test2" }, new String[] { "TLSv1", "SSLv3" });
     }
 }

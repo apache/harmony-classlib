@@ -22,6 +22,7 @@ import java.nio.ReadOnlyBufferException;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLEngineResult;
@@ -471,6 +472,18 @@ class mySSLEngine extends SSLEngine {
             ByteBuffer dst) throws SSLException {
         return new SSLEngineResult(SSLEngineResult.Status.OK,
                 SSLEngineResult.HandshakeStatus.FINISHED, 10, 20);
+    }
+
+    @Override
+    public SSLParameters getSSLParameters() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setSSLParameters(SSLParameters sslP) {
+        // TODO Auto-generated method stub
+
     }
 }
 

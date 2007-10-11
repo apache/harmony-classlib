@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.HandshakeCompletedListener;
@@ -202,5 +203,16 @@ class MySSLSocket extends SSLSocket {
     public boolean getEnableSessionCreation() {
         return false;
     }
-}
 
+    @Override
+    public SSLParameters getSSLParameters() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setSSLParameters(SSLParameters sslP) {
+        // TODO Auto-generated method stub
+
+    }
+}
