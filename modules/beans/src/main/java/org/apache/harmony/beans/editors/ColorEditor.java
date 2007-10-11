@@ -32,14 +32,14 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class ColorEditor extends Panel implements PropertyEditor {
 
-List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
-    
+    List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+
     private Color value;
-    
+
     private Object source;
-    
+
     public ColorEditor(Object source) {
-        if(null == source) {
+        if (null == source) {
             throw new NullPointerException();
         }
         this.source = source;
@@ -74,23 +74,27 @@ List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>()
     }
 
     public void setValue(Object value) {
-        if( null == value) {
+        if (null == value) {
             return;
         }
         Object oldValue = this.value;
         this.value = (Color) value;
         PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(this,
                 "value", oldValue, value); //$NON-NLS-1$
-        PropertyChangeListener[] copy = new PropertyChangeListener[listeners.size()];
+        PropertyChangeListener[] copy = new PropertyChangeListener[listeners
+                .size()];
         listeners.toArray(copy);
         for (PropertyChangeListener listener : copy) {
             listener.propertyChange(changeAllEvent);
         }
     }
-    
+
     @SuppressWarnings("nls")
-    public String getAsText(){
-        Color c = (Color)getValue();
+    public String getAsText() {
+        Color c = (Color) getValue();
+        if (null == c) {
+            return "null";
+        }
         StringBuilder sb = new StringBuilder(14);
         sb.append(c.getRed());
         sb.append(",");
@@ -99,7 +103,7 @@ List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>()
         sb.append(c.getBlue());
         return sb.toString();
     }
-    
+
     @SuppressWarnings("nls")
     public void setAsText(String text) {
         if (null == text) {
@@ -123,7 +127,6 @@ List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>()
             throw new IllegalArgumentException(aText);
         }
     }
-    
 
     public boolean isPaintable() {
         return true;
@@ -140,7 +143,7 @@ List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>()
     public Object getValue() {
         return value;
     }
-    
+
     @Override
     public synchronized void removePropertyChangeListener(
             PropertyChangeListener listener) {
@@ -154,7 +157,7 @@ List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>()
             PropertyChangeListener listener) {
         listeners.add(listener);
     }
-    
+
     public void firePropertyChange() {
         if (listeners.isEmpty()) {
             return;

@@ -431,5 +431,17 @@ public class TextFieldTest extends TestCase {
                                         null, 0, 0));
         assertTrue(eventProcessed);
     }
+    
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Component c = new TextField() {
+            public void paint(Graphics g) {
+                count[0]++;
+                setEchoChar(' ');
+            }
+        };
+        
+        Tools.checkDeadLoop(c, count);
+    }
 
 }

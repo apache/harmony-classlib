@@ -658,85 +658,90 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     @SuppressWarnings("unchecked")
     private static void introspectGet(Method theMethod,
-            HashMap<String, HashMap> propertyTable) {
-        String methodName = theMethod.getName();
-        if (methodName == null) {
-            return;
-        }
+			HashMap<String, HashMap> propertyTable) {
+		String methodName = theMethod.getName();
+		if (methodName == null) {
+			return;
+		}
 
-        int prefixLength = 0;
-        if (methodName.startsWith(PREFIX_GET)) {
-            prefixLength = PREFIX_GET.length();
-        }
+		int prefixLength = 0;
+		if (methodName.startsWith(PREFIX_GET)) {
+			prefixLength = PREFIX_GET.length();
+		}
 
-        if (methodName.startsWith(PREFIX_IS)) {
-            prefixLength = PREFIX_IS.length();
-        }
+		if (methodName.startsWith(PREFIX_IS)) {
+			prefixLength = PREFIX_IS.length();
+		}
 
-        if (prefixLength == 0) {
-            return;
-        }
+		if (prefixLength == 0) {
+			return;
+		}
 
-        String propertyName = decapitalize(methodName.substring(prefixLength));
-        // validate property name
-        if (!isValidProperty(propertyName)) {
-            return;
-        }
+		String propertyName = decapitalize(methodName.substring(prefixLength));
+		// validate property name
+		if (!isValidProperty(propertyName)) {
+			return;
+		}
 
-        Class propertyType = theMethod.getReturnType();
+		Class propertyType = theMethod.getReturnType();
 
-        // check return type getMethod
-        if (propertyType.getName().equals(Void.TYPE.getName())) {
-            return;
-        }
+		// check return type getMethod
+		if (propertyType.getName().equals(Void.TYPE.getName())) {
+			return;
+		}
 
-        // isXXX return boolean
-        if (prefixLength == 2) {
-            if (!propertyType.getName().equals(Boolean.TYPE.getName())) {
-                return;
-            }
-        }
+		// isXXX return boolean
+		if (prefixLength == 2) {
+			if (!propertyType.getName().equals(Boolean.TYPE.getName())) {
+				return;
+			}
+		}
 
-        // indexed get method
-        Class[] paramTypes = theMethod.getParameterTypes();
+		// indexed get method
+		Class[] paramTypes = theMethod.getParameterTypes();
 
-        if (paramTypes.length > 1) {
-            return;
-        }
+		if (paramTypes.length > 1) {
+			return;
+		}
 
-        String tag = "normal"; //$NON-NLS-1$
+		String tag = "normal"; //$NON-NLS-1$
 
-        if (paramTypes.length == 1) {
-            if (paramTypes[0].getName().equals(Integer.TYPE.getName())) {
-                tag = "indexed"; //$NON-NLS-1$
-            } else {
-                return;
-            }
+		if (paramTypes.length == 1) {
+			if (paramTypes[0].getName().equals(Integer.TYPE.getName())) {
+				tag = "indexed"; //$NON-NLS-1$
+			} else {
+				return;
+			}
 
-        }
+		}
 
-        HashMap table = propertyTable.get(propertyName);
-        if (table == null) {
-            table = new HashMap();
-        }
+		HashMap table = propertyTable.get(propertyName);
+		if (table == null) {
+			table = new HashMap();
+			propertyTable.put(propertyName, table);
+		}
 
-        // the "get" propertyType is conflict with "set" propertyType
-        Class oldPropertyType = (Class) table.get(tag + "PropertyType"); //$NON-NLS-1$
-        if ((oldPropertyType != null)
-                && (!oldPropertyType.getName().equals(propertyType.getName()))) {
-            table.put(tag, "invalid"); //$NON-NLS-1$
-            table.put(tag + "get", theMethod); //$NON-NLS-1$
-            table.put(tag + "PropertyType", propertyType); //$NON-NLS-1$
-            table.remove(tag + "set"); //$NON-NLS-1$
-            return;
-        }
+		// the "get" propertyType is conflict with "set" propertyType
+		Class oldPropertyType = (Class) table.get(tag + "PropertyType"); //$NON-NLS-1$
+		if ((oldPropertyType != null)
+				&& (!oldPropertyType.getName().equals(propertyType.getName()))) {
+			table.put(tag, "invalid"); //$NON-NLS-1$
+			table.remove(tag + "set"); //$NON-NLS-1$
+		} else {
+			table.put(tag, "valid"); //$NON-NLS-1$
+		}
+		
+		table.put(tag + "PropertyType", propertyType); //$NON-NLS-1$
 
-        table.put(tag, "valid"); //$NON-NLS-1$
-        table.put(tag + "get", theMethod); //$NON-NLS-1$
-        table.put(tag + "PropertyType", propertyType); //$NON-NLS-1$
-
-        propertyTable.put(propertyName, table);
-    }
+		// According to the spec "is" method should be used prior to "get"
+		if (prefixLength == 3) {
+			if (!table.containsKey(tag + "get")) { //$NON-NLS-1$
+				table.put(tag + "get", theMethod); //$NON-NLS-1$
+			}
+		} else {
+			table.put(tag + "get", theMethod); //$NON-NLS-1$
+		}
+	}
 
     @SuppressWarnings("unchecked")
     private static void introspectSet(Method theMethod,

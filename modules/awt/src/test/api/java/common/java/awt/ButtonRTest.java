@@ -28,7 +28,7 @@ import java.awt.event.KeyEvent;
 import junit.framework.TestCase;
 
 public class ButtonRTest extends TestCase {
-
+  
     public void testShowAndPack() {
         Frame frm = new Frame("Test");
         Button btnClose = new Button("MyClose");
@@ -89,6 +89,19 @@ public class ButtonRTest extends TestCase {
         testHarmony2305();
     }
 
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Button b = new Button() {
+            public void paint(Graphics g) {
+                count[0]++;
+                setEnabled(true);
+                setLabel("button1");
+            }
+        };
+        
+        Tools.checkDeadLoop(b, count);
+    }
+    
     static class AL implements ActionListener {
         ActionEvent e;
 
@@ -96,4 +109,5 @@ public class ButtonRTest extends TestCase {
             this.e = e;
         }
     }
+    
 }

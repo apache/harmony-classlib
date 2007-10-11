@@ -24,7 +24,7 @@ import java.io.OutputStream;
  *
  */
 public class AttrDefinitionBands extends BandSet {
-    
+
     private int[] attributeDefinitionHeader;
 
     private String[] attributeDefinitionLayout;    

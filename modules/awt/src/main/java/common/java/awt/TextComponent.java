@@ -774,8 +774,10 @@ public class TextComponent extends Component implements Accessible {
     public void setEditable(boolean b) {
         toolkit.lockAWT();
         try {
-            editable = b;
-            repaint(); // background color changes
+            if (editable != b) {  // to avoid dead loop in repaint()
+                editable = b;
+                repaint(); // background color changes
+            }
         } finally {
             toolkit.unlockAWT();
         }
@@ -1094,9 +1096,11 @@ public class TextComponent extends Component implements Accessible {
 
     @Override
     void setEnabledImpl(boolean value) {
-        super.setEnabledImpl(value);
-        if (isShowing()) {
-            repaint();
+        if (value != isEnabled()) { // to avoid dead loop in repaint()
+            super.setEnabledImpl(value);
+            if (isShowing()) {
+                repaint();
+            }
         }
     }
 

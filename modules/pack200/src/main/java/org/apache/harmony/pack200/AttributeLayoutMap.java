@@ -209,7 +209,7 @@ public class AttributeLayoutMap {
 	}
 
 	public void add(AttributeLayout layout) {
-        layouts[layout.getContext()].put(Integer.valueOf(layout.getIndex()), layout);
+        layouts[layout.getContext()].put(new Integer(layout.getIndex()), layout);
 	}
 
 	public AttributeLayout getAttributeLayout(String name, int context)

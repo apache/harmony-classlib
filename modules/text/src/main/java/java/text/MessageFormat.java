@@ -427,7 +427,7 @@ public class MessageFormat extends Format {
      * @exception IllegalArgumentException
      *                when the pattern cannot be parsed
      */
-    public static String format(String template, Object[] objects) {
+    public static String format(String template, Object... objects) {
         return new MessageFormat(template).format(objects);
     }
 

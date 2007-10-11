@@ -1321,8 +1321,8 @@ public class Container extends Component {
      * Determine if comp contains point pos. Comp must be showing and top-most
      * component in Z-order.
      * 
-     * @param x
-     * @param y
+     * @param comp component to look for
+     * @param pos point to look component at
      * 
      * @return
      */

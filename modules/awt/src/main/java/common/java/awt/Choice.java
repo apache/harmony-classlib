@@ -479,12 +479,15 @@ public class Choice extends Component implements ItemSelectable, Accessible {
     public void select(int pos) {
         toolkit.lockAWT();
         try {
-            if (pos >= items.size() || pos < 0) {
-                // awt.106=specified position is greater than the number of items
-                throw new IllegalArgumentException(Messages.getString("awt.106")); //$NON-NLS-1$
+            if (selectedIndex != pos) { // to avoid dead loop in repaint()
+                if (pos >= items.size() || pos < 0) {
+                    // awt.106=specified position is greater than the number of items
+                    throw new IllegalArgumentException(
+                            Messages.getString("awt.106")); //$NON-NLS-1$
+                }
+                selectedIndex = pos;
+                repaint();
             }
-            selectedIndex = pos;
-            repaint();
         } finally {
             toolkit.unlockAWT();
         }

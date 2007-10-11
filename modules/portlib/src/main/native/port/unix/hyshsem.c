@@ -492,7 +492,7 @@ hyshsem_destroy (struct HyPortLibrary * portLibrary,
 
   hyshsem_close (portLibrary, handle);
 
-  if (rc = 0)
+  if (rc == 0)
     {
       Trc_PRT_shsem_hyshsem_destroy_Exit ();
     }
@@ -702,7 +702,7 @@ createsemHandle (struct HyPortLibrary *portLibrary, int semid, int nsems,
 
   result->baseFile =
     portLibrary->mem_allocate_memory (portLibrary, baseFileLength);
-  if (result == NULL)
+  if (result->baseFile == NULL)
     {
       portLibrary->mem_free_memory (portLibrary, result);
       return NULL;

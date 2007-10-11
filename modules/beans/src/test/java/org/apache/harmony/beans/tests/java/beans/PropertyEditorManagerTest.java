@@ -772,6 +772,8 @@ public class PropertyEditorManagerTest extends TestCase {
     }
     public void testColorEditor() throws Exception{
         PropertyEditor e2 = PropertyEditorManager.findEditor(Color.class);
+        assertNull(e2.getValue());
+        assertEquals("null", e2.getAsText());
         e2.setValue(Color.RED);
         e2.setAsText(e2.getAsText());
         assertNull(e2.getTags());

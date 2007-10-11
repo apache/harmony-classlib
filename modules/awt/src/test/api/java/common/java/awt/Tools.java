@@ -60,6 +60,27 @@ public abstract class Tools {
         return name.replace('.', '/') + '/';
     }
 
+    public static void checkDeadLoop(Component c, int[] count) {
+        final int DEAD_LOOP_TIMEOUT = 1000;
+        final int VALID_NUMBER_OF_PAINT_CALLS = 5;
+        
+        Frame f = new Frame();
+        
+        f.add(c);
+        f.setSize(300,200);
+        f.setVisible(true);
+
+        try {
+            Thread.sleep(DEAD_LOOP_TIMEOUT);
+        } catch (Exception e) {}
+        
+        f.dispose();
+        
+        Assert.assertTrue("paint() called " + count[0] +
+                " times, a dead loop occurred",
+                count[0] <= VALID_NUMBER_OF_PAINT_CALLS);        
+    }
+
     public static class Shape {
 
         static int pointCount[] = {
@@ -674,4 +695,5 @@ public abstract class Tools {
         }
 
     }
+
 }

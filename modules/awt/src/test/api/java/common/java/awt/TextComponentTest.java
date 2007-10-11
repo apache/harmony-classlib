@@ -409,4 +409,16 @@ public class TextComponentTest extends TestCase {
         assertTrue("text event processed", eventProcessed);
     }
 
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Component c = new TextArea() {
+            public void paint(Graphics g) {
+                count[0]++;
+                setEditable(true);
+                setEnabled(true);
+            }
+        };
+        
+        Tools.checkDeadLoop(c, count);
+    }
 }

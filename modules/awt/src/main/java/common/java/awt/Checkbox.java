@@ -351,8 +351,10 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
     }
 
     void setChecked(boolean checked) {
-        this.checked = checked;
-        repaint();
+        if (checked != this.checked) { // avoid dead loop in repaint()
+            this.checked = checked;
+            repaint();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -437,8 +439,10 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
 
     @Override
     void setEnabledImpl(boolean value) {
-        super.setEnabledImpl(value);
-        repaint();
+        if (value != isEnabled()) { // avoid dead loop in repaint()
+            super.setEnabledImpl(value);
+            repaint();
+        }    
     }
 
     @Override
