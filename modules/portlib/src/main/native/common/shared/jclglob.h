@@ -22,8 +22,6 @@ extern void *Lib_JCL_ID_CACHE;
 #define JCL_ID_CACHE Lib_JCL_ID_CACHE
 typedef struct LibJniIDCache
 {
-
-  jfieldID FID_java_io_FileDescriptor_descriptor;
   int attachCount;
 } LibJniIDCache;
 #define JniIDCache LibJniIDCache
