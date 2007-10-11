@@ -1478,7 +1478,7 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
     }
   if (count > INTERNAL_MAX)
     {
-      buf = jclmem_allocate_memory (env, count);
+      buf = hymem_allocate_memory (count);
     }
   else
     {
@@ -1503,7 +1503,7 @@ ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
 
   if (buf != internalBuffer)
     {
-      jclmem_free_memory (env, buf);
+      hymem_free_memory (buf);
     }
 #undef INTERNAL_MAX
 
@@ -1556,7 +1556,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
     }
   if (len >= INTERNAL_MAX)
     {
-      buf = jclmem_allocate_memory (env, len);
+      buf = hymem_allocate_memory (len);
     }
   else
     {
@@ -1585,7 +1585,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
 
   if (buf != internalBuffer)
     {
-      jclmem_free_memory (env, buf);
+      hymem_free_memory (buf);
     }
 #undef INTERNAL_MAX
 
