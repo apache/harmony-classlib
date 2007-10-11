@@ -68,7 +68,8 @@ public class ServerCloneExceptionTest extends junit.framework.TestCase {
         assertNull(e.detail);
         try {
             e.initCause(e);
-        } catch (IllegalStateException exception) {
+            fail("No expected IllegalArgumentException");
+        } catch (IllegalArgumentException exception) {
             // expected
         }
     }
