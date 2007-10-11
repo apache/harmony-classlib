@@ -62,6 +62,7 @@
             <fileset refid="classes" />
         </delete>
         <delete failonerror="false" dir="bin"/>
+        <delete failonerror="false" dir="src/test/resources/TESTDB"/>
     </target>
 
     <target name="compile-java">
