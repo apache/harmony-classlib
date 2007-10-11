@@ -19,7 +19,7 @@
 // It should be named: ${java.home}/lib/security/java.policy
 
 // by default, all system extensions get AllPermission
-grant codeBase "file:${java.home}/lib/ext/*" {
+grant codeBase "file:${java.ext.dirs}/*" {
     permission java.security.AllPermission;
 };
 

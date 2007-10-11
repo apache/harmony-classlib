@@ -18,5 +18,6 @@
 #if !defined(rasthrsup_h)
 #define rasthrsup_h
 /* RAS_THREAD_ID */
+UDATA Unix_GetKernelThreadID();
 #define RAS_THREAD_ID() Unix_GetKernelThreadID()
 #endif /* rasthrsup_h */

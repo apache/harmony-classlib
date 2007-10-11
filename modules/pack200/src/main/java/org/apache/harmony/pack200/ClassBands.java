@@ -20,13 +20,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
 
 /**
- *
+ * 
  */
 public class ClassBands extends BandSet {
 
@@ -41,7 +43,7 @@ public class ClassBands extends BandSet {
     private int[] classMethodCount;
 
     private String[] classSuper;
-    
+
     private String[] classThis;
 
     private int[] codeHandlerCount;
@@ -57,11 +59,11 @@ public class ClassBands extends BandSet {
     private String[][] fieldDescr;
 
     private long[][] fieldFlags;
-    
+
     private int methodAttrCount;
 
     private ArrayList[][] methodAttributes;
-    
+
     private String[][] methodDescr;
 
     private ExceptionsAttribute[][] methodExceptions;
@@ -71,13 +73,16 @@ public class ClassBands extends BandSet {
     private AttributeLayoutMap attrMap;
 
     private CpBands cpBands;
-    
+
+    private int codeAttrCount;
+
     /**
      * @param header
      */
-    public ClassBands(Segment segment){
+    public ClassBands(Segment segment) {
         super(segment);
-        this.attrMap = segment.getAttrDefinitionBands().getAttributeDefinitionMap();
+        this.attrMap = segment.getAttrDefinitionBands()
+                .getAttributeDefinitionMap();
         this.cpBands = segment.getCpBands();
     }
 
@@ -96,8 +101,7 @@ public class ClassBands extends BandSet {
      * 
      * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException,
-            Pack200Exception {
+    public void unpack(InputStream in) throws IOException, Pack200Exception {
         int classCount = header.getClassCount();
         classThis = parseReferences("class_this", in, Codec.DELTA5, classCount,
                 cpBands.getCpClass());
@@ -108,7 +112,7 @@ public class ClassBands extends BandSet {
                 in, Codec.DELTA5, classCount);
         // for (int i = 0; i < classCount; i++) {
         classInterfaces = parseReferences("class_interface", in, Codec.DELTA5,
-                classCount, classInterfaceLengths, cpBands.getCpClass());
+                classInterfaceLengths, cpBands.getCpClass());
         // }
         classFieldCount = decodeBandInt("class_field_count", in, Codec.DELTA5,
                 classCount);
@@ -126,7 +130,7 @@ public class ClassBands extends BandSet {
         int classCount = header.getClassCount();
         SegmentOptions options = header.getOptions();
         fieldDescr = parseReferences("field_descr", in, Codec.DELTA5,
-                classCount, classFieldCount, cpBands.getCpDescriptor());
+                classFieldCount, cpBands.getCpDescriptor());
         fieldFlags = parseFlags("field_flags", in, classCount, classFieldCount,
                 Codec.UNSIGNED5, options.hasFieldFlagsHi());
         for (int i = 0; i < classCount; i++) {
@@ -141,8 +145,8 @@ public class ClassBands extends BandSet {
                     "There are attribute flags, and I don't know what to do with them");
         debug("unimplemented field_attr_indexes");
         debug("unimplemented field_attr_calls");
-        AttributeLayout layout = attrMap.getAttributeLayout(
-                        "ConstantValue", AttributeLayout.CONTEXT_FIELD);
+        AttributeLayout layout = attrMap.getAttributeLayout("ConstantValue",
+                AttributeLayout.CONTEXT_FIELD);
         Codec codec = layout.getCodec();
         fieldAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
@@ -161,15 +165,45 @@ public class ClassBands extends BandSet {
                     // be e.g. KIB or KIH
                     if (type.equals("B") || type.equals("H"))
                         type = "I";
-                    Object value = layout.getValue(result, type, cpBands.getConstantPool());
+                    Object value = layout.getValue(result, type, cpBands
+                            .getConstantPool());
                     fieldAttributes[i][j]
                             .add(new ConstantValueAttribute(value));
                     debug("Processed value " + value + " for ConstantValue");
                 }
             }
         }
-        debug("unimplemented field_Signature_RS");
-        parseMetadataBands(AttributeLayout.CONTEXT_FIELD);
+
+        layout = attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_SIGNATURE,
+                AttributeLayout.CONTEXT_FIELD);
+        codec = layout.getCodec();
+//        fieldAttributes = new ArrayList[classCount][];
+        for (int i = 0; i < classCount; i++) {
+//            fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
+            for (int j = 0; j < fieldFlags[i].length; j++) {
+//                fieldAttributes[i][j] = new ArrayList();
+                long flag = fieldFlags[i][j];
+                if (layout.matches(flag)) {
+                    // we've got a value to read
+                    long result = codec.decode(in);
+//                    String desc = fieldDescr[i][j];
+//                    int colon = desc.indexOf(':');
+//                    // String name = desc.substring(0, colon);
+//                    String type = desc.substring(colon + 1);
+//                    // TODO Got to get better at this ... in any case, it should
+//                    // be e.g. KIB or KIH
+//                    if (type.equals("B") || type.equals("H"))
+//                        type = "I";
+//                    Object value = layout.getValue(result, type, cpBands
+//                            .getConstantPool());
+//                    fieldAttributes[i][j]
+//                            .add(new ConstantValueAttribute(value));
+                    debug("Found a signature attribute: " + result);
+                }
+            }
+        }
+//        debug("unimplemented field_Signature_RS");
+        parseFieldMetadataBands();
     }
 
     private void parseMethodBands(InputStream in) throws IOException,
@@ -177,7 +211,7 @@ public class ClassBands extends BandSet {
         int classCount = header.getClassCount();
         SegmentOptions options = header.getOptions();
         methodDescr = parseReferences("method_descr", in, Codec.MDELTA5,
-                classCount, classMethodCount, cpBands.getCpDescriptor());
+                classMethodCount, cpBands.getCpDescriptor());
         methodFlags = parseFlags("method_flags", in, classCount,
                 classMethodCount, Codec.UNSIGNED5, options.hasMethodFlagsHi());
         for (int i = 0; i < classCount; i++) {
@@ -203,9 +237,9 @@ public class ClassBands extends BandSet {
         }
         parseAttributeMethodExceptions(in);
         parseAttributeMethodSignature(in);
-        parseMetadataBands(AttributeLayout.CONTEXT_METHOD);
+        parseMethodMetadataBands();
     }
-    
+
     /**
      * @param in
      * @throws Pack200Exception
@@ -215,8 +249,8 @@ public class ClassBands extends BandSet {
             throws Pack200Exception, IOException {
         // TODO Should refactor this stuff into the layout somehow
         int classCount = header.getClassCount();
-        AttributeLayout layout = attrMap.getAttributeLayout(
-                "Exceptions", AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout layout = attrMap.getAttributeLayout("Exceptions",
+                AttributeLayout.CONTEXT_METHOD);
         Codec codec = layout.getCodec();
         methodExceptions = new ExceptionsAttribute[classCount][];
         int[][] numExceptions = new int[classCount][];
@@ -235,20 +269,20 @@ public class ClassBands extends BandSet {
                 long flag = methodFlags[i][j];
                 int n = numExceptions[i][j];
                 if (n > 0) {
-                   CPClass[] exceptions = new CPClass[n];
-                   if (layout.matches(flag)) {
-                       for (int k = 0; k < n; k++) {
-                           long result = codec.decode(in);
-                           exceptions[k] = new CPClass(cpBands.getCpClass()[(int) result]);
-                       }
-                   }
-                   methodExceptions[i][j] = new ExceptionsAttribute(exceptions);
-                   methodAttributes[i][j].add(methodExceptions[i][j]);
-               }
+                    CPClass[] exceptions = new CPClass[n];
+                    if (layout.matches(flag)) {
+                        for (int k = 0; k < n; k++) {
+                            long result = codec.decode(in);
+                            exceptions[k] = new CPClass(
+                                    cpBands.getCpClass()[(int) result]);
+                        }
+                    }
+                    methodExceptions[i][j] = new ExceptionsAttribute(exceptions);
+                    methodAttributes[i][j].add(methodExceptions[i][j]);
+                }
             }
         }
     }
-    
 
     /**
      * @param name
@@ -258,12 +292,11 @@ public class ClassBands extends BandSet {
     private void parseAttributeUnknown(String name, int context, long[][] flags)
             throws Pack200Exception {
         debug("Parsing unknown attributes for " + name);
-        AttributeLayout layout = attrMap.getAttributeLayout(
-                name, context);
-       int count = SegmentUtils.countMatches(flags, layout);
-       if (count > 0)
-           throw new Error("We've got data for " + name
-                + " and we don't know what to do with it (yet)");
+        AttributeLayout layout = attrMap.getAttributeLayout(name, context);
+        int count = SegmentUtils.countMatches(flags, layout);
+        if (count > 0)
+            throw new Error("We've got data for " + name
+                    + " and we don't know what to do with it (yet)");
     }
 
     /**
@@ -294,8 +327,8 @@ public class ClassBands extends BandSet {
         debug("unimplemented class_attr_indexes");
         debug("unimplemented class_attr_calls");
         AttributeLayout layout = attrMap.getAttributeLayout(
-                        AttributeLayout.ATTRIBUTE_SOURCE_FILE,
-                        AttributeLayout.CONTEXT_CLASS);
+                AttributeLayout.ATTRIBUTE_SOURCE_FILE,
+                AttributeLayout.CONTEXT_CLASS);
         for (int i = 0; i < classCount; i++) {
             long flag = classFlags[i];
             if (layout.matches(flag)) {
@@ -303,14 +336,15 @@ public class ClassBands extends BandSet {
                 // TODO File this as a sourcefile attribute and don't generate
                 // everything below
                 long result = layout.getCodec().decode(in);
-                Object value = layout.getValue(result, cpBands.getConstantPool());
+                Object value = layout.getValue(result, cpBands
+                        .getConstantPool());
                 debug("Processed value " + value + " for SourceFile");
             }
         }
         debug("unimplemented class_EnclosingMethod_RC");
         debug("unimplemented class_EnclosingMethod_RDN");
         debug("unimplemented class_Signature_RS");
-        parseMetadataBands(AttributeLayout.CONTEXT_CLASS);
+        parseClassMetadataBands();
         debug("unimplemented class_InnerClasses_N");
         debug("unimplemented class_InnerClasses_RC");
         debug("unimplemented class_InnerClasses_F");
@@ -319,7 +353,6 @@ public class ClassBands extends BandSet {
         debug("unimplemented class_file_version_minor_H");
         debug("unimplemented class_file_version_major_H");
     }
-    
 
     private void parseCodeBands(InputStream in) throws Pack200Exception,
             IOException {
@@ -370,57 +403,173 @@ public class ClassBands extends BandSet {
                 throw new IllegalStateException("Shouldn't get here either");
             }
         }
-        debug("unimplemented code_headers");
-        debug("unimplemented code_max_stack");
-        debug("unimplemented code_max_na_locals");
-        debug("unimplemented code_hander_count");
-        debug("unimplemented code_hander_start_P");
-        debug("unimplemented code_hander_end_PO");
-        debug("unimplemented code_hander_catch_PO");
-        debug("unimplemented code_hander_class_RC");
-        parseCodeAttrBands(in);
+        int codeFlagsCount = segment.getSegmentHeader().getOptions().hasAllCodeFlags() ?
+                    codeBands : codeSpecialHeader;
+        parseCodeAttrBands(in, codeFlagsCount);
     }
-    
 
-    private void parseCodeAttrBands(InputStream in) {
-        debug("unimplemented code_flags");
+    private void parseCodeAttrBands(InputStream in, int codeFlagsCount) throws IOException, Pack200Exception {
+        long[] codeFlags = parseFlags("code_flags", in, codeFlagsCount, Codec.UNSIGNED5, segment.getSegmentHeader().getOptions().hasCodeFlagsHi());
+        for (int i = 0; i < codeFlagsCount; i++) {
+            long flag = codeFlags[i];
+            if ((flag & (1 << 16)) != 0)
+                codeAttrCount++;
+        }
+        if (codeAttrCount > 0)
+            throw new Error(
+                    "There are attribute flags, and I don't know what to do with them");
         debug("unimplemented code_attr_count");
         debug("unimplemented code_attr_indexes");
         debug("unimplemented code_attr_calls");
-        debug("unimplemented code_LineNumberTable_N");
-        debug("unimplemented code_LineNumberTable_bci_P");
-        debug("unimplemented code_LineNumberTable_line");
-        String[] types = { "LocalVariableTable", "LocalVariableTypeTable" };
+        
+        int lineNumberTableCount = SegmentUtils.countMatches(codeFlags, attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_LINE_NUMBER_TABLE, AttributeLayout.CONTEXT_CODE));
+        int[] lineNumberTableN = decodeBandInt("code_LineNumberTable_N", in, Codec.UNSIGNED5, lineNumberTableCount);
+        int[][] lineNumberTableBciP = decodeBandInt("code_LineNumberTable_bci_P", in, Codec.BCI5, lineNumberTableN);
+        int[][] lineNumberTableLine = decodeBandInt("code_LineNumberTable_line", in, Codec.UNSIGNED5, lineNumberTableN);
+        String[] types = { AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TABLE, AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TYPE_TABLE };
         for (int i = 0; i < types.length; i++) {
             String type = types[i];
-            debug("unimplemented code_" + type + "_N");
-            debug("unimplemented code_" + type + "_bci_P");
-            debug("unimplemented code_" + type + "_span_O");
-            debug("unimplemented code_" + type + "_name_RU");
-            debug("unimplemented code_" + type + "_type_RS");
-            debug("unimplemented code_" + type + "_slot");
+            int lengthNBand = SegmentUtils.countMatches(codeFlags, attrMap.getAttributeLayout(type, AttributeLayout.CONTEXT_CODE));
+            int[] nBand = decodeBandInt("code_" + type + "_N", in, Codec.UNSIGNED5, lengthNBand);
+            int[][] bciP = decodeBandInt("code_" + type + "_bci_P", in, Codec.BCI5, nBand);
+            int[][] spanO = decodeBandInt("code_" + type + "_span_O", in, Codec.BRANCH5, nBand);
+            String[][] nameRU = parseReferences("code_" + type + "_name_RU", in, Codec.UNSIGNED5, nBand, cpBands.getCpUTF8());
+            String[][] typeRS = parseReferences("code_" + type + "_type_RS", in, Codec.UNSIGNED5, nBand, cpBands.getCpSignature());
+            int[][] slot = decodeBandInt("code_" + type + "_slot", in, Codec.UNSIGNED5, nBand);
         }
     }
 
-    private void parseMetadataBands(int context) throws Pack200Exception {
-        String[] RxA;
-        if (AttributeLayout.CONTEXT_METHOD == context) {
-            RxA = new String[] { "RVA", "RIA", "RVPA", "RIPA", "AD" };
-        } else if (AttributeLayout.CONTEXT_FIELD == context
-                || AttributeLayout.CONTEXT_CLASS == context) {
-            RxA = new String[] { "RVA", "RIA" };
-        } else {
-            throw new Pack200Exception("Unknown type of metadata unit "
-                 + context);
+
+
+    private void parseFieldMetadataBands() throws Pack200Exception {
+        String[] RxA = new String[] { "RVA", "RIA" };
+        
+        AttributeLayout rvaLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
+                AttributeLayout.CONTEXT_FIELD);
+        AttributeLayout riaLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
+                AttributeLayout.CONTEXT_FIELD);
+
+        int rvaCount = SegmentUtils.countMatches(fieldFlags, rvaLayout);
+        int riaCount = SegmentUtils.countMatches(fieldFlags, riaLayout);
+        if (rvaCount > 0 || riaCount > 0) {
+            throw new Error("Field metadata not handled");
+        }
+
+        // AttributeLayout layout =
+        // map.get(RuntimeVisibleAnnotations,class/field/method as int)
+        // foreachheader ...
+        // if layout.matches(header[n] or whatever)
+        String contextName = "field";
+        for (int i = 0; i < RxA.length; i++) {
+            String rxa = RxA[i];
+            if (rxa.indexOf("P") >= 0) {
+                debug("unimplemented " + contextName + "_" + rxa + "_param_NB");
+            }
+            if (!rxa.equals("AD")) {
+                debug("unimplemented " + contextName + "_" + rxa + "_anno_N");
+                debug("unimplemented " + contextName + "_" + rxa + "_type_RS");
+                debug("unimplemented " + contextName + "_" + rxa + "_pair_N");
+                debug("unimplemented " + contextName + "_" + rxa + "_name_RU");
+            }
+            debug("unimplemented " + contextName + "_" + rxa + "_T");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseI_KI");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseD_KD");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseF_KF");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseJ_KJ");
+            debug("unimplemented " + contextName + "_" + rxa + "_casec_RS");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseet_RS");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseec_RU");
+            debug("unimplemented " + contextName + "_" + rxa + "_cases_RU");
+            debug("unimplemented " + contextName + "_" + rxa + "_casearray_N");
+            debug("unimplemented " + contextName + "_" + rxa + "_nesttype_RS");
+            debug("unimplemented " + contextName + "_" + rxa + "_nestpair_N");
+            debug("unimplemented " + contextName + "_" + rxa + "_nestname_RU");
+        }
+    }
+
+    private void parseMethodMetadataBands() throws Pack200Exception {
+        String[] RxA = new String[] { "RVA", "RIA", "RVPA", "RIPA", "AD" };
+        int[] rxaCounts = new int[] { 0, 0, 0, 0, 0 };
+        AttributeLayout rvaLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
+                AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout riaLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
+                AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout rvpaLayout = attrMap
+                .getAttributeLayout(
+                        AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
+                        AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout ripaLayout = attrMap
+                .getAttributeLayout(
+                        AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
+                        AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout adLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_ANNOTATION_DEFAULT,
+                AttributeLayout.CONTEXT_METHOD);
+        AttributeLayout[] rxaLayouts = new AttributeLayout[] { rvaLayout,
+                riaLayout, rvpaLayout, ripaLayout, adLayout };
+
+        for (int i = 0; i < rxaLayouts.length; i++) {
+            rxaCounts[i] = SegmentUtils.countMatches(methodFlags, rxaLayouts[i]);
+            if (rxaCounts[i] > 0) {
+                throw new Error("Found method metadata");
+            }
+        }
+
+        // AttributeLayout layout =
+        // map.get(RuntimeVisibleAnnotations,class/field/method as int)
+        // foreachheader ...
+        // if layout.matches(header[n] or whatever)
+        String contextName = "method";
+        for (int i = 0; i < RxA.length; i++) {
+            String rxa = RxA[i];
+            if (rxa.indexOf("P") >= 0) {
+                debug("unimplemented " + contextName + "_" + rxa + "_param_NB");
+            }
+            if (!rxa.equals("AD")) {
+                debug("unimplemented " + contextName + "_" + rxa + "_anno_N");
+                debug("unimplemented " + contextName + "_" + rxa + "_type_RS");
+                debug("unimplemented " + contextName + "_" + rxa + "_pair_N");
+                debug("unimplemented " + contextName + "_" + rxa + "_name_RU");
+            }
+            debug("unimplemented " + contextName + "_" + rxa + "_T");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseI_KI");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseD_KD");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseF_KF");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseJ_KJ");
+            debug("unimplemented " + contextName + "_" + rxa + "_casec_RS");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseet_RS");
+            debug("unimplemented " + contextName + "_" + rxa + "_caseec_RU");
+            debug("unimplemented " + contextName + "_" + rxa + "_cases_RU");
+            debug("unimplemented " + contextName + "_" + rxa + "_casearray_N");
+            debug("unimplemented " + contextName + "_" + rxa + "_nesttype_RS");
+            debug("unimplemented " + contextName + "_" + rxa + "_nestpair_N");
+            debug("unimplemented " + contextName + "_" + rxa + "_nestname_RU");
+        }
+    }
+
+    private void parseClassMetadataBands() throws Pack200Exception {
+        String[] RxA = new String[] { "RVA", "RIA" };
+
+        AttributeLayout rvaLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
+                AttributeLayout.CONTEXT_CLASS);
+        AttributeLayout riaLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
+                AttributeLayout.CONTEXT_CLASS);
+        int rvaCount = SegmentUtils.countMatches(classFlags, rvaLayout);
+        int riaCount = SegmentUtils.countMatches(classFlags, riaLayout);
+        if (rvaCount > 0 || riaCount > 0) {
+            throw new Error("Class metadata not handled");
         }
         // AttributeLayout layout =
         // map.get(RuntimeVisibleAnnotations,class/field/method as int)
         // foreachheader ...
         // if layout.matches(header[n] or whatever)
-        String contextName = (AttributeLayout.CONTEXT_METHOD == context ? "method"
-                : (AttributeLayout.CONTEXT_FIELD == context ? "field"
-                        : (AttributeLayout.CONTEXT_CLASS == context ? "class"
-                                : "unkowon")));
+        String contextName = "class";
         for (int i = 0; i < RxA.length; i++) {
             String rxa = RxA[i];
             if (rxa.indexOf("P") >= 0) {

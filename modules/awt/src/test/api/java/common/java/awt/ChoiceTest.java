@@ -365,4 +365,18 @@ public class ChoiceTest extends TestCase {
         assertTrue(eventProcessed);
     }
 
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Component c = new Choice() {
+            public void paint(Graphics g) {
+                count[0]++;
+                if (getItemCount() == 0) {
+                    add("item");      
+                }
+                select(0);
+            }
+        };
+        
+        Tools.checkDeadLoop(c, count);
+    }
 }

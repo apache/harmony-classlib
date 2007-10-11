@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -902,7 +903,21 @@ public class KeyStore {
                 }
             }
             // clone chain - this.chain = (Certificate[])chain.clone();
-            this.chain = new Certificate[chain.length];
+            boolean isAllX509Certificates = true;
+            // assert chain length > 0
+            for(Certificate cert: chain){
+                if(!(cert instanceof X509Certificate)){
+                    isAllX509Certificates = false;
+                    break;
+                }
+            }
+            
+            if(isAllX509Certificates){
+                this.chain = new X509Certificate[chain.length];
+            }
+            else{
+                this.chain = new Certificate[chain.length];
+            }
             System.arraycopy(chain, 0, this.chain, 0, chain.length);
             this.privateKey = privateKey;
         }

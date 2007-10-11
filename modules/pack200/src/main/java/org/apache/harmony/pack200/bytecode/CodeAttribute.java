@@ -37,7 +37,7 @@ public class CodeAttribute extends Attribute {
 		this.maxStack = maxStack;
 		this.codeLength = 0;
 		for (int i = 0; i < codePacked.length; i++) {
-			ByteCode byteCode = ByteCode.getByteCode(codePacked[i]);
+			ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
 			byteCodes.add(byteCode);
 			this.codeLength += byteCode.getLength();
 		}

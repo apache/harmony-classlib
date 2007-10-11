@@ -3955,7 +3955,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
         {
           /* only return the interfaces that are up so check the IFF_UP flag) */
           returnedInfoHeader = NLMSG_DATA (currentNlHeader);
-          if (returnedInfoHeader->ifi_flags & IFF_UP == IFF_UP)
+          if ((returnedInfoHeader->ifi_flags & IFF_UP) == IFF_UP)
             {
               numAdapters++;
             }
@@ -4031,7 +4031,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
           returnedInfoHeader = NLMSG_DATA (currentNlHeader);
 
           /* only return adapters that are up */
-          if (returnedInfoHeader->ifi_flags & IFF_UP == IFF_UP)
+          if ((returnedInfoHeader->ifi_flags & IFF_UP) == IFF_UP)
             {
               interfaces[currentAdapterIndex].index =
                 returnedInfoHeader->ifi_index;
@@ -4375,7 +4375,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
           /* make sure the interface is up */
           reqCopy = *currentIfReq;
           ioctl (SOCKET_CAST (socketP), SIOCGIFFLAGS, &reqCopy);
-          if (reqCopy.ifr_flags & IFF_UP == IFF_UP)
+          if ((reqCopy.ifr_flags & IFF_UP) == IFF_UP)
             {
               numAdapters++;
             }
@@ -4416,7 +4416,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
       /* make sure the interface is still up */
       reqCopy = *currentIfReq;
       ioctl (SOCKET_CAST (socketP), SIOCGIFFLAGS, &reqCopy);
-      if (reqCopy.ifr_flags & IFF_UP == IFF_UP)
+      if ((reqCopy.ifr_flags & IFF_UP) == IFF_UP)
         {
           /* since this function can return multiple entries for the same name, only do it for the first one with any given name */
           if ((NULL == lastName)
@@ -4636,7 +4636,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
           /* make sure the interface is up */
           reqCopy = ifc.ifc_req[counter];
           ioctl (SOCKET_CAST (socketP), SIOCGIFFLAGS, &reqCopy);
-          if (reqCopy.ifr_flags & IFF_UP == IFF_UP)
+          if ((reqCopy.ifr_flags & IFF_UP) == IFF_UP)
             {
               numAdapters++;
             }
@@ -4672,7 +4672,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
       /* make sure the interface is still up */
       reqCopy = ifc.ifc_req[counter];
       ioctl (SOCKET_CAST (socketP), SIOCGIFFLAGS, &reqCopy);
-      if (reqCopy.ifr_flags & IFF_UP == IFF_UP)
+      if ((reqCopy.ifr_flags & IFF_UP) == IFF_UP)
         {
           /* since this function can return multiple entries for the same name, only do it for the first one with any given name */
           if ((NULL == lastName)

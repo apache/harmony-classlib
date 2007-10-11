@@ -78,6 +78,20 @@ public class ComponentRTest extends TestCase {
         // Regression test for HARMONY-2456
         new Button().transferFocusUpCycle();
     }
+    
+    public void testDeadLoop4887() {
+        final int count[] = new int[1];
+        Component c = new Panel() {
+            public void paint(Graphics g) {
+                count[0]++;
+                setBackground(new Color(255, 255, 255));
+                setForeground(Color.BLACK);
+                setFont(new Font("Serif", Font.PLAIN, 10));
+            }
+        };
+        
+        Tools.checkDeadLoop(c, count);
+    }
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ComponentRTest.class);

@@ -1496,6 +1496,34 @@ public class IntrospectorTest extends TestCase {
         assertEquals("property1", pds[0].getName());
         assertEquals("property8", pds[1].getName());
     }
+    
+    public void testHarmony4861() throws IntrospectionException {
+		final PropertyDescriptor[] propertyDescriptors = Introspector
+				.getBeanInfo(TestBean.class).getPropertyDescriptors();
+
+		for (PropertyDescriptor d : propertyDescriptors) {
+			if (d.getName().equals("prop1")) { //$NON-NLS-1$
+				assertEquals("isProp1", d.getReadMethod().getName()); //$NON-NLS-1$
+				return;
+			}
+		}
+	}
+
+	public static class TestBean {
+		boolean prop1;
+
+		public void setProp1(boolean prop1) {
+			this.prop1 = prop1;
+		}
+
+		public boolean isProp1() {
+			return prop1;
+		}
+
+		public boolean getProp1() {
+			return prop1;
+		}
+	}
 
     public static TestSuite suite() {
 //        TestSuite suite = new TestSuite();

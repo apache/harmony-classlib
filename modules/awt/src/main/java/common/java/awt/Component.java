@@ -2985,10 +2985,13 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     }
 
     void setFontImpl(Font f) {
-        font = f;
-        invalidate();
-        if (isShowing()) {
-            repaint();
+        if (!(f == font ||
+             (f != null && f.equals(font)))) {// to avoid dead loop in repaint()
+            font = f;
+            invalidate();
+            if (isShowing()) {
+                repaint();
+            }
         }
     }
 
@@ -3009,6 +3012,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
 
     public void setForeground(Color c) {
         Color oldFgColor;
+
         toolkit.lockAWT();
         try {
             oldFgColor = foreColor;
@@ -3016,21 +3020,34 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("foreground", oldFgColor, foreColor); //$NON-NLS-1$
-        repaint();
+        
+        // Update only if new color differs from the old one.
+        // It is needed to avoid dead loops in repaint().
+        if (!(oldFgColor == c ||
+              (c != null && c.equals(oldFgColor)))) {
+            firePropertyChange("foreground", oldFgColor, c); //$NON-NLS-1$
+            repaint();
+        }
     }
 
     public void setBackground(Color c) {
-        Color oldBkColor;
+        Color oldBgColor;
+        
         toolkit.lockAWT();
         try {
-            oldBkColor = backColor;
+            oldBgColor = backColor;
             backColor = c;
         } finally {
             toolkit.unlockAWT();
         }
-        firePropertyChange("background", oldBkColor, backColor); //$NON-NLS-1$
-        repaint();
+        
+        // update only if new color differs from the old one
+        // to avoid dead loop in repaint()
+        if (!(c == oldBgColor || 
+                 (c != null && c.equals(oldBgColor)))) {
+            firePropertyChange("background", oldBgColor, c); //$NON-NLS-1$
+            repaint();
+        }
     }
 
     public void setIgnoreRepaint(boolean value) {
