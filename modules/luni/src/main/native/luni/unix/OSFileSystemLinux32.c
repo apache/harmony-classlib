@@ -31,11 +31,10 @@
 #endif
 #include "vmi.h"
 #include "iohelp.h"
+#include "nethelp.h"
 
 #include "IFileSystem.h"
 #include "OSFileSystem.h"
-
-void *getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd);
 
 typedef int OSSOCKET;   
 typedef struct hysocket_struct
@@ -241,7 +240,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   OSSOCKET socket;
   //TODO IPV6
   hysocket_t hysocketP =
-    (hysocket_t)getJavaIoFileDescriptorContentsAsPointer (env,sd);
+    (hysocket_t)getJavaIoFileDescriptorContentsAsAPointer (env,sd);
   if(hysocketP == NULL)
     return -1;
   socket = hysocketP->sock;

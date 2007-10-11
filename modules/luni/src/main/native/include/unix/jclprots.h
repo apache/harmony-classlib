@@ -307,7 +307,6 @@ void throwJavaNetSocketException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
 I_32 netGetSockAddr PROTOTYPE((JNIEnv *env, jobject fileDescriptor, hysockaddr_t sockaddrP, jboolean preferIPv6Addresses));
 
 /* NativesCommonIoHelpers*/
-void* getJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv *env, jobject fd));
 void throwNewExceptionByName PROTOTYPE((JNIEnv* env,
                                         const char* name, const char* message));
 void throwNewOutOfMemoryError PROTOTYPE((JNIEnv* env, const char* message));
@@ -315,7 +314,6 @@ void throwJavaIoIOException PROTOTYPE((JNIEnv* env, const char* message));
 void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv* env));
 void ioh_convertToPlatform PROTOTYPE((char *path));
 void throwNPException PROTOTYPE((JNIEnv* env, const char* message));
-void setJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv * env, jobject fd, void *value));
 void ioh_writebytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
 char* ioLookupErrorString PROTOTYPE((JNIEnv* env, I_32 anErrorNum));
 jint ioh_readbytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));

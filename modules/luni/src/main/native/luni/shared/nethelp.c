@@ -1613,7 +1613,7 @@ new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID)
   fd = (*env)->GetObjectField (env, recv, fdFID);
 
   /* dereference the C pointer from the wrapper object */
-  descriptor = (IDATA) getJavaIoFileDescriptorContentsAsPointer (env, fd);
+  descriptor = (IDATA) getJavaIoFileDescriptorContentsAsAPointer (env, fd);
 
   /* Check for closed file, in, out, and err */
   if (descriptor >= -1 && descriptor <= 2)
@@ -1622,37 +1622,8 @@ new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID)
     }
 
   hyfile_close (descriptor);
-  setJavaIoFileDescriptorContentsAsPointer (env, fd, (void *) -1);
+  setJavaIoFileDescriptorContents (env, fd, (void *) -1);
   return;
-}
-
-/**
-  * This will retrieve the 'descriptor' field value from a java.io.FileDescriptor
-  */
-void *
-getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd)
-{
-  jfieldID descriptorFID = getJavaIoFileDescriptorDescriptorFID (env);
-  if (NULL == descriptorFID)
-    {
-      return (void *) -1;
-    }
-  return (void *)(IDATA) ((*env)->GetLongField (env, fd, descriptorFID));
-}
-
-/**
-  * This will set the 'descriptor' field value in the java.io.FileDescriptor
-  * @fd to the value @desc 
-  */
-void
-setJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd,
-                                          void *value)
-{
-  jfieldID fid = getJavaIoFileDescriptorDescriptorFID (env);
-  if (NULL != fid)
-    {
-      (*env)->SetLongField (env, fd, fid, (IDATA)value);
-    }
 }
 
 /**

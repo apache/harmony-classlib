@@ -23,10 +23,7 @@
 
 /* DIR_SEPARATOR is defined in hycomp.h */
 #define jclSeparator DIR_SEPARATOR
-void *getJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd);
 void ioh_convertToPlatform (char *path);
-void setJavaIoFileDescriptorContentsAsPointer (JNIEnv * env, jobject fd,
-                                               void *value);
 void ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
                          jint offset, jint count, IDATA descriptor);
 char *ioLookupErrorString (JNIEnv * env, I_32 anErrorNum);

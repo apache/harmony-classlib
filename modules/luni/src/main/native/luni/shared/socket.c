@@ -106,7 +106,7 @@ createSocket (JNIEnv * env, jobject thisObjFD, int sockType,
 
   if (0 == result)
     {
-      setJavaIoFileDescriptorContentsAsPointer (env, thisObjFD, sockdesc);
+      setJavaIoFileDescriptorContents (env, thisObjFD, sockdesc);
     }
 }
 
@@ -817,7 +817,7 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
 
 #if defined(WIN32)
   PORT_ACCESS_FROM_ENV (env);
-  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+  hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
   if (!hysock_socketIsValid (hysocketP))
     {
       throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
@@ -857,7 +857,7 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
     
         SELECT_NOPOLL:
               
-        hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+        hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
       
         if (!hysock_socketIsValid (hysocketP)) {
             throwJavaNetSocketException (env, HYPORT_ERROR_SOCKET_BADSOCKET);
@@ -913,7 +913,7 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
        */
        
       hysocketP =
-        getJavaIoFileDescriptorContentsAsPointer (env, fileDescriptor);
+        getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
       
       if (!hysock_socketIsValid (hysocketP))
         {

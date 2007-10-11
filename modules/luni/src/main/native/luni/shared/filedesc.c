@@ -16,6 +16,7 @@
  */
 
 #include "iohelp.h"
+#include "nethelp.h"
 #include "exceptions.h"
 #include "harmonyglob.h"
 
@@ -26,7 +27,7 @@ Java_java_io_FileDescriptor_valid (JNIEnv * env, jobject recv)
     * Currently only answer false if the descriptor is -1.  Possibly there 
     * could be an OS check to see if the handle has been invalidated 
     */
-  void *descriptor = getJavaIoFileDescriptorContentsAsPointer (env, recv);
+  void *descriptor = getJavaIoFileDescriptorContentsAsAPointer (env, recv);
   return (IDATA) descriptor != -1;
 }
 
@@ -38,7 +39,7 @@ Java_java_io_FileDescriptor_syncImpl (JNIEnv * env, jobject recv)
   I_32 syncfailed = 0;
   PORT_ACCESS_FROM_ENV (env);
 
-  descriptor = (IDATA) getJavaIoFileDescriptorContentsAsPointer (env, recv);
+  descriptor = (IDATA) getJavaIoFileDescriptorContentsAsAPointer (env, recv);
   if (descriptor == -1)
     {
       syncfailed = 1;

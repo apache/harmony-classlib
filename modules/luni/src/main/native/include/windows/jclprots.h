@@ -551,8 +551,6 @@ extern "C"
                 jboolean preferIPv6Addresses));
                 
   /* NativesCommonIoHelpers*/
-  void *getJavaIoFileDescriptorContentsAsPointer
-    PROTOTYPE ((JNIEnv * env, jobject fd));
   void throwNewExceptionByName PROTOTYPE((JNIEnv* env,
                                           const char* name,
                                           const char* message));
@@ -561,8 +559,6 @@ extern "C"
   void throwJavaIoIOExceptionClosed PROTOTYPE ((JNIEnv* env));
   void ioh_convertToPlatform PROTOTYPE ((char *path));
   void throwNPException PROTOTYPE ((JNIEnv* env, const char* message));
-  void setJavaIoFileDescriptorContentsAsPointer
-    PROTOTYPE ((JNIEnv * env, jobject fd, void *value));
   void ioh_writebytesImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
                 jint count, IDATA descriptor));
