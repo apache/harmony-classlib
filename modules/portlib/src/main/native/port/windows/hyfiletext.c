@@ -25,10 +25,7 @@
 
 #include <windows.h>
 #include "hyport.h"
-
-#define CDEV_CURRENT_FUNCTION _prototypes_private
-U_32 decodeUTF8CharN (const U_8 * input, U_16 * result, U_32 bytesRemaining);
-#undef CDEV_CURRENT_FUNCTION
+#include "utf8decode.h"
 
 #define CDEV_CURRENT_FUNCTION hybuf_write_text
 /**

@@ -29,6 +29,7 @@
 
 #include "hycomp.h"
 #include "hyport.h"
+#include "utf8encode.h"
 
 #define HYFTYPE_U64 1
 #define HYFTYPE_U32 2
@@ -80,8 +81,6 @@ typedef struct
 static const char digits_dec[] = "0123456789";
 static const char digits_hex_lower[] = "0123456789abcdef";
 static const char digits_hex_upper[] = "0123456789ABCDEF";
-
-extern U_32 encodeUTF8Char (UDATA unicode, U_8 * result);
 
 static const char *parseTagChar (const char *format, HyFormatData * result);
 static void readValues (struct HyPortLibrary *portLibrary,

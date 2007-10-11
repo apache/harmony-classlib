@@ -60,6 +60,12 @@
                 <include name="hycomp.h" />
                 <include name="hyporterror.h" />
                 <include name="hypool.h" />
+                <include name="exceptions.h" />
+                <include name="iohelp.h" />
+                <include name="libglob.h" />
+                <include name="strhelp.h" />
+                <include name="utf8decode.h" />
+                <include name="utf8encode.h" />
             </fileset>
         </copy>
         <copy todir="${hy.hdk}/include" overwrite="yes">
@@ -174,6 +180,12 @@
                 <include name="hysock.h" />
                 <include name="hyportpg.h" />
                 <include name="hypool.h" />
+                <include name="exceptions.h" />
+                <include name="iohelp.h" />
+                <include name="libglob.h" />
+                <include name="strhelp.h" />
+                <include name="utf8decode.h" />
+                <include name="utf8encode.h" />
             </fileset>
         </delete>
     </target>
