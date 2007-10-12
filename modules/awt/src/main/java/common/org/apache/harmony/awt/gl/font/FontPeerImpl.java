@@ -462,15 +462,13 @@ public abstract class FontPeerImpl implements FontPeer{
         }
     }
     
+    /**
+     * Returns unicode by glyph index.
+     */
     public char getUnicodeByIndex(int glyphCode) {
         return 0;
     }
 
-    /**
-     * Sets new font type to the font object.
-     * 
-     * @param newType new type value
-     */
     @Override
     protected void finalize() throws Throwable {
       super.finalize();
