@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.RenderingHints;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.TextRenderer;
@@ -50,6 +51,11 @@ public class DrawableTextRenderer extends TextRenderer {
     // X11 instanse
     static final X11 x11 = X11.getInstance();
 
+    boolean isAntialiasingHintSet(Graphics2D g){
+        Object value = g.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+        return (value == RenderingHints.VALUE_ANTIALIAS_ON);
+    }
+
     public void drawString(Graphics2D ga, String str, float x, float y) {
         CommonGraphics2D g = (CommonGraphics2D)ga;
         AffineTransform trans = g.getTransform();
@@ -57,6 +63,7 @@ public class DrawableTextRenderer extends TextRenderer {
         double yOffset = y + trans.getTranslateY();
 
         FontPeerImpl fnt = (FontPeerImpl)g.getFont().getPeer();
+
         if (fnt.getClass() == CompositeFont.class){
             drawCompositeString(g, str, xOffset, yOffset);
         } else {
@@ -128,7 +135,7 @@ public class DrawableTextRenderer extends TextRenderer {
         }
         if (inChars.length != 0 ){
             LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, colormap, 
-                    peer.getFontHandle(), (int)Math.round(x), (int)Math.round(y), 
+                    peer.getFontHandle(isAntialiasingHintSet(g)), (int)Math.round(x), (int)Math.round(y),
                     outChars, j, xcolorPtr);
         }
         xcolor.unlock();
@@ -251,7 +258,7 @@ public class DrawableTextRenderer extends TextRenderer {
             char chars[] = {gl.getChar()};
 
             LinuxNativeFont.drawStringNative(xg2d.xftDraw, display, colormap, 
-                    peer.getFontHandle(), xBaseLine, yBaseLine, chars, 1, 
+                    peer.getFontHandle(isAntialiasingHintSet(g)), xBaseLine, yBaseLine, chars, 1,
                     xcolorPtr);
         }
         xcolor.unlock();

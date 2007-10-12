@@ -110,6 +110,11 @@ public class LinuxNativeFont {
     public synchronized static native String getFontPSNameNative(long fnt);
 
     /**
+     * Getting antialiasing font from existing font
+     */
+    public static native long getAntialiasedFont(long font, long display, boolean isAntialiasing);
+
+    /**
      * Disposing XftFont object.
      * 
      * @param hndFont XftFont handle
