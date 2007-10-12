@@ -17,9 +17,13 @@
 
 package org.apache.harmony.jndi.provider.ldap.asn1;
 
+import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Constants;
+import org.apache.harmony.security.asn1.ASN1Enumerated;
 import org.apache.harmony.security.asn1.ASN1Implicit;
+import org.apache.harmony.security.asn1.ASN1Integer;
 import org.apache.harmony.security.asn1.ASN1OctetString;
+import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1SetOf;
 import org.apache.harmony.security.asn1.ASN1Type;
@@ -28,6 +32,11 @@ import org.apache.harmony.security.asn1.ASN1Type;
  * This class contains all ASN.1 type defined in RFC 2251.
  */
 public class LdapASN1Constant {
+
+    public static final int OP_BIND_REQUEST = 0;
+
+    public static final int OP_BIND_RESPONSE = 1;
+
     public static final int OP_ADD_REQUEST = 9;
     
     public static final int OP_ADD_RESPONSE = 10;
@@ -45,6 +54,72 @@ public class LdapASN1Constant {
             ASN1Constants.CLASS_APPLICATION, 8, new ASN1SequenceWrap(
                     new ASN1Type[] { ASN1OctetString.getInstance(), // entry
                             AttributeList })); // attributes
+    
+    public static final ASN1Type SaslCredentials = new ASN1SequenceWrap(
+            new ASN1Type[] { ASN1OctetString.getInstance(), // mechanism
+                    ASN1OctetString.getInstance() }) { // credentials
+        {
+            setOptional(1); // credentials is optional
+        }
+    };
+    
+    public static final ASN1Type AuthenticationChoice = new ASN1ChoiceWrap(
+            new ASN1Type[] {
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 0, // simple
+                            ASN1OctetString.getInstance()),
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 3, // sasl
+                            SaslCredentials) });
+    
+    public static final ASN1Type LDAPResult = new ASN1SequenceWrap(
+            new ASN1Type[] { ASN1Enumerated.getInstance(), // resultCode
+                    ASN1OctetString.getInstance(), // matchedDN
+                    ASN1OctetString.getInstance(), // errorMessage
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 3, // referral
+                            new ASN1SequenceOf(ASN1OctetString.getInstance())) }) {
+        {
+            setOptional(3); // referral is optional
+        }
+    };
+    
+    public static final ASN1Type Control = new ASN1SequenceWrap(new ASN1Type[] {
+            ASN1OctetString.getInstance(), // controlType
+            ASN1Boolean.getInstance(), // criticality
+            ASN1OctetString.getInstance() }) { // controlValue
+        {
+            setDefault(Boolean.FALSE, 1); // criticality default false
+            setOptional(2); // controlValue is optional
+        }
+    };
+    
+    public static final ASN1Type BindRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 0, new ASN1SequenceWrap(
+                    new ASN1Type[] { ASN1Integer.getInstance(), // version
+                            ASN1OctetString.getInstance(), // name
+                            AuthenticationChoice })); // authentication
+    
+    public static final ASN1Type BindResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 1, Utils.conjoinSequence(
+                    (ASN1Sequence) LDAPResult, // result
+                    new ASN1SequenceWrap(new ASN1Type[] { new ASN1Implicit(
+                            ASN1Constants.CLASS_CONTEXTSPECIFIC, 7, // serverSaslCreds
+                            ASN1OctetString.getInstance()) }) {
+                        {
+                            setOptional(0); // serverSaslCreds is optional
+                        }
+                    }));
+    
+    public static final ASN1Type LDAPMessage = new ASN1SequenceWrap(
+            new ASN1Type[] {
+                    ASN1Integer.getInstance(),
+                    new ASN1ChoiceWrap(new ASN1Type[] { BindRequest,
+                            BindResponse, 
+                            AddRequest, 
+                            }),
+                    new ASN1SequenceOf(Control) }) {
+        {
+            setOptional(2);
+        }
+    };
     
 
 }
