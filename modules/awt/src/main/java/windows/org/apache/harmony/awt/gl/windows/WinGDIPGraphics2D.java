@@ -186,7 +186,12 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
             if (img == null) {
                 config = new WinGraphicsConfiguration(nw.getId(), getDC());
             } else {
-                config = new WinGraphicsConfiguration(getDC());
+                long hwnd = img.getHWND();
+                if(hwnd != 0){
+                    config = new WinGraphicsConfiguration(hwnd, getDC());
+                }else{
+                    config = img.getGraphicsConfiguration();
+                }
             }
         }
 
