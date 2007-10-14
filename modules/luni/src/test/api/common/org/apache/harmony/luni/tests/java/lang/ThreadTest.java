@@ -262,10 +262,13 @@ public class ThreadTest extends junit.framework.TestCase {
 	 */
 	public void test_activeCount() {
 		// Test for method int java.lang.Thread.activeCount()
-		Thread t = new Thread(new SimpleThread(1));
-		int active = Thread.activeCount();
-		assertTrue("Incorrect read made: " + active, active > 0);
-		t.start();
+		Thread t = new Thread(new SimpleThread(10));
+		int active = 0;
+		synchronized (t) {
+			t.start();
+			active = Thread.activeCount();
+		}
+		assertTrue("Incorrect activeCount for current group: " + active, active > 1);
 		try {
 			t.join();
 		} catch (InterruptedException e) {
