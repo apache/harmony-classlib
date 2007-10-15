@@ -582,6 +582,7 @@ public abstract class FileChannelImpl extends FileChannel {
         long[] handles = new long[length];
         int[] offsets = new int[length];
         int[] lengths = new int[length];
+        ByteBuffer[] bufferRefs = new ByteBuffer[length];
         for (int i = 0; i < length; i++) {
             ByteBuffer buffer = buffers[i + offset];
             if (!buffer.isDirect()) {
@@ -596,6 +597,7 @@ public abstract class FileChannelImpl extends FileChannel {
             }
             handles[i] = ((DirectBuffer) buffer).getEffectiveAddress().toLong();
             lengths[i] = buffer.remaining();
+            bufferRefs[i] = buffer;
         }
 
         long bytesWritten = 0;
