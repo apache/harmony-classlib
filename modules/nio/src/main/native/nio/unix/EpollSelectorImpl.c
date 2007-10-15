@@ -16,10 +16,58 @@
  */
 
 #include <jni.h>
-#include <sys/epoll.h>
+#include <linux/version.h>
 #include "hysock.h"
 #include "hyport.h"
 #include "EpollSelectorImpl.h"
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
+
+// use kernel 2.6 epoll facility
+#include <sys/epoll.h>
+
+#else
+
+// make the stubs for epoll to fail gently
+
+#define EPOLLIN 0
+#define EPOLLOUT 0
+#define EPOLLPRI 0
+
+#define EPOLL_CTL_ADD 0
+#define EPOLL_CTL_DEL 0
+
+typedef union epoll_data {
+  int fd;
+} epoll_data_t;
+
+struct epoll_event {
+   __uint32_t events;  /* Epoll events */
+   epoll_data_t data;  /* User data variable */
+};
+
+
+void fail_msg() {
+	printf("No epoll facility support, please make sure you have build and run on 2.6.x kernel\n");
+	exit(0);
+}
+
+int epoll_create(int size) {
+	fail_msg();
+	return -1;
+}
+
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event) {
+	fail_msg();
+	return -1;
+}
+
+int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout) {
+	fail_msg();
+	return -1;
+}
+
+#endif
 /* Header for class org_apache_harmony_nio_internal_EPollSelectorImpl */
 
 //#define EPOLL_DEBUG 
