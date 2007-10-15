@@ -128,10 +128,6 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
     // This flag is used in paintSafely, modelToView, viewToModel methods.
     private boolean                isActive             = false;
 
-    // Defined, whether document is instance of AbstractDocument or not.
-    // This flag is calculated only when document is replaced by other.
-    private boolean                isAbstractDocument   = false;
-
     // This flag is used in Listener.InsertUpdate method. It need not to lock
     // document in DocumentListener. Then modelChanged method defines, it need
     // to lock document or not
@@ -283,13 +279,11 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
             if (StringConstants.TEXT_COMPONENT_DOCUMENT_PROPERTY.equals(name)) {
                 if (document != null) {
                     document.removeDocumentListener(listener);
-                    isAbstractDocument = false;
                 }
                 Object doc = e.getNewValue();
                 if (doc != null) {
                     setDocument((Document)doc);
                     document.addDocumentListener(listener);
-                    isAbstractDocument = (document instanceof AbstractDocument);
                     modelChanged();
                 }
             } else if (StringConstants.COMPONENT_ORIENTATION.equals(name)) {
@@ -724,7 +718,6 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
             setDocument(component.getDocument());
         }
 
-        isAbstractDocument = (document instanceof AbstractDocument);
         modelChanged();
 
         ((AbstractDocument)component.getDocument())
@@ -757,8 +750,10 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
      *
      */
     protected void modelChanged() {
+        final Document doc = document;
+
         if (needLock) {
-            readLock();
+            readLock(doc);
         }
         try {
             setDocument(document);
@@ -768,7 +763,7 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
             setViewSize();
         } finally {
             if (needLock) {
-                readUnlock();
+                readUnlock(doc);
             }
         }
         if (component != null) {
@@ -784,7 +779,9 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
     public Rectangle modelToView(final JTextComponent comp, final int p,
                                  final Position.Bias b)
             throws BadLocationException {
-        readLock();
+        final Document doc = document;
+    	
+        readLock(doc);
         try {
             Rectangle r = null;
             if (isActive) {
@@ -799,7 +796,7 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
              }
              return r;
         } finally {
-            readUnlock();
+            readUnlock(doc);
         }
     }
 
@@ -823,7 +820,10 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
         if (!isActive) {
             return;
         }
-        readLock();
+        
+        final Document doc = document;
+        
+        readLock(doc);
         try {
             Highlighter highlighter = component.getHighlighter();
             Caret caret = component.getCaret();
@@ -840,7 +840,7 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
             }
             caret.paint(g);
         } finally {
-            readUnlock();
+            readUnlock(doc);
         }
     }
 
@@ -1002,15 +1002,15 @@ public abstract class BasicTextUI extends TextUI implements ViewFactory {
         }
     }
 
-    private void readLock() {
-        if (isAbstractDocument) {
-            ((AbstractDocument)document).readLock();
+    private void readLock(final Document doc) {
+        if (doc instanceof AbstractDocument) {
+            ((AbstractDocument)doc).readLock();
         }
     }
 
-    private void readUnlock() {
-        if (isAbstractDocument) {
-            ((AbstractDocument)document).readUnlock();
+    private void readUnlock(final Document doc) {
+        if (doc instanceof AbstractDocument) {
+            ((AbstractDocument)doc).readUnlock();
         }
     }
 
