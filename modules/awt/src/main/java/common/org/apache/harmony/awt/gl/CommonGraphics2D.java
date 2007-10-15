@@ -55,6 +55,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,13 +130,16 @@ public abstract class CommonGraphics2D extends Graphics2D {
 	private static final Map<RenderingHints.Key, Object> DEFAULT_RENDERING_HINTS;
 
 	static {
-		DEFAULT_RENDERING_HINTS = new HashMap<RenderingHints.Key, Object>();
-		DEFAULT_RENDERING_HINTS.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+		final Map<RenderingHints.Key, Object> m = new HashMap<RenderingHints.Key, Object>();
+
+		m.put(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-		DEFAULT_RENDERING_HINTS.put(RenderingHints.KEY_ANTIALIASING,
+		m.put(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_OFF);
-		DEFAULT_RENDERING_HINTS.put(RenderingHints.KEY_STROKE_CONTROL,
+		m.put(RenderingHints.KEY_STROKE_CONTROL,
 				RenderingHints.VALUE_STROKE_DEFAULT);
+
+		DEFAULT_RENDERING_HINTS = Collections.unmodifiableMap(m);
 	}
 	
     protected Surface dstSurf = null;
@@ -966,6 +970,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     @Override
     public void setRenderingHints(Map<?,?> hints) {
         this.hints.clear();
+        this.hints.putAll(DEFAULT_RENDERING_HINTS);
         this.hints.putAll(hints);
     }
 

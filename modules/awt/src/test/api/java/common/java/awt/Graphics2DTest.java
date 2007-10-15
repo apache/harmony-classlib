@@ -18,6 +18,8 @@
 package java.awt;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -68,5 +70,27 @@ public class Graphics2DTest extends TestCase {
 				RenderingHints.VALUE_ANTIALIAS_OFF);
 		assertEquals(g2d.getRenderingHint(RenderingHints.KEY_STROKE_CONTROL),
 				RenderingHints.VALUE_STROKE_DEFAULT);
+	}
+    
+    public void testSetRenderingHint() {
+		// Regression test for HARMONY-4920
+		final Graphics2D g2d = (Graphics2D) frame.getGraphics();
+		final Map<RenderingHints.Key, Object> m = new HashMap<RenderingHints.Key, Object>();
+
+		m.put(RenderingHints.KEY_ALPHA_INTERPOLATION,
+				RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+		m.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+
+		g2d.setRenderingHints(m);
+
+		assertEquals(RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY, g2d
+				.getRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION));
+		assertEquals(RenderingHints.VALUE_TEXT_ANTIALIAS_OFF, g2d
+				.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
+		assertEquals(RenderingHints.VALUE_ANTIALIAS_OFF, g2d
+				.getRenderingHint(RenderingHints.KEY_ANTIALIASING));
+		assertEquals(RenderingHints.VALUE_STROKE_DEFAULT, g2d
+				.getRenderingHint(RenderingHints.KEY_STROKE_CONTROL));
 	}
 }
