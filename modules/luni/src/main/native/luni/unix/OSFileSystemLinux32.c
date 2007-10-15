@@ -202,7 +202,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
   jint *offsets;
   jint *lengths;
   int i = 0;
-  long totalRead = 0;  
+  long totalWritten = 0;  
   struct iovec *vectors = (struct iovec *)hymem_allocate_memory(size * sizeof(struct iovec));
   if(vectors == NULL){
     return -1;
@@ -215,7 +215,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
     vectors[i].iov_len = lengths[i];
     i++;
   }
-  totalRead = writev(fd, vectors, size);
+  totalWritten = writev(fd, vectors, size);
   if(bufsCopied){
     (*env)->ReleaseLongArrayElements(env, jbuffers, bufs, JNI_ABORT);
   }
@@ -226,7 +226,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_write
     (*env)->ReleaseIntArrayElements(env, jlengths, lengths, JNI_ABORT);
   }
   hymem_free_memory(vectors);
-  return totalRead;
+  return totalWritten;
 }
 
 /*
