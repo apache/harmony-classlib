@@ -590,7 +590,8 @@ initNLSCatalog (HyPortLibrary * portLib)
 {
   char *endPathPtr = NULL;
   char *launcherName = NULL;
-  char **pathSet = portLib->mem_allocate_memory (portLib, sizeof(char*)*2);
+  const char **pathSet =
+          portLib->mem_allocate_memory (portLib, sizeof(char*)*2);
   char *vmPath = NULL;
 
   hysysinfo_get_executable_name (portLib, NULL, &launcherName);
