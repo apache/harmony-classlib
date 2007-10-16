@@ -1786,13 +1786,13 @@ JNIEXPORT jlong JNICALL
     XftPatternDel(mpattern, XFT_ANTIALIAS);
     if (isAntialiasing) {
         if (!XftPatternAddBool(mpattern, XFT_ANTIALIAS, True)) {
-            newNullPointerException(env,
+            throwNPException(env,
                 "Error during adding font antialias set to true to XFTPattern structure");
         }
 	}
     else {
         if (!XftPatternAddBool(mpattern, XFT_ANTIALIAS, False)) {
-            newNullPointerException(env,
+            throwNPException(env,
                 "Error during adding font antialias set to false to XFTPattern structure");
         }
     }
