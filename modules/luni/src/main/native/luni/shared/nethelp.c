@@ -1603,12 +1603,6 @@ new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID)
   IDATA descriptor;
   PORT_ACCESS_FROM_ENV (env);
 
-  descriptorFID = getJavaIoFileDescriptorDescriptorFID (env);
-  if (NULL == descriptorFID)
-    {
-      return;
-    }
-
   /* fetch the fd field from the object */
   fd = (*env)->GetObjectField (env, recv, fdFID);
 
