@@ -37,9 +37,10 @@ public class LdapASN1Constant {
 
     public static final int OP_BIND_RESPONSE = 1;
 
-    public static final int OP_ADD_REQUEST = 9;
+    // FIXME change them to appropriate index number in the future.
+    public static final int OP_ADD_REQUEST = 2;
     
-    public static final int OP_ADD_RESPONSE = 10;
+    public static final int OP_ADD_RESPONSE = 3;
     
     public static final ASN1Type Attribute = new ASN1SequenceWrap(
             new ASN1Type[] { ASN1OctetString.getInstance(), // type
@@ -81,6 +82,9 @@ public class LdapASN1Constant {
         }
     };
     
+    public static final ASN1Type AddResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 9, LDAPResult);
+    
     public static final ASN1Type Control = new ASN1SequenceWrap(new ASN1Type[] {
             ASN1OctetString.getInstance(), // controlType
             ASN1Boolean.getInstance(), // criticality
@@ -112,8 +116,9 @@ public class LdapASN1Constant {
             new ASN1Type[] {
                     ASN1Integer.getInstance(),
                     new ASN1ChoiceWrap(new ASN1Type[] { BindRequest,
-                            BindResponse, 
-                            AddRequest, 
+                            BindResponse,
+                            AddRequest,
+                            AddResponse,
                             }),
                     new ASN1SequenceOf(Control) }) {
         {

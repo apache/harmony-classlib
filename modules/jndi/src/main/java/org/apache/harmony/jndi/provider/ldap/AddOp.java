@@ -62,7 +62,7 @@ final public class AddOp implements LdapOperation, ASN1Encodable {
     }
 
     public ASN1Decodable getResponse() {
-        return (result == null) ? new LdapResult() : result;
+        return result = (result == null) ? new LdapResult() : result;
     }
 
     public int getResponseId() {
