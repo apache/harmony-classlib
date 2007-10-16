@@ -21,8 +21,6 @@
 #include "harmonyglob.h"
 #include "exceptions.h"
 
-jfieldID getJavaIoFileDescriptorDescriptorFID (JNIEnv * env);
-
 /**
  * Set up JNI ID Caches.
  *
@@ -1662,33 +1660,4 @@ ioLookupErrorString (JNIEnv * env, I_32 anErrorNum)
     default:
       return (char *) hyfile_error_message ();
     }
-}
-
-/**
-  * This will retrieve the 'descriptor' field value from a java.io.FileDescriptor
-  */
-jfieldID
-getJavaIoFileDescriptorDescriptorFID (JNIEnv * env)
-{
-  jclass descriptorCLS;
-  jfieldID descriptorFID;
-
-  descriptorFID =
-    HARMONY_CACHE_GET (env, FID_java_io_FileDescriptor_descriptor);
-  if (NULL != descriptorFID)
-    {
-      return descriptorFID;
-    }
-  descriptorCLS = (*env)->FindClass (env, "java/io/FileDescriptor");
-  if (NULL == descriptorCLS)
-    {
-      return NULL;
-    }
-  descriptorFID = (*env)->GetFieldID (env, descriptorCLS, "descriptor", "J");
-  if (NULL == descriptorFID)
-    {
-      return NULL;
-    }
-  HARMONY_CACHE_SET (env, FID_java_io_FileDescriptor_descriptor, descriptorFID);
-  return descriptorFID;
 }
