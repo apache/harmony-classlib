@@ -5025,7 +5025,7 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
             }
           /* we are done if the NLM_F_MULTI flag is not set in this header */
           *nextMessage = netlinkContext->netlinkHeader;
-          if (netlinkContext->netlinkHeader->nlmsg_flags & NLM_F_MULTI !=
+          if ((netlinkContext->netlinkHeader->nlmsg_flags & NLM_F_MULTI) !=
               NLM_F_MULTI)
             {
               netlinkContext->done = 1;
