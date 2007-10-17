@@ -25,12 +25,6 @@ extern "C"
 #include "vmi.h"
 
 
-  /* NativesCommonPlainServerSocketImpl*/
-  JNIEXPORT void JNICALL
-    Java_java_net_PlainServerSocketImpl_createServerStreamSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject thisObjFD,
-                jboolean preferIPv4Stack));
-                
   /* NativesCommonDeflater*/
   JNIEXPORT void JNICALL Java_java_util_zip_Deflater_setDictionaryImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray dict, int off, int len,
@@ -60,40 +54,6 @@ extern "C"
   JNIEXPORT jint JNICALL Java_java_util_zip_Deflater_getAdlerImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jlong handle));
 
-  /* NativesCommonPlainSocketImpl2*/
-  JNIEXPORT void JNICALL
-    Java_java_net_PlainSocketImpl2_connectStreamWithTimeoutSocketImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jint remotePort, jint timeout, jint trafficClass,
-                jobject inetAddress));
-  JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl2_socketBindImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jint localPort, jobject inetAddress));
-  JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl2_createStreamSocketImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject thisObjFD,
-                jboolean preferIPv4Stack));
-  JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl2_connectStreamSocketImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jint remotePort, jint trafficClass, jobject inetAddress));
-  JNIEXPORT jint JNICALL Java_java_net_PlainSocketImpl2_sendDatagramImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jbyteArray data, jint offset, jint msgLength, jint targetPort,
-                jobject inetAddress));
-                
-  /* NativesCommonFileOutputStream*/
-  JNIEXPORT jint JNICALL Java_java_io_FileOutputStream_openImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray path,
-                jboolean append));
-  JNIEXPORT void JNICALL Java_java_io_FileOutputStream_closeImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT void JNICALL Java_java_io_FileOutputStream_writeByteImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jint c, jlong descriptor));
-  JNIEXPORT void JNICALL Java_java_io_FileOutputStream_writeImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
-                jint count, jlong descriptor));
-  JNIEXPORT void JNICALL Java_java_io_FileOutputStream_oneTimeInitialization
-    PROTOTYPE ((JNIEnv * env, jclass clazz));
-    
   /* NativesCommonDoubleParsing*/
   JNIEXPORT jdouble JNICALL
     Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl
@@ -117,40 +77,6 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buf, int off, int len,
                 jlong crc));
                 
-  /* NativesCommonSocketImpl*/
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_listenStreamSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jint backlog));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_acceptStreamSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptorServer,
-                jobject socketImpl, jobject fileDescriptorSocketImpl,
-                jint timeout));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_sendUrgentDataImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jbyte data));
-  JNIEXPORT jint JNICALL Java_java_net_SocketImpl_receiveStreamImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jbyteArray data, jint offset, jint count, jint timeout));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_createStreamSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject thisObjFD,
-                jboolean preferIPv4Stack));
-  JNIEXPORT jint JNICALL Java_java_net_SocketImpl_sendStreamImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jbyteArray data, jint offset, jint count));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_shutdownOutputImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_createDatagramSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject thisObjFD,
-                jboolean preferIPv4Stack));
-  JNIEXPORT jint JNICALL Java_java_net_SocketImpl_availableStreamImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-  JNIEXPORT jboolean JNICALL Java_java_net_SocketImpl_supportsUrgentDataImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_shutdownInputImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-  JNIEXPORT void JNICALL Java_java_net_SocketImpl_oneTimeInitialization
-    PROTOTYPE ((JNIEnv * env, jclass clazz, jboolean jcl_supports_ipv6));
-    
   /* NativesCommonFile*/
   JNIEXPORT jboolean JNICALL Java_java_io_File_mkdirImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray path));
@@ -198,23 +124,6 @@ extern "C"
   JNIEXPORT jboolean JNICALL Java_java_io_File_existsImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray path));
   JNIEXPORT jboolean JNICALL Java_java_io_File_setReadOnlyImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray path));
-    
-  /* NativesCommonFileInputStream*/
-  JNIEXPORT jint JNICALL Java_java_io_FileInputStream_readByteImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jlong descriptor));
-  JNIEXPORT jint JNICALL Java_java_io_FileInputStream_readImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
-                jint count, jlong descriptor));
-  JNIEXPORT void JNICALL Java_java_io_FileInputStream_oneTimeInitialization
-    PROTOTYPE ((JNIEnv * env, jclass clazz));
-  JNIEXPORT void JNICALL Java_java_io_FileInputStream_closeImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT jlong JNICALL Java_java_io_FileInputStream_skip
-    PROTOTYPE ((JNIEnv * env, jobject recv, jlong count));
-  JNIEXPORT jint JNICALL Java_java_io_FileInputStream_available
-    PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT jint JNICALL Java_java_io_FileInputStream_openImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray path));
     
   /* NativesCommonObjectInputStream*/
@@ -327,62 +236,19 @@ extern "C"
   char *readCodepageMappings
     PROTOTYPE ((JNIEnv * env, char *codepage, char *codepageResult,
                 int resultSize));
-                
+
   /* NativesCommonProxy*/
   JNIEXPORT jclass JNICALL Java_java_lang_reflect_Proxy_defineClassImpl
     PROTOTYPE ((JNIEnv * env, jclass recvClass, jobject classLoader,
                 jstring className, jbyteArray classBytes));
-  JNIEXPORT jclass JNICALL
-    Java_java_lang_reflect_Proxy_defineClass0__Ljava_lang_ClassLoader_2Ljava_lang_String_2_3BIILjava_lang_Object_2_3Ljava_lang_Object_2Ljava_lang_Object_2
-    PROTOTYPE ((JNIEnv * env, jclass recvClass, jobject classLoader,
-                jstring className, jbyteArray classBytes, jint offset,
-                jint length, jobject pd, jobject signers, jobject source));
-  JNIEXPORT jclass JNICALL
-    Java_java_lang_reflect_Proxy_defineClass0__Ljava_lang_ClassLoader_2Ljava_lang_String_2_3BII
-    PROTOTYPE ((JNIEnv * env, jclass recvClass, jobject classLoader,
-                jstring className, jbyteArray classBytes, jint offset,
-                jint length));
-                
+ 
   /* NativesCommonGlobals*/
   JNIEXPORT void JNICALL JNI_OnUnload PROTOTYPE ((JavaVM * vm, void *reserved));
   JNIEXPORT jint JNICALL JCL_OnLoad PROTOTYPE ((JavaVM * vm, void *reserved));
   
-  /* NativesCommonRuntime*/
-  JNIEXPORT jlong JNICALL Java_java_lang_Runtime_maxMemoryImpl
-    PROTOTYPE ((JNIEnv * env, jclass cls));
-  JNIEXPORT jint JNICALL Java_java_lang_Runtime_availableProcessorsImpl
-    PROTOTYPE ((JNIEnv * env, jclass cls));
-    
   /* NativesCommonJarFile*/
   JNIEXPORT jarray JNICALL Java_java_util_jar_JarFile_getMetaEntriesImpl
     PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray zipName));
-    
-  /* NativesCommonRandomAccessFile*/
-  JNIEXPORT jint JNICALL Java_java_io_RandomAccessFile_readImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
-                jint count, jlong descriptor));
-  JNIEXPORT void JNICALL Java_java_io_RandomAccessFile_seek
-    PROTOTYPE ((JNIEnv * env, jobject recv, jlong pos));
-  JNIEXPORT void JNICALL Java_java_io_RandomAccessFile_closeImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT jlong JNICALL Java_java_io_RandomAccessFile_length
-    PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT jlong JNICALL Java_java_io_RandomAccessFile_getFilePointer
-    PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT void JNICALL Java_java_io_RandomAccessFile_setLengthImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jlong newLength));
-  JNIEXPORT void JNICALL Java_java_io_RandomAccessFile_writeImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
-                jint count, jlong descriptor));
-  JNIEXPORT jint JNICALL Java_java_io_RandomAccessFile_readByteImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jlong descriptor));
-  JNIEXPORT void JNICALL Java_java_io_RandomAccessFile_oneTimeInitialization
-    PROTOTYPE ((JNIEnv * env, jclass rafClazz));
-  JNIEXPORT jint JNICALL Java_java_io_RandomAccessFile_openImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jbyteArray path,
-                jboolean writable));
-  JNIEXPORT void JNICALL Java_java_io_RandomAccessFile_writeByteImpl
-    PROTOTYPE ((JNIEnv * env, jobject recv, jint c, jlong descriptor));
     
   /* NativesCommonObjectOutputStream*/
   JNIEXPORT jfloat JNICALL Java_java_io_ObjectOutputStream_getFieldFloat
@@ -418,33 +284,9 @@ extern "C"
   void createSocket
     PROTOTYPE ((JNIEnv * env, jobject thisObjFD, int sockType,
                 jboolean preferIPv4Stack));
-  JNIEXPORT void JNICALL Java_java_net_Socket_socketCloseImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-  JNIEXPORT void JNICALL Java_java_net_Socket_oneTimeInitialization
-    PROTOTYPE ((JNIEnv * env, jclass clazz, jboolean jcl_supports_ipv6));
-  JNIEXPORT jobject JNICALL Java_java_net_Socket_getSocketLocalAddressImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jboolean preferIPv6Addresses));
-  JNIEXPORT jobject JNICALL Java_java_net_Socket_getSocketOptionImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject aFileDescriptor,
-                jint anOption));
-  JNIEXPORT void JNICALL Java_java_net_Socket_setSocketOptionImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject aFileDescriptor,
-                jint anOption, jobject aValue));
-  JNIEXPORT jint JNICALL Java_java_net_Socket_getSocketFlags
-    PROTOTYPE ((JNIEnv * env, jclass thisClz));
-  JNIEXPORT jint JNICALL Java_java_net_Socket_getSocketLocalPortImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jboolean preferIPv6Addresses));
   I_32 pollSelectRead
     PROTOTYPE ((JNIEnv * env, jobject fileDescriptor, jint timeout,
                 BOOLEAN poll));
-                
-  /* NativesCommonPlainMulticastSocketImpl*/
-  JNIEXPORT void JNICALL
-    Java_java_net_PlainMulticastSocketImpl_createMulticastSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject thisObjFD,
-                jboolean preferIPv4Stack));
                 
   /* NativesCommonZipFile*/
   void throwJavaZIOException PROTOTYPE ((JNIEnv * env, const char *message));
@@ -487,9 +329,7 @@ extern "C"
   JNIEXPORT jobject JNICALL Java_java_net_InetAddress_getHostByNameImpl
     PROTOTYPE ((JNIEnv * env, jclass clazz, jstring aName,
                 jboolean preferIPv6Addresses));
-  JNIEXPORT jobjectArray JNICALL Java_java_net_InetAddress_getAliasesByAddrImpl
-    PROTOTYPE ((JNIEnv * env, jclass clazz, jstring addr));
-    
+
   /* NativesCommonTimeZone*/
   JNIEXPORT jstring JNICALL Java_java_util_TimeZone_getCustomTimeZone
     PROTOTYPE ((JNIEnv * env, jclass clazz, jintArray tzinfo,
@@ -519,7 +359,6 @@ extern "C"
   jobjectArray createAliasArrayFromAddrinfo
     PROTOTYPE ((JNIEnv * env, hyaddrinfo_t addresses, char *hName));
   BOOLEAN booleanValue PROTOTYPE ((JNIEnv * env, jobject aBoolean));
-  BOOLEAN jcl_supports_ipv6 PROTOTYPE ((JNIEnv * env));
   jobject newJavaLangInteger PROTOTYPE ((JNIEnv * env, I_32 anInt));
   BOOLEAN preferIPv4Stack PROTOTYPE ((JNIEnv * env));
   char *netLookupErrorString PROTOTYPE ((JNIEnv * env, I_32 anErrorNum));
@@ -561,22 +400,6 @@ extern "C"
   void throwNPException PROTOTYPE ((JNIEnv* env, const char* message));
   void throwIndexOutOfBoundsException PROTOTYPE ((JNIEnv* env));
 
-  /* NativesCommonSocket*/
-  void throwSocketException PROTOTYPE ((JNIEnv * env, I_32 errorNumber));
-  I_32 conPollSelectRead
-    PROTOTYPE ((JNIEnv * env, jobject socket, jint timeout, BOOLEAN poll,
-                BOOLEAN accept));
-  void *getSocketDescriptor PROTOTYPE ((JNIEnv * env, jobject fd));
-  void setSocketDescriptor
-    PROTOTYPE ((JNIEnv * env, jobject fd, void *value));
-  JNIEXPORT jstring JNICALL Java_java_lang_System_getHostnameImpl
-    PROTOTYPE ((JNIEnv * env, jclass clazz));
-  void conUpdateSocket
-    PROTOTYPE ((JNIEnv * env, hysockaddr_t sockaddrP, jobject socket,
-                int remote));
-  hysocket_t createAndBindSocket
-    PROTOTYPE ((JNIEnv * env, jobject socket, int sockType, int localPort));
-                
   /* NativesCommonFileDescriptor*/
   JNIEXPORT void JNICALL Java_java_io_FileDescriptor_oneTimeInitialization
     PROTOTYPE ((JNIEnv * env, jclass fdClazz));
@@ -617,45 +440,6 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jobject recv, jobject arg1, jlong arg2));
   JNIEXPORT void JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitialization
     PROTOTYPE ((JNIEnv * env, jclass clazz));
-    
-  /* NativesCommonPlainDatagramSocketImpl*/
-  JNIEXPORT jint JNICALL Java_java_net_PlainDatagramSocketImpl_sendDatagramImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jbyteArray data, jint offset, jint msgLength, jint targetPort,
-                jboolean bindToDevice, jint trafficClass,
-                jobject inetAddress));
-  JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_createDatagramSocketImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject thisObjFD,
-                jboolean preferIPv4Stack));
-  JNIEXPORT jint JNICALL Java_java_net_PlainDatagramSocketImpl_peekDatagramImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jobject senderAddress, jint timeout));
-  JNIEXPORT jint JNICALL Java_java_net_PlainDatagramSocketImpl_sendConnectedDatagramImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jbyteArray data, jint offset, jint msgLength,
-                jboolean bindToDevice));
-  JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_oneTimeInitialization
-    PROTOTYPE ((JNIEnv * env, jclass clazz, jboolean ipv6support));
-  JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_connectDatagramImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jint remotePort, jint trafficClass, jobject inetAddress));
-  JNIEXPORT jint JNICALL Java_java_net_PlainDatagramSocketImpl_receiveDatagramImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jobject datagramPacket, jbyteArray data, jint offset,
-                jint msgLength, jint timeout, jboolean peek));
-  JNIEXPORT jint JNICALL Java_java_net_PlainDatagramSocketImpl_receiveDatagramImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jobject datagramPacket, jbyteArray data, jint offset,
-                jint msgLength, jint timeout));
-  JNIEXPORT jboolean JNICALL Java_java_net_PlainDatagramSocketImpl_socketBindImpl2
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jint localPort, jboolean doDevice, jobject inetAddress));
-  JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_disconnectDatagramImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-  JNIEXPORT jint JNICALL Java_java_net_PlainDatagramSocketImpl_recvConnectedDatagramImpl
-    PROTOTYPE ((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-                jobject datagramPacket, jbyteArray data, jint offset,
-                jint msgLength, jint timeout, jboolean peek));
     
   /************************************************************
   ** COMPONENT: NativesWin32
