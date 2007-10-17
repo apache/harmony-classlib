@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import junit.framework.Assert;
 
+import org.apache.harmony.jndi.provider.ldap.DeleteOp;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1ChoiceWrap.ChosenValue;
 import org.apache.harmony.security.asn1.ASN1Boolean;
 import org.apache.harmony.security.asn1.ASN1Enumerated;
@@ -49,6 +50,11 @@ public class ASN1TestUtils {
         } else if (type instanceof ASN1Boolean) {
             Assert.assertTrue(value instanceof Boolean);
         } else if (type instanceof ASN1OctetString) {
+            if(value instanceof DeleteOp) {
+                Object[] objs = new Object[1];
+                ((DeleteOp)value).encodeValues(objs);
+                value = objs[0];
+            }
             Assert.assertTrue(value instanceof byte[]);
         } else if (type instanceof ASN1SequenceWrap) {
             checkEncodeSequence(value, (ASN1SequenceWrap) type);

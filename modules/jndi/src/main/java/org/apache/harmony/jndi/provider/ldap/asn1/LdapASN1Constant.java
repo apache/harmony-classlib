@@ -41,6 +41,10 @@ public class LdapASN1Constant {
     public static final int OP_ADD_REQUEST = 2;
     
     public static final int OP_ADD_RESPONSE = 3;
+
+    public static final int OP_DEL_REQUEST = 4;
+
+    public static final int OP_DEL_RESPONSE = 5;
     
     public static final ASN1Type Attribute = new ASN1SequenceWrap(
             new ASN1Type[] { ASN1OctetString.getInstance(), // type
@@ -112,6 +116,13 @@ public class LdapASN1Constant {
                         }
                     }));
     
+    public static final ASN1Type DelRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 10, ASN1OctetString.getInstance());
+    
+    
+    public static final ASN1Type DelResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 11, LDAPResult);
+    
     public static final ASN1Type LDAPMessage = new ASN1SequenceWrap(
             new ASN1Type[] {
                     ASN1Integer.getInstance(),
@@ -119,12 +130,12 @@ public class LdapASN1Constant {
                             BindResponse,
                             AddRequest,
                             AddResponse,
+                            DelRequest,
+                            DelResponse,
                             }),
                     new ASN1SequenceOf(Control) }) {
         {
             setOptional(2);
         }
     };
-    
-
 }

@@ -137,7 +137,14 @@ public class LdapMessage implements ASN1Encodable {
 
     public void encodeValues(Object[] values) {
         values[0] = ASN1Integer.fromIntValue(messageId);
-        values[1] = new ChosenValue(opIndex, requestOp);
+        // DelRequest are ASN.1 primitive
+        if (opIndex == LdapASN1Constant.OP_DEL_REQUEST) {
+            Object[] objs = new Object[1];
+            requestOp.encodeValues(objs);
+            values[1] = new ChosenValue(opIndex, objs[0]);
+        } else {
+            values[1] = new ChosenValue(opIndex, requestOp);
+        }
     }
 
     /**
