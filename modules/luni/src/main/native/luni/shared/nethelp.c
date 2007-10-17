@@ -1597,7 +1597,6 @@ void
 new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID)
 {
   jobject fd;
-  jfieldID descriptorFID;
   IDATA descriptor;
   PORT_ACCESS_FROM_ENV (env);
 
