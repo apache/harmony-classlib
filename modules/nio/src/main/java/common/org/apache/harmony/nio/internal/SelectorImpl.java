@@ -29,12 +29,11 @@ import java.nio.channels.spi.AbstractSelectableChannel;
 import java.nio.channels.spi.AbstractSelectionKey;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
@@ -42,7 +41,6 @@ import org.apache.harmony.luni.platform.Platform;
 
 /*
  * Default implementation of java.nio.channels.Selector
- * 
  */
 final class SelectorImpl extends AbstractSelector {
 
@@ -64,10 +62,14 @@ final class SelectorImpl extends AbstractSelector {
     // before selection
     final Object keysLock = new Object();
 
-    private final Set<SelectionKey> keys = new HashSet<SelectionKey>();
+    boolean keySetChanged = true;
+
+    private SelectionKey[] keys = new SelectionKey[1];
+
+    private final Set<SelectionKey> keysSet = new HashSet<SelectionKey>();
 
     private Set<SelectionKey> unmodifiableKeys = Collections
-            .unmodifiableSet(keys);
+            .unmodifiableSet(keysSet);
 
     private final Set<SelectionKey> selectedKeys = new HashSet<SelectionKey>();
 
@@ -78,16 +80,26 @@ final class SelectorImpl extends AbstractSelector {
     private Pipe.SinkChannel sink;
 
     private Pipe.SourceChannel source;
-    
+
     private FileDescriptor sourcefd;
-    
-    private SelectionKey[] readableChannels;
 
-    private SelectionKey[] writableChannels;
+    private FileDescriptor[] readableFDs;
 
-    private FileDescriptor[] readable;
+    private FileDescriptor[] writableFDs;
 
-    private FileDescriptor[] writable;
+    private int lastKeyIndex = -1;
+
+    private int readableKeysCount = 0;
+
+    private int writableKeysCount = 0;
+
+    private int[] keysToReadableFDs;
+
+    private int[] keysToWritableFDs;
+
+    private int[] readableFDsToKeys;
+
+    private int[] writableFDsToKeys;
 
     public SelectorImpl(SelectorProvider selectorProvider) {
         super(selectorProvider);
@@ -95,8 +107,27 @@ final class SelectorImpl extends AbstractSelector {
             Pipe mockSelector = selectorProvider.openPipe();
             sink = mockSelector.sink();
             source = mockSelector.source();
-            sourcefd = ((FileDescriptorHandler)source).getFD();
+            sourcefd = ((FileDescriptorHandler) source).getFD();
             source.configureBlocking(false);
+
+            readableFDs = new FileDescriptor[1];
+            writableFDs = new FileDescriptor[0];
+            keysToReadableFDs = new int[1];
+            keysToWritableFDs = new int[0];
+            readableFDsToKeys = new int[1];
+            writableFDsToKeys = new int[0];
+
+            // register sink channel
+            readableFDs[0] = sourcefd;
+            keys[0] = source.keyFor(this);
+
+            // index it
+            keysToReadableFDs[0] = 0;
+            readableFDsToKeys[0] = 0;
+
+            lastKeyIndex = 0;
+            readableKeysCount = 1;
+
         } catch (IOException e) {
             // do nothing
         }
@@ -107,16 +138,226 @@ final class SelectorImpl extends AbstractSelector {
      */
     protected void implCloseSelector() throws IOException {
         synchronized (this) {
-            synchronized (keys) {
+            synchronized (keysSet) {
                 synchronized (selectedKeys) {
                     doCancel();
                     for (SelectionKey sk : keys) {
-                        deregister((AbstractSelectionKey) sk);
+                        if (sk != null) {
+                            deregister((AbstractSelectionKey) sk);
+                        }
                     }
                     wakeup();
                 }
             }
         }
+    }
+
+    private void ensureCapacity(int c) {
+        // TODO: rewrite array handling as some internal class
+        if (c >= keys.length) {
+            SelectionKey[] newKeys = new SelectionKey[(keys.length + 1) << 1];
+            System.arraycopy(keys, 0, newKeys, 0, keys.length);
+            keys = newKeys;
+        }
+
+        if (c >= keysToReadableFDs.length) {
+            int[] newKeysToReadableFDs = new int[(keysToReadableFDs.length + 1) << 1];
+            System.arraycopy(keysToReadableFDs, 0, newKeysToReadableFDs, 0,
+                    keysToReadableFDs.length);
+            keysToReadableFDs = newKeysToReadableFDs;
+        }
+
+        if (c >= keysToWritableFDs.length) {
+            int[] newKeysToWritableFDs = new int[(keysToWritableFDs.length + 1) << 1];
+            System.arraycopy(keysToWritableFDs, 0, newKeysToWritableFDs, 0,
+                    keysToWritableFDs.length);
+            keysToWritableFDs = newKeysToWritableFDs;
+        }
+
+        if (readableKeysCount >= readableFDs.length) {
+            FileDescriptor[] newReadableFDs = new FileDescriptor[(readableFDs.length + 1) << 1];
+            System.arraycopy(readableFDs, 0, newReadableFDs, 0,
+                    readableFDs.length);
+            readableFDs = newReadableFDs;
+        }
+
+        if (readableKeysCount >= readableFDsToKeys.length) {
+            int[] newReadableFDsToKeys = new int[(readableFDsToKeys.length + 1) << 1];
+            System.arraycopy(readableFDsToKeys, 0, newReadableFDsToKeys, 0,
+                    readableFDsToKeys.length);
+            readableFDsToKeys = newReadableFDsToKeys;
+        }
+
+        if (writableKeysCount >= writableFDs.length) {
+            FileDescriptor[] newWriteableFDs = new FileDescriptor[(writableFDs.length + 1) << 1];
+            System.arraycopy(writableFDs, 0, newWriteableFDs, 0,
+                    writableFDs.length);
+            writableFDs = newWriteableFDs;
+        }
+
+        if (writableKeysCount >= writableFDsToKeys.length) {
+            int[] newWritableFDsToKeys = new int[(writableFDsToKeys.length + 1) << 1];
+            System.arraycopy(writableFDsToKeys, 0, newWritableFDsToKeys, 0,
+                    writableFDsToKeys.length);
+            writableFDsToKeys = newWritableFDsToKeys;
+        }
+    }
+
+    private void limitCapacity() {
+        // TODO: implement array squeezing
+    }
+
+    /**
+     * Adds the specified key to storage and updates the indexes accordingly
+     * 
+     * @param sk
+     *            key to add
+     * @return index in the storage
+     */
+    private int addKey(SelectionKey sk) {
+
+        lastKeyIndex++;
+        int c = lastKeyIndex;
+
+        // make sure that enough space is available
+        ensureCapacity(c);
+
+        // add to keys storage
+        keys[c] = sk;
+
+        // cache the fields
+        int ops = sk.interestOps();
+        FileDescriptor fd = ((FileDescriptorHandler) sk.channel()).getFD();
+
+        // presume that we have no FD associated
+        keysToReadableFDs[c] = -1;
+        keysToWritableFDs[c] = -1;
+
+        // if readable operations requested
+        if (((SelectionKey.OP_ACCEPT | SelectionKey.OP_READ) & ops) != 0) {
+            // save as readable FD
+            readableFDs[readableKeysCount] = fd;
+
+            // create index
+            keysToReadableFDs[c] = readableKeysCount;
+            readableFDsToKeys[readableKeysCount] = c;
+
+            readableKeysCount++;
+        }
+
+        // if writable operations requested
+        if (((SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE) & ops) != 0) {
+            // save as writable FD
+            writableFDs[writableKeysCount] = fd;
+
+            // create index
+            keysToWritableFDs[c] = writableKeysCount;
+            writableFDsToKeys[writableKeysCount] = c;
+
+            writableKeysCount++;
+        }
+
+        return c;
+    }
+
+    /**
+     * Deletes the key from the internal storage and updates the indexes
+     * accordingly
+     * 
+     * @param sk
+     *            key to delete
+     */
+    private void delKey(SelectionKey sk) {
+        int index = ((SelectionKeyImpl) sk).getIndex();
+
+        // === deleting the key and FDs
+
+        // key is null now
+        keys[index] = null;
+
+        // free FDs connected with the key
+        // free indexes
+        int readableIndex = keysToReadableFDs[index];
+        if (readableIndex != -1) {
+            readableFDs[readableIndex] = null;
+            readableFDsToKeys[readableIndex] = -1;
+            keysToReadableFDs[index] = -1;
+        }
+
+        int writableIndex = keysToWritableFDs[index];
+        if (writableIndex != -1) {
+            writableFDs[writableIndex] = null;
+            writableFDsToKeys[writableIndex] = -1;
+            keysToWritableFDs[index] = -1;
+        }
+
+        // === compacting arrays and indexes
+
+        // key compaction
+        if (keys[lastKeyIndex] != null) {
+            keys[index] = keys[lastKeyIndex];
+            keys[lastKeyIndex] = null;
+
+            // update key index
+            ((SelectionKeyImpl) keys[index]).setIndex(index);
+
+            // the key in the new position references the same FDs
+            keysToReadableFDs[index] = keysToReadableFDs[lastKeyIndex];
+            keysToWritableFDs[index] = keysToWritableFDs[lastKeyIndex];
+
+            // associated FDs reference the same key at new index
+            if (keysToReadableFDs[index] != -1) {
+                readableFDsToKeys[keysToReadableFDs[index]] = index;
+            }
+
+            if (keysToWritableFDs[index] != -1) {
+                writableFDsToKeys[keysToWritableFDs[index]] = index;
+            }
+
+        }
+        lastKeyIndex--;
+
+        // readableFDs compaction
+        if (readableIndex != -1) {
+            if (readableFDs[readableKeysCount - 1] != null) {
+                readableFDs[readableIndex] = readableFDs[readableKeysCount - 1];
+
+                // new FD references the same key
+                readableFDsToKeys[readableIndex] = readableFDsToKeys[readableKeysCount - 1];
+
+                // the key references the same FD at new index
+                if (readableFDsToKeys[readableIndex] != -1) {
+                    keysToReadableFDs[readableFDsToKeys[readableIndex]] = readableIndex;
+                }
+            }
+            readableKeysCount--;
+        }
+
+        // writableFDs compaction
+        if (writableIndex != -1) {
+            if (writableFDs[writableKeysCount - 1] != null) {
+                writableFDs[writableIndex] = writableFDs[writableKeysCount - 1];
+
+                // new FD references the same key
+                writableFDsToKeys[writableIndex] = writableFDsToKeys[writableKeysCount - 1];
+
+                // the key references the same FD at new index
+                if (writableFDsToKeys[writableIndex] != -1) {
+                    keysToWritableFDs[writableFDsToKeys[writableIndex]] = writableIndex;
+                }
+            }
+            writableKeysCount--;
+        }
+    }
+
+    /**
+     * 
+     * @param sk
+     */
+    void modKey(SelectionKey sk) {
+        // TODO: update indexes rather than recreate the key
+        delKey(sk);
+        addKey(sk);
     }
 
     /*
@@ -129,10 +370,15 @@ final class SelectorImpl extends AbstractSelector {
             throw new IllegalSelectorException();
         }
         synchronized (this) {
-            synchronized (keys) {
+            synchronized (keysSet) {
+
+                // create the key
                 SelectionKey sk = new SelectionKeyImpl(channel, operations,
                         attachment, this);
-                keys.add(sk);
+
+                int index = addKey(sk);
+                ((SelectionKeyImpl) sk).setIndex(index);
+
                 return sk;
             }
         }
@@ -143,6 +389,18 @@ final class SelectorImpl extends AbstractSelector {
      */
     public synchronized Set<SelectionKey> keys() {
         closeCheck();
+
+        keysSet.clear();
+
+        if (keys.length != lastKeyIndex + 1) {
+            SelectionKey[] chompedKeys = new SelectionKey[lastKeyIndex + 1];
+            System.arraycopy(keys, 0, chompedKeys, 0, lastKeyIndex + 1);
+            keysSet.addAll(Arrays.asList(chompedKeys));
+        } else {
+            keysSet.addAll(Arrays.asList(keys));
+        }
+
+        keysSet.remove(source.keyFor(this));
         return unmodifiableKeys;
     }
 
@@ -179,7 +437,7 @@ final class SelectorImpl extends AbstractSelector {
     private int selectInternal(long timeout) throws IOException {
         closeCheck();
         synchronized (this) {
-            synchronized (keys) {
+            synchronized (keysSet) {
                 synchronized (selectedKeys) {
                     doCancel();
                     int[] readyChannels = null;
@@ -189,13 +447,14 @@ final class SelectorImpl extends AbstractSelector {
                         if (isBlock) {
                             begin();
                         }
-                        readyChannels = Platform.getNetworkSystem().select(readable, writable, timeout);
+                        readyChannels = Platform.getNetworkSystem().select(
+                                readableFDs, writableFDs, timeout);
                     } finally {
                         if (isBlock) {
                             end();
                         }
                     }
-                    return processSelectResult(readyChannels);                    
+                    return processSelectResult(readyChannels);
                 }
             }
         }
@@ -211,45 +470,31 @@ final class SelectorImpl extends AbstractSelector {
 
     // Prepares and adds channels to list for selection
     private void prepareChannels() {
-        int sizeGuess = keys.size();
-        List<SelectionKey> readChannelList = new ArrayList<SelectionKey>(sizeGuess + 1);
-        List<FileDescriptor> readableFDs = new ArrayList<FileDescriptor>(sizeGuess + 1);
 
-        List<SelectionKey> writeChannelList = new ArrayList<SelectionKey>(sizeGuess);
-        List<FileDescriptor> writableFDs = new ArrayList<FileDescriptor>(sizeGuess);
+        // chomp the arrays if needed
 
-        // Always add in the "wake-up" channel 
-        readChannelList.add(source.keyFor(this));
-        readableFDs.add(sourcefd);
-
-        synchronized (keysLock) {
-            for (SelectionKey skey : keys) {
-                SelectionKeyImpl key = (SelectionKeyImpl) skey;
-                key.oldInterestOps = key.interestOps();
-                boolean isReadableChannel = ((SelectionKey.OP_ACCEPT | SelectionKey.OP_READ) & key.oldInterestOps) != 0;
-                boolean isWritableChannel = ((SelectionKey.OP_CONNECT | SelectionKey.OP_WRITE) & key.oldInterestOps) != 0;
-                SelectableChannel channel = key.channel();                  
-                if (isReadableChannel) {
-                    readChannelList.add(channel.keyFor(this));
-                    readableFDs.add(((FileDescriptorHandler)channel).getFD());
-                }
-                if (isWritableChannel) {
-                    writeChannelList.add(channel.keyFor(this));
-                    writableFDs.add(((FileDescriptorHandler)channel).getFD());
-                }
-            }
+        if (readableFDs.length != readableKeysCount) {
+            FileDescriptor[] chompedReadableFDs = new FileDescriptor[readableKeysCount];
+            System.arraycopy(readableFDs, 0, chompedReadableFDs, 0,
+                    readableKeysCount);
+            readableFDs = chompedReadableFDs;
         }
-        readableChannels = readChannelList.toArray(new SelectionKey[readChannelList.size()]);
-        writableChannels = writeChannelList.toArray(new SelectionKey[writeChannelList.size()]);
-        readable = readableFDs.toArray(new FileDescriptor[readableFDs.size()]);
-        writable = writableFDs.toArray(new FileDescriptor[writableFDs.size()]);
+
+        if (writableFDs.length != writableKeysCount) {
+            FileDescriptor[] chompedWriteableFDs = new FileDescriptor[writableKeysCount];
+            System.arraycopy(writableFDs, 0, chompedWriteableFDs, 0,
+                    writableKeysCount);
+            writableFDs = chompedWriteableFDs;
+        }
+
     }
 
-    /* Analyses selected channels and adds keys of ready channels to
+    /*
+     * Analyses selected channels and adds keys of ready channels to
      * selectedKeys list.
      * 
-     * readyChannels are encoded as concatenated array of flags for
-     * readable channels followed by writable channels. 
+     * readyChannels are encoded as concatenated array of flags for readable
+     * channels followed by writable channels.
      */
     private int processSelectResult(int[] readyChannels) throws IOException {
         if (0 == readyChannels.length) {
@@ -263,46 +508,51 @@ final class SelectorImpl extends AbstractSelector {
             }
         }
         int selected = 0;
-        for (int i = 1; i < readyChannels.length; i++) {            
-            SelectionKeyImpl key = (SelectionKeyImpl) (i >= readable.length ? writableChannels[i
-                    - readable.length]
-                    : readableChannels[i]);
-            if (null == key) {
-                continue;
-            }
-            boolean isOldSelectedKey = selectedKeys.contains(key);
-            int selectedOp = 0;
-            // set ready ops
-            switch (readyChannels[i]) {
-            case NA:
-                selectedOp = 0;
-                break;
-            case READABLE:
-                selectedOp = (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)
-                        & key.oldInterestOps;
-                break;
-            case WRITEABLE:
-                if (isConnected(key)) {
-                    selectedOp = SelectionKey.OP_WRITE & key.oldInterestOps;
-                } else {
-                    selectedOp = SelectionKey.OP_CONNECT & key.oldInterestOps;
-                }
-                break;
-            }
 
-            if (0 != selectedOp) {
-                if (isOldSelectedKey && key.readyOps() != selectedOp) {
-                    key.setReadyOps(key.readyOps() | selectedOp);
-                    selected++;
-                } else if (!isOldSelectedKey) {
-                    key.setReadyOps(selectedOp);
-                    selectedKeys.add(key);
-                    selected++;
+        for (int i = 1; i < readyChannels.length; i++) {
+
+            if (readyChannels[i] != NA) {
+                SelectionKeyImpl key = (SelectionKeyImpl) (i >= readableKeysCount ? keys[writableFDsToKeys[i
+                        - readableKeysCount]]
+                        : keys[readableFDsToKeys[i]]);
+
+                if (null == key) {
+                    continue;
                 }
+
+                int ops = key.interestOps();
+                int selectedOp = 0;
+
+                switch (readyChannels[i]) {
+
+                    case READABLE:
+                        selectedOp = (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)
+                                & ops;
+                        break;
+                    case WRITEABLE:
+                        if (isConnected(key)) {
+                            selectedOp = SelectionKey.OP_WRITE & ops;
+                        } else {
+                            selectedOp = SelectionKey.OP_CONNECT & ops;
+                        }
+                        break;
+                }
+
+                if (0 != selectedOp) {
+                    boolean isOldSelectedKey = selectedKeys.contains(key);
+                    if (isOldSelectedKey && key.readyOps() != selectedOp) {
+                        key.setReadyOps(key.readyOps() | selectedOp);
+                        selected++;
+                    } else if (!isOldSelectedKey) {
+                        key.setReadyOps(selectedOp);
+                        selectedKeys.add(key);
+                        selected++;
+                    }
+                }
+
             }
         }
-        readableChannels = null;
-        writableChannels = null;
+
         return selected;
     }
 
@@ -319,12 +569,13 @@ final class SelectorImpl extends AbstractSelector {
         synchronized (cancelledKeys) {
             if (cancelledKeys.size() > 0) {
                 for (SelectionKey currentkey : cancelledKeys) {
+                    delKey(currentkey);
                     deregister((AbstractSelectionKey) currentkey);
-                    keys.remove(currentkey);
                     selectedKeys.remove(currentkey);
                 }
             }
             cancelledKeys.clear();
+            limitCapacity();
         }
     }
 

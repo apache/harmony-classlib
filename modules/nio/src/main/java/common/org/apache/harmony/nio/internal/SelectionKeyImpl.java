@@ -28,9 +28,9 @@ import java.nio.channels.spi.AbstractSelectionKey;
  */
 final class SelectionKeyImpl extends AbstractSelectionKey {
 
-    private AbstractSelectableChannel channel;
+    static int stHash;
 
-    int oldInterestOps;
+    private AbstractSelectableChannel channel;
 
     private int interestOps;
 
@@ -38,12 +38,32 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
 
     private SelectorImpl selector;
 
+    private int index;
+
+    private int hashCode;
+
+    public int hashCode() {
+        return hashCode;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final SelectionKeyImpl other = (SelectionKeyImpl) obj;
+        return hashCode == other.hashCode;
+    }
+
     public SelectionKeyImpl(AbstractSelectableChannel channel, int operations,
             Object attachment, SelectorImpl selector) {
         super();
         this.channel = channel;
         interestOps = operations;
         this.selector = selector;
+        this.hashCode = stHash++;
         attach(attachment);
     }
 
@@ -65,6 +85,7 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         }
         synchronized (selector.keysLock) {
             interestOps = operations;
+            selector.modKey(this);
         }
         return this;
     }
@@ -85,10 +106,17 @@ final class SelectionKeyImpl extends AbstractSelectionKey {
         this.readyOps = readyOps;
     }
 
+    int getIndex() {
+        return index;
+    }
+
+    void setIndex(int index) {
+        this.index = index;
+    }
+
     private void checkValid() {
         if (!isValid()) {
             throw new CancelledKeyException();
         }
     }
-
 }
