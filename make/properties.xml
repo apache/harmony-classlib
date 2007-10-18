@@ -473,6 +473,7 @@ properties in preference to these:
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <env key="HY_NO_THR" value="${hy.no.thr}" />
+                <env key="HY_LOCAL_ZLIB" value="${hy.local.zlib}" />
                 <env key="HY_SHLIB_SUFFIX" value="${shlib.suffix}" />
                 <env key="HY_LINKLIB_SUFFIX" value="${linklib.suffix}" />
                 <arg line="${make.arg}" />

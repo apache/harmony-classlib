@@ -28,7 +28,11 @@ extern "C"
 #include "hyport.h"
 #include "hyzip.h"
 
+#if defined(HY_LOCAL_ZLIB)
+#define HY_ZIP_DLL_NAME "z"
+#else
 #define HY_ZIP_DLL_NAME "hyzlib"
+#endif
 
   typedef struct HyZipCache
   {
