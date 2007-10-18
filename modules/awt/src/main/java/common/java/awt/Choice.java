@@ -572,8 +572,8 @@ public class Choice extends Component implements ItemSelectable, Accessible {
         FontMetrics fm = getFontMetrics(font);
         minSize.height = fm.getHeight() + vGap + 1;
         minSize.width = hGap + 16; // TODO: use arrow button size
-
-        FontRenderContext frc = ((Graphics2D) getGraphics()).getFontRenderContext();
+        Graphics2D gr = (Graphics2D) getGraphics();
+        FontRenderContext frc = gr.getFontRenderContext();
         int maxItemWidth = 5; // TODO: take width of some char
         for (int i = 0; i < items.size(); i++) {
             String item = getItem(i);
@@ -583,6 +583,7 @@ public class Choice extends Component implements ItemSelectable, Accessible {
             }
         }
         minSize.width += maxItemWidth;
+        gr.dispose();
         return minSize;
     }
 

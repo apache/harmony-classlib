@@ -112,6 +112,7 @@ public class DebugGraphics extends Graphics {
             }         
             g.drawRect(0, 0, 40, 40);
             paint(g);
+            g.dispose();
         }                
         public abstract void paint(Graphics g);
     }

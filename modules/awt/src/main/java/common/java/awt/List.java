@@ -874,12 +874,14 @@ public class List extends Component implements ItemSelectable, Accessible {
             if (!isDisplayable()) {
                 return new Dimension();
             }
-            Dimension charSize = getMaxCharSize(getGraphics());
+            Graphics gr = getGraphics();
+            Dimension charSize = getMaxCharSize(gr);
             int minRowHeight = charSize.height + 1;
             final int MIN_CHARS_IN_ROW = 12;
             int hGap = 2 * BORDER_SIZE;
             int vGap = hGap;
             int minWidth = charSize.width * MIN_CHARS_IN_ROW + hGap;
+            gr.dispose();
             return new Dimension(minWidth, rows * minRowHeight + vGap);
         } finally {
             toolkit.unlockAWT();
@@ -897,7 +899,8 @@ public class List extends Component implements ItemSelectable, Accessible {
                 return new Dimension();
             }
             int maxItemWidth = minSize.width;
-            FontRenderContext frc = ((Graphics2D) getGraphics()).getFontRenderContext();
+            Graphics2D gr = (Graphics2D) getGraphics();
+            FontRenderContext frc = gr.getFontRenderContext();
             Font font = getFont();
             for (int i = 0; i < items.size(); i++) {
                 String item = getItem(i);
@@ -906,6 +909,7 @@ public class List extends Component implements ItemSelectable, Accessible {
                     maxItemWidth = itemWidth;
                 }
             }
+            gr.dispose();
             return new Dimension(maxItemWidth, minSize.height);
         } finally {
             toolkit.unlockAWT();
@@ -1499,8 +1503,10 @@ public class List extends Component implements ItemSelectable, Accessible {
         Dimension clientSize = getClient().getSize();
         vAdjustable.setUnitIncrement(itemSize.height);
         vAdjustable.setBlockIncrement(clientSize.height);
-        hAdjustable.setUnitIncrement(getMaxCharSize(getGraphics()).width);
+        Graphics gr = getGraphics();
+        hAdjustable.setUnitIncrement(getMaxCharSize(gr).width);
         hAdjustable.setBlockIncrement(clientSize.width);
+        gr.dispose();
     }
 
     private boolean isIdxValid(int index) {
