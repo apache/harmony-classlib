@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.harmony.security.Util;
 import org.apache.harmony.security.internal.nls.Messages;
 
 /**
@@ -371,7 +372,7 @@ public class PolicyUtils {
      * @see #expand(String, Properties)  
      */
     public static boolean canExpandProperties() {
-        return !FALSE.equalsIgnoreCase(AccessController
+        return !Util.equalsIgnoreCase(FALSE,AccessController
                 .doPrivileged(new SecurityPropertyAccessor(POLICY_EXPAND)));
     }
 
@@ -417,7 +418,7 @@ public class PolicyUtils {
         URL dynamicURL = null;
 
         //first check if policy is set via system properties
-        if (!FALSE.equalsIgnoreCase(AccessController
+        if (!Util.equalsIgnoreCase(FALSE, AccessController
                 .doPrivileged(security.key(POLICY_ALLOW_DYNAMIC)))) {
             String location = system.getProperty(systemUrlKey);
             if (location != null) {

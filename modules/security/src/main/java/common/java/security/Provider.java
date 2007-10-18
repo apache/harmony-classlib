@@ -38,6 +38,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.harmony.luni.util.TwoKeyHashMap;
+import org.apache.harmony.security.Util;
 import org.apache.harmony.security.fortress.Services;
 import org.apache.harmony.security.internal.nls.Messages;
 
@@ -313,13 +314,13 @@ public abstract class Provider extends Properties {
         
         String attributeValue = getPropertyIgnoreCase(servAlg + ' ' + attribute);
         if (attributeValue != null) {
-            if (attribute.equalsIgnoreCase("KeySize")) { //$NON-NLS-1$
+            if (Util.equalsIgnoreCase(attribute,"KeySize")) { //$NON-NLS-1$
                 if (Integer.valueOf(attributeValue).compareTo(
                         Integer.valueOf(val)) >= 0) {
                     return true;
                 }
             } else { // other attributes
-                if (attributeValue.equalsIgnoreCase(val)) {
+                if (Util.equalsIgnoreCase(attributeValue, val)) {
                     return true;
                 }
             }
@@ -375,11 +376,11 @@ public abstract class Provider extends Properties {
         }
 
         if (type.equals(lastServiceName)
-                && algorithm.equalsIgnoreCase(lastAlgorithm)) {
+                && Util.equalsIgnoreCase(algorithm, lastAlgorithm)) {
             return returnedService;
         }
 
-        String alg = algorithm.toUpperCase();
+        String alg = Util.toUpperCase(algorithm);
         Object o = null;
         if (serviceTable != null) {
             o = serviceTable.get(type, alg);
@@ -439,13 +440,13 @@ public abstract class Provider extends Properties {
         if (serviceTable == null) {
             serviceTable = new TwoKeyHashMap<String, String, Service>(128);
         }
-        serviceTable.put(s.type, s.algorithm.toUpperCase(), s);
+        serviceTable.put(s.type, Util.toUpperCase(s.algorithm), s);
         if (s.aliases != null) {
             if (aliasTable == null) {
                 aliasTable = new TwoKeyHashMap<String, String, Service>(256);
             }
             for (Iterator<String> it = s.getAliases(); it.hasNext();) {
-                aliasTable.put(s.type, (it.next()).toUpperCase(), s);
+                aliasTable.put(s.type, Util.toUpperCase(it.next()), s);
             }
         }
         serviceInfoToProperties(s);
@@ -461,11 +462,11 @@ public abstract class Provider extends Properties {
         }
         servicesChanged();
         if (serviceTable != null) {
-            serviceTable.remove(s.type, s.algorithm.toUpperCase());
+            serviceTable.remove(s.type, Util.toUpperCase(s.algorithm));
         }
         if (aliasTable != null && s.aliases != null) {
             for (Iterator<String> it = s.getAliases(); it.hasNext();) {
-                aliasTable.remove(s.type, (it.next()).toUpperCase());
+                aliasTable.remove(s.type, Util.toUpperCase(it.next()));
             }
         }
         serviceInfoFromProperties(s);
@@ -533,7 +534,7 @@ public abstract class Provider extends Properties {
             serviceName = service_alias.substring(0, i);
             aliasName = service_alias.substring(i + 1);
             if (propertyAliasTable != null) {
-                propertyAliasTable.remove(serviceName, aliasName.toUpperCase());
+                propertyAliasTable.remove(serviceName, Util.toUpperCase(aliasName));
             }
             if (propertyServiceTable != null) {
                 for (Iterator<Service> it = propertyServiceTable.values().iterator(); it
@@ -557,12 +558,12 @@ public abstract class Provider extends Properties {
             serviceName = k.substring(0, j);
             algorithm = k.substring(j + 1);
             if (propertyServiceTable != null) {
-                Provider.Service ser = propertyServiceTable.remove(serviceName, algorithm.toUpperCase());
+                Provider.Service ser = propertyServiceTable.remove(serviceName, Util.toUpperCase(algorithm));
                 if (ser != null && propertyAliasTable != null
                         && ser.aliases != null) {
                     for (Iterator<String> it = ser.aliases.iterator(); it.hasNext();) {
-                        propertyAliasTable.remove(serviceName, (it
-                                .next()).toUpperCase());
+                        propertyAliasTable.remove(serviceName, Util.toUpperCase(it
+                                .next()));
                     }
                 }
             }
@@ -572,8 +573,7 @@ public abstract class Provider extends Properties {
             serviceName = k.substring(0, j);
             algorithm = k.substring(j + 1, i);
             if (propertyServiceTable != null) {
-                Object o = propertyServiceTable.get(serviceName, algorithm
-                        .toUpperCase());
+                Object o = propertyServiceTable.get(serviceName, Util.toUpperCase(algorithm));
                 if (o != null) {
                     s = (Provider.Service) o;
                     s.attributes.remove(attribute);
@@ -614,7 +614,7 @@ public abstract class Provider extends Properties {
                 serviceName = service_alias.substring(0, i);
                 aliasName = service_alias.substring(i + 1);
                 algorithm = value;
-                String algUp = algorithm.toUpperCase();
+                String algUp = Util.toUpperCase(algorithm);
                 Object o = null;
                 if (propertyServiceTable == null) {
                     propertyServiceTable = new TwoKeyHashMap<String, String, Service>(128);
@@ -628,7 +628,7 @@ public abstract class Provider extends Properties {
                         propertyAliasTable = new TwoKeyHashMap<String, String, Service>(256);
                     }
                     propertyAliasTable.put(serviceName,
-                            aliasName.toUpperCase(), s);
+                            Util.toUpperCase(aliasName), s);
                 } else {
                     String className = (String) changedProperties
                             .get(serviceName + "." + algorithm); //$NON-NLS-1$
@@ -641,8 +641,8 @@ public abstract class Provider extends Properties {
                         if (propertyAliasTable == null) {
                             propertyAliasTable = new TwoKeyHashMap<String, String, Service>(256);
                         }
-                        propertyAliasTable.put(serviceName, aliasName
-                                .toUpperCase(), s);
+                        propertyAliasTable.put(serviceName, Util.toUpperCase(aliasName
+                                ), s);
                     }
                 }
                 continue;
@@ -655,7 +655,7 @@ public abstract class Provider extends Properties {
             if (i == -1) { // <crypto_service>.<algorithm_or_type>=<className>
                 serviceName = key.substring(0, j);
                 algorithm = key.substring(j + 1);
-                String alg = algorithm.toUpperCase();
+                String alg = Util.toUpperCase(algorithm);
                 Object o = null;
                 if (propertyServiceTable != null) {
                     o = propertyServiceTable.get(serviceName, alg);
@@ -677,7 +677,7 @@ public abstract class Provider extends Properties {
                 serviceName = key.substring(0, j);
                 algorithm = key.substring(j + 1, i);
                 String attribute = key.substring(i + 1);
-                String alg = algorithm.toUpperCase();
+                String alg = Util.toUpperCase(algorithm);
                 Object o = null;
                 if (propertyServiceTable != null) {
                     o = propertyServiceTable.get(serviceName, alg);
@@ -733,7 +733,7 @@ public abstract class Provider extends Properties {
         }
         for (Enumeration<?> e = propertyNames(); e.hasMoreElements();) {
             String pname = (String) e.nextElement();
-            if (key.equalsIgnoreCase(pname)) {
+            if (Util.equalsIgnoreCase(key, pname)) {
                 return getProperty(pname);
             }
         }
@@ -855,7 +855,7 @@ public abstract class Provider extends Properties {
                 Class[] parameterTypes = new Class[1];
                 Object[] initargs = { constructorParameter };
                 try {
-                    if (type.equalsIgnoreCase("CertStore")) { //$NON-NLS-1$
+                    if (Util.equalsIgnoreCase(type,"CertStore")) { //$NON-NLS-1$
                         parameterTypes[0] = Class
                                 .forName("java.security.cert.CertStoreParameters"); //$NON-NLS-1$
                     } else {

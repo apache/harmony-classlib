@@ -25,6 +25,7 @@ import java.security.Provider;
 import java.security.Security;
 import java.security.Signature;
 import java.security.spec.DSAParameterSpec;
+import java.util.Locale;
 
 public class Signature2Test extends junit.framework.TestCase {
 
@@ -226,4 +227,23 @@ public class Signature2Test extends junit.framework.TestCase {
 		sig.update(MESSAGE.getBytes());
 		assertTrue("Sign/Verify does not pass", sig.verify(signature));
 	}
+    
+    //Regression Test for HARMONY-4916
+    public void test_getInstance_withI18n() throws Exception {
+        // Enfore that providers information has been loaded.
+        Signature.getInstance("DSA");
+        Locale defaultLocale = Locale.getDefault();
+        try {
+            /**
+             * In locale("tr"), char 'i' will be transferred to an upper case
+             * other char than 'I'. Thus in security architecture, all
+             * manipulation to the string representing an algorithm name or
+             * standard property shall be treated as locale neutral
+             */
+            Locale.setDefault(new Locale("tr"));
+            Signature.getInstance("MD5withRSA");
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
 }
