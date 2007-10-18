@@ -38,14 +38,32 @@ public class LdapASN1Constant {
     public static final int OP_BIND_RESPONSE = 1;
 
     // FIXME change them to appropriate index number in the future.
-    public static final int OP_ADD_REQUEST = 2;
+    public static final int OP_MODIFY_REQUEST = 2;
     
-    public static final int OP_ADD_RESPONSE = 3;
+    public static final int OP_MODIFY_RESPONSE = 3;
 
-    public static final int OP_DEL_REQUEST = 4;
-
-    public static final int OP_DEL_RESPONSE = 5;
+    public static final int OP_ADD_REQUEST = 4;
     
+    public static final int OP_ADD_RESPONSE = 5;
+    
+    public static final int OP_DEL_REQUEST = 6;
+
+    public static final int OP_DEL_RESPONSE = 7;
+
+    public static final int OP_MODIFY_DN_REQUEST = 8;
+    
+    public static final int OP_MODIFY_DN_RESPONSE = 9;
+
+    public static final int OP_COMPARE_REQUEST = 10;
+    
+    public static final int OP_COMPARE_RESPONSE = 11;
+
+    public static final int OP_ABANDON_REQUEST = 12;
+
+    public static final int OP_EXTENDED_REQUEST = 13;
+    
+    public static final int OP_EXTENDED_RESPONSE = 14;
+
     public static final ASN1Type Attribute = new ASN1SequenceWrap(
             new ASN1Type[] { ASN1OctetString.getInstance(), // type
                     new ASN1SetOf(ASN1OctetString.getInstance()) }); // vals
@@ -116,6 +134,22 @@ public class LdapASN1Constant {
                         }
                     }));
     
+    public static final ASN1Type AttributeValueAssertion = new ASN1SequenceWrap(
+            new ASN1Type[] { ASN1OctetString.getInstance(), // attributeDesc
+                    ASN1OctetString.getInstance() }); // assertionValue
+    
+    public static final ASN1Type AbandonRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 16, ASN1Integer.getInstance());
+    
+    public static final ASN1Type CompareRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 14, new ASN1SequenceWrap(
+                    new ASN1Type[] { ASN1OctetString.getInstance(), // entry
+                            AttributeValueAssertion })); // ava
+
+
+    public static final ASN1Type CompareResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 15, LDAPResult);
+    
     public static final ASN1Type DelRequest = new ASN1Implicit(
             ASN1Constants.CLASS_APPLICATION, 10, ASN1OctetString.getInstance());
     
@@ -123,15 +157,91 @@ public class LdapASN1Constant {
     public static final ASN1Type DelResponse = new ASN1Implicit(
             ASN1Constants.CLASS_APPLICATION, 11, LDAPResult);
     
+    public static final ASN1Type ExtendedRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 23, new ASN1SequenceWrap(
+                    new ASN1Type[] {
+                            new ASN1Implicit(
+                                    ASN1Constants.CLASS_CONTEXTSPECIFIC, 0, // requestName
+                                    ASN1OctetString.getInstance()),
+                            new ASN1Implicit(
+                                    ASN1Constants.CLASS_CONTEXTSPECIFIC, 1, // requestValue
+                                    ASN1OctetString.getInstance()) }) {
+                {
+                    setOptional(1); // requestValue is optional
+                }
+            });
+
+
+    public static final ASN1Type ExtendedResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 24, Utils.conjoinSequence(
+                    (ASN1Sequence) LDAPResult, // LDAPResult
+                    new ASN1SequenceWrap(new ASN1Type[] {
+                            new ASN1Implicit(
+                                    ASN1Constants.CLASS_CONTEXTSPECIFIC, 10, // responseName
+                                    ASN1OctetString.getInstance()),
+                            new ASN1Implicit(
+                                    ASN1Constants.CLASS_CONTEXTSPECIFIC, 11, // response
+                                    ASN1OctetString.getInstance()) }) {
+                        {
+                            setOptional(0);
+                            setOptional(1);
+                        }
+                    }));
+    
+    public static final ASN1Type ModifyDNRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 12, new ASN1SequenceWrap(
+                    new ASN1Type[] {
+                            ASN1OctetString.getInstance(), // entry
+                            ASN1OctetString.getInstance(), // newrdn
+                            ASN1Boolean.getInstance(), // deleteoldrdn
+                            new ASN1Implicit(
+                                    ASN1Constants.CLASS_CONTEXTSPECIFIC, 0,
+                                    ASN1OctetString.getInstance()) }) { // newSuperior
+                {
+                    setOptional(3);
+                }
+            });
+
+
+    public static final ASN1Type ModifyDNResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 13, LDAPResult);
+    
+    public static final ASN1Type AttributeTypeAndValues = new ASN1SequenceWrap(
+            new ASN1Type[] { ASN1OctetString.getInstance(), // type
+                    new ASN1SetOf(ASN1OctetString.getInstance()) }); // vals
+    
+    public static final ASN1Type ModifyRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 6, new ASN1SequenceWrap(
+                    new ASN1Type[] {
+                            ASN1OctetString.getInstance(), // object
+                            new ASN1SequenceOf(new ASN1SequenceWrap( // modification
+                                    new ASN1Type[] {
+                                            ASN1Enumerated.getInstance(), // operation
+                                            AttributeTypeAndValues })) })); // modification
+
+
+    public static final ASN1Type ModifyResponse = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 7, LDAPResult);
+    
     public static final ASN1Type LDAPMessage = new ASN1SequenceWrap(
             new ASN1Type[] {
                     ASN1Integer.getInstance(),
-                    new ASN1ChoiceWrap(new ASN1Type[] { BindRequest,
+                    new ASN1ChoiceWrap(new ASN1Type[] { 
+                            BindRequest,
                             BindResponse,
+                            ModifyRequest,
+                            ModifyResponse, 
                             AddRequest,
                             AddResponse,
                             DelRequest,
                             DelResponse,
+                            ModifyDNRequest,
+                            ModifyDNResponse, 
+                            CompareRequest, 
+                            CompareResponse,
+                            AbandonRequest, 
+                            ExtendedRequest, 
+                            ExtendedResponse
                             }),
                     new ASN1SequenceOf(Control) }) {
         {
