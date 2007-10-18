@@ -264,6 +264,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
                 synchronized (this) {
                     super.implAccept(aSocket);
                     sockChannel.setConnected();
+                    sockChannel.setBound(true);
                 }
                 SecurityManager sm = System.getSecurityManager();
                 if (sm != null) {

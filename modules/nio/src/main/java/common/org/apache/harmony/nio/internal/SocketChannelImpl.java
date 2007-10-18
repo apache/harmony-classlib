@@ -121,7 +121,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     int status = SOCKET_STATUS_UNINIT;
 
     // whether the socket is bound
-    boolean isBound = false;
+    volatile boolean isBound = false;
 
     private final Object readLock = new Object();
 
@@ -226,6 +226,10 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
      */
     synchronized void setConnected() {
         status = SOCKET_STATUS_CONNECTED;
+    }
+
+    void setBound(boolean flag) {
+        isBound = flag;
     }
 
     /*
