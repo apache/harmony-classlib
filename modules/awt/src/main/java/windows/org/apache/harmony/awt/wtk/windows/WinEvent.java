@@ -584,9 +584,9 @@ final class WinEvent extends NativeEvent implements WindowsDefs {
         modifiers |= ((win32.GetKeyState(VK_MENU) & 0x80) != 0) ?
                 InputEvent.ALT_DOWN_MASK : 0;
 
-        modifiers |= ((wParam & MK_LBUTTON) != 0) || (msg == WM_LBUTTONUP) ? InputEvent.BUTTON1_DOWN_MASK : 0;
-        modifiers |= ((wParam & MK_MBUTTON) != 0) || (msg == WM_MBUTTONUP) ? InputEvent.BUTTON2_DOWN_MASK : 0;
-        modifiers |= ((wParam & MK_RBUTTON) != 0) || (msg == WM_RBUTTONUP) ? InputEvent.BUTTON3_DOWN_MASK : 0;
+        modifiers |= (wParam & MK_LBUTTON) != 0 ? InputEvent.BUTTON1_DOWN_MASK : 0;
+        modifiers |= (wParam & MK_MBUTTON) != 0 ? InputEvent.BUTTON2_DOWN_MASK : 0;
+        modifiers |= (wParam & MK_RBUTTON) != 0 ? InputEvent.BUTTON3_DOWN_MASK : 0;
         return modifiers;
     }
 }
