@@ -120,6 +120,18 @@ final class BasicPermissionCollection extends PermissionCollection {
         if (items.containsKey(checkName)) {
             return true;
         }
+        
+        //Special treat with RuntimePermission exitVM.*
+        if(items.containsKey("exitVM") || items.containsKey("exitVM.*")){
+            if(checkName.endsWith("exitVM")){
+                return true;
+            }
+            if(checkName.startsWith("exitVM.") && checkName.length() > "exitVM.".length()){
+                return true;
+            }
+        }       
+        
+        
         //now check if there are suitable wildcards
         //suppose we have "a.b.c", let's check "a.b.*" and "a.*" 
         char[] name = checkName.toCharArray();

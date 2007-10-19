@@ -78,4 +78,33 @@ public class PermissionCollectionTest extends TestCase {
         pc.setReadOnly();
         assertTrue("more calls to setReadOnly() should not harm", pc.isReadOnly());
     }
+    
+    // Regression test for "exitVM' special treatement in Java 6.
+    public void test_implies_exitVM() {
+
+        RuntimePermission runtimePermission = new RuntimePermission("exitVM");
+        PermissionCollection permissionCollection = runtimePermission
+                .newPermissionCollection();
+        permissionCollection.add(runtimePermission);
+        assertFalse(permissionCollection.implies(new RuntimePermission(
+                "exitVM.")));
+        assertTrue(permissionCollection.implies(new RuntimePermission(
+                "exitVM.1")));
+        assertTrue(permissionCollection.implies(new RuntimePermission(
+                "exitVM.teststring")));
+
+        runtimePermission = new RuntimePermission("exitVM.*");
+        permissionCollection = runtimePermission.newPermissionCollection();
+        permissionCollection.add(runtimePermission);
+        assertTrue(permissionCollection
+                .implies(new RuntimePermission("exitVM")));
+        assertFalse(permissionCollection.implies(new RuntimePermission(
+                "exitVMteststring")));
+        assertFalse(permissionCollection.implies(new RuntimePermission(
+                "exitVM.")));
+        assertTrue(permissionCollection.implies(new RuntimePermission(
+                "exitVM.1")));
+        assertTrue(permissionCollection.implies(new RuntimePermission(
+                "exitVM.teststring")));
+    }
 }
