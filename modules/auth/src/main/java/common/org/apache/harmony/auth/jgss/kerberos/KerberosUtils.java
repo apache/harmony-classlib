@@ -17,6 +17,9 @@
 
 package org.apache.harmony.auth.jgss.kerberos;
 
+import java.lang.reflect.Constructor;
+
+import org.apache.harmony.auth.jgss.kerberos.toolbox.KerberosToolboxSpi;
 import org.ietf.jgss.GSSException;
 import org.ietf.jgss.GSSName;
 import org.ietf.jgss.Oid;
@@ -33,6 +36,8 @@ public class KerberosUtils {
 	public static final Oid KRB5_PRINCIPAL_NAMETYPE;
 
 	public static final Oid[] SUPPORTED_NAME_MECHS;
+    
+    public static final String KERBEROS_TOOLBOX_PROVIDER = "org.apache.harmony.auth.jgss.kerberos.toolbox.KerberosToolboxImpl";
 
 	static {
 		try {
@@ -45,6 +50,12 @@ public class KerberosUtils {
 		SUPPORTED_NAME_MECHS = new Oid[] { GSSName.NT_USER_NAME,
 				GSSName.NT_HOSTBASED_SERVICE, GSSName.NT_EXPORT_NAME,
 				KRB5_PRINCIPAL_NAMETYPE };
-	}	
+	}
+    
+    public static KerberosToolboxSpi getKerberosToolbox(String kdcName) throws Exception{
+        Class cls = Class.forName(KERBEROS_TOOLBOX_PROVIDER);
+        Constructor constructor = cls.getConstructor(String.class);
+        return (KerberosToolboxSpi) constructor.newInstance(kdcName);        
+    }
 
 }
