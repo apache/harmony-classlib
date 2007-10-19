@@ -34,7 +34,7 @@ BUILDFILES = \
 	$(SHAREDSUB)filedesc.o $(SHAREDSUB)timezone.o \
 	$(SHAREDSUB)OSFileSystem.o OSFileSystemLinux32.o \
 	OSMemory.o OSMemoryLinux32.o $(SHAREDSUB)OSNetworkSystem.o \
-	OSNetworkSystemLinux.o OSResourcesMonitorLinux.o hyenv.o 
+	OSNetworkSystemLinux.o OSResourcesMonitorLinux.o hyenv.o consoleimpl.o
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
