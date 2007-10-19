@@ -1153,10 +1153,10 @@ public class GregorianCalendar extends Calendar {
                 } else {
                     set(field, newWeek - 1);
                 }
-            } else if (newWeek == 1) {
-                int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
-                if (week > 1) {
-                    set(field, 1);
+                } else if (newWeek == 1) {
+                    int week = (fields[day] - ((fields[day] - 1) / 7 * 7) - 1 + mod) / 7 + 1;
+                    if (week > 1) {
+                        set(field, 1);
                 } else {
                     set(field, newWeek);
                 }

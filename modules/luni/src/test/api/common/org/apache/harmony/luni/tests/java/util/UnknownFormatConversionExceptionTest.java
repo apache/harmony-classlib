@@ -34,8 +34,8 @@ public class UnknownFormatConversionExceptionTest extends TestCase {
         // to spec.
         try {
             new UnknownFormatConversionException(null);
+            fail("should throw NullPointerExcepiton");
         } catch (NullPointerException e) {
-            fail("should not throw NullPointerExcepiton");
         }
     }
 

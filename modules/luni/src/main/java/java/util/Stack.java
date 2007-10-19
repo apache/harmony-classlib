@@ -39,7 +39,7 @@ public class Stack<E> extends Vector<E> {
 	 * 
 	 * @return true if the stack is empty, false otherwise
 	 */
-	public boolean empty() {
+	public synchronized boolean empty() {
 		return elementCount == 0;
 	}
 
@@ -71,7 +71,7 @@ public class Stack<E> extends Vector<E> {
 	 */
 	@SuppressWarnings("unchecked")
     public synchronized E pop() {
-		if(elementCount == 0){
+        if(elementCount == 0){
             throw new EmptyStackException();
         }
 		final int index = --elementCount;
@@ -80,7 +80,7 @@ public class Stack<E> extends Vector<E> {
         modCount++;
 		return obj;
 	}
-
+    
 	/**
 	 * Pushes the object from the parameter onto the top of the stack.
 	 * 
