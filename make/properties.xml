@@ -290,6 +290,13 @@
         </not>
     </condition>
 
+    <property name="hy.local.zlib" value="false" />
+    <condition property="hy.skip.zlib" value="true">
+        <not>
+            <equals arg1="${hy.local.zlib}" arg2="false" />
+        </not>
+    </condition>
+
     <property name="hy.zip.api" value="false" />
     <condition property="hy.skip.zip.api" value="true">
         <not>
