@@ -16,10 +16,6 @@
  */
 package org.apache.harmony.pack200;
 
-// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-// NOTE: Do not extract strings as messages; this code is still a
-// work-in-progress
-// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -223,6 +219,12 @@ public class AttributeLayoutMap {
         }
         return null;
 	}
+    
+    public AttributeLayout getAttributeLayout(int index, int context)
+            throws Pack200Exception {
+        Map map = layouts[context];
+        return (AttributeLayout) map.get(new Integer(index));
+    }
     
     /**
      * The map should not contain the same layout and name combination more than

@@ -15,20 +15,19 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class CodecEncoding {
+
 	/**
 	 * The canonical encodings are defined to allow a single byte to represent
 	 * one of the standard encodings. The following values are defined in the
 	 * Pack200 specification, and this array cannot be changed.
 	 */
-	private static Codec[] canonicalCodec = { null, new BHSDCodec(1, 256),
+	private static final Codec[] canonicalCodec = { null, new BHSDCodec(1, 256),
 			new BHSDCodec(1, 256, 1), new BHSDCodec(1, 256, 0, 1),
 			new BHSDCodec(1, 256, 1, 1), new BHSDCodec(2, 256),
 			new BHSDCodec(2, 256, 1), new BHSDCodec(2, 256, 0, 1),
@@ -100,7 +99,7 @@ public class CodecEncoding {
 	 * @throws Pack200Exception 
 	 */
 	public static Codec getCodec(int value, InputStream in, Codec defaultCodec) throws IOException, Pack200Exception {
-		// Sanity check to make sure that no-one's been buggering with
+		// Sanity check to make sure that no-one has changed
 		// the canonical codecs, which would really cause havoc
 		if (canonicalCodec.length != 116) 
 			throw new Error("Canonical encodings have been incorrectly modified");

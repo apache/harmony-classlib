@@ -16,9 +16,14 @@
  */
 package org.apache.harmony.pack200.tests;
 
-import org.apache.harmony.pack200.Segment;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.jar.JarOutputStream;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.pack200.Segment;
 
 /**
  * Tests for org.apache.harmony.pack200.Segment, which is the main class for pack200.
@@ -31,9 +36,11 @@ public class SegmentTest extends TestCase {
 	}
 
 	public void testJustResources() throws Exception {
-		assertNotNull(Segment
-				.parse(Segment.class
-						.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack")));
+        InputStream in = Segment.class
+            .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
+        Segment segment = Segment.parse(in);
+		assertNotNull(segment);
+        segment.writeJar(new JarOutputStream(new FileOutputStream(File.createTempFile("just", "Resources.jar"))), in);
 	}
 
 	public void testJustResourcesGZip() throws Exception {
@@ -41,11 +48,28 @@ public class SegmentTest extends TestCase {
 				.parse(Segment.class
 						.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack.gz")));
 	}
-
+    
+    // Test with an archive containing Harmony's SQL module, packed with -E1
+    public void testWithSqlE1() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/sql-e1.pack.gz")));
+    
+    }
+    
+    // Test with an archive containing Harmony's Pack200 module, packed with -E1
+    public void testWithPack200E1() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200-e1.pack.gz")));
+    
+    }
+ 
     public void testInterfaceOnly() throws Exception {
         assertNotNull(Segment
                 .parse(Segment.class
                         .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack")));
     }
+
 
 }

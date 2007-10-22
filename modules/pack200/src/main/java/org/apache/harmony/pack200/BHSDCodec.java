@@ -15,19 +15,17 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * TODO Comment -- quite a lot can be nicked from Codec, since this was created
  * from it
- * 
- * @author Alex Blewitt
- * 
+ *  
  */
 public final class BHSDCodec extends Codec {
 
@@ -155,13 +153,23 @@ public final class BHSDCodec extends Codec {
 			x = in.read();
 			if (x == -1)
 				throw new EOFException("End of stream reached whilst decoding");
-			z += x * Math.pow(h, n); 
+			z += x * Math.pow(h, n);
             n++;
 		} while (n < b & isHigh(x));
-        long u = z;
-        long twoPowS = (long)Math.pow(2, s);
-        double twoPowSMinusOne = twoPowS-1;
+
+// TODO: Decide whether to use this algorithm instead (neater, possibly quicker but less easy to understand)
+//        if (isSigned()) {
+//            int u = ((1 << s) - 1);
+//            if ((z & u) == u) {
+//                z = z >>> s ^ -1L;
+//            } else {
+//                z = z - (z >>> s);
+//            }
+//        }
         if(isSigned()) {
+            long u = z;
+            long twoPowS = (long)Math.pow(2, s);
+            double twoPowSMinusOne = twoPowS-1;
             if(u % twoPowS < twoPowSMinusOne) {
                 if(cardinality < Math.pow(2, 32)) {
                     z = (long) (u - (Math.floor(u/ twoPowS)));                    
@@ -172,8 +180,8 @@ public final class BHSDCodec extends Codec {
                 z = (long) (-Math.floor(u/ twoPowS) - 1);
             }
         }
-		if (isDelta())
-			z += last;
+	    if (isDelta())
+	        z += last;
 		return z;
 	}
 
@@ -196,6 +204,50 @@ public final class BHSDCodec extends Codec {
 	public boolean encodes(long value) {
 		return (value >= smallest() && value <= largest());
 	}
+    
+    public byte[] encode(long value, long last) throws Pack200Exception {
+        if (isDelta()) {
+            value -= last;
+        }
+        if (!encodes(value)) {
+            throw new Pack200Exception("The codec " + toString()
+                    + " does not encode the value " + value);
+        }
+        long z = value;
+        if (isSigned()) {
+            if (z < 0) {
+                z = (-z << s) - 1;
+            } else {
+                if (s == 1) {
+                    z = z << s;
+                } else {
+                    z += (z - z % 3) / 3;
+                }
+            }
+        }
+        List byteList = new ArrayList();
+        for (int n = 0; n < b; n++) {
+            long byteN;
+            if (z < l) {
+                byteN = z;
+            } else {
+                byteN = z % h;
+                while (byteN < l)
+                    byteN += h;
+            }
+            byteList.add(new Byte((byte) byteN));
+            if (byteN < l) {
+                break;
+            }
+            z -= byteN;
+            z /= h;
+        }
+        byte[] bytes = new byte[byteList.size()];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = ((Byte) byteList.get(i)).byteValue();
+        }
+        return bytes;
+    }
 
 	/**
 	 * Returns true if this codec is a delta codec
@@ -220,19 +272,15 @@ public final class BHSDCodec extends Codec {
 	 */
 	public long largest() {
 		long result;
-		if (isDelta()) {
-			result = Long.MAX_VALUE;
+		// TODO This can probably be optimized into a better mathematical statement
+		if (s == 0) {
+			result = cardinality() - 1;
+		} else if (s == 1) {
+			result = cardinality() / 2 - 1;
+		} else if (s == 2) {
+			result = (3L * cardinality()) / 4 - 1;
 		} else {
-			// TODO This can probably be optimized into a better mathematical statement
-			if (s == 0) {
-				result = cardinality() - 1;
-			} else if (s == 1) {
-				result = cardinality() / 2 - 1;
-			} else if (s == 2) {
-				result = (3L * cardinality()) / 4 - 1;
-			} else {
-				throw new Error("Unknown s value");
-			}
+			throw new Error("Unknown s value");
 		}
 		return Math.min((s == 0 ? ((long) Integer.MAX_VALUE) << 1
 				: Integer.MAX_VALUE) - 1, result);
@@ -244,14 +292,10 @@ public final class BHSDCodec extends Codec {
 	 */
 	public long smallest() {
 		long result;
-		if (isDelta()) {
-			result = Integer.MIN_VALUE;
+		if (isSigned()) {
+			result = -cardinality() / (1 << s);
 		} else {
-			if (isSigned()) {
-				result = -cardinality() / (1 << s);
-			} else {
-				result = 0;
-			}
+			result = 0;
 		}
 		return Math.max(Integer.MIN_VALUE, result);
 	}

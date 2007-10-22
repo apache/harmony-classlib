@@ -26,18 +26,27 @@ import junit.framework.TestCase;
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.BandSet;
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.pack200.SegmentHeader;
 
 public class BandSetTest extends TestCase {
     
-    private BandSet bandSet = new BandSet(new Segment()) {
+    public class MockSegment extends Segment {
+        public SegmentHeader getSegmentHeader() {
+            return new SegmentHeader();
+        }
+    }
+
+    private BandSet bandSet = new BandSet(new MockSegment()) {
 
         public void pack(OutputStream outputStream) {
         }
 
         public void unpack(InputStream inputStream) throws IOException, Pack200Exception {
         }
+        
     };
     
     public void testDecodeBandInt() throws IOException, Pack200Exception {
@@ -52,13 +61,24 @@ public class BandSetTest extends TestCase {
     
     public void testDecodeBandLong() throws IOException, Pack200Exception {
         BHSDCodec codec = Codec.BYTE1;
-        byte[] bytes = new byte[]{(byte)3,(byte)56,(byte)122,(byte)78, Byte.MAX_VALUE, Byte.MIN_VALUE};
+        byte[] bytes = new byte[]{(byte)3,(byte)56,(byte)122,(byte)78, (byte)0, (byte)255};
         InputStream in = new ByteArrayInputStream(bytes);
-        long[] longs = bandSet.decodeBandLong("Test Band", in, codec, 4);
+        long[] longs = bandSet.decodeBandLong("Test Band", in, codec, 6);
         for (int i = 0; i < longs.length; i++) {
-            assertEquals("Wrong value in position " + i, longs[i], bytes[i]);
+            assertEquals("Wrong value in position " + i, (byte)longs[i], bytes[i]);
         }        
         //TODO: Should test this with other Codecs.
+    }
+    
+    public void testDecodeBandLong2() throws IOException, Pack200Exception {
+        
+        BHSDCodec codec = Codec.DELTA5;
+        byte[] bytes = new byte[]{3, 1, 2, 3, 4, 5}; // 3 is decoded to -2 by DELTA5, which signifies a switch to BYTE1
+        InputStream in = new ByteArrayInputStream(bytes);
+        long[] longs = bandSet.decodeBandLong("Test Band", in, codec, 5);
+        for (int i = 0; i < longs.length; i++) {
+            assertEquals("Wrong value in position " + i, longs[i], bytes[i + 1]);
+        }    
     }
     
     public void testParseFlags1() {

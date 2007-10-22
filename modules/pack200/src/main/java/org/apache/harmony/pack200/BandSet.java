@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.pack200;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,7 +37,7 @@ public abstract class BandSet {
     }
 
     /**
-     * Decode a band and return an array of <code>int[]</code> values
+     * Decode a band and return an array of <code>int</code> values
      * 
      * @param name
      *            the name of the band (primarily for logging/debugging
@@ -47,7 +48,7 @@ public abstract class BandSet {
      *            the default codec for this band
      * @param count
      *            the number of elements to read
-     * @return an array of decoded <code>int[]</code> values
+     * @return an array of decoded <code>int</code> values
      * @throws IOException
      *             if there is a problem reading from the underlying input
      *             stream
@@ -60,17 +61,34 @@ public abstract class BandSet {
             Pack200Exception {
         // TODO Might be able to improve this directly.
         int[] result = new int[count];
-
-        // TODO We need to muck around in the scenario where the first value
-        // read indicates
-        // an uber-codec
         long[] longResult = decodeBandLong(name, in, defaultCodec, count);
         for (int i = 0; i < count; i++) {
             result[i] = (int) longResult[i];
         }
         return result;
     }
-    
+
+    /**
+     * Decode a band and return an array of <code>int[]</code> values
+     * 
+     * @param name
+     *            the name of the band (primarily for logging/debugging
+     *            purposes)
+     * @param in
+     *            the InputStream to decode from
+     * @param defaultCodec
+     *            the default codec for this band
+     * @param counts
+     *            the numbers of elements to read for each int array within the
+     *            array to be returned
+     * @return an array of decoded <code>int[]</code> values
+     * @throws IOException
+     *             if there is a problem reading from the underlying input
+     *             stream
+     * @throws Pack200Exception
+     *             if there is a problem decoding the value or that the value is
+     *             invalid
+     */
     public int[][] decodeBandInt(String name, InputStream in, BHSDCodec defaultCodec, int[] counts) throws IOException, Pack200Exception {
         int[][] result = new int[counts.length][];
         int totalCount = 0;
@@ -90,7 +108,7 @@ public abstract class BandSet {
     }
     
     /**
-     * Decode a band and return an array of <code>long[]</code> values
+     * Decode a band and return an array of <code>long</code> values
      * 
      * @param name
      *            the name of the band (primarily for logging/debugging
@@ -101,7 +119,7 @@ public abstract class BandSet {
      *            the default codec for this band
      * @param count
      *            the number of elements to read
-     * @return an array of decoded <code>long[]</code> values
+     * @return an array of decoded <code>long</code> values
      * @throws IOException
      *             if there is a problem reading from the underlying input
      *             stream
@@ -135,24 +153,39 @@ public abstract class BandSet {
             return codec.decode(count - 1, in, first);
         }
     }
+
+    public byte[] encodeBandLong(long[] data, BHSDCodec codec) throws IOException, Pack200Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (int i = 0; i < data.length; i++) {
+            baos.write(codec.encode(data[i], i == 0 ? 0 : data[i-1]));
+        }
+        return baos.toByteArray();
+    }
     
     public long[] parseFlags(String name, InputStream in, int count,
-            BHSDCodec codec, boolean hasHi) throws IOException, Pack200Exception {
-        return parseFlags(name, in, 1, new int[] { count }, (hasHi ? codec
-                : null), codec)[0];
-    }
-
-    public long[][] parseFlags(String name, InputStream in, int count,
-            int counts[], BHSDCodec codec, boolean hasHi) throws IOException,
+            BHSDCodec codec, boolean hasHi) throws IOException,
             Pack200Exception {
-        return parseFlags(name, in, count, counts, (hasHi ? codec : null),
-                codec);
+        return parseFlags(name, in, new int[] { count },
+                (hasHi ? codec : null), codec)[0];
     }
 
-    public long[][] parseFlags(String name, InputStream in, int count,
-            int counts[], BHSDCodec hiCodec, BHSDCodec loCodec) throws IOException,
+    public long[][] parseFlags(String name, InputStream in, int counts[],
+            BHSDCodec codec, boolean hasHi) throws IOException,
+            Pack200Exception {
+        return parseFlags(name, in, counts, (hasHi ? codec : null), codec);
+    }
+
+    public long[] parseFlags(String name, InputStream in, int count,
+            BHSDCodec hiCodec, BHSDCodec loCodec) throws IOException,
+            Pack200Exception {
+        return parseFlags(name, in, new int[] { count }, hiCodec, loCodec)[0];
+    }
+
+    public long[][] parseFlags(String name, InputStream in, int counts[],
+            BHSDCodec hiCodec, BHSDCodec loCodec) throws IOException,
             Pack200Exception {
         // TODO Move away from decoding into a parseBand type structure
+        int count = counts.length;
         if (count == 0) {
             return new long[][] { {} };
         }
@@ -182,7 +215,7 @@ public abstract class BandSet {
      * [0..reference.length-1].
      * 
      * @param name
-     *            TODO
+     *            the band name
      * @param in
      *            the input stream to read from
      * @param codec
@@ -247,12 +280,12 @@ public abstract class BandSet {
         }
         // TODO Merge the decode and parsing of a multiple structure into one
         String[] result1 = new String[sum];
-        int[] decode = decodeBandInt(name, in, codec, sum);
+        int[] indices = decodeBandInt(name, in, codec, sum);
         for (int i1 = 0; i1 < sum; i1++) {
-            int index = decode[i1];
+            int index = indices[i1];
             if (index < 0 || index >= reference.length)
                 throw new Pack200Exception(
-                        "Something has gone wrong during parsing references");
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
             result1[i1] = reference[index];
         }
         String[] refs = result1;

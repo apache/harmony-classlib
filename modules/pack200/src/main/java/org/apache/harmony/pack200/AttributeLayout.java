@@ -248,5 +248,18 @@ public class AttributeLayout implements IMatcher {
     public String getName() {
         return name;
     }
+    
+    public int numBackwardsCallables() {
+        int num = 0;
+        String[] split = layout.split("\\(");
+        if(split.length > 0) {
+            for (int i = 1; i < split.length; i++) {
+                if(split[i].startsWith("-") || split[i].startsWith("0")) {
+                    num++;
+                }
+            }
+        }
+        return num;
+    }
 
 }

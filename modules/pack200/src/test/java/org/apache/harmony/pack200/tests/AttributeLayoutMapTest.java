@@ -15,9 +15,7 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200.tests;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.AttributeLayout;

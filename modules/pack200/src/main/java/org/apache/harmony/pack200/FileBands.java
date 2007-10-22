@@ -67,42 +67,22 @@ public class FileBands extends BandSet {
             Pack200Exception {
         int numberOfFiles = header.getNumberOfFiles();
         SegmentOptions options = header.getOptions();
-        if (false && System.getProperty("debug.pack200") != null) {
-            // TODO HACK
-            fileSize = new long[numberOfFiles];
-            fileModtime = new long[numberOfFiles];
-            fileOptions = new long[numberOfFiles];
-            fileName = new String[numberOfFiles];
-            Arrays.fill(fileName, "");
-            return;
-        }
-        long last;
+
         fileName = parseReferences("file_name", in, Codec.UNSIGNED5,
                 numberOfFiles, cpUTF8);
-        fileSize = new long[numberOfFiles];
-        if (options.hasFileSizeHi()) {
-            last = 0;
-            for (int i = 0; i < numberOfFiles; i++) {
-                fileSize[i] = (last = Codec.UNSIGNED5.decode(in, last)) << 32;
-            }
-        }
-        last = 0;
-        for (int i = 0; i < numberOfFiles; i++) {
-            fileSize[i] |= (last = Codec.UNSIGNED5.decode(in, last));
-        }
-        fileModtime = new long[numberOfFiles];
+        fileSize = parseFlags("file_size", in, numberOfFiles, Codec.UNSIGNED5,
+                options.hasFileSizeHi());
         if (options.hasFileModtime()) {
-            last = 0;
-            for (int i = 0; i < numberOfFiles; i++) {
-                fileModtime[i] |= (last = Codec.DELTA5.decode(in, last));
-            }
+            fileModtime = decodeBandLong("file_modtime", in, Codec.DELTA5,
+                    numberOfFiles);
+        } else {
+            fileModtime = new long[numberOfFiles];
         }
-        fileOptions = new long[numberOfFiles];
         if (options.hasFileOptions()) {
-            last = 0;
-            for (int i = 0; i < numberOfFiles; i++) {
-                fileOptions[i] |= (last = Codec.UNSIGNED5.decode(in, last));
-            }
+            fileOptions = decodeBandLong("file_options", in, Codec.UNSIGNED5,
+                    numberOfFiles);
+        } else {
+            fileOptions = new long[numberOfFiles];
         }
     }
     
