@@ -376,6 +376,7 @@ public class JEditorPane extends JTextComponent {
 
     @Override
     public Dimension getPreferredSize() {
+        getUI().getRootView(this).setSize(0,0);
         Dimension d = super.getPreferredSize();
         Container parent = getParent();
         if (parent instanceof JViewport) {
