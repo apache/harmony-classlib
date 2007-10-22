@@ -136,19 +136,25 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
     // that specify an address packets are going to be sent to
     private int trafficClass = 0;
 
-    // -------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------
-
     /*
-     * Constructor
+     * Constructor for creating a connected socket channel
      */
     public SocketChannelImpl(SelectorProvider selectorProvider)
+            throws IOException {
+        this(selectorProvider, true);
+    }
+
+    /*
+     * Constructor for creating an optionally connected socket channel.
+     */
+    public SocketChannelImpl(SelectorProvider selectorProvider, boolean connect)
             throws IOException {
         super(selectorProvider);
         fd = new FileDescriptor();
         status = SOCKET_STATUS_UNCONNECTED;
-        networkSystem.createSocket(fd, true);
+        if (connect) {
+            networkSystem.createSocket(fd, true);
+        }
     }
 
     /*

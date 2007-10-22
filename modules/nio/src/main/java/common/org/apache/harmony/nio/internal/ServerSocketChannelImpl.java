@@ -128,7 +128,7 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
             throw new NotYetBoundException();
         }
 
-        SocketChannel sockChannel = SocketChannel.open();
+        SocketChannel sockChannel = new SocketChannelImpl(SelectorProvider.provider(), false);
         Socket socketGot = sockChannel.socket();
 
         try {
