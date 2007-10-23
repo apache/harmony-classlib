@@ -688,7 +688,7 @@ public class File implements Serializable, Comparable<File> {
      * @see #getPath
      */
     public boolean isAbsolute() {
-        return isAbsoluteImpl(Util.getBytes(path));
+        return isAbsoluteImpl(Util.getUTF8Bytes(path));
     }
 
     private native boolean isAbsoluteImpl(byte[] filePath);
@@ -1181,7 +1181,7 @@ public class File implements Serializable, Comparable<File> {
         if (properPath != null) {
             return properPath;
         }
-        byte[] pathBytes = Util.getUTF8Bytes(path);
+        byte[] pathBytes = Util.getUTF8Bytes(path);       
         if (isAbsoluteImpl(pathBytes)) {
             return properPath = pathBytes;
         }
@@ -1222,7 +1222,7 @@ public class File implements Serializable, Comparable<File> {
 
         }
         result += path;
-        return properPath = Util.getUTF8Bytes(result);        
+        return properPath = Util.getUTF8Bytes(result);               
     }
 
     private static native byte[] properPathImpl(byte[] path);

@@ -18,6 +18,10 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
+import tests.support.resource.Support_Resources;
 
 import junit.framework.TestCase;
 
@@ -85,4 +89,41 @@ public class WinFileTest extends TestCase {
             dir.deleteOnExit();
         }
     }
+
+
+    /**
+     * Regression test for HARMONY-4794
+     */
+    public void testNonASCIIFileName_4794() throws IOException {
+        final String FILENAME="\u30d5\u30a1\u30a4\u30eb1.txt";
+        final String CONTENT = "A pretty predicament";
+        final String CNTNT_CHARSET = "ISO-8859-1"; 
+
+        File folder = Support_Resources.createTempFolder();
+        File f = new File(folder, FILENAME);
+        FileOutputStream fos = new FileOutputStream(f);
+        FileInputStream fis;
+ 
+        f.createNewFile();
+        f.deleteOnExit();
+        fos.write(CONTENT.getBytes(CNTNT_CHARSET));
+        fos.close();
+
+        f = new File(folder, FILENAME);        
+        assertEquals("Invalid file name", FILENAME, f.getName()); 
+        if (f.exists()) {
+            byte tmp[] = new byte[256];
+            String wasRed;
+            int n;
+
+            fis = new FileInputStream(f);
+            n = fis.read(tmp);
+            fis.close();
+            wasRed = new String(tmp, 0, n, CNTNT_CHARSET);
+            assertEquals("Invalid content was red", CONTENT, wasRed);
+        } else {
+            fail("File does not exist");
+        }
+    }
+
 }
