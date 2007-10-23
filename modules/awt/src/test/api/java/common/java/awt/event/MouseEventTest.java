@@ -21,6 +21,7 @@
 package java.awt.event;
 
 import java.awt.Button;
+import java.awt.Component;
 import java.awt.Point;
 
 import junit.framework.TestCase;
@@ -44,19 +45,51 @@ public class MouseEventTest extends TestCase {
     }
 
     public final void testMouseEventComponentintlongintintintintbooleanint() {
-        Button button = new Button("Button");
-        MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 1000000000,
-                InputEvent.BUTTON2_DOWN_MASK, 100, 200,
-                10, true, MouseEvent.BUTTON1);
+        final Button button = new Button("Button");
+        MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED,
+                1000000000, InputEvent.BUTTON2_DOWN_MASK, 100, 200, 10, true,
+                MouseEvent.BUTTON1);
 
-        assertEquals(event.getSource(), button);
-        assertEquals(event.getID(), MouseEvent.MOUSE_PRESSED);
-        assertEquals(event.getButton(), MouseEvent.BUTTON1);
-        assertEquals(event.getClickCount(), 10);
-        assertEquals(event.getPoint(), new Point(100, 200));
-        assertEquals(event.getX(), 100);
-        assertEquals(event.getY(), 200);
+        assertEquals(button, event.getSource());
+        assertEquals(MouseEvent.MOUSE_PRESSED, event.getID());
+        assertEquals(MouseEvent.BUTTON1, event.getButton());
+        assertEquals(10, event.getClickCount());
+        assertEquals(new Point(100, 200), event.getPoint());
+        assertEquals(100, event.getX());
+        assertEquals(200, event.getY());
         assertTrue(event.isPopupTrigger());
+        assertEquals(InputEvent.BUTTON1_MASK, event.getModifiers());
+        assertEquals(InputEvent.BUTTON2_DOWN_MASK, event.getModifiersEx());
+
+        event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.BUTTON1_MASK, 0, 0, 0, true, MouseEvent.NOBUTTON);
+        assertEquals(InputEvent.BUTTON1_MASK, event.getModifiers());
+        assertEquals(InputEvent.BUTTON1_DOWN_MASK, event.getModifiersEx());
+        assertEquals(MouseEvent.BUTTON1, event.getButton());
+
+        event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 0, 0, 0, 0, 0,
+                true, MouseEvent.BUTTON1);
+        assertEquals(InputEvent.BUTTON1_MASK, event.getModifiers());
+        assertEquals(MouseEvent.BUTTON1, event.getButton());
+
+        event = new MouseEvent(button, MouseEvent.MOUSE_RELEASED, 1000000000,
+                0, 100, 200, 10, true, MouseEvent.BUTTON1);
+        assertEquals(InputEvent.BUTTON1_MASK, event.getModifiers());
+        assertEquals(0, event.getModifiersEx());
+
+        event = new MouseEvent(button, MouseEvent.MOUSE_CLICKED, 1000000000, 0,
+                100, 200, 10, true, MouseEvent.BUTTON1);
+        assertEquals(InputEvent.BUTTON1_MASK, event.getModifiers());
+        assertEquals(0, event.getModifiersEx());
+
+        event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED, 0,
+                InputEvent.BUTTON1_DOWN_MASK | InputEvent.BUTTON2_DOWN_MASK
+                        | InputEvent.BUTTON3_DOWN_MASK, 0, 0, 0, true,
+                MouseEvent.BUTTON3);
+        assertEquals(InputEvent.BUTTON3_MASK, event.getModifiers());
+        assertEquals(InputEvent.BUTTON1_DOWN_MASK
+                | InputEvent.BUTTON2_DOWN_MASK | InputEvent.BUTTON3_DOWN_MASK,
+                event.getModifiersEx());
     }
 
     public final void testTranslatePoint() {
@@ -97,24 +130,19 @@ public class MouseEventTest extends TestCase {
     }
 
     public final void testParamString() {
-        // This test case fails on the RI because the method
-        // InputEvent.getModifiers() works incorrectly.
-        // TODO: Reimplement the method InputEvent.getModifiers()
+        Button button = new Button("Button");
+        MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED,
+                1000000000, InputEvent.BUTTON2_DOWN_MASK, 100, 200, 10, true,
+                MouseEvent.BUTTON1);
 
-        // Button button = new Button("Button");
-        // MouseEvent event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED,
-        // 1000000000,
-        // InputEvent.BUTTON2_DOWN_MASK, 100, 200,
-        // 10, true, MouseEvent.BUTTON1);
-        //
-        // assertEquals(event.paramString(),
-        // "MOUSE_PRESSED,(100,200),button=1,modifiers=Button1,extModifiers=Button2,clickCount=10");
-        // event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED + 1024,
-        // 1000000000,
-        // InputEvent.BUTTON2_MASK, 100, 200,
-        // 10, true, MouseEvent.BUTTON1);
-        // assertEquals(event.paramString(),
-        // "unknown
-        // type,(100,200),button=1,modifiers=Alt+Button2,extModifiers=Alt+Button2,clickCount=10");
+        assertEquals(
+                event.paramString(),
+                "MOUSE_PRESSED,(100,200),button=1,modifiers=Button1,extModifiers=Button2,clickCount=10");
+        event = new MouseEvent(button, MouseEvent.MOUSE_PRESSED + 1024,
+                1000000000, InputEvent.BUTTON2_MASK, 100, 200, 10, true,
+                MouseEvent.BUTTON1);
+        assertEquals(
+                event.paramString(),
+                "unknown type,(100,200),button=1,modifiers=Alt+Button2,extModifiers=Alt+Button2,clickCount=10");
     }
 }
