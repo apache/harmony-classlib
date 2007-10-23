@@ -36,7 +36,7 @@ public class KerberosToolboxImpl implements KerberosToolboxSpi {
         return null;
     }
 
-    public KerberosTicket getTGT(String clientPrincipalName) {
+    public KerberosTicket getTGT(String clientPrincipalName, char[] password) {
         // TODO Auto-generated method stub
         return null;
     }

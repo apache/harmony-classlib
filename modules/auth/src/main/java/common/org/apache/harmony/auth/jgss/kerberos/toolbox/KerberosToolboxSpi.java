@@ -20,6 +20,6 @@ package org.apache.harmony.auth.jgss.kerberos.toolbox;
 import javax.security.auth.kerberos.KerberosTicket;
 
 public interface KerberosToolboxSpi {    
-    KerberosTicket getTGT(String clientPrincipalName);
+    KerberosTicket getTGT(String clientPrincipalName, char[] password);
     KerberosTicket getTGS(String serverPrincipalName, KerberosTicket TGT);
 }
