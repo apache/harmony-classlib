@@ -43,7 +43,6 @@ import org.apache.harmony.nio.internal.SelectorProviderImpl;
  * <code>ServerSocketChannel</code>, and <code>SocketChannel</code>. All
  * the methods of this class are multi-thread safe.
  * </p>
- * 
  */
 public abstract class SelectorProvider extends Object {
 
@@ -54,8 +53,8 @@ public abstract class SelectorProvider extends Object {
     private static final String PROVIDER_IN_JAR_RESOURCE = "META-INF/services/java.nio.channels.spi.SelectorProvider"; //$NON-NLS-1$
 
     private static SelectorProvider provider = null;
-    
-    private static Channel inheritedChannel; 
+
+    private static Channel inheritedChannel;
 
     /**
      * Constructor for this class.
@@ -113,8 +112,8 @@ public abstract class SelectorProvider extends Object {
     static SelectorProvider loadProviderByJar() {
         Enumeration<URL> enumeration = null;
 
-        ClassLoader classLoader = AccessController.doPrivileged(
-                new PrivilegedAction<ClassLoader>() {
+        ClassLoader classLoader = AccessController
+                .doPrivileged(new PrivilegedAction<ClassLoader>() {
                     public ClassLoader run() {
                         return ClassLoader.getSystemClassLoader();
                     }
@@ -132,8 +131,8 @@ public abstract class SelectorProvider extends Object {
             BufferedReader br = null;
             String className = null;
             try {
-                br = new BufferedReader(new InputStreamReader(
-                        (enumeration.nextElement()).openStream()));
+                br = new BufferedReader(new InputStreamReader((enumeration
+                        .nextElement()).openStream()));
             } catch (Exception e) {
                 continue;
             }
@@ -147,31 +146,37 @@ public abstract class SelectorProvider extends Object {
                             .substring(0, siteComment);
                     if (0 < className.length()) {
                         return (SelectorProvider) classLoader.loadClass(
-                                className).newInstance();                  
+                                className).newInstance();
                     }
                 }
             } catch (Exception e) {
                 throw new Error(e);
+            } finally {
+                try {
+                    br.close();
+                } catch (IOException ioe) {
+                    // Ignore
+                }
             }
         }
         return null;
     }
 
     /*
-     * load by system property.
+     * Load by system property.
      */
     static SelectorProvider loadProviderByProperty() {
-        return AccessController.doPrivileged(
-                new PrivilegedAction<SelectorProvider>() {
+        return AccessController
+                .doPrivileged(new PrivilegedAction<SelectorProvider>() {
                     public SelectorProvider run() {
                         try {
-                            final String className =
-                                System.getProperty(PROVIDER_IN_SYSTEM_PROPERTY);
+                            final String className = System
+                                    .getProperty(PROVIDER_IN_SYSTEM_PROPERTY);
                             if (null != className) {
                                 Class<?> spClass = ClassLoader
                                         .getSystemClassLoader().loadClass(
                                                 className);
-                                return (SelectorProvider)spClass.newInstance();
+                                return (SelectorProvider) spClass.newInstance();
                             }
                             return null;
                         } catch (Exception e) {
