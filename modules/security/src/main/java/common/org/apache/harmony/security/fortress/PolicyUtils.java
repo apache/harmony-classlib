@@ -25,6 +25,8 @@ package org.apache.harmony.security.fortress;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.Permission;
@@ -282,6 +284,56 @@ public class PolicyUtils {
     public static String expandURL(String str, Properties properties)
             throws ExpansionFailedException {
         return expand(str, properties).replace(File.separatorChar, '/');
+    }
+    
+    /**
+     * Normalizes URLs to standard ones, eliminating pathname symbols.
+     * 
+     * @param codebase -
+     *            the original URL.
+     * @return - the normalized URL.
+     */
+    public static URL normalizeURL(URL codebase) {
+        if (codebase != null && "file".equals(codebase.getProtocol())) { //$NON-NLS-1$
+            try {
+                if (codebase.getHost().length() == 0) {
+                    String path = codebase.getFile();
+
+                    if (path.length() == 0) {
+                        // codebase is "file:"
+                        path = "*";
+                    }
+                    return filePathToURI(new File(path)
+                            .getAbsolutePath()).normalize().toURL();
+                } else {
+                    // codebase is "file://<smth>"
+                    return codebase.toURI().normalize().toURL();
+                }
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+        return codebase;
+    }
+
+    /**
+     * Converts a file path to URI without accessing file system
+     * (like {File#toURI()} does).
+     * 
+     * @param path -
+     *            file path.
+     * @return - the resulting URI.
+     * @throw URISyntaxException
+     */
+    public static URI filePathToURI(String path) throws URISyntaxException {
+        path = path.replace(File.separatorChar, '/');
+
+        if (!path.startsWith("/")) { //$NON-NLS-1$
+            return new URI("file", null, //$NON-NLS-1$
+                    new StringBuilder(path.length() + 1).append('/')
+                            .append(path).toString(), null, null);
+        }
+        return new URI("file", null, path, null, null); //$NON-NLS-1$
     }
 
     /**
