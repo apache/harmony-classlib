@@ -24,6 +24,7 @@ import java.nio.channels.Channel;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.InterruptibleChannel;
 import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
 /**
@@ -35,8 +36,7 @@ import java.security.PrivilegedExceptionAction;
  * the end method shows whether there has been any change to the java
  * environment that is visible to the API user.
  * </p>
- * 
- */
+*/
 public abstract class AbstractInterruptibleChannel implements Channel,
         InterruptibleChannel {
 
@@ -54,7 +54,7 @@ public abstract class AbstractInterruptibleChannel implements Channel,
                         }
                     });
             setInterruptAction.setAccessible(true);
-        } catch (Exception e) {
+        } catch (PrivilegedActionException e) {
             // FIXME: be accommodate before VM actually provides
             // setInterruptAction method
             // throw new Error(e);

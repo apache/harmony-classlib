@@ -58,11 +58,12 @@ final class SelectorImpl extends AbstractSelector {
 
     private static final int SELECT_NOW = 0;
 
-    // keysLock is used to brief synchronization when get selectionKeys snapshot
-    // before selection
-    final Object keysLock = new Object();
-
-    boolean keySetChanged = true;
+    /*
+     * keysLock is used to brief synchronization when get selectionKeys snapshot
+     * before selection.
+     */
+    private static class KeysLock {}
+    final Object keysLock = new KeysLock();
 
     private SelectionKey[] keys = new SelectionKey[1];
 
@@ -127,15 +128,15 @@ final class SelectorImpl extends AbstractSelector {
 
             lastKeyIndex = 0;
             readableKeysCount = 1;
-
         } catch (IOException e) {
             // do nothing
         }
     }
 
-    /*
+    /**
      * @see java.nio.channels.spi.AbstractSelector#implCloseSelector()
      */
+    @Override
     protected void implCloseSelector() throws IOException {
         synchronized (this) {
             synchronized (keysSet) {
@@ -351,8 +352,10 @@ final class SelectorImpl extends AbstractSelector {
     }
 
     /**
+     * Note that the given key has been modified
      * 
      * @param sk
+     *            the modified key.
      */
     void modKey(SelectionKey sk) {
         // TODO: update indexes rather than recreate the key
@@ -360,10 +363,11 @@ final class SelectorImpl extends AbstractSelector {
         addKey(sk);
     }
 
-    /*
+    /**
      * @see java.nio.channels.spi.AbstractSelector#register(java.nio.channels.spi.AbstractSelectableChannel,
      *      int, java.lang.Object)
      */
+    @Override
     protected SelectionKey register(AbstractSelectableChannel channel,
             int operations, Object attachment) {
         if (!provider().equals(channel.provider())) {
@@ -384,9 +388,10 @@ final class SelectorImpl extends AbstractSelector {
         }
     }
 
-    /*
+    /**
      * @see java.nio.channels.Selector#keys()
      */
+    @Override
     public synchronized Set<SelectionKey> keys() {
         closeCheck();
 
@@ -404,22 +409,27 @@ final class SelectorImpl extends AbstractSelector {
         return unmodifiableKeys;
     }
 
+    /*
+     * Checks that the receiver is not closed. If it is throws an exception.
+     */
     private void closeCheck() {
         if (!isOpen()) {
             throw new ClosedSelectorException();
         }
     }
 
-    /*
+    /**
      * @see java.nio.channels.Selector#select()
      */
+    @Override
     public int select() throws IOException {
         return selectInternal(SELECT_BLOCK);
     }
 
-    /*
+    /**
      * @see java.nio.channels.Selector#select(long)
      */
+    @Override
     public int select(long timeout) throws IOException {
         if (timeout < 0) {
             throw new IllegalArgumentException();
@@ -427,9 +437,10 @@ final class SelectorImpl extends AbstractSelector {
         return selectInternal((0 == timeout) ? SELECT_BLOCK : timeout);
     }
 
-    /*
+    /**
      * @see java.nio.channels.Selector#selectNow()
      */
+    @Override
     public int selectNow() throws IOException {
         return selectInternal(SELECT_NOW);
     }
@@ -468,7 +479,9 @@ final class SelectorImpl extends AbstractSelector {
         return true;
     }
 
-    // Prepares and adds channels to list for selection
+    /*
+     * Prepares and adds channels to list for selection
+     */
     private void prepareChannels() {
 
         // chomp the arrays if needed
@@ -556,9 +569,10 @@ final class SelectorImpl extends AbstractSelector {
         return selected;
     }
 
-    /*
+    /**
      * @see java.nio.channels.Selector#selectedKeys()
      */
+    @Override
     public synchronized Set<SelectionKey> selectedKeys() {
         closeCheck();
         return unaddableSelectedKeys;
@@ -579,9 +593,10 @@ final class SelectorImpl extends AbstractSelector {
         }
     }
 
-    /*
+    /**
      * @see java.nio.channels.Selector#wakeup()
      */
+    @Override
     public Selector wakeup() {
         try {
             sink.write(ByteBuffer.allocate(MOCK_WRITEBUF_SIZE));
@@ -599,10 +614,12 @@ final class SelectorImpl extends AbstractSelector {
             this.set = set;
         }
 
+        @Override
         public boolean equals(Object object) {
             return set.equals(object);
         }
 
+        @Override
         public int hashCode() {
             return set.hashCode();
         }
