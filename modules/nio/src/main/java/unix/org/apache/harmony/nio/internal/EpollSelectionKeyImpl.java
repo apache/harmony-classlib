@@ -37,30 +37,30 @@ final class EpollSelectionKeyImpl extends AbstractSelectionKey {
     private EpollSelectorImpl selector;
 
     private int index;
-    
-    static int stHash;
-    
-    private int hashCode; 
-    
-	public int hashCode() {		
-		return hashCode;
-	}
-	
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final EpollSelectionKeyImpl other = (EpollSelectionKeyImpl) obj;
-		if (hashCode != other.hashCode)
-			return false;
-		return true;
-	}
 
-	public EpollSelectionKeyImpl(AbstractSelectableChannel channel, int operations,
-            Object attachment, EpollSelectorImpl selector) {
+    static int stHash;
+
+    private int hashCode;
+
+    public int hashCode() {
+        return hashCode;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final EpollSelectionKeyImpl other = (EpollSelectionKeyImpl) obj;
+        if (hashCode != other.hashCode)
+            return false;
+        return true;
+    }
+
+    public EpollSelectionKeyImpl(AbstractSelectableChannel channel,
+            int operations, Object attachment, EpollSelectorImpl selector) {
         super();
         this.channel = channel;
         interestOps = operations;
@@ -109,13 +109,13 @@ final class EpollSelectionKeyImpl extends AbstractSelectionKey {
     }
 
     int getIndex() {
-    	return index;
+        return index;
     }
-    
+
     void setIndex(int index) {
-    	this.index = index;
+        this.index = index;
     }
-    
+
     private void checkValid() {
         if (!isValid()) {
             throw new CancelledKeyException();

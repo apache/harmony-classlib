@@ -16,22 +16,18 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown when an attempt is made to connect a SocketChannel that has a
  * non-blocking connection already underway.
- * 
  */
 public class ConnectionPendingException extends IllegalStateException {
 
-	private static final long serialVersionUID = 2008393366501760879L;
+    private static final long serialVersionUID = 2008393366501760879L;
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public ConnectionPendingException() {
-		super();
-	}
-
+    /**
+     * Default constructor.
+     */
+    public ConnectionPendingException() {
+        super();
+    }
 }

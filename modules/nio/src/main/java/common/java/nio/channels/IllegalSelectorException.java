@@ -16,22 +16,18 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown when a call is made to register a channel on a selector that has been
  * created by a different provider.
- * 
  */
 public class IllegalSelectorException extends IllegalArgumentException {
 
-	private static final long serialVersionUID = -8406323347253320987L;
+    private static final long serialVersionUID = -8406323347253320987L;
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public IllegalSelectorException() {
-		super();
-	}
-
+    /**
+     * Default constructor.
+     */
+    public IllegalSelectorException() {
+        super();
+    }
 }

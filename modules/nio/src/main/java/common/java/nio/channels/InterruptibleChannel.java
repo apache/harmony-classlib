@@ -16,7 +16,6 @@
 
 package java.nio.channels;
 
-
 import java.io.IOException;
 
 /**
@@ -37,22 +36,20 @@ import java.io.IOException;
  * closed. If the IO thread attempts to make an IO call with the interrupt
  * status set the call will immediately fail with a
  * <code>ClosedByInterruptException</code>.
- * 
  */
 public interface InterruptibleChannel extends Channel {
 
-	/**
-	 * Closes an InterruptibleChannel. This method is precisely the same as the
-	 * super-interface <code>close()</code>.
-	 * <p>
-	 * Any threads that are blocked on IO operations on this channel will be
-	 * interrupted with an <code>AsynchronousCloseException
-	 * </code>.
-	 * </p>
-	 * 
-	 * @throws IOException
-	 *             if an IO problem occurs closing the channel.
-	 */
-	public void close() throws IOException;
-
+    /**
+     * Closes an InterruptibleChannel. This method is precisely the same as the
+     * super-interface <code>close()</code>.
+     * <p>
+     * Any threads that are blocked on IO operations on this channel will be
+     * interrupted with an <code>AsynchronousCloseException
+     * </code>.
+     * </p>
+     * 
+     * @throws IOException
+     *             if an IO problem occurs closing the channel.
+     */
+    public void close() throws IOException;
 }

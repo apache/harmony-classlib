@@ -16,19 +16,17 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown when attempting to write to a channel that is not open for writing.
- * 
  */
 public class NonWritableChannelException extends IllegalStateException {
 
-	private static final long serialVersionUID = -7071230488279011621L;
+    private static final long serialVersionUID = -7071230488279011621L;
 
-	/**
-	 * Default constructor.
-	 */
-	public NonWritableChannelException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public NonWritableChannelException() {
+        super();
+    }
 }

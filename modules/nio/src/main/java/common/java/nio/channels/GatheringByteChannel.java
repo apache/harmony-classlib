@@ -16,7 +16,6 @@
 
 package java.nio.channels;
 
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -26,79 +25,78 @@ import java.nio.ByteBuffer;
  * <p>
  * The corresponding interface for reads is called
  * <code>ScatteringByteChannel</code>.
- * 
  */
 public interface GatheringByteChannel extends WritableByteChannel {
 
-	/**
-	 * Writes bytes from all the given buffers to the channel.
-	 * <p>
-	 * This method is equivalent to:
-	 * 
-	 * <pre>
-	 * write(buffers, 0, buffers.length);
-	 * </pre>
-	 * 
-	 * </p>
-	 * 
-	 * @param buffers
-	 *            the buffers containing bytes to be written.
-	 * @return the number of bytes actually written.
-	 * @throws ClosedChannelException
-	 *             if the channel is closed.
-	 * @throws NonWritableChannelException
-	 *             if the channel is open, but not in a mode that permits
-	 *             writing.
-	 * @throws ClosedByInterruptException
-	 *             if the thread is interrupted in its IO operation by another
-	 *             thread closing the channel.
-	 * @throws AsynchronousCloseException
-	 *             if the write is interrupted by another thread sending an
-	 *             explicit interrupt.
-	 * @throws IOException
-	 *             if some other type of exception occurs. Details are in the
-	 *             message.
-	 */
-	public long write(ByteBuffer[] buffers) throws IOException;
+    /**
+     * Writes bytes from all the given buffers to the channel.
+     * <p>
+     * This method is equivalent to:
+     * 
+     * <pre>
+     * write(buffers, 0, buffers.length);
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param buffers
+     *            the buffers containing bytes to be written.
+     * @return the number of bytes actually written.
+     * @throws ClosedChannelException
+     *             if the channel is closed.
+     * @throws NonWritableChannelException
+     *             if the channel is open, but not in a mode that permits
+     *             writing.
+     * @throws ClosedByInterruptException
+     *             if the thread is interrupted in its IO operation by another
+     *             thread closing the channel.
+     * @throws AsynchronousCloseException
+     *             if the write is interrupted by another thread sending an
+     *             explicit interrupt.
+     * @throws IOException
+     *             if some other type of exception occurs. Details are in the
+     *             message.
+     */
+    public long write(ByteBuffer[] buffers) throws IOException;
 
-	/**
-	 * Writes a subset of the given bytes from the buffers to the channel.
-	 * <p>
-	 * This method attempts to write all of the <code>remaining()</code> bytes
-	 * from <code>length</code> byte buffers, in order, starting at
-	 * <code>buffers[offset]</code>. The number of bytes actually written is
-	 * returned.
-	 * </p>
-	 * <p>
-	 * If a write operation is in progress, subsequent threads will block until
-	 * the write is completed, and will then contend for the ability to write.
-	 * </p>
-	 * 
-	 * @param buffers
-	 *            the array of byte buffers containing the source of remaining
-	 *            bytes that will be attempted to be written.
-	 * @param offset
-	 *            the index of the first buffer to write.
-	 * @param length
-	 *            the number of buffers to write.
-	 * @return the number of bytes actually written.
-	 * @throws IndexOutOfBoundsException
-	 *             if offset < 0 or > buffers.length; or length < 0 or >
-	 *             buffers.length - offset.
-	 * @throws NonWritableChannelException
-	 *             if the channel was not opened for writing.
-	 * @throws ClosedChannelException
-	 *             the channel is currently closed.
-	 * @throws AsynchronousCloseException
-	 *             the channel was closed by another thread while the write was
-	 *             underway.
-	 * @throws ClosedByInterruptException
-	 *             the thread was interrupted by another thread while the write
-	 *             was underway.
-	 * @throws IOException
-	 *             if some other type of exception occurs. Details are in the
-	 *             message.
-	 */
-	public long write(ByteBuffer[] buffers, int offset, int length)
-			throws IOException;
+    /**
+     * Writes a subset of the given bytes from the buffers to the channel.
+     * <p>
+     * This method attempts to write all of the <code>remaining()</code> bytes
+     * from <code>length</code> byte buffers, in order, starting at
+     * <code>buffers[offset]</code>. The number of bytes actually written is
+     * returned.
+     * </p>
+     * <p>
+     * If a write operation is in progress, subsequent threads will block until
+     * the write is completed, and will then contend for the ability to write.
+     * </p>
+     * 
+     * @param buffers
+     *            the array of byte buffers containing the source of remaining
+     *            bytes that will be attempted to be written.
+     * @param offset
+     *            the index of the first buffer to write.
+     * @param length
+     *            the number of buffers to write.
+     * @return the number of bytes actually written.
+     * @throws IndexOutOfBoundsException
+     *             if offset < 0 or > buffers.length; or length < 0 or >
+     *             buffers.length - offset.
+     * @throws NonWritableChannelException
+     *             if the channel was not opened for writing.
+     * @throws ClosedChannelException
+     *             the channel is currently closed.
+     * @throws AsynchronousCloseException
+     *             the channel was closed by another thread while the write was
+     *             underway.
+     * @throws ClosedByInterruptException
+     *             the thread was interrupted by another thread while the write
+     *             was underway.
+     * @throws IOException
+     *             if some other type of exception occurs. Details are in the
+     *             message.
+     */
+    public long write(ByteBuffer[] buffers, int offset, int length)
+            throws IOException;
 }

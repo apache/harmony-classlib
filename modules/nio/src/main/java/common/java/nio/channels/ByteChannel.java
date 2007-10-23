@@ -16,15 +16,13 @@
 
 package java.nio.channels;
 
-
 /**
  * A ByteChannel is both readable and writable.
  * <p>
  * The methods for the byte channel are precisely those defined by readable and
  * writable byte channels.
  * </p>
- * 
  */
 public interface ByteChannel extends ReadableByteChannel, WritableByteChannel {
-	// No methods defined.
+    // No methods defined.
 }

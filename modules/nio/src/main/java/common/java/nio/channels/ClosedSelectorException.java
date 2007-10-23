@@ -16,22 +16,17 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown when an a selector is closed and an IO operation is attempted.
- * 
  */
 public class ClosedSelectorException extends IllegalStateException {
 
     private static final long serialVersionUID = 6466297122317847835L;
-    
-	/**
-	 * Default constructor.
-	 *
-	 */
-	public ClosedSelectorException() {
-		super();
-	}
+
+    /**
+     * Default constructor.
+     */
+    public ClosedSelectorException() {
+        super();
+    }
 }
-
-

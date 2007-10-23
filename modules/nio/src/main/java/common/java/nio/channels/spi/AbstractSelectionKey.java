@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package java.nio.channels.spi;
 
 import java.nio.channels.SelectionKey;
@@ -23,38 +23,37 @@ import java.nio.channels.SelectionKey;
  * <p>
  * The class takes charge of the validation and cancellation of key.
  * </p>
- * 
  */
 public abstract class AbstractSelectionKey extends SelectionKey {
 
     /*
-     * package private for deregister method in AbstractSelector.
+     * Package private for deregister method in AbstractSelector.
      */
-	boolean isValid = true;
+    boolean isValid = true;
 
-	/**
-	 * Constructor for this class.
-	 */
-	protected AbstractSelectionKey() {
-		super();
-	}
+    /**
+     * Constructor for this class.
+     */
+    protected AbstractSelectionKey() {
+        super();
+    }
 
-	/**
-	 * @see java.nio.channels.SelectionKey#isValid()
-	 */
-	public final boolean isValid() {
-		return isValid;
-	}
+    /**
+     * @see java.nio.channels.SelectionKey#isValid()
+     */
+    public final boolean isValid() {
+        return isValid;
+    }
 
-	/**
-	 * Cancels this key and adds it to the cancelled key set.
-	 * 
-	 * @see java.nio.channels.SelectionKey#cancel()
-	 */
-	public final void cancel() {
-		if (isValid) {
-			isValid = false;
-			((AbstractSelector) selector()).cancel(this);
-		}
-	}
+    /**
+     * Cancels this key and adds it to the cancelled key set.
+     * 
+     * @see java.nio.channels.SelectionKey#cancel()
+     */
+    public final void cancel() {
+        if (isValid) {
+            isValid = false;
+            ((AbstractSelector) selector()).cancel(this);
+        }
+    }
 }

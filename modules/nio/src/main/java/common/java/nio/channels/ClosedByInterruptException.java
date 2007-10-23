@@ -16,24 +16,21 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown when a thread is interrupted in a blocking IO operation.
  * <p>
- * When the thread is interrupted by a call to <code>interrupt()</code>
- * it will close the channel, set the interrupt status of the thread to true,
- * and throw a <code>ClosedByInterruptException</code>.
- * 
+ * When the thread is interrupted by a call to <code>interrupt()</code> it
+ * will close the channel, set the interrupt status of the thread to true, and
+ * throw a <code>ClosedByInterruptException</code>.
  */
 public class ClosedByInterruptException extends AsynchronousCloseException {
 
-	private static final long serialVersionUID = -4488191543534286750L;
+    private static final long serialVersionUID = -4488191543534286750L;
 
-	/**
-	 * Default constructor.
-	 *
-	 */
-	public ClosedByInterruptException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public ClosedByInterruptException() {
+        super();
+    }
 }

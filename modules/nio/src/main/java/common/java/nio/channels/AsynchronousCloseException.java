@@ -16,20 +16,18 @@
 
 package java.nio.channels;
 
-
 /**
- * Thrown when the underlying channel for an IO operation is closed by another thread.
- * 
+ * Thrown when the underlying channel for an IO operation is closed by another
+ * thread.
  */
 public class AsynchronousCloseException extends ClosedChannelException {
 
-	private static final long serialVersionUID = 6891178312432313966L;
+    private static final long serialVersionUID = 6891178312432313966L;
 
-	/**
-	 * Default constructor
-	 */
-	public AsynchronousCloseException() {
-		super();
-	}
-
+    /**
+     * Default constructor
+     */
+    public AsynchronousCloseException() {
+        super();
+    }
 }

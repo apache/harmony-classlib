@@ -25,59 +25,57 @@ import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.AbstractSelector;
 import java.nio.channels.spi.SelectorProvider;
 
-
 /*
  * Internal implementation of SelectorProvider.
- * 
  */
 public class EpollSelectorProviderImpl extends SelectorProvider {
 
-	/*
-	 * Constructor for this class.
-	 */
-	public EpollSelectorProviderImpl() {
-		super();
-		System.out.println("Now using EpollSelectorProvider");
-	}
+    /*
+     * Constructor for this class.
+     */
+    public EpollSelectorProviderImpl() {
+        super();
+        System.out.println("Now using EpollSelectorProvider");
+    }
 
-	/*
-	 * 
-	 * @see java.nio.channels.spi.SelectorProvider#openDatagramChannel()
-	 */
-	public DatagramChannel openDatagramChannel() throws IOException {
-		return new DatagramChannelImpl(this);
-	}
+    /*
+     * 
+     * @see java.nio.channels.spi.SelectorProvider#openDatagramChannel()
+     */
+    public DatagramChannel openDatagramChannel() throws IOException {
+        return new DatagramChannelImpl(this);
+    }
 
-	/*
-	 * 
-	 * @see java.nio.channels.spi.SelectorProvider#openPipe()
-	 */
-	public Pipe openPipe() throws IOException {
-	    return new PipeImpl();
-	}
+    /*
+     * 
+     * @see java.nio.channels.spi.SelectorProvider#openPipe()
+     */
+    public Pipe openPipe() throws IOException {
+        return new PipeImpl();
+    }
 
-	/*
-	 * 
-	 * @see java.nio.channels.spi.SelectorProvider#openSelector()
-	 */
-	public AbstractSelector openSelector() throws IOException {
+    /*
+     * 
+     * @see java.nio.channels.spi.SelectorProvider#openSelector()
+     */
+    public AbstractSelector openSelector() throws IOException {
         return new EpollSelectorImpl(this);
     }
 
-	/*
-	 * 
-	 * @see java.nio.channels.spi.SelectorProvider#openServerSocketChannel()
-	 */
-	public ServerSocketChannel openServerSocketChannel() throws IOException {
-		return new ServerSocketChannelImpl(this);
-	}
+    /*
+     * 
+     * @see java.nio.channels.spi.SelectorProvider#openServerSocketChannel()
+     */
+    public ServerSocketChannel openServerSocketChannel() throws IOException {
+        return new ServerSocketChannelImpl(this);
+    }
 
-	/*
-	 * 
-	 * @see java.nio.channels.spi.SelectorProvider#openSocketChannel()
-	 */
-	public SocketChannel openSocketChannel() throws IOException {
-		return new SocketChannelImpl(this);
-	}
+    /*
+     * 
+     * @see java.nio.channels.spi.SelectorProvider#openSocketChannel()
+     */
+    public SocketChannel openSocketChannel() throws IOException {
+        return new SocketChannelImpl(this);
+    }
 
 }

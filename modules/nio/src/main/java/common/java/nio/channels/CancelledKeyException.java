@@ -16,23 +16,20 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown when an invalid selection key is used.
- * 
  */
 public class CancelledKeyException extends IllegalStateException {
 
-	/**
-	 * Version ID for serialization.
-	 */
-	private static final long serialVersionUID = -8438032138028814268L;
+    /**
+     * Version ID for serialization.
+     */
+    private static final long serialVersionUID = -8438032138028814268L;
 
-	/**
-	 * Default constructor.
-	 *
-	 */
-	public CancelledKeyException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public CancelledKeyException() {
+        super();
+    }
 }

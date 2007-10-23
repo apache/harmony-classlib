@@ -16,7 +16,6 @@
 
 package java.nio.channels;
 
-
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -33,35 +32,34 @@ import java.io.IOException;
  * Particular implementations or sub-interfaces of Channel dictate whether they
  * are thread-safe or not.
  * </p>
- * 
  */
 public interface Channel extends Closeable {
 
-	/**
-	 * Answers whether this channel is open or not.
-	 * 
-	 * @return true if the channel is open, otherwise answers false.
-	 */
-	public boolean isOpen();
+    /**
+     * Answers whether this channel is open or not.
+     * 
+     * @return true if the channel is open, otherwise answers false.
+     */
+    public boolean isOpen();
 
-	/**
-	 * Closes an open channel.
-	 * 
-	 * If the channel is already closed this method has no effect. If there is a
-	 * problem with closing the channel then the method throws an IOException
-	 * and the exception contains reasons for the failure.
-	 * <p>
-	 * If an attempt is made to perform an operation on a closed channel then a
-	 * <code>ClosedChannelException</code> will be thrown on that attempt.
-	 * </p>
-	 * <p>
-	 * If multiple threads attempts to simultaneously close a channel, then only
-	 * one thread will run the closure code, and others will be blocked until the
-	 * first returns.
-	 * </p>
-	 * 
-	 * @throws IOException
-	 *             if a problem occurs closing the channel.
-	 */
-	public void close() throws IOException;
+    /**
+     * Closes an open channel.
+     * 
+     * If the channel is already closed this method has no effect. If there is a
+     * problem with closing the channel then the method throws an IOException
+     * and the exception contains reasons for the failure.
+     * <p>
+     * If an attempt is made to perform an operation on a closed channel then a
+     * <code>ClosedChannelException</code> will be thrown on that attempt.
+     * </p>
+     * <p>
+     * If multiple threads attempts to simultaneously close a channel, then only
+     * one thread will run the closure code, and others will be blocked until
+     * the first returns.
+     * </p>
+     * 
+     * @throws IOException
+     *             if a problem occurs closing the channel.
+     */
+    public void close() throws IOException;
 }

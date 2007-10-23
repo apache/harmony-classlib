@@ -16,7 +16,6 @@
 
 package java.nio.channels;
 
-
 import java.io.IOException;
 
 /**
@@ -24,16 +23,15 @@ import java.io.IOException;
  * <p>
  * Note that the thread will also be in the 'interrupted' state.
  * </p>
- * 
  */
 public class FileLockInterruptionException extends IOException {
 
-	private static final long serialVersionUID = 7104080643653532383L;
+    private static final long serialVersionUID = 7104080643653532383L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FileLockInterruptionException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FileLockInterruptionException() {
+        super();
+    }
 }

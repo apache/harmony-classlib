@@ -70,92 +70,92 @@ import java.io.IOException;
  */
 public abstract class FileLock {
 
-	// The underlying file channel.
-	private final FileChannel channel;
+    // The underlying file channel.
+    private final FileChannel channel;
 
-	// The lock starting position.
-	private final long position;
+    // The lock starting position.
+    private final long position;
 
-	// The lock length in bytes
-	private final long size;
+    // The lock length in bytes
+    private final long size;
 
-	// If true then shared, if false then exclusive
-	private final boolean shared;
+    // If true then shared, if false then exclusive
+    private final boolean shared;
 
-	/**
-	 * Constructor for a new file lock instance for a given channel. The
-	 * constructor enforces the starting position, stretch, and shared status of
-	 * the lock.
-	 * 
-	 * @param channel
-	 *            underlying file channel that holds the lock.
-	 * @param position
-	 *            starting point for the lock.
-	 * @param size
-	 *            length of lock in number of bytes.
-	 * @param shared
-	 *            shared status of lock (true is shared, false is exclusive).
-	 */
-	protected FileLock(FileChannel channel, long position, long size,
-			boolean shared) {
-		super();
-		if (position < 0 || size < 0 || position + size < 0) {
-			throw new IllegalArgumentException();
-		}
-		this.channel = channel;
-		this.position = position;
-		this.size = size;
-		this.shared = shared;
-	}
+    /**
+     * Constructor for a new file lock instance for a given channel. The
+     * constructor enforces the starting position, stretch, and shared status of
+     * the lock.
+     * 
+     * @param channel
+     *            underlying file channel that holds the lock.
+     * @param position
+     *            starting point for the lock.
+     * @param size
+     *            length of lock in number of bytes.
+     * @param shared
+     *            shared status of lock (true is shared, false is exclusive).
+     */
+    protected FileLock(FileChannel channel, long position, long size,
+            boolean shared) {
+        super();
+        if (position < 0 || size < 0 || position + size < 0) {
+            throw new IllegalArgumentException();
+        }
+        this.channel = channel;
+        this.position = position;
+        this.size = size;
+        this.shared = shared;
+    }
 
-	/**
-	 * Answers the lock's FileChannel.
-	 * 
-	 * @return the channel.
-	 */
-	public final FileChannel channel() {
-		return channel;
-	}
+    /**
+     * Answers the lock's FileChannel.
+     * 
+     * @return the channel.
+     */
+    public final FileChannel channel() {
+        return channel;
+    }
 
-	/**
-	 * Answers the lock's starting position in the file.
-	 * 
-	 * @return the lock position.
-	 */
-	public final long position() {
-		return position;
-	}
+    /**
+     * Answers the lock's starting position in the file.
+     * 
+     * @return the lock position.
+     */
+    public final long position() {
+        return position;
+    }
 
-	/**
-	 * Answers the length of the file lock in bytes.
-	 * 
-	 * @return the size of file lock in bytes.
-	 */
-	public final long size() {
-		return size;
-	}
+    /**
+     * Answers the length of the file lock in bytes.
+     * 
+     * @return the size of file lock in bytes.
+     */
+    public final long size() {
+        return size;
+    }
 
-	/**
-	 * Answers true if the file lock is shared with other processes and false if
-	 * it is not.
-	 * 
-	 * @return true if the lock is a shared lock, and false if it is exclusive.
-	 */
-	public final boolean isShared() {
-		return shared;
-	}
+    /**
+     * Answers true if the file lock is shared with other processes and false if
+     * it is not.
+     * 
+     * @return true if the lock is a shared lock, and false if it is exclusive.
+     */
+    public final boolean isShared() {
+        return shared;
+    }
 
-	/**
-	 * Answers true if the receiver's lock region overlapps the region described
-	 * in the parameter list,and answers false otherwise.
-	 * 
-	 * @param start
-	 *            the starting position for the comparative lock.
-	 * @param length
-	 *            the length of the comparative lock.
-	 * @return true if there is an overlap, and false otherwise.
-	 */
-	public final boolean overlaps(long start, long length) {
+    /**
+     * Answers true if the receiver's lock region overlapps the region described
+     * in the parameter list,and answers false otherwise.
+     * 
+     * @param start
+     *            the starting position for the comparative lock.
+     * @param length
+     *            the length of the comparative lock.
+     * @return true if there is an overlap, and false otherwise.
+     */
+    public final boolean overlaps(long start, long length) {
         final long end = position + size - 1;
         final long newEnd = start + length - 1;
         if (end < start || position > newEnd) {
@@ -164,42 +164,43 @@ public abstract class FileLock {
         return true;
     }
 
-	/**
-	 * Answers whether the receiver is a valid file lock or not. The lock is
-	 * valid unless the underlying channel has been closed or it has been
-	 * explicitly released.
-	 * 
-	 * @return true if the lock is valid, and false otherwise.
-	 */
-	public abstract boolean isValid();
+    /**
+     * Answers whether the receiver is a valid file lock or not. The lock is
+     * valid unless the underlying channel has been closed or it has been
+     * explicitly released.
+     * 
+     * @return true if the lock is valid, and false otherwise.
+     */
+    public abstract boolean isValid();
 
-	/**
-	 * Releases this particular lock on the file. If the lock is invalid then
-	 * this method has no effect. Once released the lock becomes invalid.
-	 * 
-	 * @throws ClosedChannelException
-	 *             if the channel is already closed when an attempt to release
-	 *             the lock is made.
-	 * @throws IOException
-	 *             some other IO exception occurred.
-	 */
-	public abstract void release() throws IOException;
+    /**
+     * Releases this particular lock on the file. If the lock is invalid then
+     * this method has no effect. Once released the lock becomes invalid.
+     * 
+     * @throws ClosedChannelException
+     *             if the channel is already closed when an attempt to release
+     *             the lock is made.
+     * @throws IOException
+     *             some other IO exception occurred.
+     */
+    public abstract void release() throws IOException;
 
-	/**
-	 * Answers a string that shows the details of the lock suitable for display
-	 * to an end user.
-	 * 
-	 * @return the display string.
-	 */
-	public final String toString() {
-		StringBuffer buffer = new StringBuffer(64); // Guess length of string
-		buffer.append("FileLock: [position="); //$NON-NLS-1$
-		buffer.append(position);
-		buffer.append(", size="); //$NON-NLS-1$
-		buffer.append(size);
-		buffer.append(", shared="); //$NON-NLS-1$
-		buffer.append(Boolean.toString(shared));
-		buffer.append("]"); //$NON-NLS-1$
-		return buffer.toString();
-	}
+    /**
+     * Answers a string that shows the details of the lock suitable for display
+     * to an end user.
+     * 
+     * @return the display string.
+     */
+    @SuppressWarnings("nls")
+    public final String toString() {
+        StringBuffer buffer = new StringBuffer(64); // Guess length of string
+        buffer.append("FileLock: [position=");
+        buffer.append(position);
+        buffer.append(", size=");
+        buffer.append(size);
+        buffer.append(", shared=");
+        buffer.append(Boolean.toString(shared));
+        buffer.append("]");
+        return buffer.toString();
+    }
 }

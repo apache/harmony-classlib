@@ -568,7 +568,7 @@ public abstract class DoubleBuffer extends Buffer implements
         buf.append(capacity());
         buf.append(" position="); //$NON-NLS-1$
         buf.append(position());
-        buf.append(" limit="); //$NON-NLS-1$	
+        buf.append(" limit="); //$NON-NLS-1$
         buf.append(limit());
         return buf.toString();
     }

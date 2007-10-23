@@ -16,21 +16,18 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown if SocketChannel's finishConnect method is called before the
  * SocketChannel's connect method completed without error.
- * 
  */
 public class NoConnectionPendingException extends IllegalStateException {
 
-	private static final long serialVersionUID = -8296561183633134743L;
+    private static final long serialVersionUID = -8296561183633134743L;
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public NoConnectionPendingException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public NoConnectionPendingException() {
+        super();
+    }
 }

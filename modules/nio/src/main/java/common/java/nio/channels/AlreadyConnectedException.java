@@ -16,19 +16,18 @@
 
 package java.nio.channels;
 
-
 /**
- * Thrown when an attempt is made to connect a SocketChannel that is already connected.
- * 
+ * Thrown when an attempt is made to connect a SocketChannel that is already
+ * connected.
  */
 public class AlreadyConnectedException extends IllegalStateException {
 
-	private static final long serialVersionUID = -7331895245053773357L;
+    private static final long serialVersionUID = -7331895245053773357L;
 
-	/**
-	 * Default constructor.
-	 */
-	public AlreadyConnectedException() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public AlreadyConnectedException() {
+        super();
+    }
 }

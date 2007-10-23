@@ -16,23 +16,20 @@
 
 package java.nio.channels;
 
-
 import java.io.IOException;
 
 /**
  * This exception is thrown when a channel is closed for the type of operation
  * attempted.
- * 
  */
 public class ClosedChannelException extends IOException {
 
-	private static final long serialVersionUID = 882777185433553857L;
+    private static final long serialVersionUID = 882777185433553857L;
 
-	/**
-	 * Default constructor. 
-	 */
-	public ClosedChannelException() {
-		super();
-	}
-
+    /**
+     * Default constructor.
+     */
+    public ClosedChannelException() {
+        super();
+    }
 }

@@ -16,22 +16,18 @@
 
 package java.nio.channels;
 
-
 /**
  * Thrown if the socket channel is not connected before an IO operation is
  * invoked.
- * 
  */
 public class NotYetConnectedException extends IllegalStateException {
 
-	private static final long serialVersionUID = 4697316551909513464L;
+    private static final long serialVersionUID = 4697316551909513464L;
 
-	/**
-	 * Default constructor.
-	 * 
-	 */
-	public NotYetConnectedException() {
-		super();
-	}
-
+    /**
+     * Default constructor.
+     */
+    public NotYetConnectedException() {
+        super();
+    }
 }
