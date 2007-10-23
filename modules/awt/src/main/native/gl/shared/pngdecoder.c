@@ -250,6 +250,9 @@ void gl_info_callback(png_structp png_ptr, png_infop info) {
   }
 
   (*env)->CallVoidMethod(env, obj, img_PNG_returnHeaderID);
+  if ((*env)->ExceptionCheck(env))
+    longjmp(decoderInfo->jmpBuf, 1);
+
  
   // Get java array for image data
   if(decoderInfo->colorType == PNG_COLOR_TYPE_RGB || 
