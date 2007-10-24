@@ -109,7 +109,7 @@ public class Int16Pointer extends VoidPointer {
         if (byteBase != null) {
             byteBase.getChar(dst, offset, length);
         } else {
-            throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+            throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
         }
     }
 
@@ -126,7 +126,7 @@ public class Int16Pointer extends VoidPointer {
         if (byteBase != null) {
             byteBase.setChar(src, offset, length);
         } else {
-            throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+            throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
         }
     }
 
@@ -143,7 +143,7 @@ public class Int16Pointer extends VoidPointer {
         if (byteBase != null) {
             byteBase.getInt16(dst, offset, length);
         } else {
-            throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+            throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
         }
     }
 
@@ -160,7 +160,7 @@ public class Int16Pointer extends VoidPointer {
         if (byteBase != null) {
             byteBase.setInt16(src, offset, length);
         } else {
-            throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+            throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
         }
     }
 
@@ -171,7 +171,7 @@ public class Int16Pointer extends VoidPointer {
         if (byteBase != null) {
             return new Int16Pointer(byteBase.getBytesBaseElementPointer(index * INT16_SIZE_FACTOR, INT16_SIZE_FACTOR));
         }
-        throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
     }
 
     /**
@@ -206,7 +206,7 @@ public class Int16Pointer extends VoidPointer {
         if (byteBase != null) {
             byteBase.setString(str);
         } else {
-            throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+            throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
         }
     }
 
@@ -217,7 +217,7 @@ public class Int16Pointer extends VoidPointer {
                 byteBase.setInt16(i * INT16_SIZE_FACTOR, value);
             }
         } else {
-            throw new UnsupportedOperationException("not inmplemented"); //$NON-NLS-1$
+            throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
         }
     }
 }

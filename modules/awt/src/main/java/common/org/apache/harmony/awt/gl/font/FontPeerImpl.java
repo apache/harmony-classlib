@@ -157,7 +157,7 @@ public abstract class FontPeerImpl implements FontPeer{
     public abstract void dispose();
 
     /**
-     * Returns Glyph represeting missing char. 
+     * Returns Glyph representing missing char. 
      */
     public abstract Glyph getDefaultGlyph();
 

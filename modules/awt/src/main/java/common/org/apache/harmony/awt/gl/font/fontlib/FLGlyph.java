@@ -64,15 +64,15 @@ final public class FLGlyph extends Glyph {
 //        bim.getRaster().
         
         
-        int dbufferLenght = w * h;
+        int dbufferLength = w * h;
 
-        DataBufferByte dbuffer = new DataBufferByte(dbufferLenght);
+        DataBufferByte dbuffer = new DataBufferByte(dbufferLength);
 
         WritableRaster scanRaster = Raster.createInterleavedRaster(dbuffer, w, h, w, 1,new int[]{0}, null);
 
         /*WritableRaster scanRaster = Raster.createPackedRaster(
                 dbuffer, 
-                (dbufferLenght / h) << 3, 
+                (dbufferLength / h) << 3, 
                 h, 
                 1, 
                 null

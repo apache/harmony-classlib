@@ -48,10 +48,10 @@ import org.apache.harmony.awt.nativebridge.linux.LinuxNativeFontWrapper;
  */
 public class LinuxGlyph extends Glyph{
 
-    // Xft instanse
+    // Xft instance
     private final Xft xft = Xft.getInstance();
     
-    // LinuxNativeFontWrapper instanse
+    // LinuxNativeFontWrapper instance
     private final LinuxNativeFontWrapper lnfw = LinuxNativeFontWrapper.getInstance();
 
     // GlyphBitmap structure that stores bitmap of the glyph. 

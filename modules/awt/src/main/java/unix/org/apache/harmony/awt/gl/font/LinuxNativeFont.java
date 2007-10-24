@@ -46,9 +46,9 @@ public class LinuxNativeFont {
     public synchronized static native String[] getFontFamiliesNames();
 
     /**
-     * Returns true if the new font was added to the system, false otherwise.
-     * Methods checks if the number of system fonts changed after font configutation
-     * was rebuilded.
+     * Returns true if the new font was added to the system, false
+     * otherwise.  Methods checks if the number of system fonts
+     * changed after font configuration was rebuilt.
      *   
      * @param absolutePath absolute path to the font.
      */
@@ -59,7 +59,7 @@ public class LinuxNativeFont {
      * font handle, also sets font type to the font peer parameter. 
      * NullPointerException is thrown if there are errors in native code. 
      * 
-     * @param linFont LinuxFont instanse
+     * @param linFont LinuxFont instance
      * @param family font family name
      * @param style style of the font
      * @param size size of the font
@@ -198,7 +198,7 @@ public class LinuxNativeFont {
      * directory, after temporary font file is deleted.
      *   
      * @param tempFontFileName directory that is being re-cached name.
-     * @return not null value if succcess, 0 otherwise
+     * @return not null value if success, 0 otherwise
      */
     public synchronized static native int RemoveFontResource(String tempFontFileName);
 
@@ -677,7 +677,7 @@ public class LinuxNativeFont {
     }
 
     /**
-     * Returns an array of instanses of 1 pt. sized plain Font objects
+     * Returns an array of instances of 1 pt. sized plain Font objects
      * corresponding to fonts supported by a system. 
      */
     public static Font[] getAllFonts() {

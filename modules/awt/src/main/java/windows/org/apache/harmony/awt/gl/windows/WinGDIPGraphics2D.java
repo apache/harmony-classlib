@@ -229,7 +229,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     }
 
 
-    //REMARK: It seems that transfrom affects paints too
+    //REMARK: It seems that transform affects paints too
     //REMARK: Think how to implement this
     @Override
     public void setPaint(Paint paint) {

@@ -71,7 +71,7 @@ public class DataSnapshot implements DataProvider {
         // TODO: refine the list of native formats
     }
 
-    public boolean isNativeFormatAtailable(String nativeFormat) {
+    public boolean isNativeFormatAvailable(String nativeFormat) {
         if (nativeFormat == null) {
             return false;
         }

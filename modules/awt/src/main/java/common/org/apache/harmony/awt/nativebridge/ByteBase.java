@@ -165,8 +165,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - from
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > dst.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > dst.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > dst.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void get(byte[] dst, int from, int length) {
         checkArraysBounds(from, dst.length, length, 1);
@@ -187,8 +187,8 @@ public class ByteBase {
      * must be non-negative and no larger than array.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void set(byte[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 1);
@@ -285,8 +285,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getChar(char[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, 2);
@@ -309,8 +309,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setChar(char[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 2);
@@ -366,8 +366,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getInt16(short[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, 2);
@@ -390,8 +390,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setInt16(short[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 2);
@@ -483,8 +483,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getFloat(float[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, 4);
@@ -507,8 +507,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setFloat(float[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 4);
@@ -531,8 +531,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getDouble(double[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, 8);
@@ -555,8 +555,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setDouble(double[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 8);
@@ -612,8 +612,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getInt32(int[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, 4);
@@ -636,8 +636,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setInt32(int[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 4);
@@ -693,8 +693,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getInt64(long[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, 8);
@@ -717,8 +717,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setInt64(long[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, 8);
@@ -787,8 +787,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void getCLong(long[] dst, int offset, int length) {
         checkArraysBounds(offset, dst.length, length, CLONG_SIZE == 8 ? 8 : 4);
@@ -807,8 +807,8 @@ public class ByteBase {
      * must be non-negative and no larger than dst.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void setCLong(long[] src, int offset, int length) {
         checkArraysBounds(offset, src.length, length, CLONG_SIZE == 8 ? 8 : 4);
@@ -1110,15 +1110,15 @@ public class ByteBase {
         }
     }
 
-    final void checkArraysBounds(int toIdx, int srcDstLengh, int copyLength, int bytesInData) {
+    final void checkArraysBounds(int toIdx, int srcDstLength, int copyLength, int bytesInData) {
         if (size == -1) {
             return;
         }
-        if (toIdx < 0 || toIdx > srcDstLengh) {
+        if (toIdx < 0 || toIdx > srcDstLength) {
             // awt.34=Initial offset in the destination array is wrong: {0}
             throw new IndexOutOfBoundsException(Messages.getString("awt.34", toIdx)); //$NON-NLS-1$
         }
-        if (copyLength < 0 || copyLength > srcDstLengh - toIdx || copyLength * bytesInData > size) {
+        if (copyLength < 0 || copyLength > srcDstLength - toIdx || copyLength * bytesInData > size) {
             // awt.35=Wrong number of elements to copy: {0}
             throw new IndexOutOfBoundsException(Messages.getString("awt.35", copyLength)); //$NON-NLS-1$
         }

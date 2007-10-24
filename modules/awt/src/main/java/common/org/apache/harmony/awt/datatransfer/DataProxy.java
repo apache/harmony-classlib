@@ -133,7 +133,7 @@ public final class DataProxy implements Transferable {
     
     private Object getPlainText(DataFlavor f)
             throws IOException, UnsupportedFlavorException {
-        if (!data.isNativeFormatAtailable(DataProvider.FORMAT_TEXT)) {
+        if (!data.isNativeFormatAvailable(DataProvider.FORMAT_TEXT)) {
             throw new UnsupportedFlavorException(f);
         }
         String str = data.getText();
@@ -146,7 +146,7 @@ public final class DataProxy implements Transferable {
 
     private Object getFileList(DataFlavor f) 
             throws IOException, UnsupportedFlavorException {
-        if (!data.isNativeFormatAtailable(DataProvider.FORMAT_FILE_LIST)) {
+        if (!data.isNativeFormatAvailable(DataProvider.FORMAT_FILE_LIST)) {
             throw new UnsupportedFlavorException(f);
         }
         String[] files = data.getFileList();
@@ -159,7 +159,7 @@ public final class DataProxy implements Transferable {
 
     private Object getHTML(DataFlavor f)
             throws IOException, UnsupportedFlavorException {
-        if (!data.isNativeFormatAtailable(DataProvider.FORMAT_HTML)) {
+        if (!data.isNativeFormatAvailable(DataProvider.FORMAT_HTML)) {
             throw new UnsupportedFlavorException(f);
         }
         String str = data.getHTML();
@@ -172,7 +172,7 @@ public final class DataProxy implements Transferable {
 
     private Object getURL(DataFlavor f)
             throws IOException, UnsupportedFlavorException {
-        if (!data.isNativeFormatAtailable(DataProvider.FORMAT_URL)) {
+        if (!data.isNativeFormatAvailable(DataProvider.FORMAT_URL)) {
             throw new UnsupportedFlavorException(f);
         }
         String str = data.getURL();
@@ -194,7 +194,7 @@ public final class DataProxy implements Transferable {
             throws IOException, UnsupportedFlavorException {
         String nativeFormat = SystemFlavorMap.encodeDataFlavor(f);
         if ((nativeFormat == null) || 
-                !data.isNativeFormatAtailable(nativeFormat)) {
+                !data.isNativeFormatAvailable(nativeFormat)) {
             throw new UnsupportedFlavorException(f);
         }
         byte bytes[] = data.getSerializedObject(f.getRepresentationClass());
@@ -248,7 +248,7 @@ public final class DataProxy implements Transferable {
 
     private Image getImage(DataFlavor f) 
             throws IOException, UnsupportedFlavorException {
-        if (!data.isNativeFormatAtailable(DataProvider.FORMAT_IMAGE)) {
+        if (!data.isNativeFormatAvailable(DataProvider.FORMAT_IMAGE)) {
             throw new UnsupportedFlavorException(f);
         }
         RawBitmap bitmap = data.getRawBitmap();

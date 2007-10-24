@@ -108,7 +108,7 @@ public class OGLTextRenderer extends TextRenderer {
         GlyphMetrics glMetrics;
         Color col = g.getColor();
         Font font = g.getFont();        
-        int lenght = str.length();
+        int length = str.length();
         FontPeerImpl peer = ((FontPeerImpl)font.getPeer());
         AffineTransform fontAT = (AffineTransform)font.getTransform().clone();
         Point.Float pos = new Point.Float();
@@ -143,7 +143,7 @@ public class OGLTextRenderer extends TextRenderer {
         
         activateVars();        
         
-        for (int i = 0; i - lenght < 0; i ++) {
+        for (int i = 0; i - length < 0; i ++) {
             ch = new Character(input[i]);
             if (ESCAPE.contains(ch)) continue;
             glyph = peer.getGlyph(input[i]);
@@ -193,7 +193,7 @@ public class OGLTextRenderer extends TextRenderer {
         Color col = g.getColor();
         Glyph[] input = ((CommonGlyphVector)gv).vector;        
         Font font = gv.getFont();
-        int lenght = gv.getNumGlyphs();
+        int length = gv.getNumGlyphs();
         FontPeerImpl peer = ((FontPeerImpl)font.getPeer());
         AffineTransform fontAT = (AffineTransform)font.getTransform().clone();
         Point.Float pos = new Point.Float();
@@ -227,7 +227,7 @@ public class OGLTextRenderer extends TextRenderer {
         
         fontAT = (AffineTransform) font.getTransform().clone();
         activateVars();
-        for (int i = 0; i - lenght < 0; i ++) {
+        for (int i = 0; i - length < 0; i ++) {
             ch = new Character(input[i].getChar());
             
             if (ch == ' ') continue;

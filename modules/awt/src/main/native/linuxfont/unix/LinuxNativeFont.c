@@ -174,8 +174,8 @@ JNIEXPORT jobjectArray JNICALL
  * Signature: (Ljava/lang/String;)Z
  *
  * Returns true if the new font was added to the system, false otherwise.
- * Methods checks if the number of system fonts changed after font configutation
- * was rebuilded.
+ * Methods checks if the number of system fonts changed after font configuration
+ * was rebuilt.
  */
 JNIEXPORT jstring JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_embedFontNative(JNIEnv *env, jclass obj, jstring fName){

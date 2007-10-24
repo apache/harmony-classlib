@@ -37,7 +37,7 @@ typedef enum DecodeStateTag {HEADER, PRIVATE_DIR, SUBRS_MASSIVE, CHAR_STRING} De
 
 typedef std::map<const fchar*, const ufshort> Type1CharMap;//inner glyph number -- unicode
 
-static const ufshort MAX_STR_LENGHT = 1024;
+static const ufshort MAX_STR_LENGTH = 1024;
 static const ufshort C1 = 52845;
 static const ufshort C2 = 22719;
 static const ufshort DEF_R_EXEC = 55665;

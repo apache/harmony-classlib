@@ -471,7 +471,7 @@ public class CompositeFont extends FontPeerImpl{
      */
     @Override
     public FontExtraMetrics getExtraMetrics(){
-        // Returns FontExtraMetrics instanse of the first physical 
+        // Returns FontExtraMetrics instance of the first physical 
         // Font from the array of fonts.
         return fPhysicalFonts[0].getExtraMetrics();
     }

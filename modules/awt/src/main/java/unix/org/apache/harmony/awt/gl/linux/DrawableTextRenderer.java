@@ -45,10 +45,10 @@ import org.apache.harmony.awt.nativebridge.linux.X11;
  */
 public class DrawableTextRenderer extends TextRenderer {
     
-    /** Singleton DrawableTextRenderer instanse */
+    /** Singleton DrawableTextRenderer instance */
     public static final DrawableTextRenderer inst = new DrawableTextRenderer();
 
-    // X11 instanse
+    // X11 instance
     static final X11 x11 = X11.getInstance();
 
     boolean isAntialiasingHintSet(Graphics2D g){
