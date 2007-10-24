@@ -163,5 +163,6 @@ public class KerberosUtils {
             return tgt;
         }
         return getTGTFromLoginModule(clientPrincipal);
+        //TODO CACHE : Whether should attach this tgt to the subject for current AccessControlContext?
     }
 }

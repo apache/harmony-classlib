@@ -19,6 +19,8 @@ package org.apache.harmony.auth.jgss.kerberos.toolbox;
 
 import javax.security.auth.kerberos.KerberosTicket;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 
 /*
  * The class will wrap the dependency on external kerberos tools.
@@ -33,12 +35,12 @@ public class KerberosToolboxImpl implements KerberosToolboxSpi {
     
     public KerberosTicket getTGS(String serverPrincipalName, KerberosTicket TGT) {
         // TODO Auto-generated method stub
-        return null;
+        throw new NotImplementedException();
     }
 
     public KerberosTicket getTGT(String clientPrincipalName, char[] password) {
         // TODO Auto-generated method stub
-        return null;
+        throw new NotImplementedException();
     }
 
 }
