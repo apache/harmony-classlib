@@ -75,7 +75,7 @@ public interface PrintClient {
      * @param flavor flavor of document, for which check should
      * be performed.
      * @param attributes set of doc's print request attributes.
-     * @return true if attribute value is supported, and othervise
+     * @return true if attribute value is supported, and otherwise
      * false.
      */
     boolean isAttributeValueSupported(Attribute attribute,

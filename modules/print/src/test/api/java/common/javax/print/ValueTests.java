@@ -465,7 +465,7 @@ private String[] getPrintServices() {
 }
 
 /*
- * This native function returms Windows printers list
+ * This native function returns Windows printers list
  */
 private native String [] getWindowsPrintServices();
 

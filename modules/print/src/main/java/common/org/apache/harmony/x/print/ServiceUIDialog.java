@@ -791,7 +791,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
     void selectMedia(Media oldMedia) {
         if (sizeBox.getItemCount() > 0) {    
             
-            /* if media was not set - get it from attribites */
+            /* if media was not set - get it from attributes */
             if ((oldMedia == null) && attrs.containsKey(Media.class)) {
                 oldMedia = (Media) attrs.get(Media.class);
             }
@@ -1010,10 +1010,10 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
      * Meaning of this fields should be updated if Orientation is changed.
      * 
      * When we initialize the dialog at first time, "Margins" values are 
-     * calculated using the following algorythm: 
+     * calculated using the following algorithm: 
      *
      *  * 1. If MediaPrintableArea + Media attributes are supported, attrs set 
-     *    contains MediaPrintableArea and Media, Media attibute from attrs is 
+     *    contains MediaPrintableArea and Media, Media attribute from attrs is 
      *    supported by selected print service and this is MediaSizeName object 
      *    (i.e. we can get size of this Media) and margins may be correctly 
      *    calculated using these Media and MediaMargins attributes - we get 
@@ -1644,7 +1644,7 @@ public class ServiceUIDialog extends ServiceUIDialogTemplate {
     }
     
     /*
-     * retirns dialog's PrintServices list
+     * returns dialog's PrintServices list
      */
     public PrintService [] getServices() {
         return services;
