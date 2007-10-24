@@ -196,7 +196,7 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
 
         try {
             fos.write(new byte[1], 0, 5);
-            fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
+            fail("IndexOutOfBoundsException must be thrown if off+len > b.length");
         } catch (IndexOutOfBoundsException e) {}
 
         try {

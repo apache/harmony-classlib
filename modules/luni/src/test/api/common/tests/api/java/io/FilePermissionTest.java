@@ -48,7 +48,7 @@ public class FilePermissionTest extends junit.framework.TestCase {
 		assertEquals("action given to the constructor did not correspond - constructor failed",
 				"write", constructFile.getActions());
 		assertTrue(
-				"name given to the construcotr did not correspond - construcotr failed",
+				"name given to the constructor did not correspond - constructor failed",
 				constructFile.getName() == "test constructor");
 
         // Regression test for HARMONY-1050

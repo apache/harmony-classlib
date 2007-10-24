@@ -242,7 +242,7 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
         // equal but not same manifest
         assertEquals(mf,juc.getManifest());
         assertNotSame(mf,juc.getManifest());
-        // same main attrubutes
+        // same main attributes
         assertEquals(juc.getMainAttributes(),mf.getMainAttributes());
     }
 

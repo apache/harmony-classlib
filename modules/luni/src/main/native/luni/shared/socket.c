@@ -273,7 +273,7 @@ mcastAddMembership (JNIEnv * env, hysocket_t hysocketP, jobject optVal,
   U_32 interfaceIndex;
   U_32 scope_id = 0;
 
-  /* JNI objects needed to access the information in the optVal oject passed in */
+  /* JNI objects needed to access the information in the optVal object passed in */
   /* the object passed in is a GenericIPMreq object */
   jclass cls;
   jfieldID multiaddrID;
@@ -478,7 +478,7 @@ mcastDropMembership (JNIEnv * env, hysocket_t hysocketP, jobject optVal,
   U_32 interfaceIndex;
   U_32 scope_id = 0;
 
-/* JNI objects needed to access the information in the optVal oject passed in */
+/* JNI objects needed to access the information in the optVal object passed in */
   /* the object passed in is a GenericIPMreq object */
   jclass cls;
   jfieldID multiaddrID;

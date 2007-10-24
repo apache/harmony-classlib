@@ -252,7 +252,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			assertNotNull("validate that non null display name is returned",
 					networkInterface1.getDisplayName());
 			assertFalse(
-					"validate that non-zero lengtj display name is generated",
+					"validate that non-zero length display name is generated",
 					networkInterface1.getDisplayName().equals(""));
 		}
 		if (atLeastTwoInterfaces) {

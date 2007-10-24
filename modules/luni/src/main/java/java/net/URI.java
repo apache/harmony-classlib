@@ -613,7 +613,7 @@ public final class URI implements Comparable<URI>, Serializable {
                     // case for a closed bracket at end of IP [x:x:x:...x]
                     case ']':
                         if (i != length - 1) {
-                            return false; // must be last charcter
+                            return false; // must be last character
                         }
                         if (ipAddress.charAt(0) != '[') {
                             return false; // must have a open [

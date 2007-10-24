@@ -535,7 +535,7 @@ public class URITest extends TestCase {
 
                 // hierarchical tests..
 
-                // diffrent authorities
+                // different authorities
                 { "//www.test.com/test", "//www.test2.com/test" },
 
                 { "/nullauth", "//nonnullauth/test" }, // one null authority
@@ -1443,7 +1443,7 @@ public class URITest extends TestCase {
 
                 new URI("//fgj234fkgj.jhj.123"),
 
-                // '-' cannot be first or last charcter in a label
+                // '-' cannot be first or last character in a label
                 new URI("//-domain.name"), new URI("//domain.name-"),
                 new URI("//domain-"),
 

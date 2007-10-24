@@ -74,7 +74,7 @@ public class ProxySelectorTest extends TestCase {
 	/*
 	 * Original system properties must be restored after running each test case.
 	 */
-	private Properties orignalSystemProperties;
+	private Properties originalSystemProperties;
 
 	/**
 	 * @tests java.net.ProxySelector#getDefault()
@@ -91,7 +91,7 @@ public class ProxySelectorTest extends TestCase {
 	 * @tests java.net.ProxySelector#getDefault()
 	 */
 	public void test_getDefault_Security() {
-		SecurityManager orignalSecurityManager = System.getSecurityManager();
+		SecurityManager originalSecurityManager = System.getSecurityManager();
 		try {
 			System.setSecurityManager(new MockSecurityManager());
 		} catch (SecurityException e) {
@@ -105,7 +105,7 @@ public class ProxySelectorTest extends TestCase {
 		} catch (SecurityException e) {
 			// expected
 		} finally {
-			System.setSecurityManager(orignalSecurityManager);
+			System.setSecurityManager(originalSecurityManager);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class ProxySelectorTest extends TestCase {
 	 */
 	public void test_setDefaultLjava_net_ProxySelector_Security() {
 		ProxySelector originalSelector = ProxySelector.getDefault();
-		SecurityManager orignalSecurityManager = System.getSecurityManager();
+		SecurityManager originalSecurityManager = System.getSecurityManager();
 		try {
 			System.setSecurityManager(new MockSecurityManager());
 		} catch (SecurityException e) {
@@ -146,7 +146,7 @@ public class ProxySelectorTest extends TestCase {
 		} catch (SecurityException e) {
 			// expected
 		} finally {
-			System.setSecurityManager(orignalSecurityManager);
+			System.setSecurityManager(originalSecurityManager);
 			ProxySelector.setDefault(originalSelector);
 		}
 	}
@@ -621,15 +621,15 @@ public class ProxySelectorTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		// save original system properties
-		orignalSystemProperties = (Properties) System.getProperties().clone();
+		originalSystemProperties = (Properties) System.getProperties().clone();
 	}
 
 	/*
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		// restore orignal system properties
-		System.setProperties(orignalSystemProperties);
+		// restore original system properties
+		System.setProperties(originalSystemProperties);
 		super.tearDown();
 	}
 }
