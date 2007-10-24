@@ -41,6 +41,7 @@
 #if defined(FREEBSD) || defined(MACOSX)
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#include <dlfcn.h>
 #endif
 
 #include <unistd.h>
@@ -305,6 +306,23 @@ hysysinfo_get_executable_name (struct HyPortLibrary * portLibrary,
 #if defined(LINUX)
   return readSymbolicLink (portLibrary, "/proc/self/exe", result);
 #else
+#if defined(FREEBSD)
+  extern int main (int argc, char **argv, char **envp);
+  Dl_info info;
+  if (dladdr( (const void*)&main, &info) == 0) {
+    return -1;
+  }
+  *result =
+    (portLibrary->mem_allocate_memory) (portLibrary,
+                                        strlen (info.dli_fname) + 1);
+
+  if (!*result) {
+    return -1;
+  }
+  strcpy (*result, info.dli_fname);
+  return 0;
+  
+#else
   IDATA retval = -1;
   IDATA length;
   char *p;
@@ -431,6 +449,7 @@ cleanup:
       currentName = NULL;
     }
   return retval;
+#endif
 #endif
 
 }
