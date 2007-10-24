@@ -1331,7 +1331,7 @@ public class FileChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.FileChannel#read(ByteBuffer,long)
      */
-    public void test_readLByteBufferJ_Postion_BeyondFileLimit()
+    public void test_readLByteBufferJ_Position_BeyondFileLimit()
             throws Exception {
 
         writeDataToFile(fileOfReadOnlyFileChannel);
@@ -1346,7 +1346,7 @@ public class FileChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.FileChannel#read(ByteBuffer,long)
      */
-    public void test_readLByteBufferJ_Postion_As_Long() throws Exception {
+    public void test_readLByteBufferJ_Position_As_Long() throws Exception {
         ByteBuffer readBuffer = ByteBuffer.allocate(CAPACITY);
         try {
             readOnlyFileChannel.read(readBuffer, Long.MAX_VALUE);
