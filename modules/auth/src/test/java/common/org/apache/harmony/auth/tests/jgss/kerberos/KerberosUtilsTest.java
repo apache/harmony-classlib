@@ -17,6 +17,15 @@
 
 package org.apache.harmony.auth.tests.jgss.kerberos;
 
+import java.util.Date;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+import javax.security.auth.Subject;
+import javax.security.auth.kerberos.KerberosPrincipal;
+import javax.security.auth.kerberos.KerberosTicket;
+
 import org.apache.harmony.auth.jgss.kerberos.KerberosUtils;
 import org.apache.harmony.auth.jgss.kerberos.toolbox.KerberosToolboxImpl;
 import org.apache.harmony.auth.jgss.kerberos.toolbox.KerberosToolboxSpi;
@@ -29,5 +38,24 @@ public class KerberosUtilsTest extends TestCase {
         KerberosToolboxSpi kerberosToolBoxSpi = KerberosUtils
                 .getKerberosToolbox("TESTKDCNAME");
         assertTrue(kerberosToolBoxSpi instanceof KerberosToolboxImpl);
+    }
+
+    public void testGetTGT_fromContext() throws Exception {
+        final KerberosPrincipal clientPrincipal = new KerberosPrincipal(
+                "leo@EXAMPLE.COM");
+        final KerberosPrincipal serverPrincipal = new KerberosPrincipal(
+                "krbtgt/EXAMPLE.COM@EXAMPLE.COM");
+        KerberosTicket tgt = new KerberosTicket(new byte[0], clientPrincipal,
+                serverPrincipal, new byte[0], 1, new boolean[0],
+                new Date(1000), null, new Date(new Date().getTime() + 1000), null, null);        
+        Subject subject = new Subject();
+        subject.getPrivateCredentials().add(tgt);
+        KerberosTicket tgtFromContext = (KerberosTicket) Subject.doAs(subject, new PrivilegedAction<KerberosTicket>(){
+            public KerberosTicket run(){
+                return KerberosUtils.getTGT(clientPrincipal);
+            }
+        });
+        assertNotNull(tgtFromContext);
+        assertEquals(tgt, tgtFromContext);
     }
 }
