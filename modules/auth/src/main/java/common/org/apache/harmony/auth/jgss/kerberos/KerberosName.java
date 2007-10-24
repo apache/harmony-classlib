@@ -102,13 +102,13 @@ public class KerberosName extends GSSNameImpl {
 		return nameType;
 	}
 
-	// org.apache.harmoy.auth.jgss.GSSNameImpl actually does not support
+	// org.apache.harmony.auth.jgss.GSSNameImpl actually does not support
 	// GSSNAME.NT_ANONYMOUS, so it always returns false.
 	public boolean isAnonymous() {
 		return nameType.equals(GSSName.NT_ANONYMOUS);
 	}
 
-	// org.apache.harmoy.auth.jgss.GSSNameImpl only supports MN GSSNAME.
+	// org.apache.harmony.auth.jgss.GSSNameImpl only supports MN GSSNAME.
 	public boolean isMN() {
 		return true;
 	}
