@@ -41,34 +41,34 @@ public class PNGImageReader  extends ImageReader {
     }
 
     public int getNumImages(boolean allowSearch) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     public int getWidth(int imageIndex) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     public int getHeight(int imageIndex) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public IIOMetadata getStreamMetadata() throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 

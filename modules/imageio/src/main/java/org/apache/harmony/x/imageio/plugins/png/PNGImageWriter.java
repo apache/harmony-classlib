@@ -183,9 +183,9 @@ public class PNGImageWriter extends ImageWriter {
             colorType = PNG_COLOR_TYPE_RGBA;
         }
 
-        int dbufferLenght = bytePixelSize * imageHeight * imageWidth;
+        int dbufferLength = bytePixelSize * imageHeight * imageWidth;
 
-        dbuffer = new DataBufferByte(dbufferLenght);
+        dbuffer = new DataBufferByte(dbufferLength);
 
         WritableRaster scanRaster = Raster.createInterleavedRaster(dbuffer, imageWidth, imageHeight, bpb * numBands
                 * imageWidth, bpb * numBands, BAND_OFFSETS[numBands], null);
@@ -198,7 +198,7 @@ public class PNGImageWriter extends ImageWriter {
         }
 
         try {
-            encode(dbuffer.getData(), dbufferLenght, bytePixelSize, (ImageOutputStream) getOutput(), imageWidth,
+            encode(dbuffer.getData(), dbufferLength, bytePixelSize, (ImageOutputStream) getOutput(), imageWidth,
                     imageHeight, bitDepth, colorType, palette, palette == null ? 0 : palette.length, isInterlace);
 
         }
