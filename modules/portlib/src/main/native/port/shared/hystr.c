@@ -110,7 +110,7 @@ static I_32 writeUnicodeStringToBuffer (char *buf, U_32 bufLen, U_64 width,
                                         U_8 tag);
 
 /**
- * Write characaters to a string as specified by format.
+ * Write characters to a string as specified by format.
  *
  * @param[in] portLibrary The port library.
  * @param[in, out] buf The string buffer to be written.
@@ -137,7 +137,7 @@ hystr_printf (struct HyPortLibrary *portLibrary, char *buf, U_32 bufLen,
 }
 
 /**
- * Write characaters to a string as specified by format.
+ * Write characters to a string as specified by format.
  *
  * @param[in] portLibrary The port library.
  * @param[in, out] buf The string buffer to be written.

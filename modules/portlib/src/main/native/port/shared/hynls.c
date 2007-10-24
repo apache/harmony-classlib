@@ -540,7 +540,7 @@ open_catalog (struct HyPortLibrary *portLibrary)
           portLibrary->portGlobals->nls_data.catalogues[position++] = add_catalog;
           portLibrary->file_close (portLibrary, fd);
 #if defined(NLS_DEBUG)
-          portLibrary->tty_printf (portLibrary, "NLS - succesfully opened %s\n", catalog);
+          portLibrary->tty_printf (portLibrary, "NLS - successfully opened %s\n", catalog);
 #endif
           successfully_opened = 1;
           fd = -1;
