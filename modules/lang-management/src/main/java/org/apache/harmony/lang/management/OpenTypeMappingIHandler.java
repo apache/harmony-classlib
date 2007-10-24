@@ -664,7 +664,7 @@ public class OpenTypeMappingIHandler implements InvocationHandler {
      * 
      * @param methodName
      * @return an instance of <code>InvokeType</code> corresponding to the
-     *         nature of the operation that the caller is attemting to make on
+     *         nature of the operation that the caller is attempting to make on
      *         the target object.
      */
     private InvokeType getInvokeType(String methodName) {
