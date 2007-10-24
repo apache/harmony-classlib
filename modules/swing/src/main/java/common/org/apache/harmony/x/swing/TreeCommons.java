@@ -41,7 +41,7 @@ public class TreeCommons {
     /**
      * Painting context. Used by
      * {@link TreeCommons#paintTree(Graphics, TreeCommons.PaintTreeContext)}
-     * method to parametrize painting differences of Basic and Metal L&Fs.
+     * method to parameterize painting differences of Basic and Metal L&Fs.
      */
     public interface PaintTreeContext {
         /**
@@ -183,7 +183,7 @@ public class TreeCommons {
     }
 
     /**
-     * Paints a tree basing on the data from the paramertized context.
+     * Paints a tree basing on the data from the parameterized context.
      *
      * @param g Graphics to paint on
      * @param context PaintTreeContext specified by particular UI.

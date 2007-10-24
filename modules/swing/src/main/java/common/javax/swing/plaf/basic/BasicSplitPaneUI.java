@@ -677,7 +677,7 @@ public class BasicSplitPaneUI extends SplitPaneUI {
     protected Component createDefaultNonContinuousLayoutDivider() {
         return new Canvas() {
             // Note: this is not a guaratee for correct serialization/deserialization
-            // but rather a performace optimization
+            // but rather a performance optimization
             private static final long serialVersionUID = 1L;
 
             @Override

@@ -80,7 +80,7 @@ public class MultiLookAndFeelTest extends TestCase {
 
 	/*
 	 * Test method for 'javax.swing.plaf.multi.MultiLookAndFeel.getDefaults()'
-	 * Defaults contains referenses to Multi classes only
+	 * Defaults contains references to Multi classes only
 	 */
 	public void testGetDefaults() {
 		assertEquals(mlaf.getDefaults().get("ButtonUI"), //$NON-NLS-1$

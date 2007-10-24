@@ -112,7 +112,7 @@ class XMLSynthParser extends DefaultHandler {
      * private class below). Value is the SynthStyle to be value from
      * namedElements be inserted
      */
-    private final Map<XMLSynthKey, XMLSynthStyle> namedReferenses = new HashMap<XMLSynthKey, XMLSynthStyle>();
+    private final Map<XMLSynthKey, XMLSynthStyle> namedReferences = new HashMap<XMLSynthKey, XMLSynthStyle>();
 
     /**
      * The style under modification
@@ -213,7 +213,7 @@ class XMLSynthParser extends DefaultHandler {
 
         } else if (element == BIND_ELEMENT) {
 
-            processBindElemant(attrs);
+            processBindElement(attrs);
 
         } else if (element == IM_PAINTER_ELEMENT) {
 
@@ -241,7 +241,7 @@ class XMLSynthParser extends DefaultHandler {
      */
     @Override
     public void characters(char[] ch, int start, int size) throws SAXException {
-        adapter.pushCharactres(ch, start, size);
+        adapter.pushCharacters(ch, start, size);
     }
 
     @Override
@@ -274,7 +274,7 @@ class XMLSynthParser extends DefaultHandler {
 
     /**
      * After the xml document parsing process all the references in
-     * nameReferenses map
+     * nameReferences map
      * 
      * All the RuntimeExceptions are internal synth exceptions
      */
@@ -297,7 +297,7 @@ class XMLSynthParser extends DefaultHandler {
      */
     private void fillReferences() {
 
-        for (Map.Entry<XMLSynthKey, XMLSynthStyle> entry : namedReferenses
+        for (Map.Entry<XMLSynthKey, XMLSynthStyle> entry : namedReferences
                 .entrySet()) {
 
             XMLSynthKey key = entry.getKey();
@@ -400,7 +400,7 @@ class XMLSynthParser extends DefaultHandler {
         int style = Font.PLAIN;
 
         if (idref != null) {
-            namedReferenses.put(new XMLSynthKey(FONT_ELEMENT, currentState,
+            namedReferences.put(new XMLSynthKey(FONT_ELEMENT, currentState,
                     idref, new String[0]), currentStyle);
             return;
         }
@@ -449,7 +449,7 @@ class XMLSynthParser extends DefaultHandler {
         String idAttr = attrs.getValue("id"); //$NON-NLS-1$
 
         if ((idRefAttr != null) && (colorTypeAttr != null)) {
-            namedReferenses.put(new XMLSynthKey(COLOR_ELEMENT, currentState,
+            namedReferences.put(new XMLSynthKey(COLOR_ELEMENT, currentState,
                     idRefAttr, colorTypeAttr), currentStyle);
             return;
         }
@@ -514,11 +514,11 @@ class XMLSynthParser extends DefaultHandler {
             if ((keyAttr.endsWith("icon")) || (keyAttr.endsWith("Icon"))) {
                 // Markup that it is icon property is XMLSynthKey.info array
                 // length
-                namedReferenses.put(new XMLSynthKey(PROPERTY_ELEMENT,
+                namedReferences.put(new XMLSynthKey(PROPERTY_ELEMENT,
                         currentState, attrs.getValue("value"), new String[] {
                                 keyAttr, "" }), currentStyle);
             } else {
-                namedReferenses.put(new XMLSynthKey(PROPERTY_ELEMENT,
+                namedReferences.put(new XMLSynthKey(PROPERTY_ELEMENT,
                         currentState, attrs.getValue("value"), keyAttr),
                         currentStyle);
             }
@@ -531,11 +531,11 @@ class XMLSynthParser extends DefaultHandler {
         } else if ("dimension".equalsIgnoreCase(propertyType)) {
 
             String size = attrs.getValue("value");
-            int witdth = Integer.parseInt(size.substring(0, size.indexOf(" ")));
+            int width = Integer.parseInt(size.substring(0, size.indexOf(" ")));
             int height = Integer
                     .parseInt(size.substring(size.indexOf(" ") + 1));
 
-            currentStyle.setProperty(keyAttr, new Dimension(witdth, height));
+            currentStyle.setProperty(keyAttr, new Dimension(width, height));
 
         } else if ("insets".equalsIgnoreCase(propertyType)) {
 
@@ -560,7 +560,7 @@ class XMLSynthParser extends DefaultHandler {
         String propertyType = attrs.getValue("type");
 
         if ("idref".equals(propertyType) || propertyType == null) {
-            namedReferenses.put(new XMLSynthKey(DEFAULTS_ELEMENT, currentState,
+            namedReferences.put(new XMLSynthKey(DEFAULTS_ELEMENT, currentState,
                     attrs.getValue("value"), attrs.getValue("key")),
                     currentStyle);
 
@@ -572,11 +572,11 @@ class XMLSynthParser extends DefaultHandler {
         } else if ("dimension".equalsIgnoreCase(propertyType)) {
 
             String size = attrs.getValue("value");
-            int witdth = Integer.parseInt(size.substring(0, size.indexOf(" ")));
+            int width = Integer.parseInt(size.substring(0, size.indexOf(" ")));
             int height = Integer
                     .parseInt(size.substring(size.indexOf(" ") + 1));
 
-            UIManager.put(attrs.getValue("key"), new Dimension(witdth, height));
+            UIManager.put(attrs.getValue("key"), new Dimension(width, height));
 
         } else if ("insets".equalsIgnoreCase(propertyType)) {
 
@@ -595,7 +595,7 @@ class XMLSynthParser extends DefaultHandler {
     }
 
     @SuppressWarnings("nls")
-    private void processBindElemant(Attributes attrs) throws SAXException {
+    private void processBindElement(Attributes attrs) throws SAXException {
         /*
          * This method works with previously defined in parsed xml SynthStyles.
          * It's compatible with RI.
@@ -692,7 +692,7 @@ class XMLSynthParser extends DefaultHandler {
 
         }
 
-        namedReferenses.put(new XMLSynthKey(PAINTER_ELEMENT, currentState,
+        namedReferences.put(new XMLSynthKey(PAINTER_ELEMENT, currentState,
                 attrs.getValue("idref"), new String[] { method,
                         attrs.getValue("direction") }), currentStyle);
     }
@@ -719,7 +719,7 @@ class XMLSynthParser extends DefaultHandler {
 
         String idref = attrs.getValue("idref"); //$NON-NLS-1$
         if (idref != null) {
-            namedReferenses.put(new XMLSynthKey(
+            namedReferences.put(new XMLSynthKey(
                     "insets", currentState, idref, new String[0]), //$NON-NLS-1$
                     currentStyle);
             return;
@@ -781,7 +781,7 @@ class XMLSynthParser extends DefaultHandler {
      */
     private void processGraphicsUtilsElement(Attributes attrs) {
 
-        namedReferenses.put(new XMLSynthKey(G_UTILS_ELEMENT, currentState,
+        namedReferences.put(new XMLSynthKey(G_UTILS_ELEMENT, currentState,
                 attrs.getValue("idref"), new String[0]), currentStyle); //$NON-NLS-1$
     }
 
@@ -887,7 +887,7 @@ class XMLSynthParser extends DefaultHandler {
 
         }
 
-        public void pushCharactres(char[] ch, int start, int end) {
+        public void pushCharacters(char[] ch, int start, int end) {
 
             if (validatingCounter > 0) {
                 xmlLine.append(ch, start, end);
@@ -923,7 +923,7 @@ class XMLSynthParser extends DefaultHandler {
     }
 
     /**
-     * This class is used to represent correct keys in namedReferenses table
+     * This class is used to represent correct keys in namedReferences table
      * which helps to unambiguously insert named element instead of reference in
      * the concluding stage of parsing
      */

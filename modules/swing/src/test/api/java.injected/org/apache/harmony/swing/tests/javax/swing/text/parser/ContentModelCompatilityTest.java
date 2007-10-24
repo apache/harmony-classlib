@@ -708,7 +708,7 @@ public class ContentModelCompatilityTest extends TestCase {
      * 'org.apache.harmony.swing.tests.javax.swing.text.parser.ContentModel.ContentModel(int,
      * ContentModel)' ContentModel(Element( "1",0,true,true,null,null,null,null ,
      * and a contentmodel is created. Then ContentModel(0,contentmodel) is
-     * instanciated It checks if an instance is created, content is equal to el
+     * instantiated It checks if an instance is created, content is equal to el
      * ,type is 0 and next is null.
      */
     public void testContentModelIntContentModel036() {
@@ -2274,7 +2274,7 @@ public class ContentModelCompatilityTest extends TestCase {
      * Test method for 'org.apache.harmony.swing.tests.javax.swing.text.parser.ContentModel.toString()'
      * ContentModel(Element( "1",0,true,true,null,null,null,null , and a
      * contentmodel is created. Then ContentModel(0,contentmodel) is
-     * instanciated Expected result is "1"
+     * instantiated Expected result is "1"
      */
     public void testToString024() {
         try {
@@ -2952,7 +2952,7 @@ public class ContentModelCompatilityTest extends TestCase {
     /**
      * Test method for 'org.apache.harmony.swing.tests.javax.swing.text.parser.ContentModel.first()'
      * ContentModel(Element( "1",0,true,true,null,null,null,null)) Then
-     * ContentModel(0,contentmodel) is instanciated Expected: Element(
+     * ContentModel(0,contentmodel) is instantiated Expected: Element(
      * "1",0,true,true,null,null,null,null)
      */
     public void testFirst024() {

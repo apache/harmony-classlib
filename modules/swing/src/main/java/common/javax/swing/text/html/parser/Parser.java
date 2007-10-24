@@ -34,7 +34,7 @@ import org.apache.harmony.x.swing.internal.nls.Messages;
 
 /**
  * This class attempts to read and parse an HTML file, which it gets via an
- * Input Stream. The parsing is based on a Documet Type Definition
+ * Input Stream. The parsing is based on a Document Type Definition
  * ({@link DTD}), and calls various methods (such as handleError,
  * handleStartTag, etc.) when it finds tags or data. This methods should be
  * overriden in a subclass in order to use the parser.
@@ -828,7 +828,7 @@ public class Parser implements DTDConstants {
                 String currentAttListName = 
                     attList.getAttributeName();
                 
-                /* Assign the attibute name (attr): object */
+                /* Assign the attribute name (attr): object */
                 Object attr = HTML.getAttributeKey(currentAttListName);
                 if (attr == null) {
                     attr = currentAttListName;

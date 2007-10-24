@@ -283,7 +283,7 @@ public class BasicTextUITest extends SwingTestCase {
          * rootView.getAlignment(View.Y_AXIS));
          * assertNull(rootView.getAttributes());
          *
-         * //has not null AttrributeSet Dimension dimension =
+         * //has not null AttributeSet Dimension dimension =
          * ui.getMaximumSize(jta);
          *
          * //assertTrue(rintSpec(dimension.width) == //

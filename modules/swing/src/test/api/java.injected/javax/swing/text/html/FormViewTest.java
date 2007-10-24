@@ -725,7 +725,7 @@ public class FormViewTest extends SwingTestCase {
         doc = new HTMLDocument();
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
-        // 1. Test checkbox button. Succsessful should be only checked buttons.
+        // 1. Test checkbox button. Successful should be only checked buttons.
 
         src = new StringBuffer();
         src.append("<HTML><HEAD></HEAD><BODY> Test");
@@ -778,7 +778,7 @@ public class FormViewTest extends SwingTestCase {
         doc = new HTMLDocument();
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
-        // 1. Test submit button. Succsessful should be only armed button.
+        // 1. Test submit button. Successful should be only armed button.
 
         if (isHarmony()) {
             /**
@@ -816,7 +816,7 @@ public class FormViewTest extends SwingTestCase {
             // 1. Test disable attribute in
             // a) BUTTON
             // b) OPTGROUP
-            // 2. Test submit button. Succsessful should be only armed button.
+            // 2. Test submit button. Successful should be only armed button.
         }
 
         src = new StringBuffer();
@@ -833,7 +833,7 @@ public class FormViewTest extends SwingTestCase {
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
         // TODO
-        // 1. Test checkbox button. Succsessful should be only checked buttons.
+        // 1. Test checkbox button. Successful should be only checked buttons.
 
         src = new StringBuffer();
         src.append("<HTML><HEAD></HEAD><BODY> Test");
@@ -852,7 +852,7 @@ public class FormViewTest extends SwingTestCase {
         htmlEditorKit.read(reader, doc, 0);
         // TODO
         // 1. Test radioButton.
-        // a) For buttons with the same name succsessful should be only selected
+        // a) For buttons with the same name successful should be only selected
         // button.
         // b) Test Unchecked buttons
 
@@ -872,7 +872,7 @@ public class FormViewTest extends SwingTestCase {
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
         // TODO
-        // 1. Succsessful should be only selected items.
+        // 1. Successful should be only selected items.
 
         src = new StringBuffer();
         src.append("<HTML><HEAD></HEAD><BODY> Test");
@@ -885,7 +885,7 @@ public class FormViewTest extends SwingTestCase {
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
         // TODO
-        // 1. File is succsessful element
+        // 1. File is successful element
 
         // TODO
         // 1. If current value of element is unset, element may considered as
@@ -902,7 +902,7 @@ public class FormViewTest extends SwingTestCase {
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
         // TODO
-        // 1. Reset isn't succsessful element
+        // 1. Reset isn't successful element
 
         src = new StringBuffer();
         src.append("<HTML><HEAD></HEAD><BODY> Test");
@@ -915,7 +915,7 @@ public class FormViewTest extends SwingTestCase {
         editorPane.setDocument(doc);
         htmlEditorKit.read(reader, doc, 0);
         // TODO
-        // 1. OBJECT with attrubute "declare" isn't succsessful element.
+        // 1. OBJECT with attribute "declare" isn't successful element.
 
         // TODO
         // 1. Tests on invisible elements.

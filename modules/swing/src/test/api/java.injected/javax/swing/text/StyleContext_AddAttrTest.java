@@ -63,7 +63,7 @@ public class StyleContext_AddAttrTest extends TestCase {
     }
 
     /**
-     * Add two diffrent key/value pair to an empty set.
+     * Add two different key/value pair to an empty set.
      * Check the return instances are different.
      */
     public void testAddAttributeDiff() {

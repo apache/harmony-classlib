@@ -1267,7 +1267,7 @@ public class JInternalFrameTest extends SwingTestCase {
         try {
             frame.setMaximum(false);
         } catch (PropertyVetoException e) {
-            assertTrue("no excetion should be thrown", false);
+            assertTrue("no exception should be thrown", false);
         }
         assertTrue("normalBounds is set", frame.getNormalBounds() == normal);
         assertFalse("normalBounds is not a bound property", listener.ok);
@@ -1275,7 +1275,7 @@ public class JInternalFrameTest extends SwingTestCase {
         try {
             frame.setMaximum(true);
         } catch (PropertyVetoException e) {
-            assertTrue("no excetion should be thrown", false);
+            assertTrue("no exception should be thrown", false);
         }
         assertTrue("normalBounds is set", frame.getNormalBounds().equals(bounds));
         assertFalse("normalBounds is set", frame.getNormalBounds() == bounds);

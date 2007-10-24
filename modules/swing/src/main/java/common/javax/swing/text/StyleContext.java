@@ -595,7 +595,7 @@ public class StyleContext
 
     /**
      * This methods just does nothing because we use
-     * <code>WeakReference</code>s to remove unused attibute sets from cache.
+     * <code>WeakReference</code>s to remove unused attribute sets from cache.
      */
     public void reclaim(final AttributeSet a) {
     }
