@@ -3394,7 +3394,7 @@ public interface WindowsDefs {
     static final int ERROR_DS_SOURCE_AUDITING_NOT_ENABLED = 8552;
     static final int ERROR_DS_CANT_CREATE_IN_NONDOMAIN_NC = 8553;
     static final int ERROR_DS_INVALID_NAME_FOR_SPN = 8554;
-    static final int ERROR_DS_FILTER_USES_CONTRUCTED_ATTRS = 8555;
+    static final int ERROR_DS_FILTER_USES_CONSTRUCTED_ATTRS = 8555;
     static final int ERROR_DS_UNICODEPWD_NOT_IN_QUOTES = 8556;
     static final int ERROR_DS_MACHINE_ACCOUNT_QUOTA_EXCEEDED = 8557;
     static final int ERROR_DS_MUST_BE_RUN_ON_DST_DC = 8558;
