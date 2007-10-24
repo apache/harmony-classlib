@@ -63,7 +63,7 @@ import java.security.Provider;
  *     TLS_DH_anon_WITH_DES_CBC_SHA
  *     TLS_DH_anon_WITH_3DES_EDE_CBC_SHA
  * 
- * The real set of availible cipher suites depends on set of availible 
+ * The real set of available cipher suites depends on set of available 
  * crypto algorithms. These algorithms must be provided by some crypto
  * provider.
  * 
