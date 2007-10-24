@@ -64,7 +64,7 @@ public class ProviderTest extends TestCase {
         if (!"value 1".equals(p.getProperty("Property 1").trim()) ||
                 !"className".equals(p.getProperty("serviceName.algName").trim()) ||    
                 !"attrValue".equals(p.getProperty("serviceName.algName attrName").trim()) ||
-                !"stanbdardName".equals(p.getProperty("Alg.Alias.engineClassName.aliasName").trim()) ||
+                !"standardName".equals(p.getProperty("Alg.Alias.engineClassName.aliasName").trim()) ||
                 !String.valueOf(p.getName()).equals(p.getProperty("Provider.id name").trim()) ||
                 !String.valueOf(p.getVersion()).equals(p.getProperty("Provider.id version").trim()) ||
                 !String.valueOf(p.getInfo()).equals(p.getProperty("Provider.id info").trim()) ||

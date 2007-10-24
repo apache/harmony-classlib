@@ -527,7 +527,7 @@ public abstract class Provider extends Properties {
         String algorithm = null;
         String attribute = null;
         int i;
-        if (k.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<stanbdardName> //$NON-NLS-1$
+        if (k.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<standardName> //$NON-NLS-1$
             String aliasName;
             String service_alias = k.substring(10);
             i = service_alias.indexOf("."); //$NON-NLS-1$
@@ -607,7 +607,7 @@ public abstract class Provider extends Properties {
                 continue;
             }
             int i;
-            if (key.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<stanbdardName> //$NON-NLS-1$
+            if (key.startsWith("Alg.Alias.")) { // Alg.Alias.<crypto_service>.<aliasName>=<standardName> //$NON-NLS-1$
                 String aliasName;
                 String service_alias = key.substring(10);
                 i = service_alias.indexOf("."); //$NON-NLS-1$
