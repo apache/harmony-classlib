@@ -1119,7 +1119,7 @@ public class HTMLDocument extends DefaultStyledDocument {
     private static final String TARGET_SELF = "_self";
     private static final String TARGET_PARENT = "_parent";
 
-    private static final SimpleAttributeSet DEFAULT_CHARACHTER_ATTRIBUTES = new SimpleAttributeSet();  
+    private static final SimpleAttributeSet DEFAULT_CHARACTER_ATTRIBUTES = new SimpleAttributeSet();  
 
     private URL base;
     private Parser parser;
@@ -1472,10 +1472,10 @@ public class HTMLDocument extends DefaultStyledDocument {
     private static void addDefaultCSSAttribute(final Tag tag, final CSS.Attribute attr, final String value) {
         SimpleAttributeSet attrSet = new SimpleAttributeSet();
         attrSet.addAttribute(attr, attr.getConverter().toCSS(value));
-        DEFAULT_CHARACHTER_ATTRIBUTES.addAttribute(tag, attrSet);
+        DEFAULT_CHARACTER_ATTRIBUTES.addAttribute(tag, attrSet);
     }
 
     private static SimpleAttributeSet getDefaultCSSAttributes(final Tag tag) {
-        return (SimpleAttributeSet)DEFAULT_CHARACHTER_ATTRIBUTES.getAttribute(tag);
+        return (SimpleAttributeSet)DEFAULT_CHARACTER_ATTRIBUTES.getAttribute(tag);
     }
 }

@@ -784,7 +784,7 @@ createSemaphore (struct HyPortLibrary *portLibrary, char *baseFile,
       return FAILED;
     }
 
-  /*sucessfully created base file, now create semaphores */
+  /*successfully created base file, now create semaphores */
 
   while (projid < HYSH_MAX_PROJ_ID)
     {
@@ -835,7 +835,7 @@ createSemaphore (struct HyPortLibrary *portLibrary, char *baseFile,
                                              findError (errno, __errno2 ()));
           return FAILED;
         }
-      /* if we get here it means that we have succes with getting a semaphore! */
+      /* if we get here it means that we have success with getting a semaphore! */
       break;
     }
 

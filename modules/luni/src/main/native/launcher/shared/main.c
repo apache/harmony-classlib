@@ -752,7 +752,9 @@ cleanup:
       hymem_free_memory (mainClassJar);
     }
 
-  // by spec we must call DestroyJavaVM without detaching main thread
+  /* Updated in the 6.0 spec, we can now detach the main thread before calling DestroyJavaVM, 
+     and we must if we wish main thread uncaught exception handlers to be called. */
+  (*jvm)->DetachCurrentThread(jvm);
   (*jvm)->DestroyJavaVM (jvm);
   /*if ((*jvm)->DestroyJavaVM(jvm)) {
      hytty_printf (PORTLIB, "Failed to destroy JVM\n");

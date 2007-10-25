@@ -112,7 +112,8 @@ public class ZipFile implements ZipConstants {
     }
 
     private void openZip() throws IOException {
-        int result = openZipImpl(Util.getBytes(fileName));
+        int result = openZipImpl(Util.getUTF8Bytes(fileName));
+
         if (result != 0) {
             switch (result) {
             case 1:

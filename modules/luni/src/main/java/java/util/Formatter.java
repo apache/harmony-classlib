@@ -876,7 +876,7 @@ public final class Formatter implements Closeable, Flushable {
                     break;
                 }
                 case 'n': {
-                    result = transfromFromLineSeparator();
+                    result = transformFromLineSeparator();
                     break;
                 }
                 case 't':
@@ -1100,7 +1100,7 @@ public final class Formatter implements Closeable, Flushable {
          * Transforms line separator to a formatted string. Any flag, the width
          * or the precision is illegal.
          */
-        private String transfromFromLineSeparator() {
+        private String transformFromLineSeparator() {
             if (formatToken.isPrecisionSet()) {
                 throw new IllegalFormatPrecisionException(formatToken
                         .getPrecision());

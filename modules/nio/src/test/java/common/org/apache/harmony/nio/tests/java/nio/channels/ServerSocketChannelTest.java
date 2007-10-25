@@ -572,4 +572,19 @@ public class ServerSocketChannelTest extends TestCase {
             // expected
         }
     }
+    /**
+     * Regression test for HARMONY-4961
+     */
+    public void test_socket_getLocalPort() throws IOException {
+        serverChannel.socket().bind(localAddr1);
+        clientChannel.connect(localAddr1); 
+        SocketChannel myChannel = serverChannel.accept();
+        int port = myChannel.socket().getLocalPort();
+        assertEquals(localAddr1.getPort(), port);
+        myChannel.close();
+        clientChannel.close();
+        serverChannel.close();
+    }
+
+    
 }

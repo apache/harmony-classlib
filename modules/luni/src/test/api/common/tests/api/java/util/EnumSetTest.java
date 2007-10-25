@@ -420,7 +420,7 @@ public class EnumSetTest extends TestCase {
     /**
      * @tests java.util.EnumSet#remove(Object)
      */
-    public void test_remove_LOject() {
+    public void test_remove_LObject() {
         Set<EnumFoo> set = EnumSet.noneOf(EnumFoo.class);
         Enum[] elements = EnumFoo.class.getEnumConstants();
         for(int i = 0; i < elements.length; i++) {

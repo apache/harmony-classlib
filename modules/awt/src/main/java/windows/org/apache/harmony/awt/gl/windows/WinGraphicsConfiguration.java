@@ -23,6 +23,7 @@ package org.apache.harmony.awt.gl.windows;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.Rectangle;
+import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -68,12 +69,7 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
     }
 
     public WinGraphicsConfiguration(long hwnd, long hdc) {
-        this(hdc);
         this.device = new WinGraphicsDevice(hwnd);
-    }
-
-    public WinGraphicsConfiguration(long hdc) {
-        this.device = null;
         this.index = -1;
 
         int dci = win32.GetPixelFormat(hdc);
@@ -93,34 +89,34 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
     private void init(Win32.PIXELFORMATDESCRIPTOR pfd) {
         flags = pfd.get_dwFlags();
         pixelType = pfd.get_iPixelType();
-        if ((pixelType & WindowsDefs.PFD_TYPE_COLORINDEX) == WindowsDefs.PFD_TYPE_COLORINDEX) {
-            cm = null;
-            return;
-        }
-
         bits = pfd.get_cColorBits();
+
         if (bits == 0) { 
-            cm = null; 
             return; 
         }
-        
-        redBits = pfd.get_cRedBits();
-        redShift = pfd.get_cRedShift();
-        rmask = (int)(Math.pow(2,redBits)-1) << redShift;
 
-        greenBits = pfd.get_cGreenBits();
-        greenShift = pfd.get_cGreenShift();
-        gmask = (int)(Math.pow(2,greenBits)-1) << greenShift;
+        if ((pixelType & WindowsDefs.PFD_TYPE_COLORINDEX) != WindowsDefs.PFD_TYPE_COLORINDEX) {
+            redBits = pfd.get_cRedBits();
+            redShift = pfd.get_cRedShift();
+            rmask = (int)(Math.pow(2,redBits)-1) << redShift;
 
-        blueBits = pfd.get_cBlueBits();
-        blueShift = pfd.get_cBlueShift();
-        bmask = (int)(Math.pow(2,blueBits)-1) << blueShift;
+            greenBits = pfd.get_cGreenBits();
+            greenShift = pfd.get_cGreenShift();
+            gmask = (int)(Math.pow(2,greenBits)-1) << greenShift;
 
-        alphaBits = pfd.get_cAlphaBits();
-        alphaShift = pfd.get_cAlphaShift();
-        amask = (int)(Math.pow(2,alphaBits)-1) << alphaShift;
+            blueBits = pfd.get_cBlueBits();
+            blueShift = pfd.get_cBlueShift();
+            bmask = (int)(Math.pow(2,blueBits)-1) << blueShift;
 
-        cm = new DirectColorModel(bits, rmask, gmask, bmask, amask);
+            alphaBits = pfd.get_cAlphaBits();
+            alphaShift = pfd.get_cAlphaShift();
+            amask = (int)(Math.pow(2,alphaBits)-1) << alphaShift;
+        }
+
+        long hdc = win32.CreateDCW(null, device.getIDstring(), null, null);
+        cm = createColorModel(hdc);
+        win32.DeleteDC(hdc);
+
     }
 
     @Override
@@ -166,7 +162,14 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
 
     @Override
     public ColorModel getColorModel(int transparency) {
-        return cm;
+        switch(transparency){
+        case Transparency.BITMASK:
+            return new DirectColorModel(25, 0xFF0000, 0xFF00, 0xFF, 0x1000000);
+        case Transparency.TRANSLUCENT:
+            return ColorModel.getRGBdefault();
+        default:
+            return cm;
+        }
     }
 
     @Override
@@ -242,4 +245,6 @@ public class WinGraphicsConfiguration extends GraphicsConfiguration {
     public int getIndex() {
         return index;
     }
+    
+    private native ColorModel createColorModel(long hdc);
 }

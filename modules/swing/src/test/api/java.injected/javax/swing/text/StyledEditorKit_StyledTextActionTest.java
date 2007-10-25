@@ -74,7 +74,7 @@ public class StyledEditorKit_StyledTextActionTest extends SwingTestCase {
     public void testGetEditor() {
         jep = new JEditorPane();
         assertEquals(jep, action.getEditor(new ActionEvent(jep, 1, "...")));
-        //Really this is need to check NullPointerExceoption, but ...
+        //Really this needs to check NullPointerException, but ...
     }
 
     public void testSetParagraphAttributes() {

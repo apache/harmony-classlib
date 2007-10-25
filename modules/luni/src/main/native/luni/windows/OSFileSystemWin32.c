@@ -236,7 +236,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
         count = 0x7FFFFFFF;
     }
 
-	hysocketP = getJavaIoFileDescriptorContentsAsPointer(env,sd);	
+	hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env,sd);	
 	socket = (SOCKET)hysocketP->ipv4;	
     
 	pos_low  = SetFilePointer(hfile,0,&pos_high,FILE_CURRENT);

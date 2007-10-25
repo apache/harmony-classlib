@@ -83,8 +83,8 @@ public class Int8Pointer extends VoidPointer {
      * must be non-negative and no larger than dst.length - from
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > dst.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > dst.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > dst.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void get(byte[] dst, int from, int length) {
         byteBase.get(dst, from, length);
@@ -100,8 +100,8 @@ public class Int8Pointer extends VoidPointer {
      * must be non-negative and no larger than array.length - offset
      *
      * @throws IndexOutOfBoundsException if from < 0 || from > src.length
-     * @throws IndexOutOfBoundsException if lenght < 0 || lenght > src.length - from
-     * @throws IndexOutOfBoundsException if lenght > this.size()
+     * @throws IndexOutOfBoundsException if length < 0 || length > src.length - from
+     * @throws IndexOutOfBoundsException if length > this.size()
      */
     public void set(byte[] src, int offset, int length) {
         byteBase.set(src, offset, length);

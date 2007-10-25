@@ -86,7 +86,7 @@ public final class WinDataTransfer {
             return getDataObjectFormats(pointer);
         }
 
-        public boolean isNativeFormatAtailable(String nativeFormat) {
+        public boolean isNativeFormatAvailable(String nativeFormat) {
             return isDataObjectFormatAvailable(pointer, nativeFormat);
         }
         

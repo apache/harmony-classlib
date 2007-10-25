@@ -172,8 +172,8 @@ public class MaskFormatter extends DefaultFormatter {
         this.placeholder = placeholder;
     }
 
-    public void setPlaceholderCharacter(final char placeholderCharater) {
-        this.placeHolderCharacter = placeholderCharater;
+    public void setPlaceholderCharacter(final char placeholderCharacter) {
+        this.placeHolderCharacter = placeholderCharacter;
 
     }
 

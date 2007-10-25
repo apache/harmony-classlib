@@ -4798,7 +4798,7 @@ public class ScannerTest extends TestCase {
         mresult = s.match();
         assertEquals(0, mresult.start());
         assertEquals(2, mresult.end());
-        // Postion is now pointing at the bar. "12|345test1234test next"
+        // Position is now pointing at the bar. "12|345test1234test next"
 
         result = s.findWithinHorizon(Pattern.compile("\\p{Digit}+"), 6);
         assertEquals("345", result);
@@ -4806,7 +4806,7 @@ public class ScannerTest extends TestCase {
         mresult = s.match();
         assertEquals(2, mresult.start());
         assertEquals(5, mresult.end());
-        // Postion is now pointing at the bar. "12345|test1234test next"
+        // Position is now pointing at the bar. "12345|test1234test next"
 
         // If no such pattern is detected then the null is returned and the
         // scanner's position remains unchanged.
@@ -4822,7 +4822,7 @@ public class ScannerTest extends TestCase {
         assertEquals("345", mresult.group());
         assertEquals(2, mresult.start());
         assertEquals(5, mresult.end());
-        // Postion is now still pointing at the bar. "12345|test1234test next"
+        // Position is now still pointing at the bar. "12345|test1234test next"
 
         // If horizon is 0, then the horizon is ignored and this method
         // continues to search through the input looking for the specified
@@ -4831,7 +4831,7 @@ public class ScannerTest extends TestCase {
         mresult = s.match();
         assertEquals(9, mresult.start());
         assertEquals(13, mresult.end());
-        // Postion is now pointing at the bar. "12345test1234|test next"
+        // Position is now pointing at the bar. "12345test1234|test next"
 
         assertEquals("test", s.next());
         mresult = s.match();

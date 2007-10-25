@@ -152,7 +152,7 @@ public class PropertyResourceBundleTest extends junit.framework.TestCase {
             prb = new PropertyResourceBundle(propertiesStream);
         } catch (java.io.IOException e) {
 			fail(
-					"Contruction of PropertyResourceBundle threw IOException");
+					"Construction of PropertyResourceBundle threw IOException");
 		}
 	}
 

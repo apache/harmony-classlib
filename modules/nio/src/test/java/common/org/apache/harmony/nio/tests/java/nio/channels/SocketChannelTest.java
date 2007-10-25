@@ -389,17 +389,17 @@ public class SocketChannelTest extends TestCase {
         assertEquals(s.getLocalAddress().getHostAddress(), "0.0.0.0");
         // RI fails here. RI returns 0 while spec says unbound socket should
         // return -1.
-        assertEquals(s.getLocalPort(), -1);
+        assertEquals(-1, s.getLocalPort());
         assertFalse(s.getReuseAddress());
         assertNull(s.getLocalSocketAddress());
 
         // not connected
-        assertEquals(s.getPort(), 0);
+        assertEquals(0, s.getPort());
         assertTrue(s.getReceiveBufferSize() >= 8192);
         assertNull(s.getRemoteSocketAddress());
         assertTrue(s.getSendBufferSize() >= 8192);
-        assertEquals(s.getSoTimeout(), 0);
-        assertEquals(s.getTrafficClass(), 0);
+        assertEquals(0, s.getSoTimeout());
+        assertEquals(0, s.getTrafficClass());
 
     }
 
@@ -431,8 +431,8 @@ public class SocketChannelTest extends TestCase {
         assertEquals(s.getRemoteSocketAddress(), (SocketAddress) address);
         // assertFalse(s.getReuseAddress());
         assertTrue(s.getSendBufferSize() >= 8192);
-        assertEquals(s.getSoTimeout(), 0);
-        assertEquals(s.getTrafficClass(), 0);
+        assertEquals(0, s.getSoTimeout());
+        assertEquals(0, s.getTrafficClass());
     }
 
     private void assertSocketAction_Block_BeforeConnect(Socket s)

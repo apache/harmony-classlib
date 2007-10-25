@@ -19,11 +19,11 @@ package tests.api.java.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.ConcurrentModificationException;
 import java.util.Vector;
 
 import tests.support.Support_ListTest;
@@ -544,8 +544,35 @@ public class ArrayListTest extends junit.framework.TestCase {
         list.addAll(0, collection);
         assertEquals(14, list.size());
     }
-    
-    
+
+    public static class ArrayListExtend extends ArrayList {
+
+        private int size = 0;
+
+        public ArrayListExtend() {
+            super(10);
+        }
+
+        public boolean add(Object o) {
+            size++;
+            return super.add(o);
+        }
+
+        public int size() {
+            return size;
+        }
+    }
+
+    public void test_subclassing() {
+        ArrayListExtend a = new ArrayListExtend();
+        /*
+         * Regression test for subclasses that override size() (which used to
+         * cause an exception when growing 'a').
+         */
+        for (int i = 0; i < 100; i++) {
+            a.add(new Object());
+        }
+    }
     
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

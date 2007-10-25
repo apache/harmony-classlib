@@ -31,8 +31,8 @@ MDLLIBFILES +=	$(LIBPATH)libhyzip.a
 endif
 
 MDLLIBFILES += \
-	$(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+	$(MDLLIBZLIB) $(LIBPATH)libhypool.a \
+	$(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 DLLNAME=../libhyarchive$(HY_SHLIB_SUFFIX)
 EXPNAME=HYARCHIVE_0.1

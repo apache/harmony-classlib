@@ -285,7 +285,7 @@ public class DefaultEditorKit extends EditorKit {
     static final TextAction selectLineDoing = new KitAction(selectLineAction);
 
 
-    private static final int CHARACHTERS_TO_READ_AT_ONCE = 256;
+    private static final int CHARACTERS_TO_READ_AT_ONCE = 256;
     private static final String CONTENT_TYPE = "text/plain";
 
     /**
@@ -334,7 +334,7 @@ public class DefaultEditorKit extends EditorKit {
         if (!in.ready()) {
             return;
         }
-        int maxCharToRead = CHARACHTERS_TO_READ_AT_ONCE;
+        int maxCharToRead = CHARACTERS_TO_READ_AT_ONCE;
         char[] readArray = new char[maxCharToRead];
         int numCharRead = -1;
         AttributeSet attributes = doc.getDefaultRootElement().getAttributes();

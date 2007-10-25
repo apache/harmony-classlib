@@ -281,7 +281,7 @@ public class DTDTest extends TestCase {
         ContentModel contentModel = null;
         String[] exclusions = new String[] {HTML, BASE};
         String[] inclusions = new String[] {APPLET, BODY};
-        AttributeList attl = new AttributeList("atttibuteList");
+        AttributeList attl = new AttributeList("attributeList");
         Element elem = dtd.defElement(name, type, omitStart, omitEnd,
                                       contentModel, exclusions, inclusions,
                                       attl);

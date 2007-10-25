@@ -204,7 +204,7 @@ public class IppPrinter {
      * The method validate mimetypes.
      * Returned array is the same as parameter,
      * just with null in position of unsupported mimetypes.
-     * This method created for perfomance issue
+     * This method created for performance issue
      */
     public String[] requestGetSupportedMimeTypes(String[] mimetypes)
             throws Exception {

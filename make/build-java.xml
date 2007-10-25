@@ -113,13 +113,7 @@ ${built.files.list}
           target: -compile
          ================================= -->
     <target name="-compile" depends="-prepare-depends, -layout">
-        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can be downloaded directly from eclipse.org or copied from COMMON_RESOURCES/depends/jars/ecj_3.x folder after the fetch-depends target for JDKTOOLS has been run.">
-            <condition>
-                <not>
-                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-                </not>
-            </condition>
-        </fail>
+        <ensure-javac/>
         <mkdir dir="${build.output}" />
 
         <hy.javac destdir="${build.output}"
@@ -146,7 +140,8 @@ ${built.files.list}
             <src path="modules/luni/src/main/java" />
             <src path="modules/math/src/main/java" />
             <src path="modules/misc/src/main/java" />
-            <src path="modules/nio/src/main/java" />
+            <src path="modules/nio/src/main/java/common" />
+            <src path="modules/nio/src/main/java/${hy.os.family}" />
             <src path="modules/nio_char/src/main/java" />
             <!-- pack200 uses customized build script and 
                  should not be built from top-level build.xml -->

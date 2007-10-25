@@ -712,7 +712,7 @@ public class MultiRectArea implements Shape {
     }
 
     /**
-     * Recturn rectangle count in the buffer
+     * Return rectangle count in the buffer
      */
     public int getRectCount() {
         return (rect[0] - 1) / 4;

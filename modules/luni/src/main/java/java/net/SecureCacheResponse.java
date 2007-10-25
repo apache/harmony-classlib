@@ -22,7 +22,7 @@ import java.util.List;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 /**
- * A secure cache response, which is orignally retrieved through secure ways.
+ * A secure cache response, which is originally retrieved through secure ways.
  */
 public abstract class SecureCacheResponse extends CacheResponse {
     /**

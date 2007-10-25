@@ -23,7 +23,7 @@ CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
 
 ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += \

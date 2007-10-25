@@ -268,7 +268,7 @@ public class Utils {
                                    final int type,
                                    final String data,
                                    final boolean isGeneral,
-                                   final boolean isParametr) {
+                                   final boolean isParameter) {
         TestCase.assertEquals(name, entity.name);
         //TestCase.assertEquals(type, entity.type);
         TestCase.assertEquals(data, String.valueOf(entity.data));
@@ -276,7 +276,7 @@ public class Utils {
         TestCase.assertEquals(type, entity.getType()); //TODO 65536
         TestCase.assertEquals(data, entity.getString());
         TestCase.assertEquals(isGeneral, entity.isGeneral());
-        TestCase.assertEquals(isParametr, entity.isParameter());
+        TestCase.assertEquals(isParameter, entity.isParameter());
     }
 
     public static void checkEntity(final Entity entity,
@@ -284,14 +284,14 @@ public class Utils {
                                    final int type,
                                    final char data,
                                    final boolean isGeneral,
-                                   final boolean isParametr) {
+                                   final boolean isParameter) {
         TestCase.assertEquals(name, entity.name);
         TestCase.assertEquals(1, entity.data.length);
         TestCase.assertEquals(data, entity.data[0]);
         TestCase.assertEquals(name, entity.getName());
         TestCase.assertEquals(type, entity.getType()); //TODO 65536
         TestCase.assertEquals(isGeneral, entity.isGeneral());
-        TestCase.assertEquals(isParametr, entity.isParameter());
+        TestCase.assertEquals(isParameter, entity.isParameter());
     }
 
 

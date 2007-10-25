@@ -319,11 +319,6 @@ public class Font implements Serializable {
     }
 
     public GlyphVector createGlyphVector(FontRenderContext frc, int[] glyphCodes) throws org.apache.harmony.luni.util.NotImplementedException {
-        if (!FontManager.IS_FONTLIB) {
-            // TODO : to find out, how to operate with glyphcodes
-            throw new NotImplementedException();
-        }
-        
         int length = glyphCodes.length;        
         char[] chars = new char[length];        
         FontPeerImpl peer = (FontPeerImpl) getPeer();

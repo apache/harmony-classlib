@@ -427,26 +427,26 @@ public class JTextPaneTest extends SwingTestCase {
         AttributeSet attributes;
         textPane.setCaretPosition(1);
         attrs = textPane.getInputAttributes();
-        assertAttrubutes(attrs, false, false, true, false, false, true);
+        assertAttributes(attrs, false, false, true, false, false, true);
         textPane.insertComponent(new JButton("Format C:\\>"));
-        assertAttrubutes(attrs, false, false, false, false, false, false);
+        assertAttributes(attrs, false, false, false, false, false, false);
         assertNull(StyleConstants.getComponent(attrs));
         attributes = textPane.getStyledDocument().getCharacterElement(1).getAttributes();
-        assertAttrubutes(attributes, false, false, false, false, false, false);
+        assertAttributes(attributes, false, false, false, false, false, false);
         assertNotNull(StyleConstants.getComponent(attributes));
         attrs = new SimpleAttributeSet(attributes);
         StyleConstants.setUnderline(attrs, true);
         textPane.getStyledDocument().setCharacterAttributes(1, 1, attrs, true);
         textPane.setCaretPosition(1);
-        assertAttrubutes(textPane.getInputAttributes(), false, false, true, false, false, true);
+        assertAttributes(textPane.getInputAttributes(), false, false, true, false, false, true);
         textPane.select(2, 2);
-        assertAttrubutes(textPane.getInputAttributes(), false, false, false, false, false, true);
+        assertAttributes(textPane.getInputAttributes(), false, false, false, false, false, true);
         textPane.replaceSelection("*");
         attrs = textPane.getInputAttributes();
-        assertAttrubutes(attrs, false, false, false, false, false, true);
+        assertAttributes(attrs, false, false, false, false, false, true);
         assertNull(StyleConstants.getComponent(attrs));
         attributes = textPane.getStyledDocument().getCharacterElement(2).getAttributes();
-        assertAttrubutes(attributes, false, false, false, false, false, true);
+        assertAttributes(attributes, false, false, false, false, false, true);
         assertNull(StyleConstants.getComponent(attributes));
     }
 
@@ -454,7 +454,7 @@ public class JTextPaneTest extends SwingTestCase {
         textPane.setEditable(false);
         textPane.setCaretPosition(3);
         attrs = textPane.getInputAttributes();
-        assertAttrubutes(attrs, false, false, true, false, false, true);
+        assertAttributes(attrs, false, false, true, false, false, true);
         textPane.insertIcon(new Icon() {
             public void paintIcon(Component c, Graphics g, int x, int y) {
                 g.drawRect(x, y, getIconWidth(), getIconHeight());
@@ -468,12 +468,12 @@ public class JTextPaneTest extends SwingTestCase {
                 return 40;
             }
         });
-        assertAttrubutes(attrs, false, false, false, false, false, false);
+        assertAttributes(attrs, false, false, false, false, false, false);
         Element iconElement = textPane.getStyledDocument().getDefaultRootElement()
                 .getElement(0).getElement(1);
         AttributeSet attributes = iconElement.getAttributes();
         assertNotNull(attributes.getAttribute(StyleConstants.IconAttribute));
-        assertAttrubutes(attributes, false, false, false, false, false, false);
+        assertAttributes(attributes, false, false, false, false, false, false);
     }
 
     public void testReplaceSelection() throws BadLocationException {
@@ -540,11 +540,11 @@ public class JTextPaneTest extends SwingTestCase {
         textPane.replaceSelection("3");
         attrs = new SimpleAttributeSet(textPane.getStyledDocument().getCharacterElement(1)
                 .getAttributes());
-        assertAttrubutes(attrs, false, false, false, false, false, false);
+        assertAttributes(attrs, false, false, false, false, false, false);
         assertNotNull(StyleConstants.getIcon(attrs));
         attrs = new SimpleAttributeSet(textPane.getStyledDocument().getCharacterElement(2)
                 .getAttributes());
-        assertAttrubutes(attrs, false, false, false, false, false, false);
+        assertAttributes(attrs, false, false, false, false, false, false);
         assertNull(StyleConstants.getIcon(attrs));
     }
 
@@ -597,7 +597,7 @@ public class JTextPaneTest extends SwingTestCase {
         }
     }
 
-    private void assertAttrubutes(final AttributeSet attrs, final boolean isBold,
+    private void assertAttributes(final AttributeSet attrs, final boolean isBold,
             final boolean isItalic, final boolean isStrikeThrough, final boolean isSubscript,
             final boolean isSuperScript, final boolean isUnderline) {
         assertEquals(isBold, StyleConstants.isBold(attrs));

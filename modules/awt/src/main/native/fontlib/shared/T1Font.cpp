@@ -49,7 +49,7 @@ T1Font::T1Font(fwchar_t *family, StyleName sn, fchar* pathToFile):Font() {
         _descent = 195;
 
 
-        fchar path[MAX_STR_LENGHT];
+        fchar path[MAX_STR_LENGTH];
         size_t length = strlen(pathToFile) - 3;
 
         strncpy(path, pathToFile, length);
@@ -402,7 +402,7 @@ ufshort static getUnicode(fchar *name) {
 }
 
 void T1Font::parseAFM(FILE *font) {
-    fchar curStr[MAX_STR_LENGHT];
+    fchar curStr[MAX_STR_LENGTH];
 
     while (!feof(font)) {
         getNextLexeme(curStr, font);
@@ -424,7 +424,7 @@ void T1Font::parseAFM(FILE *font) {
         } /*else if (!strcmp(curStr, "StartCharMetrics")) {
             getNextLexeme(curStr, font);            
             fchar* curValue;
-            fchar psName[MAX_STR_LENGHT];
+            fchar psName[MAX_STR_LENGTH];
             ufshort count = (ufshort) atoi(curStr);
             for (ufshort i = 0; i < count; i ++) {
                 getNextLine(curStr, font);
@@ -461,7 +461,7 @@ void T1Font::parseAFM(FILE *font) {
 
 
 void T1Font::initFont(FILE *font) {
-	fchar curStr[MAX_STR_LENGHT];
+	fchar curStr[MAX_STR_LENGTH];
 
 	DecodeState state = HEADER;
 

@@ -248,7 +248,7 @@ public class RuleBasedCollatorTest extends TestCase {
         assertFalse(coll.equals("A", "\uFF21"));
     }
 
-    public void testGetAvaiableLocales() {
+    public void testGetAvailableLocales() {
         // Locale[] locales = Collator.getAvailableLocales();
         // for (int i = 0; i < locales.length; i++) {
         // Locale locale = locales[i];

@@ -168,7 +168,7 @@ public class Utilities implements SwingConstants {
      *
      * @param original original text
      * @param clipped clipped text
-     * @param underscoreIndex index of the characte in <code>text</code> to be
+     * @param underscoreIndex index of the character in <code>text</code> to be
      *  underscored
      * @return underscoreIndex or <code>-1</code> if the position is clipped
      */
@@ -232,12 +232,12 @@ public class Utilities implements SwingConstants {
      * requested, popup size and location of popup related to anchor. The optimal
      * location fulfills the condition popup fits on screen, not overlaps with
      * anchor and is verticaly or horizontaly positioned relative to anchor. If
-     * position is vertical the popup left or right bound is alligned with
+     * position is vertical the popup left or right bound is aligned with
      * anchor bound depending on <code>leftToRight</code>.
      *
      * @param anchor anchor bounds relative to
      * @param size requested popup size
-     * @param leftToRight horizontal allignment
+     * @param leftToRight horizontal alignment
      * @param horizontal placement relative to anchor
      * @return optimal popup location
      */
@@ -323,7 +323,7 @@ public class Utilities implements SwingConstants {
 
     /**
      * If the window is <code>Frame</code> or <code>Dialog</code>, the function
-     * returns <code>true</code> the window is resizable. Othewise
+     * returns <code>true</code> the window is resizable. Otherwise
      * <code>false</code> is returned. This function can be used
      * when implementing L&F for <code>JRootPane</code>.
      *
@@ -594,7 +594,7 @@ public class Utilities implements SwingConstants {
 
     /**
      * Aligns rectangle with the inner bounds of the box taking into account
-     * allignments given.
+     * alignments given.
      *
      * @param rect rectangle to align
      * @param box box to align with
@@ -961,7 +961,7 @@ public class Utilities implements SwingConstants {
      * @param x given value
      * @param min bottom bound for x
      * @param max top bound for x
-     * @return min if x less than min, max if x larger than max, x othetwise
+     * @return min if x less than min, max if x larger than max, x otherwise
      */
     public static int range(final int x, final int min, final int max) {
         return Math.max(min, Math.min(x, max));

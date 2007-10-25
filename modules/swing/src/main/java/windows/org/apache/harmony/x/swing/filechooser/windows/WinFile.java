@@ -144,32 +144,32 @@ public class WinFile extends PlatformFile {
     }
 
     public boolean isCDROM() {
-        return getDesription() == WindowsDefs.SHDID_COMPUTER_CDROM;
+        return getDescription() == WindowsDefs.SHDID_COMPUTER_CDROM;
     }
 
     public boolean isFixedDrive() {
-        return getDesription() == WindowsDefs.SHDID_COMPUTER_FIXED;
+        return getDescription() == WindowsDefs.SHDID_COMPUTER_FIXED;
     }
 
     public boolean isNetDrive() {
-        return getDesription() == WindowsDefs.SHDID_COMPUTER_NETDRIVE;
+        return getDescription() == WindowsDefs.SHDID_COMPUTER_NETDRIVE;
     }
 
     public boolean isRAM() {
-        return getDesription() == WindowsDefs.SHDID_COMPUTER_RAMDISK;
+        return getDescription() == WindowsDefs.SHDID_COMPUTER_RAMDISK;
     }
 
     public boolean isFloppyDrive() {
-        return getDesription() == WindowsDefs.SHDID_COMPUTER_DRIVE35
-               || getDesription() == WindowsDefs.SHDID_COMPUTER_DRIVE525;
+        return getDescription() == WindowsDefs.SHDID_COMPUTER_DRIVE35
+               || getDescription() == WindowsDefs.SHDID_COMPUTER_DRIVE525;
     }
 
     public boolean isRemovable() {
-        return getDesription() == WindowsDefs.SHDID_COMPUTER_REMOVABLE;
+        return getDescription() == WindowsDefs.SHDID_COMPUTER_REMOVABLE;
     }
 
     public boolean isComputerNode() {
-        return getDesription() == WindowsDefs.SHDID_NET_SERVER;
+        return getDescription() == WindowsDefs.SHDID_NET_SERVER;
     }
 
     public String getTypeName() {
@@ -202,7 +202,7 @@ public class WinFile extends PlatformFile {
         return result;
     }
 
-    private int getDesription() {
+    private int getDescription() {
         if (description == -1) {
             Object[] parentInfo = getParentInfo();
             Win32.IShellFolder parentFolder = (Win32.IShellFolder)parentInfo[0];

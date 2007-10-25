@@ -228,7 +228,7 @@ public class DataSource implements DataProvider {
         }
     }
 
-    public boolean isNativeFormatAtailable(String nativeFormat) {
+    public boolean isNativeFormatAvailable(String nativeFormat) {
         return getNativeFormatsList().contains(nativeFormat);
     }
 }

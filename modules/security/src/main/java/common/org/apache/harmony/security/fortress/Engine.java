@@ -25,6 +25,7 @@ package org.apache.harmony.security.fortress;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 
+import org.apache.harmony.security.Util;
 import org.apache.harmony.security.internal.nls.Messages;
 
 
@@ -89,7 +90,7 @@ public class Engine {
         }
         Services.refresh();
         if (returnedService != null
-                && algorithm.equalsIgnoreCase(lastAlgorithm)
+                && Util.equalsIgnoreCase(algorithm, lastAlgorithm)
                 && refreshNumber == Services.refreshNumber) {
             serv = returnedService;
         } else {
@@ -99,7 +100,7 @@ public class Engine {
             }
             serv = Services.getService(new StringBuffer(128)
                     .append(serviceName).append(".").append( //$NON-NLS-1$
-                            algorithm.toUpperCase()).toString());
+                            Util.toUpperCase(algorithm)).toString());
             if (serv == null) {
                 throw new NoSuchAlgorithmException(Messages.getString("security.14A", //$NON-NLS-1$
                         serviceName, algorithm));

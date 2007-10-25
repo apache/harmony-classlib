@@ -20,10 +20,8 @@ import java.io.Serializable;
 /**
  * Unchecked Exception that is to be thrown out when a format string that
  * contains either an illegal syntax or format specifier is transferred as a
- * parameter. Only subclass that is inherited explicitly from this exception is
- * allowed to be instantialized.
- * 
- * 
+ * parameter. Only a subclass that is inherited explicitly from this exception
+ * is allowed to be instantiated.
  */
 public class IllegalFormatException extends IllegalArgumentException implements
 		Serializable {

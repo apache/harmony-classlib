@@ -497,7 +497,7 @@ public class SHA1_MessageDigestTest extends TestCase {
      * test against the "void update(byte[],int,int)" method;
      * it checks out that two sequential digest, 
      * second is byte array update to first,
-     * are different, provided lenght of the byte array > 0.
+     * are different, provided length of the byte array > 0.
      */
     public final void testUpdatebyteArrayintint02() {
 

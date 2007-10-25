@@ -62,12 +62,9 @@ public class IcBands extends BandSet {
         int innerClassCount = header.getInnerClassCount();
         icThisClass = parseReferences("ic_this_class", in, Codec.UDELTA5,
                 innerClassCount, cpClass);
-        icFlags = new int[innerClassCount];
-        long last = 0;
+        icFlags = decodeBandInt("ic_flags", in, Codec.UNSIGNED5, innerClassCount);
         int outerClasses = 0;
-        // ic_flags
         for (int i = 0; i < innerClassCount; i++) {
-            icFlags[i] = (int) (last = Codec.UNSIGNED5.decode(in, last));
             if ((icFlags[i] & 1 << 16) != 0)
                 outerClasses++;
         }

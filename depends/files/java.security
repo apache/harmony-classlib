@@ -79,7 +79,7 @@ package.access=org.apache.harmony.security.fortress.,com.intel.fortress.,com.ibm
 
 
 # Class to instantiate as default JGSS manager.
-jgss.spi.manager=
+jgss.spi.manager=org.apache.harmony.auth.jgss.GSSManagerImpl
 
 
 # The default SSLSocketFactory and SSLServerSocketFactory provider implementations.

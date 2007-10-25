@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.harmony.security.Util;
+
 
 /**
  * This class contains information about all registered providers and preferred
@@ -171,14 +173,14 @@ public class Services {
             type = serv.getType();
             sb.delete(0, sb.length());
             key = sb.append(type).append(".").append( //$NON-NLS-1$
-                    serv.getAlgorithm().toUpperCase()).toString();
+                    Util.toUpperCase(serv.getAlgorithm())).toString();
             if (!services.containsKey(key)) {
                 services.put(key, serv);
             }
             for (Iterator<String> it2 = Engine.door.getAliases(serv); it2.hasNext();) {
                 alias = it2.next();
                 sb.delete(0, sb.length());
-                key = sb.append(type).append(".").append(alias.toUpperCase()) //$NON-NLS-1$
+                key = sb.append(type).append(".").append(Util.toUpperCase(alias)) //$NON-NLS-1$
                         .toString();
                 if (!services.containsKey(key)) {
                     services.put(key, serv);

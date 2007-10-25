@@ -507,10 +507,10 @@ class StandardBeanInfo extends SimpleBeanInfo {
         ArrayList<MethodDescriptor> methodList = new ArrayList<MethodDescriptor>(
                 basicMethods.length);
 
-        // Loop over the methods found, looking for public methods
+        // Loop over the methods found, looking for public non-static methods
         for (int i = 0; i < basicMethods.length; i++) {
             int modifiers = basicMethods[i].getModifiers();
-            if (Modifier.isPublic(modifiers)) {
+            if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers)) {
                 // Allocate a MethodDescriptor for this method
                 MethodDescriptor theDescriptor = new MethodDescriptor(
                         basicMethods[i]);

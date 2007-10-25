@@ -64,7 +64,7 @@ public class MockInitialLdapContext extends MockDirContext implements LdapContex
 	Control[] last=null;
 	
 	/**
-	 * <p>This method retrives the properties.</p>
+	 * <p>This method retrieves the properties.</p>
 	 */
 	public Hashtable getProps(){
 		return env;
@@ -126,7 +126,7 @@ public class MockInitialLdapContext extends MockDirContext implements LdapContex
 	}
 	
 	/**
-	 * <p>This methdo retrives the connection controls.</p>
+	 * <p>This method retrieves the connection controls.</p>
 	 * @return The connection controls.
 	 */
 	public Control[] getConnectControls() throws NamingException {

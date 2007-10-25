@@ -61,7 +61,7 @@ final class LayoutParameters {
 
     /**
      *
-     * @param target - container being layouted with this paramaters
+     * @param target - container being laid out with this parameters
      * @param alignment - alignment of the target. It can be one of the following values:
      *      <code>MIXED_ALIGNMENT</code> - value for OverlayLayout
      *      <code>HORIZONTAL_ALIGNMENT</code> - value for BoxLayout with horizontal alignment

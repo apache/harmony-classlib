@@ -45,6 +45,11 @@ extern "C" {
 JNIEXPORT jobjectArray JNICALL
 Java_org_apache_harmony_awt_gl_windows_WinGraphicsEnvironment_enumerateDisplayDevices(JNIEnv *, jobject);
 
+/*
+ * Method: org.apache.harmony.awt.gl.windows.WinGraphicsConfiguration.createColorModel(J)Ljava/awt/ColorModel;
+ */
+JNIEXPORT jobject JNICALL
+Java_org_apache_harmony_awt_gl_windows_WinGraphicsConfiguration_createColorModel(JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
 }

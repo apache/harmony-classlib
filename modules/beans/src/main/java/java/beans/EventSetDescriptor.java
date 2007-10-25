@@ -373,7 +373,7 @@ public class EventSetDescriptor extends FeatureDescriptor {
         try {
             return sourceClass.getMethod(methodName);
         } catch (Exception e) {
-            // RI keeps silence here and just retunrs null
+            // RI keeps silence here and just returns null
             return null;
         }
     }

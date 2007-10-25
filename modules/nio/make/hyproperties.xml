@@ -20,7 +20,7 @@
    <nio location=".">
       <src>
          <main>
-            <java location="src/main/java" />
+            <java location="src/main/java/common" />
             <resources location="src/main/resources" />
             <native location="src/main/native" />
          </main>

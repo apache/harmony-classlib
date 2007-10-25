@@ -46,7 +46,7 @@ import org.apache.harmony.x.swing.text.html.form.FormTextModel;
 import org.apache.harmony.x.swing.text.html.form.FormOptionGroup;
 
 public class HTMLWriter extends AbstractWriter {
-    private static final int DEFAULT_LINE_LENGHT = 80;
+    private static final int DEFAULT_LINE_LENGTH = 80;
     private static DTD dtd;
 
     private boolean writingContent;
@@ -59,13 +59,13 @@ public class HTMLWriter extends AbstractWriter {
 
     public HTMLWriter(final Writer w, final HTMLDocument doc) {
         super(w, doc);
-        setLineLength(DEFAULT_LINE_LENGHT);
+        setLineLength(DEFAULT_LINE_LENGTH);
     }
 
     public HTMLWriter(final Writer w, final HTMLDocument doc,
                       final int pos, final int len) {
         super(w, doc, pos, len);
-        setLineLength(DEFAULT_LINE_LENGHT);
+        setLineLength(DEFAULT_LINE_LENGTH);
     }
 
     public void write() throws IOException, BadLocationException {

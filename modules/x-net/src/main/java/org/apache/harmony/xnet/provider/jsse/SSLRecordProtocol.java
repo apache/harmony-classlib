@@ -186,7 +186,7 @@ public class SSLRecordProtocol {
 
     /**
      * Depending on the Connection State (Session) encrypts and compress
-     * the provided data, and packs it into TLSCiphertext structute.
+     * the provided data, and packs it into TLSCiphertext structure.
      * @param   content_type: int
      * @param   fragment: byte[]
      * @return  ssl packet created over the current connection state
@@ -198,7 +198,7 @@ public class SSLRecordProtocol {
 
     /**
      * Depending on the Connection State (Session) encrypts and compress
-     * the provided data, and packs it into TLSCiphertext structute.
+     * the provided data, and packs it into TLSCiphertext structure.
      * @param   content_type: int
      * @param   fragment: byte[]
      * @return  ssl packet created over the current connection state

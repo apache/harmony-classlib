@@ -375,7 +375,7 @@ public class IppDefs {
             PRINTERDESCRIPTIONATTRIBUTES,
             PRINTEROPERATIONATTRIBUTES };
 
-    // TODO need to tune for perfomance
+    // TODO need to tune for performance
     public static byte getAttributeGtag(String aname) {
         for (int ii = ATAGS.length, i = 0; i < ii; i += 1) {
             Object[] atags = (Object[]) ATAGS[i];
@@ -388,7 +388,7 @@ public class IppDefs {
         return -1;
     }
 
-    // TODO need to tune for perfomance
+    // TODO need to tune for performance
     public static byte getAttributeVtag(String aname) {
         for (int ii = ATAGS.length, i = 0; i < ii; i += 1) {
             Object[] atags = (Object[]) ATAGS[i];

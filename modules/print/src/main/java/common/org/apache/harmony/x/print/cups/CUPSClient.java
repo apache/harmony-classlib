@@ -103,7 +103,7 @@ class CUPSClient implements PrintClient {
     }
 
     /* 
-     * SPECIAL - supportedFlavors is global for perfomance 
+     * SPECIAL - supportedFlavors is global for performance 
      * but it can be set local for dynamic
      * 
      * @org.apache.harmony.x.print.PrintClient#getSupportedDocFlavors()

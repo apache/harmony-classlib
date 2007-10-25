@@ -670,6 +670,7 @@ public abstract class MenuComponent implements Serializable {
         if (gr != null) {
             paint(gr);
         }
+        gr.dispose();
         if (showSubMenu) {
             showSubMenu(selectedItemIndex);
         }

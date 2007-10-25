@@ -174,7 +174,7 @@ public class HandshakeIODataStream
 
     /**
      * Appends the income data to be read by handshake protocol.
-     * The attempts to overflow the buffer by meens of this methos
+     * The attempts to overflow the buffer by means of this methods
      * seem to be futile because of:
      * 1. The SSL protocol specifies the maximum size of the record
      * and record protocol does not pass huge messages. 

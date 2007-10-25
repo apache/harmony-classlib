@@ -263,6 +263,16 @@ JNIEXPORT jfloatArray JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFon
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_freeGlyphOutline
   (JNIEnv *, jclass, jlong);
 
+
+/*
+ * Method: org.apache.harmony.awt.gl.font.LinuxNativeFont.getAntialiasedFont 
+ */
+
+JNIEXPORT jlong JNICALL
+	Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getAntialiasedFont(
+		JNIEnv *, jclass, jlong, jlong, jboolean);
+
+
 #ifdef __cplusplus
 }
 #endif

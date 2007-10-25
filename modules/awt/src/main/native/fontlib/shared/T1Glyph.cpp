@@ -284,13 +284,13 @@ void T1Glyph::parseValueToOutline(EncodedValue *value, std::stack<ffloat> *stack
 
                         memcpy(tempGlyphBB, _glyphBB, 4 * sizeof(ffloat));
 
-						parseValueToOutline((*_charStringMap)[STANDART_ENCODING[(ufshort)y2]], stack, out, curX, curY, relativeSize);
+						parseValueToOutline((*_charStringMap)[STANDARD_ENCODING[(ufshort)y2]], stack, out, curX, curY, relativeSize);
 
 						*curY = x2;
 						*curX = y1;
 						out->moveTo(*curX, *curY);
 
-						parseValueToOutline((*_charStringMap)[STANDART_ENCODING[(ufshort)x3]], stack, out, curX, curY, relativeSize);
+						parseValueToOutline((*_charStringMap)[STANDARD_ENCODING[(ufshort)x3]], stack, out, curX, curY, relativeSize);
 
 						_advanceX = aX;
 						_advanceY = aY;
@@ -409,8 +409,8 @@ void T1Glyph::countPoints(std::stack<ffloat> *stack, EncodedValue *value, ufshor
 						*point += 2;
 						*command += 1;
 
-						countPoints(stack, (*_charStringMap)[STANDART_ENCODING[bchar]], point, command);
-						countPoints(stack, (*_charStringMap)[STANDART_ENCODING[achar]], point, command);
+						countPoints(stack, (*_charStringMap)[STANDARD_ENCODING[bchar]], point, command);
+						countPoints(stack, (*_charStringMap)[STANDARD_ENCODING[achar]], point, command);
 
 						break;
 					} else if (curChar == CH_STR_ESCAPE_SBW) { //sbw

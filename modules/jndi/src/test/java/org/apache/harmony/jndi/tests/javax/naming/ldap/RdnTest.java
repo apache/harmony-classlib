@@ -665,10 +665,10 @@ public class RdnTest extends TestCase {
      * </p>
      * <p>
      * This is a test for the constructor of the class Rdn. Here we are testing
-     * with a non-empty String and diferents objects.
+     * with a non-empty String and different objects.
      * </p>
      * <p>
-     * The expected result is an instance of the class with the diferents
+     * The expected result is an instance of the class with the different
      * arguments because the arguments are not parsed.
      * </p>
      */

@@ -39,8 +39,10 @@ class ModalContext {
      *
      */
     void runModalLoop() {
-        running = true;
-        toolkit.dispatchThread.runModalLoop(this);
+    	if(!running) {
+    		running = true;
+    		toolkit.dispatchThread.runModalLoop(this);
+    	}
     }
 
     /**

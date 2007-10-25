@@ -304,7 +304,7 @@ public class AbstractDocument_UpdateTest extends TestCase {
 
     /**
      * Tests if RUN_DIRECTION property has any influence on
-     * bidirectional algorythm in AbstractDocument.
+     * bidirectional algorithm in AbstractDocument.
      */
     public void testInsertUpdate10() throws BadLocationException {
         doc.putProperty(TextAttribute.RUN_DIRECTION, TextAttribute.RUN_DIRECTION_RTL);
@@ -318,7 +318,7 @@ public class AbstractDocument_UpdateTest extends TestCase {
 
     /**
      * Tests if RUN_DIRECTION attribute set on text inserted has any
-     * influence on bidirectional algorythm in AbstractDocument.
+     * influence on bidirectional algorithm in AbstractDocument.
      */
     public void testInsertUpdate11() throws BadLocationException {
         StyleContext context = (StyleContext) doc.getAttributeContext();
@@ -341,7 +341,7 @@ public class AbstractDocument_UpdateTest extends TestCase {
 
     /**
      * Tests if RUN_DIRECTION property has any influence on
-     * bidirectional algorythm in AbstractDocument.
+     * bidirectional algorithm in AbstractDocument.
      */
     public void testInsertUpdate12() throws BadLocationException {
         doc.insertString(0, "kkk", null);

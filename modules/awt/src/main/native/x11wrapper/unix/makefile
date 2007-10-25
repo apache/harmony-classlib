@@ -25,7 +25,7 @@ BUILDFILES = \
   org_apache_harmony_awt_nativebridge_linux_Xft.o
 
 ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \

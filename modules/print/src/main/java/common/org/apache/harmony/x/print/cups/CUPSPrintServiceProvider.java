@@ -380,7 +380,7 @@ public class CUPSPrintServiceProvider extends PrintServiceLookup {
             }
         }
 
-        // retun array of printers
+        // return array of printers
         return (String[]) ippservices.toArray(new String[0]);
     }
 

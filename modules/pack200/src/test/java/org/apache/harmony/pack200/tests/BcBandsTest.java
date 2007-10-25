@@ -43,17 +43,7 @@ import junit.framework.TestCase;
  * should be replaced with properly encoded byte arrays when encoding is
  * implemented.
  */
-public class BcBandsTest extends TestCase {
-
-    
-    private int numClasses = 1;
-    private int[] numMethods = {1};
-
-    public class MockSegmentHeader extends SegmentHeader {
-        public int getClassCount() {
-            return numClasses;
-        }
-    }
+public class BcBandsTest extends AbstractBandsTestCase {
 
     public class MockClassBands extends ClassBands {
         public MockClassBands(Segment segment) {
@@ -107,26 +97,7 @@ public class BcBandsTest extends TestCase {
         }
     }
 
-    public class MockAttributeDefinitionBands extends AttrDefinitionBands {
-
-        public MockAttributeDefinitionBands(Segment segment) {
-            super(segment);
-        }
-        
-        public AttributeLayoutMap getAttributeDefinitionMap() {
-            try {
-                return new AttributeLayoutMap();
-            } catch (Pack200Exception e) {
-                fail(e.getLocalizedMessage());
-            }
-            return null;
-        }
-        
-       
-
-    }
-
-    public class MockSegment extends Segment {
+    public class MockSegment extends AbstractBandsTestCase.MockSegment {
         protected AttrDefinitionBands getAttrDefinitionBands() {
             return new MockAttributeDefinitionBands(this);
         }
@@ -137,10 +108,6 @@ public class BcBandsTest extends TestCase {
         
         protected ClassBands getClassBands() {
             return new MockClassBands(this);
-        }
-        
-        public SegmentHeader getSegmentHeader() {
-            return new MockSegmentHeader();
         }
     }
 

@@ -127,7 +127,7 @@ public abstract class FontMetrics implements Serializable {
         }
 
         if ((off+len > data.length)){
-            // awt.13C=number of elemets len is out of range
+            // awt.13C=number of elements len is out of range
             throw new IllegalArgumentException(Messages.getString("awt.13C")); //$NON-NLS-1$
         }
 
@@ -146,7 +146,7 @@ public abstract class FontMetrics implements Serializable {
         }
 
         if ((off+len > data.length)){
-            // awt.13C=number of elemets len is out of range
+            // awt.13C=number of elements len is out of range
             throw new IllegalArgumentException(Messages.getString("awt.13C")); //$NON-NLS-1$
         }
 
@@ -194,7 +194,7 @@ public abstract class FontMetrics implements Serializable {
     }
     
     /**
-     * Returns FontRenderContext instanse of the Graphics context specified.
+     * Returns FontRenderContext instance of the Graphics context specified.
      * @param context the specified Graphics context
      * 
      * @return a FontRenderContext of the specified Graphics context.

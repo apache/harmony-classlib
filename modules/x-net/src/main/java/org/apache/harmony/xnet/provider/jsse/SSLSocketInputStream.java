@@ -67,7 +67,7 @@ public final class SSLSocketInputStream
         this.owner = owner;
     }
 
-    // The helper delivering the applicatin data from the record layer
+    // The helper delivering the application data from the record layer
     protected Adapter dataPoint = new Adapter();
 
     /**

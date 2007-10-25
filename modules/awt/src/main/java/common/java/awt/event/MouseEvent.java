@@ -63,6 +63,37 @@ public class MouseEvent extends InputEvent {
     private int button;
     private int x;
     private int y;
+    
+    public MouseEvent(Component source, int id, long when, int modifiers,
+            int x, int y, int clickCount, boolean popupTrigger) {
+        this(source, id, when, modifiers, x, y, clickCount, popupTrigger,
+                NOBUTTON);
+    }
+
+    public MouseEvent(Component source, int id, long when, int modifiers,
+            int x, int y, int clickCount, boolean popupTrigger, int button) {
+        super(source, id, when, modifiers);
+
+        if ((button < NOBUTTON) || (button > BUTTON3)) {
+            // awt.18B=Invalid button value
+            throw new IllegalArgumentException(Messages.getString("awt.18B")); //$NON-NLS-1$
+        }
+
+        this.popupTrigger = popupTrigger;
+        this.clickCount = clickCount;
+        this.button = button;
+        this.x = x;
+        this.y = y;
+
+        if (getModifiers() != 0) {
+            setModifiersEx();
+        } else if (getModifiersEx() != 0) {
+            setModifiers();
+        } else if ((button != NOBUTTON)
+                && ((id >= MOUSE_CLICKED) && (id <= MOUSE_RELEASED))) {
+            setButtonModifiers();
+        }
+    }
 
     public static String getMouseModifiersText(int modifiers) {
         final StringBuffer text = new StringBuffer();
@@ -77,7 +108,15 @@ public class MouseEvent extends InputEvent {
             text.append(Toolkit.getProperty("AWT.control", "Ctrl")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         if ((modifiers & ALT_MASK) != 0) {
-            text.append(Toolkit.getProperty("AWT.alt", "Alt")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            // XXX: The following hook is required to avoid conflicts between
+            // ALT_MASK and BUTTON2_MASK which have the same value.
+            if ((modifiers & BUTTON2_DOWN_MASK) != 0) {
+                if ((modifiers & ALT_DOWN_MASK) != 0) {
+                    text.append(Toolkit.getProperty("AWT.alt", "Alt")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+            } else {
+                text.append(Toolkit.getProperty("AWT.alt", "Alt")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
         }
         if ((modifiers & ALT_GRAPH_MASK) != 0) {
             text.append(Toolkit.getProperty("AWT.altGraph", "Alt Graph")).append("+"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -111,31 +150,6 @@ public class MouseEvent extends InputEvent {
         }
 
         return text;
-    }
-
-    public MouseEvent(Component source, int id, long when,
-                      int modifiers, int x, int y,
-                      int clickCount, boolean popupTrigger) {
-        this(source, id, when, modifiers, x, y,
-             clickCount, popupTrigger, NOBUTTON);
-    }
-
-    public MouseEvent(Component source, int id, long when,
-                      int modifiers, int x, int y,
-                      int clickCount, boolean popupTrigger, int button) {
-        super(source, id, when, modifiers);
-
-        if ((button != NOBUTTON) && (button != BUTTON1) &&
-                (button != BUTTON2) && (button != BUTTON3)) {
-            // awt.18B=Invalid button value
-            throw new IllegalArgumentException(Messages.getString("awt.18B")); //$NON-NLS-1$
-        }
-
-        this.popupTrigger = popupTrigger;
-        this.clickCount = clickCount;
-        this.button = button;
-        this.x = x;
-        this.y = y;
     }
 
     public int getButton() {
@@ -215,12 +229,130 @@ public class MouseEvent extends InputEvent {
                 ",button=" + button; //$NON-NLS-1$
         if (getModifiersEx() > 0) {
             paramString += 
-                    ",modifiers=" + getModifiersExText(getModifiersEx()) + //$NON-NLS-1$
-                    ",extModifiers=" + getModifiersExText(getModifiersEx()); //$NON-NLS-1$
+                    ",modifiers=" + getMouseModifiersText(modifiers) + //$NON-NLS-1$
+                    ",extModifiers=" + getModifiersExText(modifiers); //$NON-NLS-1$
         }
         paramString += ",clickCount=" + getClickCount(); //$NON-NLS-1$
 
         return paramString;
     }
 
+    private void setModifiers() {
+        modifiers &= ~MASKS; // clear modifiers
+
+        if ((modifiers & SHIFT_DOWN_MASK) != 0) {
+            modifiers |= SHIFT_MASK;
+        }
+        if ((modifiers & CTRL_DOWN_MASK) != 0) {
+            modifiers |= CTRL_MASK;
+        }
+        if ((modifiers & META_DOWN_MASK) != 0) {
+            modifiers |= META_MASK;
+        }
+        if ((modifiers & ALT_DOWN_MASK) != 0) {
+            modifiers |= ALT_MASK;
+        }
+        if ((modifiers & ALT_GRAPH_DOWN_MASK) != 0) {
+            modifiers |= ALT_GRAPH_MASK;
+        }
+
+        if ((id >= MOUSE_CLICKED) && (id <= MOUSE_RELEASED)) {
+            switch (button) {
+            case BUTTON1:
+                modifiers |= BUTTON1_MASK;
+                break;
+            case BUTTON2:
+                modifiers |= BUTTON2_MASK;
+                break;
+            case BUTTON3:
+                modifiers |= BUTTON3_MASK;
+                break;
+            }
+        } else {
+            if ((modifiers & BUTTON1_DOWN_MASK) != 0) {
+                modifiers |= BUTTON1_MASK;
+            }
+            if ((modifiers & BUTTON2_DOWN_MASK) != 0) {
+                modifiers |= BUTTON2_MASK;
+            }
+            if ((modifiers & BUTTON3_DOWN_MASK) != 0) {
+                modifiers |= BUTTON3_MASK;
+            }
+        }
+    }
+
+    private void setModifiersEx() {
+        modifiers &= ~DOWN_MASKS; // clear ex modifiers
+
+        if ((modifiers & SHIFT_MASK) != 0) {
+            modifiers |= SHIFT_DOWN_MASK;
+        }
+        if ((modifiers & CTRL_MASK) != 0) {
+            modifiers |= CTRL_DOWN_MASK;
+        }
+        if ((modifiers & META_MASK) != 0) {
+            modifiers |= META_DOWN_MASK;
+        }
+        if ((modifiers & ALT_MASK) != 0) {
+            modifiers |= ALT_DOWN_MASK;
+        }
+        if ((modifiers & ALT_GRAPH_MASK) != 0) {
+            modifiers |= ALT_GRAPH_DOWN_MASK;
+        }
+
+        if ((id >= MOUSE_CLICKED) && (id <= MOUSE_RELEASED)) {
+            if ((modifiers & BUTTON1_MASK) != 0) {
+                button = BUTTON1;
+
+                if (id == MOUSE_PRESSED) {
+                    modifiers |= BUTTON1_DOWN_MASK;
+                }
+            } else if ((modifiers & BUTTON2_MASK) != 0) {
+                button = BUTTON2;
+
+                if (id == MOUSE_PRESSED) {
+                    modifiers |= BUTTON2_DOWN_MASK;
+                }
+            } else if ((modifiers & BUTTON3_MASK) != 0) {
+                button = BUTTON3;
+
+                if (id == MOUSE_PRESSED) {
+                    modifiers |= BUTTON3_DOWN_MASK;
+                }
+            }
+        } else {
+            if ((modifiers & BUTTON1_MASK) != 0) {
+                modifiers |= BUTTON1_DOWN_MASK;
+            }
+            if ((modifiers & BUTTON2_MASK) != 0) {
+                modifiers |= BUTTON2_DOWN_MASK;
+            }
+            if ((modifiers & BUTTON3_MASK) != 0) {
+                modifiers |= BUTTON3_DOWN_MASK;
+            }
+        }
+    }
+
+    private void setButtonModifiers() {
+        switch (button) {
+        case BUTTON1:
+            modifiers |= BUTTON1_MASK;
+            if (id == MOUSE_PRESSED) {
+                modifiers |= BUTTON1_DOWN_MASK;
+            }
+            break;
+        case BUTTON2:
+            modifiers |= BUTTON2_MASK;
+            if (id == MOUSE_PRESSED) {
+                modifiers |= BUTTON2_DOWN_MASK;
+            }
+            break;
+        case BUTTON3:
+            modifiers |= BUTTON3_MASK;
+            if (id == MOUSE_PRESSED) {
+                modifiers |= BUTTON3_DOWN_MASK;
+            }
+            break;
+        }
+    }
 }

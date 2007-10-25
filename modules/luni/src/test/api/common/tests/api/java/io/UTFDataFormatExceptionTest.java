@@ -41,7 +41,7 @@ public class UTFDataFormatExceptionTest extends junit.framework.TestCase {
 		} catch (UTFDataFormatException e) {
 			return;
 		} catch (Exception e) {
-			fail("Exeption during Constructor test : " + e.getMessage());
+			fail("Exception during Constructor test : " + e.getMessage());
 		}
 	}
 
@@ -63,7 +63,7 @@ public class UTFDataFormatExceptionTest extends junit.framework.TestCase {
 		} catch (UTFDataFormatException e) {
 			return;
 		} catch (Exception e) {
-			fail("Exeption during Constructor test : " + e.getMessage());
+			fail("Exception during Constructor test : " + e.getMessage());
 		}
 	}
 

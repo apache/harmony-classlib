@@ -82,8 +82,8 @@ I_32
 getPlatformRoots (char *rootStrings)
 {
   rootStrings[0] = (char) '/';
-  rootStrings[1] = (char) NULL;
-  rootStrings[2] = (char) NULL;
+  rootStrings[1] = (char) 0;
+  rootStrings[2] = (char) 0;
   return 1;
 }
 

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
@@ -31,8 +30,11 @@ import org.apache.harmony.pack200.bytecode.CodeAttribute;
  */
 public class BcBands extends BandSet {
     
-    // the bytecodes for each method in each class as they come (i.e. in their packed format)
+    // The bytecodes for each method in each class as they come (i.e. in their packed format)
     private byte[][][] methodByteCodePacked;
+    
+    // The bands
+    // TODO:  Haven't resolved references yet.  Do we want to?
     private int[] bcCaseCount;
     private int[][] bcCaseValue;
     private int[] bcByte;
@@ -137,7 +139,6 @@ public class BcBands extends BandSet {
                    for (int i = 0; i < codes.length; i++) {
                        codes[i] = methodByteCodePacked[c][m][i] & 0xff;
                    }
-                   debug(Arrays.toString(codes));
                    for (int i = 0; i < methodByteCodePacked[c][m].length; i++) {
                        int codePacked = 0xff & methodByteCodePacked[c][m][i];
                        // TODO a lot of this needs to be encapsulated in the
@@ -467,6 +468,5 @@ public class BcBands extends BandSet {
 
     public int[][] getBcEscByte() {
         return bcEscByte;
-    }    
-
+    }
 }

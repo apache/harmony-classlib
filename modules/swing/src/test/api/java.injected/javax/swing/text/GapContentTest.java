@@ -222,7 +222,7 @@ public class GapContentTest extends AbstractDocument_ContentTest {
     }
 
     // Regression for HARMONY-2566
-    public void testGetCharsMaxInterger() {
+    public void testGetCharsMaxInteger() {
         try {
             content.getChars(1, Integer.MAX_VALUE, null);
             fail("BadLocationException is expected");

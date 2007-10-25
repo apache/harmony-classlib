@@ -90,9 +90,11 @@ hyfile_attr (struct HyPortLibrary * portLibrary, const char *path)
 {
   DWORD result;
   wchar_t *pathW;
+
   convert_path_to_unicode(portLibrary, path, &pathW);
   result = GetFileAttributesW ((LPCWSTR) pathW);
   portLibrary->mem_free_memory(portLibrary, pathW);
+
   if (result == 0xFFFFFFFF)
     {
       result = GetLastError ();
@@ -206,8 +208,9 @@ hyfile_findfirst (struct HyPortLibrary *portLibrary, const char *path,
   strcat (newPath, "*");
   
   convert_path_to_unicode(portLibrary, newPath, &pathW);
-
   result = FindFirstFileW ((LPCWSTR) pathW, &lpFindFileDataW);
+  portLibrary->mem_free_memory(portLibrary, pathW);
+
   if (result == INVALID_HANDLE_VALUE)
     {
       I_32 error = GetLastError ();
@@ -266,13 +269,17 @@ hyfile_lastmod (struct HyPortLibrary * portLibrary, const char *path)
     HANDLE newHandle;
     I_64 result, tempResult;
     I_32 error;
+    wchar_t *pathW;
 
-    newHandle = CreateFile(path, FILE_READ_ATTRIBUTES,  
+    convert_path_to_unicode(portLibrary, path, &pathW);
+    newHandle = CreateFileW(pathW, FILE_READ_ATTRIBUTES,  
         FILE_SHARE_READ,  
         NULL,  
         OPEN_EXISTING,  
         FILE_FLAG_BACKUP_SEMANTICS,  
         NULL);
+    portLibrary->mem_free_memory(portLibrary, pathW);
+
     if (newHandle == INVALID_HANDLE_VALUE)
     {
         error = GetLastError ();
@@ -321,11 +328,18 @@ hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
     I_64 result;
     I_32 error;
     WIN32_FILE_ATTRIBUTE_DATA myStat;
-    int ret = GetFileAttributesEx(path,GetFileExInfoStandard,&myStat);
+    wchar_t *pathW;
+    int ret;
+    
+    convert_path_to_unicode(portLibrary, path, &pathW);
+    ret = GetFileAttributesExW(pathW,GetFileExInfoStandard,&myStat);
+    portLibrary->mem_free_memory(portLibrary, pathW);    
+
     if(ret == 0) {
         error = GetLastError ();
         return portLibrary->error_set_last_error (portLibrary, error, findError (error));
     }
+
     result = ((I_64) myStat.nFileSizeHigh) << 32;
     result += (I_64) myStat.nFileSizeLow;
     return result;
@@ -333,13 +347,59 @@ hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
 
 #undef CDEV_CURRENT_FUNCTION
 
+#define CDEV_CURRENT_FUNCTION is_device_name
+
+/**
+ * Determines if the given file name is a reserved device name
+  
+ * @param[in] fname file name
+ * @return length of device name if given file name is a device name or
+ *   0 otherwise 
+ */
+int
+is_device_name(const char *fname)
+{
+    const char *reserved[] = {"con", "prn", "aux", "nul", "com", "lpt"};
+    int i, len = strlen(fname);
+    
+    for (i = 0; i < 6; i++) {
+        if (i < 4 && len >= 3 && !_stricmp(fname + len - 3, reserved[i])) {
+            return 3;
+        } else if (len >= 4 && !_strnicmp(fname + len - 4, reserved[i], 3) &&
+                   isdigit(fname[len - 1])) {
+            return 4;
+        }
+    }
+    return 0;
+}
+
+#undef CDEV_CURRENT_FUNCTION
+
 #define CDEV_CURRENT_FUNCTION convert_path_to_unicode
 
+
+// Maximum length of path accepted by unicode versions of
+// WinAPI functions is limited to 32767 characters;
+// each character can take up to three bytes in UTF-8.
+#define ABS_PATH_BUF_LEN 32767*3
+   
+/**
+ * Convert UTF-8 encoded path to UTF-16 so it can be used as an argument to
+ * unicode versions of WinAPI fucntions. This function also converts all
+ * relative paths to absolute ones.
+ *
+ * @param[in] portLibrary The port library
+ * @param[in] path UTF-8 encoded null-terminated path
+ * @param[out] pathW Pointer to wide characters array that contains converted
+ *   path
+ *
+ * @note Sets *pathW to null and returns if path cannot be converted 
+ */
 void
 convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
 	     wchar_t **pathW)
 {
-    int len = strlen(path);
+    int len;
     int wlen;
     char *canonicalpath;
     int srcArrayCount=0;
@@ -347,25 +407,52 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
     int slashCount=0; //record how many slashes it met.
     int dotsCount=0; //record how many dots following a separator.
     int *slashStack; //record position of every separator.
+    
+    // Buffer to store absolute path name.
+    char absPath[ABS_PATH_BUF_LEN];
+ 
+    if (!path) {
+        *pathW = (void*) 0;
+        return;
+    }
+
+    // check if given path is a name of device: nul, con, lpt1 and etc.
+    if (len = is_device_name(path)) {
+        wlen = MultiByteToWideChar(CP_UTF8, 0, path, -1, *pathW, 0);
+        *pathW = portLibrary->mem_allocate_memory(portLibrary, wlen*sizeof(wchar_t));
+        MultiByteToWideChar(CP_UTF8, 0, path + strlen(path) - len, -1, *pathW, wlen);
+        return;
+    }
+
+    // calculate an absolute path first
+    if (!GetFullPathNameA(path, ABS_PATH_BUF_LEN, absPath, (void*) 0))
+    {
+        // error occurred
+        *pathW = (void*) 0;
+        return;
+    }
+
+    len = strlen(absPath);
+
     slashStack = portLibrary->mem_allocate_memory(portLibrary, len*sizeof(int));
     canonicalpath = portLibrary->mem_allocate_memory(portLibrary, len+5);
 
     strcpy(canonicalpath,"\\\\?\\");
 
     for(srcArrayCount=0,destArrayCount=4;srcArrayCount<len;srcArrayCount++){
-        // the input path of this method has been parsed to absolute path already.
-        if(path[srcArrayCount]=='.'){
+        // we have an absolute path already.
+        if(absPath[srcArrayCount]=='.'){
             // count the dots following last separator.
-            if(dotsCount>0 || path[srcArrayCount-1]=='\\'){
+            if(dotsCount>0 || absPath[srcArrayCount-1]=='\\'){
                 dotsCount++;
                 continue;
             }
         }
         // deal with the dots when we meet next separator.
-        if(path[srcArrayCount]=='\\'){
+        if(absPath[srcArrayCount]=='\\'){
             if(dotsCount == 1){
-        	dotsCount = 0;
-        	continue;
+                dotsCount = 0;
+                continue;
             }else if (dotsCount > 1){
                 if(slashCount-2<0){
                     slashCount=2;
@@ -385,7 +472,7 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
             canonicalpath[destArrayCount++]='.';
             dotsCount--;
         }
-        canonicalpath[destArrayCount++]=path[srcArrayCount];
+        canonicalpath[destArrayCount++]=absPath[srcArrayCount];
     }
     while(canonicalpath[destArrayCount-1] == '.'){
         destArrayCount--;
@@ -398,6 +485,7 @@ convert_path_to_unicode(struct HyPortLibrary * portLibrary, const char *path,
     portLibrary->mem_free_memory(portLibrary, slashStack);
 }
 
+#undef ABS_PATH_BUF_LEN
 #undef CDEV_CURRENT_FUNCTION
 
 #define CDEV_CURRENT_FUNCTION hyfile_mkdir
@@ -416,6 +504,7 @@ hyfile_mkdir (struct HyPortLibrary * portLibrary, const char *path)
 {
     int returnVar=0;
     wchar_t *pathW;
+
     convert_path_to_unicode(portLibrary, path, &pathW);
     returnVar = CreateDirectoryW (pathW, 0);
     portLibrary->mem_free_memory(portLibrary, pathW);
@@ -450,7 +539,16 @@ I_32 VMCALL
 hyfile_move (struct HyPortLibrary * portLibrary, const char *pathExist,
 	     const char *pathNew)
 {
-  if (MoveFile (pathExist, pathNew))
+  wchar_t *pathExistW, *pathNewW;
+  int ret;
+  
+  convert_path_to_unicode(portLibrary, pathExist, &pathExistW);
+  convert_path_to_unicode(portLibrary, pathNew, &pathNewW);
+  ret = MoveFileW (pathExistW, pathNewW);
+  portLibrary->mem_free_memory(portLibrary, pathNewW);
+  portLibrary->mem_free_memory(portLibrary, pathExistW);
+  
+  if (ret)
     {
       return 0;
     }
@@ -483,6 +581,7 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
   DWORD accessMode, shareMode, createMode, flagsAndAttributes;
   HANDLE aHandle;
   I_32 error;
+  wchar_t *pathW;
 
   Trc_PRT_file_open_Entry (path, flags, mode);
 
@@ -516,14 +615,17 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
 		flagsAndAttributes |= FILE_FLAG_WRITE_THROUGH;
 	}
 
+  convert_path_to_unicode(portLibrary, path, &pathW);
   aHandle =
-    CreateFile (path, accessMode, shareMode, NULL, createMode,
+    CreateFileW (pathW, accessMode, shareMode, NULL, createMode,
 		flagsAndAttributes, NULL);
+
   if (aHandle == INVALID_HANDLE_VALUE)
     {
       error = GetLastError ();
       portLibrary->error_set_last_error (portLibrary, error,
 					 findError (error));
+      portLibrary->mem_free_memory(portLibrary, pathW); 
       Trc_PRT_file_open_Exit2 (error, findError (error));
       return -1;
     }
@@ -537,13 +639,14 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
 	}
 
       aHandle =
-	CreateFile (path, accessMode, shareMode, NULL, TRUNCATE_EXISTING,
+	CreateFileW (pathW, accessMode, shareMode, NULL, TRUNCATE_EXISTING,
 		    flagsAndAttributes, NULL);
       if (aHandle == INVALID_HANDLE_VALUE)
-	{
+      {
 	  error = GetLastError ();
 	  portLibrary->error_set_last_error (portLibrary, error,
 					     findError (error));
+      portLibrary->mem_free_memory(portLibrary, pathW); 
 	  Trc_PRT_file_open_Exit3 (error, findError (error));
 	  return -1;
 	}
@@ -554,6 +657,7 @@ hyfile_open (struct HyPortLibrary * portLibrary, const char *path, I_32 flags,
       portLibrary->file_seek (portLibrary, (IDATA) aHandle, 0, HySeekEnd);
     }
 
+  portLibrary->mem_free_memory(portLibrary, pathW); 
   Trc_PRT_file_open_Exit (aHandle);
   return ((IDATA) aHandle);
 }
@@ -748,14 +852,21 @@ hyfile_sync (struct HyPortLibrary * portLibrary, IDATA fd)
 I_32 VMCALL
 hyfile_unlink (struct HyPortLibrary * portLibrary, const char *path)
 {
+  wchar_t *pathW;
+  int ret;
+
   /* should be able to delete read-only dirs, so we set the file attribute back to normal */
-  if (0 == SetFileAttributes (path, FILE_ATTRIBUTE_NORMAL))
+  convert_path_to_unicode(portLibrary, path, &pathW);
+  if (0 == SetFileAttributesW (pathW, FILE_ATTRIBUTE_NORMAL))
     {
       I_32 error = GetLastError ();
       portLibrary->error_set_last_error (portLibrary, error, findError (error));	/* continue */
     }
 
-  if (DeleteFile (path))
+  ret = DeleteFileW (pathW);
+  portLibrary->mem_free_memory(portLibrary, pathW);  
+  
+  if (ret)
     {
       return 0;
     }

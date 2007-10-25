@@ -82,7 +82,7 @@ public class FixedHeightLayoutCacheTest extends AbstractLayoutCacheTest {
         assertEquals(200, cache.getRowHeight());
         try {
             cache.setRowHeight(0);
-            fail("no excepttion has been thrown");
+            fail("no exception has been thrown");
         } catch (IllegalArgumentException e) {
         }
     }

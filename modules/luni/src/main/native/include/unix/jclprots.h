@@ -28,10 +28,6 @@ extern "C" {
  ** COMPONENT: NativesCommon
  ************************************************************/
 
-/* NativesCommonPlainServerSocketImpl*/
-void JNICALL Java_java_net_PlainServerSocketImpl_createServerStreamSocketImpl PROTOTYPE((
-	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
-
 /* NativesCommonDeflater*/
 void JNICALL Java_java_util_zip_Deflater_setDictionaryImpl PROTOTYPE(( JNIEnv * env, jobject recv,  jbyteArray dict, int off, int len, jlong handle));
 void JNICALL Java_java_util_zip_Deflater_resetImpl PROTOTYPE(( JNIEnv * env, jobject recv,  jlong handle));
@@ -46,27 +42,6 @@ jlong JNICALL Java_java_util_zip_Deflater_createStream PROTOTYPE(( JNIEnv * env,
 jlong JNICALL Java_java_util_zip_Deflater_getTotalInImpl PROTOTYPE(( JNIEnv * env, jobject recv, jlong handle));
 jint JNICALL Java_java_util_zip_Deflater_getAdlerImpl PROTOTYPE(( JNIEnv * env, jobject recv, jlong handle));
 
-/* NativesCommonPlainSocketImpl2*/
-void JNICALL Java_java_net_PlainSocketImpl2_connectStreamWithTimeoutSocketImpl2 PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jint remotePort, jint timeout, jint trafficClass, jobject inetAddress));
-void JNICALL Java_java_net_PlainSocketImpl2_socketBindImpl2 PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jint localPort,  jobject inetAddress));
-void JNICALL Java_java_net_PlainSocketImpl2_createStreamSocketImpl2 PROTOTYPE((
-	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
-void JNICALL Java_java_net_PlainSocketImpl2_connectStreamSocketImpl2 PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jint remotePort, jint trafficClass, jobject inetAddress));
-jint JNICALL Java_java_net_PlainSocketImpl2_sendDatagramImpl2 PROTOTYPE((
-	JNIEnv* env, jclass thisClz,
-	jobject fileDescriptor, jbyteArray data, jint offset, jint msgLength,
-	jint targetPort, jobject inetAddress));
-
-/* NativesCommonFileOutputStream*/
-jint JNICALL Java_java_io_FileOutputStream_openImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray path, jboolean append));
-void JNICALL Java_java_io_FileOutputStream_closeImpl PROTOTYPE((JNIEnv * env, jobject recv));
-void JNICALL Java_java_io_FileOutputStream_writeByteImpl PROTOTYPE((JNIEnv *env, jobject recv, jint c, jlong descriptor));
-void JNICALL Java_java_io_FileOutputStream_writeImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray buffer, jint offset, jint count, jlong descriptor));
-void JNICALL Java_java_io_FileOutputStream_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz));
-
 /* NativesCommonDoubleParsing*/
 JNIEXPORT jdouble JNICALL Java_org_apache_harmony_luni_util_FloatingPointParser_parseDblImpl
    PROTOTYPE((JNIEnv *env, jclass clazz, jstring s, jint e));
@@ -80,28 +55,6 @@ jlong JNICALL Java_java_util_zip_Adler32_updateByteImpl PROTOTYPE(( JNIEnv * env
 /* NativesCommonCRC32*/
 jlong JNICALL Java_java_util_zip_CRC32_updateByteImpl PROTOTYPE(( JNIEnv * env, jobject recv, jbyte val, jlong crc));
 jlong JNICALL Java_java_util_zip_CRC32_updateImpl PROTOTYPE(( JNIEnv * env, jobject recv, jbyteArray buf, int off, int len, jlong crc));
-
-/* NativesCommonAnnotationHelper*/
-
-/* NativesCommonSocketImpl*/
-void JNICALL Java_java_net_SocketImpl_listenStreamSocketImpl PROTOTYPE(( JNIEnv *env, jclass thisClz, jobject fileDescriptor, jint backlog));
-void JNICALL Java_java_net_SocketImpl_acceptStreamSocketImpl PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptorServer, jobject socketImpl, jobject fileDescriptorSocketImpl, jint timeout));
-void JNICALL Java_java_net_SocketImpl_sendUrgentDataImpl PROTOTYPE((JNIEnv * env, jclass thisClz, jobject fileDescriptor, jbyte data));
-jint JNICALL Java_java_net_SocketImpl_receiveStreamImpl PROTOTYPE((JNIEnv * env, jclass thisClz,
-														jobject fileDescriptor, jbyteArray data, jint offset,
-														jint count, jint timeout));
-void JNICALL Java_java_net_SocketImpl_createStreamSocketImpl PROTOTYPE((
-	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
-jint JNICALL Java_java_net_SocketImpl_sendStreamImpl PROTOTYPE((JNIEnv * env, jclass thisClz, jobject fileDescriptor,
-													 jbyteArray data, jint offset, jint count));
-void JNICALL Java_java_net_SocketImpl_shutdownOutputImpl PROTOTYPE(( JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-void JNICALL Java_java_net_SocketImpl_createDatagramSocketImpl PROTOTYPE((
-JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
-jint JNICALL Java_java_net_SocketImpl_availableStreamImpl PROTOTYPE(( JNIEnv *env, jclass thisClz, jobject fileDescriptor));
-jboolean JNICALL Java_java_net_SocketImpl_supportsUrgentDataImpl PROTOTYPE((JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-void JNICALL Java_java_net_SocketImpl_shutdownInputImpl PROTOTYPE(( JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-void JNICALL Java_java_net_SocketImpl_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz, jboolean jcl_supports_ipv6 ));
 
 /* NativesCommonFile*/
 jboolean JNICALL Java_java_io_File_mkdirImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray path));
@@ -127,15 +80,6 @@ jbyteArray JNICALL Java_java_io_File_properPathImpl PROTOTYPE((JNIEnv *env, jobj
 void JNICALL Java_java_io_File_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz));
 jboolean JNICALL Java_java_io_File_existsImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray path));
 jboolean JNICALL Java_java_io_File_setReadOnlyImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray path));
-
-/* NativesCommonFileInputStream*/
-jint JNICALL Java_java_io_FileInputStream_readByteImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong descriptor));
-jint JNICALL Java_java_io_FileInputStream_readImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, jlong descriptor));
-void JNICALL Java_java_io_FileInputStream_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz));
-void JNICALL Java_java_io_FileInputStream_closeImpl PROTOTYPE((JNIEnv * env, jobject recv));
-jlong JNICALL Java_java_io_FileInputStream_skip PROTOTYPE((JNIEnv * env, jobject recv, jlong count));
-jint JNICALL Java_java_io_FileInputStream_available PROTOTYPE((JNIEnv * env, jobject recv));
-jint JNICALL Java_java_io_FileInputStream_openImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray path));
 
 /* NativesCommonObjectInputStream*/
 void JNICALL Java_java_io_ObjectInputStream_setField__Ljava_lang_Object_2Ljava_lang_Class_2Ljava_lang_String_2I PROTOTYPE((JNIEnv *env, jclass clazz, jobject targetObject, jobject declaringClass, jobject fieldName, jint newValue));
@@ -190,33 +134,13 @@ char *readCodepageMappings PROTOTYPE((JNIEnv *env, char* codepage, char *codepag
 
 /* NativesCommonProxy*/
 jclass JNICALL Java_java_lang_reflect_Proxy_defineClassImpl PROTOTYPE((JNIEnv * env, jclass recvClass, jobject classLoader, jstring className, jbyteArray classBytes));
-jclass JNICALL 
-Java_java_lang_reflect_Proxy_defineClass0__Ljava_lang_ClassLoader_2Ljava_lang_String_2_3BIILjava_lang_Object_2_3Ljava_lang_Object_2Ljava_lang_Object_2 PROTOTYPE((JNIEnv * env, jclass recvClass, jobject classLoader, jstring className, jbyteArray classBytes, jint offset, jint length, jobject pd, jobject signers, jobject source));
-jclass JNICALL 
-Java_java_lang_reflect_Proxy_defineClass0__Ljava_lang_ClassLoader_2Ljava_lang_String_2_3BII PROTOTYPE((JNIEnv * env, jclass recvClass, jobject classLoader, jstring className, jbyteArray classBytes, jint offset, jint length));
 
 /* NativesCommonGlobals*/
 void JNICALL JNI_OnUnload PROTOTYPE((JavaVM * vm, void *reserved));
 jint JNICALL JCL_OnLoad PROTOTYPE((JavaVM * vm, void *reserved));
 
-/* NativesCommonRuntime*/
-jlong JNICALL Java_java_lang_Runtime_maxMemoryImpl PROTOTYPE((JNIEnv * env, jclass cls));
-jint JNICALL Java_java_lang_Runtime_availableProcessorsImpl PROTOTYPE((JNIEnv * env, jclass cls));
-
 /* NativesCommonJarFile*/
 jarray JNICALL Java_java_util_jar_JarFile_getMetaEntriesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray zipName));
-/* NativesCommonRandomAccessFile*/
-jint JNICALL Java_java_io_RandomAccessFile_readImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray buffer, jint offset, jint count, jlong descriptor));
-void JNICALL Java_java_io_RandomAccessFile_seek PROTOTYPE((JNIEnv * env, jobject recv, jlong pos));
-void JNICALL Java_java_io_RandomAccessFile_closeImpl PROTOTYPE((JNIEnv * env, jobject recv));
-jlong JNICALL Java_java_io_RandomAccessFile_length PROTOTYPE((JNIEnv * env, jobject recv));
-jlong JNICALL Java_java_io_RandomAccessFile_getFilePointer PROTOTYPE((JNIEnv * env, jobject recv));
-void JNICALL Java_java_io_RandomAccessFile_setLengthImpl PROTOTYPE((JNIEnv * env, jobject recv, jlong newLength));
-void JNICALL Java_java_io_RandomAccessFile_writeImpl PROTOTYPE((JNIEnv *env, jobject recv, jbyteArray buffer, jint offset, jint count, jlong descriptor));
-jint JNICALL Java_java_io_RandomAccessFile_readByteImpl PROTOTYPE((JNIEnv *env, jobject recv, jlong descriptor));
-void JNICALL Java_java_io_RandomAccessFile_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass rafClazz));
-jint JNICALL Java_java_io_RandomAccessFile_openImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray path, jboolean writable));
-void JNICALL Java_java_io_RandomAccessFile_writeByteImpl PROTOTYPE((JNIEnv *env, jobject recv, jint c, jlong descriptor));
 
 /* NativesCommonObjectOutputStream*/
 jfloat JNICALL Java_java_io_ObjectOutputStream_getFieldFloat PROTOTYPE((JNIEnv *env, jclass clazz, jobject targetObject, jobject declaringClass, jobject fieldName));
@@ -229,22 +153,9 @@ jboolean JNICALL Java_java_io_ObjectOutputStream_getFieldBool PROTOTYPE((JNIEnv 
 jint JNICALL Java_java_io_ObjectOutputStream_getFieldInt PROTOTYPE((JNIEnv *env, jclass clazz, jobject targetObject, jobject declaringClass, jobject fieldName));
 jchar JNICALL Java_java_io_ObjectOutputStream_getFieldChar PROTOTYPE((JNIEnv *env, jclass clazz, jobject targetObject, jobject declaringClass, jobject fieldName));
 
-/* NativesCommonFileInputStream*/
-
 /* NativesCommonSocket*/
 void createSocket PROTOTYPE((JNIEnv* env, jobject thisObjFD, int sockType, jboolean preferIPv4Stack));
-void JNICALL Java_java_net_Socket_socketCloseImpl PROTOTYPE(( JNIEnv * env, jclass thisClz, jobject fileDescriptor));
-void JNICALL Java_java_net_Socket_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz, jboolean jcl_supports_ipv6));
-jobject JNICALL Java_java_net_Socket_getSocketLocalAddressImpl PROTOTYPE((JNIEnv *env, jclass thisClz, jobject fileDescriptor, jboolean preferIPv6Addresses));
-jobject JNICALL Java_java_net_Socket_getSocketOptionImpl PROTOTYPE((JNIEnv *env, jclass thisClz, jobject aFileDescriptor, jint anOption));
-void JNICALL Java_java_net_Socket_setSocketOptionImpl PROTOTYPE((JNIEnv *env, jclass thisClz, jobject aFileDescriptor, jint anOption, jobject aValue));
-jint JNICALL Java_java_net_Socket_getSocketFlags PROTOTYPE((JNIEnv *env, jclass thisClz));
-jint JNICALL Java_java_net_Socket_getSocketLocalPortImpl PROTOTYPE((JNIEnv *env, jclass thisClz, jobject fileDescriptor, jboolean preferIPv6Addresses));
 I_32 pollSelectRead PROTOTYPE((JNIEnv * env, jobject fileDescriptor, jint timeout, BOOLEAN poll));
-
-/* NativesCommonPlainMulticastSocketImpl*/
-void JNICALL Java_java_net_PlainMulticastSocketImpl_createMulticastSocketImpl PROTOTYPE((
-	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
 
 /* NativesCommonZipFile*/
 void throwJavaZIOException PROTOTYPE((JNIEnv * env, const char *message));
@@ -267,7 +178,6 @@ jobjectArray JNICALL Java_java_net_InetAddress_getAliasesByNameImpl PROTOTYPE((J
 jstring JNICALL Java_java_net_InetAddress_inetNtoaImpl PROTOTYPE((JNIEnv* env, jclass clazz, jint hipAddr));
 jobject JNICALL Java_java_net_InetAddress_getHostByAddrImpl PROTOTYPE((JNIEnv* env, jclass clazz, jbyteArray addr));
 jobject JNICALL Java_java_net_InetAddress_getHostByNameImpl PROTOTYPE((JNIEnv* env, jclass clazz, jstring aName, jboolean preferIPv6Addresses));
-jobjectArray JNICALL Java_java_net_InetAddress_getAliasesByAddrImpl PROTOTYPE((JNIEnv* env, jclass clazz, jstring addr));
 
 /* NativesCommonTimeZone*/
 jstring JNICALL Java_java_util_TimeZone_getCustomTimeZone PROTOTYPE((JNIEnv *env, jclass clazz, jintArray tzinfo, jbooleanArray isCustomTimeZone));
@@ -288,7 +198,6 @@ void throwJavaNetPortUnreachableException PROTOTYPE((JNIEnv* env, I_32 errorNumb
 jobject newJavaByteArray PROTOTYPE((JNIEnv * env, jbyte *bytes, jint length));
 jobjectArray createAliasArrayFromAddrinfo PROTOTYPE((JNIEnv* env, hyaddrinfo_t addresses, char* hName ));
 BOOLEAN booleanValue PROTOTYPE((JNIEnv * env, jobject aBoolean));
-BOOLEAN jcl_supports_ipv6 PROTOTYPE((JNIEnv * env));
 jobject newJavaLangInteger PROTOTYPE((JNIEnv * env, I_32 anInt));
 BOOLEAN preferIPv4Stack PROTOTYPE((JNIEnv * env));
 char* netLookupErrorString PROTOTYPE((JNIEnv* env, I_32 anErrorNum));
@@ -307,33 +216,14 @@ void throwJavaNetSocketException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
 I_32 netGetSockAddr PROTOTYPE((JNIEnv *env, jobject fileDescriptor, hysockaddr_t sockaddrP, jboolean preferIPv6Addresses));
 
 /* NativesCommonIoHelpers*/
-void* getJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv *env, jobject fd));
 void throwNewExceptionByName PROTOTYPE((JNIEnv* env,
                                         const char* name, const char* message));
 void throwNewOutOfMemoryError PROTOTYPE((JNIEnv* env, const char* message));
-jint ioh_readcharImpl PROTOTYPE((JNIEnv * env, jobject recv, IDATA descriptor));
 void throwJavaIoIOException PROTOTYPE((JNIEnv* env, const char* message));
 void throwJavaIoIOExceptionClosed PROTOTYPE((JNIEnv* env));
 void ioh_convertToPlatform PROTOTYPE((char *path));
-jint new_ioh_available PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
 void throwNPException PROTOTYPE((JNIEnv* env, const char* message));
-void setJavaIoFileDescriptorContentsAsPointer PROTOTYPE((JNIEnv * env, jobject fd, void *value));
-void ioh_writebytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
-char* ioLookupErrorString PROTOTYPE((JNIEnv* env, I_32 anErrorNum));
-void ioh_writecharImpl PROTOTYPE((JNIEnv *env, jobject recv, jint c, IDATA descriptor));
-jint ioh_readbytesImpl PROTOTYPE((JNIEnv * env, jobject recv, jbyteArray buffer, jint offset, jint count, IDATA descriptor));
-void new_ioh_close PROTOTYPE((JNIEnv * env, jobject recv, jfieldID fdFID));
 void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv* env));
-
-/* NativesCommonSocket*/
-void throwSocketException PROTOTYPE((JNIEnv* env, I_32 errorNumber));
-I_32 conPollSelectRead PROTOTYPE((JNIEnv * env, jobject socket, jint timeout, BOOLEAN poll, BOOLEAN accept));
-void* getSocketDescriptor PROTOTYPE((JNIEnv *env, jobject fd));
-void setSocketDescriptor PROTOTYPE((JNIEnv * env, jobject fd, void *value));
-jstring JNICALL Java_java_lang_System_getHostnameImpl PROTOTYPE((
-	JNIEnv* env, jclass clazz));
-void conUpdateSocket PROTOTYPE((JNIEnv *env, hysockaddr_t sockaddrP, jobject socket, int remote));
-hysocket_t createAndBindSocket PROTOTYPE((JNIEnv* env, jobject socket, int sockType, int localPort));
 
 /* NativesCommonFileDescriptor*/
 void JNICALL Java_java_io_FileDescriptor_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass fdClazz));
@@ -356,32 +246,6 @@ jlongArray JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_c
 	jobjectArray arg1, jobjectArray arg2, jbyteArray dir));
 void JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl PROTOTYPE((JNIEnv *env, jobject recv, jobject arg1, jlong arg2));
 void JNICALL Java_org_apache_harmony_luni_internal_process_SystemProcess_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz));
-
-/* NativesCommonPlainDatagramSocketImpl*/
-jint JNICALL Java_java_net_PlainDatagramSocketImpl_sendDatagramImpl2 PROTOTYPE((
-	JNIEnv* env, jclass thisClz,
-	jobject fileDescriptor, jbyteArray data, jint offset, jint msgLength,
-    jint targetPort, jboolean bindToDevice, jint trafficClass, jobject inetAddress));
-void JNICALL Java_java_net_PlainDatagramSocketImpl_createDatagramSocketImpl PROTOTYPE((
-	JNIEnv* env, jclass thisClz, jobject thisObjFD, jboolean preferIPv4Stack));
-jint JNICALL Java_java_net_PlainDatagramSocketImpl_peekDatagramImpl PROTOTYPE(( JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jobject senderAddress, jint timeout));
-jint JNICALL Java_java_net_PlainDatagramSocketImpl_sendConnectedDatagramImpl PROTOTYPE((
-	JNIEnv* env, jclass thisClz,
-	jobject fileDescriptor, jbyteArray data, jint offset, jint msgLength, jboolean bindToDevice));
-void JNICALL Java_java_net_PlainDatagramSocketImpl_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass clazz, jboolean ipv6support ));
-void JNICALL Java_java_net_PlainDatagramSocketImpl_connectDatagramImpl2 PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jint remotePort, jint trafficClass, jobject inetAddress));
-jint JNICALL Java_java_net_PlainDatagramSocketImpl_receiveDatagramImpl2 PROTOTYPE(( JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jobject datagramPacket, jbyteArray data, jint offset, jint msgLength, jint timeout, jboolean peek));
-jint JNICALL Java_java_net_PlainDatagramSocketImpl_receiveDatagramImpl PROTOTYPE(( JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jobject datagramPacket, jbyteArray data, jint offset, jint msgLength, jint timeout));
-jboolean JNICALL Java_java_net_PlainDatagramSocketImpl_socketBindImpl2 PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jint localPort,jboolean doDevice, jobject inetAddress));
-void JNICALL Java_java_net_PlainDatagramSocketImpl_disconnectDatagramImpl PROTOTYPE((JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor));
-jint JNICALL Java_java_net_PlainDatagramSocketImpl_recvConnectedDatagramImpl PROTOTYPE(( JNIEnv *env, jclass thisClz,
-	jobject fileDescriptor, jobject datagramPacket, jbyteArray data, jint offset, jint msgLength, jint timeout, jboolean peek));
 
 /************************************************************
  ** COMPONENT: NativesCommonFileSystem
@@ -412,10 +276,6 @@ I_32 getPlatformIsReadOnly PROTOTYPE((JNIEnv *env, char * path));
 void setPlatformBindOptions PROTOTYPE((JNIEnv *env, hysocket_t socketP));
 I_32 setPlatformLastModified PROTOTYPE((JNIEnv *env, char * path, I_64 time));
 I_32 setPlatformReadOnly PROTOTYPE((JNIEnv *env, char * path));
-
-/* NativesUNIXcomm*/
-jint baudValueToConst PROTOTYPE((jint baudRate));
-jint baudConstToValue PROTOTYPE((jint baudRate));
 
 /* NativesUNIXSystemHelpers*/
 char *getPlatformFileEncoding PROTOTYPE((JNIEnv * env, char *codepageProp, int propSize));

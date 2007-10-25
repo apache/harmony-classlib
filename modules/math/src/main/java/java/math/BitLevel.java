@@ -37,7 +37,7 @@ package java.math;
  */
 class BitLevel {
 
-    /** Just to denote that this class can't be instantied. */
+    /** Just to denote that this class can't be instantiated. */
     private BitLevel() {}
 
 

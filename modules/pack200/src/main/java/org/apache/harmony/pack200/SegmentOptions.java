@@ -15,9 +15,7 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 /**
  * Stores the combinations of bit flags that can be used in the segment header
  * options. Whilst this could be defined in {@link Segment}, it's cleaner to
@@ -25,9 +23,6 @@ package org.apache.harmony.pack200;
  * to determine the semantic meaning of the flags. In languages with a
  * pre-processor, these may be defined by macros that do bitflag manipulation
  * instead.
- * 
- * @author Alex Blewitt
- * @version $Revision: $
  */
 public class SegmentOptions {
 	private static final int DEFLATE_HINT = 1 << 5;

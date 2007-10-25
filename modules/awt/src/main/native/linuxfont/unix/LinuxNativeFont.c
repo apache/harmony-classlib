@@ -174,8 +174,8 @@ JNIEXPORT jobjectArray JNICALL
  * Signature: (Ljava/lang/String;)Z
  *
  * Returns true if the new font was added to the system, false otherwise.
- * Methods checks if the number of system fonts changed after font configutation
- * was rebuilded.
+ * Methods checks if the number of system fonts changed after font configuration
+ * was rebuilt.
  */
 JNIEXPORT jstring JNICALL 
     Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_embedFontNative(JNIEnv *env, jclass obj, jstring fName){
@@ -1768,4 +1768,35 @@ JNIEXPORT jfloatArray JNICALL
 
     return metrics;
        
+}
+
+/*
+ * Getting antialiased font from existing font 
+ */
+JNIEXPORT jlong JNICALL
+	Java_org_apache_harmony_awt_gl_font_LinuxNativeFont_getAntialiasedFont(
+		JNIEnv *env, jclass jobj, jlong font, jlong display, jboolean isAntialiasing){
+	
+    XftFont *fnt = (XftFont *)(long)font;
+    Display *dpy = (Display *)(long)display;
+
+    XftResult result;
+    XftPattern *mpattern = XftFontMatch(dpy, DefaultScreen(dpy),fnt->pattern,&result); 
+
+    XftPatternDel(mpattern, XFT_ANTIALIAS);
+    if (isAntialiasing) {
+        if (!XftPatternAddBool(mpattern, XFT_ANTIALIAS, True)) {
+            throwNPException(env,
+                "Error during adding font antialias set to true to XFTPattern structure");
+        }
+	}
+    else {
+        if (!XftPatternAddBool(mpattern, XFT_ANTIALIAS, False)) {
+            throwNPException(env,
+                "Error during adding font antialias set to false to XFTPattern structure");
+        }
+    }
+
+    XftFont *aaFnt = XftFontOpenPattern(dpy, mpattern);
+    return (long)aaFnt;
 }

@@ -31,7 +31,7 @@ import javax.naming.ldap.UnsolicitedNotificationListener;
 
 /**
  * <p>Implementation of the interfaces UnsolicitedNotificationListener and UnsolicitedNotification. This class has the intention of
- * give us a notifiction or a listener to test another classes.</p> 
+ * give us a notification or a listener to test another classes.</p> 
  *
  */
 public class MockUnsolicitedNotification implements
@@ -41,7 +41,7 @@ public class MockUnsolicitedNotification implements
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * <p>This flag has the intention of give us a way to know if a notification was recived.</p>
+	 * <p>This flag has the intention of give us a way to know if a notification was received.</p>
 	 */
 	private boolean flag;
 
@@ -51,11 +51,11 @@ public class MockUnsolicitedNotification implements
 	 */
 	public MockUnsolicitedNotification() {
 		super();
-		flag=false;//Flag to know if a the notification was recived.
+		flag=false;//Flag to know if a the notification was received.
 		
 	}
 	/**
-	 * <p>Here we recived the notification, so we set the flag true.</p>
+	 * <p>Here we received the notification, so we set the flag true.</p>
 	 */
 	public void notificationReceived(UnsolicitedNotificationEvent arg0) {
 		flag=true;
@@ -63,7 +63,7 @@ public class MockUnsolicitedNotification implements
 	}
 
 	/**
-	 * <p>Method to see if the notitfication was recived.</p>
+	 * <p>Method to see if the notification was received.</p>
 	 * @return The flag of the notification.
 	 */
 	public boolean getFlag(){

@@ -101,4 +101,11 @@ void setServerSocketLocalAddressContent(JNIEnv * env, jclass socketImpl_class, j
 
 void setSocketLocalAddressContent(JNIEnv * env, jclass channel_class, jobject channel_object,jbyte * address);
 
+jint ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
+                        jint offset, jint count, IDATA descriptor);
+void ioh_writebytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer,
+                         jint offset, jint count, IDATA descriptor);
+void new_ioh_close (JNIEnv * env, jobject recv, jfieldID fdFID);
+char *ioLookupErrorString (JNIEnv * env, I_32 anErrorNum);
+
 #endif /* nethelp_h */
