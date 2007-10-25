@@ -22,21 +22,15 @@ public class ParsePositionTest extends junit.framework.TestCase {
 
 	ParsePosition pp;
 
-	/**
-	 * @tests java.text.ParsePosition#ParsePosition(int)
-	 */
-	public void test_ConstructorI() {
-		// Test for method java.text.ParsePosition(int)
-		try {
-			ParsePosition pp1 = new ParsePosition(Integer.MIN_VALUE);
-			assertTrue("Initialization failed.",
-					pp1.getIndex() == Integer.MIN_VALUE);
-			assertEquals("Initialization failed.", -1, pp1.getErrorIndex());
-		} catch (Exception e) {
-			fail("Constructor failed.");
-		}
-
-	}
+    /**
+     * @tests java.text.ParsePosition#ParsePosition(int) 
+     */
+    public void test_ConstructorI() {
+        // Test for method java.text.ParsePosition(int)
+        ParsePosition pp1 = new ParsePosition(Integer.MIN_VALUE);
+        assertTrue("Initialization failed.", pp1.getIndex() == Integer.MIN_VALUE);
+        assertEquals("Initialization failed.", -1, pp1.getErrorIndex());
+    }
 
 	/**
 	 * @tests java.text.ParsePosition#equals(java.lang.Object)

@@ -1504,7 +1504,7 @@ public class DecimalFormatTest extends TestCase {
     /**
      * @tests serialization compatibility with RI
      */
-    public void test_serializationHarmonyRICompatible() {
+    public void test_serializationHarmonyRICompatible() throws Exception {
         NumberFormat nf = NumberFormat.getInstance(Locale.FRANCE);
 
         DecimalFormat df = null;
@@ -1522,8 +1522,6 @@ public class DecimalFormatTest extends TestCase {
             oinput = new ObjectInputStream(this.getClass().getResource(
                     "/serialization/java/text/DecimalFormat.ser").openStream());
             deserializedDF = (DecimalFormat) oinput.readObject();
-        } catch (Exception e) {
-            fail("Error occurs during deserialization");
         } finally {
             try {
                 if (null != oinput) {
@@ -1594,11 +1592,7 @@ public class DecimalFormatTest extends TestCase {
      */
     public void testSetDecimalFormatSymbolsAsNull(){
 	// Regression for HARMONY-1070
-        try {                                                                   
-            DecimalFormat format = (DecimalFormat)DecimalFormat.getInstance();
-            format.setDecimalFormatSymbols(null);                     
-        } catch (Exception e) {
-            fail("Unexpected exception caught: " + e);
-        }  
+        DecimalFormat format = (DecimalFormat)DecimalFormat.getInstance();
+        format.setDecimalFormatSymbols(null);                     
     }
 }

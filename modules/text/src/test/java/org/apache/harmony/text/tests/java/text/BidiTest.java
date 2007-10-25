@@ -968,8 +968,6 @@ public class BidiTest extends TestCase {
          } catch (IllegalArgumentException e) {
              // Expected for illegal run limit
              return;
-         } catch (Exception e) {
-                       fail("Unexpected exception: " + e);
          }
 
          fail("Expected IllegalArgumentException to be thrown for invalid run limit");
@@ -983,8 +981,6 @@ public class BidiTest extends TestCase {
          } catch (IllegalArgumentException e) {
              // Expected for illegal run limit
              return;
-         } catch (Exception e) {
-                       fail("Unexpected exception: " + e);
          }
 
          fail("Expected IllegalArgumentException to be thrown for invalid run limit");

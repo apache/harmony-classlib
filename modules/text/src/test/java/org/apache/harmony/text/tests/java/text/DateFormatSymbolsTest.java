@@ -30,11 +30,7 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
     public void test_Constructor() {
         // Test for method java.text.DateFormatSymbols()
         // Used in tests
-        try {
-            new DateFormatSymbols();
-        } catch (Exception e) {
-            fail("Constructor failed.");
-        }
+        new DateFormatSymbols();
     }
 
     /**
@@ -42,11 +38,7 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
      */
     public void test_ConstructorLjava_util_Locale() {
         // Test for method java.text.DateFormatSymbols(java.util.Locale)
-        try {
-            new DateFormatSymbols(new Locale("en", "us"));
-        } catch (Exception e) {
-            fail("Constructor failed.");
-        }
+        new DateFormatSymbols(new Locale("en", "us"));
     }
 
     /**

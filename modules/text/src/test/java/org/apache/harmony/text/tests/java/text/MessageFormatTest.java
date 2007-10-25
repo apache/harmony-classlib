@@ -128,22 +128,15 @@ public class MessageFormatTest extends TestCase {
 		assertEquals("Simple string", "Test message", new MessageFormat("Test message").format(
 				new Object[0]));
 
-        try {
-            result = new MessageFormat("Don't").format(new Object[0]);
-            assertTrue("Should not throw IllegalArgumentException: " + result,
+        result = new MessageFormat("Don't").format(new Object[0]);
+        assertTrue("Should not throw IllegalArgumentException: " + result,
                     "Dont".equals(result));
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e);
-        }
 
         try {
             new MessageFormat("Invalid {1,foobar} format descriptor!");
             fail("Expected test_ConstructorLjava_lang_String to throw IAE.");
         } catch (IllegalArgumentException ex) {
             // expected
-        } catch (Throwable ex) {
-            fail("Expected test_ConstructorLjava_lang_String to throw IAE, not a "
-                    + ex.getClass().getName());
         }
 
         try {
@@ -151,9 +144,6 @@ public class MessageFormatTest extends TestCase {
                     "Invalid {1,date,invalid-spec} format descriptor!");
         } catch (IllegalArgumentException ex) {
             // expected
-        } catch (Throwable ex) {
-            fail("Expected test_ConstructorLjava_lang_String to throw IAE, not a "
-                    + ex.getClass().getName());
         }
 
         checkSerialization(new MessageFormat(""));
