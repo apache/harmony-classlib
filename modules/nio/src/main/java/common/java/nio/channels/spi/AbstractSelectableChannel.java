@@ -26,7 +26,6 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,7 +34,6 @@ import java.util.List;
  * In this class, there are methods about registering/deregistering a channel,
  * about channel closing. It realize the multi-thread safe.
  * </p>
- * 
  */
 public abstract class AbstractSelectableChannel extends SelectableChannel {
 
@@ -71,6 +69,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      * @see java.nio.channels.SelectableChannel#provider()
      * @return The provider of this channel.
      */
+    @Override
     public final SelectorProvider provider() {
         return provider;
     }
@@ -78,6 +77,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     /**
      * @see java.nio.channels.SelectableChannel#isRegistered()
      */
+    @Override
     synchronized public final boolean isRegistered() {
         return !keyList.isEmpty();
     }
@@ -85,6 +85,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     /**
      * @see java.nio.channels.SelectableChannel#keyFor(java.nio.channels.Selector)
      */
+    @Override
     synchronized public final SelectionKey keyFor(Selector selector) {
         for (int i = 0; i < keyList.size(); i++) {
             SelectionKey key = keyList.get(i);
@@ -109,6 +110,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      * @see java.nio.channels.SelectableChannel#register(java.nio.channels.Selector,
      *      int, java.lang.Object)
      */
+    @Override
     public final SelectionKey register(Selector selector, int interestSet,
             Object attachment) throws ClosedChannelException {
         if (!isOpen()) {
@@ -155,6 +157,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      * 
      * @see java.nio.channels.spi.AbstractInterruptibleChannel#implCloseChannel()
      */
+    @Override
     synchronized protected final void implCloseChannel() throws IOException {
         implCloseSelectableChannel();
         for (int i = 0; i < keyList.size(); i++) {
@@ -176,6 +179,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     /**
      * @see java.nio.channels.SelectableChannel#isBlocking()
      */
+    @Override
     public final boolean isBlocking() {
         synchronized (blockingLock) {
             return isBlocking;
@@ -185,6 +189,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     /**
      * @see java.nio.channels.SelectableChannel#blockingLock()
      */
+    @Override
     public final Object blockingLock() {
         return blockingLock;
     }
@@ -197,6 +202,7 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
      *            <code>true</code> for blocking mode; <code>false</code>
      *            for non-blocking mode.
      */
+    @Override
     public final SelectableChannel configureBlocking(boolean blockingMode)
             throws IOException {
         if (isOpen()) {
@@ -213,7 +219,6 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
             return this;
         }
         throw new ClosedChannelException();
-
     }
 
     /**
