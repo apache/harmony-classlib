@@ -45,9 +45,10 @@ import org.apache.harmony.luni.util.Util;
  * @see java.lang.Comparable
  */
 public class File implements Serializable, Comparable<File> {
-    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     private static final long serialVersionUID = 301077366599181567L;
+
+    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     private String path;
 
@@ -168,7 +169,7 @@ public class File implements Serializable, Comparable<File> {
 
     private String calculatePath(String dirPath, String name) {
         dirPath = fixSlashes(dirPath);
-        if (!name.equals(EMPTY_STRING) || dirPath.equals(EMPTY_STRING)) { 
+        if (!name.equals(EMPTY_STRING) || dirPath.equals(EMPTY_STRING)) {
             // Remove all the proceeding separator chars from name
             name = fixSlashes(name);
 
@@ -192,36 +193,37 @@ public class File implements Serializable, Comparable<File> {
         return dirPath;
     }
 
+    @SuppressWarnings("nls")
     private void checkURI(URI uri) {
         if (!uri.isAbsolute()) {
-            throw new IllegalArgumentException(Msg.getString("K031a", uri)); //$NON-NLS-1$
-        } else if (!uri.getRawSchemeSpecificPart().startsWith("/")) { //$NON-NLS-1$
-            throw new IllegalArgumentException(Msg.getString("K031b", uri)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Msg.getString("K031a", uri));
+        } else if (!uri.getRawSchemeSpecificPart().startsWith("/")) {
+            throw new IllegalArgumentException(Msg.getString("K031b", uri));
         }
 
         String temp = uri.getScheme();
-        if (temp == null || !temp.equals("file")) { //$NON-NLS-1$
-            throw new IllegalArgumentException(Msg.getString("K031c", uri)); //$NON-NLS-1$
+        if (temp == null || !temp.equals("file")) {
+            throw new IllegalArgumentException(Msg.getString("K031c", uri));
         }
 
         temp = uri.getRawPath();
         if (temp == null || temp.length() == 0) {
-            throw new IllegalArgumentException(Msg.getString("K031d", uri)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Msg.getString("K031d", uri));
         }
 
         if (uri.getRawAuthority() != null) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K031e", new String[] { "authority", uri.toString() })); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException(Msg.getString("K031e",
+                    new String[] { "authority", uri.toString() }));
         }
 
         if (uri.getRawQuery() != null) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K031e", new String[] { "query", uri.toString() })); //$NON-NLS-1$//$NON-NLS-2$
+            throw new IllegalArgumentException(Msg.getString("K031e",
+                    new String[] { "query", uri.toString() }));
         }
 
         if (uri.getRawFragment() != null) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K031e", new String[] { "fragment", uri.toString() })); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException(Msg.getString("K031e",
+                    new String[] { "fragment", uri.toString() }));
         }
     }
 
@@ -866,7 +868,7 @@ public class File implements Serializable, Comparable<File> {
         }
         if (!isDirectory() || !canRead()) {
             return null;
-		}
+        }
         byte[][] implList = listImpl(properPath(true));
         if (implList == null) {
             // empty list
@@ -875,7 +877,6 @@ public class File implements Serializable, Comparable<File> {
         String result[] = new String[implList.length];
         for (int index = 0; index < implList.length; index++) {
             result[index] = Util.toUTF8String(implList[index]);
-            //result[index] = Util.toString(implList[index]);
         }
         return result;
     }
@@ -1181,7 +1182,7 @@ public class File implements Serializable, Comparable<File> {
         if (properPath != null) {
             return properPath;
         }
-        byte[] pathBytes = Util.getUTF8Bytes(path);       
+        byte[] pathBytes = Util.getUTF8Bytes(path);
         if (isAbsoluteImpl(pathBytes)) {
             return properPath = pathBytes;
         }
@@ -1200,19 +1201,18 @@ public class File implements Serializable, Comparable<File> {
             return properPath = Util.getUTF8Bytes(userdir);
         }
         int length = userdir.length();
-        
+
         // Handle windows-like path
         if (path.charAt(0) == '\\') {
             if (length > 1 && userdir.charAt(1) == ':') {
                 return properPath = Util.getUTF8Bytes(userdir.substring(0, 2)
                         + path);
-            } else {
-                path = path.substring(1);
             }
+            path = path.substring(1);
         }
-        
+
         // Handle separator
-        String result  = userdir;
+        String result = userdir;
         if (userdir.charAt(length - 1) != separatorChar) {
             if (path.charAt(0) != separatorChar) {
                 result += separator;
@@ -1222,7 +1222,7 @@ public class File implements Serializable, Comparable<File> {
 
         }
         result += path;
-        return properPath = Util.getUTF8Bytes(result);               
+        return properPath = Util.getUTF8Bytes(result);
     }
 
     private static native byte[] properPathImpl(byte[] path);
@@ -1269,18 +1269,19 @@ public class File implements Serializable, Comparable<File> {
      * 
      * @return a <code>file</code> URI for this File.
      */
+    @SuppressWarnings("nls")
     public URI toURI() {
         String name = getAbsoluteName();
         try {
-            if (!name.startsWith("/")) { //$NON-NLS-1$
+            if (!name.startsWith("/")) {
                 // start with sep.
-                return new URI("file", null, //$NON-NLS-1$
-                        new StringBuilder(name.length() + 1).append('/')
-                                .append(name).toString(), null, null);
-            } else if (name.startsWith("//")) { //$NON-NLS-1$
-                return new URI("file", name, null); // UNC path //$NON-NLS-1$
+                return new URI("file", null, new StringBuilder(
+                        name.length() + 1).append('/').append(name).toString(),
+                        null, null);
+            } else if (name.startsWith("//")) {
+                return new URI("file", name, null); // UNC path
             }
-            return new URI("file", null, name, null, null); //$NON-NLS-1$
+            return new URI("file", null, name, null, null);
         } catch (URISyntaxException e) {
             // this should never happen
             return null;
@@ -1297,16 +1298,18 @@ public class File implements Serializable, Comparable<File> {
      * @throws java.net.MalformedURLException
      *             if the path cannot be transformed into an URL
      */
+    @SuppressWarnings("nls")
     public URL toURL() throws java.net.MalformedURLException {
         String name = getAbsoluteName();
-        if (!name.startsWith("/")) { //$NON-NLS-1$
+        if (!name.startsWith("/")) {
             // start with sep.
-            return new URL("file", EMPTY_STRING, -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ 
-                    .append('/').append(name).toString(), null);
-        } else if (name.startsWith("//")) { //$NON-NLS-1$
-            return new URL("file:" + name); // UNC path //$NON-NLS-1$
+            return new URL(
+                    "file", EMPTY_STRING, -1, new StringBuilder(name.length() + 1) //$NON-NLS-1$ 
+                            .append('/').append(name).toString(), null);
+        } else if (name.startsWith("//")) {
+            return new URL("file:" + name); // UNC path
         }
-        return new URL("file", EMPTY_STRING, -1, name, null); //$NON-NLS-1$
+        return new URL("file", EMPTY_STRING, -1, name, null);
     }
 
     private String getAbsoluteName() {
