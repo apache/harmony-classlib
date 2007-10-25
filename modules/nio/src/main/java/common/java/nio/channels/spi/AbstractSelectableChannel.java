@@ -238,12 +238,12 @@ public abstract class AbstractSelectableChannel extends SelectableChannel {
     }
 
     /**
-     * Returns true if the keyList contains at least 1 valid key and false otherwise.
+     * Returns true if the keyList contains at least 1 valid key and false
+     * otherwise.
      */
     private synchronized boolean containsValidKeys() {
-        for (Iterator<SelectionKey> iter = keyList.iterator(); iter.hasNext();) {
-            SelectionKey key = iter.next();
-
+        for (int i = 0; i < keyList.size(); i++) {
+            SelectionKey key = keyList.get(i);
             if (key != null && key.isValid()) {
                 return true;
             }
