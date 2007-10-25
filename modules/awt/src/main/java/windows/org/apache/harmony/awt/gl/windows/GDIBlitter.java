@@ -101,18 +101,21 @@ public class GDIBlitter implements Blitter {
                 int compType = ac.getRule();
                 float alpha = ac.getAlpha();
                 if(srcSurf instanceof ImageSurface){
-                    if(bgcolor == null || srcSurf.getTransparency() == Transparency.OPAQUE){
-                        bltImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
-                                dstX, dstY, dstSurfStruct,
-                                width, height, compType, alpha,
-                                matrix, clipRects, numVertex, 
-                                srcSurf.invalidated());
-                    }else{
-                        bltBGImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
-                                dstX, dstY, dstSurfStruct,
-                                width, height, bgcolor.getRGB(),
-                                compType, alpha, matrix, clipRects, 
-                                numVertex, srcSurf.invalidated());
+                    Object data = srcSurf.getData();
+                    synchronized(data){
+                        if(bgcolor == null || srcSurf.getTransparency() == Transparency.OPAQUE){
+                            bltImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
+                                    dstX, dstY, dstSurfStruct,
+                                    width, height, compType, alpha,
+                                    matrix, clipRects, numVertex, 
+                                    srcSurf.invalidated());
+                        }else{
+                            bltBGImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
+                                    dstX, dstY, dstSurfStruct,
+                                    width, height, bgcolor.getRGB(),
+                                    compType, alpha, matrix, clipRects, 
+                                    numVertex, srcSurf.invalidated());
+                        }
                     }
                     srcSurf.validate();
                 }else{
@@ -124,10 +127,13 @@ public class GDIBlitter implements Blitter {
             }else if(comp instanceof XORComposite){
                 XORComposite xcomp = (XORComposite) comp;
                 if(srcSurf instanceof ImageSurface){
-                    xorImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
-                            dstX, dstY, dstSurfStruct,
-                            width, height, xcomp.getXORColor().getRGB(),
-                            matrix, clipRects, numVertex, srcSurf.invalidated());
+                    Object data = srcSurf.getData();
+                    synchronized(data){
+                        xorImage(srcX, srcY, srcSurfStruct, data,
+                                dstX, dstY, dstSurfStruct,
+                                width, height, xcomp.getXORColor().getRGB(),
+                                matrix, clipRects, numVertex, srcSurf.invalidated());
+                    }
                     srcSurf.validate();
                 }else{
                     xorBitmap(srcX, srcY, srcSurfStruct,

@@ -15,9 +15,7 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,9 +24,6 @@ import java.io.InputStream;
  * the first codec, and the remaining codes are decoded from the remaining
  * codec. Note that since this codec maintains state, the instances are
  * not reusable.
- *
- * @author Alex Blewitt
- * @version $Revision: $
  */
 public class RunCodec extends Codec {
 	private int k;

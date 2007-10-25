@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.harmony.security.Util;
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.fortress.PolicyUtils;
 import org.apache.harmony.security.fortress.SecurityAccess;
@@ -74,7 +75,7 @@ public final class Security {
                     }
                 }
 
-                if ("true".equalsIgnoreCase(secprops.getProperty("security.allowCustomPropertiesFile", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                if (Util.equalsIgnoreCase("true", secprops.getProperty("security.allowCustomPropertiesFile", "true"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     String securityFile = System.getProperty("java.security.properties"); //$NON-NLS-1$
                     if (securityFile != null) {
                         if (securityFile.startsWith("=")) { // overwrite //$NON-NLS-1$
@@ -149,7 +150,7 @@ public final class Security {
             for (Enumeration e = providers[i].propertyNames(); e
                     .hasMoreElements();) {
                 String pname = (String) e.nextElement();
-                if (prop.equalsIgnoreCase(pname)) {
+                if (Util.equalsIgnoreCase(prop, pname)) {
                     return providers[i].getProperty(pname);
                 }
             }
@@ -394,7 +395,7 @@ public final class Security {
         for (int i = 0; i < p.length; i++) {
             for (Iterator it = p[i].getServices().iterator(); it.hasNext();) {
                 Provider.Service s = (Provider.Service) it.next();
-                if (s.getType().equalsIgnoreCase(serviceName)) {
+                if (Util.equalsIgnoreCase(s.getType(),serviceName)) {
                     result.add(s.getAlgorithm());
                 }
             }

@@ -27,7 +27,7 @@ public class FormatterClosedException extends IllegalStateException implements
 	private static final long serialVersionUID = 18111216L;
 
 	/**
-	 * Constucts an instance of FormatterClosedException.
+	 * Constructs an instance of FormatterClosedException.
 	 * 
 	 */
 	public FormatterClosedException() {

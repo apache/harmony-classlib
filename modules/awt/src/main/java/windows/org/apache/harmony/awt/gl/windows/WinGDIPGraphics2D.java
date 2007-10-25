@@ -40,6 +40,7 @@ import java.util.Map;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
+import org.apache.harmony.awt.gl.XORComposite;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.NativeFont;
 import org.apache.harmony.awt.gl.font.fontlib.FLTextRenderer;
@@ -186,7 +187,12 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
             if (img == null) {
                 config = new WinGraphicsConfiguration(nw.getId(), getDC());
             } else {
-                config = new WinGraphicsConfiguration(getDC());
+                long hwnd = img.getHWND();
+                if(hwnd != 0){
+                    config = new WinGraphicsConfiguration(hwnd, getDC());
+                }else{
+                    config = img.getGraphicsConfiguration();
+                }
             }
         }
 
@@ -195,7 +201,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     protected void fillMultiRectAreaPaint(MultiRectArea mra) {
-        if (nativeBrush) {
+        if (nativeBrush && composite == AlphaComposite.SrcOver) {
             fillRects(gi, mra.rect, mra.rect[0]-1);
         } else {
             super.fillMultiRectAreaPaint(mra);
@@ -223,7 +229,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     }
 
 
-    //REMARK: It seems that transfrom affects paints too
+    //REMARK: It seems that transform affects paints too
     //REMARK: Think how to implement this
     @Override
     public void setPaint(Paint paint) {
@@ -302,7 +308,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     public void draw(Shape s) {
-        if (!nativePen) {
+        if (!nativePen || composite != AlphaComposite.SrcOver) {
             super.draw(s);
             return;
         }
@@ -314,7 +320,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        if (!nativePen) {
+        if (!nativePen || composite != AlphaComposite.SrcOver) {
             super.drawLine(x1, y1, x2, y2);
             return;
         }
@@ -324,7 +330,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     public void drawRect(int x, int y, int width, int height) {
-        if (!nativePen) {
+        if (!nativePen || composite != AlphaComposite.SrcOver) {
             super.drawRect(x, y, width, height);
             return;
         }

@@ -30,7 +30,7 @@ public class GradientPaintTest extends TestCase {
 
     GradientPaint gp;
 
-    public void testContructorBad() {
+    public void testConstructorBad() {
         // Regression for HARMONY-1470
         try {
             new GradientPaint(1, 2, null, 3, 4, new Color(255), false);

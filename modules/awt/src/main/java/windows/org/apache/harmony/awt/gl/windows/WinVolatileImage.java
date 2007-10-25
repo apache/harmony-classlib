@@ -158,4 +158,12 @@ public class WinVolatileImage extends GLVolatileImage {
         }
         super.flush();
     }
+    
+    long getHWND(){
+        return hwnd;
+    }
+    
+    WinGraphicsConfiguration getGraphicsConfiguration(){
+        return gc;
+    }
 }

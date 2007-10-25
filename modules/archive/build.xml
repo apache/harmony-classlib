@@ -43,7 +43,10 @@
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
     
-    <target name="copy-native-includes" depends="overlay-oss, copy-zipsup-include">
+    <target name="copy-native-includes"
+            depends="overlay-oss, copy-zipsup-include, copy-zlib-include" />
+
+    <target name="copy-zlib-include" unless="hy.skip.zlib">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.archive.src.main.native}/zlib_dist">
                 <include name="zlib.h" />
@@ -60,24 +63,25 @@
         </copy>
 	</target>
     
-    <target name="overlay-oss">
+    <target name="overlay-oss" unless="hy.skip.zlib">
         <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
         <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
         <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
     </target>
     
-    <target name="clean-overlay-oss">
+    <target name="clean-overlay-oss" unless="hy.skip.zlib" >
         <delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
     </target>
     
     <!-- Build native code -->
-    <target name="build-native" depends="-build-native-zip,-build-native" />
+    <target name="build-native"
+            depends="-build-native-zip,-build-native-zlib,-build-native-archive" />
 
     <target name="-build-native-zip" if="hy.skip.zip.api">
         <make dir="${hy.archive.src.main.native}/zip/${hy.os.family}" />
     </target>
         
-    <target name="-build-native">
+    <target name="-build-native-zlib" unless="hy.skip.zlib">
         <make dir="${hy.archive.src.main.native}/zlib/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.archive.src.main.native}/zlib">
@@ -86,8 +90,10 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+    </target>
         
-    <make dir="${hy.archive.src.main.native}/archive/${hy.os.family}" />
+    <target name="-build-native-archive">
+        <make dir="${hy.archive.src.main.native}/archive/${hy.os.family}" />
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.archive.src.main.native}/archive">
                 <include name="*${shlib.suffix}*"/>
@@ -98,10 +104,20 @@
     </target>
     
     <!-- Clean natives -->
-    <target name="clean-native">
-        <make dir="${hy.archive.src.main.native}/zip/${hy.os.family}" target="clean" />
+    <target name="clean-native"
+            depends="-clean-native-zip,-clean-native-zlib,-clean-native-archive"/>
+
+    <target name="-clean-native-zip" if="hy.skip.zip.api">
+        <make dir="${hy.archive.src.main.native}/zip/${hy.os.family}"
+              target="clean" />
+    </target>
+
+    <target name="-clean-native-zlib" unless="hy.skip.zlib">
         <make dir="${hy.archive.src.main.native}/zlib/${hy.os.family}"
               target="clean" />
+    </target>
+
+    <target name="-clean-native-archive">
         <make dir="${hy.archive.src.main.native}/archive/${hy.os.family}"
               target="clean" />
     </target>

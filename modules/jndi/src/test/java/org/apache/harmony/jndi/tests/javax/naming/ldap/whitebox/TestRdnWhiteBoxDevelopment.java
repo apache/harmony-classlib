@@ -36,8 +36,8 @@ import junit.framework.TestCase;
  * not 100%.
  * </p>
  * <p>
- * We are gonna find here a lot cases from diferent classes, notice here that
- * the conventional structure followed in the rest of the proyect is applied
+ * We are going to find here a lot cases from different classes, notice here that
+ * the conventional structure followed in the rest of the project is applied
  * here.
  * </p>
  * 
@@ -53,7 +53,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * Here we are testing if the constructor can recive several multivalued
+     * Here we are testing if the constructor can receive several multivalued
      * types.
      * </p>
      * <p>
@@ -80,7 +80,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * Here we are testing if the constructor can recive the special character
+     * Here we are testing if the constructor can receive the special character
      * "\".
      * </p>
      * <p>
@@ -100,7 +100,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * Here we are testing if the constructor can recive the special character
+     * Here we are testing if the constructor can receive the special character
      * "+".
      * </p>
      * <p>
@@ -118,7 +118,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.Rdn(String)'
      * </p>
      * <p>
-     * Here we are testing if the constructor can recive the special character
+     * Here we are testing if the constructor can receive the special character
      * "#".
      * </p>
      * <p>
@@ -134,7 +134,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if the method can recive a Rdn.
+     * Here we are testing if the method can receive a Rdn.
      * </p>
      * <p>
      * The expected result is that two rdns must be the same.
@@ -151,7 +151,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if the method can recive a Rdn.
+     * Here we are testing if the method can receive a Rdn.
      * </p>
      * <p>
      * The expected result is that two rdns must be the same.
@@ -168,7 +168,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if the method can recive a Rdn.
+     * Here we are testing if the method can receive a Rdn.
      * </p>
      * <p>
      * The expected result is that two rdns must be the same.
@@ -186,7 +186,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if the method can recive a Rdn.
+     * Here we are testing if the method can receive a Rdn.
      * </p>
      * <p>
      * The expected result is that two rdns must be the same.
@@ -228,7 +228,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
      * Test method for 'javax.naming.ldap.Rdn.equals(Rdn)'
      * </p>
      * <p>
-     * Here we are testing if the method can recive a Rdn with a different
+     * Here we are testing if the method can receive a Rdn with a different
      * array.
      * </p>
      * <p>
@@ -485,7 +485,7 @@ public class TestRdnWhiteBoxDevelopment extends TestCase {
 
     /**
      * <p>
-     * Test methdo to test if the constructor can recive the correct lenght to a
+     * Test method to test if the constructor can receive the correct length to a
      * byte array.
      * </p>
      * 

@@ -27,7 +27,7 @@ import org.apache.harmony.math.internal.nls.Messages;
  */
 class Multiplication {
 
-    /** Just to denote that this class can't be instantied. */
+    /** Just to denote that this class can't be instantiated. */
     private Multiplication() {}
 
     /**
@@ -355,7 +355,7 @@ class Multiplication {
     /**
      *  Performs a<sup>2</sup>
      *  @param a The number to square.
-     *  @param length The lenght of the number to square.
+     *  @param length The length of the number to square.
      */ 
     static int[] square(int[] a, int s) {
         int [] t = new int [s<<1];

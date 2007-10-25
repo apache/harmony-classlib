@@ -206,7 +206,7 @@ public class TextRunSegmentImpl {
         }
 
         /**
-         * Attemts to map each character to the corresponding advance increment
+         * Attempts to map each character to the corresponding advance increment
          */
         void initAdvanceMapping() {
             GlyphVector gv = getGlyphVector();
@@ -300,7 +300,7 @@ public class TextRunSegmentImpl {
         }
 
         /**
-         * Attemts to create mapping of the characters to glyphs in the glyph vector.
+         * Attempts to create mapping of the characters to glyphs in the glyph vector.
          * @return array where for each character index stored corresponding glyph index
          */
         private int[] getChar2Glyph() {

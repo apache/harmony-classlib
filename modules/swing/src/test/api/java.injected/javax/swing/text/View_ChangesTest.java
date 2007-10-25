@@ -936,7 +936,7 @@ public class View_ChangesTest extends TestCase {
         assertEquals("added and created are different", added.length, viewsCreatedElements
                 .size());
         for (int i = 0; i < added.length; i++) {
-            assertSame("Elemets different @ " + i, added[i], viewsCreatedElements.get(i));
+            assertSame("Elements different @ " + i, added[i], viewsCreatedElements.get(i));
         }
         assertEquals("Child view count is unexpected", count, view.getViewCount());
         assertEquals("Replace index is unexpected", docEvent.getChange(root).getIndex(),

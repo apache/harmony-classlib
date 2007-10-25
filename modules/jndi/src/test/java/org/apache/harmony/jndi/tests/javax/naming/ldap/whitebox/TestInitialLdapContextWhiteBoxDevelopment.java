@@ -30,8 +30,8 @@ import junit.framework.TestCase;
 
 /**
  * <p>This class test is made to test all cases of package where the coverage was not 100%.</p>
- * <p>We are gonna find here a lot cases from diferent classes, notice here that the conventional structure
- * followed in the rest of the proyect is applied  here.</p>
+ * <p>We are going to find here a lot cases from different classes, notice here that the conventional structure
+ * followed in the rest of the project is applied  here.</p>
  * 
  */
 public class TestInitialLdapContextWhiteBoxDevelopment extends TestCase {

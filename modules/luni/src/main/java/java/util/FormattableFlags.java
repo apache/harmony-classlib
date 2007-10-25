@@ -24,7 +24,7 @@ package java.util;
 public class FormattableFlags {
     
     private FormattableFlags(){
-        //prevent this class to be instantialized
+        //prevent this class from being instantiated
     }
     
     /**

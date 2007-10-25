@@ -55,37 +55,37 @@ public class JPEGImageReader extends ImageReader {
 
     @Override
     public int getHeight(int i) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public int getWidth(int i) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public int getNumImages(boolean b) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int i) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public IIOMetadata getStreamMetadata() throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public IIOMetadata getImageMetadata(int i) throws IOException {
-        //-- TODO imlement
+        //-- TODO implement
         throw new UnsupportedOperationException("not implemented yet");
     }
 

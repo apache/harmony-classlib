@@ -590,7 +590,7 @@ initNLSCatalog (HyPortLibrary * portLib)
 {
   char *endPathPtr = NULL;
   char *launcherName = NULL;
-  char **pathSet = portLib->mem_allocate_memory (portLib, sizeof(char*)*2);
+  const char **pathSet = portLib->mem_allocate_memory (portLib, sizeof(char*)*2);
   char *vmPath = NULL;
 
   hysysinfo_get_executable_name (portLib, NULL, &launcherName);
@@ -616,7 +616,7 @@ initNLSCatalog (HyPortLibrary * portLib)
     portLib->nls_set_catalog (portLib, pathSet, 2, "harmony", "properties");
     // Free memory for launcherName -- necessary ??
     portLib->mem_free_memory (portLib, launcherName);
-    portLib->mem_free_memory (portLib, pathSet);
+    portLib->mem_free_memory (portLib, (void*) pathSet);
     portLib->mem_free_memory (portLib, vmPath);
   }
 }

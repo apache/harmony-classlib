@@ -1034,6 +1034,7 @@ public abstract class JComponent extends Container implements Serializable {
             repaintRegion.convertRegion(this, effectiveRoot);
             repaintRegion.intersect(visibleRect);
             if (repaintRegion.isEmpty()) {
+                g.dispose();
                 return;
             }
             if (g instanceof Graphics2D) {
@@ -1046,6 +1047,7 @@ public abstract class JComponent extends Container implements Serializable {
             repaintRect = SwingUtilities.computeIntersection(repaintRect.x, repaintRect.y,
                     repaintRect.width, repaintRect.height, visibleRect);
             if (repaintRect.isEmpty()) {
+                g.dispose();
                 return;
             }
             g.clipRect(rect.x, rect.y, rect.width, rect.height);
@@ -1057,6 +1059,7 @@ public abstract class JComponent extends Container implements Serializable {
         } else {
             effectiveRoot.paint(g);
         }
+        g.dispose();
     }
 
     public void paintImmediately(int x, int y, int width, int height) {
@@ -1426,6 +1429,7 @@ public abstract class JComponent extends Container implements Serializable {
             g.drawImage(image, clipRect.x, clipRect.y, this);
         } finally {
             doubleBufferingRoot = false;
+            offscreenGraphics.dispose();
         }
     }
 

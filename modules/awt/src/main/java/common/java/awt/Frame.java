@@ -572,6 +572,7 @@ public class Frame extends Window implements MenuContainer {
             if (g != null) {
                 menuBar.paint(g);
             }
+            g.dispose();
         }
     }
 

@@ -119,7 +119,7 @@ public class ShortMessage extends MidiMessage {
          * method. From 0 up to 127, from 256 up to 383 and so on this method
          * throw out exception, i.e. after 256 begin cycle with some small
          * differences in the first lap, from 0 up to 255. From the second lap
-         * and so on this method, getDataLenght(int), throw out exception with
+         * and so on this method, getDataLength(int), throw out exception with
          * value of status from 496 up to 511, from 752 up to 767 and so on,
          * i.e. on the last 16 number of 256-lap. And now differences in the
          * first lap. This method don't throw out exception with value of status

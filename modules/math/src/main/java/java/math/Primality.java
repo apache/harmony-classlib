@@ -27,7 +27,7 @@ import java.util.Random;
  */
 class Primality {
 
-    /** Just to denote that this class can't be instantied. */
+    /** Just to denote that this class can't be instantiated. */
     private Primality() {}
 
     /* Private Fields */

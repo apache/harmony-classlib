@@ -65,6 +65,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private CachedRow currentRow;
 
+    private CachedRow originalRow;
+
     // start from : 0 rather than 1.
     private int currentRowIndex;
 
@@ -82,12 +84,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private String dataBaseURL;
 
+    private CachedRowSetImpl originalResultSet;
+
     public CachedRowSetImpl(String providerID) throws SyncFactoryException {
         syncProvider = SyncFactory.getInstance(providerID);
     }
 
     public CachedRowSetImpl() throws SyncFactoryException {
-        // this("org.apache.harmony.sql.rowset.HYOptimisticProvider");
+        this("Apache Harmony HYOptimisticProvider");
     }
 
     public void setRows(ArrayList<CachedRow> data, int cloumnCount) {
@@ -96,23 +100,26 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void acceptChanges() throws SyncProviderException {
-        // TODO:
-        // ?? 1. use the provider
-        // 2. use the connections defined in the resultset
+        if (currentRow == insertRow)
+            throw new SyncProviderException();
         try {
-            RowSetWriter rowSetWriter = syncProvider.getRowSetWriter();
-            rowSetWriter.writeData(this);
-            // acceptChanges(this.getConnection());
+            acceptChanges(this.getConnection());
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new SyncProviderException();
         }
     }
 
     public void acceptChanges(Connection con) throws SyncProviderException {
         if (currentRow == insertRow)
             throw new SyncProviderException();
-        throw new NotImplementedException();
+        try {
+            dataBaseURL = con.getMetaData().getURL();
+            RowSetWriter rowSetWriter = syncProvider.getRowSetWriter();
+            rowSetWriter.writeData(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SyncProviderException();
+        }
     }
 
     public boolean columnUpdated(int idx) throws SQLException {
@@ -158,6 +165,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void execute(Connection conn) throws SQLException {
+        //new connection using the direct-base class: BaseRowSet to get the connection and make the data query 
+        //and then populate the data
         throw new NotImplementedException();
     }
 
@@ -166,14 +175,17 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public ResultSet getOriginal() throws SQLException {
-        throw new NotImplementedException();
+        return originalResultSet;
     }
 
     public ResultSet getOriginalRow() throws SQLException {
         if (currentRow == null)
             throw new SQLException();
-        // ResultSet originalRow.s
-        throw new NotImplementedException();
+        CachedRowSetImpl specialRset = new CachedRowSetImpl();
+        ArrayList<CachedRow> data = new ArrayList<CachedRow>();
+        data.add(this.originalRow);        
+        specialRset.setRows(data, this.columnCount);        
+        return specialRset;
     }
 
     public int getPageSize() {
@@ -201,9 +213,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void populate(ResultSet rs, int startRow) throws SQLException {
-        new CachedRowSetReader(rs, startRow).readData(this);
         composeMetaData(rs.getMetaData());
-        dataBaseURL = rs.getStatement().getConnection().getMetaData().getURL();
+        new CachedRowSetReader(rs, startRow).readData(this);
+        dataBaseURL = rs.getStatement().getConnection().getMetaData().getURL();        
+        setTableName(rs.getMetaData().getTableName(1));
+        
+        //deep clone the resultset        
+        originalResultSet = new CachedRowSetImpl();
+        new CachedRowSetReader(this, startRow).readData(originalResultSet);
+        originalResultSet.setMetaData((RowSetMetaData)(this.getMetaData()));
+        first();
     }
 
     private void composeMetaData(ResultSetMetaData metaData)
@@ -212,6 +231,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         rowSetMetaData.setColumnCount(metaData.getColumnCount());
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             rowSetMetaData.setColumnName(i, metaData.getColumnName(i));
+            rowSetMetaData.setTableName(i, metaData.getTableName(i));
+            rowSetMetaData.setSchemaName(i, metaData.getSchemaName(i));
+            rowSetMetaData.setCatalogName(i, metaData.getCatalogName(i));
         }
         // TODO set other meta info when necessary
         this.meta = rowSetMetaData;
@@ -251,7 +273,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void setOriginalRow() throws SQLException {
-        throw new NotImplementedException();
+        if (currentRow == null)
+            throw new SQLException();
+        originalRow = currentRow;
+        currentRow.setUnavailable(); 
     }
 
     public void setPageSize(int size) throws SQLException {
@@ -366,7 +391,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void close() throws SQLException {
-        throw new NotImplementedException();
+        //TODO need more concerns!
+        rows.clear();        
     }
 
     public void deleteRow() throws SQLException {
@@ -436,7 +462,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Blob getBlob(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        return this.currentRow.getBLOb(columnIndex);
     }
 
     public Blob getBlob(String columnName) throws SQLException {
@@ -536,11 +562,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public ResultSetMetaData getMetaData() throws SQLException {
-        throw new NotImplementedException();
+        return this.meta;
     }
 
     public Object getObject(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        return this.currentRow.getObject(columnIndex);
     }
 
     public Object getObject(int columnIndex, Map<String, Class<?>> map)
@@ -549,7 +575,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Object getObject(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return this.currentRow.getObject(getIndexByName(columnName));
     }
 
     public Object getObject(String columnName, Map<String, Class<?>> map)
@@ -678,8 +704,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void moveToCurrentRow() throws SQLException {
-        this.currentRowIndex = rememberedCursorPosition;
-        this.currentRow = rows.get(currentRowIndex);
+        if (this.currentRow == this.insertRow) {
+            this.currentRowIndex = rememberedCursorPosition;
+            this.currentRow = rows.get(currentRowIndex);
+        }
     }
 
     public void moveToInsertRow() throws SQLException {
@@ -716,14 +744,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean rowInserted() throws SQLException {
+        return this.currentRow.getInsert();
+    }
+
+    public boolean rowUpdated() throws SQLException {
         boolean sign = false;
         for (int i = 0; i < meta.getColumnCount(); ++i)
             sign = this.currentRow.getUpdateMask(i) | sign;
         return sign;
-    }
-
-    public boolean rowUpdated() throws SQLException {
-        throw new NotImplementedException();
     }
 
     public void updateArray(int columnIndex, Array x) throws SQLException {
@@ -934,11 +962,17 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void execute() throws SQLException {
+        //new connection using the direct-base class: BaseRowSet to get the connection and make the data query 
+        //populate the data
         throw new NotImplementedException();
     }
 
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(dataBaseURL);
+    } 
+    
+    CachedRow getCurrentRow(){
+        return currentRow;
     }
 
 }

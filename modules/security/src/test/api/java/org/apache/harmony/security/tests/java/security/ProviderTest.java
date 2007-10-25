@@ -112,11 +112,11 @@ public class ProviderTest extends TestCase {
         hm.put("MessageDigest.SHA-1", "aaa.bbb.ccc.ddd");
         hm.put("Property 1", "value 1");
         hm.put("serviceName.algName attrName", "attrValue");
-        hm.put("Alg.Alias.engineClassName.aliasName", "stanbdardName");
+        hm.put("Alg.Alias.engineClassName.aliasName", "standardName");
         p.putAll(hm);
         if (!"value 1".equals(p.getProperty("Property 1").trim()) ||
                 !"attrValue".equals(p.getProperty("serviceName.algName attrName").trim()) ||
-                !"stanbdardName".equals(p.getProperty("Alg.Alias.engineClassName.aliasName").trim()) ||
+                !"standardName".equals(p.getProperty("Alg.Alias.engineClassName.aliasName").trim()) ||
                 !"aaa.bbb.ccc.ddd".equals(p.getProperty("MessageDigest.SHA-1").trim()) ) {
             fail("Incorrect property value");
         }

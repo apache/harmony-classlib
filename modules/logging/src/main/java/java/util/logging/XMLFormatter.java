@@ -165,7 +165,7 @@ public class XMLFormatter extends Formatter {
 
     /**
      * Return the header string for XML, use given handler's encoding if has,
-     * other wise use default platform encoding
+     * otherwise use default platform encoding
      * 
      * @param h
      *            the given handler

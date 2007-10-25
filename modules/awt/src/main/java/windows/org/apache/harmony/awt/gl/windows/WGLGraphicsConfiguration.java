@@ -74,10 +74,6 @@ public class WGLGraphicsConfiguration
         super(hwnd, hdc);
     }
 
-    public WGLGraphicsConfiguration(long hdc) {
-        super(hdc);
-    }
-
     public long windowProc(long hwnd, int msg, long wParam, long lParam) {
         return w32.DefWindowProcW(hwnd, msg, wParam, lParam);
     }

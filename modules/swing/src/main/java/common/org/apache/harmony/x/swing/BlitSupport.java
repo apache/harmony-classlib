@@ -140,6 +140,7 @@ public class BlitSupport {
         if (!wasPainted) {
             onPaint();
         }
+        g.dispose();
 
         return true;
     }

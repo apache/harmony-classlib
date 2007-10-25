@@ -174,7 +174,7 @@ Java_java_io_ObjectInputStream_newInstance (JNIEnv * env, jclass clazz,
     }
   else
     {
-      /* Instantiate an object of a given class and constuct it using
+      /* Instantiate an object of a given class and construct it using
          the constructor of the other class. */
       jobject obj;
       obj = (*env)->AllocObject(env, instantiationClass);

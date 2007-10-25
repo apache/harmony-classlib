@@ -42,7 +42,7 @@ public abstract class JarURLConnection extends URLConnection {
     private String file;
 
     /**
-     * Contructs an instance of <code>JarURLConnection</code>.
+     * Constructs an instance of <code>JarURLConnection</code>.
      * 
      * @param url
      *            java.net.URL the URL that contains the location to connect to

@@ -32,8 +32,8 @@ import junit.framework.TestCase;
 
 /**
  * <p>This class test is made to test all cases of package where the coverage was not 100%.</p>
- * <p>We are gonna find here a lot cases from diferent classes, notice here that the conventional structure
- * followed in the rest of the proyect is applied  here.</p>
+ * <p>We are going to find here a lot cases from different classes, notice here that the conventional structure
+ * followed in the rest of the project is applied  here.</p>
  * 
  */
 public class TestControlFactoryWhiteBoxDevelopment extends TestCase {
@@ -55,7 +55,7 @@ public class TestControlFactoryWhiteBoxDevelopment extends TestCase {
 
 	/**
 	 * <p>Test method for 'javax.naming.ldap.ControlFactory.getControlInstance(Control)'</p>
-	 * <p>Here we are gonna test if we can get an instance with the controls sended.</p>
+	 * <p>Here we are going to test if we can get an instance with the controls sended.</p>
 	 */
 	public void testGetControlInstanceControl() {
 

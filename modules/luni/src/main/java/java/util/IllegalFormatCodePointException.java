@@ -52,7 +52,7 @@ public class IllegalFormatCodePointException extends IllegalFormatException
 	/**
 	 * Return the message string of the IllegalFormatCodePointException.
 	 * 
-	 * @retun The message string of the IllegalFormatCodePointException.
+	 * @return The message string of the IllegalFormatCodePointException.
 	 */
 	@Override
     public String getMessage() {

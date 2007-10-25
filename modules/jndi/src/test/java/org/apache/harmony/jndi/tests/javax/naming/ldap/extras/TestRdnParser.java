@@ -27,7 +27,7 @@ import javax.naming.ldap.Rdn;
 import junit.framework.TestCase;
 
 /**
- * <p>Test case to test the class Rdn when it recives an UTF-8 string that happens when is escaped with the 
+ * <p>Test case to test the class Rdn when it receives an UTF-8 string that happens when is escaped with the 
  * blackslash ('\' ASCII 92).</p>
  *
  */
@@ -293,7 +293,7 @@ public class TestRdnParser extends TestCase {
 	}
 
 	/**
-	 * <p>Here we are testing if the constructor can create an instance of the rdn with diferents combiantions of utf8 not printables.</p>
+	 * <p>Here we are testing if the constructor can create an instance of the rdn with different combinations of utf8 not printables.</p>
 	 *
 	 */
 	public void testRdnString001() {
@@ -310,7 +310,7 @@ public class TestRdnParser extends TestCase {
 	}
 
 	/**
-	 * <p>Here we are testing if the constructor can create an instance of the rdn with diferents combiantions of utf8 printables.</p>
+	 * <p>Here we are testing if the constructor can create an instance of the rdn with different combinations of utf8 printables.</p>
 	 *
 	 */
 	public void testRdnString002() {
@@ -329,7 +329,7 @@ public class TestRdnParser extends TestCase {
 	}
 
 	/**
-	 * <p>Here we are testing if the constructor can create an instance of the rdn with diferents combiantions of utf8 not printables and 
+	 * <p>Here we are testing if the constructor can create an instance of the rdn with different combinations of utf8 not printables and 
 	 * printables. 1 to 1</p>
 	 *
 	 */
@@ -352,7 +352,7 @@ public class TestRdnParser extends TestCase {
 	}
 
 	/**
-	 * <p>Here we are testing if the constructor can create an instance of the rdn with diferents combiantions of utf8 not printables and 
+	 * <p>Here we are testing if the constructor can create an instance of the rdn with different combinations of utf8 not printables and 
 	 * printables. 1 to 1</p>
 	 *
 	 */	
@@ -375,7 +375,7 @@ public class TestRdnParser extends TestCase {
 	}
 
 	/**
-	 * <p>Here we are testing if the constructor can create an instance of the rdn with diferents combiantions of utf8 not printables and 
+	 * <p>Here we are testing if the constructor can create an instance of the rdn with different combinations of utf8 not printables and 
 	 * printables. 1 utf8 to 1 ascii to 1 utf8 and 1 ascii to 1 utf8 to 1 ascii.</p>
 	 *
 	 */	
@@ -517,7 +517,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor recives in the value an utf8 value.</p>
+	 * <p>Here we are testing if the constructor receives in the value an utf8 value.</p>
 	 *
 	 */
 	public void testRdnString010(){
@@ -535,7 +535,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor recives in the value utf8 values.</p>
+	 * <p>Here we are testing if the constructor receives in the value utf8 values.</p>
 	 *
 	 */
 	public void testRdnString011(){
@@ -564,7 +564,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor recives in the value an ascii value.</p>
+	 * <p>Here we are testing if the constructor receives in the value an ascii value.</p>
 	 *
 	 */
 	public void testRdnString012(){
@@ -582,7 +582,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor recives in the value ascii values.</p>
+	 * <p>Here we are testing if the constructor receives in the value ascii values.</p>
 	 *
 	 */
 	public void testRdnString013(){
@@ -612,7 +612,7 @@ public class TestRdnParser extends TestCase {
 	
 	
 	/**
-	 * <p>Here we are testing if the constructor recives an especial character in the type.</p>
+	 * <p>Here we are testing if the constructor receives an especial character in the type.</p>
 	 *
 	 */
 	public void testRdnString014() {
@@ -631,7 +631,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor recives an especial character in the value.</p>
+	 * <p>Here we are testing if the constructor receives an especial character in the value.</p>
 	 *
 	 */
 	public void testRdnString015() {
@@ -652,7 +652,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor can recive an utf8 up to 7e</p>
+	 * <p>Here we are testing if the constructor can receive an utf8 up to 7e</p>
 	 *
 	 */
 	public void testRdnString016(){
@@ -669,7 +669,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor can recive a multivalue.</p> 
+	 * <p>Here we are testing if the constructor can receive a multivalue.</p> 
 	 *
 	 */
 	public void testRdnString017(){
@@ -730,7 +730,7 @@ public class TestRdnParser extends TestCase {
 	
 	
 	/**
-	 * <p>Here we are testing if the constructor can recive a multivalue between '"'.</p> 
+	 * <p>Here we are testing if the constructor can receive a multivalue between '"'.</p> 
 	 *
 	 */
 	public void testRdnString018(){
@@ -763,7 +763,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor can recive a multivalue between '"'.</p> 
+	 * <p>Here we are testing if the constructor can receive a multivalue between '"'.</p> 
 	 *
 	 */
 	public void testRdnString019(){
@@ -853,7 +853,7 @@ public class TestRdnParser extends TestCase {
 	}
 	
 	/**
-	 * <p>Here we are testing if the constructor recives combinations of bytes arrays.</p>
+	 * <p>Here we are testing if the constructor receives combinations of bytes arrays.</p>
 	 *
 	 */
 	public void testBytes(){

@@ -39,7 +39,7 @@ public class IndexColorModel extends ColorModel {
     private BigInteger validBits;  // Specify valid Color Map values
 
     private static final int CACHESIZE = 20; // Cache size. Cache used for 
-                                             // improving performace of selection
+                                             // improving performance of selection
                                              // nearest color in Color Map
 
     private final int cachetable[] = new int[CACHESIZE * 2]; // Cache table - used for 

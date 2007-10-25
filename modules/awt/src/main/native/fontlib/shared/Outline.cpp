@@ -25,7 +25,7 @@ Outline::Outline(ufshort pointsNumber, ufshort commandNumber) {
 	commandsCount = 0;
 
 	_points = new ffloat[_pointsLength = pointsNumber];
-	_commands = new ufchar[_commandLenght = commandNumber];    
+	_commands = new ufchar[_commandLength = commandNumber];    
 
 	/*for (commandsCount = 0 ; commandsCount < commandNumber; commandsCount ++) {
 		this->_commands[commandsCount] = SEG_CLOSE;
@@ -40,11 +40,11 @@ Outline::~Outline() {
 }
 
 void Outline::trim() {
-    if (_commandLenght == commandsCount) {
+    if (_commandLength == commandsCount) {
 		return;
 	}
 
-	//printf("_length = %u, commandsCount = %u\n", _commandLenght, commandsCount);
+	//printf("_length = %u, commandsCount = %u\n", _commandLength, commandsCount);
 
 	ufchar *commandMas = new ufchar[commandsCount];
 	ffloat *pointsMas = new ffloat[pointsCount];
@@ -58,7 +58,7 @@ void Outline::trim() {
 	_points = pointsMas;
 	_commands = commandMas;
 
-    _commandLenght = commandsCount;
+    _commandLength = commandsCount;
     _pointsLength = pointsCount;
 }
 
@@ -111,5 +111,5 @@ ufshort Outline::getPointsLength(void) {
 }
 
 ufshort Outline::getCommandLength(void) {
-    return _commandLenght;
+    return _commandLength;
 }

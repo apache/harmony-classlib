@@ -125,7 +125,7 @@ public class RMIObjectOutputStream extends ObjectOutputStream {
     }
 
     /**
-     * Annotates specified proxy class with it's codebase URL if avaliable.
+     * Annotates specified proxy class with it's codebase URL if available.
      *
      * @param cl proxy class to be annotated
      */

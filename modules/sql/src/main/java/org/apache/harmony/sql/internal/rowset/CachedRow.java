@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+import java.sql.Blob;
 import java.util.BitSet;
 
 public class CachedRow {
@@ -41,6 +42,13 @@ public class CachedRow {
 
     public void setUpdateMask(int i) {
         mask.set(i);
+    }
+    
+    public void setUnavailable(){
+        setDelete();
+        setInsert();
+        mask.clear();
+        mask.flip(0,columnData.length);
     }
 
     public void setDelete() {
@@ -68,12 +76,24 @@ public class CachedRow {
         this.columnData[columnIndex - 1] = x;
         setUpdateMask(columnIndex - 1);
     }
+    
+    public CachedRow getOriginal() {
+        return new CachedRow(originalColumnData);
+    }
 
     public String getString(int columnIndex) {
         return (String) this.columnData[columnIndex - 1];
     }
+    
+    public Object getObject(int columnIndex) {
+        return  this.columnData[columnIndex - 1];
+    }
 
     public int getInt(int columnIndex) {
         return (Integer) this.columnData[columnIndex - 1];
+    }
+    
+    public Blob getBLOb(int columnIndex){
+        return (Blob) this.columnData[columnIndex-1];
     }
 }

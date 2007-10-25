@@ -24,9 +24,9 @@ class AwtDimensionPersistenceDelegate extends DefaultPersistenceDelegate {
     @Override
 	@SuppressWarnings("boxing")
     protected Expression instantiate(Object oldInstance, Encoder enc) {
-		Dimension dimesion = (Dimension) oldInstance;
+		Dimension dimension = (Dimension) oldInstance;
 
-        return new Expression(dimesion, dimesion.getClass(), Statement.CONSTRUCTOR_NAME,
-                new Object[] { dimesion.width, dimesion.height });
+        return new Expression(dimension, dimension.getClass(), Statement.CONSTRUCTOR_NAME,
+                new Object[] { dimension.width, dimension.height });
     }
 }

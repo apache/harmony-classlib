@@ -248,9 +248,9 @@ public class XGraphicsConfiguration extends GraphicsConfiguration {
             case Transparency.OPAQUE:
                 return getColorModel();
             case Transparency.TRANSLUCENT:
+                return ColorModel.getRGBdefault();
             case Transparency.BITMASK:
-                // Transparency unsupported yet, return default model again
-                return getColorModel();
+                return new DirectColorModel(25, 0xFF0000, 0xFF00, 0xFF, 0x1000000);
             default:
                 // awt.0D=Invalid transparency
                 throw new IllegalArgumentException(Messages.getString("awt.0D")); //$NON-NLS-1$

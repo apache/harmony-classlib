@@ -153,7 +153,7 @@ public class ServerHandshakeImpl extends HandshakeProtocol {
                     if (clientCert.certs.length == 0) {
                         if (parameters.getNeedClientAuth()) {
                             fatalAlert(AlertProtocol.HANDSHAKE_FAILURE,
-                                    "HANDSHAKE FAILURE: no client certificate recived");
+                                    "HANDSHAKE FAILURE: no client certificate received");
                         }
                     } else {
                         String authType = clientCert.certs[0].getPublicKey()

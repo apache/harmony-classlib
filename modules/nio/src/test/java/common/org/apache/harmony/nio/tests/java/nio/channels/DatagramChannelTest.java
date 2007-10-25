@@ -2403,29 +2403,29 @@ public class DatagramChannelTest extends TestCase {
     
     public void test_write_LBuffer_positioned() throws Exception {
         // Regression test for Harmony-683
-        int postion = 16;
+        int position = 16;
         DatagramChannel dc = DatagramChannel.open();
         byte[] sourceArray = new byte[CAPACITY_NORMAL];        
         dc.connect(localAddr1);
         // write
         ByteBuffer sourceBuf = ByteBuffer.wrap(sourceArray);
-        sourceBuf.position(postion);
-        assertEquals(CAPACITY_NORMAL - postion, dc.write(sourceBuf));
+        sourceBuf.position(position);
+        assertEquals(CAPACITY_NORMAL - position, dc.write(sourceBuf));
     }
 
-    public void test_send_LBuffer_LSocketAddress_PositonNotZero()
+    public void test_send_LBuffer_LSocketAddress_PositionNotZero()
             throws Exception {
         // regression test for Harmony-701
         int CAPACITY_NORMAL = 256;
-        int postion = 16;
+        int position = 16;
         DatagramChannel dc = DatagramChannel.open();
         byte[] sourceArray = new byte[CAPACITY_NORMAL];
         // send ByteBuffer whose position is not zero
         ByteBuffer sourceBuf = ByteBuffer.wrap(sourceArray);
-        sourceBuf.position(postion);
+        sourceBuf.position(position);
         int ret = dc.send(sourceBuf, localAddr1);
         // assert send (256 - 16) bytes  
-        assertEquals(CAPACITY_NORMAL - postion, ret);
+        assertEquals(CAPACITY_NORMAL - position, ret);
         // assert the position of ByteBuffer has been set
         assertEquals(CAPACITY_NORMAL, sourceBuf.position());
     }

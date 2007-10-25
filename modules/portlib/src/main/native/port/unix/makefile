@@ -42,9 +42,4 @@ endif
 DLLNAME = ../libhyprt$(HY_SHLIB_SUFFIX)
 EXPNAME = HYPRT_0.1
 
-# temp by geir - please ignore
-#
-LIBNAME = $(LIBPATH)libhyprt.a
-
-
 include $(HY_HDK)/build/make/rules.mk

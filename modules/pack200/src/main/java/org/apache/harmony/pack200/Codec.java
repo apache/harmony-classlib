@@ -15,9 +15,7 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -95,9 +93,6 @@ import java.io.InputStream;
  * by the Pack200 specification, which allow a codec to be referred to by
  * canonical number. TODO Add links to canonical numbers when this has been
  * done.
- * 
- * @author Alex Blewitt
- * @version $Revision: $
  */
 public abstract class Codec {
 	/**
@@ -129,7 +124,7 @@ public abstract class Codec {
 	public static final BHSDCodec DELTA5 = new BHSDCodec(5, 64, 1, 1);
 
 	/**
-	 * DELTA5 = (5,64,2,1): Used for the majority of numerical codings where
+	 * MDELTA5 = (5,64,2,1): Used for the majority of numerical codings where
 	 * there is a correlated sequence of signed values, but where most of them
 	 * are expected to be non-negative.
 	 */
@@ -147,7 +142,7 @@ public abstract class Codec {
 	public static final BHSDCodec UDELTA5 = new BHSDCodec(5, 64, 0, 1);
 
 	/**
-	 * USIGNED5 = (5,64): Used for small unsigned values.
+	 * UNSIGNED5 = (5,64): Used for small unsigned values.
 	 */
 	public static final BHSDCodec UNSIGNED5 = new BHSDCodec(5, 64);
 

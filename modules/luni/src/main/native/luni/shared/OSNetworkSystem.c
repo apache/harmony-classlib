@@ -1442,7 +1442,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rec
     }
   else
     {
-     /* update	the packet with	the legth of data received.
+     /* update	the packet with	the length of data received.
 	 Since we are connected	we did not get back an address.	 This
 	 address is cached within the PlainDatagramSocket  java	object and is filled in	at
 	 the java level	*/

@@ -142,6 +142,7 @@ abstract class PopupBox {
             if (gr != null) {
                 paint(gr);
             }
+            gr.dispose();
         }
     }
 

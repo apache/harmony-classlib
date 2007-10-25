@@ -62,8 +62,7 @@ static char* buf_write_using_iconv (struct HyPortLibrary *portLibrary,
 #endif /* HYVM_USE_ICONV (autogen) */
 
 #if (defined(HYVM_USE_WCTOMB))
-U_32 decodeUTF8CharN (const U_8 * input, U_16 * result, U_32 bytesRemaining);
-U_32 decodeUTF8Char (const U_8 * input, U_16 * result);
+#include "utf8decode.h"
 #endif
 
 #if (defined(HYVM_USE_WCTOMB))

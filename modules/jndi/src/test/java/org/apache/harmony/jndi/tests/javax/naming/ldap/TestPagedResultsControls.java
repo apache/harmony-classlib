@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 
 /**        
  * <p>This Test class is testing the PagedResultsControls class.</p>
- * <p>In the next tables we are gonna see the methods that we test in this class:</p>
+ * <p>In the next tables we are going to see the methods that we test in this class:</p>
  * <table class="t" cellspacing="0">
 	<tbody><th>Constructors:</th>
 		<tr>

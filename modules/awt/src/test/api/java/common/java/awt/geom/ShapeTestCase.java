@@ -524,7 +524,7 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
           return list;
     }
 
-    void interator(String name, FilenameFilter filter, Runner runner) {
+    void iterator(String name, FilenameFilter filter, Runner runner) {
         if (filter == null) {
             return; // skip test
         }
@@ -540,28 +540,28 @@ public abstract class ShapeTestCase extends PathIteratorTestCase {
     }
 
     public void testGetPathIterator() {
-        interator(
+        iterator(
                 "getPathIterator()",
                 filterShape,
                 new Runner.PathIterator());
     }
 
     public void testContainsPoint() {
-        interator(
+        iterator(
                 "contains(double,double)",
                 filterImage,
                 new Runner.Point());
     }
 
     public void testContainsRect() {
-        interator(
+        iterator(
                 "contains(double,double,double,double)",
                 filterImage,
                 new Runner.Rectangle.Contains());
     }
 
     public void testIntersectsRect() {
-        interator(
+        iterator(
                 "intersects(double,double,double,double)",
                 filterImage,
                 new Runner.Rectangle.Intersects());

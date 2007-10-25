@@ -297,7 +297,7 @@ public class MidiSystem {
         /*
          * if we don't find anyway, we throw out MidiUnavailableException
          */
-        throw new MidiUnavailableException("There are no Recivers installed on your system!");
+        throw new MidiUnavailableException("There are no Receivers installed on your system!");
     }
 
     public static Sequence getSequence(File file) throws InvalidMidiDataException, IOException {

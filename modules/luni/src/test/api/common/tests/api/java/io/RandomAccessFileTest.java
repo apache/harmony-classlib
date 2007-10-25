@@ -774,7 +774,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
 
         try {
             raf.read(new byte[1], 0, 5);
-            fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
+            fail("IndexOutOfBoundsException must be thrown if off+len > b.length");
         } catch (IndexOutOfBoundsException e) {
         }
 
@@ -878,7 +878,7 @@ public class RandomAccessFileTest extends junit.framework.TestCase {
 
         try {
             raf.write(new byte[1], 0, 5);
-            fail("IndexOutOfBoundsException must be thrown if off+len > b.lengh");
+            fail("IndexOutOfBoundsException must be thrown if off+len > b.length");
         } catch (IndexOutOfBoundsException e) {
         }
 

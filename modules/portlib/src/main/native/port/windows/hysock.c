@@ -499,7 +499,7 @@ useIPv4Socket (hysocket_t sockHandle)
  * entity, as known to the communications layer. The exact format of the addr parameter 
  * is determined by the address family established when the socket was created. 
  * @param[in] sockHandle A pointer to a hysocket_t  which will point to the newly created 
- * socket once accept returns succesfully
+ * socket once accept returns successfully
  *
  * @return 
  * \arg 0 on success
@@ -1311,7 +1311,7 @@ hysock_getaddrinfo_family (struct HyPortLibrary * portLibrary,
   OSADDRINFO *addr;
   int i;
 
-  /* If we have the IPv6 functions then we'll cast to a OSADDRINFO othewise we have a hostent */
+  /* If we have the IPv6 functions then we'll cast to a OSADDRINFO otherwise we have a hostent */
   if (PPG_sock_IPv6_FUNCTION_SUPPORT)
     {
       addr = (OSADDRINFO *) handle->addr_info;
@@ -2034,7 +2034,7 @@ hysock_getsockname (struct HyPortLibrary * portLibrary, hysocket_t handle,
 	}
     }
 
-  /* if both sockets are open we cannot retun the address for either one as whichever one we return it is wrong in some 
+  /* if both sockets are open we cannot return the address for either one as whichever one we return it is wrong in some 
      cases. Therefore,  we reset the address to the ANY address and leave the port as is as it should be the same
      for both sockets (bind makes sure that when we open the two sockets we use the same port */
   if ((handle->flags & SOCKET_IPV4_OPEN_MASK)
@@ -4206,7 +4206,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
 	    }
 #endif
 
-	  /* set up the return stucture */
+	  /* set up the return structure */
 	  array->elements = interfaces;
 	  array->length = numAdapters;
 
@@ -4631,7 +4631,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
 	}
 #endif
 
-      // set up the return stucture
+      // set up the return structure
       array->elements = interfaces;
       array->length = numAdapters + 1;
       currentAdapter = adaptersList;

@@ -1189,7 +1189,7 @@ public class URLTest extends junit.framework.TestCase {
 		URL ftpUrl = new URL("ftp://" + Support_Configuration.FTPTestAddress
 				+ "/nettest.txt");
 		URL[] urlList = { httpUrl, ftpUrl };
-		ProxySelector orignalSelector = ProxySelector.getDefault();
+		ProxySelector originalSelector = ProxySelector.getDefault();
 		ProxySelector.setDefault(new MockProxySelector());
 		try {
 			for (int i = 0; i < urlList.length; ++i) {
@@ -1205,8 +1205,7 @@ public class URLTest extends junit.framework.TestCase {
 								+ urlList[i], isSelectCalled);
 			}
 		} finally {
-			ProxySelector.setDefault(orignalSelector);
-
+			ProxySelector.setDefault(originalSelector);
 		}
 	}
     

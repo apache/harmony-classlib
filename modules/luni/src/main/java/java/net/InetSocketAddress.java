@@ -52,7 +52,7 @@ public class InetSocketAddress extends SocketAddress {
     }
 
     /*
-     * Internal contructor for InetSocketAddress(String, int) and
+     * Internal constructor for InetSocketAddress(String, int) and
      * createUnresolved(String, int);
      */
     InetSocketAddress(String host, int port, boolean needResolved) {

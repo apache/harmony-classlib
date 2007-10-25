@@ -4044,7 +4044,7 @@ static const ufchar GLYPH_LIST[64323] = {
 111,238,  1,226,251, 56,  0,  0,115,109, 97,108,236,247,230,  0,
   0,  0,  0}; 
 
-static const ufshort STANDART_ENCODING[256] = {
+static const ufshort STANDARD_ENCODING[256] = {
     0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,

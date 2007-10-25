@@ -73,7 +73,7 @@ public:
 	
 private:
 	ufshort _pointsLength;	
-    ufshort _commandLenght;	
+    ufshort _commandLength;	
 
 	ufshort pointsCount;
 	ufshort commandsCount;

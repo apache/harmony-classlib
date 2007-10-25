@@ -951,7 +951,7 @@ Java_org_apache_harmony_math_util_BigInteger_shlImpl (JNIEnv * env, jclass cls,
       shiftvalr = 64 - shiftval;
       lenR = len + newAt + 1;
 
-      /* attemp to pre-normalize */
+      /* attempt to pre-normalize */
       if (!(ar = (U_64 *) GET_ELEMENTS_CRITICAL (src)))
         goto error;
       if (shiftval == 0
@@ -1013,7 +1013,7 @@ Java_org_apache_harmony_math_util_BigInteger_shlImpl (JNIEnv * env, jclass cls,
             lenR = 1;
           else
             {
-              /* attemp to pre-normalize */
+              /* attempt to pre-normalize */
               if (!(ar = (U_64 *) GET_ELEMENTS_CRITICAL (src)))
                 goto error;
               if (shiftval != 0

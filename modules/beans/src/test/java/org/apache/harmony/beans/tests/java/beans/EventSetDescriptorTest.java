@@ -724,7 +724,7 @@ public class EventSetDescriptorTest extends TestCase {
 
         // RI reports true in the following assertion, so it returns exactly
         // the same array as it was specified in the EventSetDescriptor
-        // construtor. 
+        // constructor. 
         assertEquals(listenerMethods, esd.getListenerMethods());
 
         assertEquals(2, esd.getListenerMethodDescriptors().length);

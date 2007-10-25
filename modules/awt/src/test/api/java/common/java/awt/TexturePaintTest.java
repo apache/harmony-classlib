@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class TexturePaintTest extends TestCase {
 
-    public void testContructorBad() {
+    public void testConstructorBad() {
         // Regression HARMONY-1471
         try {
             new TexturePaint(null, new Rectangle());

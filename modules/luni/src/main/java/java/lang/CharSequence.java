@@ -27,7 +27,7 @@ public interface CharSequence {
 	/**
 	 * Answers the number of characters in the sequence.
 	 * 
-	 * @return the number of charcters in the sequence
+	 * @return the number of characters in the sequence
 	 */
 	public int length();
 

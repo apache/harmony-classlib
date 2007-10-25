@@ -16,10 +16,6 @@
  */
 package org.apache.harmony.pack200;
 
-// NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-// NOTE: Do not extract strings as messages; this code is still a
-// work-in-progress
-// NOTE: Also, don't get rid of 'else' statements for the hell of it ...
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -64,9 +60,6 @@ import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
  * In any case, if GZip decompression is being performed the input stream will
  * be buffered at a higher level, and thus this can read on a byte-oriented
  * basis.
- * 
- * @author Alex Blewitt
- * @version $Revision: $
  */
 public class Segment {
 

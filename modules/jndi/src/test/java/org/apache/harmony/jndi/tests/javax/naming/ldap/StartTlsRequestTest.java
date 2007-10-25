@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import org.apache.harmony.jndi.tests.javax.naming.spi.mock.ldap.MockStartTlsResponse;
 /**
  * <p>This Test class is testing the class StartTlsRequest in the javax.naming.ldap package.</p>
- * <p>Here in the next tables we are gonna find all methods to be tested:</p>
+ * <p>Here in the next tables we are going to find all methods to be tested:</p>
  *  <table class="t" cellspacing="0">
 	<tbody><th>Constructors:</th>
 		<tr>

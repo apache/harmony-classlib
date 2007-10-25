@@ -495,7 +495,7 @@ platformSocketOption (I_32 portableSocketOption)
  * entity, as known to the communications layer. The exact format of the addr parameter 
  * is determined by the address family established when the socket was created. 
  * @param[in] sockHandle A pointer to a hysocket_t  which will point to the newly created 
- * socket once accept returns succesfully
+ * socket once accept returns successfully
  *
  * @return 
  * \arg 0 on success
@@ -1074,7 +1074,7 @@ hysock_getaddrinfo_family (struct HyPortLibrary * portLibrary,
   OSADDRINFO *addr;
   int i;
 
-  /* If we have the IPv6 functions then we'll cast to a OSADDRINFO othewise we have a hostent */
+  /* If we have the IPv6 functions then we'll cast to a OSADDRINFO otherwise we have a hostent */
 #if defined(IPv6_FUNCTION_SUPPORT)
   addr = (OSADDRINFO *) handle->addr_info;
   for (i = 0; i < index; i++)
@@ -3983,7 +3983,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
       interfaces[counter].addresses = NULL;
     }
 #endif
-/* set up the return stucture */
+/* set up the return structure */
   array->elements = interfaces;
   array->length = numAdapters;
   /* now get the adapter information */
@@ -4406,7 +4406,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
       interfaces[counter].addresses = NULL;
     }
 #endif
-/* set up the return stucture */
+/* set up the return structure */
   array->elements = interfaces;
   array->length = numAdapters;
   lastName = NULL;
@@ -4663,7 +4663,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
       interfaces[counter].addresses = NULL;
     }
 #endif
-/* set up the return stucture */
+/* set up the return structure */
   array->elements = interfaces;
   array->length = numAdapters;
   lastName = NULL;
@@ -5025,7 +5025,7 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
             }
           /* we are done if the NLM_F_MULTI flag is not set in this header */
           *nextMessage = netlinkContext->netlinkHeader;
-          if (netlinkContext->netlinkHeader->nlmsg_flags & NLM_F_MULTI !=
+          if ((netlinkContext->netlinkHeader->nlmsg_flags & NLM_F_MULTI) !=
               NLM_F_MULTI)
             {
               netlinkContext->done = 1;

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.harmony.security.Util;
 import org.apache.harmony.security.asn1.ObjectIdentifier;
 
 /**
@@ -80,7 +81,7 @@ public class AlgNameMapper {
 
     static {
         for (String[] element : knownAlgMappings) {
-            String algUC = element[1].toUpperCase();
+            String algUC = Util.toUpperCase(element[1]);
             alg2OidMap.put(algUC, element[0]);
             oid2AlgMap.put(element[0], algUC);
             // map upper case alg name to its original name
@@ -110,7 +111,7 @@ public class AlgNameMapper {
      */
     public static String map2OID(String algName) {
         // alg2OidMap map contains upper case keys
-        return alg2OidMap.get(algName.toUpperCase());
+        return alg2OidMap.get(Util.toUpperCase(algName));
     }
 
     /**
@@ -133,7 +134,7 @@ public class AlgNameMapper {
      * @return algorithm name
      */
     public static String getStandardName(String algName) {
-        return algAliasesMap.get(algName.toUpperCase());
+        return algAliasesMap.get(Util.toUpperCase(algName));
     }
 
     // Searches given provider for mappings like
@@ -150,7 +151,7 @@ public class AlgNameMapper {
                 if (key.startsWith(keyPrfix2find)) {
                     String alias = key.substring(keyPrfix2find.length());
                     String alg = (String)me.getValue();
-                    String algUC = alg.toUpperCase();
+                    String algUC = Util.toUpperCase(alg);
                     if (isOID(alias)) {
                         if (alias.startsWith("OID.")) { //$NON-NLS-1$
                             alias = alias.substring(4);
@@ -169,8 +170,8 @@ public class AlgNameMapper {
                             algAliasesMap.put(algUC, alg);
                         }
                            // Do not override known standard names
-                    } else if (!algAliasesMap.containsKey(alias.toUpperCase())) {
-                        algAliasesMap.put(alias.toUpperCase(), alg);
+                    } else if (!algAliasesMap.containsKey(Util.toUpperCase(alias))) {
+                        algAliasesMap.put(Util.toUpperCase(alias), alg);
                     }
                 }
             }

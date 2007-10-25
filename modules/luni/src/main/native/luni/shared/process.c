@@ -16,6 +16,7 @@
  */
 
 #include "iohelp.h"
+#include "nethelp.h"
 #include "exceptions.h"
 #include "procimpl.h"
 
@@ -255,7 +256,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessInputStream_setFDImpl (JNIE
                 jobject recv,
                 jobject arg1, jlong arg2)
 {
-  setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) ((IDATA) arg2));
+  setJavaIoFileDescriptorContents (env, arg1, (void *) ((IDATA) arg2));
 }
 
 JNIEXPORT void JNICALL
@@ -263,7 +264,7 @@ Java_org_apache_harmony_luni_internal_process_ProcessOutputStream_setFDImpl (JNI
                  jobject recv,
                  jobject arg1, jlong arg2)
 {
-  setJavaIoFileDescriptorContentsAsPointer (env, arg1, (void *) ((IDATA) arg2));
+  setJavaIoFileDescriptorContents (env, arg1, (void *) ((IDATA) arg2));
 }
 
 /* Wait for the receiver to finish then return the exit value */

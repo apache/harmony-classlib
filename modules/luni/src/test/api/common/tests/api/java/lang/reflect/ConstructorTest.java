@@ -63,7 +63,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 		} catch (Exception e) {
 			fail("Exception during equals test : " + e.getMessage());
 		}
-		assertTrue("Different Contructors returned equal", !ctor1.equals(ctor2));
+		assertTrue("Different Constructors returned equal", !ctor1.equals(ctor2));
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class ConstructorTest extends junit.framework.TestCase {
 							.equals(
 									"tests.api.java.lang.reflect.ConstructorTest$ConstructorTestHelper"));
 		} catch (Exception e) {
-			fail("Exception obtaining contructor : " + e.getMessage());
+			fail("Exception obtaining constructor : " + e.getMessage());
 		}
 	}
 

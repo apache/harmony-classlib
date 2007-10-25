@@ -26,7 +26,7 @@ BUILDFILES = \
   $(SHAREDSUB)org_apache_harmony_misc_accessors_StringAccessorImpl.o
 
 ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES += $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
 MDLLIBFILES += $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \

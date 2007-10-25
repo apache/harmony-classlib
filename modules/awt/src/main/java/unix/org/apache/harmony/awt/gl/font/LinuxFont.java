@@ -57,6 +57,9 @@ public class LinuxFont extends FontPeerImpl {
 
     // X11 screen value
     private int screen = 0;
+
+    // native antialiased font handle
+    private long aaFont = 0;
     
     public LinuxFont(String fontName, int fontStyle, int fontSize) {
         /*
@@ -332,5 +335,20 @@ public class LinuxFont extends FontPeerImpl {
         }
         
         return extraMetrix;
+    }
+
+    /**
+     * Returns native font handle of this font peer. 
+     */
+    public long getFontHandle(boolean isAntialiased) {
+        if (!isAntialiased) {
+            return this.getFontHandle();
+        } else {
+            if (aaFont == 0) {
+                aaFont = LinuxNativeFont.getAntialiasedFont(
+                        pFont, this.display, true);
+            }
+            return aaFont;
+        }
     }
 }

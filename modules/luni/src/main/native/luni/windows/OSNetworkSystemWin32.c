@@ -58,7 +58,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   FD_ZERO (&fdset_write->handle);
   for (val = 0; val<countReadC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,readFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
       (*env)->DeleteLocalRef(env, gotFD);
 
 	  if (!hysock_socketIsValid (hysocketP)){
@@ -79,7 +79,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	}
   for (val = 0; val<countWriteC; val++){
 	  gotFD	= (*env)->GetObjectArrayElement(env,writeFDArray,val);
-	  hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
       (*env)->DeleteLocalRef(env, gotFD);
 
 	  if (!hysock_socketIsValid (hysocketP)){
@@ -122,7 +122,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
 	  for (val=0;val<countReadC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,readFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
         (*env)->DeleteLocalRef(env, gotFD);
 
 		if (!hysock_socketIsValid (hysocketP)){
@@ -146,7 +146,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 		
 	  for (val=0;val<countWriteC;val++){
 		gotFD =	(*env)->GetObjectArrayElement(env,writeFDArray,val);
-		hysocketP = getJavaIoFileDescriptorContentsAsPointer (env, gotFD);
+		hysocketP = getJavaIoFileDescriptorContentsAsAPointer (env, gotFD);
         (*env)->DeleteLocalRef(env, gotFD);
 
 		if (!hysock_socketIsValid (hysocketP)){

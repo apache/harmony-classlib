@@ -107,21 +107,10 @@
 
     <target name="compile-support" depends="copy-test-resources, check-support-jars"
             description="Compile the unit test source">
-        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
-            <condition>
-                <not>
-                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-                </not>
-            </condition>
-        </fail>
+        <ensure-javac/>
         <mkdir dir="${tests.support.output}" />
-        <javac 
-               destdir="${tests.support.output}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+        <hy.javac 
+               destdir="${tests.support.output}">
 
             <src path="${support.dir}/src/test/java" />
             <classpath location="${junit.jar}" />
@@ -136,7 +125,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
         
     </target>
     

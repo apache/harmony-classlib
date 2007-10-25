@@ -60,7 +60,7 @@ public interface DataProvider {
     
     public String[] getNativeFormats();
     
-    public boolean isNativeFormatAtailable(String nativeFormat);
+    public boolean isNativeFormatAvailable(String nativeFormat);
     
     public String getText();
     

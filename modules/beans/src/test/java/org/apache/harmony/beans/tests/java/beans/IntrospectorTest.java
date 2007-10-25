@@ -2302,4 +2302,33 @@ public class IntrospectorTest extends TestCase {
         }
 
     }
+
+    /*
+     * Regression test for HARMONY-4892
+     */
+    public static class MyBean {
+
+        public static String invisble;
+
+        public static String getInvisible() {
+            return invisble;
+        }
+
+        public String visible;
+
+        public String getVisible() {
+            return visible;
+        }
+
+        public void setVisible(String a) {
+            this.visible = a;
+        }
+    }
+
+    public void testPropertyDescriptors() throws IntrospectionException {
+        BeanInfo info = Introspector.getBeanInfo(MyBean.class);
+        for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
+            assertFalse(pd.getName().equals("invisible"));
+        }
+    }
 }

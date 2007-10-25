@@ -436,7 +436,7 @@ public class KeyEvent extends InputEvent {
     private int keyLocation;
 
     public static String getKeyModifiersText(int modifiers) {
-        return getKeyModifiersExText(extractExFlags(modifiers));
+        return getKeyModifiersExText(extractModifiers(modifiers));
     }
 
     static String getKeyModifiersExText(int modifiersEx) {
@@ -554,7 +554,7 @@ public class KeyEvent extends InputEvent {
                     long when, int modifiers,
                     int keyCode, char keyChar,
                     int keyLocation) {
-        super(src, id, when, modifiers);
+        super(src, id, when, extractModifiers(modifiers));
 
         if (id == KEY_TYPED) {
             if (keyCode != VK_UNDEFINED) {
@@ -598,10 +598,9 @@ public class KeyEvent extends InputEvent {
         return keyLocation;
     }
 
-    @Override
     @Deprecated
     public void setModifiers(int modifiers) {
-        super.setModifiers(modifiers);
+        this.modifiers = extractModifiers(modifiers);
     }
 
     public boolean isActionKey() {
@@ -678,4 +677,29 @@ public class KeyEvent extends InputEvent {
         return paramString;
     }
 
+    private static int extractModifiers(int modifiers) {
+        int mod = 0;
+
+        if (((modifiers & SHIFT_MASK) != 0)
+                || ((modifiers & SHIFT_DOWN_MASK) != 0)) {
+            mod |= SHIFT_MASK | SHIFT_DOWN_MASK;
+        }
+        if (((modifiers & CTRL_MASK) != 0)
+                || ((modifiers & CTRL_DOWN_MASK) != 0)) {
+            mod |= CTRL_MASK | CTRL_DOWN_MASK;
+        }
+        if (((modifiers & META_MASK) != 0)
+                || ((modifiers & META_DOWN_MASK) != 0)) {
+            mod |= META_MASK | META_DOWN_MASK;
+        }
+        if (((modifiers & ALT_MASK) != 0) || ((modifiers & ALT_DOWN_MASK) != 0)) {
+            mod |= ALT_MASK | ALT_DOWN_MASK;
+        }
+        if (((modifiers & ALT_GRAPH_MASK) != 0)
+                || ((modifiers & ALT_GRAPH_DOWN_MASK) != 0)) {
+            mod |= ALT_GRAPH_MASK | ALT_GRAPH_DOWN_MASK;
+        }
+
+        return mod;
+    }
 }

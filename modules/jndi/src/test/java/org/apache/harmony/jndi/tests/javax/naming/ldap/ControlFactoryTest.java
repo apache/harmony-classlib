@@ -29,7 +29,7 @@ import org.apache.harmony.jndi.tests.javax.naming.spi.mock.ldap.MockControl;
 
 /**
  * <p>This Test class is testing the class ControlFactory in the javax.naming.ldap package.</p>
- * <p>Here in the next tables we are gonna find all methods to be tested:</p>
+ * <p>Here in the next tables we are going to find all methods to be tested:</p>
  * <table>
  	<tbody><th>Method Summary:</th>
 	<tr><TD>Return</TD><TD>Method</TD></tr>

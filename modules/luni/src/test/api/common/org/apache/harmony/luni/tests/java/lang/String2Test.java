@@ -366,7 +366,7 @@ public class String2Test extends junit.framework.TestCase {
                     assertEquals((byte) i, result[0]);
                 } else {
                     /*
-                     * Substitue character should be 0x1A [1], but may be '?'
+                     * Substitute character should be 0x1A [1], but may be '?'
                      * character. [1]
                      * http://en.wikipedia.org/wiki/Substitute_character
                      */

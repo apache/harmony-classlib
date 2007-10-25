@@ -87,7 +87,7 @@ public class KeyManagerFactory {
     public static final KeyManagerFactory getInstance(String algorithm)
             throws NoSuchAlgorithmException {
         if (algorithm == null) {
-            throw new NullPointerException("algorith is null");
+            throw new NullPointerException("algorithm is null");
         }
         synchronized (engine) {
             engine.getInstance(algorithm, null);
@@ -127,7 +127,7 @@ public class KeyManagerFactory {
             throw new IllegalArgumentException("Provider is null");
         }
         if (algorithm == null) {
-            throw new NullPointerException("algorith is null");
+            throw new NullPointerException("algorithm is null");
         }
         synchronized (engine) {
             engine.getInstance(algorithm, provider, null);

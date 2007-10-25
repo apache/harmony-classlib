@@ -23,10 +23,8 @@
 #include "hycomp.h"
 #include "hyport.h"
 #include "hycunit.h"
+#include "utf8encode.h"
 
-#define CDEV_CURRENT_FUNCTION _prototypes_private
-encodeUTF8CharN (UDATA unicode, U_8 * result, U_32 bytesRemaining);
-#undef CDEV_CURRENT_FUNCTION
 void cleanup(HyPortLibrary hyportLibrary);
 void generateAbsoluteFilePath(struct HyPortLibrary *hyportLibrary,char *dist , char *fileName);
 void forVprintfTest(struct HyPortLibrary *hyportLibrary,IDATA fd,char* format,...);

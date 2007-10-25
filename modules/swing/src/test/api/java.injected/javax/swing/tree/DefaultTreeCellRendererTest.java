@@ -222,12 +222,12 @@ public class DefaultTreeCellRendererTest extends BasicSwingTestCase {
         renderer.getTreeCellRendererComponent(new JTree(), "value", true, true, true, 0, false);
         JLabel label = new JLabel("value", renderer.getDefaultLeafIcon(), SwingConstants.LEFT);
         label.setFont(renderer.getFont());
-        Dimension baseDimenstion = label.getPreferredSize();
+        Dimension baseDimension = label.getPreferredSize();
         if (isHarmony()) {
-            assertEquals(new Dimension(baseDimenstion.width + 2, baseDimenstion.height),
+            assertEquals(new Dimension(baseDimension.width + 2, baseDimension.height),
                     renderer.getPreferredSize());
         } else {
-            assertEquals(new Dimension(baseDimenstion.width + 3, baseDimenstion.height),
+            assertEquals(new Dimension(baseDimension.width + 3, baseDimension.height),
                     renderer.getPreferredSize());
         }
     }

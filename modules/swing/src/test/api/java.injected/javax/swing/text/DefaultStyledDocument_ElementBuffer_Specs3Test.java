@@ -115,7 +115,7 @@ public class DefaultStyledDocument_ElementBuffer_Specs3Test extends TestCase imp
 
         public void check(final Element element) {
             if (attrs == null) {
-                assertEquals("Attibute count", 0, element.getAttributes().getAttributeCount());
+                assertEquals("Attribute count", 0, element.getAttributes().getAttributeCount());
             } else {
                 assertTrue("Attributes", attrs.isEqual(element.getAttributes()));
             }

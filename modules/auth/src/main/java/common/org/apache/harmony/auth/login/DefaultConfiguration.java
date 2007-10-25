@@ -59,7 +59,7 @@ public class DefaultConfiguration extends Configuration {
             "refreshLoginConfiguration"); //$NON-NLS-1$
 
     // set of application entry
-    private Map<String, List<AppConfigurationEntry>> configutations = Collections
+    private Map<String, List<AppConfigurationEntry>> configurations = Collections
             .synchronizedMap(new HashMap<String, List<AppConfigurationEntry>>());
 
     /**
@@ -74,7 +74,7 @@ public class DefaultConfiguration extends Configuration {
     @Override
     public AppConfigurationEntry[] getAppConfigurationEntry(String applicationName) {
 
-        List<AppConfigurationEntry> list = configutations.get(applicationName);
+        List<AppConfigurationEntry> list = configurations.get(applicationName);
 
         if (list == null || list.isEmpty()) {
             return null;
@@ -89,7 +89,7 @@ public class DefaultConfiguration extends Configuration {
         if (sm != null) {
             sm.checkPermission(REFRESH_LOGIN_CONFIGURATION);
         }
-        configutations.clear();
+        configurations.clear();
 
         init();
     }
@@ -143,6 +143,6 @@ public class DefaultConfiguration extends Configuration {
                 //throw new SecurityException ("Unable to load a login configuration file");
             }
         }
-        configutations = fresh;
+        configurations = fresh;
     }
 }

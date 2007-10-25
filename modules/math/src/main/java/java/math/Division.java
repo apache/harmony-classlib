@@ -431,7 +431,7 @@ class Division {
             }
             } else {
                 
-                // Use Knuth's algorithm of sucessive subtract and shifting
+                // Use Knuth's algorithm of successive subtract and shifting
                 do {
                     Elementary.inplaceSubtract(op2, op1); // both are odd
                     BitLevel.inplaceShiftRight(op2, op2.getLowestSetBit()); // op2 is even

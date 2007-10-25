@@ -201,7 +201,7 @@ public class HashAttributeTest extends TestCase {
 
     /*
      * clear() method testing. 
-     * Test that clear() remove all values from this attribite set.
+     * Test that clear() remove all values from this attribute set.
      */
     public final void testClear() {
 
@@ -382,7 +382,7 @@ public class HashAttributeTest extends TestCase {
 
     /*
      * remove(Attribute attribute) method testing. Tests that if given attribute
-     * wasn't in attribute set than remove(Attribute attribut) returns false.
+     * wasn't in attribute set than remove(Attribute attribute) returns false.
      */
     public final void testRemove() {
 

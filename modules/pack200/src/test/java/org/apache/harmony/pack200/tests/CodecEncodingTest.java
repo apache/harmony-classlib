@@ -15,9 +15,7 @@
  *  limitations under the License.
  */
 package org.apache.harmony.pack200.tests;
-//NOTE: Do not use generics in this code; it needs to run on JVMs < 1.5
-//NOTE: Do not extract strings as messages; this code is still a work-in-progress
-//NOTE: Also, don't get rid of 'else' statements for the hell of it ...
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,11 +29,11 @@ import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
 
 /**
- * @author Alex Blewitt
- * @version $Revision: $
+ * 
  */
 public class CodecEncodingTest extends TestCase {
-	public void testCanonicalEncodings() throws IOException, Pack200Exception { 
+	
+    public void testCanonicalEncodings() throws IOException, Pack200Exception { 
 		Codec defaultCodec = new BHSDCodec(2,16,0,0);
 		assertEquals(defaultCodec,CodecEncoding.getCodec(0,null, defaultCodec));
 		Map map = new HashMap();
@@ -164,4 +162,5 @@ public class CodecEncodingTest extends TestCase {
 		assertEquals("(5,128,2,1)",CodecEncoding.getCodec(116,new ByteArrayInputStream(new byte[] { 0x25, (byte)0x7F}), null).toString());
 		assertEquals("(2,128,1,1)",CodecEncoding.getCodec(116,new ByteArrayInputStream(new byte[] { 0x0B, (byte)0x7F}), null).toString());
 	}
+    
 }

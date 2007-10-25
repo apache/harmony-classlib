@@ -69,7 +69,7 @@ public class AttributeSetUtilitiesTest extends TestCase {
         try {
             AttributeSetUtilities.
                 verifyAttributeCategory(ColorSupported.class, DocAttribute.class);
-                fail("metod doesn't throw ClassCastException " +
+                fail("method doesn't throw ClassCastException " +
                         "if object is not a Class that implements interfaceName");
         } catch (ClassCastException e) {
             //System.out.println("testVerifyAttributeCategory1 - " + e.toString());
@@ -96,7 +96,7 @@ public class AttributeSetUtilitiesTest extends TestCase {
 
     /*
      * verifyAttributeCategory(Object object, Class interfaceName) method testing. 
-     * Tests that method throws exeption if object is a Class that implements 
+     * Tests that method throws exception if object is a Class that implements 
      * interfaceName but interfaceName is not a class that implements interface
      * Attribute.
      */
@@ -108,7 +108,7 @@ public class AttributeSetUtilitiesTest extends TestCase {
         try {
             AttributeSetUtilities.
                 verifyAttributeCategory(SimpleDoc.class, Doc.class);
-            fail("metod doesn't throw ClassCastException if object " +
+            fail("method doesn't throw ClassCastException if object " +
                     "is a Class that implements interfaceName but " +
                         "interfaceName is not a class that implements " +
                             "interface Attribute");

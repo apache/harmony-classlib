@@ -46,6 +46,8 @@ public class WindowsFont extends FontPeerImpl{
     
     // table with loaded cached Glyphs
     private final Hashtable<Integer, WinGlyph> glyphs = new Hashtable<Integer, WinGlyph>();
+    // table with loaded glyph codes
+    private final Hashtable<Integer, Integer> glyphCodes = new Hashtable<Integer, Integer>();
 
     // Pairs of [begin, end],[..].. unicode ranges values 
     private int[] fontUnicodeRanges;
@@ -404,7 +406,33 @@ public class WindowsFont extends FontPeerImpl{
 
         return faceName;
     }
-    
+
+    /**
+     * Returns unicode by index from the 'cmap' table of this font.
+     */
+    @Override
+    public char getUnicodeByIndex(int glyphCode) {
+        char result;
+
+        if (glyphCodes.isEmpty()) {
+            for (int i = 0; i < fontUnicodeRanges.length - 1; i += 2) {
+                for (int j = fontUnicodeRanges[i]; j <= fontUnicodeRanges[i + 1]; j++)
+                {
+                    int code = NativeFont.getGlyphCodeNative(pFont, (char) j);
+                    glyphCodes.put(code, j);
+                }
+            }
+        }
+
+        if (glyphCodes.containsKey(glyphCode)) {
+            result = (char) glyphCodes.get(glyphCode).intValue();
+        } else {
+            result = defaultChar;
+        }
+
+        return result;
+    }
+
     /**
      * Returns initiated FontExtraMetrics instance of this WindowsFont.
      */

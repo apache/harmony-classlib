@@ -115,7 +115,7 @@ public class AbstractDocument_ListenerTest extends TestCase implements DocumentL
     }
 
     /**
-     * Helper method which constracts the array before calling its
+     * Helper method which constructs the array before calling its
      * counterpart to perform real checking.
      *
      * @param change true if changeUpdate is supposed to be called

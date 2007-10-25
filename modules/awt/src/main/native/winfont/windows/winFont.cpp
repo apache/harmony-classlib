@@ -389,7 +389,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getFontFamiliesNames(JNIEnv *env,
 * Class:     org_apache_harmony_awt_gl_font_NativeFont
 * Method:    enumSystemFonts
 * Signature: ()V;
-* Description: Sets arrays of avaliable Font data in Java.
+* Description: Sets arrays of available Font data in Java.
 */
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_enumSystemFonts(JNIEnv *env, jclass obj) {
     int i = 0;
@@ -816,7 +816,7 @@ Java_org_apache_harmony_awt_gl_font_NativeFont_getDefaultCharNative(JNIEnv *env,
 * Class:     org_apache_harmony_awt_gl_font_NativeFont
 * Method:    getFonts
 * Signature: ()[Ljava/lang/String;
-* Description: Returns array of avaliable Font Names.
+* Description: Returns array of available Font Names.
 *       !! Doesn't enumerate Type1 fonts !!
 */
 JNIEXPORT jobjectArray JNICALL Java_org_apache_harmony_awt_gl_font_NativeFont_getFonts(JNIEnv *env, jclass obj) {

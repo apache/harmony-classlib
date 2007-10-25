@@ -39,29 +39,33 @@ public final class Util {
 		if (encoding != null) {
 			try {
 				"".getBytes(encoding);
-			} catch (java.io.UnsupportedEncodingException e) {
-				encoding = null;
+            } catch (Throwable t) {
+                encoding = null;
 			}
 		}
-		defaultEncoding = encoding;
+        defaultEncoding = encoding;
 	}
 
-	public static byte[] getBytes(String name) {
+    /**
+     * Get bytes from String using default encoding; default encoding can
+     *   be changed via "os.encoding" property
+     * @param name input String
+     * @return byte array
+     */
+    public static byte[] getBytes(String name) {
 		if (defaultEncoding != null) {
 			try {
 				return name.getBytes(defaultEncoding);
 			} catch (java.io.UnsupportedEncodingException e) {
 			}
-		}
-		return name.getBytes();
+		}      
+        return name.getBytes();
 	}
     
     /**
-     * Get bytes from String with specific encoding
+     * Get bytes from String with UTF8 encoding
      * @param name
      *          input String
-     * @param encoding
-     *          specific encoding
      * @return byte array
      */
     public static byte[] getUTF8Bytes(String name) {

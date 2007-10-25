@@ -209,8 +209,8 @@ public class CpBands extends BandSet {
     private void parseCpLong(InputStream in) throws IOException,
             Pack200Exception {
         int cpLongCount = header.getCpLongCount();
-        cpLong = parseFlags("cp_Long", in, cpLongCount, new int[] { 1 },
-                Codec.UDELTA5, Codec.DELTA5)[0];
+        cpLong = parseFlags("cp_Long", in, cpLongCount,
+                Codec.UDELTA5, Codec.DELTA5);
     }
 
     /**
@@ -262,7 +262,18 @@ public class CpBands extends BandSet {
         String[] cpSignatureForm = parseReferences("cp_Signature_form", in,
                 Codec.DELTA5, cpSignatureCount, cpUTF8);
         cpSignature = new String[cpSignatureCount];
-        long last = 0;
+        int lCount = 0;
+        for (int i = 0; i < cpSignatureCount; i++) {
+            String form = cpSignatureForm[i];
+            char[] chars = form.toCharArray();
+            for (int j = 0; j < chars.length; j++) {
+                if(chars[j] == 'L') {
+                    lCount++;
+                }
+            }
+        }
+        String[] cpSignatureClasses = parseReferences("cp_Signature_classes", in, Codec.UDELTA5, lCount, cpClass);
+        int index = 0;
         for (int i = 0; i < cpSignatureCount; i++) {
             String form = cpSignatureForm[i];
             int len = form.length();
@@ -272,10 +283,10 @@ public class CpBands extends BandSet {
                 char c = form.charAt(j);
                 signature.append(c);
                 if (c == 'L') {
-                    int index = (int) (last = Codec.UDELTA5.decode(in, last));
-                    String className = cpClass[index];
+                    String className = cpSignatureClasses[index];
                     list.add(className);
                     signature.append(className);
+                    index++;
                 }
             }
             cpSignature[i] = signature.toString();

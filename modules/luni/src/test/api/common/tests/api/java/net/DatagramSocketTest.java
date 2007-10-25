@@ -1139,7 +1139,7 @@ public class DatagramSocketTest extends SocketTestCase {
 				int portNumber = Support_PortManager.getNextPortForUDP();
 				ds = new java.net.DatagramSocket(new mySocketAddress());
 				fail(
-						"No exception when constucting datagramSocket with unsupported SocketAddress type");
+						"No exception when constructing datagramSocket with unsupported SocketAddress type");
 			} catch (IllegalArgumentException e) {
 
 			}

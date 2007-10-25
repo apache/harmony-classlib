@@ -47,7 +47,7 @@ public class LookupOpTest extends TestCase {
      * Test method for 'java.awt.image.LookupOp.filter()' when src and dst have
      * different heights or widths.
      */
-    public final void test_LookupOp_filter_DifferentDimentionsTest() {
+    public final void test_LookupOp_filter_DifferentDimensionsTest() {
         // regression test for Harmony-1632
         byte[] array0 = new byte[96];
         ByteLookupTable localByteLookupTable = new ByteLookupTable(1, array0);
