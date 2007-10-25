@@ -41,7 +41,6 @@
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.orig.jar}" />
-        <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
         <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
@@ -366,10 +365,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <mkdir dir="${bcprov.dir}" />
     <download-one-file src="${bcprov.url}" dest="${bcprov.orig.jar}"
                            md5="${bcprov.md5}" />
-
-    <mkdir dir="${icu4j.dir}" />
-    <download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
-                           md5="${icu4j.md5}" />
 
     <mkdir dir="${mx4j.dir}" />
     <download-one-file src="${mx4j.url}" dest="${mx4j.zip}"
