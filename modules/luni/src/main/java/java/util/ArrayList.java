@@ -334,7 +334,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	}
 
 	private void growAtEnd(int required) {
-		int size = size();
+		int size = lastIndex - firstIndex;
 		if (firstIndex >= required - (array.length - lastIndex)) {
 			int newLast = lastIndex - firstIndex;
 			if (size > 0) {
@@ -363,7 +363,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	}
 
 	private void growAtFront(int required) {
-		int size = size();
+		int size = lastIndex - firstIndex;
 		if (array.length - lastIndex + firstIndex >= required) {
 			int newFirst = array.length - size;
 			if (size > 0) {
@@ -394,7 +394,8 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>, Cloneable,
 	}
 
 	private void growForInsert(int location, int required) {
-		int size = size(), increment = size / 2;
+		int size = lastIndex - firstIndex;
+		int increment = size / 2;
 		if (required > increment) {
             increment = required;
         }
