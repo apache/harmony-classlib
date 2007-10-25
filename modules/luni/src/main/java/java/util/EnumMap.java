@@ -23,7 +23,8 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 
 public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
-        Map<K, V>, Serializable, Cloneable {
+        Serializable, Cloneable {
+
     private static final long serialVersionUID = 458661240069192865L;
 
     private Class<K> keyType;
@@ -40,13 +41,13 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
     private transient EnumMapEntrySet<K, V> entrySet = null;
 
-    static class EnumMapEntry<K extends Enum<K>, V> extends
-            MapEntry<K, V> {
-        private final EnumMap<K, V> enumMap;
+    private static class Entry<KT extends Enum<KT>, VT> extends
+            MapEntry<KT, VT> {
+        private final EnumMap<KT, VT> enumMap;
 
         private final int ordinal;
 
-        EnumMapEntry(K theKey, V theValue, EnumMap<K, V> em) {
+        Entry(KT theKey, VT theValue, EnumMap<KT, VT> em) {
             super(theKey, theValue);
             enumMap = em;
             ordinal = ((Enum) theKey).ordinal();
@@ -60,7 +61,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             }
             boolean isEqual = false;
             if (object instanceof Map.Entry) {
-                Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
+                Map.Entry<KT, VT> entry = (Map.Entry<KT, VT>) object;
                 Object enumKey = entry.getKey();
                 if (key.equals(enumKey)) {
                     Object theValue = entry.getValue();
@@ -81,23 +82,23 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
 
         @SuppressWarnings("unchecked")
         @Override
-        public K getKey() {
+        public KT getKey() {
             checkEntryStatus();
-            return (K) enumMap.keys[ordinal];
+            return (KT) enumMap.keys[ordinal];
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public V getValue() {
+        public VT getValue() {
             checkEntryStatus();
-            return (V) enumMap.values[ordinal];
+            return (VT) enumMap.values[ordinal];
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        public V setValue(V value) {
+        public VT setValue(VT value) {
             checkEntryStatus();
-            return enumMap.put((K) enumMap.keys[ordinal], value);
+            return enumMap.put((KT) enumMap.keys[ordinal], value);
         }
 
         @Override
@@ -116,17 +117,17 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
     }
 
-    private static class EnumMapIterator<E, K extends Enum<K>, V> implements
+    private static class EnumMapIterator<E, KT extends Enum<KT>, VT> implements
             Iterator<E> {
         int position = 0;
 
         int prePosition = -1;
 
-        final EnumMap<K, V> enumMap;
+        final EnumMap<KT, VT> enumMap;
 
-        final MapEntry.Type<E, K, V> type;
+        final MapEntry.Type<E, KT, VT> type;
 
-        EnumMapIterator(MapEntry.Type<E, K, V> value, EnumMap<K, V> em) {
+        EnumMapIterator(MapEntry.Type<E, KT, VT> value, EnumMap<KT, VT> em) {
             enumMap = em;
             type = value;
         }
@@ -177,11 +178,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
     }
 
-    private static class EnumMapKeySet<K extends Enum<K>, V> extends
-            AbstractSet<K> {
-        private final EnumMap<K, V> enumMap;
+    private static class EnumMapKeySet<KT extends Enum<KT>, VT> extends
+            AbstractSet<KT> {
+        private final EnumMap<KT, VT> enumMap;
 
-        EnumMapKeySet(EnumMap<K, V> em) {
+        EnumMapKeySet(EnumMap<KT, VT> em) {
             enumMap = em;
         }
 
@@ -198,9 +199,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         @Override
         @SuppressWarnings("unchecked")
         public Iterator iterator() {
-            return new EnumMapIterator<K, K, V>(
-                    new MapEntry.Type<K, K, V>() {
-                        public K get(MapEntry<K, V> entry) {
+            return new EnumMapIterator<KT, KT, VT>(
+                    new MapEntry.Type<KT, KT, VT>() {
+                        public KT get(MapEntry<KT, VT> entry) {
                             return entry.key;
                         }
                     }, enumMap);
@@ -222,11 +223,11 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
     }
 
-    private static class EnumMapValueCollection<K extends Enum<K>, V>
-            extends AbstractCollection<V> {
-        private final EnumMap<K, V> enumMap;
+    private static class EnumMapValueCollection<KT extends Enum<KT>, VT>
+            extends AbstractCollection<VT> {
+        private final EnumMap<KT, VT> enumMap;
 
-        EnumMapValueCollection(EnumMap<K, V> em) {
+        EnumMapValueCollection(EnumMap<KT, VT> em) {
             enumMap = em;
         }
 
@@ -243,9 +244,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         @SuppressWarnings("unchecked")
         @Override
         public Iterator iterator() {
-            return new EnumMapIterator<V, K, V>(
-                    new MapEntry.Type<V, K, V>() {
-                        public V get(MapEntry<K, V> entry) {
+            return new EnumMapIterator<VT, KT, VT>(
+                    new MapEntry.Type<VT, KT, VT>() {
+                        public VT get(MapEntry<KT, VT> entry) {
                             return entry.value;
                         }
                     }, enumMap);
@@ -278,9 +279,9 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
     }
 
-    private static class EnumMapEntryIterator<E, K extends Enum<K>, V>
-            extends EnumMapIterator<E, K, V> {
-        EnumMapEntryIterator(MapEntry.Type<E, K, V> value, EnumMap<K, V> em) {
+    private static class EnumMapEntryIterator<E, KT extends Enum<KT>, VT>
+            extends EnumMapIterator<E, KT, VT> {
+        EnumMapEntryIterator(MapEntry.Type<E, KT, VT> value, EnumMap<KT, VT> em) {
             super(value, em);
         }
 
@@ -291,16 +292,16 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
                 throw new NoSuchElementException();
             }
             prePosition = position++;
-            return type.get(new EnumMapEntry<K, V>((K) enumMap.keys[prePosition],
-                    (V) enumMap.values[prePosition], enumMap));
+            return type.get(new Entry<KT, VT>((KT) enumMap.keys[prePosition],
+                    (VT) enumMap.values[prePosition], enumMap));
         }
     }
 
-    private static class EnumMapEntrySet<K extends Enum<K>, V> extends
-            AbstractSet<Map.Entry<K, V>> {
-        private final EnumMap<K, V> enumMap;
+    private static class EnumMapEntrySet<KT extends Enum<KT>, VT> extends
+            AbstractSet<Map.Entry<KT, VT>> {
+        private final EnumMap<KT, VT> enumMap;
 
-        EnumMapEntrySet(EnumMap<K, V> em) {
+        EnumMapEntrySet(EnumMap<KT, VT> em) {
             enumMap = em;
         }
 
@@ -316,7 +317,7 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
                 Object enumKey = ((Map.Entry) object).getKey();
                 Object enumValue = ((Map.Entry) object).getValue();
                 if (enumMap.containsKey(enumKey)) {
-                    V value = enumMap.get(enumKey);
+                    VT value = enumMap.get(enumKey);
                     isEqual = (value == null ? null == enumValue : value
                             .equals(enumValue));
                 }
@@ -325,10 +326,10 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         }
 
         @Override
-        public Iterator<Map.Entry<K, V>> iterator() {
-            return new EnumMapEntryIterator<Map.Entry<K, V>, K, V>(
-                    new MapEntry.Type<Map.Entry<K, V>, K, V>() {
-                        public Map.Entry<K, V> get(MapEntry<K, V> entry) {
+        public Iterator<Map.Entry<KT, VT>> iterator() {
+            return new EnumMapEntryIterator<Map.Entry<KT, VT>, KT, VT>(
+                    new MapEntry.Type<Map.Entry<KT, VT>, KT, VT>() {
+                        public Map.Entry<KT, VT> get(MapEntry<KT, VT> entry) {
                             return entry;
                         }
                     }, enumMap);
@@ -364,10 +365,10 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
                 Class<?> clazz = array.getClass().getComponentType();
                 entryArray = (Object[]) Array.newInstance(clazz, size);
             }
-            Iterator<Map.Entry<K, V>> iter = iterator();
+            Iterator<Map.Entry<KT, VT>> iter = iterator();
             for (; index < size; index++) {
-                Map.Entry<K, V> entry = iter.next();
-                entryArray[index] = new MapEntry<K, V>(entry.getKey(), entry
+                Map.Entry<KT, VT> entry = iter.next();
+                entryArray[index] = new MapEntry<KT, VT>(entry.getKey(), entry
                         .getValue());
             }
             if (index < array.length) {
