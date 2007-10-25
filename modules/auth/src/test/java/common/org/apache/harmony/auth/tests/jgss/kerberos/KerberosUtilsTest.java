@@ -18,8 +18,6 @@
 package org.apache.harmony.auth.tests.jgss.kerberos;
 
 import java.util.Date;
-import java.security.AccessControlContext;
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import javax.security.auth.Subject;
@@ -57,5 +55,12 @@ public class KerberosUtilsTest extends TestCase {
         });
         assertNotNull(tgtFromContext);
         assertEquals(tgt, tgtFromContext);
+    }
+    
+    public void testGetTGT_fromLoginContext() throws Exception {
+        final KerberosPrincipal clientPrincipal = new KerberosPrincipal(
+                "leo@EXAMPLE.COM");
+        KerberosTicket tgt = KerberosUtils.getTGT(clientPrincipal);
+        assertNull(tgt);
     }
 }

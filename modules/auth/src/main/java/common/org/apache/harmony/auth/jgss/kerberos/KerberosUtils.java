@@ -28,6 +28,7 @@ import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
+import javax.security.auth.kerberos.ServicePermission;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -86,14 +87,16 @@ public class KerberosUtils {
                         AccessControlContext acc = AccessController
                                 .getContext();
                         Subject subject = Subject.getSubject(acc);
-                        return getTicketFromSubject(subject, clientPrincipal, serverPrincipal);
+                        return getTicketFromSubject(subject, clientPrincipal,
+                                serverPrincipal);
                     }
                 }, acc);
 
     }
 
     private static KerberosTicket getTicketFromSubject(Subject subject,
-            final KerberosPrincipal clientPrincipal, final KerberosPrincipal serverPrincipal) {        
+            final KerberosPrincipal clientPrincipal,
+            final KerberosPrincipal serverPrincipal) {
         if (null == subject) {
             return null;
         }
@@ -112,7 +115,7 @@ public class KerberosUtils {
                 kerberosTickets.remove(tgt);
                 return null;
             }
-        }        
+        }
         return null;
     }
 
@@ -144,7 +147,8 @@ public class KerberosUtils {
             return null;
         }
         Subject subject = loginContext.getSubject();
-        return getTicketFromSubject(subject, clientPrincipal, getTGTServerPrincipal(clientPrincipal));       
+        return getTicketFromSubject(subject, clientPrincipal,
+                getTGTServerPrincipal(clientPrincipal));
     }
 
     private static KerberosPrincipal getTGTServerPrincipal(
@@ -159,10 +163,25 @@ public class KerberosUtils {
             tgt = getKerberosTicketFromContext(clientPrincipal,
                     getTGTServerPrincipal(clientPrincipal));
         }
-        if (null != tgt) {
-            return tgt;
+        if (null == tgt) {
+            tgt = getTGTFromLoginModule(clientPrincipal);
         }
-        return getTGTFromLoginModule(clientPrincipal);
-        //TODO CACHE : Whether should attach this tgt to the subject for current AccessControlContext?
+        if (null != tgt) {
+            checkServicePermission(tgt.getServer(), "initiate");
+            // TODO CACHE : Whether should attach this tgt to the subject for
+            // current AccessControlContext?
+        }
+        return tgt;
+    }
+
+    public static void checkServicePermission(KerberosPrincipal principal,
+            String action) {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm == null) {
+            return;
+        }
+        ServicePermission servicePermission = new ServicePermission(principal
+                .getName(), action);
+        sm.checkPermission(servicePermission);
     }
 }
