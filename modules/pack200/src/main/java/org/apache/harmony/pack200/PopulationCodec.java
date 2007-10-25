@@ -18,6 +18,7 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class PopulationCodec extends Codec {
 	private Codec favouredCodec;
@@ -91,15 +92,15 @@ public class PopulationCodec extends Codec {
 		// read favorites
 		result = tokenCodec.decode(n, in);
 		// read unfavorites
-		last = 0;
-		for(int i=0;i<n;i++) {
-			int index = (int) result[i];
-			if (index == 0) {
-				result[i] = unvafouredCodec.decode(in, last);
-			} else {
-				result[i] = favoured[index-1];
-			}
-		}
+        last = 0;
+        for(int i = 0; i < n; i++) {
+            int index = (int) result[i];
+            if (index == 0) {
+                result[i] = last = unvafouredCodec.decode(in, last);
+            } else {
+                result[i] = favoured[index-1];
+            }
+        }
 		return result;
-	}	
+    }
 }
