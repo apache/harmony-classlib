@@ -53,55 +53,38 @@ public class JarInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.jar.JarInputStream#JarInputStream(java.io.InputStream)
 	 */
-	public void test_ConstructorLjava_io_InputStream() {
+	public void test_ConstructorLjava_io_InputStream() throws Exception {
 		// Test for method java.util.jar.JarInputStream(java.io.InputStream)
-		try {
-			InputStream is = new URL(jarName).openConnection()
-					.getInputStream();
-			boolean hasCorrectEntry = false;
-			JarInputStream jis = new JarInputStream(is);
-			assertNotNull("The jar input stream should have a manifest", jis
-					.getManifest());
-			JarEntry je = jis.getNextJarEntry();
-			while (je != null) {
-				if (je.getName().equals(entryName)) {
-                    hasCorrectEntry = true;
+		InputStream is = new URL(jarName).openConnection().getInputStream();
+		boolean hasCorrectEntry = false;
+		JarInputStream jis = new JarInputStream(is);
+		assertNotNull("The jar input stream should have a manifest", jis.getManifest());
+		JarEntry je = jis.getNextJarEntry();
+		while (je != null) {
+                    if (je.getName().equals(entryName)) {
+                        hasCorrectEntry = true;
+                    }
+                    je = jis.getNextJarEntry();
                 }
-				je = jis.getNextJarEntry();
-			}
-			assertTrue(
-					"The jar input stream does not contain the correct entries",
-					hasCorrectEntry);
-		} catch (Exception e) {
-			fail("Exception during test: " + e.toString());
-		}
-
+		assertTrue("The jar input stream does not contain the correct entries",	hasCorrectEntry);
 	}
 
 	/**
 	 * @tests java.util.jar.JarInputStream#getManifest()
 	 */
-	public void test_getManifest() {
+	public void test_getManifest() throws Exception {
 		// Test for method java.util.jar.Manifest
 		// java.util.jar.JarInputStream.getManifest()
-		try {
-			Manifest m;
+		Manifest m;
+		InputStream is = new URL(jarName2).openConnection().getInputStream();
+		JarInputStream jis = new JarInputStream(is);
+		m = jis.getManifest();
+		assertNull("The jar input stream should not have a manifest", m);
 
-			InputStream is = new URL(jarName2).openConnection()
-					.getInputStream();
-			JarInputStream jis = new JarInputStream(is);
-			m = jis.getManifest();
-			assertNull("The jar input stream should not have a manifest",
-					m);
-
-			is = new URL(jarName).openConnection().getInputStream();
-			jis = new JarInputStream(is);
-			m = jis.getManifest();
-			assertNotNull("The jar input stream should have a manifest", m);
-		} catch (Exception e) {
-			fail("Exception during test: " + e.toString());
-		}
-
+		is = new URL(jarName).openConnection().getInputStream();
+		jis = new JarInputStream(is);
+		m = jis.getManifest();
+		assertNotNull("The jar input stream should have a manifest", m);
 	}
 
 	/**

@@ -131,16 +131,12 @@ public class JarFileTest extends TestCase {
 	/**
 	 * @tests java.util.jar.JarFile#getJarEntry(java.lang.String)
 	 */
-	public void test_getJarEntryLjava_lang_String() {
-		try {
-			Support_Resources.copyFile(resources, null, jarName);
-			JarFile jarFile = new JarFile(new File(resources, jarName));
-			assertEquals("Error in returned entry", 311, jarFile.getEntry(entryName)
-					.getSize());
-			jarFile.close();
-		} catch (Exception e) {
-			fail("Exception during test: " + e.toString());
-		}
+	public void test_getJarEntryLjava_lang_String() throws Exception {
+		Support_Resources.copyFile(resources, null, jarName);
+		JarFile jarFile = new JarFile(new File(resources, jarName));
+		assertEquals("Error in returned entry", 311, jarFile.getEntry(entryName)
+				.getSize());
+		jarFile.close();
 
 		// tests for signed jars
 		// test all signed jars in the /Testres/Internal/SignedJars directory
@@ -187,7 +183,7 @@ public class JarFileTest extends TestCase {
 			try {
 				File file = Support_Resources.getExternalLocalFile(jarDirUrl
 						+ "/" + jarName);
-				JarFile jarFile = new JarFile(file, true);
+				jarFile = new JarFile(file, true);
 				boolean foundCerts = false;
 				Enumeration<JarEntry> e = jarFile.entries();
 				while (e.hasMoreElements()) {
@@ -214,72 +210,58 @@ public class JarFileTest extends TestCase {
 	/**
 	 * @tests java.util.jar.JarFile#getManifest()
 	 */
-	public void test_getManifest() {
+	public void test_getManifest() throws Exception {
 		// Test for method java.util.jar.Manifest
 		// java.util.jar.JarFile.getManifest()
-		try {
-			Support_Resources.copyFile(resources, null, jarName);
-			JarFile jarFile = new JarFile(new File(resources, jarName));
-			assertNotNull("Error--Manifest not returned",
-					jarFile.getManifest());
-			jarFile.close();
-		} catch (Exception e) {
-			fail("Exception during 1st test: " + e.toString());
-		}
-		try {
-			Support_Resources.copyFile(resources, null, jarName2);
-			JarFile jarFile = new JarFile(new File(resources, jarName2));
-			assertNull("Error--should have returned null", jarFile
-					.getManifest());
-			jarFile.close();
-		} catch (Exception e) {
-			fail("Exception during 2nd test: " + e.toString());
-		}
+		Support_Resources.copyFile(resources, null, jarName);
+		JarFile jarFile = new JarFile(new File(resources, jarName));
+		assertNotNull("Error--Manifest not returned",
+				jarFile.getManifest());
+		jarFile.close();
 
-		try {
-			// jarName3 was created using the following test
-			Support_Resources.copyFile(resources, null, jarName3);
-			JarFile jarFile = new JarFile(new File(resources, jarName3));
-			assertNotNull("Should find manifest without verifying", jarFile
-					.getManifest());
-			jarFile.close();
-		} catch (Exception e) {
-			fail("Exception during 3rd test: " + e.toString());
-		}
+		Support_Resources.copyFile(resources, null, jarName2);
+                jarFile = new JarFile(new File(resources, jarName2));
+		assertNull("Error--should have returned null", jarFile
+				.getManifest());
+		jarFile.close();
 
-		try {
-			// this is used to create jarName3 used in the previous test
-			Manifest manifest = new Manifest();
-			Attributes attributes = manifest.getMainAttributes();
-			attributes.put(new Attributes.Name("Manifest-Version"), "1.0");
-			ByteArrayOutputStream manOut = new ByteArrayOutputStream();
-			manifest.write(manOut);
-			byte[] manBytes = manOut.toByteArray();
-			File file = new File(Support_PlatformFile.getNewPlatformFile(
-					"hyts_manifest1", ".jar"));
-			JarOutputStream jarOut = new JarOutputStream(new FileOutputStream(
-					file.getAbsolutePath()));
-			ZipEntry entry = new ZipEntry("META-INF/");
-			entry.setSize(0);
-			jarOut.putNextEntry(entry);
-			entry = new ZipEntry(JarFile.MANIFEST_NAME);
-			entry.setSize(manBytes.length);
-			jarOut.putNextEntry(entry);
-			jarOut.write(manBytes);
-			entry = new ZipEntry("myfile");
-			entry.setSize(1);
-			jarOut.putNextEntry(entry);
-			jarOut.write(65);
-			jarOut.close();
-			JarFile jar = new JarFile(file.getAbsolutePath(), false);
-			assertNotNull("Should find manifest without verifying", jar
-					.getManifest());
-			jar.close();
-			file.delete();
-		} catch (IOException e) {
-			fail("IOException 3");
-		}
-		try {
+		// jarName3 was created using the following test
+		Support_Resources.copyFile(resources, null, jarName3);
+		jarFile = new JarFile(new File(resources, jarName3));
+		assertNotNull("Should find manifest without verifying", jarFile
+				.getManifest());
+		jarFile.close();
+
+		// this is used to create jarName3 used in the previous test
+		Manifest manifest = new Manifest();
+		Attributes attributes = manifest.getMainAttributes();
+		attributes.put(new Attributes.Name("Manifest-Version"), "1.0");
+		ByteArrayOutputStream manOut = new ByteArrayOutputStream();
+		manifest.write(manOut);
+		byte[] manBytes = manOut.toByteArray();
+		File file = new File(Support_PlatformFile.getNewPlatformFile(
+				"hyts_manifest1", ".jar"));
+		JarOutputStream jarOut = new JarOutputStream(new FileOutputStream(
+				file.getAbsolutePath()));
+		ZipEntry entry = new ZipEntry("META-INF/");
+		entry.setSize(0);
+		jarOut.putNextEntry(entry);
+		entry = new ZipEntry(JarFile.MANIFEST_NAME);
+		entry.setSize(manBytes.length);
+		jarOut.putNextEntry(entry);
+		jarOut.write(manBytes);
+		entry = new ZipEntry("myfile");
+		entry.setSize(1);
+		jarOut.putNextEntry(entry);
+		jarOut.write(65);
+		jarOut.close();
+		JarFile jar = new JarFile(file.getAbsolutePath(), false);
+		assertNotNull("Should find manifest without verifying", jar
+				.getManifest());
+		jar.close();
+		file.delete();
+
+                try {
 			Support_Resources.copyFile(resources, null, jarName2);
 			JarFile jF = new JarFile(new File(resources, jarName2));
 			jF.close();
@@ -287,8 +269,6 @@ public class JarFileTest extends TestCase {
 		        fail("FAILED: expected IllegalStateException" ); 
 		} catch (IllegalStateException ise) {
 			//expected;
-		} catch (Exception e) {
-			fail("Exception during 4th test: " + e.toString());
 		}
 	}
 
@@ -325,46 +305,33 @@ public class JarFileTest extends TestCase {
 	/**
 	 * @tests java.util.jar.JarFile#getInputStream(java.util.zip.ZipEntry)
 	 */
-	public void test_getInputStreamLjava_util_jar_JarEntry_subtest0() {
+	public void test_getInputStreamLjava_util_jar_JarEntry_subtest0() throws Exception {
 		File signedFile = null;
-		try {
-			Support_Resources.copyFile(resources, null, jarName4);
-			signedFile = new File(resources, jarName4);
-		} catch (Exception e) {
-			fail("Failed to create local file 2: " + e);
-		}
+		Support_Resources.copyFile(resources, null, jarName4);
+		signedFile = new File(resources, jarName4);
 
-		try {
-			JarFile jar = new JarFile(signedFile);
-			JarEntry entry = new JarEntry(entryName3);
-			InputStream in = jar.getInputStream(entry);
-			in.read();
-		} catch (Exception e) {
-			fail("Exception during test 3: " + e);
-		}
+		JarFile jar = new JarFile(signedFile);
+		JarEntry entry = new JarEntry(entryName3);
+		InputStream in = jar.getInputStream(entry);
+		in.read();
 
-		try {
-			JarFile jar = new JarFile(signedFile);
-			JarEntry entry = new JarEntry(entryName3);
-			InputStream in = jar.getInputStream(entry);
-			in.read(new byte[1077]);
-			assertNull("found certificates", entry.getCertificates());
-		} catch (Exception e) {
-			fail("Exception during test 4: " + e);
-		}
+                jar = new JarFile(signedFile);
+		entry = new JarEntry(entryName3);
+		in = jar.getInputStream(entry);
+		in.read(new byte[1077]);
+		assertNull("found certificates", entry.getCertificates());
 
 		boolean exception = false;
 		try {
-			JarFile jar = new JarFile(signedFile);
-			JarEntry entry = new JarEntry(entryName3);
+			jar = new JarFile(signedFile);
+			entry = new JarEntry(entryName3);
 			entry.setSize(1076);
-			InputStream in = jar.getInputStream(entry);
+			in = jar.getInputStream(entry);
 			in.read(new byte[2048]);
 		} catch (SecurityException e) {
 			exception = true;
-		} catch (Exception e) {
-			fail("Exception during test 5: " + e);
 		}
+
 		assertTrue("Failed to throw SecurityException", exception);
 	}
 

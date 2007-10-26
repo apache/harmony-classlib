@@ -366,15 +366,9 @@ public class InflaterTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// test method of java.util.zip.inflater.Inflater()
-		try {
-			Inflater inflate = new Inflater();
-			assertNotNull("failed to create the instance of inflater",
-					inflate);
-
-		} catch (Exception e) {
-
-			assertTrue("Inflate () constructor threw an exception", true);
-		}
+		Inflater inflate = new Inflater();
+		assertNotNull("failed to create the instance of inflater",
+				inflate);
 	}
 
 	/**

@@ -126,11 +126,8 @@ public class ZipOutputStreamTest extends junit.framework.TestCase {
     public void test_setCommentLjava_lang_String() {
         // There is no way to get the comment back, so no way to determine if
         // the comment is set correct
-        try {
-            zos.setComment("test setComment");
-        } catch (Exception e) {
-            fail("Trying to set comment failed");
-        }
+        zos.setComment("test setComment");
+
         try {
             zos.setComment(new String(new byte[0xFFFF + 1]));
             fail("Comment over 0xFFFF in length should throw exception");
