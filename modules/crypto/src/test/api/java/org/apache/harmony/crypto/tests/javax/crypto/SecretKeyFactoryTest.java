@@ -381,12 +381,12 @@ public class SecretKeyFactoryTest extends TestCase {
             try {
                 skF[i].getKeySpec(secKey, null);
                 fail("getKeySpec(secKey, null): NullPointerException or InvalidKeySpecException must be thrown");
-            } catch (Exception e) {
-                if (!(e instanceof NullPointerException) &&
-                        !(e instanceof InvalidKeySpecException)) {
-                    fail("Unexpected: "+e.toString() + "was thrown");
-                }
+            } catch (InvalidKeySpecException e) {
+                // Expected
+            } catch (NullPointerException e) {
+                // Expected
             }
+                
             try {
                 Class c;
                 if (defaultAlgorithm.equals(defaultAlgorithm2)) {
