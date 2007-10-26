@@ -57,12 +57,9 @@ public class KeyStoreLoginModuleTest extends TestCase {
         Subject subject = new Subject();
         subject.setReadOnly();
         ksm.initialize(subject, null, null, options);
-        try {
-            assertFalse("Should return false if login failed or no login", ksm
-                    .abort());
-        } catch (Exception e) {
-            fail("Not any exception here");
-        }
+
+        assertFalse("Should return false if login failed or no login", ksm.abort());
+
         options.remove("keyStorePasswordURL");
         options.put("keyStorePasswordURL", KEYSTORE_FAULTPASSWORD_URL);
         subject = new Subject();
