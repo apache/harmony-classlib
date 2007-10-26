@@ -48,19 +48,11 @@ public class GridLayoutRTest extends TestCase {
     }
     
     public final void testLayoutContainer() {        
-        try {
-            layout.layoutContainer(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }
+        layout.layoutContainer(emptyContainer);
     }
     
     public void testRemoveLayoutComponent() {        
-        try {
-            layout.removeLayoutComponent(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }
+        layout.removeLayoutComponent(emptyContainer);
     }
 
 }

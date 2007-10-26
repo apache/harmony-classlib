@@ -48,27 +48,15 @@ public class FlowLayoutRTest extends TestCase {
     }
     
     public final void testLayoutContainer() {        
-        try {
-            layout.layoutContainer(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }
+        layout.layoutContainer(emptyContainer);
     }
     
     public void testSetAlignment() {
-        try {
-            layout.setAlignment(-1);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.setAlignment(-1);
     }
     
     public void testRemoveLayoutComponent() {        
-        try {
-            layout.removeLayoutComponent(null);
-        } catch (Throwable t) {
-            fail();
-        }
+        layout.removeLayoutComponent(null);
     }
 
 }
