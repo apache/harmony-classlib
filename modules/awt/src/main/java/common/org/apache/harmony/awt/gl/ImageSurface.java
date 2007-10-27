@@ -22,12 +22,14 @@
  */
 package org.apache.harmony.awt.gl;
 
+import java.awt.Rectangle;
 import java.awt.color.ColorSpace;
 import java.awt.image.BandedSampleModel;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.ComponentSampleModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.MultiPixelPackedSampleModel;
@@ -59,6 +61,8 @@ public class ImageSurface extends Surface implements DataBufferListener {
     
     private long cachedDataPtr;       // Pointer for cached Image Data
     private boolean alphaPre;         // Cached Image Data alpha premultiplied 
+    
+    AwtImageBackdoorAccessor ba = AwtImageBackdoorAccessor.getInstance();
 
     public ImageSurface(ColorModel cm, WritableRaster raster){
         this(cm, raster, Surface.getType(cm, raster));
@@ -73,12 +77,14 @@ public class ImageSurface extends Surface implements DataBufferListener {
         this.raster = raster;
         surfaceType = type;
 
-        data = AwtImageBackdoorAccessor.getInstance().
-        getData(raster.getDataBuffer());
+        DataBuffer db = raster.getDataBuffer();
+        data = ba.getData(db);
+        ba.addDataBufferListener(db, this);
         ColorSpace cs = cm.getColorSpace();
         transparency = cm.getTransparency();
         width = raster.getWidth();
         height = raster.getHeight();
+        addDirtyRegion(new Rectangle(0, 0, width, height));
 
         // For the moment we can build natively only images which have 
         // sRGB, Linear_RGB, Linear_Gray Color Space and type different
@@ -97,6 +103,7 @@ public class ImageSurface extends Surface implements DataBufferListener {
         if(type == BufferedImage.TYPE_CUSTOM){
             nativeDrawable = false;
         }
+        
     }
 
     @Override
@@ -219,6 +226,7 @@ public class ImageSurface extends Surface implements DataBufferListener {
 
     @Override
     public synchronized void dispose() {
+        ba.removeDataBufferListener(raster.getDataBuffer());
         if(surfaceDataPtr != 0L){
             dispose(surfaceDataPtr);
             surfaceDataPtr = 0L;
@@ -256,7 +264,9 @@ public class ImageSurface extends Surface implements DataBufferListener {
      */
     public void setRaster(WritableRaster r) {
         raster = r;
-        data = AwtImageBackdoorAccessor.getInstance().getData(r.getDataBuffer());
+        DataBuffer db = r.getDataBuffer();
+        data = ba.getData(db);
+        ba.addDataBufferListener(db, this);
         if (surfaceDataPtr != 0) {
             setImageSize(surfaceDataPtr, r.getWidth(), r.getHeight());
         }
@@ -313,11 +323,12 @@ public class ImageSurface extends Surface implements DataBufferListener {
             AwtImageBackdoorAccessor ba = AwtImageBackdoorAccessor.getInstance();
             ba.validate(raster.getDataBuffer());
         }
+        releaseDurtyRegions();
         
     }
     
     @Override
     public boolean invalidated(){
-        return needToRefresh;
+        return needToRefresh | dataTaken;
     }
 }

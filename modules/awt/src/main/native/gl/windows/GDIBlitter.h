@@ -38,10 +38,11 @@
 void findNonExistColor(DWORD &, DWORD *, UINT);
 BOOL isRepeatColor(UINT , DWORD *, UINT);
 
-BOOL initBlitData(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, UINT compType, 
-                                UCHAR srcConstAlpha, BLITSTRUCT *blitStruct);
 
-BOOL initBitmap(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre);
+BOOL initBlitData(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, UINT compType, 
+                                UCHAR srcConstAlpha, BLITSTRUCT *blitStruct, int *, int);
+
+BOOL initBitmap(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre, int *, int);
 
 void CompositeBlt(HDC, jint, jint, jint, jint, SURFACE_STRUCTURE *, void *, jint, jint, UINT, UCHAR, PXFORM, PXFORM);
 

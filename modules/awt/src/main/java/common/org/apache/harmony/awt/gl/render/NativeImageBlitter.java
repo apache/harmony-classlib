@@ -25,6 +25,7 @@ package org.apache.harmony.awt.gl.render;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -151,15 +152,13 @@ public class NativeImageBlitter implements Blitter {
                             dstX, dstY, dstSurfStruct, dstData,
                             width, height, bgcolor.getRGB(),
                             compType, alpha, clipRects, srcSurf.invalidated());
-                    dstSurf.invalidate();
-                    srcSurf.validate();
+                    dstSurf.addDirtyRegion(new Rectangle(dstX, dstY, width, height));
                 }else{
                     blt(srcX, srcY, srcSurfStruct, srcData,
                             dstX, dstY, dstSurfStruct, dstData,
                             width, height, compType, alpha,
                             clipRects, srcSurf.invalidated());
-                    dstSurf.invalidate();
-                    srcSurf.validate();
+                    dstSurf.addDirtyRegion(new Rectangle(dstX, dstY, width, height));
                 }
             }else if(comp instanceof XORComposite){
                 XORComposite xcomp = (XORComposite) comp;
@@ -167,8 +166,7 @@ public class NativeImageBlitter implements Blitter {
                         dstX, dstY, dstSurfStruct, dstData,
                         width, height, xcomp.getXORColor().getRGB(),
                         clipRects, srcSurf.invalidated());
-                dstSurf.invalidate();
-                srcSurf.validate();
+                dstSurf.addDirtyRegion(new Rectangle(dstX, dstY, width, height));
             }else{
                 if(srcSurf instanceof ImageSurface){
                     JavaBlitter.inst.blit(srcX, srcY, srcSurf, dstX, dstY, 
@@ -189,7 +187,6 @@ public class NativeImageBlitter implements Blitter {
                             tmpSurfStruct, tmpData, w, h, 
                             AlphaComposite.SRC_OVER,
                             1.0f, tmpClip, srcSurf.invalidated());
-                    srcSurf.validate();
                     JavaBlitter.inst.blit(srcX, srcY, tmpSurf, dstX, dstY, 
                             dstSurf, width, height,
                             comp, bgcolor, clip);

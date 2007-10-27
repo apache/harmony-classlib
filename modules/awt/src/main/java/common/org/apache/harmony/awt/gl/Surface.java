@@ -23,6 +23,7 @@
 package org.apache.harmony.awt.gl;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
@@ -90,6 +91,8 @@ public abstract class Surface implements Transparency{
     protected int transparency = OPAQUE;
     protected int width;
     protected int height;
+    
+    protected MultiRectArea dirtyRegions;
 
     /**
      * This list contains caches with the data of this surface that are valid at the moment.
@@ -171,6 +174,28 @@ public abstract class Surface implements Transparency{
     public void validate(){}
     
     public void invalidate(){}
+    
+    public void addDirtyRegion(Rectangle r){
+        if (dirtyRegions == null) {
+            dirtyRegions = new MultiRectArea(r);
+        } else {
+            Rectangle rects[] = dirtyRegions.getRectangles();
+            if (rects.length == 1){
+                if (rects[0].contains(r)) return;
+            }
+            dirtyRegions.add(r);
+        }
+        invalidate();
+    }
+    
+    public void releaseDurtyRegions(){
+        dirtyRegions = null;
+    }
+    
+    public int[] getDirtyRegions(){
+        if(dirtyRegions != null) return dirtyRegions.rect;
+        else return null;
+    }
 
     /**
      * Computation type of BufferedImage or Surface

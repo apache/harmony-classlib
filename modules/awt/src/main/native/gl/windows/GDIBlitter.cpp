@@ -39,14 +39,14 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_GDISurface_create
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDISurface_dispose
 (JNIEnv *env, jobject obj, jlong surfDataPtr){
 
-    free((void *)surfDataPtr);
+    if(surfDataPtr) free((void *)surfDataPtr);
 }
 
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
-  jint bgcolor, jint compType, jfloat alpha, jdoubleArray matrix, 
-  jintArray clip, jint numVertex, jboolean invalidated){
+  jint bgcolor, jint compType, jfloat alpha, jdoubleArray matrix, jintArray clip, 
+  jint numVertex, jboolean invalidated, jintArray dirtyRegions, jint regCount){
 
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
@@ -69,7 +69,23 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
       HBRUSH brush = CreateSolidBrush(RGB(r, g, b));
       SelectObject(tmpDC, brush);
       PatBlt(tmpDC, 0, 0, w, h, PATCOPY);
-      if(initBitmap(srcSurf, env, srcData, true)){
+      
+      int count;
+      int *regions;
+      if(dirtyRegions == 0){
+          regCount = 1;
+          regions = (int *)malloc(4 * sizeof(int));
+          regions[0] = 0;
+          regions[1] = 0;
+          regions[2] = srcSurf->width - 1;
+          regions[3] = srcSurf->height - 1;
+      } else {
+          count = regCount;
+          regions = (int *)malloc(count * sizeof(int));
+          env->GetIntArrayRegion(dirtyRegions, 1, count, regions);
+      }
+
+      if(initBitmap(srcSurf, env, srcData, true, regions, count)){
           BLENDFUNCTION bf;
           bf.AlphaFormat = AC_SRC_ALPHA;
           bf.BlendOp = AC_SRC_OVER;
@@ -184,8 +200,8 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, 
-  jint compType, jfloat alpha, jdoubleArray matrix, 
-  jintArray clip, jint numVertex, jboolean invalidated){
+  jint compType, jfloat alpha, jdoubleArray matrix, jintArray clip, 
+  jint numVertex, jboolean invalidated, jintArray dirtyRegions, jint regCount){
 
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
@@ -196,9 +212,24 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
       memset(&blitStruct, 0, sizeof(BLITSTRUCT));
 
       srcSurf->invalidated = invalidated != 0;
+      
+      int count;
+      int *regions;
+      if(dirtyRegions == 0){
+          regCount = 1;
+          regions = (int *)malloc(4 * sizeof(int));
+          regions[0] = 0;
+          regions[1] = 0;
+          regions[2] = srcSurf->width - 1;
+          regions[3] = srcSurf->height - 1;
+      } else {
+          count = regCount;
+          regions = (int *)malloc(count * sizeof(int));
+          env->GetIntArrayRegion(dirtyRegions, 1, count, regions);
+      }
 
-      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct)){
-           return;
+      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct, regions, count)){
+          return;
       }
 
       XFORM currentTransform, transform;
@@ -370,13 +401,29 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitm
 JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImage
   (JNIEnv *env, jobject obj, jint srcX, jint srcY, jlong srcSurfStruct, jobject srcData, 
   jint dstX, jint dstY, jlong dstSurfStruct, jint width, jint height, jint xorcolor, 
-  jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated){
+  jdoubleArray matrix, jintArray clip, jint numVertex, jboolean invalidated, 
+  jintArray dirtyRegions, jint regCount){
 
       SURFACE_STRUCTURE *srcSurf = (SURFACE_STRUCTURE *)srcSurfStruct;
       SURFACE_STRUCTURE *dstSurf = (SURFACE_STRUCTURE *)dstSurfStruct;
 
       srcSurf->invalidated = invalidated != 0;
-      if(!initBitmap(srcSurf, env, srcData, false)) return;
+
+      int count;
+      int *regions;
+      if(dirtyRegions == 0){
+          regCount = 1;
+          regions = (int *)malloc(4 * sizeof(int));
+          regions[0] = 0;
+          regions[1] = 0;
+          regions[2] = srcSurf->width - 1;
+          regions[3] = srcSurf->height - 1;
+      } else {
+          count = regCount;
+          regions = (int *)malloc(count * sizeof(int));
+          env->GetIntArrayRegion(dirtyRegions, 1, count, regions);
+      }
+      if(!initBitmap(srcSurf, env, srcData, true, regions, count)) return;
 
       BYTE r = (BYTE)((xorcolor >> 16) & 0xff);
       BYTE g = (BYTE)((xorcolor >> 8) & 0xff);
@@ -510,7 +557,7 @@ BOOL isRepeatColor(UINT idx, DWORD *colormap, UINT size){
  }
 
 BOOL initBlitData
-(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, UINT compType, UCHAR srcConstAlpha, BLITSTRUCT *blitStruct){
+(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, UINT compType, UCHAR srcConstAlpha, BLITSTRUCT *blitStruct, int *dirtyRegions, int regCount){
 
     switch(compType){
         case COMPOSITE_CLEAR:
@@ -527,7 +574,7 @@ BOOL initBlitData
                 return true;
             }
             if(srcSurf->invalidated || srcSurf->isAlphaPre != false){
-                if(!initBitmap(srcSurf, env, srcData, false)) return false;
+                if(!initBitmap(srcSurf, env, srcData, false, dirtyRegions, regCount)) return false;
             }
             blitStruct->blitFunctintType = BIT_BLT;
             blitStruct->rastOp = SRCCOPY;
@@ -536,7 +583,7 @@ BOOL initBlitData
         case COMPOSITE_SRC_OVER:
         case COMPOSITE_SRC_ATOP:
             if(srcSurf->invalidated || srcSurf->isAlphaPre != true){
-                if(!initBitmap(srcSurf, env, srcData, true)) return false;
+                if(!initBitmap(srcSurf, env, srcData, true, dirtyRegions, regCount)) return false;
             }
             if(srcSurf->transparency != GL_OPAQUE || srcConstAlpha != 255){
                 blitStruct->blitFunctintType = ALPHA_BLEND;
@@ -581,17 +628,23 @@ BOOL initBlitData
 }
 
 BOOL initBitmap
-(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre){
+(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre, int *dirtyRegions, int regCount){
 
     HBITMAP srcBmp = srcSurf->bitmap;
     if(!srcBmp){
         return false;
     }
-    updateCache(srcSurf, env, srcData, alphaPre);
-    if(srcSurf->isTrueColor){
-        SetDIBits(srcSurf->srcDC, srcSurf->bitmap, 0, srcSurf->height, srcSurf->bmpData, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
-    }else{
-        GdiFlush();
+    for(int i = 0; i < regCount;){
+        int x = dirtyRegions[i++];
+        int y = dirtyRegions[i++];
+        int w = dirtyRegions[i++] - x + 1;
+        int h = dirtyRegions[i++] - y + 1;
+        updateCache(srcSurf, env, srcData, alphaPre, x, y, w, h);
+        if(srcSurf->isTrueColor){
+            SetDIBits(srcSurf->srcDC, srcSurf->bitmap, srcSurf->height - y - h, h, (int *)srcSurf->bmpData + y * srcSurf->width, (BITMAPINFO *)&srcSurf->bmpInfo, DIB_RGB_COLORS);
+        }else{
+            GdiFlush();
+        }
     }
     return true;
 }

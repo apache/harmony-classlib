@@ -107,7 +107,10 @@ METHODDEF(void) gl_jpeg_skip_input_data(j_decompress_ptr cinfo, long num_bytes) 
     cinfo->src->bytes_in_buffer = (size_t) srcmgr->valid_buffer_length;
 }
 
-GLOBAL(boolean) gl_jpeg_init_source_mgr(j_decompress_ptr cinfo) {
+GLOBAL(boolean) gl_jpeg_init_source_mgr(j_decompress_ptr cinfo, int bufferSize) {
+
+  int perfBufferSize;
+
   gl_jpeg_source_mgr* mgr = (gl_jpeg_source_mgr*) cinfo->src;
   // jpeg_source_mgr fields
   mgr->base.init_source = gl_jpeg_dummy_decompress;
@@ -116,7 +119,15 @@ GLOBAL(boolean) gl_jpeg_init_source_mgr(j_decompress_ptr cinfo) {
     mgr->base.resync_to_restart = jpeg_resync_to_restart; // Use default
     mgr->base.term_source = gl_jpeg_dummy_decompress;
   
-  mgr->buffer_size = MAX_BUFFER;
+  perfBufferSize = bufferSize * 8;
+ 
+  if (perfBufferSize < MIN_BUFFER) {
+      mgr->buffer_size = MIN_BUFFER;
+  } else if (perfBufferSize > MAX_BUFFER){
+      mgr->buffer_size = MAX_BUFFER;
+  } else {
+      mgr->buffer_size = perfBufferSize;
+  }
   mgr->jpeg_buffer = malloc(mgr->buffer_size);
   if(!mgr->jpeg_buffer) {
     return FALSE;
@@ -162,7 +173,7 @@ void outOfMemory(JNIEnv *env, jobject obj, gl_decompress_struct *glDecompress) {
   throwNewExceptionByName(env, "java/lang/OutOfMemoryError", "Out of memory");
 }
 
-GLOBAL(void) gl_decompress_struct_init(gl_decompress_struct** glDecompressPtr) {
+GLOBAL(void) gl_decompress_struct_init(gl_decompress_struct** glDecompressPtr, int bufferSize) {
   gl_decompress_struct* glDecompress = *glDecompressPtr;
 
   if(glDecompress == NULL) { // Allocate new decompress struct
@@ -186,7 +197,7 @@ GLOBAL(void) gl_decompress_struct_init(gl_decompress_struct** glDecompressPtr) {
 
   // Set up source manager
   glDecompress->decompress.src = &(glDecompress->srcMgr.base);
-  if(!gl_jpeg_init_source_mgr(&glDecompress->decompress)) { // Out of memory
+  if(!gl_jpeg_init_source_mgr(&glDecompress->decompress, bufferSize)) { // Out of memory
     free(glDecompress);
     *glDecompressPtr = NULL;
     return;
@@ -314,7 +325,7 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_awt_gl_image_JpegDecoder_decod
     (gl_decompress_struct*) ((IDATA)hglDecompress);
 
   if(glDecompress == NULL) {
-    gl_decompress_struct_init(&glDecompress);
+    gl_decompress_struct_init(&glDecompress, bytesInBuffer);
     if(glDecompress == NULL) { // Out of memory
       outOfMemory(env, obj, NULL);
       return 0;
