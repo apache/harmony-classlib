@@ -108,7 +108,7 @@ public class RuntimeTest extends junit.framework.TestCase {
 			assertTrue("object memory did not grow", secondRead > firstRead);
 			assertTrue("space was not reclaimed", (r.totalMemory() - r
 					.freeMemory()) < secondRead);
-		} catch (Throwable t) {
+		} catch (OutOfMemoryError oome ) {
 			System.out.println("Out of memory during freeMemory test");
 			r.gc();
 			r.gc();

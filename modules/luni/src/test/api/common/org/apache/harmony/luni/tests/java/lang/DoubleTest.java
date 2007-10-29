@@ -1250,9 +1250,7 @@ public class DoubleTest extends TestCase {
             fail("Expected Double.valueOf(null) to throw NPE.");
         } catch (NullPointerException ex) {
             // expected
-        } catch (Throwable ex) {
-            fail("Expected Double.valueOf(null) to throw NPE not " + ex.getClass().getName());
-        }
+        } 
 
         try {
             Double.valueOf("");

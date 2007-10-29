@@ -40,57 +40,42 @@ public class FileInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileInputStream#FileInputStream(java.io.File)
 	 */
-	public void test_ConstructorLjava_io_File() {
+	public void test_ConstructorLjava_io_File() throws Exception {
 		// Test for method java.io.FileInputStream(java.io.File)
-		try {
-			java.io.File f = new java.io.File(fileName);
-			is = new java.io.FileInputStream(f);
-			is.close();
-		} catch (Exception e) {
-			fail("Failed to create FileInputStream : " + e.getMessage());
-		}
-
+                java.io.File f = new java.io.File(fileName);
+                is = new java.io.FileInputStream(f);
+                is.close();
 	}
 
 	/**
 	 * @tests java.io.FileInputStream#FileInputStream(java.io.FileDescriptor)
 	 */
-	public void test_ConstructorLjava_io_FileDescriptor() {
+	public void test_ConstructorLjava_io_FileDescriptor() throws Exception {
 		// Test for method java.io.FileInputStream(java.io.FileDescriptor)
-		try {
-			FileOutputStream fos = new FileOutputStream(fileName);
-			FileInputStream fis = new FileInputStream(fos.getFD());
-			fos.close();
-			fis.close();
-		} catch (Exception e) {
-			fail("Exception during constrcutor test: " + e.toString());
-		}
+                FileOutputStream fos = new FileOutputStream(fileName);
+                FileInputStream fis = new FileInputStream(fos.getFD());
+                fos.close();
+                fis.close();
 	}
 
 	/**
 	 * @tests java.io.FileInputStream#FileInputStream(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws Exception {
 		// Test for method java.io.FileInputStream(java.lang.String)
-		try {
-			is = new java.io.FileInputStream(fileName);
-			is.close();
-		} catch (Exception e) {
-			fail("Failed to create FileInputStream : " + e.getMessage());
-		}
+                is = new java.io.FileInputStream(fileName);
+                is.close();
 	}
 
 	/**
 	 * @tests java.io.FileInputStream#available()
 	 */
-	public void test_available() {
+	public void test_available() throws Exception {
 		// Test for method int java.io.FileInputStream.available()
 		try {
 			is = new java.io.FileInputStream(fileName);
 			assertTrue("Returned incorrect number of available bytes", is
 					.available() == fileString.length());
-		} catch (Exception e) {
-			fail("Exception during available test : " + e.getMessage());
 		} finally {
 			try {
 				is.close();
@@ -145,55 +130,41 @@ public class FileInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileInputStream#read()
 	 */
-	public void test_read() {
+	public void test_read() throws Exception {
 		// Test for method int java.io.FileInputStream.read()
-		try {
-			is = new java.io.FileInputStream(fileName);
-			int c = is.read();
-			is.close();
-			assertTrue("read returned incorrect char", c == fileString
-					.charAt(0));
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
+            is = new java.io.FileInputStream(fileName);
+            int c = is.read();
+            is.close();
+            assertTrue("read returned incorrect char", c == fileString
+                            .charAt(0));
 	}
 
 	/**
 	 * @tests java.io.FileInputStream#read(byte[])
 	 */
-	public void test_read$B() {
+	public void test_read$B() throws Exception {
 		// Test for method int java.io.FileInputStream.read(byte [])
 		byte[] buf1 = new byte[100];
-		try {
-			is = new java.io.FileInputStream(fileName);
-			is.skip(3000);
-			is.read(buf1);
-			is.close();
-			assertTrue("Failed to read correct data", new String(buf1, 0,
-					buf1.length).equals(fileString.substring(3000, 3100)));
-
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
+                is = new java.io.FileInputStream(fileName);
+                is.skip(3000);
+                is.read(buf1);
+                is.close();
+                assertTrue("Failed to read correct data", new String(buf1, 0,
+                                buf1.length).equals(fileString.substring(3000, 3100)));
 	}
 
 	/**
 	 * @tests java.io.FileInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
+	public void test_read$BII() throws Exception {
 		// Test for method int java.io.FileInputStream.read(byte [], int, int)
 		byte[] buf1 = new byte[100];
-		try {
-			is = new java.io.FileInputStream(fileName);
-			is.skip(3000);
-			is.read(buf1, 0, buf1.length);
-			is.close();
-			assertTrue("Failed to read correct data", new String(buf1, 0,
-					buf1.length).equals(fileString.substring(3000, 3100)));
-
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
+                is = new java.io.FileInputStream(fileName);
+                is.skip(3000);
+                is.read(buf1, 0, buf1.length);
+                is.close();
+                assertTrue("Failed to read correct data", new String(buf1, 0,
+                                buf1.length).equals(fileString.substring(3000, 3100)));
 	}
     
     /**
@@ -317,19 +288,15 @@ public class FileInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileInputStream#skip(long)
 	 */
-	public void test_skipJ() {
+	public void test_skipJ() throws Exception {
 		// Test for method long java.io.FileInputStream.skip(long)
 		byte[] buf1 = new byte[10];
-		try {
-			is = new java.io.FileInputStream(fileName);
-			is.skip(1000);
-			is.read(buf1, 0, buf1.length);
-			is.close();
-			assertTrue("Failed to skip to correct position", new String(buf1,
-					0, buf1.length).equals(fileString.substring(1000, 1010)));
-		} catch (Exception e) {
-			fail("Exception during skip test " + e.getMessage());
-		}
+                is = new java.io.FileInputStream(fileName);
+                is.skip(1000);
+                is.read(buf1, 0, buf1.length);
+                is.close();
+                assertTrue("Failed to skip to correct position", new String(buf1,
+                                0, buf1.length).equals(fileString.substring(1000, 1010)));
 	}
 
     /**
@@ -395,8 +362,6 @@ public class FileInputStreamTest extends junit.framework.TestCase {
             fail("IOException must be thrown if number of bytes to skip <0");
         } catch (IOException e) {
             // Expected IOException
-        } catch (Exception e) {
-            fail("IOException expected, but found: " + e.getMessage());
         }
         
         fis.close();

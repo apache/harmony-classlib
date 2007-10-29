@@ -78,7 +78,7 @@ public class ReferenceTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.ref.Reference#enqueue()
 	 */
-	public void test_general() {
+	public void test_general() throws Exception {
 		// Test the general/overall functionality of Reference.
 
 		class TestObject {
@@ -107,35 +107,27 @@ public class ReferenceTest extends junit.framework.TestCase {
 
 		Reference ref;
 
-		try {
-			Thread t = new TestThread();
-			t.start();
-			t.join();
-			System.gc();
-			System.runFinalization();
-			ref = rq.remove();
-			assertTrue("Unexpected ref1", ref == wr);
-			assertNotNull("Object not garbage collected1.", ref);
-			assertNull("Object could not be reclaimed1.", wr.get());
-		} catch (InterruptedException e) {
-			fail("InterruptedException : " + e.getMessage());
-		}
+                Thread t = new TestThread();
+                t.start();
+                t.join();
+                System.gc();
+                System.runFinalization();
+                ref = rq.remove();
+                assertTrue("Unexpected ref1", ref == wr);
+                assertNotNull("Object not garbage collected1.", ref);
+                assertNull("Object could not be reclaimed1.", wr.get());
 
-		try {
-			Thread t = new TestThread();
-			t.start();
-			t.join();
-			System.gc();
-			System.runFinalization();
-			ref = rq.poll();
-			assertTrue("Unexpected ref2", ref == wr);
-			assertNotNull("Object not garbage collected.", ref);
-			assertNull("Object could not be reclaimed.", ref.get());
-			// Reference wr so it does not get collected
-			assertNull("Object could not be reclaimed.", wr.get());
-		} catch (Exception e) {
-			fail("Exception : " + e.getMessage());
-		}
+                t = new TestThread();
+                t.start();
+                t.join();
+                System.gc();
+                System.runFinalization();
+                ref = rq.poll();
+                assertTrue("Unexpected ref2", ref == wr);
+                assertNotNull("Object not garbage collected.", ref);
+                assertNull("Object could not be reclaimed.", ref.get());
+                // Reference wr so it does not get collected
+                assertNull("Object could not be reclaimed.", wr.get());
 	}
 
 	/**

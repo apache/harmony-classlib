@@ -42,24 +42,19 @@ public class FileWriterTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileWriter#FileWriter(java.io.File)
 	 */
-	public void test_ConstructorLjava_io_File() {
+	public void test_ConstructorLjava_io_File() throws Exception {
 		// Test for method java.io.FileWriter(java.io.File)
-		try {
-			fos = new FileOutputStream(f.getPath());
-			fos.write("Test String".getBytes());
-			fos.close();
-			bw = new BufferedWriter(new FileWriter(f));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			br = new BufferedReader(new FileReader(f.getPath()));
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			assertEquals("Failed to write correct chars", " After test string", new String(buf, 0, r)
-					);
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
+                fos = new FileOutputStream(f.getPath());
+                fos.write("Test String".getBytes());
+                fos.close();
+                bw = new BufferedWriter(new FileWriter(f));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                br = new BufferedReader(new FileReader(f.getPath()));
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                assertEquals("Failed to write correct chars", " After test string", new String(buf, 0, r));
 	}
 
     /**
@@ -109,85 +104,69 @@ public class FileWriterTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileWriter#FileWriter(java.io.FileDescriptor)
 	 */
-	public void test_ConstructorLjava_io_FileDescriptor() {
+	public void test_ConstructorLjava_io_FileDescriptor() throws Exception {
 		// Test for method java.io.FileWriter(java.io.FileDescriptor)
-		try {
-			fos = new FileOutputStream(f.getPath());
-			fos.write("Test String".getBytes());
-			fos.close();
-			fis = new FileInputStream(f.getPath());
-			br = new BufferedReader(new FileReader(fis.getFD()));
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			fis.close();
-			assertTrue("Failed to write correct chars: "
-					+ new String(buf, 0, r), new String(buf, 0, r)
-					.equals("Test String"));
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
+                fos = new FileOutputStream(f.getPath());
+                fos.write("Test String".getBytes());
+                fos.close();
+                fis = new FileInputStream(f.getPath());
+                br = new BufferedReader(new FileReader(fis.getFD()));
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                fis.close();
+                assertTrue("Failed to write correct chars: "
+                                + new String(buf, 0, r), new String(buf, 0, r)
+                                .equals("Test String"));
 	}
 
 	/**
 	 * @tests java.io.FileWriter#FileWriter(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws Exception {
 		// Test for method java.io.FileWriter(java.lang.String)
-		try {
-			fos = new FileOutputStream(f.getPath());
-			fos.write("Test String".getBytes());
-			fos.close();
-			bw = new BufferedWriter(new FileWriter(f.getPath()));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			br = new BufferedReader(new FileReader(f.getPath()));
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			assertEquals("Failed to write correct chars", " After test string", new String(buf, 0, r)
-					);
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
+                fos = new FileOutputStream(f.getPath());
+                fos.write("Test String".getBytes());
+                fos.close();
+                bw = new BufferedWriter(new FileWriter(f.getPath()));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                br = new BufferedReader(new FileReader(f.getPath()));
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                assertEquals("Failed to write correct chars", " After test string", new String(buf, 0, r));
 	}
 
 	/**
 	 * @tests java.io.FileWriter#FileWriter(java.lang.String, boolean)
 	 */
-	public void test_ConstructorLjava_lang_StringZ() {
+	public void test_ConstructorLjava_lang_StringZ() throws Exception {
 		// Test for method java.io.FileWriter(java.lang.String, boolean)
-
-		try {
-			fos = new FileOutputStream(f.getPath());
-			fos.write("Test String".getBytes());
-			fos.close();
-			bw = new BufferedWriter(new FileWriter(f.getPath(), true));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			br = new BufferedReader(new FileReader(f.getPath()));
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			assertEquals("Failed to append to file", "Test String After test string", new String(buf, 0, r)
-					);
-
-			fos = new FileOutputStream(f.getPath());
-			fos.write("Test String".getBytes());
-			fos.close();
-			bw = new BufferedWriter(new FileWriter(f.getPath(), false));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			br = new BufferedReader(new FileReader(f.getPath()));
-			buf = new char[100];
-			r = br.read(buf);
-			br.close();
-			assertEquals("Failed to overwrite file", " After test string", new String(buf, 0, r)
-					);
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
-
+                fos = new FileOutputStream(f.getPath());
+                fos.write("Test String".getBytes());
+                fos.close();
+                bw = new BufferedWriter(new FileWriter(f.getPath(), true));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                br = new BufferedReader(new FileReader(f.getPath()));
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                assertEquals("Failed to append to file", "Test String After test string", new String(buf, 0, r)
+                                );
+    
+                fos = new FileOutputStream(f.getPath());
+                fos.write("Test String".getBytes());
+                fos.close();
+                bw = new BufferedWriter(new FileWriter(f.getPath(), false));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                br = new BufferedReader(new FileReader(f.getPath()));
+                buf = new char[100];
+                r = br.read(buf);
+                br.close();
+                assertEquals("Failed to overwrite file", " After test string", new String(buf, 0, r));
 	}
 
 	/**

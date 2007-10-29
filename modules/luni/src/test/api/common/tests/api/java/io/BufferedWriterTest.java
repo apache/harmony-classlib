@@ -111,51 +111,39 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.BufferedWriter#flush()
 	 */
-	public void test_flush() {
+	public void test_flush() throws Exception {
 		// Test for method void java.io.BufferedWriter.flush()
-		try {
-			bw.write("This should not cause a flush");
-			assertTrue("Bytes written without flush", sw.toString().equals(""));
-			bw.flush();
-			assertEquals("Bytes not flushed", 
-					"This should not cause a flush", sw.toString());
-		} catch (Exception e) {
-			fail("Exception during flush test");
-		}
+                bw.write("This should not cause a flush");
+                assertTrue("Bytes written without flush", sw.toString().equals(""));
+                bw.flush();
+                assertEquals("Bytes not flushed", 
+                                "This should not cause a flush", sw.toString());
 	}
 
 	/**
 	 * @tests java.io.BufferedWriter#newLine()
 	 */
-	public void test_newLine() {
+	public void test_newLine() throws Exception {
 		// Test for method void java.io.BufferedWriter.newLine()
-		try {
-			String separator = System.getProperty("line.separator");
-			bw.write("Hello");
-			bw.newLine();
-			bw.write("World");
-			bw.flush();
-			assertTrue("Incorrect string written: " + sw.toString(), sw
-					.toString().equals("Hello" + separator + "World"));
-		} catch (Exception e) {
-			fail("Exception during write test");
-		}
+                String separator = System.getProperty("line.separator");
+                bw.write("Hello");
+                bw.newLine();
+                bw.write("World");
+                bw.flush();
+                assertTrue("Incorrect string written: " + sw.toString(), sw
+                                .toString().equals("Hello" + separator + "World"));
 	}
 
 	/**
 	 * @tests java.io.BufferedWriter#write(char[], int, int)
 	 */
-	public void test_write$CII() {
+	public void test_write$CII() throws Exception {
 		// Test for method void java.io.BufferedWriter.write(char [], int, int)
-		try {
-			char[] testCharArray = testString.toCharArray();
-			bw.write(testCharArray, 500, 1000);
-			bw.flush();
-			assertTrue("Incorrect string written", sw.toString().equals(
-					testString.substring(500, 1500)));
-		} catch (Exception e) {
-			fail("Exception during write test");
-		}
+                char[] testCharArray = testString.toCharArray();
+                bw.write(testCharArray, 500, 1000);
+                bw.flush();
+                assertTrue("Incorrect string written", sw.toString().equals(
+                                testString.substring(500, 1500)));
 	}
 	
 	/**
@@ -219,32 +207,24 @@ public class BufferedWriterTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.BufferedWriter#write(int)
 	 */
-	public void test_writeI() {
+	public void test_writeI() throws Exception {
 		// Test for method void java.io.BufferedWriter.write(int)
-		try {
-			bw.write('T');
-			assertTrue("Char written without flush", sw.toString().equals(""));
-			bw.flush();
-			assertEquals("Incorrect char written", "T", sw.toString());
-		} catch (Exception e) {
-			fail("Exception during write test");
-		}
+		bw.write('T');
+                    assertTrue("Char written without flush", sw.toString().equals(""));
+                    bw.flush();
+                    assertEquals("Incorrect char written", "T", sw.toString());
 	}
 
 	/**
 	 * @tests java.io.BufferedWriter#write(java.lang.String, int, int)
 	 */
-	public void test_writeLjava_lang_StringII() {
+	public void test_writeLjava_lang_StringII() throws Exception {
 		// Test for method void java.io.BufferedWriter.write(java.lang.String,
 		// int, int)
-		try {
-			bw.write(testString);
-			bw.flush();
-			assertTrue("Incorrect string written", sw.toString().equals(
-					testString));
-		} catch (Exception e) {
-			fail("Exception during write test");
-		}
+                bw.write(testString);
+                bw.flush();
+                assertTrue("Incorrect string written", sw.toString().equals(
+                                testString));
 	}
 	
 	/**

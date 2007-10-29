@@ -57,7 +57,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.NetworkInterface#getInetAddresses()
 	 */
-	public void test_getInetAddresses() {
+	public void test_getInetAddresses() throws Exception {
 
 		// security manager that allows us to check that we only return the
 		// addresses that we should
@@ -215,30 +215,22 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			// validate that we can get the interface by specifying the address.
 			// This is to be compatible
 			for (int i = 0; i < notOkAddresses.size(); i++) {
-				try {
-					assertNotNull(
-							"validate we cannot get the NetworkInterface with an address for which we have no privs",
-							NetworkInterface
-									.getByInetAddress((InetAddress) notOkAddresses
-											.get(i)));
-				} catch (Exception e) {
-					fail("get NetworkInterface for address with no perm - exception");
-				}
+                                assertNotNull(
+                                                "validate we cannot get the NetworkInterface with an address for which we have no privs",
+                                                NetworkInterface
+                                                                .getByInetAddress((InetAddress) notOkAddresses
+                                                                                .get(i)));
 			}
 
 			// validate that we can get the network interface for the good
 			// addresses
-			try {
-				for (int i = 0; i < okAddresses.size(); i++) {
-					assertNotNull(
-							"validate we cannot get the NetworkInterface with an address fro which we have no privs",
-							NetworkInterface
-									.getByInetAddress((InetAddress) okAddresses
-											.get(i)));
-				}
-			} catch (Exception e) {
-				fail("get NetworkInterface for address with perm - exception");
-			}
+                        for (int i = 0; i < okAddresses.size(); i++) {
+                                assertNotNull(
+                                                "validate we cannot get the NetworkInterface with an address fro which we have no privs",
+                                                NetworkInterface
+                                                                .getByInetAddress((InetAddress) okAddresses
+                                                                                .get(i)));
+                        }
 
 			System.setSecurityManager(null);
 		}
@@ -266,38 +258,25 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.NetworkInterface#getByName(java.lang.String)
 	 */
-	public void test_getByNameLjava_lang_String() {
+	public void test_getByNameLjava_lang_String() throws Exception {
 		try {
 			assertNull("validate null handled ok",
                                    NetworkInterface.getByName(null));
 			fail("getByName did not throw NullPointerException for null argument");
 		} catch (NullPointerException e) {
-		} catch (Exception e) {
-			fail("getByName, null inetAddress - raised exception : "
-					+ e.getMessage());
-		}
+		} 
 
-		try {
-			assertNull("validate handled ok if we ask for name not associated with any interface",
-                                   NetworkInterface.getByName("8not a name4"));
-		} catch (Exception e) {
-			fail("getByName, unknown inetAddress - raised exception : "
-					+ e.getMessage());
-		}
+		assertNull("validate handled ok if we ask for name not associated with any interface",
+                                  NetworkInterface.getByName("8not a name4"));
 
 		// for each address in an interface validate that we get the right
 		// interface for that name
 		if (atLeastOneInterface) {
 			String theName = networkInterface1.getName();
 			if (theName != null) {
-				try {
-					assertTrue(
-							"validate that Interface can be obtained with its name",
-							NetworkInterface.getByName(theName).equals(
-									networkInterface1));
-				} catch (Exception e) {
-					fail("validate to get network interface using name - socket exception");
-				}
+                                assertTrue("validate that Interface can be obtained with its name",
+                                                NetworkInterface.getByName(theName).equals(
+                                                                networkInterface1));
 			}
 		}
 
@@ -306,14 +285,9 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		if (atLeastTwoInterfaces) {
 			String theName = networkInterface2.getName();
 			if (theName != null) {
-				try {
-					assertTrue(
-							"validate that Interface can be obtained with its name",
-							NetworkInterface.getByName(theName).equals(
-									networkInterface2));
-				} catch (Exception e) {
-					fail("validate to get network interface using name - socket exception");
-				}
+				assertTrue("validate that Interface can be obtained with its name",
+                                                NetworkInterface.getByName(theName).equals(
+                                                                networkInterface2));
 			}
 		}
 	}
@@ -321,7 +295,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.NetworkInterface#getByInetAddress(java.net.InetAddress)
 	 */
-	public void test_getByInetAddressLjava_net_InetAddress() {
+	public void test_getByInetAddressLjava_net_InetAddress() throws Exception {
 
 		byte addressBytes[] = new byte[4];
 		addressBytes[0] = 0;
@@ -335,18 +309,11 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 			fail("should not get here if getByInetAddress throws "
 					+ "NullPointerException if null passed in");
 		} catch (NullPointerException e) {
-		} catch (Exception e) {
-			fail("getByInetAddress, null inetAddress should have raised NPE"
-					+ " but instead threw a : " + e.getMessage());
 		}
 
-		try {
-			assertNull("validate handled ok if we ask for address not associated with any interface",
-                                   NetworkInterface.getByInetAddress(InetAddress
-							.getByAddress(addressBytes)));
-		} catch (Exception e) {
-			fail("getByInetAddress, unknown inetAddress threw exception : " + e);
-		}
+                assertNull("validate handled ok if we ask for address not associated with any interface",
+                           NetworkInterface.getByInetAddress(InetAddress
+                                                .getByAddress(addressBytes)));
 
 		// for each address in an interface validate that we get the right
 		// interface for that address
@@ -356,15 +323,9 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 				while (addresses.hasMoreElements()) {
 					InetAddress theAddress = (InetAddress) addresses
 							.nextElement();
-					try {
-						assertTrue(
-								"validate that Interface can be obtained with any one of its addresses",
-								NetworkInterface.getByInetAddress(theAddress)
-										.equals(networkInterface1));
-					} catch (Exception e) {
-						fail("validate to get address using inetAddress " +
-								"threw exception : " + e);
-					}
+                                        assertTrue("validate that Interface can be obtained with any one of its addresses",
+                                                        NetworkInterface.getByInetAddress(theAddress)
+                                                                        .equals(networkInterface1));
 				}
 			}
 		}
@@ -377,15 +338,9 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 				while (addresses.hasMoreElements()) {
 					InetAddress theAddress = (InetAddress) addresses
 							.nextElement();
-					try {
-						assertTrue(
-								"validate that Interface can be obtained with any one of its addresses",
-								NetworkInterface.getByInetAddress(theAddress)
-										.equals(networkInterface2));
-					} catch (Exception e) {
-						fail("validate to get address using inetAddress "
-								+ "threw exception : " + e);
-					}
+                                        assertTrue("validate that Interface can be obtained with any one of its addresses",
+                                                        NetworkInterface.getByInetAddress(theAddress)
+                                                                        .equals(networkInterface2));
 				}
 			}
 		}
@@ -394,16 +349,11 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.NetworkInterface#getNetworkInterfaces()
 	 */
-	public void test_getNetworkInterfaces() {
+	public void test_getNetworkInterfaces() throws Exception {
 
 		// really this is tested by all of the other calls but just make sure we
 		// can call it and get a list of interfaces if they exist
-		try {
-			Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
-		} catch (Exception e) {
-			fail("get Network Interfaces - raised exception : "
-					+ e.getMessage());
-		}
+		Enumeration theInterfaces = NetworkInterface.getNetworkInterfaces();
 	}
 
 	/**

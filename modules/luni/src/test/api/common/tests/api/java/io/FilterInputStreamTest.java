@@ -40,14 +40,10 @@ public class FilterInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FilterInputStream#available()
 	 */
-	public void test_available() {
+	public void test_available() throws Exception {
 		// Test for method int java.io.FilterInputStream.available()
-		try {
-			assertTrue("Returned incorrect number of available bytes", is
-					.available() == fileString.length());
-		} catch (Exception e) {
-			fail("Exception during available test : " + e.getMessage());
-		}
+		assertTrue("Returned incorrect number of available bytes", is
+				.available() == fileString.length());
 	}
 
 	/**
@@ -88,47 +84,35 @@ public class FilterInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FilterInputStream#read()
 	 */
-	public void test_read() {
+	public void test_read() throws Exception {
 		// Test for method int java.io.FilterInputStream.read()
-		try {
-			int c = is.read();
-			assertTrue("read returned incorrect char", c == fileString
-					.charAt(0));
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
+		int c = is.read();
+		assertTrue("read returned incorrect char", c == fileString
+				.charAt(0));
 	}
 
 	/**
 	 * @tests java.io.FilterInputStream#read(byte[])
 	 */
-	public void test_read$B() {
+	public void test_read$B() throws Exception {
 		// Test for method int java.io.FilterInputStream.read(byte [])
 		byte[] buf1 = new byte[100];
-		try {
-			is.read(buf1);
-			assertTrue("Failed to read correct data", new String(buf1, 0,
-					buf1.length).equals(fileString.substring(0, 100)));
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
+		is.read(buf1);
+		assertTrue("Failed to read correct data", new String(buf1, 0,
+				buf1.length).equals(fileString.substring(0, 100)));
 	}
 
 	/**
 	 * @tests java.io.FilterInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
+	public void test_read$BII() throws Exception {
 		// Test for method int java.io.FilterInputStream.read(byte [], int, int)
 		byte[] buf1 = new byte[100];
-		try {
-			is.skip(3000);
-			is.mark(1000);
-			is.read(buf1, 0, buf1.length);
-			assertTrue("Failed to read correct data", new String(buf1, 0,
-					buf1.length).equals(fileString.substring(3000, 3100)));
-		} catch (Exception e) {
-			fail("Exception during read test : " + e.getMessage());
-		}
+		is.skip(3000);
+		is.mark(1000);
+		is.read(buf1, 0, buf1.length);
+		assertTrue("Failed to read correct data", new String(buf1, 0,
+				buf1.length).equals(fileString.substring(3000, 3100)));
 	}
 
 	/**
@@ -147,17 +131,14 @@ public class FilterInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FilterInputStream#skip(long)
 	 */
-	public void test_skipJ() {
+	public void test_skipJ() throws Exception {
 		// Test for method long java.io.FilterInputStream.skip(long)
 		byte[] buf1 = new byte[10];
-		try {
-			is.skip(1000);
-			is.read(buf1, 0, buf1.length);
-			assertTrue("Failed to skip to correct position", new String(buf1,
-					0, buf1.length).equals(fileString.substring(1000, 1010)));
-		} catch (Exception e) {
-			fail("Exception during skip test");
-		}
+
+                is.skip(1000);
+                is.read(buf1, 0, buf1.length);
+                assertTrue("Failed to skip to correct position", new String(buf1,
+                                0, buf1.length).equals(fileString.substring(1000, 1010)));
 	}
 
 	/**

@@ -153,7 +153,7 @@ public class InvocationTargetExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.InvocationTargetException#getTargetException()
 	 */
-	public void test_getTargetException() {
+	public void test_getTargetException() throws Exception {
 		// Test for method java.lang.Throwable
 		// java.lang.reflect.InvocationTargetException.getTargetException()
 		try {
@@ -166,9 +166,8 @@ public class InvocationTargetExceptionTest extends junit.framework.TestCase {
 			assertTrue("Returned incorrect target exception", e
 					.getTargetException() instanceof NullPointerException);
 			return;
-		} catch (Exception e) {
-			fail("Exception during constructor test : " + e.getMessage());
-		}
+		} 
+
 		fail("Failed to throw exception");
 	}
 
@@ -178,22 +177,18 @@ public class InvocationTargetExceptionTest extends junit.framework.TestCase {
 	public void test_printStackTrace() {
 		// Test for method void
 		// java.lang.reflect.InvocationTargetException.printStackTrace()
-		try {
-			ByteArrayOutputStream bao = new ByteArrayOutputStream();
-			PrintStream ps = new PrintStream(bao);
-			PrintStream oldErr = System.err;
-			System.setErr(ps);
-			InvocationTargetException ite = new InvocationTargetException(null);
-			ite.printStackTrace();
-			System.setErr(oldErr);
+                ByteArrayOutputStream bao = new ByteArrayOutputStream();
+                PrintStream ps = new PrintStream(bao);
+                PrintStream oldErr = System.err;
+                System.setErr(ps);
+                InvocationTargetException ite = new InvocationTargetException(null);
+                ite.printStackTrace();
+                System.setErr(oldErr);
 
-			String s = new String(bao.toByteArray());
+                String s = new String(bao.toByteArray());
 
-			assertTrue("Incorrect Stack trace: " + s, s != null
-					&& s.length() > 300);
-		} catch (Exception e) {
-			fail("printStackTrace() caused exception : " + e.getMessage());
-		}
+                assertTrue("Incorrect Stack trace: " + s, s != null
+                                && s.length() > 300);
 	}
 
 	/**
@@ -219,35 +214,30 @@ public class InvocationTargetExceptionTest extends junit.framework.TestCase {
 	public void test_printStackTraceLjava_io_PrintWriter() {
 		// Test for method void
 		// java.lang.reflect.InvocationTargetException.printStackTrace(java.io.PrintWriter)
-		try {
-			PrintWriter pw;
-			InvocationTargetException ite;
-			String s;
-			CharArrayWriter caw = new CharArrayWriter();
-			pw = new PrintWriter(caw);
-			ite = new InvocationTargetException(new InvocationTargetException(
-					null));
-			ite.printStackTrace(pw);
+                PrintWriter pw;
+                InvocationTargetException ite;
+                String s;
+                CharArrayWriter caw = new CharArrayWriter();
+                pw = new PrintWriter(caw);
+                ite = new InvocationTargetException(new InvocationTargetException(
+                                null));
+                ite.printStackTrace(pw);
 
-			s = caw.toString();
-			assertTrue("printStackTrace failed." + s.length(), s != null
-					&& s.length() > 400);
-			pw.close();
+                s = caw.toString();
+                assertTrue("printStackTrace failed." + s.length(), s != null
+                                && s.length() > 400);
+                pw.close();
 
-			ByteArrayOutputStream bao = new ByteArrayOutputStream();
-			pw = new PrintWriter(bao);
-			ite = new InvocationTargetException(new InvocationTargetException(
-					null));
-			ite.printStackTrace(pw);
+                ByteArrayOutputStream bao = new ByteArrayOutputStream();
+                pw = new PrintWriter(bao);
+                ite = new InvocationTargetException(new InvocationTargetException(
+                                null));
+                ite.printStackTrace(pw);
 
-			pw.flush(); // Test will fail if this line removed.
-			s = bao.toString();
-			assertTrue("printStackTrace failed." + s.length(), s != null
-					&& s.length() > 400);
-
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                pw.flush(); // Test will fail if this line removed.
+                s = bao.toString();
+                assertTrue("printStackTrace failed." + s.length(), s != null
+                                && s.length() > 400);
 	}
 
 	/**

@@ -31,12 +31,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		int[] x = { 1 };
 		Object ret = null;
 		boolean thrown = false;
-		try {
-			ret = Array.get(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value",
+		ret = Array.get(x, 0);
+
+                assertEquals("Get returned incorrect value",
 				1, ((Integer) ret).intValue());
 		try {
 			ret = Array.get(new Object(), 0);
@@ -68,12 +65,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		boolean[] x = { true };
 		boolean ret = false;
 		boolean thrown = false;
-		try {
-			ret = Array.getBoolean(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertTrue("Get returned incorrect value", ret);
+		ret = Array.getBoolean(x, 0);
+
+                assertTrue("Get returned incorrect value", ret);
 		try {
 			ret = Array.getBoolean(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -104,12 +98,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		byte[] x = { 1 };
 		byte ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getByte(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret);
+		ret = Array.getByte(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret);
 		try {
 			ret = Array.getByte(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -140,12 +131,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		char[] x = { 1 };
 		char ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getChar(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret);
+		ret = Array.getChar(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret);
 		try {
 			ret = Array.getChar(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -176,12 +164,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		double[] x = { 1 };
 		double ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getDouble(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret, 0.0);
+		ret = Array.getDouble(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret, 0.0);
 		try {
 			ret = Array.getDouble(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -213,12 +198,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		float[] x = { 1 };
 		float ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getFloat(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret, 0.0);
+		ret = Array.getFloat(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret, 0.0);
 		try {
 			ret = Array.getFloat(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -249,12 +231,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		int[] x = { 1 };
 		int ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getInt(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret);
+		ret = Array.getInt(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret);
 		try {
 			ret = Array.getInt(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -305,12 +284,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		long[] x = { 1 };
 		long ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getLong(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret);
+		ret = Array.getLong(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret);
 		try {
 			ret = Array.getLong(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -341,12 +317,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		short[] x = { 1 };
 		short ret = 0;
 		boolean thrown = false;
-		try {
-			ret = Array.getShort(x, 0);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ret);
+		ret = Array.getShort(x, 0);
+
+                assertEquals("Get returned incorrect value", 1, ret);
 		try {
 			ret = Array.getShort(new Object(), 0);
 		} catch (IllegalArgumentException e) {
@@ -403,12 +376,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// int, java.lang.Object)
 		int[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.set(x, 0, new Integer(1));
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, ((Integer) Array.get(x, 0))
+		Array.set(x, 0, new Integer(1));
+
+                assertEquals("Get returned incorrect value", 1, ((Integer) Array.get(x, 0))
 				.intValue());
 		try {
 			Array.set(new Object(), 0, new Object());
@@ -449,12 +419,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setBoolean(java.lang.Object, int, boolean)
 		boolean[] x = { false };
 		boolean thrown = false;
-		try {
-			Array.setBoolean(x, 0, true);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertTrue("Failed to set correct value", Array.getBoolean(x, 0));
+		Array.setBoolean(x, 0, true);
+
+                assertTrue("Failed to set correct value", Array.getBoolean(x, 0));
 		try {
 			Array.setBoolean(new Object(), 0, false);
 		} catch (IllegalArgumentException e) {
@@ -484,12 +451,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setByte(java.lang.Object, int, byte)
 		byte[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.setByte(x, 0, (byte) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getByte(x, 0));
+		Array.setByte(x, 0, (byte) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getByte(x, 0));
 		try {
 			Array.setByte(new Object(), 0, (byte) 9);
 		} catch (IllegalArgumentException e) {
@@ -519,12 +483,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setChar(java.lang.Object, int, char)
 		char[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.setChar(x, 0, (char) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getChar(x, 0));
+		Array.setChar(x, 0, (char) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getChar(x, 0));
 		try {
 			Array.setChar(new Object(), 0, (char) 9);
 		} catch (IllegalArgumentException e) {
@@ -554,12 +515,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setDouble(java.lang.Object, int, double)
 		double[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.setDouble(x, 0, (double) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getDouble(x, 0), 0.0);
+		Array.setDouble(x, 0, (double) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getDouble(x, 0), 0.0);
 		try {
 			Array.setDouble(new Object(), 0, (double) 9);
 		} catch (IllegalArgumentException e) {
@@ -589,12 +547,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setFloat(java.lang.Object, int, float)
 		float[] x = { 0.0f };
 		boolean thrown = false;
-		try {
-			Array.setFloat(x, 0, (float) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getFloat(x, 0), 0.0);
+		Array.setFloat(x, 0, (float) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getFloat(x, 0), 0.0);
 		try {
 			Array.setFloat(new Object(), 0, (float) 9);
 		} catch (IllegalArgumentException e) {
@@ -624,12 +579,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// int, int)
 		int[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.setInt(x, 0, (int) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getInt(x, 0));
+		Array.setInt(x, 0, (int) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getInt(x, 0));
 		try {
 			Array.setInt(new Object(), 0, (int) 9);
 		} catch (IllegalArgumentException e) {
@@ -659,12 +611,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setLong(java.lang.Object, int, long)
 		long[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.setLong(x, 0, (long) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getLong(x, 0));
+		Array.setLong(x, 0, (long) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getLong(x, 0));
 		try {
 			Array.setLong(new Object(), 0, (long) 9);
 		} catch (IllegalArgumentException e) {
@@ -694,12 +643,9 @@ public class ArrayTest extends junit.framework.TestCase {
 		// java.lang.reflect.Array.setShort(java.lang.Object, int, short)
 		short[] x = { 0 };
 		boolean thrown = false;
-		try {
-			Array.setShort(x, 0, (short) 1);
-		} catch (Exception e) {
-			fail("Exception during get test : " + e.getMessage());
-		}
-		assertEquals("Get returned incorrect value", 1, Array.getShort(x, 0));
+		Array.setShort(x, 0, (short) 1);
+
+                assertEquals("Get returned incorrect value", 1, Array.getShort(x, 0));
 		try {
 			Array.setShort(new Object(), 0, (short) 9);
 		} catch (IllegalArgumentException e) {

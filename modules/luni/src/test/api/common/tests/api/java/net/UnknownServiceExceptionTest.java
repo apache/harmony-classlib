@@ -25,16 +25,15 @@ public class UnknownServiceExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.UnknownServiceException#UnknownServiceException()
 	 */
-	public void test_Constructor() {
+	public void test_Constructor() throws Exception {
 		// Test for method java.net.UnknownServiceException()
 		try {
 			new URL("file://moo.txt").openConnection().getOutputStream();
 		} catch (UnknownServiceException e) {
 			// correct
 			return;
-		} catch (Exception e) {
-			fail("Wrong exception during test : " + e.getMessage());
-		}
+		} 
+
 		fail("Exception not thrown");
 	}
 

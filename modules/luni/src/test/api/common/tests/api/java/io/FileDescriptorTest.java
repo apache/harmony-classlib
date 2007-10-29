@@ -78,21 +78,16 @@ public class FileDescriptorTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileDescriptor#valid()
 	 */
-	public void test_valid() {
+	public void test_valid() throws Exception {
 		// Test for method boolean java.io.FileDescriptor.valid()
-		try {
-			f = new File(System.getProperty("user.dir"), "fd.tst");
-			f.delete();
-			os = new BufferedOutputStream(fos = new FileOutputStream(f
-					.getPath()), 4096);
-			FileDescriptor fd = fos.getFD();
-			assertTrue("Valid fd returned false", fd.valid());
-			os.close();
-			assertTrue("Invalid fd returned true", !fd.valid());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-
+                f = new File(System.getProperty("user.dir"), "fd.tst");
+                f.delete();
+                os = new BufferedOutputStream(fos = new FileOutputStream(f
+                                .getPath()), 4096);
+                FileDescriptor fd = fos.getFD();
+                assertTrue("Valid fd returned false", fd.valid());
+                os.close();
+                assertTrue("Invalid fd returned true", !fd.valid());
 	}
 
 	/**

@@ -298,19 +298,15 @@ public class DataOutputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.DataOutputStream#writeUTF(java.lang.String)
 	 */
-	public void test_writeUTFLjava_lang_String() {
+	public void test_writeUTFLjava_lang_String() throws Exception {
 		// Test for method void
 		// java.io.DataOutputStream.writeUTF(java.lang.String)
-		try {
-			os.writeUTF(unihw);
-			os.close();
-			openDataInputStream();
-			assertTrue("Failed to write string in UTF format",
-					dis.available() == unihw.length() + 2);
-			assertTrue("Incorrect string returned", dis.readUTF().equals(unihw));
-		} catch (Exception e) {
-			fail("Exception during writeUTF" + e.getMessage());
-		}
+                os.writeUTF(unihw);
+                os.close();
+                openDataInputStream();
+                assertTrue("Failed to write string in UTF format",
+                                dis.available() == unihw.length() + 2);
+                assertTrue("Incorrect string returned", dis.readUTF().equals(unihw));
 	}
 
 	private void openDataInputStream() throws IOException {

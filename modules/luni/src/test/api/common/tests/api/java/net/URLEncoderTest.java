@@ -33,16 +33,13 @@ public class URLEncoderTest extends junit.framework.TestCase {
 		final String URL = "http://" + Support_Configuration.HomeAddress;
 		final String URL2 = "telnet://justWantToHaveFun.com:400";
 		final String URL3 = "file://myServer.org/a file with spaces.jpg";
-		try {
-			assertTrue("1. Incorrect encoding/decoding", URLDecoder.decode(
-					URLEncoder.encode(URL)).equals(URL));
-			assertTrue("2. Incorrect encoding/decoding", URLDecoder.decode(
-					URLEncoder.encode(URL2)).equals(URL2));
-			assertTrue("3. Incorrect encoding/decoding", URLDecoder.decode(
-					URLEncoder.encode(URL3)).equals(URL3));
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+
+                assertTrue("1. Incorrect encoding/decoding", URLDecoder.decode(
+                                URLEncoder.encode(URL)).equals(URL));
+                assertTrue("2. Incorrect encoding/decoding", URLDecoder.decode(
+                                URLEncoder.encode(URL2)).equals(URL2));
+                assertTrue("3. Incorrect encoding/decoding", URLDecoder.decode(
+                                URLEncoder.encode(URL3)).equals(URL3));
 	}
 
 	/**

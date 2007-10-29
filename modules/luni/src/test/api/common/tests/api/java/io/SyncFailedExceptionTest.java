@@ -27,21 +27,20 @@ public class SyncFailedExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.SyncFailedException#SyncFailedException(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws Exception {
 		// Test for method java.io.SyncFailedException(java.lang.String)
-		File f = null;
-		try {
-			f = new File(System.getProperty("user.dir"), "synfail.tst");
-			FileOutputStream fos = new FileOutputStream(f.getPath());
-			FileDescriptor fd = fos.getFD();
-			fos.close();
-			fd.sync();
+                File f = null;
+                try {
+                    f = new File(System.getProperty("user.dir"), "synfail.tst");
+                    FileOutputStream fos = new FileOutputStream(f.getPath());
+                    FileDescriptor fd = fos.getFD();
+                    fos.close();
+                    fd.sync();
 		} catch (SyncFailedException e) {
 			f.delete();
 			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+		} 
+
 		fail("Failed to generate expected Exception");
 	}
 

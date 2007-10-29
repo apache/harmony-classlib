@@ -31,744 +31,686 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.Inet6Address#isMulticastAddress()
 	 */
-	public void test_isMulticastAddress() {
+	public void test_isMulticastAddress() throws Exception {
 
 		String addrName = "";
 		InetAddress addr = null;
 
-		try {
+                // IP V6 regular multicast and non-multicast tests
+                //
+                // Create 2 IP v6 addresses and call "isMulticastAddress()"
+                // A prefix of "11111111" means that the address is multicast
+                // The first one will be one with the prefix the second without
 
-			// IP V6 regular multicast and non-multicast tests
-			//
-			// Create 2 IP v6 addresses and call "isMulticastAddress()"
-			// A prefix of "11111111" means that the address is multicast
-			// The first one will be one with the prefix the second without
+                addrName = "FFFF::42:42"; // 11111111 = FFFF
+                addr = InetAddress.getByName(addrName);
+                assertTrue("Multicast address " + addrName + " not detected.", addr
+                                .isMulticastAddress());
 
-			addrName = "FFFF::42:42"; // 11111111 = FFFF
-			addr = InetAddress.getByName(addrName);
-			assertTrue("Multicast address " + addrName + " not detected.", addr
-					.isMulticastAddress());
+                addrName = "42::42:42"; // an non-multicast address
+                addr = InetAddress.getByName(addrName);
+                assertTrue("Non multicast address " + addrName
+                                + " reporting as a multicast address.", !addr
+                                .isMulticastAddress());
 
-			addrName = "42::42:42"; // an non-multicast address
-			addr = InetAddress.getByName(addrName);
-			assertTrue("Non multicast address " + addrName
-					+ " reporting as a multicast address.", !addr
-					.isMulticastAddress());
+                // IPv4-compatible IPv6 address tests
+                //
+                // Now create 2 IP v6 addresses that are IP v4 compatable
+                // to IP v6 addresses. The address prefix for a multicast ip v4
+                // address is 1110 for the last 16 bits ::d.d.d.d
+                // We expect these to be false
 
-			// IPv4-compatible IPv6 address tests
-			//
-			// Now create 2 IP v6 addresses that are IP v4 compatable
-			// to IP v6 addresses. The address prefix for a multicast ip v4
-			// address is 1110 for the last 16 bits ::d.d.d.d
-			// We expect these to be false
+                addrName = "::224.42.42.42"; // an ipv4 multicast addr 1110 = 224
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 compatable address " + addrName
+                                + " reported incorrectly as multicast.", !addr
+                                .isMulticastAddress());
 
-			addrName = "::224.42.42.42"; // an ipv4 multicast addr 1110 = 224
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 compatable address " + addrName
-					+ " reported incorrectly as multicast.", !addr
-					.isMulticastAddress());
+                addrName = "::42.42.42.42"; // an ipv4 non-multicast address
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 compatable address " + addrName
+                                + " reported incorrectly as multicast.", !addr
+                                .isMulticastAddress());
 
-			addrName = "::42.42.42.42"; // an ipv4 non-multicast address
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 compatable address " + addrName
-					+ " reported incorrectly as multicast.", !addr
-					.isMulticastAddress());
+                // IPv4-mapped IPv6 address tests
+                //
+                // Now create 2 IP v6 addresses that are IP v4 compatable
+                // to IP v6 addresses. The address prefix for a multicast ip v4
+                // address is 1110 for the last 16 bits ::FFFF:d.d.d.d
 
-			// IPv4-mapped IPv6 address tests
-			//
-			// Now create 2 IP v6 addresses that are IP v4 compatable
-			// to IP v6 addresses. The address prefix for a multicast ip v4
-			// address is 1110 for the last 16 bits ::FFFF:d.d.d.d
+                addrName = "::FFFF:224.42.42.42"; // an ipv4 multicast addr 1110 =
+                // 224
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-mapped IPv6 multicast address " + addrName
+                                + " not detected.", addr.isMulticastAddress());
 
-			addrName = "::FFFF:224.42.42.42"; // an ipv4 multicast addr 1110 =
-			// 224
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-mapped IPv6 multicast address " + addrName
-					+ " not detected.", addr.isMulticastAddress());
-
-			addrName = "::FFFF:42.42.42.42"; // an ipv4 non-multicast address
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-mapped IPv6 non-multicast address " + addrName
-					+ " reporting as a multicast address.", !addr
-					.isMulticastAddress());
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "::FFFF:42.42.42.42"; // an ipv4 non-multicast address
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-mapped IPv6 non-multicast address " + addrName
+                                + " reporting as a multicast address.", !addr
+                                .isMulticastAddress());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isAnyLocalAddress()
 	 */
-	public void test_isAnyLocalAddress() {
+	public void test_isAnyLocalAddress() throws Exception {
 
 		String addrName = "";
 		InetAddress addr = null;
 
-		try {
+                // test to ensure that the unspecified address returns tru
+                addrName = "::0"; // The unspecified address
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "The unspecified (also known as wildcard and any local address) "
+                                                + addrName + " not detected.", addr
+                                                .isAnyLocalAddress());
 
-			// test to ensure that the unspecified address returns tru
-			addrName = "::0"; // The unspecified address
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"The unspecified (also known as wildcard and any local address) "
-							+ addrName + " not detected.", addr
-							.isAnyLocalAddress());
+                addrName = "::"; // another form of the unspecified address
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "The unspecified (also known as wildcard and any local address) "
+                                                + addrName + " not detected.", addr
+                                                .isAnyLocalAddress());
 
-			addrName = "::"; // another form of the unspecified address
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"The unspecified (also known as wildcard and any local address) "
-							+ addrName + " not detected.", addr
-							.isAnyLocalAddress());
-
-			addrName = "::1"; // The loopback address
-			addr = InetAddress.getByName(addrName);
-			assertTrue("The addresses " + addrName
-					+ " incorrectly reporting an the unspecified address.",
-					!addr.isAnyLocalAddress());
-
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "::1"; // The loopback address
+                addr = InetAddress.getByName(addrName);
+                assertTrue("The addresses " + addrName
+                                + " incorrectly reporting an the unspecified address.",
+                                !addr.isAnyLocalAddress());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isLoopbackAddress()
 	 */
-	public void test_isLoopbackAddress() {
+	public void test_isLoopbackAddress() throws Exception {
 
 		String addrName = "";
-		try {
+                // IP V6 regular address tests for loopback
+                // The loopback address for IPv6 is ::1
 
-			// IP V6 regular address tests for loopback
-			// The loopback address for IPv6 is ::1
+                addrName = "::1";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 loopback address " + addrName + " not detected.",
+                                addr.isLoopbackAddress());
 
-			addrName = "::1";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 loopback address " + addrName + " not detected.",
-					addr.isLoopbackAddress());
+                addrName = "::2";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address incorrectly " + addrName
+                                + " detected as a loopback address.", !addr
+                                .isLoopbackAddress());
 
-			addrName = "::2";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address incorrectly " + addrName
-					+ " detected as a loopback address.", !addr
-					.isLoopbackAddress());
+                // a loopback address should be 127.d.d.d
+                addrName = "42:42::42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address incorrectly " + addrName
+                                + " detected as a loopback address.", !addr
+                                .isLoopbackAddress());
 
-			// a loopback address should be 127.d.d.d
-			addrName = "42:42::42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address incorrectly " + addrName
-					+ " detected as a loopback address.", !addr
-					.isLoopbackAddress());
+                // IPv4-compatible IPv6 address tests
+                //
+                // Now create 2 IP v6 addresses that are IP v4 compatable
+                // to IP v6 addresses. The address prefix for a multicast ip v4
+                // address is 1110 for the last 16 bits ::d.d.d.d
+                // We expect these to be false, as they are not IPv4 addresses
 
-			// IPv4-compatible IPv6 address tests
-			//
-			// Now create 2 IP v6 addresses that are IP v4 compatable
-			// to IP v6 addresses. The address prefix for a multicast ip v4
-			// address is 1110 for the last 16 bits ::d.d.d.d
-			// We expect these to be false, as they are not IPv4 addresses
+                // a loopback address should be 127.d.d.d
+                addrName = "::127.0.0.0"; 
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-compatible IPv6 address " + addrName
+                                + " detected incorrectly as a loopback.", !addr
+                                .isLoopbackAddress());
 
-			// a loopback address should be 127.d.d.d
-			addrName = "::127.0.0.0"; 
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-compatible IPv6 address " + addrName
-					+ " detected incorrectly as a loopback.", !addr
-					.isLoopbackAddress());
+                addrName = "::127.42.42.42"; // a loopback address should be
+                // 127.d.d.d
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-compatible IPv6 address " + addrName
+                                + " detected incorrectly as a loopback.", !addr
+                                .isLoopbackAddress());
 
-			addrName = "::127.42.42.42"; // a loopback address should be
-			// 127.d.d.d
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-compatible IPv6 address " + addrName
-					+ " detected incorrectly as a loopback.", !addr
-					.isLoopbackAddress());
+                // a loopback address should be 127.d.d.d
+                addrName = "::42.42.42.42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-compatible IPv6 address " + addrName
+                                + " detected incorrectly as a loopback.", !addr
+                                .isLoopbackAddress());
 
-			// a loopback address should be 127.d.d.d
-			addrName = "::42.42.42.42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-compatible IPv6 address " + addrName
-					+ " detected incorrectly as a loopback.", !addr
-					.isLoopbackAddress());
+                // IPv4-mapped IPv6 address tests
+                //
+                // Now create 2 IP v6 addresses that are IP v4 compatable
+                // to IP v6 addresses. The address prefix for a multicast ip v4
+                // address is 1110 for the last 16 bits ::FFFF:d.d.d.d
 
-			// IPv4-mapped IPv6 address tests
-			//
-			// Now create 2 IP v6 addresses that are IP v4 compatable
-			// to IP v6 addresses. The address prefix for a multicast ip v4
-			// address is 1110 for the last 16 bits ::FFFF:d.d.d.d
+                // a loopback address should be 127.d.d.d
+                addrName = "::FFFF:127.0.0.0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-compatible IPv6 loopback address " + addrName
+                                + " not detected.", addr.isLoopbackAddress());
 
-			// a loopback address should be 127.d.d.d
-			addrName = "::FFFF:127.0.0.0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-compatible IPv6 loopback address " + addrName
-					+ " not detected.", addr.isLoopbackAddress());
+                // a loopback address should be 127.d.d.d
+                addrName = "::FFFF:127.42.42.42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-compatible IPv6 loopback address " + addrName
+                                + " not detected.", addr.isLoopbackAddress());
 
-			// a loopback address should be 127.d.d.d
-			addrName = "::FFFF:127.42.42.42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-compatible IPv6 loopback address " + addrName
-					+ " not detected.", addr.isLoopbackAddress());
-
-			// a loopback address should be 127.d.d.d
-			addrName = "::FFFF:42.42.42.42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4-compatible IPv6 address incorrectly " + addrName
-					+ " detected as a loopback address.", !addr
-					.isLoopbackAddress());
-
-		} catch (UnknownHostException e) {
-			fail("Unknown address : " + addrName);
-		}
+                // a loopback address should be 127.d.d.d
+                addrName = "::FFFF:42.42.42.42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4-compatible IPv6 address incorrectly " + addrName
+                                + " detected as a loopback address.", !addr
+                                .isLoopbackAddress());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isLinkLocalAddress()
 	 */
-	public void test_isLinkLocalAddress() {
+	public void test_isLinkLocalAddress() throws Exception {
 
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for link local addresses
-			//
-			// Link local addresses are FE80:: -
-			// FEBF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
+                // IP V6 regular address tests for link local addresses
+                //
+                // Link local addresses are FE80:: -
+                // FEBF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
 
-			addrName = "FE80::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 link local address " + addrName + " not detected.",
-					addr.isLinkLocalAddress());
+                addrName = "FE80::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 link local address " + addrName + " not detected.",
+                                addr.isLinkLocalAddress());
 
-			addrName = "FEBF::FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 link local address " + addrName + " not detected.",
-					addr.isLinkLocalAddress());
+                addrName = "FEBF::FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 link local address " + addrName + " not detected.",
+                                addr.isLinkLocalAddress());
 
-			addrName = "FEC0::1";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address " + addrName
-					+ " detected incorrectly as a link local address.", !addr
-					.isLinkLocalAddress());
+                addrName = "FEC0::1";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address " + addrName
+                                + " detected incorrectly as a link local address.", !addr
+                                .isLinkLocalAddress());
 
-			addrName = "FD80::1:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address " + addrName
-					+ " detected incorrectly as a link local address.", !addr
-					.isLinkLocalAddress());
+                addrName = "FD80::1:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address " + addrName
+                                + " detected incorrectly as a link local address.", !addr
+                                .isLinkLocalAddress());
 
-			addrName = "FE7F::FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address " + addrName
-					+ " detected incorrectly as a link local address.", !addr
-					.isLinkLocalAddress());
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
-
+                addrName = "FE7F::FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address " + addrName
+                                + " detected incorrectly as a link local address.", !addr
+                                .isLinkLocalAddress());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isSiteLocalAddress()
 	 */
-	public void test_isSiteLocalAddress() {
+	public void test_isSiteLocalAddress() throws Exception {
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for link local addresses
-			//
-			// Link local addresses are FEC0::0 through to
-			// FEFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
 
-			addrName = "FEC0::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 site local address " + addrName + " not detected.",
-					addr.isSiteLocalAddress());
+                // IP V6 regular address tests for link local addresses
+                //
+                // Link local addresses are FEC0::0 through to
+                // FEFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
 
-			addrName = "FEFF::FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 site local address " + addrName + " not detected.",
-					addr.isSiteLocalAddress());
+                addrName = "FEC0::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 site local address " + addrName + " not detected.",
+                                addr.isSiteLocalAddress());
 
-			addrName = "FEBF::FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address " + addrName
-					+ " detected incorrectly as a site local address.", !addr
-					.isSiteLocalAddress());
+                addrName = "FEFF::FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 site local address " + addrName + " not detected.",
+                                addr.isSiteLocalAddress());
 
-			addrName = "FFC0::0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 address " + addrName
-					+ " detected incorrectly as a site local address.", !addr
-					.isSiteLocalAddress());
+                addrName = "FEBF::FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address " + addrName
+                                + " detected incorrectly as a site local address.", !addr
+                                .isSiteLocalAddress());
 
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "FFC0::0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 address " + addrName
+                                + " detected incorrectly as a site local address.", !addr
+                                .isSiteLocalAddress());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isMCGlobal()
 	 */
-	public void test_isMCGlobal() {
+	public void test_isMCGlobal() throws Exception {
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for Mulitcase Global addresses
-			//
-			// Multicast global addresses are FFxE:/112 where x is
-			// a set of flags, and the addition 112 bits make up
-			// the global address space
+                // IP V6 regular address tests for Mulitcase Global addresses
+                //
+                // Multicast global addresses are FFxE:/112 where x is
+                // a set of flags, and the addition 112 bits make up
+                // the global address space
 
-			addrName = "FF0E::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 global mutlicast address " + addrName
-					+ " not detected.", addr.isMCGlobal());
+                addrName = "FF0E::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 global mutlicast address " + addrName
+                                + " not detected.", addr.isMCGlobal());
 
-			addrName = "FF0E:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 global multicast address " + addrName
-					+ " not detected.", addr.isMCGlobal());
+                addrName = "FF0E:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 global multicast address " + addrName
+                                + " not detected.", addr.isMCGlobal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFFE::0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 global mutlicast address " + addrName
-					+ " not detected.", addr.isMCGlobal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFFE::0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 global mutlicast address " + addrName
+                                + " not detected.", addr.isMCGlobal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFFE:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 global multicast address " + addrName
-					+ " not detected.", addr.isMCGlobal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFFE:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 global multicast address " + addrName
+                                + " not detected.", addr.isMCGlobal());
 
-			// a sample MC organizational address
-			addrName = "FF08:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast organizational " + addrName
-					+ " incorrectly indicated as a global address.", !addr
-					.isMCGlobal());
+                // a sample MC organizational address
+                addrName = "FF08:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast organizational " + addrName
+                                + " incorrectly indicated as a global address.", !addr
+                                .isMCGlobal());
 
-			// a sample MC site address
-			addrName = "FF05:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast site address " + addrName
-					+ " incorrectly indicated as a global address.", !addr
-					.isMCGlobal());
+                // a sample MC site address
+                addrName = "FF05:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast site address " + addrName
+                                + " incorrectly indicated as a global address.", !addr
+                                .isMCGlobal());
 
-			// a sample MC link address
-			addrName = "FF02:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast link address " + addrName
-					+ " incorrectly indicated as a global address.", !addr
-					.isMCGlobal());
+                // a sample MC link address
+                addrName = "FF02:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast link address " + addrName
+                                + " incorrectly indicated as a global address.", !addr
+                                .isMCGlobal());
 
-			// a sample MC Node
-			addrName = "FF01:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast node address " + addrName
-					+ " incorrectly indicated as a global address.", !addr
-					.isMCGlobal());
+                // a sample MC Node
+                addrName = "FF01:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast node address " + addrName
+                                + " incorrectly indicated as a global address.", !addr
+                                .isMCGlobal());
 
-			// IPv4-mapped IPv6 address tests
-			addrName = "::FFFF:224.0.1.0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 global multicast address " + addrName
-					+ " not identified as a global multicast address.", addr
-					.isMCGlobal());
+                // IPv4-mapped IPv6 address tests
+                addrName = "::FFFF:224.0.1.0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 global multicast address " + addrName
+                                + " not identified as a global multicast address.", addr
+                                .isMCGlobal());
 
-			addrName = "::FFFF:238.255.255.255";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 global multicast address " + addrName
-					+ " not identified as a global multicast address.", addr
-					.isMCGlobal());
-
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "::FFFF:238.255.255.255";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 global multicast address " + addrName
+                                + " not identified as a global multicast address.", addr
+                                .isMCGlobal());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isMCNodeLocal()
 	 */
-	public void test_isMCNodeLocal() {
+	public void test_isMCNodeLocal() throws Exception {
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for Mulitcase node local addresses
-			//
-			// Multicast node local addresses are FFx1:/112 where x is
-			// a set of flags, and the addition 112 bits make up
-			// the global address space
+                // IP V6 regular address tests for Mulitcase node local addresses
+                //
+                // Multicast node local addresses are FFx1:/112 where x is
+                // a set of flags, and the addition 112 bits make up
+                // the global address space
 
-			addrName = "FF01::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 node-local mutlicast address " + addrName
-					+ " not detected.", addr.isMCNodeLocal());
+                addrName = "FF01::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 node-local mutlicast address " + addrName
+                                + " not detected.", addr.isMCNodeLocal());
 
-			addrName = "FF01:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 node-local multicast address " + addrName
-					+ " not detected.", addr.isMCNodeLocal());
+                addrName = "FF01:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 node-local multicast address " + addrName
+                                + " not detected.", addr.isMCNodeLocal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF1::0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 node-local mutlicast address " + addrName
-					+ " not detected.", addr.isMCNodeLocal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF1::0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 node-local mutlicast address " + addrName
+                                + " not detected.", addr.isMCNodeLocal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF1:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 node-local multicast address " + addrName
-					+ " not detected.", addr.isMCNodeLocal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF1:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 node-local multicast address " + addrName
+                                + " not detected.", addr.isMCNodeLocal());
 
-			// a sample MC organizational address
-			addrName = "FF08:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast organizational address " + addrName
-					+ " incorrectly indicated as a node-local address.", !addr
-					.isMCNodeLocal());
+                // a sample MC organizational address
+                addrName = "FF08:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast organizational address " + addrName
+                                + " incorrectly indicated as a node-local address.", !addr
+                                .isMCNodeLocal());
 
-			// a sample MC site address
-			addrName = "FF05:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast site address " + addrName
-					+ " incorrectly indicated as a node-local address.", !addr
-					.isMCNodeLocal());
+                // a sample MC site address
+                addrName = "FF05:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast site address " + addrName
+                                + " incorrectly indicated as a node-local address.", !addr
+                                .isMCNodeLocal());
 
-			// a sample MC link address
-			addrName = "FF02:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast link address " + addrName
-					+ " incorrectly indicated as a node-local address.", !addr
-					.isMCNodeLocal());
+                // a sample MC link address
+                addrName = "FF02:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast link address " + addrName
+                                + " incorrectly indicated as a node-local address.", !addr
+                                .isMCNodeLocal());
 
-			// a sample MC global address
-			addrName = "FF0E:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 mulitcast node address " + addrName
-					+ " incorrectly indicated as a node-local address.", !addr
-					.isMCNodeLocal());
-
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                // a sample MC global address
+                addrName = "FF0E:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 mulitcast node address " + addrName
+                                + " incorrectly indicated as a node-local address.", !addr
+                                .isMCNodeLocal());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isMCLinkLocal()
 	 */
-	public void test_isMCLinkLocal() {
+	public void test_isMCLinkLocal() throws Exception {
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for Mulitcase link local addresses
-			//
-			// Multicast link local addresses are FFx2:/112 where x is
-			// a set of flags, and the addition 112 bits make up
-			// the global address space
+                // IP V6 regular address tests for Mulitcase link local addresses
+                //
+                // Multicast link local addresses are FFx2:/112 where x is
+                // a set of flags, and the addition 112 bits make up
+                // the global address space
 
-			addrName = "FF02::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 link local multicast address " + addrName
-					+ " not detected.", addr.isMCLinkLocal());
+                addrName = "FF02::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 link local multicast address " + addrName
+                                + " not detected.", addr.isMCLinkLocal());
 
-			addrName = "FF02:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 link local multicast address " + addrName
-					+ " not detected.", addr.isMCLinkLocal());
+                addrName = "FF02:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 link local multicast address " + addrName
+                                + " not detected.", addr.isMCLinkLocal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF2::0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 link local multicast address " + addrName
-					+ " not detected.", addr.isMCLinkLocal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF2::0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 link local multicast address " + addrName
+                                + " not detected.", addr.isMCLinkLocal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF2:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 link local multicast address " + addrName
-					+ " not detected.", addr.isMCLinkLocal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF2:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 link local multicast address " + addrName
+                                + " not detected.", addr.isMCLinkLocal());
 
-			// a sample MC organizational address
-			addrName = "FF08:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 organization multicast address "
-							+ addrName
-							+ " incorrectly indicated as a link-local mulitcast address.",
-					!addr.isMCLinkLocal());
+                // a sample MC organizational address
+                addrName = "FF08:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 organization multicast address "
+                                                + addrName
+                                                + " incorrectly indicated as a link-local mulitcast address.",
+                                !addr.isMCLinkLocal());
 
-			// a sample MC site address
-			addrName = "FF05:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 site-local mulitcast address "
-							+ addrName
-							+ " incorrectly indicated as a link-local mulitcast address.",
-					!addr.isMCLinkLocal());
+                // a sample MC site address
+                addrName = "FF05:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 site-local mulitcast address "
+                                                + addrName
+                                                + " incorrectly indicated as a link-local mulitcast address.",
+                                !addr.isMCLinkLocal());
 
-			// a sample MC global address
-			addrName = "FF0E:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 global multicast address "
-							+ addrName
-							+ " incorrectly indicated as a link-local mulitcast address.",
-					!addr.isMCLinkLocal());
+                // a sample MC global address
+                addrName = "FF0E:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 global multicast address "
+                                                + addrName
+                                                + " incorrectly indicated as a link-local mulitcast address.",
+                                !addr.isMCLinkLocal());
 
-			// a sample MC Node
-			addrName = "FF01:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 mulitcast node address "
-							+ addrName
-							+ " incorrectly indicated as a link-local mulitcast address.",
-					!addr.isMCLinkLocal());
+                // a sample MC Node
+                addrName = "FF01:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 mulitcast node address "
+                                                + addrName
+                                                + " incorrectly indicated as a link-local mulitcast address.",
+                                !addr.isMCLinkLocal());
 
-			// Ipv4-mapped IPv6 addresses
+                // Ipv4-mapped IPv6 addresses
 
-			addrName = "::FFFF:224.0.0.0"; // a multicast addr 1110
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 link-local multicast address " + addrName
-					+ " not identified as a link-local multicast address.",
-					addr.isMCLinkLocal());
+                addrName = "::FFFF:224.0.0.0"; // a multicast addr 1110
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 link-local multicast address " + addrName
+                                + " not identified as a link-local multicast address.",
+                                addr.isMCLinkLocal());
 
-			addrName = "::FFFF:224.0.0.255"; // a multicast addr 1110
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 link-local multicast address " + addrName
-					+ " not identified as a link-local multicast address.",
-					addr.isMCLinkLocal());
-
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "::FFFF:224.0.0.255"; // a multicast addr 1110
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 link-local multicast address " + addrName
+                                + " not identified as a link-local multicast address.",
+                                addr.isMCLinkLocal());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isMCSiteLocal()
 	 */
-	public void test_isMCSiteLocal() {
+	public void test_isMCSiteLocal() throws Exception {
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for Multicast site-local addresses
-			//
-			// Multicast global addresses are FFx5:/112 where x is
-			// a set of flags, and the addition 112 bits make up
-			// the global address space
-
-			addrName = "FF05::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 site-local mutlicast address " + addrName
-					+ " not detected.", addr.isMCSiteLocal());
-
-			addrName = "FF05:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 site-local multicast address " + addrName
-					+ " not detected.", addr.isMCSiteLocal());
-
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF5::0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 site-local mutlicast address " + addrName
-					+ " not detected.", addr.isMCSiteLocal());
-
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF5:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 site-local multicast address " + addrName
-					+ " not detected.", addr.isMCSiteLocal());
-
-			// a sample MC organizational address
-			addrName = "FF08:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 organization multicast address "
-							+ addrName
-							+ " incorrectly indicated as a site-local mulitcast address.",
-					!addr.isMCSiteLocal());
-
-			// a sample MC global address
-			addrName = "FF0E:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 global mulitcast address "
-							+ addrName
-							+ " incorrectly indicated as a site-local mulitcast address.",
-					!addr.isMCSiteLocal());
-
-			// a sample MC link address
-			addrName = "FF02:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 link-local multicast address "
-							+ addrName
-							+ " incorrectly indicated as a site-local mulitcast address.",
-					!addr.isMCSiteLocal());
-
-			// a sample MC Node
-			addrName = "FF01:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 mulitcast node address "
-							+ addrName
-							+ " incorrectly indicated as a site-local mulitcast address.",
-					!addr.isMCSiteLocal());
-
-			// IPv4-mapped IPv6 addresses
-			addrName = "::FFFF:239.255.0.0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 site-local multicast address " + addrName
-					+ " not identified as a site-local multicast address.",
-					addr.isMCSiteLocal());
-
-			addrName = "::FFFF:239.255.255.255";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 site-local multicast address " + addrName
-					+ " not identified as a site-local multicast address.",
-					addr.isMCSiteLocal());
-
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                // IP V6 regular address tests for Multicast site-local addresses
+                //
+                // Multicast global addresses are FFx5:/112 where x is
+                // a set of flags, and the addition 112 bits make up
+                // the global address space
+    
+                addrName = "FF05::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 site-local mutlicast address " + addrName
+                                + " not detected.", addr.isMCSiteLocal());
+    
+                addrName = "FF05:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 site-local multicast address " + addrName
+                                + " not detected.", addr.isMCSiteLocal());
+    
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF5::0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 site-local mutlicast address " + addrName
+                                + " not detected.", addr.isMCSiteLocal());
+    
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF5:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 site-local multicast address " + addrName
+                                + " not detected.", addr.isMCSiteLocal());
+    
+                // a sample MC organizational address
+                addrName = "FF08:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 organization multicast address "
+                                                + addrName
+                                                + " incorrectly indicated as a site-local mulitcast address.",
+                                !addr.isMCSiteLocal());
+    
+                // a sample MC global address
+                addrName = "FF0E:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 global mulitcast address "
+                                                + addrName
+                                                + " incorrectly indicated as a site-local mulitcast address.",
+                                !addr.isMCSiteLocal());
+    
+                // a sample MC link address
+                addrName = "FF02:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 link-local multicast address "
+                                                + addrName
+                                                + " incorrectly indicated as a site-local mulitcast address.",
+                                !addr.isMCSiteLocal());
+    
+                // a sample MC Node
+                addrName = "FF01:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 mulitcast node address "
+                                                + addrName
+                                                + " incorrectly indicated as a site-local mulitcast address.",
+                                !addr.isMCSiteLocal());
+    
+                // IPv4-mapped IPv6 addresses
+                addrName = "::FFFF:239.255.0.0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 site-local multicast address " + addrName
+                                + " not identified as a site-local multicast address.",
+                                addr.isMCSiteLocal());
+    
+                addrName = "::FFFF:239.255.255.255";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 site-local multicast address " + addrName
+                                + " not identified as a site-local multicast address.",
+                                addr.isMCSiteLocal());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isMCOrgLocal()
 	 */
-	public void test_isMCOrgLocal() {
+	public void test_isMCOrgLocal() throws Exception {
 		String addrName = "";
-		try {
-			// IP V6 regular address tests for Mulitcase organization-local
-			// addresses
-			//
-			// Multicast global addresses are FFxE:/112 where x is
-			// a set of flags, and the addition 112 bits make up
-			// the global address space
+                // IP V6 regular address tests for Mulitcase organization-local
+                // addresses
+                //
+                // Multicast global addresses are FFxE:/112 where x is
+                // a set of flags, and the addition 112 bits make up
+                // the global address space
 
-			addrName = "FF08::0";
-			InetAddress addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 organization-local mutlicast address " + addrName
-					+ " not detected.", addr.isMCOrgLocal());
+                addrName = "FF08::0";
+                InetAddress addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 organization-local mutlicast address " + addrName
+                                + " not detected.", addr.isMCOrgLocal());
 
-			addrName = "FF08:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 organization-local multicast address " + addrName
-					+ " not detected.", addr.isMCOrgLocal());
+                addrName = "FF08:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 organization-local multicast address " + addrName
+                                + " not detected.", addr.isMCOrgLocal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF8::0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 organization-local mutlicast address " + addrName
-					+ " not detected.", addr.isMCOrgLocal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF8::0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 organization-local mutlicast address " + addrName
+                                + " not detected.", addr.isMCOrgLocal());
 
-			// a currently invalid address as the prefix FFxE
-			// is only valid for x = {1,0} as the rest are reserved
-			addrName = "FFF8:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv6 organization-local multicast address " + addrName
-					+ " not detected.", addr.isMCOrgLocal());
+                // a currently invalid address as the prefix FFxE
+                // is only valid for x = {1,0} as the rest are reserved
+                addrName = "FFF8:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv6 organization-local multicast address " + addrName
+                                + " not detected.", addr.isMCOrgLocal());
 
-			// a sample MC global address
-			addrName = "FF0E:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 global multicast address "
-							+ addrName
-							+ " incorrectly indicated as an organization-local mulitcast address.",
-					!addr.isMCOrgLocal());
+                // a sample MC global address
+                addrName = "FF0E:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 global multicast address "
+                                                + addrName
+                                                + " incorrectly indicated as an organization-local mulitcast address.",
+                                !addr.isMCOrgLocal());
 
-			// a sample MC site address
-			addrName = "FF05:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 site-local mulitcast address "
-							+ addrName
-							+ " incorrectly indicated as an organization-local mulitcast address.",
-					!addr.isMCOrgLocal());
+                // a sample MC site address
+                addrName = "FF05:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 site-local mulitcast address "
+                                                + addrName
+                                                + " incorrectly indicated as an organization-local mulitcast address.",
+                                !addr.isMCOrgLocal());
 
-			// a sample MC link address
-			addrName = "FF02:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 link-local multicast address "
-							+ addrName
-							+ " incorrectly indicated as an organization-local mulitcast address.",
-					!addr.isMCOrgLocal());
+                // a sample MC link address
+                addrName = "FF02:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 link-local multicast address "
+                                                + addrName
+                                                + " incorrectly indicated as an organization-local mulitcast address.",
+                                !addr.isMCOrgLocal());
 
-			// a sample MC Node
-			addrName = "FF01:42:42:42:42:42:42:42";
-			addr = InetAddress.getByName(addrName);
-			assertTrue(
-					"IPv6 mulitcast node address "
-							+ addrName
-							+ " incorrectly indicated as an organization-local mulitcast address.",
-					!addr.isMCOrgLocal());
+                // a sample MC Node
+                addrName = "FF01:42:42:42:42:42:42:42";
+                addr = InetAddress.getByName(addrName);
+                assertTrue(
+                                "IPv6 mulitcast node address "
+                                                + addrName
+                                                + " incorrectly indicated as an organization-local mulitcast address.",
+                                !addr.isMCOrgLocal());
 
-			// IPv4-mapped IPv6 addresses
+                // IPv4-mapped IPv6 addresses
 
-			addrName = "::FFFF:239.192.0.0";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 org-local multicast address " + addrName
-					+ " not identified as a org-local multicast address.", addr
-					.isMCOrgLocal());
+                addrName = "::FFFF:239.192.0.0";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 org-local multicast address " + addrName
+                                + " not identified as a org-local multicast address.", addr
+                                .isMCOrgLocal());
 
-			addrName = "::FFFF:239.195.255.255";
-			addr = InetAddress.getByName(addrName);
-			assertTrue("IPv4 org-local multicast address " + addrName
-					+ " not identified as a org-local multicast address.", addr
-					.isMCOrgLocal());
-
-		} catch (Exception e) {
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "::FFFF:239.195.255.255";
+                addr = InetAddress.getByName(addrName);
+                assertTrue("IPv4 org-local multicast address " + addrName
+                                + " not identified as a org-local multicast address.", addr
+                                .isMCOrgLocal());
 	}
 
 	/**
 	 * @tests java.net.Inet6Address#isIPv4CompatibleAddress()
 	 */
-	public void test_isIPv4CompatibleAddress() {
+	public void test_isIPv4CompatibleAddress() throws Exception {
 		String addrName = "";
 		Inet6Address addr = null;
 
-		try {
+                // Tests a number of addresses to see if they are compatable with
+                // IPv6 addresses
 
-			// Tests a number of addresses to see if they are compatable with
-			// IPv6 addresses
+                addrName = "FFFF::42:42"; // 11111111 = FFFF
+                addr = (Inet6Address) InetAddress.getByName(addrName);
+                assertTrue("A non-compatable IPv6 address " + addrName
+                                + " incorrectly identified as a IPv4 compatable address.",
+                                !addr.isIPv4CompatibleAddress());
 
-			addrName = "FFFF::42:42"; // 11111111 = FFFF
-			addr = (Inet6Address) InetAddress.getByName(addrName);
-			assertTrue("A non-compatable IPv6 address " + addrName
-					+ " incorrectly identified as a IPv4 compatable address.",
-					!addr.isIPv4CompatibleAddress());
+                // IPv4-compatible IPv6 address tests
+                //
+                // Now create 2 IP v6 addresses that are IP v4 compatable
+                // to IP v6 addresses.
 
-			// IPv4-compatible IPv6 address tests
-			//
-			// Now create 2 IP v6 addresses that are IP v4 compatable
-			// to IP v6 addresses.
+                addrName = "::0.0.0.0";
+                addr = (Inet6Address) InetAddress.getByName(addrName);
+                assertTrue("IPv4 compatable address " + addrName
+                                + " not detected correctly.", addr
+                                .isIPv4CompatibleAddress());
 
-			addrName = "::0.0.0.0";
-			addr = (Inet6Address) InetAddress.getByName(addrName);
-			assertTrue("IPv4 compatable address " + addrName
-					+ " not detected correctly.", addr
-					.isIPv4CompatibleAddress());
-
-			addrName = "::255.255.255.255"; // an ipv4 non-multicast address
-			addr = (Inet6Address) InetAddress.getByName(addrName);
-			assertTrue("IPv4 compatable address " + addrName
-					+ " not detected correctly.", addr
-					.isIPv4CompatibleAddress());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("Unknown address : " + addrName);
-		}
+                addrName = "::255.255.255.255"; // an ipv4 non-multicast address
+                addr = (Inet6Address) InetAddress.getByName(addrName);
+                assertTrue("IPv4 compatable address " + addrName
+                                + " not detected correctly.", addr
+                                .isIPv4CompatibleAddress());
 	}
 
 	/**

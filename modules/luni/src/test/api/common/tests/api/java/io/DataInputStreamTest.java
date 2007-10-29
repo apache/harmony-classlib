@@ -519,52 +519,40 @@ public class DataInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.DataInputStream#readUnsignedShort()
 	 */
-	public void test_readUnsignedShort() {
+	public void test_readUnsignedShort() throws Exception {
 		// Test for method int java.io.DataInputStream.readUnsignedShort()
-		try {
-			os.writeShort(9875);
-			os.close();
-			openDataInputStream();
-			assertEquals("Incorrect short read", 9875, dis.readUnsignedShort());
-		} catch (IOException e) {
-			fail("Exception during readShort test : " + e.getMessage());
-		}
+		os.writeShort(9875);
+		os.close();
+		openDataInputStream();
+		assertEquals("Incorrect short read", 9875, dis.readUnsignedShort());
 	}
 
 	/**
 	 * @tests java.io.DataInputStream#readUTF()
 	 */
-	public void test_readUTF() {
+	public void test_readUTF() throws Exception {
 		// Test for method java.lang.String java.io.DataInputStream.readUTF()
-		try {
-			os.writeUTF(unihw);
-			os.close();
-			openDataInputStream();
-			assertTrue("Failed to write string in UTF format",
-					dis.available() == unihw.length() + 2);
-			assertTrue("Incorrect string read", dis.readUTF().equals(unihw));
-		} catch (Exception e) {
-			fail("Exception during readUTF : " + e.getMessage());
-		}
+                os.writeUTF(unihw);
+                os.close();
+                openDataInputStream();
+                assertTrue("Failed to write string in UTF format",
+                                dis.available() == unihw.length() + 2);
+                assertTrue("Incorrect string read", dis.readUTF().equals(unihw));
 	}
 
 	/**
 	 * @tests java.io.DataInputStream#readUTF(java.io.DataInput)
 	 */
-	public void test_readUTFLjava_io_DataInput() {
+	public void test_readUTFLjava_io_DataInput() throws Exception {
 		// Test for method java.lang.String
 		// java.io.DataInputStream.readUTF(java.io.DataInput)
-		try {
-			os.writeUTF(unihw);
-			os.close();
-			openDataInputStream();
-			assertTrue("Failed to write string in UTF format",
-					dis.available() == unihw.length() + 2);
-			assertTrue("Incorrect string read", DataInputStream.readUTF(dis)
-					.equals(unihw));
-		} catch (Exception e) {
-			fail("Exception during readUTF : " + e.getMessage());
-		}
+                os.writeUTF(unihw);
+                os.close();
+                openDataInputStream();
+                assertTrue("Failed to write string in UTF format",
+                                dis.available() == unihw.length() + 2);
+                assertTrue("Incorrect string read", DataInputStream.readUTF(dis)
+                                .equals(unihw));
 	}
 
 	/**

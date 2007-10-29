@@ -25,61 +25,41 @@ public class CompilerTest extends TestCase {
      * @tests java.lang.Compiler#command(java.lang.Object)
      */
     public void test_commandLjava_lang_Object() {
-        try {
-            assertNull("Incorrect behavior.", Compiler.command(new Object()));
-        } catch (Exception e) {
-            fail("Exception during test : " + e.getMessage());
-        }
+        assertNull("Incorrect behavior.", Compiler.command(new Object()));
     }
 
     /**
      * @tests java.lang.Compiler#compileClass(java.lang.Class)
      */
     public void test_compileClassLjava_lang_Class() {
-        try {
-            // Do not test return value, may return true or false depending on
-            // if the jit is enabled. Make the call to ensure it doesn't crash.
-            Compiler.compileClass(Compiler.class);
-        } catch (Exception e) {
-            fail("Exception during test.");
-        }
+        // Do not test return value, may return true or false depending on
+        // if the jit is enabled. Make the call to ensure it doesn't crash.
+        Compiler.compileClass(Compiler.class);
     }
 
     /**
      * @tests java.lang.Compiler#compileClasses(java.lang.String)
      */
     public void test_compileClassesLjava_lang_String() {
-        try {
-            // Do not test return value, may return true or false depending on
-            // if the jit is enabled. Make the call to ensure it doesn't crash.
+        // Do not test return value, may return true or false depending on
+        // if the jit is enabled. Make the call to ensure it doesn't crash.
             Compiler.compileClasses("Compiler");
-        } catch (Exception e) {
-            fail("Exception during test.");
-        }
     }
 
     /**
      * @tests java.lang.Compiler#disable()
      */
     public void test_disable() {
-        try {
-            Compiler.disable();
-            Compiler.compileClass(Compiler.class);
-        } catch (Exception e) {
-            fail("Exception during test : " + e.getMessage());
-        }
+        Compiler.disable();
+        Compiler.compileClass(Compiler.class);
     }
 
     /**
      * @tests java.lang.Compiler#enable()
      */
     public void test_enable() {
-        try {
-            Compiler.disable();
-            Compiler.enable();
-            Compiler.compileClass(Compiler.class);
-        } catch (Exception e) {
-            fail("Exception during test : " + e.getMessage());
-        }
+        Compiler.disable();
+        Compiler.enable();
+        Compiler.compileClass(Compiler.class);
     }
 }

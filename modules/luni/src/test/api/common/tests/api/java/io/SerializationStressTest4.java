@@ -2084,14 +2084,11 @@ public class SerializationStressTest4 extends SerializationStressTest {
 
 		try {
 			objToSave = null;
-			try {
-				objToSave = new java.security.CodeSource(new java.net.URL(
-						"http://localhost/a.txt"),
-						(Certificate[])null);
-			} catch (Exception e) {
-				fail("Exception creating object : " + e.getMessage());
-			}
-			if (DEBUG)
+			objToSave = new java.security.CodeSource(new java.net.URL(
+					"http://localhost/a.txt"),
+					(Certificate[])null);
+
+                        if (DEBUG)
 				System.out.println("Obj = " + objToSave);
 			objLoaded = dumpAndReload(objToSave);
 

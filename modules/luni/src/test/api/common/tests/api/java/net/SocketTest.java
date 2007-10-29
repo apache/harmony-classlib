@@ -1335,30 +1335,24 @@ public class SocketTest extends SocketTestCase {
 			theSocket = new Socket();
 			theSocket.connect(null);
 			fail("No exception after null address passed in");
-		} catch (Exception e) {
-			assertTrue("Wrong exception null address passed in: "
-					+ e.toString(), (e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		try {
 			theSocket = new Socket();
 			theSocket.connect(invalidType);
 			fail("No exception when invalid socket address type passed in: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when when invalid socket address type passed in: "
-							+ e.toString(),
-					(e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		try {
 			theSocket = new Socket();
 			theSocket.connect(nonConnectableAddress);
 			fail("No exception when non Connectable Address passed in: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when non Connectable Address passed in: "
-							+ e.toString(), (e instanceof ConnectException));
+		} catch (ConnectException e) {
+			//Expected
 		}
 
 		// now validate that we get a connect exception if we try to connect to
@@ -1368,10 +1362,8 @@ public class SocketTest extends SocketTestCase {
 			theSocket.connect(theAddress);
 			theSocket.close();
 			fail("No exception when connecting to address nobody listening on: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when connecting to address nobody listening on: "
-							+ e.toString(), (e instanceof ConnectException));
+		} catch (ConnectException e) {
+			// Expected
 		}
 
 		// now validate that we can acutally connect when sombody is listening
@@ -1574,39 +1566,32 @@ public class SocketTest extends SocketTestCase {
 			theSocket = new Socket();
 			theSocket.connect(theAddress, -100);
 			fail("No exception after negative timeout passed in");
-		} catch (Exception e) {
-			assertTrue("Wrong exception when negative timeout passed in: "
-					+ e.toString(), (e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		try {
 			theSocket = new Socket();
 			theSocket.connect(null, 0);
 			fail("No exception after null address passed in");
-		} catch (Exception e) {
-			assertTrue("Wrong exception null address passed in: "
-					+ e.toString(), (e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		try {
 			theSocket = new Socket();
 			theSocket.connect(invalidType, 100000);
 			fail("No exception when invalid socket address type passed in: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when when invalid socket address type passed in: "
-							+ e.toString(),
-					(e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		try {
 			theSocket = new Socket();
 			theSocket.connect(nonConnectableAddress, 100000);
 			fail("No exception when non Connectable Address passed in: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when non Connectable Address passed in: "
-							+ e.toString(), (e instanceof SocketException));
+		} catch (SocketException e) {
+			// Expected
 		}
 
 		// now validate that we get a connect exception if we try to connect to
@@ -1616,10 +1601,8 @@ public class SocketTest extends SocketTestCase {
 			theSocket.connect(theAddress, 0);
 			theSocket.close();
 			fail("No timeout:No exception when connecting to address nobody listening on: ");
-		} catch (Exception e) {
-			assertTrue(
-					"No timeout:Wrong exception when connecting to address nobody listening on: "
-							+ e.toString(), (e instanceof ConnectException));
+		} catch (ConnectException e) {
+			// Expected
 		}
 
 		// now validate that we can acutally connect when sombody is listening
@@ -1637,10 +1620,8 @@ public class SocketTest extends SocketTestCase {
 			theSocket.connect(nonListeningAddress, 100000);
 			theSocket.close();
 			fail("No exception when connecting to address nobody listening on: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when connecting to address nobody listening on: "
-							+ e.toString(), (e instanceof ConnectException));
+		} catch (ConnectException e) {
+			// Expected
 		}
 
 		// now validate that we get a interrupted exception if we try to connect
@@ -1651,11 +1632,8 @@ public class SocketTest extends SocketTestCase {
 			theSocket.connect(nonReachableAddress, 200);
 			theSocket.close();
 			fail("No interrupted exception when connecting to address nobody listening on with short timeout 200: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when connecting to address nobody listening on with short timeout 200: "
-							+ e.toString(),
-					(e instanceof SocketTimeoutException));
+		} catch (SocketTimeoutException e) {
+			// Expected
 		}
 
 		// now validate that we get a interrupted exception if we try to connect
@@ -1666,11 +1644,8 @@ public class SocketTest extends SocketTestCase {
 			theSocket.connect(nonReachableAddress, 40);
 			theSocket.close();
 			fail("No interrupted exception when connecting to address nobody listening on with short timeout 40: ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when connecting to address nobody listening on with short timeout 40: "
-							+ e.toString(),
-					(e instanceof SocketTimeoutException));
+		} catch (SocketTimeoutException e) {
+			// Expected
 		}
 
 		// now validate that we can acutally connect when sombody is listening

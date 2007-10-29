@@ -39,91 +39,72 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor$BI() {
 		// Test for method java.net.DatagramPacket(byte [], int)
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 5);
-			assertEquals("Created incorrect packet", "Hello", new String(dp.getData(), 0,
-					dp.getData().length));
-			assertEquals("Wrong length", 5, dp.getLength());
-		} catch (Exception e) {
-			fail("Exception during Constructor test: " + e.toString());
-		}
-        //regression for Harmony-890
-        dp = new DatagramPacket(new byte[942],4);
-        assertEquals(-1, dp.getPort());
-        try{
-            dp.getSocketAddress();
-            fail("Should throw IllegalArgumentException");            
-        }catch(IllegalArgumentException e){
-            //expected
-        }
+                dp = new DatagramPacket("Hello".getBytes(), 5);
+                assertEquals("Created incorrect packet", "Hello", new String(dp.getData(), 0,
+                                dp.getData().length));
+                assertEquals("Wrong length", 5, dp.getLength());
+
+                //regression for Harmony-890
+                dp = new DatagramPacket(new byte[942],4);
+                assertEquals(-1, dp.getPort());
+                try{
+                    dp.getSocketAddress();
+                    fail("Should throw IllegalArgumentException");            
+                }catch(IllegalArgumentException e){
+                    //expected
+                }
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#DatagramPacket(byte[], int, int)
 	 */
 	public void test_Constructor$BII() {
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 2, 3);
-			assertEquals("Created incorrect packet", "Hello", new String(dp.getData(), 0,
-					dp.getData().length));
-			assertEquals("Wrong length", 3, dp.getLength());
-			assertEquals("Wrong offset", 2, dp.getOffset());
-		} catch (Exception e) {
-			fail("Exception during Constructor test: " + e.toString());
-		}
+                dp = new DatagramPacket("Hello".getBytes(), 2, 3);
+                assertEquals("Created incorrect packet", "Hello", new String(dp.getData(), 0,
+                                dp.getData().length));
+                assertEquals("Wrong length", 3, dp.getLength());
+                assertEquals("Wrong offset", 2, dp.getOffset());
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#DatagramPacket(byte[], int, int,
 	 *        java.net.InetAddress, int)
 	 */
-	public void test_Constructor$BIILjava_net_InetAddressI() {
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 2, 3, InetAddress
-					.getLocalHost(), 0);
-			assertTrue("Created incorrect packet", dp.getAddress().equals(
-					InetAddress.getLocalHost())
-					&& dp.getPort() == 0);
-			assertEquals("Wrong length", 3, dp.getLength());
-			assertEquals("Wrong offset", 2, dp.getOffset());
-		} catch (Exception e) {
-			fail("Exception during Constructor test: " + e.toString());
-		}
+	public void test_Constructor$BIILjava_net_InetAddressI() throws Exception {
+                dp = new DatagramPacket("Hello".getBytes(), 2, 3, InetAddress
+                                .getLocalHost(), 0);
+                assertTrue("Created incorrect packet", dp.getAddress().equals(
+                                InetAddress.getLocalHost())
+                                && dp.getPort() == 0);
+                assertEquals("Wrong length", 3, dp.getLength());
+                assertEquals("Wrong offset", 2, dp.getOffset());
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#DatagramPacket(byte[], int,
 	 *        java.net.InetAddress, int)
 	 */
-	public void test_Constructor$BILjava_net_InetAddressI() {
+	public void test_Constructor$BILjava_net_InetAddressI() throws Exception {
 		// Test for method java.net.DatagramPacket(byte [], int,
 		// java.net.InetAddress, int)
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
-					.getLocalHost(), 0);
-			assertTrue("Created incorrect packet", dp.getAddress().equals(
-					InetAddress.getLocalHost())
-					&& dp.getPort() == 0);
-			assertEquals("Wrong length", 5, dp.getLength());
-		} catch (Exception e) {
-			fail("Exception during Constructor test: " + e.toString());
-		}
+                dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
+                                .getLocalHost(), 0);
+                assertTrue("Created incorrect packet", dp.getAddress().equals(
+                                InetAddress.getLocalHost())
+                                && dp.getPort() == 0);
+                assertEquals("Wrong length", 5, dp.getLength());
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#getAddress()
 	 */
-	public void test_getAddress() {
+	public void test_getAddress() throws Exception {
 		// Test for method java.net.InetAddress
 		// java.net.DatagramPacket.getAddress()
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
-					.getLocalHost(), 0);
-			assertTrue("Incorrect address returned", dp.getAddress().equals(
-					InetAddress.getLocalHost()));
-		} catch (Exception e) {
-			fail("Exception during getAddress test:" + e.toString());
-		}
+                dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
+                                .getLocalHost(), 0);
+                assertTrue("Incorrect address returned", dp.getAddress().equals(
+                                InetAddress.getLocalHost()));
 	}
 
 	/**
@@ -158,23 +139,16 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.DatagramPacket#getPort()
 	 */
-	public void test_getPort() {
+	public void test_getPort() throws Exception {
 		// Test for method int java.net.DatagramPacket.getPort()
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
-					.getLocalHost(), 1000);
-			assertEquals("Incorrect port returned", 1000, dp.getPort());
-		} catch (Exception e) {
-			fail("Exception during getPort test : " + e.getMessage());
-		}
+                dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
+                                .getLocalHost(), 1000);
+                assertEquals("Incorrect port returned", 1000, dp.getPort());
 
 		InetAddress localhost = null;
-		try {
-			localhost = InetAddress.getByName("localhost");
-		} catch (UnknownHostException e) {
-			fail("Unexpected UnknownHostException : " + e.getMessage());
-		}
-		int[] ports = Support_PortManager.getNextPortsForUDP(2);
+		localhost = InetAddress.getByName("localhost");
+
+                int[] ports = Support_PortManager.getNextPortsForUDP(2);
 		final int port = ports[0];
 		final Object lock = new Object();
 
@@ -234,19 +208,15 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.DatagramPacket#setAddress(java.net.InetAddress)
 	 */
-	public void test_setAddressLjava_net_InetAddress() {
+	public void test_setAddressLjava_net_InetAddress() throws Exception {
 		// Test for method void
 		// java.net.DatagramPacket.setAddress(java.net.InetAddress)
-		try {
-			InetAddress ia = InetAddress
-					.getByName(Support_Configuration.InetTestIP);
-			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
-					.getLocalHost(), 0);
-			dp.setAddress(ia);
-			assertTrue("Incorrect address returned", dp.getAddress().equals(ia));
-		} catch (Exception e) {
-			fail("Exception during getAddress test:" + e.toString());
-		}
+                InetAddress ia = InetAddress
+                                .getByName(Support_Configuration.InetTestIP);
+                dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
+                                .getLocalHost(), 0);
+                dp.setAddress(ia);
+                assertTrue("Incorrect address returned", dp.getAddress().equals(ia));
 	}
 
 	/**
@@ -283,132 +253,115 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.DatagramPacket#setPort(int)
 	 */
-	public void test_setPortI() {
+	public void test_setPortI() throws Exception {
 		// Test for method void java.net.DatagramPacket.setPort(int)
-		try {
-			dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
-					.getLocalHost(), 1000);
-			dp.setPort(2000);
-			assertEquals("Port not set", 2000, dp.getPort());
-		} catch (Exception e) {
-			fail("Exception during setPort test : " + e.getMessage());
-		}
+                dp = new DatagramPacket("Hello".getBytes(), 5, InetAddress
+                                .getLocalHost(), 1000);
+                dp.setPort(2000);
+                assertEquals("Port not set", 2000, dp.getPort());
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#DatagramPacket(byte[], int,
 	 *        java.net.SocketAddress)
 	 */
-	public void test_Constructor$BILjava_net_SocketAddress() {
+	public void test_Constructor$BILjava_net_SocketAddress() throws Exception {
 		class mySocketAddress extends SocketAddress {
 
 			public mySocketAddress() {
 			}
 		}
 
-		try {
-			// unsupported SocketAddress subclass
-			byte buf[] = new byte[1];
-			try {
-				DatagramPacket thePacket = new DatagramPacket(buf, 1,
-						new mySocketAddress());
-				fail("No exception when constructing using unsupported SocketAddress subclass");
-			} catch (IllegalArgumentException ex) {
-			}
+                // unsupported SocketAddress subclass
+                byte buf[] = new byte[1];
+                try {
+                        DatagramPacket thePacket = new DatagramPacket(buf, 1,
+                                        new mySocketAddress());
+                        fail("No exception when constructing using unsupported SocketAddress subclass");
+                } catch (IllegalArgumentException ex) {
+                }
 
-			// case were we try to pass in null
-			// unsupported SocketAddress subclass
+                // case were we try to pass in null
+                // unsupported SocketAddress subclass
 
-			try {
-				DatagramPacket thePacket = new DatagramPacket(buf, 1, null);
-				fail("No exception when constructing address using null");
-			} catch (IllegalArgumentException ex) {
-			}
+                try {
+                        DatagramPacket thePacket = new DatagramPacket(buf, 1, null);
+                        fail("No exception when constructing address using null");
+                } catch (IllegalArgumentException ex) {
+                }
 
-			// now validate we can construct
-			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPortForUDP());
-			DatagramPacket thePacket = new DatagramPacket(buf, 1, theAddress);
-			assertTrue("Socket address not set correctly (1)", theAddress
-					.equals(thePacket.getSocketAddress()));
-			assertTrue("Socket address not set correctly (2)", theAddress
-					.equals(new InetSocketAddress(thePacket.getAddress(),
-							thePacket.getPort())));
-		} catch (Exception e) {
-			fail("Exception during constructor test(1):" + e.toString());
-		}
+                // now validate we can construct
+                InetSocketAddress theAddress = new InetSocketAddress(InetAddress
+                                .getLocalHost(), Support_PortManager.getNextPortForUDP());
+                DatagramPacket thePacket = new DatagramPacket(buf, 1, theAddress);
+                assertTrue("Socket address not set correctly (1)", theAddress
+                                .equals(thePacket.getSocketAddress()));
+                assertTrue("Socket address not set correctly (2)", theAddress
+                                .equals(new InetSocketAddress(thePacket.getAddress(),
+                                                thePacket.getPort())));
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#DatagramPacket(byte[], int, int,
 	 *        java.net.SocketAddress)
 	 */
-	public void test_Constructor$BIILjava_net_SocketAddress() {
+	public void test_Constructor$BIILjava_net_SocketAddress() throws Exception {
 		class mySocketAddress extends SocketAddress {
 
 			public mySocketAddress() {
 			}
 		}
 
-		try {
-			// unsupported SocketAddress subclass
-			byte buf[] = new byte[2];
-			try {
-				DatagramPacket thePacket = new DatagramPacket(buf, 1, 1,
-						new mySocketAddress());
-				fail("No exception when constructing using unsupported SocketAddress subclass");
-			} catch (IllegalArgumentException ex) {
-			}
+                // unsupported SocketAddress subclass
+                byte buf[] = new byte[2];
+                try {
+                        DatagramPacket thePacket = new DatagramPacket(buf, 1, 1,
+                                        new mySocketAddress());
+                        fail("No exception when constructing using unsupported SocketAddress subclass");
+                } catch (IllegalArgumentException ex) {
+                }
 
-			// case were we try to pass in null
-			// unsupported SocketAddress subclass
+                // case were we try to pass in null
+                // unsupported SocketAddress subclass
 
-			try {
-				DatagramPacket thePacket = new DatagramPacket(buf, 1, 1, null);
-				fail("No exception when constructing address using null");
-			} catch (IllegalArgumentException ex) {
-			}
+                try {
+                        DatagramPacket thePacket = new DatagramPacket(buf, 1, 1, null);
+                        fail("No exception when constructing address using null");
+                } catch (IllegalArgumentException ex) {
+                }
 
-			// now validate we can construct
-			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPortForUDP());
-			DatagramPacket thePacket = new DatagramPacket(buf, 1, 1, theAddress);
-			assertTrue("Socket address not set correctly (1)", theAddress
-					.equals(thePacket.getSocketAddress()));
-			assertTrue("Socket address not set correctly (2)", theAddress
-					.equals(new InetSocketAddress(thePacket.getAddress(),
-							thePacket.getPort())));
-			assertEquals("Offset not set correctly", 1, thePacket.getOffset());
-		} catch (Exception e) {
-			fail("Exception during constructor test(2):" + e.toString());
-		}
+                // now validate we can construct
+                InetSocketAddress theAddress = new InetSocketAddress(InetAddress
+                                .getLocalHost(), Support_PortManager.getNextPortForUDP());
+                DatagramPacket thePacket = new DatagramPacket(buf, 1, 1, theAddress);
+                assertTrue("Socket address not set correctly (1)", theAddress
+                                .equals(thePacket.getSocketAddress()));
+                assertTrue("Socket address not set correctly (2)", theAddress
+                                .equals(new InetSocketAddress(thePacket.getAddress(),
+                                                thePacket.getPort())));
+                assertEquals("Offset not set correctly", 1, thePacket.getOffset());
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#getSocketAddress()
 	 */
-	public void test_getSocketAddress() {
-		try {
-			byte buf[] = new byte[1];
-			DatagramPacket thePacket = new DatagramPacket(buf, 1);
+	public void test_getSocketAddress() throws Exception {
+                byte buf[] = new byte[1];
+                DatagramPacket thePacket = new DatagramPacket(buf, 1);
 
-			// validate get returns the value we set
-			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPortForUDP());
-			thePacket = new DatagramPacket(buf, 1);
-			thePacket.setSocketAddress(theAddress);
-			assertTrue("Socket address not set correctly (1)", theAddress
-					.equals(thePacket.getSocketAddress()));
-		} catch (Exception e) {
-			fail(
-					"Exception during getSocketAddress test:" + e.toString());
-		}
+                // validate get returns the value we set
+                InetSocketAddress theAddress = new InetSocketAddress(InetAddress
+                                .getLocalHost(), Support_PortManager.getNextPortForUDP());
+                thePacket = new DatagramPacket(buf, 1);
+                thePacket.setSocketAddress(theAddress);
+                assertTrue("Socket address not set correctly (1)", theAddress
+                                .equals(thePacket.getSocketAddress()));
 	}
 
 	/**
 	 * @tests java.net.DatagramPacket#setSocketAddress(java.net.SocketAddress)
 	 */
-	public void test_setSocketAddressLjava_net_SocketAddress() {
+	public void test_setSocketAddressLjava_net_SocketAddress() throws Exception {
 
 		class mySocketAddress extends SocketAddress {
 
@@ -416,39 +369,34 @@ public class DatagramPacketTest extends junit.framework.TestCase {
 			}
 		}
 
-		try {
-			// unsupported SocketAddress subclass
-			byte buf[] = new byte[1];
-			DatagramPacket thePacket = new DatagramPacket(buf, 1);
-			try {
-				thePacket.setSocketAddress(new mySocketAddress());
-				fail("No exception when setting address using unsupported SocketAddress subclass");
-			} catch (IllegalArgumentException ex) {
-			}
+                // unsupported SocketAddress subclass
+                byte buf[] = new byte[1];
+                DatagramPacket thePacket = new DatagramPacket(buf, 1);
+                try {
+                        thePacket.setSocketAddress(new mySocketAddress());
+                        fail("No exception when setting address using unsupported SocketAddress subclass");
+                } catch (IllegalArgumentException ex) {
+                }
 
-			// case were we try to pass in null
-			// unsupported SocketAddress subclass
-			thePacket = new DatagramPacket(buf, 1);
-			try {
-				thePacket.setSocketAddress(null);
-				fail("No exception when setting address using null");
-			} catch (IllegalArgumentException ex) {
-			}
+                // case were we try to pass in null
+                // unsupported SocketAddress subclass
+                thePacket = new DatagramPacket(buf, 1);
+                try {
+                        thePacket.setSocketAddress(null);
+                        fail("No exception when setting address using null");
+                } catch (IllegalArgumentException ex) {
+                }
 
-			// now validate we can set it correctly
-			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPortForUDP());
-			thePacket = new DatagramPacket(buf, 1);
-			thePacket.setSocketAddress(theAddress);
-			assertTrue("Socket address not set correctly (1)", theAddress
-					.equals(thePacket.getSocketAddress()));
-			assertTrue("Socket address not set correctly (2)", theAddress
-					.equals(new InetSocketAddress(thePacket.getAddress(),
-							thePacket.getPort())));
-		} catch (Exception e) {
-			fail(
-					"Exception during setSocketAddress test:" + e.toString());
-		}
+                // now validate we can set it correctly
+                InetSocketAddress theAddress = new InetSocketAddress(InetAddress
+                                .getLocalHost(), Support_PortManager.getNextPortForUDP());
+                thePacket = new DatagramPacket(buf, 1);
+                thePacket.setSocketAddress(theAddress);
+                assertTrue("Socket address not set correctly (1)", theAddress
+                                .equals(thePacket.getSocketAddress()));
+                assertTrue("Socket address not set correctly (2)", theAddress
+                                .equals(new InetSocketAddress(thePacket.getAddress(),
+                                                thePacket.getPort())));
 	}
 
 	/**
