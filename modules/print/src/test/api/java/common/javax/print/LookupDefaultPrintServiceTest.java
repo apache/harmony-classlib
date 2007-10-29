@@ -34,7 +34,7 @@ import javax.print.attribute.standard.Sides;
 import junit.framework.TestCase;
 
 public class LookupDefaultPrintServiceTest extends TestCase {
-    public void testLookupDefaultPrintService() {
+    public void testLookupDefaultPrintService() throws Exception {
         System.out
                 .println("======= START LookupDefaultPrintServiceTest ======");
 
@@ -51,29 +51,24 @@ public class LookupDefaultPrintServiceTest extends TestCase {
         daset.add(MediaName.ISO_A4_WHITE);
         daset.add(Sides.TWO_SIDED_LONG_EDGE);
 
-        try {
-            service = PrintServiceLookup.lookupDefaultPrintService();
-            if (service != null) {
-                if (service.isDocFlavorSupported(psFlavor)) {
-                    if (service.getUnsupportedAttributes(psFlavor, aset)==null) {
-                        fis = this.getClass().getResourceAsStream(
-                                "/Resources/GIF.gif");
-                        doc = new SimpleDoc(fis, psFlavor, daset);
+        service = PrintServiceLookup.lookupDefaultPrintService();
+        if (service != null) {
+            if (service.isDocFlavorSupported(psFlavor)) {
+                if (service.getUnsupportedAttributes(psFlavor, aset)==null) {
+                    fis = this.getClass().getResourceAsStream(
+                            "/Resources/GIF.gif");
+                    doc = new SimpleDoc(fis, psFlavor, daset);
 
-                        pj = service.createPrintJob();
-                        pj.print(doc, aset);
-                        System.out.println(fis.toString() + " printed on "
-                                + service.getName());
-                    }
-                } else {
-                    System.out.println("flavor is not supported");
+                    pj = service.createPrintJob();
+                    pj.print(doc, aset);
+                    System.out.println(fis.toString() + " printed on "
+                            + service.getName());
                 }
             } else {
-                System.out.println("service not found");
+                System.out.println("flavor is not supported");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
+        } else {
+            System.out.println("service not found");
         }
 
         System.out.println("======= END LookupDefaultPrintServiceTest =======");

@@ -45,17 +45,13 @@ public class SetOfIntegerSyntaxTest extends TestCase {
      * setOfIntegerSyntax(String str) constructor testing. 
      */
     public final void testSetOfIntegerSyntax() {
-        try {
-            set1 = new setOfIntegerSyntax(
-                    " 16-37, 100:30, 17-50, 1000-1848, 1-2, 2147");
-            set1 = new setOfIntegerSyntax("0");
-            set1 = new setOfIntegerSyntax(
-                    "100       :       30,                  4");
-            set1 = new setOfIntegerSyntax("000-1848");
-            set1 = new setOfIntegerSyntax("");
-        } catch (Exception e) {
-            fail("Unexpected exception occurred: " + e.toString());
-        }
+        set1 = new setOfIntegerSyntax(
+                " 16-37, 100:30, 17-50, 1000-1848, 1-2, 2147");
+        set1 = new setOfIntegerSyntax("0");
+        set1 = new setOfIntegerSyntax(
+                "100       :       30,                  4");
+        set1 = new setOfIntegerSyntax("000-1848");
+        set1 = new setOfIntegerSyntax("");
 
         try {
             set1 = new setOfIntegerSyntax("17-50 1000-160");
@@ -160,15 +156,12 @@ public class SetOfIntegerSyntaxTest extends TestCase {
             fail("IllegalArgumentException wasn't trown when expected");
         } catch (IllegalArgumentException e) {
         }
-        try {
-            arr1 = new int[][] {{1,5}, {10}, {7,7}, {5,6}, {8,9}, {15,14}};
-            set1 = new setOfIntegerSyntax(arr1);
-            //System.out.println(set1.toString());
-            assertEquals(1, set1.getMembers()[0][0]);
-            assertEquals(10, set1.getMembers()[0][1]);
-        } catch (Exception e) {
-            fail("Unexpected exception occurred " + e);
-        }
+
+        arr1 = new int[][] {{1,5}, {10}, {7,7}, {5,6}, {8,9}, {15,14}};
+        set1 = new setOfIntegerSyntax(arr1);
+        //System.out.println(set1.toString());
+        assertEquals(1, set1.getMembers()[0][0]);
+        assertEquals(10, set1.getMembers()[0][1]);
 
         arr1 = new int[][] {{15,14}};
         set1 = new setOfIntegerSyntax(arr1);
