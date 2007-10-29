@@ -58,78 +58,75 @@ public class EDIPartyNameTest extends TestCase {
      */
     public void _testEDIPartyName1() {
         boolean pass = true;
-        try {
-            EDIPartyName ediPN = new EDIPartyName("nameAssigner", "partyName");
-            byte[] encoded = ediPN.getEncoded();
-            // manually derived data:
-            byte[] _encoded = { 
-                (byte) 0x30, (byte) 0x1d, (byte) 0x80, (byte) 0x0e, 
-                (byte) 0x13, (byte) 0x0c, (byte) 0x6e, (byte) 0x61, 
-                (byte) 0x6d, (byte) 0x65, (byte) 0x41, (byte) 0x73, 
-                (byte) 0x73, (byte) 0x69, (byte) 0x67, (byte) 0x6e,
-                (byte) 0x65, (byte) 0x72, (byte) 0x81, (byte) 0x0b, 
-                (byte) 0x13, (byte) 0x09, (byte) 0x70, (byte) 0x61, 
-                (byte) 0x72, (byte) 0x74, (byte) 0x79, (byte) 0x4e, 
-                (byte) 0x61, (byte) 0x6d, (byte) 0x65
-            };
-            if (!Arrays.equals(encoded, _encoded)) {
-                System.out.println("Got encoded form of EDIPartyName is:");
-                printAsHex(16, "", " ", encoded);
-                System.out.println("But should be like this:");
-                printAsHex(16, "", " ", _encoded);
-                System.out.println("");
-                pass = false;
-            }
 
-            GeneralName gName = new GeneralName(ediPN);
-            encoded = gName.getEncoded();
-            // manually derived data:
-            _encoded = new byte[] {
-                (byte) 0xa5, (byte) 0x1d, (byte) 0x80, (byte) 0x0e, 
-                (byte) 0x13, (byte) 0x0c, (byte) 0x6e, (byte) 0x61, 
-                (byte) 0x6d, (byte) 0x65, (byte) 0x41, (byte) 0x73, 
-                (byte) 0x73, (byte) 0x69, (byte) 0x67, (byte) 0x6e, 
-                (byte) 0x65, (byte) 0x72, (byte) 0x81, (byte) 0x0b, 
-                (byte) 0x13, (byte) 0x09, (byte) 0x70, (byte) 0x61, 
-                (byte) 0x72, (byte) 0x74, (byte) 0x79, (byte) 0x4e, 
-                (byte) 0x61, (byte) 0x6d, (byte) 0x65
-            };
-            if (!Arrays.equals(encoded, _encoded)) {
-                System.out.println("Got encoded form of GeneralName is:");
-                printAsHex(16, "", " ", encoded);
-                System.out.println("But should be like this:");
-                printAsHex(16, "", " ", _encoded);
-                System.out.println("");
-                pass = false;
-            }
-
-            GeneralNames gNames = new GeneralNames();
-            gNames.addName(gName);
-            encoded = gNames.getEncoded();
-            // manually derived data:
-            _encoded = new byte[] {
-                (byte) 0x30, (byte) 0x1f, (byte) 0xa5, (byte) 0x1d,
-                (byte) 0x80, (byte) 0x0e, (byte) 0x13, (byte) 0x0c,
-                (byte) 0x6e, (byte) 0x61, (byte) 0x6d, (byte) 0x65,
-                (byte) 0x41, (byte) 0x73, (byte) 0x73, (byte) 0x69,
-                (byte) 0x67, (byte) 0x6e, (byte) 0x65, (byte) 0x72,
-                (byte) 0x81, (byte) 0x0b, (byte) 0x13, (byte) 0x09,
-                (byte) 0x70, (byte) 0x61, (byte) 0x72, (byte) 0x74,
-                (byte) 0x79, (byte) 0x4e, (byte) 0x61, (byte) 0x6d,
-                (byte) 0x65
-            };
-            if (!Arrays.equals(encoded, _encoded)) {
-                System.out.println("Got encoded form of GeneralNames is:");
-                printAsHex(16, "", " ", encoded);
-                System.out.println("But should be like this:");
-                printAsHex(16, "", " ", _encoded);
-                System.out.println("");
-                pass = false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown.");
+        EDIPartyName ediPN = new EDIPartyName("nameAssigner", "partyName");
+        byte[] encoded = ediPN.getEncoded();
+        // manually derived data:
+        byte[] _encoded = { 
+            (byte) 0x30, (byte) 0x1d, (byte) 0x80, (byte) 0x0e, 
+            (byte) 0x13, (byte) 0x0c, (byte) 0x6e, (byte) 0x61, 
+            (byte) 0x6d, (byte) 0x65, (byte) 0x41, (byte) 0x73, 
+            (byte) 0x73, (byte) 0x69, (byte) 0x67, (byte) 0x6e,
+            (byte) 0x65, (byte) 0x72, (byte) 0x81, (byte) 0x0b, 
+            (byte) 0x13, (byte) 0x09, (byte) 0x70, (byte) 0x61, 
+            (byte) 0x72, (byte) 0x74, (byte) 0x79, (byte) 0x4e, 
+            (byte) 0x61, (byte) 0x6d, (byte) 0x65
+        };
+        if (!Arrays.equals(encoded, _encoded)) {
+            System.out.println("Got encoded form of EDIPartyName is:");
+            printAsHex(16, "", " ", encoded);
+            System.out.println("But should be like this:");
+            printAsHex(16, "", " ", _encoded);
+            System.out.println("");
+            pass = false;
         }
+
+        GeneralName gName = new GeneralName(ediPN);
+        encoded = gName.getEncoded();
+        // manually derived data:
+        _encoded = new byte[] {
+            (byte) 0xa5, (byte) 0x1d, (byte) 0x80, (byte) 0x0e, 
+            (byte) 0x13, (byte) 0x0c, (byte) 0x6e, (byte) 0x61, 
+            (byte) 0x6d, (byte) 0x65, (byte) 0x41, (byte) 0x73, 
+            (byte) 0x73, (byte) 0x69, (byte) 0x67, (byte) 0x6e, 
+            (byte) 0x65, (byte) 0x72, (byte) 0x81, (byte) 0x0b, 
+            (byte) 0x13, (byte) 0x09, (byte) 0x70, (byte) 0x61, 
+            (byte) 0x72, (byte) 0x74, (byte) 0x79, (byte) 0x4e, 
+            (byte) 0x61, (byte) 0x6d, (byte) 0x65
+        };
+        if (!Arrays.equals(encoded, _encoded)) {
+            System.out.println("Got encoded form of GeneralName is:");
+            printAsHex(16, "", " ", encoded);
+            System.out.println("But should be like this:");
+            printAsHex(16, "", " ", _encoded);
+            System.out.println("");
+            pass = false;
+        }
+
+        GeneralNames gNames = new GeneralNames();
+        gNames.addName(gName);
+        encoded = gNames.getEncoded();
+        // manually derived data:
+        _encoded = new byte[] {
+            (byte) 0x30, (byte) 0x1f, (byte) 0xa5, (byte) 0x1d,
+            (byte) 0x80, (byte) 0x0e, (byte) 0x13, (byte) 0x0c,
+            (byte) 0x6e, (byte) 0x61, (byte) 0x6d, (byte) 0x65,
+            (byte) 0x41, (byte) 0x73, (byte) 0x73, (byte) 0x69,
+            (byte) 0x67, (byte) 0x6e, (byte) 0x65, (byte) 0x72,
+            (byte) 0x81, (byte) 0x0b, (byte) 0x13, (byte) 0x09,
+            (byte) 0x70, (byte) 0x61, (byte) 0x72, (byte) 0x74,
+            (byte) 0x79, (byte) 0x4e, (byte) 0x61, (byte) 0x6d,
+            (byte) 0x65
+        };
+        if (!Arrays.equals(encoded, _encoded)) {
+            System.out.println("Got encoded form of GeneralNames is:");
+            printAsHex(16, "", " ", encoded);
+            System.out.println("But should be like this:");
+            printAsHex(16, "", " ", _encoded);
+            System.out.println("");
+            pass = false;
+        }
+
         assertTrue("Some problems occured.", pass);
     }
     

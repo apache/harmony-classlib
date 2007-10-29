@@ -40,31 +40,26 @@ public class CertificatePoliciesTest extends TestCase {
     /**
      * CertificatePolicies() method testing.
      */
-    public void testCertificatePolicies() {
-        try {
-            String[] policies = new String[] {
-                "0.0.0.0.0.0",
-                "1.1.1.1.1.1",
-                "2.2.2.2.2.2"
-            };
-            CertificatePolicies certificatePolicies = 
-                                            new CertificatePolicies();
-            for (int i=0; i<policies.length; i++) {
-                PolicyInformation policyInformation =
-                                        new PolicyInformation(policies[i]);
-                certificatePolicies.addPolicyInformation(policyInformation);
-            }
-
-            byte[] encoding = certificatePolicies.getEncoded();
-            List policyInformations = ((CertificatePolicies) 
-                    CertificatePolicies.ASN1.decode(encoding))
-                    .getPolicyInformations();
-            Iterator it = policyInformations.iterator();
-            ((PolicyInformation) it.next()).getPolicyIdentifier();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
+    public void testCertificatePolicies() throws Exception {
+        String[] policies = new String[] {
+            "0.0.0.0.0.0",
+            "1.1.1.1.1.1",
+            "2.2.2.2.2.2"
+        };
+        CertificatePolicies certificatePolicies = 
+                                        new CertificatePolicies();
+        for (int i=0; i<policies.length; i++) {
+            PolicyInformation policyInformation =
+                                    new PolicyInformation(policies[i]);
+            certificatePolicies.addPolicyInformation(policyInformation);
         }
+
+        byte[] encoding = certificatePolicies.getEncoded();
+        List policyInformations = ((CertificatePolicies) 
+                CertificatePolicies.ASN1.decode(encoding))
+                .getPolicyInformations();
+        Iterator it = policyInformations.iterator();
+        ((PolicyInformation) it.next()).getPolicyIdentifier();
     }
     
     public static Test suite() {

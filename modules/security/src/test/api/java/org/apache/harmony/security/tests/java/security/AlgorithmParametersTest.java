@@ -557,7 +557,7 @@ public class AlgorithmParametersTest extends TestCase {
         try {
             params.init(enc, "DOUGLASMAWSON");
             fail("unsupported format should have raised IOException");
-        } catch (Exception e) {
+        } catch (IOException e) {
             // expected
         }
     }

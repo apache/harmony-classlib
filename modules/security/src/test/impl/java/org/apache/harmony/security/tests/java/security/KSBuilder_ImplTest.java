@@ -342,13 +342,8 @@ public class KSBuilder_ImplTest extends TestCase {
 
             while (iter.hasMoreElements()) {
                 aName = (String) iter.nextElement();
-                try {
-                    assertEquals("Incorrect ProtectionParameter", ksB
-                            .getProtectionParameter(aName), pp[i]);
-                } catch (Exception e) {
-                    fail("Unexpected: " + e.toString()
-                            + " was thrown for alias: " + aName);
-                }
+                assertEquals("Incorrect ProtectionParameter", ksB
+                        .getProtectionParameter(aName), pp[i]);
             }
 
             try {

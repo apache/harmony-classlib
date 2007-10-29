@@ -352,72 +352,57 @@ public class X509CertFactoryPerfTest extends TestCase {
 
     private static int XXX = 0, flag = 0;
 
-    public void testCreationCRL() {
-        try {
-            byte[] stamp = new byte[10];
-            if ((++flag)%2 != 0) {
-                XXX++;
-            }
-            byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
-            System.arraycopy(tmp, 0, stamp, 0, tmp.length);
-            System.arraycopy(stamp, 0, certEncoding, 
-                    certEncoding.length-stamp.length, stamp.length);
+    public void testCreationCRL() throws Exception {
+        byte[] stamp = new byte[10];
+        if ((++flag)%2 != 0) {
+            XXX++;
+        }
+        byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
+        System.arraycopy(tmp, 0, stamp, 0, tmp.length);
+        System.arraycopy(stamp, 0, certEncoding, 
+                certEncoding.length-stamp.length, stamp.length);
 
-            stream.reset();
-            java.security.cert.Certificate c = factory.generateCertificate(stream);
+        stream.reset();
+        java.security.cert.Certificate c = factory.generateCertificate(stream);
 
-            byte[] enc = c.getEncoded();
-            byte[] stamp_chek = new byte[stamp.length];
-            
-            System.arraycopy(enc, enc.length - stamp.length, 
-                    stamp_chek, 0, stamp.length);
-           
-            if (!Arrays.equals(stamp, stamp_chek)) {
-                fail("Wrong encoding received.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Creation of a certificate from a stream failed:"+e.getMessage());
+        byte[] enc = c.getEncoded();
+        byte[] stamp_chek = new byte[stamp.length];
+        
+        System.arraycopy(enc, enc.length - stamp.length, 
+                stamp_chek, 0, stamp.length);
+       
+        if (!Arrays.equals(stamp, stamp_chek)) {
+            fail("Wrong encoding received.");
         }
     }
     
-    public void testCreation1() {
-        try {
-            byte[] stamp = new byte[10];
-            if ((++flag)%2 != 0) {
-                XXX++;
-            }
-            byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
-            System.arraycopy(tmp, 0, stamp, 0, tmp.length);
-            System.arraycopy(stamp, 0, certEncoding, 
-                    certEncoding.length-stamp.length, stamp.length);
+    public void testCreation1() throws Exception {
+        byte[] stamp = new byte[10];
+        if ((++flag)%2 != 0) {
+            XXX++;
+        }
+        byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
+        System.arraycopy(tmp, 0, stamp, 0, tmp.length);
+        System.arraycopy(stamp, 0, certEncoding, 
+                certEncoding.length-stamp.length, stamp.length);
 
-            stream.reset();
-            java.security.cert.Certificate c = factory.generateCertificate(stream);
+        stream.reset();
+        java.security.cert.Certificate c = factory.generateCertificate(stream);
 
-            byte[] enc = c.getEncoded();
-            byte[] stamp_chek = new byte[stamp.length];
-            
-            System.arraycopy(enc, enc.length - stamp.length, 
-                    stamp_chek, 0, stamp.length);
-           
-            if (!Arrays.equals(stamp, stamp_chek)) {
-                fail("Wrong encoding received.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Creation of a certificate from a stream failed:"+e.getMessage());
+        byte[] enc = c.getEncoded();
+        byte[] stamp_chek = new byte[stamp.length];
+        
+        System.arraycopy(enc, enc.length - stamp.length, 
+                stamp_chek, 0, stamp.length);
+       
+        if (!Arrays.equals(stamp, stamp_chek)) {
+            fail("Wrong encoding received.");
         }
     }
     
-    public void testCreation2() {
-        try {
-            stream_b64.reset();
-            factory.generateCertificate(stream_b64);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Creation of a certificate from a stream failed:"+e.getMessage());
-        }
+    public void testCreation2() throws Exception {
+        stream_b64.reset();
+        factory.generateCertificate(stream_b64);
     }
     
     /**
@@ -635,22 +620,18 @@ public class X509CertFactoryPerfTest extends TestCase {
     /**
      * getExtendedKeyUsage() method testing.
      */
-    public void testGetExtendedKeyUsage() {
-        try {
-            List exku = certificate.getExtendedKeyUsage();
-            if ((exku == null) 
-                    || (exku.size() != extnExtendedKeyUsage.size())) {
-                fail("Incorrect Extended Key Usage value.");
+    public void testGetExtendedKeyUsage() throws Exception {
+        List exku = certificate.getExtendedKeyUsage();
+        if ((exku == null) 
+                || (exku.size() != extnExtendedKeyUsage.size())) {
+            fail("Incorrect Extended Key Usage value.");
+        }
+        for (int i=0; i<extnExtendedKeyUsage.size(); i++) {
+            String ku = ObjectIdentifier
+                    .toString((int[]) extnExtendedKeyUsage.get(i));
+            if (!exku.contains(ku)) {
+                fail("Missing value:" + ku);
             }
-            for (int i=0; i<extnExtendedKeyUsage.size(); i++) {
-                String ku = ObjectIdentifier
-                        .toString((int[]) extnExtendedKeyUsage.get(i));
-                if (!exku.contains(ku)) {
-                    fail("Missing value:" + ku);
-                }
-            }
-        } catch (Exception e) {
-            fail("Incorrect Key Usage value.");
         }
     }
     
@@ -816,25 +797,17 @@ public class X509CertFactoryPerfTest extends TestCase {
      * verify(PublicKey key) method testing.
      */
     public void testVerify1() throws Exception {
-        try {
-            certificate.verify(publicKey);
-        } catch (Exception e) {
-            fail("Signature verifying process failed.");
-        }
+        certificate.verify(publicKey);
     }
     
     /**
      * TODO
      * verify(PublicKey key, String sigProvider) method testing.
      */
-    public void testVerify2() {
-        try {
-            certificate.verify(publicKey, 
-                    Signature.getInstance("SHA1withDSA")
-                                    .getProvider().getName());
-        } catch (Exception e) {
-            fail("Signature verifying process failed.");
-        }
+    public void testVerify2() throws Exception {
+        certificate.verify(publicKey, 
+               Signature.getInstance("SHA1withDSA")
+                               .getProvider().getName());
     }
     
     /**

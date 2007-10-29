@@ -244,37 +244,32 @@ public class X509CRLImplTest extends TestCase {
     
     private static int XXX = 0, counter = 0;
 
-    public void testCreationCRL() {
-        try {
-            byte[] stamp = new byte[10];
-            if ((++counter)%10 != 0) {
-                XXX++;
-            }
-            byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
-            System.arraycopy(tmp, 0, stamp, 0, tmp.length);
-            System.arraycopy(stamp, 0, encoding, 
-                    encoding.length-stamp.length, stamp.length);
+    public void testCreationCRL() throws Exception {
+        byte[] stamp = new byte[10];
+        if ((++counter)%10 != 0) {
+            XXX++;
+        }
+        byte tmp[] = BigInteger.valueOf(XXX).toByteArray();
+        System.arraycopy(tmp, 0, stamp, 0, tmp.length);
+        System.arraycopy(stamp, 0, encoding, 
+                encoding.length-stamp.length, stamp.length);
 
-            stream.reset();
-            java.security.cert.X509CRL c = (java.security.cert.X509CRL)
-                factory.generateCRL(stream);
-            
-            if (counter == 1) {
-                System.out.println("\nUSING: "+ c.getClass());
-            }
-            
-            byte[] enc = c.getEncoded();
-            byte[] stamp_chek = new byte[stamp.length];
-            
-            System.arraycopy(enc, enc.length - stamp.length, 
-                    stamp_chek, 0, stamp.length);
-           
-            if (!Arrays.equals(stamp, stamp_chek)) {
-                fail("Wrong encoding received.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Creation of a crl from a stream failed:"+e.getMessage());
+        stream.reset();
+        java.security.cert.X509CRL c = (java.security.cert.X509CRL)
+            factory.generateCRL(stream);
+        
+        if (counter == 1) {
+            System.out.println("\nUSING: "+ c.getClass());
+        }
+        
+        byte[] enc = c.getEncoded();
+        byte[] stamp_chek = new byte[stamp.length];
+        
+        System.arraycopy(enc, enc.length - stamp.length, 
+                stamp_chek, 0, stamp.length);
+       
+        if (!Arrays.equals(stamp, stamp_chek)) {
+            fail("Wrong encoding received.");
         }
     }
 

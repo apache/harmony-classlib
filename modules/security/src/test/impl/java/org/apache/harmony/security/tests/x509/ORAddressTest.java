@@ -55,28 +55,22 @@ public class ORAddressTest extends TestCase {
      * ORAddress() method testing.
      */
     public void testORAddress() {
-        try {
-            ORAddress ora = new ORAddress();
-            System.out.println("");
-            System.out.println("ORAddress:");
-            printAsHex(8, "", " ", ora.getEncoded());
-            System.out.println("");
-            
-            GeneralName gName = new GeneralName(ora);
-            System.out.println("GeneralName:");
-            printAsHex(8, "", " ", gName.getEncoded());
-            System.out.println("");
+        ORAddress ora = new ORAddress();
+        System.out.println("");
+        System.out.println("ORAddress:");
+        printAsHex(8, "", " ", ora.getEncoded());
+        System.out.println("");
+        
+        GeneralName gName = new GeneralName(ora);
+        System.out.println("GeneralName:");
+        printAsHex(8, "", " ", gName.getEncoded());
+        System.out.println("");
 
-            GeneralNames gNames = new GeneralNames();
-            gNames.addName(gName);
-            System.out.println("GeneralNames:");
-            printAsHex(8, "", " ", gNames.getEncoded());
-            System.out.println("");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Exception was thrown.");
-        }
+        GeneralNames gNames = new GeneralNames();
+        gNames.addName(gName);
+        System.out.println("GeneralNames:");
+        printAsHex(8, "", " ", gNames.getEncoded());
+        System.out.println("");
     }
     
     public static Test suite() {
