@@ -79,7 +79,7 @@ public class DriverManagerTest extends TestCase {
      * 
      * @throws SQLException
      */
-    public void testDeregisterDriver() throws SQLException {
+    public void testDeregisterDriver() throws Exception {
         // First get one of the drivers loaded by the test
         Driver aDriver;
         aDriver = DriverManager.getDriver(baseURL4);
@@ -103,24 +103,17 @@ public class DriverManagerTest extends TestCase {
         // TODO - need to load a driver with a different classloader!!
         aDriver = DriverManager.getDriver(baseURL1);
 
-        try {
-            Class<?> driverClass = Class
-                    .forName(
-                            "org.apache.harmony.sql.tests.java.sql.TestHelper_DriverManager",
-                            true, testClassLoader);
+        Class<?> driverClass = Class
+                .forName(
+                        "org.apache.harmony.sql.tests.java.sql.TestHelper_DriverManager",
+                        true, testClassLoader);
 
-            // Give the Helper class one of our drivers....
-            Class<?>[] methodClasses = { Class.forName("java.sql.Driver") };
-            Method theMethod = driverClass.getDeclaredMethod("setDriver",
-                    methodClasses);
-            Object[] args = { aDriver };
-            theMethod.invoke(null, args);
-        } catch (Exception e) {
-            System.out
-                    .println("testDeregisterDriver: Got exception allocating TestHelper");
-            e.printStackTrace();
-            return;
-        } // end try
+        // Give the Helper class one of our drivers....
+        Class<?>[] methodClasses = { Class.forName("java.sql.Driver") };
+        Method theMethod = driverClass.getDeclaredMethod("setDriver",
+                methodClasses);
+        Object[] args = { aDriver };
+        theMethod.invoke(null, args);
 
         // Check that the driver was not deregistered
         assertTrue(
