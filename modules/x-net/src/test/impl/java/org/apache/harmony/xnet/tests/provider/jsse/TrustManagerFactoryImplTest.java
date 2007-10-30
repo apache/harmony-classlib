@@ -69,7 +69,7 @@ public class TrustManagerFactoryImplTest extends TestCase {
         }
     }
 
-    public void testEngineGetTrustManagers() {
+    public void testEngineGetTrustManagers() throws Exception {
         TrustManagerFactoryImpl tmf = new TrustManagerFactoryImpl();
         try {
             tmf.engineGetTrustManagers();
@@ -78,13 +78,10 @@ public class TrustManagerFactoryImplTest extends TestCase {
             // expected
         }
         KeyStore ks;
-        try {
-            ks = KeyStore.getInstance("BKS");
-            ks.load(null, null);
-            tmf.engineInit(ks);
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        ks = KeyStore.getInstance("BKS");
+        ks.load(null, null);
+        tmf.engineInit(ks);
+
         TrustManager[] tma = tmf.engineGetTrustManagers();
         assertEquals("Incorrect array length", 1, tma.length);
         assertTrue("Incorrect KeyManager type",

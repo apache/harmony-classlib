@@ -338,7 +338,7 @@ public class KeyManagerFactory1Test extends TestCase {
      * Test for <code>KeyManagerFactory</code> constructor 
      * Assertion: returns KeyManagerFactory object
      */
-    public void testKeyManagerFactory10() throws NoSuchAlgorithmException {
+    public void testKeyManagerFactory10() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportedMsg);
             return;
@@ -354,9 +354,9 @@ public class KeyManagerFactory1Test extends TestCase {
             keyMF.init(null, new char[1]);
             fail("UnrecoverableKeyException must be thrown");
         } catch (UnrecoverableKeyException e) {
-        } catch (Exception e) {
-            fail("Unexpected: "+e.toString()+" was thrown");
+            // Expected
         }
+
         keyMF = new myKeyManagerFactory(null, null, null);
         assertTrue("Not CertStore object", keyMF instanceof KeyManagerFactory);
         assertNull("Aalgorithm must be null", keyMF.getAlgorithm());
@@ -372,8 +372,7 @@ public class KeyManagerFactory1Test extends TestCase {
      * <code>getKeyManagers()</code> 
      * Assertion: returns not empty KeyManager array
      */
-    public void testKeyManagerFactory11() throws NoSuchAlgorithmException,
-            KeyStoreException, UnrecoverableKeyException {
+    public void testKeyManagerFactory11() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportedMsg);
             return;
@@ -390,16 +389,9 @@ public class KeyManagerFactory1Test extends TestCase {
                     (km.length > 0));
         }
         KeyStore ks;
-        try {
-            ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            ks.load(null, null);
-        } catch (KeyStoreException e) {
-            fail(e.toString() + "default KeyStore type is not supported");
-            return;
-        } catch (Exception e) {
-            fail("Unexpected: " + e.toString());
-            return;
-        }
+        ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(null, null);
+
         for (int i = 0; i < keyMF.length; i++) {
             try {
                 keyMF[i].init(ks, new char[10]);

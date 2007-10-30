@@ -372,24 +372,16 @@ public class TrustManagerFactory1Test extends TestCase {
      * <code>getTrustManagers()</code>
      * Assertion: returns not empty TrustManager array
      */
-    public void testTrustManagerFactory11() throws NoSuchAlgorithmException,
-            KeyStoreException {
+    public void testTrustManagerFactory11() throws Exception {
         if (!DEFSupported) {
             fail(NotSupportedMsg);
             return;
         }
         KeyStore ks;
         KeyStore ksNull = null;
-        try {
-            ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            ks.load(null, null);            
-        } catch (KeyStoreException e) {
-            fail(e.toString() + "default KeyStore type is not supported");
-            return;
-        } catch (Exception e) {
-            fail("Unexpected: " + e.toString());
-            return;
-        }
+        ks = KeyStore.getInstance(KeyStore.getDefaultType());
+        ks.load(null, null);            
+ 
         TrustManager[] tm;
         TrustManagerFactory[] trustMF = createTMFac();
         assertNotNull("TrustManagerFactory objects were not created", trustMF);
