@@ -17,51 +17,49 @@
 package org.apache.harmony.tests.java.util.regex;
 
 import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 
 /**
  * Test boundary and error conditions in java.util.regex.Pattern
- * 
  */
+@SuppressWarnings("nls")
 public class PatternErrorTest extends TestCase {
-	public void testCompileErrors() throws Exception {
-		// null regex string - should get NullPointerException
-		try {
-			Pattern.compile(null);
+    public void testCompileErrors() throws Exception {
+        // null regex string - should get NullPointerException
+        try {
+            Pattern.compile(null);
             fail("NullPointerException expected");
-		} catch (NullPointerException e) {
-		}
+        } catch (NullPointerException e) {
+        }
 
+        // empty regex string - no exception should be thrown
+        Pattern.compile("");
 
-		// empty regex string - no exception should be thrown
-		Pattern.compile("");
+        // note: invalid regex syntax checked in PatternSyntaxExceptionTest
 
-		// note: invalid regex syntax checked in PatternSyntaxExceptionTest
+        // flags = 0 should raise no exception
+        int flags = 0;
+        Pattern.compile("foo", flags);
 
-		// flags = 0 should raise no exception
-		int flags = 0;
-		Pattern.compile("foo", flags);
+        // check that all valid flags accepted without exception
+        flags |= Pattern.UNIX_LINES;
+        flags |= Pattern.CASE_INSENSITIVE;
+        flags |= Pattern.MULTILINE;
+        flags |= Pattern.CANON_EQ;
+        flags |= Pattern.COMMENTS;
+        flags |= Pattern.DOTALL;
+        flags |= Pattern.UNICODE_CASE;
+        Pattern.compile("foo", flags);
 
-		// check that all valid flags accepted without exception
-		flags |= Pattern.UNIX_LINES;
-		flags |= Pattern.CASE_INSENSITIVE;
-		flags |= Pattern.MULTILINE;
-		flags |= Pattern.CANON_EQ;
-		flags |= Pattern.COMMENTS;
-		flags |= Pattern.DOTALL;
-		flags |= Pattern.UNICODE_CASE;
-		Pattern.compile("foo", flags);
-
-		// add invalid flags - should get IllegalArgumentException
+        // add invalid flags - should get IllegalArgumentException
         // regression test for HARMONY-4248
-		flags |= 0xFFFFFFFF;
-		try {
-		    Pattern.compile("foo",flags);
-		} catch (IllegalArgumentException e) {
-		    // This is the expected exception
-                    return;
-		}
-
-                fail("Expected IllegalArgumentException to be thrown");
-	}
+        flags |= 0xFFFFFFFF;
+        try {
+            Pattern.compile("foo", flags);
+            fail("Expected IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            // This is the expected exception
+        }
+    }
 }
