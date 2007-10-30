@@ -55,15 +55,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * an instance is created. Fields content and next are null and type is 0.
      */
     public void testContentModel001() {
-        try {
-            cm = new ContentModel();
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel();
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /*
@@ -77,15 +73,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next are null and type is 0.
      */
     public void testContentModelElement001() {
-        try {
-            cm = new ContentModel(null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -97,27 +89,22 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null.
      */
     public void testContentModelElement003() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(cm2, el.content);
-            assertEquals(el, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(cm2, el.content);
+        assertEquals(el, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -129,26 +116,22 @@ public class ContentModelCompatilityTest extends TestCase {
      * content is equal to el ,type is 0 and next is null.
      */
     public void testContentModelElement004() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(el);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(cm2, el.content);
-            assertEquals(el, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(el);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(cm2, el.content);
+        assertEquals(el, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -159,20 +142,16 @@ public class ContentModelCompatilityTest extends TestCase {
      * null.
      */
     public void testContentModelElement005() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertNull(el.content);
-            assertEquals(el, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertNull(el.content);
+        assertEquals(el, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /*
@@ -188,16 +167,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntContentModel001() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(0, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(0, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -208,16 +183,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * Integer.MIN_VALUE and next is null
      */
     public void testContentModelIntContentModel002() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(Integer.MIN_VALUE, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(Integer.MIN_VALUE, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -228,16 +199,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * Integer.MAX_VALUE and next is null
      */
     public void testContentModelIntContentModel003() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(Integer.MAX_VALUE, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(Integer.MAX_VALUE, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(Integer.MAX_VALUE, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(Integer.MAX_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -248,16 +215,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntContentModel004() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(42, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(42, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(42, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(42, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -268,16 +231,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntContentModel005() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(43, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(43, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(43, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(43, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -288,16 +247,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntContentModel006() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(44, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(44, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(44, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(44, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -308,16 +263,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntContentModel007() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(63, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(63, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(63, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(63, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -328,16 +279,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntContentModel008() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(124, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(124, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(124, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(124, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -348,16 +295,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntContentModel009() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(38, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(38, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(38, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(38, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -367,15 +310,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 0 and next is null
      */
     public void testContentModelIntContentModel010() {
-        try {
-            cm = new ContentModel(0, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(0, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -386,15 +325,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntContentModel011() {
-        try {
-            cm = new ContentModel(Integer.MIN_VALUE, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(Integer.MIN_VALUE, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -405,15 +340,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntContentModel012() {
-        try {
-            cm = new ContentModel(Integer.MAX_VALUE, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(Integer.MAX_VALUE, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(Integer.MAX_VALUE, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(Integer.MAX_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -423,15 +354,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 42 and next is null
      */
     public void testContentModelIntContentModel013() {
-        try {
-            cm = new ContentModel(42, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(42, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(42, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(42, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -441,15 +368,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 43 and next is null
      */
     public void testContentModelIntContentModel014() {
-        try {
-            cm = new ContentModel(43, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(43, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(43, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(43, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -459,15 +382,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 44 and next is null
      */
     public void testContentModelIntContentModel015() {
-        try {
-            cm = new ContentModel(44, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(44, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(44, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(44, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -477,15 +396,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 63 and next is null
      */
     public void testContentModelIntContentModel016() {
-        try {
-            cm = new ContentModel(63, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(63, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(63, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(63, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -495,16 +410,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 124 and next is null
      */
     public void testContentModelIntContentModel017() {
-        try {
-            cm = new ContentModel(124, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(124, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(124, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(124, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -514,16 +424,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * created. content is equal to null, type is 38 and next is null
      */
     public void testContentModelIntContentModel018() {
-        try {
-            cm = new ContentModel(38, null);
-            assertNotNull(cm);
-            assertNull(cm.content);
-            assertEquals(38, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(38, null);
+        assertNotNull(cm);
+        assertNull(cm.content);
+        assertEquals(38, cm.type);
+        assertNull(cm.next);
     }
 
 
@@ -535,18 +440,13 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(0,ContentModel()), type is 0 and next is null
      */
     public void testContentModelIntContentModel028() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(0, cm2);
-            cm = new ContentModel(0, cm3);
-            assertNotNull(cm);
-            assertEquals(cm3, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(0, cm2);
+        cm = new ContentModel(0, cm3);
+        assertNotNull(cm);
+        assertEquals(cm3, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -559,18 +459,13 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntContentModel029() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(Integer.MAX_VALUE, cm2);
-            cm = new ContentModel(Integer.MIN_VALUE, cm3);
-            assertNotNull(cm);
-            assertEquals(cm3, cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(Integer.MAX_VALUE, cm2);
+        cm = new ContentModel(Integer.MIN_VALUE, cm3);
+        assertNotNull(cm);
+        assertEquals(cm3, cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -583,18 +478,13 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntContentModel030() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(Integer.MIN_VALUE, cm2);
-            cm = new ContentModel(Integer.MAX_VALUE, cm3);
-            assertNotNull(cm);
-            assertEquals(cm3, cm.content);
-            assertEquals(Integer.MAX_VALUE, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(Integer.MIN_VALUE, cm2);
+        cm = new ContentModel(Integer.MAX_VALUE, cm3);
+        assertNotNull(cm);
+        assertEquals(cm3, cm.content);
+        assertEquals(Integer.MAX_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -605,18 +495,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * 42 and next is null
      */
     public void testContentModelIntContentModel031() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(42, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(42, cm.type);
-            assertNull(cm.next);
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(42, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(42, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -627,18 +511,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * 43 and next is null
      */
     public void testContentModelIntContentModel032() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(43, cm2);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(43, cm.type);
-            assertNull(cm.next);
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(43, cm2);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(43, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -650,26 +528,22 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null.
      */
     public void testContentModelIntContentModel034() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(0, cm2);
-            assertNotNull(cm);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(0, cm2);
+        assertNotNull(cm);
 
-            assertEquals(cm2, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertEquals(cm2, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -681,26 +555,22 @@ public class ContentModelCompatilityTest extends TestCase {
      * content is equal to el ,type is 0 and next is null.
      */
     public void testContentModelIntContentModel035() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(43, cm2);
-            assertNotNull(cm);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(43, cm2);
+        assertNotNull(cm);
 
-            assertEquals(cm2, cm.content);
-            assertEquals(43, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertEquals(cm2, cm.content);
+        assertEquals(43, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -712,20 +582,16 @@ public class ContentModelCompatilityTest extends TestCase {
      * ,type is 0 and next is null.
      */
     public void testContentModelIntContentModel036() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            assertNotNull(cm2);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        assertNotNull(cm2);
 
-            assertEquals(cm, cm2.content);
-            assertEquals(0, cm2.type);
-            assertNull(cm2.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertEquals(cm, cm2.content);
+        assertEquals(0, cm2.type);
+        assertNull(cm2.next);
     }
 
     /*
@@ -1250,16 +1116,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntObjectContentModel043() {
-        try {
-            dtd = new DTDGetter("hi");
-            cm = new ContentModel(38, dtd, null);
-            assertNotNull(cm);
-            assertNull(cm.next);
-            assertEquals(38, cm.type);
-            assertEquals(dtd, cm.content);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("hi");
+        cm = new ContentModel(38, dtd, null);
+        assertNotNull(cm);
+        assertNull(cm.next);
+        assertEquals(38, cm.type);
+        assertEquals(dtd, cm.content);
     }
 
 
@@ -1273,24 +1135,20 @@ public class ContentModelCompatilityTest extends TestCase {
      * type is -38 and next is null
      */
     public void testContentModelIntObjectContentModel045() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(-38, el, null);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(-38, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(-38, el, null);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(-38, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1304,25 +1162,21 @@ public class ContentModelCompatilityTest extends TestCase {
      * is 0 and next is null
      */
     public void testContentModelIntObjectContentModel046() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(3);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", '.', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            cm = new ContentModel(0, cm2, null);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(3);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", '.', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        cm = new ContentModel(0, cm2, null);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1338,24 +1192,20 @@ public class ContentModelCompatilityTest extends TestCase {
      * null
      */
     public void testContentModelIntObjectContentModel047() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(Integer.MIN_VALUE, el, null);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(Integer.MIN_VALUE, el, null);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1368,18 +1218,14 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is null
      */
     public void testContentModelIntObjectContentModel048() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(Integer.MAX_VALUE, el, null);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(Integer.MAX_VALUE, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(Integer.MAX_VALUE, el, null);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(Integer.MAX_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1393,26 +1239,22 @@ public class ContentModelCompatilityTest extends TestCase {
      * next is null
      */
     public void testContentModelIntObjectContentModel049() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
 
-            cm = new ContentModel(42, cm2, null);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(42, cm.type);
-            assertNull(cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(42, cm2, null);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(42, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1433,26 +1275,21 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null)))
      */
     public void testContentModelIntObjectContentModel050() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            cm = new ContentModel(0, cm2, null);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(0, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        cm = new ContentModel(0, cm2, null);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(0, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1466,21 +1303,16 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testContentModelIntObjectContentModel051() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            cm = new ContentModel(Integer.MIN_VALUE, cm2, null);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertNull(cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        cm = new ContentModel(Integer.MIN_VALUE, cm2, null);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertNull(cm.next);
     }
 
     /**
@@ -1725,17 +1557,13 @@ public class ContentModelCompatilityTest extends TestCase {
      * new DTDGetter("hi"), type is 38 and next is new ContentModel()
      */
     public void testContentModelIntObjectContentModel076() {
-        try {
-            ContentModel cmnext = new ContentModel();
-            dtd = new DTDGetter("hi");
-            cm = new ContentModel(38, dtd, cmnext);
-            assertNotNull(cm);
-            assertEquals(cmnext, cm.next);
-            assertEquals(38, cm.type);
-            assertEquals(dtd, cm.content);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cmnext = new ContentModel();
+        dtd = new DTDGetter("hi");
+        cm = new ContentModel(38, dtd, cmnext);
+        assertNotNull(cm);
+        assertEquals(cmnext, cm.next);
+        assertEquals(38, cm.type);
+        assertEquals(dtd, cm.content);
     }
 
 
@@ -1750,26 +1578,22 @@ public class ContentModelCompatilityTest extends TestCase {
      * to null, type is 0 and next is new ContentModel()
      */
     public void testContentModelIntObjectContentModel079() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cmnext = new ContentModel();
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            cm = new ContentModel(0, cm2, cmnext);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(0, cm.type);
-            assertEquals(cmnext, cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cmnext = new ContentModel();
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        cm = new ContentModel(0, cm2, cmnext);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(0, cm.type);
+        assertEquals(cmnext, cm.next);
     }
 
     /**
@@ -1785,25 +1609,21 @@ public class ContentModelCompatilityTest extends TestCase {
      * new ContentModel()
      */
     public void testContentModelIntObjectContentModel080() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cmnext = new ContentModel();
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(Integer.MIN_VALUE, el, cmnext);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertEquals(cmnext, cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cmnext = new ContentModel();
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(Integer.MIN_VALUE, el, cmnext);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertEquals(cmnext, cm.next);
     }
 
     /**
@@ -1816,19 +1636,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is new ContentModel()
      */
     public void testContentModelIntObjectContentModel081() {
-        try {
-            ContentModel cmnext = new ContentModel();
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(Integer.MAX_VALUE, el, cmnext);
-            assertNotNull(cm);
-            assertEquals(el, cm.content);
-            assertEquals(Integer.MAX_VALUE, cm.type);
-            assertEquals(cmnext, cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cmnext = new ContentModel();
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(Integer.MAX_VALUE, el, cmnext);
+        assertNotNull(cm);
+        assertEquals(el, cm.content);
+        assertEquals(Integer.MAX_VALUE, cm.type);
+        assertEquals(cmnext, cm.next);
     }
 
     /**
@@ -1842,27 +1658,23 @@ public class ContentModelCompatilityTest extends TestCase {
      * and next is new ContentModel()
      */
     public void testContentModelIntObjectContentModel082() {
-        try {
-            ContentModel cmnext = new ContentModel();
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
+        ContentModel cmnext = new ContentModel();
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
 
-            cm = new ContentModel(42, cm2, cmnext);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(42, cm.type);
-            assertEquals(cmnext, cm.next);
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(42, cm2, cmnext);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(42, cm.type);
+        assertEquals(cmnext, cm.next);
     }
 
     /**
@@ -1884,28 +1696,23 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null)))
      */
     public void testContentModelIntObjectContentModel083() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cmnext = new ContentModel();
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cmnext = new ContentModel();
 
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            cm = new ContentModel(0, cm2, cmnext);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(0, cm.type);
-            assertEquals(cmnext, cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        cm = new ContentModel(0, cm2, cmnext);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(0, cm.type);
+        assertEquals(cmnext, cm.next);
     }
 
     /**
@@ -1920,22 +1727,17 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testContentModelIntObjectContentModel084() {
-        try {
-            ContentModel cmnext = new ContentModel();
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            cm = new ContentModel(Integer.MIN_VALUE, cm2, cmnext);
-            assertNotNull(cm);
-            assertEquals(cm2, cm.content);
-            assertEquals(Integer.MIN_VALUE, cm.type);
-            assertEquals(cmnext, cm.next);
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cmnext = new ContentModel();
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        cm = new ContentModel(Integer.MIN_VALUE, cm2, cmnext);
+        assertNotNull(cm);
+        assertEquals(cm2, cm.content);
+        assertEquals(Integer.MIN_VALUE, cm.type);
+        assertEquals(cmnext, cm.next);
     }
 
     /**
@@ -1948,9 +1750,8 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: " + e.getClass() + " " + e.getMessage());
-        }
+            // Expected
+        } 
     }
 
     /**
@@ -1964,8 +1765,7 @@ public class ContentModelCompatilityTest extends TestCase {
 
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -1976,23 +1776,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Expected: "elemento"
      */
     public void testToString004() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
 
-            assertEquals("elemento", cm.toString());
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertEquals("elemento", cm.toString());
     }
 
     /**
@@ -2001,23 +1796,18 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testToString005() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(el);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(el);
 
-            assertEquals("", cm.toString());
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertEquals("", cm.toString());
     }
 
     /**
@@ -2025,17 +1815,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(Element("1",0,true,true,null,null,null,null)) Expected: "1"
      */
     public void testToString006() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
 
-            assertEquals("1", cm.toString());
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertEquals("1", cm.toString());
     }
 
     /**
@@ -2049,8 +1834,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2066,8 +1850,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2083,8 +1866,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2099,8 +1881,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2109,12 +1890,8 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=43, null Expected result is "null+"
      */
     public void testToString011() {
-        try {
-            cm = new ContentModel(43, null);
-            assertEquals("null+", cm.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(43, null);
+        assertEquals("null+", cm.toString());
     }
 
     /**
@@ -2122,12 +1899,8 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=44, null Expected result is "()"
      */
     public void testToString012() {
-        try {
             cm = new ContentModel(44, null);
             assertEquals("()", cm.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
     }
 
     /**
@@ -2144,9 +1917,8 @@ public class ContentModelCompatilityTest extends TestCase {
 
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
-        }
+            // Expected
+        } 
     }
 
     /**
@@ -2163,8 +1935,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2183,8 +1954,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.toString();
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2193,15 +1963,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=42, ContentModel(42,null) Expected result is "null**"
      */
     public void testToString019() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(42, cm2);
-            assertEquals("null**", cm.toString());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(42, cm2);
+        assertEquals("null**", cm.toString());
     }
 
     /**
@@ -2209,15 +1973,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=43, ContentModel(42,null) Expected result is "null*+"
      */
     public void testToString020() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(43, cm2);
-            assertEquals("null*+", cm.toString());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(43, cm2);
+        assertEquals("null*+", cm.toString());
     }
 
     /**
@@ -2227,22 +1985,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Expected result is "elemento"
      */
     public void testToString022() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(0, cm2);
-            assertEquals("elemento", cm.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(0, cm2);
+        assertEquals("elemento", cm.toString());
     }
 
     /**
@@ -2252,22 +2006,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null)) . Expected result is "+"
      */
     public void testToString023() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(43, cm2);
-            assertEquals("+", cm.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(43, cm2);
+        assertEquals("+", cm.toString());
     }
 
     /**
@@ -2277,16 +2027,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * instantiated Expected result is "1"
      */
     public void testToString024() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            assertEquals("1", cm.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        assertEquals("1", cm.toString());
     }
 
     /**
@@ -2294,15 +2040,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type='&', ContentModel('|',null) Expected result is "null|&"
      */
     public void testToString025() {
-        try {
-            ContentModel cm2 = new ContentModel('&', null);
-            cm = new ContentModel('|', cm2);
-            assertEquals("(())", cm.toString());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel('&', null);
+        cm = new ContentModel('|', cm2);
+        assertEquals("(())", cm.toString());
     }
 
 
@@ -2329,13 +2069,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(0,cm2) Expected result is false
      */
     public void testEmpty003() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(0, cm2);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(0, cm2);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2345,21 +2081,17 @@ public class ContentModelCompatilityTest extends TestCase {
      * Expected result is false
      */
     public void testEmpty004() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2369,23 +2101,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Expected result is false
      */
     public void testEmpty005() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(el);
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(el);
 
-            assertFalse(cm.empty());
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2394,15 +2121,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * result is false
      */
     public void testEmpty006() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        assertFalse(cm.empty());
     }
 
 
@@ -2412,13 +2135,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * false
      */
     public void testEmpty008() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(Integer.MIN_VALUE, cm2);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(Integer.MIN_VALUE, cm2);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2427,13 +2146,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * false
      */
     public void testEmpty009() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(Integer.MAX_VALUE, cm2);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(Integer.MAX_VALUE, cm2);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2441,13 +2156,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=42, ContentModel() Expected result is true
      */
     public void testEmpty010() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(42, cm2);
-            assertTrue(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(42, cm2);
+        assertTrue(cm.empty());
     }
 
     /**
@@ -2455,12 +2166,8 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=43, null Expected result is false
      */
     public void testEmpty011() {
-        try {
-            cm = new ContentModel(43, null);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(43, null);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2468,12 +2175,8 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=44, null Expected result is true
      */
     public void testEmpty012() {
-        try {
-            cm = new ContentModel(44, null);
-            assertTrue(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(44, null);
+        assertTrue(cm.empty());
     }
 
     /**
@@ -2482,15 +2185,10 @@ public class ContentModelCompatilityTest extends TestCase {
      * false
      */
     public void testEmpty016() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(0, cm2);
-            cm = new ContentModel(0, cm3);
-            assertFalse(cm.empty());
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(0, cm2);
+        cm = new ContentModel(0, cm3);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2499,14 +2197,10 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(Integer.MAX_VALUE,ContentModel()) Expected result is false
      */
     public void testEmpty017() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(Integer.MAX_VALUE, cm2);
-            cm = new ContentModel(Integer.MIN_VALUE, cm3);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(Integer.MAX_VALUE, cm2);
+        cm = new ContentModel(Integer.MIN_VALUE, cm3);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2515,14 +2209,10 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(Integer.MIN_VALUE,ContentModel()) Expected result is false
      */
     public void testEmpty018() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(Integer.MIN_VALUE, cm2);
-            cm = new ContentModel(Integer.MAX_VALUE, cm3);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(Integer.MIN_VALUE, cm2);
+        cm = new ContentModel(Integer.MAX_VALUE, cm3);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2530,15 +2220,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=42, ContentModel(42,null) Expected result is True
      */
     public void testEmpty019() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(42, cm2);
-            assertTrue(cm.empty());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(42, cm2);
+        assertTrue(cm.empty());
     }
 
     /**
@@ -2546,15 +2230,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=43, ContentModel(42,null) Expected result is true
      */
     public void testEmpty020() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(43, cm2);
-            assertTrue(cm.empty());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(43, cm2);
+        assertTrue(cm.empty());
     }
 
     /**
@@ -2564,22 +2242,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Expected result is false
      */
     public void testEmpty022() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(0, cm2);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(0, cm2);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2589,22 +2263,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null)) Expected result is false
      */
     public void testEmpty023() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(43, cm2);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(43, cm2);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2613,16 +2283,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * "1",0,true,true,null,null,null,null)) Expected result is false
      */
     public void testEmpty024() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            assertFalse(cm.empty());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        assertFalse(cm.empty());
     }
 
     /**
@@ -2652,21 +2318,17 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel()),BitSet(0).set(1),BitSet(168).set(45),AttributeList("1")
      */
     public void testFirst004() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
-            assertEquals(el, cm.first());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
+        assertEquals(el, cm.first());
     }
 
     /**
@@ -2679,21 +2341,17 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null))
      */
     public void testFirst005() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(el);
-            assertEquals(el, cm.first());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(el);
+        assertEquals(el, cm.first());
     }
 
     /**
@@ -2702,15 +2360,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * Element("1",0,true,true,null,null,null,null)
      */
     public void testFirst006() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            assertEquals(el, cm.first());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        assertEquals(el, cm.first());
     }
 
     /**
@@ -2725,10 +2379,7 @@ public class ContentModelCompatilityTest extends TestCase {
             Element result = cm.first();
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -2744,10 +2395,7 @@ public class ContentModelCompatilityTest extends TestCase {
             Element result = cm.first();
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -2756,13 +2404,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=42, ContentModel() Expected result is null
      */
     public void testFirst010() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(42, cm2);
-            assertNull(cm.first());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(42, cm2);
+        assertNull(cm.first());
     }
 
     /**
@@ -2775,8 +2419,7 @@ public class ContentModelCompatilityTest extends TestCase {
             assertNull(cm.first());
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2790,8 +2433,7 @@ public class ContentModelCompatilityTest extends TestCase {
             assertNull(cm.first());
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -2809,10 +2451,7 @@ public class ContentModelCompatilityTest extends TestCase {
             Element result = cm.first();
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -2830,10 +2469,7 @@ public class ContentModelCompatilityTest extends TestCase {
             Element result = cm.first();
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -2851,10 +2487,7 @@ public class ContentModelCompatilityTest extends TestCase {
             Element result = cm.first();
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -2863,15 +2496,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=42, ContentModel(42,null) Expected result is null
      */
     public void testFirst019() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(42, cm2);
-            assertNull(cm.first());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(42, cm2);
+        assertNull(cm.first());
     }
 
     /**
@@ -2879,15 +2506,9 @@ public class ContentModelCompatilityTest extends TestCase {
      * Parameters type=43, ContentModel(42,null) Expected result is null
      */
     public void testFirst020() {
-        try {
-            ContentModel cm2 = new ContentModel(42, null);
-            cm = new ContentModel(43, cm2);
-            assertNull(cm.first());
-        }
-
-        catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel(42, null);
+        cm = new ContentModel(43, cm2);
+        assertNull(cm.first());
     }
 
 
@@ -2914,10 +2535,7 @@ public class ContentModelCompatilityTest extends TestCase {
             assertEquals(el, cm.first());
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -2931,22 +2549,18 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null))
      */
     public void testFirst023() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(43, cm2);
-            assertEquals(el, cm.first());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(43, cm2);
+        assertEquals(el, cm.first());
     }
 
     /**
@@ -2956,16 +2570,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * "1",0,true,true,null,null,null,null)
      */
     public void testFirst024() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            assertEquals(el, cm.first());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        assertEquals(el, cm.first());
     }
 
     /**
@@ -2973,12 +2583,8 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel().first(null) Expected: True
      */
     public void testFirstObject001() {
-        try {
-            cm = new ContentModel();
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel();
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -2986,12 +2592,8 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(null).first(null) Expected: True
      */
     public void testFirstObject002() {
-        try {
-            cm = new ContentModel(null);
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(null);
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3000,12 +2602,8 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testFirstObject003() {
-        try {
-            cm = new ContentModel(null);
-            assertFalse(cm.first(cm));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(null);
+        assertFalse(cm.first(cm));
     }
 
 
@@ -3018,31 +2616,27 @@ public class ContentModelCompatilityTest extends TestCase {
      * Expected: true
      */
     public void testFirstObject005() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
-            assertTrue(cm.first(el));
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
-            assertFalse(cm.first(dtd));
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
+        assertTrue(cm.first(el));
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
+        assertFalse(cm.first(dtd));
 
-            assertFalse(cm.first(bs1));
-            assertFalse(cm.first(bs2));
-            assertFalse(cm.first(al));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("elemento"));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(bs1));
+        assertFalse(cm.first(bs2));
+        assertFalse(cm.first(al));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("elemento"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3055,30 +2649,26 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testFirstObject006() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(el);
-            assertTrue(cm.first(el));
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
-            assertFalse(cm.first(dtd));
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(el);
+        assertTrue(cm.first(el));
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
+        assertFalse(cm.first(dtd));
 
-            assertFalse(cm.first(bs1));
-            assertFalse(cm.first(bs2));
-            assertFalse(cm.first(al));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(bs1));
+        assertFalse(cm.first(bs2));
+        assertFalse(cm.first(al));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3088,20 +2678,16 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testFirstObject007() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            assertTrue(cm.first(el));
-            assertFalse(cm.first(cm));
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        assertTrue(cm.first(el));
+        assertFalse(cm.first(cm));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3110,19 +2696,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel Expected: true
      */
     public void testFirstObject008() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(0, cm2);
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(0, cm2);
 
-            assertFalse(cm.first(cm));
-            assertTrue(cm.first(cm2));
+        assertFalse(cm.first(cm));
+        assertTrue(cm.first(cm2));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3131,19 +2713,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel in the ContentModel Expected: true
      */
     public void testFirstObject009() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(Integer.MIN_VALUE, cm2);
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(Integer.MIN_VALUE, cm2);
 
-            assertFalse(cm.first(cm));
-            assertTrue(cm.first(cm2));
+        assertFalse(cm.first(cm));
+        assertTrue(cm.first(cm2));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3152,19 +2730,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel in the ContentModel Expected: true
      */
     public void testFirstObject010() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(Integer.MAX_VALUE, cm2);
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(Integer.MAX_VALUE, cm2);
 
-            assertFalse(cm.first(cm));
-            assertTrue(cm.first(cm2));
+        assertFalse(cm.first(cm));
+        assertTrue(cm.first(cm2));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3172,19 +2746,14 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(42, ContentModel()) null Expected: true
      */
     public void testFirstObject011() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(42, cm2);
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(42, cm2);
 
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3192,19 +2761,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(43, ContentModel()) parameter is null Expected: true
      */
     public void testFirstObject012() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(43, cm2);
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(43, cm2);
 
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3212,19 +2777,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(44, ContentModel()) parameter is null Expected: true
      */
     public void testFirstObject013() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(44, cm2);
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(44, cm2);
 
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3232,18 +2793,14 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(63, ContentModel()) parameter is null Expected: true
      */
     public void testFirstObject014() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(63, cm2);
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(63, cm2);
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
 
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3258,8 +2815,7 @@ public class ContentModelCompatilityTest extends TestCase {
             assertTrue(cm.first(null));
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3275,8 +2831,7 @@ public class ContentModelCompatilityTest extends TestCase {
             assertTrue(cm.first(null));
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3292,10 +2847,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.first(cm);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3312,10 +2864,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.first(cm);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3331,10 +2880,7 @@ public class ContentModelCompatilityTest extends TestCase {
             boolean result = cm.first(cm2);
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3350,10 +2896,7 @@ public class ContentModelCompatilityTest extends TestCase {
             boolean result = cm.first(cm2);
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3369,10 +2912,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.first("");
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3390,8 +2930,7 @@ public class ContentModelCompatilityTest extends TestCase {
 
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3400,15 +2939,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(0,null); parameter is null expected: true
      */
     public void testFirstObject023() {
-        try {
-            cm = new ContentModel(0, null);
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(0, null);
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3416,15 +2951,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(Integer.MIN_VALUE,null); parameter is null expected: true
      */
     public void testFirstObject024() {
-        try {
-            cm = new ContentModel(Integer.MIN_VALUE, null);
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(Integer.MIN_VALUE, null);
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3432,15 +2963,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(Integer.MAX_VALUE,null); parameter is null expected: true
      */
     public void testFirstObject025() {
-        try {
-            cm = new ContentModel(Integer.MAX_VALUE, null);
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertTrue(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(Integer.MAX_VALUE, null);
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertTrue(cm.first(null));
     }
 
     /**
@@ -3454,8 +2981,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.first(cm);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3469,8 +2995,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.first(null);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3479,15 +3004,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(44,null); parameter is null expected: false
      */
     public void testFirstObject028() {
-        try {
-            cm = new ContentModel(44, null);
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(44, null);
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3500,8 +3021,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.first(null);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3516,10 +3036,7 @@ public class ContentModelCompatilityTest extends TestCase {
             boolean result = cm.first("");
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3533,10 +3050,7 @@ public class ContentModelCompatilityTest extends TestCase {
             boolean result = cm.first(cm);
             fail("Should raise ClassCastException, but was returned:" + result);
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -3547,20 +3061,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(0,ContentModel() expected: true
      */
     public void testFirstObject037() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(0, cm2);
-            cm = new ContentModel(0, cm3);
-            assertFalse(cm.first(cm2));
-            assertTrue(cm.first(cm3));
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(0, cm2);
+        cm = new ContentModel(0, cm3);
+        assertFalse(cm.first(cm2));
+        assertTrue(cm.first(cm3));
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3569,20 +3078,15 @@ public class ContentModelCompatilityTest extends TestCase {
      * parameter: DTD.elements expected: true
      */
     public void testFirstObject038() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            ContentModel cm3 = new ContentModel(Integer.MIN_VALUE, cm2);
-            cm = new ContentModel(Integer.MAX_VALUE, cm3);
-            assertFalse(cm.first(cm2));
-            assertFalse(cm.first(cm));
-            assertTrue(cm.first(cm3));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(null));
-
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        ContentModel cm3 = new ContentModel(Integer.MIN_VALUE, cm2);
+        cm = new ContentModel(Integer.MAX_VALUE, cm3);
+        assertFalse(cm.first(cm2));
+        assertFalse(cm.first(cm));
+        assertTrue(cm.first(cm3));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(null));
     }
 
 
@@ -3595,29 +3099,25 @@ public class ContentModelCompatilityTest extends TestCase {
      * true
      */
     public void testFirstObject040() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(0, cm2);
-            assertFalse(cm.first(cm));
-            assertTrue(cm.first(cm2));
-            assertFalse(cm.first(al));
-            assertFalse(cm.first(el));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
-            assertFalse(cm.first(dtd));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(0, cm2);
+        assertFalse(cm.first(cm));
+        assertTrue(cm.first(cm2));
+        assertFalse(cm.first(al));
+        assertFalse(cm.first(el));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
+        assertFalse(cm.first(dtd));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3630,30 +3130,26 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null)) expected: true
      */
     public void testFirstObject041() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(43, cm2);
-            assertFalse(cm.first(cm));
-            assertFalse(cm.first(cm2));
-            assertFalse(cm.first(al));
-            assertTrue(cm.first(el));
-            assertFalse(cm.first(""));
-            assertFalse(cm.first("1"));
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(43, cm2);
+        assertFalse(cm.first(cm));
+        assertFalse(cm.first(cm2));
+        assertFalse(cm.first(al));
+        assertTrue(cm.first(el));
+        assertFalse(cm.first(""));
+        assertFalse(cm.first("1"));
 
-            assertFalse(cm.first(dtd));
-            assertFalse(cm.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm.first(dtd));
+        assertFalse(cm.first(null));
     }
 
     /**
@@ -3664,23 +3160,19 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testFirstObject042() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            ContentModel cm2 = new ContentModel(0, cm);
-            assertTrue(cm2.first(cm));
-            assertFalse(cm2.first(cm2));
-            assertFalse(cm2.first(el));
-            assertFalse(cm2.first(""));
-            assertFalse(cm2.first("1"));
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        ContentModel cm2 = new ContentModel(0, cm);
+        assertTrue(cm2.first(cm));
+        assertFalse(cm2.first(cm2));
+        assertFalse(cm2.first(el));
+        assertFalse(cm2.first(""));
+        assertFalse(cm2.first("1"));
 
-            assertFalse(cm2.first(dtd));
-            assertFalse(cm2.first(null));
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        assertFalse(cm2.first(dtd));
+        assertFalse(cm2.first(null));
     }
 
     /**
@@ -3697,8 +3189,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException but was: " + e);
+            // Expected
         }
     }
 
@@ -3717,8 +3208,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3737,8 +3227,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3756,8 +3245,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3775,8 +3263,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException but was: " + e);
+            // Expected
         }
     }
 
@@ -3795,8 +3282,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3815,8 +3301,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3834,8 +3319,7 @@ public class ContentModelCompatilityTest extends TestCase {
             fail("Should raise NullPointerException");
 
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3856,8 +3340,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(null);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3872,8 +3355,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(null);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3901,8 +3383,7 @@ public class ContentModelCompatilityTest extends TestCase {
 
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3929,8 +3410,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(null);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3949,8 +3429,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(null);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -3961,15 +3440,11 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testGetElements007() {
-        try {
-            cm = new ContentModel();
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals(1, v.size());
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel();
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals(1, v.size());
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -3978,15 +3453,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(null).getElements(new Vector()) Expected: "[null]"
      */
     public void testGetElements008() {
-        try {
-            cm = new ContentModel(null);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals(1, v.size());
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(null);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals(1, v.size());
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -3997,23 +3468,19 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector()) Expected: "elemento"
      */
     public void testGetElements010() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[elemento]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[elemento]", v.toString());
     }
 
     /**
@@ -4024,23 +3491,19 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector(),new AttributeList(null)).getElements(new Vector()) Expected: ""
      */
     public void testGetElements011() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm = new ContentModel(el);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm = new ContentModel(el);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[]", v.toString());
     }
 
     /**
@@ -4050,17 +3513,13 @@ public class ContentModelCompatilityTest extends TestCase {
      * Vector()) Expected: "1"
      */
     public void testGetElements012() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Element el = dtd.defineElement("1", 0, true, true, null, null,
-                    null, null);
-            cm = new ContentModel(el);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[1]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Element el = dtd.defineElement("1", 0, true, true, null, null,
+                null, null);
+        cm = new ContentModel(el);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[1]", v.toString());
     }
 
     /**
@@ -4070,17 +3529,13 @@ public class ContentModelCompatilityTest extends TestCase {
      */
 
     public void testGetElements013() {
-        try {
-            Vector v = new Vector();
-            v.add("el");
-            cm = new ContentModel();
+        Vector v = new Vector();
+        v.add("el");
+        cm = new ContentModel();
 
-            cm.getElements(v);
-            assertEquals(2, v.size());
-            assertEquals("[el, null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm.getElements(v);
+        assertEquals(2, v.size());
+        assertEquals("[el, null]", v.toString());
     }
 
     /**
@@ -4092,27 +3547,23 @@ public class ContentModelCompatilityTest extends TestCase {
      * elemento, elemento]"
      */
     public void testGetElements014() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm = new ContentModel(el);
-            Vector v = new Vector();
-            cm.getElements(v);
-            cm.getElements(v);
-            cm.getElements(v);
-            cm.getElements(v);
-            assertEquals("[elemento, elemento, elemento, elemento]", v
-                    .toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm = new ContentModel(el);
+        Vector v = new Vector();
+        cm.getElements(v);
+        cm.getElements(v);
+        cm.getElements(v);
+        cm.getElements(v);
+        assertEquals("[elemento, elemento, elemento, elemento]", v
+                .toString());
     }
 
     /**
@@ -4129,10 +3580,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -4151,10 +3599,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -4172,10 +3617,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -4185,15 +3627,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(42, ContentModel()) parameter: new Vector() expected: null
      */
     public void testGetElements018() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(42, cm2);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(42, cm2);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -4202,15 +3640,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(43, ContentModel()) parameter: new Vector() expected: null
      */
     public void testGetElements019() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(43, cm2);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(43, cm2);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -4219,15 +3653,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(44, ContentModel()) parameter: new Vector() expected: null
      */
     public void testGetElements020() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(44, cm2);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(44, cm2);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -4236,15 +3666,11 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(63, ContentModel()) parameter: new Vector() expected: null
      */
     public void testGetElements021() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(63, cm2);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(63, cm2);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -4253,16 +3679,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(124, ContentModel()) parameter: new Vector() expected: null
      */
     public void testGetElements022() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(124, cm2);
-            Vector v = new Vector();
-            cm.getElements(v);
-            cm.getElements(v);
-            assertEquals("[null, null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(124, cm2);
+        Vector v = new Vector();
+        cm.getElements(v);
+        cm.getElements(v);
+        assertEquals("[null, null]", v.toString());
     }
 
     /**
@@ -4271,16 +3693,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(38, ContentModel()) parameter: new Vector() expected: null
      */
     public void testGetElements023() {
-        try {
-            ContentModel cm2 = new ContentModel();
-            cm = new ContentModel(38, cm2);
-            Vector v = new Vector();
-            cm.getElements(v);
-            cm.getElements(v);
-            assertEquals("[null, null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        ContentModel cm2 = new ContentModel();
+        cm = new ContentModel(38, cm2);
+        Vector v = new Vector();
+        cm.getElements(v);
+        cm.getElements(v);
+        assertEquals("[null, null]", v.toString());
     }
 
     /**
@@ -4289,15 +3707,10 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(0,null) parameter: new Vector() expected: null
      */
     public void testGetElements024() {
-        try {
-
-            cm = new ContentModel(0, null);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[null]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(0, null);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[null]", v.toString());
     }
 
     /**
@@ -4315,8 +3728,7 @@ public class ContentModelCompatilityTest extends TestCase {
 
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -4328,15 +3740,13 @@ public class ContentModelCompatilityTest extends TestCase {
      */
     public void testGetElements026() {
         try {
-
             cm = new ContentModel(43, null);
             Vector v = new Vector();
             cm.getElements(v);
 
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -4346,15 +3756,10 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(44,null) parameter: new Vector() expected: ""
      */
     public void testGetElements027() {
-        try {
-
-            cm = new ContentModel(44, null);
-            Vector v = new Vector();
-            cm.getElements(v);
-            assertEquals("[]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(44, null);
+        Vector v = new Vector();
+        cm.getElements(v);
+        assertEquals("[]", v.toString());
     }
 
     /**
@@ -4365,14 +3770,12 @@ public class ContentModelCompatilityTest extends TestCase {
      */
     public void testGetElements028() {
         try {
-
             cm = new ContentModel(63, null);
             Vector v = new Vector();
             cm.getElements(v);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -4382,16 +3785,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(124,null) parameter: new Vector() expected: ""
      */
     public void testGetElements029() {
-        try {
-            cm = new ContentModel(124, null);
-            Vector v = new Vector();
-            assertNull(cm.content);
-            assertEquals(124, cm.type);
-            cm.getElements(v);
-            assertEquals("[]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(124, null);
+        Vector v = new Vector();
+        assertNull(cm.content);
+        assertEquals(124, cm.type);
+        cm.getElements(v);
+        assertEquals("[]", v.toString());
     }
 
     /**
@@ -4400,16 +3799,12 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel(38,null) parameter: new Vector() expected: ""
      */
     public void testGetElements030() {
-        try {
-            cm = new ContentModel(38, null);
-            Vector v = new Vector();
-            assertNull(cm.content);
-            assertEquals(38, cm.type);
-            cm.getElements(v);
-            assertEquals("[]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        cm = new ContentModel(38, null);
+        Vector v = new Vector();
+        assertNull(cm.content);
+        assertEquals(38, cm.type);
+        cm.getElements(v);
+        assertEquals("[]", v.toString());
     }
 
 
@@ -4428,10 +3823,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -4450,10 +3842,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass());
+            // Expected
         }
     }
 
@@ -4471,8 +3860,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -4490,8 +3878,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm.getElements(v);
             fail("Should raise NullPointerException");
         } catch (NullPointerException e) {
-        } catch (Throwable e) {
-            fail("Should throw NullPointerException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
 
@@ -4504,24 +3891,20 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel()),BitSet(0).set(1),BitSet(168).set(45),AttributeList("1")
      */
     public void testGetElements043() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(0);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(168);
-            bs2.set(45);
-            AttributeList al = new AttributeList("1");
-            Element el = dtd.defineElement("elemento", ',', false, false, cm2,
-                    bs1, bs2, al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(0, cm2);
-            Vector v = new Vector();
-            cm2.getElements(v);
-            assertEquals("[elemento]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(0);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(168);
+        bs2.set(45);
+        AttributeList al = new AttributeList("1");
+        Element el = dtd.defineElement("elemento", ',', false, false, cm2,
+                bs1, bs2, al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(0, cm2);
+        Vector v = new Vector();
+        cm2.getElements(v);
+        assertEquals("[elemento]", v.toString());
     }
 
     /**
@@ -4533,24 +3916,20 @@ public class ContentModelCompatilityTest extends TestCase {
      * ContentModel()),BitSet(0).set(1),BitSet(168).set(45),AttributeList("1")
      */
     public void testGetElements044() {
-        try {
-            dtd = new DTDGetter("TestContentModelSemantic");
-            Vector v = new Vector();
-            ContentModel cm2 = new ContentModel('*', new ContentModel());
-            BitSet bs1 = new BitSet(128);
-            bs1.set(1);
-            BitSet bs2 = new BitSet(7);
-            AttributeList al = new AttributeList("bigC", -2147483648, -1,
-                    "value", new Vector(), new AttributeList(null));
-            Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
-                    al);
-            cm2 = new ContentModel(el);
-            ContentModel cm = new ContentModel(43, cm2);
-            cm2.getElements(v);
-            assertEquals("[]", v.toString());
-        } catch (Exception e) {
-            fail("Should not throw any exception but was: " + e);
-        }
+        dtd = new DTDGetter("TestContentModelSemantic");
+        Vector v = new Vector();
+        ContentModel cm2 = new ContentModel('*', new ContentModel());
+        BitSet bs1 = new BitSet(128);
+        bs1.set(1);
+        BitSet bs2 = new BitSet(7);
+        AttributeList al = new AttributeList("bigC", -2147483648, -1,
+                "value", new Vector(), new AttributeList(null));
+        Element el = dtd.defineElement("", '*', true, false, cm2, bs1, bs2,
+                al);
+        cm2 = new ContentModel(el);
+        ContentModel cm = new ContentModel(43, cm2);
+        cm2.getElements(v);
+        assertEquals("[]", v.toString());
     }
 
     /**
@@ -4570,11 +3949,7 @@ public class ContentModelCompatilityTest extends TestCase {
             cm2.getElements(v);
             fail("Should raise ClassCastException");
         } catch (ClassCastException e) {
-        } catch (AssertionFailedError e){
-            throw e;
-        } catch (Throwable e) {
-            fail("Should throw ClassCastException, but was raised a: "  + e.getClass() + " " + e.getMessage());
+            // Expected
         }
     }
-
 }

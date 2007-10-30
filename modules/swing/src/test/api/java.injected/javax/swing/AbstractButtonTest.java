@@ -996,30 +996,28 @@ public class AbstractButtonTest extends SwingTestCase {
         String exceptionText = "exceptionText";
         int res = button.checkVerticalKey(SwingConstants.TOP, exceptionText);
         assertEquals("returned value ", 1, res);
-        Throwable exception = null;
         try {
             res = button.checkVerticalKey(SwingConstants.WEST, exceptionText);
-        } catch (Exception e) {
-            exception = e;
+        } catch (IllegalArgumentException e) {
+            assertEquals("exception's message ", exceptionText, e.getMessage());
+            return;
         }
-        assertTrue("exception's been thrown ", exception != null);
-        assertEquals("exception's class ", IllegalArgumentException.class, exception.getClass());
-        assertEquals("exception's message ", exceptionText, exception.getMessage());
+
+        fail("Expected IllegalArgumentException to be thrown");
     }
 
     public void testCheckHorizontalKey() {
         String exceptionText = "exceptionText";
         int res = button.checkHorizontalKey(SwingConstants.TRAILING, exceptionText);
         assertEquals("returned value ", SwingConstants.TRAILING, res);
-        Throwable exception = null;
         try {
             res = button.checkHorizontalKey(SwingConstants.TOP, exceptionText);
-        } catch (Exception e) {
-            exception = e;
+        } catch (IllegalArgumentException e) {
+            assertEquals("exception's message ", exceptionText, e.getMessage());
+            return;
         }
-        assertTrue("exception's been thrown ", exception != null);
-        assertEquals("exception's class ", IllegalArgumentException.class, exception.getClass());
-        assertEquals("exception's message ", exceptionText, exception.getMessage());
+        
+        fail("Expected IllegalArgumentException to be thrown");
     }
 
     public void testCreateActionPropertyChangeListener() {

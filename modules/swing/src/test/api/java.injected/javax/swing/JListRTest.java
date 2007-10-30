@@ -24,12 +24,8 @@ import junit.framework.TestCase;
 
 public class JListRTest extends TestCase {
     public void testAddSelectionInterval() throws Exception {
-        try {
-            JList jl = new JList();
-            jl.addSelectionInterval(10000000, 1);
-        } catch (Exception e) {
-            fail("Unexpected exception :" + e);
-        }
+        JList jl = new JList();
+        jl.addSelectionInterval(10000000, 1);
     }
 
     public void testSetSelectedIndicies() throws Exception {
