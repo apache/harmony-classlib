@@ -43,40 +43,24 @@ public class CardLayoutRTest extends TestCase {
         } catch (IllegalArgumentException iae) {
             return;            
         }
-        fail();
+        fail("Expected IllegalArgumentException");
     }
 
     
     public final void testGetLayoutAlignmentX1() {
-        try {
-            layout.getLayoutAlignmentX(null);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentX(null);
     }
     
     public final void testGetLayoutAlignmentX2() {        
-        try {
-            layout.getLayoutAlignmentX(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentX(emptyContainer);
     }
     
     public final void testGetLayoutAlignmentY1() {
-        try {
-            layout.getLayoutAlignmentY(null);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentY(null);
     }
     
     public final void testGetLayoutAlignmentY2() {        
-        try {
-            layout.getLayoutAlignmentY(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentY(emptyContainer);
     }
     
     public void testLast() {        
@@ -85,32 +69,20 @@ public class CardLayoutRTest extends TestCase {
         } catch (IllegalArgumentException iae) {
             return;            
         }
-        fail();
+        fail("Expected IllegalArgumentException");
     }
     
     public void testLayoutContainer() {       
-        try {
-            layout.layoutContainer(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }
+        layout.layoutContainer(emptyContainer);
         assertTrue(true);
     }
     
     public final void testMaximumLayoutSize1() {
-        try {
-            assertEquals(maxSize, layout.maximumLayoutSize(null));
-        } catch (Throwable t) {
-            fail();
-        }        
+        assertEquals(maxSize, layout.maximumLayoutSize(null));
     }
     
     public final void testMaximumLayoutSize2() {        
-        try {
-            assertEquals(maxSize, layout.maximumLayoutSize(emptyContainer));
-        } catch (Throwable t) {
-            fail();
-        }        
+        assertEquals(maxSize, layout.maximumLayoutSize(emptyContainer));
     }
 
 
@@ -124,7 +96,7 @@ public class CardLayoutRTest extends TestCase {
         } catch (IllegalArgumentException iae) {
             return;            
         }
-        fail();
+        fail("Expected IllegalArgumentException");
     }
     
     public final void testPreferredLayoutSize() {
@@ -137,15 +109,11 @@ public class CardLayoutRTest extends TestCase {
         } catch (IllegalArgumentException iae) {
             return;            
         }
-        fail();
+        fail("Expected IllegalArgumentException");
     }
     
     public void testRemoveLayoutComponent() {       
-        try {
-            layout.removeLayoutComponent(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }
+        layout.removeLayoutComponent(emptyContainer);
     }
     
 }

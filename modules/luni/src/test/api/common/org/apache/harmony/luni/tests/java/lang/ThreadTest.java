@@ -161,13 +161,9 @@ public class ThreadTest extends junit.framework.TestCase {
 	 * @tests java.lang.Thread#Thread(java.lang.Runnable)
 	 */
 	public void test_ConstructorLjava_lang_Runnable() {
-		// Test for method java.lang.Thread(java.lang.Runnable)
-		try {
-			ct = new Thread(new SimpleThread(10));
-			ct.start();
-		} catch (Exception e) {
-			fail("Failed to create subthread : " + e.getMessage());
-		}
+            // Test for method java.lang.Thread(java.lang.Runnable)
+            ct = new Thread(new SimpleThread(10));
+            ct.start();
 	}
 
 	/**
@@ -305,11 +301,7 @@ public class ThreadTest extends junit.framework.TestCase {
          * Thread.countStackFrames() is unpredictable, so we just test that it
          * doesn't throw an exception.
          */
-        try {
-            Thread.currentThread().countStackFrames();
-        } catch (Throwable t) {
-            fail("unexpected throwable: " + t.toString());
-        }
+        Thread.currentThread().countStackFrames();
     }
 
 	/**
@@ -736,28 +728,24 @@ public class ThreadTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Thread#join(long, int)
 	 */
-	public void test_joinJI() {
+	public void test_joinJI() throws Exception {
 		// Test for method void java.lang.Thread.join(long, int)
 		SimpleThread simple;
-		try {
-			st = new Thread(simple = new SimpleThread(1000), "Squawk1");
-			assertTrue("Thread is alive", !st.isAlive());
-			synchronized (simple) {
-				st.start();
-				simple.wait();
-			}
-			
-			long firstRead = System.currentTimeMillis();
-			st.join(100, 999999);
-			long secondRead = System.currentTimeMillis();
-			assertTrue("Did not join by appropriate time: " + secondRead + "-"
-					+ firstRead + "=" + (secondRead - firstRead), secondRead
-					- firstRead <= 300);
-			assertTrue("Joined thread is not alive", st.isAlive());
-			st.interrupt();  
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                st = new Thread(simple = new SimpleThread(1000), "Squawk1");
+                assertTrue("Thread is alive", !st.isAlive());
+                synchronized (simple) {
+                        st.start();
+                        simple.wait();
+                }
+                
+                long firstRead = System.currentTimeMillis();
+                st.join(100, 999999);
+                long secondRead = System.currentTimeMillis();
+                assertTrue("Did not join by appropriate time: " + secondRead + "-"
+                                + firstRead + "=" + (secondRead - firstRead), secondRead
+                                - firstRead <= 300);
+                assertTrue("Joined thread is not alive", st.isAlive());
+                st.interrupt();  
 
 		final Object lock = new Object();
 		final Thread main = Thread.currentThread();

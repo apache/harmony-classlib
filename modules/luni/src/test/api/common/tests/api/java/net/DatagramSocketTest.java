@@ -98,47 +98,34 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#DatagramSocket()
 	 */
-	public void test_Constructor() {
+	public void test_Constructor() throws Exception {
 		// Test for method java.net.DatagramSocket()
-		try {
-			ds = new java.net.DatagramSocket();
-		} catch (Exception e) {
-			fail("Could not create DatagramSocket : " + e.getMessage());
-		}
-
+		ds = new java.net.DatagramSocket();
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#DatagramSocket(int)
 	 */
-	public void test_ConstructorI() {
+	public void test_ConstructorI() throws Exception {
 		// Test for method java.net.DatagramSocket(int)
-		try {
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			ds = new java.net.DatagramSocket(portNumber);
-			assertTrue("Created socket with incorrect port",
-					ds.getLocalPort() == portNumber);
-		} catch (Exception e) {
-			fail("Could not create DatagramSocket : " + e.getMessage());
-		}
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                ds = new java.net.DatagramSocket(portNumber);
+                assertTrue("Created socket with incorrect port",
+                                ds.getLocalPort() == portNumber);
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#DatagramSocket(int, java.net.InetAddress)
 	 */
-	public void test_ConstructorILjava_net_InetAddress() {
+	public void test_ConstructorILjava_net_InetAddress() throws Exception {
 		// Test for method java.net.DatagramSocket(int, java.net.InetAddress)
-		try {
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			ds = new java.net.DatagramSocket(portNumber, InetAddress
-					.getLocalHost());
-			assertTrue("Created socket with incorrect port",
-					ds.getLocalPort() == portNumber);
-			assertTrue("Created socket with incorrect address", ds
-					.getLocalAddress().equals(InetAddress.getLocalHost()));
-		} catch (Exception e) {
-			fail("Could not create DatagramSocket : " + e.getMessage());
-		}
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                ds = new java.net.DatagramSocket(portNumber, InetAddress
+                                .getLocalHost());
+                assertTrue("Created socket with incorrect port",
+                                ds.getLocalPort() == portNumber);
+                assertTrue("Created socket with incorrect address", ds
+                                .getLocalAddress().equals(InetAddress.getLocalHost()));
 	}
 
 	/**
@@ -162,59 +149,47 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#connect(java.net.InetAddress, int)
 	 */
-	public void test_connectLjava_net_InetAddressI() {
-		try {
-			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			ds.connect(inetAddress, portNumber);
-			assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
-					inetAddress));
-			assertTrue("Incorrect Port", ds.getPort() == portNumber);
-			ds.disconnect();
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+	public void test_connectLjava_net_InetAddressI() throws Exception {
+                ds = new java.net.DatagramSocket();
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                ds.connect(inetAddress, portNumber);
+                assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
+                                inetAddress));
+                assertTrue("Incorrect Port", ds.getPort() == portNumber);
+                ds.disconnect();
 
 		if ("true".equals(System.getProperty("run.ipv6tests"))) {
 			System.out
 					.println("Running test_connectLjava_net_InetAddressI(DatagramSocketTest) with IPv6GlobalAddressJcl4: "
 							+ Support_Configuration.IPv6GlobalAddressJcl4);
-			try {
-				ds = new java.net.DatagramSocket();
-				InetAddress inetAddress = InetAddress
-						.getByName(Support_Configuration.IPv6GlobalAddressJcl4);
-				int portNumber = Support_PortManager.getNextPortForUDP();
-				ds.connect(inetAddress, portNumber);
-				assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
-						inetAddress));
-				assertTrue("Incorrect Port", ds.getPort() == portNumber);
-				ds.disconnect();
-			} catch (Exception e) {
-				fail("Exception during test : " + e.getMessage());
-			}
+
+                        ds = new java.net.DatagramSocket();
+                        inetAddress = InetAddress.getByName(Support_Configuration.IPv6GlobalAddressJcl4);
+                        portNumber = Support_PortManager.getNextPortForUDP();
+                        ds.connect(inetAddress, portNumber);
+                        assertTrue("Incorrect InetAddress", ds.getInetAddress().equals(
+                                        inetAddress));
+                        assertTrue("Incorrect Port", ds.getPort() == portNumber);
+                        ds.disconnect();
 		}
 
-		try {
-			// Create a connected datagram socket to test
-			// PlainDatagramSocketImpl.peek()
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket();
-			int port = ds.getLocalPort();
-			ds.connect(localHost, port);
-			DatagramPacket send = new DatagramPacket(new byte[10], 10,
-					localHost, port);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("Wrong size: " + receive.getLength(), receive
-					.getLength() == 10);
-			assertTrue("Wrong receiver", receive.getAddress().equals(localHost));
-		} catch (IOException e) {
-			fail("Unexpected IOException : " + e.getMessage());
-		}
+                // Create a connected datagram socket to test
+                // PlainDatagramSocketImpl.peek()
+                InetAddress localHost = InetAddress.getLocalHost();
+                DatagramSocket ds = new DatagramSocket();
+                int port = ds.getLocalPort();
+                ds.connect(localHost, port);
+                DatagramPacket send = new DatagramPacket(new byte[10], 10,
+                                localHost, port);
+                ds.send(send);
+                DatagramPacket receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue("Wrong size: " + receive.getLength(), receive
+                                .getLength() == 10);
+                assertTrue("Wrong receiver", receive.getAddress().equals(localHost));
 
 		class DatagramServer extends Thread {
 
@@ -264,68 +239,54 @@ public class DatagramSocketTest extends SocketTestCase {
 		// send a dgram to a server that is not running and then do a recv
 		try {
 			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPortForUDP();
+			inetAddress = InetAddress.getLocalHost();
+			portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
-			DatagramPacket send = new DatagramPacket(new byte[10], 10);
+			send = new DatagramPacket(new byte[10], 10);
 			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
+			receive = new DatagramPacket(new byte[20], 20);
 			ds.setSoTimeout(10000);
 			ds.receive(receive);
 			ds.close();
 			fail(
 					"No PortUnreachableException when connected at native level on recv ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when trying to connect at native level on recv: "
-							+ e.toString(),
-					(e instanceof PortUnreachableException));
-		}
+		} catch (PortUnreachableException e) {
+                    // Expected
+                }
 
 		// validate that we can send/receive with datagram sockets connected at
 		// the native level
 		DatagramServer server = null;
 		int[] ports = Support_PortManager.getNextPortsForUDP(3);
 		int serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(localHost, serverPortNumber);
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("Wrong size data received: " + receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("Wrong receiver:" + receive.getAddress() + ":"
-					+ localHost, receive.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level:"
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(localHost, serverPortNumber);
+
+                final byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
+                send = new DatagramPacket(sendBytes, sendBytes.length);
+                ds.send(send);
+                receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue("Wrong size data received: " + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("Wrong receiver:" + receive.getAddress() + ":"
+                                + localHost, receive.getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -334,33 +295,28 @@ public class DatagramSocketTest extends SocketTestCase {
 		// validate that we can disconnect
 		try {
 			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPortForUDP();
+			inetAddress = InetAddress.getLocalHost();
+			portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
 			ds.disconnect();
 			ds.close();
-		} catch (Exception e) {
-			assertTrue("Unexpected exception when trying to connect at native"
-					+ e.toString(), (e instanceof PortUnreachableException));
+		} catch (PortUnreachableException e) {
+			// Expected
 		}
 
 		// validate that once connected we cannot send to another address
 		try {
 			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPortForUDP();
+			inetAddress = InetAddress.getLocalHost();
+			portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(inetAddress, portNumber);
-			DatagramPacket send = new DatagramPacket(new byte[10], 10,
-					inetAddress, portNumber + 1);
+			send = new DatagramPacket(new byte[10], 10, inetAddress, portNumber + 1);
 			ds.send(send);
 			ds.close();
 			fail(
 					"No Exception when trying to send to a different address on a connected socket ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when trying to send to a different address on a connected socket: "
-							+ e.toString(),
-					(e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		// validate that we can connect, then disconnect, then connect then
@@ -368,50 +324,39 @@ public class DatagramSocketTest extends SocketTestCase {
 		server = null;
 		ports = Support_PortManager.getNextPortsForUDP(3);
 		serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(localHost, serverPortNumber + 1);
-			ds.disconnect();
-			ds.connect(localHost, serverPortNumber);
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue(
-					"connect/disconnect/connect - Wrong size data received: "
-							+ receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("connect/disconnect/connect - Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("connect/disconnect/connect - Wrong receiver:"
-					+ receive.getAddress() + ":" + localHost, receive
-					.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level after connect/disconnect/connect:"
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(localHost, serverPortNumber + 1);
+                ds.disconnect();
+                ds.connect(localHost, serverPortNumber);
+
+                send = new DatagramPacket(sendBytes,
+                                sendBytes.length);
+                ds.send(send);
+                receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue(
+                                "connect/disconnect/connect - Wrong size data received: "
+                                                + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("connect/disconnect/connect - Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("connect/disconnect/connect - Wrong receiver:"
+                                + receive.getAddress() + ":" + localHost, receive
+                                .getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -421,48 +366,37 @@ public class DatagramSocketTest extends SocketTestCase {
 		server = null;
 		ports = Support_PortManager.getNextPortsForUDP(3);
 		serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(localHost, serverPortNumber + 1);
-			ds.disconnect();
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length, localHost, serverPortNumber);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("connect/disconnect - Wrong size data received: "
-					+ receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("connect/disconnect - Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("connect/disconnect - Wrong receiver:"
-					+ receive.getAddress() + ":" + localHost, receive
-					.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level after connect/disconnect:"
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(localHost, serverPortNumber + 1);
+                ds.disconnect();
+
+                send = new DatagramPacket(sendBytes,
+                                sendBytes.length, localHost, serverPortNumber);
+                ds.send(send);
+                receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue("connect/disconnect - Wrong size data received: "
+                                + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("connect/disconnect - Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("connect/disconnect - Wrong receiver:"
+                                + receive.getAddress() + ":" + localHost, receive
+                                .getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -473,48 +407,36 @@ public class DatagramSocketTest extends SocketTestCase {
 		server = null;
 		ports = Support_PortManager.getNextPortsForUDP(3);
 		serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(localHost, serverPortNumber + 1);
-			ds.connect(localHost, serverPortNumber);
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("connect/connect - Wrong size data received: "
-					+ receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("connect/connect - Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("connect/connect - Wrong receiver:"
-					+ receive.getAddress() + ":" + localHost, receive
-					.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level after connect/connect: "
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(localHost, serverPortNumber + 1);
+                ds.connect(localHost, serverPortNumber);
+
+                send = new DatagramPacket(sendBytes, sendBytes.length);
+                ds.send(send);
+                receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue("connect/connect - Wrong size data received: "
+                                + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("connect/connect - Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("connect/connect - Wrong receiver:"
+                                + receive.getAddress() + ":" + localHost, receive
+                                .getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -523,69 +445,47 @@ public class DatagramSocketTest extends SocketTestCase {
 		// test for when we fail to connect at the native level. Even though we
 		// fail at the native level there is no way to return an exception so
 		// there should be no exception
-		try {
-			ds = new java.net.DatagramSocket();
-			byte[] addressBytes = { 0, 0, 0, 0 };
-			InetAddress inetAddress = InetAddress.getByAddress(addressBytes);
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			ds.connect(inetAddress, portNumber);
-		} catch (Exception e) {
-			fail(
-					"Unexcpected exception when trying to connect at native level with bad address for signature with no exception to be returned: "
-							+ e.toString());
-		}
+                ds = new java.net.DatagramSocket();
+                byte[] addressBytes = { 0, 0, 0, 0 };
+                inetAddress = InetAddress.getByAddress(addressBytes);
+                portNumber = Support_PortManager.getNextPortForUDP();
+                ds.connect(inetAddress, portNumber);
 
 		if ("true".equals(System.getProperty("run.ipv6tests"))) {
-			System.out
-					.println("Running test_connectLjava_net_InetAddressI(DatagramSocketTest) with IPv6 address");
-			try {
-				ds = new java.net.DatagramSocket();
-				byte[] addressBytes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-						0, 0, 0 };
-				InetAddress inetAddress = InetAddress
-						.getByAddress(addressBytes);
-				int portNumber = Support_PortManager.getNextPortForUDP();
-				ds.connect(inetAddress, portNumber);
-			} catch (Exception e) {
-				fail(
-						"Unexcpected exception when trying to connect at native level with bad IPv6 address for signature with no exception to be returned: "
-								+ e.toString());
-			}
+			System.out.println("Running test_connectLjava_net_InetAddressI(DatagramSocketTest) with IPv6 address");
+
+                        ds = new java.net.DatagramSocket();
+                        byte[] addressTestBytes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                        0, 0, 0 };
+                        inetAddress = InetAddress
+                                        .getByAddress(addressTestBytes);
+                        portNumber = Support_PortManager.getNextPortForUDP();
+                        ds.connect(inetAddress, portNumber);
 		}
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#disconnect()
 	 */
-	public void test_disconnect() {
-		try {
-			ds = new java.net.DatagramSocket();
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			ds.connect(inetAddress, portNumber);
-			ds.disconnect();
-			assertNull("Incorrect InetAddress", ds.getInetAddress());
-			assertEquals("Incorrect Port", -1, ds.getPort());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+	public void test_disconnect() throws Exception {
+                ds = new java.net.DatagramSocket();
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                ds.connect(inetAddress, portNumber);
+                ds.disconnect();
+                assertNull("Incorrect InetAddress", ds.getInetAddress());
+                assertEquals("Incorrect Port", -1, ds.getPort());
 
 		if ("true".equals(System.getProperty("run.ipv6tests"))) {
-			System.out
-					.println("Running test_disconnect(DatagramSocketTest) with IPv6GlobalAddressJcl4: "
+			System.out.println("Running test_disconnect(DatagramSocketTest) with IPv6GlobalAddressJcl4: "
 							+ Support_Configuration.IPv6GlobalAddressJcl4);
-			try {
-				ds = new java.net.DatagramSocket();
-				InetAddress inetAddress = InetAddress
-						.getByName(Support_Configuration.IPv6GlobalAddressJcl4);
-				int portNumber = Support_PortManager.getNextPortForUDP();
-				ds.connect(inetAddress, portNumber);
-				ds.disconnect();
-				assertNull("Incorrect InetAddress", ds.getInetAddress());
-				assertEquals("Incorrect Port", -1, ds.getPort());
-			} catch (Exception e) {
-				fail("Exception during test : " + e.getMessage());
-			}
+                        ds = new java.net.DatagramSocket();
+                        inetAddress = InetAddress.getByName(Support_Configuration.IPv6GlobalAddressJcl4);
+                        portNumber = Support_PortManager.getNextPortForUDP();
+                        ds.connect(inetAddress, portNumber);
+                        ds.disconnect();
+                        assertNull("Incorrect InetAddress", ds.getInetAddress());
+                        assertEquals("Incorrect Port", -1, ds.getPort());
 		}
 
 	}
@@ -600,82 +500,70 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#getLocalAddress()
 	 */
-	public void test_getLocalAddress() {
+	public void test_getLocalAddress() throws Exception {
 		// Test for method java.net.InetAddress
 		// java.net.DatagramSocket.getLocalAddress()
 		InetAddress local = null;
-		try {
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			local = InetAddress.getLocalHost();
-			ds = new java.net.DatagramSocket(portNumber, local);
-			assertTrue("Returned incorrect address. Got:"
-					+ ds.getLocalAddress()
-					+ " wanted: "
-					+ InetAddress.getByName(InetAddress.getLocalHost()
-							.getHostName()), InetAddress.getByName(
-					InetAddress.getLocalHost().getHostName()).equals(
-					ds.getLocalAddress()));
 
-			// now validate thet behaviour when the any address is returned
-			String preferIPv4StackValue = System
-					.getProperty("java.net.preferIPv4Stack");
-			String preferIPv6AddressesValue = System
-					.getProperty("java.net.preferIPv6Addresses");
-			DatagramSocket s = new DatagramSocket(0);
-			if (((preferIPv4StackValue == null) || preferIPv4StackValue
-					.equalsIgnoreCase("false"))
-					&& (preferIPv6AddressesValue != null)
-					&& (preferIPv6AddressesValue.equals("true"))) {
-				assertTrue(
-						"ANY address not returned correctly (getLocalAddress) with preferIPv6Addresses=true, preferIPv4Stack=false "
-								+ s.getLocalSocketAddress(), s
-								.getLocalAddress() instanceof Inet6Address);
-			} else {
-				assertTrue(
-						"ANY address not returned correctly (getLocalAddress) with preferIPv6Addresses=true, preferIPv4Stack=true "
-								+ s.getLocalSocketAddress(), s
-								.getLocalAddress() instanceof Inet4Address);
-			}
-			s.close();
-		} catch (Exception e) {
-			fail(
-					"Exception during getLocalAddress: " + local + " - " + e);
-		}
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                local = InetAddress.getLocalHost();
+                ds = new java.net.DatagramSocket(portNumber, local);
+                assertTrue("Returned incorrect address. Got:"
+                                + ds.getLocalAddress()
+                                + " wanted: "
+                                + InetAddress.getByName(InetAddress.getLocalHost()
+                                                .getHostName()), InetAddress.getByName(
+                                InetAddress.getLocalHost().getHostName()).equals(
+                                ds.getLocalAddress()));
+
+                // now validate thet behaviour when the any address is returned
+                String preferIPv4StackValue = System
+                                .getProperty("java.net.preferIPv4Stack");
+                String preferIPv6AddressesValue = System
+                                .getProperty("java.net.preferIPv6Addresses");
+                DatagramSocket s = new DatagramSocket(0);
+                if (((preferIPv4StackValue == null) || preferIPv4StackValue
+                                .equalsIgnoreCase("false"))
+                                && (preferIPv6AddressesValue != null)
+                                && (preferIPv6AddressesValue.equals("true"))) {
+                        assertTrue(
+                                        "ANY address not returned correctly (getLocalAddress) with preferIPv6Addresses=true, preferIPv4Stack=false "
+                                                        + s.getLocalSocketAddress(), s
+                                                        .getLocalAddress() instanceof Inet6Address);
+                } else {
+                        assertTrue(
+                                        "ANY address not returned correctly (getLocalAddress) with preferIPv6Addresses=true, preferIPv4Stack=true "
+                                                        + s.getLocalSocketAddress(), s
+                                                        .getLocalAddress() instanceof Inet4Address);
+                }
+                s.close();
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#getLocalPort()
 	 */
-	public void test_getLocalPort() {
+	public void test_getLocalPort() throws Exception {
 		// Test for method int java.net.DatagramSocket.getLocalPort()
-		try {
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			ds = new java.net.DatagramSocket(portNumber);
-			assertTrue("Returned incorrect port",
-					ds.getLocalPort() == portNumber);
-		} catch (Exception e) {
-			fail("Exception during getLocalAddress : " + e.getMessage());
-		}
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                ds = new java.net.DatagramSocket(portNumber);
+                assertTrue("Returned incorrect port",
+                                ds.getLocalPort() == portNumber);
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#getPort()
 	 */
-	public void test_getPort() {
-		try {
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			DatagramSocket theSocket = new DatagramSocket(portNumber);
-			assertEquals("Expected -1 for remote port as not connected",
-					-1, theSocket.getPort());
+	public void test_getPort() throws Exception {
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                DatagramSocket theSocket = new DatagramSocket(portNumber);
+                assertEquals("Expected -1 for remote port as not connected",
+                                -1, theSocket.getPort());
 
-			// now connect the socket and validate that we get the right port
-			theSocket.connect(InetAddress.getLocalHost(), portNumber);
-			assertTrue("getPort returned wrong value:" + theSocket.getPort()
-					+ ":Expected:" + portNumber,
-					theSocket.getPort() == portNumber);
-		} catch (Exception e) {
-			fail("unexpected exception during getPort test : " + e.getMessage());
-		}
+                // now connect the socket and validate that we get the right port
+                theSocket.connect(InetAddress.getLocalHost(), portNumber);
+                assertTrue("getPort returned wrong value:" + theSocket.getPort()
+                                + ":Expected:" + portNumber,
+                                theSocket.getPort() == portNumber);
 	}
 
 	/**
@@ -755,23 +643,18 @@ public class DatagramSocketTest extends SocketTestCase {
 			}
 		}
 
-		try {
-			new Thread(new TestDGRcv(), "DGSender").start();
-			ds = new java.net.DatagramSocket(portNumber);
-			ds.setSoTimeout(6000);
-			byte rbuf[] = new byte[1000];
-			DatagramPacket rdp = new DatagramPacket(rbuf, rbuf.length);
-			;
-			ds.receive(rdp);
-			ds.close();
-			assertTrue("Send/Receive failed to return correct data: "
-					+ new String(rbuf, 0, 11), new String(rbuf, 0, 11)
-					.equals("Test String"));
-		} catch (Exception e) {
-			System.err.println("Exception during send test: " + e);
-			e.printStackTrace();
-			fail("port " + portNumber + " Exception during send test: "
-					+ e);
+                try {
+                    new Thread(new TestDGRcv(), "DGSender").start();
+                    ds = new java.net.DatagramSocket(portNumber);
+                    ds.setSoTimeout(6000);
+                    byte rbuf[] = new byte[1000];
+                    DatagramPacket rdp = new DatagramPacket(rbuf, rbuf.length);
+    
+                    ds.receive(rdp);
+                    ds.close();
+                    assertTrue("Send/Receive failed to return correct data: "
+                                    + new String(rbuf, 0, 11), new String(rbuf, 0, 11)
+                                    .equals("Test String"));
 		} finally {
 			ds.close();
 		}
@@ -990,8 +873,6 @@ public class DatagramSocketTest extends SocketTestCase {
 				assertTrue("Incorrect data sent: " + retval, retval
 						.equals(testString));
 			}
-		} catch (Exception e) {
-			fail("Exception during send test : " + e.getMessage());
 		} finally {
 			ds.close();
 		}
@@ -1030,21 +911,22 @@ public class DatagramSocketTest extends SocketTestCase {
 		        return null; 
 		    } 
 		} 
-        InetSocketAddress sa = InetSocketAddress.createUnresolved("localhost", 0); 
-        //no exception expected for next line
-        new testDatagramSocket(new testDatagramSocketImpl()).send(new DatagramPacket(new byte[272], 3, sa)); 
-        
-        // Regression test for Harmony-2938
-        InetAddress i = InetAddress.getByName("127.0.0.1");
-        DatagramSocket d = new DatagramSocket(0, i);
-        try {
-            d.send(new DatagramPacket(new byte[] { 1 }, 1));
-            fail("should throw NPE.");
-        } catch (NullPointerException e) {
-            // expected;
-        } finally {
-            d.close();
-        }
+
+                InetSocketAddress sa = InetSocketAddress.createUnresolved("localhost", 0); 
+                //no exception expected for next line
+                new testDatagramSocket(new testDatagramSocketImpl()).send(new DatagramPacket(new byte[272], 3, sa)); 
+                
+                // Regression test for Harmony-2938
+                InetAddress i = InetAddress.getByName("127.0.0.1");
+                DatagramSocket d = new DatagramSocket(0, i);
+                try {
+                    d.send(new DatagramPacket(new byte[] { 1 }, 1));
+                    fail("should throw NPE.");
+                } catch (NullPointerException e) {
+                    // expected;
+                } finally {
+                    d.close();
+                }
 	}
 
 	/**
@@ -1114,48 +996,39 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#DatagramSocket(java.net.SocketAddress)
 	 */
-	public void test_ConstructorLjava_net_SocketAddress() {
+	public void test_ConstructorLjava_net_SocketAddress() throws Exception {
 		class mySocketAddress extends SocketAddress {
 
 			public mySocketAddress() {
 			}
 		}
 
-		try {
-			try {
-				int portNumber = Support_PortManager.getNextPortForUDP();
-				ds = new java.net.DatagramSocket(new InetSocketAddress(
-						InetAddress.getLocalHost(), portNumber));
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                ds = new java.net.DatagramSocket(new InetSocketAddress(
+                                InetAddress.getLocalHost(), portNumber));
                 assertTrue(ds.getBroadcast());
-				assertTrue("Created socket with incorrect port", ds
-						.getLocalPort() == portNumber);
-				assertTrue("Created socket with incorrect address", ds
-						.getLocalAddress().equals(InetAddress.getLocalHost()));
-			} catch (Exception e) {
-				fail("Could not create DatagramSocket : " + e.getMessage());
-			}
+                assertTrue("Created socket with incorrect port", ds
+                                .getLocalPort() == portNumber);
+                assertTrue("Created socket with incorrect address", ds
+                                .getLocalAddress().equals(InetAddress.getLocalHost()));
 
-			try {
-				int portNumber = Support_PortManager.getNextPortForUDP();
-				ds = new java.net.DatagramSocket(new mySocketAddress());
-				fail(
-						"No exception when constructing datagramSocket with unsupported SocketAddress type");
-			} catch (IllegalArgumentException e) {
+                try {
+                        portNumber = Support_PortManager.getNextPortForUDP();
+                        ds = new java.net.DatagramSocket(new mySocketAddress());
+                        fail(
+                                        "No exception when constructing datagramSocket with unsupported SocketAddress type");
+                } catch (IllegalArgumentException e) {
 
-			}
-            //regression for Harmony-894
-            ds = new DatagramSocket((SocketAddress)null);
-            assertTrue(ds.getBroadcast());
-		} catch (Exception ex) {
-			fail(
-					"unexpected exception when datagramSocket SocketAddress constructor test");
-		}
+                }
+                //regression for Harmony-894
+                ds = new DatagramSocket((SocketAddress)null);
+                assertTrue(ds.getBroadcast());
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#bind(java.net.SocketAddress)
 	 */
-	public void test_bindLjava_net_SocketAddress() {
+	public void test_bindLjava_net_SocketAddress() throws Exception {
 		class mySocketAddress extends SocketAddress {
 
 			public mySocketAddress() {
@@ -1163,108 +1036,99 @@ public class DatagramSocketTest extends SocketTestCase {
 		}
 
 		DatagramServer server = null;
-		try {
-			// now create a socket that is not bound and then bind it
-			int[] ports = Support_PortManager.getNextPortsForUDP(3);
-			int portNumber = ports[0];
-			int serverPortNumber = ports[1];
-			DatagramSocket theSocket = new DatagramSocket(
-					new InetSocketAddress(InetAddress.getLocalHost(),
-							portNumber));
 
-			// validate that the localSocketAddress reflects the address we
-			// bound to
-			assertTrue("Local address not correct after bind:"
-					+ theSocket.getLocalSocketAddress().toString()
-					+ "Expected: "
-					+ (new InetSocketAddress(InetAddress.getLocalHost(),
-							portNumber)).toString(), theSocket
-					.getLocalSocketAddress().equals(
-							new InetSocketAddress(InetAddress.getLocalHost(),
-									portNumber)));
+                // now create a socket that is not bound and then bind it
+                int[] ports = Support_PortManager.getNextPortsForUDP(3);
+                int portNumber = ports[0];
+                int serverPortNumber = ports[1];
+                DatagramSocket theSocket = new DatagramSocket(
+                                new InetSocketAddress(InetAddress.getLocalHost(),
+                                                portNumber));
 
-			// now make sure that datagrams sent from this socket appear to come
-			// from the address we bound to
-			InetAddress localHost = InetAddress.getLocalHost();
-			portNumber = ports[2];
-			DatagramSocket ds = new DatagramSocket(null);
-			ds.bind(new InetSocketAddress(localHost, portNumber));
+                // validate that the localSocketAddress reflects the address we
+                // bound to
+                assertTrue("Local address not correct after bind:"
+                                + theSocket.getLocalSocketAddress().toString()
+                                + "Expected: "
+                                + (new InetSocketAddress(InetAddress.getLocalHost(),
+                                                portNumber)).toString(), theSocket
+                                .getLocalSocketAddress().equals(
+                                                new InetSocketAddress(InetAddress.getLocalHost(),
+                                                                portNumber)));
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for bin datagram socket test ");
-			}
+                // now make sure that datagrams sent from this socket appear to come
+                // from the address we bound to
+                InetAddress localHost = InetAddress.getLocalHost();
+                portNumber = ports[2];
+                DatagramSocket ds = new DatagramSocket(null);
+                ds.bind(new InetSocketAddress(localHost, portNumber));
 
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			Thread.sleep(1000);
-			ds.close();
-			assertTrue(
-					"Address in packet sent does not match address bound to:"
-							+ server.rdp.getAddress() + ":"
-							+ server.rdp.getPort() + ":" + localHost + ":"
-							+ portNumber, (server.rdp.getAddress()
-							.equals(localHost))
-							&& (server.rdp.getPort() == portNumber));
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber));
 
-			// validate if we pass in null that it picks an address for us and
-			// all is ok
-			theSocket = new DatagramSocket(null);
-			theSocket.bind(null);
-			assertNotNull("Bind with null did not work", theSocket
-					.getLocalSocketAddress());
-			theSocket.close();
+                byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
+                DatagramPacket send = new DatagramPacket(sendBytes,
+                                sendBytes.length);
+                ds.send(send);
+                Thread.sleep(1000);
+                ds.close();
+                assertTrue(
+                                "Address in packet sent does not match address bound to:"
+                                                + server.rdp.getAddress() + ":"
+                                                + server.rdp.getPort() + ":" + localHost + ":"
+                                                + portNumber, (server.rdp.getAddress()
+                                                .equals(localHost))
+                                                && (server.rdp.getPort() == portNumber));
 
-			// now check the error conditions
+                // validate if we pass in null that it picks an address for us and
+                // all is ok
+                theSocket = new DatagramSocket(null);
+                theSocket.bind(null);
+                assertNotNull("Bind with null did not work", theSocket
+                                .getLocalSocketAddress());
+                theSocket.close();
 
-			// Address we cannot bind to
-			theSocket = new DatagramSocket(null);
-			try {
-				theSocket
-						.bind(new InetSocketAddress(
-								InetAddress
-										.getByAddress(Support_Configuration.nonLocalAddressBytes),
-								Support_PortManager.getNextPortForUDP()));
-				fail("No exception when binding to bad address");
-			} catch (SocketException ex) {
-			}
-			theSocket.close();
+                // now check the error conditions
 
-			// Address that we have allready bound to
-			ports = Support_PortManager.getNextPortsForUDP(2);
-			theSocket = new DatagramSocket(null);
-			DatagramSocket theSocket2 = new DatagramSocket(ports[0]);
-			try {
-				InetSocketAddress theAddress = new InetSocketAddress(
-						InetAddress.getLocalHost(), ports[1]);
-				theSocket.bind(theAddress);
-				theSocket2.bind(theAddress);
-				fail("No exception binding to address that is not available");
-			} catch (SocketException ex) {
-			}
-			theSocket.close();
-			theSocket2.close();
+                // Address we cannot bind to
+                theSocket = new DatagramSocket(null);
+                try {
+                        theSocket
+                                        .bind(new InetSocketAddress(
+                                                        InetAddress
+                                                                        .getByAddress(Support_Configuration.nonLocalAddressBytes),
+                                                        Support_PortManager.getNextPortForUDP()));
+                        fail("No exception when binding to bad address");
+                } catch (SocketException ex) {
+                }
+                theSocket.close();
 
-			// unsupported SocketAddress subclass
-			theSocket = new DatagramSocket(null);
-			try {
-				theSocket.bind(new mySocketAddress());
-				fail("No exception when binding using unsupported SocketAddress subclass");
-			} catch (IllegalArgumentException ex) {
-			}
-			theSocket.close();
+                // Address that we have allready bound to
+                ports = Support_PortManager.getNextPortsForUDP(2);
+                theSocket = new DatagramSocket(null);
+                DatagramSocket theSocket2 = new DatagramSocket(ports[0]);
+                try {
+                        InetSocketAddress theAddress = new InetSocketAddress(
+                                        InetAddress.getLocalHost(), ports[1]);
+                        theSocket.bind(theAddress);
+                        theSocket2.bind(theAddress);
+                        fail("No exception binding to address that is not available");
+                } catch (SocketException ex) {
+                }
+                theSocket.close();
+                theSocket2.close();
 
-		} catch (Exception e) {
-			fail("Unexpected exception during bind test : " + e.getMessage());
-		}
+                // unsupported SocketAddress subclass
+                theSocket = new DatagramSocket(null);
+                try {
+                        theSocket.bind(new mySocketAddress());
+                        fail("No exception when binding using unsupported SocketAddress subclass");
+                } catch (IllegalArgumentException ex) {
+                }
+                theSocket.close();
 
 		if (server != null) {
 			server.stopServer();
@@ -1274,7 +1138,7 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#connect(java.net.SocketAddress)
 	 */
-	public void test_connectLjava_net_SocketAddress() {
+	public void test_connectLjava_net_SocketAddress() throws Exception {
 
 		// validate that we get the PortUnreachable exception if we try to
 		// send a dgram to a server that is not running and then do a recv
@@ -1289,13 +1153,9 @@ public class DatagramSocketTest extends SocketTestCase {
 			ds.setSoTimeout(10000);
 			ds.receive(receive);
 			ds.close();
-			fail(
-					"No PortUnreachableException when connected at native level on recv ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when trying to connect at native level on recv: "
-							+ e.toString(),
-					(e instanceof PortUnreachableException));
+			fail("No PortUnreachableException when connected at native level on recv ");
+		} catch (PortUnreachableException e) {
+			// Expected
 		}
 
 		// validate that we can send/receive with datagram sockets connected at
@@ -1303,45 +1163,35 @@ public class DatagramSocketTest extends SocketTestCase {
 		DatagramServer server = null;
 		int[] ports = Support_PortManager.getNextPortsForUDP(3);
 		int serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                InetAddress localHost = InetAddress.getLocalHost();
+                DatagramSocket ds = new DatagramSocket(ports[1]);
+                DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("Wrong size data received: " + receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("Wrong receiver:" + receive.getAddress() + ":"
-					+ localHost, receive.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level:"
-							+ e.toString());
-		}
+                int port = ds.getLocalPort();
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+
+                final byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
+                DatagramPacket send = new DatagramPacket(sendBytes,
+                                sendBytes.length);
+                ds.send(send);
+                DatagramPacket receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue("Wrong size data received: " + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("Wrong receiver:" + receive.getAddress() + ":"
+                                + localHost, receive.getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -1355,9 +1205,8 @@ public class DatagramSocketTest extends SocketTestCase {
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
 			ds.disconnect();
 			ds.close();
-		} catch (Exception e) {
-			assertTrue("Unexpected exception when trying to connect at native"
-					+ e.toString(), (e instanceof PortUnreachableException));
+		} catch (PortUnreachableException e) {
+			// Expected
 		}
 
 		// validate that once connected we cannot send to another address
@@ -1366,17 +1215,14 @@ public class DatagramSocketTest extends SocketTestCase {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 			int portNumber = Support_PortManager.getNextPortForUDP();
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
-			DatagramPacket send = new DatagramPacket(new byte[10], 10,
+			DatagramPacket senddp = new DatagramPacket(new byte[10], 10,
 					inetAddress, portNumber + 1);
-			ds.send(send);
+			ds.send(senddp);
 			ds.close();
 			fail(
 					"No Exception when trying to send to a different address on a connected socket ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when trying to send to a different address on a connected socket: "
-							+ e.toString(),
-					(e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 
 		// validate that we can connect, then disconnect, then connect then
@@ -1384,50 +1230,38 @@ public class DatagramSocketTest extends SocketTestCase {
 		server = null;
 		ports = Support_PortManager.getNextPortsForUDP(3);
 		serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber + 1));
-			ds.disconnect();
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue(
-					"connect/disconnect/connect - Wrong size data received: "
-							+ receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("connect/disconnect/connect - Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("connect/disconnect/connect - Wrong receiver:"
-					+ receive.getAddress() + ":" + localHost, receive
-					.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level after connect/disconnect/connect:"
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber + 1));
+                ds.disconnect();
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+
+                send = new DatagramPacket(sendBytes, sendBytes.length);
+                ds.send(send);
+                receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue(
+                                "connect/disconnect/connect - Wrong size data received: "
+                                                + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("connect/disconnect/connect - Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("connect/disconnect/connect - Wrong receiver:"
+                                + receive.getAddress() + ":" + localHost, receive
+                                .getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -1437,48 +1271,37 @@ public class DatagramSocketTest extends SocketTestCase {
 		server = null;
 		ports = Support_PortManager.getNextPortsForUDP(3);
 		serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber + 1));
-			ds.disconnect();
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length, localHost, serverPortNumber);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("connect/disconnect - Wrong size data received: "
-					+ receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("connect/disconnect - Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("connect/disconnect - Wrong receiver:"
-					+ receive.getAddress() + ":" + localHost, receive
-					.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level after connect/disconnect:"
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber + 1));
+                ds.disconnect();
+
+                send = new DatagramPacket(sendBytes,
+                            sendBytes.length, localHost, serverPortNumber);
+                ds.send(send);
+                receive = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receive);
+                ds.close();
+                assertTrue("connect/disconnect - Wrong size data received: "
+                                + receive.getLength(),
+                                receive.getLength() == sendBytes.length);
+                assertTrue("connect/disconnect - Wrong data received"
+                                + new String(receive.getData(), 0, receive.getLength())
+                                + ":" + new String(sendBytes), new String(
+                                receive.getData(), 0, receive.getLength())
+                                .equals(new String(sendBytes)));
+                assertTrue("connect/disconnect - Wrong receiver:"
+                                + receive.getAddress() + ":" + localHost, receive
+                                .getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -1489,48 +1312,37 @@ public class DatagramSocketTest extends SocketTestCase {
 		server = null;
 		ports = Support_PortManager.getNextPortsForUDP(3);
 		serverPortNumber = ports[0];
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			DatagramSocket ds = new DatagramSocket(ports[1]);
-			DatagramSocket ds2 = new DatagramSocket(ports[2]);
 
-			try {
-				server = new DatagramServer(serverPortNumber, localHost);
-				server.start();
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				fail(
-						"Failed to set up datagram server for native connected Dgram socket test ");
-			}
+                localHost = InetAddress.getLocalHost();
+                ds = new DatagramSocket(ports[1]);
+                ds2 = new DatagramSocket(ports[2]);
 
-			int port = ds.getLocalPort();
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber + 1));
-			ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+                server = new DatagramServer(serverPortNumber, localHost);
+                server.start();
+                Thread.sleep(1000);
 
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length);
-			ds.send(send);
-			DatagramPacket receive = new DatagramPacket(new byte[20], 20);
-			ds.setSoTimeout(2000);
-			ds.receive(receive);
-			ds.close();
-			assertTrue("connect/connect - Wrong size data received: "
-					+ receive.getLength(),
-					receive.getLength() == sendBytes.length);
-			assertTrue("connect/connect - Wrong data received"
-					+ new String(receive.getData(), 0, receive.getLength())
-					+ ":" + new String(sendBytes), new String(
-					receive.getData(), 0, receive.getLength())
-					.equals(new String(sendBytes)));
-			assertTrue("connect/connect - Wrong receiver:"
-					+ receive.getAddress() + ":" + localHost, receive
-					.getAddress().equals(localHost));
-		} catch (Exception e) {
-			fail(
-					"Unexpected exception when sending data on dgram connected at native level after connect/connect: "
-							+ e.toString());
-		}
+                port = ds.getLocalPort();
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber + 1));
+                ds.connect(new InetSocketAddress(localHost, serverPortNumber));
+
+                byte[] sendTestBytes = { 'T', 'e', 's', 't', 0 };
+                send = new DatagramPacket(sendTestBytes, sendTestBytes.length);
+                ds.send(send);
+                DatagramPacket receivedp = new DatagramPacket(new byte[20], 20);
+                ds.setSoTimeout(2000);
+                ds.receive(receivedp);
+                ds.close();
+                assertTrue("connect/connect - Wrong size data received: "
+                                + receivedp.getLength(),
+                                receivedp.getLength() == sendTestBytes.length);
+                assertTrue("connect/connect - Wrong data received"
+                                + new String(receivedp.getData(), 0, receivedp.getLength())
+                                + ":" + new String(sendTestBytes), new String(
+                                receivedp.getData(), 0, receivedp.getLength())
+                                .equals(new String(sendTestBytes)));
+                assertTrue("connect/connect - Wrong receiver:"
+                                + receivedp.getAddress() + ":" + localHost, receivedp
+                                .getAddress().equals(localHost));
 
 		if (server != null) {
 			server.stopServer();
@@ -1545,232 +1357,210 @@ public class DatagramSocketTest extends SocketTestCase {
 			byte[] addressBytes = { 0, 0, 0, 0 };
 			InetAddress inetAddress = InetAddress.getByAddress(addressBytes);
 			int portNumber = Support_PortManager.getNextPortForUDP();
-			InetAddress localHost = InetAddress.getLocalHost();
+			InetAddress localHostIA = InetAddress.getLocalHost();
 			ds.connect(new InetSocketAddress(inetAddress, portNumber));
 			assertTrue("Is not connected after connect to inaddr any", ds
 					.isConnected());
-			byte[] sendBytes = { 'T', 'e', 's', 't', 0 };
-			DatagramPacket send = new DatagramPacket(sendBytes,
-					sendBytes.length, localHost, portNumber);
-			ds.send(send);
+			byte[] sendBytesArray = { 'T', 'e', 's', 't', 0 };
+			DatagramPacket senddp = new DatagramPacket(sendBytesArray,
+					sendBytesArray.length, localHostIA, portNumber);
+			ds.send(senddp);
 			fail(
 					"No exception when trying to connect at native level with bad address (exception from send)  ");
-		} catch (Exception e) {
-			assertTrue(
-					"Wrong exception when trying to connect at native level with bad address (exception from send): "
-							+ e.toString(),
-					(e instanceof IllegalArgumentException));
+		} catch (IllegalArgumentException e) {
+			// Expected
 		}
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#isBound()
 	 */
-	public void test_isBound() {
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			int[] ports = Support_PortManager.getNextPortsForUDP(3);
-			int port = ports[0];
+	public void test_isBound() throws Exception {
+                InetAddress addr = InetAddress.getLocalHost();
+                int[] ports = Support_PortManager.getNextPortsForUDP(3);
+                int port = ports[0];
 
-			DatagramSocket theSocket = new DatagramSocket(ports[1]);
-			assertTrue("Socket indicated  not bound when it should be (1)",
-					theSocket.isBound());
-			theSocket.close();
+                DatagramSocket theSocket = new DatagramSocket(ports[1]);
+                assertTrue("Socket indicated  not bound when it should be (1)",
+                                theSocket.isBound());
+                theSocket.close();
 
-			theSocket = new DatagramSocket(new InetSocketAddress(addr, port));
-			assertTrue("Socket indicated  not bound when it should be (2)",
-					theSocket.isBound());
-			theSocket.close();
+                theSocket = new DatagramSocket(new InetSocketAddress(addr, port));
+                assertTrue("Socket indicated  not bound when it should be (2)",
+                                theSocket.isBound());
+                theSocket.close();
 
-			theSocket = new DatagramSocket(null);
-			assertFalse("Socket indicated  bound when it should not be (1)",
-					theSocket.isBound());
-			theSocket.close();
+                theSocket = new DatagramSocket(null);
+                assertFalse("Socket indicated  bound when it should not be (1)",
+                                theSocket.isBound());
+                theSocket.close();
 
-			// connect causes implicit bind
-			theSocket = new DatagramSocket(null);
-			theSocket.connect(new InetSocketAddress(addr, port));
-			assertTrue("Socket indicated not bound when it should be (3)",
-					theSocket.isBound());
-			theSocket.close();
+                // connect causes implicit bind
+                theSocket = new DatagramSocket(null);
+                theSocket.connect(new InetSocketAddress(addr, port));
+                assertTrue("Socket indicated not bound when it should be (3)",
+                                theSocket.isBound());
+                theSocket.close();
 
-			// now test when we bind explicitely
-			InetSocketAddress theLocalAddress = new InetSocketAddress(
-					InetAddress.getLocalHost(), ports[2]);
-			theSocket = new DatagramSocket(null);
-			assertFalse("Socket indicated bound when it should not be (2)",
-					theSocket.isBound());
-			theSocket.bind(theLocalAddress);
-			assertTrue("Socket indicated not bound when it should be (4)",
-					theSocket.isBound());
-			theSocket.close();
-			assertTrue("Socket indicated not bound when it should be (5)",
-					theSocket.isBound());
-		} catch (Exception e) {
-			fail("Got exception during isBound tests" + e.toString());
-		}
+                // now test when we bind explicitely
+                InetSocketAddress theLocalAddress = new InetSocketAddress(
+                                InetAddress.getLocalHost(), ports[2]);
+                theSocket = new DatagramSocket(null);
+                assertFalse("Socket indicated bound when it should not be (2)",
+                                theSocket.isBound());
+                theSocket.bind(theLocalAddress);
+                assertTrue("Socket indicated not bound when it should be (4)",
+                                theSocket.isBound());
+                theSocket.close();
+                assertTrue("Socket indicated not bound when it should be (5)",
+                                theSocket.isBound());
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#isConnected()
 	 */
-	public void test_isConnected() {
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			int[] ports = Support_PortManager.getNextPortsForUDP(4);
-			int port = ports[0];
+	public void test_isConnected() throws Exception {
+                InetAddress addr = InetAddress.getLocalHost();
+                int[] ports = Support_PortManager.getNextPortsForUDP(4);
+                int port = ports[0];
 
-			// base test
-			DatagramSocket theSocket = new DatagramSocket(ports[1]);
-			assertFalse("Socket indicated connected when it should not be",
-					theSocket.isConnected());
-			theSocket.connect(new InetSocketAddress(addr, port));
-			assertTrue("Socket indicated  not connected when it should be",
-					theSocket.isConnected());
+                // base test
+                DatagramSocket theSocket = new DatagramSocket(ports[1]);
+                assertFalse("Socket indicated connected when it should not be",
+                                theSocket.isConnected());
+                theSocket.connect(new InetSocketAddress(addr, port));
+                assertTrue("Socket indicated  not connected when it should be",
+                                theSocket.isConnected());
 
-			// reconnect the socket and make sure we get the right answer
-			theSocket.connect(new InetSocketAddress(addr, ports[2]));
-			assertTrue("Socket indicated  not connected when it should be",
-					theSocket.isConnected());
+                // reconnect the socket and make sure we get the right answer
+                theSocket.connect(new InetSocketAddress(addr, ports[2]));
+                assertTrue("Socket indicated  not connected when it should be",
+                                theSocket.isConnected());
 
-			// now disconnect the socket and make sure we get the right answer
-			theSocket.disconnect();
-			assertFalse("Socket indicated connected when it should not be",
-					theSocket.isConnected());
-			theSocket.close();
+                // now disconnect the socket and make sure we get the right answer
+                theSocket.disconnect();
+                assertFalse("Socket indicated connected when it should not be",
+                                theSocket.isConnected());
+                theSocket.close();
 
-			// now check behavior when socket is closed when connected
-			theSocket = new DatagramSocket(ports[3]);
-			theSocket.connect(new InetSocketAddress(addr, port));
-			theSocket.close();
-			assertTrue("Socket indicated  not connected when it should be",
-					theSocket.isConnected());
-		} catch (Exception e) {
-			fail("Got exception during isConnected tests" + e.toString());
-		}
+                // now check behavior when socket is closed when connected
+                theSocket = new DatagramSocket(ports[3]);
+                theSocket.connect(new InetSocketAddress(addr, port));
+                theSocket.close();
+                assertTrue("Socket indicated  not connected when it should be",
+                                theSocket.isConnected());
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#getRemoteSocketAddress()
 	 */
-	public void test_getRemoteSocketAddress() {
-		try {
-			int[] ports = Support_PortManager.getNextPortsForUDP(3);
-			int sport = ports[0];
-			int portNumber = ports[1];
-			DatagramSocket s = new DatagramSocket(new InetSocketAddress(
-					InetAddress.getLocalHost(), portNumber));
-			s.connect(new InetSocketAddress(InetAddress.getLocalHost(), sport));
-			assertTrue("Returned incorrect InetSocketAddress(1):"
-					+ s.getLocalSocketAddress().toString(), s
-					.getRemoteSocketAddress().equals(
-							new InetSocketAddress(InetAddress.getLocalHost(),
-									sport)));
-			s.close();
+	public void test_getRemoteSocketAddress() throws Exception {
+                int[] ports = Support_PortManager.getNextPortsForUDP(3);
+                int sport = ports[0];
+                int portNumber = ports[1];
+                DatagramSocket s = new DatagramSocket(new InetSocketAddress(
+                                InetAddress.getLocalHost(), portNumber));
+                s.connect(new InetSocketAddress(InetAddress.getLocalHost(), sport));
+                assertTrue("Returned incorrect InetSocketAddress(1):"
+                                + s.getLocalSocketAddress().toString(), s
+                                .getRemoteSocketAddress().equals(
+                                                new InetSocketAddress(InetAddress.getLocalHost(),
+                                                                sport)));
+                s.close();
 
-			// now create one that is not connected and validate that we get the
-			// right answer
-			DatagramSocket theSocket = new DatagramSocket(null);
-			portNumber = ports[2];
-			theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
-					portNumber));
-			assertNull(
-					"Returned incorrect InetSocketAddress -unconnected socket:"
-							+ "Expected: NULL", theSocket
-							.getRemoteSocketAddress());
+                // now create one that is not connected and validate that we get the
+                // right answer
+                DatagramSocket theSocket = new DatagramSocket(null);
+                portNumber = ports[2];
+                theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
+                                portNumber));
+                assertNull(
+                                "Returned incorrect InetSocketAddress -unconnected socket:"
+                                                + "Expected: NULL", theSocket
+                                                .getRemoteSocketAddress());
 
-			// now connect and validate we get the right answer
-			theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
-					sport));
-			assertTrue("Returned incorrect InetSocketAddress(2):"
-					+ theSocket.getRemoteSocketAddress().toString(), theSocket
-					.getRemoteSocketAddress().equals(
-							new InetSocketAddress(InetAddress.getLocalHost(),
-									sport)));
-			theSocket.close();
-
-		} catch (Exception e) {
-			fail("Exception during getRemoteSocketAddress test: " + e);
-		}
+                // now connect and validate we get the right answer
+                theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
+                                sport));
+                assertTrue("Returned incorrect InetSocketAddress(2):"
+                                + theSocket.getRemoteSocketAddress().toString(), theSocket
+                                .getRemoteSocketAddress().equals(
+                                                new InetSocketAddress(InetAddress.getLocalHost(),
+                                                                sport)));
+                theSocket.close();
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#getLocalSocketAddress()
 	 */
-	public void test_getLocalSocketAddress() {
+	public void test_getLocalSocketAddress() throws Exception {
+                int portNumber = Support_PortManager.getNextPortForUDP();
+                DatagramSocket s = new DatagramSocket(new InetSocketAddress(
+                                InetAddress.getLocalHost(), portNumber));
+                assertTrue("Returned incorrect InetSocketAddress(1):"
+                                + s.getLocalSocketAddress().toString()
+                                + "Expected: "
+                                + (new InetSocketAddress(InetAddress.getLocalHost(),
+                                                portNumber)).toString(), s.getLocalSocketAddress()
+                                .equals(
+                                                new InetSocketAddress(InetAddress.getLocalHost(),
+                                                                portNumber)));
+                s.close();
 
-		try {
-			int portNumber = Support_PortManager.getNextPortForUDP();
-			DatagramSocket s = new DatagramSocket(new InetSocketAddress(
-					InetAddress.getLocalHost(), portNumber));
-			assertTrue("Returned incorrect InetSocketAddress(1):"
-					+ s.getLocalSocketAddress().toString()
-					+ "Expected: "
-					+ (new InetSocketAddress(InetAddress.getLocalHost(),
-							portNumber)).toString(), s.getLocalSocketAddress()
-					.equals(
-							new InetSocketAddress(InetAddress.getLocalHost(),
-									portNumber)));
-			s.close();
+                InetSocketAddress remoteAddress = (InetSocketAddress) s
+                                .getRemoteSocketAddress();
 
-			InetSocketAddress remoteAddress = (InetSocketAddress) s
-					.getRemoteSocketAddress();
+                // now create a socket that is not bound and validate we get the
+                // right answer
+                DatagramSocket theSocket = new DatagramSocket(null);
+                assertNull(
+                                "Returned incorrect InetSocketAddress -unbound socket- Expected null",
+                                theSocket.getLocalSocketAddress());
 
-			// now create a socket that is not bound and validate we get the
-			// right answer
-			DatagramSocket theSocket = new DatagramSocket(null);
-			assertNull(
-					"Returned incorrect InetSocketAddress -unbound socket- Expected null",
-					theSocket.getLocalSocketAddress());
+                // now bind the socket and make sure we get the right answer
+                portNumber = Support_PortManager.getNextPortForUDP();
+                theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
+                                portNumber));
+                assertTrue("Returned incorrect InetSocketAddress(2):"
+                                + theSocket.getLocalSocketAddress().toString()
+                                + "Expected: "
+                                + (new InetSocketAddress(InetAddress.getLocalHost(),
+                                                portNumber)).toString(), theSocket
+                                .getLocalSocketAddress().equals(
+                                                new InetSocketAddress(InetAddress.getLocalHost(),
+                                                                portNumber)));
+                theSocket.close();
 
-			// now bind the socket and make sure we get the right answer
-			portNumber = Support_PortManager.getNextPortForUDP();
-			theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
-					portNumber));
-			assertTrue("Returned incorrect InetSocketAddress(2):"
-					+ theSocket.getLocalSocketAddress().toString()
-					+ "Expected: "
-					+ (new InetSocketAddress(InetAddress.getLocalHost(),
-							portNumber)).toString(), theSocket
-					.getLocalSocketAddress().equals(
-							new InetSocketAddress(InetAddress.getLocalHost(),
-									portNumber)));
-			theSocket.close();
+                // now validate thet behaviour when the any address is returned
+                s = new DatagramSocket(0);
 
-			// now validate thet behaviour when the any address is returned
-			s = new DatagramSocket(0);
-
-			String preferIPv4StackValue = System
-					.getProperty("java.net.preferIPv4Stack");
-			String preferIPv6AddressesValue = System
-					.getProperty("java.net.preferIPv6Addresses");
-			if (((preferIPv4StackValue == null) || preferIPv4StackValue
-					.equalsIgnoreCase("false"))
-					&& (preferIPv6AddressesValue != null)
-					&& (preferIPv6AddressesValue.equals("true"))) {
-				assertTrue(
-						"ANY address not returned correctly with preferIPv6Addresses=true, preferIPv4Stack=false "
-								+ s.getLocalSocketAddress(),
-						((InetSocketAddress) s.getLocalSocketAddress())
-								.getAddress() instanceof Inet6Address);
-			} else {
-				assertTrue(
-						"ANY address not returned correctly with preferIPv6Addresses=true, preferIPv4Stack=true "
-								+ s.getLocalSocketAddress(),
-						((InetSocketAddress) s.getLocalSocketAddress())
-								.getAddress() instanceof Inet4Address);
-			}
-			s.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail("Exception during getLocalSocketAddress test: " + e);
-		}
+                String preferIPv4StackValue = System
+                                .getProperty("java.net.preferIPv4Stack");
+                String preferIPv6AddressesValue = System
+                                .getProperty("java.net.preferIPv6Addresses");
+                if (((preferIPv4StackValue == null) || preferIPv4StackValue
+                                .equalsIgnoreCase("false"))
+                                && (preferIPv6AddressesValue != null)
+                                && (preferIPv6AddressesValue.equals("true"))) {
+                        assertTrue(
+                                        "ANY address not returned correctly with preferIPv6Addresses=true, preferIPv4Stack=false "
+                                                        + s.getLocalSocketAddress(),
+                                        ((InetSocketAddress) s.getLocalSocketAddress())
+                                                        .getAddress() instanceof Inet6Address);
+                } else {
+                        assertTrue(
+                                        "ANY address not returned correctly with preferIPv6Addresses=true, preferIPv4Stack=true "
+                                                        + s.getLocalSocketAddress(),
+                                        ((InetSocketAddress) s.getLocalSocketAddress())
+                                                        .getAddress() instanceof Inet4Address);
+                }
+                s.close();
 	}
 
 	/**
 	 * @tests java.net.DatagramSocket#setReuseAddress(boolean)
 	 */
-	public void test_setReuseAddressZ() {
+	public void test_setReuseAddressZ() throws Exception {
 		try {
 			// test case were we set it to false
 			DatagramSocket theSocket1 = null;
@@ -1796,21 +1586,17 @@ public class DatagramSocketTest extends SocketTestCase {
 				theSocket2.close();
 
 			// test case were we set it to true
-			try {
-				InetSocketAddress theAddress = new InetSocketAddress(
-						InetAddress.getLocalHost(), Support_PortManager
-								.getNextPortForUDP());
-				theSocket1 = new DatagramSocket(null);
-				theSocket2 = new DatagramSocket(null);
-				theSocket1.setReuseAddress(true);
-				theSocket2.setReuseAddress(true);
-				theSocket1.bind(theAddress);
-				theSocket2.bind(theAddress);
-			} catch (Exception e) {
-				fail(
-						"unexpected exception when trying to connect to do duplicate socket bind with re-useaddr set to true");
-			}
-			if (theSocket1 != null)
+                        InetSocketAddress theAddress = new InetSocketAddress(
+                                        InetAddress.getLocalHost(), Support_PortManager
+                                                        .getNextPortForUDP());
+                        theSocket1 = new DatagramSocket(null);
+                        theSocket2 = new DatagramSocket(null);
+                        theSocket1.setReuseAddress(true);
+                        theSocket2.setReuseAddress(true);
+                        theSocket1.bind(theAddress);
+                        theSocket2.bind(theAddress);
+
+                        if (theSocket1 != null)
 				theSocket1.close();
 			if (theSocket2 != null)
 				theSocket2.close();
@@ -1818,7 +1604,7 @@ public class DatagramSocketTest extends SocketTestCase {
 			// test the default case which we expect to be the same on all
 			// platforms
 			try {
-				InetSocketAddress theAddress = new InetSocketAddress(
+				theAddress = new InetSocketAddress(
 						InetAddress.getLocalHost(), Support_PortManager
 								.getNextPortForUDP());
 				theSocket1 = new DatagramSocket(null);
@@ -1976,28 +1762,24 @@ public class DatagramSocketTest extends SocketTestCase {
 	/**
 	 * @tests java.net.DatagramSocket#isClosed()
 	 */
-	public void test_isClosed() {
-		try {
-			DatagramSocket theSocket = new DatagramSocket();
+	public void test_isClosed() throws Exception {
+                DatagramSocket theSocket = new DatagramSocket();
 
-			// validate isClosed returns expected values
-			assertFalse("Socket should indicate it is not closed(1):",
-					theSocket.isClosed());
-			theSocket.close();
-			assertTrue("Socket should indicate it is not closed(1):", theSocket
-					.isClosed());
+                // validate isClosed returns expected values
+                assertFalse("Socket should indicate it is not closed(1):",
+                                theSocket.isClosed());
+                theSocket.close();
+                assertTrue("Socket should indicate it is not closed(1):", theSocket
+                                .isClosed());
 
-			InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-					.getLocalHost(), Support_PortManager.getNextPortForUDP());
-			theSocket = new DatagramSocket(theAddress);
-			assertFalse("Socket should indicate it is not closed(2):",
-					theSocket.isClosed());
-			theSocket.close();
-			assertTrue("Socket should indicate it is not closed(2):", theSocket
-					.isClosed());
-		} catch (Exception e) {
-			fail("Got exception during isClosed tests" + e.toString());
-		}
+                InetSocketAddress theAddress = new InetSocketAddress(InetAddress
+                                .getLocalHost(), Support_PortManager.getNextPortForUDP());
+                theSocket = new DatagramSocket(theAddress);
+                assertFalse("Socket should indicate it is not closed(2):",
+                                theSocket.isClosed());
+                theSocket.close();
+                assertTrue("Socket should indicate it is not closed(2):", theSocket
+                                .isClosed());
 	}
 	
 	/**

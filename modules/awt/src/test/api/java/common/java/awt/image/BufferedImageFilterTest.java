@@ -72,9 +72,8 @@ public class BufferedImageFilterTest extends TestCase {
             new BufferedImageFilter(null);
             fail("Should throw NullPointerException, but was not.");
         } catch (NullPointerException e) {
-        } catch (Exception e) {
-            fail("NullPointerException expected");
-        }
+            // Expected
+        } 
     }
 
     public void testGetBufferedImageOp() throws Exception {

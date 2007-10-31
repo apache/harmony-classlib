@@ -140,9 +140,13 @@ public class ObjectStreamClass implements Serializable {
     private static final WeakHashMap<Class<?>, ObjectStreamClass> classesAndDescriptors = new WeakHashMap<Class<?>, ObjectStreamClass>();
 
     private transient Method methodWriteReplace;
+
     private transient Method methodReadResolve;
+
     private transient Method methodWriteObject;
+
     private transient Method methodReadObject;
+
     private transient Method methodReadObjectNoData;
 
     // ClassDesc //
@@ -200,7 +204,8 @@ public class ObjectStreamClass implements Serializable {
      *            a boolean indicating if SUID should be computed or not.
      * @return the computer class descriptor
      */
-    private static ObjectStreamClass createClassDesc(Class<?> cl, boolean computeSUID) {
+    private static ObjectStreamClass createClassDesc(Class<?> cl,
+            boolean computeSUID) {
 
         ObjectStreamClass result = new ObjectStreamClass();
 
@@ -223,7 +228,8 @@ public class ObjectStreamClass implements Serializable {
                 result.setSerialVersionUID(0L);
             } else {
                 declaredFields = cl.getDeclaredFields();
-                result.setSerialVersionUID(computeSerialVersionUID(cl, declaredFields));
+                result.setSerialVersionUID(computeSerialVersionUID(cl,
+                        declaredFields));
             }
         }
 
@@ -242,7 +248,7 @@ public class ObjectStreamClass implements Serializable {
         // Copy all fields to loadFields - they should be read by default in
         // ObjectInputStream.defaultReadObject() method
         ObjectStreamField[] fields = result.getFields();
-    
+
         if (fields != null) {
             ObjectStreamField[] loadFields = new ObjectStreamField[fields.length];
 
@@ -250,7 +256,8 @@ public class ObjectStreamClass implements Serializable {
                 loadFields[i] = new ObjectStreamField(fields[i].getName(),
                         fields[i].getType(), fields[i].isUnshared());
 
-                // resolve type string to init typeString field in ObjectStreamField
+                // resolve type string to init typeString field in
+                // ObjectStreamField
                 loadFields[i].getTypeString();
             }
             result.setLoadFields(loadFields);
@@ -263,16 +270,14 @@ public class ObjectStreamClass implements Serializable {
         } else if (serializable) {
             flags |= ObjectStreamConstants.SC_SERIALIZABLE;
         }
-        result.methodWriteReplace = 
-            findMethod(cl, "writeReplace");
-        result.methodReadResolve = 
-            findMethod(cl, "readResolve");
-        result.methodWriteObject = 
-            findPrivateMethod(cl, "writeObject", WRITE_PARAM_TYPES);
-        result.methodReadObject = 
-            findPrivateMethod(cl, "readObject", READ_PARAM_TYPES);
-        result.methodReadObjectNoData = 
-            findPrivateMethod(cl, "readObjectNoData", EMPTY_CONSTRUCTOR_PARAM_TYPES); 
+        result.methodWriteReplace = findMethod(cl, "writeReplace"); //$NON-NLS-1$
+        result.methodReadResolve = findMethod(cl, "readResolve"); //$NON-NLS-1$
+        result.methodWriteObject = findPrivateMethod(cl, "writeObject", //$NON-NLS-1$
+                WRITE_PARAM_TYPES);
+        result.methodReadObject = findPrivateMethod(cl, "readObject", //$NON-NLS-1$
+                READ_PARAM_TYPES);
+        result.methodReadObjectNoData = findPrivateMethod(cl,
+                "readObjectNoData", EMPTY_CONSTRUCTOR_PARAM_TYPES); //$NON-NLS-1$
         if (result.hasMethodWriteObject()) {
             flags |= ObjectStreamConstants.SC_WRITE_METHOD;
         }
@@ -352,7 +357,7 @@ public class ObjectStreamClass implements Serializable {
         }
         fields = _fields;
     }
-    
+
     /**
      * Compute and return the Serial Version UID of the class <code>cl</code>.
      * The value is computed based on the class name, superclass chain, field
@@ -695,17 +700,17 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
-     * If a Class uses "serialPersistentFields" to define the serialized fields, 
+     * If a Class uses "serialPersistentFields" to define the serialized fields,
      * this.loadFields cannot get the "unshared" information when deserializing
-     * fields using current implementation of ObjectInputStream. This method 
+     * fields using current implementation of ObjectInputStream. This method
      * provides a way to copy the "unshared" attribute from this.fields.
-     *
+     * 
      */
     private void copyFieldAttributes() {
         if ((loadFields == null) || fields == null) {
             return;
         }
-        
+
         for (int i = 0; i < loadFields.length; i++) {
             ObjectStreamField loadField = loadFields[i];
             String name = loadField.getName();
@@ -936,16 +941,16 @@ public class ObjectStreamClass implements Serializable {
      *            a boolean indicating if SUID should be computed or not.
      * @return the corresponding descriptor
      */
-    private static ObjectStreamClass lookupStreamClass(
-            Class<?> cl, boolean computeSUID) {
+    private static ObjectStreamClass lookupStreamClass(Class<?> cl,
+            boolean computeSUID) {
         // Synchronized because of the lookup table 'classesAndDescriptors'
 
-        ObjectStreamClass cachedValue;  
-        synchronized(classesAndDescriptors){
+        ObjectStreamClass cachedValue;
+        synchronized (classesAndDescriptors) {
             cachedValue = classesAndDescriptors.get(cl);
             if (cachedValue == null) {
-                cachedValue  = createClassDesc(cl, computeSUID);;
-               classesAndDescriptors.put(cl, cachedValue);
+                cachedValue = createClassDesc(cl, computeSUID);
+                classesAndDescriptors.put(cl, cachedValue);
             }
         }
         return cachedValue;
@@ -953,8 +958,8 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
-     * Return the java.lang.reflect.Method if class
-     * <code>cl</code> implements <code>methodName</code> . Return null otherwise.
+     * Return the java.lang.reflect.Method if class <code>cl</code> implements
+     * <code>methodName</code> . Return null otherwise.
      * 
      * @param cl
      *            a java.lang.Class which to test
@@ -967,7 +972,7 @@ public class ObjectStreamClass implements Serializable {
         Method method = null;
         while (search != null) {
             try {
-                method = search.getDeclaredMethod(methodName, (Class[]) null); //$NON-NLS-1$
+                method = search.getDeclaredMethod(methodName, (Class[]) null);
                 if (search == cl
                         || (method.getModifiers() & Modifier.PRIVATE) == 0) {
                     method.setAccessible(true);
@@ -981,8 +986,8 @@ public class ObjectStreamClass implements Serializable {
     }
 
     /**
-     * Return the java.lang.reflect.Method if class
-     * <code>cl</code> implements private <code>methodName</code> . Return null otherwise.
+     * Return the java.lang.reflect.Method if class <code>cl</code> implements
+     * private <code>methodName</code> . Return null otherwise.
      * 
      * @param cl
      *            a java.lang.Class which to test
@@ -990,10 +995,10 @@ public class ObjectStreamClass implements Serializable {
      *         writeReplace <code>null</code> if the class does not implement
      *         writeReplace
      */
-    static Method findPrivateMethod(Class<?> cl, String methodName, Class[] param) {
+    static Method findPrivateMethod(Class<?> cl, String methodName,
+            Class<?>[] param) {
         try {
-            Method method = cl
-                    .getDeclaredMethod(methodName, param); //$NON-NLS-1$
+            Method method = cl.getDeclaredMethod(methodName, param);
             if (Modifier.isPrivate(method.getModifiers())
                     && method.getReturnType() == VOID_CLASS) {
                 method.setAccessible(true);
@@ -1005,53 +1010,54 @@ public class ObjectStreamClass implements Serializable {
         return null;
     }
 
-    boolean hasMethodWriteReplace(){
+    boolean hasMethodWriteReplace() {
         return (methodWriteReplace != null);
     }
 
-    Method getMethodWriteReplace(){
+    Method getMethodWriteReplace() {
         return methodWriteReplace;
     }
 
-    boolean hasMethodReadResolve(){
+    boolean hasMethodReadResolve() {
         return (methodReadResolve != null);
     }
 
-    Method getMethodReadResolve(){
+    Method getMethodReadResolve() {
         return methodReadResolve;
     }
 
-    boolean hasMethodWriteObject(){
+    boolean hasMethodWriteObject() {
         return (methodWriteObject != null);
     }
 
-    Method getMethodWriteObject(){
+    Method getMethodWriteObject() {
         return methodWriteObject;
     }
 
-    boolean hasMethodReadObject(){
+    boolean hasMethodReadObject() {
         return (methodReadObject != null);
     }
 
-    Method getMethodReadObject(){
+    Method getMethodReadObject() {
         return methodReadObject;
     }
 
-    boolean hasMethodReadObjectNoData(){
+    boolean hasMethodReadObjectNoData() {
         return (methodReadObjectNoData != null);
     }
 
-    Method getMethodReadObjectNoData(){
+    Method getMethodReadObjectNoData() {
         return methodReadObjectNoData;
     }
 
-    void initPrivateFields(ObjectStreamClass desc){
+    void initPrivateFields(ObjectStreamClass desc) {
         methodWriteReplace = desc.methodWriteReplace;
         methodReadResolve = desc.methodReadResolve;
         methodWriteObject = desc.methodWriteObject;
         methodReadObject = desc.methodReadObject;
         methodReadObjectNoData = desc.methodReadObjectNoData;
     }
+
     /**
      * Set the class (java.lang.Class) that the receiver represents
      * 

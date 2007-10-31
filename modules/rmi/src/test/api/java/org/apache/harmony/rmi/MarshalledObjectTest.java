@@ -136,33 +136,25 @@ public class MarshalledObjectTest extends TestCase {
             Object obj = null;
 
             // 1-st get: thread context classloader is equal to system classloader
-            try {
-                obj = mo.get();
+            obj = mo.get();
 
-                if (obj.getClass().getClassLoader() != old_cl) {
-                    fail("1-st get failed: loaded through: "
-                            + obj.getClass().getClassLoader() + ", expected: " + old_cl);
+            if (obj.getClass().getClassLoader() != old_cl) {
+                fail("1-st get failed: loaded through: "
+                        + obj.getClass().getClassLoader() + ", expected: " + old_cl);
             } else {
                 System.out.println("1-st get passed.");
-            }
-            } catch (Exception ex) {
-                fail("1-st get failed: " + ex);
             }
 
             // 2-nd get: thread context classloader is equal to null
             Thread.currentThread().setContextClassLoader(null);
 
-            try {
-                obj = mo.get();
+            obj = mo.get();
 
-                if (obj.getClass().getClassLoader() != old_cl) {
-                    fail("2-nd get failed: loaded through: "
-                            + obj.getClass().getClassLoader() + ", expected: " + old_cl);
-                } else {
-                    System.out.println("2-nd get passed.");
-                }
-            } catch (Exception ex) {
-                fail("2-nd get failed: " + ex);
+            if (obj.getClass().getClassLoader() != old_cl) {
+                fail("2-nd get failed: loaded through: "
+                        + obj.getClass().getClassLoader() + ", expected: " + old_cl);
+            } else {
+                System.out.println("2-nd get passed.");
             }
         } finally {
             // restore thread context classloader

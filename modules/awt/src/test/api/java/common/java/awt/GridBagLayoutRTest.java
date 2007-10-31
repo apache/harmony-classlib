@@ -111,11 +111,7 @@ public class GridBagLayoutRTest extends TestCase {
     
     public final void testInvalidate() {
         GridBagLayout gbl = new GridBagLayout();
-        try {
-            gbl.invalidateLayout(null);
-        } catch (Throwable t) {
-            fail();
-        }
+        gbl.invalidateLayout(null);
     }
     
     static void addToGridBag(Panel panel, Component comp, int x, int y, int w,

@@ -184,24 +184,37 @@ public abstract class BandSet {
     public long[][] parseFlags(String name, InputStream in, int counts[],
             BHSDCodec hiCodec, BHSDCodec loCodec) throws IOException,
             Pack200Exception {
-        // TODO Move away from decoding into a parseBand type structure
         int count = counts.length;
         if (count == 0) {
             return new long[][] { {} };
         }
+        int sum = 0;
         long[][] result = new long[count][];
-        for (int j = 0; j < count; j++) {
-            int[] hi;
-            if(hiCodec != null) {
-                hi = decodeBandInt(name, in, hiCodec, counts[j]);
-                result[j] = decodeBandLong(name, in, loCodec, counts[j]);
-                for (int i = 0; i < counts[j]; i++) {                    
-                    result[j][i] = (hi[i] << 32) |result[j][i];
+        for (int i = 0; i < count; i++) {
+            result[i] = new long[counts[i]];
+            sum += counts[i];
+        }
+        int[] hi = null;
+        int[] lo;
+        if(hiCodec != null) {
+            hi = decodeBandInt(name, in, hiCodec, sum);
+            lo = decodeBandInt(name, in, loCodec, sum);        
+        } else {
+            lo = decodeBandInt(name, in, loCodec, sum);
+        }
+        
+        int index = 0;
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
+                if(hi != null) {
+                    result[i][j] = (hi[index] << 32) | lo[index];
+                } else {
+                    result[i][j] = lo[index];
                 }
-            } else {
-                result[j] = decodeBandLong(name, in, loCodec, counts[j]);
+                index++;
             }
         }
+
         // TODO Remove debugging code
         debug("Parsed *" + name + " (" + result.length + ")");
         return result;        
@@ -280,7 +293,7 @@ public abstract class BandSet {
         }
         // TODO Merge the decode and parsing of a multiple structure into one
         String[] result1 = new String[sum];
-        int[] indices = decodeBandInt(name, in, codec, sum);
+        int[] indices = decodeBandInt(name, in, codec, sum, reference.length - 1);
         for (int i1 = 0; i1 < sum; i1++) {
             int index = indices[i1];
             if (index < 0 || index >= reference.length)
@@ -298,6 +311,60 @@ public abstract class BandSet {
             pos += num;
         }
         return result;
+    }
+
+    private int[] decodeBandInt(String name, InputStream in, BHSDCodec codec, int count, int maxValue) throws IOException, Pack200Exception {
+        long[] band;
+        Codec codecUsed = codec;
+        if (codec.getB() == 1 || count == 0) {
+            band = codec.decode(count, in);           
+        } else {
+            long[] getFirst = codec.decode(1, in);
+            if (getFirst.length == 0) {
+                return new int[0];
+            }
+            long first = getFirst[0];
+            if (codec.isSigned() && first >= -256 && first <= -1) {
+                // Non-default codec should be used
+                codecUsed = CodecEncoding.getCodec((int) (-1 - first),
+                        header.getBandHeadersInputStream(), codec);
+                band = codecUsed.decode(count, in);          
+            } else if (!codec.isSigned() && first >= codec.getL()
+                    && first <= codec.getL() + 255) {
+                // Non-default codec should be used
+                codecUsed = CodecEncoding.getCodec((int) first
+                        - codec.getL(), header.getBandHeadersInputStream(), codec);
+                band = codecUsed.decode(count, in);
+            } else {
+                // First element should not be discarded
+                band = codec.decode(count - 1, in, first);
+            }
+        }
+
+        int[] returnBand = new int[band.length];
+        for (int i = 0; i < returnBand.length; i++) {
+            returnBand[i] = (int)band[i];
+        }
+        
+        /*
+         * Note - this is not in the spec, but seems to be used as an
+         * optimization by the RI for bands where the minimum and maximum values
+         * are known (ie reference bands). It will not hurt any encoding that is
+         * following the spec because all the values decoded will be inside the
+         * range anyway.
+         */
+        if (codecUsed instanceof BHSDCodec) {
+            for (int i = 0; i < returnBand.length; i++) {
+                while (returnBand[i] < 0) {
+                    returnBand[i] += ((BHSDCodec) codecUsed).cardinality();
+                }
+                while (returnBand[i] > maxValue) {
+                    returnBand[i] -= ((BHSDCodec) codecUsed).cardinality();
+                }
+            }
+        }
+        
+        return returnBand;
     }
 
     /**

@@ -33,7 +33,8 @@
 
 #include "exceptions.h"
 
-#define MAX_BUFFER 32768
+#define MIN_BUFFER 32768
+#define MAX_BUFFER 33554432
 
 jfieldID img_JPEG_imageWidthID;
 jfieldID img_JPEG_imageHeightID;

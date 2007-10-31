@@ -38,11 +38,7 @@ public class SecureRandom2Test extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.security.SecureRandom()
-		try {
-			new SecureRandom();
-		} catch (Exception e) {
-			fail("Constructor threw exception : " + e);
-		}
+		new SecureRandom();
 	}
 
 	/**
@@ -50,11 +46,7 @@ public class SecureRandom2Test extends junit.framework.TestCase {
 	 */
 	public void test_Constructor$B() {
 		// Test for method java.security.SecureRandom(byte [])
-		try {
-			new SecureRandom(SEED_BYTES);
-		} catch (Exception e) {
-			fail("Constructor threw exception : " + e);
-		}
+		new SecureRandom(SEED_BYTES);
 	}
 
 	/**
@@ -120,11 +112,7 @@ public class SecureRandom2Test extends junit.framework.TestCase {
 	public void test_nextBytes$B() {
 		// Test for method void java.security.SecureRandom.nextBytes(byte [])
 		byte[] bytes = new byte[313];
-		try {
 		new SecureRandom().nextBytes(bytes);
-		} catch (Exception e) {
-			fail("next bytes not ok : " + e);
-		}
 	}
 
 	/**
@@ -132,11 +120,7 @@ public class SecureRandom2Test extends junit.framework.TestCase {
 	 */
 	public void test_setSeed$B() {
 		// Test for method void java.security.SecureRandom.setSeed(byte [])
-		try {
-			new SecureRandom().setSeed(SEED_BYTES);
-		} catch (Exception e) {
-			fail("seed generation with bytes failed : " + e);
-		}
+		new SecureRandom().setSeed(SEED_BYTES);
 	}
 
 	/**
@@ -144,11 +128,7 @@ public class SecureRandom2Test extends junit.framework.TestCase {
 	 */
 	public void test_setSeedJ() {
 		// Test for method void java.security.SecureRandom.setSeed(long)
-		try {
-			new SecureRandom().setSeed(SEED_VALUE);
-		} catch (Exception e) {
-			fail("seed generation with long failed : " + e);
-		}
+		new SecureRandom().setSeed(SEED_VALUE);
 	}
 
 	/**

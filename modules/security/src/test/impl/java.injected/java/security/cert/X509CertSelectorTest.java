@@ -2685,7 +2685,7 @@ public class X509CertSelectorTest extends TestCase {
     /**
      * toString() method testing.
      */
-    public void testToString() throws IOException {
+    public void testToString() throws Exception {
         BigInteger serial = new BigInteger("10000");
         X500Principal issuer = new X500Principal("O=Issuer Org.");
         X500Principal subject = new X500Principal("O=Subject Org.");
@@ -2698,13 +2698,9 @@ public class X509CertSelectorTest extends TestCase {
         };
         String pkAlgID = "1.2.840.113549.1.1.4"; // MD5 with RSA encryption (source: http://asn1.elibel.tm.fr)
         PublicKey pkey;
-        try {
-            pkey = new TestKeyPair("RSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: " + e.getMessage());
-            return;
-        }
+
+        pkey = new TestKeyPair("RSA").getPublic();
+
         boolean[] keyUsage = new boolean[]
                     {true, true, true, true, true, true, true, true, false};
         // OID values was taken from rfc 3280
@@ -2754,7 +2750,7 @@ public class X509CertSelectorTest extends TestCase {
      * and if the certificate conforming to the multiple matching criteria
      * matches or does not..
      */
-    public void testMatch() throws IOException {
+    public void testMatch() throws Exception {
         BigInteger serial = new BigInteger("10000");
         X500Principal issuer = new X500Principal("O=Issuer Org.");
         X500Principal subject = new X500Principal("O=Subject Org.");
@@ -2767,13 +2763,9 @@ public class X509CertSelectorTest extends TestCase {
         };
         String pkAlgID = "1.2.840.113549.1.1.1"; // RSA encryption (source: http://asn1.elibel.tm.fr)
         PublicKey pkey;
-        try {
-            pkey = new TestKeyPair("RSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: " + e.getMessage());
-            return;
-        }
+
+        pkey = new TestKeyPair("RSA").getPublic();
+
         boolean[] keyUsage = new boolean[]
                     {true, true, true, true, true, true, true, true, false};
         // OID values was taken from rfc 3280
@@ -2853,7 +2845,7 @@ public class X509CertSelectorTest extends TestCase {
     /**
      * clone() method testing.
      */
-    public void testClone() throws IOException {
+    public void testClone() throws Exception {
         BigInteger serial = new BigInteger("10000");
         X500Principal issuer = new X500Principal("O=Issuer Org.");
         X500Principal subject = new X500Principal("O=Subject Org.");
@@ -2866,13 +2858,9 @@ public class X509CertSelectorTest extends TestCase {
         };
         String pkAlgID = "1.2.840.113549.1.1.1"; // RSA encryption (source: http://asn1.elibel.tm.fr)
         PublicKey pkey;
-        try {
-            pkey = new TestKeyPair("RSA").getPublic();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Unexpected Exception was thrown: " + e.getMessage());
-            return;
-        }
+
+        pkey = new TestKeyPair("RSA").getPublic();
+
         boolean[] keyUsage = new boolean[]
                     {true, true, true, true, true, true, true, true, false};
         // OID values was taken from rfc 3280

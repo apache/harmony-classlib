@@ -1273,15 +1273,9 @@ public class EventSetDescriptorTest extends TestCase {
     /**
      * The test checks the constructor
      */
-    public void testEventSetDescriptorConstructor() {
-        try {
-            new EventSetDescriptor(OtherBean.class, "sample",
-                    SampleListener.class, "fireSampleEvent");
-        } catch (Exception e) {
-            fail("Exception of " + e.getClass() + " class with message "
-                    + e.getMessage() + " is thrown");
-        }
-
+    public void testEventSetDescriptorConstructor() throws Exception {
+        new EventSetDescriptor(OtherBean.class, "sample",
+                SampleListener.class, "fireSampleEvent");
     }
     
     //Regression Test

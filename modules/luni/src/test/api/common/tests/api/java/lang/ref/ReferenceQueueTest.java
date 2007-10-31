@@ -62,48 +62,33 @@ public class ReferenceQueueTest extends junit.framework.TestCase {
 		b = new Boolean(true);
 		SoftReference sr = new SoftReference(b, rq);
 		sr.enqueue();
-		try {
-			assertTrue("Remove failed.", ((Boolean) rq.poll().get())
-					.booleanValue());
-		} catch (Exception e) {
-			fail("Exception during the test : " + e.getMessage());
-		}
+                assertTrue("Remove failed.", ((Boolean) rq.poll().get())
+                                .booleanValue());
 	}
 
 	/**
 	 * @tests java.lang.ref.ReferenceQueue#remove()
 	 */
-	public void test_remove() {
+	public void test_remove() throws Exception {
 		// store in a static so it won't be gc'ed because the jit
 		// optimized it out
 		b = new Boolean(true);
 		SoftReference sr = new SoftReference(b, rq);
 		sr.enqueue();
-		try {
-			assertTrue("Remove failed.", ((Boolean) rq.remove().get())
-					.booleanValue());
-		} catch (Exception e) {
-			fail("Exception during the test : " + e.getMessage());
-		}
+                assertTrue("Remove failed.", ((Boolean) rq.remove().get())
+                                .booleanValue());
 	}
 
 	/**
 	 * @tests java.lang.ref.ReferenceQueue#remove(long)
 	 */
-	public void test_removeJ() {
-		try {
-			assertNull("Queue is empty.", rq.poll());
-			assertNull("Queue is empty.", rq.remove((long) 1));
-			Thread ct = new Thread(new ChildThread());
-			ct.start();
-			Reference ret = rq.remove(0L);
-			assertNotNull("Delayed remove failed.", ret);
-		} catch (InterruptedException e) {
-			fail("InterruptedExeException during test : " + e.getMessage());
-		}
-		catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+	public void test_removeJ() throws Exception {
+                assertNull("Queue is empty.", rq.poll());
+                assertNull("Queue is empty.", rq.remove((long) 1));
+                Thread ct = new Thread(new ChildThread());
+                ct.start();
+                Reference ret = rq.remove(0L);
+                assertNotNull("Delayed remove failed.", ret);
 	}
 
 	/**

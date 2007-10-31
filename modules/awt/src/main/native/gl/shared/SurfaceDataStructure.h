@@ -162,6 +162,6 @@ typedef struct _SURFACE_STRUCTURE{
 int parseMask(unsigned int, int *, int *);
 int getShift(unsigned int);
 
-extern inline void updateCache(SURFACE_STRUCTURE *, JNIEnv *, jobject, bool);
+extern inline void updateCache(SURFACE_STRUCTURE *, JNIEnv *, jobject, bool, int, int, int, int);
 
 #endif

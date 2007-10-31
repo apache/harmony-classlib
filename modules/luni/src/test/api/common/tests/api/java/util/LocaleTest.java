@@ -97,16 +97,12 @@ public class LocaleTest extends junit.framework.TestCase {
 		// Test for method java.util.Locale []
 		// java.util.Locale.getAvailableLocales()
 		// Assumes there will generally be about 100+ available locales...
-		try {
-			Locale[] locales = Locale.getAvailableLocales();
-			assertTrue("Wrong number of locales: ", locales.length > 100);
-			// regression test for HARMONY-1514
-            // HashSet can filter duplicate locales
-            Set<Locale> localesSet = new HashSet<Locale>(Arrays.asList(locales));
-            assertEquals(localesSet.size(), locales.length);            
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                Locale[] locales = Locale.getAvailableLocales();
+                assertTrue("Wrong number of locales: ", locales.length > 100);
+                // regression test for HARMONY-1514
+                // HashSet can filter duplicate locales
+                Set<Locale> localesSet = new HashSet<Locale>(Arrays.asList(locales));
+                assertEquals(localesSet.size(), locales.length);            
 	}
 
 	/**

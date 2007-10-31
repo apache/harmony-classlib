@@ -33,13 +33,9 @@ public class SoftReferenceTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() {
 		ReferenceQueue rq = new ReferenceQueue();
 		bool = new Boolean(true);
-		try {
-			SoftReference sr = new SoftReference(bool, rq);
-			assertTrue("Initialization failed.", ((Boolean) sr.get())
-					.booleanValue());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                SoftReference sr = new SoftReference(bool, rq);
+                assertTrue("Initialization failed.", ((Boolean) sr.get())
+                                .booleanValue());
 
 		boolean exception = false;
 		try {
@@ -55,13 +51,9 @@ public class SoftReferenceTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_lang_Object() {
 		bool = new Boolean(true);
-		try {
-			SoftReference sr = new SoftReference(bool);
-			assertTrue("Initialization failed.", ((Boolean) sr.get())
-					.booleanValue());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                SoftReference sr = new SoftReference(bool);
+                assertTrue("Initialization failed.", ((Boolean) sr.get())
+                                .booleanValue());
 	}
 
 	/**

@@ -511,7 +511,7 @@ public class URITest extends TestCase {
     /**
      * @tests java.net.URI#compareTo(java.lang.Object)
      */
-    public void test_compareToLjava_lang_Object() {
+    public void test_compareToLjava_lang_Object() throws Exception {
         // compareTo tests
 
         String[][] compareToData = new String[][] {
@@ -573,18 +573,13 @@ public class URITest extends TestCase {
 
         // test compareTo functionality
         for (int i = 0; i < compareToResults.length; i++) {
-            try {
-                URI b = new URI(compareToData[i][0]);
-                URI r = new URI(compareToData[i][1]);
-                if (b.compareTo(r) != compareToResults[i]) {
-                    fail("Test " + i + ": " + compareToData[i][0]
-                            + " compared to " + compareToData[i][1] + " -> "
-                            + b.compareTo(r) + " rather than "
-                            + compareToResults[i]);
-                }
-            } catch (Exception e) {
-                fail("Error in compareTo test of " + compareToData[i][0]
-                        + " compared to " + compareToData[i][1] + ": " + e);
+            URI b = new URI(compareToData[i][0]);
+            URI r = new URI(compareToData[i][1]);
+            if (b.compareTo(r) != compareToResults[i]) {
+                fail("Test " + i + ": " + compareToData[i][0]
+                        + " compared to " + compareToData[i][1] + " -> "
+                        + b.compareTo(r) + " rather than "
+                        + compareToResults[i]);
             }
         }
     }
@@ -630,7 +625,7 @@ public class URITest extends TestCase {
     /**
      * @tests java.net.URI#equals(java.lang.Object)
      */
-    public void test_equalsLjava_lang_Object() {
+    public void test_equalsLjava_lang_Object() throws Exception {
         String[][] equalsData = new String[][] {
                 { "", "" }, // null frags
                 { "/path", "/path#frag" },
@@ -689,17 +684,12 @@ public class URITest extends TestCase {
 
         // test equals functionality
         for (int i = 0; i < equalsResults.length; i++) {
-            try {
-                URI b = new URI(equalsData[i][0]);
-                URI r = new URI(equalsData[i][1]);
-                if (b.equals(r) != equalsResults[i]) {
-                    fail("Error: " + equalsData[i][0] + " == "
-                            + equalsData[i][1] + "? -> " + b.equals(r)
-                            + " expected " + equalsResults[i]);
-                }
-            } catch (Exception e) {
-                fail("Exception during equals testing data " + equalsData[i][0]
-                        + " == " + equalsData[i][1] + "? " + e);
+            URI b = new URI(equalsData[i][0]);
+            URI r = new URI(equalsData[i][1]);
+            if (b.equals(r) != equalsResults[i]) {
+                fail("Error: " + equalsData[i][0] + " == "
+                        + equalsData[i][1] + "? -> " + b.equals(r)
+                        + " expected " + equalsResults[i]);
             }
         }
 

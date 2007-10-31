@@ -52,7 +52,7 @@ public class ObjectTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.Object#getClass()
 	 */
-	public void test_getClass() {
+	public void test_getClass() throws Exception {
 		// Test for method java.lang.Class java.lang.Object.getClass()
 		String classNames[] = { "java.lang.Object", "java.lang.Throwable",
 				"java.lang.StringBuffer" };
@@ -61,17 +61,13 @@ public class ObjectTest extends junit.framework.TestCase {
 
 		status = 0;
 		for (int i = 0; i < classNames.length; ++i) {
-			try {
-				classToTest = Class.forName(classNames[i]);
-				instanceToTest = classToTest.newInstance();
-				assertTrue("Instance didn't match creator class.",
-						instanceToTest.getClass() == classToTest);
-				assertTrue("Instance didn't match class with matching name.",
-						instanceToTest.getClass() == Class
-								.forName(classNames[i]));
-			} catch (Exception ex) {
-				fail("Unexpected exception : " + ex.getMessage());
-			}
+                    classToTest = Class.forName(classNames[i]);
+                    instanceToTest = classToTest.newInstance();
+                    assertTrue("Instance didn't match creator class.",
+                                    instanceToTest.getClass() == classToTest);
+                    assertTrue("Instance didn't match class with matching name.",
+                                    instanceToTest.getClass() == Class
+                                                    .forName(classNames[i]));
 		}
 	}
 

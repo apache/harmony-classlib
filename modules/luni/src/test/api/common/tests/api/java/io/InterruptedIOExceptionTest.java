@@ -30,11 +30,7 @@ public class InterruptedIOExceptionTest extends junit.framework.TestCase {
 			throw new InterruptedIOException();
 		} catch (InterruptedIOException e) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during InterruptedIOException test"
-					+ e.toString());
-		}
-		fail("Failed to generate exception");
+		} 
 	}
 
 	/**
@@ -46,11 +42,7 @@ public class InterruptedIOExceptionTest extends junit.framework.TestCase {
 			throw new InterruptedIOException("Some error message");
 		} catch (InterruptedIOException e) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during InterruptedIOException test"
-					+ e.toString());
 		}
-		fail("Failed to generate exception");
 	}
 
 	/**

@@ -851,8 +851,6 @@ public class FloatTest extends TestCase {
             fail("Expected Float.valueOf(null) to throw NPE.");
         } catch (NullPointerException ex) {
             // expected
-        } catch (Exception ex) {
-            fail("Expected Float.valueOf(null) to throw NPE not " + ex.getClass().getName());
         }
 
         try {

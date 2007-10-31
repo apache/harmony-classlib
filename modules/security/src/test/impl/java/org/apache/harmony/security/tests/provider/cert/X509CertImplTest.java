@@ -314,13 +314,9 @@ public class X509CertImplTest extends TestCase {
         certificate = new X509CertImpl(cert);
     }
 
-    public void testCreation() {
-        try {
-            ByteArrayInputStream bis = new ByteArrayInputStream(certEncoding);
-            certificate = new X509CertImpl(bis);
-        } catch (Exception e) {
-            fail("Creation of a certificate from a stream failed.");
-        }
+    public void testCreation() throws Exception {
+        ByteArrayInputStream bis = new ByteArrayInputStream(certEncoding);
+        certificate = new X509CertImpl(bis);
     }
     
     /**
@@ -558,22 +554,18 @@ public class X509CertImplTest extends TestCase {
     /**
      * getExtendedKeyUsage() method testing.
      */
-    public void testGetExtendedKeyUsage() {
-        try {
-            List exku = certificate.getExtendedKeyUsage();
-            if ((exku == null) 
-                    || (exku.size() != extnExtendedKeyUsage.size())) {
-                fail("Incorrect Extended Key Usage value.");
+    public void testGetExtendedKeyUsage() throws Exception {
+        List exku = certificate.getExtendedKeyUsage();
+        if ((exku == null) 
+                || (exku.size() != extnExtendedKeyUsage.size())) {
+            fail("Incorrect Extended Key Usage value.");
+        }
+        for (int i=0; i<extnExtendedKeyUsage.size(); i++) {
+            String ku = ObjectIdentifier
+                    .toString((int[]) extnExtendedKeyUsage.get(i));
+            if (!exku.contains(ku)) {
+                fail("Missing value:" + ku);
             }
-            for (int i=0; i<extnExtendedKeyUsage.size(); i++) {
-                String ku = ObjectIdentifier
-                        .toString((int[]) extnExtendedKeyUsage.get(i));
-                if (!exku.contains(ku)) {
-                    fail("Missing value:" + ku);
-                }
-            }
-        } catch (Exception e) {
-            fail("Incorrect Key Usage value.");
         }
     }
     

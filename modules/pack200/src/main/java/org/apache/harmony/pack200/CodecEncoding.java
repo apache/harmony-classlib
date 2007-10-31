@@ -95,7 +95,7 @@ public class CodecEncoding {
 	 * @throws IOException if there is a problem reading from the input stream (which
 	 * in reality, is never, since the band_headers are likely stored in a byte array
 	 * and accessed via a ByteArrayInputStream. However, an EOFException could occur
-	 * if things go titsup.com.
+	 * if things go wrong)
 	 * @throws Pack200Exception 
 	 */
 	public static Codec getCodec(int value, InputStream in, Codec defaultCodec) throws IOException, Pack200Exception {
@@ -151,7 +151,7 @@ public class CodecEncoding {
 			boolean fdef = (offset & 1) == 1; 
 			boolean udef = (offset >> 1 & 1) == 1;
 			int tdefl = offset >> 2;
-			boolean tdef = tdefl == 0;
+			boolean tdef = tdefl != 0;
 			// From section 6.7.3 of spec
 			final int[] tdefToL= {0,4,8,16,32,64,128,192,224,240,248,252 };
 			int l = tdefToL[tdefl];

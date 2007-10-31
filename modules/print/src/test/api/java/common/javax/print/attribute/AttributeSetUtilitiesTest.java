@@ -48,15 +48,10 @@ public class AttributeSetUtilitiesTest extends TestCase {
      * if arguments are valid.
      */
     public final void testVerifyAttributeCategory() {
-
-        try {
-            assertEquals(ColorSupported.class,
-                AttributeSetUtilities.
-                    verifyAttributeCategory(ColorSupported.class,
-                        PrintServiceAttribute.class));
-        } catch (Exception e) {
-            fail("Unexpected was thrown: " + e.toString());
-        }
+        assertEquals(ColorSupported.class,
+            AttributeSetUtilities.
+                verifyAttributeCategory(ColorSupported.class,
+                    PrintServiceAttribute.class));
     }
 
     /*
@@ -125,19 +120,13 @@ public class AttributeSetUtilitiesTest extends TestCase {
      * exception is thown if arguments are valid.
      */
     public final void testVerifyAttributeValue() {
-
-        try {
-            PrintJobAttribute att = new Copies(10);
-            assertEquals(att,
+        PrintJobAttribute att = new Copies(10);
+        assertEquals(att,
+            AttributeSetUtilities.
+                verifyAttributeValue(att, PrintJobAttribute.class));
+        assertEquals(att,
                 AttributeSetUtilities.
-                    verifyAttributeValue(att, PrintJobAttribute.class));
-            assertEquals(att,
-                    AttributeSetUtilities.
-                        verifyAttributeValue(att, PrintRequestAttribute.class));
-        } catch (Exception e) {
-            fail("Unexpected was thrown: " + e.toString());
-        }
-
+                    verifyAttributeValue(att, PrintRequestAttribute.class));
     }
 
     /*
@@ -177,14 +166,9 @@ public class AttributeSetUtilitiesTest extends TestCase {
      * Tests that method throws no exception if arguments are valid.
      */
     public final void testVerifyCategoryForValue() {
-
-        try {
-            PrintServiceAttribute att = ColorSupported.NOT_SUPPORTED;
-            AttributeSetUtilities.
-                verifyCategoryForValue(ColorSupported.class, att);
-        } catch (Exception e) {
-            fail("Unexpected was thrown: " + e.toString());
-        }
+        PrintServiceAttribute att = ColorSupported.NOT_SUPPORTED;
+        AttributeSetUtilities.
+            verifyCategoryForValue(ColorSupported.class, att);
     }
 
     /*

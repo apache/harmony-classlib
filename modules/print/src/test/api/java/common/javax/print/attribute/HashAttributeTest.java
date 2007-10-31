@@ -65,12 +65,8 @@ public class HashAttributeTest extends TestCase {
                     "if attributes is null");
         } catch (NullPointerException e) {}
 
-        try {
-            AttributeSet aset1 = null;
-            AttributeSet aset2 = new HashAttributeSet(aset1);
-        } catch (Exception e) {
-            fail("Unexpected exception occurred: " + e.toString());
-        }
+        AttributeSet aset1 = null;
+        AttributeSet aset2 = new HashAttributeSet(aset1);
     }
 
 

@@ -96,30 +96,20 @@ public class JarEntryTest extends TestCase {
     /**
      * @tests java.util.jar.JarEntry#getAttributes()
      */
-    public void test_getAttributes() {
+    public void test_getAttributes() throws Exception {
         JarFile attrJar = null;
         File file = null;
-        try {
-            Support_Resources.copyFile(resources, null, attJarName);
-            file = new File(resources, attJarName);
-            attrJar = new JarFile(file);
-        } catch (Exception e) {
-            assertTrue(file + " does not exist", file.exists());
-            fail("Exception opening file: " + e.toString());
-        }
-        try {
-            jarEntry = attrJar.getJarEntry(attEntryName);
-            assertNotNull("Should have Manifest attributes", jarEntry.getAttributes());
-        } catch (Exception e) {
-            fail("Exception during 2nd test: " + e.toString());
-        }
-        try {
-            jarEntry = attrJar.getJarEntry(attEntryName2);
-            assertNull("Shouldn't have any Manifest attributes", jarEntry.getAttributes());
-            attrJar.close();
-        } catch (Exception e) {
-            fail("Exception during 1st test: " + e.toString());
-        }
+
+        Support_Resources.copyFile(resources, null, attJarName);
+        file = new File(resources, attJarName);
+        attrJar = new JarFile(file);
+
+        jarEntry = attrJar.getJarEntry(attEntryName);
+        assertNotNull("Should have Manifest attributes", jarEntry.getAttributes());
+
+        jarEntry = attrJar.getJarEntry(attEntryName2);
+        assertNull("Shouldn't have any Manifest attributes", jarEntry.getAttributes());
+        attrJar.close();
     }
 
     /**

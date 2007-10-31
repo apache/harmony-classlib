@@ -212,26 +212,21 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	 * @tests java.net.URLConnection#getDefaultRequestProperty(java.lang.String)
 	 */
 	public void test_getDefaultRequestPropertyLjava_lang_String() {
-		try {
-			URLConnection.setDefaultRequestProperty("Shmoo", "Blah");
-			assertNull(
-					"setDefaultRequestProperty should have returned: null, but returned: "
-							+ URLConnection.getDefaultRequestProperty("Shmoo"),
-					URLConnection.getDefaultRequestProperty("Shmoo"));
-			URLConnection.setDefaultRequestProperty("Shmoo", "Boom");
-			assertNull(
-					"setDefaultRequestProperty should have returned: null, but returned: "
-							+ URLConnection.getDefaultRequestProperty("Shmoo"),
-					URLConnection.getDefaultRequestProperty("Shmoo"));
-			assertNull(
-					"setDefaultRequestProperty should have returned: null, but returned: "
-							+ URLConnection.getDefaultRequestProperty("Kapow"),
-					URLConnection.getDefaultRequestProperty("Kapow"));
-			URLConnection.setDefaultRequestProperty("Shmoo", null);
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-
+                URLConnection.setDefaultRequestProperty("Shmoo", "Blah");
+                assertNull(
+                                "setDefaultRequestProperty should have returned: null, but returned: "
+                                                + URLConnection.getDefaultRequestProperty("Shmoo"),
+                                URLConnection.getDefaultRequestProperty("Shmoo"));
+                URLConnection.setDefaultRequestProperty("Shmoo", "Boom");
+                assertNull(
+                                "setDefaultRequestProperty should have returned: null, but returned: "
+                                                + URLConnection.getDefaultRequestProperty("Shmoo"),
+                                URLConnection.getDefaultRequestProperty("Shmoo"));
+                assertNull(
+                                "setDefaultRequestProperty should have returned: null, but returned: "
+                                                + URLConnection.getDefaultRequestProperty("Kapow"),
+                                URLConnection.getDefaultRequestProperty("Kapow"));
+                URLConnection.setDefaultRequestProperty("Shmoo", null);
 	}
 
 	/**
@@ -630,29 +625,24 @@ public class URLConnectionTest extends junit.framework.TestCase {
 				+ Support_HttpServer.AUTHTEST;
 
 		// Authentication test
-		try {
-			// set up a very simple authenticator
-			Authenticator.setDefault(new Authenticator() {
-				public PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("test", "password"
-							.toCharArray());
-				}
-			});
-			try {
-				client.open(authTestUrl);
-				is = client.getInputStream();
-				int c = is.read();
-				while (c > 0)
-					c = is.read();
-				c = is.read();
-				is.close();
-			} catch (FileNotFoundException e) {
-				fail("Error performing authentication test: " + e);
-			}
-		} catch (Exception e) {
-			fail("Exception during test3: " + e);
-			e.printStackTrace();
-		}
+                // set up a very simple authenticator
+                Authenticator.setDefault(new Authenticator() {
+                        public PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication("test", "password"
+                                                .toCharArray());
+                        }
+                });
+                try {
+                        client.open(authTestUrl);
+                        is = client.getInputStream();
+                        int c = is.read();
+                        while (c > 0)
+                                c = is.read();
+                        c = is.read();
+                        is.close();
+                } catch (FileNotFoundException e) {
+                        fail("Error performing authentication test: " + e);
+                }
 
 		final String invalidLocation = "/missingFile.htm";
 		final String redirectTestUrl = "http://localhost:" + server.getPort()
@@ -673,11 +663,7 @@ public class URLConnectionTest extends junit.framework.TestCase {
 			is.close();
 			fail("Incorrect data returned on redirect to non-existent file.");
 		} catch (FileNotFoundException e) {
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			fail("Exception during test4: " + e);
-		}
+		} 
 		server.stopServer();
 
 	}
@@ -807,58 +793,53 @@ public class URLConnectionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.net.URLConnection#getPermission()
 	 */
-	public void test_getPermission() {
-		try {
-			java.security.Permission p = uc.getPermission();
-			assertTrue("Permission of wrong type: " + p.toString(),
-					p instanceof java.net.SocketPermission);
-			assertTrue("Permission has wrong name: " + p.getName(), p.getName()
-					.contains("localhost:"+port));
+	public void test_getPermission() throws Exception {
+                java.security.Permission p = uc.getPermission();
+                assertTrue("Permission of wrong type: " + p.toString(),
+                                p instanceof java.net.SocketPermission);
+                assertTrue("Permission has wrong name: " + p.getName(), p.getName()
+                                .contains("localhost:"+port));
 
-			URL fileUrl = new URL("file:myfile");
-			Permission perm = new FilePermission("myfile", "read");
-			Permission result = fileUrl.openConnection().getPermission();
-			assertTrue("Wrong file: permission 1:" + perm + " , " + result,
-					result.equals(perm));
+                URL fileUrl = new URL("file:myfile");
+                Permission perm = new FilePermission("myfile", "read");
+                Permission result = fileUrl.openConnection().getPermission();
+                assertTrue("Wrong file: permission 1:" + perm + " , " + result,
+                                result.equals(perm));
 
-			fileUrl = new URL("file:/myfile/");
-			perm = new FilePermission("/myfile", "read");
-			result = fileUrl.openConnection().getPermission();
-			assertTrue("Wrong file: permission 2:" + perm + " , " + result,
-					result.equals(perm));
+                fileUrl = new URL("file:/myfile/");
+                perm = new FilePermission("/myfile", "read");
+                result = fileUrl.openConnection().getPermission();
+                assertTrue("Wrong file: permission 2:" + perm + " , " + result,
+                                result.equals(perm));
 
-			fileUrl = new URL("file:///host/volume/file");
-			perm = new FilePermission("/host/volume/file", "read");
-			result = fileUrl.openConnection().getPermission();
-			assertTrue("Wrong file: permission 3:" + perm + " , " + result,
-					result.equals(perm));
+                fileUrl = new URL("file:///host/volume/file");
+                perm = new FilePermission("/host/volume/file", "read");
+                result = fileUrl.openConnection().getPermission();
+                assertTrue("Wrong file: permission 3:" + perm + " , " + result,
+                                result.equals(perm));
 
-			URL httpUrl = new URL("http://home/myfile/");
-			assertTrue("Wrong http: permission", httpUrl.openConnection()
-					.getPermission().equals(
-							new SocketPermission("home:80", "connect")));
-			httpUrl = new URL("http://home2:8080/myfile/");
-			assertTrue("Wrong http: permission", httpUrl.openConnection()
-					.getPermission().equals(
-							new SocketPermission("home2:8080", "connect")));
-			URL ftpUrl = new URL("ftp://home/myfile/");
-			assertTrue("Wrong ftp: permission", ftpUrl.openConnection()
-					.getPermission().equals(
-							new SocketPermission("home:21", "connect")));
-			ftpUrl = new URL("ftp://home2:22/myfile/");
-			assertTrue("Wrong ftp: permission", ftpUrl.openConnection()
-					.getPermission().equals(
-							new SocketPermission("home2:22", "connect")));
+                URL httpUrl = new URL("http://home/myfile/");
+                assertTrue("Wrong http: permission", httpUrl.openConnection()
+                                .getPermission().equals(
+                                                new SocketPermission("home:80", "connect")));
+                httpUrl = new URL("http://home2:8080/myfile/");
+                assertTrue("Wrong http: permission", httpUrl.openConnection()
+                                .getPermission().equals(
+                                                new SocketPermission("home2:8080", "connect")));
+                URL ftpUrl = new URL("ftp://home/myfile/");
+                assertTrue("Wrong ftp: permission", ftpUrl.openConnection()
+                                .getPermission().equals(
+                                                new SocketPermission("home:21", "connect")));
+                ftpUrl = new URL("ftp://home2:22/myfile/");
+                assertTrue("Wrong ftp: permission", ftpUrl.openConnection()
+                                .getPermission().equals(
+                                                new SocketPermission("home2:22", "connect")));
 
-			URL jarUrl = new URL("jar:file:myfile!/");
-			perm = new FilePermission("myfile", "read");
-			result = jarUrl.openConnection().getPermission();
-			assertTrue("Wrong jar: permission:" + perm + " , " + result, result
-					.equals(new FilePermission("myfile", "read")));
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-
+                URL jarUrl = new URL("jar:file:myfile!/");
+                perm = new FilePermission("myfile", "read");
+                result = jarUrl.openConnection().getPermission();
+                assertTrue("Wrong jar: permission:" + perm + " , " + result, result
+                                .equals(new FilePermission("myfile", "read")));
 	}
 
 	/**

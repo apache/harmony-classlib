@@ -26,33 +26,29 @@ public class EOFExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.EOFException#EOFException()
 	 */
-	public void test_Constructor() {
+	public void test_Constructor() throws Exception {
 		// Test for method java.io.EOFException()
 		try {
 			new DataInputStream(new ByteArrayInputStream(new byte[1]))
 					.readShort();
 		} catch (EOFException e) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during EOFException test" + e.toString());
 		}
-		fail("Failed to generate exception");
+		fail("Failed to generate EOFException");
 	}
 
 	/**
 	 * @tests java.io.EOFException#EOFException(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws Exception {
 		// Test for method java.io.EOFException(java.lang.String)
 		try {
 			new DataInputStream(new ByteArrayInputStream(new byte[1]))
 					.readShort();
 		} catch (EOFException e) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during EOFException test" + e.toString());
 		}
-		fail("Failed to generate exception");
+		fail("Failed to generate EOFException");
 	}
 
 	/**

@@ -26,6 +26,7 @@ package org.apache.harmony.awt.gl.image;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
@@ -68,7 +69,6 @@ public class OffscreenImage extends Image implements ImageConsumer {
     private boolean producing;
     private boolean done;
     private ImageSurface imageSurf;
-    Object surfData;
     AwtImageBackdoorAccessor ba = AwtImageBackdoorAccessor.getInstance();
 
 
@@ -134,6 +134,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
         synchronized (this) {
             imageState = 0;
             image = null;
+            imageSurf = null;
             cm = null;
             raster = null;
             hints = 0;
@@ -184,13 +185,16 @@ public class OffscreenImage extends Image implements ImageConsumer {
             forceToIntARGB();
         }
 
+        DataBuffer db = raster.getDataBuffer();
+        Object surfData = ba.getData(db);
+
         synchronized(surfData){
             if(cm == model && model.getTransferType() == DataBuffer.TYPE_INT &&
                     raster.getNumDataElements() == 1){
 
                 int data[] = (int[])surfData;
                 int scanline = raster.getWidth();
-                DataBufferInt dbi = (DataBufferInt) raster.getDataBuffer();
+                DataBufferInt dbi = (DataBufferInt) db;
                 int rof = dbi.getOffset() + y * scanline + x;
                 for(int lineOff = off, line = y; line < y + h;
                     line++, lineOff += scansize, rof += scanline){
@@ -202,7 +206,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
                 int buff[] = new int[w];
                 int data[] = (int[])surfData;
                 int scanline = raster.getWidth();
-                DataBufferInt dbi = (DataBufferInt) raster.getDataBuffer();
+                DataBufferInt dbi = (DataBufferInt) db;
                 int rof = dbi.getOffset() + y * scanline + x;
                 for (int sy = y, sOff = off; sy < y + h; sy++, sOff += scansize,
                     rof += scanline) {
@@ -223,9 +227,10 @@ public class OffscreenImage extends Image implements ImageConsumer {
                 }
             }
         }
-
+        
+        ba.releaseData(db);
         if (imageSurf != null) {
-            imageSurf.invalidate();
+            imageSurf.addDirtyRegion(new Rectangle(x, y, w, h));
         }
 
         imageUpdate(ImageObserver.SOMEBITS);
@@ -251,6 +256,9 @@ public class OffscreenImage extends Image implements ImageConsumer {
             forceToIntARGB();
         }
 
+        DataBuffer db = raster.getDataBuffer();
+        Object surfData = ba.getData(db);
+
         synchronized(surfData){
             if(isIntRGB){
                 int buff[] = new int[w];
@@ -259,7 +267,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
                 icm.getRGBs(colorMap);
                 int data[] = (int[])surfData;
                 int scanline = raster.getWidth();
-                DataBufferInt dbi = (DataBufferInt) raster.getDataBuffer();
+                DataBufferInt dbi = (DataBufferInt) db;
                 int rof = dbi.getOffset() + y * scanline + x;
                 if(model instanceof IndexColorModel){
 
@@ -285,7 +293,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
 
                 byte data[] = (byte[])surfData;
                 int scanline = raster.getWidth();
-                DataBufferByte dbb = (DataBufferByte)raster.getDataBuffer();
+                DataBufferByte dbb = (DataBufferByte) db;
                 int rof = dbb.getOffset() + y * scanline + x;
                 for(int lineOff = off, line = y; line < y + h;
                     line++, lineOff += scansize, rof += scanline){
@@ -310,8 +318,9 @@ public class OffscreenImage extends Image implements ImageConsumer {
             }
         }
 
+        ba.releaseData(db);
         if (imageSurf != null) {
-            imageSurf.invalidate();
+            imageSurf.addDirtyRegion(new Rectangle(x, y, w, h));
         }
 
         imageUpdate(ImageObserver.SOMEBITS);
@@ -475,7 +484,6 @@ public class OffscreenImage extends Image implements ImageConsumer {
             raster = cm.createCompatibleWritableRaster(width, height);
             isIntRGB = true;
         }
-        surfData = ba.getData(raster.getDataBuffer());
     }
 
     private void imageUpdate(int state){
@@ -548,7 +556,6 @@ public class OffscreenImage extends Image implements ImageConsumer {
             }
             cm = rgbCM;
             raster = destRaster;
-            surfData = ba.getData(raster.getDataBuffer());
             isIntRGB = true;
         }
     }

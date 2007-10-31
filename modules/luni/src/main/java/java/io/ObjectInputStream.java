@@ -31,6 +31,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.apache.harmony.kernel.vm.VM;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -985,7 +986,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             return classSig;
         }
 
-        while (classSig.startsWith("[L", start)
+        while (classSig.startsWith("[L", start) //$NON-NLS-1$
                 && classSig.charAt(end - 1) == ';') {
             start += 2;
             end--;
@@ -1774,7 +1775,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass newClassDesc = new ObjectStreamClass();
         String name = input.readUTF();
         if (name.length() == 0) {
-            throw new IOException("The stream is corrupted.");
+            // luni.07 = The stream is corrupted
+            throw new IOException(Messages.getString("luni.07")); //$NON-NLS-1$
         }
         newClassDesc.setName(name);
         newClassDesc.setSerialVersionUID(input.readLong());

@@ -73,20 +73,15 @@ public class GeneralNameTest extends TestCase {
         }
     }
 
-    public void testGeneralName1() {
-        try {
-            OtherName on =
-                new OtherName("1.2.3.4.5", new byte[] {1, 2, 0, 1});
-            byte[] encoding = OtherName.ASN1.encode(on);
-            new GeneralName(0, encoding);
-            OtherName.ASN1.decode(encoding);
-            GeneralName gn = new GeneralName(on);
-            new GeneralName(0, gn.getEncodedName());
-            assertEquals(gn, new GeneralName(0, gn.getEncodedName()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+    public void testGeneralName1() throws Exception {
+        OtherName on =
+            new OtherName("1.2.3.4.5", new byte[] {1, 2, 0, 1});
+        byte[] encoding = OtherName.ASN1.encode(on);
+        new GeneralName(0, encoding);
+        OtherName.ASN1.decode(encoding);
+        GeneralName gn = new GeneralName(on);
+        new GeneralName(0, gn.getEncodedName());
+        assertEquals(gn, new GeneralName(0, gn.getEncodedName()));
     }
 
     /**

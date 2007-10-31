@@ -22,7 +22,10 @@ include $(HY_HDK)/build/make/defines.mk
 CFLAGS += -fpic
 
 BUILDFILES = \
-	../shared/DirectBufferUtil.o ../shared/AddressUtil.o ../unix/EpollSelectorImpl.o
+	../shared/DirectBufferUtil.o ../shared/AddressUtil.o
+ifeq ($(HY_OS),linux)
+BUILDFILES += ../unix/EpollSelectorImpl.o
+endif
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a 

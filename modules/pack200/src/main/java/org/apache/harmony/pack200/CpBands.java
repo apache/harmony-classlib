@@ -313,57 +313,53 @@ public class CpBands extends BandSet {
 
     private void parseCpUtf8(InputStream in) throws IOException,
             Pack200Exception {
-        int cpUTF8Count = header.getCpUTF8Count();
-        // TODO Update codec.decode -> decodeScalar
+        int cpUTF8Count = header.getCpUTF8Count();        
         cpUTF8 = new String[cpUTF8Count];
         cpUTF8[0] = ""; //$NON-NLS-1$
-        int[] suffix = new int[cpUTF8Count];
-        long last = 0;
         int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5, cpUTF8Count-2);
-        int chars = 0;
-        int bigSuffix = 0;
-        for (int i = 1; i < cpUTF8Count; i++) {
-            last = suffix[i] = (int) Codec.UNSIGNED5.decode(in);
-            if (last == 0) {
-                bigSuffix++;
+        int charCount = 0;
+        int bigSuffixCount = 0;
+        int[] suffix = decodeBandInt("cpUTF8Suffix", in, Codec.UNSIGNED5, cpUTF8Count-1);
+
+        for (int i = 0; i < suffix.length; i++) {
+            if (suffix[i] == 0) {
+                bigSuffixCount++;
             } else {
-                chars += last;
+                charCount += suffix[i];
             }
         }
-        char data[] = new char[chars];
+        char[] data = new char[charCount];
+        int[] dataBand = decodeBandInt("cp_Utf8_chars", in, Codec.CHAR3, charCount);
         for (int i = 0; i < data.length; i++) {
-            data[i] = (char) Codec.CHAR3.decode(in);
-        }
-        // read in the big suffix data
-        char bigSuffixData[][] = new char[bigSuffix][];
-        last = 0;
-        for (int i = 0; i < bigSuffix; i++) {
-            last = (int) Codec.DELTA5.decode(in, last);
-            bigSuffixData[i] = new char[(int) last];
-        }
-        // initialize big suffix data
-        for (int i = 0; i < bigSuffix; i++) {
-            char[] singleBigSuffixData = bigSuffixData[i];
-            last = 0;
-            for (int j = 0; j < singleBigSuffixData.length; j++) {
-                last = singleBigSuffixData[j] = (char) Codec.DELTA5.decode(in,
-                        last);
+            data[i] = (char) dataBand[i];
+        } 
+        
+        // Read in the big suffix data
+        int[] bigSuffixCounts = decodeBandInt("cp_Utf8_big_suffix", in, Codec.DELTA5, bigSuffixCount);
+        int[][] bigSuffixDataBand = decodeBandInt("cp_Utf8_big_chars", in, Codec.DELTA5, bigSuffixCounts);
+        
+        // Convert big suffix data to characters
+        char bigSuffixData[][] = new char[bigSuffixCount][];        
+        for (int i = 0; i < bigSuffixDataBand.length; i++) {
+            bigSuffixData[i] = new char[bigSuffixDataBand[i].length];
+            for (int j = 0; j < bigSuffixDataBand[i].length; j++) {
+                bigSuffixData[i][j] = (char) bigSuffixDataBand[i][j];
             }
         }
-        // go through the strings
-        chars = 0;
-        bigSuffix = 0;
+        // Go through the strings
+        charCount = 0;
+        bigSuffixCount = 0;
         for (int i = 1; i < cpUTF8Count; i++) {
             String lastString = cpUTF8[i - 1];
-            if (suffix[i] == 0) {
+            if (suffix[i-1] == 0) {
                 // The big suffix stuff hasn't been tested, and I'll be
                 // surprised if it works first time w/o errors ...
                 cpUTF8[i] = lastString.substring(0, i>1 ? prefix[i-2] : 0)
-                        + new String(bigSuffixData[bigSuffix++]);
+                        + new String(bigSuffixData[bigSuffixCount++]);
             } else {
                 cpUTF8[i] = lastString.substring(0, i>1 ? prefix[i-2]: 0)
-                        + new String(data, chars, suffix[i]);
-                chars += suffix[i];
+                        + new String(data, charCount, suffix[i-1]);
+                charCount += suffix[i-1];
             }
         }
     }

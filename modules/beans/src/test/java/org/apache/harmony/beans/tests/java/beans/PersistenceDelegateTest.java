@@ -1242,19 +1242,15 @@ public class PersistenceDelegateTest extends TestCase {
             return true;
         }
     }
-    public void test_writeExpression_writeObject() {
+    public void test_writeExpression_writeObject() throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder( output );
 
         Date date = new Date(2007, 06, 26);
         Expression expression = new Expression( date, "toString", null );
         String date_string = null;
-        try {
-                date_string = (String) expression.getValue();
-        } catch (Exception e ) {
-                System.out.println("Failed to get the date value.");
-                e.printStackTrace();
-        }
+        date_string = (String) expression.getValue();
+
         DummyBean bean = new DummyBean( date_string );
         // The expression knows about the date object.
         encoder.writeExpression( expression );

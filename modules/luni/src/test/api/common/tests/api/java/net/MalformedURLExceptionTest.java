@@ -34,9 +34,8 @@ public class MalformedURLExceptionTest extends junit.framework.TestCase {
 		} catch (MalformedURLException e) {
 			// correct
 			passed = true;
-		} catch (Exception e) {
-			fail("Wrong exception thrown : " + e.getMessage());
-		}
+		} 
+
 		assertTrue("Failed to throw correct exception", passed);
 	}
 

@@ -62,6 +62,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
     
     public void testSimple() throws IOException, Pack200Exception {
         cpClasses = new String[] { "Class1", "Class2", "Class3", "Interface1", "Interface2" };
+        cpDescriptor = new String[0];
         byte[] classThis = Codec.DELTA5.encode(1, 0);
         byte[] classSuper = Codec.DELTA5.encode(2, 0);
         byte[] classInterfaceCount = Codec.DELTA5.encode(2, 0);

@@ -121,7 +121,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.util.zip.ZipFile#entries()
 	 */
-	public void test_entries() {
+	public void test_entries() throws Exception {
 		// Test for method java.util.Enumeration java.util.zip.ZipFile.entries()
 		Enumeration<? extends ZipEntry> enumer = zfile.entries();
 		int c = 0;
@@ -131,20 +131,16 @@ public class ZipFileTest extends junit.framework.TestCase {
 		}
 		assertTrue("Incorrect number of entries returned: " + c, c == 6);
 
+		Enumeration<? extends ZipEntry> enumeration = zfile.entries();
+		zfile.close();
+		zfile = null;
+		boolean pass = false;
 		try {
-			Enumeration<? extends ZipEntry> enumeration = zfile.entries();
-			zfile.close();
-			zfile = null;
-			boolean pass = false;
-			try {
-				enumeration.hasMoreElements();
-			} catch (IllegalStateException e) {
-				pass = true;
-			}
-			assertTrue("did not detect closed jar file", pass);
-		} catch (Exception e) {
-			fail("Exception during entries test: " + e.toString());
+			enumeration.hasMoreElements();
+		} catch (IllegalStateException e) {
+			pass = true;
 		}
+		assertTrue("did not detect closed jar file", pass);
 	}
 
 	/**

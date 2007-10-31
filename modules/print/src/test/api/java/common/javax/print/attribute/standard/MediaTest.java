@@ -48,12 +48,8 @@ public class MediaTest extends TestCase {
         Media tray = new mediaTray(1);
         assertFalse(name.equals(tray));
 
-        try {
-            sizename = null;
-            assertFalse(name.equals(sizename));
-        } catch (Exception e) {
-            fail("Unexpected exception ocurred " + e);
-        }
+        sizename = null;
+        assertFalse(name.equals(sizename));
     }
 
     /*

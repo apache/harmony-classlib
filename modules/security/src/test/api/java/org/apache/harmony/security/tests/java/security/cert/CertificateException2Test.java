@@ -36,8 +36,6 @@ public class CertificateException2Test extends junit.framework.TestCase {
 		} catch (CertificateException e) {
 			assertEquals("Initializer failed : " + e.toString(),
 					"java.security.cert.CertificateException", e.toString());
-		} catch (Exception e) {
-			fail("Unexpected exception during test : " + e);
 		}
 	}
 
@@ -55,8 +53,6 @@ public class CertificateException2Test extends junit.framework.TestCase {
 		} catch (CertificateException e) {
 			assertEquals("Initializer failed",
 					"Some error message", e.getMessage());
-		} catch (Exception e) {
-			fail("Unexpected exception during test : " + e);
 		}
 	}
 }

@@ -428,9 +428,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Boolean(true));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -450,9 +447,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Byte((byte) 123));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -472,9 +466,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Character('a'));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -494,9 +485,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(Object.class);
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -516,9 +504,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Double(0.01));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -538,9 +523,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Float((float) 0.01));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -560,9 +542,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Integer(1));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -582,9 +561,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Long(1));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -604,9 +580,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new Short((short) 1));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -626,9 +599,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new String("hello"));
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -648,9 +618,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(new int[] { 1, 2, 3 });
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -670,9 +637,6 @@ public class XMLEncoderTest extends TestCase {
 
         try {
             e.writeObject(null);
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -701,9 +665,6 @@ public class XMLEncoderTest extends TestCase {
         try {
             e.writeObject(bean1);
             e.writeObject(bean2);
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }
@@ -739,9 +700,6 @@ public class XMLEncoderTest extends TestCase {
             // e.writeObject(object);
             e.writeObject(a);
             e.writeObject(object);
-        } catch (Exception excp) {
-            fail("Exception " + excp.getClass() + " is thrown: "
-                    + excp.getMessage());
         } finally {
             e.close();
         }

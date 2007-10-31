@@ -55,25 +55,6 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
     
-    <!-- Build native code -->
-    <target name="build-native" >
-        <make dir="${hy.text.src.main.native}/text/${hy.os.family}" />
-
-        <!-- Copy the built shared libs over to the jre/bin dir -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.text.src.main.native}/text">
-                <include name="*${shlib.suffix}*"/>
-                <include name="*${progdb.suffix}*" if="is.windows" />
-                <exclude name="*${manifest.suffix}"/>
-            </fileset>
-        </copy>
-    </target>
-    
-    <!-- Clean natives -->
-    <target name="clean-native">
-        <make dir="${hy.text.src.main.native}/text/${hy.os.family}" target="clean" />
-    </target>
-
     <target name="clean">
         <delete file="${hy.jdk}/jre/lib/boot/text.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/text-src.jar" />

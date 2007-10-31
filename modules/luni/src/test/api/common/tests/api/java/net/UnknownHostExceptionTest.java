@@ -24,16 +24,12 @@ public class UnknownHostExceptionTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.net.UnknownHostException()
-		try {
-			try {
-				java.net.InetAddress.getByName("a.b.c.x.y.z.com");
-			} catch (java.net.UnknownHostException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                try {
+                        java.net.InetAddress.getByName("a.b.c.x.y.z.com");
+                } catch (java.net.UnknownHostException e) {
+                        return;
+                }
+                fail("Failed to generate Exception");
 	}
 
 	/**
@@ -41,16 +37,12 @@ public class UnknownHostExceptionTest extends junit.framework.TestCase {
 	 */
 	public void test_ConstructorLjava_lang_String() {
 		// Test for method java.net.UnknownHostException(java.lang.String)
-		try {
-			try {
-				java.net.InetAddress.getByName("a.b.c.x.y.z.com");
-			} catch (java.net.UnknownHostException e) {
-				return;
-			}
-			fail("Failed to generate Exception");
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                try {
+                        java.net.InetAddress.getByName("a.b.c.x.y.z.com");
+                } catch (java.net.UnknownHostException e) {
+                        return;
+                }
+                fail("Failed to generate Exception");
 	}
 
 	/**

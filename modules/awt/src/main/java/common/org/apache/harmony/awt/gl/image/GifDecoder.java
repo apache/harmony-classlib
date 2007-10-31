@@ -54,8 +54,10 @@ public class GifDecoder extends ImageDecoder {
     static final int IMPOSSIBLE_VALUE = 0x0FFFFFFF;
 
     // I/O buffer
-    private static final int BUFFER_SIZE = 1024;
-    private byte buffer[] = new byte[BUFFER_SIZE];
+    private static final int MIN_BUFFER_SIZE = 1024;
+    private static final int MAX_BUFFER_SIZE = 2097152;
+    private int buffer_size;
+    private byte buffer[];
 
     GifDataStream gifDataStream = new GifDataStream();
     GifGraphicBlock currBlock;
@@ -79,6 +81,19 @@ public class GifDecoder extends ImageDecoder {
 
     public GifDecoder(DecodingImageSource src, InputStream is) {
         super(src, is);
+        try {
+            int available_bytes = is.available();
+            if (available_bytes < MIN_BUFFER_SIZE) {
+                buffer_size = MIN_BUFFER_SIZE;
+            } else if (available_bytes > MAX_BUFFER_SIZE) {
+                buffer_size = MAX_BUFFER_SIZE;
+            } else {
+                buffer_size = available_bytes;
+            }
+        } catch (IOException e) {
+            buffer_size = MIN_BUFFER_SIZE;
+        }
+        buffer = new byte[buffer_size];
     }
 
     private static native int[] toRGB(byte imageData[], byte colormap[], int transparentColor);
@@ -168,7 +183,7 @@ public class GifDecoder extends ImageDecoder {
 
             // Read from the input stream
             for (;;) {
-                needBytes = BUFFER_SIZE - bytesInBuffer;
+                needBytes = buffer_size - bytesInBuffer;
                 offset = bytesInBuffer;
 
                 bytesRead = inputStream.read(buffer, offset, needBytes);

@@ -136,28 +136,22 @@ public class MethodTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Method#equals(java.lang.Object)
 	 */
-	public void test_equalsLjava_lang_Object() {
+	public void test_equalsLjava_lang_Object() throws Exception {
 		// Test for method boolean
 		// java.lang.reflect.Method.equals(java.lang.Object)
 
 		Method m1 = null, m2 = null;
-		try {
-			m1 = TestMethod.class.getMethod("invokeInstanceTest", new Class[0]);
-			m2 = TestMethodSub.class.getMethod("invokeInstanceTest",
-					new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during equals test : " + e.getMessage());
-		}
+		m1 = TestMethod.class.getMethod("invokeInstanceTest", new Class[0]);
+		m2 = TestMethodSub.class.getMethod("invokeInstanceTest",
+				new Class[0]);
+
 		assertTrue("Overriden method returned equal", !m1.equals(m2));
 		assertTrue("Same method returned not-equal", m1.equals(m1));
-		try {
-			m1 = TestMethod.class.getMethod("invokeStaticTest", new Class[0]);
-			m2 = TestMethodSub.class
-					.getMethod("invokeStaticTest", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during equals test : " + e.getMessage());
-		}
-		assertTrue("Inherited method returned not-equal", m1.equals(m2));
+                m1 = TestMethod.class.getMethod("invokeStaticTest", new Class[0]);
+                m2 = TestMethodSub.class
+                                .getMethod("invokeStaticTest", new Class[0]);
+
+                assertTrue("Inherited method returned not-equal", m1.equals(m2));
 	}
 
 	/**
@@ -169,114 +163,86 @@ public class MethodTest extends junit.framework.TestCase {
 
 		Method[] mths;
 
-		try {
-			mths = TestMethod.class.getDeclaredMethods();
-			assertTrue("Returned incorrect declaring class: "
-					+ mths[0].getDeclaringClass().toString(), mths[0]
-					.getDeclaringClass().equals(TestMethod.class));
-		} catch (Exception e) {
-			fail("Exception during getDeclaringClass test: "
-					+ e.toString());
-		}
+                mths = TestMethod.class.getDeclaredMethods();
+                assertTrue("Returned incorrect declaring class: "
+                                + mths[0].getDeclaringClass().toString(), mths[0]
+                                .getDeclaringClass().equals(TestMethod.class));
 	}
 
 	/**
 	 * @tests java.lang.reflect.Method#getExceptionTypes()
 	 */
-	public void test_getExceptionTypes() {
+	public void test_getExceptionTypes() throws Exception {
 		// Test for method java.lang.Class []
 		// java.lang.reflect.Method.getExceptionTypes()
 
-		try {
-			Method mth = TestMethod.class.getMethod("voidMethod", new Class[0]);
-			Class[] ex = mth.getExceptionTypes();
-			assertEquals("Returned incorrect number of exceptions",
-					1, ex.length);
-			assertTrue("Returned incorrect exception type", ex[0]
-					.equals(IllegalArgumentException.class));
-			mth = TestMethod.class.getMethod("intMethod", new Class[0]);
-			ex = mth.getExceptionTypes();
-			assertEquals("Returned incorrect number of exceptions",
-					0, ex.length);
-		} catch (Exception e) {
-			fail("Exception during getExceptionTypes: " + e.toString());
-		}
-
+                Method mth = TestMethod.class.getMethod("voidMethod", new Class[0]);
+                Class[] ex = mth.getExceptionTypes();
+                assertEquals("Returned incorrect number of exceptions",
+                                1, ex.length);
+                assertTrue("Returned incorrect exception type", ex[0]
+                                .equals(IllegalArgumentException.class));
+                mth = TestMethod.class.getMethod("intMethod", new Class[0]);
+                ex = mth.getExceptionTypes();
+                assertEquals("Returned incorrect number of exceptions",
+                                0, ex.length);
 	}
 
 	/**
 	 * @tests java.lang.reflect.Method#getModifiers()
 	 */
-	public void test_getModifiers() {
+	public void test_getModifiers() throws Exception {
 		// Test for method int java.lang.reflect.Method.getModifiers()
 
 		Class cl = TestMethod.class;
 		int mods = 0;
 		Method mth = null;
 		int mask = 0;
-		try {
-			mth = cl.getMethod("pustatic", new Class[0]);
-			mods = mth.getModifiers();
-		} catch (Exception e) {
-			fail("Exception during getModfiers test: " + e.toString());
-		}
-		mask = Modifier.PUBLIC | Modifier.STATIC;
+                mth = cl.getMethod("pustatic", new Class[0]);
+                mods = mth.getModifiers();
+
+                mask = Modifier.PUBLIC | Modifier.STATIC;
 		assertTrue("Incorrect modifiers returned", (mods | mask) == mask);
-		try {
-			mth = cl.getDeclaredMethod("prstatic", new Class[0]);
-			mods = mth.getModifiers();
-		} catch (Exception e) {
-			fail("Exception during getModfiers test: " + e.toString());
-		}
-		mask = Modifier.PRIVATE | Modifier.STATIC;
+                mth = cl.getDeclaredMethod("prstatic", new Class[0]);
+                mods = mth.getModifiers();
+
+                mask = Modifier.PRIVATE | Modifier.STATIC;
 		assertTrue("Incorrect modifiers returned", (mods | mask) == mask);
-		try {
-			mth = cl.getDeclaredMethod("pustatsynch", new Class[0]);
-			mods = mth.getModifiers();
-		} catch (Exception e) {
-			fail("Exception during getModfiers test: " + e.toString());
-		}
-		mask = (Modifier.PUBLIC | Modifier.STATIC) | Modifier.SYNCHRONIZED;
+		mth = cl.getDeclaredMethod("pustatsynch", new Class[0]);
+		mods = mth.getModifiers();
+
+                mask = (Modifier.PUBLIC | Modifier.STATIC) | Modifier.SYNCHRONIZED;
 		assertTrue("Incorrect modifiers returned", (mods | mask) == mask);
-		try {
-			mth = cl.getDeclaredMethod("pustatsynchnat", new Class[0]);
-			mods = mth.getModifiers();
-		} catch (Exception e) {
-			fail("Exception during getModfiers test: " + e.toString());
-		}
-		mask = ((Modifier.PUBLIC | Modifier.STATIC) | Modifier.SYNCHRONIZED)
+		mth = cl.getDeclaredMethod("pustatsynchnat", new Class[0]);
+		mods = mth.getModifiers();
+
+                mask = ((Modifier.PUBLIC | Modifier.STATIC) | Modifier.SYNCHRONIZED)
 				| Modifier.NATIVE;
 		assertTrue("Incorrect modifiers returned", (mods | mask) == mask);
 		cl = AbstractTestMethod.class;
-		try {
-			mth = cl.getDeclaredMethod("puabs", new Class[0]);
-			mods = mth.getModifiers();
-		} catch (Exception e) {
-			fail("Exception during getModfiers test: " + e.toString());
-		}
-		mask = Modifier.PUBLIC | Modifier.ABSTRACT;
+                mth = cl.getDeclaredMethod("puabs", new Class[0]);
+                mods = mth.getModifiers();
+
+                mask = Modifier.PUBLIC | Modifier.ABSTRACT;
 		assertTrue("Incorrect modifiers returned", (mods | mask) == mask);
 	}
 
 	/**
 	 * @tests java.lang.reflect.Method#getName()
 	 */
-	public void test_getName() {
+	public void test_getName() throws Exception {
 		// Test for method java.lang.String java.lang.reflect.Method.getName()
 		Method mth = null;
-		try {
-			mth = TestMethod.class.getMethod("voidMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getMethodName(): " + e.toString());
-		}
-		assertEquals("Returned incorrect method name", 
+		mth = TestMethod.class.getMethod("voidMethod", new Class[0]);
+
+                assertEquals("Returned incorrect method name", 
 				"voidMethod", mth.getName());
 	}
 
 	/**
 	 * @tests java.lang.reflect.Method#getParameterTypes()
 	 */
-	public void test_getParameterTypes() {
+	public void test_getParameterTypes() throws Exception {
 		// Test for method java.lang.Class []
 		// java.lang.reflect.Method.getParameterTypes()
 		Class cl = TestMethod.class;
@@ -286,22 +252,14 @@ public class MethodTest extends junit.framework.TestCase {
 		Class[] plist = { int.class, short.class, String.class, boolean.class,
 				Object.class, long.class, byte.class, char.class, double.class,
 				float.class };
-		try {
-			mth = cl.getMethod("voidMethod", new Class[0]);
-			parms = mth.getParameterTypes();
-		} catch (Exception e) {
-			fail("Exception during getParameterTypes test: "
-					+ e.toString());
-		}
-		assertEquals("Returned incorrect parameterTypes", 0, parms.length);
-		try {
-			mth = cl.getMethod("parmTest", plist);
-			parms = mth.getParameterTypes();
-		} catch (Exception e) {
-			fail("Exception during getParameterTypes test: "
-					+ e.toString());
-		}
-		assertTrue("Invalid number of parameters returned",
+		mth = cl.getMethod("voidMethod", new Class[0]);
+		parms = mth.getParameterTypes();
+
+                assertEquals("Returned incorrect parameterTypes", 0, parms.length);
+		mth = cl.getMethod("parmTest", plist);
+		parms = mth.getParameterTypes();
+
+                assertTrue("Invalid number of parameters returned",
 				plist.length == parms.length);
 		for (int i = 0; i < plist.length; i++)
 			assertTrue("Incorrect parameter returned", plist[i]
@@ -330,74 +288,47 @@ public class MethodTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Method#getReturnType()
 	 */
-	public void test_getReturnType() {
+	public void test_getReturnType() throws Exception {
 		// Test for method java.lang.Class
 		// java.lang.reflect.Method.getReturnType()
 		Class cl = TestMethod.class;
 		Method mth = null;
-		try {
-			mth = cl.getMethod("charMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted char", mth
+		mth = cl.getMethod("charMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted char", mth
 				.getReturnType().equals(char.class));
-		try {
-			mth = cl.getMethod("longMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted long", mth
+		mth = cl.getMethod("longMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted long", mth
 				.getReturnType().equals(long.class));
-		try {
-			mth = cl.getMethod("shortMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted short", mth
+		mth = cl.getMethod("shortMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted short", mth
 				.getReturnType().equals(short.class));
-		try {
-			mth = cl.getMethod("intMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted int: "
+		mth = cl.getMethod("intMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted int: "
 				+ mth.getReturnType(), mth.getReturnType().equals(int.class));
-		try {
-			mth = cl.getMethod("doubleMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted double", mth
+		mth = cl.getMethod("doubleMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted double", mth
 				.getReturnType().equals(double.class));
-		try {
-			mth = cl.getMethod("byteMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted byte", mth
+		mth = cl.getMethod("byteMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted byte", mth
 				.getReturnType().equals(byte.class));
-		try {
-			mth = cl.getMethod("byteMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test:" + e.toString());
-		}
-		assertTrue("Gave incorrect returne type, wanted byte", mth
+		mth = cl.getMethod("byteMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted byte", mth
 				.getReturnType().equals(byte.class));
-		try {
-			mth = cl.getMethod("objectMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted Object", mth
+		mth = cl.getMethod("objectMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted Object", mth
 				.getReturnType().equals(Object.class));
 
-		try {
-			mth = cl.getMethod("voidMethod", new Class[0]);
-		} catch (Exception e) {
-			fail("Exception during getReturnType test : " + e.getMessage());
-		}
-		assertTrue("Gave incorrect returne type, wanted void", mth
+		mth = cl.getMethod("voidMethod", new Class[0]);
+
+                assertTrue("Gave incorrect returne type, wanted void", mth
 				.getReturnType().equals(void.class));
 	}
 
@@ -405,7 +336,7 @@ public class MethodTest extends junit.framework.TestCase {
 	 * @tests java.lang.reflect.Method#invoke(java.lang.Object,
 	 *        java.lang.Object[])
 	 */
-	public void test_invokeLjava_lang_Object$Ljava_lang_Object() {
+	public void test_invokeLjava_lang_Object$Ljava_lang_Object() throws Exception {
 		// Test for method java.lang.Object
 		// java.lang.reflect.Method.invoke(java.lang.Object, java.lang.Object
 		// [])
@@ -416,94 +347,54 @@ public class MethodTest extends junit.framework.TestCase {
 		Class[] dcl = new Class[0];
 
 		// Get and invoke a static method
-		try {
-			mth = cl.getDeclaredMethod("invokeStaticTest", dcl);
-		} catch (Exception e) {
-			fail(
-					"Unable to obtain method for invoke test: invokeStaticTest");
-		}
-		try {
-			ret = mth.invoke(null, new Object[0]);
-		} catch (Exception e) {
-			fail("Exception during invoke test : " + e.getMessage());
-		}
-		assertEquals("Invoke returned incorrect value", 1, ((Integer) ret)
+		mth = cl.getDeclaredMethod("invokeStaticTest", dcl);
+                ret = mth.invoke(null, new Object[0]);
+
+                assertEquals("Invoke returned incorrect value", 1, ((Integer) ret)
 				.intValue());
 
 		// Get and invoke an instance method
-		try {
-			mth = cl.getDeclaredMethod("invokeInstanceTest", dcl);
-		} catch (Exception e) {
-			fail(
-					"Unable to obtain method for invoke test: invokeInstanceTest");
-		}
-		try {
-			ret = mth.invoke(new TestMethod(), new Object[0]);
-		} catch (Exception e) {
-			fail("Exception during invoke test : " + e.getMessage());
-		}
-		assertEquals("Invoke returned incorrect value", 1, ((Integer) ret)
+		mth = cl.getDeclaredMethod("invokeInstanceTest", dcl);
+                ret = mth.invoke(new TestMethod(), new Object[0]);
+
+                assertEquals("Invoke returned incorrect value", 1, ((Integer) ret)
 				.intValue());
 
 		// Get and attempt to invoke a private method
-		try {
-			mth = cl.getDeclaredMethod("privateInvokeTest", dcl);
-		} catch (Exception e) {
-			fail(
-					"Unable to obtain method for invoke test: privateInvokeTest");
-		}
+		mth = cl.getDeclaredMethod("privateInvokeTest", dcl);
+
 		try {
 			ret = mth.invoke(new TestMethod(), new Object[0]);
 		} catch (IllegalAccessException e) {
 			// Correct behaviour
-		} catch (Exception e) {
-			fail("Exception during invoke test : " + e.getMessage());
-		}
+		} 
+
 		// Generate an IllegalArgumentException
-		try {
-			mth = cl.getDeclaredMethod("invokeInstanceTest", dcl);
-		} catch (Exception e) {
-			fail(
-					"Unable to obtain method for invoke test: invokeInstanceTest");
-		}
-		try {
+		mth = cl.getDeclaredMethod("invokeInstanceTest", dcl);
+
+                try {
 			Object[] args = { Object.class };
 			ret = mth.invoke(new TestMethod(), args);
 		} catch (IllegalArgumentException e) {
 			// Correct behaviour
-		} catch (Exception e) {
-			fail("Exception during invoke test : " + e.getMessage());
 		}
 
 		// Generate a NullPointerException
-		try {
-			mth = cl.getDeclaredMethod("invokeInstanceTest", dcl);
-		} catch (Exception e) {
-			fail("Unable to obtain method invokeInstanceTest for invoke test : "
-					+ e.getMessage());
-		}
-		try {
+		mth = cl.getDeclaredMethod("invokeInstanceTest", dcl);
+
+                try {
 			ret = mth.invoke(null, new Object[0]);
 		} catch (NullPointerException e) {
 			// Correct behaviour
-		} catch (Exception e) {
-			fail("Exception during invoke test : " + e.getMessage());
 		}
 
 		// Generate an InvocationTargetException
-		try {
-			mth = cl.getDeclaredMethod("invokeExceptionTest", dcl);
-		} catch (Exception e) {
-			fail("Unable to obtain method invokeExceptionTest for invoke test: "
-					+ e.getMessage());
-		}
+		mth = cl.getDeclaredMethod("invokeExceptionTest", dcl);
 		try {
 			ret = mth.invoke(new TestMethod(), new Object[0]);
 		} catch (InvocationTargetException e) {
 			// Correct behaviour
-		} catch (Exception e) {
-			fail("Exception during invoke test : " + e.getMessage());
-		}
+		} 
 
 		TestMethod testMethod = new TestMethod();
 		Method methods[] = cl.getMethods();
@@ -646,18 +537,13 @@ public class MethodTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Method#toString()
 	 */
-	public void test_toString() {
+	public void test_toString() throws Exception {
 		// Test for method java.lang.String java.lang.reflect.Method.toString()
 		Method mth = null;
 		Class[] parms = { int.class, short.class, String.class, boolean.class,
 				Object.class, long.class, byte.class, char.class, double.class,
 				float.class };
-		try {
-
-			mth = TestMethod.class.getDeclaredMethod("printTest", parms);
-		} catch (Exception e) {
-			fail("Exception during toString test : " + e.getMessage());
-		}
+		mth = TestMethod.class.getDeclaredMethod("printTest", parms);
 
 		assertTrue(
 				"Returned incorrect string for method: " + mth.toString(),

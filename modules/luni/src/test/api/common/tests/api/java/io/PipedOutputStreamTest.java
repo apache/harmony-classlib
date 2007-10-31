@@ -85,30 +85,22 @@ public class PipedOutputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.PipedOutputStream#PipedOutputStream(java.io.PipedInputStream)
 	 */
-	public void test_ConstructorLjava_io_PipedInputStream() {
+	public void test_ConstructorLjava_io_PipedInputStream() throws Exception {
 		// Test for method java.io.PipedOutputStream(java.io.PipedInputStream)
 
-		try {
-			out = new PipedOutputStream(new PipedInputStream());
-			out.write('b');
-		} catch (Exception e) {
-			fail("Exception during constructor test : " + e.getMessage());
-		}
+                out = new PipedOutputStream(new PipedInputStream());
+                out.write('b');
 	}
 
 	/**
 	 * @tests java.io.PipedOutputStream#close()
 	 */
-	public void test_close() {
+	public void test_close() throws Exception {
 		// Test for method void java.io.PipedOutputStream.close()
-		try {
-			out = new PipedOutputStream();
-			rt = new Thread(reader = new PReader(out));
-			rt.start();
-			out.close();
-		} catch (IOException e) {
-			fail("Exception during close : " + e.getMessage());
-		}
+                out = new PipedOutputStream();
+                rt = new Thread(reader = new PReader(out));
+                rt.start();
+                out.close();
 	}
     
     /**

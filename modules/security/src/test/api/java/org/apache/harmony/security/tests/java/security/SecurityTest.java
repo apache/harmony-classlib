@@ -145,8 +145,6 @@ public class SecurityTest extends TestCase {
             }
             assertEquals("Providers not removed", 0,
                     Security.getProviders().length);
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {    // restore providers
             for (int i = 0; i < providers.length; i++) {
                 Security.addProvider(providers[i]);

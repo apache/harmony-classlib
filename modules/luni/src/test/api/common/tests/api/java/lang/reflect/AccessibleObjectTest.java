@@ -28,38 +28,30 @@ public class AccessibleObjectTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.AccessibleObject#isAccessible()
 	 */
-	public void test_isAccessible() {
+	public void test_isAccessible() throws Exception {
 		// Test for method boolean
 		// java.lang.reflect.AccessibleObject.isAccessible()
-		try {
-			AccessibleObject ao = TestClass.class.getField("aField");
-			ao.setAccessible(true);
-			assertTrue("Returned false to isAccessible", ao.isAccessible());
-			ao.setAccessible(false);
-			assertTrue("Returned true to isAccessible", !ao.isAccessible());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                AccessibleObject ao = TestClass.class.getField("aField");
+                ao.setAccessible(true);
+                assertTrue("Returned false to isAccessible", ao.isAccessible());
+                ao.setAccessible(false);
+                assertTrue("Returned true to isAccessible", !ao.isAccessible());
 	}
 
 	/**
 	 * @tests java.lang.reflect.AccessibleObject#setAccessible(java.lang.reflect.AccessibleObject[],
 	 *        boolean)
 	 */
-	public void test_setAccessible$Ljava_lang_reflect_AccessibleObjectZ() {
+	public void test_setAccessible$Ljava_lang_reflect_AccessibleObjectZ() throws Exception {
 		// Test for method void
 		// java.lang.reflect.AccessibleObject.setAccessible(java.lang.reflect.AccessibleObject
 		// [], boolean)
-		try {
-			AccessibleObject ao = TestClass.class.getField("aField");
-			AccessibleObject[] aoa = new AccessibleObject[] { ao };
-			AccessibleObject.setAccessible(aoa, true);
-			assertTrue("Returned false to isAccessible", ao.isAccessible());
-			AccessibleObject.setAccessible(aoa, false);
-			assertTrue("Returned true to isAccessible", !ao.isAccessible());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                AccessibleObject ao = TestClass.class.getField("aField");
+                AccessibleObject[] aoa = new AccessibleObject[] { ao };
+                AccessibleObject.setAccessible(aoa, true);
+                assertTrue("Returned false to isAccessible", ao.isAccessible());
+                AccessibleObject.setAccessible(aoa, false);
+                assertTrue("Returned true to isAccessible", !ao.isAccessible());
 	}
 
 	/**
