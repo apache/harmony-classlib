@@ -52,6 +52,11 @@ import java.text.NumberFormat;
  */
 public final class Formatter implements Closeable, Flushable {
 
+    /**
+     * a enum big decimal layout form
+     * 
+     * @since 1.6
+     */
     public enum BigDecimalLayoutForm {
         SCIENTIFIC, DECIMAL_FLOAT
     }
