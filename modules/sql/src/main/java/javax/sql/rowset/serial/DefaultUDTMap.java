@@ -26,7 +26,7 @@ import java.sql.Struct;
 import java.sql.Types;
 import java.util.HashMap;
 
-public class DefaultUDTMap<T> {
+class DefaultUDTMap<T> {
 
     public static HashMap<String, Class<?>> DEFAULTMAP = new HashMap<String, Class<?>>();
 
