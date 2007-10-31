@@ -13,20 +13,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-#
-# Makefile for module 'thread'
-#
+# Use cc for assembly compiles on z/OS
+AS = cc
 
-include $(HY_HDK)/build/make/defines.mk
+# Use cxx/c++ for c++ compiles on z/OS
+CXX = cxx
 
-BUILDFILES = \
-	$(SHAREDSUB)thread_copyright.o $(HY_ARCH)/thrhelp.o $(HY_ARCH)/thrspinlock.o \
-	$(SHAREDSUB)hythread.o $(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o \
-	rasthrsup.o $(SHAREDSUB)rwmutex.o thrcreate.o thrdsup.o $(SHAREDSUB)thrprof.o
+DEFINES += -DZOS -DZOS_S390X -DHYS390X -DHY_ATOE
+OPT += -Wc,lp64,xplink,convlit\(ISO8859-1\),FLOAT\(IEEE,FOLD,AFP\) -Wc,"langlvl(commonc)" -Wa,goff -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL
 
-OSLIBS += -lpthread
-MDLLIBFILES = $(LIBPATH)libhypool.a $(LIBPATH)libhycommon.a
-DLLNAME = ../libhythr$(HY_SHLIB_SUFFIX)
-EXPNAME = HYTHR_0.1
+CFLAGS += -Wc,"SSCOMM" -Wc,"langlvl(commonc)"
+CXXFLAGS += -+ -Wc,"langlvl(extended)"
 
-include $(HY_HDK)/build/make/rules.mk
+ASFLAGS += -Wc,lp64,xplink,convlit\(ISO8859-1\)  -Wa,goff -Wc,NOANSIALIAS -Wc,DLL,EXPORTALL -Wa,SYSPARM\(BIT64\) -c
+LDFLAGS += -Wl,lp64 -Wl,xplink,dll
+
+# No need for --start-group and --end-group tags here
+MDLLIBPREFIX =
+MDLLIBSUFFIX =
+
+# Don't use these flags on z/OS
+DLL_LDFLAGS =
+
+# We can't use the -Xlinker options on z/OS
+EXERPATHPREFIX = 

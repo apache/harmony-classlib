@@ -20,7 +20,6 @@
 include $(HY_HDK)/build/make/defines.mk
 
 INCLUDES += -I../../zlib_dist
-CFLAGS += -fpic
 
 BUILDFILES = $(SHAREDSUB)zcpool.o $(SHAREDSUB)zipalloc.o \
 	$(SHAREDSUB)zipcache.o $(SHAREDSUB)zipsup.o

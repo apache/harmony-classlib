@@ -20,7 +20,9 @@
 include $(HY_HDK)/build/make/defines.mk
 
 # CFLAGS += -fpic -Wall -Werror 
-CFLAGS += -fpic -Wall
+ifneq ($(HY_OS),zos)
+CFLAGS += -Wall
+endif
 
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \

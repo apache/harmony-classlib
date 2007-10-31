@@ -19,7 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)hysig_copyright.o hysiglinux.o hysigunix.o
 MDLLIBFILES =
 DLLNAME = ../libhysig$(HY_SHLIB_SUFFIX)

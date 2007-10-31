@@ -42,7 +42,9 @@ RANLIB=echo
 endif
 
 ifneq ($(HY_OS),freebsd)
+ifneq ($(HY_OS),zos)
 OSLIBS += -ldl
+endif
 endif
 
 EXEPATH=../
@@ -50,7 +52,7 @@ LIBPATH=$(HY_HDK)/lib/
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
 SHAREDSUB=../shared/
 
-DEFINES += -D_REENTRANT -DIPv6_FUNCTION_SUPPORT
+DEFINES += -D_REENTRANT
 INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 
 ifndef HYDEBUGCFLAGS

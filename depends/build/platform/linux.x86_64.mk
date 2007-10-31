@@ -13,6 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DLINUX -DLINUX_X86_64 -DHYX86_64
+DEFINES += -DLINUX -DLINUX_X86_64 -DHYX86_64 -DIPv6_FUNCTION_SUPPORT
 OPT += -fpic
 XLIBS = -L/usr/X11R6/lib64 -lX11 -lXft

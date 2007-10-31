@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DLINUX -DLINUX_PPC64 -DHYPPC64
-OPT += -m64
+DEFINES += -DLINUX -DLINUX_PPC64 -DHYPPC64 -DIPv6_FUNCTION_SUPPORT
+OPT += -fpic -m64
 XLIBS = -L/usr/X11R6/lib64 -lX11 -lXft
 
 ASFLAGS += -a64
