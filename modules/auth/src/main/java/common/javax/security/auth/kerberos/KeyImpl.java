@@ -319,16 +319,26 @@ public String toString() {
     
     @Override
     public boolean equals(Object other) {
-        if (other instanceof KeyImpl && !this.isDestroyed()
-                && !((KeyImpl) other).isDestroyed()) {
-            if ((keyType == ((KeyImpl) other).keyType)
-                    && (keyBytes.length == ((KeyImpl) other).keyBytes.length)) {
+        if (this.isDestroyed()) {
+            return false;
+        }
+        if (this == other) {
+            return true;
+        }
+
+        if (other instanceof KeyImpl) {
+            KeyImpl that = (KeyImpl) other;
+            if (that.isDestroyed()) {
+                return false;
+            }
+            if ((keyType == that.keyType)
+                    && (keyBytes.length == that.keyBytes.length)) {
                 for (int i = 0; i < keyBytes.length; i++) {
-                    if (keyBytes[i] != ((KeyImpl) other).keyBytes[i]) {
+                    if (keyBytes[i] != that.keyBytes[i]) {
                         return false;
                     }
-                    return true;
                 }
+                return true;
             }
         }
         return false;

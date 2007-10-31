@@ -343,10 +343,10 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
         sb.append("Postdated Ticket = ").append(flags[POSTDATED] + LF); //$NON-NLS-1$
         sb.append("Renewable Ticket = ").append(flags[RENEWABLE] + LF); //$NON-NLS-1$
         sb.append("Initial Ticket = ").append(flags[INITIAL] + LF); //$NON-NLS-1$
-        sb.append("Auth Time = ").append(this.authTime.toString() + LF); //$NON-NLS-1$
-        sb.append("Start Time = ").append(this.startTime.toString() + LF); //$NON-NLS-1$
-        sb.append("End Time = ").append(this.endTime.toString() + LF); //$NON-NLS-1$
-        sb.append("Renew Till = ").append(this.renewTill.toString() + LF); //$NON-NLS-1$
+        sb.append("Auth Time = ").append(this.authTime + LF); //$NON-NLS-1$
+        sb.append("Start Time = ").append(this.startTime + LF); //$NON-NLS-1$
+        sb.append("End Time = ").append(this.endTime + LF); //$NON-NLS-1$
+        sb.append("Renew Till = ").append(this.renewTill + LF); //$NON-NLS-1$
         sb.append("Client Addresses "); //$NON-NLS-1$
         if (clientAddresses != null) {
             for (int i = 0; i < clientAddresses.length; i++) {
@@ -374,6 +374,10 @@ public class KerberosTicket implements Destroyable, Refreshable, Serializable {
 
     @Override
     public boolean equals(Object other) {
+        if( this == other && !this.isDestroyed()){
+            return true;
+        }
+        
         if ((other instanceof KerberosTicket) && (!this.isDestroyed())) {
             KerberosTicket that = (KerberosTicket) other;
             if ((!that.isDestroyed()) && sessionKey.equals(that.sessionKey)

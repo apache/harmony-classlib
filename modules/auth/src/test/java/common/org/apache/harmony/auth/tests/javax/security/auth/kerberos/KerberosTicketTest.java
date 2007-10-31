@@ -546,6 +546,24 @@ public class KerberosTicketTest extends TestCase {
         }
         assertFalse("Destroyed krbTicket sholudn't be equivalent ", krbTicket1
                 .equals(krbTicket2));
+        
+        //Regression test for KerberosTicket.equals().
+        final KerberosPrincipal clientPrincipal = new KerberosPrincipal(
+                "leo@EXAMPLE.COM");
+        final KerberosPrincipal serverPrincipal = new KerberosPrincipal(
+                "krbtgt/EXAMPLE.COM@EXAMPLE.COM");
+        KerberosTicket tgt = new KerberosTicket(new byte[0], clientPrincipal,
+                serverPrincipal, new byte[0], 1, new boolean[0],
+                new Date(1000), null, new Date(new Date().getTime() + 1000),
+                null, null);
+        assertEquals(tgt, tgt);
+        KerberosTicket tgt1 = new KerberosTicket(new byte[0], clientPrincipal,
+                serverPrincipal, new byte[0], 1, new boolean[0],
+                new Date(1000), null, new Date(new Date().getTime() + 1000),
+                null, null);
+        assertEquals(tgt, tgt1);
+        assertEquals(tgt1, tgt);
+        
     }
 
     /**
