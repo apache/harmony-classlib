@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ICU4J
 Bundle-SymbolicName: com.ibm.icu4j;singleton:=true
 Bundle-Version: 3.8
-Bundle-ClassPath: icu4j-3_8.jar
+Bundle-ClassPath: icu4j-3_8.jar,icu4j-charsets-3_8.jar
 Eclipse-JREBundle: true
 Import-Package: java.io,
  java.lang,
