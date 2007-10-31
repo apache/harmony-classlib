@@ -37,8 +37,6 @@ public class CertificateEncodingException2Test extends junit.framework.TestCase 
 			assertEquals("Initializer failed : " + e.toString(),
 					"java.security.cert.CertificateEncodingException",
 					e.toString());
-		} catch (Exception e) {
-			fail("Unexpected exception during test : " + e);
-		}
+		} 
 	}
 }

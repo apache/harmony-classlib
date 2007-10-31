@@ -22,8 +22,11 @@ package javax.swing.plaf.basic;
 
 import java.awt.Component;
 import java.awt.KeyEventDispatcher;
+import java.awt.Toolkit;
+import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.AWTEventListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -326,10 +329,22 @@ class MenuKeyBindingProcessor implements KeyEventDispatcher {
     }
 
     public boolean dispatchKeyEvent(final KeyEvent e) {
-        if (e.getID() != KeyEvent.KEY_PRESSED) {
+        if (e.getID() != KeyEvent.KEY_PRESSED || e.isConsumed()) {
             return false;
         }
 
+        // dispatch event to user listeners
+        for (AWTEventListener listener :
+                Toolkit.getDefaultToolkit().getAWTEventListeners(
+                    AWTEvent.KEY_EVENT_MASK)) {
+            listener.eventDispatched(e);
+        }
+        
+        if (e.isConsumed()) {
+            // consumed by user listener
+            return true;
+        }
+        
         final JPopupMenu activePopupMenu = getActivePopupMenu();
         if (activePopupMenu == null) {
             return false;
@@ -340,6 +355,7 @@ class MenuKeyBindingProcessor implements KeyEventDispatcher {
         if (action == null) {
             return false;
         }
+        
         SwingUtilities.notifyAction(action, ks, e, activePopupMenu, e.getModifiersEx());
         return true;
     }

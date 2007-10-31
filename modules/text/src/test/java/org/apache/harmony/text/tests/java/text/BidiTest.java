@@ -781,7 +781,7 @@ public class BidiTest extends TestCase {
 	}
 
 	public void testCreateLineBidi() {
-		bd = new Bidi("a\u05D0a\na\u05D0\"\u05D0a".toCharArray(), 0,
+		bd = new Bidi("a\u05D0a\u05D0a\u05D0\"\u05D0a".toCharArray(), 0,
 				new byte[] { 0, 0, 0, -3, -3, 2, 2, 0, 3 }, 0, 9,
 				Bidi.DIRECTION_RIGHT_TO_LEFT);
 		Bidi line = bd.createLineBidi(2, 7);
@@ -789,14 +789,14 @@ public class BidiTest extends TestCase {
 		assertEquals(1, line.getBaseLevel());
 		assertEquals(5, line.getLength());
 		assertEquals(2, line.getLevelAt(0));
-		assertEquals(1, line.getLevelAt(1));
+		assertEquals(3, line.getLevelAt(1));
 		assertEquals(3, line.getLevelAt(2));
 		assertEquals(3, line.getLevelAt(3));
 		assertEquals(2, line.getLevelAt(4));
 		assertEquals(1, line.getLevelAt(1000));
-		assertEquals(4, line.getRunCount());
-		assertRunArrayEquals(new int[][] { { 0, 1, 2 }, { 1, 2, 1 },
-				{ 2, 4, 3 }, { 4, 5, 2 }, }, line);
+		assertEquals(3, line.getRunCount());
+		assertRunArrayEquals(new int[][] { { 0, 1, 2 }, { 1, 4, 3 },
+				{ 4, 5, 2 }, }, line);
 		assertFalse(line.isLeftToRight());
 		assertTrue(line.isMixed());
 		assertFalse(line.isRightToLeft());
@@ -832,8 +832,12 @@ public class BidiTest extends TestCase {
         } catch (IllegalArgumentException e) {
             // Expected
         }
-        
-        bidi.createLineBidi(2, 2);
+
+        try {
+            bidi.createLineBidi(2, 2);
+        }catch (IllegalArgumentException e){
+            // Expected
+        }
 
         try {
             bidi.createLineBidi(2, 4);
@@ -961,18 +965,25 @@ public class BidiTest extends TestCase {
          bd = new Bidi("text", Bidi.DIRECTION_LEFT_TO_RIGHT);
          try {
              assertTrue(4 == bd.getRunLimit(-1));
-         } catch (Exception e) {
-                       fail("Unexpected exception: " + e);
+         } catch (IllegalArgumentException e) {
+             // Expected for illegal run limit
+             return;
          }
+
+         fail("Expected IllegalArgumentException to be thrown for invalid run limit");
        }
+
        public void testBidiConstructor_Iterator() {
                AttributedString paragraph = new AttributedString("text");
          bd = new Bidi(paragraph.getIterator());
          try {
              assertTrue(4 == bd.getRunLimit(1));
-         } catch (Exception e) {
-                       fail("Unexpected exception: " + e);
+         } catch (IllegalArgumentException e) {
+             // Expected for illegal run limit
+             return;
          }
+
+         fail("Expected IllegalArgumentException to be thrown for invalid run limit");
        }
 
 }

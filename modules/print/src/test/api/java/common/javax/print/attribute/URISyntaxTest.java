@@ -43,13 +43,10 @@ public class URISyntaxTest extends TestCase {
     /*
      * URISyntax() constructor testing. 
      */
-    public final void testURISyntax() {
-        try {
-            uri1 = new URI("http://news.ngs.ru/more/14161.shtml");
-            us1 = new uriSyntax(uri1);
-        } catch (Exception e) {
-            fail("Unexpected exception occurred " + e);
-        }
+    public final void testURISyntax() throws Exception {
+        uri1 = new URI("http://news.ngs.ru/more/14161.shtml");
+        us1 = new uriSyntax(uri1);
+
         try {
             uri1 = null;
             us1 = new uriSyntax(uri1);
@@ -62,60 +59,44 @@ public class URISyntaxTest extends TestCase {
     /*
      * hashCode() method testing. 
      */
-    public final void testHashCode() {
-        try {
-            uri1 = new URI("http://www.ietf.org/rfc/rfc2396.txt");
-            us1 = new uriSyntax(uri1);
-            assertTrue(us1.hashCode() == us1.hashCode());
+    public final void testHashCode() throws Exception {
+        uri1 = new URI("http://www.ietf.org/rfc/rfc2396.txt");
+        us1 = new uriSyntax(uri1);
+        assertTrue(us1.hashCode() == us1.hashCode());
 
-            uri1 = new URI("http://www.ietf.org/rfc/rfc2396.txt");
-            us1 = new uriSyntax(uri1);
-            uri2 = new URI("http://www.ietf.org/rfc/rfc2395.txt");
-            us2 = new uriSyntax(uri2);
-            assertFalse(us1.hashCode() == us2.hashCode());
-
-        } catch (Exception e) {
-            fail("Unexpected exception occurred " + e);
-        }
-
+        uri1 = new URI("http://www.ietf.org/rfc/rfc2396.txt");
+        us1 = new uriSyntax(uri1);
+        uri2 = new URI("http://www.ietf.org/rfc/rfc2395.txt");
+        us2 = new uriSyntax(uri2);
+        assertFalse(us1.hashCode() == us2.hashCode());
     }
 
     /*
      * equals(Object object) method testing. 
      */
-    public final void testEqualsObject() {
-        try {
-            uri1 = new URI("http://www.melodi.ru/main/index.php#");
-            us1 = new uriSyntax(uri1);
-            assertTrue(us1.equals(us1));
+    public final void testEqualsObject() throws Exception {
+        uri1 = new URI("http://www.melodi.ru/main/index.php#");
+        us1 = new uriSyntax(uri1);
+        assertTrue(us1.equals(us1));
 
-            uri1 = new URI("http://www.ietf.org/rfc/rfc2396.txt");
-            us1 = new uriSyntax(uri1);
-            uri2 = new URI("http://www.ietf.org/rfc/rfc2395.txt");
-            us2 = new uriSyntax(uri2);
-            assertFalse(us1.equals(us2));
-
-        } catch (Exception e) {
-            fail("Unexpected exception occurred " + e);
-        }
+        uri1 = new URI("http://www.ietf.org/rfc/rfc2396.txt");
+        us1 = new uriSyntax(uri1);
+        uri2 = new URI("http://www.ietf.org/rfc/rfc2395.txt");
+        us2 = new uriSyntax(uri2);
+        assertFalse(us1.equals(us2));
     }
 
     /*
      * getURI() method testing. 
      */
-    public final void testGetURI() {
-        try {
-            uri1 = new URI("http://www.melodi.ru/main/index.php#");
-            us1 = new uriSyntax(uri1);
-            assertEquals(uri1, us1.getURI());
+    public final void testGetURI() throws Exception {
+        uri1 = new URI("http://www.melodi.ru/main/index.php#");
+        us1 = new uriSyntax(uri1);
+        assertEquals(uri1, us1.getURI());
 
-            uri2 = new URI("http://www.ietf.org/rfc/rfc2395.txt");
-            us2 = new uriSyntax(uri2);
-            assertEquals(uri2, us2.getURI());
-
-        } catch (Exception e) {
-            fail("Unexpected exception occurred " + e);
-        }
+        uri2 = new URI("http://www.ietf.org/rfc/rfc2395.txt");
+        us2 = new uriSyntax(uri2);
+        assertEquals(uri2, us2.getURI());
     }
 
 

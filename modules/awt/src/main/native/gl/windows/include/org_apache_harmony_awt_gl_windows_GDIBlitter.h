@@ -47,11 +47,11 @@ Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorBitmap(JNIEnv *, jobject,
     jint, jint, jlong, jint, jint, jlong, jint, jint, jint, jdoubleArray, jintArray, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.xorImage(IIJLjava/lang/Object;IIJIII[D[IIZ)V
+ * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.xorImage(IIJLjava/lang/Object;IIJIII[D[IIZ[II)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImage(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jdoubleArray, jintArray, jint, jboolean);
+    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jdoubleArray, jintArray, jint, jboolean, jintArray, jint);
 
 /*
  * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.bltBitmap(IIJIIJIIIF[D[II)V
@@ -61,18 +61,18 @@ Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBitmap(JNIEnv *, jobject,
     jint, jint, jlong, jint, jint, jlong, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.bltImage(IIJLjava/lang/Object;IIJIIIF[D[IIZ)V
+ * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.bltImage(IIJLjava/lang/Object;IIJIIIF[D[IIZ[II)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImage(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint, jboolean);
+    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint, jboolean, jintArray, jint);
 
 /*
- * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.bltBGImage(IIJLjava/lang/Object;IIJIIIIF[D[IIZ)V
+ * Method: org.apache.harmony.awt.gl.windows.GDIBlitter.bltBGImage(IIJLjava/lang/Object;IIJIIIIF[D[IIZ[II)V
  */
 JNIEXPORT void JNICALL
 Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGImage(JNIEnv *, jobject, 
-    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint, jboolean);
+    jint, jint, jlong, jobject, jint, jint, jlong, jint, jint, jint, jint, jfloat, jdoubleArray, jintArray, jint, jboolean, jintArray, jint);
 
 
 #ifdef __cplusplus

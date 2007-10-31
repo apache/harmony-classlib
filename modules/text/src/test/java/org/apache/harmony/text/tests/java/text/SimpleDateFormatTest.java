@@ -141,10 +141,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
             fail("Expected test_ConstructorLjava_lang_String to throw IAE.");
         } catch (IllegalArgumentException ex) {
             // expected
-        } catch (Throwable ex) {
-            fail("Expected test_ConstructorLjava_lang_String to throw IAE, not "
-                    + ex.getClass().getName());
-        }
+        } 
 
         // Null string value
         try {
@@ -152,10 +149,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
             fail("Expected test_ConstructorLjava_lang_String to throw NPE.");
         } catch (NullPointerException ex) {
             // expected
-        } catch (Throwable ex) {
-            fail("Expected test_ConstructorLjava_lang_String to throw NPE, not "
-                    + ex.getClass().getName());
-        }
+        } 
     }
 
     /**
@@ -504,9 +498,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
             fail("Expected test to throw NPE.");
         } catch (NullPointerException ex) {
             // expected
-        } catch (Throwable ex) {
-            fail("Expected test to throw NPE, not " + ex.getClass().getName());
-        }
+        } 
     }
 
     /**

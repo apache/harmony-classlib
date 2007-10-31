@@ -203,7 +203,7 @@ public class KeyFactory2Test extends junit.framework.TestCase {
 	 * @tests java.security.KeyFactory#getInstance(java.lang.String,
 	 *        java.lang.String)
 	 */
-	public void test_getInstanceLjava_lang_StringLjava_lang_String() {
+	public void test_getInstanceLjava_lang_StringLjava_lang_String() throws Exception {
 
 		// Test1: Test for method java.security.KeyFactory
 		// java.security.KeyFactory.getInstance(java.lang.String,
@@ -229,8 +229,6 @@ public class KeyFactory2Test extends junit.framework.TestCase {
             fail("Expected IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			// Expected
-		} catch (Exception e) {
-			fail("Expected IllegalArgumentException, got " + e);
 		}
 	}
 

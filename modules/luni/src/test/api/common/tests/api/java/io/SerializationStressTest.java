@@ -275,16 +275,11 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 		}
 	}
 
-	public void test_1_Constructor() {
+	public void test_1_Constructor() throws Exception {
 		// Test for method java.io.ObjectOutputStream(java.io.OutputStream)
-
-		try {
-			oos.close();
-			oos = new ObjectOutputStream(new ByteArrayOutputStream());
-			oos.close();
-		} catch (Exception e) {
-			fail("Failed to create ObjectOutputStream : " + e.getMessage());
-		}
+                oos.close();
+                oos = new ObjectOutputStream(new ByteArrayOutputStream());
+                oos.close();
 	}
 
 	public void test_2_close() {
@@ -691,14 +686,10 @@ public class SerializationStressTest extends junit.framework.TestCase implements
 		}
 	}
 
-	public void test_serialVersionUID(Class clazz, long svUID) {
+	public void test_serialVersionUID(Class clazz, long svUID) throws Exception {
 		final String idWrong = "serialVersionUID is wrong for: ";
 		long reflectedSvUID = 0L;
-		try {
-			reflectedSvUID = clazz.getField("serialVersionUID").getLong(null);
-		} catch (Exception e) {
-			fail("Unable to determine serialVersionUID of " + clazz);
-		}
+		reflectedSvUID = clazz.getField("serialVersionUID").getLong(null);
 		assertTrue(idWrong + clazz + ": " + reflectedSvUID + " does not equal "
 				+ svUID, reflectedSvUID == svUID);
 	}

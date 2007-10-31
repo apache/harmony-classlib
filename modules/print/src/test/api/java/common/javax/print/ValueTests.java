@@ -228,7 +228,7 @@ public void testStreamPrintService() {
     assertTrue(streamService.isDisposed());
 }
 
-public void testStreamServicePrinting() {
+public void testStreamServicePrinting() throws Exception {
     startTest("StreamPrintServiceFactory class testing...");
     
     byte [] forChecking = {'%', '!', 'P', 'S', '-', 'A', 'd', 'o', 'b', 'e'};
@@ -256,12 +256,9 @@ public void testStreamServicePrinting() {
     streamService = streamFactory.getPrintService(new ByteArrayOutputStream());
     aJob = streamService.createPrintJob();
     doc = new SimpleDoc(aStream, flavor, null);
-    try {
-        aJob.print(doc, null);
-    } catch (Exception e) {
-        e.printStackTrace();
-        fail("Can not print PrintJob!");
-    }    
+
+    aJob.print(doc, null);
+
     arr = ((ByteArrayOutputStream) (streamService.getOutputStream()))
             .toByteArray();
     for (int i = 0; i < 10; i++) {

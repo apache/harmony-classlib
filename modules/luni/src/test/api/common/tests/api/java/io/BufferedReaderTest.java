@@ -61,8 +61,6 @@ public class BufferedReaderTest extends junit.framework.TestCase {
 			fail("Read on closed stream");
 		} catch (IOException x) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during close test " + e.toString());
 		}
 	}
 

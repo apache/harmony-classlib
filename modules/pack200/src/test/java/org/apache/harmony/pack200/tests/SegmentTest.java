@@ -57,11 +57,27 @@ public class SegmentTest extends TestCase {
     
     }
     
+    // Test with an archive containing Harmony's SQL module
+    public void testWithSql() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz")));
+    
+    }
+    
     // Test with an archive containing Harmony's Pack200 module, packed with -E1
     public void testWithPack200E1() throws Exception {
         assertNotNull(Segment
                 .parse(Segment.class
                         .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200-e1.pack.gz")));
+    
+    }
+    
+    // Test with an archive containing Harmony's Pack200 module
+    public void testWithPack200() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200.pack.gz")));
     
     }
  
@@ -70,6 +86,5 @@ public class SegmentTest extends TestCase {
                 .parse(Segment.class
                         .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack")));
     }
-
 
 }

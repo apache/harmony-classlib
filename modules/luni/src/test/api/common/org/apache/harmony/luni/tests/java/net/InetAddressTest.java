@@ -133,18 +133,14 @@ public class InetAddressTest extends junit.framework.TestCase {
     /**
      * @tests java.net.InetAddress#equals(java.lang.Object)
      */
-    public void test_equalsLjava_lang_Object() {
+    public void test_equalsLjava_lang_Object() throws Exception {
         // Test for method boolean java.net.InetAddress.equals(java.lang.Object)
-        try {
-            InetAddress ia1 = InetAddress
-                    .getByName(Support_Configuration.InetTestAddress);
-            InetAddress ia2 = InetAddress
-                    .getByName(Support_Configuration.InetTestIP);
-            assertTrue("Equals returned incorrect result - " + ia1 + " != "
-                    + ia2, ia1.equals(ia2));
-        } catch (Exception e) {
-            fail("Exception during equals test : " + e.getMessage());
-        }
+        InetAddress ia1 = InetAddress
+                .getByName(Support_Configuration.InetTestAddress);
+        InetAddress ia2 = InetAddress
+                .getByName(Support_Configuration.InetTestIP);
+        assertTrue("Equals returned incorrect result - " + ia1 + " != "
+                + ia2, ia1.equals(ia2));
     }
 
     /**
@@ -196,8 +192,6 @@ public class InetAddressTest extends junit.framework.TestCase {
                 InetAddress.getByName("3d.com");
             } catch (SecurityException ex) {
                 exception = true;
-            } catch (Exception ex) {
-                fail("getByName threw wrong exception : " + ex.getMessage());
             }
             assertTrue("expected SecurityException", exception);
         } finally {
@@ -249,19 +243,15 @@ public class InetAddressTest extends junit.framework.TestCase {
     /**
      * @tests java.net.InetAddress#getHostAddress()
      */
-    public void test_getHostAddress() {
+    public void test_getHostAddress() throws Exception {
         // Test for method java.lang.String
         // java.net.InetAddress.getHostAddress()
-        try {
-            InetAddress ia2 = InetAddress
-                    .getByName(Support_Configuration.InetTestAddress);
-            assertTrue("getHostAddress returned incorrect result: "
-                    + ia2.getHostAddress() + " != "
-                    + Support_Configuration.InetTestIP, ia2.getHostAddress()
-                    .equals(Support_Configuration.InetTestIP));
-        } catch (Exception e) {
-            fail("Exception during getHostAddress test : " + e.getMessage());
-        }
+        InetAddress ia2 = InetAddress
+                .getByName(Support_Configuration.InetTestAddress);
+        assertTrue("getHostAddress returned incorrect result: "
+                + ia2.getHostAddress() + " != "
+                + Support_Configuration.InetTestIP, ia2.getHostAddress()
+                .equals(Support_Configuration.InetTestIP));
     }
 
     /**
@@ -359,20 +349,17 @@ public class InetAddressTest extends junit.framework.TestCase {
     /**
      * @tests java.net.InetAddress#getLocalHost()
      */
-    public void test_getLocalHost() {
+    public void test_getLocalHost() throws Exception {
         // Test for method java.net.InetAddress
         // java.net.InetAddress.getLocalHost()
-        try {
-            // We don't know the host name or ip of the machine
-            // running the test, so we can't build our own address
-            DatagramSocket dg = new DatagramSocket(0, InetAddress
-                    .getLocalHost());
-            assertTrue("Incorrect host returned", InetAddress.getLocalHost()
-                    .equals(dg.getLocalAddress()));
-            dg.close();
-        } catch (Exception e) {
-            fail("Exception during getLocalHost test : " + e.getMessage());
-        }
+
+        // We don't know the host name or ip of the machine
+        // running the test, so we can't build our own address
+        DatagramSocket dg = new DatagramSocket(0, InetAddress
+                .getLocalHost());
+        assertTrue("Incorrect host returned", InetAddress.getLocalHost()
+                .equals(dg.getLocalAddress()));
+        dg.close();
     }
 
     /**

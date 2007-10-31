@@ -83,25 +83,18 @@ public class FieldTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Field#equals(java.lang.Object)
 	 */
-	public void test_equalsLjava_lang_Object() {
+	public void test_equalsLjava_lang_Object() throws Exception {
 		// Test for method boolean
 		// java.lang.reflect.Field.equals(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
-		try {
-			f = x.getClass().getDeclaredField("shortField");
-		} catch (Exception e) {
-			fail("Exception during getType test : " + e.getMessage());
-		}
-		try {
-			assertTrue("Same Field returned false", f.equals(f));
-			assertTrue("Inherited Field returned false", f.equals(x.getClass()
-					.getDeclaredField("shortField")));
-			assertTrue("Identical Field from different class returned true", !f
-					.equals(A.class.getDeclaredField("shortField")));
-		} catch (Exception e) {
-			fail("Exception during getType test : " + e.getMessage());
-		}
+		f = x.getClass().getDeclaredField("shortField");
+
+                assertTrue("Same Field returned false", f.equals(f));
+                assertTrue("Inherited Field returned false", f.equals(x.getClass()
+                                .getDeclaredField("shortField")));
+                assertTrue("Identical Field from different class returned true", !f
+                                .equals(A.class.getDeclaredField("shortField")));
 	}
 
 	/**
@@ -463,96 +456,77 @@ public class FieldTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Field#getBoolean(java.lang.Object)
 	 */
-	public void test_getBooleanLjava_lang_Object() {
+	public void test_getBooleanLjava_lang_Object() throws Exception {
 		// Test for method boolean
 		// java.lang.reflect.Field.getBoolean(java.lang.Object)
 
 		TestField x = new TestField();
 		Field f = null;
 		boolean val = false;
-		try {
-			f = x.getClass().getDeclaredField("booleanField");
-			val = f.getBoolean(x);
+                f = x.getClass().getDeclaredField("booleanField");
+                val = f.getBoolean(x);
 
-		} catch (Exception e) {
-			fail("Exception during getBoolean test: " + e.toString());
-		}
-		assertTrue("Returned incorrect boolean field value", val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("doubleField");
-				f.getBoolean(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since doubleField is not a
-				// boolean type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getBoolean test: " + e.toString());
-		}
+                assertTrue("Returned incorrect boolean field value", val);
+
+                try {
+                        f = x.getClass().getDeclaredField("doubleField");
+                        f.getBoolean(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since doubleField is not a
+                        // boolean type
+                        return;
+                }
 		fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getByte(java.lang.Object)
 	 */
-	public void test_getByteLjava_lang_Object() {
+	public void test_getByteLjava_lang_Object() throws Exception {
 		// Test for method byte
 		// java.lang.reflect.Field.getByte(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		byte val = 0;
-		try {
-			f = x.getClass().getDeclaredField("byteField");
-			val = f.getByte(x);
-		} catch (Exception e) {
-			fail("Exception during getbyte test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect byte field value", val == Byte.MAX_VALUE);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getByte(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since byteField is not a
-				// boolean type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getbyte test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("byteField");
+                val = f.getByte(x);
+
+                assertTrue("Returned incorrect byte field value", val == Byte.MAX_VALUE);
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getByte(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since byteField is not a
+                        // boolean type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getChar(java.lang.Object)
 	 */
-	public void test_getCharLjava_lang_Object() {
+	public void test_getCharLjava_lang_Object() throws Exception {
 		// Test for method char
 		// java.lang.reflect.Field.getChar(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		char val = 0;
-		try {
-			f = x.getClass().getDeclaredField("charField");
-			val = f.getChar(x);
-		} catch (Exception e) {
-			fail("Exception during getCharacter test: " + e.toString());
-		}
-		assertEquals("Returned incorrect char field value", 'T', val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getChar(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since charField is not a
-				// boolean type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getchar test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("charField");
+                val = f.getChar(x);
+
+                assertEquals("Returned incorrect char field value", 'T', val);
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getChar(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since charField is not a
+                        // boolean type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
@@ -563,160 +537,130 @@ public class FieldTest extends junit.framework.TestCase {
 		// java.lang.reflect.Field.getDeclaringClass()
 		Field[] fields;
 
-		try {
-			fields = new TestField().getClass().getFields();
-			assertTrue("Returned incorrect declaring class", fields[0]
-					.getDeclaringClass().equals(new TestField().getClass()));
+                fields = new TestField().getClass().getFields();
+                assertTrue("Returned incorrect declaring class", fields[0]
+                                .getDeclaringClass().equals(new TestField().getClass()));
 
-			// Check the case where the field is inherited to be sure the parent
-			// is returned as the declarator
-			fields = new TestFieldSub1().getClass().getFields();
-			assertTrue("Returned incorrect declaring class", fields[0]
-					.getDeclaringClass().equals(new TestField().getClass()));
-		} catch (Exception e) {
-			fail("Exception : " + e.getMessage());
-		}
+                // Check the case where the field is inherited to be sure the parent
+                // is returned as the declarator
+                fields = new TestFieldSub1().getClass().getFields();
+                assertTrue("Returned incorrect declaring class", fields[0]
+                                .getDeclaringClass().equals(new TestField().getClass()));
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getDouble(java.lang.Object)
 	 */
-	public void test_getDoubleLjava_lang_Object() {
+	public void test_getDoubleLjava_lang_Object() throws Exception {
 		// Test for method double
 		// java.lang.reflect.Field.getDouble(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		double val = 0.0;
-		try {
-			f = x.getClass().getDeclaredField("doubleField");
-			val = f.getDouble(x);
-		} catch (Exception e) {
-			fail("Exception during getDouble test: " + e.toString());
-		}
-		assertTrue("Returned incorrect double field value",
+                f = x.getClass().getDeclaredField("doubleField");
+                val = f.getDouble(x);
+
+                assertTrue("Returned incorrect double field value",
 				val == Double.MAX_VALUE);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getDouble(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since doubleField is not a
-				// boolean type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getDouble test: " + e.toString());
-		}
-		fail("Accessed field of invalid type");
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getDouble(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since doubleField is not a
+                        // boolean type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getFloat(java.lang.Object)
 	 */
-	public void test_getFloatLjava_lang_Object() {
+	public void test_getFloatLjava_lang_Object() throws Exception {
 		// Test for method float
 		// java.lang.reflect.Field.getFloat(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		float val = 0;
-		try {
-			f = x.getClass().getDeclaredField("floatField");
-			val = f.getFloat(x);
-		} catch (Exception e) {
-			fail("Exception during getFloat test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect float field value",
+                f = x.getClass().getDeclaredField("floatField");
+                val = f.getFloat(x);
+
+                assertTrue("Returned incorrect float field value",
 				val == Float.MAX_VALUE);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getFloat(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since floatField is not a
-				// boolean type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getfloat test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getFloat(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since floatField is not a
+                        // boolean type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getInt(java.lang.Object)
 	 */
-	public void test_getIntLjava_lang_Object() {
+	public void test_getIntLjava_lang_Object() throws Exception {
 		// Test for method int java.lang.reflect.Field.getInt(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		int val = 0;
-		try {
-			f = x.getClass().getDeclaredField("intField");
-			val = f.getInt(x);
-		} catch (Exception e) {
-			fail("Exception during getInt test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect Int field value",
+                f = x.getClass().getDeclaredField("intField");
+                val = f.getInt(x);
+
+                assertTrue("Returned incorrect Int field value",
 				val == Integer.MAX_VALUE);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getInt(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since IntField is not a
-				// boolean type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getInt test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getInt(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since IntField is not a
+                        // boolean type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getLong(java.lang.Object)
 	 */
-	public void test_getLongLjava_lang_Object() {
+	public void test_getLongLjava_lang_Object() throws Exception {
 		// Test for method long
 		// java.lang.reflect.Field.getLong(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		long val = 0;
-		try {
-			f = x.getClass().getDeclaredField("longField");
-			val = f.getLong(x);
-		} catch (Exception e) {
-			fail("Exception during getLong test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect long field value", val == Long.MAX_VALUE);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getLong(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// long type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getlong test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("longField");
+                val = f.getLong(x);
+
+                assertTrue("Returned incorrect long field value", val == Long.MAX_VALUE);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getLong(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // long type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getModifiers()
 	 */
-	public void test_getModifiers() {
+	public void test_getModifiers() throws Exception {
 		// Test for method int java.lang.reflect.Field.getModifiers()
 		TestField x = new TestField();
 		Field f = null;
-		try {
-			f = x.getClass().getDeclaredField("prsttrvol");
-		} catch (Exception e) {
-			fail("Exception during getModifiers test: " + e.toString());
-		}
-		int mod = f.getModifiers();
+		f = x.getClass().getDeclaredField("prsttrvol");
+
+                int mod = f.getModifiers();
 		int mask = (Modifier.PROTECTED | Modifier.STATIC)
 				| (Modifier.TRANSIENT | Modifier.VOLATILE);
 		int nmask = (Modifier.PUBLIC | Modifier.NATIVE);
@@ -727,450 +671,387 @@ public class FieldTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Field#getName()
 	 */
-	public void test_getName() {
+	public void test_getName() throws Exception {
 		// Test for method java.lang.String java.lang.reflect.Field.getName()
 		TestField x = new TestField();
 		Field f = null;
-		try {
-			f = x.getClass().getDeclaredField("shortField");
-		} catch (Exception e) {
-			fail("Exception during getType test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect field name", 
+		f = x.getClass().getDeclaredField("shortField");
+
+                assertEquals("Returned incorrect field name", 
 				"shortField", f.getName());
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getShort(java.lang.Object)
 	 */
-	public void test_getShortLjava_lang_Object() {
+	public void test_getShortLjava_lang_Object() throws Exception {
 		// Test for method short
 		// java.lang.reflect.Field.getShort(java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		short val = 0;
-		;
-		try {
-			f = x.getClass().getDeclaredField("shortField");
-			val = f.getShort(x);
-		} catch (Exception e) {
-			fail("Exception during getShort test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect short field value",
+
+                f = x.getClass().getDeclaredField("shortField");
+                val = f.getShort(x);
+
+                assertTrue("Returned incorrect short field value",
 				val == Short.MAX_VALUE);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.getShort(x);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// short type
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during getshort test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.getShort(x);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // short type
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#getType()
 	 */
-	public void test_getType() {
+	public void test_getType() throws Exception {
 		// Test for method java.lang.Class java.lang.reflect.Field.getType()
 		TestField x = new TestField();
 		Field f = null;
-		try {
-			f = x.getClass().getDeclaredField("shortField");
-		} catch (Exception e) {
-			fail("Exception during getType test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect field type: " + f.getType().toString(),
+		f = x.getClass().getDeclaredField("shortField");
+
+                assertTrue("Returned incorrect field type: " + f.getType().toString(),
 				f.getType().equals(short.class));
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#set(java.lang.Object, java.lang.Object)
 	 */
-	public void test_setLjava_lang_ObjectLjava_lang_Object() {
+	public void test_setLjava_lang_ObjectLjava_lang_Object() throws Exception {
 		// Test for method void java.lang.reflect.Field.set(java.lang.Object,
 		// java.lang.Object)
 		TestField x = new TestField();
 		Field f = null;
 		double val = 0.0;
-		try {
-			f = x.getClass().getDeclaredField("doubleField");
-			f.set(x, new Double(1.0));
-			val = f.getDouble(x);
-		} catch (Exception e) {
-			fail("Exception during set test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect double field value", 1.0, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.set(x, new Double(1.0));
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// double type
-				return;
-			}
-			try {
-				f = x.getClass().getDeclaredField("doubleFField");
-				f.set(x, new Double(1.0));
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since doubleFField is
-				// declared as final
-				return;
-			}
-			// Test setting a static field;
-			f = x.getClass().getDeclaredField("doubleSField");
-			f.set(x, new Double(1.0));
-			val = f.getDouble(x);
-			assertEquals("Returned incorrect double field value", 1.0, val);
-		} catch (Exception e) {
-			fail("Exception during setDouble test: " + e.toString());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("doubleField");
+                f.set(x, new Double(1.0));
+                val = f.getDouble(x);
+
+                assertEquals("Returned incorrect double field value", 1.0, val);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.set(x, new Double(1.0));
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // double type
+                        return;
+                }
+                try {
+                        f = x.getClass().getDeclaredField("doubleFField");
+                        f.set(x, new Double(1.0));
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since doubleFField is
+                        // declared as final
+                        return;
+                }
+                // Test setting a static field;
+                f = x.getClass().getDeclaredField("doubleSField");
+                f.set(x, new Double(1.0));
+                val = f.getDouble(x);
+                assertEquals("Returned incorrect double field value", 1.0, val);
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setBoolean(java.lang.Object, boolean)
 	 */
-	public void test_setBooleanLjava_lang_ObjectZ() {
+	public void test_setBooleanLjava_lang_ObjectZ() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setBoolean(java.lang.Object, boolean)
 		TestField x = new TestField();
 		Field f = null;
 		boolean val = false;
-		try {
-			f = x.getClass().getDeclaredField("booleanField");
-			f.setBoolean(x, false);
-			val = f.getBoolean(x);
-		} catch (Exception e) {
-			fail("Exception during setboolean test: " + e.toString());
-		}
-		assertTrue("Returned incorrect float field value", !val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setBoolean(x, true);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// boolean type
-				return;
-			}
+                f = x.getClass().getDeclaredField("booleanField");
+                f.setBoolean(x, false);
+                val = f.getBoolean(x);
 
-			try {
-				f = x.getClass().getDeclaredField("booleanFField");
-				f.setBoolean(x, true);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since booleanField is
-				// declared as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setboolean test: " + e.toString());
-		}
-		fail("Accessed field of invalid type");
+                assertTrue("Returned incorrect float field value", !val);
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setBoolean(x, true);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // boolean type
+                        return;
+                }
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanFField");
+                        f.setBoolean(x, true);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since booleanField is
+                        // declared as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setByte(java.lang.Object, byte)
 	 */
-	public void test_setByteLjava_lang_ObjectB() {
+	public void test_setByteLjava_lang_ObjectB() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setByte(java.lang.Object, byte)
 		TestField x = new TestField();
 		Field f = null;
 		byte val = 0;
-		try {
-			f = x.getClass().getDeclaredField("byteField");
-			f.setByte(x, (byte) 1);
-			val = f.getByte(x);
-		} catch (Exception e) {
-			fail("Exception during setByte test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect float field value", 1, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setByte(x, (byte) 1);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// byte type
-				return;
-			}
+                f = x.getClass().getDeclaredField("byteField");
+                f.setByte(x, (byte) 1);
+                val = f.getByte(x);
 
-			try {
-				f = x.getClass().getDeclaredField("byteFField");
-				f.setByte(x, (byte) 1);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since byteFField is declared
-				// as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setByte test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                assertEquals("Returned incorrect float field value", 1, val);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setByte(x, (byte) 1);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // byte type
+                        return;
+                }
+
+                try {
+                        f = x.getClass().getDeclaredField("byteFField");
+                        f.setByte(x, (byte) 1);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since byteFField is declared
+                        // as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setChar(java.lang.Object, char)
 	 */
-	public void test_setCharLjava_lang_ObjectC() {
+	public void test_setCharLjava_lang_ObjectC() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setChar(java.lang.Object, char)
 		TestField x = new TestField();
 		Field f = null;
 		char val = 0;
-		try {
-			f = x.getClass().getDeclaredField("charField");
-			f.setChar(x, (char) 1);
-			val = f.getChar(x);
-		} catch (Exception e) {
-			fail("Exception during setChar test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect float field value", 1, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setChar(x, (char) 1);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// char type
-				return;
-			}
+                f = x.getClass().getDeclaredField("charField");
+                f.setChar(x, (char) 1);
+                val = f.getChar(x);
 
-			try {
-				f = x.getClass().getDeclaredField("charFField");
-				f.setChar(x, (char) 1);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since charFField is declared
-				// as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setChar test : " + e.getMessage());
-		}
+                assertEquals("Returned incorrect float field value", 1, val);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setChar(x, (char) 1);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // char type
+                        return;
+                }
+
+                try {
+                        f = x.getClass().getDeclaredField("charFField");
+                        f.setChar(x, (char) 1);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since charFField is declared
+                        // as final
+                        return;
+                }
+
 		fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setDouble(java.lang.Object, double)
 	 */
-	public void test_setDoubleLjava_lang_ObjectD() {
+	public void test_setDoubleLjava_lang_ObjectD() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setDouble(java.lang.Object, double)
 		TestField x = new TestField();
 		Field f = null;
 		double val = 0.0;
-		try {
-			f = x.getClass().getDeclaredField("doubleField");
-			f.setDouble(x, 1.0);
-			val = f.getDouble(x);
-		} catch (Exception e) {
-			fail("Exception during setDouble test: " + e.toString());
-		}
-		assertEquals("Returned incorrect double field value", 1.0, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setDouble(x, 1.0);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// double type
-				return;
-			}
+                f = x.getClass().getDeclaredField("doubleField");
+                f.setDouble(x, 1.0);
+                val = f.getDouble(x);
 
-			try {
-				f = x.getClass().getDeclaredField("doubleFField");
-				f.setDouble(x, 1.0);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since doubleFField is
-				// declared as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setDouble test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                assertEquals("Returned incorrect double field value", 1.0, val);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setDouble(x, 1.0);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // double type
+                        return;
+                }
+
+                try {
+                        f = x.getClass().getDeclaredField("doubleFField");
+                        f.setDouble(x, 1.0);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since doubleFField is
+                        // declared as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setFloat(java.lang.Object, float)
 	 */
-	public void test_setFloatLjava_lang_ObjectF() {
+	public void test_setFloatLjava_lang_ObjectF() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setFloat(java.lang.Object, float)
 		TestField x = new TestField();
 		Field f = null;
 		float val = 0.0F;
-		try {
-			f = x.getClass().getDeclaredField("floatField");
-			f.setFloat(x, (float) 1);
-			val = f.getFloat(x);
-		} catch (Exception e) {
-			fail("Exception during setFloat test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect float field value", 1.0, val, 0.0);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setFloat(x, (float) 1);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// float type
-				return;
-			}
-			try {
-				f = x.getClass().getDeclaredField("floatFField");
-				f.setFloat(x, (float) 1);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since floatFField is
-				// declared as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setFloat test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("floatField");
+                f.setFloat(x, (float) 1);
+                val = f.getFloat(x);
+
+                assertEquals("Returned incorrect float field value", 1.0, val, 0.0);
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setFloat(x, (float) 1);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // float type
+                        return;
+                }
+                try {
+                        f = x.getClass().getDeclaredField("floatFField");
+                        f.setFloat(x, (float) 1);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since floatFField is
+                        // declared as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setInt(java.lang.Object, int)
 	 */
-	public void test_setIntLjava_lang_ObjectI() {
+	public void test_setIntLjava_lang_ObjectI() throws Exception {
 		// Test for method void java.lang.reflect.Field.setInt(java.lang.Object,
 		// int)
 		TestField x = new TestField();
 		Field f = null;
 		int val = 0;
-		try {
-			f = x.getClass().getDeclaredField("intField");
-			f.setInt(x, (int) 1);
-			val = f.getInt(x);
-		} catch (Exception e) {
-			fail("Exception during setInteger test: " + e.toString());
-		}
-		assertEquals("Returned incorrect int field value", 1, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setInt(x, (int) 1);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// int type
-				return;
-			}
-			try {
-				f = x.getClass().getDeclaredField("intFField");
-				f.setInt(x, (int) 1);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since intFField is declared
-				// as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setInteger test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("intField");
+                f.setInt(x, (int) 1);
+                val = f.getInt(x);
+
+                assertEquals("Returned incorrect int field value", 1, val);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setInt(x, (int) 1);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // int type
+                        return;
+                }
+                try {
+                        f = x.getClass().getDeclaredField("intFField");
+                        f.setInt(x, (int) 1);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since intFField is declared
+                        // as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setLong(java.lang.Object, long)
 	 */
-	public void test_setLongLjava_lang_ObjectJ() {
+	public void test_setLongLjava_lang_ObjectJ() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setLong(java.lang.Object, long)
 		TestField x = new TestField();
 		Field f = null;
 		long val = 0L;
-		try {
-			f = x.getClass().getDeclaredField("longField");
-			f.setLong(x, (long) 1);
-			val = f.getLong(x);
-		} catch (Exception e) {
-			fail("Exception during setLong test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect long field value", 1, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setLong(x, (long) 1);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// long type
-				return;
-			}
-			try {
-				f = x.getClass().getDeclaredField("longFField");
-				f.setLong(x, (long) 1);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since longFField is declared
-				// as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setLong test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("longField");
+                f.setLong(x, (long) 1);
+                val = f.getLong(x);
+
+                assertEquals("Returned incorrect long field value", 1, val);
+
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setLong(x, (long) 1);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // long type
+                        return;
+                }
+                try {
+                        f = x.getClass().getDeclaredField("longFField");
+                        f.setLong(x, (long) 1);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since longFField is declared
+                        // as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#setShort(java.lang.Object, short)
 	 */
-	public void test_setShortLjava_lang_ObjectS() {
+	public void test_setShortLjava_lang_ObjectS() throws Exception {
 		// Test for method void
 		// java.lang.reflect.Field.setShort(java.lang.Object, short)
 		TestField x = new TestField();
 		Field f = null;
 		short val = 0;
-		try {
-			f = x.getClass().getDeclaredField("shortField");
-			f.setShort(x, (short) 1);
-			val = f.getShort(x);
-		} catch (Exception e) {
-			fail("Exception during setShort test : " + e.getMessage());
-		}
-		assertEquals("Returned incorrect short field value", 1, val);
-		try {
-			try {
-				f = x.getClass().getDeclaredField("booleanField");
-				f.setShort(x, (short) 1);
-			} catch (IllegalArgumentException ex) {
-				// Good, Exception should be thrown since booleanField is not a
-				// short type
-				return;
-			}
-			try {
-				f = x.getClass().getDeclaredField("shortFField");
-				f.setShort(x, (short) 1);
-			} catch (IllegalAccessException ex) {
-				// Good, Exception should be thrown since shortFField is
-				// declared as final
-				return;
-			}
-		} catch (Exception e) {
-			fail("Exception during setShort test : " + e.getMessage());
-		}
-		fail("Accessed field of invalid type");
+                f = x.getClass().getDeclaredField("shortField");
+                f.setShort(x, (short) 1);
+                val = f.getShort(x);
+
+                assertEquals("Returned incorrect short field value", 1, val);
+                try {
+                        f = x.getClass().getDeclaredField("booleanField");
+                        f.setShort(x, (short) 1);
+                } catch (IllegalArgumentException ex) {
+                        // Good, Exception should be thrown since booleanField is not a
+                        // short type
+                        return;
+                }
+                try {
+                        f = x.getClass().getDeclaredField("shortFField");
+                        f.setShort(x, (short) 1);
+                } catch (IllegalAccessException ex) {
+                        // Good, Exception should be thrown since shortFField is
+                        // declared as final
+                        return;
+                }
+
+                fail("Accessed field of invalid type");
 	}
 
 	/**
 	 * @tests java.lang.reflect.Field#toString()
 	 */
-	public void test_toString() {
+	public void test_toString() throws Exception {
 		// Test for method java.lang.String java.lang.reflect.Field.toString()
 		Field f = null;
 
-		try {
-			f = TestField.class.getDeclaredField("x");
-		} catch (Exception e) {
-			fail("Exception getting field : " + e.getMessage());
-		}
-		assertEquals("Field returned incorrect string",
+		f = TestField.class.getDeclaredField("x");
+
+                assertEquals("Field returned incorrect string",
 				"private static final int tests.api.java.lang.reflect.FieldTest$TestField.x",
 						f.toString());
 	}

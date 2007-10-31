@@ -38,67 +38,35 @@ public class BorderLayoutRTest extends TestCase {
     }
     
     public final void testGetLayoutAlignmentX1() {
-        try {
-            layout.getLayoutAlignmentX(null);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentX(null);
     }
     
     public final void testGetLayoutAlignmentX2() {        
-        try {
-            layout.getLayoutAlignmentX(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentX(emptyContainer);
     }
     
     public final void testGetLayoutAlignmentY1() {
-        try {
-            layout.getLayoutAlignmentY(null);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentY(null);
     }
     
     public final void testGetLayoutAlignmentY2() {        
-        try {
-            layout.getLayoutAlignmentY(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.getLayoutAlignmentY(emptyContainer);
     }
     
     public final void testInvalidateLayout1() {
-        try {
-            layout.invalidateLayout(null);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.invalidateLayout(null);
     }
     
     public final void testInvalidateLayout2() {        
-        try {
-            layout.invalidateLayout(emptyContainer);
-        } catch (Throwable t) {
-            fail();
-        }        
+        layout.invalidateLayout(emptyContainer);
     }
     
     public final void testMaximumLayoutSize1() {
-        try {
-            assertEquals(maxSize, layout.maximumLayoutSize(null));
-        } catch (Throwable t) {
-            fail();
-        }        
+        assertEquals(maxSize, layout.maximumLayoutSize(null));
     }
     
     public final void testMaximumLayoutSize2() {        
-        try {
-            assertEquals(maxSize, layout.maximumLayoutSize(emptyContainer));
-        } catch (Throwable t) {
-            fail();
-        }        
+        assertEquals(maxSize, layout.maximumLayoutSize(emptyContainer));
     }
 
 

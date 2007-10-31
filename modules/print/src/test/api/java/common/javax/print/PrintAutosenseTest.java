@@ -29,11 +29,11 @@ import javax.print.attribute.standard.MediaSizeName;
 import junit.framework.TestCase;
 
 public class PrintAutosenseTest extends TestCase {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new PrintAutosenseTest().testPrintAutosense();
     }
 
-    public void testPrintAutosense() {
+    public void testPrintAutosense() throws Exception {
         System.out.println("======== START PrintAutosenseTest ========");
 
         PrintService[] services;
@@ -43,28 +43,23 @@ public class PrintAutosenseTest extends TestCase {
 
         daset.add(MediaSizeName.ISO_A4);
 
-        try {
-            DocFlavor df = DocFlavor.INPUT_STREAM.AUTOSENSE;
-            InputStream fis = this.getClass().getResourceAsStream(
-                    "/Resources/hello_ps.ps");
-            services = PrintServiceLookup.lookupPrintServices(df, null);
-            TestUtil.checkServices(services);
+        DocFlavor df = DocFlavor.INPUT_STREAM.AUTOSENSE;
+        InputStream fis = this.getClass().getResourceAsStream(
+                "/Resources/hello_ps.ps");
+        services = PrintServiceLookup.lookupPrintServices(df, null);
+        TestUtil.checkServices(services);
 
-            for (int j = 0; j < services.length; j++) {
-                PrintService printer = services[j];
-                if (printer.toString().indexOf("print-to-file") >= 0) {
-                    doc = new SimpleDoc(fis, df, null);
+        for (int j = 0; j < services.length; j++) {
+            PrintService printer = services[j];
+            if (printer.toString().indexOf("print-to-file") >= 0) {
+                doc = new SimpleDoc(fis, df, null);
 
-                    pj = printer.createPrintJob();
-                    pj.print(doc, null);
-                    System.out.println(fis.toString() + " printed on "
-                            + printer.getName());
-                    break;
-                }
+                pj = printer.createPrintJob();
+                pj.print(doc, null);
+                System.out.println(fis.toString() + " printed on "
+                        + printer.getName());
+                break;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
         }
 
         System.out.println("====== END PrintAutosenseTest ========");

@@ -41,18 +41,15 @@ public class PhantomReferenceTest extends junit.framework.TestCase {
 	 * @tests java.lang.ref.PhantomReference#PhantomReference(java.lang.Object,
 	 *        java.lang.ref.ReferenceQueue)
 	 */
-	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() {
+	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() throws Exception {
 		ReferenceQueue rq = new ReferenceQueue();
 		bool = new Boolean(true);
-		try {
-			PhantomReference pr = new PhantomReference(bool, rq);
-			// Allow the finalizer to run to potentially enqueue
-			Thread.sleep(1000);
-			assertTrue("Initialization failed.", !pr.isEnqueued());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		// need a reference to bool so the jit does not optimize it away
+                PhantomReference pr = new PhantomReference(bool, rq);
+                // Allow the finalizer to run to potentially enqueue
+                Thread.sleep(1000);
+                assertTrue("Initialization failed.", !pr.isEnqueued());
+
+                // need a reference to bool so the jit does not optimize it away
 		assertTrue("should always pass", bool.booleanValue());
 
 		boolean exception = false;

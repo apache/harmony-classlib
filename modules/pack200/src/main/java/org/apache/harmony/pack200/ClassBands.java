@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
@@ -233,7 +234,7 @@ public class ClassBands extends BandSet {
                 if ((flag & (1 << 16)) != 0)
                     methodAttrCount++;
             }
-        }        
+        }
         int[] methodAttrCounts = decodeBandInt("method_attr_count", in, Codec.UNSIGNED5, methodAttrCount);
         int[][] methodAttrIndexes = decodeBandInt("method_attr_indexes", in, Codec.UNSIGNED5, methodAttrCounts);
         int callCount = 0;
@@ -424,7 +425,7 @@ public class ClassBands extends BandSet {
                 sourceFileIndex++;
             }
             if(enclosingMethodLayout.matches(flag)) {
-                // TODO
+               // TODO
             }
             if(signatureLayout.matches(flag)) {
 //              TODO
@@ -510,7 +511,6 @@ public class ClassBands extends BandSet {
             if ((flag & (1 << 16)) != 0)
                 codeAttrCount++;
         }
-        System.out.println("codeAttrCount = " + codeAttrCount);
         int[] codeAttrCounts = decodeBandInt("code_attr_count", in, Codec.UNSIGNED5, codeAttrCount);
         int[][] codeAttrIndexes = decodeBandInt("code_attr_indexes", in, Codec.UNSIGNED5, codeAttrCounts);
         int callCount = 0;
@@ -521,11 +521,9 @@ public class ClassBands extends BandSet {
                 callCount += layout.numBackwardsCallables();
             }
         }
-        System.out.println("callCount = " + callCount);
         int[] codeAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5, callCount);
        
         int lineNumberTableCount = SegmentUtils.countMatches(codeFlags, attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_LINE_NUMBER_TABLE, AttributeLayout.CONTEXT_CODE));
-        System.out.println("lineNumberTables = " + lineNumberTableCount);
         int[] lineNumberTableN = decodeBandInt("code_LineNumberTable_N", in, Codec.UNSIGNED5, lineNumberTableCount);
         int[][] lineNumberTableBciP = decodeBandInt("code_LineNumberTable_bci_P", in, Codec.BCI5, lineNumberTableN);
         int[][] lineNumberTableLine = decodeBandInt("code_LineNumberTable_line", in, Codec.UNSIGNED5, lineNumberTableN);
@@ -533,7 +531,6 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < types.length; i++) {
             String type = types[i];
             int lengthNBand = SegmentUtils.countMatches(codeFlags, attrMap.getAttributeLayout(type, AttributeLayout.CONTEXT_CODE));
-            System.out.println(type + " count = " + lengthNBand);
             
             int[] nBand = decodeBandInt("code_" + type + "_N", in, Codec.UNSIGNED5, lengthNBand);
             int[][] bciP = decodeBandInt("code_" + type + "_bci_P", in, Codec.BCI5, nBand);

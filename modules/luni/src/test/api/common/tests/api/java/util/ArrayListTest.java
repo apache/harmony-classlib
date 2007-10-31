@@ -288,20 +288,16 @@ public class ArrayListTest extends junit.framework.TestCase {
 		}
 		al.add(i, testObject);
 		int location = al.indexOf(testObject);
-		try {
-			al.ensureCapacity(capacity);
-			assertTrue("EnsureCapacity moved objects around in array1.",
-					location == al.indexOf(testObject));
-			al.remove(0);
-			al.ensureCapacity(capacity);
-			assertTrue("EnsureCapacity moved objects around in array2.",
-					--location == al.indexOf(testObject));
-			al.ensureCapacity(capacity + 2);
-			assertTrue("EnsureCapacity did not change location.",
-					location == al.indexOf(testObject));
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                al.ensureCapacity(capacity);
+                assertTrue("EnsureCapacity moved objects around in array1.",
+                                location == al.indexOf(testObject));
+                al.remove(0);
+                al.ensureCapacity(capacity);
+                assertTrue("EnsureCapacity moved objects around in array2.",
+                                --location == al.indexOf(testObject));
+                al.ensureCapacity(capacity + 2);
+                assertTrue("EnsureCapacity did not change location.",
+                                location == al.indexOf(testObject));
 	}
 
 	/**

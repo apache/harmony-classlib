@@ -43,4 +43,3 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSResourcesMoni
     }    
     return FALSE;	
 }
-  

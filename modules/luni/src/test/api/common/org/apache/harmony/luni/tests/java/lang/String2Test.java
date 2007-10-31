@@ -106,11 +106,7 @@ public class String2Test extends junit.framework.TestCase {
     public void test_Constructor$BIILjava_lang_String() throws Exception {
         // Test for method java.lang.String(byte [], int, int, java.lang.String)
         String s = null;
-        try {
-            s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 5, "8859_1");
-        } catch (Exception e) {
-            fail("Threw exception : " + e.getMessage());
-        }
+        s = new String(new byte[] { 65, 66, 67, 68, 69 }, 0, 5, "8859_1");
         assertTrue("Incorrect string returned: " + s, s.equals("ABCDE"));
         // Regression for HARMONY-1111
         assertNotNull(new String(new byte[] { (byte) 0xC0 }, 0, 1, "UTF-8"));
@@ -119,14 +115,10 @@ public class String2Test extends junit.framework.TestCase {
     /**
      * @tests java.lang.String#String(byte[], java.lang.String)
      */
-    public void test_Constructor$BLjava_lang_String() {
+    public void test_Constructor$BLjava_lang_String() throws Exception {
         // Test for method java.lang.String(byte [], java.lang.String)
         String s = null;
-        try {
-            s = new String(new byte[] { 65, 66, 67, 68, 69 }, "8859_1");
-        } catch (Exception e) {
-            fail("Threw exception : " + e.getMessage());
-        }
+        s = new String(new byte[] { 65, 66, 67, 68, 69 }, "8859_1");
         assertTrue("Incorrect string returned: " + s, s.equals("ABCDE"));
     }
 

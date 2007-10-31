@@ -150,14 +150,10 @@ public class EnumSyntaxTest extends TestCase {
      * value toString() returns string contains this enumeration value.
      */
     public void testToString() {
-        try {
-            ees = new ExtendEnumSyntax(2);
-            assertEquals("2", ees.toString());
-            es = new enumSyntax(10);
-            assertEquals("10", es.toString());
-        } catch (Exception e) {
-            fail("toString() throws an exception");
-        }
+        ees = new ExtendEnumSyntax(2);
+        assertEquals("2", ees.toString());
+        es = new enumSyntax(10);
+        assertEquals("10", es.toString());
     }
 
     /*

@@ -72,12 +72,9 @@ public class JndiLoginModuleTest extends TestCase {
         Subject subject = new Subject();
         subject.setReadOnly();
         jlm.initialize(subject, null, null, options);
-        try {
-            assertFalse("Should return false if login failed or no login", jlm
-                    .abort());
-        } catch (Exception e) {
-            fail("Not any exception here");
-        }
+
+        assertFalse("Should return false if login failed or no login", jlm.abort());
+
         subject = new Subject();
         jlm.initialize(subject, new FaultCallbackHandler(), null, options);
         try {

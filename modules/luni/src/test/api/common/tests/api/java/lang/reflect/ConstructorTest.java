@@ -46,60 +46,51 @@ public class ConstructorTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Constructor#equals(java.lang.Object)
 	 */
-	public void test_equalsLjava_lang_Object() {
+	public void test_equalsLjava_lang_Object() throws Exception {
 		// Test for method boolean
 		// java.lang.reflect.Constructor.equals(java.lang.Object)
 		Class[] types = null;
 		Constructor ctor1 = null, ctor2 = null;
-		try {
-			ctor1 = new ConstructorTestHelper().getClass().getConstructor(
-					new Class[0]);
+		ctor1 = new ConstructorTestHelper().getClass().getConstructor(
+                                new Class[0]);
 
-			Class[] parms = null;
-			parms = new Class[1];
-			parms[0] = new Object().getClass();
-			ctor2 = new ConstructorTestHelper().getClass()
-					.getConstructor(parms);
-		} catch (Exception e) {
-			fail("Exception during equals test : " + e.getMessage());
-		}
-		assertTrue("Different Constructors returned equal", !ctor1.equals(ctor2));
+                Class[] parms = null;
+                parms = new Class[1];
+                parms[0] = new Object().getClass();
+                ctor2 = new ConstructorTestHelper().getClass()
+                                .getConstructor(parms);
+
+                assertTrue("Different Constructors returned equal", !ctor1.equals(ctor2));
 	}
 
 	/**
 	 * @tests java.lang.reflect.Constructor#getDeclaringClass()
 	 */
-	public void test_getDeclaringClass() {
+	public void test_getDeclaringClass() throws Exception {
 		// Test for method java.lang.Class
 		// java.lang.reflect.Constructor.getDeclaringClass()
 		boolean val = false;
-		try {
-			Class pclass = new ConstructorTestHelper().getClass();
-			Constructor ctor = pclass.getConstructor(new Class[0]);
-			val = ctor.getDeclaringClass().equals(pclass);
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		assertTrue("Returned incorrect declaring class", val);
+                Class pclass = new ConstructorTestHelper().getClass();
+                Constructor ctor = pclass.getConstructor(new Class[0]);
+                val = ctor.getDeclaringClass().equals(pclass);
+
+                assertTrue("Returned incorrect declaring class", val);
 	}
 
 	/**
 	 * @tests java.lang.reflect.Constructor#getExceptionTypes()
 	 */
-	public void test_getExceptionTypes() {
+	public void test_getExceptionTypes() throws Exception {
 		// Test for method java.lang.Class []
 		// java.lang.reflect.Constructor.getExceptionTypes()
 		Class[] exceptions = null;
 		Class ex = null;
-		try {
-			Constructor ctor = new ConstructorTestHelper().getClass()
-					.getConstructor(new Class[0]);
-			exceptions = ctor.getExceptionTypes();
-			ex = new IndexOutOfBoundsException().getClass();
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		assertEquals("Returned exception list of incorrect length",
+                Constructor ctor = new ConstructorTestHelper().getClass()
+                                .getConstructor(new Class[0]);
+                exceptions = ctor.getExceptionTypes();
+                ex = new IndexOutOfBoundsException().getClass();
+
+                assertEquals("Returned exception list of incorrect length",
 				1, exceptions.length);
 		assertTrue("Returned incorrect exception", exceptions[0].equals(ex));
 	}
@@ -147,89 +138,69 @@ public class ConstructorTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.reflect.Constructor#getName()
 	 */
-	public void test_getName() {
+	public void test_getName() throws Exception {
 		// Test for method java.lang.String
 		// java.lang.reflect.Constructor.getName()
-		try {
-			Constructor ctor = new ConstructorTestHelper().getClass()
-					.getConstructor(new Class[0]);
-			assertTrue(
-					"Returned incorrect name: " + ctor.getName(),
-					ctor
-							.getName()
-							.equals(
-									"tests.api.java.lang.reflect.ConstructorTest$ConstructorTestHelper"));
-		} catch (Exception e) {
-			fail("Exception obtaining constructor : " + e.getMessage());
-		}
+                Constructor ctor = new ConstructorTestHelper().getClass()
+                                .getConstructor(new Class[0]);
+                assertTrue(
+                                "Returned incorrect name: " + ctor.getName(),
+                                ctor
+                                                .getName()
+                                                .equals(
+                                                                "tests.api.java.lang.reflect.ConstructorTest$ConstructorTestHelper"));
 	}
 
 	/**
 	 * @tests java.lang.reflect.Constructor#getParameterTypes()
 	 */
-	public void test_getParameterTypes() {
+	public void test_getParameterTypes() throws Exception {
 		// Test for method java.lang.Class []
 		// java.lang.reflect.Constructor.getParameterTypes()
 		Class[] types = null;
-		try {
-			Constructor ctor = new ConstructorTestHelper().getClass()
-					.getConstructor(new Class[0]);
-			types = ctor.getParameterTypes();
-		} catch (Exception e) {
-			fail("Exception during getParameterTypes test:"
-					+ e.toString());
-		}
-		assertEquals("Incorrect parameter returned", 0, types.length);
+                Constructor ctor = new ConstructorTestHelper().getClass()
+                                .getConstructor(new Class[0]);
+                types = ctor.getParameterTypes();
+
+                assertEquals("Incorrect parameter returned", 0, types.length);
 
 		Class[] parms = null;
-		try {
-			parms = new Class[1];
-			parms[0] = new Object().getClass();
-			Constructor ctor = new ConstructorTestHelper().getClass()
-					.getConstructor(parms);
-			types = ctor.getParameterTypes();
-		} catch (Exception e) {
-			fail("Exception during getParameterTypes test:"
-					+ e.toString());
-		}
-		assertTrue("Incorrect parameter returned", types[0].equals(parms[0]));
+                parms = new Class[1];
+                parms[0] = new Object().getClass();
+                ctor = new ConstructorTestHelper().getClass().getConstructor(parms);
+                types = ctor.getParameterTypes();
+
+                assertTrue("Incorrect parameter returned", types[0].equals(parms[0]));
 	}
 
 	/**
 	 * @tests java.lang.reflect.Constructor#newInstance(java.lang.Object[])
 	 */
-	public void test_newInstance$Ljava_lang_Object() {
+	public void test_newInstance$Ljava_lang_Object() throws Exception {
 		// Test for method java.lang.Object
 		// java.lang.reflect.Constructor.newInstance(java.lang.Object [])
 
 		ConstructorTestHelper test = null;
-		try {
-			Constructor ctor = new ConstructorTestHelper().getClass()
-					.getConstructor(new Class[0]);
-			test = (ConstructorTestHelper) ctor.newInstance((Object[])null);
-		} catch (Exception e) {
-			fail("Failed to create instance : " + e.getMessage());
-		}
-		assertEquals("improper instance created", 99, test.check());
+                Constructor ctor = new ConstructorTestHelper().getClass()
+                                .getConstructor(new Class[0]);
+                test = (ConstructorTestHelper) ctor.newInstance((Object[])null);
+
+                assertEquals("improper instance created", 99, test.check());
 	}
 
 	/**
 	 * @tests java.lang.reflect.Constructor#toString()
 	 */
-	public void test_toString() {
+	public void test_toString() throws Exception {
 		// Test for method java.lang.String
 		// java.lang.reflect.Constructor.toString()
 		Class[] parms = null;
 		Constructor ctor = null;
-		try {
-			parms = new Class[1];
-			parms[0] = new Object().getClass();
-			ctor = new ConstructorTestHelper().getClass().getConstructor(parms);
-		} catch (Exception e) {
-			fail("Exception during getParameterTypes test:"
-					+ e.toString());
-		}
-		assertTrue(
+                parms = new Class[1];
+                parms[0] = new Object().getClass();
+                ctor = new ConstructorTestHelper().getClass().getConstructor(parms);
+
+                assertTrue(
 				"Returned incorrect string representation: " + ctor.toString(),
 				ctor
 						.toString()

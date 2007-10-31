@@ -34,7 +34,7 @@ import javax.print.attribute.standard.Sides;
 import junit.framework.TestCase;
 
 public class LookupMultiDocPrintServicesTest extends TestCase {
-    public void testLookupMultiDocPrintServices() {
+    public void testLookupMultiDocPrintServices() throws Exception {
         System.out
                 .println("============= START LookupMultiDocPrintServicesTest ================");
 
@@ -51,27 +51,21 @@ public class LookupMultiDocPrintServicesTest extends TestCase {
         daset.add(MediaName.ISO_A4_WHITE);
         daset.add(Sides.TWO_SIDED_LONG_EDGE);
 
-        try {
-            services = PrintServiceLookup.lookupMultiDocPrintServices(
-                    new DocFlavor[] { psFlavor }, aset);
-            if (services != null && services.length > 0) {
-                fis = new FileInputStream("/Resources/1M.GIF");
-                doc = new SimpleDoc(fis, psFlavor, daset);
+        services = PrintServiceLookup.lookupMultiDocPrintServices(
+                new DocFlavor[] { psFlavor }, aset);
+        if (services != null && services.length > 0) {
+            fis = new FileInputStream("/Resources/1M.GIF");
+            doc = new SimpleDoc(fis, psFlavor, daset);
 
-                pj = services[0].createPrintJob();
-                pj.print(doc, aset);
-                System.out.println(fis.toString() + " printed on "
-                        + services[0].getName());
-            } else {
-                System.out.println("services not found");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
+            pj = services[0].createPrintJob();
+            pj.print(doc, aset);
+            System.out.println(fis.toString() + " printed on "
+                    + services[0].getName());
+        } else {
+            System.out.println("services not found");
         }
 
-        System.out
-                .println("============= END LookupMultiDocPrintServicesTest ================");
+        System.out.println("============= END LookupMultiDocPrintServicesTest ================");
     }
 
 }

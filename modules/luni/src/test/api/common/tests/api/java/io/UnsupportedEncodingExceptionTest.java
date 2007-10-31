@@ -32,10 +32,8 @@ public class UnsupportedEncodingExceptionTest extends junit.framework.TestCase {
 			new OutputStreamWriter(new ByteArrayOutputStream(), "BogusEncoding");
 		} catch (UnsupportedEncodingException e) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during UnsupportedEncodingException test"
-					+ e.toString());
 		}
+
 		fail("Failed to generate expected exception");
 	}
 
@@ -49,10 +47,8 @@ public class UnsupportedEncodingExceptionTest extends junit.framework.TestCase {
 			new OutputStreamWriter(new ByteArrayOutputStream(), "BogusEncoding");
 		} catch (UnsupportedEncodingException e) {
 			return;
-		} catch (Exception e) {
-			fail("Exception during UnsupportedEncodingException test"
-					+ e.toString());
 		}
+
 		fail("Failed to generate expected exception");
 	}
 

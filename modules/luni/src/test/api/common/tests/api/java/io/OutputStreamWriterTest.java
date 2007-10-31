@@ -625,20 +625,16 @@ public class OutputStreamWriterTest extends TestCase {
 	/**
 	 * @tests java.io.OutputStreamWriter#flush()
 	 */
-	public void test_flush() {
+	public void test_flush() throws Exception {
 		// Test for method void java.io.OutputStreamWriter.flush()
-		try {
-			char[] buf = new char[testString.length()];
-			osw.write(testString, 0, testString.length());
-			osw.flush();
-			openInputStream();
-			isr.read(buf, 0, buf.length);
-			assertTrue("Chars not flushed", new String(buf, 0, buf.length)
-					.equals(testString));
-		} catch (Exception e) {
-			fail("Exception during write test : " + e.getMessage());
-		}
-	}
+                char[] buf = new char[testString.length()];
+                osw.write(testString, 0, testString.length());
+                osw.flush();
+                openInputStream();
+                isr.read(buf, 0, buf.length);
+                assertTrue("Chars not flushed", new String(buf, 0, buf.length)
+                                .equals(testString));
+        }
 
 	/**
 	 * @tests java.io.OutputStreamWriter#getEncoding()
@@ -657,56 +653,44 @@ public class OutputStreamWriterTest extends TestCase {
 	/**
 	 * @tests java.io.OutputStreamWriter#write(char[], int, int)
 	 */
-	public void test_write$CII() {
+	public void test_write$CII() throws Exception {
 		// Test for method void java.io.OutputStreamWriter.write(char [], int,
 		// int)
-		try {
-			char[] buf = new char[testString.length()];
-			osw.write(testString, 0, testString.length());
-			osw.close();
-			openInputStream();
-			isr.read(buf, 0, buf.length);
-			assertTrue("Incorrect chars returned", new String(buf, 0,
-					buf.length).equals(testString));
-		} catch (Exception e) {
-			fail("Exception during write test : " + e.getMessage());
-		}
+                char[] buf = new char[testString.length()];
+                osw.write(testString, 0, testString.length());
+                osw.close();
+                openInputStream();
+                isr.read(buf, 0, buf.length);
+                assertTrue("Incorrect chars returned", new String(buf, 0,
+                                buf.length).equals(testString));
 	}
 
 	/**
 	 * @tests java.io.OutputStreamWriter#write(int)
 	 */
-	public void test_writeI() {
+	public void test_writeI() throws Exception {
 		// Test for method void java.io.OutputStreamWriter.write(int)
-		try {
-			osw.write('T');
-			osw.close();
-			openInputStream();
-			int c = isr.read();
-			assertEquals("Incorrect char returned", 'T', (char) c);
-		} catch (Exception e) {
-			fail("Exception during write test : " + e.getMessage());
-		}
+                osw.write('T');
+                osw.close();
+                openInputStream();
+                int c = isr.read();
+                assertEquals("Incorrect char returned", 'T', (char) c);
 	}
 
 	/**
 	 * @tests java.io.OutputStreamWriter#write(java.lang.String, int, int)
 	 */
-	public void test_writeLjava_lang_StringII() {
+	public void test_writeLjava_lang_StringII() throws Exception {
 		// Test for method void
 		// java.io.OutputStreamWriter.write(java.lang.String, int, int)
 
-		try {
-			char[] buf = new char[testString.length()];
-			osw.write(testString, 0, testString.length());
-			osw.close();
-			openInputStream();
-			isr.read(buf);
-			assertTrue("Incorrect chars returned", new String(buf, 0,
-					buf.length).equals(testString));
-		} catch (Exception e) {
-			fail("Exception during write test : " + e.getMessage());
-		}
+                char[] buf = new char[testString.length()];
+                osw.write(testString, 0, testString.length());
+                osw.close();
+                openInputStream();
+                isr.read(buf);
+                assertTrue("Incorrect chars returned", new String(buf, 0,
+                                buf.length).equals(testString));
 	}
 
 	private void openInputStream() {

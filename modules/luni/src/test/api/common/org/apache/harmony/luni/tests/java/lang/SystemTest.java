@@ -101,18 +101,14 @@ public class SystemTest extends junit.framework.TestCase {
 	 */
 	public void test_currentTimeMillis() {
 		// Test for method long java.lang.System.currentTimeMillis()
-		try {
-			long firstRead = System.currentTimeMillis();
-			try {
-				Thread.sleep(150);
-			} catch (InterruptedException e) {
-			}
-			long secondRead = System.currentTimeMillis();
-			assertTrue("Incorrect times returned: " + firstRead + ", "
-					+ secondRead, firstRead < secondRead);
-		} catch (Exception e) {
-			System.out.println("Exception during test: " + e.toString());
-		}
+                long firstRead = System.currentTimeMillis();
+                try {
+                        Thread.sleep(150);
+                } catch (InterruptedException e) {
+                }
+                long secondRead = System.currentTimeMillis();
+                assertTrue("Incorrect times returned: " + firstRead + ", "
+                                + secondRead, firstRead < secondRead);
 	}
 
 	/**
@@ -292,11 +288,7 @@ public class SystemTest extends junit.framework.TestCase {
 	@SuppressWarnings("deprecation")
     public void test_runFinalizersOnExitZ() {
 		// Can we call the method at least?
-		try {
-			System.runFinalizersOnExit(false);
-		} catch (Throwable t) {
-			fail("Failed to set runFinalizersOnExit");
-		}
+		System.runFinalizersOnExit(false);
 	}
 
 	/**

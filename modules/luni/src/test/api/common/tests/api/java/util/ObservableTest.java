@@ -77,13 +77,9 @@ public class ObservableTest extends junit.framework.TestCase {
 	 */
 	public void test_Constructor() {
 		// Test for method java.util.Observable()
-		try {
-			Observable ov = new Observable();
-			assertTrue("Wrong initial values.", !ov.hasChanged());
-			assertEquals("Wrong initial values.", 0, ov.countObservers());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                Observable ov = new Observable();
+                assertTrue("Wrong initial values.", !ov.hasChanged());
+                assertEquals("Wrong initial values.", 0, ov.countObservers());
 	}
 
 	/**
@@ -104,9 +100,6 @@ public class ObservableTest extends junit.framework.TestCase {
 			fail("Expected adding a null observer to throw a NPE.");
 		} catch (NullPointerException ex) {
 			// expected;
-		} catch (Throwable ex) {
-			fail("Did not expect adding a new observer to throw a "
-					+ ex.getClass().getName());
 		}
 	}
 

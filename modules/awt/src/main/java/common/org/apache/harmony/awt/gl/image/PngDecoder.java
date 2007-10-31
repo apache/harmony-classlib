@@ -57,8 +57,10 @@ public class PngDecoder extends ImageDecoder {
     // Each pixel is an R,G,B triple, followed by an alpha sample.
     private static final int PNG_COLOR_TYPE_RGBA = 6;
 
-    private static final int INPUT_BUFFER_SIZE = 4096;
-    private byte buffer[] = new byte[INPUT_BUFFER_SIZE];
+    private static final int MIN_BUFFER_SIZE = 4096;
+    private static final int MAX_BUFFER_SIZE = 2097152;
+    private int buffer_size;
+    private byte buffer[];
 
     // Buffers for decoded image data
     byte byteOut[];
@@ -86,6 +88,19 @@ public class PngDecoder extends ImageDecoder {
 
     public PngDecoder(DecodingImageSource src, InputStream is) {
         super(src, is);
+        try {
+            int available_bytes = is.available();
+            if (available_bytes < MIN_BUFFER_SIZE) {
+                buffer_size = MIN_BUFFER_SIZE;
+            } else if (available_bytes > MAX_BUFFER_SIZE) {
+                buffer_size = MAX_BUFFER_SIZE;
+            } else {
+                buffer_size = available_bytes;
+            }
+        } catch (IOException e) {
+            buffer_size = MIN_BUFFER_SIZE;
+        }
+        buffer = new byte[buffer_size];
     }
 
     @Override
@@ -95,7 +110,7 @@ public class PngDecoder extends ImageDecoder {
             int needBytes, offset, bytesInBuffer = 0;
             // Read from the input stream
             for (;;) {
-                needBytes = INPUT_BUFFER_SIZE - bytesInBuffer;
+                needBytes = buffer_size - bytesInBuffer;
                 offset = bytesInBuffer;
 
                 bytesRead = inputStream.read(buffer, offset, needBytes);

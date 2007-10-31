@@ -37,17 +37,13 @@ public class StringTest extends TestCase {
         UNSAFE_CONSTRUCTOR = uc;
     }
 
-    private static String newString(int start, int len, char[] data) {
+    private static String newString(int start, int len, char[] data) throws Exception {
         if (UNSAFE_CONSTRUCTOR == null) {
             return new String(data, start, len);
         }
 
-        try {
-            return UNSAFE_CONSTRUCTOR.newInstance(Integer.valueOf(start), Integer.valueOf(len),
+        return UNSAFE_CONSTRUCTOR.newInstance(Integer.valueOf(start), Integer.valueOf(len),
                     data);
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
     }
     
     /**
@@ -231,7 +227,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.String#contentEquals(CharSequence)
      */
-    public void test_contentEqualsLjava_lang_CharSequence() {
+    public void test_contentEqualsLjava_lang_CharSequence() throws Exception {
         String s = "abc";
         assertTrue(s.contentEquals((CharSequence) new StringBuffer("abc")));
         assertFalse(s.contentEquals((CharSequence) new StringBuffer("def")));
@@ -253,7 +249,7 @@ public class StringTest extends TestCase {
      * @tests java.lang.String#contentEquals(StringBuffer)
      */
     @SuppressWarnings("nls")
-    public void test_boolean_contentEquals_StringBuffer() {
+    public void test_boolean_contentEquals_StringBuffer() throws Exception {
         String s = "abc";
         assertTrue(s.contentEquals(new StringBuffer("abc")));
         assertFalse(s.contentEquals(new StringBuffer("def")));
@@ -276,7 +272,7 @@ public class StringTest extends TestCase {
      * @tests java.lang.String#contains(CharSequence)
      */
     @SuppressWarnings("cast")
-    public void test_containsLjava_lang_CharSequence() {
+    public void test_containsLjava_lang_CharSequence() throws Exception {
         String s = "abcdefghijklmnopqrstuvwxyz";
         assertTrue(s.contains((CharSequence) new StringBuffer("abc")));
         assertTrue(s.contains((CharSequence) new StringBuffer("def")));
@@ -297,7 +293,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.String.offsetByCodePoints(int, int)'
      */
-    public void test_offsetByCodePointsII() {
+    public void test_offsetByCodePointsII() throws Exception {
         int result = new String("a\uD800\uDC00b").offsetByCodePoints(0, 2);
         assertEquals(3, result);
 
@@ -420,7 +416,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.StringBuilder.codePointAt(int)
      */
-    public void test_codePointAtI() {
+    public void test_codePointAtI() throws Exception {
         String s = "abc";
         assertEquals('a', s.codePointAt(0));
         assertEquals('b', s.codePointAt(1));
@@ -481,7 +477,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.StringBuilder.codePointBefore(int)
      */
-    public void test_codePointBeforeI() {
+    public void test_codePointBeforeI() throws Exception {
         String s = "abc";
         assertEquals('a', s.codePointBefore(1));
         assertEquals('b', s.codePointBefore(2));
@@ -542,7 +538,7 @@ public class StringTest extends TestCase {
     /**
      * @tests java.lang.StringBuilder.codePointCount(int, int)
      */
-    public void test_codePointCountII() {
+    public void test_codePointCountII() throws Exception {
         assertEquals(1, "\uD800\uDC00".codePointCount(0, 2));
         assertEquals(1, "\uD800\uDC01".codePointCount(0, 2));
         assertEquals(1, "\uD801\uDC01".codePointCount(0, 2));

@@ -29,18 +29,13 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.ByteArrayInputStream#ByteArrayInputStream(byte[])
 	 */
-	public void test_Constructor$B() {
+	public void test_Constructor$B() throws Exception {
 		// Test for method java.io.ByteArrayInputStream(byte [])
-
 		java.io.InputStream bis = new java.io.ByteArrayInputStream(fileString
 				.getBytes());
 
-		try {
-			assertTrue("Unable to create ByteArrayInputStream",
-					bis.available() == fileString.length());
-		} catch (Exception e) {
-			System.out.println("Exception during Constructor test");
-		}
+		assertTrue("Unable to create ByteArrayInputStream",
+				bis.available() == fileString.length());
 	}
 
 	/**
@@ -54,12 +49,8 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 		byte[] zz = fileString.getBytes();
 		java.io.InputStream bis = new java.io.ByteArrayInputStream(zz, 0, 100);
 
-		try {
-			assertEquals("Unable to create ByteArrayInputStream",
-					100, bis.available());
-		} catch (Exception e) {
-			fail("Exception during Constructor test");
-		}
+		assertEquals("Unable to create ByteArrayInputStream",
+				100, bis.available());
 		
 		// Regression test for Harmony-2405
 		new SubByteArrayInputStream(new byte[] { 1, 2 }, 444, 13);
@@ -86,14 +77,10 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.ByteArrayInputStream#available()
 	 */
-	public void test_available() {
+	public void test_available() throws Exception {
 		// Test for method int java.io.ByteArrayInputStream.available()
-		try {
-			assertTrue("Returned incorrect number of available bytes", is
-					.available() == fileString.length());
-		} catch (Exception e) {
-			fail("Exception during available test");
-		}
+                assertTrue("Returned incorrect number of available bytes", is
+                           .available() == fileString.length());
 	}
 
 	/**
@@ -121,24 +108,18 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.ByteArrayInputStream#mark(int)
 	 */
-	public void test_markI() {
+	public void test_markI() throws Exception {
 		// Test for method void java.io.ByteArrayInputStream.mark(int)
 		byte[] buf1 = new byte[100];
 		byte[] buf2 = new byte[100];
-		try {
-			is.skip(3000);
-			is.mark(1000);
-			is.read(buf1, 0, buf1.length);
-			is.reset();
-			is.read(buf2, 0, buf2.length);
-			is.reset();
-			assertTrue("Failed to mark correct position", new String(buf1, 0,
-					buf1.length).equals(new String(buf2, 0, buf2.length)));
-
-		} catch (Exception e) {
-			fail("Exception during mark test");
-		}
-
+                is.skip(3000);
+                is.mark(1000);
+                is.read(buf1, 0, buf1.length);
+                is.reset();
+                is.read(buf2, 0, buf2.length);
+                is.reset();
+                assertTrue("Failed to mark correct position", new String(buf1, 0,
+                                buf1.length).equals(new String(buf2, 0, buf2.length)));
 	}
 
 	/**
@@ -152,72 +133,54 @@ public class ByteArrayInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.ByteArrayInputStream#read()
 	 */
-	public void test_read() {
+	public void test_read() throws Exception {
 		// Test for method int java.io.ByteArrayInputStream.read()
-		try {
-
-			int c = is.read();
-			is.reset();
-			assertTrue("read returned incorrect char", c == fileString
-					.charAt(0));
-		} catch (Exception e) {
-			fail("Exception during read test");
-		}
+                int c = is.read();
+                is.reset();
+                assertTrue("read returned incorrect char", c == fileString
+                                .charAt(0));
 	}
 
 	/**
 	 * @tests java.io.ByteArrayInputStream#read(byte[], int, int)
 	 */
-	public void test_read$BII() {
+	public void test_read$BII() throws Exception {
 		// Test for method int java.io.ByteArrayInputStream.read(byte [], int,
 		// int)
 		byte[] buf1 = new byte[20];
-		try {
-			is.skip(50);
-			is.mark(100);
-			is.read(buf1, 0, buf1.length);
-			assertTrue("Failed to read correct data", new String(buf1, 0,
-					buf1.length).equals(fileString.substring(50, 70)));
-
-		} catch (Exception e) {
-			fail("Exception during read test: " + e);
-		}
+                is.skip(50);
+                is.mark(100);
+                is.read(buf1, 0, buf1.length);
+                assertTrue("Failed to read correct data", new String(buf1, 0,
+                                buf1.length).equals(fileString.substring(50, 70)));
 	}
 
 	/**
 	 * @tests java.io.ByteArrayInputStream#reset()
 	 */
-	public void test_reset() {
+	public void test_reset() throws Exception {
 		// Test for method void java.io.ByteArrayInputStream.reset()
 		byte[] buf1 = new byte[10];
 		byte[] buf2 = new byte[10];
-		try {
-			is.mark(200);
-			is.read(buf1, 0, 10);
-			is.reset();
-			is.read(buf2, 0, 10);
-			is.reset();
-			assertTrue("Reset failed", new String(buf1, 0, buf1.length)
-					.equals(new String(buf2, 0, buf2.length)));
-		} catch (Exception e) {
-			fail("Exception during reset test : " + e.getMessage());
-		}
+                is.mark(200);
+                is.read(buf1, 0, 10);
+                is.reset();
+                is.read(buf2, 0, 10);
+                is.reset();
+                assertTrue("Reset failed", new String(buf1, 0, buf1.length)
+                                .equals(new String(buf2, 0, buf2.length)));
 	}
 
 	/**
 	 * @tests java.io.ByteArrayInputStream#skip(long)
 	 */
-	public void test_skipJ() {
+	public void test_skipJ() throws Exception {
 		// Test for method long java.io.ByteArrayInputStream.skip(long)
 		byte[] buf1 = new byte[10];
-		try {
-			is.skip(100);
-			is.read(buf1, 0, buf1.length);
-			assertTrue("Failed to skip to correct position", new String(buf1,
-					0, buf1.length).equals(fileString.substring(100, 110)));
-		} catch (Exception e) {
-			fail("Exception during skip test : " + e.getMessage());
-		}
+                is.skip(100);
+                is.read(buf1, 0, buf1.length);
+                assertTrue("Failed to skip to correct position", new String(buf1,
+                                0, buf1.length).equals(fileString.substring(100, 110)));
 	}
 
 	/**

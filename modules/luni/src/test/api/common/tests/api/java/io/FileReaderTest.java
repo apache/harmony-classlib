@@ -36,63 +36,48 @@ public class FileReaderTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.FileReader#FileReader(java.io.File)
 	 */
-	public void test_ConstructorLjava_io_File() {
+	public void test_ConstructorLjava_io_File() throws Exception {
 		// Test for method java.io.FileReader(java.io.File)
-		try {
-			bw = new BufferedWriter(new FileWriter(f.getPath()));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			br = new FileReader(f);
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r)
-					);
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
+                bw = new BufferedWriter(new FileWriter(f.getPath()));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                br = new FileReader(f);
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r));
 	}
 
 	/**
 	 * @tests java.io.FileReader#FileReader(java.io.FileDescriptor)
 	 */
-	public void test_ConstructorLjava_io_FileDescriptor() {
+	public void test_ConstructorLjava_io_FileDescriptor() throws Exception {
 		// Test for method java.io.FileReader(java.io.FileDescriptor)
-		try {
-			bw = new BufferedWriter(new FileWriter(f.getPath()));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			FileInputStream fis = new FileInputStream(f.getPath());
-			br = new FileReader(fis.getFD());
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			fis.close();
-			assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r)
-					);
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
+                bw = new BufferedWriter(new FileWriter(f.getPath()));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                FileInputStream fis = new FileInputStream(f.getPath());
+                br = new FileReader(fis.getFD());
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                fis.close();
+                assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r));
 	}
 
 	/**
 	 * @tests java.io.FileReader#FileReader(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws Exception {
 		// Test for method java.io.FileReader(java.lang.String)
-		try {
-			bw = new BufferedWriter(new FileWriter(f.getPath()));
-			bw.write(" After test string", 0, 18);
-			bw.close();
-			br = new FileReader(f.getPath());
-			char[] buf = new char[100];
-			int r = br.read(buf);
-			br.close();
-			assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r)
-					);
-		} catch (Exception e) {
-			fail("Exception during Constructor test " + e.toString());
-		}
+                bw = new BufferedWriter(new FileWriter(f.getPath()));
+                bw.write(" After test string", 0, 18);
+                bw.close();
+                br = new FileReader(f.getPath());
+                char[] buf = new char[100];
+                int r = br.read(buf);
+                br.close();
+                assertEquals("Failed to read correct chars", " After test string", new String(buf, 0, r));
 	}
 
 	/**

@@ -26,7 +26,7 @@ public class StreamCorruptedExceptionTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.StreamCorruptedException#StreamCorruptedException()
 	 */
-	public void test_Constructor() {
+	public void test_Constructor() throws Exception {
 		// Test for method java.io.StreamCorruptedException()
 
 		try {
@@ -38,16 +38,15 @@ public class StreamCorruptedExceptionTest extends junit.framework.TestCase {
 		} catch (StreamCorruptedException e) {
 			// Correct
 			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
 		}
-		fail("Failed to throw exception for non serialized stream");
+
+		fail("Failed to throw StreamCorruptedException for non serialized stream");
 	}
 
 	/**
 	 * @tests java.io.StreamCorruptedException#StreamCorruptedException(java.lang.String)
 	 */
-	public void test_ConstructorLjava_lang_String() {
+	public void test_ConstructorLjava_lang_String() throws Exception {
 		// Test for method java.io.StreamCorruptedException(java.lang.String)
 		try {
 			ObjectInputStream ois = new ObjectInputStream(
@@ -58,10 +57,9 @@ public class StreamCorruptedExceptionTest extends junit.framework.TestCase {
 		} catch (StreamCorruptedException e) {
 			// Correct
 			return;
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		fail("Failed to throw exception for non serialized stream");
+		} 
+
+		fail("Failed to throw StreamCorruptedException for non serialized stream");
 	}
 
 	/**

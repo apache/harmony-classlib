@@ -153,16 +153,11 @@ public class ProxyTest extends junit.framework.TestCase {
 		}
 		assertTrue("Problem converting exception ", worked);
 
-		Broken1 proxyObject = null;
-		try {
-			proxyObject = (Broken1) Proxy.newProxyInstance(Broken1.class
-					.getClassLoader(), new Class[] { Broken1.class },
-					new Broken1Invoke());
-		} catch (Throwable e) {
-			fail("Failed to create proxy for class: " + Broken1.class + " - "
-					+ e);
-		}
-		float brokenResult = proxyObject.method(2.1f, 5.8f);
+		Broken1 proxyObject = (Broken1) Proxy.newProxyInstance(Broken1.class
+				.getClassLoader(), new Class[] { Broken1.class },
+				new Broken1Invoke());
+
+                float brokenResult = proxyObject.method(2.1f, 5.8f);
 		assertTrue("Invalid invoke result", brokenResult == 5.8f);
 	}
 

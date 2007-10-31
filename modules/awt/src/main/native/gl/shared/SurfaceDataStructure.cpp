@@ -68,11 +68,11 @@ int getShift(unsigned int mask){
 }
 
 inline void updateCache
-(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre){
+(SURFACE_STRUCTURE *srcSurf, JNIEnv *env, jobject srcData, bool alphaPre, int x, int y, int width, int height){
 
-    unsigned int srcstride, dststride, offset;
-    unsigned int h = srcSurf->height;
-    unsigned int w = srcSurf->width;
+    int src_stride, dst_stride, src_offset, dst_offset;
+    int h = height;
+    int w = width;
 
     void *bmpDataPtr = srcSurf->bmpData;
     void *srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
@@ -81,22 +81,18 @@ inline void updateCache
 
         case INT_RGB:
             {
-                unsigned int *src, *s, *dst, *d;
+                unsigned int *src, *dst;
 
-                srcstride = srcSurf->scanline_stride;
-                dststride = w;
+                src_stride = srcSurf->scanline_stride;
+                dst_stride = srcSurf->width;
 
-                offset = w - 1;
-                src = (unsigned int *)srcDataPtr + offset;
-                dst = (unsigned int *)bmpDataPtr + offset;
+                src_offset = y * src_stride + x;
+                dst_offset = y * dst_stride + x;
+                src = (unsigned int *)srcDataPtr + src_offset;
+                dst = (unsigned int *)bmpDataPtr + dst_offset;
 
-                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
-                    s = src;
-                    d = dst;
-
-                    for(int x = w; x > 0 ; x--){
-                        *d-- = 0xff000000 | *s--;
-                    }
+                for(int _y = 0; _y < h; _y++, src += src_stride, dst += dst_stride){
+                    memcpy(dst, src, w * sizeof(int));
                 }
             }
             break;
@@ -105,19 +101,20 @@ inline void updateCache
             {
                 unsigned char *src, *s, *dst, *d, sa;
 
-                offset = (w << 2) - 1;
-                src = (unsigned char *)srcDataPtr + offset;
-                dst = (unsigned char *)bmpDataPtr + offset;
+                src_stride = srcSurf->scanline_stride_byte;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride_byte;
-                dststride = w << 2;
+                src_offset = y * src_stride + ((x + w) << 2) - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
                 if(alphaPre){
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             sa = *s--;
                             *d-- = sa;
                             if(sa != 255){
@@ -134,11 +131,11 @@ inline void updateCache
                     }
                     srcSurf->isAlphaPre = true;
                 }else{
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             sa = *s--;
                             if(sa == 0){
                                 *d-- = 0;
@@ -163,19 +160,20 @@ inline void updateCache
             {
                 unsigned char *src, *s, *dst, *d, sa;
 
-                offset = (w << 2) - 1;
-                src = (unsigned char *)srcDataPtr + offset;
-                dst = (unsigned char *)bmpDataPtr + offset;
+                src_stride = srcSurf->scanline_stride_byte;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride_byte;
-                dststride = w << 2;
+                src_offset = y * src_stride + ((x + w) << 2) - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
                 if(alphaPre){
-                    for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             sa = *s--;
                             *d-- = sa;
                             *d-- = *s--;
@@ -188,11 +186,11 @@ inline void updateCache
                     }
                     srcSurf->isAlphaPre = true;
                 }else{
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             sa = *s--;
                             *d-- = sa;
                             *d-- = DIV(sa, *s--);
@@ -209,18 +207,19 @@ inline void updateCache
             {
                 unsigned char *src, *s, *dst, *d;
 
-                offset = (w << 2) - 1;
-                src = (unsigned char *)srcDataPtr + offset;
-                dst = (unsigned char *)bmpDataPtr + offset;
+                src_stride = srcSurf->scanline_stride_byte;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride_byte;
-                dststride = w << 2;
- 
-                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                src_offset = y * src_stride + ((x + w) << 2) - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
+
+                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                     s = src;
                     d = dst;
 
-                    for(int x = w; x > 0 ; x--){
+                    for(int _x = w; _x > 0; _x--){
                         *d = 255;
                         *s--;
                         *(d - 3) = *s--;
@@ -236,19 +235,19 @@ inline void updateCache
             {
                 unsigned char *src, *s, *dst, *d;
 
-                offset = (w << 2) - 1;
-                unsigned int srcOffset = w * 3 - 1;
-                src = (unsigned char *)srcDataPtr + srcOffset;
-                dst = (unsigned char *)bmpDataPtr + offset;
+                src_stride = srcSurf->scanline_stride_byte;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride_byte;
-                dststride = w << 2;
+                src_offset = y * src_stride + (x + w) * 3 - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
-                for(int y = srcSurf->height; y > 0; y--, src += srcstride, dst += dststride){
+                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                     s = src;
                     d = dst;
 
-                    for(int x = w; x > 0 ; x--){
+                    for(int _x = w; _x > 0; _x--){
                         *d-- = 255;
                         *d-- = *s--;
                         *d-- = *s--;
@@ -262,19 +261,20 @@ inline void updateCache
             {
                 unsigned char *src, *s, *dst, *d, a, r, g, b;
 
-                offset = (w << 2) - 1;
-                src = (unsigned char *)srcDataPtr + offset;
-                dst = (unsigned char *)bmpDataPtr + offset;
+                src_stride = srcSurf->scanline_stride_byte;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride_byte;
-                dststride = w << 2;
+                src_offset = y * src_stride + ((x + w) << 2) - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
                 if(alphaPre){
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             r = *s--;
                             g = *s--;
                             b = *s--;
@@ -294,11 +294,11 @@ inline void updateCache
                     }
                     srcSurf->isAlphaPre = true;
                 }else{
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             r = *s--;
                             g = *s--;
                             b = *s--;
@@ -325,19 +325,20 @@ inline void updateCache
             {
                 unsigned char *src, *s, *dst, *d, a, r, g, b;
 
-                offset = (w << 2) - 1;
-                src = (unsigned char *)srcDataPtr + offset;
-                dst = (unsigned char *)bmpDataPtr + offset;
+                src_stride = srcSurf->scanline_stride_byte;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride_byte;
-                dststride = w << 2;
+                src_offset = y * src_stride + ((x + w) << 2) - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
                 if(alphaPre){
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
  
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x =  w; _x > 0; _x--){
                             r = *s--;
                             g = *s--;
                             b = *s--;
@@ -353,11 +354,11 @@ inline void updateCache
                     }
                     srcSurf->isAlphaPre = true;
                 }else{
-                    for(int y = h; y > 0 ; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
   
-                        for(int x = w; x > 0 ; x--){
+                        for(int _x = w; _x > 0; _x--){
                             r = *s--;
                             g = *s--;
                             b = *s--;
@@ -385,14 +386,6 @@ inline void updateCache
                 unsigned char *dst, *d;
                 unsigned short *src, *s, pixel;
 
-                offset = (w << 2) - 1;
-                unsigned int srcOffset = w - 1;
-                src = (unsigned short *)srcDataPtr + srcOffset;
-                dst = (unsigned char *)bmpDataPtr + offset;
-
-                srcstride = srcSurf->scanline_stride;
-                dststride = w << 2;
-
                 unsigned int mr = srcSurf->max_red;
                 unsigned int mg = srcSurf->max_green;
                 unsigned int mb = srcSurf->max_red;
@@ -403,10 +396,18 @@ inline void updateCache
                 unsigned int gs = srcSurf->green_sht;
                 unsigned int bs = srcSurf->blue_sht;
 
-                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                src_stride = srcSurf->scanline_stride;
+                dst_stride = srcSurf->width << 2;
+
+                src_offset = y * src_stride + x + w - 1;
+                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                src = (unsigned short *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
+
+                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                     d = dst;
                     s = src;
-                    for(int x = w; x > 0; x--){
+                    for(int _x = w; _x > 0; _x--){
                         pixel = *s--;
                         *d-- = 255;
                         *d-- = DIV(mb, ((pixel & rm) >> rs));
@@ -422,16 +423,18 @@ inline void updateCache
                 unsigned char *dst, *d, pixel;
                 unsigned short *src, *s;
 
-                src = (unsigned short *)srcDataPtr;
-                dst = (unsigned char *)bmpDataPtr;
+                src_stride = srcSurf->scanline_stride;
+                dst_stride = srcSurf->width << 2;
 
-                srcstride = srcSurf->scanline_stride;
-                dststride = w << 2;
+                src_offset = y * src_stride + (x << 1);
+                dst_offset = y * dst_stride + (x << 2);
+                src = (unsigned short *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
-                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                     s = src;
                     d = dst;
-                    for(int x = w; x > 0; x--){
+                    for(int _x =  w; _x > 0; _x--){
                         pixel = (unsigned char)(*s++ / 257);
                         *d++ = pixel;
                         *d++ = pixel;
@@ -447,19 +450,21 @@ inline void updateCache
                 unsigned char *src, *s;
                 unsigned int *dst, *d, pixel, bitnum, elem, shift, bitMask;
 
-                src = (unsigned char *)srcDataPtr;
-                dst = (unsigned int *)bmpDataPtr;
-
-                srcstride = srcSurf->scanline_stride;
-                dststride = w;
-
                 unsigned int pixelBits = srcSurf->pixel_stride;
                 int *cm = srcSurf->colormap;
 
-                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                src_stride = srcSurf->scanline_stride;
+                dst_stride = srcSurf->width;
+
+                src_offset = y * src_stride;
+                dst_offset = y * dst_stride + x;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned int *)bmpDataPtr + dst_offset;
+
+                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                     d = dst;
 
-                    for(unsigned int x = 0; x < w; x++){
+                    for(int _x = 0; _x < w; _x++){
                         bitnum = x * pixelBits;
                         s = src + bitnum / 8;
                         elem = *s;
@@ -477,31 +482,33 @@ inline void updateCache
                 int transparency = srcSurf->transparency;
                 unsigned char *src, *s;
                 unsigned int *dst, *d, pixel, r, g, b, a;
-
-                unsigned int offset = w - 1;
-                src = (unsigned char *)srcDataPtr + offset;
-                dst = (unsigned int *)bmpDataPtr + offset;
-
-                srcstride = srcSurf->scanline_stride;
-                dststride = w;
                 int *cm = srcSurf->colormap;
                 int tp = srcSurf->transparent_pixel;
 
+                src_stride = srcSurf->scanline_stride;
+                dst_stride = srcSurf->width;
+
+                src_offset = y * src_stride + x + w - 1;
+                dst_offset = y * dst_stride + x + w - 1;
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned int *)bmpDataPtr + dst_offset;
+
+
                 if(transparency == GL_OPAQUE){
-                    for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0; x--){
+                        for(int _x = w; _x > 0; _x--){
                             *d-- = 0xff000000 | *(cm + *s--);
                         }
                     }
                 }else if(transparency == GL_BITMASK){
-                    for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0; x--){
+                        for(int _x = w; _x > 0; _x--){
                             pixel = *s--;
                             if(pixel != tp){
                                 *d-- = 0xff000000 | *(cm + pixel);
@@ -512,11 +519,11 @@ inline void updateCache
                         }
                     }
                 }else{
-                    for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
 
-                        for(int x = w; x > 0; x--){
+                        for(int _x = w; _x > 0; _x--){
                             pixel = *(cm + *s--);
                             a = (pixel >> 24) & 0xff;
                             if(alphaPre){
@@ -546,18 +553,19 @@ inline void updateCache
         case BYTE_GRAY:
             {
                 unsigned char *src, *s, *dst, *d, pixel;
+                src_stride = srcSurf->scanline_stride;
+                dst_stride = srcSurf->width << 2;
 
-                src = (unsigned char *)srcDataPtr;
-                dst = (unsigned char *)bmpDataPtr;
+                src_offset = y * src_stride + x;
+                dst_offset = y * dst_stride + (x << 2);
+                src = (unsigned char *)srcDataPtr + src_offset;
+                dst = (unsigned char *)bmpDataPtr + dst_offset;
 
-                srcstride = srcSurf->scanline_stride;
-                dststride = w << 2;
-
-                for(int y = h; y > 0; y--, src += srcstride, dst += dststride){
+                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                     s = src;
                     d = dst;
 
-                    for(int x = srcSurf->width; x > 0; x--){
+                    for(int _x = w; _x > 0; _x--){
                         pixel = *s++;
                         *d++ = pixel;
                         *d++ = pixel;
@@ -716,7 +724,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_ImageSurface_updateCache
     SURFACE_STRUCTURE *surf = (SURFACE_STRUCTURE *)ptr;
     jlong cachePtr = 0;
     if(surf != NULL){
-        updateCache(surf, env, data, alphaPre != 0);
+        updateCache(surf, env, data, alphaPre != 0, 0, 0, surf->width, surf->height);
         cachePtr = (jlong)surf->bmpData;
     }
     return cachePtr;

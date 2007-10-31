@@ -102,19 +102,24 @@ public class GDIBlitter implements Blitter {
                 float alpha = ac.getAlpha();
                 if(srcSurf instanceof ImageSurface){
                     Object data = srcSurf.getData();
+
+                    int dirtyRegions[] = ((ImageSurface) srcSurf).getDirtyRegions();
+                    int regCount = 0;
+                    if(dirtyRegions != null) regCount = dirtyRegions[0] - 1;
+                    
                     synchronized(data){
                         if(bgcolor == null || srcSurf.getTransparency() == Transparency.OPAQUE){
                             bltImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
                                     dstX, dstY, dstSurfStruct,
                                     width, height, compType, alpha,
                                     matrix, clipRects, numVertex, 
-                                    srcSurf.invalidated());
+                                    srcSurf.invalidated(), dirtyRegions, regCount);
                         }else{
                             bltBGImage(srcX, srcY, srcSurfStruct, srcSurf.getData(),
                                     dstX, dstY, dstSurfStruct,
                                     width, height, bgcolor.getRGB(),
                                     compType, alpha, matrix, clipRects, 
-                                    numVertex, srcSurf.invalidated());
+                                    numVertex, srcSurf.invalidated(), dirtyRegions, regCount);
                         }
                     }
                     srcSurf.validate();
@@ -128,11 +133,17 @@ public class GDIBlitter implements Blitter {
                 XORComposite xcomp = (XORComposite) comp;
                 if(srcSurf instanceof ImageSurface){
                     Object data = srcSurf.getData();
+
+                    int dirtyRegions[] = ((ImageSurface) srcSurf).getDirtyRegions();
+                    int regCount = 0;
+                    if(dirtyRegions != null) regCount = dirtyRegions[0] - 1;
+
                     synchronized(data){
                         xorImage(srcX, srcY, srcSurfStruct, data,
                                 dstX, dstY, dstSurfStruct,
                                 width, height, xcomp.getXORColor().getRGB(),
-                                matrix, clipRects, numVertex, srcSurf.invalidated());
+                                matrix, clipRects, numVertex, 
+                                srcSurf.invalidated(), dirtyRegions, regCount);
                     }
                     srcSurf.validate();
                 }else{
@@ -175,13 +186,13 @@ public class GDIBlitter implements Blitter {
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             int width, int height, int bgcolor,
             int compType, float alpha, double matrix[],
-            int clip[], int numVertex, boolean invalidated);
+            int clip[], int numVertex, boolean invalidated, int[] dirtyRegions, int regCount);
 
     private native void bltImage(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             int width, int height, int compType,
             float alpha, double matrix[],
-            int clip[], int numVertex, boolean invalidated);
+            int clip[], int numVertex, boolean invalidated, int[] dirtyRegions, int regCount);
 
     private native void bltBitmap(int srcX, int srcY, long srsSurfDataPtr,
             int dstX, int dstY, long dstSurfDataPtr,
@@ -192,7 +203,7 @@ public class GDIBlitter implements Blitter {
     private native void xorImage(int srcX, int srcY, long srsSurfDataPtr,
             Object srcData, int dstX, int dstY, long dstSurfDataPtr,
             int width, int height, int xorcolor, double matrix[],
-            int clip[], int numVertex, boolean invalidated);
+            int clip[], int numVertex, boolean invalidated, int[] dirtyRegions, int regCount);
 
     private native void xorBitmap(int srcX, int srcY, long srsSurfDataPtr,
             int dstX, int dstY, long dstSurfDataPtr,

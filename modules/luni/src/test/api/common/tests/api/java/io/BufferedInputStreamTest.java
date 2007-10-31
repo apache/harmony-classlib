@@ -126,10 +126,7 @@ public class BufferedInputStreamTest extends TestCase {
 			fail("Expected test to throw IOE.");
 		} catch (IOException ex) {
 			// expected
-		} catch (Throwable ex) {
-			fail("Expected test to throw IOE not "
-					+ ex.getClass().getName());
-		}
+		} 
 	}
 
 	/**

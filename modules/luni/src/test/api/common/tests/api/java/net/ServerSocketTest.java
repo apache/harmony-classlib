@@ -323,14 +323,8 @@ public class ServerSocketTest extends SocketTestCase {
             s.setSoTimeout(100);
             s.accept();
         } catch (InterruptedIOException e) {
-            try {
-                assertEquals("Set incorrect sotimeout", 100, s.getSoTimeout());
-                return;
-            } catch (Exception x) {
-                fail("Exception during setSOTimeout: " + e.toString());
-            }
-        } catch (IOException iox) {
-            fail("IOException during setSotimeout: " + iox.toString());
+            assertEquals("Set incorrect sotimeout", 100, s.getSoTimeout());
+            return;
         }
 
         // Timeout should not trigger in this case
@@ -551,41 +545,37 @@ public class ServerSocketTest extends SocketTestCase {
     /**
      * @tests java.net.ServerSocket#getLocalSocketAddress()
      */
-    public void test_getLocalSocketAddress() {
+    public void test_getLocalSocketAddress() throws Exception {
         // set up server connect and then validate that we get the right
         // response for the local address
-        try {
-            ServerSocket theSocket = new ServerSocket(0, 5, InetAddress
-                    .getLocalHost());
-            int portNumber = theSocket.getLocalPort();
-            assertTrue("Returned incorrect InetSocketAddress(1):"
-                    + theSocket.getLocalSocketAddress().toString()
-                    + "Expected: "
-                    + (new InetSocketAddress(InetAddress.getLocalHost(),
-                            portNumber)).toString(), theSocket
-                    .getLocalSocketAddress().equals(
-                            new InetSocketAddress(InetAddress.getLocalHost(),
-                                    portNumber)));
-            theSocket.close();
+        ServerSocket theSocket = new ServerSocket(0, 5, InetAddress
+                .getLocalHost());
+        int portNumber = theSocket.getLocalPort();
+        assertTrue("Returned incorrect InetSocketAddress(1):"
+                + theSocket.getLocalSocketAddress().toString()
+                + "Expected: "
+                + (new InetSocketAddress(InetAddress.getLocalHost(),
+                        portNumber)).toString(), theSocket
+                .getLocalSocketAddress().equals(
+                        new InetSocketAddress(InetAddress.getLocalHost(),
+                                portNumber)));
+        theSocket.close();
 
-            // now create a socket that is not bound and validate we get the
-            // right answer
-            theSocket = new ServerSocket();
-            assertNull(
-                    "Returned incorrect InetSocketAddress -unbound socket- Expected null",
-                    theSocket.getLocalSocketAddress());
+        // now create a socket that is not bound and validate we get the
+        // right answer
+        theSocket = new ServerSocket();
+        assertNull(
+                "Returned incorrect InetSocketAddress -unbound socket- Expected null",
+                theSocket.getLocalSocketAddress());
 
-            // now bind the socket and make sure we get the right answer
-            theSocket
-                    .bind(new InetSocketAddress(InetAddress.getLocalHost(), 0));
-            int localPort = theSocket.getLocalPort();
-            assertEquals("Returned incorrect InetSocketAddress(2):", theSocket
-                    .getLocalSocketAddress(), new InetSocketAddress(InetAddress
-                    .getLocalHost(), localPort));
-            theSocket.close();
-        } catch (Exception e) {
-            fail("Exception during getLocalSocketAddress test: " + e);
-        }
+        // now bind the socket and make sure we get the right answer
+        theSocket
+                .bind(new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        int localPort = theSocket.getLocalPort();
+        assertEquals("Returned incorrect InetSocketAddress(2):", theSocket
+                .getLocalSocketAddress(), new InetSocketAddress(InetAddress
+                .getLocalHost(), localPort));
+        theSocket.close();
     }
 
     /**

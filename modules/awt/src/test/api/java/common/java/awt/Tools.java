@@ -62,7 +62,7 @@ public abstract class Tools {
 
     public static void checkDeadLoop(Component c, int[] count) {
         final int DEAD_LOOP_TIMEOUT = 1000;
-        final int VALID_NUMBER_OF_PAINT_CALLS = 5;
+        final int VALID_NUMBER_OF_PAINT_CALLS = 15;
         
         Frame f = new Frame();
         

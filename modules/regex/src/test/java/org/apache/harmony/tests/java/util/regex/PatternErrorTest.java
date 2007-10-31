@@ -59,8 +59,9 @@ public class PatternErrorTest extends TestCase {
 		    Pattern.compile("foo",flags);
 		} catch (IllegalArgumentException e) {
 		    // This is the expected exception
-		} catch (Exception e) {
-		    fail();
+                    return;
 		}
+
+                fail("Expected IllegalArgumentException to be thrown");
 	}
 }

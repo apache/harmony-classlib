@@ -29,7 +29,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import junit.framework.TestCase;
 
 public class LookupPrintServicesTest extends TestCase {
-    public void testLookupPrintServices() {
+    public void testLookupPrintServices() throws Exception {
         System.out.println("======== START LookupPrintServicesTest ========");
 
         PrintService[] services;
@@ -41,31 +41,27 @@ public class LookupPrintServicesTest extends TestCase {
         Object[][] filetoprint = { { "/Resources/JPEG.jpg",
                 DocFlavor.INPUT_STREAM.JPEG },
                 { "/Resources/GIF.gif", DocFlavor.INPUT_STREAM.GIF } };
-        try {
-            DocFlavor df;
-            InputStream fis;
 
-            for (int i = 0; i < filetoprint.length; i++) {
-                df = (DocFlavor) filetoprint[i][1];
+        DocFlavor df;
+        InputStream fis;
 
-                services = PrintServiceLookup.lookupPrintServices(df, aset);
-                TestUtil.checkServices(services);
+        for (int i = 0; i < filetoprint.length; i++) {
+            df = (DocFlavor) filetoprint[i][1];
 
-                for (int j = 0; j < services.length; j++) {
-                    fis = this.getClass().getResourceAsStream(
-                            (String) filetoprint[i][0]);
-                    doc = new SimpleDoc(fis, df, daset);
-                    PrintService printer = services[j];
+            services = PrintServiceLookup.lookupPrintServices(df, aset);
+            TestUtil.checkServices(services);
 
-                    pj = printer.createPrintJob();
-                    pj.print(doc, aset);
-                    System.out.println(fis.toString() + " printed on "
-                            + printer.getName());
-                }
+            for (int j = 0; j < services.length; j++) {
+                fis = this.getClass().getResourceAsStream(
+                        (String) filetoprint[i][0]);
+                doc = new SimpleDoc(fis, df, daset);
+                PrintService printer = services[j];
+
+                pj = printer.createPrintJob();
+                pj.print(doc, aset);
+                System.out.println(fis.toString() + " printed on "
+                        + printer.getName());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
         }
 
         System.out.println("====== END LookupPrintServicesTest ========");

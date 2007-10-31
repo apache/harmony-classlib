@@ -68,8 +68,7 @@
         <ant dir="modules/luni" antfile="build.xml" target="build-native-core" />
     	<ant dir="modules/archive" antfile="build.xml" target="build-native" />
     	<ant dir="modules/auth" antfile="build.xml" target="build-native" />
-    	<ant dir="modules/text" antfile="build.xml" target="build-native" />
-    	<ant dir="modules/prefs" antfile="build.xml" target="build-native" />
+        <ant dir="modules/prefs" antfile="build.xml" target="build-native" />
     	<ant dir="modules/luni" antfile="build.xml" target="build-native-secondary" />
         <ant dir="modules/nio" antfile="build.xml" target="build-native" />    	
         <ant dir="modules/nio_char" antfile="build.xml" target="build-native" />    	
@@ -92,8 +91,7 @@
         <ant dir="modules/portlib" antfile="build.xml" target="clean-native" />
     	<ant dir="modules/auth" antfile="build.xml" target="clean-native" />
     	<ant dir="modules/archive" antfile="build.xml" target="clean-native" />
-       	<ant dir="modules/text" antfile="build.xml" target="clean-native" />
-    	<ant dir="modules/prefs" antfile="build.xml" target="clean-native" />
+        <ant dir="modules/prefs" antfile="build.xml" target="clean-native" />
     	<ant dir="modules/luni" antfile="build.xml" target="clean-native" />
     	<ant dir="modules/nio" antfile="build.xml" target="clean-native" />
     	<ant dir="modules/nio_char" antfile="build.xml" target="clean-native" />

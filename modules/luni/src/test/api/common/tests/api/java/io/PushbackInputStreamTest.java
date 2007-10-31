@@ -117,23 +117,19 @@ public class PushbackInputStreamTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.io.PushbackInputStream#skip(long)
 	 */
-	public void test_skipJ() {
+	public void test_skipJ() throws Exception {
 		// Test for method long java.io.PushbackInputStream.skip(long)
-		try {
-			byte[] buf = new byte[50];
-			pis.skip(50);
-			pis.read(buf, 0, buf.length);
-			assertTrue("a) Incorrect bytes read", new String(buf)
-					.equals(fileString.substring(50, 100)));
-			pis.unread(buf);
-			pis.skip(25);
-			byte[] buf2 = new byte[25];
-			pis.read(buf2, 0, buf2.length);
-			assertTrue("b) Incorrect bytes read", new String(buf2)
-					.equals(fileString.substring(75, 100)));
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
+                byte[] buf = new byte[50];
+                pis.skip(50);
+                pis.read(buf, 0, buf.length);
+                assertTrue("a) Incorrect bytes read", new String(buf)
+                                .equals(fileString.substring(50, 100)));
+                pis.unread(buf);
+                pis.skip(25);
+                byte[] buf2 = new byte[25];
+                pis.read(buf2, 0, buf2.length);
+                assertTrue("b) Incorrect bytes read", new String(buf2)
+                                .equals(fileString.substring(75, 100)));
 	}
 
 	/**

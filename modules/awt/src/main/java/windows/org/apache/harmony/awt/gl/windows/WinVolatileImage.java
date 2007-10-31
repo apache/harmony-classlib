@@ -156,6 +156,7 @@ public class WinVolatileImage extends GLVolatileImage {
             WinGDIPGraphics2D.disposeGraphicsInfo(gi);
             gi = 0;
         }
+        if (surface != null) surface.dispose();
         super.flush();
     }
     

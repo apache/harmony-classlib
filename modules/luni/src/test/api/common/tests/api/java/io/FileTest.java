@@ -957,11 +957,7 @@ public class FileTest extends junit.framework.TestCase {
 		f = new File(System.getProperty("user.home"), "p.tst");
 		assertTrue("Incorrect path returned", f.getParent().equals(
 				System.getProperty("user.home")));
-		try {
-			f.delete();
-		} catch (Exception e) {
-			fail("Unexpected exception during tests : " + e.getMessage());
-		}
+		f.delete();
 
 		File f1 = new File("/directory");
 		assertTrue("Wrong parent test 1", f1.getParent().equals(slash));

@@ -225,7 +225,7 @@ public class Matcher2Test extends TestCase {
         try {
             mat.replaceAll(substitutionString);
             fail("IndexOutOfBoundsException should be thrown");
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
         }
     }
 }

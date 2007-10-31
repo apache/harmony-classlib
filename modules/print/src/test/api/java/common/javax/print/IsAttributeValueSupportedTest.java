@@ -50,57 +50,52 @@ public class IsAttributeValueSupportedTest extends TestCase {
             System.out.println("----------- " + services[i].getName()
                     + "----------");
 
-            try {
-                uri1 = new URI("file:///foo/bar");
-                uri2 = new URI("file:///F:/printing/tmp/print.out");
-                uri3 = new URI("file:///F:/printing/tmp/xxx/print.out");
+            uri1 = new URI("file:///foo/bar");
+            uri2 = new URI("file:///F:/printing/tmp/print.out");
+            uri3 = new URI("file:///F:/printing/tmp/xxx/print.out");
 
-                Attribute[] attrs = { MediaSizeName.ISO_A0,
-                        Finishings.NONE,
-                        Finishings.EDGE_STITCH,
-                        MediaSizeName.ISO_A2,
-                        MediaSizeName.ISO_A3,
-                        new Destination(uri1),
-                        new Destination(uri2),
-                        new Destination(uri3),
-                        new DocumentName("xyz", Locale.US),
-                        new JobName("xyz", Locale.US),
-                        new RequestingUserName("xyz", Locale.US),
-                        Sides.DUPLEX,
-                        Sides.ONE_SIDED,
-                        Sides.TUMBLE,
-                        Sides.TWO_SIDED_LONG_EDGE,
-                        Sides.TWO_SIDED_SHORT_EDGE,
-                        null };
-                for (int a = 0, ac = attrs.length; a < ac; a++) {
-                    try {
-                        supported = services[i].isAttributeValueSupported(
-                                attrs[a], DocFlavor.INPUT_STREAM.GIF, null);
-                    } catch (NullPointerException e1) {
-                        if (attrs[a] != null) {
-                            fail(e1.toString());
-                        }
-                    } catch (IllegalArgumentException e) {
-                        if (services[i]
-                                .isDocFlavorSupported(DocFlavor.INPUT_STREAM.GIF)) {
-                            fail(e.toString());
-                        }
-                    } catch (Exception e) {
+            Attribute[] attrs = { MediaSizeName.ISO_A0,
+                    Finishings.NONE,
+                    Finishings.EDGE_STITCH,
+                    MediaSizeName.ISO_A2,
+                    MediaSizeName.ISO_A3,
+                    new Destination(uri1),
+                    new Destination(uri2),
+                    new Destination(uri3),
+                    new DocumentName("xyz", Locale.US),
+                    new JobName("xyz", Locale.US),
+                    new RequestingUserName("xyz", Locale.US),
+                    Sides.DUPLEX,
+                    Sides.ONE_SIDED,
+                    Sides.TUMBLE,
+                    Sides.TWO_SIDED_LONG_EDGE,
+                    Sides.TWO_SIDED_SHORT_EDGE,
+                    null };
+            for (int a = 0, ac = attrs.length; a < ac; a++) {
+                try {
+                    supported = services[i].isAttributeValueSupported(
+                            attrs[a], DocFlavor.INPUT_STREAM.GIF, null);
+                } catch (NullPointerException e1) {
+                    if (attrs[a] != null) {
+                        fail(e1.toString());
+                    }
+                } catch (IllegalArgumentException e) {
+                    if (services[i]
+                            .isDocFlavorSupported(DocFlavor.INPUT_STREAM.GIF)) {
                         fail(e.toString());
                     }
-                    System.out.println(attrs[a]
-
-                            + (attrs[a] == null ? "" : "("
-                                    + attrs[a].getCategory().toString() + ")")
-                            + " : " + supported);
+                } catch (Exception e) {
+                    fail(e.toString());
                 }
-            } catch (Exception e) {
-                fail(e.toString());
+                System.out.println(attrs[a]
+
+                        + (attrs[a] == null ? "" : "("
+                                + attrs[a].getCategory().toString() + ")")
+                        + " : " + supported);
             }
         }
 
-        System.out
-                .println("============= END testIsAttributeValueSupported ================");
+        System.out.println("============= END testIsAttributeValueSupported ================");
     }
 
 }

@@ -34,15 +34,12 @@ public class WeakReferenceTest extends junit.framework.TestCase {
 	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() {
 		ReferenceQueue rq = new ReferenceQueue();
 		bool = new Boolean(true);
-		try {
-			// Allow the finalizer to run to potentially enqueue
-			WeakReference wr = new WeakReference(bool, rq);
-			assertTrue("Initialization failed.", ((Boolean) wr.get())
-					.booleanValue());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		// need a reference to bool so the jit does not optimize it away
+                // Allow the finalizer to run to potentially enqueue
+                WeakReference wr = new WeakReference(bool, rq);
+                assertTrue("Initialization failed.", ((Boolean) wr.get())
+                                .booleanValue());
+
+                // need a reference to bool so the jit does not optimize it away
 		assertTrue("should always pass", bool.booleanValue());
 
 		boolean exception = false;
@@ -57,18 +54,15 @@ public class WeakReferenceTest extends junit.framework.TestCase {
 	/**
 	 * @tests java.lang.ref.WeakReference#WeakReference(java.lang.Object)
 	 */
-	public void test_ConstructorLjava_lang_Object() {
+	public void test_ConstructorLjava_lang_Object() throws Exception {
 		bool = new Boolean(true);
-		try {
-			WeakReference wr = new WeakReference(bool);
-			// Allow the finalizer to run to potentially enqueue
-			Thread.sleep(1000);
-			assertTrue("Initialization failed.", ((Boolean) wr.get())
-					.booleanValue());
-		} catch (Exception e) {
-			fail("Exception during test : " + e.getMessage());
-		}
-		// need a reference to bool so the jit does not optimize it away
+                WeakReference wr = new WeakReference(bool);
+                // Allow the finalizer to run to potentially enqueue
+                Thread.sleep(1000);
+                assertTrue("Initialization failed.", ((Boolean) wr.get())
+                                .booleanValue());
+
+                // need a reference to bool so the jit does not optimize it away
 		assertTrue("should always pass", bool.booleanValue());
 	}
 

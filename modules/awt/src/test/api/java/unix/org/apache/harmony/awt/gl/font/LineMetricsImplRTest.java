@@ -32,14 +32,9 @@ public class LineMetricsImplRTest extends TestCase {
             Font font = new Font("Dialog", Font.PLAIN, 12);
             FontRenderContext frc = new FontRenderContext(null, false, false);
             final int count = 100;
-        try {
+
             for (int i = 0; i < count; i++) {
                 LineMetrics lm = font.getLineMetrics("", frc);
             }
-        } catch (Exception e) {
-            if (e.getMessage().indexOf("Error opening TrueType font file.") != -1){
-                fail("NPE \"Error opening TrueType font file.\" caught.");
-            }
-        }
     }
 }

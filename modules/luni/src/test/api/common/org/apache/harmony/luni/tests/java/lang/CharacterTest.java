@@ -609,8 +609,6 @@ public class CharacterTest extends TestCase {
             fail("Expected IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
             // expected
-        } catch (Exception e) {
-            fail("Expected IndexOutOfBoundsException");
         }
 
         try {           
@@ -618,8 +616,6 @@ public class CharacterTest extends TestCase {
             fail("Expected NullPointerException");
         } catch (NullPointerException e) {
             // expected
-        } catch (Exception e) {
-            fail("Expected NullPointerException");
         }
 
         try {           
@@ -627,8 +623,6 @@ public class CharacterTest extends TestCase {
             fail("Expected IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
             // expected
-        } catch (Exception e) {
-            fail("Expected IndexOutOfBoundsException");
         }
     }
     

@@ -25,11 +25,7 @@ public class ThreadLocalTest extends TestCase {
      * @tests java.lang.ThreadLocal#ThreadLocal()
      */
     public void test_Constructor() {
-        try {
-            new ThreadLocal<Object>();
-        } catch (Exception e) {
-            fail("unexpected exception: " + e.toString());
-        }
+        new ThreadLocal<Object>();
     }
     
     /**

@@ -48,8 +48,10 @@ public class JpegDecoder extends ImageDecoder {
             hintflagsProgressive;
 
     // Buffer for the stream
-    private static final int BUFFER_SIZE = 1024;
-    private byte buffer[] = new byte[BUFFER_SIZE];
+    private static final int MIN_BUFFER_SIZE = 1024;
+    private static final int MAX_BUFFER_SIZE = 2097152;
+    private int buffer_size;
+    private byte buffer[];
 
     // 3 possible color models only
     private static ColorModel cmRGB;
@@ -96,6 +98,19 @@ public class JpegDecoder extends ImageDecoder {
 
     public JpegDecoder(DecodingImageSource src, InputStream is) {
         super(src, is);
+        try {
+            int available_bytes = is.available();
+            if (available_bytes < MIN_BUFFER_SIZE) {
+                buffer_size = MIN_BUFFER_SIZE;
+            } else if (available_bytes > MAX_BUFFER_SIZE) {
+                buffer_size = MAX_BUFFER_SIZE;
+            } else {
+                buffer_size = available_bytes;
+            }
+        } catch (IOException e) {
+            buffer_size = MIN_BUFFER_SIZE;
+        }
+        buffer = new byte[buffer_size];
     }
 
     /*
@@ -125,7 +140,7 @@ public class JpegDecoder extends ImageDecoder {
             int intOut[] = null;
             // Read from the input stream
             for (;;) {
-                needBytes = BUFFER_SIZE - bytesInBuffer;
+                needBytes = buffer_size - bytesInBuffer;
                 offset = bytesInBuffer;
 
                 bytesRead = inputStream.read(buffer, offset, needBytes);

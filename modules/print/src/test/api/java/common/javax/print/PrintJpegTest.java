@@ -31,11 +31,11 @@ import javax.print.attribute.standard.MediaSizeName;
 import junit.framework.TestCase;
 
 public class PrintJpegTest extends TestCase {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new PrintJpegTest().testPrintJpeg();
     }
     
-    public void testPrintJpeg() {
+    public void testPrintJpeg() throws Exception {
         System.out.println("======== START PrintJpegTest ========");
 
         PrintService[] services;
@@ -46,28 +46,23 @@ public class PrintJpegTest extends TestCase {
 
         daset.add(MediaSizeName.ISO_A4);
 
-        try {
-            DocFlavor df = DocFlavor.INPUT_STREAM.JPEG;
-            InputStream fis = this.getClass().getResourceAsStream(
-                    "/Resources/JPEG.jpg");
-            services = PrintServiceLookup.lookupPrintServices(df, aset);
-            TestUtil.checkServices(services);
+        DocFlavor df = DocFlavor.INPUT_STREAM.JPEG;
+        InputStream fis = this.getClass().getResourceAsStream(
+                "/Resources/JPEG.jpg");
+        services = PrintServiceLookup.lookupPrintServices(df, aset);
+        TestUtil.checkServices(services);
 
-            for (int j = 0; j < services.length; j++) {
-                PrintService printer = services[j];
-                if (printer.toString().indexOf("print-to-file") >= 0) {
-                    doc = new SimpleDoc(fis, df, daset);
+        for (int j = 0; j < services.length; j++) {
+            PrintService printer = services[j];
+            if (printer.toString().indexOf("print-to-file") >= 0) {
+                doc = new SimpleDoc(fis, df, daset);
 
-                    pj = printer.createPrintJob();
-                    pj.print(doc, aset);
-                    System.out.println(fis.toString() + " printed on "
-                            + printer.getName());
-                    break;
-                }
+                pj = printer.createPrintJob();
+                pj.print(doc, aset);
+                System.out.println(fis.toString() + " printed on "
+                        + printer.getName());
+                break;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
         }
 
         System.out.println("====== END PrintJpegTest ========");
