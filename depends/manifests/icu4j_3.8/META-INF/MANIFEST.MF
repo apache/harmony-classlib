@@ -22,4 +22,5 @@ Import-Package: java.io,
 Export-Package: com.ibm.icu.lang,
  com.ibm.icu.math,
  com.ibm.icu.text,
- com.ibm.icu.util
+ com.ibm.icu.util,
+ com.ibm.icu.charset
