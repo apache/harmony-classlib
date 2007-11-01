@@ -157,15 +157,7 @@ public class AttributeLayout implements IMatcher {
 			return Codec.SIGNED5;
 		} else if (layout.indexOf("B") >= 0) { //$NON-NLS-1$
 			return Codec.BYTE1;
-		}
-		/*
-		 * TODO Add this as a test (and don't commit since this is copyright
-		 * text) && ) If the layout contains 'O', use BRANCH5. Otherwise, if the
-		 * layout contains 'P', use BCI5. Otherwise, if the layout contains 'S'
-		 * but not 'KS' or 'RS', use SIGNED5. Otherwise, if the layout contains
-		 * 'B', use BYTE1. For all other layouts use UNSIGNED5.
-		 */
-		else {
+		} else {
 			return Codec.UNSIGNED5;
 		}
 	}

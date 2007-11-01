@@ -91,8 +91,7 @@ import java.io.InputStream;
  * assumes that other combinations of values can result in more specific and
  * efficient formats. There are also a sequence of canonical encodings defined
  * by the Pack200 specification, which allow a codec to be referred to by
- * canonical number. TODO Add links to canonical numbers when this has been
- * done.
+ * canonical number. {@link CodecEncoding#canonicalCodec}) 
  */
 public abstract class Codec {
 	/**

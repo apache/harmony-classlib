@@ -19,7 +19,6 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 /**
  * Parses the file band headers (not including the actual bits themselves).
@@ -28,7 +27,6 @@ import java.util.Arrays;
  * remaining in the stream with BYTE1 compression. A decent implementation
  * will probably just stream the bytes out to the reconstituted Jar rather
  * than caching them.
- * 
  */
 public class FileBands extends BandSet {
 
@@ -94,9 +92,8 @@ public class FileBands extends BandSet {
         fileBits = new byte[numberOfFiles][];
         for (int i = 0; i < numberOfFiles; i++) {
             int size = (int) fileSize[i];
-            // TODO This buggers up if file_size > 2^32. Probably an array is
-            // not the right choice, and
-            // we should just serialize the bugger here?
+            // TODO This breaks if file_size > 2^32. Probably an array is
+            // not the right choice, and we should just serialize it here?
             fileBits[i] = new byte[size];
             for (int j = 0; j < size; j++) {
                 fileBits[i][j] = (byte) Codec.BYTE1.decode(in);
