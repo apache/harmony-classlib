@@ -15,22 +15,23 @@
  *  limitations under the License. 
  */
 
-package org.apache.harmony.jndi.provider.ldap.asn1;
+package org.apache.harmony.jndi.provider.ldap;
 
-/**
- * Retrieves data from ASN.1 data stream.
- * 
- * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable
- * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1ChoiceWrap
- * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1SequenceWrap
- */
-public interface ASN1Decodable {
+import javax.naming.directory.SearchControls;
 
-    /**
-     * Decode <code>values</code> to corresponding java type.
-     * 
-     * @param values
-     *            values to be decoded
-     */
-    public void decodeValues(Object[] values);
+import junit.framework.TestCase;
+
+import org.apache.harmony.jndi.provider.ldap.asn1.ASN1TestUtils;
+import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
+import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
+
+public class SearchOpTest extends TestCase {
+    public void test_encode_decode() throws Exception {
+        SearchControls controls = new SearchControls();
+        Filter filter = new Filter(7);
+        filter.setValue(Utils.getBytes("objectClass"));
+        SearchOp op = new SearchOp("test", controls, filter);
+        
+        ASN1TestUtils.checkEncode(op.getRequest(), LdapASN1Constant.SearchRequest);
+    }
 }

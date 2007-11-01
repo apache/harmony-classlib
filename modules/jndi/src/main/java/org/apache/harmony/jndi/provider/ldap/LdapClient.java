@@ -28,6 +28,8 @@ import javax.net.SocketFactory;
 
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
+import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
+import org.apache.harmony.security.asn1.ASN1Integer;
 
 /**
  * LdapClient is the actual class used to communicate with Ldap Server.
@@ -108,6 +110,31 @@ final public class LdapClient {
         out.flush();
         LdapMessage responseMsg = new LdapMessage(response);
         responseMsg.decode(in);
+        if (opIndex == LdapASN1Constant.OP_SEARCH_REQUEST
+                && responseMsg.getOperationIndex() != LdapASN1Constant.OP_SEARCH_RESULT_DONE) {
+            responseMsg = new LdapMessage(response);
+            responseMsg.decode(in);
+        }
         return responseMsg;
+    }
+    public void abandon(final int messageId, Control[] controls)
+            throws IOException {
+        doOperationWithoutResponse(LdapASN1Constant.OP_ABANDON_REQUEST,
+                new ASN1Encodable() {
+
+                    public void encodeValues(Object[] values) {
+                        values[0] = ASN1Integer.fromIntValue(messageId);
+                    }
+
+                }, controls);
+    }
+    public void doOperationWithoutResponse(int opIndex, ASN1Encodable op,
+            Control[] controls) throws IOException {
+        LdapMessage request = new LdapMessage(opIndex, op, controls);
+        out.write(request.encode());
+        out.flush();
+    }
+    public void close() throws IOException {
+        socket.close();
     }
 }
