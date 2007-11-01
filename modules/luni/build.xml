@@ -111,6 +111,10 @@
             <fileset dir="${hy.luni.src.main.native}/vmi">
                 <include name="libvmi${shlib.suffix}"/>
             </fileset>
+            <!-- Copy link exports file on z/OS -->
+            <fileset dir="${hy.luni.src.main.native}/vmi/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
         </copy>
     </target>
 
@@ -127,6 +131,12 @@
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.luni.src.main.native}/luni/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
@@ -161,6 +171,24 @@
     <target name="overlay-oss" >
         <unzip src="${fdlibm.zip}" dest="${hy.luni.src.main.native}/fdlibm_dist" />
         <chmod dir="${hy.luni.src.main.native}/fdlibm_dist" perm="ugo+r" />
+        <antcall target="-ascii2ebcdic-conversion" />
+    </target>
+
+    <target name="-ascii2ebcdic-conversion" if="is.zos">
+        <move todir="${hy.luni.src.main.native}/fdlibm_dist_ascii">
+            <fileset dir="${hy.luni.src.main.native}/fdlibm_dist">
+                <include name="**/*" />
+                <exclude name="**/*.o" />
+            </fileset>
+        </move>
+        <copy todir="${hy.luni.src.main.native}/fdlibm_dist" outputencoding="IBM-1047" >
+            <fileset dir="${hy.luni.src.main.native}/fdlibm_dist_ascii">
+                <include name="**/*" />
+                <exclude name="**/*.o" />
+            </fileset>               
+        </copy>
+        <fixcrlf srcdir="${hy.luni.src.main.native}/fdlibm_dist" includes="**/*" excludes="**/*.o" eol="unix" />
+        <delete dir="${hy.luni.src.main.native}/fdlibm_dist_ascii" />
     </target>
 
     <!-- Clean overlaid OSS packages -->

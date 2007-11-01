@@ -49,7 +49,14 @@ endif
 
 EXEPATH=../
 LIBPATH=$(HY_HDK)/lib/
+
+ifneq ($(HY_OS),zos)
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
+else
+# On z/OS set DLLPATH to LIBPATH so we link against .x export files in
+# $(HY_HDK)/lib instead of directly against the .so libraries.
+DLLPATH=$(LIBPATH)
+endif
 SHAREDSUB=../shared/
 
 DEFINES += -D_REENTRANT

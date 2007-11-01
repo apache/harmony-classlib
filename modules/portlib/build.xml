@@ -128,6 +128,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.portlib.src.main.native}/thread/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="-build-native-thrstub" if="hy.skip.thr">
@@ -139,6 +145,10 @@
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
+            </fileset>
+            <!-- Copy link exports file on z/OS -->
+            <fileset dir="${hy.portlib.src.main.native}/thrstub/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
@@ -154,7 +164,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
-
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.portlib.src.main.native}/port/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
     </target>
 
     <!-- Clean natives -->
