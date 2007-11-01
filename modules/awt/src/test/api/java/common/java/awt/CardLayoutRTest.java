@@ -74,7 +74,6 @@ public class CardLayoutRTest extends TestCase {
     
     public void testLayoutContainer() {       
         layout.layoutContainer(emptyContainer);
-        assertTrue(true);
     }
     
     public final void testMaximumLayoutSize1() {
