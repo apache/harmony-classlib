@@ -1011,13 +1011,13 @@ void WinDataObject::init(JNIEnv * env, jobject dataSnapshot) {
         FORMATETC * list;
         int listLen = getFormatsForName(env, formatName, &list);
         for (int j = 0; j < listLen; j++) {
-            formatArray.SetAtGrow(formatArray.GetCount(), list[j]);
+            formatArray.Add(list[j]);
         }
         if (listLen == 0) {
             UINT serializedFormat = getSerializedFormat(env, formatName);
             if (serializedFormat != 0) {
                 FORMATETC fmt = { serializedFormat, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-                formatArray.SetAtGrow(formatArray.GetCount(), fmt);
+                formatArray.Add(fmt);
             }
         }
     }
@@ -1089,7 +1089,7 @@ STDMETHODIMP WinDataObject::SetData(FORMATETC * pFormatetc,
 STDMETHODIMP WinDataObject::EnumFormatEtc(DWORD dwDirection, 
                                           IEnumFORMATETC ** ppEnumFormatEtc) {
     if(dwDirection == DATADIR_GET) {
-        return SHCreateStdEnumFmtEtc((UINT)formatArray.GetCount(), 
+        return SHCreateStdEnumFmtEtc((UINT)formatArray.GetSize(), 
                 formatArray.GetData(), ppEnumFormatEtc);
     }
     return E_NOTIMPL;
@@ -1108,8 +1108,8 @@ STDMETHODIMP WinDataObject::EnumDAdvise(IEnumSTATDATA **) {
 }
 
 int WinDataObject::getFormatIndex(FORMATETC * fmt) {
-    for (size_t i=0; i<formatArray.GetCount(); i++) {
-        const FORMATETC & f = formatArray.GetAt(i);
+    for (int i=0; i<formatArray.GetSize(); i++) {
+        const FORMATETC & f = formatArray[i];
         if (f.cfFormat == fmt->cfFormat
                 && f.ptd == fmt->ptd
                 && f.dwAspect == fmt->dwAspect
