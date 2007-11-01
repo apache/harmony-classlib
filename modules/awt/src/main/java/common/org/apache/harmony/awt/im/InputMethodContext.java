@@ -156,6 +156,8 @@ public class InputMethodContext extends InputContext implements
     }
 
     private void activateIM(InputMethod im) {
+        Component c;
+        
         im.activate();
         if ((nativeIM != null) && (im != nativeIM)) {
             // when Java IM is active
@@ -164,6 +166,11 @@ public class InputMethodContext extends InputContext implements
             nativeIM.disableIME();
         }
         IMManager.setLastActiveIMC(this);
+        
+        c = getClient();
+        if (c != null) {
+           c.getInputMethodRequests();
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -313,10 +320,13 @@ public class InputMethodContext extends InputContext implements
         if (newIM != null) {
             closeIM(inputMethod);
             client = KeyboardFocusManager.
-            getCurrentKeyboardFocusManager().getFocusOwner();
+                    getCurrentKeyboardFocusManager().getFocusOwner();
+            if (client != null) {
+                client.getInputMethodRequests();
+            }
             initIM(newIM, locale);
             inputMethod = newIM;
-            
+
             return true;
         }
         return false;
