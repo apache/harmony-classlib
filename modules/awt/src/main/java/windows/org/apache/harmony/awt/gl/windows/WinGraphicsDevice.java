@@ -70,7 +70,7 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
         type = TYPE_RASTER_SCREEN;
 
         long hmon = win32.MonitorFromWindow(hwnd, WindowsDefs.MONITOR_DEFAULTTOPRIMARY);
-        Win32.MONITORINFOEXW mi = win32.createMONITORINFOEXW(false);
+        Win32.MONITORINFOEXW mi = win32.createMONITORINFOEXW(true);
         mi.get_MONITORINFO().set_cbSize(mi.size());
         if (win32.GetMonitorInfoW(hmon, mi.shortLockPointer()) == 0) {
             // awt.15=Can not get monitor info
