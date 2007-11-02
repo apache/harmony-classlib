@@ -67,6 +67,24 @@
         <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
         <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
         <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
+        <antcall target="-ascii2ebcdic-conversion" />
+    </target>
+
+    <target name="-ascii2ebcdic-conversion" if="is.zos">
+        <move todir="${hy.archive.src.main.native}/zlib_dist_ascii">
+            <fileset dir="${hy.archive.src.main.native}/zlib_dist">
+                <include name="**/*" />
+                <exclude name="**/*.o" />
+            </fileset>
+        </move>
+        <copy todir="${hy.archive.src.main.native}/zlib_dist" outputencoding="IBM-1047" >
+            <fileset dir="${hy.archive.src.main.native}/zlib_dist_ascii">
+                <include name="**/*" />
+                <exclude name="**/*.o" />
+            </fileset>               
+        </copy>
+        <fixcrlf srcdir="${hy.archive.src.main.native}/zlib_dist" includes="**/*"  excludes="**/*.o" eol="unix" />
+        <delete dir="${hy.archive.src.main.native}/zlib_dist_ascii" />
     </target>
     
     <target name="clean-overlay-oss" unless="hy.skip.zlib" >
@@ -90,6 +108,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.archive.src.main.native}/zlib/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
     </target>
         
     <target name="-build-native-archive">
@@ -99,6 +123,12 @@
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.archive.src.main.native}/archive/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
