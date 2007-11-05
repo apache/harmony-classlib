@@ -197,6 +197,48 @@ typedef double FLOAT_EXTENDED;
 
 #endif /* defined(WIN32) */
 
+#if defined(ZOS)
+
+#define HY_BIG_ENDIAN
+
+#define DATA_TYPES_DEFINED
+typedef unsigned int   BOOLEAN;
+#if defined (HYS390X)
+typedef unsigned long U_64;
+typedef long I_64;
+#else
+typedef signed long long	I_64;
+typedef unsigned long long	U_64;
+#endif
+
+typedef double				SYS_FLOAT;
+
+#define HYCONST64(x) x##LL
+
+#define NO_LVALUE_CASTING
+#define PLATFORM_LINE_DELIMITER	"\012"
+#define DIR_SEPARATOR '/'
+#define DIR_SEPARATOR_STR "/"
+#define PATH_SEPARATOR_STR ":"
+#define LIBPATH_ENV_VAR "LIBPATH"
+
+#define VA_PTR(valist) (&valist[0])
+
+typedef struct {
+#if !defined(HYS390X)
+	char stuff[16];
+#endif
+	char *ada;
+	void (*rawFnAddress)();
+} HyFunctionDescriptor_T;
+
+#define TOC_UNWRAP_ADDRESS(wrappedPointer) (((HyFunctionDescriptor_T *) (wrappedPointer))->rawFnAddress)
+
+#define PLATFORM_DLL_EXTENSION ".so"
+
+#endif /* ZOS */
+
+
 #if !defined(VMCALL)
 #define VMCALL
 #define VMAPICALL

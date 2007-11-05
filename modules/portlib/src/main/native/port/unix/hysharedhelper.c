@@ -25,7 +25,9 @@
 #define SUCCESS 0
 #define FAILED -1
 
+#if !defined(ZOS)
 #define __errno2() 0
+#endif
 
 static void changeDirectoryPermission (struct HyPortLibrary *portLibrary,
                                        const char *pathname);

@@ -28,11 +28,24 @@
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+#if !defined(ZOS)
 #include <netinet/tcp.h>
+#else /* !defined(ZOS) */
+#include <netinet/tcp_var.h>
+#endif /* !defined(ZOS) */
+
 #include <netdb.h>
 #include <sys/time.h>
 #include <stdlib.h>
+
+#if !defined(ZOS)
 #include <sys/socketvar.h>
+#else /* !defined(ZOS) */
+#include <arpa/inet.h>
+#include <xti.h>
+#endif /* !defined(ZOS) */
+
 #include "hysocket.h"
 #include "hycomp.h"
 #include "hyport.h"

@@ -19,7 +19,7 @@
 #define hyshsem_h
 #include <sys/types.h>
 #include <errno.h>
-#if defined(_SEM_SEMUN_UNDEFINED) || defined(AIX)
+#if defined(_SEM_SEMUN_UNDEFINED) || defined(AIX) || defined(ZOS)
 /* according to X/OPEN we have to define it ourselves */
 union semun
 {
@@ -54,5 +54,7 @@ typedef struct hyshsem_handle
 #define HYSHSEM_SEMFLAGS_GROUP (IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP)
 #define HYSHSEM_SEMMARKER 769
 /* for zOS we have a function to get extended error code - useful for debugging */
+#if !defined(ZOS)
 #define __errno2() 0
+#endif /* ZOS */
 #endif /* hyshsem_h */
