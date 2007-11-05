@@ -29,6 +29,10 @@
 #endif /* HY_NO_THR */
 #include <string.h>
 #include <stdlib.h>
+#ifdef ZOS
+#include <unistd.h>
+#endif
+
 
 #define PORT_LIB_OPTION "_org.apache.harmony.vmi.portlib"
 
@@ -46,7 +50,7 @@
 #define PLATFORM_STRNICMP strnicmp
 #endif
 
-#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX) || defined(ZOS)
 #define PLATFORM_STRNICMP strncasecmp
 #endif
 
@@ -1196,11 +1200,14 @@ main_runJavaMain (JNIEnv * env, char *mainClassName, int nameIsUTF,
     }
   stringMid = ((*env)->GetMethodID (env, stringClass, "<init>", "([BII)V"));
 
+#ifndef ZOS /* Only do UTF conversion on non-z/OS platforms*/
   if (nameIsUTF)
-    {
+#endif /* !ZOS */
+  {
       cls = (*env)->FindClass (env, slashifiedClassName);
       portLibrary->mem_free_memory (portLibrary, slashifiedClassName);
     }
+#ifndef ZOS
   else
     {
       rc =
@@ -1236,10 +1243,12 @@ main_runJavaMain (JNIEnv * env, char *mainClassName, int nameIsUTF,
           rc = 12;
           goto done;
         }
+
       cls = (*env)->FindClass (env, utfClassName);
       (*env)->ReleaseStringUTFChars (env, str, utfClassName);
       (*env)->DeleteLocalRef (env, str);
     }
+#endif /* !ZOS */
 
   if (!cls)
     {
@@ -1259,6 +1268,7 @@ main_runJavaMain (JNIEnv * env, char *mainClassName, int nameIsUTF,
     }
   for (i = 0; i < java_argc; ++i)
     {
+#ifndef ZOS /* Only convert the option strings on non-zOS platforms */
       rc =
         convertString (env, portLibrary, stringClass, stringMid, java_argv[i],
                        &str);
@@ -1282,6 +1292,9 @@ main_runJavaMain (JNIEnv * env, char *mainClassName, int nameIsUTF,
         }
 
       (*env)->SetObjectArrayElement (env, args, i, str);
+#else
+      (*env)->SetObjectArrayElement (env, args, i, (*env)->NewStringUTF(env, java_argv[i]));
+#endif /* !ZOS */
       if ((*env)->ExceptionCheck (env))
         {
           /* HYNLS_EXELIB_INTERNAL_VM_ERR_FAILED_SET_ARRAY_ELEM=Internal VM error: Failed to set array element for %s\n */
@@ -1291,7 +1304,9 @@ main_runJavaMain (JNIEnv * env, char *mainClassName, int nameIsUTF,
           rc = 9;
           goto done;
         }
+#ifndef ZOS
       (*env)->DeleteLocalRef (env, str);
+#endif /* !ZOS */
     }
 
   mid =
