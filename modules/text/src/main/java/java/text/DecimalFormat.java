@@ -54,7 +54,15 @@ public class DecimalFormat extends NumberFormat {
      * default Locale.
      */
     public DecimalFormat() {
-        this(getPattern(Locale.getDefault(), "Number")); //$NON-NLS-1$
+        Locale locale = Locale.getDefault();
+        icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
+        symbols = new DecimalFormatSymbols(locale);
+        dform = new com.ibm.icu.text.DecimalFormat();
+
+        super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
+        super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
+        super.setMinimumFractionDigits(dform.getMinimumFractionDigits());
+        super.setMinimumIntegerDigits(dform.getMinimumIntegerDigits());
     }
 
     /**
@@ -68,7 +76,15 @@ public class DecimalFormat extends NumberFormat {
      *                when the pattern cannot be parsed
      */
     public DecimalFormat(String pattern) {
-        this(pattern, new DecimalFormatSymbols());
+        Locale locale = Locale.getDefault();
+        icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
+        symbols = new DecimalFormatSymbols(locale);
+        dform = new com.ibm.icu.text.DecimalFormat(pattern, icuSymbols);
+
+        super.setMaximumFractionDigits(dform.getMaximumFractionDigits());
+        super.setMaximumIntegerDigits(dform.getMaximumIntegerDigits());
+        super.setMinimumFractionDigits(dform.getMinimumFractionDigits());
+        super.setMinimumIntegerDigits(dform.getMinimumIntegerDigits());
     }
 
     /**
@@ -85,7 +101,7 @@ public class DecimalFormat extends NumberFormat {
      */
     public DecimalFormat(String pattern, DecimalFormatSymbols value) {
         symbols = (DecimalFormatSymbols) value.clone();
-        Locale locale = (Locale) this.getInternalField("locale", symbols); //$NON-NLS-1$
+        Locale locale = (Locale) Format.getInternalField("locale", symbols); //$NON-NLS-1$
         icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(locale);
         copySymbols(icuSymbols, symbols);
 
@@ -711,16 +727,16 @@ public class DecimalFormat extends NumberFormat {
         fields.put("positiveSuffix", dform.getPositiveSuffix());
         fields.put("negativePrefix", dform.getNegativePrefix());
         fields.put("negativeSuffix", dform.getNegativeSuffix());
-        String posPrefixPattern = (String) this.getInternalField(
+        String posPrefixPattern = (String) Format.getInternalField(
                 "posPrefixPattern", dform);
         fields.put("posPrefixPattern", posPrefixPattern);
-        String posSuffixPattern = (String) this.getInternalField(
+        String posSuffixPattern = (String) Format.getInternalField(
                 "posSuffixPattern", dform);
         fields.put("posSuffixPattern", posSuffixPattern);
-        String negPrefixPattern = (String) this.getInternalField(
+        String negPrefixPattern = (String) Format.getInternalField(
                 "negPrefixPattern", dform);
         fields.put("negPrefixPattern", negPrefixPattern);
-        String negSuffixPattern = (String) this.getInternalField(
+        String negSuffixPattern = (String) Format.getInternalField(
                 "negSuffixPattern", dform);
         fields.put("negSuffixPattern", negSuffixPattern);
         fields.put("multiplier", dform.getMultiplier());
@@ -729,10 +745,10 @@ public class DecimalFormat extends NumberFormat {
                 .isDecimalSeparatorAlwaysShown());
         fields.put("parseBigDecimal", parseBigDecimal);
         fields.put("symbols", symbols);
-        boolean useExponentialNotation = ((Boolean) this.getInternalField(
+        boolean useExponentialNotation = ((Boolean) Format.getInternalField(
                 "useExponentialNotation", dform)).booleanValue();
         fields.put("useExponentialNotation", useExponentialNotation);
-        byte minExponentDigits = ((Byte) this.getInternalField(
+        byte minExponentDigits = ((Byte) Format.getInternalField(
                 "minExponentDigits", dform)).byteValue();
         fields.put("minExponentDigits", minExponentDigits);
         fields.put("maximumIntegerDigits", dform.getMaximumIntegerDigits());
@@ -786,7 +802,7 @@ public class DecimalFormat extends NumberFormat {
         int minimumFractionDigits = fields.get("minimumFractionDigits", 340);
         this.serialVersionOnStream = fields.get("serialVersionOnStream", 0);
 
-        Locale locale = (Locale) getInternalField("locale", symbols);
+        Locale locale = (Locale) Format.getInternalField("locale", symbols);
         dform = new com.ibm.icu.text.DecimalFormat("",
                 new com.ibm.icu.text.DecimalFormatSymbols(locale));
         setInternalField("useExponentialNotation", dform, Boolean
@@ -831,8 +847,14 @@ public class DecimalFormat extends NumberFormat {
      */
     private void copySymbols(final com.ibm.icu.text.DecimalFormatSymbols icu,
             final DecimalFormatSymbols dfs) {
-        icu.setCurrency(com.ibm.icu.util.Currency.getInstance(dfs.getCurrency()
-                .getCurrencyCode()));
+        Currency currency = dfs.getCurrency();
+        if (currency == null) {
+            icu.setCurrency(com.ibm.icu.util.Currency.getInstance("XXX"));
+        } else {
+            icu.setCurrency(com.ibm.icu.util.Currency.getInstance(dfs
+                    .getCurrency().getCurrencyCode()));
+        }
+       
         icu.setCurrencySymbol(dfs.getCurrencySymbol());
         icu.setDecimalSeparator(dfs.getDecimalSeparator());
         icu.setDigit(dfs.getDigit());
@@ -873,32 +895,6 @@ public class DecimalFormat extends NumberFormat {
                         return field;
                     }
                 });
-    }
-
-    /*
-     * Gets private field value by reflection.
-     * 
-     * @param fieldName the field name to be set @param target the object which
-     * field to be gotten
-     */
-    private Object getInternalField(final String fieldName, final Object target) {
-        Object value = AccessController
-                .doPrivileged(new PrivilegedAction<Object>() {
-                    public Object run() {
-                        Object result = null;
-                        java.lang.reflect.Field field = null;
-                        try {
-                            field = target.getClass().getDeclaredField(
-                                    fieldName);
-                            field.setAccessible(true);
-                            result = field.get(target);
-                        } catch (Exception e1) {
-                            return null;
-                        }
-                        return result;
-                    }
-                });
-        return value;
     }
 
 }

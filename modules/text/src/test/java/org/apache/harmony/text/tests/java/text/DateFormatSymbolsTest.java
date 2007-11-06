@@ -99,9 +99,9 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
         // java.text.DateFormatSymbols.getLocalPatternChars()
         String retVal = dfs.getLocalPatternChars();
 
-        String val = "GyMdkHmsSEDFwWahKzZ";
+        String val = "GyMdkHmsSEDFwWahKzYeugAZvcLQqV";
 
-        assertTrue("Returned incorrect pattern string", retVal.equals(val));
+        assertEquals("Returned incorrect pattern string", val, retVal);
     }
 
     /**
@@ -113,9 +113,8 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
         String[] retVal = dfs.getMonths();
         String[] val = { "January", "February", "March", "April", "May",
                 "June", "July", "August", "September", "October", "November",
-                "December", "" };
-        if (retVal.length != val.length)
-            fail("Returned wrong array: " + retVal.length);
+                "December"};
+        assertEquals("Returned wrong array: ", val.length, retVal.length);
         for (int i = 0; i < val.length; i++)
             assertTrue("Array values do not match", retVal[i].equals(val[i]));
     }
@@ -128,9 +127,8 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
         // java.text.DateFormatSymbols.getShortMonths()
         String[] retVal = dfs.getShortMonths();
         String[] val = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
-                "Aug", "Sep", "Oct", "Nov", "Dec", "" };
-        if (retVal.length != val.length)
-            fail("Returned wrong array");
+                "Aug", "Sep", "Oct", "Nov", "Dec"};
+        assertEquals("Returned wrong array: ", val.length, retVal.length);
         for (int i = 0; i < val.length; i++)
             assertTrue("Array values do not match", retVal[i].equals(val[i]));
     }
