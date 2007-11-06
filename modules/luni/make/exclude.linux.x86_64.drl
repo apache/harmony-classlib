@@ -3,5 +3,5 @@ org/apache/harmony/luni/tests/java/lang/ThreadTest.java
 tests/api/java/net/SocketTest.java
 tests/api/java/net/MulticastSocketTest.java
 
-# HARMONY-4753
+# HARMONY-4043 (was duplicate HARMONY-4753)
 org/apache/harmony/luni/tests/java/lang/SecurityManager2Test.java
