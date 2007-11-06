@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import javax.sql.RowSetInternal;
 import javax.sql.RowSetReader;
+import javax.sql.rowset.CachedRowSet;
 
 public class CachedRowSetReader implements RowSetReader {
 
@@ -39,14 +40,29 @@ public class CachedRowSetReader implements RowSetReader {
     }
 
     public void readData(RowSetInternal theCaller) throws SQLException {
+        int pageSize = ((CachedRowSet)theCaller).getPageSize();
         ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-        int columnCount = metadata.getColumnCount();
-        while (rs.next()) {
+        int columnCount = metadata.getColumnCount();        
+        int tempCursor = 0;
+        
+        if (startRow >= 0) {
+            if (rs.getType() == ResultSet.TYPE_FORWARD_ONLY)
+                throw new SQLException();
+            else {
+                rs.beforeFirst();
+                for (int j = 1; j++ < startRow; rs.next())
+                    ;
+            }
+        }
+        
+        while ((rs.next())) {            
             Object[] columnData = new Object[columnCount];
             for (int i = 0; i < columnCount; i++) {
                 columnData[i] = rs.getObject(i+1);
             }
-            data.add(new CachedRow(columnData));
+            if((pageSize>0)&&(pageSize<++tempCursor)) break;
+            data.add(new CachedRow(columnData));            
+            
         }
         ((CachedRowSetImpl) theCaller).setRows(data, columnCount);
     }
