@@ -76,8 +76,13 @@ errorMessage (struct HyPortLibrary *portLibrary, I_32 errorCode)
     }
 
   /* Copy from OS to ptBuffers */
+#if !defined(ZOS)
   strerror_r(errorCode,
              ptBuffers->errorMessageBuffer, ptBuffers->errorMessageBufferSize);
+#else
+  /* Do not have strerror_r on z/OS so use port library function instead */
+  portLibrary->str_printf(portLibrary, ptBuffers->errorMessageBuffer, ptBuffers->errorMessageBufferSize, strerror(errorCode));
+#endif /* ZOS */
   ptBuffers->errorMessageBuffer[ptBuffers->errorMessageBufferSize - 1] = '\0';
   return ptBuffers->errorMessageBuffer;
 }
