@@ -289,7 +289,8 @@ Generating snapshot zip
     <target name="-init-hdk">
         <mkdir dir="${hy.hdk}/build/ant" />
         <copy file="make/properties.xml"
-              tofile="${hy.hdk}/build/ant/properties.xml">
+              tofile="${hy.hdk}/build/ant/properties.xml"
+              outputencoding="UTF-8" >
             <filterchain>
                 <tokenfilter>
                     <replacestring from="Top-Level property definitions"
@@ -307,7 +308,8 @@ Generating snapshot zip
           -->
         <mkdir dir="${hy.hdk}/build/ant" />
         <copy file="make/properties.xml"
-              tofile="${hy.hdk}/build/ant/properties.xml">
+              tofile="${hy.hdk}/build/ant/properties.xml"
+              outputencoding="UTF-8" >
             <filterchain>
                 <tokenfilter>
                     <replacestring from="Top-Level property definitions"
