@@ -22,10 +22,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Hashtable;
 
+import javax.naming.CommunicationException;
+import javax.naming.ConfigurationException;
+import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.naming.ldap.Control;
 import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
@@ -35,7 +42,7 @@ import org.apache.harmony.security.asn1.ASN1Integer;
  * LdapClient is the actual class used to communicate with Ldap Server.
  * 
  */
-final public class LdapClient {
+public class LdapClient {
     /*
      * Socket used to communicate with Ldap Server.
      */
@@ -50,6 +57,11 @@ final public class LdapClient {
      * Output stream of socket.
      */
     private OutputStream out;
+
+    // constructor for test
+    public LdapClient() {
+        // do nothing
+    }
 
     /**
      * Constructor for LdapClient.
@@ -117,6 +129,7 @@ final public class LdapClient {
         }
         return responseMsg;
     }
+
     public void abandon(final int messageId, Control[] controls)
             throws IOException {
         doOperationWithoutResponse(LdapASN1Constant.OP_ABANDON_REQUEST,
@@ -128,13 +141,86 @@ final public class LdapClient {
 
                 }, controls);
     }
+
     public void doOperationWithoutResponse(int opIndex, ASN1Encodable op,
             Control[] controls) throws IOException {
         LdapMessage request = new LdapMessage(opIndex, op, controls);
         out.write(request.encode());
         out.flush();
     }
+
     public void close() throws IOException {
         socket.close();
+    }
+
+    /**
+     * Get new instance of LdapClient according environment variable
+     * 
+     * @param envmt
+     * @return
+     * @throws NamingException
+     */
+    public static LdapClient newInstance(String host, int port,
+            Hashtable<?, ?> envmt) throws NamingException {
+        String factoryName = (String) envmt
+                .get("java.naming.ldap.factory.socket");
+
+        SocketFactory factory = null;
+        if (factoryName == null || "".equals(factoryName)) {
+            if ("ssl".equalsIgnoreCase((String) envmt
+                    .get(Context.SECURITY_PROTOCOL))) {
+                factory = SSLSocketFactory.getDefault();
+            } else {
+                factory = SocketFactory.getDefault();
+            }
+        } else {
+
+            try {
+                factory = (SocketFactory) classForName(factoryName)
+                        .newInstance();
+            } catch (Exception e) {
+                ConfigurationException ex = new ConfigurationException();
+                ex.setRootCause(e);
+                throw ex;
+            }
+        }
+        // TODO: get LdapClient from pool first.
+
+        try {
+            return new LdapClient(factory, host, port);
+
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException();
+            ex.setRootCause(e);
+            throw ex;
+        }
+    }
+
+    private static Class<?> classForName(final String className)
+            throws ClassNotFoundException {
+
+        Class<?> cls = null;
+        // try thread context class loader first
+        try {
+            cls = Class.forName(className, true, Thread.currentThread()
+                    .getContextClassLoader());
+        } catch (ClassNotFoundException e) {
+            // Ignored.
+        }
+        // try system class loader second
+        try {
+            cls = Class.forName(className, true, ClassLoader
+                    .getSystemClassLoader());
+        } catch (ClassNotFoundException e1) {
+            // Ignored.
+        }
+
+        if (cls == null) {
+            // jndi.1C=class {0} not found
+            throw new ClassNotFoundException(Messages.getString(
+                    "jndi.1C", className)); //$NON-NLS-1$
+        }
+
+        return cls;
     }
 }
