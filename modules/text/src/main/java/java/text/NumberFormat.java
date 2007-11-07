@@ -24,7 +24,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.util.Currency;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.harmony.text.internal.nls.Messages;
 
@@ -230,7 +229,10 @@ public abstract class NumberFormat extends Format {
      * @return a NumberFormat
      */
     public static NumberFormat getCurrencyInstance(Locale locale) {
-        return getInstance(locale, "Currency"); //$NON-NLS-1$
+        com.ibm.icu.text.DecimalFormat icuFormat = (com.ibm.icu.text.DecimalFormat) com.ibm.icu.text.NumberFormat
+                .getCurrencyInstance(locale);
+        String pattern = icuFormat.toPattern();
+        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
     }
 
     /**
@@ -252,9 +254,13 @@ public abstract class NumberFormat extends Format {
      * @return a NumberFormat
      */
     public static NumberFormat getIntegerInstance(Locale locale) {
-        NumberFormat format = getInstance(locale, "Integer"); //$NON-NLS-1$
+        com.ibm.icu.text.DecimalFormat icuFormat = (com.ibm.icu.text.DecimalFormat) com.ibm.icu.text.NumberFormat
+                .getIntegerInstance(locale);
+        String pattern = icuFormat.toPattern();
+        DecimalFormat format = new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
         format.setParseIntegerOnly(true);
         return format;
+        
     }
 
     /**
@@ -277,11 +283,6 @@ public abstract class NumberFormat extends Format {
      */
     public static NumberFormat getInstance(Locale locale) {
         return getNumberInstance(locale);
-    }
-
-    static NumberFormat getInstance(Locale locale, String type) {
-        return new DecimalFormat(getPattern(locale, type),
-                new DecimalFormatSymbols(locale));
     }
 
     /**
@@ -345,12 +346,10 @@ public abstract class NumberFormat extends Format {
      * @return a NumberFormat
      */
     public static NumberFormat getNumberInstance(Locale locale) {
-        return getInstance(locale, "Number"); //$NON-NLS-1$
-    }
-
-    static String getPattern(Locale locale, String type) {
-        ResourceBundle bundle = getBundle(locale);
-        return bundle.getString(type);
+        com.ibm.icu.text.DecimalFormat icuFormat = (com.ibm.icu.text.DecimalFormat) com.ibm.icu.text.NumberFormat
+                .getNumberInstance(locale);
+        String pattern = icuFormat.toPattern();
+        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
     }
 
     /**
@@ -372,7 +371,10 @@ public abstract class NumberFormat extends Format {
      * @return a NumberFormat
      */
     public static NumberFormat getPercentInstance(Locale locale) {
-        return getInstance(locale, "Percent"); //$NON-NLS-1$
+        com.ibm.icu.text.DecimalFormat icuFormat = (com.ibm.icu.text.DecimalFormat) com.ibm.icu.text.NumberFormat
+                .getPercentInstance(locale);
+        String pattern = icuFormat.toPattern();
+        return new DecimalFormat(pattern, new DecimalFormatSymbols(locale));
     }
 
     /**

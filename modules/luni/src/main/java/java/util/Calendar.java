@@ -156,12 +156,13 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 *            the locale
 	 */
 	protected Calendar(TimeZone timezone, Locale locale) {
-		this(timezone);
-		ResourceBundle bundle = Locale.getBundle("Locale", locale); //$NON-NLS-1$
-		setFirstDayOfWeek(((Integer) bundle.getObject("First_Day")).intValue()); //$NON-NLS-1$
-		setMinimalDaysInFirstWeek(((Integer) bundle.getObject("Minimal_Days")) //$NON-NLS-1$
-				.intValue());
-	}
+        this(timezone);
+        com.ibm.icu.util.Calendar icuCalendar = com.ibm.icu.util.Calendar
+                .getInstance(com.ibm.icu.util.SimpleTimeZone
+                        .getTimeZone(timezone.getID()), locale);
+        setFirstDayOfWeek(icuCalendar.getFirstDayOfWeek());
+        setMinimalDaysInFirstWeek(icuCalendar.getMinimalDaysInFirstWeek());
+    }
 
 	/**
 	 * Adds the specified amount to a Calendar field.

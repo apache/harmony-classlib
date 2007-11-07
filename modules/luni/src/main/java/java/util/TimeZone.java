@@ -20,6 +20,7 @@ package java.util;
 
 import java.io.Serializable;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.DateFormatSymbols;
 
 import org.apache.harmony.luni.util.PriviAction;
@@ -445,8 +446,27 @@ public abstract class TimeZone implements Serializable, Cloneable {
 	 */
 	public static synchronized void setDefault(TimeZone timezone) {
 		if (timezone != null) {
-			Default = timezone;
-			return;
+            final com.ibm.icu.util.TimeZone icuTZ = com.ibm.icu.util.TimeZone
+                    .getTimeZone(timezone.getID());
+
+            AccessController
+                    .doPrivileged(new PrivilegedAction<java.lang.reflect.Field>() {
+                        public java.lang.reflect.Field run() {
+                            java.lang.reflect.Field field = null;
+                            try {
+                                field = com.ibm.icu.util.TimeZone.class
+                                        .getDeclaredField("defaultZone");
+                                field.setAccessible(true);
+                                field.set("defaultZone", icuTZ);
+                            } catch (Exception e) {
+                                return null;
+                            }
+                            return field;
+                        }
+                    });
+            
+            Default = timezone;
+            return;
 		}
 
 		String zone = AccessController.doPrivileged(new PriviAction<String>(

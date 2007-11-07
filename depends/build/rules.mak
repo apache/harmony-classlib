@@ -39,18 +39,20 @@ all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 $(LIBNAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 	$(implib) /NOLOGO -subsystem:windows -out:$(LIBNAME) \
 	$(HYLDFLAGS) -machine:$(CPU) \
+	/NODEFAULTLIB:libc \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 !endif
 
 !ifdef DLLNAME
 $(DLLNAME): $(LIBNAME)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
+	/NODEFAULTLIB:libcmt /NODEFAULTLIB:libc /FORCE:UNRESOLVED \
 	-entry:_DllMainCRTStartup$(DLLENTRY) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
-		$(COMMENT) \
+	$(COMMENT) \
 	-subsystem:windows -out:$@ -map:$*.map \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
-	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib \
-		comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
+	kernel32.lib  msvcrt.lib ws2_32.lib advapi32.lib user32.lib gdi32.lib \
+	comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
 	if exist $(DLLNAME).manifest \
 		mt -manifest $(DLLNAME).manifest -outputresource:$(DLLNAME);#2
 !endif

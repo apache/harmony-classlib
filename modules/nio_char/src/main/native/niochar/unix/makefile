@@ -19,8 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
-
 BUILDFILES = \
   ../shared/CP_1250.o \
   ../shared/CP_1251.o \

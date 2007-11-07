@@ -469,6 +469,7 @@ properties in preference to these:
         <attribute name="dir" />
         <attribute name="target" default="" />
         <sequential>
+            <echo>Making "@{target}" in @{dir}</echo>
             <exec failonerror="true"
                   executable="${make.command}"
                   dir="@{dir}">

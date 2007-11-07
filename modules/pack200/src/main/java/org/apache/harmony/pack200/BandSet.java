@@ -194,10 +194,10 @@ public abstract class BandSet {
             result[i] = new long[counts[i]];
             sum += counts[i];
         }
-        int[] hi = null;
+        long[] hi = null;
         int[] lo;
         if(hiCodec != null) {
-            hi = decodeBandInt(name, in, hiCodec, sum);
+            hi = decodeBandLong(name, in, hiCodec, sum);
             lo = decodeBandInt(name, in, loCodec, sum);        
         } else {
             lo = decodeBandInt(name, in, loCodec, sum);

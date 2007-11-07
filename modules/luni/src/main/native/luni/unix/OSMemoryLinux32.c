@@ -30,6 +30,11 @@
 #include "OSMemory.h"
 #include "IMemorySystem.h"
 
+/* z/OS mman.h does not define MAP_FAILED - it should always be ((void*)-1) */
+#ifndef MAP_FAILED
+#define MAP_FAILED      ((void *) -1)
+#endif
+
 #define	OS_JNI(func) JNICALL Java_org_apache_harmony_luni_platform_OSMemory_##func
 
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLittleEndianImpl(JNIEnv * env, jclass clazz)
@@ -67,6 +72,7 @@ int getPageSize()
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
+#if !defined(ZOS)
    if(mlock((void *)((IDATA)addr), size)!=-1)
    {
       if(munlock((void *)((IDATA)addr),size)!=-1)
@@ -77,10 +83,14 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
       	   return 0;
    }
    return -1;
+#else
+   return 0;
+#endif /* !defined(ZOS) */
   }
 
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoadedImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
+#if !defined(ZOS)
 	  PORT_ACCESS_FROM_ENV (env);
   	  jboolean result = 0;
   	  IDATA m_addr = (IDATA)addr;
@@ -103,6 +113,9 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
 	  }
 	  hymem_free_memory(vec);
       return result;
+#else
+      return ;
+#endif /* !defined(ZOS) */
   }
 
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl

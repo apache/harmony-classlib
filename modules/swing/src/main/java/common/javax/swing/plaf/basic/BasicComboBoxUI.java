@@ -125,7 +125,6 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
         public void focusLost(final FocusEvent e) {
             hasFocus = false;
-            comboBox.hidePopup();
             comboBox.repaint();
         }
     }

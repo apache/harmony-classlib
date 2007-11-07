@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#if defined(FREEBSD)
+#if defined(FREEBSD) || defined(ZOS)
 #include <sys/types.h>
 #include <sys/socket.h>
 #else

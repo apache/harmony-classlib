@@ -30,6 +30,10 @@ public class HYOptimisticProvider extends SyncProvider {
 
     private final static int providerGrade = SyncProvider.DATASOURCE_NO_LOCK;
 
+    private final static String vendor = "Apache Harmony";
+
+    private final static String version = "";
+
     @Override
     public int getDataSourceLock() throws SyncProviderException {
         // TODO Auto-generated method stub
@@ -58,14 +62,12 @@ public class HYOptimisticProvider extends SyncProvider {
 
     @Override
     public String getVendor() {
-        // TODO Auto-generated method stub
-        return null;
+        return vendor;
     }
 
     @Override
     public String getVersion() {
-        // TODO Auto-generated method stub
-        return null;
+        return version;
     }
 
     @Override

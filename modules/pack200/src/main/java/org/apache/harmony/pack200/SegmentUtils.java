@@ -18,6 +18,7 @@ package org.apache.harmony.pack200;
 
 // TODO Write doc
 public final class SegmentUtils {
+    
 	public static int countArgs(String descriptor) {
 		int bra = descriptor.indexOf("(");
 		int ket = descriptor.indexOf(")");
@@ -50,6 +51,35 @@ public final class SegmentUtils {
 		}
 		return count;
 	}
+    
+    public static int countBit16(int[] flags) {
+        int count = 0;
+        for (int i = 0; i < flags.length; i++) {
+            if ((flags[i] & (1 << 16)) != 0)
+                count++;
+        }
+        return count;
+    }
+    
+    public static int countBit16(long[] flags) {
+        int count = 0;
+        for (int i = 0; i < flags.length; i++) {
+            if ((flags[i] & (1 << 16)) != 0)
+                count++;
+        }
+        return count;
+    }
+    
+    public static int countBit16(long[][] flags) {
+        int count = 0;
+        for (int i = 0; i < flags.length; i++) {
+            for (int j = 0; j < flags[i].length; j++) {
+                if ((flags[i][j] & (1 << 16)) != 0)
+                    count++;
+            }            
+        }
+        return count;
+    }
 
 	public static int countMatches(long[][] flags, IMatcher matcher) {
 		int count = 0;

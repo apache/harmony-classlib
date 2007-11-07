@@ -22,6 +22,7 @@
  */
 package javax.swing;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Frame;
@@ -105,4 +106,44 @@ public class SwingUtilitiesRTest extends SwingTestCase {
         final JDialog dialog = new JDialog(f);
         assertSame(f, SwingUtilities.getAncestorOfClass(Frame.class, dialog));
     }
+    
+    public void testDeadLoop_4820() {
+        final int DEAD_LOOP_TIMEOUT = 1000;
+        final int VALID_NUMBER_OF_CALLS = 15;
+        final int counter[] = {0};
+        
+        class MFrame extends Frame {
+            MFrame() {
+                setSize(300,200) ;
+                show();
+            }
+        
+            public Component locate(int x, int y) {
+                counter[0]++;
+                return super.locate(x,y);
+            }
+            
+            public Component getComponentAt(int x, int y) {
+                counter[0]++;
+                return super.getComponentAt(x, y);
+            }
+            
+            public Component getComponentAt(java.awt.Point p) {
+                counter[0]++;
+                return super.getComponentAt(p);
+            }
+        }
+
+        Frame f = new MFrame();
+        
+        SwingUtilities.getDeepestComponentAt(f, 10, 10);
+        try {
+            Thread.sleep(DEAD_LOOP_TIMEOUT);
+        } catch (Exception e) {}
+        
+        f.dispose();
+        
+        assertTrue("Dead loop occured", counter[0] <= VALID_NUMBER_OF_CALLS);
+    }
+
 }

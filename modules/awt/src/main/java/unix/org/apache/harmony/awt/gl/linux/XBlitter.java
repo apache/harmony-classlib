@@ -168,16 +168,6 @@ public class XBlitter implements Blitter {
                  );
                 break;
             default:
-                XSurface xDstSurf = (XSurface) dstSurf;
-
-                AffineTransform at = (AffineTransform) sysxform.clone();
-
-                Rectangle transDstBounds = JavaBlitter.getBounds2D(at, new Rectangle(dstX, dstY, width, height)).getBounds();
-                int tWidth = transDstBounds.width;
-                int tHeight = transDstBounds.height;
-                dstX = transDstBounds.x;
-                dstY = transDstBounds.y;
-
                 ColorModel cm = srcSurf.getColorModel();
                 WritableRaster compRaster = srcSurf.getRaster();
                 BufferedImage compIm = new BufferedImage(
@@ -187,28 +177,21 @@ public class XBlitter implements Blitter {
                         null
                 );
 
-                BufferedImage transformed = new BufferedImage(tWidth, tHeight, BufferedImage.TYPE_INT_ARGB);
+                Rectangle transDstBounds = JavaBlitter.getBounds2D(sysxform, new Rectangle(dstX, dstY, width, height)).getBounds();
+                int tWidth = transDstBounds.width;
+                int tHeight = transDstBounds.height;
+                int tX = transDstBounds.x;
+                int tY = transDstBounds.y;
+
+                if(tWidth <= 0 || tHeight <= 0) return;
+                BufferedImage transformed = new BufferedImage(dstSurf.getWidth(), dstSurf.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
                 Surface transfSurf = Surface.getImageSurface(transformed);
                 JavaBlitter.getInstance().blit(srcX, srcY, Surface.getImageSurface(compIm), 
-                        0, 0, transfSurf, width, height, at, AlphaComposite.Src, null, null);
-
-                if (dstX < 0){
-                    tWidth += dstX;
-                    srcX = -dstX;
-                    dstX = 0;
-                }
-
-                if (dstY < 0){
-                    tHeight += dstY;
-                    srcY = -dstY;
-                    dstY = 0;
-                }
-
-                if(tWidth <= 0 || tHeight <= 0 || srcX >= tWidth || srcY >= tHeight) return;
+                        dstX, dstY, transfSurf, width, height, sysxform, AlphaComposite.Src, null, null);
                 blit(
-                        srcX, srcY, transfSurf,
-                        dstX, dstY, dstSurf,
+                        tX, tY, transfSurf,
+                        tX, tY, dstSurf,
                         tWidth, tHeight,
                         comp, bgcolor, clip
                 );

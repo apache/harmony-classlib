@@ -40,7 +40,7 @@
 #include <errno.h>
 #include "hyport.h"
 
-#if defined(_SEM_SEMUN_UNDEFINED) || defined(AIX)
+#if defined(_SEM_SEMUN_UNDEFINED) || defined(AIX) || defined(ZOS)
 /* arg for semctl semaphore system calls. */
 union semun
 {

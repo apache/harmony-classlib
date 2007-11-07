@@ -131,6 +131,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.misc.src.main.native}/accessors/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
     </target>
     
     <!-- Clean natives -->

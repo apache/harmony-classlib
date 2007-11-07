@@ -460,15 +460,11 @@ public class JEditorPaneTest extends SwingTestCase {
                 "javax.swing.text.html.HTMLEditorKit", "text/html", TEST_URL, jep);
     }
 
-    public void testJEditorPaneJarHTML() {
-        try {
-            // Regression for HARMONY-4529
-            URL jar = getClass().getResource("testhtml.jar");
-            URL url = new URL("jar:" + jar + "!/index.html");
-            new JEditorPane(url);
-        } catch (Exception e) {
-            fail("Unexpected exception: " + e);
-        }
+    public void testJEditorPaneJarHTML() throws Exception {
+        // Regression for HARMONY-4529
+        URL jar = getClass().getResource("testhtml.jar");
+        URL url = new URL("jar:" + jar + "!/index.html");
+        new JEditorPane(url);
     }
 
     private void assertEquals(final ArrayList<HyperlinkListener> a, final Object objects[]) {

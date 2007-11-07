@@ -162,6 +162,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/lcmm/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
 
         <make dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -170,6 +176,12 @@
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/jpegdecoder/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
@@ -182,6 +194,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/gl/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
         
         <make dir="${hy.awt.src.main.native}/oglwrapper/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
@@ -190,6 +208,12 @@
                 <include name="*${shlib.suffix}*"/>
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
+            </fileset>
+        </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/oglwrapper/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
 
@@ -202,6 +226,12 @@
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/fontlib/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
     </target>
 
     <target name="-build-native-unix" if="is.unix">
@@ -212,12 +242,24 @@
                 <include name="*${shlib.suffix}*"/>
             </fileset>
         </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/x11wrapper/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
 
         <make dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}" />
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.awt.src.main.native}/linuxfont">
                 <include name="*${shlib.suffix}*"/>
+            </fileset>
+        </copy>
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.awt.src.main.native}/linuxfont/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>

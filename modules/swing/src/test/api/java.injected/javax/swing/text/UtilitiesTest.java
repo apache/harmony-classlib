@@ -828,14 +828,10 @@ public class UtilitiesTest extends SwingTestCase {
         assertEquals(-1, Utilities.getRowEnd(c, 6));
     }
 
-    public void testGetRowStartEnd() {
-        try {
-            getRowStartEndTest(jta);
-            //getRowStartEndTest(jtp);
-            getRowStartEndTest(jtf);
-        } catch (Exception e) {
-            assertFalse("Unexpected exception", true);
-        }
+    public void testGetRowStartEnd() throws Exception {
+        getRowStartEndTest(jta);
+        //getRowStartEndTest(jtp);
+        getRowStartEndTest(jtf);
     }
 
     void getPreviousWordTest(final JTextComponent c) {

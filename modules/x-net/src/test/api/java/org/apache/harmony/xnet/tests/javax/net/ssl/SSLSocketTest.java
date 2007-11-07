@@ -50,36 +50,28 @@ public class SSLSocketTest extends TestCase {
     /*
      * Class under test for void SSLSocket(String, int)
      */
-    public void testSSLSocketStringint() {
-        try {
-            ServerSocket ss = new ServerSocket(0);
-            SSLSocket soc = new MySSLSocket("localhost", ss.getLocalPort());
-            ss.close();
-            soc.close();
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+    public void testSSLSocketStringint() throws Exception {
+        ServerSocket ss = new ServerSocket(0);
+        SSLSocket soc = new MySSLSocket("localhost", ss.getLocalPort());
+        ss.close();
+        soc.close();
     }
 
     /*
      * Class under test for void SSLSocket(InetAddress, int)
      */
-    public void testSSLSocketInetAddressint() {
-        try {
-            ServerSocket ss = new ServerSocket(0);
-            SSLSocket soc = new MySSLSocket(InetAddress.getLocalHost(), ss
-                    .getLocalPort());
-            ss.close();
-            soc.close();
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+    public void testSSLSocketInetAddressint() throws Exception {
+        ServerSocket ss = new ServerSocket(0);
+        SSLSocket soc = new MySSLSocket(InetAddress.getLocalHost(), ss
+                .getLocalPort());
+        ss.close();
+        soc.close();
     }
 
     /*
      * Class under test for void SSLSocket(String, int, InetAddress, int)
      */
-    public void testSSLSocketStringintInetAddressint() {
+    public void testSSLSocketStringintInetAddressint() throws Exception {
         try {
             ServerSocket ss1 = new ServerSocket(0);
             ServerSocket ss2 = new ServerSocket(0);
@@ -89,15 +81,13 @@ public class SSLSocketTest extends TestCase {
             ss2.close();
             soc.close();
         } catch (IOException e) {
-        } catch (Exception e) {
-            fail(e.toString());
         }
     }
 
     /*
      * Class under test for void SSLSocket(InetAddress, int, InetAddress, int)
      */
-    public void testSSLSocketInetAddressintInetAddressint() {
+    public void testSSLSocketInetAddressintInetAddressint() throws Exception {
         try {
             ServerSocket ss1 = new ServerSocket(0);
             ServerSocket ss2 = new ServerSocket(0);
@@ -108,8 +98,6 @@ public class SSLSocketTest extends TestCase {
             ss2.close();
             soc.close();
         } catch (IOException e) {
-        } catch (Exception e) {
-            fail(e.toString());
         }
     }
 }

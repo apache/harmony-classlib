@@ -108,7 +108,7 @@
     <!-- ================================= 
           target: layout              
          ================================= -->
-    <target name="layout" depends="layout.windows"
+    <target name="layout" depends="layout.windows,layout.zos"
         description="Construct the correct directory structure for native binaries">
 
     	<!-- Create the target directory structure -->
@@ -133,6 +133,13 @@
     <target name="layout.windows" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
         <!-- workaround until msdll is moved. -->
         <copy file="${msvcr.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
+    </target>
+
+    <target name="layout.zos" if="is.zos">
+        <!-- on z/OS copy across .x files to link against -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${depends.libs}${hy.libstdc++.suffix}" includes="*${linklib.suffix}*" />
+        </copy>
     </target>
 
     <!-- ================================= 

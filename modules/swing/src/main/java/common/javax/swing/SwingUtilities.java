@@ -401,6 +401,9 @@ public class SwingUtilities implements SwingConstants {
         while (child != null && child instanceof Container) {
             parent = child;
             child = parent.getComponentAt(x, y);
+            if (child == parent) {
+                break;
+            }
         }
 
         return (child != null) ? child : parent;

@@ -83,7 +83,8 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
 
     private int concurrency = ResultSet.CONCUR_UPDATABLE;
 
-    private boolean readOnly;
+    //compatiable with RI, default: true
+    private boolean readOnly = true;
 
     private boolean escapeProcessing;
 
@@ -988,5 +989,11 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             result[i] = param;
         }
         return result;
+    }
+    
+    public BaseRowSet clone() throws CloneNotSupportedException{
+        BaseRowSet result = (BaseRowSet) super.clone();        
+        return result;
+        
     }
 }

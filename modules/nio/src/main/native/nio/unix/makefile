@@ -19,8 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
-
 BUILDFILES = \
 	../shared/DirectBufferUtil.o ../shared/AddressUtil.o
 ifeq ($(HY_OS),linux)

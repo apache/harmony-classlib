@@ -44,8 +44,11 @@ BUILDFILES = \
 	$(FDLIBM_DIST)w_log.o $(FDLIBM_DIST)w_log10.o $(FDLIBM_DIST)w_pow.o $(FDLIBM_DIST)w_remainder.o \
 	$(FDLIBM_DIST)w_scalb.o $(FDLIBM_DIST)w_sinh.o $(FDLIBM_DIST)w_sqrt.o
 
-# OPTS is overriden
+# OPT is overriden except on zOS (fpic, for example, is not an option on zOS)
+ifneq ($(HY_OS),zos)
 OPT = -O0 -ffloat-store -fpic
+endif
+
 DEFINES += -D_IEEE_LIBM
 
 LIBNAME = $(LIBPATH)libhyfdlibm.a

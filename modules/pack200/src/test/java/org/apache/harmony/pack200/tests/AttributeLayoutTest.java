@@ -19,11 +19,13 @@ package org.apache.harmony.pack200.tests;
 import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.AttributeLayout;
+import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
 import org.apache.harmony.pack200.SegmentConstantPool;
 
 public class AttributeLayoutTest extends TestCase {
+
 	public class TestSegment extends Segment {
 		public SegmentConstantPool getConstantPool() {
 			final Object[][] data = new Object[][] {
@@ -41,6 +43,7 @@ public class AttributeLayoutTest extends TestCase {
 			};
 		}
 	}
+
 	public void testBadData() {
 		assertTrue(throwsException(null,AttributeLayout.CONTEXT_CLASS,""));
 		assertTrue(throwsException("",AttributeLayout.CONTEXT_CLASS,""));
@@ -51,6 +54,7 @@ public class AttributeLayoutTest extends TestCase {
 		assertTrue(throwsException("name",-1,""));
 		assertTrue(throwsException("name",1234,""));
 	}
+
 	public void testLayoutRU() throws Pack200Exception {
 		AttributeLayout layout = new AttributeLayout("RU",AttributeLayout.CONTEXT_CLASS,"RU", 1);
 		Segment segment = new TestSegment();
@@ -58,6 +62,7 @@ public class AttributeLayoutTest extends TestCase {
 		assertEquals("Zero",layout.getValue(0, segment.getConstantPool()));
 		assertEquals("One",layout.getValue(1, segment.getConstantPool()));
 	}
+
 	public void testLayoutRUN() throws Pack200Exception {
 		AttributeLayout layout = new AttributeLayout("RUN",AttributeLayout.CONTEXT_CLASS,"RUN", 1);
 		Segment segment = new TestSegment();
@@ -65,6 +70,7 @@ public class AttributeLayoutTest extends TestCase {
 		assertEquals("Zero",layout.getValue(1, segment.getConstantPool()));
 		assertEquals("One",layout.getValue(2, segment.getConstantPool()));
 	}
+
 	public void testLayoutRS() throws Pack200Exception {
 		AttributeLayout layout = new AttributeLayout("RS",AttributeLayout.CONTEXT_CLASS,"RS", 1);
 		Segment segment = new TestSegment();
@@ -72,13 +78,30 @@ public class AttributeLayoutTest extends TestCase {
 		assertEquals("Ein",layout.getValue(0, segment.getConstantPool()));
 		assertEquals("Zwei",layout.getValue(1, segment.getConstantPool()));
 	}
-	public void testLayoutRSN() throws Pack200Exception {
+
+    public void testLayoutRSN() throws Pack200Exception {
 		AttributeLayout layout = new AttributeLayout("RSN",AttributeLayout.CONTEXT_CLASS,"RSN", 1);
 		Segment segment = new TestSegment();
 		assertNull(layout.getValue(0, segment.getConstantPool()));
 		assertEquals("Ein",layout.getValue(1, segment.getConstantPool()));
 		assertEquals("Zwei",layout.getValue(2, segment.getConstantPool()));
 	}
+
+    public void testGetCodec() throws Pack200Exception {
+        AttributeLayout layout = new AttributeLayout("O", AttributeLayout.CONTEXT_CLASS, "HOBS", 1);
+        assertEquals(Codec.BRANCH5, layout.getCodec());
+        layout = new AttributeLayout("P", AttributeLayout.CONTEXT_METHOD, "PIN", 1);
+        assertEquals(Codec.BCI5, layout.getCodec());
+        layout = new AttributeLayout("S", AttributeLayout.CONTEXT_FIELD, "HS", 1);
+        assertEquals(Codec.SIGNED5, layout.getCodec());
+        layout = new AttributeLayout("RS", AttributeLayout.CONTEXT_CODE, "RRRS", 1);
+        assertEquals(Codec.UNSIGNED5, layout.getCodec());
+        layout = new AttributeLayout("KS", AttributeLayout.CONTEXT_CLASS, "RKS", 1);
+        assertEquals(Codec.UNSIGNED5, layout.getCodec());
+        layout = new AttributeLayout("B", AttributeLayout.CONTEXT_CLASS, "TRKSB", 1);
+        assertEquals(Codec.BYTE1, layout.getCodec());
+    }
+
 	public boolean throwsException(String name, int context, String layout) {
 		try {
 			new AttributeLayout(name,context,layout,-1);

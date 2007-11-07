@@ -15,7 +15,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
 INCLUDES += -I$(SHARED)common -I/usr/X11R6/include -I/usr/include/freetype2 \
             -Iinclude -I../../fontlib/unix -I../../fontlib/shared # TOFIX move includes
 ifeq ($(HY_OS),freebsd)

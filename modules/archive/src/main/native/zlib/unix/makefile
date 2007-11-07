@@ -21,8 +21,6 @@ include $(HY_HDK)/build/make/defines.mk
 
 ZLIB_DIST=../../zlib_dist/# Path to zlib
 
-CFLAGS += -fpic
-
 BUILDFILES = \
 	$(SHAREDSUB)zlib_copyright.o $(ZLIB_DIST)adler32.o $(ZLIB_DIST)compress.o \
 	$(ZLIB_DIST)crc32.o $(ZLIB_DIST)deflate.o $(ZLIB_DIST)infback.o $(ZLIB_DIST)inffast.o \
@@ -32,9 +30,15 @@ DLLNAME = ../libhyzlib$(HY_SHLIB_SUFFIX)
 EXPNAME = HYZLIB_0.1
 
 ifeq ($(DLL_LD),$(CC))
+ifneq ($(HY_OS),zos)
 ifneq ($(HY_OS),macosx)
 LDFLAGS += -Wl,-Bsymbolic
 endif
+endif
+endif
+
+ifeq ($(HY_OS),zos)
+OPT += -DSTDC
 endif
 
 include $(HY_HDK)/build/make/rules.mk

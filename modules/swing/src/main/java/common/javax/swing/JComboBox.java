@@ -568,7 +568,6 @@ public class JComboBox extends JComponent implements ItemSelectable, ListDataLis
 
     public void actionPerformed(ActionEvent e) {
         setSelectedItem(editor.getItem());
-        getUI().setPopupVisible(this, false);
     }
 
     public void contentsChanged(ListDataEvent e) {

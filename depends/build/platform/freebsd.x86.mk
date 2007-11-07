@@ -13,6 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DFREEBSD -DFREEBSD_X86 -DHYX86 -DNEEDS_SYS_TYPES
-OPT += -march=pentium3
+DEFINES += -DFREEBSD -DFREEBSD_X86 -DHYX86 -DNEEDS_SYS_TYPES -DIPv6_FUNCTION_SUPPORT
+OPT += -fpic -march=pentium3
 OSLIBS = -lpthread -lm

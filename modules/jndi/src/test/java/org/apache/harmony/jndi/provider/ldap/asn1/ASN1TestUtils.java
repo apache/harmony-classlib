@@ -66,9 +66,15 @@ public class ASN1TestUtils {
             }
         } else if (type instanceof ASN1ChoiceWrap) {
             checkEncodeChoice(value, (ASN1ChoiceWrap) type);
+        }  else if (type instanceof ASN1LdapFilter) {
+            checkEncodeFilter(value, (ASN1LdapFilter) type);
         } else {
             Assert.fail("Not supported ASN.1 type");
         }
+    }
+
+    private static void checkEncodeFilter(Object value, ASN1LdapFilter filter) {
+        checkEncode(value, LdapASN1Constant.Filter);
     }
 
     private static void checkEncodeChoice(Object value, ASN1ChoiceWrap type) {

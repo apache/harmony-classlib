@@ -21,17 +21,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- *
+ * Pack200 Inner Class Bands
  */
 public class IcBands extends BandSet {
     
-    private int[] icFlags;
+    public static class ICTuple {
 
-    private Object icName;
+        public String C; // this class
+        public int F; // flags
+        public String C2; // outer class
+        public String N; // name
 
-    private String[] icOuterClass;
+    }
 
-    private String[] icThisClass;
+    private ICTuple[] icAll;
 
     private String[] cpUTF8;
 
@@ -59,19 +62,35 @@ public class IcBands extends BandSet {
      */
     public void unpack(InputStream in) throws IOException,
             Pack200Exception {
+        // Read IC bands
         int innerClassCount = header.getInnerClassCount();
-        icThisClass = parseReferences("ic_this_class", in, Codec.UDELTA5,
+        String[] icThisClass = parseReferences("ic_this_class", in, Codec.UDELTA5,
                 innerClassCount, cpClass);
-        icFlags = decodeBandInt("ic_flags", in, Codec.UNSIGNED5, innerClassCount);
-        int outerClasses = 0;
-        for (int i = 0; i < innerClassCount; i++) {
-            if ((icFlags[i] & 1 << 16) != 0)
-                outerClasses++;
-        }
-        icOuterClass = parseReferences("ic_outer_class", in, Codec.DELTA5,
+        int[] icFlags = decodeBandInt("ic_flags", in, Codec.UNSIGNED5, innerClassCount);
+        int outerClasses = SegmentUtils.countBit16(icFlags);
+        String[] icOuterClass = parseReferences("ic_outer_class", in, Codec.DELTA5,
                 outerClasses, cpClass);
-        icName = parseReferences("ic_name", in, Codec.DELTA5, outerClasses,
+        String[] icName = parseReferences("ic_name", in, Codec.DELTA5, outerClasses,
                 cpUTF8);
+        
+        // Construct IC tuples
+        icAll = new ICTuple[icThisClass.length];
+        int index = 0;
+        for (int i = 0; i < icThisClass.length; i++) {
+            icAll[i] = new ICTuple();
+            icAll[i].C = icThisClass[i];
+            icAll[i].F = icFlags[i];
+            if((icFlags[i] & 1<<16) != 0) {
+                icAll[i].C2 = icOuterClass[index];
+                icAll[i].N = icName[index];
+                index++;
+            }
+        }
     }
 
+    public ICTuple[] getIcTuples() {
+        return icAll;
+    }
+
+  
 }

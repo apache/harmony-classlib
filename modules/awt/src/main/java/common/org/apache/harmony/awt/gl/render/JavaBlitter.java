@@ -34,6 +34,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import org.apache.harmony.awt.gl.ImageSurface;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.XORComposite;
@@ -134,6 +135,10 @@ public class JavaBlitter implements Blitter {
 
                 transformedBlit(srcCM, srcR, 0, 0, dstCM, dstR, dstX, dstY, w, h,
                         sysxform, comp, bgcolor, clip);
+                
+                Rectangle dirtyReg = JavaBlitter.getBounds2D(sysxform, new Rectangle(dstX, dstY, w, h)).getBounds();
+                Rectangle bounds = new Rectangle(dstSurf.getWidth(), dstSurf.getHeight()).getBounds();
+                dstSurf.addDirtyRegion(bounds.intersection(dirtyReg));
 
         }
     }
@@ -147,6 +152,8 @@ public class JavaBlitter implements Blitter {
                 dstSurf.getWidth(), dstSurf.getHeight(),
                 dstSurf.getColorModel(), dstSurf.getRaster(),
                 width, height, comp, bgcolor, clip);
+
+        dstSurf.addDirtyRegion(new Rectangle(dstX, dstY, width, height));
 
     }
     public void javaBlt(int srcX, int srcY, int srcW, int srcH,
@@ -353,11 +360,11 @@ public class JavaBlitter implements Blitter {
             int width, int height, AffineTransform at, Composite comp,
             Color bgcolor,MultiRectArea clip) {
 
-        Rectangle srcBounds = new Rectangle(width, height);
-        Rectangle dstBlitBounds = new Rectangle(dstX, dstY, srcR.getWidth(), srcR.getHeight());
+        Rectangle srcBounds = new Rectangle(srcX, srcY, width, height);
+        Rectangle dstBlitBounds = new Rectangle(dstX, dstY, width, height);
 
         Rectangle transSrcBounds = getBounds2D(at, srcBounds).getBounds();
-        Rectangle transDstBlitBounds = new Rectangle(0, 0, dstR.getWidth(), dstR.getHeight());
+        Rectangle transDstBlitBounds = getBounds2D(at, dstBlitBounds).getBounds();
 
         int translateX = transDstBlitBounds.x - transSrcBounds.x;
         int translateY = transDstBlitBounds.y - transSrcBounds.y;

@@ -19,8 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
-
 BUILDFILES = \
 	$(SHAREDSUB)thread_copyright.o $(HY_ARCH)/thrhelp.o $(HY_ARCH)/thrspinlock.o \
 	$(SHAREDSUB)hythread.o $(SHAREDSUB)hythreadinspect.o linuxonexit.o priority.o \

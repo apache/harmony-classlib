@@ -16,10 +16,12 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+
 import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.BitSet;
 
-public class CachedRow {
+public class CachedRow implements Cloneable{
     private Object[] columnData;
 
     private Object[] originalColumnData;
@@ -29,6 +31,8 @@ public class CachedRow {
     private boolean isDelete;
 
     private boolean insert;
+
+    private boolean nonUpdateable = false;
 
     public CachedRow(Object[] columnData) {
         this.columnData = columnData;
@@ -51,8 +55,24 @@ public class CachedRow {
         mask.flip(0,columnData.length);
     }
 
+    public void setNonUpdateable() {
+        // setDelete();
+        // setInsert();
+        // mask.clear();
+        // mask.flip(0,columnData.length);
+        nonUpdateable = true;
+    }
+
+    public boolean getNonUpdateable() {
+        return nonUpdateable;
+    }
+
     public void setDelete() {
         this.isDelete = true;
+    }
+    
+    public void unDoDelete() {
+        this.isDelete = false;
     }
 
     public boolean getDelete() {
@@ -67,7 +87,9 @@ public class CachedRow {
         return this.insert;
     }
 
-    public void updateString(int columnIndex, String x) {
+    public void updateString(int columnIndex, String x) throws SQLException {
+        if (nonUpdateable)
+            throw new SQLException("Not Updateable of the CurrentRow");
         this.columnData[columnIndex - 1] = x;
         setUpdateMask(columnIndex - 1);
     }
@@ -86,14 +108,43 @@ public class CachedRow {
     }
     
     public Object getObject(int columnIndex) {
-        return  this.columnData[columnIndex - 1];
+        return this.columnData[columnIndex - 1];
     }
 
     public int getInt(int columnIndex) {
         return (Integer) this.columnData[columnIndex - 1];
     }
-    
-    public Blob getBLOb(int columnIndex){
-        return (Blob) this.columnData[columnIndex-1];
+
+    public Blob getBLOb(int columnIndex) {
+        return (Blob) this.columnData[columnIndex - 1];
+    }
+
+    public boolean getBoolean(int columnIndex) {
+        return (Boolean) this.columnData[columnIndex - 1];
+    }
+
+    public byte getByte(int columnIndex) {
+        return (Byte) this.columnData[columnIndex - 1];
+    }
+
+    public byte[] getBytes(int columnIndex) {
+        return (byte[]) this.columnData[columnIndex - 1];
+    }
+
+    // deep clone
+    public CachedRow createClone() throws CloneNotSupportedException {  
+        CachedRow cr = (CachedRow) super.clone();
+
+        Object[] cd = new Object[columnData.length];
+        for (int i = 0; i < columnData.length; i++) {
+            cd[i] = columnData[i];
+        }
+        cr.columnData = cd;
+        cr.insert = insert;
+        cr.isDelete = isDelete;
+        cr.mask = (BitSet) mask.clone();
+        cr.nonUpdateable = nonUpdateable;
+        // cr.originalColumnData
+        return cr;
     }
 }
