@@ -32,6 +32,7 @@ import org.apache.harmony.sql.internal.nls.Messages;
 
 public class CachedRowSetWriter implements RowSetWriter {
 
+
     private ResultSet primaryKeys;
 
     private CachedRowSet originalRowSet;
@@ -46,7 +47,7 @@ public class CachedRowSetWriter implements RowSetWriter {
 
     private String sql;
 
-    private int columnCount, keysCount, keyColumnNumber;
+    private int columnCount;
 
     private int signal = 0;
 
@@ -55,18 +56,22 @@ public class CachedRowSetWriter implements RowSetWriter {
     private String keyColumnName, whereStatementForOriginal,
             whereStatementForCurrent;
 
+
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
         // use an optimistic concurrency control mechanism
+
         initial(theRowSet);
         // analyse every row and do responsible task.
         currentRowSet.first();
         originalRowSet.first();
-        while (currentRowSet.next()) {
+        do{
             // rolling with currentRowSet
             if (originalRowSet.next()) {
                 // deal with updated or deleted row which need do conflict check
-                if (checkConflictNotExist()) {
-                    writeRowData();
+                if (checkConflictNotExist(originalRowSet)) {
+                    //If all of the values in the data source are already the values to be persisted, 
+                    //the method acceptChanges does nothing. 
+                    if(!checkConflictNotExist(currentRowSet))  writeRowData();
                 } else {
                     cleanEnvironment();
                     throw new SyncProviderException(Messages
@@ -79,13 +84,14 @@ public class CachedRowSetWriter implements RowSetWriter {
                 // FIXME: need pre-check before insert into database?
                 writeRowData();
             }
-        }
+        }while (currentRowSet.next());
 
         cleanEnvironment();
+
         return true;
     }
-
-    private void initial(RowSetInternal theRowSet) throws SQLException {
+    
+    private void initial(RowSetInternal theRowSet) throws SQLException {      
         currentRowSet = (CachedRowSetImpl) theRowSet;
         // initial environment
         originalRowSet = (CachedRowSet) currentRowSet.getOriginal();
@@ -96,8 +102,8 @@ public class CachedRowSetWriter implements RowSetWriter {
         primaryKeys = originalConnection.getMetaData().getPrimaryKeys("",
                 currentRowSet.getMetaData().getSchemaName(1), tableName);
         cachedKeySet.populate(primaryKeys);
-        keysCount = cachedKeySet.getMetaData().getColumnCount();
     }
+
 
     private void writeRowData() throws SQLException {
         try {
@@ -122,7 +128,9 @@ public class CachedRowSetWriter implements RowSetWriter {
             e.printStackTrace();
             new SQLException(Messages.getString("rowset.6"));
         }
+
     }
+
 
     private void createScriptForWriteBack() throws SQLException {
         cachedKeySet.first();
@@ -130,11 +138,11 @@ public class CachedRowSetWriter implements RowSetWriter {
         String insertCollector = "", updateCollector = "";
         // FIXME:uses getUpdateMask()
 
-        while (cachedKeySet.next()) {
+         do{
             keyColumnName = cachedKeySet.getString("COLUMN_NAME");
             whereStatementForCurrent = whereStatementForCurrent + keyColumnName
                     + " = ? " + " and ";
-        }
+        }while (cachedKeySet.next());
 
         whereStatementForCurrent = subStringN(whereStatementForCurrent, 5);
 
@@ -185,12 +193,12 @@ public class CachedRowSetWriter implements RowSetWriter {
                     + originalRowSet.getMetaData().getColumnName(i) + ", ";
         tempSelector = tempSelector.substring(0, tempSelector.length() - 2);
         sql = "select " + tempSelector + " from " + tableName + " where ";
-        while (cachedKeySet.next()) {
+        do {
             keyColumnName = cachedKeySet.getString("COLUMN_NAME");
             whereStatementForOriginal = whereStatementForOriginal
                     + keyColumnName + " = ? " + " and ";
             whereStatementForOriginal = subStringN(whereStatementForOriginal, 5);
-        }
+        } while (cachedKeySet.next());
         cachedKeySet.first();
         sql = sql + whereStatementForOriginal;
     }
@@ -199,11 +207,11 @@ public class CachedRowSetWriter implements RowSetWriter {
             throws SQLException {
         cachedKeySet.first();
         int i = from+1;        
-        while (cachedKeySet.next()) {
+        do {
             keyColumnName = cachedKeySet.getString("COLUMN_NAME");
             ((PreparedStatement) statement).setObject(i++, inputRS
                     .getObject(keyColumnName));
-        }
+        } while (cachedKeySet.next()); 
     }
 
     private void fillParasOfAllColumn() throws SQLException {
@@ -212,7 +220,7 @@ public class CachedRowSetWriter implements RowSetWriter {
                     .getObject(i));
     }
 
-    private boolean checkConflictNotExist() {
+    private boolean checkConflictNotExist(CachedRowSet crs) {
         try {
             createScriptForCheck();
             statement = originalConnection.prepareStatement(sql);
@@ -222,8 +230,7 @@ public class CachedRowSetWriter implements RowSetWriter {
             // compare line by line, column by column
             if (dataInDB.next()) {
                 for (int i = 1; i <= dataInDB.getMetaData().getColumnCount(); i++) {
-                    if (!(dataInDB.getObject(i).equals(originalRowSet
-                            .getObject(i))))
+                    if (!(dataInDB.getObject(i).equals(crs.getObject(i))))
                         return false;
                 }
             }
@@ -234,7 +241,7 @@ public class CachedRowSetWriter implements RowSetWriter {
     }
 
     private void cleanEnvironment() {
-        try {
+        try {           
             originalRowSet.close();
             originalConnection.close();
             cachedKeySet.close();
@@ -246,4 +253,5 @@ public class CachedRowSetWriter implements RowSetWriter {
         }
     }
     // end class
+
 }

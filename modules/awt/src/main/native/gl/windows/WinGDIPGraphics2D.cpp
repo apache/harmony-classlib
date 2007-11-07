@@ -109,6 +109,27 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
 }
 
 /*
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
+ * Method:    createGraphicsInfoFor
+ * Signature: (JC)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createGraphicsInfoFor
+  (JNIEnv * env, jobject obj, jlong hdc, jchar pageUnit) {
+	GraphicsInfo * gi = (GraphicsInfo *) malloc(sizeof(GraphicsInfo));
+
+	gi->hdc = (HDC) hdc;
+	gi->graphics = new Graphics(gi->hdc);
+	gi->pen = 0;
+	gi->brush = 0;
+	gi->bmp = 0;
+	gi->matrix = new Matrix();
+
+	gi->graphics->SetPageUnit((Gdiplus::Unit) pageUnit);
+
+	return (jlong)gi;
+}
+
+/*
  * Creates compatible GraphicsInfo structure for specified device context
  */
 static inline GraphicsInfo *createCompatibleImageInfo(JNIEnv *env, HDC hdc, jint width, jint height) {

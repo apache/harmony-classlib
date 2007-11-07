@@ -20,6 +20,9 @@ package org.apache.harmony.jndi.provider.ldap.asn1;
 /**
  * Retrieves data from ASN.1 data stream.
  * 
+ * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable
+ * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1ChoiceWrap
+ * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1SequenceWrap
  */
 public interface ASN1Decodable {
 

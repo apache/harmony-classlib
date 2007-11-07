@@ -20,11 +20,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+import org.apache.harmony.pack200.IcBands.ICTuple;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
+import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
  * 
@@ -44,6 +45,12 @@ public class ClassBands extends BandSet {
     private String[] classThis;
     
     private ArrayList[] classAttributes;
+    
+    private int[] classVersionMajor;
+    
+    private int[] classVersionMinor;
+    
+    private IcBands.ICTuple[][] icLocal;
 
     private int[] codeHandlerCount;
 
@@ -51,21 +58,15 @@ public class ClassBands extends BandSet {
 
     private int[] codeMaxStack;
 
-    private int fieldAttrCount;
-
     private ArrayList[][] fieldAttributes;
 
     private String[][] fieldDescr;
 
     private long[][] fieldFlags;
 
-    private int methodAttrCount;
-
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
-
-    private ExceptionsAttribute[][] methodExceptions;
     
     private long[][] methodFlags;
 
@@ -134,13 +135,7 @@ public class ClassBands extends BandSet {
                 classFieldCount, cpBands.getCpDescriptor());
         fieldFlags = parseFlags("field_flags", in, classFieldCount,
                 Codec.UNSIGNED5, options.hasFieldFlagsHi());
-        for (int i = 0; i < fieldFlags.length; i++) {
-            for (int j = 0; j < fieldFlags[i].length; j++) {
-                long flag = fieldFlags[i][j];
-                if ((flag & (1 << 16)) != 0)
-                    fieldAttrCount++;
-            }
-        }
+        int fieldAttrCount = SegmentUtils.countBit16(fieldFlags);
         int[] fieldAttrCounts = decodeBandInt("field_attr_count", in, Codec.UNSIGNED5, fieldAttrCount);
         int[][] fieldAttrIndexes = decodeBandInt("field_attr_indexes", in, Codec.UNSIGNED5, fieldAttrCounts);
         int callCount = 0;
@@ -151,71 +146,63 @@ public class ClassBands extends BandSet {
                 callCount += layout.numBackwardsCallables();
             }
         }
-        int[] fieldAttrCalls = decodeBandInt("field_attr_calls", in, Codec.UNSIGNED5, callCount);
-        AttributeLayout layout = attrMap.getAttributeLayout("ConstantValue",
-                AttributeLayout.CONTEXT_FIELD);
-        int constantCount = SegmentUtils.countMatches(fieldFlags, layout);        
-        if(constantCount > 0) {
-            int[] field_constantValue_KQ = decodeBandInt("field_ConstantValue_KQ", in, Codec.UNSIGNED5, constantCount);
-            int index = 0;
-            fieldAttributes = new ArrayList[classCount][];
-            for (int i = 0; i < classCount; i++) {
-                fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
-                for (int j = 0; j < fieldFlags[i].length; j++) {
-                    fieldAttributes[i][j] = new ArrayList();
-                    long flag = fieldFlags[i][j];
-                    if (layout.matches(flag)) {
-                        // we've got a value to read
-                        long result = field_constantValue_KQ[index];
-                        String desc = fieldDescr[i][j];
-                        int colon = desc.indexOf(':');
-                        // String name = desc.substring(0, colon);
-                        String type = desc.substring(colon + 1);
-                        // TODO Got to get better at this ... in any case, it should
-                        // be e.g. KIB or KIH
-                        if (type.equals("B") || type.equals("H"))
-                            type = "I";
-                        Object value = layout.getValue(result, type, cpBands
-                                    .getConstantPool());
-                        fieldAttributes[i][j]
-                                .add(new ConstantValueAttribute(value));
-                        debug("Processed value " + value + " for ConstantValue");
-                        index++;
-                    }
-                }
+        int layoutsUsed = 0;
+        for (int i = 0; i < fieldFlags.length; i++) {
+            for (int j = 0; j < fieldFlags[i].length; j++) {
+                layoutsUsed |= fieldFlags[i][j]; 
             }
         }
+        for (int i = 0; i < 16; i++) {
+            if((layoutsUsed & 1<<i) != 0) {
+                AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_FIELD);
+                callCount += layout.numBackwardsCallables();
+            }
+        }
+        int[] fieldAttrCalls = decodeBandInt("field_attr_calls", in, Codec.UNSIGNED5, callCount);
 
-        layout = attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_SIGNATURE,
+        AttributeLayout constantValueLayout = attrMap.getAttributeLayout("ConstantValue",
                 AttributeLayout.CONTEXT_FIELD);
-        int signatureCount = SegmentUtils.countMatches(fieldFlags, layout);
-        if (signatureCount > 0) {
-            int[] fieldSignatureRS = decodeBandInt("field_Signature_RS", in, Codec.UNSIGNED5, signatureCount);
-            int index = 0;
-            fieldAttributes = new ArrayList[classCount][];
-            for (int i = 0; i < classCount; i++) {
-                fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
-                for (int j = 0; j < fieldFlags[i].length; j++) {
-                    fieldAttributes[i][j] = new ArrayList();
-                    long flag = fieldFlags[i][j];
-                    if (layout.matches(flag)) {
-                        // we've got a signature attribute
-                        long result = fieldSignatureRS[index];
-                        String desc = fieldDescr[i][j];
-                        int colon = desc.indexOf(':');
-                        // String name = desc.substring(0, colon);
-                        String type = desc.substring(colon + 1);
-                        // TODO Got to get better at this ... in any case, it should
-                        // be e.g. KIB or KIH
-                        if (type.equals("B") || type.equals("H"))
-                            type = "I";
-                        Object value = layout.getValue(result, type, cpBands
-                                .getConstantPool());
-                        fieldAttributes[i][j]
-                                .add(new ConstantValueAttribute(value));
-                        index++;
-                        debug("Found a signature attribute: " + result);
-                    }
+        int constantCount = SegmentUtils.countMatches(fieldFlags, constantValueLayout); 
+        int[] field_constantValue_KQ = decodeBandInt("field_ConstantValue_KQ", in, Codec.UNSIGNED5, constantCount);
+        int constantValueIndex = 0;
+        
+        AttributeLayout signatureLayout = attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_SIGNATURE,
+                AttributeLayout.CONTEXT_FIELD);
+        int signatureCount = SegmentUtils.countMatches(fieldFlags, signatureLayout);
+        int[] fieldSignatureRS = decodeBandInt("field_Signature_RS", in, Codec.UNSIGNED5, signatureCount);
+        int signatureIndex = 0;
+        
+        fieldAttributes = new ArrayList[classCount][];
+        for (int i = 0; i < classCount; i++) {
+            fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
+            for (int j = 0; j < fieldFlags[i].length; j++) {
+                fieldAttributes[i][j] = new ArrayList();
+                long flag = fieldFlags[i][j];
+                if (constantValueLayout.matches(flag)) {
+                    // we've got a value to read
+                    long result = field_constantValue_KQ[constantValueIndex];
+                    String desc = fieldDescr[i][j];
+                    int colon = desc.indexOf(':');
+                    String type = desc.substring(colon + 1);
+                    if (type.equals("B") || type.equals("S") || type.equals("C") || type.equals("Z"))
+                        type = "I";
+                    Object value = constantValueLayout.getValue(result, type,
+                            cpBands.getConstantPool());
+                    fieldAttributes[i][j]
+                            .add(new ConstantValueAttribute(value));
+                    constantValueIndex++;
+                }
+                if (signatureLayout.matches(flag)) {
+                    // we've got a signature attribute
+                    long result = fieldSignatureRS[signatureIndex];
+                    String desc = fieldDescr[i][j];
+                    int colon = desc.indexOf(':');
+                    String type = desc.substring(colon + 1);
+                    Object value = signatureLayout.getValue(result, type, cpBands
+                            .getConstantPool());
+                    fieldAttributes[i][j]
+                            .add(new ConstantValueAttribute(value));
+                    signatureIndex++;
                 }
             }
         }
@@ -228,13 +215,8 @@ public class ClassBands extends BandSet {
                 classMethodCount, cpBands.getCpDescriptor());
         methodFlags = parseFlags("method_flags", in, classMethodCount,
                 Codec.UNSIGNED5, options.hasMethodFlagsHi());
-        for (int i = 0; i < classCount; i++) {
-            for (int j = 0; j < methodFlags[i].length; j++) {
-                long flag = methodFlags[i][j];
-                if ((flag & (1 << 16)) != 0)
-                    methodAttrCount++;
-            }
-        }
+       
+        int methodAttrCount = SegmentUtils.countBit16(methodFlags);
         int[] methodAttrCounts = decodeBandInt("method_attr_count", in, Codec.UNSIGNED5, methodAttrCount);
         int[][] methodAttrIndexes = decodeBandInt("method_attr_indexes", in, Codec.UNSIGNED5, methodAttrCounts);
         int callCount = 0;
@@ -246,6 +228,7 @@ public class ClassBands extends BandSet {
             }
         }
         methodAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5, callCount);
+        
         // assign empty method attributes
         methodAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
@@ -273,7 +256,6 @@ public class ClassBands extends BandSet {
                     long result = methodSignatureRS[index];
                     String desc = methodDescr[i][j];
                     int colon = desc.indexOf(':');
-                    // String name = desc.substring(0, colon);
                     String type = desc.substring(colon + 1);
                     // TODO Got to get better at this ... in any case, it should
                     // be e.g. KIB or KIH
@@ -284,7 +266,6 @@ public class ClassBands extends BandSet {
                     methodAttributes[i][j]
                             .add(new ConstantValueAttribute(value));
                     index++;
-                    debug("Found a signature attribute: " + result);
                 }
             }        
         }
@@ -299,13 +280,11 @@ public class ClassBands extends BandSet {
             throws Pack200Exception, IOException {
         AttributeLayout layout = attrMap.getAttributeLayout("Exceptions",
                 AttributeLayout.CONTEXT_METHOD);
-        methodExceptions = new ExceptionsAttribute[classCount][];
         int count = SegmentUtils.countMatches(methodFlags, layout);
         int[] numExceptions = decodeBandInt("method_Exceptions_n", in, Codec.UNSIGNED5, count);
         String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC", in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
         int index = 0;
         for (int i = 0; i < classCount; i++) {
-            methodExceptions[i] = new ExceptionsAttribute[methodFlags[i].length];
             for (int j = 0; j < methodFlags[i].length; j++) {
                 long flag = methodFlags[i][j];
                 if(layout.matches(flag)) {
@@ -315,8 +294,7 @@ public class ClassBands extends BandSet {
                     for (int k = 0; k < n; k++) {
                         exceptionClasses[k] = new CPClass(exceptions[k]);
                     }
-                    methodExceptions[i][j] = new ExceptionsAttribute(exceptionClasses);
-                    methodAttributes[i][j].add(methodExceptions[i][j]);
+                    methodAttributes[i][j].add(new ExceptionsAttribute(exceptionClasses));
                     index ++;
                 }
             }
@@ -325,14 +303,12 @@ public class ClassBands extends BandSet {
 
     private void parseClassAttrBands(InputStream in) throws IOException,
             Pack200Exception {
+        String[] cpUTF8 = cpBands.getCpUTF8();
+        String[] cpClass = cpBands.getCpClass();
+        
         classFlags = parseFlags("class_flags", in, classCount, Codec.UNSIGNED5,
                 options.hasClassFlagsHi());
-        int classAttrCount = 0;
-        for (int i = 0; i < classFlags.length; i++) {
-            long flag = classFlags[i];
-            if ((flag & (1 << 16)) != 0)
-                classAttrCount++;
-        }
+        int classAttrCount = SegmentUtils.countBit16(classFlags);
         int[] classAttrCounts = decodeBandInt("class_attr_count", in, Codec.UNSIGNED5, classAttrCount);
         int[][] classAttrIndexes = decodeBandInt("class_attr_indexes", in, Codec.UNSIGNED5, classAttrCounts);
         int callCount = 0;
@@ -402,39 +378,99 @@ public class ClassBands extends BandSet {
                 "class_file_version_minor_H", in, Codec.UNSIGNED5, versionCount);
         int[] classFileVersionMajorH = decodeBandInt(
                 "class_file_version_major_H", in, Codec.UNSIGNED5, versionCount);
-        
+        if(versionCount > 0) {
+            classVersionMajor = new int[classCount];
+            classVersionMinor = new int[classCount];
+        }
+        int defaultVersionMajor = header.getDefaultClassMajorVersion();
+        int defaultVersionMinor = header.getDefaultClassMinorVersion();
         
         // Now process the attribute bands we have parsed
         int sourceFileIndex = 0;
         int enclosingMethodIndex = 0;
         int signatureIndex = 0;
         int innerClassIndex = 0;
+        int innerClassC2NIndex = 0;
         int versionIndex = 0;
         classAttributes = new ArrayList[classCount];
+        icLocal = new IcBands.ICTuple[classCount][];
         for (int i = 0; i < classCount; i++) {
             classAttributes[i] = new ArrayList();
             long flag = classFlags[i];
+            
             if (sourceFileLayout.matches(flag)) {
                 long result = classSourceFile[sourceFileIndex];
-                // we've got a value to read
-                // TODO File this as a sourcefile attribute and don't generate
-                // everything below
-                Object value = sourceFileLayout.getValue(result, cpBands
+                String value = (String) sourceFileLayout.getValue(result, cpBands
                         .getConstantPool());
-                debug("Processed value " + value + " for SourceFile");
+                if(value == null) {
+                    // Remove package prefix
+                    String className = classThis[i].substring(classThis[i].lastIndexOf('/') + 1);
+                    className = className.substring(className.lastIndexOf('.') + 1);
+                    
+                    // Remove mangled nested class names
+                    char[] chars = className.toCharArray();
+                    int index = -1;
+                    for (int j = 0; j < chars.length; j++) {
+                        if(chars[j] <= 0x2D) {
+                            index = j;
+                            break;
+                        }                        
+                    }
+                    if(index > -1) {
+                        className = className.substring(0, index);
+                    }
+                    // Add .java to the end
+                    value = className + ".java";
+                }
+                classAttributes[i].add(new SourceFileAttribute(value));
                 sourceFileIndex++;
             }
             if(enclosingMethodLayout.matches(flag)) {
-               // TODO
+//                long result = 
             }
             if(signatureLayout.matches(flag)) {
-//              TODO
+                long result = classSignature[signatureIndex];
+                Object value = signatureLayout.getValue(result, cpBands
+                        .getConstantPool());
+                classAttributes[i].add(new ConstantValueAttribute(value));
+                signatureIndex++;
             }
             if(innerClassLayout.matches(flag)) {
-                // TODO
+                // Just create the tuples for now because the attributes are
+                // decided at the end when creating class constant pools
+                icLocal[i] = new IcBands.ICTuple[classInnerClassesN[innerClassIndex]];
+                for (int j = 0; j < icLocal[i].length; j++) {
+                    IcBands.ICTuple icTuple = new IcBands.ICTuple();
+                    icTuple.C = cpClass[classInnerClassesRC[innerClassIndex][j]];
+                    icTuple.F = classInnerClassesF[innerClassIndex][j];
+                    if(icTuple.F != 0) {
+                        icTuple.C2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
+                        icTuple.N = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
+                        innerClassC2NIndex++;
+                    } else {
+                        // Get from icBands
+                        IcBands icBands = segment.getIcBands();
+                        ICTuple[] icAll = icBands.getIcTuples();
+                        for (int k = 0; k < icAll.length; k++) {
+                            if(icAll[k].C.equals(icTuple.C)) {
+                                icTuple.C2 = icAll[k].C2;
+                                icTuple.N = icAll[k].N;
+                                break;
+                            }
+                        }
+                    }
+                    icLocal[i][j] = icTuple;
+                }
+                innerClassIndex++;           
             }
             if(versionLayout.matches(flag)) {
-                // TODO
+                classVersionMajor[i] = classFileVersionMajorH[versionIndex];
+                classVersionMinor[i] = classFileVersionMinorH[versionIndex];
+                versionIndex++;
+            } else if(classVersionMajor != null) {
+                // Fill in with defaults
+                classVersionMajor[i] = defaultVersionMajor;
+                classVersionMinor[i] = defaultVersionMinor;
             }
         }
     }
@@ -505,12 +541,7 @@ public class ClassBands extends BandSet {
 
     private void parseCodeAttrBands(InputStream in, int codeFlagsCount) throws IOException, Pack200Exception {
         long[] codeFlags = parseFlags("code_flags", in, codeFlagsCount, Codec.UNSIGNED5, segment.getSegmentHeader().getOptions().hasCodeFlagsHi());
-        int codeAttrCount = 0;
-        for (int i = 0; i < codeFlagsCount; i++) {
-            long flag = codeFlags[i];
-            if ((flag & (1 << 16)) != 0)
-                codeAttrCount++;
-        }
+        int codeAttrCount = SegmentUtils.countBit16(codeFlags);
         int[] codeAttrCounts = decodeBandInt("code_attr_count", in, Codec.UNSIGNED5, codeAttrCount);
         int[][] codeAttrIndexes = decodeBandInt("code_attr_indexes", in, Codec.UNSIGNED5, codeAttrCounts);
         int callCount = 0;
@@ -731,10 +762,6 @@ public class ClassBands extends BandSet {
         return codeMaxStack;
     }
 
-    public int getFieldAttrCount() {
-        return fieldAttrCount;
-    }
-
     public ArrayList[][] getFieldAttributes() {
         return fieldAttributes;
     }
@@ -755,12 +782,30 @@ public class ClassBands extends BandSet {
         return methodDescr;
     }
 
-    public ExceptionsAttribute[][] getMethodExceptions() {
-        return methodExceptions;
-    }
-
     public long[][] getMethodFlags() {
         return methodFlags;
+    }
+
+    /**
+     * Returns null if all classes should use the default major and minor
+     * version or an array of integers containing the major version numberss to
+     * use for each class in the segment
+     * 
+     * @return Class file major version numbers, or null if none specified
+     */
+    public int[] getClassVersionMajor() {
+        return classVersionMajor;
+    }
+
+    /**
+     * Returns null if all classes should use the default major and minor
+     * version or an array of integers containing the minor version numberss to
+     * use for each class in the segment
+     * 
+     * @return Class file minor version numbers, or null if none specified
+     */
+    public int[] getClassVersionMinor() {
+        return classVersionMinor;
     }
 
 }

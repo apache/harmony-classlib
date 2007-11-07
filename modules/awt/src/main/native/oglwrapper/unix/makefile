@@ -15,7 +15,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
 INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include
 
 BUILDFILES = \

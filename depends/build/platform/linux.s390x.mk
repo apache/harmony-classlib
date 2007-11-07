@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DLINUX -DLINUX_S390X -DHYS390X
+DEFINES += -DLINUX -DLINUX_S390X -DHYS390X -DIPv6_FUNCTION_SUPPORT
 OPT += -fpic -m64
 
 ASFLAGS += -m64

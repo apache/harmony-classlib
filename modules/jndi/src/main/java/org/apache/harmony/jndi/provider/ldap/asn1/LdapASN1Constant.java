@@ -36,34 +36,42 @@ public class LdapASN1Constant {
     public static final int OP_BIND_REQUEST = 0;
 
     public static final int OP_BIND_RESPONSE = 1;
+    
+    public static final int OP_SEARCH_REQUEST = 2;
 
+    public static final int OP_SEARCH_RESULT_ENTRY = 3;
+
+    public static final int OP_SEARCH_RESULT_DONE = 4;
+
+    public static final int OP_SEARCH_RESULT_REF = 5;
+    
     // FIXME change them to appropriate index number in the future.
-    public static final int OP_MODIFY_REQUEST = 2;
+    public static final int OP_MODIFY_REQUEST = 6;
     
-    public static final int OP_MODIFY_RESPONSE = 3;
+    public static final int OP_MODIFY_RESPONSE = 7;
 
-    public static final int OP_ADD_REQUEST = 4;
+    public static final int OP_ADD_REQUEST = 8;
     
-    public static final int OP_ADD_RESPONSE = 5;
+    public static final int OP_ADD_RESPONSE = 9;
     
-    public static final int OP_DEL_REQUEST = 6;
+    public static final int OP_DEL_REQUEST = 10;
 
-    public static final int OP_DEL_RESPONSE = 7;
+    public static final int OP_DEL_RESPONSE = 11;
 
-    public static final int OP_MODIFY_DN_REQUEST = 8;
+    public static final int OP_MODIFY_DN_REQUEST = 12;
     
-    public static final int OP_MODIFY_DN_RESPONSE = 9;
+    public static final int OP_MODIFY_DN_RESPONSE = 13;
 
-    public static final int OP_COMPARE_REQUEST = 10;
+    public static final int OP_COMPARE_REQUEST = 14;
     
-    public static final int OP_COMPARE_RESPONSE = 11;
+    public static final int OP_COMPARE_RESPONSE = 15;
 
-    public static final int OP_ABANDON_REQUEST = 12;
+    public static final int OP_ABANDON_REQUEST = 16;
 
-    public static final int OP_EXTENDED_REQUEST = 13;
+    public static final int OP_EXTENDED_REQUEST = 17;
     
-    public static final int OP_EXTENDED_RESPONSE = 14;
-
+    public static final int OP_EXTENDED_RESPONSE = 18;
+    
     public static final ASN1Type Attribute = new ASN1SequenceWrap(
             new ASN1Type[] { ASN1OctetString.getInstance(), // type
                     new ASN1SetOf(ASN1OctetString.getInstance()) }); // vals
@@ -133,6 +141,9 @@ public class LdapASN1Constant {
                             setOptional(0); // serverSaslCreds is optional
                         }
                     }));
+    
+    public static final ASN1Type UnbindRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 2, ASN1Null.getInstance());
     
     public static final ASN1Type AttributeValueAssertion = new ASN1SequenceWrap(
             new ASN1Type[] { ASN1OctetString.getInstance(), // attributeDesc
@@ -223,12 +234,105 @@ public class LdapASN1Constant {
     public static final ASN1Type ModifyResponse = new ASN1Implicit(
             ASN1Constants.CLASS_APPLICATION, 7, LDAPResult);
     
+    public static final ASN1Type SubstringFilter = new ASN1SequenceWrap(
+            new ASN1Type[] {
+                    ASN1OctetString.getInstance(), // type
+                    new ASN1SequenceOf(
+                            new ASN1ChoiceWrap(new ASN1Type[] { // substrings
+                                            new ASN1Implicit(
+                                                    // initial
+                                                    ASN1Constants.CLASS_CONTEXTSPECIFIC,
+                                                    0, ASN1OctetString
+                                                            .getInstance()),
+                                            new ASN1Implicit(
+                                                    // any
+                                                    ASN1Constants.CLASS_CONTEXTSPECIFIC,
+                                                    1, ASN1OctetString
+                                                            .getInstance()),
+                                            new ASN1Implicit(
+                                                    // final
+                                                    ASN1Constants.CLASS_CONTEXTSPECIFIC,
+                                                    2, ASN1OctetString
+                                                            .getInstance()) })) });
+    
+    public static final ASN1Type MatchingRuleAssertion = new ASN1SequenceWrap(
+            new ASN1Type[] {
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 1, // matchingRule
+                            ASN1OctetString.getInstance()),
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 2, // type
+                            ASN1OctetString.getInstance()),
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 3, // matchValue
+                            ASN1OctetString.getInstance()),
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 4, // dnAttributes
+                            ASN1Boolean.getInstance()) }) {
+        {
+            setOptional(0);
+            setOptional(1);
+            setDefault(Boolean.FALSE, 3);
+        }
+    };
+    
+    public static final ASN1Type Filter = new ASN1ChoiceWrap(new ASN1Type[] {
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 0,
+                    new ASN1SetOf(new ASN1LdapFilter())),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 1,
+                    new ASN1SetOf(new ASN1LdapFilter())),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 2,
+                    new ASN1LdapFilter()),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 3,
+                    AttributeValueAssertion),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 4,
+                    SubstringFilter),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 5,
+                    AttributeValueAssertion),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 6,
+                    AttributeValueAssertion),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 7,
+                    ASN1OctetString.getInstance()),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 8,
+                    AttributeValueAssertion),
+            new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 9,
+                    MatchingRuleAssertion) });
+    
+    public static final ASN1Type SearchRequest = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 3,
+            new ASN1SequenceWrap(new ASN1Type[] {
+                    ASN1OctetString.getInstance(), // baseObject
+                    ASN1Enumerated.getInstance(), // scope
+                    ASN1Enumerated.getInstance(), // derefAliases
+                    ASN1Integer.getInstance(), // sizeLimit
+                    ASN1Integer.getInstance(), // timeLimit
+                    ASN1Boolean.getInstance(), // typesonly
+                    Filter, // Filter
+                    new ASN1SequenceOf(ASN1OctetString.getInstance()) })); // attributes
+    
+    public static final ASN1Type PartialAttributeList = new ASN1SequenceOf(
+            new ASN1SequenceWrap(new ASN1Type[] {
+                    ASN1OctetString.getInstance(), // type
+                    new ASN1SetOf(ASN1OctetString.getInstance()) })); // vals
+    
+    public static final ASN1Type SearchResultEntry = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 4, new ASN1SequenceWrap(
+                    new ASN1Type[] { ASN1OctetString.getInstance(), // objectName
+                            PartialAttributeList })); // attributes
+    
+    public static final ASN1Type SearchResultReference = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 19, new ASN1SequenceOf(
+                    ASN1OctetString.getInstance()));
+    
+    public static final ASN1Type SearchResultDone = new ASN1Implicit(
+            ASN1Constants.CLASS_APPLICATION, 5, LDAPResult);
+    
     public static final ASN1Type LDAPMessage = new ASN1SequenceWrap(
             new ASN1Type[] {
                     ASN1Integer.getInstance(),
                     new ASN1ChoiceWrap(new ASN1Type[] { 
                             BindRequest,
                             BindResponse,
+                            SearchRequest,
+                            SearchResultEntry, 
+                            SearchResultDone,
+                            SearchResultReference, 
                             ModifyRequest,
                             ModifyResponse, 
                             AddRequest,

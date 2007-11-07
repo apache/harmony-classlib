@@ -19,8 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
-
 BUILDFILES = \
 	../shared/instrument.o ../shared/inst_agt.o 
 

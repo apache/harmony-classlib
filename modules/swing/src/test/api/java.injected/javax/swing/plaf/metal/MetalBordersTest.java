@@ -190,7 +190,8 @@ public class MetalBordersTest extends SwingTestCase {
         try {
             border.getBorderInsets(new JButton());
             fail("should throw ClassCastException");
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
+            // Expected
         }
         checkInsets(border, testToolBar);
     }

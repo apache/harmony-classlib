@@ -17,7 +17,6 @@ include $(HY_HDK)/build/make/defines.mk
 
 PNG_DIR=$(HY_HDK)/../depends/libs/build/png/
 
-CFLAGS += -fpic
 INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include -I$(PNG_DIR)
 
 BUILDFILES = \

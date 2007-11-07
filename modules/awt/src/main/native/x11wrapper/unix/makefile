@@ -15,7 +15,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
 INCLUDES += -I$(SHARED)common -I/usr/X11R6/include
 
 BUILDFILES = \

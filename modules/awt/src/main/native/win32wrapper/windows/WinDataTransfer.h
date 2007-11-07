@@ -122,7 +122,7 @@ private:
     HRESULT getImage(UINT format, STGMEDIUM * pMedium);
     HRESULT getSerializedObject(UINT format, STGMEDIUM * pMedium);
 
-    CAtlArray<FORMATETC> formatArray;
+    CSimpleArray<FORMATETC> formatArray;
     jobject dataSnapshotGlobalRef;
 };
 

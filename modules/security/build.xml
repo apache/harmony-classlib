@@ -90,6 +90,10 @@
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
+            <!-- Copy link exports file on z/OS -->
+            <fileset dir="${hy.security.src.main.native}/security/${hy.os.family}">
+                <include name="*${linklib.suffix}*" if="is.zos" />
+            </fileset>
         </copy>
     </target>
     

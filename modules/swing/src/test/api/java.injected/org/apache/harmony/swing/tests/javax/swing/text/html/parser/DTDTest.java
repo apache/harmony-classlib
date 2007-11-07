@@ -35,10 +35,8 @@ public class DTDTest extends TestCase {
             Element e = dtd.getElement(-1);
             fail("IndexOutOfBoundsException wasn't raised as RI, but method returned: " + e);
         } catch (IndexOutOfBoundsException e) {
-        } catch (Exception e) {
-            fail(e.getClass().getName()
-                    + " raised but IndexOutOfBoundsException had to be raised");
-        }
+            // Expected
+        } 
     }
 
     public void testGetElementUpperOutOfBounds() {
@@ -46,9 +44,7 @@ public class DTDTest extends TestCase {
             Element e = dtd.getElement(dtd.elements.size());
             fail("IndexOutOfBoundsException didn't raised as RI, but method returned: " + e);
         } catch (IndexOutOfBoundsException e) {
-        } catch (Exception e) {
-            fail(e.getClass().getName()
-                    + " raised but IndexOutOfBoundsException had to be raised");
+            // Expected
         }
     }
 }

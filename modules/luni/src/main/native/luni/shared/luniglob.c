@@ -333,7 +333,9 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
     {
         unsigned i = 0;
         /* Make a string version of the CP separator */
-        char cpSeparator[] = {(char)hysysinfo_get_classpathSeparator (), '\0'};
+        char cpSeparator[2];
+        cpSeparator[0] = (char)hysysinfo_get_classpathSeparator();
+        cpSeparator[1] = '\0';
 		
         /* Read current value of bootclasspath property */
         rcGetProperty = (*vmInterface)->GetSystemProperty (vmInterface,

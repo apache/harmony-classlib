@@ -21,6 +21,11 @@
     #include <stddef.h>
 #endif
 
+/* Need to include inttypes.h to get intptr_t and uintptr_t */
+#if defined(ZOS)
+#include <inttypes.h>
+#endif
+
 #include <jni.h>
 
 #define jlong2addr(a, x) ((a *)((uintptr_t)(x)))

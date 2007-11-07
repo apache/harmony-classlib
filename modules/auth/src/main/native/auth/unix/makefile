@@ -19,7 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
 BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
 
 ifneq ($(HY_ZIP_API),true)

@@ -19,8 +19,6 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-CFLAGS += -fpic
-
 BUILDFILES = $(SHAREDSUB)hythread.o
 
 DLLNAME = ../libhythr$(HY_SHLIB_SUFFIX)

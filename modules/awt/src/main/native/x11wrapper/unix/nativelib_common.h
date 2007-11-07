@@ -21,10 +21,17 @@
 #ifndef NATIVELIB_COMMON_H
 #define NATIVELIB_COMMON_H
 
-#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX)
+#if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX) || defined(ZOS)
 // common linux section--------------------------------
-#include <dlfcn.h>
+#ifndef ZOS
 #include <stdint.h>
+#else
+#include <stddef.h>
+#ifndef __SUSV3
+#define __SUSV3
+#endif
+#endif
+#include <dlfcn.h>
 
 #define mkstr(x) #x
 
@@ -33,7 +40,7 @@
 
 #define FindFunction(lib, name) (void *)dlsym(lib, name)
 
-#if !defined(__INTEL_COMPILER) && !defined(AIX)
+#if !defined(__INTEL_COMPILER) && !defined(AIX) && !defined(ZOS)
     typedef long long __int64;
 #endif
 

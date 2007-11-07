@@ -18,7 +18,6 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 public class PopulationCodec extends Codec {
 	private Codec favouredCodec;
@@ -53,7 +52,7 @@ public class PopulationCodec extends Codec {
 
 	
 	public long[] decode(int n, InputStream in) throws IOException, Pack200Exception {
-		long favoured[] =new long[n]; // there must be <= n  values, but probably a lot less
+		long favoured[] = new long[n]; // there must be <= n  values, but probably a lot less
 		long result[];
 		// read table of favorites first
 		long smallest = Long.MAX_VALUE;
@@ -90,8 +89,8 @@ public class PopulationCodec extends Codec {
 			}
 		}
 		// read favorites
-		result = tokenCodec.decode(n, in);
-		// read unfavorites
+		result = tokenCodec.decode(n, in);		
+        // read unfavorites
         last = 0;
         for(int i = 0; i < n; i++) {
             int index = (int) result[i];

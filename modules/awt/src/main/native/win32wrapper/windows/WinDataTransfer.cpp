@@ -797,7 +797,7 @@ jobjectArray WinDataObject::enumFormats(JNIEnv * env, IDataObject * dataObject) 
     enum { maskText = 1, maskFileList = 2, maskUrl = 4, maskHtml = 8, maskImage = 16 };
     DWORD formatsMask = 0;
     
-    CAtlArray<jstring> formatList;
+    CSimpleArray<jstring> formatList;
 
     FORMATETC format;
     DWORD count = 0;
@@ -812,7 +812,7 @@ jobjectArray WinDataObject::enumFormats(JNIEnv * env, IDataObject * dataObject) 
         if ((format.tymed & TYMED_ENHMF) != 0 
                 && format.cfFormat == CF_ENHMETAFILE) {
             jstring jstr = env->NewStringUTF(FORMAT_IMAGE);
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
             continue;
         }
         if ((format.tymed & TYMED_HGLOBAL) == 0) {
@@ -820,38 +820,38 @@ jobjectArray WinDataObject::enumFormats(JNIEnv * env, IDataObject * dataObject) 
         }
         if (format.cfFormat == CF_UNICODETEXT || format.cfFormat == CF_TEXT) {
             jstring jstr = env->NewStringUTF(FORMAT_TEXT);
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
             continue;
         }
         if (format.cfFormat == CF_HDROP) {
             jstring jstr = env->NewStringUTF(FORMAT_FILE_LIST);
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
             continue;
         }
         if (format.cfFormat == CF_DIB) {
             jstring jstr = env->NewStringUTF(FORMAT_IMAGE);
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
             continue;
         }
         if (format.cfFormat == cfShellUrlA || format.cfFormat == cfShellUrlW) {
             jstring jstr = env->NewStringUTF(FORMAT_URL);
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
             continue;
         }
         if (format.cfFormat == cfHTML) {
             jstring jstr = env->NewStringUTF(FORMAT_HTML);
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
             continue;
         }
         jstring jstr = getSerializedFormatName(env, format.cfFormat);
         if (jstr != NULL) {
-            formatList.SetAtGrow(formatList.GetCount(), jstr);
+            formatList.Add(jstr);
         }
     }
     enumFormats.Release();
 
-    jobjectArray result = env->NewObjectArray((jsize)formatList.GetCount(), classString, NULL);
-    for (jsize i = 0; i < (jsize)formatList.GetCount(); i++) {
+    jobjectArray result = env->NewObjectArray((jsize)formatList.GetSize(), classString, NULL);
+    for (jsize i = 0; i < (jsize)formatList.GetSize(); i++) {
         env->SetObjectArrayElement(result, i, formatList[i]);
     }
     return result;
@@ -1011,13 +1011,13 @@ void WinDataObject::init(JNIEnv * env, jobject dataSnapshot) {
         FORMATETC * list;
         int listLen = getFormatsForName(env, formatName, &list);
         for (int j = 0; j < listLen; j++) {
-            formatArray.SetAtGrow(formatArray.GetCount(), list[j]);
+            formatArray.Add(list[j]);
         }
         if (listLen == 0) {
             UINT serializedFormat = getSerializedFormat(env, formatName);
             if (serializedFormat != 0) {
                 FORMATETC fmt = { serializedFormat, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
-                formatArray.SetAtGrow(formatArray.GetCount(), fmt);
+                formatArray.Add(fmt);
             }
         }
     }
@@ -1089,7 +1089,7 @@ STDMETHODIMP WinDataObject::SetData(FORMATETC * pFormatetc,
 STDMETHODIMP WinDataObject::EnumFormatEtc(DWORD dwDirection, 
                                           IEnumFORMATETC ** ppEnumFormatEtc) {
     if(dwDirection == DATADIR_GET) {
-        return SHCreateStdEnumFmtEtc((UINT)formatArray.GetCount(), 
+        return SHCreateStdEnumFmtEtc((UINT)formatArray.GetSize(), 
                 formatArray.GetData(), ppEnumFormatEtc);
     }
     return E_NOTIMPL;
@@ -1108,8 +1108,8 @@ STDMETHODIMP WinDataObject::EnumDAdvise(IEnumSTATDATA **) {
 }
 
 int WinDataObject::getFormatIndex(FORMATETC * fmt) {
-    for (size_t i=0; i<formatArray.GetCount(); i++) {
-        const FORMATETC & f = formatArray.GetAt(i);
+    for (int i=0; i<formatArray.GetSize(); i++) {
+        const FORMATETC & f = formatArray[i];
         if (f.cfFormat == fmt->cfFormat
                 && f.ptd == fmt->ptd
                 && f.dwAspect == fmt->dwAspect

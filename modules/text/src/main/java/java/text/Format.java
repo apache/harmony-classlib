@@ -20,8 +20,6 @@ package java.text;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.harmony.text.internal.nls.Messages;
 
@@ -54,17 +52,6 @@ public abstract class Format implements Serializable, Cloneable {
         } catch (CloneNotSupportedException e) {
             return null;
         }
-    }
-
-    static ResourceBundle getBundle(final Locale locale) {
-        return AccessController
-                .doPrivileged(new PrivilegedAction<ResourceBundle>() {
-                    public ResourceBundle run() {
-                        return ResourceBundle
-                                .getBundle(
-                                        "org.apache.harmony.luni.internal.locale.Locale", locale); //$NON-NLS-1$
-                    }
-                });
     }
 
     String convertPattern(String template, String fromChars, String toChars,
@@ -189,6 +176,32 @@ public abstract class Format implements Serializable, Cloneable {
      * @return the object resulting from the parse, or null if there is an error
      */
     public abstract Object parseObject(String string, ParsePosition position);
+
+    /*
+     * Gets private field value by reflection.
+     * 
+     * @param fieldName the field name to be set @param target the object which
+     * field to be gotten
+     */
+    static Object getInternalField(final String fieldName, final Object target) {
+        Object value = AccessController
+                .doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        Object result = null;
+                        java.lang.reflect.Field field = null;
+                        try {
+                            field = target.getClass().getDeclaredField(
+                                    fieldName);
+                            field.setAccessible(true);
+                            result = field.get(target);
+                        } catch (Exception e1) {
+                            return null;
+                        }
+                        return result;
+                    }
+                });
+        return value;
+    }
 
     static boolean upTo(String string, ParsePosition position,
             StringBuffer buffer, char stop) {

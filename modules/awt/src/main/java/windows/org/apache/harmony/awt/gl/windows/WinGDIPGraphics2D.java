@@ -147,6 +147,28 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         setTransform(getTransform());
     }
 
+    /**
+     * Create G2D associated with the specified device context.
+     * 
+     * @param hdc pointer to DC handle
+     * @param pageUnit one of Gdiplus::Unit specifying how to convert Graphics
+     *        coordinates to DC coordinates
+     * @param width Graphics width
+     * @param height Graphics height
+     */
+    public WinGDIPGraphics2D(final long hdc, final char pageUnit,
+                    final int width, final int height) {
+        size = new Dimension(width, height);
+        gi = createGraphicsInfoFor(hdc, pageUnit);
+
+        if (!FontManager.IS_FONTLIB) {
+            jtr = GDIPTextRenderer.inst;
+        }
+
+        dstSurf = new GDISurface(gi);
+        blitter = GDIBlitter.getInstance();
+    }
+
     @Override
     public void addRenderingHints(Map<?,?> hints) {
         super.addRenderingHints(hints);
@@ -532,6 +554,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     // Creates native GraphicsInfo structure
     private native long createGraphicsInfo(long hwnd, int x, int y, int width, int height);
+    private native long createGraphicsInfoFor(long hdc, char pageUnit);
     static native long createCompatibleImageInfo(long hwnd, int width, int height);
     static native long createCompatibleImageInfo(byte[] bytes, int width, int height);
     private native long copyImageInfo(long gi);

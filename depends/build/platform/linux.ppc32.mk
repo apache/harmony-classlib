@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DLINUX -DLINUX_PPC32 -DHYPPC32
-OPT += -m32
+DEFINES += -DLINUX -DLINUX_PPC32 -DHYPPC32 -DIPv6_FUNCTION_SUPPORT
+OPT += -fpic -m32
 
 ASFLAGS += -a32
 LDFLAGS += -m32

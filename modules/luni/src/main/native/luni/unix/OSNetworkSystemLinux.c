@@ -15,14 +15,26 @@
  *  limitations under the License.
  */
 
-#if defined(FREEBSD) || defined(AIX) || defined(MACOSX)
+#if defined(FREEBSD) || defined(AIX) || defined(MACOSX) || defined(ZOS)
 #include <sys/types.h>
 #include <netinet/in.h>
 #endif
+
+#if !defined(ZOS)
 #include <sys/poll.h>
+#else
+/* poll.h in a different location on zOS */
+#include <poll.h>
+#endif
+
+/* We do not get these header files "for free" on zOS, so we will use the
+  definitions for these structures defined in OSNetworkSystem.h */
+#if !defined(ZOS)
 #include <netinet/in_systm.h>
 #include<netinet/ip.h>
 #include<netinet/ip_icmp.h>
+#endif /* !ZOS */
+
 #include "nethelp.h"
 #include "harmonyglob.h"
 #include "hysock.h"
@@ -36,7 +48,11 @@
 #define SOCKET_ERROR -1
 
 unsigned short ip_checksum(unsigned short * buffer, int size);
+#if !defined(ZOS)
 void set_icmp_packet(struct icmp * icmp_hdr, int packet_size);
+#else
+void set_icmp_packet(struct ICMPHeader * icmp_hdr, int packet_size);
+#endif
 
 // Alternative Select function
 int
@@ -59,13 +75,21 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   (JNIEnv * env, jobject clz, jobject address, jobject localaddr,  jint ttl, jint timeout){
   PORT_ACCESS_FROM_ENV (env);
   struct sockaddr_in dest,source,local;
+#if !defined(ZOS)
   struct icmp * send_buf = 0;
   struct ip * recv_buf = 0;
+  struct icmp* icmphdr = 0;
+#else /* !ZOS */
+  struct ICMPHeader* send_buf = 0;
+  struct IPHeader* recv_buf = 0;
+  struct ICMPHeader* icmphdr = 0;
+#endif /* !ZOS */
   int result,ret=UNREACHABLE;
   struct pollfd my_pollfd;
   int sockadd_size = sizeof (source);
   jbyte host[HYSOCK_INADDR6_LEN];
   U_32 length;
+  unsigned short header_len = 0;
 
   int sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
   if (INVALID_SOCKET == sock){
@@ -131,14 +155,25 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_isR
   	goto cleanup;
   }  
 			    
-  unsigned short header_len = recv_buf->ip_hl << 2;
-  struct icmp* icmphdr = (struct icmp*)((char*)recv_buf + header_len);
+#if !defined(ZOS)
+  header_len = recv_buf->ip_hl << 2;
+  icmphdr = (struct icmp*)((char*)recv_buf + header_len);
   if ((result < header_len + ICMP_SIZE)||
 	(icmphdr->icmp_type != ICMP_ECHO_REPLY)||
 	(icmphdr->icmp_id != getpid())) {	
 	if (!(icmphdr->icmp_type == ICMP_ECHO_REQUEST && icmphdr->icmp_seq == 0))
 		goto cleanup;
   }
+#else
+  header_len = recv_buf->h_len << 2;
+  icmphdr = (struct ICMPHeader*)((char*)recv_buf + header_len);
+  if ((result < header_len + ICMP_SIZE)||
+	(icmphdr->type != ICMP_ECHO_REPLY)||
+	(icmphdr->id != getpid())) {	
+	if (!(icmphdr->type == ICMP_ECHO_REQUEST && icmphdr->seq == 0))
+		goto cleanup;
+  }
+#endif
   ret = REACHABLE;
 cleanup:
 
@@ -173,8 +208,10 @@ unsigned short ip_checksum(unsigned short* buffer, int size)
     return (unsigned short )(~sum);
 }
 
+#if !defined(ZOS)
 void set_icmp_packet(struct icmp* icmp_hdr, int packet_size)
 {
+
     icmp_hdr->icmp_type = ICMP_ECHO_REQUEST;
     icmp_hdr->icmp_code = 0;
     icmp_hdr->icmp_cksum = 0;
@@ -184,6 +221,21 @@ void set_icmp_packet(struct icmp* icmp_hdr, int packet_size)
     // Calculate a checksum on the result
     icmp_hdr->icmp_cksum = ip_checksum((unsigned short*)icmp_hdr, packet_size);
 }
+#else
+void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
+{
+
+    icmp_hdr->type = ICMP_ECHO_REQUEST;
+    icmp_hdr->code = 0;
+    icmp_hdr->checksum = 0;
+    icmp_hdr->id = getpid();
+    icmp_hdr->seq = 0;
+
+    // Calculate a checksum on the result
+    icmp_hdr->checksum = ip_checksum((unsigned short*)icmp_hdr, packet_size);
+}
+#endif
+
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem

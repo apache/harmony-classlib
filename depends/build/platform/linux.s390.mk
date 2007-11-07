@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-DEFINES += -DLINUX -DLINUX_S390 -DHYS390
+DEFINES += -DLINUX -DLINUX_S390 -DHYS390 -DIPv6_FUNCTION_SUPPORT
 OPT += -fpic -m31
 
 ASFLAGS += -m31

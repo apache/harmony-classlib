@@ -33,7 +33,7 @@ import org.apache.harmony.security.asn1.ASN1Integer;
  * detailed information
  * 
  */
-public class LdapMessage implements ASN1Encodable {
+public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     
     /**
      * operation request which could be encoded using ASN.1 BER
@@ -66,7 +66,14 @@ public class LdapMessage implements ASN1Encodable {
     public static synchronized int getNextMessageId() {
         return nextMessageId++;
     }
-    
+    /**
+     * Get message id of this message
+     * 
+     * @return id of this message
+     */
+    public int getMessageId() {
+        return messageId;
+    }
     /**
      * Construct a request message. <code>op</code> may not be
      * <code>null</code>. <code>controls</code> is <code>null</code> or a
@@ -131,13 +138,23 @@ public class LdapMessage implements ASN1Encodable {
         }
         ChosenValue chosen = (ChosenValue) values[1];
         opIndex = chosen.getIndex();
-        responseOp.decodeValues((Object[]) chosen.getValue());
+        if (opIndex == LdapASN1Constant.OP_SEARCH_RESULT_DONE
+                || opIndex == LdapASN1Constant.OP_SEARCH_RESULT_ENTRY
+                || opIndex == LdapASN1Constant.OP_SEARCH_RESULT_REF) {
+            /*
+             * we use LdapSearchResult to decode all types of search responses,
+             * so we need index to determine which type of response to decode
+             */
+            responseOp.decodeValues(new Object[] { chosen });
+        } else {
+            responseOp.decodeValues((Object[]) chosen.getValue());
+        }
 
     }
 
     public void encodeValues(Object[] values) {
         values[0] = ASN1Integer.fromIntValue(messageId);
-        // DelRequest are ASN.1 primitive
+        // Abandon & DelRequest are ASN.1 primitive
         if (opIndex == LdapASN1Constant.OP_ABANDON_REQUEST
                 || opIndex == LdapASN1Constant.OP_DEL_REQUEST) {
             Object[] objs = new Object[1];
@@ -153,7 +170,14 @@ public class LdapMessage implements ASN1Encodable {
      * 
      * @return id of this message
      */
-    public int getMessageId() {
-        return messageId;
+    /**
+     * Get index of the operation, determine which operation is encapsulated in
+     * this message. If this <code>LdapMessage</code> instance is not initial,
+     * <code>-1</code> will be returned.
+     * 
+     * @return index of the operation encapsulated in the message
+     */
+    public int getOperationIndex() {
+        return opIndex;
     }
 }

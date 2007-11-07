@@ -21,6 +21,9 @@ package org.apache.harmony.jndi.provider.ldap.asn1;
  * This interface is responsible for encoding data according to ASN.1 type schema.
  * Below is type mapping between ASN.1 and Java.
  * <p>
+ * Note: the mapping of SEQUENCE and CHOICE is supported only when using
+ * corresponding wrapped class ASN1SequenceWrap and ASN1ChoiceWrap
+ * <p>
  * <code>
  * ASN.1                Java
  * BOOLEAN              Boolean
@@ -33,6 +36,8 @@ package org.apache.harmony.jndi.provider.ldap.asn1;
  * CHOICE               Object[] or ChosenValue
  * </code>
  * 
+ * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1ChoiceWrap
+ * @see org.apache.harmony.jndi.provider.ldap.asn1.ASN1SequenceWrap
  */
 public interface ASN1Encodable {
 

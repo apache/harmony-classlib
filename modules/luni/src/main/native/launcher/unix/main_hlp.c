@@ -26,6 +26,17 @@
 #include <pwd.h>
 #include <sys/types.h>
 
+#if defined(ZOS)
+/* zOS does not define PATH_MAX, so just set it to be _POSIX_PATH_MAX */
+#ifndef PATH_MAX
+#define PATH_MAX _POSIX_PATH_MAX
+#endif
+/* Need to define this to get RTLD_NOW on zOS */
+#ifndef __SUSV3
+#define __SUSV3
+#endif
+#endif
+
 #if defined(LINUX)
 #include <sys/sysinfo.h>
 #endif

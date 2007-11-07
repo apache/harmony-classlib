@@ -69,6 +69,10 @@
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
             </fileset>
+            <!-- Copy link exports file on z/OS -->
+            <fileset dir="${hy.prefs.src.main.native}/prefs/${hy.os.family}">
+                <include name="*${linklib.suffix}*" if="is.zos" />
+            </fileset>
         </copy>
     </target>
 
