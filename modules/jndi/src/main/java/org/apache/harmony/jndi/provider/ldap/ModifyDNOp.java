@@ -66,4 +66,24 @@ public class ModifyDNOp implements LdapOperation, ASN1Encodable {
         }
     }
 
+    public LdapResult getResult() {
+        return result;
+    }
+
+    public boolean isDeleteoldrdn() {
+        return deleteoldrdn;
+    }
+
+    public String getEntry() {
+        return entry;
+    }
+
+    public String getNewrdn() {
+        return newrdn;
+    }
+
+    public String getNewSuperior() {
+        return newSuperior;
+    }
+
 }

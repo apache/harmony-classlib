@@ -39,13 +39,27 @@ public class LdapUrlParser {
     
     private Filter filter;
  
-    private String baseObject;
+    private String baseObject = "";
 
-    private String host;
+    private String host = DEFAULT_HOST;
 
-    private int port = -1;
+    private int port = DEFAULT_PORT;
+
+    private boolean hasAttributes = false;
+
+    private boolean hasScope = false;
+
+    private boolean hasFilter = false;
+
+    private boolean hasExtensions= false;
 
     private boolean isEndEOF = false;
+
+    private static final int DEFAULT_PORT = 389;
+
+    private static final int DEFAULT_SSL_PORT = 636;
+
+    private static final String DEFAULT_HOST = "localhost";
 
     public LdapUrlParser(String url) {
         this(new StringReader(url));
@@ -87,6 +101,22 @@ public class LdapUrlParser {
 
     public String getBaseObject() {
         return baseObject;
+    }
+
+    public boolean hasFilter() {
+        return hasFilter;
+    }
+
+    public boolean hasAttributes() {
+        return hasAttributes;
+    }
+
+    public boolean hasScope() {
+        return hasScope;
+    }
+
+    public boolean hasExtensions() {
+        return hasExtensions;
     }
 
     public static void main(String args[]) throws ParseException, FileNotFoundException {
@@ -140,9 +170,16 @@ TOKEN :
 
 
 void parseURL():
-        {}
         {
-            <SCHEME> 
+            Token t;
+        }
+        {
+            t = <SCHEME> 
+                {
+                    if (t.image.equals("ldaps://")) {
+                        port = DEFAULT_SSL_PORT;
+                    }
+                }
             [hostport()] 
             [<SLASH> [dn() 
                   [<QUESTION_MARK> attributes()]]]
@@ -254,9 +291,10 @@ void attributes():
              [(<COMMA> value = value() {attrs.add(value);})+]]
             {
                 if (attrs.size() != 0) {
+                    hasAttributes = true;
                     if (controls == null) {
                         // FIXME: test what default search parameter value is
-                        controls = new SearchControls(SearchControls.OBJECT_SCOPE, 0, 0, null, false, false);
+                        controls = new SearchControls();
                     }
                     controls.setReturningAttributes((String[]) attrs.toArray(new String[0]));
                 }
@@ -279,9 +317,9 @@ void scope():
             [t = <SCOPE> 
                 {
                     scope = t.image;
+                    hasScope = true;
                     if (controls == null) {
-                        // FIXME: test what default search parameter value is
-                        controls = new SearchControls(SearchControls.OBJECT_SCOPE, 0, 0, null, false, false);
+                        controls = new SearchControls();
                     }
                     if (scope.equals("base")) {
                         controls.setSearchScope(SearchControls.OBJECT_SCOPE);
@@ -305,13 +343,15 @@ void filter():
                 {
                     FilterParser parser = new FilterParser(new StringReader(value));
                     filter = parser.parse();
+                    hasFilter = true;
                 }] 
             [<QUESTION_MARK> extensions()]
         }
+
 void extensions():
         {}
         {
-            extension() [(<COMMA> extension())+]
+            extension() {hasExtensions = true;} [(<COMMA> extension())+]
         }
 
 void extension():

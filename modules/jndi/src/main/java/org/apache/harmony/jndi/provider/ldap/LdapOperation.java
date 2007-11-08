@@ -53,4 +53,15 @@ public interface LdapOperation {
      * @return index of response of this operation
      */
     public int getResponseId();
+
+    /**
+     * Get <code>LdapResult</code> from response. Except unbind and abandon
+     * operation, all ldap operation response contains LdapResult, which
+     * indicate whether the operation is successful or what error occurs.
+     * 
+     * @return instance of <code>LdapResult</code>. <code>null</code> if
+     *         operation has not completed or response donesn't contian
+     *         LDAPResult.
+     */
+    public LdapResult getResult();
 }

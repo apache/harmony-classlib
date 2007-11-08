@@ -82,4 +82,9 @@ public class ModifyOp implements LdapOperation, ASN1Encodable {
             values[1] = attr;
         }
     }
+
+    public LdapResult getResult() {
+        return result;
+    }
+    
 }

@@ -31,12 +31,13 @@ import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
  * formate bytes to java objects.
  */
 final public class AddOp implements LdapOperation, ASN1Encodable {
+    // Attribute list
     private List<LdapAttribute> attrList;
 
     // LDAP distinguished name
     private String entry;
 
-    // Attribute list
+    // LDAP operation result
     private LdapResult result;
 
     public AddOp(String entry, List<LdapAttribute> attrList) {
@@ -76,6 +77,14 @@ final public class AddOp implements LdapOperation, ASN1Encodable {
     public void encodeValues(Object[] values) {
         values[0] = Utils.getBytes(entry);
         values[1] = attrList;
+    }
+
+    public List<LdapAttribute> getAttributeList() {
+        return attrList;
+    }
+
+    public String getEntry() {
+        return entry;
     }
 
 }
