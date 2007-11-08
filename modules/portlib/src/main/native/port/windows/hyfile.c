@@ -352,21 +352,25 @@ hyfile_length (struct HyPortLibrary * portLibrary, const char *path)
 /**
  * Determines if the given file name is a reserved device name
   
- * @param[in] fname file name
+ * @param[in] path the path
  * @return length of device name if given file name is a device name or
  *   0 otherwise 
  */
 int
-is_device_name(const char *fname)
+is_device_name(const char *path)
 {
     const char *reserved[] = {"con", "prn", "aux", "nul", "com", "lpt"};
-    int i, len = strlen(fname);
+    char *fname = strrchr(path, '\\');
+    int i, len;
+
+    fname = fname ? (fname + 1) : (char *) path;
+    len = strlen(fname);
     
     for (i = 0; i < 6; i++) {
-        if (i < 4 && len >= 3 && !_stricmp(fname + len - 3, reserved[i])) {
+        if (i < 4 && len == 3 && !_stricmp(fname, reserved[i])) {
             return 3;
-        } else if (len >= 4 && !_strnicmp(fname + len - 4, reserved[i], 3) &&
-                   isdigit(fname[len - 1])) {
+        } else if (i >= 4 && len == 4 && !_strnicmp(fname, reserved[i], 3) &&
+                   isdigit(fname[3]) && fname[3] != '0') {
             return 4;
         }
     }
