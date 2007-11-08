@@ -403,6 +403,8 @@ public class SimpleDateFormat extends DateFormat {
      */
     @Override
     public Date parse(String string, ParsePosition position) {
+        icuFormat.setTimeZone(com.ibm.icu.util.TimeZone.getTimeZone(calendar
+                .getTimeZone().getID()));
         return icuFormat.parse(string,position);
     }
 
