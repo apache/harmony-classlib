@@ -299,8 +299,10 @@ public class BufferedReader extends Reader {
      * Answers a <code>String</code> representing the next line of text
      * available in this BufferedReader. A line is represented by 0 or more
      * characters followed by <code>'\n'</code>, <code>'\r'</code>,
-     * <code>'\r\n'</code> or end of stream. The <code>String</code> does
-     * not include the newline sequence.
+     * <code>'\r\n'</code> or end of stream. The <code>String</code> does not
+     * include the newline sequence. 
+     * In EBCDIC systems, a new line can also be represented by the 
+     * <code>'\u0085'</code> (NEL) character.
      * 
      * @return the contents of the line or null if no characters were read
      *         before end of stream.
@@ -335,6 +337,11 @@ public class BufferedReader extends Reader {
                         pos++;
                     }
                     return res;
+                } else if (ch == '\u0085') {
+                    /* Also handle the EBCDIC NEL character */
+                    String res = new String(buf, pos, charPos - pos);
+                    pos = charPos + 1;
+                    return res;
                 }
             }
 
@@ -359,7 +366,7 @@ public class BufferedReader extends Reader {
                 }
                 for (int charPos = pos; charPos < count; charPos++) {
                     if (eol == '\0') {
-                        if ((buf[charPos] == '\n' || buf[charPos] == '\r')) {
+                        if ((buf[charPos] == '\n' || buf[charPos] == '\r') || (buf[charPos] == '\u0085')) {
                             eol = buf[charPos];
                         }
                     } else if (eol == '\r' && (buf[charPos] == '\n')) {
