@@ -446,25 +446,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
 	 */
 	public static synchronized void setDefault(TimeZone timezone) {
 		if (timezone != null) {
-            final com.ibm.icu.util.TimeZone icuTZ = com.ibm.icu.util.TimeZone
-                    .getTimeZone(timezone.getID());
-
-            AccessController
-                    .doPrivileged(new PrivilegedAction<java.lang.reflect.Field>() {
-                        public java.lang.reflect.Field run() {
-                            java.lang.reflect.Field field = null;
-                            try {
-                                field = com.ibm.icu.util.TimeZone.class
-                                        .getDeclaredField("defaultZone");
-                                field.setAccessible(true);
-                                field.set("defaultZone", icuTZ);
-                            } catch (Exception e) {
-                                return null;
-                            }
-                            return field;
-                        }
-                    });
-            
+            setICUDefaultTimeZone(timezone);
             Default = timezone;
             return;
 		}
@@ -500,9 +482,31 @@ public abstract class TimeZone implements Serializable, Cloneable {
 			}
 		} else {
 			// if property user.timezone is set in command line (with -D option)
-			Default = getTimeZone(zone);
+		    Default = getTimeZone(zone);
 		}
+		setICUDefaultTimeZone(Default);
 	}
+
+    private static void setICUDefaultTimeZone(TimeZone timezone) {
+        final com.ibm.icu.util.TimeZone icuTZ = com.ibm.icu.util.TimeZone
+                .getTimeZone(timezone.getID());
+
+        AccessController
+                .doPrivileged(new PrivilegedAction<java.lang.reflect.Field>() {
+                    public java.lang.reflect.Field run() {
+                        java.lang.reflect.Field field = null;
+                        try {
+                            field = com.ibm.icu.util.TimeZone.class
+                                    .getDeclaredField("defaultZone");
+                            field.setAccessible(true);
+                            field.set("defaultZone", icuTZ);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                        return field;
+                    }
+                });
+    }
 
 	/**
 	 * Sets the ID of this TimeZone.
