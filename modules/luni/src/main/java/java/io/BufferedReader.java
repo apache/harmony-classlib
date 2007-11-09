@@ -322,7 +322,7 @@ public class BufferedReader extends Reader {
             }
             for (int charPos = pos; charPos < count; charPos++) {
                 char ch = buf[charPos];
-                if (ch > '\r') {
+                if ((ch > '\r') && (ch != '\u0085')) {
                     continue;
                 }
                 if (ch == '\n') {
