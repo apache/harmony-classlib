@@ -222,8 +222,9 @@ public abstract class TimeZone implements Serializable, Cloneable {
 			String[][] zones = data.getZoneStrings();
 			for (int i = 0; i < zones.length; i++) {
                 if (id.equals(zones[i][0])) {
-                    return style == SHORT ? zones[i][useDaylight ? 4 : 2]
+                    String res  = style == SHORT ? zones[i][useDaylight ? 4 : 2]
 							: zones[i][useDaylight ? 3 : 1];
+		     return res == null ? "" : res;
                 }
             }
 			int offset = getRawOffset();
