@@ -75,7 +75,7 @@ class PrinterJobImpl extends PrinterJob {
         if (!isServiceSupported(printservice)) {
             // DocFlavor.SERVICE_FORMATTED is not supported
             throw new PrinterException(Messages.getString(
-                            "5D", "DocFlavor.SERVICE_FORMATTED")); //$NON-NLS-1$ //$NON-NLS-2$
+                            "awt.5D", "DocFlavor.SERVICE_FORMATTED")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         this.printService = printservice;
