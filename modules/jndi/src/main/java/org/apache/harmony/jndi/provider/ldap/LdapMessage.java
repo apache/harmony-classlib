@@ -19,6 +19,8 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.ldap.Control;
 
@@ -44,6 +46,11 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
      * operation response operation which could be decoded using ASN.1 BER
      */
     private ASN1Decodable responseOp;
+    
+    /**
+     * controls for this message
+     */
+    private Control[] controls;
     
     /**
      * index of the operation, determine which operation is encapsulated in this
@@ -74,6 +81,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     public int getMessageId() {
         return messageId;
     }
+
     /**
      * Construct a request message. <code>op</code> may not be
      * <code>null</code>. <code>controls</code> is <code>null</code> or a
@@ -89,6 +97,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     public LdapMessage(int opIndex, ASN1Encodable op, Control[] controls) {
         this.opIndex = opIndex;
         requestOp = op;
+        this.controls = controls;
         messageId = getNextMessageId();
     }
     
@@ -130,6 +139,16 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         decodeValues(values);
     }
     
+    /**
+     * Return controls of the message, if there is no control, <code>null</code>
+     * will be returned.
+     * 
+     * @return controls of the message
+     */
+    public Control[] getControls() {
+        return controls;
+    }
+    
     @SuppressWarnings("unchecked")
     public void decodeValues(Object[] values) {
         messageId = ASN1Integer.toIntValue(values[0]);
@@ -154,14 +173,24 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
 
     public void encodeValues(Object[] values) {
         values[0] = ASN1Integer.fromIntValue(messageId);
-        // Abandon & DelRequest are ASN.1 primitive
+        // ABANDON, UNBIND and DELETE request are ASN.1 primitive
         if (opIndex == LdapASN1Constant.OP_ABANDON_REQUEST
-                || opIndex == LdapASN1Constant.OP_DEL_REQUEST) {
+                || opIndex == LdapASN1Constant.OP_DEL_REQUEST
+                || opIndex == LdapASN1Constant.OP_UNBIND_REQUEST) {
             Object[] objs = new Object[1];
             requestOp.encodeValues(objs);
             values[1] = new ChosenValue(opIndex, objs[0]);
         } else {
             values[1] = new ChosenValue(opIndex, requestOp);
+        }
+
+        // encode controls, wrap to LdapControl, so it could be encoded
+        if (controls != null) {
+            List<LdapControl> list = new ArrayList<LdapControl>(controls.length);
+            for (int i = 0; i < controls.length; ++i) {
+                list.add(new LdapControl(controls[i]));
+            }
+            values[2] = list;
         }
     }
 

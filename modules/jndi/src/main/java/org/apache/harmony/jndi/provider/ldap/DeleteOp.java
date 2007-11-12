@@ -67,4 +67,8 @@ public class DeleteOp implements LdapOperation, ASN1Encodable, ASN1Decodable {
         dn = Utils.getString((byte[]) values[0]);
     }
 
+    public String getDn() {
+        return dn;
+    }
+
 }

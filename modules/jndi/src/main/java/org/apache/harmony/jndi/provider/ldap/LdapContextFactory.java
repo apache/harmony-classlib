@@ -25,14 +25,9 @@ import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 
-import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.parser.LdapUrlParser;
 
 public class LdapContextFactory implements InitialContextFactory {
-
-    private static final int DEFAULT_PORT = 389;
-
-    private static final String DEFAULT_HOST = "localhost"; //$NON-NLS-1$
 
     public Context getInitialContext(Hashtable<?, ?> envmt)
             throws NamingException {
@@ -53,18 +48,6 @@ public class LdapContextFactory implements InitialContextFactory {
         String host = parser.getHost();
         int port = parser.getPort();
         String dn = parser.getBaseObject();
-
-        if (host == null) {
-            host = DEFAULT_HOST;
-        }
-
-        if (port == -1) {
-            port = DEFAULT_PORT;
-        }
-
-        if (dn == null) {
-            dn = "";
-        }
 
         LdapClient client = LdapClient.newInstance(host, port, myEnv);
 

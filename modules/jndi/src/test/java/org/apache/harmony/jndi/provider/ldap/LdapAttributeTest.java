@@ -18,6 +18,7 @@
 package org.apache.harmony.jndi.provider.ldap;
 
 import javax.naming.NamingException;
+import javax.naming.directory.BasicAttribute;
 
 import junit.framework.TestCase;
 
@@ -44,5 +45,15 @@ public class LdapAttributeTest extends TestCase {
         
         assertEquals(attr.getID(), decoded.getID());
 
+    }
+    
+    public void test_constructor_LAttribute() throws Exception {
+        BasicAttribute attr = new BasicAttribute("cn");
+        attr.add("test");
+        attr.add("harmony");
+        LdapAttribute la = new LdapAttribute(attr);
+        
+        ASN1TestUtils.checkEncode(la, LdapASN1Constant.Attribute);
+        
     }
 }

@@ -76,8 +76,8 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
             add(values.next());
         }
 
-        attributeDefinition = attr.getAttributeDefinition();
-        attributeSyntaxDefinition = attr.getAttributeSyntaxDefinition();
+        attributeDefinition = null;
+        attributeSyntaxDefinition = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -111,11 +111,20 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
 
     @Override
     public DirContext getAttributeDefinition() throws NamingException {
-        return attributeDefinition;
+        if (attributeDefinition != null) {
+            return attributeDefinition;
+        }
+        // TODO: Not yet implemented
+        throw new NotYetImplementedException();
+
     }
 
     @Override
     public DirContext getAttributeSyntaxDefinition() throws NamingException {
-        return attributeSyntaxDefinition;
+        if (attributeSyntaxDefinition != null) {
+            return attributeSyntaxDefinition;
+        }
+        // TODO: Not yet implemented
+        throw new NotYetImplementedException();
     }
 }
