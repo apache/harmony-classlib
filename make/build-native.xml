@@ -160,12 +160,26 @@
     <!-- ================================= 
           target: overlay-oss              
          ================================= -->
+    <condition property="iculib.zip"
+        value="${depends.oss}/icu4c-3.4-harmony-windows.x86_64.zip"
+        else="${depends.oss}/icu4c-3.4-harmony.zip">
+        <and>
+            <isset property="is.windows"/>
+            <isset property="is.x86_64"/>
+        </and>
+    </condition>
+
     <target name="overlay-oss">
         <ant dir="modules/luni" antfile="build.xml"
              target="overlay-oss" />
 
     	<ant dir="modules/archive" antfile="build.xml" 
 	     target="overlay-oss" />        
+    	
+        <mkdir dir="${hy.hdk}/include/icu4c/unicode" />
+        <unzip src="${iculib.zip}" dest="${hy.hdk}/include/icu4c/unicode" />
+        <chmod dir="${hy.hdk}/include/icu4c/unicode" perm="ugo+r" />
+        <copy file="${hy.hdk}/include/icu4c/unicode/icuuc.lib" todir="${native.lib.target}" overwrite="yes"/>
     </target>
 
     <!-- ================================= 
@@ -231,6 +245,7 @@
              target="clean-overlay-oss" />
      	<ant dir="modules/archive" antfile="build.xml" 
     	     target="clean-overlay-oss" />
+	<delete dir="${hy.hdk}/include/icu4c" quiet="true" />     
     </target>
 
 </project>
