@@ -25,7 +25,6 @@ package org.apache.harmony.security.asn1;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.apache.harmony.security.internal.nls.Messages;
 
@@ -132,8 +131,8 @@ public class BerInputStream {
         if (length != INDEFINIT_LENGTH) {
             // input stream has definite length encoding
             // check allocated length to avoid further reallocations
-            if (buffer.length < length) {
-                byte[] newBuffer = new byte[length];
+            if (buffer.length < (length + offset)) {
+                byte[] newBuffer = new byte[length + offset];
                 System.arraycopy(buffer, 0, newBuffer, 0, offset);
                 buffer = newBuffer;
             }

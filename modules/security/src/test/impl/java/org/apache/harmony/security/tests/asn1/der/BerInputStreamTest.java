@@ -28,6 +28,7 @@ import java.math.BigInteger;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.ASN1Exception;
 import org.apache.harmony.security.asn1.BerInputStream;
 
@@ -102,8 +103,29 @@ public class BerInputStreamTest extends TestCase {
         } catch (ASN1Exception e) {
             assertTrue(e.getMessage().startsWith("Too long"));
         }
+
+        //
+        // Test for correct internal array reallocation
+        // Regression for HARMONY-5054
+        //
+
+        // must be greater then buffer initial size (16K)
+        int arrayLength = 17000;
+
+        // 1 byte for tag and 3 for length
+        byte[] encoding = new byte[arrayLength + 4];
+
+        // fill tag and length bytes
+        encoding[0] = ASN1Constants.TAG_OCTETSTRING;
+        encoding[1] = (byte) 0x82; // length is encoded in two bytes
+        encoding[2] = (byte) (arrayLength >> 8);
+        encoding[3] = (byte) (arrayLength & 0xFF);
+
+        BerInputStream in = new BerInputStream(new ByteArrayInputStream(
+                encoding));
+        assertEquals(encoding.length, in.getBuffer().length);
     }
-    
+
     /**
      * @tests org.apache.harmony.security.asn1.BerInputStream#BerInputStream(byte[],
      *        int,int)
