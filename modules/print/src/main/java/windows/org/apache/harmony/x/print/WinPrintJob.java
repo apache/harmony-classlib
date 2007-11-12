@@ -19,8 +19,12 @@ package org.apache.harmony.x.print;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.font.GlyphVector;
 import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
 import java.awt.print.Paper;
@@ -61,6 +65,7 @@ import javax.print.event.PrintJobAttributeListener;
 import javax.print.event.PrintJobEvent;
 import javax.print.event.PrintJobListener;
 
+import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.windows.WinGDIPGraphics2D;
 
 class WinPrintJob implements CancelablePrintJob {
@@ -404,14 +409,26 @@ class WinPrintJob implements CancelablePrintJob {
         private int printPrintable(final Printable p, final long pdc,
                         final PageFormat format, final int pageIndex)
                         throws PrintException {
-            final int result;
+            int result = Printable.PAGE_EXISTS;
 
             try {
-                WinPrinterFactory.startPage(pdc);
-                result = p.print(getGraphics(pdc, format), format, pageIndex);
-                WinPrinterFactory.endPage(pdc);
-            } catch (final PrinterException ex) {
-                throw new PrintException(ex);
+                // Before drawing on printer's device context trying to draw on
+                // a dummy graphics to ensure that the page exists.
+                result = p.print(new DummyGraphics2D((int) format.getWidth(),
+                                (int) format.getHeight()), format, pageIndex);
+            } catch (final Exception ex) {
+                // ignore
+            }
+
+            if (result == Printable.PAGE_EXISTS) {
+                try {
+                    WinPrinterFactory.startPage(pdc);
+                    result = p.print(getGraphics(pdc, format), format,
+                                    pageIndex);
+                    WinPrinterFactory.endPage(pdc);
+                } catch (final PrinterException ex) {
+                    throw new PrintException(ex);
+                }
             }
 
             return result;
@@ -530,6 +547,30 @@ class WinPrintJob implements CancelablePrintJob {
             }
 
             return format;
+        }
+    }
+
+    private static class DummyGraphics2D extends CommonGraphics2D {
+        DummyGraphics2D(final int width, final int height) {
+            setClip(new Rectangle(width, height));
+        }
+
+        public void drawGlyphVector(GlyphVector g, float x, float y) {
+        }
+
+        public void drawString(String s, float x, float y) {
+        }
+
+        public GraphicsConfiguration getDeviceConfiguration() {
+            return null;
+        }
+
+        public void copyArea(int sx, int sy, int width, int height, int dx,
+                        int dy) {
+        }
+
+        public Graphics create() {
+            return this;
         }
     }
 }
