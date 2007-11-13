@@ -17,11 +17,42 @@
 
 package org.apache.harmony.auth.jgss.kerberos.toolbox;
 
+import javax.crypto.SecretKey;
 import javax.security.auth.kerberos.KerberosTicket;
 
-public interface KerberosToolboxSpi {    
-    KerberosTicket getTGT(String clientPrincipalName, char[] password);
-    KerberosTicket getTGS(String serverPrincipalName, KerberosTicket TGT);
-    byte[] encodeApplicationRequest(KerberosApplicationRequest kerberosApplicationRequest);
-    KerberosApplicationRequest decodeApplicationRequest(byte[] token);
+// TODO The Request for encoding includes TGS while decoding includes
+// SessionKey. Maybe more information, for example, peer Principal is required
+// in decoding.
+public class KerberosApplicationRequest {
+    private long seqNum;
+
+    private boolean[] options;
+
+    private KerberosTicket tgs;
+
+    private SecretKey sessionKey;
+
+    public KerberosApplicationRequest(long seqNum, boolean[] options,
+            KerberosTicket tgs, SecretKey sessionKey) {
+        this.seqNum = seqNum;
+        this.options = options;
+        this.tgs = tgs;
+        this.sessionKey = sessionKey;
+    }
+
+    public long getSeqNum() {
+        return seqNum;
+    }
+
+    public boolean[] getOptions() {
+        return options;
+    }
+
+    public KerberosTicket getTGS() {
+        return tgs;
+    }
+
+    public SecretKey getSessionKey() {
+        return sessionKey;
+    }
 }
