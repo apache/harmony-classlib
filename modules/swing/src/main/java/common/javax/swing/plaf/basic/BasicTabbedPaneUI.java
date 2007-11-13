@@ -1690,15 +1690,13 @@ public class BasicTabbedPaneUI extends TabbedPaneUI implements SwingConstants {
 
     protected void setVisibleComponent(final Component component) {
         Component oldVisible = getVisibleComponent();
-        if (oldVisible == component) {
-            return;
-        }
-
+        if (oldVisible != component) {
         if (oldVisible != null) {
             oldVisible.setVisible(false);
         }
-
         visibleComponent = component;
+        }
+
         if (visibleComponent != null) {
             visibleComponent.setVisible(true);
         }
