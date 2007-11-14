@@ -24,8 +24,8 @@ import org.apache.harmony.security.asn1.ASN1Type;
 
 public class Utils {
 
-    private static final String CODING_CHARSET = "UTF-8"; //$NON-NLS-1$
-    
+    public static final String CODING_CHARSET = "UTF-8"; //$NON-NLS-1$
+
     /**
      * conjoin two ASN1Sequence type as new one
      * 
@@ -65,36 +65,95 @@ public class Utils {
     }
 
     /**
-     * Convert <code>bytes</code> to <code>String</code> using UTF-8
-     * charset. when <code>bytes</code> is <code>null</code>, empty String
-     * will be returned.
+     * Convert <code>obj</code> to <code>String</code>. If obj is byte[],
+     * then using UTF-8 charset. when <code>obj</code> is <code>null</code>,
+     * empty String would be returned.
      * 
-     * @param bytes
-     *            bytes to be decoded into a UTF-8 string
-     * @return UTF-8 String composed of bytes, never be empty string
+     * @param obj
+     *            object to be covert
+     * @return UTF-8 String
      */
-    public static String getString(byte[] bytes) {
-        try {
-            return (bytes == null) ? "" : new String(bytes, CODING_CHARSET); //$NON-NLS-1$
-        } catch (UnsupportedEncodingException e) {
-            // never reached, because UTF-8 is supported by all java platform
+    public static String getString(Object obj) {
+        if (obj == null) {
             return ""; //$NON-NLS-1$
         }
+
+        if (obj instanceof byte[]) {
+            try {
+                return new String((byte[]) obj, CODING_CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                // never reached, because UTF-8 is supported by all java
+                // platform
+                return ""; //$NON-NLS-1$
+            }
+        } else if (obj instanceof char[]) {
+            return new String((char[]) obj);
+        } else  {
+            return (String) obj;
+        }
+        
     }
 
     /**
-     * Encodes <code>s</code> into a sequence of bytes using UTF-8 charset.
+     * Encodes <code>obj</code> into a sequence of bytes using UTF-8 charset.
      * 
-     * @param s
-     *            String to be encoded
-     * @return UTF-8 String
+     * @param obj
+     *            object to be encoded
+     * @return UTF-8 byte[]
      */
-    public static byte[] getBytes(String s) {
-        try {
-            return (s == null) ? new byte[0] : s.getBytes(CODING_CHARSET);
-        } catch (UnsupportedEncodingException e) {
-            // never reached, because UTF-8 is supported by all java platform
+    public static byte[] getBytes(Object obj) {
+        if (obj == null) {
             return new byte[0];
+        }
+
+        if (obj instanceof String) {
+            try {
+                return ((String) obj).getBytes(CODING_CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                // never reached, because UTF-8 is supported by all java platform
+                return new byte[0];
+            }
+        } else if (obj instanceof char[]) {
+            try {
+                return new String((char[]) obj).getBytes(CODING_CHARSET);
+            } catch (UnsupportedEncodingException e) {
+                // never reached, because UTF-8 is supported by all java platform
+                return new byte[0];
+            }
+        } else {
+            // no other types, ignore class cast expection
+            return (byte[]) obj;
+        }
+    }
+    
+
+    /**
+     * Convert <code>obj</code> to <code>char[]</code>. If obj is byte[],
+     * then using UTF-8 charset. when <code>obj</code> is <code>null</code>,
+     * zero length char array would be returned.
+     * 
+     * @param obj
+     *            object to be covert
+     * @return UTF-8 char[]
+     */
+    public static char[] getCharArray(Object obj) {
+        if (obj == null) {
+            return new char[0];
+        }
+
+        if (obj instanceof String) {
+            return ((String) obj).toCharArray();
+        } else if (obj instanceof byte[]) {
+            try {
+                return new String((byte[]) obj, CODING_CHARSET).toCharArray();
+            } catch (UnsupportedEncodingException e) {
+                // never reached, because UTF-8 is supported by all java
+                // platform
+                return new char[0];
+            }
+        } else {
+            // no other types, ignore class cast expection
+            return (char[]) obj;
         }
     }
 }

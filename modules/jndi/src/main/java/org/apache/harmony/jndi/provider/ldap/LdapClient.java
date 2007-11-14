@@ -58,6 +58,11 @@ public class LdapClient {
      */
     private OutputStream out;
 
+    /*
+     * Address of connection
+     */
+    private String address;
+
     // constructor for test
     public LdapClient() {
         // do nothing
@@ -79,8 +84,12 @@ public class LdapClient {
      */
     public LdapClient(SocketFactory factory, String address, int port)
             throws UnknownHostException, IOException {
+        this.address = address;
         socket = factory.createSocket(address, port);
-        in = socket.getInputStream();
+        // FIXME: Use of InputStreamWrap here is to deal with a potential bug of
+        // RI.
+        in = new InputStreamWrap(socket.getInputStream());
+        // in = socket.getInputStream();
         out = socket.getOutputStream();
     }
 
@@ -122,6 +131,7 @@ public class LdapClient {
         out.flush();
         LdapMessage responseMsg = new LdapMessage(response);
         responseMsg.decode(in);
+
         if (opIndex == LdapASN1Constant.OP_SEARCH_REQUEST
                 && responseMsg.getOperationIndex() != LdapASN1Constant.OP_SEARCH_RESULT_DONE) {
             responseMsg = new LdapMessage(response);
@@ -222,5 +232,77 @@ public class LdapClient {
         }
 
         return cls;
+    }
+
+    // TODO: This class is used to deal with a potential bug of RI, may be
+    // removed in the future.
+    /**
+     * When use <code>InputStream</code> from SSL Socket, if invoke
+     * <code>InputStream.read(byte[])</code> with byte array of zero length,
+     * the method will be blocked. Seems it's bug of ri.
+     * 
+     * This wrap class delegate all request to wrapped instance, except
+     * returning immediately when the invoke
+     * <code>InputStream.read(byte[])</code> with byte array of zero length.
+     */
+    static class InputStreamWrap extends InputStream {
+        InputStream in;
+
+        public InputStreamWrap(InputStream in) {
+            this.in = in;
+        }
+
+        @Override
+        public int read() throws IOException {
+            return in.read();
+        }
+
+        @Override
+        public int read(byte[] bs, int offset, int len) throws IOException {
+            if (len == 0) {
+                return 0;
+            }
+            return in.read(bs, offset, len);
+        }
+
+        @Override
+        public void reset() throws IOException {
+            in.reset();
+
+        }
+
+        @Override
+        public int available() throws IOException {
+            return in.available();
+        }
+
+        @Override
+        public void close() throws IOException {
+            in.close();
+        }
+
+        @Override
+        public void mark(int readlimit) {
+            in.mark(readlimit);
+        }
+
+        @Override
+        public boolean markSupported() {
+            return in.markSupported();
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            return in.read(b);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            return in.skip(n);
+        }
+    }
+
+    public String getAddress() {
+        return address;
     }
 }
