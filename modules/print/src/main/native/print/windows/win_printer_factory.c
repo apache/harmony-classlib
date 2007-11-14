@@ -99,19 +99,19 @@ static DWORD getPrinterCapabilities(JNIEnv * env, jlong handle, WORD query,
 // ----------------   JNI functions   -----------------------
 
 JNIEXPORT jstring JNICALL Java_org_apache_harmony_x_print_WinPrinterFactory_getDefaultPrinterName(JNIEnv * env, jclass c) {
-	DWORD len = 1024;
+	jstring name = NULL;
 	unsigned short buff[1024];
-	jstring name;
-	BOOL result = GetDefaultPrinterW(buff, &len);
+	unsigned int i;
+	unsigned int size = GetProfileStringW(L"windows", L"device", L",,,", buff,
+			sizeof(buff) / sizeof(unsigned short));
 
-	if (!result) {
-		handleLastError(__FUNCTION__,__FILE__ , __LINE__, env);
-	} else if (result == ERROR_FILE_NOT_FOUND) {
-		handleError(__FUNCTION__,__FILE__ , __LINE__, env, "No default printer");
-	} else if (result == ERROR_INSUFFICIENT_BUFFER) {
-		handleError(__FUNCTION__,__FILE__ , __LINE__, env, "Printer name is too long");
-	} else {
-		name = (*env)->NewString(env, buff, len - 1);
+	for (i = 0; i < size; i++) {
+		if (buff[i] == L',') {
+			if (i > 0) {
+				name = (*env)->NewString(env, buff, i);
+			}
+			break;
+		}
 	}
 
 	return name;
