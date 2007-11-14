@@ -36,33 +36,34 @@ import org.apache.harmony.security.asn1.ASN1Integer;
  * 
  */
 public class LdapMessage implements ASN1Encodable, ASN1Decodable {
-    
+
     /**
      * operation request which could be encoded using ASN.1 BER
      */
     private ASN1Encodable requestOp;
-    
+
     /**
      * operation response operation which could be decoded using ASN.1 BER
      */
     private ASN1Decodable responseOp;
-    
+
     /**
      * controls for this message
      */
     private Control[] controls;
-    
+
     /**
      * index of the operation, determine which operation is encapsulated in this
      * message.
      */
     private int opIndex;
-    
+
+
     /**
      * unique request id for each session
      */
     private int messageId;
-    
+
     private static int nextMessageId = 1;
 
     /**
@@ -73,6 +74,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     public static synchronized int getNextMessageId() {
         return nextMessageId++;
     }
+
     /**
      * Get message id of this message
      * 
@@ -100,7 +102,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         this.controls = controls;
         messageId = getNextMessageId();
     }
-    
+
     /**
      * Construct a response message. <code>op</code> indicate which operation
      * to be used, and the message would be initialized after calling
@@ -115,7 +117,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         opIndex = -1;
         messageId = -1;
     }
-    
+
     /**
      * Encode this message using ASN.1 Basic Encoding Rules (BER)
      * 
@@ -124,7 +126,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     public byte[] encode() {
         return LdapASN1Constant.LDAPMessage.encode(this);
     }
-    
+
     /**
      * Decode values from <code>InputStream</code> using ASN.1 BER, and the
      * decoded values will initialize this <code>LdapMessage</code> instance.
@@ -138,7 +140,7 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         Object[] values = (Object[]) LdapASN1Constant.LDAPMessage.decode(in);
         decodeValues(values);
     }
-    
+
     /**
      * Return controls of the message, if there is no control, <code>null</code>
      * will be returned.
@@ -148,13 +150,14 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     public Control[] getControls() {
         return controls;
     }
-    
+
     @SuppressWarnings("unchecked")
     public void decodeValues(Object[] values) {
         messageId = ASN1Integer.toIntValue(values[0]);
         if (values[1] == null) {
             return;
         }
+
         ChosenValue chosen = (ChosenValue) values[1];
         opIndex = chosen.getIndex();
         if (opIndex == LdapASN1Constant.OP_SEARCH_RESULT_DONE
@@ -194,11 +197,6 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         }
     }
 
-    /**
-     * Get message id of this message
-     * 
-     * @return id of this message
-     */
     /**
      * Get index of the operation, determine which operation is encapsulated in
      * this message. If this <code>LdapMessage</code> instance is not initial,

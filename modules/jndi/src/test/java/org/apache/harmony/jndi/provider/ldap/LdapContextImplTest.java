@@ -24,15 +24,20 @@ import java.util.Map;
 
 import javax.naming.CompositeName;
 import javax.naming.Context;
+import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InvalidSearchFilterException;
+import javax.naming.directory.SearchControls;
 import javax.naming.ldap.BasicControl;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapName;
+
+import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 
 import junit.framework.TestCase;
 
@@ -75,6 +80,32 @@ public class LdapContextImplTest extends TestCase {
         result = context.composeName(compositeName, cName);
         assertTrue(result instanceof CompositeName);
         assertEquals("bin/cn=ok/usr", result.toString());
+    }
+
+    public void test_list_LName() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        context = new LdapContextImpl(client, new Hashtable<Object, Object>(),
+                "");
+
+        Name name = new LdapName("cn=test,o=harmony");
+        context.list(name);
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals(name.toString(), op.getBaseObject());
+        assertFalse(op.isTypesOnly());
+        SearchControls controls = op.getControls();
+        assertEquals(SearchControls.ONELEVEL_SCOPE, controls.getSearchScope());
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", (String) filter.getValue());
+
+        name = new CompositeName("usr/bin");
+        try {
+            context.list(name);
+            fail("should throws InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
     }
 
     public void test_createSubcontext_LName() throws Exception {
@@ -159,6 +190,34 @@ public class LdapContextImplTest extends TestCase {
         attr = map.get("dc");
         assertEquals(1, attr.size());
         assertEquals("hello", attr.get(0));
+    }
+
+    public void test_getAttributes() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        context = new LdapContextImpl(client, new Hashtable<Object, Object>(),
+                "cn=test");
+
+        Attributes attrs = context.getAttributes("o=apache");
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("o=apache,cn=test", op.getBaseObject());
+        SearchControls controls = op.getControls();
+        assertEquals(SearchControls.OBJECT_SCOPE, controls.getSearchScope());
+        assertNull(controls.getReturningAttributes());
+
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", filter.getValue());
+
+        attrs = context.getAttributes("o=apache", new String[0]);
+        op = (SearchOp) client.getRequest();
+        assertEquals("o=apache,cn=test", op.getBaseObject());
+        controls = op.getControls();
+        assertEquals(SearchControls.OBJECT_SCOPE, controls.getSearchScope());
+        assertEquals(1, controls.getReturningAttributes().length);
+        assertEquals("1.1", controls.getReturningAttributes()[0]);
+        filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", filter.getValue());
     }
 
     public void test_modifyAttributes() throws Exception {
@@ -295,6 +354,135 @@ public class LdapContextImplTest extends TestCase {
         context.setRequestControls(controls);
         actual = context.getRequestControls();
         assertEquals(controls.length + 1, actual.length);
+    }
+
+    public void test_search_LAttribute() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        context = new LdapContextImpl(client, new Hashtable<Object, Object>(),
+                "cn=test");
+
+        Attributes attrs = new BasicAttributes();
+        attrs.put("cn", "hello");
+        Attribute attr = new BasicAttribute("o");
+        attr.add("harmony");
+        attr.add("apache");
+        attrs.put(attr);
+
+        context.search("cn=hello", attrs);
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("cn=hello,cn=test", op.getBaseObject());
+        SearchControls controls = op.getControls();
+        assertEquals(SearchControls.ONELEVEL_SCOPE, controls.getSearchScope());
+        assertEquals(0, controls.getCountLimit());
+        assertEquals(false, controls.getDerefLinkFlag());
+        assertEquals(false, controls.getReturningObjFlag());
+        assertEquals(null, controls.getReturningAttributes());
+
+        Filter filter = op.getFilter();
+        assertEquals(Filter.AND_FILTER, filter.getType());
+        List<Filter> children = filter.getChildren();
+
+        for (Filter f : children) {
+            assertEquals(Filter.EQUALITY_MATCH_FILTER, f.getType());
+            AttributeTypeAndValuePair pair = (AttributeTypeAndValuePair) f
+                    .getValue();
+            if (pair.getType().equals("cn")) {
+                assertEquals("hello", pair.getValue());
+            } else {
+                assertEquals("o", pair.getType());
+                assertTrue(pair.getValue().equals("harmony")
+                        || pair.getValue().equals("apache"));
+            }
+        }
+
+        String[] rtAttributes = new String[] { "cn", "o" };
+        context.search("cn=hello", attrs, rtAttributes);
+        op = (SearchOp) client.getRequest();
+        assertEquals("cn=hello,cn=test", op.getBaseObject());
+        controls = op.getControls();
+        String[] actual = controls.getReturningAttributes();
+
+        for (String attribute : rtAttributes) {
+            boolean found = false;
+            for (String s : actual) {
+                if (s.equals(attribute)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                fail("Attribute " + attribute + " not found.");
+            }
+        }
+    }
+
+    public void test_search_with_filter() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        context = new LdapContextImpl(client, new Hashtable<Object, Object>(),
+                "cn=test");
+        SearchControls controls = new SearchControls();
+        controls.setCountLimit(100);
+        controls.setDerefLinkFlag(true);
+        controls.setReturningObjFlag(true);
+        controls.setTimeLimit(5);
+
+        context.search("test=search", "(objectClass=*)", controls);
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("test=search,cn=test", op.getBaseObject());
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", filter.getValue());
+        assertEquals(controls.getCountLimit(), op.getControls().getCountLimit());
+        assertEquals(controls.getDerefLinkFlag(), op.getControls()
+                .getDerefLinkFlag());
+        assertEquals(controls.getReturningObjFlag(), op.getControls()
+                .getReturningObjFlag());
+        assertEquals(controls.getSearchScope(), op.getControls()
+                .getSearchScope());
+        assertEquals(controls.getTimeLimit(), op.getControls().getTimeLimit());
+
+        try {
+            context.search("test=search", "objectClass=*", controls);
+            fail("Should throw InvalidSearchFilterException");
+        } catch (InvalidSearchFilterException e) {
+            // expected
+        }
+
+        context.search("test=search", "(objectClass=*)", null);
+        op = (SearchOp) client.getRequest();
+        assertEquals(0, op.getControls().getCountLimit());
+        assertEquals(false, op.getControls().getDerefLinkFlag());
+        assertEquals(false, op.getControls().getReturningObjFlag());
+        assertEquals(SearchControls.ONELEVEL_SCOPE, op.getControls()
+                .getSearchScope());
+        assertEquals(0, op.getControls().getTimeLimit());
+        assertNull(controls.getReturningAttributes());
+    }
+
+    public void test_search_invalid_properties() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        env.put("java.naming.ldap.derefAliases", "error");
+        context = new LdapContextImpl(client, env, "cn=test");
+        try {
+            context.search("", null);
+            fail("Should throws IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+
+        env = new Hashtable<Object, Object>();
+        env.put("java.naming.ldap.typesOnly", "error");
+        context = new LdapContextImpl(client, env, "cn=test");
+        try {
+            context.getAttributes("", null);
+            fail("Should throws IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
 }

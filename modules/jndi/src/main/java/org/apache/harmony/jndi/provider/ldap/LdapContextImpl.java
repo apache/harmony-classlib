@@ -20,7 +20,9 @@ package org.apache.harmony.jndi.provider.ldap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.Binding;
 import javax.naming.CannotProceedException;
@@ -40,6 +42,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -56,7 +59,10 @@ import javax.naming.spi.NamingManager;
 
 import org.apache.harmony.jndi.internal.Util;
 import org.apache.harmony.jndi.internal.nls.Messages;
+import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 import org.apache.harmony.jndi.internal.parser.LdapNameParser;
+import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
+import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
 
 /**
  * This context implements LdapContext, it's main entry point of all JNDI ldap
@@ -92,6 +98,10 @@ public class LdapContextImpl implements LdapContext {
             Control.NONCRITICAL);
 
     private static final String LDAP_DELETE_RDN = "java.naming.ldap.deleteRDN"; //$NON-NLS-1$
+
+    private static final String LDAP_DEREF_ALIASES = "java.naming.ldap.derefAliases"; //$NON-NLS-1$
+
+    private static final String LDAP_TYPES_ONLY = "java.naming.ldap.typesOnly"; //$NON-NLS-1$
 
     /**
      * construct a new inherit <code>LdapContextImpl</code>
@@ -339,8 +349,55 @@ public class LdapContextImpl implements LdapContext {
 
     public Attributes getAttributes(Name name, String[] as)
             throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            if (!(name.getPrefix(0) instanceof LdapName)) {
+                throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
+            }
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * context
+             */
+            DirContext nns = (DirContext) findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            return nns.getAttributes(remainingName, as);
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+        // absolute dn name to list
+        String targetDN = getTargetDN(name, contextDn);
+
+        // construct one-level search using filter "(objectclass=*)"
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.OBJECT_SCOPE);
+
+        /*
+         * none should be retrieved, send OID "1.1" to server, according to RFC
+         * 2251, 4.5.1
+         */
+        if (as != null && as.length == 0) {
+            // "1.1" means no attributes should return
+            as = new String[] { "1.1" }; //$NON-NLS-1$
+        }
+        controls.setReturningAttributes(as);
+
+        Filter filter = new Filter(Filter.PRESENT_FILTER);
+        filter.setValue("objectClass");
+
+        LdapSearchResult result = doSearch(targetDN, filter, controls);
+        Iterator<Attributes> it = result.getEntries().values().iterator();
+        if (it.hasNext()) {
+            // FIXME: there must be only one Attributes?
+            return it.next();
+        } else if (result.getException() != null) {
+            throw result.getException();
+        }
+
+        // no attribute retrieved from server, return a empty Attributes
+        return new BasicAttributes();
     }
 
     public Attributes getAttributes(String s) throws NamingException {
@@ -439,7 +496,7 @@ public class LdapContextImpl implements LdapContext {
                 break;
             default:
                 throw new IllegalArgumentException(Messages.getString(
-                        "jndi.14", item.getModificationOp()));
+                        "jndi.14", item.getModificationOp())); //$NON-NLS-1$
             }
         }
 
@@ -474,15 +531,127 @@ public class LdapContextImpl implements LdapContext {
 
     public NamingEnumeration<SearchResult> search(Name name,
             Attributes attributes, String[] as) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * context
+             */
+            DirContext nns = (DirContext) findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            return nns.search(remainingName, attributes, as);
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+        // get absolute dn name
+        String targetDN = getTargetDN(name, contextDn);
+        Filter filter = null;
+
+        // construct filter
+        if (attributes == null || attributes.size() == 0) {
+            filter = new Filter(Filter.PRESENT_FILTER);
+            filter.setValue("objectClass");
+        } else {
+            NamingEnumeration<? extends Attribute> attrs = attributes.getAll();
+            filter = new Filter(Filter.AND_FILTER);
+            while (attrs.hasMore()) {
+                Attribute attr = attrs.next();
+                String type = attr.getID();
+                NamingEnumeration<?> enuValues = attr.getAll();
+                while (enuValues.hasMore()) {
+                    Object value = enuValues.next();
+                    Filter child = new Filter(Filter.EQUALITY_MATCH_FILTER);
+                    child.setValue(new AttributeTypeAndValuePair(type, value));
+                    filter.addChild(child);
+                }
+            }
+        }
+
+        SearchControls controls = new SearchControls();
+        controls.setReturningAttributes(as);
+        LdapSearchResult result = doSearch(targetDN, filter, controls);
+
+        List<SearchResult> list = new ArrayList<SearchResult>();
+        Map<String, Attributes> entries = result.getEntries();
+        Name tempName = new LdapName(contextDn.toString());
+        tempName.addAll(name);
+        String baseDN = tempName.toString();
+        for (String dn : entries.keySet()) {
+            String relativeName = convertToRelativeName(dn, baseDN);
+            SearchResult sr = new SearchResult(relativeName, null, entries
+                    .get(dn));
+            sr.setNameInNamespace(dn);
+            list.add(sr);
+        }
+
+        return new LdapNamingEnumeration<SearchResult>(list, result
+                .getException());
     }
 
     public NamingEnumeration<SearchResult> search(Name name, String filter,
             Object[] objs, SearchControls searchControls)
             throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * context
+             */
+            DirContext nns = (DirContext) findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            return nns.search(remainingName, filter, objs, searchControls);
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+        if (filter == null) {
+            throw new NullPointerException(Messages.getString("ldap.28")); //$NON-NLS-1$
+        }
+
+        if (objs == null) {
+            objs = new Object[0];
+        }
+
+        if (searchControls == null) {
+            searchControls = new SearchControls();
+        }
+
+        // get absolute dn name
+        String targetDN = getTargetDN(name, contextDn);
+        FilterParser filterParser = new FilterParser(filter);
+        filterParser.setArgs(objs);
+        Filter f = null;
+        try {
+            f = filterParser.parse();
+        } catch (ParseException e) {
+            InvalidSearchFilterException ex = new InvalidSearchFilterException(
+                    Messages.getString("ldap.29")); //$NON-NLS-1$
+            ex.setRootCause(e);
+            throw ex;
+        }
+
+        LdapSearchResult result = doSearch(targetDN, f, searchControls);
+
+        List<SearchResult> list = new ArrayList<SearchResult>();
+        Map<String, Attributes> entries = result.getEntries();
+        Name tempName = new LdapName(contextDn.toString());
+        tempName.addAll(name);
+        String baseDN = tempName.toString();
+        for (String dn : entries.keySet()) {
+            String relativeName = convertToRelativeName(dn, baseDN);
+            SearchResult sr = new SearchResult(relativeName, null, entries
+                    .get(dn));
+            sr.setNameInNamespace(dn);
+            list.add(sr);
+        }
+
+        return new LdapNamingEnumeration<SearchResult>(list, result
+                .getException());
     }
 
     public NamingEnumeration<SearchResult> search(Name name, String filter,
@@ -510,6 +679,91 @@ public class LdapContextImpl implements LdapContext {
     public NamingEnumeration<SearchResult> search(String name, String filter,
             SearchControls searchControls) throws NamingException {
         return search(convertFromStringToName(name), filter, searchControls);
+    }
+
+    LdapSearchResult doSearch(SearchOp op) throws NamingException {
+        if (env.get(LDAP_DEREF_ALIASES) != null) {
+            String derefAliases = (String) env.get(LDAP_DEREF_ALIASES);
+            if (derefAliases.equals("always")) {
+                op.setDerefAliases(0);
+            } else if (derefAliases.equals("never")) {
+                op.setDerefAliases(1);
+            } else if (derefAliases.equals("finding")) {
+                op.setDerefAliases(2);
+            } else if (derefAliases.equals("searching")) {
+                op.setDerefAliases(3);
+            } else {
+                throw new IllegalArgumentException(Messages.getString(
+                        "ldap.30", new Object[] { env.get(LDAP_DEREF_ALIASES), //$NON-NLS-1$
+                                LDAP_DEREF_ALIASES }));
+            }
+
+        }
+
+        if (env.containsKey(LDAP_TYPES_ONLY)) {
+            String typesOnly = (String) env.get(LDAP_TYPES_ONLY);
+            if ("true".equals(typesOnly)) {
+                op.setTypesOnly(true);
+            } else if ("false".equals(typesOnly)) {
+                op.setTypesOnly(false);
+            } else {
+                throw new IllegalArgumentException(Messages.getString(
+                        "ldap.30", new Object[] { env.get(LDAP_TYPES_ONLY), //$NON-NLS-1$
+                                LDAP_TYPES_ONLY }));
+            }
+        }
+
+        LdapMessage message = null;
+        try {
+            message = client.doOperation(op, requestControls);
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException(e
+                    .getMessage());
+            ex.setRootCause(e);
+            if (op.getSearchResult() == null || op.getSearchResult().isEmpty()) {
+                throw ex;
+            }
+            op.getSearchResult().setException(ex);
+            // occurs errors, just return, doesn't deal with referral and
+            // controls
+            return op.getSearchResult();
+        }
+
+        // TODO: assume response controls returned in last message, it may
+        // be not correct
+        Control[] rawControls = message.getControls();
+        responseControls = narrowingControls(rawControls);
+
+        LdapResult result = op.getResult();
+
+        op.getSearchResult().setException(
+                Util.getExceptionFromErrorCode(result.getResultCode()));
+
+        // has error, not deal with referrals
+        if (op.getSearchResult().getException() != null) {
+            return op.getSearchResult();
+        }
+
+        // baseObject is not located at the server
+        if (result.getResultCode() == 10) {
+            // TODO deal with referrals
+            throw new NotYetImplementedException();
+        }
+
+        // there are SearchResultReference in search result
+        if (op.getSearchResult().getRefURLs() != null
+                && op.getSearchResult().getRefURLs().size() != 0) {
+            // TODO deal with referrals
+            throw new NotYetImplementedException();
+        }
+
+        return op.getSearchResult();
+    }
+
+    LdapSearchResult doSearch(String dn, Filter filter, SearchControls controls)
+            throws NamingException {
+        SearchOp op = new SearchOp(dn, controls, filter);
+        return doSearch(op);
     }
 
     public Object addToEnvironment(String s, Object o) throws NamingException {
@@ -659,13 +913,82 @@ public class LdapContextImpl implements LdapContext {
 
     public NamingEnumeration<NameClassPair> list(Name name)
             throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            if (!(name.getPrefix(0) instanceof LdapName)) {
+                throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
+            }
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * context
+             */
+            Context nns = findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            return nns.list(remainingName);
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+        // absolute dn name to list
+        String targetDN = getTargetDN(name, contextDn);
+
+        // construct one-level search using filter "(objectclass=*)"
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+        Filter filter = new Filter(Filter.PRESENT_FILTER);
+        filter.setValue("objectClass");
+
+        LdapSearchResult result = doSearch(targetDN, filter, controls);
+
+        List<NameClassPair> list = new ArrayList<NameClassPair>();
+        Map<String, Attributes> entries = result.getEntries();
+        Name tempName = new LdapName(contextDn.toString());
+        tempName.addAll(name);
+        String baseDN = tempName.toString();
+        for (String dn : entries.keySet()) {
+            String relativeName = convertToRelativeName(dn, baseDN);
+            Attributes attrs = entries.get(dn);
+            Attribute attrClass = attrs.get("javaClassName");
+            String className = null;
+            if (attrClass != null) {
+                className = (String) attrClass.get(0);
+            } else {
+                className = DirContext.class.getName();
+            }
+            NameClassPair pair = new NameClassPair(relativeName, className,
+                    true);
+            pair.setNameInNamespace(dn);
+            list.add(pair);
+        }
+
+        return new LdapNamingEnumeration<NameClassPair>(list, result
+                .getException());
     }
 
-    public NamingEnumeration<NameClassPair> list(String s)
-            throws NamingException {
-        return list(convertFromStringToName(s));
+    /**
+     * convert absolute dn to the dn relatived to the dn of
+     * <code>targetContextDN</code>.
+     * 
+     * @param dn
+     *            absolute dn
+     * @param base
+     *            base dn of the relative name
+     * @return dn relatived to the <code>dn</code> of <code>base</code>
+     */
+    private String convertToRelativeName(String dn, String base) {
+
+        if (base.equals("")) {
+            return dn;
+        }
+
+        int index = dn.lastIndexOf(base);
+        if (index == 0) {
+            return "";
+        }
+
+        return dn.substring(0, index - 1);
     }
 
     private String getTargetDN(Name name, Name prefix) throws NamingException,
@@ -736,6 +1059,11 @@ public class LdapContextImpl implements LdapContext {
         cpe.setResolvedObj(ref);
 
         return DirectoryManager.getContinuationDirContext(cpe);
+    }
+
+    public NamingEnumeration<NameClassPair> list(String s)
+            throws NamingException {
+        return list(convertFromStringToName(s));
     }
 
     public NamingEnumeration<Binding> listBindings(Name name)

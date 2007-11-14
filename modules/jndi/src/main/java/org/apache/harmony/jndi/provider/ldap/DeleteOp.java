@@ -27,7 +27,7 @@ import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
  * {@link http://www.rfc-editor.org/rfc/rfc2251.txt} for detailed information
  * 
  */
-public class DeleteOp implements LdapOperation, ASN1Encodable, ASN1Decodable {
+public class DeleteOp implements LdapOperation, ASN1Encodable {
     /**
      * The distinguished name of the target entry
      */
@@ -61,10 +61,6 @@ public class DeleteOp implements LdapOperation, ASN1Encodable, ASN1Decodable {
 
     public LdapResult getResult() {
         return result;
-    }
-
-    public void decodeValues(Object[] values) {
-        dn = Utils.getString((byte[]) values[0]);
     }
 
     public String getDn() {

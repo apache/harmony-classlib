@@ -23,6 +23,7 @@ import javax.naming.ldap.Control;
 
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
+import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.security.asn1.ASN1Integer;
 
@@ -47,6 +48,28 @@ public class MockLdapClient extends LdapClient {
                     Utils.getBytes(""), Utils.getBytes(""), null };
             result.decodeValues(values);
         }
+
+        if (response instanceof SearchOp) {
+            SearchOp op = (SearchOp) response;
+            op.setSearchResult(new LdapSearchResult() {
+                public LdapResult getResult() {
+                    LdapResult rs = new LdapResult();
+                    Object[] values = new Object[] { ASN1Integer.fromIntValue(0),
+                            Utils.getBytes(""), Utils.getBytes(""), null };
+                    rs.decodeValues(values);
+                    return rs;
+                }
+            });
+        }
+        
+        if (opIndex == LdapASN1Constant.OP_BIND_REQUEST) {
+            Object[] values = new Object[5];
+            values[0] = ASN1Integer.fromIntValue(0);
+            values[1] = Utils.getBytes("");
+            values[2] = Utils.getBytes("");
+            responseOp.decodeValues(values);
+        }
+
         return new LdapMessage(response);
     }
 
