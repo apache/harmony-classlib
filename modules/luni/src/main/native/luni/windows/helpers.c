@@ -374,15 +374,81 @@ getPlatformIsReadOnly (JNIEnv * env, char *path)
   return getPlatformAttribute (env, path, FILE_ATTRIBUTE_READONLY);
 }
 
+void
+convert_path_to_unicode(JNIEnv * env,const char *path,
+	     wchar_t **pathW)
+{
+PORT_ACCESS_FROM_ENV (env);
+    int len = strlen(path);
+    int wlen;
+    char *canonicalpath;
+    int srcArrayCount=0;
+    int destArrayCount=0;
+    int slashCount=0; //record how many slashes it met.
+    int dotsCount=0; //record how many dots following a separator.
+    int *slashStack; //record position of every separator.
+    slashStack = jclmem_allocate_memory (env, len*sizeof(int));
+    canonicalpath = jclmem_allocate_memory (env, len+5);
+
+    strcpy(canonicalpath,"\\\\?\\");
+
+    for(srcArrayCount=0,destArrayCount=4;srcArrayCount<len;srcArrayCount++){
+        // the input path of this method has been parsed to absolute path already.
+        if(path[srcArrayCount]=='.'){
+            // count the dots following last separator.
+            if(dotsCount>0 || path[srcArrayCount-1]=='\\'){
+                dotsCount++;
+                continue;
+            }
+        }
+        // deal with the dots when we meet next separator.
+        if(path[srcArrayCount]=='\\'){
+            if(dotsCount == 1){
+        	dotsCount = 0;
+        	continue;
+            }else if (dotsCount > 1){
+                if(slashCount-2<0){
+                    slashCount=2;
+                }
+                destArrayCount=slashStack[slashCount-2];
+                dotsCount = 0;
+                slashCount--;
+            }else{
+                while(canonicalpath[destArrayCount-1] == '.'){
+                    destArrayCount--;
+                }
+                slashStack[slashCount++]=destArrayCount;
+            }
+        }
+        // for normal character.
+        while(dotsCount >0){
+            canonicalpath[destArrayCount++]='.';
+            dotsCount--;
+        }
+        canonicalpath[destArrayCount++]=path[srcArrayCount];
+    }
+    while(canonicalpath[destArrayCount-1] == '.'){
+        destArrayCount--;
+    }        
+    canonicalpath[destArrayCount]='\0';
+    wlen = MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, 0);
+    *pathW = jclmem_allocate_memory (env, wlen*sizeof(wchar_t));
+    MultiByteToWideChar(CP_UTF8, 0, canonicalpath, -1, *pathW, wlen);
+    jclmem_free_memory (env, canonicalpath);
+    jclmem_free_memory (env, slashStack);
+}
+
 /**
  * Answer 1 if the path is write-only, 0 otherwise even in fail cases.
  */
 I_32
 getPlatformIsWriteOnly (JNIEnv * env, char *path)
 {
-  HANDLE fHandle = CreateFile(path, GENERIC_READ, FILE_SHARE_READ,
-      NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  HANDLE fHandle;
+  wchar_t *pathW;
+  convert_path_to_unicode(env,path,&pathW);
 
+  fHandle = CreateFileW(pathW, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
   if (fHandle == INVALID_HANDLE_VALUE) {
     return 1;
   }
