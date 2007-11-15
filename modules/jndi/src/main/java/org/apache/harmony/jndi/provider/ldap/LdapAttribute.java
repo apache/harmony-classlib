@@ -19,6 +19,7 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.naming.NamingEnumeration;
@@ -52,28 +53,55 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
     private DirContext attributeSyntaxDefinition = null;
 
     /**
-     * constructor for LdapAttribute
+     * whether the value of attribute is binary
+     */
+    private boolean isBinary;
+
+    private static HashSet<String> BINARY_ATTRIBUTE = new HashSet<String>();
+    static {
+        BINARY_ATTRIBUTE.add("photo");
+        BINARY_ATTRIBUTE.add("personalSignature");
+        BINARY_ATTRIBUTE.add("audio");
+        BINARY_ATTRIBUTE.add("jpegPhoto");
+        BINARY_ATTRIBUTE.add("javaSerializedData");
+        BINARY_ATTRIBUTE.add("thumbnailPhoto");
+        BINARY_ATTRIBUTE.add("thumbnailLogo");
+        BINARY_ATTRIBUTE.add("userPassword");
+        BINARY_ATTRIBUTE.add("userCertificate");
+        BINARY_ATTRIBUTE.add("cACertificate");
+        BINARY_ATTRIBUTE.add("authorityRevocationList");
+        BINARY_ATTRIBUTE.add("certificateRevocationList");
+        BINARY_ATTRIBUTE.add("crossCertificatePair");
+        BINARY_ATTRIBUTE.add("x500UniqueIdentifier");
+    }
+
+    /**
+     * constructor for decode
      * 
      */
-    protected LdapAttribute() {
+    public LdapAttribute() {
         super("", false); //$NON-NLS-1$
     }
 
     public LdapAttribute(String id) {
         super(id, false);
+        isBinary = isBinary(id);
     }
 
     /**
      * Constructs instance from already existing <code>Attribute</code>
      * 
      * @param attr
+     *            may never be <code>null</code>
      * @throws NamingException
      */
     public LdapAttribute(Attribute attr) throws NamingException {
         super(attr.getID(), attr.isOrdered());
-        NamingEnumeration<?> values = attr.getAll();
-        while (values.hasMore()) {
-            add(values.next());
+        isBinary = isBinary(getID());
+        NamingEnumeration<?> enu = attr.getAll();
+        while (enu.hasMore()) {
+            Object value = enu.next();
+            add(value);
         }
 
         attributeDefinition = null;
@@ -81,32 +109,38 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
     }
 
     @SuppressWarnings("unchecked")
-    public void decodeValues(Object[] values) {
-        byte[] type = (byte[]) values[0];
+    public void decodeValues(Object[] vs) {
+        byte[] type = (byte[]) vs[0];
         attrID = Utils.getString(type);
-        Collection<byte[]> list = (Collection<byte[]>) values[1];
-        for (byte[] bs : list) {
-            // TODO: convert to corresponding java type according to schema
-            add(Utils.getString(bs));
+        isBinary = isBinary(attrID);
+        Collection<byte[]> list = (Collection<byte[]>) vs[1];
+        // FIXME: deal with java.naming.ldap.attributes.binary
+        if (!isBinary) {
+            for (byte[] bs : list) {
+                add(Utils.getString(bs));
+            }
+        } else {
+            for (byte[] bs : list) {
+                add(bs);
+            }
         }
 
     }
 
-    public void encodeValues(Object[] values) {
-        values[0] = Utils.getBytes(attrID);
+    public void encodeValues(Object[] vs) {
+        vs[0] = Utils.getBytes(attrID);
 
         List<Object> list = new ArrayList<Object>(this.values.size());
 
         for (Object object : this.values) {
-            // TODO: convert other types to byte[]
-            if (object instanceof String) {
+            if (!isBinary && object instanceof String) {
                 String str = (String) object;
                 object = Utils.getBytes(str);
             }
 
             list.add(object);
         }
-        values[1] = list;
+        vs[1] = list;
     }
 
     @Override
@@ -126,5 +160,9 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
         }
         // TODO: Not yet implemented
         throw new NotYetImplementedException();
+    }
+
+    private static boolean isBinary(String name) {
+        return BINARY_ATTRIBUTE.contains(name) || name.endsWith(";binary");
     }
 }
