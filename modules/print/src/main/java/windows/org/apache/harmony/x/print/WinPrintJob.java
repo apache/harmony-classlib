@@ -139,7 +139,7 @@ class WinPrintJob implements CancelablePrintJob {
                 }
 
                 printer = new Printer(doc, attributes);
-                printer.start();
+                printer.print();
             }
         }
     }
@@ -221,12 +221,20 @@ class WinPrintJob implements CancelablePrintJob {
         int                            jobId;
 
         Printer(final Doc doc, final PrintRequestAttributeSet attributes) {
-            super(WinPrintService.DEFAULT_JOB_NAME.getName());
+            super(WinPrintService.DEFAULT_JOB_NAME.getValue());
             this.doc = doc;
             this.attributes = attributes;
         }
-
+        
         public void run() {
+            try {
+                print();
+            } catch (final PrintException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        public void print() throws PrintException {
             final DocFlavor flavor = doc.getDocFlavor();
             final DevmodeStructWrapper dm = service.getPrinterProps();
 
@@ -260,11 +268,13 @@ class WinPrintJob implements CancelablePrintJob {
 
                 notifyJobListeners(PrintJobEvent.DATA_TRANSFER_COMPLETE);
                 notifyJobListeners(PrintJobEvent.JOB_COMPLETE);
+            } catch (final PrintException ex) {
+                throw ex;
             } catch (final Exception ex) {
                 synchronized (this) {
                     if (jobId != -1) {
                         notifyJobListeners(PrintJobEvent.JOB_FAILED);
-                        throw new RuntimeException(ex);
+                        throw new PrintException(ex);
                     }
                 }
             } finally {
