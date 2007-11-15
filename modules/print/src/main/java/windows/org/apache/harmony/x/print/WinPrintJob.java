@@ -30,6 +30,7 @@ import java.awt.print.Pageable;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -479,7 +480,8 @@ class WinPrintJob implements CancelablePrintJob {
             if (attrs != null) {
                 final Destination dest = (Destination) attrs
                                 .get(Destination.class);
-                return dest != null ? dest.getURI().getPath() : null;
+                return dest != null ? new File(dest.getURI()).getAbsolutePath()
+                                : null;
             }
             return null;
         }
