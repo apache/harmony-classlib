@@ -737,7 +737,7 @@ public class LdapContextImpl implements LdapContext {
         LdapResult result = op.getResult();
 
         op.getSearchResult().setException(
-                Util.getExceptionFromErrorCode(result.getResultCode()));
+                LdapUtils.getExceptionFromResult(result));
 
         // has error, not deal with referrals
         if (op.getSearchResult().getException() != null) {
@@ -1220,8 +1220,9 @@ public class LdapContextImpl implements LdapContext {
 
         // TODO deal with referrals
 
-        if (Util.getExceptionFromErrorCode(result.getResultCode()) != null) {
-            throw Util.getExceptionFromErrorCode(result.getResultCode());
+        NamingException ex = LdapUtils.getExceptionFromResult(result);
+        if (ex != null) {
+            throw ex;
         }
     }
 
