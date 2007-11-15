@@ -25,6 +25,7 @@ package org.apache.harmony.security.tests.asn1.der;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -166,6 +167,57 @@ public class BerInputStreamTest extends TestCase {
             fail("No expected ASN1Exception");
         } catch (ASN1Exception e) {
             assertEquals("Wrong content length", e.getMessage());
+        }
+    }
+
+    /**
+     * @tests org.apache.harmony.security.asn1.BerInputStream#readContent()
+     */
+    public void test_readContent() throws IOException {
+
+        byte[] encoding = { ASN1Constants.TAG_OCTETSTRING, 0x0F, 0x01, 0x02,
+                0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
+                0x0D, 0x0E, 0x0F };
+
+        // a custom input stream that doesn't return all data at once
+        ByteArrayInputStream in = new ByteArrayInputStream(encoding) {
+            public int read(byte[] b, int off, int len) {
+                if (len < 2) {
+                    return super.read(b, off, len);
+                } else {
+                    return super.read(b, off, 4);
+                }
+
+            }
+        };
+
+        BerInputStream berIn = new BerInputStream(in);
+        berIn.readContent();
+
+        assertTrue(Arrays.equals(encoding, berIn.getEncoded()));
+
+        //
+        // negative test case: the stream returns only 4 bytes of content
+        //
+        in = new ByteArrayInputStream(encoding) {
+
+            int i = 0;
+
+            public int read(byte[] b, int off, int len) {
+                if (i == 0) {
+                    i++;
+                    return super.read(b, off, 4);
+                } else {
+                    return 0;
+                }
+
+            }
+        };
+        berIn = new BerInputStream(in);
+        try {
+            berIn.readContent();
+            fail("No expected ASN1Exception");
+        } catch (ASN1Exception e) {
         }
     }
 }

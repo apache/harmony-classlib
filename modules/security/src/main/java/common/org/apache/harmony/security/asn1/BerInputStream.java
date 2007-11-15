@@ -915,9 +915,22 @@ public class BerInputStream {
         if (in == null) {
             offset += length;
         } else {
-            if (in.read(buffer, offset, length) != length) {
-                throw new ASN1Exception(Messages.getString("security.13C")); //$NON-NLS-1$
+            int bytesRead = in.read(buffer, offset, length);
+
+            if (bytesRead != length) {
+                // if input stream didn't return all data at once
+                // try to read it in several blocks
+                int c = bytesRead;
+                do {
+                    if (c < 1 || bytesRead > length) {
+                        throw new ASN1Exception(Messages
+                                .getString("security.13C")); //$NON-NLS-1$
+                    }
+                    c = in.read(buffer, offset + bytesRead, length - bytesRead);
+                    bytesRead += c;
+                } while (bytesRead != length);
             }
+
             offset += length;
         }
     }
