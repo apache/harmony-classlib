@@ -66,6 +66,11 @@ class PrinterJobImpl extends PrinterJob {
 
     @Override
     public PrintService getPrintService() {
+        if (printService == null) {
+            printService = PrintServiceLookup.lookupDefaultPrintService();
+            printService = isServiceSupported(printService) ? printService
+                            : null;
+        }
         return printService;
     }
 
@@ -130,15 +135,8 @@ class PrinterJobImpl extends PrinterJob {
     @Override
     public PageFormat pageDialog(final PrintRequestAttributeSet attributes)
                     throws HeadlessException {
-        return pageDialog(attrsToFormat(attributes));
-    }
-
-    @Override
-    public PageFormat pageDialog(final PageFormat page)
-                    throws HeadlessException {
         checkHeadless();
 
-        final PrintRequestAttributeSet attributes = formatToAttrs(page);
         final Window wnd = KeyboardFocusManager
                         .getCurrentKeyboardFocusManager().getActiveWindow();
         final Window owner = (((wnd instanceof Dialog) || (wnd instanceof Frame))
@@ -156,8 +154,19 @@ class PrinterJobImpl extends PrinterJob {
             owner.dispose();
         }
 
+        if (attributes != dialog.getAttributes()) {
+            attributes.addAll(dialog.getAttributes());
+        }
+
         return (dialog.getResult() == ServiceUIDialog.APPROVE_PRINT)
-                        ? attrsToFormat(attributes) : page;
+                        ? attrsToFormat(attributes) : null;
+    }
+
+    @Override
+    public PageFormat pageDialog(final PageFormat page)
+                    throws HeadlessException {
+        final PageFormat format = pageDialog(formatToAttrs(page));
+        return format != null ? format : page;
     }
 
     @Override
@@ -174,8 +183,7 @@ class PrinterJobImpl extends PrinterJob {
         }
 
         final PrintRequestAttributeSet attrs = mergeAttrs(attributes);
-        final PrintService service = printService != null ? printService
-                        : PrintServiceLookup.lookupDefaultPrintService();
+        final PrintService service = getPrintService();
 
         if (service == null) {
             // Printer not found
@@ -207,16 +215,12 @@ class PrinterJobImpl extends PrinterJob {
         }
 
         final PrintRequestAttributeSet attrs = mergeAttrs(attributes);
-        final PrintService defaultPrintService = PrintServiceLookup
-                        .lookupDefaultPrintService();
         final Rectangle screen = GraphicsEnvironment
                         .getLocalGraphicsEnvironment().getDefaultScreenDevice()
                         .getDefaultConfiguration().getBounds();
         final PrintService newService = ServiceUI.printDialog(null,
                         screen.width / 3, screen.height / 3,
-                        lookupPrintServices(),
-                        (isServiceSupported(defaultPrintService)
-                                        ? defaultPrintService : null),
+                        lookupPrintServices(), getPrintService(),
                         DocFlavor.SERVICE_FORMATTED.PRINTABLE, attrs);
 
         if (newService != null) {
@@ -271,9 +275,8 @@ class PrinterJobImpl extends PrinterJob {
     }
 
     private static boolean isServiceSupported(final PrintService service) {
-        return (service != null)
-                        && service
-                                        .isDocFlavorSupported(DocFlavor.SERVICE_FORMATTED.PAGEABLE);
+        return (service != null) && service.isDocFlavorSupported(
+                        DocFlavor.SERVICE_FORMATTED.PAGEABLE);
     }
 
     private static PrintRequestAttributeSet formatToAttrs(
