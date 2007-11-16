@@ -43,25 +43,45 @@ import org.apache.harmony.security.asn1.ASN1Integer;
  * 
  */
 public class LdapClient {
-    /*
+    /**
      * Socket used to communicate with Ldap Server.
      */
     private Socket socket;
 
-    /*
+    /**
      * Input stream of socket.
      */
     private InputStream in;
 
-    /*
+    /**
      * Output stream of socket.
      */
     private OutputStream out;
 
-    /*
+    /**
      * Address of connection
      */
     private String address;
+
+    /**
+     * port of connection
+     */
+    private int port;
+
+    /**
+     * blocked requests list which wait for response
+     */
+    private Hashtable<Integer, Element> requests = new Hashtable<Integer, Element>();
+
+    /**
+     * the max time to wait server response in milli-second
+     */
+    private long MAX_WAIT_TIME = 30 * 1000;
+
+    /**
+     * responsible for dispatching received messages
+     */
+    private Dispatcher dispatcher;
 
     // constructor for test
     public LdapClient() {
@@ -85,13 +105,149 @@ public class LdapClient {
     public LdapClient(SocketFactory factory, String address, int port)
             throws UnknownHostException, IOException {
         this.address = address;
+        this.port = port;
         socket = factory.createSocket(address, port);
         // FIXME: Use of InputStreamWrap here is to deal with a potential bug of
         // RI.
         in = new InputStreamWrap(socket.getInputStream());
-        // in = socket.getInputStream();
         out = socket.getOutputStream();
+        dispatcher = new Dispatcher();
+        dispatcher.start();
     }
+
+    /**
+     * The instance of the class is daemon thread, which read messages from
+     * server and dispatch to corresponding thread.
+     */
+    class Dispatcher extends Thread {
+
+        private boolean isStopped = false;
+
+        public Dispatcher() {
+            /**
+             * must be daemon thread, otherwrise can't destory by gc
+             */
+            setDaemon(true);
+        }
+
+        public boolean isStopped() {
+            return isStopped;
+        }
+
+        public void setStopped(boolean isStopped) {
+            this.isStopped = isStopped;
+        }
+
+        @Override
+        public void run() {
+            while (!isStopped) {
+                try {
+                    // set response op to null, load later
+                    LdapMessage response = new LdapMessage(null) {
+
+                        /**
+                         * Dispatcher can't know which response operation should
+                         * be used until messageId had determined.
+                         * 
+                         * @return response according messageId
+                         */
+                        @Override
+                        public ASN1Decodable getResponseOp() {
+                            // responseOp has been load, just return it
+                            if (super.getResponseOp() != null) {
+                                return super.getResponseOp();
+                            }
+
+                            int messageId = getMessageId();
+
+                            // Unsolicited Notification
+                            if (messageId == 0) {
+                                // TODO return instance of
+                                // UnsolicitedNotificationImpl
+                            }
+
+                            // get response operation according messageId
+                            Element element = requests.get(Integer
+                                    .valueOf(messageId));
+                            if (element != null) {
+                                return element.response.getResponseOp();
+                            }
+
+                            /*
+                             * FIXME: if messageId not find in request list,
+                             * what should we do?
+                             */
+                            return null;
+                        }
+                    };
+
+                    Exception ex = null;
+                    /**
+                     * TODO read message data by ourselves then decode, this
+                     * would be robust
+                     */
+                    try {
+                        // read next message
+                        response.decode(in);
+                    } catch (IOException e) {
+                        // may socket has problem or decode occurs error
+                        ex = e;
+                    } catch (RuntimeException e) {
+                        // may socket has problem or decode occurs error
+                        ex = e;
+                    }
+
+                    processResponse(response, ex);
+
+                } catch (Exception e) {
+                    // may never reach
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        private void processResponse(LdapMessage response, Exception ex) {
+            // unsolicited notification
+            if (response.getMessageId() == 0) {
+                // TODO notify unsolicited listeners
+                return;
+            }
+
+            Element element = requests.get(Integer.valueOf(response
+                    .getMessageId()));
+
+            if (element != null) {
+                element.response = response;
+                element.ex = ex;
+                // persistent search response
+                if (element.lock == null) {
+
+                    // TODO notify persistent search listeners
+
+                } else {
+                    /*
+                     * notify the thread which send request and wait for
+                     * response
+                     */
+                    synchronized (element.lock) {
+                        element.lock.notify();
+                    }
+                } // end of if (element.lock == null) else
+            } // end of if (element != null)
+
+            else if (ex != null) {
+                /*
+                 * may asn1 decode error or socket problem, can get message id,
+                 * so couldn't know which thread should be notified
+                 */
+                // FIXME: any better way?
+                close();
+            }
+            // FIXME message id not found and no exception, what shoud we do?
+
+        } // end of processResponse
+    } // Dispatcher
 
     /**
      * Carry out the ldap operation encapsulated in operation with controls.
@@ -126,18 +282,102 @@ public class LdapClient {
     public LdapMessage doOperation(int opIndex, ASN1Encodable request,
             ASN1Decodable response, Control[] controls) throws IOException {
 
-        LdapMessage requestMsg = new LdapMessage(opIndex, request, controls);
-        out.write(requestMsg.encode());
-        out.flush();
-        LdapMessage responseMsg = new LdapMessage(response);
-        responseMsg.decode(in);
-
-        if (opIndex == LdapASN1Constant.OP_SEARCH_REQUEST
-                && responseMsg.getOperationIndex() != LdapASN1Constant.OP_SEARCH_RESULT_DONE) {
-            responseMsg = new LdapMessage(response);
-            responseMsg.decode(in);
+        if (opIndex == LdapASN1Constant.OP_SEARCH_REQUEST) {
+            return doSearchOperation(request, response, controls);
         }
-        return responseMsg;
+
+        LdapMessage requestMsg = new LdapMessage(opIndex, request, controls);
+
+        Integer messageID = Integer.valueOf(requestMsg.getMessageId());
+
+        Object lock = new Object();
+        requests.put(messageID, new Element(lock, new LdapMessage(response)));
+
+        try {
+            out.write(requestMsg.encode());
+            out.flush();
+            return waitResponse(messageID, lock);
+
+        } finally {
+            // remove request from list
+            requests.remove(messageID);
+        }
+
+    }
+
+    /**
+     * Block the current thread until get response from server or occurs error
+     * 
+     * @param messageID
+     *            id of request message, is same as id of response message
+     * @param response
+     *            decoder of the response
+     * @return response message, may not be null
+     * 
+     * @throws Exception
+     */
+    private LdapMessage waitResponse(Integer messageID, Object lock)
+            throws IOException {
+
+        synchronized (lock) {
+            try {
+                lock.wait(MAX_WAIT_TIME);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+        }
+
+        Element element = requests.get(messageID);
+
+        // wait time out
+        if (element.response.getMessageId() != messageID.intValue()) {
+            // ldap.31=Read LDAP response message time out
+            throw new IOException(Messages.getString("ldap.31")); //$NON-NLS-1$
+        }
+
+        // error occurs when read response
+        if (element.ex != null) {
+            // socket is not connected
+            if (!socket.isConnected()) {
+                close();
+            }
+            // element.ex must be one of IOException or RuntimeException
+            if (element.ex instanceof IOException) {
+                throw (IOException) element.ex;
+            }
+
+            throw (RuntimeException) element.ex;
+        }
+
+        return element.response;
+
+    }
+
+    private LdapMessage doSearchOperation(ASN1Encodable request,
+            ASN1Decodable response, Control[] controls) throws IOException {
+        LdapMessage requestMsg = new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_REQUEST, request, controls);
+
+        Integer messageID = Integer.valueOf(requestMsg.getMessageId());
+
+        Object lock = new Object();
+        requests.put(messageID, new Element(lock, new LdapMessage(response)));
+
+        try {
+            out.write(requestMsg.encode());
+            out.flush();
+            LdapMessage responseMsg = waitResponse(messageID, lock);
+
+            while (responseMsg.getOperationIndex() != LdapASN1Constant.OP_SEARCH_RESULT_DONE) {
+                responseMsg = waitResponse(messageID, lock);
+            }
+
+            return responseMsg;
+        } finally {
+            // remove request from list
+            requests.remove(messageID);
+        }
+
     }
 
     public void abandon(final int messageId, Control[] controls)
@@ -159,8 +399,50 @@ public class LdapClient {
         out.flush();
     }
 
-    public void close() throws IOException {
-        socket.close();
+    /**
+     * Close network connection, stop dispather thread, and release all other
+     * resources
+     * 
+     * NOTE: invoke this method should be careful when this
+     * <code>LdapClient</code> instance is shared by multi
+     * <code>LdapContext</code>
+     * 
+     */
+    public void close() {
+        // close socket
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+
+        socket = null;
+        in = null;
+        out = null;
+
+        // try to stop dispather
+        if (dispatcher != null) {
+            dispatcher.setStopped(true);
+            dispatcher.interrupt();
+        }
+
+        // notify all blocked thread
+        if (requests != null) {
+            for (Element element : requests.values()) {
+                if (element.lock != null) {
+                    synchronized (element.lock) {
+                        element.lock.notify();
+                    }
+                } else {
+                    // TODO notify persistent search listeners
+                }
+            }
+            requests.clear();
+            requests = null;
+        }
+
     }
 
     /**
@@ -234,6 +516,22 @@ public class LdapClient {
         return cls;
     }
 
+    /**
+     * struct for holding necessary info to add to requests list
+     */
+    static class Element {
+        Object lock;
+
+        LdapMessage response;
+
+        Exception ex;
+
+        public Element(Object lock, LdapMessage response) {
+            this.lock = lock;
+            this.response = response;
+        }
+    }
+
     // TODO: This class is used to deal with a potential bug of RI, may be
     // removed in the future.
     /**
@@ -304,5 +602,14 @@ public class LdapClient {
 
     public String getAddress() {
         return address;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    protected void finalize() {
+        close();
     }
 }

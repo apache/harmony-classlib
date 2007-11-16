@@ -72,6 +72,14 @@ public class LdapMessageTest extends TestCase {
 
     }
 
+    public void test_constructor() {
+        LdapMessage message = new LdapMessage(null);
+        assertNull(message.getControls());
+        assertNull(message.getResponseOp());
+        assertEquals(-1, message.getMessageId());
+        assertEquals(-1, message.getOperationIndex());
+    }
+    
     public void test_encodeValues_$LObject() {
         LdapMessage message = new LdapMessage(
                 LdapASN1Constant.OP_ABANDON_REQUEST, new MockAbandonRequest(1),

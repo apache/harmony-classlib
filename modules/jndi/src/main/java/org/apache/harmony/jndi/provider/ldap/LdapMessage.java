@@ -160,6 +160,12 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
 
         ChosenValue chosen = (ChosenValue) values[1];
         opIndex = chosen.getIndex();
+        // failed to retrieve responseOp
+        responseOp = getResponseOp();
+        if (responseOp == null) {
+            return;
+        }
+
         if (opIndex == LdapASN1Constant.OP_SEARCH_RESULT_DONE
                 || opIndex == LdapASN1Constant.OP_SEARCH_RESULT_ENTRY
                 || opIndex == LdapASN1Constant.OP_SEARCH_RESULT_REF) {
@@ -207,4 +213,9 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
     public int getOperationIndex() {
         return opIndex;
     }
+
+    public ASN1Decodable getResponseOp() {
+        return responseOp;
+    }
+
 }
