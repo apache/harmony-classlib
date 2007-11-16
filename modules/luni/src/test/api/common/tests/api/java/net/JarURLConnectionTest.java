@@ -41,7 +41,7 @@ public class JarURLConnectionTest extends junit.framework.TestCase {
 
 	URLConnection uc;
     
-    private static final URL BASE = JarURLConnectionTest.class.getClassLoader().getResource(JarURLConnectionTest.class.getPackage().getName().replace('.', File.separatorChar));
+    private static final URL BASE = JarURLConnectionTest.class.getClassLoader().getResource(".."+File.separatorChar+JarURLConnectionTest.class.getPackage().getName().replace('.', File.separatorChar));
 
 	/**
 	 * @tests java.net.JarURLConnection#getAttributes()

@@ -28,6 +28,7 @@
          </main>
          <test location="src/test">
             <api location="src/test/api" />
+            <impl location="src/test/impl" />
             <resources location="src/test/resources" />
          </test>
          <natives location="src/natives" />
