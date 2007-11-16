@@ -61,8 +61,10 @@ import org.apache.harmony.jndi.internal.Util;
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 import org.apache.harmony.jndi.internal.parser.LdapNameParser;
+import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
 import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
+import org.apache.harmony.jndi.provider.ldap.sasl.SaslBind;
 
 /**
  * This context implements LdapContext, it's main entry point of all JNDI ldap
@@ -94,6 +96,11 @@ public class LdapContextImpl implements LdapContext {
      */
     private NameParser parser;
 
+    /**
+     * connection controls for this context
+     */
+    private Control[] connCtls;
+
     private static final Control NON_CRITICAL_MANAGE_REF_CONTROL = new ManageReferralControl(
             Control.NONCRITICAL);
 
@@ -107,7 +114,7 @@ public class LdapContextImpl implements LdapContext {
      * construct a new inherit <code>LdapContextImpl</code>
      * 
      * @param context
-     * @param env
+     * @param environment
      * @param dn
      * @throws InvalidNameException
      */
@@ -130,7 +137,14 @@ public class LdapContextImpl implements LdapContext {
             Hashtable<Object, Object> environment, String dn)
             throws NamingException {
         initial(client, environment, dn);
-        // TODO do ldap bind operation
+
+        try {
+            doBindOperation(connCtls);
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException();
+            ex.setRootCause(e);
+            throw ex;
+        }
     }
 
     private void initial(LdapClient ldapClient,
@@ -145,6 +159,42 @@ public class LdapContextImpl implements LdapContext {
 
         contextDn = new LdapName(dn);
         parser = new LdapNameParser(dn);
+    }
+
+    /**
+     * Perform a LDAP Bind operation.
+     * 
+     * @param env
+     * @throws IOException
+     * @throws IOException
+     * @throws NamingException
+     * @throws ParseException
+     */
+    private void doBindOperation(Control[] connCtsl) throws IOException,
+            NamingException {
+
+        SaslBind saslBind = new SaslBind();
+        LdapResult result = null;
+
+        SaslBind.AuthMech authMech = saslBind.valueAuthMech(env);
+        if (authMech == SaslBind.AuthMech.None) {
+            BindOp bind = new BindOp("", "", null, null);
+            client.doOperation(bind, connCtsl);
+            result = bind.getResult();
+        } else if (authMech == SaslBind.AuthMech.Simple) {
+            String principal = (String) env.get(Context.SECURITY_PRINCIPAL);
+            String credential = Utils.getString(env
+                    .get(Context.SECURITY_CREDENTIALS));
+            BindOp bind = new BindOp(principal, credential, null, null);
+            client.doOperation(bind, connCtsl);
+            result = bind.getResult();
+        } else if (authMech == SaslBind.AuthMech.SASL) {
+            result = saslBind.doSaslBindOperation(env, client, connCtsl);
+        }
+
+        if (LdapUtils.getExceptionFromResult(result) != null) {
+            throw LdapUtils.getExceptionFromResult(result);
+        }
     }
 
     public ExtendedResponse extendedOperation(ExtendedRequest request)
