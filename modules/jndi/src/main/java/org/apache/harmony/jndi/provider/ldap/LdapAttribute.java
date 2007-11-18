@@ -56,6 +56,8 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
      * whether the value of attribute is binary
      */
     private boolean isBinary;
+    
+    private LdapContextImpl context = null;
 
     private static HashSet<String> BINARY_ATTRIBUTE = new HashSet<String>();
     static {
@@ -83,9 +85,14 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
         super("", false); //$NON-NLS-1$
     }
 
-    public LdapAttribute(String id) {
+    public LdapAttribute(String id, LdapContextImpl ctx) {
         super(id, false);
         isBinary = isBinary(id);
+        context = ctx;
+    }
+    
+    void setContext(LdapContextImpl ctx) {
+        context = ctx;
     }
 
     /**
@@ -95,7 +102,7 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
      *            may never be <code>null</code>
      * @throws NamingException
      */
-    public LdapAttribute(Attribute attr) throws NamingException {
+    public LdapAttribute(Attribute attr, LdapContextImpl ctx) throws NamingException {
         super(attr.getID(), attr.isOrdered());
         isBinary = isBinary(getID());
         NamingEnumeration<?> enu = attr.getAll();
@@ -106,6 +113,7 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
 
         attributeDefinition = null;
         attributeSyntaxDefinition = null;
+        context = ctx;
     }
 
     @SuppressWarnings("unchecked")

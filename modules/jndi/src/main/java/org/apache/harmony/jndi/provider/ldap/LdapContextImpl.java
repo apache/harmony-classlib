@@ -23,6 +23,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.naming.Binding;
 import javax.naming.CannotProceedException;
@@ -57,7 +59,6 @@ import javax.naming.ldap.Rdn;
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.NamingManager;
 
-import org.apache.harmony.jndi.internal.Util;
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 import org.apache.harmony.jndi.internal.parser.LdapNameParser;
@@ -80,7 +81,7 @@ public class LdapContextImpl implements LdapContext {
     /**
      * name of the context
      */
-    private Name contextDn;
+    protected Name contextDn;
 
     private Control[] requestControls;
 
@@ -89,7 +90,7 @@ public class LdapContextImpl implements LdapContext {
     /**
      * environment properties for this context
      */
-    private Hashtable<Object, Object> env;
+    protected Hashtable<Object, Object> env;
 
     /**
      * name parser for this context
@@ -294,7 +295,7 @@ public class LdapContextImpl implements LdapContext {
 
         if (attributes == null) {
             attributes = new BasicAttributes();
-            Attribute attr = new LdapAttribute("objectClass");
+            Attribute attr = new LdapAttribute("objectClass", this);
             attr.add("top");
             attr.add("javaContainer");
             attributes.put(attr);
@@ -310,7 +311,7 @@ public class LdapContextImpl implements LdapContext {
         List<LdapAttribute> la = new ArrayList<LdapAttribute>(attrs.size());
         NamingEnumeration<? extends Attribute> enu = attrs.getAll();
         while (enu.hasMore()) {
-            la.add(new LdapAttribute(enu.next()));
+            la.add(new LdapAttribute(enu.next(), this));
         }
 
         // do add operation
@@ -374,7 +375,7 @@ public class LdapContextImpl implements LdapContext {
             return first;
         }
 
-        Attribute attr = new LdapAttribute(first.getID());
+        Attribute attr = new LdapAttribute(first.getID(), this);
         NamingEnumeration<?> enu = first.getAll();
         while (enu.hasMore()) {
             attr.add(enu.next());
@@ -459,13 +460,234 @@ public class LdapContextImpl implements LdapContext {
         return getAttributes(convertFromStringToName(s), as);
     }
 
+
+    public static Hashtable<String, Hashtable<String, Hashtable<String, Object>>> schemaTree = new Hashtable<String, Hashtable<String, Hashtable<String, Object>>>();
+
+    private LdapSchemaContextImpl ldapSchemaCtx = null;
+
+    protected String subschemasubentry = null;
+
     public DirContext getSchema(Name name) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+        if (null != ldapSchemaCtx)
+            return ldapSchemaCtx;
+
+        SearchControls searchControls = new SearchControls();
+        SearchOp search = null;
+        Filter filter = null;
+        FilterParser filterParser = null;
+        LdapSearchResult sre = null;
+        Map<String, Attributes> names = null;
+        Set<String> keyset = null;
+
+        if (name.size() != 0) {
+            subschemasubentry = name.toString() + "," + contextDn.toString();
+        }
+        if (null == subschemasubentry) {
+            filterParser = new FilterParser("(objectClass=*)");
+            try {
+                filter = filterParser.parse();
+            } catch (ParseException e) {
+                InvalidSearchFilterException ex = new InvalidSearchFilterException(
+                        Messages.getString("ldap.29")); //$NON-NLS-1$
+                ex.setRootCause(e);
+                throw ex;
+            }
+
+            searchControls.setSearchScope(SearchControls.OBJECT_SCOPE);
+            searchControls.setReturningAttributes(new String[] {
+                    "namingContexts", "subschemaSubentry", "altServer", });
+            search = new SearchOp("", searchControls, filter);
+
+            try {
+                client.doOperation(search, requestControls);
+            } catch (IOException e) {
+                CommunicationException ex = new CommunicationException(e
+                        .getMessage());
+                ex.setRootCause(e);
+                if (search.getSearchResult().isEmpty()) {
+                    throw ex;
+                }
+                search.getSearchResult().setException(ex);
+            }
+
+            sre = search.getSearchResult();
+            names = sre.getEntries();
+
+            keyset = names.keySet();
+            for (Iterator<String> iterator = keyset.iterator(); iterator
+                    .hasNext();) {
+                String key = iterator.next();
+                Attributes as = names.get(key);
+                subschemasubentry = (String) as.get("subschemasubentry").get();
+            }
+        }
+
+        searchControls.setSearchScope(SearchControls.OBJECT_SCOPE);
+        searchControls.setReturningAttributes(new String[] { "objectclasses",
+                "attributetypes", "matchingrules", "ldapsyntaxes" });
+        searchControls.setReturningObjFlag(true);
+        filterParser = new FilterParser("(objectClass=subschema)");
+        try {
+            filter = filterParser.parse();
+        } catch (ParseException e) {
+            InvalidSearchFilterException ex = new InvalidSearchFilterException(
+                    Messages.getString("ldap.29")); //$NON-NLS-1$
+            ex.setRootCause(e);
+            throw ex;
+        }
+        search = new SearchOp(subschemasubentry, searchControls, filter);
+
+        try {
+            client.doOperation(search, requestControls);
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException(e
+                    .getMessage());
+            ex.setRootCause(e);
+            if (search.getSearchResult().isEmpty()) {
+                throw ex;
+            }
+            search.getSearchResult().setException(ex);
+        }
+        if (search.getResult().getResultCode() == LdapResult.INVALID_DN_SYNTAX) {
+            throw new InvalidNameException(Messages.getString("ldap.34"));
+        }
+        sre = search.getSearchResult();
+        names = sre.getEntries();
+
+        keyset = names.keySet();
+        for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
+            String key = iterator.next();
+            Attributes as = names.get(key);
+            NamingEnumeration<String> ids = as.getIDs();
+
+            while (ids.hasMoreElements()) {
+                String schemaType = ids.nextElement();
+                if (!schemaTree.contains(schemaType)) {
+                    schemaTree.put(schemaType,
+                            new Hashtable<String, Hashtable<String, Object>>());
+                }
+                Hashtable<String, Hashtable<String, Object>> schemaDefs = schemaTree
+                        .get(schemaType);
+                LdapAttribute attribute = (LdapAttribute) as.get(schemaType);
+                for (int i = 0; i < attribute.size(); i++) {
+                    String value = (String) attribute.get(i);
+                    parseValue(value, schemaDefs);
+                }
+            }
+        }
+        ldapSchemaCtx = new LdapSchemaContextImpl(this, env, name);
+        return ldapSchemaCtx;
+    }
+
+    Hashtable<String, Object> findSchemaDefInfo(String schemaType,
+            String className) {
+        Hashtable<String, Hashtable<String, Object>> schemaDefs = schemaTree
+                .get(schemaType);
+        Hashtable<String, Object> schemaDef = schemaDefs.get(className);
+        return schemaDef;
+    }
+
+    /*
+     * Sample schema value from Openldap server is ( 2.5.13.8 NAME
+     * 'numericStringMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 ) TODO check
+     * with RFC to see whether all the schema definition has been catered for
+     */
+    private static void parseValue(String value,
+            Hashtable<String, Hashtable<String, Object>> schemaDefs) {
+        StringTokenizer st = new StringTokenizer(value);
+        // Skip (
+        st.nextToken();
+
+        String oid = st.nextToken();
+
+        Hashtable<String, Object> schemaDef = new Hashtable<String, Object>();
+        schemaDef.put("orig", value);
+        schemaDef.put("numericoid", oid);
+        String token = null;
+        ArrayList<String> values = null;
+        StringBuilder desc = new StringBuilder();
+        while (st.hasMoreTokens()) {
+            String attrName = st.nextToken();
+            if (attrName.startsWith("x-")) {
+                token = st.nextToken();
+                // remove the ending ' symbol
+                token = token.substring(0, token.length() - 1);
+                schemaDef.put(attrName, token);
+            }
+            if (attrName.equals("usage") || attrName.equals("equality")
+                    || attrName.equals("syntax") || attrName.equals("ordering")
+                    || attrName.equals("substr")) {
+                token = st.nextToken();
+                schemaDef.put(attrName, token);
+            }
+            if (attrName.equals("desc")) {
+                token = st.nextToken();
+
+                // remove the leading ' symbol
+                if (token.startsWith("'"))
+                    token = token.substring(1);
+                while (!token.endsWith("'")) {
+                    desc.append(token).append(" ");
+                    token = st.nextToken();
+                }
+
+                // remove the ending ' symbol
+                desc.append(token.substring(0, token.length() - 1));
+                schemaDef.put(attrName, desc.toString());
+                desc.delete(0, desc.length());
+            }
+            if (attrName.equals("name")) {
+                token = st.nextToken();
+                values = new ArrayList<String>();
+                // Name has multiple values
+                if (token.startsWith("(")) {
+                    token = st.nextToken();
+                    while (!token.equals(")")) {
+                        // remove enclosing quotation
+                        token = token.substring(1, token.length() - 1);
+                        values.add(token);
+                        token = st.nextToken();
+                    }
+                } else {
+                    // remove enclosing quotation
+                    token = token.substring(1, token.length() - 1);
+                    values.add(token);
+                }
+                schemaDef.put(attrName, values);
+                schemaDefs.put(values.get(0), schemaDef);
+            }
+            if (attrName.equals("must") || attrName.equals("sup")
+                    || attrName.equals("may")) {
+                token = st.nextToken();
+                values = new ArrayList<String>();
+                // has multiple values
+                if (token.startsWith("(")) {
+                    token = st.nextToken();
+                    while (!token.equals(")")) {
+                        if (!token.equals("$"))
+                            values.add(token);
+                        token = st.nextToken();
+                    }
+                } else {
+                    values.add(token);
+                }
+                schemaDef.put(attrName, values);
+            }
+            if (attrName.equals("abstract") || attrName.equals("structual")
+                    || attrName.equals("auxiliary")
+                    || attrName.equals("single-value")
+                    || attrName.equals("no-user-modification")) {
+                schemaDef.put(attrName, "true");
+            }
+        }
+        if (!schemaDef.keySet().contains("name")) {
+            schemaDefs.put(oid, schemaDef);
+        }
     }
 
     public DirContext getSchema(String s) throws NamingException {
-        return getSchema(convertFromStringToName(s));
+        return getSchema(new CompositeName(s));
     }
 
     public DirContext getSchemaClassDefinition(Name name)
@@ -536,13 +758,13 @@ public class LdapContextImpl implements LdapContext {
         for (ModificationItem item : modificationItems) {
             switch (item.getModificationOp()) {
             case DirContext.ADD_ATTRIBUTE:
-                op.addModification(0, new LdapAttribute(item.getAttribute()));
+                op.addModification(0, new LdapAttribute(item.getAttribute(), this));
                 break;
             case DirContext.REMOVE_ATTRIBUTE:
-                op.addModification(1, new LdapAttribute(item.getAttribute()));
+                op.addModification(1, new LdapAttribute(item.getAttribute(), this));
                 break;
             case DirContext.REPLACE_ATTRIBUTE:
-                op.addModification(2, new LdapAttribute(item.getAttribute()));
+                op.addModification(2, new LdapAttribute(item.getAttribute(), this));
                 break;
             default:
                 throw new IllegalArgumentException(Messages.getString(
@@ -1027,7 +1249,7 @@ public class LdapContextImpl implements LdapContext {
      *            base dn of the relative name
      * @return dn relatived to the <code>dn</code> of <code>base</code>
      */
-    private String convertToRelativeName(String dn, String base) {
+    protected String convertToRelativeName(String dn, String base) {
 
         if (base.equals("")) {
             return dn;
@@ -1041,7 +1263,7 @@ public class LdapContextImpl implements LdapContext {
         return dn.substring(0, index - 1);
     }
 
-    private String getTargetDN(Name name, Name prefix) throws NamingException,
+    protected String getTargetDN(Name name, Name prefix) throws NamingException,
             InvalidNameException {
         Name target = null;
         if (name.size() == 0) {
@@ -1057,7 +1279,7 @@ public class LdapContextImpl implements LdapContext {
         return target.toString();
     }
 
-    private Context findNnsContext(Name name) throws NamingException {
+    protected Context findNnsContext(Name name) throws NamingException {
         CannotProceedException cpe = null;
         if (env.containsKey(NamingManager.CPE)) {
             cpe = (CannotProceedException) env.get(NamingManager.CPE);
@@ -1147,7 +1369,7 @@ public class LdapContextImpl implements LdapContext {
      * @throws InvalidNameException
      *             occurs error while converting
      */
-    private Name convertFromStringToName(String s) throws InvalidNameException {
+    protected Name convertFromStringToName(String s) throws InvalidNameException {
         if (s == null) {
             // jndi.2E=The name is null
             throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
@@ -1251,7 +1473,7 @@ public class LdapContextImpl implements LdapContext {
      * @param op
      * @throws NamingException
      */
-    private void doBasicOperation(LdapOperation op) throws NamingException {
+    protected void doBasicOperation(LdapOperation op) throws NamingException {
         LdapMessage message = null;
         try {
             message = client.doOperation(op, requestControls);

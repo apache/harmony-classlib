@@ -35,7 +35,7 @@ public class LdapAttributeTest extends TestCase {
         byte[] v1 = Utils.getBytes("value1");
         byte[] v2 = Utils.getBytes("value2");
         byte[] v3 = Utils.getBytes("value3");
-        LdapAttribute attr = new LdapAttribute(id);
+        LdapAttribute attr = new LdapAttribute(id, null);
         attr.add(v1);
         attr.add(v2);
         attr.add(v3);
@@ -43,7 +43,7 @@ public class LdapAttributeTest extends TestCase {
 
         Object[] encoded = new Object[2];
         attr.encodeValues(encoded);
-        LdapAttribute decoded = new LdapAttribute("");
+        LdapAttribute decoded = new LdapAttribute("", null);
         decoded.decodeValues(encoded);
 
         assertEquals(attr.getID(), decoded.getID());
@@ -54,7 +54,7 @@ public class LdapAttributeTest extends TestCase {
         BasicAttribute attr = new BasicAttribute("cn");
         attr.add("test");
         attr.add("harmony");
-        LdapAttribute la = new LdapAttribute(attr);
+        LdapAttribute la = new LdapAttribute(attr, null);
 
         ASN1TestUtils.checkEncode(la, LdapASN1Constant.Attribute);
 

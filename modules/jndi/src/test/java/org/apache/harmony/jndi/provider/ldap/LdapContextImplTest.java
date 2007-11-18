@@ -26,6 +26,7 @@ import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -37,12 +38,29 @@ import javax.naming.ldap.BasicControl;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapName;
 
-import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 
 public class LdapContextImplTest extends TestCase {
     private LdapContextImpl context;
+    
+    public void test_getSchema() throws NamingException {
+        context = new LdapContextImpl(new MockLdapClient(), null, "");
+        try {
+            context.getSchema((Name) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            context.getSchema((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
     public void test_composeName_LNameLName() throws Exception {
         context = new LdapContextImpl(new MockLdapClient(), null, "");
