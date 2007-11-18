@@ -29,6 +29,7 @@ import javax.naming.ConfigurationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.Control;
+import javax.naming.ldap.StartTlsRequest;
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -230,6 +231,16 @@ public class LdapClient {
                      * notify the thread which send request and wait for
                      * response
                      */
+                    if (element.response.getOperationIndex() == LdapASN1Constant.OP_EXTENDED_RESPONSE
+                            && ((ExtendedOp) element.response.getResponseOp())
+                                    .getExtendedRequest().getID().equals(
+                                            StartTlsRequest.OID)) {
+                        /*
+                         * When establishing TLS by StartTls extended operation, no 
+                         */
+                        isStopped = true;
+                    }
+                    
                     synchronized (element.lock) {
                         element.lock.notify();
                     }
@@ -611,5 +622,21 @@ public class LdapClient {
     @Override
     protected void finalize() {
         close();
+    }
+    
+    public Socket getSocket() {
+        return this.socket;
+    }
+
+    public void setSocket(Socket socket) throws IOException {
+        this.socket = socket;
+        this.in = new InputStreamWrap(socket.getInputStream());
+        this.out = socket.getOutputStream();
+        if (dispatcher != null) {
+            dispatcher.setStopped(true);
+            dispatcher.interrupt();
+        }
+        this.dispatcher = new Dispatcher();
+        this.dispatcher.start();
     }
 }
