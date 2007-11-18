@@ -19,17 +19,33 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ExceptionTableEntry {
+/**
+ * AnnotationDefault attribute
+ */
+public class AnnotationDefaultAttribute extends AnnotationsAttribute {
 
-	public int catchType;
-	public int endPC;
-	public int handlerPC;
-	public int startPC;
+    private ElementValue element_value;
 
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeShort(startPC);
-		dos.writeShort(endPC);
-		dos.writeShort(handlerPC);
-		dos.writeShort(catchType);
-	}
+    public AnnotationDefaultAttribute(ElementValue element_value) {
+        super("AnnotationDefault");
+        this.element_value = element_value;
+    }
+
+    protected int getLength() {
+        return element_value.getLength();
+    }
+
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        element_value.writeBody(dos);
+    }
+    
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        element_value.resolve(pool);
+    }
+
+    public String toString() {
+        return "AnnotationDefault: " + element_value;
+    }
+
 }

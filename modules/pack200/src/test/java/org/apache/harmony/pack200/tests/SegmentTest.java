@@ -31,8 +31,11 @@ import org.apache.harmony.pack200.Segment;
 public class SegmentTest extends TestCase {
 
 	public void testHelloWorld() throws Exception {
-		assertNotNull(Segment.parse(Segment.class
-				.getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack")));
+        InputStream in = Segment.class
+            .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        segment.writeJar(new JarOutputStream(new FileOutputStream(File.createTempFile("Hello", "World.jar"))), in);
 	}
 
 	public void testJustResources() throws Exception {
@@ -78,6 +81,22 @@ public class SegmentTest extends TestCase {
         assertNotNull(Segment
                 .parse(Segment.class
                         .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200.pack.gz")));
+    
+    }
+    
+    // Test with an archive containing Harmony's JNDI module
+    public void testWithJNDIE1() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz")));
+    
+    }
+    
+    // Test with an archive containing Annotations
+    public void testWithAnnotations() throws Exception {
+        assertNotNull(Segment
+                .parse(Segment.class
+                        .getResourceAsStream("/org/apache/harmony/pack200/tests/annotations.pack.gz")));
     
     }
  
