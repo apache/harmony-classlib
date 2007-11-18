@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.TimeZone;
 
 import org.apache.harmony.text.internal.nls.Messages;
@@ -320,8 +321,9 @@ public abstract class DateFormat extends Format {
      */
     public final static DateFormat getDateInstance(int style, Locale locale) {
         checkDateStyle(style);
-        com.ibm.icu.text.DateFormat icuFormat = com.ibm.icu.text.DateFormat.getDateInstance(style, locale);
-        return new SimpleDateFormat(locale, (com.ibm.icu.text.SimpleDateFormat)icuFormat);
+        ResourceBundle bundle = getBundle(locale);
+        String pattern = bundle.getString("Date_" + getStyleName(style)); //$NON-NLS-1$
+        return new SimpleDateFormat(pattern, locale);
     }
 
     /**
@@ -368,8 +370,10 @@ public abstract class DateFormat extends Format {
             int timeStyle, Locale locale) {
         checkTimeStyle(timeStyle);
         checkDateStyle(dateStyle);
-        com.ibm.icu.text.DateFormat icuFormat = com.ibm.icu.text.DateFormat.getDateTimeInstance(dateStyle, timeStyle, locale);
-        return new SimpleDateFormat(locale, (com.ibm.icu.text.SimpleDateFormat)icuFormat);
+        ResourceBundle bundle = getBundle(locale);
+        String pattern = bundle.getString("Date_" + getStyleName(dateStyle)) //$NON-NLS-1$
+                + " " + bundle.getString("Time_" + getStyleName(timeStyle)); //$NON-NLS-1$ //$NON-NLS-2$
+        return new SimpleDateFormat(pattern, locale);
     }
 
     /**
@@ -447,8 +451,9 @@ public abstract class DateFormat extends Format {
      */
     public final static DateFormat getTimeInstance(int style, Locale locale) {
         checkTimeStyle(style);
-        com.ibm.icu.text.DateFormat icuFormat = com.ibm.icu.text.DateFormat.getTimeInstance(style, locale);
-        return new SimpleDateFormat(locale, (com.ibm.icu.text.SimpleDateFormat)icuFormat);
+        ResourceBundle bundle = getBundle(locale);
+        String pattern = bundle.getString("Time_" + getStyleName(style)); //$NON-NLS-1$
+        return new SimpleDateFormat(pattern, locale);
     }
 
     /**

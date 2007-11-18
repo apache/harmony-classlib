@@ -80,7 +80,7 @@ public class TimeZoneTest extends junit.framework.TestCase {
 				.getTimeInMillis();
 		st1 = TimeZone.getTimeZone("EST");
 		assertEquals("T2. Incorrect offset returned",
-                             -(5 * ONE_HOUR), st1.getOffset(time2));
+                             -(4 * ONE_HOUR), st1.getOffset(time2));
 
 		// test on subclass Support_TimeZone, an instance with daylight savings
 		TimeZone tz1 = new Support_TimeZone(-5 * ONE_HOUR, true);
