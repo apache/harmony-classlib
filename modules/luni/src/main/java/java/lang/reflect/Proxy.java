@@ -166,6 +166,7 @@ public class Proxy implements Serializable {
                 }
             } else {
                 newClass = ref.get();
+                assert newClass != null; 
             }
             return newClass;
         }
