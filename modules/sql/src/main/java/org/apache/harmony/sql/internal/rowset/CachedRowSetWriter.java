@@ -32,7 +32,6 @@ import org.apache.harmony.sql.internal.nls.Messages;
 
 public class CachedRowSetWriter implements RowSetWriter {
 
-
     private ResultSet primaryKeys;
 
     private CachedRowSet originalRowSet;
@@ -56,7 +55,6 @@ public class CachedRowSetWriter implements RowSetWriter {
     private String keyColumnName, whereStatementForOriginal,
             whereStatementForCurrent;
 
-
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
         // use an optimistic concurrency control mechanism
 
@@ -64,14 +62,16 @@ public class CachedRowSetWriter implements RowSetWriter {
         // analyse every row and do responsible task.
         currentRowSet.first();
         originalRowSet.first();
-        do{
+        do {
             // rolling with currentRowSet
             if (originalRowSet.next()) {
                 // deal with updated or deleted row which need do conflict check
                 if (checkConflictNotExist(originalRowSet)) {
-                    //If all of the values in the data source are already the values to be persisted, 
-                    //the method acceptChanges does nothing. 
-                    if(!checkConflictNotExist(currentRowSet))  writeRowData();
+                    // If all of the values in the data source are already the
+                    // values to be persisted,
+                    // the method acceptChanges does nothing.
+                    if (!checkConflictNotExist(currentRowSet))
+                        writeRowData();
                 } else {
                     cleanEnvironment();
                     throw new SyncProviderException(Messages
@@ -84,14 +84,14 @@ public class CachedRowSetWriter implements RowSetWriter {
                 // FIXME: need pre-check before insert into database?
                 writeRowData();
             }
-        }while (currentRowSet.next());
+        } while (currentRowSet.next());
 
         cleanEnvironment();
 
         return true;
     }
-    
-    private void initial(RowSetInternal theRowSet) throws SQLException {      
+
+    private void initial(RowSetInternal theRowSet) throws SQLException {
         currentRowSet = (CachedRowSetImpl) theRowSet;
         // initial environment
         originalRowSet = (CachedRowSet) currentRowSet.getOriginal();
@@ -103,7 +103,6 @@ public class CachedRowSetWriter implements RowSetWriter {
                 currentRowSet.getMetaData().getSchemaName(1), tableName);
         cachedKeySet.populate(primaryKeys);
     }
-
 
     private void writeRowData() throws SQLException {
         try {
@@ -131,27 +130,26 @@ public class CachedRowSetWriter implements RowSetWriter {
 
     }
 
-
     private void createScriptForWriteBack() throws SQLException {
         cachedKeySet.first();
         whereStatementForCurrent = "";
         String insertCollector = "", updateCollector = "";
         // FIXME:uses getUpdateMask()
 
-         do{
+        do {
             keyColumnName = cachedKeySet.getString("COLUMN_NAME");
             whereStatementForCurrent = whereStatementForCurrent + keyColumnName
                     + " = ? " + " and ";
-        }while (cachedKeySet.next());
+        } while (cachedKeySet.next());
 
         whereStatementForCurrent = subStringN(whereStatementForCurrent, 5);
 
         // insertCollector: all column
         for (int i = 1; i <= columnCount; i++) {
-            insertCollector = insertCollector + " ? "+" , ";            
+            insertCollector = insertCollector + " ? " + " , ";
         }
         insertCollector = subStringN(insertCollector, 3);
-        
+
         // update: all column
         ResultSetMetaData tempRSMD = currentRowSet.getMetaData();
         for (int i = 1; i <= columnCount; i++) {
@@ -206,18 +204,25 @@ public class CachedRowSetWriter implements RowSetWriter {
     private void fillParasOfKeys(CachedRowSet inputRS, int from)
             throws SQLException {
         cachedKeySet.first();
-        int i = from+1;        
+        int i = from + 1;
         do {
             keyColumnName = cachedKeySet.getString("COLUMN_NAME");
             ((PreparedStatement) statement).setObject(i++, inputRS
                     .getObject(keyColumnName));
-        } while (cachedKeySet.next()); 
+        } while (cachedKeySet.next());
     }
 
     private void fillParasOfAllColumn() throws SQLException {
-        for (int i = 1; i <= columnCount; i++)
-            ((PreparedStatement) statement).setObject(i, currentRowSet
-                    .getObject(i));
+        for (int i = 1; i <= columnCount; i++) {
+            ResultSetMetaData rsmd = currentRowSet.getMetaData();
+            if (currentRowSet.getObject(i) == null) {
+                ((PreparedStatement) statement).setNull(i, rsmd
+                        .getColumnType(i));
+            } else {
+                ((PreparedStatement) statement).setObject(i, currentRowSet
+                        .getObject(i));
+            }
+        }
     }
 
     private boolean checkConflictNotExist(CachedRowSet crs) {
@@ -230,8 +235,12 @@ public class CachedRowSetWriter implements RowSetWriter {
             // compare line by line, column by column
             if (dataInDB.next()) {
                 for (int i = 1; i <= dataInDB.getMetaData().getColumnCount(); i++) {
-                    if (!(dataInDB.getObject(i).equals(crs.getObject(i))))
+                    if (dataInDB.getObject(i) == crs.getObject(i)) {
+                        continue;
+                    }
+                    if (!(dataInDB.getObject(i).equals(crs.getObject(i)))) {
                         return false;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -241,7 +250,7 @@ public class CachedRowSetWriter implements RowSetWriter {
     }
 
     private void cleanEnvironment() {
-        try {           
+        try {
             originalRowSet.close();
             originalConnection.close();
             cachedKeySet.close();

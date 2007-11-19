@@ -16,11 +16,16 @@
  */
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
@@ -33,7 +38,7 @@ public class CachedRowSetImplTest extends TestCase {
 
     private static final String DERBY_URL = "jdbc:derby:src/test/resources/TESTDB";
 
-    private Connection conn;
+    private Connection conn = null;
 
     private Statement st;
 
@@ -41,8 +46,11 @@ public class CachedRowSetImplTest extends TestCase {
 
     private CachedRowSet crset;
 
-    public void setUp() throws IllegalAccessException, InstantiationException,
-            ClassNotFoundException, SQLException {
+    private final static int DEFAULT_COLUMN_COUNT = 12;
+
+    private final static int DEFAULT_ROW_COUNT = 4;
+
+    public void setUp() throws Exception {
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
         try {
@@ -57,20 +65,18 @@ public class CachedRowSetImplTest extends TestCase {
         ;
 
         st = conn.createStatement();
-
         rs = conn.getMetaData().getTables(null, "APP", "USER_INFO", null);
-        // careful: Integer, rather than int!
+        String createTableSQL = "create table USER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(10) NOT NULL, BIGINT_T BIGINT, "
+                + "NUMERIC_T NUMERIC, DECIMAL_T DECIMAL, SMALLINT_T SMALLINT, FLOAT_T FLOAT, REAL_T REAL, DOUBLE_T DOUBLE,"
+                + "DATE_T DATE, TIME_T TIME, TIMESTAMP_T TIMESTAMP)";
+        String alterTableSQL = "ALTER TABLE USER_INFO  ADD CONSTRAINT USER_INFO_PK Primary Key (ID)";
 
         if (!rs.next()) {
-            st
-                    .execute("create table USER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(10) NOT NULL)");
-            st
-                    .execute("ALTER TABLE USER_INFO  ADD CONSTRAINT USER_INFO_PK Primary Key (ID)");
+            st.execute(createTableSQL);
+            st.execute(alterTableSQL);
         }
 
-        st.executeUpdate("delete from USER_INFO");
-        st.executeUpdate("insert into USER_INFO(ID,NAME) values (1,'hermit')");
-        st.executeUpdate("insert into USER_INFO(ID,NAME) values (2,'test')");
+        insertData();
         rs = st.executeQuery("select * from USER_INFO");
         try {
             crset = (CachedRowSet) Class.forName(
@@ -93,12 +99,19 @@ public class CachedRowSetImplTest extends TestCase {
         crset.setUrl(DERBY_URL);
     }
 
-    public void tearDown() throws SQLException {
+    public void tearDown() throws Exception {
         if (rs != null) {
             rs.close();
         }
-        if (crset != null)
+        if (crset != null) {
             crset.close();
+        }
+        if (st != null) {
+            st.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
     }
 
     public void testSetSyncProvider() throws Exception {
@@ -186,7 +199,7 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testSize() {
-        assertEquals(2, crset.size());
+        assertEquals(DEFAULT_ROW_COUNT, crset.size());
     }
 
     public void testDeleteRow() throws SQLException {
@@ -200,7 +213,7 @@ public class CachedRowSetImplTest extends TestCase {
         crset.next();
         assertFalse(crset.rowDeleted());
         crset.deleteRow();
-        assertEquals(2, crset.size());
+        assertEquals(DEFAULT_ROW_COUNT, crset.size());
         assertTrue(crset.rowDeleted());
     }
 
@@ -243,15 +256,16 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testAcceptChanges() throws SQLException {
+        // FIXME: if the value of column is null, it would go wrong when
+        // call acceptChanges(). And if one method in TestCase throws
+        // SQLException, the following method will be affected.
         rs.next();
         assertEquals(1, rs.getInt(1));
-
         assertEquals("hermit", rs.getString(2));
-        crset.first();
 
-        assertEquals(1, crset.getInt(1));
-
-        assertEquals("hermit", crset.getString(2));
+        crset.absolute(3);
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
         crset.updateString(2, "HarmonY");
 
         crset.moveToInsertRow();
@@ -268,9 +282,10 @@ public class CachedRowSetImplTest extends TestCase {
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "test");
+        assertEquals(rs.getString(2), "hermit");
         rs.next();
-        assertEquals(rs.getString(2), "Apache");
+        rs.next();
+        assertEquals(rs.getString(2), "test4");
 
     }
 
@@ -346,7 +361,7 @@ public class CachedRowSetImplTest extends TestCase {
         RowSetMetaData rsmCopySchema = (RowSetMetaData) crsetCopySchema
                 .getMetaData();
         assertEquals("USER_INFO", rsmCopySchema.getTableName(1));
-        assertEquals(2, rsmCopySchema.getColumnCount());
+        assertEquals(DEFAULT_COLUMN_COUNT, rsmCopySchema.getColumnCount());
 
         RowSetMetaData rsm = (RowSetMetaData) crset.getMetaData();
         rsm.setTableName(1, "newBorn");
@@ -357,32 +372,35 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testCreateCopy() throws Exception {
-        crset.first();
-        assertEquals(crset.getString(2), "hermit");
-        crset.updateString(2, "copyTest");
+        // crset.first();
+        crset.absolute(3);
+        assertEquals(crset.getString(2), "test3");
+        crset.updateString(2, "copyTest3");
         crset.updateRow();
         crset.acceptChanges();
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "copyTest");
+        assertEquals(rs.getString(2), "hermit");
 
         CachedRowSet crsetCopy = (CachedRowSet) crset.createCopy();
 
-        crsetCopy.first();
-        crsetCopy.updateString(2, "copyTest2");
+        // crsetCopy.first();
+        crsetCopy.absolute(3);
+        crsetCopy.updateString(2, "copyTest3");
         crsetCopy.updateRow();
         crsetCopy.acceptChanges();
 
-        assertEquals(crsetCopy.getString(2), "copyTest2");
-        assertEquals(crset.getString(2), "copyTest");
+        assertEquals(crsetCopy.getString(2), "copyTest3");
+        assertEquals(crset.getString(2), "copyTest3");
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "copyTest2");
+        assertEquals(rs.getString(2), "hermit");
 
-        crset.first();
-        assertEquals(crset.getString(2), "copyTest");
+        // crset.first();
+        crset.absolute(3);
+        assertEquals(crset.getString(2), "copyTest3");
     }
 
     public void testAfterLast() throws Exception {
@@ -395,7 +413,7 @@ public class CachedRowSetImplTest extends TestCase {
 
         crset.afterLast();
         crset.previous();
-        assertEquals(2, crset.getInt(1));
+        assertEquals(4, crset.getInt(1));
     }
 
     public void testNextandPreviousPage() throws Exception {
@@ -460,5 +478,52 @@ public class CachedRowSetImplTest extends TestCase {
         crset.populate(cc, 1);
         crset.first();
         assertEquals("hermit", crset.getString(2));
+    }
+
+    private void insertData() throws Exception {
+
+        st.executeUpdate("delete from USER_INFO");
+
+        // first row
+        st.executeUpdate("insert into USER_INFO(ID,NAME) values (1,'hermit')");
+        // second row
+        st.executeUpdate("insert into USER_INFO(ID,NAME) values (2,'test')");
+
+        String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
+                + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
+                + "?, ?, ?, ?, ?, ? )";
+        PreparedStatement preStmt = conn.prepareStatement(insertSQL);
+        // third row
+        preStmt.setInt(1, 3);
+        preStmt.setString(2, "test3");
+        preStmt.setLong(3, 3333L);
+        preStmt.setBigDecimal(4, new BigDecimal(123));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 13);
+        preStmt.setFloat(7, 3.7F);
+        preStmt.setFloat(8, 3.888F);
+        preStmt.setDouble(9, 3.9999);
+        preStmt.setDate(10, new Date(523654123));
+        preStmt.setTime(11, new Time(966554221));
+        preStmt.setTimestamp(12, new Timestamp(521342100));
+        preStmt.executeUpdate();
+        // fourth row
+        preStmt.setInt(1, 4);
+        preStmt.setString(2, "test4");
+        preStmt.setLong(3, 444423L);
+        preStmt.setBigDecimal(4, new BigDecimal(12));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 41);
+        preStmt.setFloat(7, 4.8F);
+        preStmt.setFloat(8, 4.888F);
+        preStmt.setDouble(9, 4.9999);
+        preStmt.setDate(10, new Date(965324512));
+        preStmt.setTime(11, new Time(452368512));
+        preStmt.setTimestamp(12, new Timestamp(874532105));
+        preStmt.executeUpdate();
+
+        if (preStmt != null) {
+            preStmt.close();
+        }
     }
 }

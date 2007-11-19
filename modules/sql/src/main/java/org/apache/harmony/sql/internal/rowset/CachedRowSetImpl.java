@@ -360,12 +360,25 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         RowSetMetaDataImpl rowSetMetaData = new RowSetMetaDataImpl();
         rowSetMetaData.setColumnCount(metaData.getColumnCount());
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            rowSetMetaData.setColumnName(i, metaData.getColumnName(i));
-            rowSetMetaData.setTableName(i, metaData.getTableName(i));
-            rowSetMetaData.setSchemaName(i, metaData.getSchemaName(i));
+            rowSetMetaData.setAutoIncrement(i, metaData.isAutoIncrement(i));
+            rowSetMetaData.setCaseSensitive(i, metaData.isCaseSensitive(i));
             rowSetMetaData.setCatalogName(i, metaData.getCatalogName(i));
+            rowSetMetaData.setColumnDisplaySize(i, metaData
+                    .getColumnDisplaySize(i));
+            rowSetMetaData.setColumnLabel(i, metaData.getColumnLabel(i));
+            rowSetMetaData.setColumnName(i, metaData.getColumnName(i));
+            rowSetMetaData.setColumnType(i, metaData.getColumnType(i));
+            rowSetMetaData.setColumnTypeName(i, metaData.getColumnTypeName(i));
+            rowSetMetaData.setCurrency(i, metaData.isCurrency(i));
+            rowSetMetaData.setNullable(i, metaData.isNullable(i));
+            rowSetMetaData.setPrecision(i, metaData.getPrecision(i));
+            rowSetMetaData.setScale(i, metaData.getScale(i));
+            rowSetMetaData.setSchemaName(i, metaData.getSchemaName(i));
+            rowSetMetaData.setSearchable(i, metaData.isSearchable(i));
+            rowSetMetaData.setSigned(i, metaData.isSigned(i));
+            rowSetMetaData.setTableName(i, metaData.getTableName(i));
+
         }
-        // TODO set other meta info when necessary
         this.meta = rowSetMetaData;
     }
 
