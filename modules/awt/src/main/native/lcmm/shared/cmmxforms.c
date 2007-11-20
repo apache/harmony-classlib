@@ -27,7 +27,7 @@ typedef struct {
   int count; // Number of transforms
 } MultiprofileXform;
 
-BOOL doMultiprofileTransform(MultiprofileXform *xform, LPVOID in, LPVOID out, unsigned int size) {
+LCMSBOOL doMultiprofileTransform(MultiprofileXform *xform, LPVOID in, LPVOID out, unsigned int size) {
     cmsHTRANSFORM* Transforms = xform->xforms;
     int i, bpp;
     DWORD outFmt;
