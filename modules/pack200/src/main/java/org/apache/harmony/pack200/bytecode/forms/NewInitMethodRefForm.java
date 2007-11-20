@@ -14,21 +14,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.pack200.bytecode.forms;
 
-public class CPMethodRef extends CPRef {
+import org.apache.harmony.pack200.bytecode.OperandManager;
 
-	protected CPClass className = null;
-	protected CPNameAndType descriptor = null;
+/**
+ * This class is used to determine which init method should
+ * be called, based on the last class which was sent a
+ * constructor message.
+ */
+public class NewInitMethodRefForm extends InitMethodReferenceForm {
 
-	public CPMethodRef(String className, String descriptor) {
-		super(ConstantPoolEntry.CP_Methodref, className, descriptor);
-		this.className = new CPClass(className);
-		this.descriptor = new CPNameAndType(descriptor);
-	}
+    public NewInitMethodRefForm(int opcode, String name,
+            int[] rewrite) {
+        super(opcode, name, rewrite);
+        // TODO Auto-generated constructor stub
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { className, descriptor };
-	}
+    public int getOperandType() {
+        return TYPE_NEWINITMETHODREF;
+    }
+    
+    public boolean hasNewInitMethodRefOperand() {
+        return true;
+    }
 
+    protected String context(OperandManager operandManager) {
+        return operandManager.getNewClass();
+    }
 }

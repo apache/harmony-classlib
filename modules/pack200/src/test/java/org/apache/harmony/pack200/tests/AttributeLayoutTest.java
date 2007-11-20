@@ -30,8 +30,14 @@ public class AttributeLayoutTest extends TestCase {
 		public SegmentConstantPool getConstantPool() {
 			final Object[][] data = new Object[][] {
 					{ }, // ALL
-					{ "Zero", "One" }, // UTF-8
-					{ "Ein", "Zwei" }, // Signature
+					{ "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" }, // UTF-8
+					{ },
+					{ },
+					{ },
+					{ },
+					{ },
+					{ },
+					{ "Eins", "Zwei", "Drei", "Vier", "Funf", "Sechs", "Sieben", "Acht", "Neun" }, // Signature
 			};
 			return new SegmentConstantPool(null) {
 				public Object getValue(int cp, long index) {
@@ -75,7 +81,7 @@ public class AttributeLayoutTest extends TestCase {
 		AttributeLayout layout = new AttributeLayout("RS",AttributeLayout.CONTEXT_CLASS,"RS", 1);
 		Segment segment = new TestSegment();
 		assertNull(layout.getValue(-1, segment.getConstantPool()));
-		assertEquals("Ein",layout.getValue(0, segment.getConstantPool()));
+		assertEquals("Eins",layout.getValue(0, segment.getConstantPool()));
 		assertEquals("Zwei",layout.getValue(1, segment.getConstantPool()));
 	}
 
@@ -83,7 +89,7 @@ public class AttributeLayoutTest extends TestCase {
 		AttributeLayout layout = new AttributeLayout("RSN",AttributeLayout.CONTEXT_CLASS,"RSN", 1);
 		Segment segment = new TestSegment();
 		assertNull(layout.getValue(0, segment.getConstantPool()));
-		assertEquals("Ein",layout.getValue(1, segment.getConstantPool()));
+		assertEquals("Eins",layout.getValue(1, segment.getConstantPool()));
 		assertEquals("Zwei",layout.getValue(2, segment.getConstantPool()));
 	}
 

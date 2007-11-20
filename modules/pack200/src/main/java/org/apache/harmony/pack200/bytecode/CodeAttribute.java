@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.pack200.Segment;
+
 public class CodeAttribute extends Attribute {
 	public List attributes = new ArrayList();
 	public List byteCodes = new ArrayList();
@@ -31,13 +33,15 @@ public class CodeAttribute extends Attribute {
 	public int maxLocals;
 	public int maxStack;
 
-	public CodeAttribute(int maxStack, int maxLocals, byte codePacked[]) {
+	public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
+			Segment segment, OperandManager operandManager) {
 		super("Code"); //$NON-NLS-1$
 		this.maxLocals = maxLocals;
 		this.maxStack = maxStack;
 		this.codeLength = 0;
 		for (int i = 0; i < codePacked.length; i++) {
 			ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
+			byteCode.extractOperands(operandManager, segment);
 			byteCodes.add(byteCode);
 			this.codeLength += byteCode.getLength();
 		}
@@ -52,6 +56,15 @@ public class CodeAttribute extends Attribute {
 		}
 		return 2 + 2 + 4 + codeLength + exceptionTable.size() * (2 + 2 + 2 + 2)
 				+ 2 + attributesSize;
+	}
+
+	protected ClassFileEntry[] getNestedClassFileEntries() {
+		ArrayList nestedEntries = new ArrayList();
+		nestedEntries.add(getAttributeName());
+		nestedEntries.addAll(byteCodes);
+		ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries.size()];
+		nestedEntries.toArray(nestedEntryArray);
+		return nestedEntryArray;
 	}
 
 	protected void resolve(ClassConstantPool pool) {
