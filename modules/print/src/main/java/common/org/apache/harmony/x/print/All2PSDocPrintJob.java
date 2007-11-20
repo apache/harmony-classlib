@@ -27,6 +27,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
+import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.IOException;
@@ -273,6 +274,9 @@ public class All2PSDocPrintJob implements DocPrintJob {
             }
 
             if (image != null) {
+                final PageFormat format = new PageFormat();
+                final Paper p = format.getPaper();
+                
                 MediaSize size = null;
                 if (attributes != null) {
                     if (attributes.containsKey(MediaSize.class)) {
@@ -302,8 +306,11 @@ public class All2PSDocPrintJob implements DocPrintJob {
                 iHeight = image.getHeight(null);
                 x = (width - iWidth) / 2;
                 y = (height - iHeight) / 2;
+                p.setSize(width, height);
+                p.setImageableArea(x, y, iWidth, iHeight);
+                
 
-                Graphics2D2PS graphics = new Graphics2D2PS(outstream, height);
+                Graphics2D2PS graphics = new Graphics2D2PS(outstream, format);
                 graphics.startPage(1);
                 if (x < 0 || y < 0) {
                     scaleX = (float) image.getWidth(null) / (float) width;
@@ -350,8 +357,8 @@ public class All2PSDocPrintJob implements DocPrintJob {
             converter = new Graphics2D2PS(outstream);
             format = null;            
         } else {
-            double height = psDocument.getPageFormat(0).getHeight();        
-            converter = new Graphics2D2PS(outstream, height);               
+            format = psDocument.getPageFormat(0);
+            converter = new Graphics2D2PS(outstream, format);               
         }
         
         Graphics2D2PS fake = new Graphics2D2PS(new PrintStream(
