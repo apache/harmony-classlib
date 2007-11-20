@@ -164,7 +164,7 @@ public class Segment {
                     classBands.getMethodFlags()[classNum][i], classBands.getMethodAttributes()[classNum][i]));
 		}
 		// sort CP according to cp_All
-		cp.resolve();
+		cp.resolve(this);
 		// print out entries
 		debug("Constant pool looks like:");
 		for (i = 1; i <= cp.size(); i++) {

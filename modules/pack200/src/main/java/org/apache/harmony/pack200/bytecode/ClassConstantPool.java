@@ -17,8 +17,12 @@
 package org.apache.harmony.pack200.bytecode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.pack200.Segment;
 
 
 public class ClassConstantPool {
@@ -69,6 +73,39 @@ public class ClassConstantPool {
 		return (ClassFileEntry) entries.get(--i);
 	}
 
+	public void resolve(Segment segment) {
+		System.out.println("\n\nResolving (Segment.resolve(Segment)");
+		HashMap sortMap = new HashMap();
+		List cpAll = null;
+		// TODO: HACK - this is a 1.5 api.
+		// Need to do the right thing and do it with 1.4 API.
+		try {
+			cpAll = Arrays.asList(segment.getConstantPool().getCpAll());
+		} catch (Pack200Exception ex) {
+			ex.printStackTrace();
+		}
+		Iterator it = entries.iterator();
+		while(it.hasNext()) {
+			ClassFileEntry entry = (ClassFileEntry) it.next();
+			int indexInCpAll = cpAll.indexOf(entry);
+			if(indexInCpAll > 0) {
+				sortMap.put(new Integer(indexInCpAll), entry);
+			} else {
+				sortMap.put(new Integer(99999), entry);
+			}
+		}
+		ArrayList sortedList = new ArrayList();
+		for(int index=0; index < 99999; index++) {
+			if(sortMap.containsKey(new Integer(index))) {
+				sortedList.add((ClassFileEntry)sortMap.get(new Integer(index)));
+			}
+		}
+		for(int xindex=0; xindex < sortedList.size(); xindex++) {
+			System.out.println(sortedList.get(xindex));
+		}
+		resolve();
+	}
+	
 	public void resolve() {
 		resolved= true;
 		Iterator it = entries.iterator();

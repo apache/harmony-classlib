@@ -38,7 +38,7 @@ public class CpBands extends BandSet {
 
     private String[] cpFieldClass;
 
-    private Object cpFieldDescriptor;
+    private String[] cpFieldDescriptor;
 
     private float[] cpFloat;
 
@@ -380,7 +380,7 @@ public class CpBands extends BandSet {
         return cpFieldClass;
     }
 
-    public Object getCpFieldDescriptor() {
+    public String[] getCpFieldDescriptor() {
         return cpFieldDescriptor;
     }
 

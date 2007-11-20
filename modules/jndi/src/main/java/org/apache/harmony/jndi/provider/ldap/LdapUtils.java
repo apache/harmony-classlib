@@ -17,15 +17,77 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+
+import javax.naming.AuthenticationException;
+import javax.naming.AuthenticationNotSupportedException;
+import javax.naming.CommunicationException;
+import javax.naming.ContextNotEmptyException;
 import javax.naming.InvalidNameException;
+import javax.naming.LimitExceededException;
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
+import javax.naming.NoPermissionException;
+import javax.naming.OperationNotSupportedException;
+import javax.naming.PartialResultException;
+import javax.naming.ServiceUnavailableException;
+import javax.naming.SizeLimitExceededException;
+import javax.naming.TimeLimitExceededException;
+import javax.naming.directory.AttributeInUseException;
+import javax.naming.directory.InvalidAttributeIdentifierException;
+import javax.naming.directory.InvalidAttributeValueException;
 import javax.naming.directory.InvalidSearchFilterException;
+import javax.naming.directory.NoSuchAttributeException;
+import javax.naming.directory.SchemaViolationException;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
 import org.apache.harmony.jndi.provider.ldap.parser.LdapUrlParser;
 import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
 
+@SuppressWarnings("boxing")
 public class LdapUtils {
+    private static HashMap<Integer, Class<?>> errorCodesMap = new HashMap<Integer, Class<?>>();
+
+    static {
+        errorCodesMap.put(1, NamingException.class);
+        errorCodesMap.put(2, CommunicationException.class);
+        errorCodesMap.put(3, TimeLimitExceededException.class);
+        errorCodesMap.put(4, SizeLimitExceededException.class);
+        errorCodesMap.put(7, AuthenticationNotSupportedException.class);
+        errorCodesMap.put(8, AuthenticationNotSupportedException.class);
+        errorCodesMap.put(9, PartialResultException.class);
+        errorCodesMap.put(11, LimitExceededException.class);
+        errorCodesMap.put(12, OperationNotSupportedException.class);
+        errorCodesMap.put(13, AuthenticationNotSupportedException.class);
+        errorCodesMap.put(16, NoSuchAttributeException.class);
+        errorCodesMap.put(17, InvalidAttributeIdentifierException.class);
+        errorCodesMap.put(18, InvalidSearchFilterException.class);
+        errorCodesMap.put(19, InvalidAttributeValueException.class);
+        errorCodesMap.put(20, AttributeInUseException.class);
+        errorCodesMap.put(21, InvalidAttributeValueException.class);
+        errorCodesMap.put(32, NameNotFoundException.class);
+        errorCodesMap.put(33, NamingException.class);
+        errorCodesMap.put(34, InvalidNameException.class);
+        errorCodesMap.put(36, NamingException.class);
+        errorCodesMap.put(48, AuthenticationNotSupportedException.class);
+        errorCodesMap.put(49, AuthenticationException.class);
+        errorCodesMap.put(50, NoPermissionException.class);
+        errorCodesMap.put(51, ServiceUnavailableException.class);
+        errorCodesMap.put(52, ServiceUnavailableException.class);
+        errorCodesMap.put(53, OperationNotSupportedException.class);
+        errorCodesMap.put(54, NamingException.class);
+        errorCodesMap.put(64, InvalidNameException.class);
+        errorCodesMap.put(65, SchemaViolationException.class);
+        errorCodesMap.put(66, ContextNotEmptyException.class);
+        errorCodesMap.put(67, SchemaViolationException.class);
+        errorCodesMap.put(68, NameAlreadyBoundException.class);
+        errorCodesMap.put(69, SchemaViolationException.class);
+        errorCodesMap.put(71, NamingException.class);
+        errorCodesMap.put(80, NamingException.class);
+    }
 
     public static Filter parseFilter(String filter)
             throws InvalidSearchFilterException {
@@ -71,5 +133,43 @@ public class LdapUtils {
         }
 
         return parser;
+    }
+
+    public static NamingException getExceptionFromResult(LdapResult result) {
+        int errorCode = result.getResultCode();
+        // 0 means successful
+        if (errorCode == 0) {
+            return null;
+        }
+
+        Class<?> exceptionClass = errorCodesMap.get(errorCode);
+        // not in map, using NamingException
+        if (exceptionClass == null) {
+            exceptionClass = NamingException.class;
+        }
+
+        try {
+            Constructor<?> constructor = exceptionClass
+                    .getConstructor(new Class[] { String.class });
+            String message = null;
+
+            if (result.getErrorMessage() != null
+                    && !result.getErrorMessage().equals("")) { //$NON-NLS-1$
+                // ldap.34=[LDAP: error code {0} - {1}]
+                message = Messages.getString("ldap.34", new Object[] { //$NON-NLS-1$
+                        errorCode, result.getErrorMessage() });
+            } else {
+                // ldap.35=[LDAP: error code {0}]
+                message = Messages.getString("ldap.35", //$NON-NLS-1$
+                        new Object[] { errorCode });
+            }
+
+            return (NamingException) constructor
+                    .newInstance(new Object[] { message });
+        } catch (Exception e) {
+            // ldap.35=[LDAP: error code {0}]
+            return new NamingException(Messages.getString("ldap.35", //$NON-NLS-1$
+                    new Object[] { errorCode }));
+        }
     }
 }

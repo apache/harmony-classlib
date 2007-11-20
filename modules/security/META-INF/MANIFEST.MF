@@ -12,7 +12,8 @@ Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Eclipse-ExtensibleAPI: true
-Import-Package: java.io,
+Import-Package: com.ibm.icu.text,
+ java.io,
  java.lang,
  java.lang.reflect,
  java.math,

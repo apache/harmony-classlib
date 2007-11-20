@@ -39,6 +39,14 @@ extern char **environ;
 void
 sleepFor (unsigned int nanoseconds)
 {
+
+#if defined(AIX) || defined(ZOS)
+/* These platforms don't have nanosleep(). */
+
+	unsigned int microseconds = (nanoseconds+999) / 1000;
+	usleep(microseconds);
+
+#else /* other unix platforms */
   struct timespec delay, remDelay;
   delay.tv_sec = 0;
   delay.tv_nsec = nanoseconds;
@@ -54,6 +62,7 @@ sleepFor (unsigned int nanoseconds)
           break;    /* Oops the sleep didn't work ??? */
         }
     }
+#endif /* AIX or ZOS */
 }
 
 int

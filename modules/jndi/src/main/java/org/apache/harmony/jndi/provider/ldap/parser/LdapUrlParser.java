@@ -32,13 +32,27 @@ public class LdapUrlParser implements LdapUrlParserConstants {
 
     private Filter filter;
 
-    private String baseObject;
+    private String baseObject = "";
 
-    private String host;
+    private String host = DEFAULT_HOST;
 
-    private int port = -1;
+    private int port = DEFAULT_PORT;
+
+    private boolean hasAttributes = false;
+
+    private boolean hasScope = false;
+
+    private boolean hasFilter = false;
+
+    private boolean hasExtensions= false;
 
     private boolean isEndEOF = false;
+
+    private static final int DEFAULT_PORT = 389;
+
+    private static final int DEFAULT_SSL_PORT = 636;
+
+    private static final String DEFAULT_HOST = "localhost";
 
     public LdapUrlParser(String url) {
         this(new StringReader(url));
@@ -82,6 +96,22 @@ public class LdapUrlParser implements LdapUrlParserConstants {
         return baseObject;
     }
 
+    public boolean hasFilter() {
+        return hasFilter;
+    }
+
+    public boolean hasAttributes() {
+        return hasAttributes;
+    }
+
+    public boolean hasScope() {
+        return hasScope;
+    }
+
+    public boolean hasExtensions() {
+        return hasExtensions;
+    }
+
     public static void main(String args[]) throws ParseException, FileNotFoundException {
         LdapUrlParser parser = new LdapUrlParser(new FileInputStream("parser.url.test"));
 //        URLParser parser = new URLParser(System.in);
@@ -92,7 +122,11 @@ public class LdapUrlParser implements LdapUrlParserConstants {
     }
 
   final public void parseURL() throws ParseException {
-    jj_consume_token(SCHEME);
+            Token t;
+    t = jj_consume_token(SCHEME);
+                    if (t.image.equals("ldaps://")) {
+                        port = DEFAULT_SSL_PORT;
+                    }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SCHEME:
     case PRE_XTOKEN:
@@ -453,9 +487,10 @@ public class LdapUrlParser implements LdapUrlParserConstants {
       ;
     }
                 if (attrs.size() != 0) {
+                    hasAttributes = true;
                     if (controls == null) {
                         // FIXME: test what default search parameter value is
-                        controls = new SearchControls(SearchControls.OBJECT_SCOPE, 0, 0, null, false, false);
+                        controls = new SearchControls();
                     }
                     controls.setReturningAttributes((String[]) attrs.toArray(new String[0]));
                 }
@@ -481,9 +516,9 @@ public class LdapUrlParser implements LdapUrlParserConstants {
     case SCOPE:
       t = jj_consume_token(SCOPE);
                     scope = t.image;
+                    hasScope = true;
                     if (controls == null) {
-                        // FIXME: test what default search parameter value is
-                        controls = new SearchControls(SearchControls.OBJECT_SCOPE, 0, 0, null, false, false);
+                        controls = new SearchControls();
                     }
                     if (scope.equals("base")) {
                         controls.setSearchScope(SearchControls.OBJECT_SCOPE);
@@ -526,6 +561,7 @@ public class LdapUrlParser implements LdapUrlParserConstants {
       value = value();
                     FilterParser parser = new FilterParser(new StringReader(value));
                     filter = parser.parse();
+                    hasFilter = true;
       break;
     default:
       jj_la1[21] = jj_gen;
@@ -544,6 +580,7 @@ public class LdapUrlParser implements LdapUrlParserConstants {
 
   final public void extensions() throws ParseException {
     extension();
+                         hasExtensions = true;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case COMMA:
       label_6:

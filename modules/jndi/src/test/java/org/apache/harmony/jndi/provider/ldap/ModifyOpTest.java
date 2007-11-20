@@ -31,13 +31,13 @@ public class ModifyOpTest extends TestCase {
         
         ASN1TestUtils.checkEncode(op, LdapASN1Constant.ModifyRequest);
         
-        LdapAttribute attr = new LdapAttribute("attr1");
+        LdapAttribute attr = new LdapAttribute("attr1", null);
         attr.add("value1");
         attr.add("value2");
         
         op.addModification(DirContext.ADD_ATTRIBUTE, attr);
         
-        attr = new LdapAttribute("attr2");
+        attr = new LdapAttribute("attr2", null);
         op.addModification(DirContext.REMOVE_ATTRIBUTE, attr);
         
         ASN1TestUtils.checkEncode(op, LdapASN1Constant.ModifyRequest);

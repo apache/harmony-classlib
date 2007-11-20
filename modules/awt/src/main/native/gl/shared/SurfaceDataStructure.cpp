@@ -461,10 +461,10 @@ inline void updateCache
                 src = (unsigned char *)srcDataPtr + src_offset;
                 dst = (unsigned int *)bmpDataPtr + dst_offset;
 
-                for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
+                for(int y = h; y > 0; y--, src += src_stride, dst += dst_stride){
                     d = dst;
 
-                    for(int _x = 0; _x < w; _x++){
+                    for(int x = 0; x < w; x++){
                         bitnum = x * pixelBits;
                         s = src + bitnum / 8;
                         elem = *s;

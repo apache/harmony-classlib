@@ -20,6 +20,7 @@ package java.text;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * DateFormatSymbols holds the Strings used in the formating and parsing of
@@ -51,16 +52,15 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      *            the Locale
      */
     public DateFormatSymbols(Locale locale) {
-        com.ibm.icu.text.DateFormatSymbols icuSymbols = new com.ibm.icu.text.DateFormatSymbols(locale);
-        
-        localPatternChars = icuSymbols.getLocalPatternChars();
-        ampms = icuSymbols.getAmPmStrings();
-        eras = icuSymbols.getEras();
-        months = icuSymbols.getMonths();
-        shortMonths = icuSymbols.getShortMonths();
-        shortWeekdays = icuSymbols.getShortWeekdays();
-        weekdays = icuSymbols.getWeekdays();
-        zoneStrings = icuSymbols.getZoneStrings();
+        ResourceBundle bundle = Format.getBundle(locale);
+        localPatternChars = bundle.getString("LocalPatternChars"); //$NON-NLS-1$
+        ampms = bundle.getStringArray("ampm"); //$NON-NLS-1$
+        eras = bundle.getStringArray("eras"); //$NON-NLS-1$
+        months = bundle.getStringArray("months"); //$NON-NLS-1$
+        shortMonths = bundle.getStringArray("shortMonths"); //$NON-NLS-1$
+        shortWeekdays = bundle.getStringArray("shortWeekdays"); //$NON-NLS-1$
+        weekdays = bundle.getStringArray("weekdays"); //$NON-NLS-1$
+        zoneStrings = (String[][]) bundle.getObject("timezones"); //$NON-NLS-1$
     }
 
     /**
@@ -273,9 +273,7 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         }
         for (String[] element : zoneStrings) {
             for (int j = 0; j < element.length; j++) {
-                if (element[j] != null) {
-                    hashCode += element[j].hashCode();
-                }
+                hashCode += element[j].hashCode();
             }
         }
         return hashCode;

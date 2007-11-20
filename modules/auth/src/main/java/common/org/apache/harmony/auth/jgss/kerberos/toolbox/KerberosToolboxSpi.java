@@ -22,4 +22,6 @@ import javax.security.auth.kerberos.KerberosTicket;
 public interface KerberosToolboxSpi {    
     KerberosTicket getTGT(String clientPrincipalName, char[] password);
     KerberosTicket getTGS(String serverPrincipalName, KerberosTicket TGT);
+    byte[] encodeApplicationRequest(KerberosApplicationRequest kerberosApplicationRequest);
+    KerberosApplicationRequest decodeApplicationRequest(byte[] token);
 }

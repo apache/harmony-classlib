@@ -26,7 +26,8 @@ import java.util.Map;
  * internationalized, and should not be translated.
  */
 public class AttributeLayoutMap {
-	// create a whole bunch of AttributeLayouts here
+    
+	// Create all the default AttributeLayouts here
 	private static AttributeLayout[] getDefaultAttributeLayouts()
 			throws Pack200Exception {
 		return new AttributeLayout[] {
@@ -137,7 +138,7 @@ public class AttributeLayoutMap {
 				new AttributeLayout(AttributeLayout.ATTRIBUTE_CONSTANT_VALUE,
 						AttributeLayout.CONTEXT_FIELD, "KQH", 17),
 				new AttributeLayout(AttributeLayout.ATTRIBUTE_CODE,
-						AttributeLayout.CONTEXT_METHOD, "*", 17),
+						AttributeLayout.CONTEXT_METHOD, "", 17),
 				new AttributeLayout(AttributeLayout.ATTRIBUTE_ENCLOSING_METHOD,
 						AttributeLayout.CONTEXT_CLASS, "RCHRDNH", 18),
 				new AttributeLayout(AttributeLayout.ATTRIBUTE_EXCEPTIONS,
@@ -173,7 +174,7 @@ public class AttributeLayoutMap {
 						AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_ANNOTATIONS,
 						AttributeLayout.CONTEXT_METHOD, "*", 22),
 				new AttributeLayout(AttributeLayout.ATTRIBUTE_INNER_CLASSES,
-						AttributeLayout.CONTEXT_CLASS, "*", 23),
+						AttributeLayout.CONTEXT_CLASS, "", 23),
 				new AttributeLayout(
 						AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_PARAMETER_ANNOTATIONS,
 						AttributeLayout.CONTEXT_METHOD, "*", 23),
@@ -257,4 +258,5 @@ public class AttributeLayoutMap {
             }
         }
     }
+    
 }

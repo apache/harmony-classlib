@@ -23,7 +23,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#if defined(FREEBSD) || defined(ZOS)
+#if defined(FREEBSD) || defined(AIX) || defined(ZOS)
 #include <sys/types.h>
 #include <sys/socket.h>
 #else
@@ -244,6 +244,19 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   if(hysocketP == NULL)
     return -1;
   socket = hysocketP->sock;
+#if defined(AIX) || defined(ZOS)
+  {
+    struct sf_parms parms;
+    parms.file_descriptor = (int)fd;
+    parms.file_offset = (off64_t)offset;
+    parms.file_bytes = count;
+    parms.header_data = 0;
+    parms.header_length = 0;
+    parms.trailer_data = 0;
+    parms.trailer_length = 0;
+    return send_file(&socket, &parms, 0);
+  }
+#else
   /* Value of offset is checked in jint scope (checked in java layer)
    The conversion here is to guarantee no value lost when converting offset to off_t
    */
@@ -252,5 +265,6 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSFileSystem_trans
   return sendfile(socket,(int)fd,(off_t *)&off,(size_t)count);	
 #else
   return sendfile(fd, socket, off, (size_t)count, NULL, NULL, 0);
+#endif
 #endif
 }

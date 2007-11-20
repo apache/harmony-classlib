@@ -32,7 +32,7 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 
 import junit.framework.TestCase;
 
-public class ServiceUITests extends TestCase {
+public class ServiceUITest extends TestCase {
 
 private PrintService [] services = null;
 private HashPrintRequestAttributeSet attrs = null;

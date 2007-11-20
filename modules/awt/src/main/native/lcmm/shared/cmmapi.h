@@ -26,16 +26,18 @@
 #define cmsFLAGS_NOTCACHE (0)
 #endif
 
+#if (LCMS_VERSION < 117)
+#define LCMSBOOL BOOL
+#endif
 
 // Just a useful macro
 #undef MIN
-
 #define MIN(a,b)    ((a) < (b) ? (a) : (b))
 
 
 LPLCMSICCPROFILE cmmOpenProfile(LPBYTE dataPtr, DWORD dwSize);
 
-BOOL cmmCloseProfile(LPLCMSICCPROFILE hProfile);
+LCMSBOOL cmmCloseProfile(LPLCMSICCPROFILE hProfile);
 
 
 
@@ -45,17 +47,17 @@ void cmmGetProfile(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t dataSize);
 
 
 
-BOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t dwLen);
+LCMSBOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t dwLen);
 
-BOOL cmmSetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data);
+LCMSBOOL cmmSetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data);
 
 
 
-BOOL cmmGetProfileElement(LPLCMSICCPROFILE hProfile, icTagSignature sig, LPBYTE data, size_t *dataSize);
+LCMSBOOL cmmGetProfileElement(LPLCMSICCPROFILE hProfile, icTagSignature sig, LPBYTE data, size_t *dataSize);
 
 long cmmGetProfileElementSize(LPLCMSICCPROFILE hProfile, icTagSignature sig);
 
-BOOL cmmSetProfileElement(LPLCMSICCPROFILE hProfile, icTagSignature sig, LPVOID data, size_t size);
+LCMSBOOL cmmSetProfileElement(LPLCMSICCPROFILE hProfile, icTagSignature sig, LPVOID data, size_t size);
 
 
 cmsHTRANSFORM cmmCreateTransform(cmsHPROFILE Input,

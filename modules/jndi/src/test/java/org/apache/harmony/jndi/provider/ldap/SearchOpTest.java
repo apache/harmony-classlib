@@ -17,6 +17,8 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
+import java.util.Collection;
+
 import javax.naming.directory.SearchControls;
 
 import junit.framework.TestCase;
@@ -31,7 +33,14 @@ public class SearchOpTest extends TestCase {
         Filter filter = new Filter(7);
         filter.setValue(Utils.getBytes("objectClass"));
         SearchOp op = new SearchOp("test", controls, filter);
-        
-        ASN1TestUtils.checkEncode(op.getRequest(), LdapASN1Constant.SearchRequest);
+
+        ASN1TestUtils.checkEncode(op.getRequest(),
+                LdapASN1Constant.SearchRequest);
+
+        Object[] encoded = new Object[8];
+        op.encodeValues(encoded);
+        // return attributes is null, encode to empty collection
+        assertNull(controls.getReturningAttributes());
+        assertEquals(((Collection) encoded[7]).size(), 0);
     }
 }

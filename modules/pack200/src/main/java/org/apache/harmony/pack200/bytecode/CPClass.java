@@ -74,9 +74,13 @@ public class CPClass extends ConstantPoolEntry {
 	}
 
 	public String toString() {
-		return "Class: " + name;
+		return "Class: " + getName();
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(index);
 	}

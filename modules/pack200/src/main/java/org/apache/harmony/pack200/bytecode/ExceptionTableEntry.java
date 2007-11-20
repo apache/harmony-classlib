@@ -20,6 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class ExceptionTableEntry {
+
 	public int catchType;
 	public int endPC;
 	public int handlerPC;

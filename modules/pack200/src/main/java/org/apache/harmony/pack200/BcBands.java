@@ -24,12 +24,13 @@ import java.util.ArrayList;
 
 import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
+import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
  * Pack200 Bytecode bands
  */
 public class BcBands extends BandSet {
-    
+
     // The bytecodes for each method in each class as they come (i.e. in their packed format)
     private byte[][][] methodByteCodePacked;
     
@@ -177,7 +178,7 @@ public class BcBands extends BandSet {
                        case 187: // new
                        case 189: // anewarray
                        case 192: // checkcast
-                       case 193: // instanceof                       
+                       case 193: // instanceof
                            bcClassRefCount++;
                            break;
                        case 20: // lldc2_w
@@ -285,7 +286,7 @@ public class BcBands extends BandSet {
                            } else if (startsWithIf(codePacked)) {
                                bcLabelCount++;
                            } else {
-                               debug("Found unhandled " + ByteCode.getByteCode(codePacked));
+                               debug("Found unhandled " + codePacked + " " + ByteCode.getByteCode(codePacked));
                            }
                        }
                    }
@@ -332,7 +333,14 @@ public class BcBands extends BandSet {
         bcEscRefSize = decodeBandInt("bc_escrefsize", in, Codec.UNSIGNED5, bcEscRefCount);
         bcEscSize = decodeBandInt("bc_escsize", in, Codec.UNSIGNED5, bcEscCount);
         bcEscByte = decodeBandInt("bc_escbyte", in, Codec.BYTE1, bcEscSize);
-        
+
+        OperandManager operandManager = new OperandManager(bcByte, bcShort,
+                bcLocal, bcLabel, bcIntRef, bcFloatRef, bcLongRef, bcDoubleRef,
+                bcStringRef, bcClassRef, bcFieldRef, bcMethodRef, bcIMethodRef,
+                bcThisField, bcSuperField, bcThisMethod, bcSuperMethod,
+                bcInitRef);
+        operandManager.setSegment(segment);
+
         int i = 0;
         for (int c = 0; c < classCount; c++) {
            int numberOfMethods = methodFlags[c].length;
@@ -347,15 +355,17 @@ public class BcBands extends BandSet {
                    maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
                    // TODO Move creation of code attribute until after constant
                    // pool resolved
+                   operandManager.setCurrentClass(segment.getClassBands().getClassThis()[c]);
+                   operandManager.setSuperClass(segment.getClassBands().getClassSuper()[c]);
                    CodeAttribute attr = new CodeAttribute(maxStack, maxLocal,
-                           methodByteCodePacked[c][m]);
+                           methodByteCodePacked[c][m], segment, operandManager);
                    methodAttributes[c][m].add(attr);
                    i++;
                }
            }
        }
     }
-
+    
     private boolean startsWithIf(int codePacked) {
         return (codePacked >= 153 && codePacked <= 166)
         || (codePacked == 198)
@@ -367,7 +377,7 @@ public class BcBands extends BandSet {
     }
 
     private boolean endsWithStore(int codePacked) {
-        return  (codePacked >= 54 && codePacked <= 58);
+        return (codePacked >= 54 && codePacked <= 58);
     }
 
     public byte[][][] getMethodByteCodePacked() {
@@ -461,7 +471,7 @@ public class BcBands extends BandSet {
     public int[] getBcEscRefSize() {
         return bcEscRefSize;
     }
-    
+
     public int[] getBcEscSize() {
         return bcEscSize;
     }
@@ -469,4 +479,6 @@ public class BcBands extends BandSet {
     public int[][] getBcEscByte() {
         return bcEscByte;
     }
+
+
 }

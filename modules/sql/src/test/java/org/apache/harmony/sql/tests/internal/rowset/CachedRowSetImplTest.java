@@ -16,12 +16,19 @@
  */
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 
+import javax.sql.RowSetEvent;
+import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
 
@@ -33,7 +40,7 @@ public class CachedRowSetImplTest extends TestCase {
 
     private static final String DERBY_URL = "jdbc:derby:src/test/resources/TESTDB";
 
-    private Connection conn;
+    private Connection conn = null;
 
     private Statement st;
 
@@ -41,8 +48,11 @@ public class CachedRowSetImplTest extends TestCase {
 
     private CachedRowSet crset;
 
-    public void setUp() throws IllegalAccessException, InstantiationException,
-            ClassNotFoundException, SQLException {
+    private final static int DEFAULT_COLUMN_COUNT = 12;
+
+    private final static int DEFAULT_ROW_COUNT = 4;
+
+    public void setUp() throws Exception {
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
         try {
@@ -57,20 +67,18 @@ public class CachedRowSetImplTest extends TestCase {
         ;
 
         st = conn.createStatement();
-
         rs = conn.getMetaData().getTables(null, "APP", "USER_INFO", null);
-        // careful: Integer, rather than int!
+        String createTableSQL = "create table USER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(10) NOT NULL, BIGINT_T BIGINT, "
+                + "NUMERIC_T NUMERIC, DECIMAL_T DECIMAL, SMALLINT_T SMALLINT, FLOAT_T FLOAT, REAL_T REAL, DOUBLE_T DOUBLE,"
+                + "DATE_T DATE, TIME_T TIME, TIMESTAMP_T TIMESTAMP)";
+        String alterTableSQL = "ALTER TABLE USER_INFO  ADD CONSTRAINT USER_INFO_PK Primary Key (ID)";
 
         if (!rs.next()) {
-            st
-                    .execute("create table USER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(10) NOT NULL)");
-            st
-                    .execute("ALTER TABLE USER_INFO  ADD CONSTRAINT USER_INFO_PK Primary Key (ID)");
+            st.execute(createTableSQL);
+            st.execute(alterTableSQL);
         }
 
-        st.executeUpdate("delete from USER_INFO");
-        st.executeUpdate("insert into USER_INFO(ID,NAME) values (1,'hermit')");
-        st.executeUpdate("insert into USER_INFO(ID,NAME) values (2,'test')");
+        insertData();
         rs = st.executeQuery("select * from USER_INFO");
         try {
             crset = (CachedRowSet) Class.forName(
@@ -93,12 +101,19 @@ public class CachedRowSetImplTest extends TestCase {
         crset.setUrl(DERBY_URL);
     }
 
-    public void tearDown() throws SQLException {
+    public void tearDown() throws Exception {
         if (rs != null) {
             rs.close();
         }
-        if (crset != null)
+        if (crset != null) {
             crset.close();
+        }
+        if (st != null) {
+            st.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
     }
 
     public void testSetSyncProvider() throws Exception {
@@ -186,7 +201,7 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testSize() {
-        assertEquals(2, crset.size());
+        assertEquals(DEFAULT_ROW_COUNT, crset.size());
     }
 
     public void testDeleteRow() throws SQLException {
@@ -200,7 +215,7 @@ public class CachedRowSetImplTest extends TestCase {
         crset.next();
         assertFalse(crset.rowDeleted());
         crset.deleteRow();
-        assertEquals(2, crset.size());
+        assertEquals(DEFAULT_ROW_COUNT, crset.size());
         assertTrue(crset.rowDeleted());
     }
 
@@ -243,15 +258,16 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testAcceptChanges() throws SQLException {
+        // FIXME: if the value of column is null, it would go wrong when
+        // call acceptChanges(). And if one method in TestCase throws
+        // SQLException, the following method will be affected.
         rs.next();
         assertEquals(1, rs.getInt(1));
-
         assertEquals("hermit", rs.getString(2));
-        crset.first();
 
-        assertEquals(1, crset.getInt(1));
-
-        assertEquals("hermit", crset.getString(2));
+        crset.absolute(3);
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
         crset.updateString(2, "HarmonY");
 
         crset.moveToInsertRow();
@@ -268,9 +284,10 @@ public class CachedRowSetImplTest extends TestCase {
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "test");
+        assertEquals(rs.getString(2), "hermit");
         rs.next();
-        assertEquals(rs.getString(2), "Apache");
+        rs.next();
+        assertEquals(rs.getString(2), "test4");
 
     }
 
@@ -307,12 +324,45 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testCreateShared() throws Exception {
+        crset.setUsername("testUsername");
+        crset.setPassword("testPassword");
+        crset.setPageSize(5);
+        Listener listener = new Listener(); // a class implements RowSetListener
+        crset.addRowSetListener(listener);
+        crset.absolute(3); // move to the third row for testing
+        // TODO: when the cursor moved, notifyCursorMoved() should be called
+        // assertEquals("cursorMoved", listener.getTag());
+
         CachedRowSet crsetShared = (CachedRowSet) crset.createShared();
-        crsetShared.first();
-        crset.first();
-        crsetShared.updateString(2, "copyTest2");
-        assertEquals(crsetShared.getString(2), "copyTest2");
-        assertEquals(crset.getString(2), "copyTest2");
+        assertEquals("testUsername", crsetShared.getUsername());
+        assertEquals("testPassword", crsetShared.getPassword());
+        assertEquals(5, crsetShared.getPageSize());
+        // check whether modify the attribute of the original is visible to the
+        // duplicate
+        crset.setUsername("modifyUsername");
+        crset.setPageSize(10);
+        assertEquals("modifyUsername", crset.getUsername());
+        assertEquals("testUsername", crsetShared.getUsername());
+        assertEquals(10, crset.getPageSize());
+        assertEquals(5, crsetShared.getPageSize());
+
+        // compare the current row, that is the third row
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+        assertEquals(3, crsetShared.getInt(1));
+        assertEquals("test3", crsetShared.getString(2));
+        // check whether update the duplicate is visible to the original
+        crsetShared.updateString(2, "modify3");
+        assertEquals("modify3", crsetShared.getString(2));
+        assertEquals("modify3", crset.getString(2));
+        crsetShared.updateRow();
+        crsetShared.acceptChanges();
+        assertEquals("rowSetChanged", listener.getTag());
+
+        // when move the duplicate's cursor, the original shouldn't be affected
+        crsetShared.absolute(1);
+        assertEquals(1, crsetShared.getInt(1));
+        assertEquals(3, crset.getInt(1));
     }
 
     public void testcreateCopyNoConstraints() throws Exception {
@@ -340,49 +390,105 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testCopySchema() throws Exception {
-        crset.first();
-        CachedRowSet crsetCopySchema = (CachedRowSet) crset.createCopySchema();
+        // the original's addtribute and meta data
+        crset.setCommand("testCommand");
+        crset.setConcurrency(ResultSet.CONCUR_UPDATABLE);
+        crset.setDataSourceName("testDataSource");
+        crset.setFetchDirection(ResultSet.FETCH_UNKNOWN);
+        crset.setPageSize(20);
+        crset.setMaxRows(20);
+        crset.setTableName("USER_INFO");
+        /*
+         * NOTICE: spec say copy must not has any content, but when run on RI,
+         * if call next() before call createCopySchema(), the copy can get the
+         * current row's data
+         */
 
-        RowSetMetaData rsmCopySchema = (RowSetMetaData) crsetCopySchema
+        /*
+         * NOTICE: when run on RI, if add the listener first, then it will go
+         * wrong when call createCopySchema().It's said that clone failed.
+         */
+        // Listener listener = new Listener();
+        // crset.addRowSetListener(listener);
+        RowSetMetaData rsmd = (RowSetMetaData) crset.getMetaData();
+        // the copy
+        CachedRowSet crsetCopySchema = crset.createCopySchema();
+        RowSetMetaData rsmdCopySchema = (RowSetMetaData) crsetCopySchema
                 .getMetaData();
-        assertEquals("USER_INFO", rsmCopySchema.getTableName(1));
-        assertEquals(2, rsmCopySchema.getColumnCount());
 
-        RowSetMetaData rsm = (RowSetMetaData) crset.getMetaData();
-        rsm.setTableName(1, "newBorn");
-        assertEquals("newBorn", rsm.getTableName(1));
+        // compare the meta data between the duplicate and the original
+        assertNotSame(crset.getMetaData(), crsetCopySchema.getMetaData());
+        assertNotSame(crset.getOriginal(), crsetCopySchema.getOriginal());
+        // assertNotSame(crset.getSyncProvider(), crsetCopySchema
+        // .getSyncProvider());
 
-        crset.setTableName("test");
-        assertEquals("test", crset.getTableName());
+        assertEquals("USER_INFO", crset.getTableName());
+        assertEquals("USER_INFO", rsmdCopySchema.getTableName(1));
+        assertEquals(DEFAULT_COLUMN_COUNT, rsmdCopySchema.getColumnCount());
+        assertEquals(rsmd.getColumnName(1), rsmdCopySchema.getColumnName(1));
+        // check the primary key
+        // TODO: RI doesn't evalute the keyColumns. The value of
+        // crset.getKeyColumns() is null.
+        assertEquals(crset.getKeyColumns(), crsetCopySchema.getKeyColumns());
+
+        // check the attributes in the duplicate. These are supposed to be the
+        // same as the original
+        // System.out.println("crsetCopySchema: " + crsetCopySchema.getInt(1));
+        assertFalse(crsetCopySchema.next());
+        assertEquals("testCommand", crsetCopySchema.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, crsetCopySchema
+                .getConcurrency());
+        assertEquals("testDataSource", crsetCopySchema.getDataSourceName());
+        assertEquals(ResultSet.FETCH_UNKNOWN, crsetCopySchema
+                .getFetchDirection());
+        assertEquals(20, crsetCopySchema.getPageSize());
+        assertEquals(20, crsetCopySchema.getMaxRows());
+
+        // fill the duplicate CachedRowSet with data, check the listener
+        Listener listener = new Listener();
+        crsetCopySchema.addRowSetListener(listener);
+        assertNull(listener.getTag());
+        rs = st.executeQuery("select * from USER_INFO");
+        crsetCopySchema.populate(rs);
+        // TODO: in the Harmony implementation, need to call notifyRowSetChanged
+        // at the suitable place
+        // assertEquals("rowSetChanged", listener.getTag());
+        listener.setTag(null);
+        // the move of the original's cursor shouldn't affect the duplicate
+        crset.next();
+        assertNull(listener.getTag());
     }
 
     public void testCreateCopy() throws Exception {
-        crset.first();
-        assertEquals(crset.getString(2), "hermit");
-        crset.updateString(2, "copyTest");
+        // crset.first();
+        crset.absolute(3);
+        assertEquals(crset.getString(2), "test3");
+        crset.updateString(2, "copyTest3");
         crset.updateRow();
         crset.acceptChanges();
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "copyTest");
+        assertEquals(rs.getString(2), "hermit");
 
         CachedRowSet crsetCopy = (CachedRowSet) crset.createCopy();
 
-        crsetCopy.first();
-        crsetCopy.updateString(2, "copyTest2");
+        // crsetCopy.first();
+        crsetCopy.absolute(3);
+        crsetCopy.updateString(2, "copyTest3");
         crsetCopy.updateRow();
         crsetCopy.acceptChanges();
 
-        assertEquals(crsetCopy.getString(2), "copyTest2");
-        assertEquals(crset.getString(2), "copyTest");
+        assertEquals(crsetCopy.getString(2), "copyTest3");
+        assertEquals(crset.getString(2), "copyTest3");
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "copyTest2");
+        assertEquals(rs.getString(2), "hermit");
 
-        crset.first();
-        assertEquals(crset.getString(2), "copyTest");
+        // crset.first();
+        crset.absolute(3);
+        assertEquals(crset.getString(2), "copyTest3");
     }
 
     public void testAfterLast() throws Exception {
@@ -395,7 +501,7 @@ public class CachedRowSetImplTest extends TestCase {
 
         crset.afterLast();
         crset.previous();
-        assertEquals(2, crset.getInt(1));
+        assertEquals(4, crset.getInt(1));
     }
 
     public void testNextandPreviousPage() throws Exception {
@@ -460,5 +566,83 @@ public class CachedRowSetImplTest extends TestCase {
         crset.populate(cc, 1);
         crset.first();
         assertEquals("hermit", crset.getString(2));
+    }
+
+    private void insertData() throws Exception {
+
+        st.executeUpdate("delete from USER_INFO");
+
+        // first row
+        st.executeUpdate("insert into USER_INFO(ID,NAME) values (1,'hermit')");
+        // second row
+        st.executeUpdate("insert into USER_INFO(ID,NAME) values (2,'test')");
+
+        String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
+                + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
+                + "?, ?, ?, ?, ?, ? )";
+        PreparedStatement preStmt = conn.prepareStatement(insertSQL);
+        // third row
+        preStmt.setInt(1, 3);
+        preStmt.setString(2, "test3");
+        preStmt.setLong(3, 3333L);
+        preStmt.setBigDecimal(4, new BigDecimal(123));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 13);
+        preStmt.setFloat(7, 3.7F);
+        preStmt.setFloat(8, 3.888F);
+        preStmt.setDouble(9, 3.9999);
+        preStmt.setDate(10, new Date(523654123));
+        preStmt.setTime(11, new Time(966554221));
+        preStmt.setTimestamp(12, new Timestamp(521342100));
+        preStmt.executeUpdate();
+        // fourth row
+        preStmt.setInt(1, 4);
+        preStmt.setString(2, "test4");
+        preStmt.setLong(3, 444423L);
+        preStmt.setBigDecimal(4, new BigDecimal(12));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 41);
+        preStmt.setFloat(7, 4.8F);
+        preStmt.setFloat(8, 4.888F);
+        preStmt.setDouble(9, 4.9999);
+        preStmt.setDate(10, new Date(965324512));
+        preStmt.setTime(11, new Time(452368512));
+        preStmt.setTimestamp(12, new Timestamp(874532105));
+        preStmt.executeUpdate();
+
+        if (preStmt != null) {
+            preStmt.close();
+        }
+    }
+
+    public class Listener implements RowSetListener, Cloneable {
+
+        private String tag = null;
+
+        public void cursorMoved(RowSetEvent theEvent) {
+            tag = "cursorMoved";
+        }
+
+        public void rowChanged(RowSetEvent theEvent) {
+            tag = "rowChanged";
+        }
+
+        public void rowSetChanged(RowSetEvent theEvent) {
+            tag = "rowSetChanged";
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public void setTag(String tag) {
+            this.tag = tag;
+        }
+
+        public Listener clone() throws CloneNotSupportedException {
+            Listener listener = (Listener) super.clone();
+            listener.tag = tag;
+            return listener;
+        }
     }
 }

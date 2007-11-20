@@ -25,7 +25,7 @@ import org.apache.harmony.luni.util.NotImplementedException;
 /*
  * The class will wrap the dependency on external kerberos tools.
  */
-public class KerberosToolboxImpl implements KerberosToolboxSpi {
+public final class KerberosToolboxImpl implements KerberosToolboxSpi {
 
     private String kdc;
     
@@ -42,5 +42,15 @@ public class KerberosToolboxImpl implements KerberosToolboxSpi {
         // TODO Auto-generated method stub
         throw new NotImplementedException();
     }
+
+	public KerberosApplicationRequest decodeApplicationRequest(byte[] token) {
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
+	}
+
+	public byte[] encodeApplicationRequest(KerberosApplicationRequest kerberosApplicationRequest) {
+		// TODO Auto-generated method stub
+		throw new NotImplementedException();
+	}
 
 }

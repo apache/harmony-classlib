@@ -22,7 +22,7 @@
 
 #include "NativeCMM.h"
 
-static BOOL cmsInitialized = FALSE; 
+static LCMSBOOL cmsInitialized = FALSE; 
 static char *errMsg = NULL;
 
 int gl_cmsErrorHandler(int errorCode, const char *msg) {
@@ -356,8 +356,8 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_color_NativeCMM_cmmTransla
   int srcPixelStride, dstPixelStride;
   BYTE *srcPtr, *dstPtr;
   int i;
-  BOOL copyAlpha = FALSE;
-  BOOL fillAlpha = FALSE;
+  LCMSBOOL copyAlpha = FALSE;
+  LCMSBOOL fillAlpha = FALSE;
 
     cmsHTRANSFORM xform = (cmsHTRANSFORM) ((IDATA)transformHandle);
 

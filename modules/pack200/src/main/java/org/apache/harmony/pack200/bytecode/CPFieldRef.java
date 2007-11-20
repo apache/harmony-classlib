@@ -37,10 +37,7 @@ public class CPFieldRef extends ConstantPoolEntry {
 
 	
 	protected ClassFileEntry[] getNestedClassFileEntries() {
-		ClassFileEntry[] entries = new ClassFileEntry[2];
-		entries[0] = className;
-		entries[1] = nameAndType;
-		return entries;
+		return new ClassFileEntry[] {className, nameAndType};
 	}
 
 

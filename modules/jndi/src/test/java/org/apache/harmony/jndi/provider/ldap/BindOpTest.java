@@ -26,7 +26,7 @@ public class BindOpTest extends TestCase {
     public void test_encodeValues_$LObject() {
         String dn = "o=Entry";
         String pwd = "secret";
-        BindOp op = new BindOp(dn, pwd);
+        BindOp op = new BindOp(dn, pwd,null,null);
 
         ASN1TestUtils.checkEncode(op.getRequest(), LdapASN1Constant.BindRequest);
     }

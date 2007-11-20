@@ -68,8 +68,8 @@ public class DecimalFormatSymbolsTest extends TestCase {
      */
     public void test_getCurrency() {
         Currency currency = Currency.getInstance("USD");
-        assertEquals("Returned incorrect currency",
-                dfsUS.getCurrency(), currency);
+        assertTrue("Returned incorrect currency",
+                dfsUS.getCurrency() == currency);
 
         Currency currK = Currency.getInstance("KRW");
         Currency currX = Currency.getInstance("XXX");
@@ -239,8 +239,8 @@ public class DecimalFormatSymbolsTest extends TestCase {
         dfs.setCurrency(currency);
 
         assertTrue("Returned incorrect currency", currency == dfs.getCurrency());
-        assertEquals("Returned incorrect currency symbol", currency.getSymbol(
-                locale), dfs.getCurrencySymbol());
+        assertTrue("Returned incorrect currency symbol", currency.getSymbol(
+                locale).equals(dfs.getCurrencySymbol()));
         assertTrue("Returned incorrect international currency symbol", currency
                 .getCurrencyCode().equals(dfs.getInternationalCurrencySymbol()));
     }
@@ -292,14 +292,17 @@ public class DecimalFormatSymbolsTest extends TestCase {
 
         assertTrue("Test1: Returned incorrect currency", currency == dfs
                 .getCurrency());
-        assertEquals("Test1: Returned incorrect currency symbol", currency
-                .getSymbol(locale), dfs.getCurrencySymbol());
+        assertTrue("Test1: Returned incorrect currency symbol", currency
+                .getSymbol(locale).equals(dfs.getCurrencySymbol()));
         assertTrue("Test1: Returned incorrect international currency symbol",
                 currency.getCurrencyCode().equals(
                         dfs.getInternationalCurrencySymbol()));
 
+        String symbol = dfs.getCurrencySymbol();
         dfs.setInternationalCurrencySymbol("bogus");
-        assertNotNull("Test2: Returned incorrect currency", dfs.getCurrency());
+        assertNull("Test2: Returned incorrect currency", dfs.getCurrency());
+        assertTrue("Test2: Returned incorrect currency symbol", dfs
+                .getCurrencySymbol().equals(symbol));
         assertEquals("Test2: Returned incorrect international currency symbol",
                 "bogus", dfs.getInternationalCurrencySymbol());
     }

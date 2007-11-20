@@ -67,10 +67,6 @@ public class WinFile extends PlatformFile {
         return WinFileManager.getManager().getParentShellInfo(absoluteItemId);
     }
 
-    public String getName() {
-        return isFileSystem() ? super.getName() : getDisplayName();
-    }
-
     public File getParentFile() {
         Win32.ITEMIDLIST parentItemId = WinFileManager.getManager().getParentItemId(absoluteItemId);
         return parentItemId != null ? WinFileManager.getManager().getWinFile(parentItemId) : null;
@@ -147,6 +143,10 @@ public class WinFile extends PlatformFile {
         return getDescription() == WindowsDefs.SHDID_COMPUTER_CDROM;
     }
 
+    public String toString() {
+        return isFileSystem() ? super.toString() : getDisplayName();
+    }
+    
     public boolean isFixedDrive() {
         return getDescription() == WindowsDefs.SHDID_COMPUTER_FIXED;
     }

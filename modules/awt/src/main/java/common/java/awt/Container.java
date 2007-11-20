@@ -1352,7 +1352,7 @@ public class Container extends Component {
                     }
                 }
 
-                if ((fc == comp) || (container == c)) {
+                if ((fc == comp) || (container == c) || (fc == container)) {
                     break;
                 }
 

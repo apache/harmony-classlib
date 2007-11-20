@@ -33,14 +33,17 @@ public class SearchOp implements LdapOperation, ASN1Encodable,
     private String baseObject;
 
     private boolean typesOnly = false;
+    
+    // default value is 'always' = 3
+    private int derefAliases = 3;
 
     private Filter filter;
 
     private SearchControls controls;
 
-    private LdapSearchResult result = new LdapSearchResult();
+    private LdapSearchResult result;
 
-    public LdapSearchResult getResult() {
+    public LdapSearchResult getSearchResult() {
         return result;
     }
 
@@ -70,20 +73,15 @@ public class SearchOp implements LdapOperation, ASN1Encodable,
     public void encodeValues(Object[] values) {
         values[0] = Utils.getBytes(baseObject);
         values[1] = ASN1Integer.fromIntValue(controls.getSearchScope());
-        if (controls.getDerefLinkFlag()) {
-            // derefAlways
-            values[2] = ASN1Integer.fromIntValue(3);
-        } else {
-            // neverDerefAliases
-            values[2] = ASN1Integer.fromIntValue(0);
-        }
+        values[2] = ASN1Integer.fromIntValue(derefAliases);
         values[3] = ASN1Integer.fromIntValue((int) controls.getCountLimit());
         values[4] = ASN1Integer.fromIntValue(controls.getTimeLimit());
         values[5] = Boolean.valueOf(typesOnly);
         values[6] = filter;
         String[] attributes = controls.getReturningAttributes();
+        // if null, return all attributes
         if (attributes == null) {
-            attributes = new String[] { "" };
+            attributes = new String[0];
         }
 
         List<byte[]> list = new ArrayList<byte[]>(attributes.length);
@@ -95,8 +93,57 @@ public class SearchOp implements LdapOperation, ASN1Encodable,
     }
 
     public void decodeValues(Object[] values) {
-        
+        if (result == null) {
+            result = new LdapSearchResult();
+        }
         result.decodeSearchResponse(values);
+    }
+
+    public String getBaseObject() {
+        return baseObject;
+    }
+
+    public SearchControls getControls() {
+        return controls;
+    }
+
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public boolean isTypesOnly() {
+        return typesOnly;
+    }
+
+    public void setSearchResult(LdapSearchResult result) {
+        this.result = result;
+    }
+
+    public LdapResult getResult() {
+        if (result == null) {
+            return null;
+        }
+        return result.getResult();
+    }
+
+    public int getDerefAliases() {
+        return derefAliases;
+    }
+
+    public void setDerefAliases(int derefAliases) {
+        this.derefAliases = derefAliases;
+    }
+
+    public void setTypesOnly(boolean typesOnly) {
+        this.typesOnly = typesOnly;
+    }
+
+    public void setBaseObject(String baseObject) {
+        this.baseObject = baseObject;
+    }
+
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
 }
