@@ -25,9 +25,11 @@ package org.apache.harmony.security.tests.asn1.der;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.security.asn1.ASN1Constants;
 import org.apache.harmony.security.asn1.ASN1Exception;
 import org.apache.harmony.security.asn1.BerInputStream;
 
@@ -102,8 +104,29 @@ public class BerInputStreamTest extends TestCase {
         } catch (ASN1Exception e) {
             assertTrue(e.getMessage().startsWith("Too long"));
         }
+
+        //
+        // Test for correct internal array reallocation
+        // Regression for HARMONY-5054
+        //
+
+        // must be greater then buffer initial size (16K)
+        int arrayLength = 17000;
+
+        // 1 byte for tag and 3 for length
+        byte[] encoding = new byte[arrayLength + 4];
+
+        // fill tag and length bytes
+        encoding[0] = ASN1Constants.TAG_OCTETSTRING;
+        encoding[1] = (byte) 0x82; // length is encoded in two bytes
+        encoding[2] = (byte) (arrayLength >> 8);
+        encoding[3] = (byte) (arrayLength & 0xFF);
+
+        BerInputStream in = new BerInputStream(new ByteArrayInputStream(
+                encoding));
+        assertEquals(encoding.length, in.getBuffer().length);
     }
-    
+
     /**
      * @tests org.apache.harmony.security.asn1.BerInputStream#BerInputStream(byte[],
      *        int,int)
@@ -144,6 +167,57 @@ public class BerInputStreamTest extends TestCase {
             fail("No expected ASN1Exception");
         } catch (ASN1Exception e) {
             assertEquals("Wrong content length", e.getMessage());
+        }
+    }
+
+    /**
+     * @tests org.apache.harmony.security.asn1.BerInputStream#readContent()
+     */
+    public void test_readContent() throws IOException {
+
+        byte[] encoding = { ASN1Constants.TAG_OCTETSTRING, 0x0F, 0x01, 0x02,
+                0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
+                0x0D, 0x0E, 0x0F };
+
+        // a custom input stream that doesn't return all data at once
+        ByteArrayInputStream in = new ByteArrayInputStream(encoding) {
+            public int read(byte[] b, int off, int len) {
+                if (len < 2) {
+                    return super.read(b, off, len);
+                } else {
+                    return super.read(b, off, 4);
+                }
+
+            }
+        };
+
+        BerInputStream berIn = new BerInputStream(in);
+        berIn.readContent();
+
+        assertTrue(Arrays.equals(encoding, berIn.getEncoded()));
+
+        //
+        // negative test case: the stream returns only 4 bytes of content
+        //
+        in = new ByteArrayInputStream(encoding) {
+
+            int i = 0;
+
+            public int read(byte[] b, int off, int len) {
+                if (i == 0) {
+                    i++;
+                    return super.read(b, off, 4);
+                } else {
+                    return 0;
+                }
+
+            }
+        };
+        berIn = new BerInputStream(in);
+        try {
+            berIn.readContent();
+            fail("No expected ASN1Exception");
+        } catch (ASN1Exception e) {
         }
     }
 }

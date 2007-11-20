@@ -516,7 +516,7 @@ public abstract class URLConnection {
         if (date == null) {
             return defaultValue;
         }
-        return Util.parseDate(date);
+        return java.util.Date.parse(date);
     }
 
     /**

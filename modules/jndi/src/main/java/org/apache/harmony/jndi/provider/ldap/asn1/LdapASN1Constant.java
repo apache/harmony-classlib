@@ -36,41 +36,42 @@ public class LdapASN1Constant {
     public static final int OP_BIND_REQUEST = 0;
 
     public static final int OP_BIND_RESPONSE = 1;
-    
-    public static final int OP_SEARCH_REQUEST = 2;
 
-    public static final int OP_SEARCH_RESULT_ENTRY = 3;
+    public static final int OP_UNBIND_REQUEST = 2;
 
-    public static final int OP_SEARCH_RESULT_DONE = 4;
+    public static final int OP_SEARCH_REQUEST = 3;
 
-    public static final int OP_SEARCH_RESULT_REF = 5;
-    
-    // FIXME change them to appropriate index number in the future.
-    public static final int OP_MODIFY_REQUEST = 6;
-    
-    public static final int OP_MODIFY_RESPONSE = 7;
+    public static final int OP_SEARCH_RESULT_ENTRY = 4;
 
-    public static final int OP_ADD_REQUEST = 8;
-    
-    public static final int OP_ADD_RESPONSE = 9;
-    
-    public static final int OP_DEL_REQUEST = 10;
+    public static final int OP_SEARCH_RESULT_DONE = 5;
 
-    public static final int OP_DEL_RESPONSE = 11;
+    public static final int OP_SEARCH_RESULT_REF = 6;
 
-    public static final int OP_MODIFY_DN_REQUEST = 12;
-    
-    public static final int OP_MODIFY_DN_RESPONSE = 13;
+    public static final int OP_MODIFY_REQUEST = 7;
 
-    public static final int OP_COMPARE_REQUEST = 14;
-    
-    public static final int OP_COMPARE_RESPONSE = 15;
+    public static final int OP_MODIFY_RESPONSE = 8;
 
-    public static final int OP_ABANDON_REQUEST = 16;
+    public static final int OP_ADD_REQUEST = 9;
 
-    public static final int OP_EXTENDED_REQUEST = 17;
-    
-    public static final int OP_EXTENDED_RESPONSE = 18;
+    public static final int OP_ADD_RESPONSE = 10;
+
+    public static final int OP_DEL_REQUEST = 11;
+
+    public static final int OP_DEL_RESPONSE = 12;
+
+    public static final int OP_MODIFY_DN_REQUEST = 13;
+
+    public static final int OP_MODIFY_DN_RESPONSE = 14;
+
+    public static final int OP_COMPARE_REQUEST = 15;
+
+    public static final int OP_COMPARE_RESPONSE = 16;
+
+    public static final int OP_ABANDON_REQUEST = 17;
+
+    public static final int OP_EXTENDED_REQUEST = 18;
+
+    public static final int OP_EXTENDED_RESPONSE = 19;
     
     public static final ASN1Type Attribute = new ASN1SequenceWrap(
             new ASN1Type[] { ASN1OctetString.getInstance(), // type
@@ -329,6 +330,7 @@ public class LdapASN1Constant {
                     new ASN1ChoiceWrap(new ASN1Type[] { 
                             BindRequest,
                             BindResponse,
+                            UnbindRequest,
                             SearchRequest,
                             SearchResultEntry, 
                             SearchResultDone,
@@ -347,7 +349,8 @@ public class LdapASN1Constant {
                             ExtendedRequest, 
                             ExtendedResponse
                             }),
-                    new ASN1SequenceOf(Control) }) {
+                    new ASN1Implicit(ASN1Constants.CLASS_CONTEXTSPECIFIC, 0,
+                            new ASN1SequenceOf(Control)) }) {
         {
             setOptional(2);
         }

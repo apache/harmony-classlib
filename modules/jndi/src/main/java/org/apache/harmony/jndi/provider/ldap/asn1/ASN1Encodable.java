@@ -31,8 +31,8 @@ package org.apache.harmony.jndi.provider.ldap.asn1;
  * OCTET STRING         byte[] (encode: Utils.getBytes(String s)    decode: getString(byte[] bytes))
  * ENUMERATED           byte[] (encode: ASN1Integer.fromIntValue(int value)  decode: ASN1Integer.toIntValue(Object decoded))
  * SEQUENCE             Object[] or ASN1Encodable
- * SEQUENCE OF          java.util.List
- * SET OF               java.util.List
+ * SEQUENCE OF          Collection
+ * SET OF               Collection
  * CHOICE               Object[] or ChosenValue
  * </code>
  * 

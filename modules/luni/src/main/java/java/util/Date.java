@@ -378,7 +378,7 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
         int commentLevel = 0;
         int offset = 0, length = string.length(), state = 0;
         int year = -1, month = -1, date = -1;
-        int hour = -1, minute = -1, second = -1, zoneOffset = 0;
+        int hour = -1, minute = -1, second = -1, zoneOffset = 0, minutesOffset =0;
         boolean zone = false;
         final int PAD = 0, LETTERS = 1, NUMBERS = 2;
         StringBuffer buffer = new StringBuffer();
@@ -416,6 +416,14 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
                 if (sign == '+' || sign == '-') {
                     if (zoneOffset == 0) {
                         zone = true;
+                        if (next == ':') {
+                            minutesOffset = sign == '-' ? -Integer
+                                    .parseInt(string.substring(offset,
+                                            offset + 2)) : Integer
+                                    .parseInt(string.substring(offset,
+                                            offset + 2));
+                            offset += 2;
+                        }
                         zoneOffset = sign == '-' ? -digit : digit;
                         sign = 0;
                     } else {
@@ -531,6 +539,7 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
             } else if (year < 100) {
                 year += 1900;
             }
+            minute -= minutesOffset;
             if (zone) {
                 if (zoneOffset >= 24 || zoneOffset <= -24) {
                     hour -= zoneOffset / 100;

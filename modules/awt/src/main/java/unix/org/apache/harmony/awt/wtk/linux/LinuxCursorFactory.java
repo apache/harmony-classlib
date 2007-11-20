@@ -26,6 +26,7 @@ import java.awt.Image;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.awt.image.MultiPixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 
 import org.apache.harmony.awt.gl.Utils;
@@ -95,23 +96,27 @@ public class LinuxCursorFactory extends CursorFactory implements X11Defs {
         int width = img.getWidth(null);
         int height = img.getHeight(null);
         BufferedImage bufImg = Utils.getBufferedImage(img);
+        if(bufImg == null) throw new NullPointerException("Cursor Image is null");
+
         //must convert image into TYPE_BYTE_BINARY format of depth 1
-        BufferedImage bmpSrc = convertTo1Bit(/*bufImg*/img);
+        BufferedImage bmpSrc = convertTo1Bit(bufImg);
         BufferedImage bmpMask = getMask(bufImg);
         //get pixel data from bufImg & create X11 pixmap
         byte[] bmpSrcData = ((DataBufferByte) bmpSrc.getData().getDataBuffer()).getData();
+        byte[] rSrcData = convertToLSBFirst(bmpSrcData);
         byte[] bmpMaskData = ((DataBufferByte) bmpMask.getData().getDataBuffer()).getData();
+        byte[] rMaskData = convertToLSBFirst(bmpMaskData);
 
         ArrayAccessor arrayAccess = AccessorFactory.getArrayAccessor();
         long wnd = factory.getRootWindow();
-        LockedArray larr = arrayAccess.lockArrayShort(bmpSrcData);
+        LockedArray larr = arrayAccess.lockArrayShort(rSrcData);
         long dataPtr = larr.getAddress();
         long pixmap = x11.XCreateBitmapFromData(display, wnd,
                 dataPtr, width, height);
         //System.out.println("source pixmap=" + pixmap);
         larr.release();
 
-        larr = arrayAccess.lockArrayShort(bmpMaskData);
+        larr = arrayAccess.lockArrayShort(rMaskData);
         dataPtr = larr.getAddress();
         long pixmapMask = x11.XCreateBitmapFromData(display, wnd, dataPtr,
                 width, height);
@@ -130,6 +135,24 @@ public class LinuxCursorFactory extends CursorFactory implements X11Defs {
         x11.XFreePixmap(display, pixmapMask);
 
         return new LinuxCursor(cursor, display);
+    }
+
+    // Convert Bitmap bits to LSBFirst
+    private byte[] convertToLSBFirst(byte[] src){
+        int len = src.length;
+        byte[] dst = new byte[len];
+
+        for(int i = 0; i < len; i++){
+            int pix = src[i] & 0xff;
+            int rpix = pix & 0x1;
+            for( int j = 1; j < 8; j++){
+                pix >>= 1;
+                rpix <<= 1;
+                rpix |= (pix & 0x1) ;
+            }
+            dst[i] = (byte)rpix;
+        }
+        return dst;
     }
 
     /**
@@ -273,7 +296,11 @@ public class LinuxCursorFactory extends CursorFactory implements X11Defs {
      * @param src Image to convert
      * @return new Buffered image containing 1-bit bitmap
      */
-    static BufferedImage convertTo1Bit(Image src) {
+    static BufferedImage convertTo1Bit(BufferedImage src) {
+        if(src.getType() == BufferedImage.TYPE_BYTE_BINARY){
+            MultiPixelPackedSampleModel mppsm = (MultiPixelPackedSampleModel) src.getRaster().getSampleModel();
+            if(mppsm.getPixelBitStride() == 1) return src;
+        }
         int w = src.getWidth(null);
         int h = src.getHeight(null);
 

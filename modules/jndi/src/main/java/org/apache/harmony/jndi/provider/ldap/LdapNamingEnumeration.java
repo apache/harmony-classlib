@@ -115,5 +115,9 @@ public class LdapNamingEnumeration<T> implements NamingEnumeration<T> {
     protected void setException(NamingException exception) {
         this.exception = exception;
     }
+    
+    void add(T pair) {
+        values.add(pair);
+    }
 
 }

@@ -52,8 +52,8 @@ static icInt32Number swapBytes32(icInt32Number value)
 typedef struct {
   LPBYTE Base;    // Base pointer
   LPBYTE CurrPtr; // Moving pointer
-  BOOL needsUpdate; // Tag sizes changed or tags added/removed
-  BOOL needsUpdateCriticalTags; // Critical tags changed
+  LCMSBOOL needsUpdate; // Tag sizes changed or tags added/removed
+  LCMSBOOL needsUpdateCriticalTags; // Critical tags changed
   size_t size;
 } MemBuffer;
 
@@ -72,7 +72,7 @@ static MemBuffer* openMemBuffer(LPBYTE Ptr, size_t size) {
   return buffer;
 }
 
-static BOOL allocMemBuffer(LPVOID f, size_t size) {
+static LCMSBOOL allocMemBuffer(LPVOID f, size_t size) {
   MemBuffer* memBuffer = (MemBuffer*) f;
     
   memBuffer->CurrPtr = malloc(size);
@@ -88,7 +88,7 @@ static BOOL allocMemBuffer(LPVOID f, size_t size) {
   return TRUE;
 }
 
-static BOOL closeMemBuffer(MemBuffer **buffer) {
+static LCMSBOOL closeMemBuffer(MemBuffer **buffer) {
   if(*buffer)
     free(*buffer);
   *buffer = NULL;
@@ -105,7 +105,7 @@ static size_t readMemBuffer(LPVOID buffer, size_t size, size_t count, LPVOID f) 
   return count;
 }
 
-static BOOL seekMemBuffer(LPVOID f, size_t offset) {
+static LCMSBOOL seekMemBuffer(LPVOID f, size_t offset) {
   MemBuffer* memBuffer = (MemBuffer*) f;
   memBuffer->CurrPtr = memBuffer->Base + offset;
 
@@ -117,7 +117,7 @@ static size_t tellMemBuffer(LPVOID f) {
   return memBuffer->CurrPtr - memBuffer->Base;
 }
 
-static BOOL writeMemBuffer(LPVOID f, size_t size, LPBYTE Data) {
+static LCMSBOOL writeMemBuffer(LPVOID f, size_t size, LPBYTE Data) {
   MemBuffer* memBuffer = (MemBuffer*) f;
 
   if (size == 0) return TRUE;
@@ -145,7 +145,7 @@ static size_t zeroMemBuffer(LPVOID f, size_t size) {
 }
 
 
-static BOOL updateHeader(LPLCMSICCPROFILE Icc) {
+static LCMSBOOL updateHeader(LPLCMSICCPROFILE Icc) {
   icHeader head;
 
   readMemBuffer(&head, sizeof(icHeader), 1, Icc -> stream);
@@ -479,7 +479,7 @@ LPLCMSICCPROFILE cmmOpenProfile(LPBYTE dataPtr, DWORD dwSize) {
 
 
 
-BOOL cmmCloseProfile(LPLCMSICCPROFILE hProfile) {
+LCMSBOOL cmmCloseProfile(LPLCMSICCPROFILE hProfile) {
 
   return cmsCloseProfile(hProfile);
 
@@ -509,7 +509,7 @@ void cmmGetProfile(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t dataSize) {
 
 
 
-BOOL cmmGetProfileElement(
+LCMSBOOL cmmGetProfileElement(
 
     LPLCMSICCPROFILE hProfile, 
 
@@ -572,7 +572,7 @@ long cmmGetProfileElementSize(LPLCMSICCPROFILE hProfile, icTagSignature sig) {
 
 
 
-BOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t size) {
+LCMSBOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t size) {
 
   size_t bytesToRead = MIN(size, sizeof(icHeader));
 
@@ -586,7 +586,7 @@ BOOL cmmGetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data, size_t size) {
 
 
 
-BOOL cmmSetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data) {
+LCMSBOOL cmmSetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data) {
 
   seekMemBuffer(hProfile->stream, 0);
 
@@ -606,7 +606,7 @@ BOOL cmmSetProfileHeader(LPLCMSICCPROFILE hProfile, LPBYTE data) {
 
 
 
-BOOL cmmSetProfileElement(LPLCMSICCPROFILE hProfile, icTagSignature sig, LPVOID data, size_t size) {
+LCMSBOOL cmmSetProfileElement(LPLCMSICCPROFILE hProfile, icTagSignature sig, LPVOID data, size_t size) {
 
   MemBuffer *memBuffer;
 

@@ -21,11 +21,13 @@ import java.lang.reflect.Constructor;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.security.auth.DestroyFailedException;
 import javax.security.auth.RefreshFailedException;
 import javax.security.auth.Subject;
+import javax.security.auth.kerberos.KerberosKey;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.kerberos.KerberosTicket;
 import javax.security.auth.kerberos.ServicePermission;
@@ -55,6 +57,12 @@ public class KerberosUtils {
     public static final String KERBEROS_CONTEXT_INIT = "org.apache.harmony.auth.jgss.initiate";
 
     public static final String KERBEROS_CONTEXT_ACCEPT = "org.apache.harmony.auth.jgss.accept";
+    
+    public static final String SERVICE_PERMISSION_ACTION_INITIATE = "initiate";
+    
+    public static final String SERVICE_PERMISSION_ACTION_ACCEPT = "accept";
+    
+    public static final String[] SUPPORTED_KEY_ENCRYPT= {"DES"};
 
     static {
         try {
@@ -80,7 +88,7 @@ public class KerberosUtils {
             final KerberosPrincipal clientPrincipal,
             final KerberosPrincipal serverPrincipal) {
         AccessControlContext acc = AccessController.getContext();
-        return AccessController.doPrivileged(
+        KerberosTicket tgt = AccessController.doPrivileged(
                 new PrivilegedAction<KerberosTicket>() {
 
                     public KerberosTicket run() {
@@ -91,7 +99,53 @@ public class KerberosUtils {
                                 serverPrincipal);
                     }
                 }, acc);
-
+        if (tgt != null) {
+            checkTGTServicePermission(tgt);
+        }
+        return tgt;
+    }
+    
+    private static KerberosKey[] getKeysFromContext(final KerberosPrincipal serverPrincipal){
+        AccessControlContext acc = AccessController.getContext();
+        KerberosKey[] kerberosKeys = AccessController.doPrivileged(new PrivilegedAction<KerberosKey[]>(){
+            public KerberosKey[] run() {
+                AccessControlContext acc = AccessController
+                .getContext();
+                Subject subject = Subject.getSubject(acc);
+                return getKeysFromSubject(subject, serverPrincipal);
+            }}, acc);
+        if(kerberosKeys.length > 0){
+            //All keys in kerberosKeys have the same principal. Check the permission for the first key is enough.
+            checkServerKeyServicePermission(kerberosKeys[0]);
+            return kerberosKeys;
+        }
+        return null;
+    }
+    
+    private static KerberosPrincipal getPrincipalFromContext(){
+        AccessControlContext acc = AccessController.getContext();
+        return AccessController.doPrivileged(new PrivilegedAction<KerberosPrincipal>(){
+            public KerberosPrincipal run() {
+                AccessControlContext acc = AccessController
+                .getContext();
+                Subject subject = Subject.getSubject(acc);
+                Set<KerberosPrincipal> kerberosPrincipals = subject.getPrincipals(KerberosPrincipal.class);
+                if(kerberosPrincipals.size() == 0){
+                    return null;
+                }
+                return kerberosPrincipals.iterator().next();
+            }}, acc);
+    }
+    
+    private static KerberosKey[] getKeysFromSubject(Subject subject, final KerberosPrincipal serverPrincipal){
+        Set<KerberosKey> kerberosKeys = subject.getPrivateCredentials(KerberosKey.class);
+        ArrayList<KerberosKey> serverKeys = new ArrayList<KerberosKey>();
+        for(KerberosKey kerberosKey : kerberosKeys){
+            if(serverPrincipal.equals(kerberosKey.getPrincipal())){
+                serverKeys.add(kerberosKey);
+            }
+        }
+        return serverKeys.toArray(new KerberosKey[serverKeys.size()]);
     }
 
     private static KerberosTicket getTicketFromSubject(Subject subject,
@@ -147,8 +201,28 @@ public class KerberosUtils {
             return null;
         }
         Subject subject = loginContext.getSubject();
+        if(clientPrincipal == null){
+            clientPrincipal = getPrincipalFromContext();
+        }
         return getTicketFromSubject(subject, clientPrincipal,
                 getTGTServerPrincipal(clientPrincipal));
+    }
+    
+    private static KerberosKey[] getKeysFromLoginModule(KerberosPrincipal serverPrincipal){
+        LoginContext loginContext = null;
+        try {
+            loginContext = new LoginContext(KERBEROS_CONTEXT_ACCEPT);
+            loginContext.login();
+
+        } catch (LoginException e) {
+            e.printStackTrace();
+            return null;
+        }
+        Subject subject = loginContext.getSubject();
+        if(serverPrincipal == null){
+            serverPrincipal = getPrincipalFromContext();
+        }
+        return getKeysFromSubject(subject, serverPrincipal);
     }
 
     private static KerberosPrincipal getTGTServerPrincipal(
@@ -163,15 +237,40 @@ public class KerberosUtils {
             tgt = getKerberosTicketFromContext(clientPrincipal,
                     getTGTServerPrincipal(clientPrincipal));
         }
-        if (null == tgt) {
-            tgt = getTGTFromLoginModule(clientPrincipal);
-        }
         if (null != tgt) {
-            checkServicePermission(tgt.getServer(), "initiate");
+            return tgt;            
+        }
+        tgt = getTGTFromLoginModule(clientPrincipal);
+        if (null != tgt) {            
             // TODO CACHE : Whether should attach this tgt to the subject for
             // current AccessControlContext?
         }
         return tgt;
+    }
+    
+    public static KerberosKey[] getKeys(KerberosPrincipal serverPrincipal) {
+        KerberosKey[] keys = null;
+        if (serverPrincipal != null) {
+            keys = getKeysFromContext(serverPrincipal);
+        }
+        if (null != keys) {
+            return keys;
+        }
+        keys = getKeysFromLoginModule(serverPrincipal);
+        if (null != keys) {
+            // TODO CACHE : Whether should attach these keys to the subject for
+            // current AccessControlContext?
+        }
+        return keys;
+    }
+    
+        
+    public static void checkTGTServicePermission(KerberosTicket tgt){
+        checkServicePermission(tgt.getServer(), SERVICE_PERMISSION_ACTION_INITIATE);
+    }
+    
+    public static void checkServerKeyServicePermission(KerberosKey key){
+        checkServicePermission(key.getPrincipal(), SERVICE_PERMISSION_ACTION_ACCEPT);
     }
 
     public static void checkServicePermission(KerberosPrincipal principal,

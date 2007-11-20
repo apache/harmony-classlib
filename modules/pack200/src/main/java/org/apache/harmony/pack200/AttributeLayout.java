@@ -242,6 +242,9 @@ public class AttributeLayout implements IMatcher {
     }
     
     public int numBackwardsCallables() {
+        if(layout == "*") {
+            return 1; // TODO: complicated attributes (shouldn't be *'s at all...)
+        }
         int num = 0;
         String[] split = layout.split("\\(");
         if(split.length > 0) {

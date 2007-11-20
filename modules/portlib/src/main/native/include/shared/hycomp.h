@@ -236,6 +236,12 @@ typedef struct {
 
 #define PLATFORM_DLL_EXTENSION ".so"
 
+#ifdef HYS390X
+#ifndef HY_WORD64
+#define HY_WORD64
+#endif /* ifndef HY_WORD64 */
+#endif /* HYS390X */
+
 #endif /* ZOS */
 
 

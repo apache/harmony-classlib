@@ -35,6 +35,7 @@ typedef struct _GraphicsInfo {
     Brush *brush;
     HBITMAP bmp;
     Matrix *matrix;
+    Region *clip;
 } GraphicsInfo;
 
 typedef struct _GLBITMAPINFO{

@@ -28,6 +28,8 @@
 
     <property name="hy.luni.src.test.api.java.platform"
 	    value="${hy.luni.src.test.api}/${hy.os.family}" />
+	<property name="hy.luni.src.test.impl.java.platform"
+	    value="${hy.luni.src.test.impl}/${hy.os.family}" />
     <fileset id="classes" dir="${hy.build}">
         <or>
             <present targetdir="${hy.luni.src.main.java}" />
@@ -298,42 +300,53 @@
         </jar>
     </target>
 
-    <target name="compile-tests" depends="copy-test-resources">
-        <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
+    <!-- compile both api tests and impl tests-->
+    <target name="compile-tests" depends="compile-tests-api, compile-tests-impl" />
+
+    <target name="compile-tests-api" depends="copy-test-resources">
+        <compile-tests description="JUnit API Tests" destdir="${hy.luni.bin.test}/api">
             <javac-elements>
                 <src>
                     <pathelement location="${hy.luni.src.test.api}/common" />
                     <pathelement location="${hy.luni.src.test.api.java.platform}" />
-                    <pathelement location="${hy.luni.src.test}/impl" />
                 </src>
                 <include name="**/*.java" />
             </javac-elements>
         </compile-tests>
     </target>
 
+    <target name="compile-tests-impl" depends="copy-test-resources">
+         <compile-tests description="JUnit Impl tests" destdir="${hy.luni.bin.test}/impl">
+            <javac-elements>
+                <src>
+                   <pathelement location="${hy.luni.src.test.impl}/common" />
+                   <pathelement location="${hy.luni.src.test.impl.java.platform}" />
+                </src>
+                <include name="**/*.java" />
+            </javac-elements>
+        </compile-tests>
+    </target>
+    
     <target name="prepare-exclude">
         <prepare-exclude-list moduleName="luni" dir="./make"
                              result="${luni.exclude.file}"/>
     </target>
 
-    <target name="run-tests">
-        <run-tests description="JUnit Tests">
+    <!-- run both api tests and impl tests -->
+    <target name="run-tests" depends="run-tests-api, run-tests-impl" />
+
+    <target name="run-tests-api">
+        <run-tests description="JUnit API Tests">
             <junit-elements>
                 <classpath>
-                    <pathelement path="${hy.luni.bin.test}"/>
+                    <pathelement path="${hy.luni.bin.test}/api"/>
                     <pathelement path="${hy.luni.src.test.resources}"/>
                     <pathelement path="../../build/tests"/>
                     <fileset dir="${hy.hdk}/build/test/">
                         <include name="*.jar" />
                     </fileset>
                 </classpath>
-                <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
-
-                <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=../../support/src/test/resources/config/localhosttest.ini" />
-
-
+ 
                 <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
                     <fileset dir="${hy.luni.src.test.api}/common">
                         <!-- if ${test.case}     -->
@@ -348,7 +361,41 @@
                         <!-- unless ${test.case} -->
                         <include name="**/*Test.java" unless="test.case" />
                         <excludesfile name="${luni.exclude.file}" unless="test.case" />
+                    </fileset>             
+                </batchtest>
+
+            </junit-elements>
+        </run-tests>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+       
+    <target name="run-tests-impl">         
+        <run-tests description="JUnit Impl Tests">
+            <junit-elements>
+                <classpath>
+                    <pathelement path="${hy.luni.bin.test}/impl"/>
+                    <pathelement path="${hy.luni.src.test.resources}"/>
+                    <pathelement path="../../build/tests"/>
+                    <fileset dir="${hy.hdk}/build/test/">
+                        <include name="*.jar" />
                     </fileset>
+                </classpath>
+                <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+                   <fileset dir="${hy.luni.src.test.impl}/common">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
+                    </fileset>
+                    <fileset dir="${hy.luni.src.test.impl.java.platform}">
+                        <!-- if ${test.case}     -->
+                        <include name="${converted.tc}" if="test.case" />
+                        <!-- unless ${test.case} -->
+                        <include name="**/*Test.java" unless="test.case" />
+                        <excludesfile name="${luni.exclude.file}" unless="test.case" />
+                    </fileset>              
                 </batchtest>
 
             </junit-elements>
@@ -438,6 +485,12 @@
                 <jvmarg line="${hy.test.vmargs}" />
                 <!-- Used by Support_Exec.execJava() -->
                 <jvmarg value="-Dhy.test.vmargs=${hy.test.vmargs}" />
+                
+                <!-- Required by various tests that set security manager etc -->
+                <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
+
+                <!-- Required for running the java.net unit tests -->
+                <jvmarg value="-Dtest.ini.file=../../support/src/test/resources/config/localhosttest.ini" />
 
                 <junit-elements />
 

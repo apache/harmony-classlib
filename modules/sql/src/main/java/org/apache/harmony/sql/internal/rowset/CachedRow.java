@@ -16,12 +16,10 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
-
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.BitSet;
 
-public class CachedRow implements Cloneable{
+public class CachedRow implements Cloneable {
     private Object[] columnData;
 
     private Object[] originalColumnData;
@@ -30,13 +28,15 @@ public class CachedRow implements Cloneable{
 
     private boolean isDelete;
 
-    private boolean insert;
+    private boolean isInsert;
+
+    private boolean isUpdate;
 
     private boolean nonUpdateable = false;
 
     public CachedRow(Object[] columnData) {
-        this.columnData = columnData;
-        this.originalColumnData = columnData;
+        this.columnData = columnData.clone();
+        originalColumnData = columnData.clone();
         mask = new BitSet(columnData.length);
     }
 
@@ -47,12 +47,13 @@ public class CachedRow implements Cloneable{
     public void setUpdateMask(int i) {
         mask.set(i);
     }
-    
-    public void setUnavailable(){
+
+    public void setUnavailable() {
+        // FIXME: What is this method used for?
         setDelete();
         setInsert();
         mask.clear();
-        mask.flip(0,columnData.length);
+        mask.flip(0, columnData.length);
     }
 
     public void setNonUpdateable() {
@@ -68,71 +69,59 @@ public class CachedRow implements Cloneable{
     }
 
     public void setDelete() {
-        this.isDelete = true;
-    }
-    
-    public void unDoDelete() {
-        this.isDelete = false;
+        isDelete = true;
     }
 
-    public boolean getDelete() {
+    public void undoDelete() {
+        isDelete = false;
+    }
+
+    public boolean isDelete() {
         return isDelete;
     }
 
     public void setInsert() {
-        this.insert = true;
+        isInsert = true;
     }
 
-    public boolean getInsert() {
-        return this.insert;
+    public boolean isInsert() {
+        return isInsert;
     }
 
-    public void updateString(int columnIndex, String x) throws SQLException {
-        if (nonUpdateable)
+    public void setUpdate() {
+        isUpdate = true;
+    }
+
+    public void undoUpdate() {
+        isUpdate = false;
+        mask.flip(0, columnData.length);
+        columnData = originalColumnData.clone();
+    }
+
+    public boolean isUpdate() {
+        return isUpdate;
+    }
+
+    public void updateObject(int columnIndex, Object x) throws SQLException {
+        if (nonUpdateable) {
+            // TODO load message from resource file
             throw new SQLException("Not Updateable of the CurrentRow");
-        this.columnData[columnIndex - 1] = x;
+        }
+
+        columnData[columnIndex - 1] = x;
         setUpdateMask(columnIndex - 1);
     }
 
-    public void updateInt(int columnIndex, int x) {
-        this.columnData[columnIndex - 1] = x;
-        setUpdateMask(columnIndex - 1);
-    }
-    
     public CachedRow getOriginal() {
         return new CachedRow(originalColumnData);
     }
 
-    public String getString(int columnIndex) {
-        return (String) this.columnData[columnIndex - 1];
-    }
-    
     public Object getObject(int columnIndex) {
-        return this.columnData[columnIndex - 1];
-    }
-
-    public int getInt(int columnIndex) {
-        return (Integer) this.columnData[columnIndex - 1];
-    }
-
-    public Blob getBLOb(int columnIndex) {
-        return (Blob) this.columnData[columnIndex - 1];
-    }
-
-    public boolean getBoolean(int columnIndex) {
-        return (Boolean) this.columnData[columnIndex - 1];
-    }
-
-    public byte getByte(int columnIndex) {
-        return (Byte) this.columnData[columnIndex - 1];
-    }
-
-    public byte[] getBytes(int columnIndex) {
-        return (byte[]) this.columnData[columnIndex - 1];
+        return columnData[columnIndex - 1];
     }
 
     // deep clone
-    public CachedRow createClone() throws CloneNotSupportedException {  
+    public CachedRow createClone() throws CloneNotSupportedException {
         CachedRow cr = (CachedRow) super.clone();
 
         Object[] cd = new Object[columnData.length];
@@ -140,8 +129,9 @@ public class CachedRow implements Cloneable{
             cd[i] = columnData[i];
         }
         cr.columnData = cd;
-        cr.insert = insert;
+        cr.isInsert = isInsert;
         cr.isDelete = isDelete;
+        cr.isUpdate = isUpdate;
         cr.mask = (BitSet) mask.clone();
         cr.nonUpdateable = nonUpdateable;
         // cr.originalColumnData

@@ -96,7 +96,6 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         size = new Dimension(b.width, b.height);
 
         gi = createGraphicsInfo(this.nw.getId(), tx, ty, b.width, b.height);
-        setTransformedClip(this.clip);        
         if (!FontManager.IS_FONTLIB) {
             jtr = GDIPTextRenderer.inst;
         }
@@ -112,7 +111,6 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         size = new Dimension(width, height);
 
         gi = createGraphicsInfo(this.nw.getId(), tx, ty, width, height);
-        setTransformedClip(this.clip);
         if (!FontManager.IS_FONTLIB) {
             jtr = GDIPTextRenderer.inst;
         }
@@ -138,7 +136,6 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
         } else {
             this.gi = copyImageInfo(img.gi);
         }
-        setTransformedClip(this.clip);
         dstSurf = img.getImageSurface();
         blitter = GDIBlitter.getInstance();
         if (!FontManager.IS_FONTLIB) {

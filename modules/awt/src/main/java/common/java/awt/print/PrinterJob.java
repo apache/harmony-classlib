@@ -80,7 +80,7 @@ public abstract class PrinterJob {
                 String s = System.getProperty("java.awt.printerjob"); //$NON-NLS-1$
 
                 if (s == null || s.equals("")){ //$NON-NLS-1$
-                    s = "org.apache.harmony.x.print.awt.PSPrinterJob"; //$NON-NLS-1$
+                    s = "java.awt.print.PrinterJobImpl"; //$NON-NLS-1$
                 }
                 try {
                     return (PrinterJob) Class.forName(s).newInstance();

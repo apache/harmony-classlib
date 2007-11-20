@@ -88,8 +88,8 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
        normally, jpeg-6b.
     2. Configure the build by running:
 
-	    For the release version: ./configure CFLAGS=’-O2 -fpic’
-	    For the debug version: ./configure CFLAGS=’-g -fpic’
+	    For the release version: ./configure CFLAGS="-O2 -fpic"
+	    For the debug version: ./configure CFLAGS="-g -fpic"
 
     3. Copy the file jconfig.h created during the previous step to
        the <EXTERNAL_LIBS_DIR>/jpeg/jconfig.lnx directory.
@@ -137,8 +137,8 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
    1. Change the working directory to the libpng source directory.
    2. Configure the build by running:
 
-	    For the release version: ./configure CFLAGS=’-O2 -fpic’
-	    For the debug version: ./configure CFLAGS=’-g -fpic’
+	    For the release version: ./configure CFLAGS="-O2 -fpic"
+	    For the debug version: ./configure CFLAGS="-g -fpic"
 
    3. To build the library, run:
 
@@ -181,8 +181,8 @@ Further in the document, <EXTERNAL_LIBS_DIR> denotes the directory
    1. Change the working directory to the LCMS source directory.
    2. Configure the build by running:
 
-   	For the release version: ./configure CFLAGS=’-O2 -fpic’
-   	For the debug version: ./configure CFLAGS=’-g -fpic’
+   	For the release version: ./configure CFLAGS="-O2 -fpic"
+   	For the debug version: ./configure CFLAGS="-g -fpic"
 
    3. To build the library, run:
 

@@ -61,4 +61,8 @@ public class CompareOp implements LdapOperation, ASN1Encodable {
         values[1] = objs;
     }
 
+    public LdapResult getResult() {
+        return result;
+    }
+
 }

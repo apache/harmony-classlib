@@ -19,17 +19,14 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.SearchResult;
 
-import org.apache.harmony.jndi.provider.dns.BasicNamingEnumerator;
 import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1ChoiceWrap.ChosenValue;
@@ -39,7 +36,7 @@ public class LdapSearchResult {
     /**
      * all search result entries
      */
-    private Map<String, SearchResult> entries = new HashMap<String, SearchResult>();
+    private Map<String, Attributes> entries = new HashMap<String, Attributes>();
 
     /**
      * SearchResultReference from server
@@ -48,6 +45,8 @@ public class LdapSearchResult {
     private List<String> refURLs = new ArrayList<String>();
 
     private LdapResult result;
+
+    private NamingException ex;
 
     public void decodeSearchResponse(Object[] values) {
         ChosenValue chosen = (ChosenValue) values[0];
@@ -79,13 +78,14 @@ public class LdapSearchResult {
     private void decodeEntry(Object value) {
         Object[] values = (Object[]) value;
         String name = Utils.getString((byte[]) values[0]);
+
         Attributes attrs = null;
 
         if (entries.containsKey(name)) {
-            attrs = entries.get(name).getAttributes();
+            attrs = entries.get(name);
         } else {
             attrs = new BasicAttributes();
-            entries.put(name, new SearchResult(name, new Object(), attrs));
+            entries.put(name, attrs);
         }
 
         Collection<Object[]> list = (Collection<Object[]>) values[1];
@@ -96,31 +96,8 @@ public class LdapSearchResult {
         }
     }
 
-    public NamingEnumeration<SearchResult> getEnumeration() {
-        //TODO: this is simple implementation, need to be completed
-        return new BasicNamingEnumerator<SearchResult>(
-                new Enumeration<SearchResult>() {
-                    private ArrayList<SearchResult> values = new ArrayList<SearchResult>(
-                            entries.values());
-
-                    private int index = -1;
-
-                    public boolean hasMoreElements() {
-                        if (index == -1) {
-                            index = 0;
-                        }
-                        
-                        if (index + 1 <= values.size()) {
-                            return true;
-                        }
-
-                        return false;
-                    }
-
-                    public SearchResult nextElement() {
-                        return values.get(index++);
-                    }
-                });
+    public Map<String, Attributes> getEntries() {
+        return entries;
     }
 
     public List<String> getRefURLs() {
@@ -129,5 +106,21 @@ public class LdapSearchResult {
 
     public LdapResult getResult() {
         return result;
+    }
+
+    public NamingException getException() {
+        return ex;
+    }
+
+    public void setException(NamingException ex) {
+        this.ex = ex;
+    }
+
+    public boolean isEmpty() {
+        return entries.size() == 0 && refURLs.size() == 0;
+    }
+
+    public void setRefURLs(List<String> refURLs) {
+        this.refURLs = refURLs;
     }
 }

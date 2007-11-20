@@ -602,18 +602,8 @@ public class Raster {
             throw new RasterFormatException(Messages.getString("awt.284")); //$NON-NLS-1$
         }
         
-        if (sampleModel instanceof ComponentSampleModel) {
-            validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
-                    ((ComponentSampleModel) sampleModel).getScanlineStride());
-        } else if (sampleModel instanceof MultiPixelPackedSampleModel) {
-            validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
-                    ((MultiPixelPackedSampleModel) sampleModel)
-                            .getScanlineStride());
-        } else if (sampleModel instanceof SinglePixelPackedSampleModel) {
-            validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
-                    ((SinglePixelPackedSampleModel) sampleModel)
-                            .getScanlineStride());
-        }
+        validateDataBuffer(dataBuffer, aRegion.width, aRegion.height,
+                sampleModel);
 
         this.sampleModel = sampleModel;
         this.dataBuffer = dataBuffer;
@@ -853,8 +843,54 @@ public class Raster {
     }
 
     private static void validateDataBuffer(final DataBuffer dataBuffer, final int w,
-            final int h, final int scanlineStride) {
-        if (dataBuffer.getSize() < (scanlineStride * (h - 1) + w - 1)) {
+            final int h, final SampleModel sampleModel) {
+
+        int size = 0;
+        
+        if (sampleModel instanceof ComponentSampleModel) {
+            ComponentSampleModel csm = (ComponentSampleModel) sampleModel;
+            int offsets[] = csm.getBandOffsets();
+            int maxOffset = offsets[0];
+            for (int i = 1; i < offsets.length; i++) {
+                if (offsets[i] > maxOffset) {
+                    maxOffset = offsets[i];
+                }
+            }
+            int scanlineStride = csm.getScanlineStride();
+            int pixelStride = csm.getPixelStride();
+            
+            size = (h - 1) * scanlineStride +
+            (w - 1) * pixelStride + maxOffset + 1;
+
+        } else if (sampleModel instanceof MultiPixelPackedSampleModel) {
+            MultiPixelPackedSampleModel mppsm = 
+                (MultiPixelPackedSampleModel) sampleModel;
+            
+            int scanlineStride = mppsm.getScanlineStride();
+            int dataBitOffset = mppsm.getDataBitOffset();
+            int dataType = dataBuffer.getDataType();
+            
+            size = scanlineStride * h;
+
+            switch (dataType) {
+            case DataBuffer.TYPE_BYTE:
+                size += (dataBitOffset + 7) / 8;
+                break;
+            case DataBuffer.TYPE_USHORT:
+                size += (dataBitOffset + 15) / 16;
+                break;
+            case DataBuffer.TYPE_INT:
+                size += (dataBitOffset + 31) / 32;
+                break;
+            }
+        } else if (sampleModel instanceof SinglePixelPackedSampleModel) {
+            SinglePixelPackedSampleModel sppsm = 
+                (SinglePixelPackedSampleModel) sampleModel;
+            
+            int scanlineStride = sppsm.getScanlineStride();
+            size = (h - 1) * scanlineStride + w;
+        }
+        if (dataBuffer.getSize() < size) {
             // awt.298=dataBuffer is too small
             throw new RasterFormatException(Messages.getString("awt.298")); //$NON-NLS-1$
         }

@@ -22,7 +22,7 @@
 #include "harmonyglob.h"
 #include "exceptions.h"
 
-#if defined(LINUX) || defined(ZOS)
+#if defined(LINUX) || defined(FREEBSD) || defined(ZOS)
 #define USE_LL
 #endif
 

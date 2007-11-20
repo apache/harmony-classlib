@@ -97,7 +97,13 @@ public class StartTlsRequest implements ExtendedRequest {
             // ignore
         }
 
-        // TODO: return a provider default implementation
+        try {
+            return  (StartTlsResponse) Class.forName(
+                    "org.apache.harmony.jndi.provider.ldap.ext.StartTlsResponseImpl", true, cl).newInstance();
+        } catch (Exception e) {
+            // ignore
+        }
+        
         throw new NamingException(Messages.getString("ldap.09")); //$NON-NLS-1$
     }
 }

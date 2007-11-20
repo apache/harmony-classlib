@@ -30,7 +30,9 @@ HYCFLAGS = \
   -I$(SHAREDSUB)\include
 
 BUILDFILES = print.obj \
-ui.obj
+ui.obj \
+win_printer_factory.obj \
+devmode_struct_wrapper.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib

@@ -32,6 +32,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
     
     private String[] cpClasses;
     private String[] cpDescriptor;
+    private String[] cpUTF8;
     
     public class MockCpBands extends CpBands {
 
@@ -46,14 +47,36 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         public String[] getCpDescriptor() {
             return cpDescriptor;
         }
-
+        
+        public String[] getCpUTF8() {
+            return cpUTF8;
+        }
+        
+        public int[] getCpInt() {
+            return new int[0];
+        }
+        
+        public double[] getCpDouble() {
+            return new double[0];
+        }
+        
+        public long[] getCpLong() {
+            return new long[0];            
+        }
+        
+        public float[] getCpFloat() {
+            return new float[0];
+        }
+        
+        public String[] getCpSignature() {
+            return new String[0];
+        }
     }
 
     public class MockSegment extends AbstractBandsTestCase.MockSegment {
         protected CpBands getCpBands() {
             return new MockCpBands(this);
-        }       
-        
+        }
     }
     
     
@@ -63,6 +86,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
     public void testSimple() throws IOException, Pack200Exception {
         cpClasses = new String[] { "Class1", "Class2", "Class3", "Interface1", "Interface2" };
         cpDescriptor = new String[0];
+        cpUTF8 = new String[0];
         byte[] classThis = Codec.DELTA5.encode(1, 0);
         byte[] classSuper = Codec.DELTA5.encode(2, 0);
         byte[] classInterfaceCount = Codec.DELTA5.encode(2, 0);
@@ -99,6 +123,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
     public void testWithMethods() throws Pack200Exception, IOException {
         cpClasses = new String[] { "Class1", "Class2", "Class3" };
         cpDescriptor = new String[] {"method1", "method2", "method3"};
+        cpUTF8 = new String[0];
         byte[] classThis = Codec.DELTA5.encode(1, 0);
         byte[] classSuper = Codec.DELTA5.encode(2, 0);
         byte[] classInterfaceCount = Codec.DELTA5.encode(0, 0);

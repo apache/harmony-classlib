@@ -27,7 +27,7 @@ BUILDFILES = \
 	$(SHAREDSUB)hygp.o hyipcmutex.o hymem.o \
 	$(HY_OS)/hymmap.o $(SHAREDSUB)hynls.o hynlshelpers.o hyosdump.o \
 	$(SHAREDSUB)hyport.o $(SHAREDSUB)hyportcontrol.o hyportptb.o \
-	hysharedhelper.o hyshmem.o hyshsem.o hysl.o hysock.o \
+	hysharedhelper.o hyshmem.o hyshsem.o $(HY_OS)/hysl.o hysock.o \
 	$(SHAREDSUB)hystr.o $(SHAREDSUB)hystrftime.o $(SHAREDSUB)hystsl.o \
 	hysysinfo.o hytime.o $(SHAREDSUB)hytlshelpers.o hytty.o $(HY_OS)/hyvmem.o
 

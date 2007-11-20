@@ -20,11 +20,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import org.apache.harmony.pack200.IcBands.ICTuple;
 import org.apache.harmony.pack200.bytecode.CPClass;
+import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
+import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
+import org.apache.harmony.pack200.bytecode.LocalVariableTableAttribute;
+import org.apache.harmony.pack200.bytecode.LocalVariableTypeTableAttribute;
+import org.apache.harmony.pack200.bytecode.SignatureAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
@@ -43,14 +50,16 @@ public class ClassBands extends BandSet {
     private String[] classSuper;
 
     private String[] classThis;
-    
+
     private ArrayList[] classAttributes;
-    
+
     private int[] classVersionMajor;
-    
+
     private int[] classVersionMinor;
-    
+
     private IcBands.ICTuple[][] icLocal;
+
+    private ArrayList[] codeAttributes;
 
     private int[] codeHandlerCount;
 
@@ -67,7 +76,7 @@ public class ClassBands extends BandSet {
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
-    
+
     private long[][] methodFlags;
 
     private AttributeLayoutMap attrMap;
@@ -79,7 +88,7 @@ public class ClassBands extends BandSet {
     private int classCount;
 
     private int[] methodAttrCalls;
-    
+
     /**
      * @param segment
      */
@@ -90,7 +99,7 @@ public class ClassBands extends BandSet {
         this.cpBands = segment.getCpBands();
         this.classCount = header.getClassCount();
         this.options = header.getOptions();
-        
+
     }
 
     /*
@@ -136,42 +145,32 @@ public class ClassBands extends BandSet {
         fieldFlags = parseFlags("field_flags", in, classFieldCount,
                 Codec.UNSIGNED5, options.hasFieldFlagsHi());
         int fieldAttrCount = SegmentUtils.countBit16(fieldFlags);
-        int[] fieldAttrCounts = decodeBandInt("field_attr_count", in, Codec.UNSIGNED5, fieldAttrCount);
-        int[][] fieldAttrIndexes = decodeBandInt("field_attr_indexes", in, Codec.UNSIGNED5, fieldAttrCounts);
-        int callCount = 0;
-        for (int i = 0; i < fieldAttrIndexes.length; i++) {
-            for (int j = 0; j < fieldAttrIndexes[i].length; j++) {
-                int index = fieldAttrIndexes[i][j];
-                AttributeLayout layout = attrMap.getAttributeLayout(index, AttributeLayout.CONTEXT_FIELD);
-                callCount += layout.numBackwardsCallables();
-            }
-        }
-        int layoutsUsed = 0;
-        for (int i = 0; i < fieldFlags.length; i++) {
-            for (int j = 0; j < fieldFlags[i].length; j++) {
-                layoutsUsed |= fieldFlags[i][j]; 
-            }
-        }
-        for (int i = 0; i < 16; i++) {
-            if((layoutsUsed & 1<<i) != 0) {
-                AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_FIELD);
-                callCount += layout.numBackwardsCallables();
-            }
-        }
-        int[] fieldAttrCalls = decodeBandInt("field_attr_calls", in, Codec.UNSIGNED5, callCount);
+        int[] fieldAttrCounts = decodeBandInt("field_attr_count", in,
+                Codec.UNSIGNED5, fieldAttrCount);
+        int[][] fieldAttrIndexes = decodeBandInt("field_attr_indexes", in,
+                Codec.UNSIGNED5, fieldAttrCounts);
+        int callCount = getCallCount(fieldAttrIndexes, fieldFlags,
+                AttributeLayout.CONTEXT_FIELD);
+        int[] fieldAttrCalls = decodeBandInt("field_attr_calls", in,
+                Codec.UNSIGNED5, callCount);
 
-        AttributeLayout constantValueLayout = attrMap.getAttributeLayout("ConstantValue",
-                AttributeLayout.CONTEXT_FIELD);
-        int constantCount = SegmentUtils.countMatches(fieldFlags, constantValueLayout); 
-        int[] field_constantValue_KQ = decodeBandInt("field_ConstantValue_KQ", in, Codec.UNSIGNED5, constantCount);
+        AttributeLayout constantValueLayout = attrMap.getAttributeLayout(
+                "ConstantValue", AttributeLayout.CONTEXT_FIELD);
+        int constantCount = SegmentUtils.countMatches(fieldFlags,
+                constantValueLayout);
+        int[] field_constantValue_KQ = decodeBandInt("field_ConstantValue_KQ",
+                in, Codec.UNSIGNED5, constantCount);
         int constantValueIndex = 0;
-        
-        AttributeLayout signatureLayout = attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_SIGNATURE,
+
+        AttributeLayout signatureLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_SIGNATURE,
                 AttributeLayout.CONTEXT_FIELD);
-        int signatureCount = SegmentUtils.countMatches(fieldFlags, signatureLayout);
-        int[] fieldSignatureRS = decodeBandInt("field_Signature_RS", in, Codec.UNSIGNED5, signatureCount);
+        int signatureCount = SegmentUtils.countMatches(fieldFlags,
+                signatureLayout);
+        int[] fieldSignatureRS = decodeBandInt("field_Signature_RS", in,
+                Codec.UNSIGNED5, signatureCount);
         int signatureIndex = 0;
-        
+
         fieldAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
             fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
@@ -184,7 +183,8 @@ public class ClassBands extends BandSet {
                     String desc = fieldDescr[i][j];
                     int colon = desc.indexOf(':');
                     String type = desc.substring(colon + 1);
-                    if (type.equals("B") || type.equals("S") || type.equals("C") || type.equals("Z"))
+                    if (type.equals("B") || type.equals("S")
+                            || type.equals("C") || type.equals("Z"))
                         type = "I";
                     Object value = constantValueLayout.getValue(result, type,
                             cpBands.getConstantPool());
@@ -198,15 +198,17 @@ public class ClassBands extends BandSet {
                     String desc = fieldDescr[i][j];
                     int colon = desc.indexOf(':');
                     String type = desc.substring(colon + 1);
-                    Object value = signatureLayout.getValue(result, type, cpBands
-                            .getConstantPool());
+                    CPUTF8 value = new CPUTF8((String) signatureLayout.getValue(result, type,
+                            cpBands.getConstantPool()));
                     fieldAttributes[i][j]
-                            .add(new ConstantValueAttribute(value));
+                            .add(new SignatureAttribute(value));
                     signatureIndex++;
                 }
             }
         }
-        parseFieldMetadataBands();
+        parseFieldMetadataBands(in, fieldAttrCalls);
+
+        // TODO: Parse other attribute bands
     }
 
     private void parseMethodBands(InputStream in) throws IOException,
@@ -215,20 +217,17 @@ public class ClassBands extends BandSet {
                 classMethodCount, cpBands.getCpDescriptor());
         methodFlags = parseFlags("method_flags", in, classMethodCount,
                 Codec.UNSIGNED5, options.hasMethodFlagsHi());
-       
+
         int methodAttrCount = SegmentUtils.countBit16(methodFlags);
-        int[] methodAttrCounts = decodeBandInt("method_attr_count", in, Codec.UNSIGNED5, methodAttrCount);
-        int[][] methodAttrIndexes = decodeBandInt("method_attr_indexes", in, Codec.UNSIGNED5, methodAttrCounts);
-        int callCount = 0;
-        for (int i = 0; i < methodAttrIndexes.length; i++) {
-            for (int j = 0; j < methodAttrIndexes[i].length; j++) {
-                int index = methodAttrIndexes[i][j];
-                AttributeLayout layout = attrMap.getAttributeLayout(index, AttributeLayout.CONTEXT_METHOD);
-                callCount += layout.numBackwardsCallables();
-            }
-        }
-        methodAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5, callCount);
-        
+        int[] methodAttrCounts = decodeBandInt("method_attr_count", in,
+                Codec.UNSIGNED5, methodAttrCount);
+        int[][] methodAttrIndexes = decodeBandInt("method_attr_indexes", in,
+                Codec.UNSIGNED5, methodAttrCounts);
+        int callCount = getCallCount(methodAttrIndexes, methodFlags,
+                AttributeLayout.CONTEXT_METHOD);
+        methodAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5,
+                callCount);
+
         // assign empty method attributes
         methodAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
@@ -239,14 +238,45 @@ public class ClassBands extends BandSet {
         }
         parseAttributeMethodExceptions(in);
         parseAttributeMethodSigntaure(in);
-        parseMethodMetadataBands();
+        parseMethodMetadataBands(in, methodAttrCalls);
+
+        // TODO: Parse other attribute bands
     }
 
-    private void parseAttributeMethodSigntaure(InputStream in) throws IOException, Pack200Exception {
-        AttributeLayout layout = attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_SIGNATURE,
+    private int getCallCount(int[][] methodAttrIndexes, long[][] flags,
+            int context) throws Pack200Exception {
+        int callCount = 0;
+        for (int i = 0; i < methodAttrIndexes.length; i++) {
+            for (int j = 0; j < methodAttrIndexes[i].length; j++) {
+                int index = methodAttrIndexes[i][j];
+                AttributeLayout layout = attrMap.getAttributeLayout(index,
+                        context);
+                callCount += layout.numBackwardsCallables();
+            }
+        }
+        int layoutsUsed = 0;
+        for (int i = 0; i < flags.length; i++) {
+            for (int j = 0; j < flags[i].length; j++) {
+                layoutsUsed |= flags[i][j];
+            }
+        }
+        for (int i = 0; i < 26; i++) {
+            if ((layoutsUsed & 1 << i) != 0) {
+                AttributeLayout layout = attrMap.getAttributeLayout(i, context);
+                callCount += layout.numBackwardsCallables();
+            }
+        }
+        return callCount;
+    }
+
+    private void parseAttributeMethodSigntaure(InputStream in)
+            throws IOException, Pack200Exception {
+        AttributeLayout layout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_SIGNATURE,
                 AttributeLayout.CONTEXT_METHOD);
         int count = SegmentUtils.countMatches(methodFlags, layout);
-        long[] methodSignatureRS = decodeBandLong("method_signature_RS", in, Codec.UNSIGNED5, count);
+        long[] methodSignatureRS = decodeBandLong("method_signature_RS", in,
+                Codec.UNSIGNED5, count);
         int index = 0;
         for (int i = 0; i < methodAttributes.length; i++) {
             for (int j = 0; j < methodAttributes[i].length; j++) {
@@ -267,7 +297,7 @@ public class ClassBands extends BandSet {
                             .add(new ConstantValueAttribute(value));
                     index++;
                 }
-            }        
+            }
         }
     }
 
@@ -281,21 +311,24 @@ public class ClassBands extends BandSet {
         AttributeLayout layout = attrMap.getAttributeLayout("Exceptions",
                 AttributeLayout.CONTEXT_METHOD);
         int count = SegmentUtils.countMatches(methodFlags, layout);
-        int[] numExceptions = decodeBandInt("method_Exceptions_n", in, Codec.UNSIGNED5, count);
-        String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC", in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
+        int[] numExceptions = decodeBandInt("method_Exceptions_n", in,
+                Codec.UNSIGNED5, count);
+        String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC",
+                in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
         int index = 0;
         for (int i = 0; i < classCount; i++) {
             for (int j = 0; j < methodFlags[i].length; j++) {
                 long flag = methodFlags[i][j];
-                if(layout.matches(flag)) {
+                if (layout.matches(flag)) {
                     int n = numExceptions[index];
                     String[] exceptions = methodExceptionsRS[index];
                     CPClass[] exceptionClasses = new CPClass[n];
                     for (int k = 0; k < n; k++) {
                         exceptionClasses[k] = new CPClass(exceptions[k]);
                     }
-                    methodAttributes[i][j].add(new ExceptionsAttribute(exceptionClasses));
-                    index ++;
+                    methodAttributes[i][j].add(new ExceptionsAttribute(
+                            exceptionClasses));
+                    index++;
                 }
             }
         }
@@ -305,22 +338,25 @@ public class ClassBands extends BandSet {
             Pack200Exception {
         String[] cpUTF8 = cpBands.getCpUTF8();
         String[] cpClass = cpBands.getCpClass();
+
+        // Prepare empty attribute lists
+        classAttributes = new ArrayList[classCount];
+        for (int i = 0; i < classCount; i++) {
+            classAttributes[i] = new ArrayList();
+        }
         
         classFlags = parseFlags("class_flags", in, classCount, Codec.UNSIGNED5,
                 options.hasClassFlagsHi());
         int classAttrCount = SegmentUtils.countBit16(classFlags);
-        int[] classAttrCounts = decodeBandInt("class_attr_count", in, Codec.UNSIGNED5, classAttrCount);
-        int[][] classAttrIndexes = decodeBandInt("class_attr_indexes", in, Codec.UNSIGNED5, classAttrCounts);
-        int callCount = 0;
-        for (int i = 0; i < classAttrIndexes.length; i++) {
-            for (int j = 0; j < classAttrIndexes[i].length; j++) {
-                int index = classAttrIndexes[i][j];
-                AttributeLayout layout = attrMap.getAttributeLayout(index, AttributeLayout.CONTEXT_CLASS);
-                callCount += layout.numBackwardsCallables();
-            }
-        }
-        int[] classAttrCalls = decodeBandInt("class_attr_calls", in, Codec.UNSIGNED5, callCount);
-        
+        int[] classAttrCounts = decodeBandInt("class_attr_count", in,
+                Codec.UNSIGNED5, classAttrCount);
+        int[][] classAttrIndexes = decodeBandInt("class_attr_indexes", in,
+                Codec.UNSIGNED5, classAttrCounts);
+        int callCount = getCallCount(classAttrIndexes, new long[][] {classFlags},
+                AttributeLayout.CONTEXT_CLASS);
+        int[] classAttrCalls = decodeBandInt("class_attr_calls", in,
+                Codec.UNSIGNED5, callCount);
+
         AttributeLayout sourceFileLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SOURCE_FILE,
                 AttributeLayout.CONTEXT_CLASS);
@@ -335,20 +371,20 @@ public class ClassBands extends BandSet {
         int enclosingMethodCount = SegmentUtils.countMatches(classFlags,
                 enclosingMethodLayout);
         int[] enclosingMethodRC = decodeBandInt("class_EnclosingMethod_RC", in,
-                Codec.UNSIGNED5, enclosingMethodCount);        
-        int[] enclosingMethodRDN = decodeBandInt("class_EnclosingMethod_RDN", in,
                 Codec.UNSIGNED5, enclosingMethodCount);
-        
+        int[] enclosingMethodRDN = decodeBandInt("class_EnclosingMethod_RDN",
+                in, Codec.UNSIGNED5, enclosingMethodCount);
+
         AttributeLayout signatureLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SIGNATURE,
                 AttributeLayout.CONTEXT_CLASS);
         int signatureCount = SegmentUtils.countMatches(classFlags,
                 signatureLayout);
         int[] classSignature = decodeBandInt("class_Signature_RS", in,
-                Codec.UNSIGNED5, signatureCount);        
+                Codec.UNSIGNED5, signatureCount);
 
-        parseClassMetadataBands();
-        
+        parseClassMetadataBands(in, classAttrCalls);
+
         AttributeLayout innerClassLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_INNER_CLASSES,
                 AttributeLayout.CONTEXT_CLASS);
@@ -356,20 +392,23 @@ public class ClassBands extends BandSet {
                 innerClassLayout);
         int[] classInnerClassesN = decodeBandInt("class_InnerClasses_N", in,
                 Codec.UNSIGNED5, innerClassCount);
-        int[][] classInnerClassesRC = decodeBandInt("class_InnerClasses_RC", in, Codec.UNSIGNED5, classInnerClassesN);
-        int[][] classInnerClassesF = decodeBandInt("class_InnerClasses_F", in, Codec.UNSIGNED5, classInnerClassesN);
+        int[][] classInnerClassesRC = decodeBandInt("class_InnerClasses_RC",
+                in, Codec.UNSIGNED5, classInnerClassesN);
+        int[][] classInnerClassesF = decodeBandInt("class_InnerClasses_F", in,
+                Codec.UNSIGNED5, classInnerClassesN);
         int flagsCount = 0;
         for (int i = 0; i < classInnerClassesF.length; i++) {
             for (int j = 0; j < classInnerClassesF[i].length; j++) {
-                if(classInnerClassesF[i][j] != 0) {
+                if (classInnerClassesF[i][j] != 0) {
                     flagsCount++;
                 }
             }
         }
-        int[] classInnerClassesOuterRCN = decodeBandInt("class_InnerClasses_outer_RCN", in, Codec.UNSIGNED5, flagsCount);
-        int[] classInnerClassesNameRUN = decodeBandInt("class_InnerClasses_name_RUN", in, Codec.UNSIGNED5, flagsCount);
-        
-        
+        int[] classInnerClassesOuterRCN = decodeBandInt(
+                "class_InnerClasses_outer_RCN", in, Codec.UNSIGNED5, flagsCount);
+        int[] classInnerClassesNameRUN = decodeBandInt(
+                "class_InnerClasses_name_RUN", in, Codec.UNSIGNED5, flagsCount);
+
         AttributeLayout versionLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_CLASS_FILE_VERSION,
                 AttributeLayout.CONTEXT_CLASS);
@@ -378,13 +417,15 @@ public class ClassBands extends BandSet {
                 "class_file_version_minor_H", in, Codec.UNSIGNED5, versionCount);
         int[] classFileVersionMajorH = decodeBandInt(
                 "class_file_version_major_H", in, Codec.UNSIGNED5, versionCount);
-        if(versionCount > 0) {
+        if (versionCount > 0) {
             classVersionMajor = new int[classCount];
             classVersionMinor = new int[classCount];
         }
         int defaultVersionMajor = header.getDefaultClassMajorVersion();
         int defaultVersionMinor = header.getDefaultClassMinorVersion();
-        
+
+        // TODO: Parse other attribute bands
+
         // Now process the attribute bands we have parsed
         int sourceFileIndex = 0;
         int enclosingMethodIndex = 0;
@@ -392,31 +433,31 @@ public class ClassBands extends BandSet {
         int innerClassIndex = 0;
         int innerClassC2NIndex = 0;
         int versionIndex = 0;
-        classAttributes = new ArrayList[classCount];
         icLocal = new IcBands.ICTuple[classCount][];
         for (int i = 0; i < classCount; i++) {
-            classAttributes[i] = new ArrayList();
             long flag = classFlags[i];
-            
+
             if (sourceFileLayout.matches(flag)) {
                 long result = classSourceFile[sourceFileIndex];
-                String value = (String) sourceFileLayout.getValue(result, cpBands
-                        .getConstantPool());
-                if(value == null) {
+                String value = (String) sourceFileLayout.getValue(result,
+                        cpBands.getConstantPool());
+                if (value == null) {
                     // Remove package prefix
-                    String className = classThis[i].substring(classThis[i].lastIndexOf('/') + 1);
-                    className = className.substring(className.lastIndexOf('.') + 1);
-                    
+                    String className = classThis[i].substring(classThis[i]
+                            .lastIndexOf('/') + 1);
+                    className = className
+                            .substring(className.lastIndexOf('.') + 1);
+
                     // Remove mangled nested class names
                     char[] chars = className.toCharArray();
                     int index = -1;
                     for (int j = 0; j < chars.length; j++) {
-                        if(chars[j] <= 0x2D) {
+                        if (chars[j] <= 0x2D) {
                             index = j;
                             break;
-                        }                        
+                        }
                     }
-                    if(index > -1) {
+                    if (index > -1) {
                         className = className.substring(0, index);
                     }
                     // Add .java to the end
@@ -425,17 +466,17 @@ public class ClassBands extends BandSet {
                 classAttributes[i].add(new SourceFileAttribute(value));
                 sourceFileIndex++;
             }
-            if(enclosingMethodLayout.matches(flag)) {
-//                long result = 
+            if (enclosingMethodLayout.matches(flag)) {
+                // long result =
             }
-            if(signatureLayout.matches(flag)) {
+            if (signatureLayout.matches(flag)) {
                 long result = classSignature[signatureIndex];
                 Object value = signatureLayout.getValue(result, cpBands
                         .getConstantPool());
                 classAttributes[i].add(new ConstantValueAttribute(value));
                 signatureIndex++;
             }
-            if(innerClassLayout.matches(flag)) {
+            if (innerClassLayout.matches(flag)) {
                 // Just create the tuples for now because the attributes are
                 // decided at the end when creating class constant pools
                 icLocal[i] = new IcBands.ICTuple[classInnerClassesN[innerClassIndex]];
@@ -443,7 +484,7 @@ public class ClassBands extends BandSet {
                     IcBands.ICTuple icTuple = new IcBands.ICTuple();
                     icTuple.C = cpClass[classInnerClassesRC[innerClassIndex][j]];
                     icTuple.F = classInnerClassesF[innerClassIndex][j];
-                    if(icTuple.F != 0) {
+                    if (icTuple.F != 0) {
                         icTuple.C2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
                         icTuple.N = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
                         innerClassC2NIndex++;
@@ -452,7 +493,7 @@ public class ClassBands extends BandSet {
                         IcBands icBands = segment.getIcBands();
                         ICTuple[] icAll = icBands.getIcTuples();
                         for (int k = 0; k < icAll.length; k++) {
-                            if(icAll[k].C.equals(icTuple.C)) {
+                            if (icAll[k].C.equals(icTuple.C)) {
                                 icTuple.C2 = icAll[k].C2;
                                 icTuple.N = icAll[k].N;
                                 break;
@@ -461,13 +502,13 @@ public class ClassBands extends BandSet {
                     }
                     icLocal[i][j] = icTuple;
                 }
-                innerClassIndex++;           
+                innerClassIndex++;
             }
-            if(versionLayout.matches(flag)) {
+            if (versionLayout.matches(flag)) {
                 classVersionMajor[i] = classFileVersionMajorH[versionIndex];
                 classVersionMinor[i] = classFileVersionMinorH[versionIndex];
                 versionIndex++;
-            } else if(classVersionMajor != null) {
+            } else if (classVersionMajor != null) {
                 // Fill in with defaults
                 classVersionMajor[i] = defaultVersionMajor;
                 classVersionMinor[i] = defaultVersionMinor;
@@ -475,7 +516,6 @@ public class ClassBands extends BandSet {
         }
     }
 
-    
     private void parseCodeBands(InputStream in) throws Pack200Exception,
             IOException {
         AttributeLayout layout = attrMap.getAttributeLayout(
@@ -527,56 +567,174 @@ public class ClassBands extends BandSet {
         }
         int sumCodeHandlerCount = 0;
         for (int i = 0; i < codeHandlerCount.length; i++) {
-            sumCodeHandlerCount+= codeHandlerCount[i];
+            sumCodeHandlerCount += codeHandlerCount[i];
         }
-        int[] codeHandlerStartP = decodeBandInt("code_handler_start_P", in, Codec.BCI5, sumCodeHandlerCount);
-        int[] codeHandlerEndPO = decodeBandInt("code_handler_end_PO", in, Codec.BRANCH5, sumCodeHandlerCount);
-        int[] codeHandlerCatchPO = decodeBandInt("code_handler_catch_PO", in, Codec.BRANCH5, sumCodeHandlerCount);
-        int[] codeHandlerClassRCN = decodeBandInt("code_handler_class_RCN", in, Codec.UNSIGNED5, sumCodeHandlerCount);
-        
-        int codeFlagsCount = segment.getSegmentHeader().getOptions().hasAllCodeFlags() ?
-                codeCount : codeSpecialHeader;
+        int[] codeHandlerStartP = decodeBandInt("code_handler_start_P", in,
+                Codec.BCI5, sumCodeHandlerCount);
+        int[] codeHandlerEndPO = decodeBandInt("code_handler_end_PO", in,
+                Codec.BRANCH5, sumCodeHandlerCount);
+        int[] codeHandlerCatchPO = decodeBandInt("code_handler_catch_PO", in,
+                Codec.BRANCH5, sumCodeHandlerCount);
+        int[] codeHandlerClassRCN = decodeBandInt("code_handler_class_RCN", in,
+                Codec.UNSIGNED5, sumCodeHandlerCount);
+
+        int codeFlagsCount = segment.getSegmentHeader().getOptions()
+                .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
+
+        codeAttributes = new ArrayList[codeFlagsCount];
+        for (int i = 0; i < codeAttributes.length; i++) {
+            codeAttributes[i] = new ArrayList();
+        }
         parseCodeAttrBands(in, codeFlagsCount);
     }
 
-    private void parseCodeAttrBands(InputStream in, int codeFlagsCount) throws IOException, Pack200Exception {
-        long[] codeFlags = parseFlags("code_flags", in, codeFlagsCount, Codec.UNSIGNED5, segment.getSegmentHeader().getOptions().hasCodeFlagsHi());
+    private void parseCodeAttrBands(InputStream in, int codeFlagsCount)
+            throws IOException, Pack200Exception {
+        long[] codeFlags = parseFlags("code_flags", in, codeFlagsCount,
+                Codec.UNSIGNED5, segment.getSegmentHeader().getOptions()
+                        .hasCodeFlagsHi());
         int codeAttrCount = SegmentUtils.countBit16(codeFlags);
-        int[] codeAttrCounts = decodeBandInt("code_attr_count", in, Codec.UNSIGNED5, codeAttrCount);
-        int[][] codeAttrIndexes = decodeBandInt("code_attr_indexes", in, Codec.UNSIGNED5, codeAttrCounts);
+        int[] codeAttrCounts = decodeBandInt("code_attr_count", in,
+                Codec.UNSIGNED5, codeAttrCount);
+        int[][] codeAttrIndexes = decodeBandInt("code_attr_indexes", in,
+                Codec.UNSIGNED5, codeAttrCounts);
         int callCount = 0;
         for (int i = 0; i < codeAttrIndexes.length; i++) {
             for (int j = 0; j < codeAttrIndexes[i].length; j++) {
                 int index = codeAttrIndexes[i][j];
-                AttributeLayout layout = attrMap.getAttributeLayout(index, AttributeLayout.CONTEXT_CODE);
+                AttributeLayout layout = attrMap.getAttributeLayout(index,
+                        AttributeLayout.CONTEXT_CODE);
                 callCount += layout.numBackwardsCallables();
             }
         }
-        int[] codeAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5, callCount);
-       
-        int lineNumberTableCount = SegmentUtils.countMatches(codeFlags, attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_LINE_NUMBER_TABLE, AttributeLayout.CONTEXT_CODE));
-        int[] lineNumberTableN = decodeBandInt("code_LineNumberTable_N", in, Codec.UNSIGNED5, lineNumberTableCount);
-        int[][] lineNumberTableBciP = decodeBandInt("code_LineNumberTable_bci_P", in, Codec.BCI5, lineNumberTableN);
-        int[][] lineNumberTableLine = decodeBandInt("code_LineNumberTable_line", in, Codec.UNSIGNED5, lineNumberTableN);
-        String[] types = { AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TABLE, AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TYPE_TABLE };
-        for (int i = 0; i < types.length; i++) {
-            String type = types[i];
-            int lengthNBand = SegmentUtils.countMatches(codeFlags, attrMap.getAttributeLayout(type, AttributeLayout.CONTEXT_CODE));
-            
-            int[] nBand = decodeBandInt("code_" + type + "_N", in, Codec.UNSIGNED5, lengthNBand);
-            int[][] bciP = decodeBandInt("code_" + type + "_bci_P", in, Codec.BCI5, nBand);
-            int[][] spanO = decodeBandInt("code_" + type + "_span_O", in, Codec.BRANCH5, nBand);
-            String[][] nameRU = parseReferences("code_" + type + "_name_RU", in, Codec.UNSIGNED5, nBand, cpBands.getCpUTF8());
-            String[][] typeRS = parseReferences("code_" + type + "_type_RS", in, Codec.UNSIGNED5, nBand, cpBands.getCpSignature());
-            int[][] slot = decodeBandInt("code_" + type + "_slot", in, Codec.UNSIGNED5, nBand);
+        int[] codeAttrCalls = decodeBandInt("code_attr_calls", in,
+                Codec.UNSIGNED5, callCount);
+
+        AttributeLayout lineNumberTableLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_LINE_NUMBER_TABLE,
+                AttributeLayout.CONTEXT_CODE);
+        int lineNumberTableCount = SegmentUtils.countMatches(codeFlags,
+                lineNumberTableLayout);
+        int[] lineNumberTableN = decodeBandInt("code_LineNumberTable_N", in,
+                Codec.UNSIGNED5, lineNumberTableCount);
+        int[][] lineNumberTableBciP = decodeBandInt(
+                "code_LineNumberTable_bci_P", in, Codec.BCI5, lineNumberTableN);
+        int[][] lineNumberTableLine = decodeBandInt(
+                "code_LineNumberTable_line", in, Codec.UNSIGNED5,
+                lineNumberTableN);
+
+        AttributeLayout localVariableTableLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TABLE,
+                AttributeLayout.CONTEXT_CODE);
+        AttributeLayout localVariableTypeTableLayout = attrMap
+                .getAttributeLayout(
+                        AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TYPE_TABLE,
+                        AttributeLayout.CONTEXT_CODE);
+        
+        int lengthLocalVariableNBand = SegmentUtils.countMatches(codeFlags,
+                localVariableTableLayout);
+        int[] localVariableTableN = decodeBandInt("code_LocalVariableTable_N",
+                in, Codec.UNSIGNED5, lengthLocalVariableNBand);
+        int[][] localVariableTableBciP = decodeBandInt(
+                "code_LocalVariableTable_bci_P", in, Codec.BCI5,
+                localVariableTableN);
+        int[][] localVariableTableSpanO = decodeBandInt(
+                "code_LocalVariableTable_span_O", in, Codec.BRANCH5,
+                localVariableTableN);
+        CPUTF8[][] localVariableTableNameRU = stringsToCPUTF8(parseReferences(
+                "code_LocalVariableTable_name_RU", in, Codec.UNSIGNED5,
+                localVariableTableN, cpBands.getCpUTF8()));
+        CPUTF8[][] localVariableTableTypeRS = stringsToCPUTF8(parseReferences(
+                "code_LocalVariableTable_type_RS", in, Codec.UNSIGNED5,
+                localVariableTableN, cpBands.getCpSignature()));
+        int[][] localVariableTableSlot = decodeBandInt(
+                "code_LocalVariableTable_slot", in, Codec.UNSIGNED5,
+                localVariableTableN);
+
+        int lengthLocalVariableTypeTableNBand = SegmentUtils.countMatches(
+                codeFlags, localVariableTypeTableLayout);
+        int[] localVariableTypeTableN = decodeBandInt(
+                "code_LocalVariableTypeTable_N", in, Codec.UNSIGNED5,
+                lengthLocalVariableTypeTableNBand);
+        int[][] localVariableTypeTableBciP = decodeBandInt(
+                "code_LocalVariableTypeTable_bci_P", in, Codec.BCI5,
+                localVariableTypeTableN);
+        int[][] localVariableTypeTableSpanO = decodeBandInt(
+                "code_LocalVariableTypeTable_span_O", in, Codec.BRANCH5,
+                localVariableTypeTableN);
+        CPUTF8[][] localVariableTypeTableNameRU = stringsToCPUTF8(parseReferences(
+                "code_LocalVariableTypeTable_name_RU", in, Codec.UNSIGNED5,
+                localVariableTypeTableN, cpBands.getCpUTF8()));
+        CPUTF8[][] localVariableTypeTableTypeRS = stringsToCPUTF8(parseReferences(
+                "code_LocalVariableTypeTable_type_RS", in, Codec.UNSIGNED5,
+                localVariableTypeTableN, cpBands.getCpSignature()));
+        int[][] localVariableTypeTableSlot = decodeBandInt(
+                "code_LocalVariableTypeTable_slot", in, Codec.UNSIGNED5,
+                localVariableTypeTableN);
+
+        int lineNumberIndex = 0;
+        int lvtIndex = 0;
+        int lvttIndex = 0;
+        for (int i = 0; i < codeFlagsCount; i++) {
+            if (lineNumberTableLayout.matches(codeFlags[i])) {
+                LineNumberTableAttribute lnta = new LineNumberTableAttribute(
+                        lineNumberTableN[lineNumberIndex],
+                        lineNumberTableBciP[lineNumberIndex],
+                        lineNumberTableLine[lineNumberIndex]);
+                lineNumberIndex++;
+                codeAttributes[i].add(lnta);
+            }
+            if (localVariableTableLayout.matches(codeFlags[i])) {
+                LocalVariableTableAttribute lvta = new LocalVariableTableAttribute(
+                        localVariableTableN[lvtIndex],
+                        localVariableTableBciP[lvtIndex],
+                        localVariableTableSpanO[lvtIndex],
+                        localVariableTableNameRU[lvtIndex],
+                        localVariableTableTypeRS[lvtIndex],
+                        localVariableTableSlot[lvtIndex]);
+                lvtIndex++;
+                codeAttributes[i].add(lvta);
+            }
+            if (localVariableTypeTableLayout.matches(codeFlags[i])) {
+                LocalVariableTypeTableAttribute lvtta = new LocalVariableTypeTableAttribute(
+                        localVariableTypeTableN[lvttIndex],
+                        localVariableTypeTableBciP[lvttIndex],
+                        localVariableTypeTableSpanO[lvttIndex],
+                        localVariableTypeTableNameRU[lvttIndex],
+                        localVariableTypeTableTypeRS[lvttIndex],
+                        localVariableTypeTableSlot[lvttIndex]);
+                lvttIndex++;
+                codeAttributes[i].add(lvtta);
+            }
         }
+        // TODO: Parse other attribute bands
     }
 
+    private CPUTF8[][] stringsToCPUTF8(String[][] strings) {
+        CPUTF8[][] cpUTF8s = new CPUTF8[strings.length][];
+        for (int i = 0; i < strings.length; i++) {
+            cpUTF8s[i] = new CPUTF8[strings[i].length];
+            for (int j = 0; j < strings[i].length; j++) {
+                cpUTF8s[i][j] = new CPUTF8(strings[i][j]);
+            }
+        }
+        return cpUTF8s;
+    }
+    
 
 
-    private void parseFieldMetadataBands() throws Pack200Exception {
+    private CPUTF8[] stringsToCPUTF8(String[] strings) {
+        CPUTF8[] cpUTF8s = new CPUTF8[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            cpUTF8s[i] = new CPUTF8(strings[i]);
+        }
+        return cpUTF8s;
+    }
+
+    private void parseFieldMetadataBands(InputStream in, int[] fieldAttrCalls)
+            throws Pack200Exception, IOException {
         String[] RxA = new String[] { "RVA", "RIA" };
-        
+
         AttributeLayout rvaLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
                 AttributeLayout.CONTEXT_FIELD);
@@ -586,45 +744,143 @@ public class ClassBands extends BandSet {
 
         int rvaCount = SegmentUtils.countMatches(fieldFlags, rvaLayout);
         int riaCount = SegmentUtils.countMatches(fieldFlags, riaLayout);
-        if (rvaCount > 0 || riaCount > 0) {
-            throw new Error("Field metadata not handled");
+        int[] RxACount = new int[] { rvaCount, riaCount };
+        int[] backwardsCalls = new int[] {0, 0};
+        if(rvaCount > 0) {
+            backwardsCalls[0] = fieldAttrCalls[0];
+            if(riaCount > 0) {
+                backwardsCalls[1] = fieldAttrCalls[1];
+            }
+        } else if (riaCount > 0) {
+            backwardsCalls[1] = fieldAttrCalls[0];
         }
-
-        // AttributeLayout layout =
-        // map.get(RuntimeVisibleAnnotations,class/field/method as int)
-        // foreachheader ...
-        // if layout.matches(header[n] or whatever)
-        String contextName = "field";
-        for (int i = 0; i < RxA.length; i++) {
-            String rxa = RxA[i];
-            if (rxa.indexOf("P") >= 0) {
-                debug("unimplemented " + contextName + "_" + rxa + "_param_NB");
+        MetadataBandGroup[] mb = parseMetadata(in, RxA, RxACount, backwardsCalls, "field");
+        Iterator rvaAttributesIterator = mb[0].getAttributes().iterator();
+        Iterator riaAttributesIterator = mb[1].getAttributes().iterator();
+        for (int i = 0; i < fieldFlags.length; i++) {
+            for (int j = 0; j < fieldFlags[i].length; j++) {                
+                if(rvaLayout.matches(fieldFlags[i][j])) {
+                    fieldAttributes[i][j].add(rvaAttributesIterator.next());
+                }
+                if(riaLayout.matches(fieldFlags[i][j])) {
+                    fieldAttributes[i][j].add(riaAttributesIterator.next());
+                }
             }
-            if (!rxa.equals("AD")) {
-                debug("unimplemented " + contextName + "_" + rxa + "_anno_N");
-                debug("unimplemented " + contextName + "_" + rxa + "_type_RS");
-                debug("unimplemented " + contextName + "_" + rxa + "_pair_N");
-                debug("unimplemented " + contextName + "_" + rxa + "_name_RU");
-            }
-            debug("unimplemented " + contextName + "_" + rxa + "_T");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseI_KI");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseD_KD");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseF_KF");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseJ_KJ");
-            debug("unimplemented " + contextName + "_" + rxa + "_casec_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseet_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseec_RU");
-            debug("unimplemented " + contextName + "_" + rxa + "_cases_RU");
-            debug("unimplemented " + contextName + "_" + rxa + "_casearray_N");
-            debug("unimplemented " + contextName + "_" + rxa + "_nesttype_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_nestpair_N");
-            debug("unimplemented " + contextName + "_" + rxa + "_nestname_RU");
         }
     }
 
-    private void parseMethodMetadataBands() throws Pack200Exception {
+    private MetadataBandGroup[] parseMetadata(InputStream in, String[] RxA, int[] RxACount,
+            int[] backwardsCallCounts, String contextName) throws IOException, Pack200Exception {
+        MetadataBandGroup[] mbg = new MetadataBandGroup[RxA.length];
+        for (int i = 0; i < RxA.length; i++) {
+            mbg[i] = new MetadataBandGroup(RxA[i]);
+            String rxa = RxA[i];
+            if (rxa.indexOf("P") >= 0) {
+                mbg[i].param_NB = decodeBandInt(contextName + "_" + rxa
+                        + "_param_NB", in, Codec.BYTE1, RxACount[i]);
+            }
+            int pairCount = 0;
+            if (!rxa.equals("AD")) {
+                mbg[i].anno_N = decodeBandInt(contextName + "_" + rxa
+                        + "_anno_N", in, Codec.UNSIGNED5, RxACount[i]);
+                mbg[i].type_RS = stringsToCPUTF8(parseReferences(contextName + "_" + rxa
+                        + "_type_RS", in, Codec.UNSIGNED5, mbg[i].anno_N, cpBands.getCpSignature()));
+                mbg[i].pair_N = decodeBandInt(contextName + "_" + rxa
+                        + "_pair_N", in, Codec.UNSIGNED5, mbg[i].anno_N);
+                for (int j = 0; j < mbg[i].pair_N.length; j++) {
+                    for (int k = 0; k < mbg[i].pair_N[j].length; k++) {
+                        pairCount += mbg[i].pair_N[j][k];
+                    }
+                }
+                
+                mbg[i].name_RU = stringsToCPUTF8(parseReferences(contextName + "_" + rxa
+                        + "_name_RU", in, Codec.UNSIGNED5, pairCount, cpBands.getCpUTF8()));
+            }
+            mbg[i].T = decodeBandInt(contextName + "_" + rxa + "_T", in,
+                    Codec.BYTE1, pairCount + backwardsCallCounts[i]);
+            int ICount = 0, DCount = 0, FCount = 0, JCount = 0, cCount = 0, eCount = 0, sCount = 0, arrayCount = 0, atCount = 0;
+            for (int j = 0; j < mbg[i].T.length; j++) {
+                char c = (char) mbg[i].T[j];
+                switch (c) {
+                case 'B':
+                case 'C':
+                case 'I':
+                case 'S':
+                case 'Z':
+                    ICount++;
+                    break;
+                case 'D':
+                    DCount++;
+                    break;
+                case 'F':
+                    FCount++;
+                    break;
+                case 'J':
+                    JCount++;
+                    break;
+                case 'c':
+                    cCount++;
+                    break;
+                case 'e':
+                    eCount++;
+                    break;
+                case 's':
+                    sCount++;
+                    break;
+                case '[':
+                    arrayCount++;
+                    break;
+                case '@':
+                    atCount++;
+                    break;
+                }
+            }
+            mbg[i].caseI_KI = parseCPIntReferences(contextName + "_" + rxa
+                    + "_caseI_KI", in, Codec.UNSIGNED5, ICount);
+            mbg[i].caseD_KD = parseCPDoubleReferences(contextName + "_" + rxa
+                    + "_caseD_KD", in, Codec.UNSIGNED5, DCount);
+            mbg[i].caseF_KF = parseCPFloatReferences(contextName + "_" + rxa
+                    + "_caseF_KF", in, Codec.UNSIGNED5, FCount);
+            mbg[i].caseJ_KJ = parseCPLongReferences(contextName + "_" + rxa
+                    + "_caseJ_KJ", in, Codec.UNSIGNED5, JCount);
+            mbg[i].casec_RS = parseCPUTF8References(contextName + "_" + rxa
+                    + "_casec_RS", in, Codec.UNSIGNED5, cCount);
+            mbg[i].caseet_RS = parseReferences(contextName + "_" + rxa
+                    + "_caseet_RS", in, Codec.UNSIGNED5, eCount, cpBands.getCpSignature());
+            mbg[i].caseec_RU = parseReferences(contextName + "_" + rxa
+                    + "_caseec_RU", in, Codec.UNSIGNED5, eCount, cpBands.getCpUTF8());
+            mbg[i].cases_RU = parseCPUTF8References(contextName + "_" + rxa
+                    + "_cases_RU", in, Codec.UNSIGNED5, sCount);
+            mbg[i].casearray_N = decodeBandInt(contextName + "_" + rxa
+                    + "_casearray_N", in, Codec.UNSIGNED5, arrayCount);
+            mbg[i].nesttype_RS = parseCPUTF8References(contextName + "_" + rxa
+                    + "_nesttype_RS", in, Codec.UNSIGNED5, atCount);
+            mbg[i].nestpair_N = decodeBandInt(contextName + "_" + rxa
+                    + "_nestpair_N", in, Codec.UNSIGNED5, atCount);
+            int nestPairCount = 0;
+            for (int j = 0; j < mbg[i].nestpair_N.length; j++) {
+                nestPairCount += mbg[i].nestpair_N[j];
+            }
+            mbg[i].nestname_RU = parseCPUTF8References(contextName + "_" + rxa
+                    + "_nestname_RU", in, Codec.UNSIGNED5, nestPairCount);
+        }
+        return mbg;
+    }
+
+    private void parseMethodMetadataBands(InputStream in, int[] methodAttrCalls)
+            throws Pack200Exception, IOException {
         String[] RxA = new String[] { "RVA", "RIA", "RVPA", "RIPA", "AD" };
         int[] rxaCounts = new int[] { 0, 0, 0, 0, 0 };
+        int[] backwardsCalls = new int[5];
+        int methodAttrIndex = 0;
+        for (int i = 0; i < backwardsCalls.length; i++) {
+            if(rxaCounts[i] > 0) {
+                backwardsCalls[i] = methodAttrCalls[methodAttrIndex];
+                methodAttrIndex++;
+            } else {
+                backwardsCalls[i] = 0;
+            }
+        }
         AttributeLayout rvaLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_RUNTIME_VISIBLE_ANNOTATIONS,
                 AttributeLayout.CONTEXT_METHOD);
@@ -646,45 +902,26 @@ public class ClassBands extends BandSet {
                 riaLayout, rvpaLayout, ripaLayout, adLayout };
 
         for (int i = 0; i < rxaLayouts.length; i++) {
-            rxaCounts[i] = SegmentUtils.countMatches(methodFlags, rxaLayouts[i]);
-            if (rxaCounts[i] > 0) {
-                throw new Error("Found method metadata");
-            }
+            rxaCounts[i] = SegmentUtils
+                    .countMatches(methodFlags, rxaLayouts[i]);
         }
-
-        // AttributeLayout layout =
-        // map.get(RuntimeVisibleAnnotations,class/field/method as int)
-        // foreachheader ...
-        // if layout.matches(header[n] or whatever)
-        String contextName = "method";
-        for (int i = 0; i < RxA.length; i++) {
-            String rxa = RxA[i];
-            if (rxa.indexOf("P") >= 0) {
-                debug("unimplemented " + contextName + "_" + rxa + "_param_NB");
+        MetadataBandGroup[] mbgs = parseMetadata(in, RxA, rxaCounts, backwardsCalls, "method");
+        Iterator[] attributeIterators = new Iterator[RxA.length];
+        for (int i = 0; i < mbgs.length; i++) {
+            attributeIterators[i] = mbgs[i].getAttributes().iterator();
+        }
+        for (int i = 0; i < methodFlags.length; i++) {
+            for (int j = 0; j < methodFlags[i].length; j++) {
+                for (int k = 0; k < rxaLayouts.length; k++) {
+                    if(rxaLayouts[k].matches(methodFlags[i][j])) {
+                        methodAttributes[i][j].add(attributeIterators[k].next());
+                    }
+                }
             }
-            if (!rxa.equals("AD")) {
-                debug("unimplemented " + contextName + "_" + rxa + "_anno_N");
-                debug("unimplemented " + contextName + "_" + rxa + "_type_RS");
-                debug("unimplemented " + contextName + "_" + rxa + "_pair_N");
-                debug("unimplemented " + contextName + "_" + rxa + "_name_RU");
-            }
-            debug("unimplemented " + contextName + "_" + rxa + "_T");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseI_KI");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseD_KD");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseF_KF");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseJ_KJ");
-            debug("unimplemented " + contextName + "_" + rxa + "_casec_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseet_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseec_RU");
-            debug("unimplemented " + contextName + "_" + rxa + "_cases_RU");
-            debug("unimplemented " + contextName + "_" + rxa + "_casearray_N");
-            debug("unimplemented " + contextName + "_" + rxa + "_nesttype_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_nestpair_N");
-            debug("unimplemented " + contextName + "_" + rxa + "_nestname_RU");
         }
     }
 
-    private void parseClassMetadataBands() throws Pack200Exception {
+    private void parseClassMetadataBands(InputStream in, int[] classAttrCalls) throws Pack200Exception, IOException {
         String[] RxA = new String[] { "RVA", "RIA" };
 
         AttributeLayout rvaLayout = attrMap.getAttributeLayout(
@@ -695,38 +932,26 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_CLASS);
         int rvaCount = SegmentUtils.countMatches(classFlags, rvaLayout);
         int riaCount = SegmentUtils.countMatches(classFlags, riaLayout);
-        if (rvaCount > 0 || riaCount > 0) {
-            throw new Error("Class metadata not handled");
+        int[] RxACount = new int[] { rvaCount, riaCount };
+        int[] backwardsCalls = new int[] {0, 0};
+        if(rvaCount > 0) {
+            backwardsCalls[0] = classAttrCalls[0];
+            if(riaCount > 0) {
+                backwardsCalls[1] = classAttrCalls[1];
+            }
+        } else if (riaCount > 0) {
+            backwardsCalls[1] = classAttrCalls[0];
         }
-        // AttributeLayout layout =
-        // map.get(RuntimeVisibleAnnotations,class/field/method as int)
-        // foreachheader ...
-        // if layout.matches(header[n] or whatever)
-        String contextName = "class";
-        for (int i = 0; i < RxA.length; i++) {
-            String rxa = RxA[i];
-            if (rxa.indexOf("P") >= 0) {
-                debug("unimplemented " + contextName + "_" + rxa + "_param_NB");
+        MetadataBandGroup[] mbgs = parseMetadata(in, RxA, RxACount, backwardsCalls, "class");
+        Iterator rvaAttributesIterator = mbgs[0].getAttributes().iterator();
+        Iterator riaAttributesIterator = mbgs[1].getAttributes().iterator();
+        for (int i = 0; i < classFlags.length; i++) {
+            if(rvaLayout.matches(classFlags[i])) {
+                classAttributes[i].add(rvaAttributesIterator.next());
             }
-            if (!rxa.equals("AD")) {
-                debug("unimplemented " + contextName + "_" + rxa + "_anno_N");
-                debug("unimplemented " + contextName + "_" + rxa + "_type_RS");
-                debug("unimplemented " + contextName + "_" + rxa + "_pair_N");
-                debug("unimplemented " + contextName + "_" + rxa + "_name_RU");
+            if(riaLayout.matches(classFlags[i])) {
+                classAttributes[i].add(riaAttributesIterator.next());
             }
-            debug("unimplemented " + contextName + "_" + rxa + "_T");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseI_KI");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseD_KD");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseF_KF");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseJ_KJ");
-            debug("unimplemented " + contextName + "_" + rxa + "_casec_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseet_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_caseec_RU");
-            debug("unimplemented " + contextName + "_" + rxa + "_cases_RU");
-            debug("unimplemented " + contextName + "_" + rxa + "_casearray_N");
-            debug("unimplemented " + contextName + "_" + rxa + "_nesttype_RS");
-            debug("unimplemented " + contextName + "_" + rxa + "_nestpair_N");
-            debug("unimplemented " + contextName + "_" + rxa + "_nestname_RU");
         }
     }
 

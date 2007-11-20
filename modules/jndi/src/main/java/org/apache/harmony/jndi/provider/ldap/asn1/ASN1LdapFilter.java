@@ -19,6 +19,7 @@ package org.apache.harmony.jndi.provider.ldap.asn1;
 
 import java.io.IOException;
 
+import org.apache.harmony.jndi.provider.ldap.Filter;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1ChoiceWrap.ChosenValue;
 import org.apache.harmony.security.asn1.ASN1Choice;
 import org.apache.harmony.security.asn1.ASN1Type;
@@ -52,11 +53,14 @@ public class ASN1LdapFilter extends ASN1Type {
         if (type == null) {
             type = (ASN1Choice) LdapASN1Constant.Filter;
         }
-        ChosenValue chosen = (ChosenValue) out.content;
-        int index = chosen.getIndex();
-        byte[] bytes = type.type[index].encode(chosen.getValue());
-        out.content = bytes;
-        out.length = bytes.length;
+        // has not been decoded
+        if (!(out.content instanceof byte[])) {
+            ChosenValue chosen = (ChosenValue) out.content;
+            int index = chosen.getIndex();
+            byte[] bytes = type.type[index].encode(chosen.getValue());
+            out.content = bytes;
+            out.length = bytes.length;
+        }
         // TODO: Any way better to do this(append out.content to out.encoded)?
         out.encodeString();
     }
@@ -69,8 +73,24 @@ public class ASN1LdapFilter extends ASN1Type {
 
     @Override
     public void setEncodingContent(BerOutputStream out) {
-        // FIXME: do nothing if never be called
-        throw new RuntimeException();
+        if (type == null) {
+            type = (ASN1Choice) LdapASN1Constant.Filter;
+        }
+
+        ChosenValue chosen = null;
+        if (out.content instanceof Filter) {
+            Object[] values = new Object[1];
+            ((Filter) out.content).encodeValues(values);
+            chosen = (ChosenValue) values[0];
+        } else {
+            chosen = (ChosenValue) out.content;
+        }
+
+        int index = chosen.getIndex();
+        byte[] bytes = type.type[index].encode(chosen.getValue());
+
+        out.content = bytes;
+        out.length = bytes.length;
     }
 
 }

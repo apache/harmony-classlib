@@ -29,7 +29,7 @@ public class AddOpTest extends TestCase {
 
         ASN1TestUtils.checkEncode(op.getRequest(), LdapASN1Constant.AddRequest);
 
-        LdapAttribute attr = new LdapAttribute("attr1");
+        LdapAttribute attr = new LdapAttribute("attr1", null);
 
         op.addAttribute(attr);
         ASN1TestUtils.checkEncode(op.getRequest(), LdapASN1Constant.AddRequest);

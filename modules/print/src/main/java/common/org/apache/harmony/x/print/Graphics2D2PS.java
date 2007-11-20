@@ -14,179 +14,130 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Igor A. Pyankov 
- * @version $Revision: 1.2 $ 
- */ 
 
 package org.apache.harmony.x.print;
 
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
-import java.awt.Paint;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.RenderingHints.Key;
-import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
+import java.awt.print.PageFormat;
 import java.io.PrintStream;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.Date;
-import java.util.Map;
 
-/*
- * Graphics2D2PS
- *  
- */
-public class Graphics2D2PS extends Graphics2D {
-    
-    private Color color;
-    private Color bgcolor;
-    private Color XORcolor; 
-    private Paint paint; 
-    private Font font;    
-    private PrintStream out_stream;
-    
-    static double const1 = 842; // 11.7"
-    static double yscale = 1;
-    
-    private static int convY (int y){      
-        return (int)(const1*yscale)- y ;        
-    }
-   
-    public void setY(int y){
-        const1 = (double)y;
-    }
-           
-    private static String threebytes2Hex (int b){
-        
-        char [] hex = {'0', '1', '2', '3', '4', '5', '6', '7',
-                       '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-        
-        char [] ret = new char[6];
-        
-            for (int i = 0; i < 6; i++){
-                ret[5-i] = hex[b & 0x0F];
-                b = b >> 4;
-        }
-        return new  String(ret);
-    }   
-            
-    public Graphics2D2PS(PrintStream stream, double height) {              
+import org.apache.harmony.awt.gl.CommonGraphics2D;
+
+public class Graphics2D2PS extends CommonGraphics2D {
+
+    private static final Font DEF_FONT = new Font("Courier", Font.PLAIN, 12); //$NON-NLS-1$
+
+    private final PrintStream out_stream;
+    private final PageFormat  format;
+    private final Rectangle   defaultClip;
+    private double            yscale   = 1;
+
+    public Graphics2D2PS(final PrintStream stream, final PageFormat format) {
         super();
         if (stream == null) {
-            throw new IllegalArgumentException("stream is null");
-        }          
-        out_stream = stream;
-        font = new Font("Courier", Font.PLAIN, 12);
-        color = Color.BLACK;
-        bgcolor = Color.WHITE;
-        yscale = 1;
-        const1 = height;
-        out_stream.println("%!PS-Adobe");
-        out_stream.println("%%Title: Java printJob");
-        out_stream.println("%%Creator: Intel(tm) java printing ");
-        out_stream.println("%%CreationDate: " + new Date());
-        out_stream.println("%%EndComments"); 
-    }
-    
-    public Graphics2D2PS(PrintStream stream) {    
-        this(stream, 842D);   
-    }   
+            throw new IllegalArgumentException("stream is null"); //$NON-NLS-1$
+        }
 
-    public void finish(){       
-        out_stream.println("%%EOF");   
+        out_stream = stream;
+        this.format = format != null ? format : new PageFormat();
+        defaultClip = new Rectangle((int) this.format.getImageableX(),
+                        (int) this.format.getImageableY(), (int) this.format
+                                        .getImageableWidth(), (int) this.format
+                                        .getImageableHeight());
+        PS.printHeader(stream);
+        resetGraphics();
+        setColor(fgColor);
+        setFont(DEF_FONT);
+        setClip(defaultClip);
+        ps(PS.gsave);
+    }
+
+    public Graphics2D2PS(final PrintStream stream) {
+        this(stream, null);
+    }
+
+    public void finish() {
+        PS.printFooter(out_stream);
         out_stream.close();
     }
 
-    public void startPage(int number){
-        out_stream.println("%%Page: " + number + " " + number);
+    public void startPage(final int number) {
+        ps(PS.comment, "Page: " + number + " " + number); //$NON-NLS-1$ //$NON-NLS-2$
+        ps(PS.grestore);
+        resetGraphics();
     }
-    
-    public void endOfPage(int number){
-        out_stream.println("showpage");
-        out_stream.println("%%EndPage: " + number + " " + number);
+
+    public void endOfPage(final int number) {
+        ps(PS.showpage);
+        ps(PS.comment, "EndPage: " + number + " " + number); //$NON-NLS-1$ //$NON-NLS-2$
     }
-         
-    /* drawImage-s */    
-    public boolean drawImage(Image image, int x, int y,
-            ImageObserver imageObserver) {
+
+    public boolean drawImage(final Image image, final int x, final int y,
+                    final ImageObserver imageObserver) {
         drawImage(image, x, convY(y));
         return true;
-    }   
-  
-    public boolean drawImage(Image image, int x, int y, int width, int height,
-            ImageObserver imageObserver) {
-        float w;
-        float h;         
-        BufferedImage imageGIF = (BufferedImage) image;
-        w = (float)imageGIF.getWidth();
-        h = (float)imageGIF.getHeight();       
-        drawImage(image, x, convY(y), true, ((float)width)/w , ((float)height)/h);
+    }
+
+    public boolean drawImage(final Image image, final int x, final int y,
+                    final int width, final int height,
+                    final ImageObserver imageObserver) {
+        final BufferedImage imageGIF = (BufferedImage) image;
+        final float w = (float) imageGIF.getWidth();
+        final float h = (float) imageGIF.getHeight();
+
+        drawImage(image, x, convY(y), true, ((float) width) / w,
+                        ((float) height) / h);
         return true;
     }
-        
-    public boolean drawImage(Image image, int x, int y, Color bbgcolor,
-            ImageObserver imageObserver) {
-        int iw;
-        int ih;
-        Color cur_color;
-        
-        BufferedImage imageGIF = (BufferedImage) image;
-        cur_color = getColor();
+
+    public boolean drawImage(final Image image, final int x, final int y,
+                    final Color bbgcolor, final ImageObserver imageObserver) {
+        final BufferedImage imageGIF = (BufferedImage) image;
+        final int iw = imageGIF.getWidth();
+        final int ih = imageGIF.getHeight();
+        final Color cur_color = getColor();
+
         setColor(bbgcolor);
-        
-        iw = imageGIF.getWidth();
-        ih = imageGIF.getHeight();               
         fillRect(x, y, iw, ih);
         setColor(cur_color);
-        
         drawImage(image, x, convY(y));
         return true;
     }
-    
-    
-    public boolean drawImage(Image image, int x, int y, int width, int height,
-            Color bbgcolor, ImageObserver imageObserver) {
-        float w;
-        float h;
-        Color cur_color;
 
-        cur_color = getColor();
-        setColor(bbgcolor);        
+    public boolean drawImage(final Image image, final int x, final int y,
+                    final int width, final int height, final Color bbgcolor,
+                    final ImageObserver imageObserver) {
+        final BufferedImage imageGIF = (BufferedImage) image;
+        final float w = (float) imageGIF.getWidth();
+        final float h = (float) imageGIF.getHeight();
+        final Color cur_color = getColor();
+
+        setColor(bbgcolor);
         fillRect(x, y, width, height);
         setColor(cur_color);
-        
-        BufferedImage imageGIF = (BufferedImage) image;
-        w = (float)imageGIF.getWidth();
-        h = (float)imageGIF.getHeight();
-        
-        drawImage(image, x, convY(y), true, ((float)width)/w , ((float)height)/h);
+        drawImage(image, x, convY(y), true, ((float) width) / w,
+                        ((float) height) / h);
         return true;
     }
-     
-    
-    public boolean drawImage(Image image, 
-            int dx1, int dy1, int dx2, int dy2,
-            int sx1, int sy1, int sx2, int sy2, 
-            ImageObserver imageObserver) {
-        
+
+    public boolean drawImage(Image image, int dx1, int dy1, int dx2, int dy2,
+                    int sx1, int sy1, int sx2, int sy2,
+                    ImageObserver imageObserver) {
         int sx;
         int sy;
         int width;
@@ -197,10 +148,9 @@ public class Graphics2D2PS extends Graphics2D {
         int comp;
         BufferedImage newImage;
         BufferedImage imageGIF;
-        
-        /* this method have to be improved to flip image 
-         * if dx2 < dx1 or dy2 <dy1
-         */     
+
+        // TODO: this method have to be improved to flip image if dx2 < dx1 or
+        // dy2<dy1
         if (dx2 < dx1) {
             d = dx2;
             dx2 = dx1;
@@ -212,577 +162,542 @@ public class Graphics2D2PS extends Graphics2D {
             dy1 = d;
         }
         dx = dx2 - dx1 + 1;
-        dy = dy2 - dy1 + 1;       
-        
+        dy = dy2 - dy1 + 1;
+
         imageGIF = (BufferedImage) image;
         width = imageGIF.getWidth();
-        height = imageGIF.getHeight();       
-        if (dx2 > width || dy2 > height){
+        height = imageGIF.getHeight();
+        if (dx2 > width || dy2 > height) {
             return false;
         }
-        newImage = new BufferedImage(dx, dy, BufferedImage.TYPE_INT_ARGB);  
-        
+        newImage = new BufferedImage(dx, dy, BufferedImage.TYPE_INT_ARGB);
+
         sy = 0;
         for (int iy = dy1; iy <= dy2; iy++) {
             sx = 0;
-            for (int ix = dx1; ix <= dx2; ix++) {   
+            for (int ix = dx1; ix <= dx2; ix++) {
                 comp = imageGIF.getRGB(ix, iy);
-                newImage.setRGB(sx++, sy, comp);              
-            } 
-            sy++;                
-        }        
-        drawImage(newImage, sx1, sy1, sx2 - sx1 + 1, sy2 - sy1 + 1, null);
-        
-        return true;         
-    }
-    
-    public boolean drawImage(Image image, 
-            int dx1, int dy1, int dx2, int dy2,
-            int sx1, int sy1, int sx2, int sy2, 
-            Color bbgcolor, ImageObserver imageObserver) {
-        
-        Color cur_color;
-        cur_color = getColor();
-        setColor(bbgcolor);        
-        fillRect( sx1, sy1, sx2 - sx1 + 1, sy2 - sy1 + 1);
-        setColor(cur_color);
-        
-        return drawImage(image, 
-                dx1, dy1, dx2, dy2,
-                sx1, sy1, sx2, sy2, 
-                imageObserver); 
-        
-    }
-
-    /* method have to be implemented*/
-    public boolean drawImage(Image image, AffineTransform transform,
-            ImageObserver imageObserver) {
-        return true;        
-    }    
-    
-    /* method have to be implemented*/     
-    public void drawImage(BufferedImage image, BufferedImageOp arg1, 
-            int arg2, int arg3) {       
-    }
-    
-    
-    /*
-     * common private methods for drawImage methods.  
-     */    
-    private void drawImage(Image image, int x, int y) {
-         drawImage(image, x, y, false, 0f, 0f);     
-    }       
-
-    private void drawImage(Image image, int x, int y, boolean scale,
-            float sx, float sy) {
-        int line = 0;
-        int comp;
-        int imageHeight;
-        int imageWidth;
-        BufferedImage imageGIF;
-        
-        if (image != null) {
-            imageHeight = image.getHeight(null);
-            imageWidth = image.getWidth(null);           
-            imageGIF = (BufferedImage) image;          
-           
-            out_stream.println("");
-            out_stream.println(x + " " + y + " translate");  
-            if (scale){
-                out_stream.println(sx + " " + sy + " scale");               
+                newImage.setRGB(sx++, sy, comp);
             }
-            out_stream.print(imageWidth + " ");
-            out_stream.println(imageHeight + " 8");
-            
-            out_stream.println(" [1 0 0 -1 0 1]");   
-            out_stream.println("{ currentfile");
-            
-            out_stream.println(" 32 string readhexstring pop");
-            out_stream.println("}");
-            out_stream.println("false 3"); 
-            out_stream.println("colorimage");             
-            
+            sy++;
+        }
+        drawImage(newImage, sx1, sy1, sx2 - sx1 + 1, sy2 - sy1 + 1, null);
+
+        return true;
+    }
+
+    public boolean drawImage(final Image image, final int dx1, final int dy1,
+                    final int dx2, final int dy2, final int sx1, final int sy1,
+                    final int sx2, final int sy2, final Color bbgcolor,
+                    final ImageObserver imageObserver) {
+        final Color cur_color = getColor();
+
+        setColor(bbgcolor);
+        fillRect(sx1, sy1, sx2 - sx1 + 1, sy2 - sy1 + 1);
+        setColor(cur_color);
+
+        return drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2,
+                        imageObserver);
+
+    }
+
+    public boolean drawImage(final Image image,
+                    final AffineTransform transform,
+                    final ImageObserver imageObserver) {
+        // TODO: Implement
+        return false;
+    }
+
+    public void drawImage(final BufferedImage image,
+                    final BufferedImageOp arg1, final int arg2, final int arg3) {
+        // TODO: Implement
+    }
+
+    public void drawString(final String text, final float x, final float y) {
+        drawString(text, (int) x, (int) y);
+    }
+
+    public void drawString(final String text, final int x, final int y) {
+        if (text != null) {
+            ps(PS.moveto, x, convY(y));
+            ps(PS.show, "(" + wrapString(text) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
+    public void drawString(final AttributedCharacterIterator iterator,
+                    final float x, final float y) {
+        drawString(iterator, (int) x, (int) y);
+    }
+
+    public void drawString(final AttributedCharacterIterator iterator,
+                    final int x, final int y) {
+        final int n = iterator.getEndIndex();
+        final char[] cc = new char[n];
+        int i = 0;
+
+        for (char c = iterator.first(); c != CharacterIterator.DONE; c = iterator
+                        .next()) {
+            cc[i++] = c;
+        }
+        drawChars(cc, 0, n, x, y);
+    }
+
+    public void drawLine(final int x1, final int y1, final int x2, final int y2) {
+        ps(PS.newpath);
+        ps(PS.moveto, x1, convY(y1));
+        ps(PS.lineto, x2, convY(y2));
+        ps(PS.stroke);
+    }
+
+    public void drawOval(final int x, final int y, final int width,
+                    final int height) {
+        drawArc(x, y, width, height, 0, 360, false);
+    }
+
+    public void fillOval(final int x, final int y, final int width,
+                    final int height) {
+        drawArc(x, y, width, height, 0, 360, true);
+    }
+
+    public void drawArc(final int x, final int y, final int width,
+                    final int height, final int startAngle, final int arcAngle) {
+        drawArc(x, y, width, height, startAngle, arcAngle, false);
+    }
+
+    public void fillArc(final int x, final int y, final int width,
+                    final int height, final int startAngle, final int arcAngle) {
+        drawArc(x, y, width, height, startAngle, arcAngle, true);
+    }
+
+    public void drawRoundRect(final int x, final int y, final int width,
+                    final int height, final int arcWidth, final int arcHeight) {
+        drawRoundRect(x, y, width, height, arcWidth, arcHeight, false);
+    }
+
+    public void fillRoundRect(final int x, final int y, final int width,
+                    final int height, final int arcWidth, final int arcHeight) {
+        drawRoundRect(x, y, width, height, arcWidth, arcHeight, true);
+    }
+
+    public void drawRect(final int x, final int y, final int width,
+                    final int height) {
+        int x2 = x + width;
+        int y1 = convY(y);
+        int y2 = convY(y + height);
+        int[] xPoints = { x, x2, x2, x };
+        int[] yPoints = { y1, y1, y2, y2 };
+        drawPolyline(xPoints, yPoints, 4, true, false);
+    }
+
+    public void fillRect(final int x, final int y, final int width,
+                    final int height) {
+        int x2 = x + width;
+        int y1 = convY(y);
+        int y2 = convY(y + height);
+        int[] xPoints = { x, x2, x2, x };
+        int[] yPoints = { y1, y1, y2, y2 };
+        drawPolyline(xPoints, yPoints, 4, true, true);
+    }
+
+    public void clearRect(final int x, final int y, final int width,
+                    final int height) {
+        final Color savecolor = getColor();
+        setColor(bgColor);
+        fillRect(x, y, width, height);
+        setColor(savecolor);
+    }
+
+    public void drawPolygon(final int[] xPoints, final int[] yPoints,
+                    final int nPoints) {
+        for (int i = 0; i < nPoints; i++) {
+            yPoints[i] = convY(yPoints[i]);
+        }
+        drawPolyline(xPoints, yPoints, nPoints, true, false);
+    }
+
+    public void drawPolyline(final int[] xPoints, final int[] yPoints,
+                    final int nPoints) {
+        for (int i = 0; i < nPoints; i++) {
+            yPoints[i] = convY(yPoints[i]);
+        }
+        drawPolyline(xPoints, yPoints, nPoints, false, false);
+    }
+
+    public void fillPolygon(final int[] xPoints, final int[] yPoints,
+                    final int nPoints) {
+        for (int i = 0; i < nPoints; i++) {
+            yPoints[i] = convY(yPoints[i]);
+        }
+        drawPolyline(xPoints, yPoints, nPoints, true, true);
+    }
+
+    public void draw(final Shape shape) {
+        drawShape(shape, false, true);
+    }
+
+    public void fill(final Shape shape) {
+        drawShape(shape, true, true);
+    }
+
+    private void drawShape(final Shape shape, final boolean fill,
+                    final boolean stroke) {
+        final float[] coords = new float[6];
+        final PathIterator pathIterator = shape
+                        .getPathIterator((AffineTransform) null);
+        int i;
+
+        ps(PS.newpath);
+
+        while (!pathIterator.isDone()) {
+            i = pathIterator.currentSegment(coords);
+            switch (i) {
+            case PathIterator.SEG_MOVETO: {
+                ps(PS.moveto, (int) coords[0], convY((int) coords[1]));
+                break;
+            }
+            case PathIterator.SEG_LINETO: {
+                ps(PS.lineto, (int) coords[0], convY((int) coords[1]));
+                break;
+            }
+            case PathIterator.SEG_QUADTO: {
+                // XXX: improvement required
+                ps(PS.lineto, (int) coords[0], convY((int) coords[1]));
+                ps(PS.lineto, (int) coords[2], convY((int) coords[3]));
+                break;
+            }
+            case PathIterator.SEG_CUBICTO: {
+                ps(PS.curveto, (int) coords[0], convY((int) coords[1]),
+                                (int) coords[2], convY((int) coords[3]),
+                                (int) coords[4], convY((int) coords[5]));
+                break;
+            }
+            case PathIterator.SEG_CLOSE: {
+                ps(PS.closepath);
+                break;
+            }
+            }
+            pathIterator.next();
+        }
+
+        if (fill) {
+            ps(PS.fill);
+        }
+
+        if (stroke) {
+            ps(PS.stroke);
+        }
+    }
+
+    public void setColor(final Color color) {
+        super.setColor(color);
+        final float[] rgb = fgColor.getRGBColorComponents((float[]) null);
+        ps(PS.setcolor, rgb[0], rgb[1], rgb[2]);
+    }
+
+    public void setFont(final Font font) {
+        super.setFont(font);
+        ps(PS.setfnt, font.getName(), font.getSize());
+    }
+
+    public void translate(final int x, final int y) {
+        ps(PS.translate, x, -y);
+    }
+
+    public void translate(final double x, final double y) {
+        translate((int) x, (int) y);
+    }
+
+    public void rotate(final double theta) {
+        rotate(theta, 0d, 0d);
+    }
+
+    public void rotate(final double theta, final double x, final double y) {
+        final double alfa = -theta * 180 / java.lang.Math.PI;
+        final int x0 = (int) x;
+        final int y0 = convY((int) y);
+
+        ps(PS.translate, x0, y0);
+        ps(PS.rotate, alfa);
+        ps(PS.translate, -x0, -y0);
+    }
+
+    public void scale(final double sx, final double sy) {
+        ps(PS.scale, sx, sy);
+        yscale = yscale / sy;
+    }
+
+    public void setClip(final int x, final int y, final int width,
+                    final int height) {
+        setClip(new Rectangle(x, y, width, height));
+    }
+
+    @Override
+    public void setClip(final Shape s) {
+        super.setClip(s);
+        drawShape(s, false, false);
+        ps(PS.clip);
+    }
+
+    @Override
+    public void drawGlyphVector(GlyphVector g, float x, float y) {
+        // TODO Implement
+    }
+
+    @Override
+    public GraphicsConfiguration getDeviceConfiguration() {
+        // TODO Implement
+        return null;
+    }
+
+    @Override
+    public void copyArea(int sx, int sy, int width, int height, int dx, int dy) {
+        // TODO Implement
+    }
+
+    @Override
+    public Graphics create() {
+        return this;
+    }
+
+    @Override
+    public void setTransform(final AffineTransform transform) {
+        super.setTransform(transform);
+        ps(PS.concat, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4],
+                        matrix[5]);
+    }
+
+    private static String wrapString(final String str) {
+        return str.replace("\\", "\\\\").replace("\n", "\\\n").replace("\r", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
+                        "\\\r").replace("(", "\\(").replace(")", "\\)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    }
+
+    private void drawImage(final Image image, final int x, final int y) {
+        drawImage(image, x, y, false, 0f, 0f);
+    }
+
+    /**
+     * common private method for image drawing
+     */
+    private void drawImage(final Image image, final int x, final int y,
+                    final boolean scale, final float sx, final float sy) {
+        if (image != null) {
+            final int imageHeight = image.getHeight(null);
+            final int imageWidth = image.getWidth(null);
+            final BufferedImage imageGIF = (BufferedImage) image;
+            int line = 0;
+            int comp;
+
+            ps(PS.translate, x, y);
+
+            if (scale) {
+                ps(PS.scale, sx, sy);
+            }
+
+            out_stream.print(imageWidth);
+            out_stream.println(imageHeight + " 8"); //$NON-NLS-1$
+
+            out_stream.println(" [1 0 0 -1 0 1]"); //$NON-NLS-1$
+            out_stream.println("{ currentfile"); //$NON-NLS-1$
+
+            out_stream.println(" 32 string readhexstring pop"); //$NON-NLS-1$
+            out_stream.println("}"); //$NON-NLS-1$
+            out_stream.println("false 3"); //$NON-NLS-1$
+            out_stream.println("colorimage"); //$NON-NLS-1$
+
             for (int iy = 0; iy < imageHeight; iy++) {
-                for (int ix = 0; ix < imageWidth; ix++) {   
+                for (int ix = 0; ix < imageWidth; ix++) {
                     comp = imageGIF.getRGB(ix, iy);
-                    out_stream.print(threebytes2Hex(comp));                                         
+                    out_stream.print(threebytes2Hex(comp));
                     if (line++ == 30) {
                         out_stream.println();
                         line = 0;
-                    }                      
+                    }
                 }
-                if (line != 0){
+                if (line != 0) {
                     line = 0;
                     out_stream.println();
                 }
             }
-              
-            if (scale){
-                out_stream.println(1/sx + " " + 1/sy + " scale");                   
+
+            if (scale) {
+                ps(PS.scale, 1 / sx, 1 / sy);
             }
-            out_stream.println((-x) + " " + (-y) + " translate");
-            out_stream.println("stroke");
+            ps(PS.translate, -x, -y);
+            ps(PS.stroke);
         }
-        return;
-    }
-   
-    
-    
-    public void drawString(String text, float x, float y) {
-        drawString(text, (int) x, (int) y);
-    }
-    
-    public void drawString(String text, int x, int y) {
-        Font cur_font = getFont(); 
-        y = convY(y);
-        out_stream.println("/" + cur_font.getName() + " findfont");
-        out_stream.println(cur_font.getSize() + " scalefont setfont");
-        out_stream.println("  " + x + " " + y + " moveto");
-        out_stream.println("(" + text + ") show");       
-        out_stream.println("stroke");
-    }  
-
-    public void drawString(AttributedCharacterIterator iterator, 
-                           float x, float y) {
-        drawString(iterator, (int) x, (int) y);
-    }
-    
-    public void drawString(AttributedCharacterIterator iterator, int x, int y) {
-
-        int i = 0;
-        int n = iterator.getEndIndex();
-        char [] cc = new char[n];
-        
-        for (char c = iterator.first(); c != CharacterIterator.DONE; 
-                c = iterator.next()) {
-            cc[i++] = c;
-        }
-        drawChars(cc, 0, n, x, y);        
     }
 
-    
-    public void drawLine(int x1, int y1, int x2, int y2)  {
-        out_stream.println("newpath");  
-        out_stream.println("  " + x1 + " " + convY(y1) + " moveto");
-        out_stream.println("  " + x2 + " " + convY(y2) + " lineto");
-        out_stream.println("stroke");         
-    }
-    
-    
-    
-    public void drawOval(int x, int y, int width, int height) {    
-        drawArc(x, y, width, height, 0, 360, false);       
-    }
-
-    
-    public void fillOval(int x, int y, int width, int height) {
-        drawArc(x, y, width, height, 0, 360, true);
-    }
-
-    
-    public void drawArc(int x, int y, int width, int height, int startAngle,
-            int arcAngle) {          
-        drawArc(x, y, width, height, startAngle, arcAngle, false);  
-    }
-    
-    public void fillArc(int x, int y, int width, int height, 
-            int startAngle, int arcAngle) {      
-        drawArc(x, y, width, height, startAngle, arcAngle, true);      
-    }
-      
-    /*
-     * common private method for drawOval, fillOval, 
-     * drawArc and fillArc methods.  
+    /**
+     * common private method for drawOval, fillOval, drawArc and fillArc
+     * methods.
      */
-    private void drawArc(int x, int y, int width, int height, int startAngle,
-            int arcAngle, boolean fill) {   
-        
-        int cx = x + width /2;
-        int cy = convY(y + height /2);
-        y = convY(y);
-        
-        float scale1 = (float)width/(float)height;
-        float scale2 = (float)height/(float)width;       
-        
-        out_stream.println("newpath");
-        out_stream.println(scale1 + " 1 scale");
-        out_stream.print("  " + (cx * scale2));
-        out_stream.print(" " + cy + " " + height /2); 
-        out_stream.println(" " + startAngle + " " + arcAngle + " arc");
-        if (fill) {      
-            out_stream.print("  " + (cx * scale2));
-            out_stream.println(" " + cy + " lineto");                
-            out_stream.println("fill");       
+    private void drawArc(final int x, final int y, final int width,
+                    final int height, final int startAngle, final int arcAngle,
+                    final boolean fill) {
+        final int cx = x + width / 2;
+        final int cy = convY(y + height / 2);
+        final float scale1 = (float) width / (float) height;
+        final float scale2 = (float) height / (float) width;
+
+        ps(PS.newpath);
+        ps(PS.scale, scale1, 1);
+        ps(PS.arc, (cx * scale2), cy, (height / 2), startAngle, arcAngle);
+        if (fill) {
+            ps(PS.lineto, (cx * scale2), cy);
+            ps(PS.fill);
         }
-        out_stream.println(scale2 + " 1 scale");
-        out_stream.println("stroke");       
-    } 
- 
-    public void drawRoundRect(int x, int y, int width, int height,
-            int arcWidth, int arcHeight) {
-        drawRoundRect(x, y, width, height, arcWidth, arcHeight, false);
-    }
-    
-    public void fillRoundRect(int x, int y, int width, int height,
-            int arcWidth, int arcHeight) {
-        drawRoundRect(x, y, width, height, arcWidth, arcHeight, true);
-    }
-    
-    /*
-     * common private method for drawRoundRect 
-     * and fillRoundRect methods.  
-     */        
-    private void drawRoundRect(int x, int y, int width, int height,
-            int arcWidth, int arcHeight, boolean fill) { 
-             
-        int x1 = x + arcWidth;
-        int x2 = x + width - arcWidth;
-       
-        int y1 = convY(y + arcHeight);
-        int y2 = convY(y + height - arcHeight);        
-        y = convY(y);   
-        
-        float scale1 = (float)arcWidth/(float)arcHeight;
-        float scale2 = (float)arcHeight/(float)arcWidth;  
-       
-        out_stream.println("newpath");
-        out_stream.println("  " + x + " " + y1 + " moveto");
-        out_stream.println(scale1 + " 1 scale");        
-        out_stream.print("  " + (x1 * scale2) + " " + y2 + " ");
-        out_stream.println(arcHeight + " 180 270 arc");
-        out_stream.print("  " + (x2 * scale2) + " " + y2 + " "); 
-        out_stream.println(arcHeight + " 270 0 arc");
-        out_stream.print("  " + (x2 * scale2) + " " + y1 + " ");
-        out_stream.println(arcHeight + " 0 90 arc");
-        out_stream.print("  " + (x1 * scale2) + " " + y1 + " ");
-        out_stream.println(arcHeight + " 90 180 arc");
-        out_stream.println(scale2 + " 1 scale");
-        if (fill) { 
-            out_stream.println("fill");       
-        }        
-        out_stream.println("stroke");        
-    }
-    
-    public void drawRect(int x, int y, int width, int height) {        
-        int x2 = x + width;
-        int y1 = convY(y);
-        int y2 = convY(y + height);        
-        int [] xPoints = {x, x2, x2, x};
-        int [] yPoints = {y1, y1, y2, y2};
-        drawPolyline (xPoints, yPoints, 4, true, false);
+        ps(PS.scale, scale2, 1);
+        ps(PS.stroke);
     }
 
-    public void fillRect(int x, int y, int width, int height) {
-        int x2 = x + width;
-        int y1 = convY(y);
-        int y2 = convY(y + height);        
-        int [] xPoints = {x, x2, x2, x};
-        int [] yPoints = {y1, y1, y2, y2};
-        drawPolyline (xPoints, yPoints, 4, true, true);        
-    }       
-    
-    public void clearRect(int x, int y, int width, int height) {
-        Color savecolor = getColor();
-        setColor(bgcolor);      
-        fillRect(x, y, width, height);
-        setColor(savecolor);
-    }   
-    
-    public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        for (int i = 0; i < nPoints; i++) {
-            yPoints[i]=convY(yPoints[i]);
-        } 
-        drawPolyline (xPoints, yPoints, nPoints, true, false); 
-    }
-
-    
-    public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {          
-        for (int i = 0; i < nPoints; i++) {
-            yPoints[i]=convY(yPoints[i]);
-        }        
-        drawPolyline (xPoints, yPoints, nPoints, false, false);       
-    }
-
-    public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
-        for (int i = 0; i < nPoints; i++) {
-            yPoints[i]=convY(yPoints[i]);
-        } 
-        drawPolyline (xPoints, yPoints, nPoints, true, true);      
-    }
-    
-    /*
-     * common private method for drawPolyline, drawPolygon, drawRect,
-     * clearRect, fillPolyline, fillPolygon and  fillRect methods.  
+    /**
+     * common private method for drawRoundRect and fillRoundRect methods.
      */
-    private void drawPolyline(int[] xPoints, int[] yPoints, int nPoints,
-            boolean close, boolean fill) {
+    private void drawRoundRect(final int x, final int y, final int width,
+                    final int height, final int arcWidth, final int arcHeight,
+                    final boolean fill) {
 
-        out_stream.println("newpath");
-        out_stream.print("  " + xPoints[0]); 
-        out_stream.println(" " + yPoints[0] + " moveto");
-        
+        final int x1 = x + arcWidth;
+        final int x2 = x + width - arcWidth;
+        final int y1 = convY(y + arcHeight);
+        final int y2 = convY(y + height - arcHeight);
+        final float scale1 = (float) arcWidth / (float) arcHeight;
+        final float scale2 = (float) arcHeight / (float) arcWidth;
+
+        ps(PS.newpath);
+        ps(PS.moveto, x, y1);
+        ps(PS.scale, scale1, 1);
+        ps(PS.arc, (x1 * scale2), y2, arcHeight, 180, 270);
+        ps(PS.arc, (x2 * scale2), y2, arcHeight, 270, 0);
+        ps(PS.arc, (x2 * scale2), y1, arcHeight, 0, 90);
+        ps(PS.arc, (x1 * scale2), y1, arcHeight, 90, 180);
+        ps(PS.scale, scale2, 1);
+
+        if (fill) {
+            ps(PS.fill);
+        }
+        ps(PS.stroke);
+    }
+
+    /**
+     * common private method for drawPolyline, drawPolygon, drawRect, clearRect,
+     * fillPolyline, fillPolygon and fillRect methods.
+     */
+    private void drawPolyline(final int[] xPoints, final int[] yPoints,
+                    final int nPoints, final boolean close, final boolean fill) {
+        ps(PS.moveto, xPoints[0], yPoints[0]);
+
         for (int i = 1; i < nPoints; i++) {
-            out_stream.print("  " + xPoints[i]); 
-            out_stream.println(" " + yPoints[i] + " lineto");
+            ps(PS.lineto, xPoints[i], yPoints[i]);
         }
         if (close) {
-            out_stream.println("closepath");            
+            ps(PS.closepath);
         }
         if (fill) {
-            out_stream.println("fill");
+            ps(PS.fill);
         }
-        out_stream.println("stroke");
-    }      
-   
-    
-    public void draw(Shape shape) {
-        drawShape(shape, false);
+        ps(PS.stroke);
     }
 
-    public void fill(Shape shape) {
-        drawShape(shape, true);
+    private static String threebytes2Hex(int b) {
+        final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                        'A', 'B', 'C', 'D', 'E', 'F' };
+        final char[] ret = new char[6];
+
+        for (int i = 0; i < 6; i++) {
+            ret[5 - i] = hex[b & 0x0F];
+            b = b >> 4;
+        }
+        return new String(ret);
     }
 
-    private void drawShape(Shape shape, boolean fill) {
-        float[] coords = new float[6];
-        int i;
-        PathIterator  pathIterator;    
-        pathIterator = shape.getPathIterator((AffineTransform)null);
-        
-        out_stream.println("newpath 3");
-        i = 0;
-        int j=0;
-        
-        while (!pathIterator.isDone()){
-            i=pathIterator.currentSegment(coords);
-            switch (i) {
-                case PathIterator.SEG_MOVETO: {
-                    out_stream.print("  " + (int) coords[0] + " ");
-                    out_stream.println(convY((int) coords[1]) + " moveto");
-                    break;
+    /**
+     * Generates PostScript procedure call with the specified arguments.
+     * 
+     * @param ps procedure name
+     * @param args procedure arguments
+     */
+    private void ps(final PS ps, final Object... args) {
+        ps.print(out_stream, args);
+    }
+
+    private int convY(final int y) {
+        return (int) (format.getHeight() * yscale) - y;
+    }
+
+    private void resetGraphics() {
+        super.setTransform(new AffineTransform());
+        super.setClip(defaultClip);
+        super.setFont(DEF_FONT);
+        super.setColor(Color.BLACK);
+        super.setBackground(Color.WHITE);
+    }
+
+    private enum PS {
+            arc,
+            clip,
+            closepath,
+            curveto,
+            def,
+            exch,
+            fill,
+            grestore,
+            gsave,
+            lineto,
+            moveto,
+            newpath,
+            rlineto,
+            rmoveto,
+            rotate,
+            scale,
+            scalefont,
+            setfont,
+            setlinewidth,
+            show,
+            showpage,
+            stroke,
+            translate,
+            comment(null, "%%%%%s"), //$NON-NLS-1$
+            concat(null, "[%s %s %s %s %s %s] concat"), //$NON-NLS-1$
+            setcolor("C", null), //$NON-NLS-1$
+            setfnt(null, "/%s %s F"); //$NON-NLS-1$
+
+        final String name;
+        final String format;
+
+        PS() {
+            this(null, null);
+        }
+
+        PS(final String name, final String format) {
+            this.name = (name != null) ? name : toString();
+            this.format = format;
+        }
+
+        static void printHeader(final PrintStream out) {
+            out.println("%!PS-Adobe-3"); //$NON-NLS-1$
+            out.println("%%Title: G2D generated document"); //$NON-NLS-1$
+            out.println("%%Creator: Apache Harmony"); //$NON-NLS-1$
+            out.println("%%CreationDate: " + new Date()); //$NON-NLS-1$
+            out.println("%%EndComments"); //$NON-NLS-1$
+            out.println("/F {exch findfont exch scalefont setfont} def"); //$NON-NLS-1$
+            out.println("/C {setrgbcolor} bind def"); //$NON-NLS-1$
+        }
+
+        static void printFooter(final PrintStream out) {
+            out.println("%%EOF"); //$NON-NLS-1$
+        }
+
+        void print(final PrintStream out, final Object... args) {
+            if (format != null) {
+                out.printf(format, args);
+                out.println();
+            } else {
+                for (Object arg : args) {
+                    out.print(arg + " "); //$NON-NLS-1$
                 }
-                case PathIterator.SEG_LINETO: {
-                    out_stream.println("  " + (int) coords[0] + " ");
-                    out_stream.println(convY((int) coords[1]) + " lineto");
-                    break;
-                }
-                case PathIterator.SEG_QUADTO: {
-                    //fake - need to improved
-                    out_stream.print("  " + (int) coords[0] + " ");
-                    out_stream.println(convY((int) coords[1]) + " lineto");                     
-                    out_stream.print("  " + (int) coords[2] + " ");
-                    out_stream.println(convY((int) coords[3]) + " lineto");
-                    break;  
-                }
-                case PathIterator.SEG_CUBICTO: {
-                    out_stream.print("  " + (int) coords[0] + " ");
-                    out_stream.print(convY((int) coords[1]));
-                    out_stream.print("  " + (int) coords[2] + " ");
-                    out_stream.print(convY((int) coords[3]));
-                    out_stream.print("  " + (int) coords[4] + " ");
-                    out_stream.print(convY((int) coords[5]));
-                    out_stream.println(" curveto");
-                    break;
-                }
-                case PathIterator.SEG_CLOSE: {
-                    out_stream.println("closepath");
-                    break;
-                } 
+                out.println(name);
             }
-            pathIterator.next();
         }
-        
-        if (fill) {
-            out_stream.println("fill");
-        }
-        out_stream.println("stroke");
-    }      
-           
-    public Color getColor() { 
-        return color;
     }
-
-    public void setColor(Color arg_color) {
-        color = arg_color;        
-        float[] rgb = color.getRGBColorComponents((float[])null);
-        out_stream.print("  " + rgb[0] + " " + rgb[1]);
-        out_stream.println(" " + rgb[2] + " setrgbcolor");  
-    }
-
-    public Color getBackground() {
-        return bgcolor;
-    }
-
-    public void setBackground(Color arg_color) {
-        bgcolor = arg_color;
-    }
-        
-    public void setXORMode(Color arg_color) {        
-        XORcolor = arg_color;
-    }
-
-    public Font getFont() {
-        return font;
-    }
-
-    public void setFont(Font arg_font) {
-        font=arg_font;
-    }
-
-    public FontMetrics getFontMetrics(Font arg_font) {
-        Font cur_font = getFont();
-        setFont(arg_font);
-        FontMetrics fontMetrics=getFontMetrics(); 
-        setFont(cur_font);
-        return fontMetrics;
-    }
-
-    public void translate(int x, int y) {
-          out_stream.println(x + " " + (-y) + " translate");
-    }
-
-    public void translate(double x, double y) {
-        translate((int)x, (int)y);
-    }
-    
-    public void rotate(double theta) {
-        rotate(theta, 0d, 0d);
-    }
-
-    public void rotate(double theta, double x, double y) {
-        double alfa; //angle in degrees 
-        int y0;
-        int x0;
-        alfa = - theta * 180/java.lang.Math.PI;
-        x0 =(int)x;
-        y0 = convY((int)y);
-        out_stream.println(x0 + " " + y0 + " translate");       
-        out_stream.println(alfa + " rotate");
-        out_stream.println((-x0) + " " + (-y0) + " translate");
-    }
-       
-    public void scale(double sx, double sy) {
-        out_stream.println(sx + " " + sy + " scale");
-        yscale = yscale/sy;
-    }
-
-    public Paint getPaint() {      
-        return  paint; 
-    }
-
-    public void setPaint(Paint arg0) {
-        paint = arg0;
-    }
-    
-    public void setClip(int x, int y, int width, int height) {
-        int x2 = x + width;
-        int y1 = convY(y);
-        int y2 = convY(y + height);
-        
-        out_stream.println("newpath");
-        out_stream.println("  " + x + " " + y1 + " moveto");
-        out_stream.println("  " + x2 + " " + y1 + " lineto");
-        out_stream.println("  " + x2 + " " + y2 + " lineto");
-        out_stream.println("  " + x + " " + y2 + " lineto");
-        out_stream.println("closepath clip");   
-    }      
-    
-    /* methods below this line must be implemented*/    
-    public Graphics create() {        
-        return null;
-    }
-
-    public Rectangle getClipBounds() {       
-        return null;
-    }
-
-    public Shape getClip() {
-        return null;
-    }
-
-    public void setClip(Shape arg0) {       
-    }
-
-    public void shear(double arg0, double arg1) {
-    }
-   
-    public Composite getComposite() {
-        return null;
-    }
-
-    public void setComposite(Composite arg0) {
-    }
-
-    public GraphicsConfiguration getDeviceConfiguration() {
-        return null;
-    }
-
-    public RenderingHints getRenderingHints() {
-        return null;
-    }
-
-    public void clip(Shape arg0) {
-    }
-  
-   
-    public Stroke getStroke() {
-        return null;
-    }
-
-    public void setStroke(Stroke arg0) {
-    }
-
-    public FontRenderContext getFontRenderContext() {
-        return null;
-    }
-
-    public void drawGlyphVector(GlyphVector arg0, float arg1, float arg2) {
-    }
-
-    public AffineTransform getTransform() {
-        return null;
-    }
-
-    public void setTransform(AffineTransform arg0) {
-    }
-
-    public void transform(AffineTransform arg0) {
-    }
-
-    public void addRenderingHints(Map hints) {
-    }
-
-    public void setRenderingHints(Map hints) {
-    }
-
-    public boolean hit(Rectangle arg0, Shape arg1, boolean arg2) {
-        return false;
-    }
-
-    public void drawRenderedImage(RenderedImage arg0, AffineTransform arg1) {
-    }
-
-    public void drawRenderableImage(RenderableImage arg0, 
-                                            AffineTransform arg1) {
-    }
-
-    public Object getRenderingHint(Key hintKey) {
-        return null;
-    }
-
-    public void setRenderingHint(RenderingHints.Key hintKey, 
-                                            Object hintValue) {
-    }
-
-    public void dispose() {      
-    }
-
-    public void setPaintMode() {        
-    }
-  
-    public void clipRect(int x, int y, int width, int height) {
-    }
-        
-    public void copyArea(int x, int y, int width, int height, int dx, int dy) {
-    }    
 }

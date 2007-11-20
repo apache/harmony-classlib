@@ -1,7 +1,2 @@
 tests/api/java/net/URLClassLoaderTest.java
 tests/api/java/net/ExcludedProxyTest.java
-tests/api/java/util/CurrencyTest.java
-tests/api/java/util/FormatterTest.java
-tests/api/java/util/GregorianCalendarTest.java
-tests/api/java/util/LocaleTest.java
-tests/api/java/util/ScannerTest.java

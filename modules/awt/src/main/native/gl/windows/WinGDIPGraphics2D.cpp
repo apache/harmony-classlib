@@ -105,6 +105,9 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
     gi->bmp = 0;
     gi->matrix = new Matrix();
 
+    gi->clip = new Region(Rect(x, y, width, height));
+    gi->graphics->SetClip(gi->clip);
+
     return (jlong)gi;
 }
 
@@ -115,18 +118,21 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createGraphicsInfoFor
   (JNIEnv * env, jobject obj, jlong hdc, jchar pageUnit) {
-	GraphicsInfo * gi = (GraphicsInfo *) malloc(sizeof(GraphicsInfo));
+        GraphicsInfo * gi = (GraphicsInfo *) malloc(sizeof(GraphicsInfo));
 
-	gi->hdc = (HDC) hdc;
-	gi->graphics = new Graphics(gi->hdc);
-	gi->pen = 0;
-	gi->brush = 0;
-	gi->bmp = 0;
-	gi->matrix = new Matrix();
+        gi->hdc = (HDC) hdc;
+        gi->graphics = new Graphics(gi->hdc);
+        gi->pen = 0;
+        gi->brush = 0;
+        gi->bmp = 0;
+        gi->matrix = new Matrix();
 
-	gi->graphics->SetPageUnit((Gdiplus::Unit) pageUnit);
+        gi->clip = new Region();
+        gi->graphics->SetClip(gi->clip);
 
-	return (jlong)gi;
+        gi->graphics->SetPageUnit((Gdiplus::Unit) pageUnit);
+
+        return (jlong)gi;
 }
 
 /*
@@ -172,6 +178,9 @@ static inline GraphicsInfo *createCompatibleImageInfo(JNIEnv *env, HDC hdc, jint
     gi->pen = 0;
     gi->brush = 0;   
     gi->matrix = 0;
+
+    gi->clip = new Region(Rect(0, 0, width, height));
+    gi->graphics->SetClip(gi->clip);
     
     return gi; 
 }
@@ -222,12 +231,13 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
     gi->hdc = origgi->hdc;
     gi->bmp = 0;
     gi->graphics = new Graphics(gi->hdc);
+
+    gi->clip = new Region();
     if (origgi->graphics != NULL) {
-        Region clip;
-        origgi->graphics->GetClip(&clip);
-        gi->graphics->SetClip(&clip);
+        origgi->graphics->GetClip(gi->clip);
     }
     
+    gi->graphics->SetClip(gi->clip);
     gi->pen = (origgi->pen != NULL)?origgi->pen->Clone():0;
     gi->brush = (origgi->brush != NULL)?origgi->brush->Clone():0;
     gi->matrix = (origgi->matrix != NULL)?origgi->matrix->Clone():new Matrix();
@@ -262,6 +272,10 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_
 
     if (gi->matrix) {
         delete(gi->matrix);
+    }
+
+    if (gi->clip) {
+        delete(gi->clip);
     }
 
     // If hwnd and bmp are 0 then we should not destroy HDC 
@@ -679,7 +693,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_
         return;
         
     GraphicsInfo *gi = (GraphicsInfo *)gip;
-    gi->graphics->ResetClip();
+    gi->graphics->SetClip(gi->clip);
 }
 
 /*
