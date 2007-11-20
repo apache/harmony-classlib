@@ -27,6 +27,8 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+import javax.sql.RowSetEvent;
+import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
 
@@ -322,12 +324,45 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testCreateShared() throws Exception {
+        crset.setUsername("testUsername");
+        crset.setPassword("testPassword");
+        crset.setPageSize(5);
+        Listener listener = new Listener(); // a class implements RowSetListener
+        crset.addRowSetListener(listener);
+        crset.absolute(3); // move to the third row for testing
+        // TODO: when the cursor moved, notifyCursorMoved() should be called
+        // assertEquals("cursorMoved", listener.getTag());
+
         CachedRowSet crsetShared = (CachedRowSet) crset.createShared();
-        crsetShared.first();
-        crset.first();
-        crsetShared.updateString(2, "copyTest2");
-        assertEquals(crsetShared.getString(2), "copyTest2");
-        assertEquals(crset.getString(2), "copyTest2");
+        assertEquals("testUsername", crsetShared.getUsername());
+        assertEquals("testPassword", crsetShared.getPassword());
+        assertEquals(5, crsetShared.getPageSize());
+        // check whether modify the attribute of the original is visible to the
+        // duplicate
+        crset.setUsername("modifyUsername");
+        crset.setPageSize(10);
+        assertEquals("modifyUsername", crset.getUsername());
+        assertEquals("testUsername", crsetShared.getUsername());
+        assertEquals(10, crset.getPageSize());
+        assertEquals(5, crsetShared.getPageSize());
+
+        // compare the current row, that is the third row
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+        assertEquals(3, crsetShared.getInt(1));
+        assertEquals("test3", crsetShared.getString(2));
+        // check whether update the duplicate is visible to the original
+        crsetShared.updateString(2, "modify3");
+        assertEquals("modify3", crsetShared.getString(2));
+        assertEquals("modify3", crset.getString(2));
+        crsetShared.updateRow();
+        crsetShared.acceptChanges();
+        assertEquals("rowSetChanged", listener.getTag());
+
+        // when move the duplicate's cursor, the original shouldn't be affected
+        crsetShared.absolute(1);
+        assertEquals(1, crsetShared.getInt(1));
+        assertEquals(3, crset.getInt(1));
     }
 
     public void testcreateCopyNoConstraints() throws Exception {
@@ -355,20 +390,73 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testCopySchema() throws Exception {
-        crset.first();
-        CachedRowSet crsetCopySchema = (CachedRowSet) crset.createCopySchema();
+        // the original's addtribute and meta data
+        crset.setCommand("testCommand");
+        crset.setConcurrency(ResultSet.CONCUR_UPDATABLE);
+        crset.setDataSourceName("testDataSource");
+        crset.setFetchDirection(ResultSet.FETCH_UNKNOWN);
+        crset.setPageSize(20);
+        crset.setMaxRows(20);
+        crset.setTableName("USER_INFO");
+        /*
+         * NOTICE: spec say copy must not has any content, but when run on RI,
+         * if call next() before call createCopySchema(), the copy can get the
+         * current row's data
+         */
 
-        RowSetMetaData rsmCopySchema = (RowSetMetaData) crsetCopySchema
+        /*
+         * NOTICE: when run on RI, if add the listener first, then it will go
+         * wrong when call createCopySchema().It's said that clone failed.
+         */
+        // Listener listener = new Listener();
+        // crset.addRowSetListener(listener);
+        RowSetMetaData rsmd = (RowSetMetaData) crset.getMetaData();
+        // the copy
+        CachedRowSet crsetCopySchema = crset.createCopySchema();
+        RowSetMetaData rsmdCopySchema = (RowSetMetaData) crsetCopySchema
                 .getMetaData();
-        assertEquals("USER_INFO", rsmCopySchema.getTableName(1));
-        assertEquals(DEFAULT_COLUMN_COUNT, rsmCopySchema.getColumnCount());
 
-        RowSetMetaData rsm = (RowSetMetaData) crset.getMetaData();
-        rsm.setTableName(1, "newBorn");
-        assertEquals("newBorn", rsm.getTableName(1));
+        // compare the meta data between the duplicate and the original
+        assertNotSame(crset.getMetaData(), crsetCopySchema.getMetaData());
+        assertNotSame(crset.getOriginal(), crsetCopySchema.getOriginal());
+        // assertNotSame(crset.getSyncProvider(), crsetCopySchema
+        // .getSyncProvider());
 
-        crset.setTableName("test");
-        assertEquals("test", crset.getTableName());
+        assertEquals("USER_INFO", crset.getTableName());
+        assertEquals("USER_INFO", rsmdCopySchema.getTableName(1));
+        assertEquals(DEFAULT_COLUMN_COUNT, rsmdCopySchema.getColumnCount());
+        assertEquals(rsmd.getColumnName(1), rsmdCopySchema.getColumnName(1));
+        // check the primary key
+        // TODO: RI doesn't evalute the keyColumns. The value of
+        // crset.getKeyColumns() is null.
+        assertEquals(crset.getKeyColumns(), crsetCopySchema.getKeyColumns());
+
+        // check the attributes in the duplicate. These are supposed to be the
+        // same as the original
+        // System.out.println("crsetCopySchema: " + crsetCopySchema.getInt(1));
+        assertFalse(crsetCopySchema.next());
+        assertEquals("testCommand", crsetCopySchema.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, crsetCopySchema
+                .getConcurrency());
+        assertEquals("testDataSource", crsetCopySchema.getDataSourceName());
+        assertEquals(ResultSet.FETCH_UNKNOWN, crsetCopySchema
+                .getFetchDirection());
+        assertEquals(20, crsetCopySchema.getPageSize());
+        assertEquals(20, crsetCopySchema.getMaxRows());
+
+        // fill the duplicate CachedRowSet with data, check the listener
+        Listener listener = new Listener();
+        crsetCopySchema.addRowSetListener(listener);
+        assertNull(listener.getTag());
+        rs = st.executeQuery("select * from USER_INFO");
+        crsetCopySchema.populate(rs);
+        // TODO: in the Harmony implementation, need to call notifyRowSetChanged
+        // at the suitable place
+        // assertEquals("rowSetChanged", listener.getTag());
+        listener.setTag(null);
+        // the move of the original's cursor shouldn't affect the duplicate
+        crset.next();
+        assertNull(listener.getTag());
     }
 
     public void testCreateCopy() throws Exception {
@@ -524,6 +612,37 @@ public class CachedRowSetImplTest extends TestCase {
 
         if (preStmt != null) {
             preStmt.close();
+        }
+    }
+
+    public class Listener implements RowSetListener, Cloneable {
+
+        private String tag = null;
+
+        public void cursorMoved(RowSetEvent theEvent) {
+            tag = "cursorMoved";
+        }
+
+        public void rowChanged(RowSetEvent theEvent) {
+            tag = "rowChanged";
+        }
+
+        public void rowSetChanged(RowSetEvent theEvent) {
+            tag = "rowSetChanged";
+        }
+
+        public String getTag() {
+            return tag;
+        }
+
+        public void setTag(String tag) {
+            this.tag = tag;
+        }
+
+        public Listener clone() throws CloneNotSupportedException {
+            Listener listener = (Listener) super.clone();
+            listener.tag = tag;
+            return listener;
         }
     }
 }
