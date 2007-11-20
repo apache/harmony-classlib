@@ -158,12 +158,12 @@ public class CachedRowSetWriter implements RowSetWriter {
         }
         updateCollector = subStringN(updateCollector, 3);
 
-        if (currentRowSet.getCurrentRow().getDelete()) {
+        if (currentRowSet.getCurrentRow().isDelete()) {
             // paras of where: pks
             sql = " delete from " + tableName + " where "
                     + whereStatementForCurrent;
             signal = 0;
-        } else if (currentRowSet.getCurrentRow().getInsert()) {
+        } else if (currentRowSet.getCurrentRow().isInsert()) {
             // paras of insert : all
             sql = " insert into " + tableName + " values " + " ( "
                     + insertCollector + " ) ";
