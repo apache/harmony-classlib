@@ -30,8 +30,8 @@ public class WinPrintServiceLookup extends PrintServiceLookup {
     @Override
     public PrintService getDefaultPrintService() {
         try {
-            return new WinPrintService(WinPrinterFactory
-                            .getDefaultPrinterName());
+            final String name = WinPrinterFactory.getDefaultPrinterName();
+            return (name != null) ? new WinPrintService(name) : null;
         } catch (PrintException e) {
             return null;
         }
