@@ -22,6 +22,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
@@ -31,6 +32,7 @@ import javax.sql.RowSetEvent;
 import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.spi.SyncProviderException;
 
 import junit.framework.TestCase;
 
@@ -64,7 +66,6 @@ public class CachedRowSetImplTest extends TestCase {
                 throw new SQLException("Create DB Failure!");
             }
         }
-        ;
 
         st = conn.createStatement();
         rs = conn.getMetaData().getTables(null, "APP", "USER_INFO", null);
@@ -82,10 +83,7 @@ public class CachedRowSetImplTest extends TestCase {
         rs = st.executeQuery("select * from USER_INFO");
         try {
             crset = (CachedRowSet) Class.forName(
-
             "com.sun.rowset.CachedRowSetImpl").newInstance();
-
-            System.out.println("Testing RI");
         } catch (ClassNotFoundException e) {
 
             crset = (CachedRowSet) Class.forName(
@@ -93,9 +91,14 @@ public class CachedRowSetImplTest extends TestCase {
                     .newInstance();
 
             System.setProperty("Testing Harmony", "true");
-            System.out.println("Testing Harmony");
-
         }
+        crset.populate(rs);
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.setUrl(DERBY_URL);
+    }
+
+    private void reloadCachedRowSet() throws SQLException {
+        rs = st.executeQuery("select * from USER_INFO");
         crset.populate(rs);
         rs = st.executeQuery("select * from USER_INFO");
         crset.setUrl(DERBY_URL);
@@ -112,6 +115,11 @@ public class CachedRowSetImplTest extends TestCase {
             st.close();
         }
         if (conn != null) {
+            /*
+             * if doesn't call rollback, ri will throw exception then block
+             * java.sql.SQLException: Invalid transaction state.
+             */
+            conn.rollback();
             conn.close();
         }
     }
@@ -200,7 +208,7 @@ public class CachedRowSetImplTest extends TestCase {
         }
     }
 
-    public void testSize() {
+    public void testSize() throws Exception {
         assertEquals(DEFAULT_ROW_COUNT, crset.size());
     }
 
@@ -258,6 +266,7 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testAcceptChanges() throws SQLException {
+        crset.setTableName("USER_INFO");
         // FIXME: if the value of column is null, it would go wrong when
         // call acceptChanges(). And if one method in TestCase throws
         // SQLException, the following method will be affected.
@@ -460,35 +469,235 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testCreateCopy() throws Exception {
-        // crset.first();
+
         crset.absolute(3);
-        assertEquals(crset.getString(2), "test3");
-        crset.updateString(2, "copyTest3");
-        crset.updateRow();
-        crset.acceptChanges();
 
-        rs = st.executeQuery("select * from USER_INFO");
-        rs.next();
-        assertEquals(rs.getString(2), "hermit");
+        CachedRowSet crsetCopy = crset.createCopy();
 
-        CachedRowSet crsetCopy = (CachedRowSet) crset.createCopy();
-
-        // crsetCopy.first();
-        crsetCopy.absolute(3);
         crsetCopy.updateString(2, "copyTest3");
         crsetCopy.updateRow();
         crsetCopy.acceptChanges();
 
         assertEquals(crsetCopy.getString(2), "copyTest3");
-        assertEquals(crset.getString(2), "copyTest3");
+
+        assertEquals(crset.getString(2), "test3");
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
-        assertEquals(rs.getString(2), "hermit");
+        rs.next();
+        rs.next();
+        assertEquals(rs.getString(2), "copyTest3");
 
-        // crset.first();
+        reloadCachedRowSet();
+        crset.absolute(2);
+
+        crsetCopy = crset.createCopy();
+
+        assertEquals(crset.isReadOnly(), crsetCopy.isReadOnly());
+        // TODO uncomment when isBeforeFirst is implemented
+        // assertEquals(crset.isBeforeFirst(), crsetCopy.isBeforeFirst());
+        // TODO uncomment when isAfterLast is implemented
+        // assertEquals(crset.isAfterLast(), crsetCopy.isAfterLast());
+        // TODO uncomment when isFirst is implemented
+        // assertEquals(crset.isFirst(), crsetCopy.isFirst());
+        // TODO uncomment when isLast is implemented
+        // assertEquals(crset.isLast(), crsetCopy.isLast());
+
+        assertEquals(crset.size(), crsetCopy.size());
+        // different metaData object
+        assertNotSame(crset.getMetaData(), crsetCopy.getMetaData());
+
+        isMetaDataEquals(crset.getMetaData(), crsetCopy.getMetaData());
+
+        assertEquals(crset.getCommand(), crsetCopy.getCommand());
+        assertEquals(crset.getConcurrency(), crsetCopy.getConcurrency());
+
+        // uncomment after implemented
+        // try {
+        // assertEquals(crset.getCursorName(), crsetCopy.getCursorName());
+        // fail("Should throw SQLException");
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        // try {
+        // assertEquals(crset.getMatchColumnIndexes(), crsetCopy
+        // .getMatchColumnIndexes());
+        // fail("Should throw SQLException");
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        //
+        // try {
+        // assertEquals(crset.getMatchColumnNames(), crsetCopy
+        // .getMatchColumnNames());
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        // assertEquals(crset.getRow(), crsetCopy.getRow());
+        // assertEquals(crset.getStatement(), crsetCopy.getStatement());
+        // assertNotSame(crset.getWarnings(), crsetCopy.getWarnings());
+
+        assertEquals(crset.getEscapeProcessing(), crsetCopy
+                .getEscapeProcessing());
+        assertEquals(crset.getFetchDirection(), crsetCopy.getFetchDirection());
+        assertEquals(crset.getFetchSize(), crsetCopy.getFetchSize());
+        if (crset.getKeyColumns() == null) {
+            assertNull(crsetCopy.getKeyColumns());
+        } else {
+            int[] keyColumns = crset.getKeyColumns();
+            int[] copyKeyColumns = crsetCopy.getKeyColumns();
+
+            assertEquals(keyColumns.length, copyKeyColumns.length);
+            for (int i = 0; i < keyColumns.length; i++) {
+                assertEquals(keyColumns[i], copyKeyColumns[i]);
+            }
+            assertEquals(crset.getKeyColumns(), crsetCopy.getKeyColumns());
+        }
+
+        assertEquals(crset.getMaxFieldSize(), crsetCopy.getMaxFieldSize());
+        assertEquals(crset.getMaxRows(), crsetCopy.getMaxRows());
+
+        assertEquals(crset.getPageSize(), crsetCopy.getPageSize());
+        assertEquals(crset.getPassword(), crsetCopy.getPassword());
+        assertEquals(crset.getQueryTimeout(), crsetCopy.getQueryTimeout());
+        assertEquals(crset.getShowDeleted(), crsetCopy.getShowDeleted());
+
+        assertEquals(crset.getSyncProvider().getProviderID(), crsetCopy
+                .getSyncProvider().getProviderID());
+        assertEquals(crset.getSyncProvider().getProviderGrade(), crsetCopy
+                .getSyncProvider().getProviderGrade());
+        assertEquals(crset.getSyncProvider().getDataSourceLock(), crsetCopy
+                .getSyncProvider().getDataSourceLock());
+        assertEquals(crset.getSyncProvider().getVendor(), crsetCopy
+                .getSyncProvider().getVendor());
+        assertEquals(crset.getSyncProvider().getVersion(), crsetCopy
+                .getSyncProvider().getVersion());
+
+        assertEquals(crset.getTableName(), crsetCopy.getTableName());
+        assertEquals(crset.getTransactionIsolation(), crsetCopy
+                .getTransactionIsolation());
+        assertEquals(crset.getType(), crsetCopy.getType());
+
+        assertEquals(crset.getUrl(), crsetCopy.getUrl());
+        assertEquals(crset.getUsername(), crsetCopy.getUsername());
+
+    }
+
+    public void testCreateCopy2() throws Exception {
+
+        CachedRowSet copy = crset.createCopy();
+
+        copy.absolute(3);
         crset.absolute(3);
-        assertEquals(crset.getString(2), "copyTest3");
+
+        copy.updateString(2, "updated");
+        assertEquals("updated", copy.getString(2));
+        assertEquals("test3", crset.getString(2));
+        copy.updateRow();
+        copy.acceptChanges();
+
+        assertEquals(copy.getString(2), "updated");
+        assertEquals(crset.getString(2), "test3");
+
+        crset.updateString(2, "again");
+
+        assertEquals(copy.getString(2), "updated");
+        assertEquals(crset.getString(2), "again");
+
+        crset.updateRow();
+        try {
+            /*
+             * seems ri doesn't release lock when expception throw from
+             * acceptChanges(), which will cause test case block at insertData()
+             * when next test case setUp, so we must pass current connection to
+             * it, and all resource would be released after connection closed.
+             */
+            crset.acceptChanges(conn);
+            // TODO: wait the implementation of Writer
+            // fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        assertEquals(copy.getString(2), "updated");
+
+        crset.absolute(3);
+        // data doesn't change
+        assertEquals("again", crset.getString(2));
+    }
+
+    public void testCreateCopy3() throws Exception {
+        crset.setCommand("SELECT * FROM USER_INFO WHERE ID = ?");
+        crset.setInt(1, 3);
+        crset.execute();
+
+        assertEquals(12, crset.getMetaData().getColumnCount());
+        assertTrue(crset.next());
+        assertEquals("test3", crset.getString(2));
+        assertFalse(crset.next());
+
+        CachedRowSet crsetCopy = crset.createCopy();
+        crsetCopy.execute();
+        assertEquals(12, crsetCopy.getMetaData().getColumnCount());
+        assertTrue(crsetCopy.next());
+        assertEquals("test3", crsetCopy.getString(2));
+        assertFalse(crsetCopy.next());
+
+        crsetCopy.setCommand("SELECT * FROM USER_INFO WHERE NAME = ?");
+        crsetCopy.setString(1, "test4");
+        crsetCopy.execute();
+        assertTrue(crsetCopy.next());
+        assertEquals(4, crsetCopy.getInt(1));
+        assertFalse(crsetCopy.next());
+
+        crset.execute();
+        assertTrue(crset.next());
+        assertEquals("test3", crset.getString(2));
+        assertFalse(crset.next());
+    }
+
+    private void isMetaDataEquals(ResultSetMetaData expected,
+            ResultSetMetaData actual) throws SQLException {
+        assertEquals(expected.getColumnCount(), actual.getColumnCount());
+
+        int columnCount = expected.getColumnCount();
+
+        for (int column = 1; column <= columnCount; column++) {
+            assertEquals(expected.isAutoIncrement(column), actual
+                    .isAutoIncrement(column));
+            assertEquals(expected.isCaseSensitive(column), actual
+                    .isCaseSensitive(column));
+            assertEquals(expected.isCurrency(column), actual.isCurrency(column));
+            assertEquals(expected.isDefinitelyWritable(column), actual
+                    .isDefinitelyWritable(column));
+            assertEquals(expected.isReadOnly(column), actual.isReadOnly(column));
+            assertEquals(expected.isSearchable(column), actual
+                    .isSearchable(column));
+            assertEquals(expected.isSigned(column), actual.isSigned(column));
+            assertEquals(expected.isWritable(column), actual.isWritable(column));
+            assertEquals(expected.isNullable(column), actual.isNullable(column));
+            assertEquals(expected.getCatalogName(column), actual
+                    .getCatalogName(column));
+            assertEquals(expected.getColumnClassName(column), actual
+                    .getColumnClassName(column));
+            assertEquals(expected.getColumnDisplaySize(column), actual
+                    .getColumnDisplaySize(column));
+            assertEquals(expected.getColumnLabel(column), actual
+                    .getColumnLabel(column));
+            assertEquals(expected.getColumnName(column), actual
+                    .getColumnName(column));
+            assertEquals(expected.getColumnType(column), actual
+                    .getColumnType(column));
+            assertEquals(expected.getColumnTypeName(column), actual
+                    .getColumnTypeName(column));
+            assertEquals(expected.getPrecision(column), actual
+                    .getPrecision(column));
+            assertEquals(expected.getScale(column), actual.getScale(column));
+            assertEquals(expected.getSchemaName(column), actual
+                    .getSchemaName(column));
+            assertEquals(expected.getTableName(column), actual
+                    .getTableName(column));
+        }
     }
 
     public void testAfterLast() throws Exception {

@@ -18,6 +18,7 @@ package org.apache.harmony.sql.internal.rowset;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Blob;
@@ -38,11 +39,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.sql.RowSet;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetInternal;
+import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.BaseRowSet;
@@ -173,48 +178,85 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public CachedRowSet createCopy() throws SQLException {
         CachedRowSetImpl output;
         try {
+            /*
+             * the attribute of BaseRowSet which are needed to deep copy
+             */
+            // BaseRowSet.params <Hashtable>
+            Object[] paramsObjArray = super.getParams().clone();
+            Hashtable<Object, Object> paramsHashtable = new Hashtable<Object, Object>();
+            for (int i = 0; i < paramsObjArray.length; i++) {
+                paramsHashtable.put(Integer.valueOf(i), paramsObjArray[i]);
+            }
+            // BaseRowSet.listeners <Vector>
+            Vector<RowSetListener> listeners = new Vector<RowSetListener>();
+
+            /*
+             * deep copy BaseRowSet
+             */
             output = (CachedRowSetImpl) super.clone();
-            // restore "this"'s states
-            int temp = currentRowIndex;
-            CachedRow cr;
-            if (currentRow != null) {
-                cr = currentRow.createClone();
-            } else {
-                cr = null;
+            // BaseRowSet.params
+            Field paramsField = output.getClass().getSuperclass()
+                    .getDeclaredField("params");
+            paramsField.setAccessible(true);
+            paramsField.set(output, paramsHashtable);
+            // BaseRowSet.listeners
+            Field listenersField = output.getClass().getSuperclass()
+                    .getDeclaredField("listeners");
+            listenersField.setAccessible(true);
+            listenersField.set(output, listeners);
+            // BaseRowSet.map
+            if (super.getTypeMap() != null) {
+                Map<String, Class<?>> originalTypeMap = super.getTypeMap();
+                Map<String, Class<?>> copyTypeMap = new HashMap<String, Class<?>>();
+                copyTypeMap.putAll(originalTypeMap);
+                output.setTypeMap(copyTypeMap);
             }
 
-            first();
+            /*
+             * deep copy CachedRowSetImpl
+             */
+            // CachedRowSetImpl.rows <ArrayList>
+            ArrayList<CachedRow> copyRows = new ArrayList<CachedRow>();
+            for (int i = 0; i < rows.size(); i++) {
+                copyRows.add(rows.get(i).createClone());
+            }
+            output.setRows(copyRows, columnCount);
+            // CachedRowSetImpl.meta <RowSetMetaData>
+            output.setMetaData(copyMetaData(getMetaData()));
+            // set currentRow
+            if ((currentRowIndex > 0) && (currentRowIndex <= rows.size())) {
+                output.absolute(currentRowIndex);
+            }
+            // others
+            if (getKeyColumns() != null) {
+                output.setKeyColumns(getKeyColumns().clone());
+            }
 
-            // Deep Copy
-            ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-
-            do {
-                data.add(currentRow.createClone());
-            } while (next());
-
-            // TODO: should be the same granularity with RI using Debug tool
-            // inspect!
-            ((CachedRowSetImpl) output).setRows(data, columnCount);
-            output.setMetaData(((RowSetMetaDataImpl) getMetaData()));
-            output.originalResultSet = originalResultSet;
-            output.setUrl(getUrl());
-            output.setTableName(getTableName());
-
-            // Constraints
-            output.setReadOnly(isReadOnly());
-            output.setConcurrency(getConcurrency());
-            output.setType(getType());
-
-            // recovery this's state for the modification of the operation
-            // first() and next();
-            currentRow = cr;
-            currentRowIndex = temp;
+            /*
+             * TODO uncomment after getMatchColumnIndexes and
+             * getMatchColumnNames implemented
+             */
+            // if (getMatchColumnIndexes() != null) {
+            // output.setMatchColumn(getMatchColumnIndexes().clone());
+            // }
+            // if (getMatchColumnNames() != null) {
+            // output.setMatchColumn(getMatchColumnNames().clone());
+            // }
+            output.setSyncProvider(getSyncProvider().getProviderID());
+            if (insertRow != null) {
+                output.insertRow = insertRow.createClone();
+            }
 
             return output;
         } catch (CloneNotSupportedException e) {
-            // FIXME deal with the exception
-            e.printStackTrace();
-            return null;
+            // TODO add error message
+            throw new SQLException();
+        } catch (NoSuchFieldException e) {
+            // TODO add error message
+            throw new SQLException();
+        } catch (IllegalAccessException e) {
+            // TODO add error message
+            throw new SQLException();
         }
     }
 
@@ -374,7 +416,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void populate(ResultSet rs, int startRow) throws SQLException {
-        initParams();
         meta = copyMetaData(rs.getMetaData());
 
         new CachedRowSetReader(rs, startRow).readData(this);
@@ -397,23 +438,38 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         RowSetMetaDataImpl rowSetMetaData = new RowSetMetaDataImpl();
         rowSetMetaData.setColumnCount(metaData.getColumnCount());
         for (int columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++) {
-            rowSetMetaData.setAutoIncrement(columnIndex, metaData.isAutoIncrement(columnIndex));
-            rowSetMetaData.setCaseSensitive(columnIndex, metaData.isCaseSensitive(columnIndex));
-            rowSetMetaData.setCatalogName(columnIndex, metaData.getCatalogName(columnIndex));
+            rowSetMetaData.setAutoIncrement(columnIndex, metaData
+                    .isAutoIncrement(columnIndex));
+            rowSetMetaData.setCaseSensitive(columnIndex, metaData
+                    .isCaseSensitive(columnIndex));
+            rowSetMetaData.setCatalogName(columnIndex, metaData
+                    .getCatalogName(columnIndex));
             rowSetMetaData.setColumnDisplaySize(columnIndex, metaData
                     .getColumnDisplaySize(columnIndex));
-            rowSetMetaData.setColumnLabel(columnIndex, metaData.getColumnLabel(columnIndex));
-            rowSetMetaData.setColumnName(columnIndex, metaData.getColumnName(columnIndex));
-            rowSetMetaData.setColumnType(columnIndex, metaData.getColumnType(columnIndex));
-            rowSetMetaData.setColumnTypeName(columnIndex, metaData.getColumnTypeName(columnIndex));
-            rowSetMetaData.setCurrency(columnIndex, metaData.isCurrency(columnIndex));
-            rowSetMetaData.setNullable(columnIndex, metaData.isNullable(columnIndex));
-            rowSetMetaData.setPrecision(columnIndex, metaData.getPrecision(columnIndex));
-            rowSetMetaData.setScale(columnIndex, metaData.getScale(columnIndex));
-            rowSetMetaData.setSchemaName(columnIndex, metaData.getSchemaName(columnIndex));
-            rowSetMetaData.setSearchable(columnIndex, metaData.isSearchable(columnIndex));
-            rowSetMetaData.setSigned(columnIndex, metaData.isSigned(columnIndex));
-            rowSetMetaData.setTableName(columnIndex, metaData.getTableName(columnIndex));
+            rowSetMetaData.setColumnLabel(columnIndex, metaData
+                    .getColumnLabel(columnIndex));
+            rowSetMetaData.setColumnName(columnIndex, metaData
+                    .getColumnName(columnIndex));
+            rowSetMetaData.setColumnType(columnIndex, metaData
+                    .getColumnType(columnIndex));
+            rowSetMetaData.setColumnTypeName(columnIndex, metaData
+                    .getColumnTypeName(columnIndex));
+            rowSetMetaData.setCurrency(columnIndex, metaData
+                    .isCurrency(columnIndex));
+            rowSetMetaData.setNullable(columnIndex, metaData
+                    .isNullable(columnIndex));
+            rowSetMetaData.setPrecision(columnIndex, metaData
+                    .getPrecision(columnIndex));
+            rowSetMetaData
+                    .setScale(columnIndex, metaData.getScale(columnIndex));
+            rowSetMetaData.setSchemaName(columnIndex, metaData
+                    .getSchemaName(columnIndex));
+            rowSetMetaData.setSearchable(columnIndex, metaData
+                    .isSearchable(columnIndex));
+            rowSetMetaData.setSigned(columnIndex, metaData
+                    .isSigned(columnIndex));
+            rowSetMetaData.setTableName(columnIndex, metaData
+                    .getTableName(columnIndex));
         }
         return rowSetMetaData;
     }
