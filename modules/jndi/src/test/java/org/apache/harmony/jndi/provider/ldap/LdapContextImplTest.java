@@ -503,4 +503,45 @@ public class LdapContextImplTest extends TestCase {
         }
     }
 
+    public void test_addToEnvironment() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+
+        Object preValue = context.addToEnvironment(Context.REFERRAL, "ignore");
+        assertNull(preValue);
+        Hashtable<Object, Object> returnedEnv = (Hashtable<Object, Object>) context
+                .getEnvironment();
+        assertTrue(returnedEnv.containsKey(Context.REFERRAL));
+        assertEquals("ignore", returnedEnv.get(Context.REFERRAL));
+
+        preValue = context.addToEnvironment(Context.REFERRAL, "follow");
+        assertEquals("ignore", preValue);
+        returnedEnv = (Hashtable<Object, Object>) context.getEnvironment();
+        assertTrue(returnedEnv.containsKey(Context.REFERRAL));
+        assertEquals("follow", returnedEnv.get(Context.REFERRAL));
+
+    }
+
+    public void test_removeFromEnvironment() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+
+        Object preValue = context.removeFromEnvironment(Context.REFERRAL);
+        assertNull(preValue);
+        Hashtable<Object, Object> returnedEnv = (Hashtable<Object, Object>) context
+                .getEnvironment();
+        assertFalse(returnedEnv.containsKey(Context.REFERRAL));
+
+        env.clear();
+        env.put(Context.REFERRAL, "ignore");
+        context = new LdapContextImpl(client, env, "cn=test");
+        preValue = context.removeFromEnvironment(Context.REFERRAL);
+        assertEquals("ignore", preValue);
+        returnedEnv = (Hashtable<Object, Object>) context.getEnvironment();
+        assertFalse(returnedEnv.containsKey(Context.REFERRAL));
+    }
 }

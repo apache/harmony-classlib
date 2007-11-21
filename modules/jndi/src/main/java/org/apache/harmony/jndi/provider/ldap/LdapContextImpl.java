@@ -19,6 +19,7 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -26,10 +27,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.Binding;
 import javax.naming.CannotProceedException;
 import javax.naming.CommunicationException;
 import javax.naming.CompositeName;
+import javax.naming.ConfigurationException;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
@@ -110,6 +113,23 @@ public class LdapContextImpl implements LdapContext {
     private static final String LDAP_DEREF_ALIASES = "java.naming.ldap.derefAliases"; //$NON-NLS-1$
 
     private static final String LDAP_TYPES_ONLY = "java.naming.ldap.typesOnly"; //$NON-NLS-1$
+
+    /**
+     * Some properties, such as 'java.naming.security.authentication', changed
+     * by <code>Context.addToEnvironment</code> or
+     * <code>Context.removeFromEnvironment</code> may affect connection with
+     * LDAP server. This variable contains all such properties, which need
+     * re-communication with LDAP server after changing.
+     */
+    private static final HashSet<String> connectionProperties = new HashSet<String>();
+
+    static {
+        connectionProperties.add(Context.SECURITY_AUTHENTICATION);
+        connectionProperties.add(Context.SECURITY_CREDENTIALS);
+        connectionProperties.add(Context.SECURITY_PRINCIPAL);
+        connectionProperties.add(Context.SECURITY_PROTOCOL);
+        connectionProperties.add("java.naming.ldap.factory.socket");
+    }
 
     /**
      * construct a new inherit <code>LdapContextImpl</code>
@@ -1039,8 +1059,17 @@ public class LdapContextImpl implements LdapContext {
     }
 
     public Object addToEnvironment(String s, Object o) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        Object preValue = env.put(s, o);
+
+        // if preValue equals o, do nothing
+        if ((preValue != null && preValue.equals(o))
+                || (preValue == null && o == null)) {
+            return preValue;
+        }
+
+        updateEnvironment(s);
+
+        return preValue;
     }
 
     public void bind(Name n, Object o) throws NamingException {
@@ -1401,8 +1430,40 @@ public class LdapContextImpl implements LdapContext {
     }
 
     public Object removeFromEnvironment(String s) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        Object preValue = env.remove(s);
+
+        // if s doesn't exist in env
+        if (preValue == null) {
+            return preValue;
+        }
+
+        updateEnvironment(s);
+
+        return preValue;
+    }
+
+    private void updateEnvironment(String propName) throws NamingException,
+            AuthenticationNotSupportedException, CommunicationException,
+            ConfigurationException {
+        if (connectionProperties.contains(propName)) {
+            if (propName.equals("java.naming.ldap.factory.socket")) {
+                // use new socket factory to connect server
+                String address = client.getAddress();
+                int port = client.getPort();
+
+                client = LdapClient.newInstance(address, port, env);
+                try {
+                    doBindOperation(connCtls);
+                } catch (IOException e) {
+                    CommunicationException ex = new CommunicationException();
+                    ex.setRootCause(e);
+                    throw ex;
+                }
+            } else {
+
+                reconnect(connCtls);
+            }
+        }
     }
 
     public void rename(Name nOld, Name nNew) throws NamingException {
