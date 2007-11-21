@@ -80,6 +80,8 @@ public class LdapContextImpl implements LdapContext {
      * ldap connection
      */
     private LdapClient client;
+    
+    private boolean isClosed;
 
     /**
      * name of the context
@@ -535,11 +537,18 @@ public class LdapContextImpl implements LdapContext {
             names = sre.getEntries();
 
             keyset = names.keySet();
-            for (Iterator<String> iterator = keyset.iterator(); iterator
+            schemaRoot: for (Iterator<String> iterator = keyset.iterator(); iterator
                     .hasNext();) {
                 String key = iterator.next();
                 Attributes as = names.get(key);
-                subschemasubentry = (String) as.get("subschemasubentry").get();
+                NamingEnumeration<String> ids = as.getIDs();
+                while (ids.hasMore()) {
+                    String id = ids.next();
+                    if (id.equalsIgnoreCase("subschemasubentry")) {
+                        subschemasubentry = (String) as.get(id).get();
+                        break schemaRoot;
+                    }
+                }
             }
         }
 
@@ -583,16 +592,16 @@ public class LdapContextImpl implements LdapContext {
 
             while (ids.hasMoreElements()) {
                 String schemaType = ids.nextElement();
-                if (!schemaTree.contains(schemaType)) {
-                    schemaTree.put(schemaType,
+                if (!schemaTree.contains(schemaType.toLowerCase())) {
+                    schemaTree.put(schemaType.toLowerCase(),
                             new Hashtable<String, Hashtable<String, Object>>());
                 }
                 Hashtable<String, Hashtable<String, Object>> schemaDefs = schemaTree
-                        .get(schemaType);
+                        .get(schemaType.toLowerCase());
                 LdapAttribute attribute = (LdapAttribute) as.get(schemaType);
                 for (int i = 0; i < attribute.size(); i++) {
                     String value = (String) attribute.get(i);
-                    parseValue(value, schemaDefs);
+                    parseValue(schemaType, value.toLowerCase(), schemaDefs);
                 }
             }
         }
@@ -613,7 +622,8 @@ public class LdapContextImpl implements LdapContext {
      * 'numericStringMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 ) TODO check
      * with RFC to see whether all the schema definition has been catered for
      */
-    private static void parseValue(String value,
+    private static void parseValue(String schemaType,
+            String value,
             Hashtable<String, Hashtable<String, Object>> schemaDefs) {
         StringTokenizer st = new StringTokenizer(value);
         // Skip (
@@ -664,18 +674,42 @@ public class LdapContextImpl implements LdapContext {
                 if (token.startsWith("(")) {
                     token = st.nextToken();
                     while (!token.equals(")")) {
-                        // remove enclosing quotation
-                        token = token.substring(1, token.length() - 1);
-                        values.add(token);
+                        // remove the leading ' symbol
+                        if (token.startsWith("'"))
+                            token = token.substring(1);
+                        while (!token.endsWith("'")) {
+                            desc.append(token).append(" ");
+                            token = st.nextToken();
+                        }
+
+                        // remove the ending ' symbol
+                        desc.append(token.substring(0, token.length() - 1));
+                        values.add(desc.toString());
+                        desc.delete(0, desc.length());
+
                         token = st.nextToken();
                     }
                 } else {
-                    // remove enclosing quotation
-                    token = token.substring(1, token.length() - 1);
-                    values.add(token);
+                    // remove the leading ' symbol
+                    if (token.startsWith("'"))
+                        token = token.substring(1);
+                    while (!token.endsWith("'")) {
+                        desc.append(token).append(" ");
+                        token = st.nextToken();
+                    }
+
+                    // remove the ending ' symbol
+                    desc.append(token.substring(0, token.length() - 1));
+                    values.add(desc.toString());
+                    desc.delete(0, desc.length());
                 }
                 schemaDef.put(attrName, values);
-                schemaDefs.put(values.get(0), schemaDef);
+                if (schemaType
+                        .equalsIgnoreCase(LdapSchemaContextImpl.LDAP_SYNTAXES)) {
+                    schemaDefs.put(oid, schemaDef);
+                } else {
+                    schemaDefs.put(values.get(0), schemaDef);
+                }
             }
             if (attrName.equals("must") || attrName.equals("sup")
                     || attrName.equals("may")) {
@@ -1081,8 +1115,10 @@ public class LdapContextImpl implements LdapContext {
     }
 
     public void close() throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        if (!isClosed) {
+            isClosed = true;
+            client = null;
+        }
     }
 
     /**
