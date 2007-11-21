@@ -118,7 +118,7 @@ public class CommonGlyphVector extends GlyphVector {
         visualPositions = new float[(len+1)<<1];
         defaultPositions = new float[(len+1)<<1];
 
-        glsTransforms = new AffineTransform[len];
+//        glsTransforms = new AffineTransform[len];
 
         this.charVector = chars;
         this.vectorFRC = frc;
@@ -486,7 +486,7 @@ public class CommonGlyphVector extends GlyphVector {
     @Override
     public Rectangle getGlyphPixelBounds(int glyphIndex, FontRenderContext frc,
             float x, float y) {
-        // TODO : need to be implemented with FontRenderContext
+
         if ((glyphIndex < 0) || (glyphIndex >= this.getNumGlyphs())) {
             // awt.43=glyphIndex is out of vector's limits
             throw new IndexOutOfBoundsException(Messages.getString("awt.43")); //$NON-NLS-1$
@@ -507,8 +507,16 @@ public class CommonGlyphVector extends GlyphVector {
 
         if (frc != null){
             at.concatenate(frc.getTransform());
+        
+/*          if (frc.usesFractionalMetrics()){
+                shape.transform(at);
+                Rectangle2D bounds = shape.getBounds2D();
+                Rectangle rect = new Rectangle();
+                rect.setRect(bounds);
+                return rect;
+            }*/
         }
-
+        
         shape.transform(at);
 
         Rectangle bounds = shape.getBounds();

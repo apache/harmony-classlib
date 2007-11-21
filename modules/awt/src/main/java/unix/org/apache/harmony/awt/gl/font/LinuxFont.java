@@ -89,7 +89,7 @@ public class LinuxFont extends FontPeerImpl {
                 this.italicAngle = LinuxNativeFont.getItalicAngleNative(pFont, this.fontType);
         }
         
-        this.nlm = new LinuxLineMetrics(this, null, " "); //$NON-NLS-1$
+        this.nlm = new LinuxLineMetrics(this, " "); //$NON-NLS-1$
 
         this.ascent = nlm.getLogicalAscent();
         this.descent = nlm.getLogicalDescent();
@@ -119,16 +119,22 @@ public class LinuxFont extends FontPeerImpl {
     }
 
     public LineMetrics getLineMetrics(String str, FontRenderContext frc, AffineTransform at) {
-        //TODO: frc isn't used now
         
+        AffineTransform frcAt = null;
         // Initialize baseline offsets
         nlm.getBaselineOffsets();
+        if (frc != null)
+            frcAt = frc.getTransform();
         
         LineMetricsImpl lm = (LineMetricsImpl)(this.nlm.clone());
         lm.setNumChars(str.length());
 
         if ((at != null) && (!at.isIdentity())){
+            if (frcAt != null) 
+                at.concatenate(frcAt);
             lm.scale((float)at.getScaleX(), (float)at.getScaleY());
+        } else if ((frcAt != null) && (!frcAt.isIdentity())) {
+            lm.scale((float)frcAt.getScaleX(), (float)frcAt.getScaleY());
         }
 
         return lm;
