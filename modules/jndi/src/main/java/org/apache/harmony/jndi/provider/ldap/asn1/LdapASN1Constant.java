@@ -355,4 +355,19 @@ public class LdapASN1Constant {
             setOptional(2);
         }
     };
+
+    public static final ASN1Type PersistentSearchControl = new ASN1SequenceWrap(
+            new ASN1Type[] { new ASN1Integer(), // changeTypes
+                    new ASN1Boolean(), // changesOnly
+                    new ASN1Boolean() }); // returnECs
+
+    public static final ASN1Type EntryChangeNotificationControl = new ASN1SequenceWrap(
+            new ASN1Type[] { new ASN1Enumerated(), // changeType
+                    new ASN1OctetString(), // previousDN
+                    new ASN1Integer() }) { // changeNumber
+        {
+            setOptional(1);
+            setOptional(2);
+        }
+    };
 }
