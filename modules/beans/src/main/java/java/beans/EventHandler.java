@@ -21,6 +21,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.StringTokenizer;
 
 import org.apache.harmony.beans.internal.nls.Messages;
@@ -35,6 +38,8 @@ public class EventHandler implements InvocationHandler {
 
     private String listenerMethodName;
 
+    final private AccessControlContext context; 
+
     public EventHandler(Object target, String action, String eventPropertyName,
             String listenerMethodName) {
         if (target == null || action == null) {
@@ -44,9 +49,18 @@ public class EventHandler implements InvocationHandler {
         this.action = action;
         this.eventPropertyName = eventPropertyName;
         this.listenerMethodName = listenerMethodName;
+        this.context = AccessController.getContext();
     }
 
-    public Object invoke(Object proxy, Method method, Object[] arguments) {
+    public Object invoke(final Object proxy, final Method method, final Object[] arguments) {
+        return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                return invokeImpl(proxy, method, arguments);
+            }
+        }, context);
+    }
+
+    private Object invokeImpl(Object proxy, Method method, Object[] arguments) {
         Class<?> proxyClass;
         Object result = null;
 
