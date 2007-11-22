@@ -151,9 +151,6 @@ public class Proxy implements Serializable {
                 }
                 byte[] classFileBytes = ProxyClassFile.generateBytes(
                         nextClassName, interfaces);
-                if (loader == null) {
-                    loader = ClassLoader.getSystemClassLoader();
-                }
                 newClass = defineClassImpl(loader, nextClassName.replace('.',
                         '/'), classFileBytes);
                 // Need a weak reference to the class so it can
