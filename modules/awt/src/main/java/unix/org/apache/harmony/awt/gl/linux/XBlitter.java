@@ -343,6 +343,19 @@ public class XBlitter implements Blitter {
             Color bgcolor,
             MultiRectArea clip
     ) {
+
+        if(dstX < 0){
+            width += dstX;
+            dstX = 0;
+        }
+
+        if(dstY < 0){
+            height += dstY;
+            dstY = 0;
+        }
+
+        if(width <= 0 || height <= 0) return;
+
         XSurface xDstSurf = ((XSurface) dstSurf);
 
         boolean srcNoAlpha =
