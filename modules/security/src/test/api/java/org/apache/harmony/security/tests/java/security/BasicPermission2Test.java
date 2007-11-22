@@ -18,6 +18,7 @@
 package org.apache.harmony.security.tests.java.security;
 
 import java.security.BasicPermission;
+import java.security.Permission;
 import java.security.PermissionCollection;
 
 public class BasicPermission2Test extends junit.framework.TestCase {
@@ -119,4 +120,18 @@ public class BasicPermission2Test extends junit.framework.TestCase {
 		assertTrue("Should imply", bpc.implies(bp4));
 		assertTrue("Should not imply", !bpc.implies(bp3));
 	}
+    
+    //Special treat with RuntimePermission exitVM in Java 6, which equals RuntimePermission exitVM.*
+    public void test_RuntimePermissionExitVM(){
+        Permission permission_exitVM = new RuntimePermission("exitVM");
+        Permission permission_exitVM_ALL = new RuntimePermission("exitVM.*");
+        Permission permission_exitVM_0 = new RuntimePermission("exitVM.0");
+        Permission permission_exitVM_a = new RuntimePermission("exitVM.a");
+        assertTrue(permission_exitVM.implies(permission_exitVM_ALL));
+        assertTrue(permission_exitVM.implies(permission_exitVM_0));
+        assertTrue(permission_exitVM.implies(permission_exitVM_a));
+        assertTrue(permission_exitVM_ALL.implies(permission_exitVM));
+        assertTrue(permission_exitVM_ALL.implies(permission_exitVM_0));
+        assertTrue(permission_exitVM_ALL.implies(permission_exitVM_a));
+    }
 }

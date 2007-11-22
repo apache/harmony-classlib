@@ -146,5 +146,19 @@ public class PermissionsTest extends TestCase {
     	} catch (NullPointerException e){}
 
     }
+    
+    public void test_toString() {
+        Permissions ps = new Permissions();
+        String address = getAddress(ps.toString());
+        String expectedResult = "java.security.Permissions@" + address
+                + " (\n)\n";
+        assertEquals(expectedResult, ps.toString());
+    }
+
+    private String getAddress(String s) {
+        int startIndex = s.indexOf('@') + 1;
+        int endIndex = s.indexOf(' ');
+        return s.substring(startIndex, endIndex);
+    }
 
  }

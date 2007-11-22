@@ -129,7 +129,16 @@ public abstract class BasicPermission extends Permission implements
 	 */
     public boolean implies(Permission permission) {
         if (permission != null && permission.getClass() == this.getClass()) {
-            return nameImplies(getName(), permission.getName());
+            String name = getName();
+            String thatName = permission.getName();
+            if (this instanceof RuntimePermission) {
+                if (thatName.equals("exitVM")) {
+                    thatName = "exitVM.*";
+                } else if (name.equals("exitVM")) {
+                    name = "exitVM.*";
+                }
+            }
+            return nameImplies(name, thatName);
         }
         return false;
     }

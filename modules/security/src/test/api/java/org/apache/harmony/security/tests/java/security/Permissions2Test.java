@@ -144,4 +144,16 @@ public class Permissions2Test extends junit.framework.TestCase {
 				.implies(new FilePermission(s + "tmp" + s + "test" + s
 						+ "test2.file", "write")));
 	}
+    
+    public void test_RuntimePermission_exitVM(){
+        Permissions permissions = new Permissions();
+        permissions.add(new RuntimePermission("exitVM"));
+        assertTrue(permissions.implies(new RuntimePermission("exitVM.*")));
+        assertTrue(permissions.implies(new RuntimePermission("exitVM.0")));
+        
+        permissions = new Permissions();
+        permissions.add(new RuntimePermission("exitVM.*"));
+        assertTrue(permissions.implies(new RuntimePermission("exitVM")));
+        assertTrue(permissions.implies(new RuntimePermission("exitVM.0")));
+    }
 }

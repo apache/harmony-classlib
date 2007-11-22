@@ -182,6 +182,7 @@ final class BasicPermissionCollection extends PermissionCollection {
      * Reads the object from stream and checks its consistency: all contained
      * permissions must be of the same subclass of BasicPermission.
      */
+    @SuppressWarnings("unchecked")
     private void readObject(java.io.ObjectInputStream in) throws IOException,
         ClassNotFoundException {
         ObjectInputStream.GetField fields = in.readFields();
