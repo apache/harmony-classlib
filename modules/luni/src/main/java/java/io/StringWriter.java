@@ -84,9 +84,7 @@ public class StringWriter extends Writer {
      * @return this StringWriters local StringBuffer.
      */
     public StringBuffer getBuffer() {
-        synchronized (lock) {
-            return buf;
-        }
+        return buf;
     }
 
     /**
@@ -98,9 +96,7 @@ public class StringWriter extends Writer {
      */
     @Override
     public String toString() {
-        synchronized (lock) {
-            return buf.toString();
-        }
+        return buf.toString();
     }
 
     /**
@@ -124,9 +120,10 @@ public class StringWriter extends Writer {
                 || count > cbuf.length - offset) {
             throw new IndexOutOfBoundsException();
         }
-        synchronized (lock) {
-            this.buf.append(cbuf, offset, count);
+        if (count == 0) {
+            return;
         }
+        buf.append(cbuf, offset, count);
     }
 
     /**
@@ -139,9 +136,7 @@ public class StringWriter extends Writer {
      */
     @Override
     public void write(int oneChar) {
-        synchronized (lock) {
-            buf.append((char) oneChar);
-        }
+        buf.append((char) oneChar);
     }
 
     /**
@@ -153,9 +148,7 @@ public class StringWriter extends Writer {
      */
     @Override
     public void write(String str) {
-        synchronized (lock) {
-            buf.append(str);
-        }
+        buf.append(str);
     }
 
     /**
@@ -176,9 +169,7 @@ public class StringWriter extends Writer {
     @Override
     public void write(String str, int offset, int count) {
         String sub = str.substring(offset, offset + count);
-        synchronized (lock) {
-            buf.append(sub);
-        }
+        buf.append(sub);
     }
 
     /**
@@ -209,9 +200,9 @@ public class StringWriter extends Writer {
     @Override
     public StringWriter append(CharSequence csq) {
         if (null == csq) {
-            append(TOKEN_NULL, 0, TOKEN_NULL.length());
+            write(TOKEN_NULL);
         } else {
-            append(csq, 0, csq.length());
+            write(csq.toString());
         }
         return this;
     }
