@@ -42,7 +42,7 @@ public class StringReader extends Reader {
      *            the String to filter reads on.
      */
     public StringReader(String str) {
-        super(str);
+        super();
         this.str = str;
         this.count = str.length();
     }
@@ -54,12 +54,7 @@ public class StringReader extends Reader {
      */
     @Override
     public void close() {
-        synchronized (lock) {
-            if (isClosed()) {
-                return;
-            }
-            str = null;
-        }
+        str = null;
     }
 
     /**
@@ -139,14 +134,17 @@ public class StringReader extends Reader {
      */
     @Override
     public int read(char buf[], int offset, int len) throws IOException {
-        // avoid int overflow
-        if (offset < 0 || offset > buf.length || len < 0
-                || len > buf.length - offset) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
         synchronized (lock) {
             if (isClosed()) {
                 throw new IOException(Msg.getString("K0083")); //$NON-NLS-1$
+            }
+            // avoid int overflow
+            if (offset < 0 || offset > buf.length || len < 0
+                    || len > buf.length - offset) {
+                throw new ArrayIndexOutOfBoundsException();
+            }
+            if (len == 0) {
+                return 0;
             }
             if (pos == this.count) {
                 return -1;

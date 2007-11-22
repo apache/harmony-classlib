@@ -147,22 +147,24 @@ public class StringReaderTest extends junit.framework.TestCase {
                                 .equals(testString.substring(5, 7)));
 	}
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
+	// Regression test for HARMONY-5077
+    static boolean finish = false;
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
+    public void test_synchronization() {
+        String anything = "Hello world";
+        final StringReader sr = new StringReader(anything);
+        Thread other = new Thread(new Runnable() {
+            public void run() {
+                sr.close();
+                finish = true;
+            };
+        });
 
-		try {
-			sr.close();
-		} catch (Exception e) {
-		}
-	}
+        synchronized (anything) {
+            other.start();
+            while (!finish) {
+                Thread.yield();
+            }
+        }
+    }
 }
