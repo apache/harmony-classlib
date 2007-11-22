@@ -112,6 +112,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         try {
             setEscapeProcessing(true);
             setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            setConcurrency(ResultSet.CONCUR_UPDATABLE);
+            setType(ResultSet.TYPE_SCROLL_INSENSITIVE);
+            setMaxRows(0);
+            setQueryTimeout(0);
+            setShowDeleted(false);
+            setUsername(null);
+            setPassword(null);
+            setMaxFieldSize(0);
+            setTypeMap(null);
+            setFetchSize(0);
         } catch (SQLException e) {
             // ignore, never reached
         }
@@ -272,45 +282,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public CachedRowSet createCopyNoConstraints() throws SQLException {
-        CachedRowSetImpl output;
-        try {
-            output = (CachedRowSetImpl) super.clone();
-            // restore "this"'s states
-            int temp = currentRowIndex;
-            CachedRow cr;
-            if (currentRow != null) {
-                cr = currentRow.createClone();
-            } else {
-                cr = null;
-            }
-
-            first();
-
-            // Deep Copy
-            ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-            do {
-                data.add(currentRow.createClone());
-            } while (next());
-
-            // TODO: should be the same granularity with RI using Debug tool
-            // inspect!
-            ((CachedRowSetImpl) output).setRows(data, columnCount);
-            output.setMetaData((RowSetMetaData) (getMetaData()));
-            output.originalResultSet = originalResultSet;
-            output.setUrl(getUrl());
-            output.setTableName(getTableName());
-
-            // recovery this's state for the modification of the operation
-            // first() and next();
-            currentRow = cr;
-            currentRowIndex = temp;
-
-            return output;
-        } catch (CloneNotSupportedException e) {
-            // FIXME deal with the exception
-            e.printStackTrace();
-            return null;
-        }
+        CachedRowSetImpl output = (CachedRowSetImpl) createCopy();
+        output.initialProperties();
+        return output;
     }
 
     public CachedRowSet createCopySchema() throws SQLException {

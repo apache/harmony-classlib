@@ -27,6 +27,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetListener;
@@ -384,27 +386,203 @@ public class CachedRowSetImplTest extends TestCase {
     }
 
     public void testcreateCopyNoConstraints() throws Exception {
-        crset.first();
 
-        CachedRowSet crsetCopyNoConstraints = (CachedRowSet) crset
-                .createCopyNoConstraints();
-
-        // Modify he constraints
-        crset.setReadOnly(false);
         crset.setConcurrency(ResultSet.CONCUR_READ_ONLY);
-        crset.setType(ResultSet.TYPE_FORWARD_ONLY);
+        crset.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
+        crset.setEscapeProcessing(false);
+        crset.setMaxRows(10);
+        crset.setTransactionIsolation(Connection.TRANSACTION_NONE);
+        crset.setQueryTimeout(10);
+        crset.setPageSize(10);
+        crset.setShowDeleted(true);
+        crset.setUsername("username");
+        crset.setPassword("password");
+        crset.setTypeMap(new HashMap<String, Class<?>>());
+        crset.setMaxFieldSize(10);
+        crset.setFetchDirection(ResultSet.FETCH_UNKNOWN);
 
-        crsetCopyNoConstraints.first();
-        crsetCopyNoConstraints.updateString(2, "copyTest2");
-        assertEquals(crsetCopyNoConstraints.getString(2), "copyTest2");
-        assertEquals(crset.getString(2), "hermit");
-        // the copyNoConstraints keep the default value of the CachedRowSet
-        assertEquals(crsetCopyNoConstraints.isReadOnly(), true);
-        assertEquals(crsetCopyNoConstraints.getConcurrency(),
-                ResultSet.CONCUR_UPDATABLE);
-        assertEquals(crsetCopyNoConstraints.getType(),
-                ResultSet.TYPE_SCROLL_INSENSITIVE);
+        CachedRowSet copy = crset.createCopyNoConstraints();
 
+        
+        // default is ResultSet.CONCUR_UPDATABLE
+        assertEquals(ResultSet.CONCUR_UPDATABLE, copy.getConcurrency());
+        // default is ResultSet.TYPE_SCROLL_INSENSITIVE
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, copy.getType());
+        // default is true
+        assertTrue(copy.getEscapeProcessing());
+        // default is 0
+        assertEquals(0, copy.getMaxRows());
+        // default is Connection.TRANSACTION_READ_COMMITTED
+        assertEquals(Connection.TRANSACTION_READ_COMMITTED, copy
+                .getTransactionIsolation());
+        // default is 0
+        assertEquals(0, copy.getQueryTimeout());
+        // default is false
+        assertFalse(copy.getShowDeleted());
+        // default is 0
+        assertEquals(0, copy.getMaxFieldSize());
+        // default is null
+        assertNull(copy.getPassword());
+        // default is null
+        assertNull(copy.getUsername());
+        // default is null
+        assertNull(copy.getTypeMap());
+
+        if (crset.getKeyColumns() == null) {
+            assertNull(copy.getKeyColumns());
+        } else {
+            int[] keyColumns = crset.getKeyColumns();
+            int[] copyKeyColumns = copy.getKeyColumns();
+
+            assertEquals(keyColumns.length, copyKeyColumns.length);
+            for (int i = 0; i < keyColumns.length; i++) {
+                assertEquals(keyColumns[i], copyKeyColumns[i]);
+            }
+            assertEquals(crset.getKeyColumns(), copy.getKeyColumns());
+        }
+
+        assertEquals(crset.getFetchDirection(), copy.getFetchDirection());
+        assertEquals(crset.getPageSize(), copy.getPageSize());
+
+        // TODO uncomment them after implemented
+        // assertEquals(crset.isBeforeFirst(), crsetCopy.isBeforeFirst());
+        // assertEquals(crset.isAfterLast(), crsetCopy.isAfterLast());
+        // assertEquals(crset.isFirst(), crsetCopy.isFirst());
+        // assertEquals(crset.isLast(), crsetCopy.isLast());
+        // assertEquals(crset.getRow(), copy.getRow());
+        // assertNotSame(crset.getWarnings(), copy.getWarnings());
+        // assertEquals(crset.getStatement(), copy.getStatement());
+        // try {
+        // assertEquals(crset.getCursorName(), copy.getCursorName());
+        // fail("Should throw SQLException");
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        //
+        // try {
+        // assertEquals(crset.getMatchColumnIndexes(), copy
+        // .getMatchColumnIndexes());
+        // fail("Should throw SQLException");
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        //
+        // try {
+        // assertEquals(crset.getMatchColumnNames(), copy
+        // .getMatchColumnNames());
+        // } catch (SQLException e) {
+        // // expected
+        // }
+
+        assertEquals(crset.isReadOnly(), copy.isReadOnly());
+        assertEquals(crset.size(), copy.size());
+
+        // different metaData object
+        assertNotSame(crset.getMetaData(), copy.getMetaData());
+
+        isMetaDataEquals(crset.getMetaData(), copy.getMetaData());
+
+        assertEquals(crset.getCommand(), copy.getCommand());
+
+        // check SyncProvider
+        assertEquals(crset.getSyncProvider().getProviderID(), copy
+                .getSyncProvider().getProviderID());
+        assertEquals(crset.getSyncProvider().getProviderGrade(), copy
+                .getSyncProvider().getProviderGrade());
+        assertEquals(crset.getSyncProvider().getDataSourceLock(), copy
+                .getSyncProvider().getDataSourceLock());
+        assertEquals(crset.getSyncProvider().getVendor(), copy
+                .getSyncProvider().getVendor());
+        assertEquals(crset.getSyncProvider().getVersion(), copy
+                .getSyncProvider().getVersion());
+
+        assertEquals(crset.getTableName(), copy.getTableName());
+        assertEquals(crset.getUrl(), copy.getUrl());
+
+    }
+
+    public void testcreateCopyNoConstraints2() throws Exception {
+
+        // the default value
+        assertNull(crset.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, crset.getConcurrency());
+        assertNull(crset.getDataSourceName());
+        assertEquals(ResultSet.FETCH_FORWARD, crset.getFetchDirection());
+        assertEquals(0, crset.getFetchSize());
+        assertEquals(0, crset.getMaxFieldSize());
+        assertEquals(0, crset.getMaxRows());
+        assertEquals(0, crset.getPageSize());
+        assertNull(crset.getPassword());
+        assertEquals(0, crset.getQueryTimeout());
+        assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, crset
+                .getTransactionIsolation());
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
+        assertNull(crset.getTypeMap());
+        assertEquals(DERBY_URL, crset.getUrl());
+        assertNull(crset.getUsername());
+        assertTrue(crset.getEscapeProcessing());
+        assertNull(crset.getKeyColumns());
+
+        // set value
+        crset.setCommand("testCommand");
+        crset.setConcurrency(ResultSet.CONCUR_READ_ONLY);
+        crset.setDataSourceName("testDataSourceName");
+        crset.setFetchDirection(ResultSet.FETCH_REVERSE);
+        crset.setMaxFieldSize(100);
+        crset.setMaxRows(10);
+        crset.setPageSize(10);
+        crset.setPassword("passwo");
+        crset.setQueryTimeout(100);
+        crset.setTableName("testTable");
+        crset.setTransactionIsolation(ResultSet.HOLD_CURSORS_OVER_COMMIT);
+        crset.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
+        crset.setTypeMap(new HashMap<String, Class<?>>());
+        crset.setUsername("testUserName");
+        crset.setEscapeProcessing(false);
+        crset.setKeyColumns(new int[] { 1 });
+
+        // check the changed value
+        assertEquals("testCommand", crset.getCommand());
+        assertEquals(ResultSet.CONCUR_READ_ONLY, crset.getConcurrency());
+        assertEquals("testDataSourceName", crset.getDataSourceName());
+        assertEquals(ResultSet.FETCH_REVERSE, crset.getFetchDirection());
+        assertEquals(0, crset.getFetchSize());
+        assertEquals(100, crset.getMaxFieldSize());
+        assertEquals(10, crset.getMaxRows());
+        assertEquals(10, crset.getPageSize());
+        assertEquals("passwo", crset.getPassword());
+        assertEquals(100, crset.getQueryTimeout());
+        assertEquals("testTable", crset.getTableName());
+        assertEquals(ResultSet.HOLD_CURSORS_OVER_COMMIT, crset
+                .getTransactionIsolation());
+        assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, crset.getType());
+        assertNotNull(crset.getTypeMap());
+        assertNull(crset.getUrl());
+        assertEquals("testUserName", crset.getUsername());
+        assertFalse(crset.getEscapeProcessing());
+        assertTrue(Arrays.equals(new int[] { 1 }, crset.getKeyColumns()));
+
+        // after call createCopyNoConstraints
+        CachedRowSet copy = crset.createCopyNoConstraints();
+        assertEquals("testCommand", copy.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, copy.getConcurrency());
+        assertEquals("testDataSourceName", copy.getDataSourceName());
+        assertEquals(ResultSet.FETCH_REVERSE, copy.getFetchDirection());
+        assertEquals(0, copy.getFetchSize());
+        assertEquals(0, copy.getMaxFieldSize());
+        assertEquals(0, copy.getMaxRows());
+        assertEquals(10, copy.getPageSize());
+        assertNull(copy.getPassword());
+        assertEquals(0, copy.getQueryTimeout());
+        assertEquals("testTable", copy.getTableName());
+        assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, copy
+                .getTransactionIsolation());
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, copy.getType());
+        assertNull(copy.getTypeMap());
+        assertNull(copy.getUrl());
+        assertNull(copy.getUsername());
+        assertTrue(copy.getEscapeProcessing());
+        assertTrue(Arrays.equals(new int[] { 1 }, copy.getKeyColumns()));
     }
 
     public void testCopySchema() throws Exception {
@@ -887,7 +1065,7 @@ public class CachedRowSetImplTest extends TestCase {
 
         assertNull(noInitialCrset.getUrl());
         assertNull(noInitialCrset.getUsername());
-        
+
     }
 
     public class Listener implements RowSetListener, Cloneable {
