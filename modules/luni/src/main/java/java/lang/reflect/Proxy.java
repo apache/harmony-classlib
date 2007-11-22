@@ -163,7 +163,10 @@ public class Proxy implements Serializable {
                 }
             } else {
                 newClass = ref.get();
-                assert newClass != null; 
+                assert newClass != null : "interfaceKey=" + interfaceKey
+                                        + "loaderCache=" + loaderCache 
+                                        + "\nintfCache=" + interfaceCache
+                                        + "\nproxyCache=" + proxyCache; 
             }
             return newClass;
         }
