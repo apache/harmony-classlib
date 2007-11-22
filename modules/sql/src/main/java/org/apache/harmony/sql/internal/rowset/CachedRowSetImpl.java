@@ -105,6 +105,17 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public CachedRowSetImpl(String providerID) throws SyncFactoryException {
         syncProvider = SyncFactory.getInstance(providerID);
+        initialProperties();
+    }
+
+    private void initialProperties() {
+        try {
+            setEscapeProcessing(true);
+            setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        } catch (SQLException e) {
+            // ignore, never reached
+        }
+
     }
 
     public CachedRowSetImpl() throws SyncFactoryException {
@@ -544,6 +555,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int size() {
+        if (rows == null) {
+            return 0;
+        }
         return rows.size();
     }
 
@@ -667,7 +681,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void close() throws SQLException {
 
         // TODO need more concerns!
-        rows.clear();
+        if (rows != null) {
+            rows.clear();
+        }
         currentRowIndex = 0;
         currentRow = null;
         meta = null;

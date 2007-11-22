@@ -50,6 +50,8 @@ public class CachedRowSetImplTest extends TestCase {
 
     private CachedRowSet crset;
 
+    private CachedRowSet noInitialCrset;
+
     private final static int DEFAULT_COLUMN_COUNT = 12;
 
     private final static int DEFAULT_ROW_COUNT = 4;
@@ -83,10 +85,15 @@ public class CachedRowSetImplTest extends TestCase {
         rs = st.executeQuery("select * from USER_INFO");
         try {
             crset = (CachedRowSet) Class.forName(
-            "com.sun.rowset.CachedRowSetImpl").newInstance();
+                    "com.sun.rowset.CachedRowSetImpl").newInstance();
+            noInitialCrset = (CachedRowSet) Class.forName(
+                    "com.sun.rowset.CachedRowSetImpl").newInstance();
         } catch (ClassNotFoundException e) {
 
             crset = (CachedRowSet) Class.forName(
+                    "org.apache.harmony.sql.internal.rowset.CachedRowSetImpl")
+                    .newInstance();
+            noInitialCrset = (CachedRowSet) Class.forName(
                     "org.apache.harmony.sql.internal.rowset.CachedRowSetImpl")
                     .newInstance();
 
@@ -210,6 +217,8 @@ public class CachedRowSetImplTest extends TestCase {
 
     public void testSize() throws Exception {
         assertEquals(DEFAULT_ROW_COUNT, crset.size());
+        // before populate should return 0
+        assertEquals(0, noInitialCrset.size());
     }
 
     public void testDeleteRow() throws SQLException {
@@ -822,6 +831,63 @@ public class CachedRowSetImplTest extends TestCase {
         if (preStmt != null) {
             preStmt.close();
         }
+    }
+
+    public void testConstructor() throws Exception {
+
+        assertTrue(noInitialCrset.isReadOnly());
+        assertEquals(0, noInitialCrset.size());
+        assertNull(noInitialCrset.getMetaData());
+
+        assertNull(noInitialCrset.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, noInitialCrset
+                .getConcurrency());
+        // TODO uncomment after impelemented
+        // try {
+        // crset.getCursorName();
+        // fail("Should throw SQLException");
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        // try {
+        // crset.getMatchColumnIndexes();
+        // fail("Should throw SQLException");
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        //
+        // try {
+        // crset.getMatchColumnNames();
+        // } catch (SQLException e) {
+        // // expected
+        // }
+        // assertEquals(0, crset.getRow());
+        // assertNull(crset.getStatement());
+
+        assertEquals(true, noInitialCrset.getEscapeProcessing());
+        assertEquals(Connection.TRANSACTION_READ_COMMITTED, noInitialCrset
+                .getTransactionIsolation());
+
+        assertEquals(ResultSet.FETCH_FORWARD, noInitialCrset
+                .getFetchDirection());
+        assertEquals(0, noInitialCrset.getFetchSize());
+        assertNull(noInitialCrset.getKeyColumns());
+
+        assertEquals(0, noInitialCrset.getMaxFieldSize());
+        assertEquals(0, noInitialCrset.getMaxRows());
+
+        assertEquals(0, noInitialCrset.getPageSize());
+        assertEquals(null, noInitialCrset.getPassword());
+        assertEquals(0, noInitialCrset.getQueryTimeout());
+        assertEquals(false, noInitialCrset.getShowDeleted());
+
+        assertNull(noInitialCrset.getTableName());
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, noInitialCrset
+                .getType());
+
+        assertNull(noInitialCrset.getUrl());
+        assertNull(noInitialCrset.getUsername());
+        
     }
 
     public class Listener implements RowSetListener, Cloneable {
