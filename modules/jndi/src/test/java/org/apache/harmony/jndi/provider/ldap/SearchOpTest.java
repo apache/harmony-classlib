@@ -30,7 +30,7 @@ import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 public class SearchOpTest extends TestCase {
     public void test_encode_decode() throws Exception {
         SearchControls controls = new SearchControls();
-        Filter filter = new Filter(7);
+        Filter filter = new Filter(Filter.PRESENT_FILTER);
         filter.setValue(Utils.getBytes("objectClass"));
         SearchOp op = new SearchOp("test", controls, filter);
 

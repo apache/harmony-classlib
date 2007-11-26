@@ -143,7 +143,7 @@ public class LdapResult implements ASN1Decodable {
      * Retrieves the referrals.
      * 
      * @return A prossibly null array. <code>null</code> means no referrals
-     *         retrieves from server
+     *         retrieved from server
      */
     public String[] getReferrals() {
         return referrals;

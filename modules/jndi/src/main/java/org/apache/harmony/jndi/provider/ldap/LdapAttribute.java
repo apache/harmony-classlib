@@ -22,12 +22,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 
+import org.apache.harmony.accessibility.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
@@ -156,9 +158,9 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
         if (attributeDefinition != null) {
             return attributeDefinition;
         }
-        // TODO: Not yet implemented
-        throw new NotYetImplementedException();
-
+        attributeDefinition = context
+                .getSchemaAttributeDefinition(getID());
+        return attributeDefinition;
     }
 
     @Override
@@ -166,8 +168,24 @@ public class LdapAttribute extends BasicAttribute implements ASN1Decodable,
         if (attributeSyntaxDefinition != null) {
             return attributeSyntaxDefinition;
         }
-        // TODO: Not yet implemented
-        throw new NotYetImplementedException();
+        //      get the syntax id from the attribute def
+        DirContext schema = context.getSchema("");
+        DirContext attrDef = (DirContext)schema.lookup(
+                LdapSchemaContextImpl.ATTRIBUTE_DEFINITION + "/" + getID());
+
+        Attribute syntaxAttr = attrDef.getAttributes("").get("syntax");
+
+        if (syntaxAttr == null || syntaxAttr.size() == 0) {
+            throw new NameNotFoundException(Messages.getString("jndi.90",
+                    getID()));
+        }
+
+        String syntaxName = (String)syntaxAttr.get();
+
+        // look in the schema tree for the syntax definition
+        return (DirContext)schema.lookup(
+                LdapSchemaContextImpl.SYNTAX_DEFINITION + "/" + syntaxName);
+        
     }
 
     private static boolean isBinary(String name) {

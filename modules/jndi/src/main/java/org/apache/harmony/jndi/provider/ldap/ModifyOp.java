@@ -59,6 +59,13 @@ public class ModifyOp implements LdapOperation, ASN1Encodable {
         values[1] = modifications;
     }
 
+    /**
+     * 
+     * @param type
+     *            ldap modify type, must be one of ModifyOp.ADD, ModifyOp.DELETE
+     *            or ModifyOp.REPLACE
+     * @param attr
+     */
     public void addModification(int type, LdapAttribute attr) {
         if (type >= 0 && type <= 2 && attr != null) {
             modifications.add(new Modification(type, attr));
