@@ -133,6 +133,35 @@ public class CachedRowSetImplTest extends TestCase {
         }
     }
 
+    public void testGetOriginalRow() throws Exception {
+        try {
+            crset.getOriginalRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected: spec throw SQLException
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // RI throw ArrayIndexOutOfBoundsException
+        }
+
+        assertTrue(crset.absolute(3));
+        assertNotSame(crset.getOriginalRow(), crset.getOriginalRow());
+
+        crset.updateString(2, "update3");
+        ResultSet originalRow = crset.getOriginalRow();
+        assertTrue(originalRow.next());
+        assertEquals("test3", originalRow.getString(2));
+
+        // after call acceptChanges()
+        crset.updateRow();
+        crset.acceptChanges();
+        assertTrue(crset.absolute(3));
+        assertEquals("update3", crset.getString(2));
+        originalRow = crset.getOriginalRow();
+        assertTrue(originalRow.next());
+        // TODO uncomment it after implement Writer
+        // assertEquals("update3", originalRow.getString(2));
+    }
+
     public void testSetSyncProvider() throws Exception {
         if (System.getProperty("Testing Harmony") == "true") {
             String mySyncProvider = "org.apache.harmony.sql.internal.rowset.HYOptimisticProvider";
@@ -403,7 +432,6 @@ public class CachedRowSetImplTest extends TestCase {
 
         CachedRowSet copy = crset.createCopyNoConstraints();
 
-        
         // default is ResultSet.CONCUR_UPDATABLE
         assertEquals(ResultSet.CONCUR_UPDATABLE, copy.getConcurrency());
         // default is ResultSet.TYPE_SCROLL_INSENSITIVE
@@ -655,7 +683,55 @@ public class CachedRowSetImplTest extends TestCase {
         assertNull(listener.getTag());
     }
 
+    public void testCopySchema2() throws Exception {
+
+        // set value
+        crset.setCommand("testCommand");
+        crset.setConcurrency(ResultSet.CONCUR_READ_ONLY);
+        crset.setDataSourceName("testDataSourceName");
+        crset.setFetchDirection(ResultSet.FETCH_REVERSE);
+        crset.setMaxFieldSize(100);
+        crset.setMaxRows(10);
+        crset.setPageSize(10);
+        crset.setPassword("passwo");
+        crset.setQueryTimeout(100);
+        crset.setTableName("testTable");
+        crset.setTransactionIsolation(ResultSet.HOLD_CURSORS_OVER_COMMIT);
+        crset.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
+        crset.setTypeMap(new HashMap<String, Class<?>>());
+        crset.setEscapeProcessing(false);
+        crset.setKeyColumns(new int[] { 1 });
+
+        // call createCopySchema()
+        CachedRowSet copy = crset.createCopySchema();
+        assertFalse(copy.next());
+        assertEquals(crset.getCommand(), copy.getCommand());
+        assertEquals(crset.getConcurrency(), copy.getConcurrency());
+        assertEquals(crset.getDataSourceName(), copy.getDataSourceName());
+        assertEquals(crset.getFetchDirection(), copy.getFetchDirection());
+        assertEquals(crset.getMaxFieldSize(), copy.getMaxFieldSize());
+        assertEquals(crset.getMaxRows(), copy.getMaxRows());
+        assertEquals(crset.getPageSize(), copy.getPageSize());
+        assertEquals(crset.getQueryTimeout(), copy.getQueryTimeout());
+        assertEquals(crset.getTableName(), copy.getTableName());
+        assertEquals(crset.getTransactionIsolation(), copy
+                .getTransactionIsolation());
+        assertEquals(crset.getType(), copy.getType());
+        assertEquals(crset.getUrl(), copy.getUrl());
+        assertEquals(crset.getEscapeProcessing(), copy.getEscapeProcessing());
+        assertTrue(Arrays.equals(crset.getKeyColumns(), copy.getKeyColumns()));
+
+        // compare the object reference
+        assertNotSame(crset.getKeyColumns(), copy.getKeyColumns());
+        assertNotSame(crset.getMetaData(), copy.getMetaData());
+        assertNotSame(crset.getOriginal(), copy.getOriginal());
+        assertNotSame(crset.getTypeMap(), copy.getTypeMap());
+    }
+
     public void testCreateCopy() throws Exception {
+
+        // TODO: lack of the test for CachedRowSet.getOriginal() and
+        // CachedRowSet.getOriginalRow()
 
         crset.absolute(3);
 

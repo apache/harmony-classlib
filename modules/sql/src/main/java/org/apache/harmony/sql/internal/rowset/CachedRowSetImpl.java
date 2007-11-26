@@ -73,8 +73,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private CachedRow currentRow;
 
-    private CachedRow originalRow;
-
     // start from : 1.
     private int currentRowIndex;
 
@@ -161,7 +159,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             RowSetWriter rowSetWriter = syncProvider.getRowSetWriter();
             CachedRowSetImpl input = (CachedRowSetImpl) createCopy();
             rowSetWriter.writeData(input);
-            // setOriginalRow();
+            /*
+             * FIXME: if no conflicts happen when writeData, then call
+             * setOriginalRow()
+             */
             notifyRowSetChanged();
         } catch (SQLException e) {
             // TODO deal with the exception
@@ -252,6 +253,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             if (getKeyColumns() != null) {
                 output.setKeyColumns(getKeyColumns().clone());
             }
+            // CachedRowSetImpl.originalResultSet
+            CachedRowSetImpl copyOriginalRs = new CachedRowSetImpl();
+            copyOriginalRs.populate(getOriginal());
+            output.originalResultSet = copyOriginalRs;
 
             /*
              * TODO uncomment after getMatchColumnIndexes and
@@ -288,35 +293,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public CachedRowSet createCopySchema() throws SQLException {
-        // For webRowSet: represent the table structure: Columns
-        CachedRowSetImpl result;
-        try {
-            // copy data from BaseRowSet
-            result = (CachedRowSetImpl) super.clone();
-            // deep copy meta data
-            result.meta = copyMetaData(meta);
-            result.columnCount = columnCount;
-            result.keyCols = keyCols == null ? null : keyCols.clone();
-            result.originalResultSet = new CachedRowSetImpl(syncProvider
-                    .getProviderID());
-            result.pageSize = pageSize;
-            result.setSyncProvider(syncProvider.getProviderID());
-            result.setTableName(getTableName());
+        CachedRowSetImpl output = (CachedRowSetImpl) createCopy();
 
-            // clean up rows data
-            result.currentColumn = null;
-            result.currentRowIndex = 0;
-            result.insertRow = null;
-            result.originalRow = null;
-            result.pageNumber = 1;
-            result.rememberedCursorPosition = 0;
-            result.rows = new ArrayList<CachedRow>();
-            result.sqlwarn = null;
-            return result;
-        } catch (CloneNotSupportedException e) {
-            // TODO add error message
-            throw new SQLException();
-        }
+        // clean up rows data
+        output.currentColumn = null;
+        output.currentRow = null;
+        output.currentRowIndex = 0;
+        output.insertRow = null;
+        output.pageNumber = 1;
+        output.rememberedCursorPosition = 0;
+        output.rows = new ArrayList<CachedRow>();
+        output.sqlwarn = null;
+
+        return output;
     }
 
     public RowSet createShared() throws SQLException {
@@ -364,11 +353,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException();
         }
 
-        CachedRowSetImpl specialRset = new CachedRowSetImpl();
+        CachedRowSetImpl originalRowRset = new CachedRowSetImpl();
         ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-        data.add(originalRow);
-        specialRset.setRows(data, columnCount);
-        return specialRset;
+        CachedRow originalCachedRow = rows.get(getRow() - 1).getOriginal();
+        data.add(originalCachedRow);
+        originalRowRset.setRows(data, columnCount);
+        originalRowRset.setType(ResultSet.TYPE_SCROLL_INSENSITIVE);
+        originalRowRset.setConcurrency(ResultSet.CONCUR_UPDATABLE);
+        return originalRowRset;
     }
 
     public int getPageSize() {
@@ -495,13 +487,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void setOriginalRow() throws SQLException {
 
+        // FIXME re-implements this method
         if (currentRow == null) {
             // TODO add error messages
             throw new SQLException();
         }
-        originalRow = currentRow;
         currentRow.setNonUpdateable();
-
     }
 
     public void setPageSize(int size) throws SQLException {
@@ -883,7 +874,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int getRow() throws SQLException {
-        throw new NotImplementedException();
+        // FIXME need more tests
+        if (currentRow == null) {
+            return 0;
+        }
+
+        return currentRowIndex;
     }
 
     public short getShort(int columnIndex) throws SQLException {
