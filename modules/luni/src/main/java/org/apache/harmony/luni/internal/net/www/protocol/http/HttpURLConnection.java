@@ -1081,6 +1081,7 @@ public class HttpURLConnection extends java.net.HttpURLConnection {
         // Response Code Sample : "HTTP/1.0 200 OK"
 
         // Call connect() first since getHeaderField() doesn't return exceptions
+        connect();
         doRequest();
         if (responseCode != -1) {
             return responseCode;
