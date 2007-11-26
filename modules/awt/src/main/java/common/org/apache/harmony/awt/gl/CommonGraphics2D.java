@@ -28,6 +28,7 @@ import java.awt.Composite;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Paint;
 import java.awt.PaintContext;
@@ -158,7 +159,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
     protected Stroke stroke = new BasicStroke();
 
     //TODO: Think more about FontRenderContext
-    protected FontRenderContext frc = new FontRenderContext(null, false, false);
+    protected FontRenderContext frc = null;
 
     protected JavaShapeRasterizer jsr = new JavaShapeRasterizer();
 
@@ -782,6 +783,22 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
     @Override
     public FontRenderContext getFontRenderContext() {
+        AffineTransform at;
+        if (frc == null){
+            GraphicsConfiguration gc = getDeviceConfiguration();
+            if (gc != null){
+                at = gc.getDefaultTransform();
+                at.concatenate(gc.getNormalizingTransform());
+            }
+            else 
+                at = null;
+
+            boolean isAa = (hints.get(RenderingHints.KEY_TEXT_ANTIALIASING) == 
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            boolean isFm = (hints.get(RenderingHints.KEY_FRACTIONALMETRICS) == 
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            frc = new FontRenderContext(at,isAa,isFm);
+        }
         return frc;
     }
 

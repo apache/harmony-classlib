@@ -34,6 +34,11 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.SearchControls;
+import javax.naming.event.EventContext;
+import javax.naming.event.NamespaceChangeListener;
+import javax.naming.event.NamingEvent;
+import javax.naming.event.NamingExceptionEvent;
+import javax.naming.event.NamingListener;
 import javax.naming.ldap.BasicControl;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapName;
@@ -41,6 +46,7 @@ import javax.naming.ldap.LdapName;
 import junit.framework.TestCase;
 
 import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
+import org.apache.harmony.jndi.provider.ldap.event.PersistentSearchResult;
 
 public class LdapContextImplTest extends TestCase {
     private LdapContextImpl context;
@@ -503,4 +509,196 @@ public class LdapContextImplTest extends TestCase {
         }
     }
 
+    public void test_addToEnvironment() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+
+        Object preValue = context.addToEnvironment(Context.REFERRAL, "ignore");
+        assertNull(preValue);
+        Hashtable<Object, Object> returnedEnv = (Hashtable<Object, Object>) context
+                .getEnvironment();
+        assertTrue(returnedEnv.containsKey(Context.REFERRAL));
+        assertEquals("ignore", returnedEnv.get(Context.REFERRAL));
+
+        preValue = context.addToEnvironment(Context.REFERRAL, "follow");
+        assertEquals("ignore", preValue);
+        returnedEnv = (Hashtable<Object, Object>) context.getEnvironment();
+        assertTrue(returnedEnv.containsKey(Context.REFERRAL));
+        assertEquals("follow", returnedEnv.get(Context.REFERRAL));
+
+    }
+
+    public void test_removeFromEnvironment() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+
+        Object preValue = context.removeFromEnvironment(Context.REFERRAL);
+        assertNull(preValue);
+        Hashtable<Object, Object> returnedEnv = (Hashtable<Object, Object>) context
+                .getEnvironment();
+        assertFalse(returnedEnv.containsKey(Context.REFERRAL));
+
+        env.clear();
+        env.put(Context.REFERRAL, "ignore");
+        context = new LdapContextImpl(client, env, "cn=test");
+        preValue = context.removeFromEnvironment(Context.REFERRAL);
+        assertEquals("ignore", preValue);
+        returnedEnv = (Hashtable<Object, Object>) context.getEnvironment();
+        assertFalse(returnedEnv.containsKey(Context.REFERRAL));
+    }
+
+    public void test_addNamingListener() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+
+        context.addNamingListener("", EventContext.OBJECT_SCOPE,
+                new TestNamingListener());
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("cn=test", op.getBaseObject());
+        SearchControls controls = op.getControls();
+        assertEquals(SearchControls.OBJECT_SCOPE, controls.getSearchScope());
+        assertEquals(0, controls.getCountLimit());
+        assertEquals(false, controls.getDerefLinkFlag());
+        assertEquals(false, controls.getReturningObjFlag());
+        assertEquals(null, controls.getReturningAttributes());
+
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", filter.getValue());
+        assertTrue(op.getSearchResult() instanceof PersistentSearchResult);
+
+        try {
+            context.addNamingListener("cn=addlistener/use/bin",
+                    EventContext.OBJECT_SCOPE, new TestNamingListener());
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+
+        client = new MockLdapClient();
+        context = new LdapContextImpl(client, env, "cn=test");
+        // listener is null, do nothing
+        context.addNamingListener("", EventContext.OBJECT_SCOPE, null);
+        assertFalse(client.getRequest() instanceof SearchOp);
+
+        try {
+            context.addNamingListener("", 100, new TestNamingListener());
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    public void test_addNamingListener_with_filter() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+
+        SearchControls controls = new SearchControls();
+        controls.setCountLimit(100);
+        controls.setDerefLinkFlag(true);
+        controls.setReturningObjFlag(true);
+        controls.setTimeLimit(5);
+        context.addNamingListener("test=addlistener", "(objectClass=*)",
+                controls, new TestNamingListener());
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("test=addlistener,cn=test", op.getBaseObject());
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", filter.getValue());
+        assertEquals(controls.getCountLimit(), op.getControls().getCountLimit());
+        assertEquals(controls.getDerefLinkFlag(), op.getControls()
+                .getDerefLinkFlag());
+        assertEquals(controls.getReturningObjFlag(), op.getControls()
+                .getReturningObjFlag());
+        assertEquals(controls.getSearchScope(), op.getControls()
+                .getSearchScope());
+        assertEquals(controls.getTimeLimit(), op.getControls().getTimeLimit());
+        assertTrue(op.getSearchResult() instanceof PersistentSearchResult);
+
+        try {
+            context.search("test=addlistener", "objectClass=*", controls);
+            fail("Should throw InvalidSearchFilterException");
+        } catch (InvalidSearchFilterException e) {
+            // expected
+        }
+
+        context.addNamingListener("test=addlistener", "(objectClass=*)", null,
+                new TestNamingListener());
+
+        op = (SearchOp) client.getRequest();
+        assertEquals(0, op.getControls().getCountLimit());
+        assertEquals(false, op.getControls().getDerefLinkFlag());
+        assertEquals(false, op.getControls().getReturningObjFlag());
+        assertEquals(SearchControls.ONELEVEL_SCOPE, op.getControls()
+                .getSearchScope());
+        assertEquals(0, op.getControls().getTimeLimit());
+        assertNull(controls.getReturningAttributes());
+        assertTrue(op.getSearchResult() instanceof PersistentSearchResult);
+    }
+
+    public void test_removeNamingListener() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+        // remove not registered listener, do nothing
+        context.removeNamingListener(new TestNamingListener());
+
+        NamingListener listener = new TestNamingListener();
+
+        context.addNamingListener("test=listener", EventContext.OBJECT_SCOPE,
+                listener);
+        context.removeNamingListener(listener);
+
+        listener = new TestNamingListener();
+        context.addNamingListener("test=listener", EventContext.OBJECT_SCOPE,
+                listener);
+        context.addNamingListener("test=listener", EventContext.ONELEVEL_SCOPE,
+                listener);
+        context.removeNamingListener(listener);
+    }
+
+    public static class TestNamingListener implements NamespaceChangeListener {
+
+        private NamingEvent event;
+
+        private NamingExceptionEvent ex;
+
+        public void objectAdded(NamingEvent namingevent) {
+            this.event = namingevent;
+        }
+
+        public void objectRemoved(NamingEvent namingevent) {
+            this.event = namingevent;
+        }
+
+        public NamingEvent getEvent() {
+            return event;
+        }
+
+        public NamingExceptionEvent getExceptionEvent() {
+            return ex;
+        }
+
+        public void objectRenamed(NamingEvent namingevent) {
+            this.event = namingevent;
+        }
+
+        public void namingExceptionThrown(
+                NamingExceptionEvent namingExceptionEvent) {
+            this.ex = namingExceptionEvent;
+
+        }
+
+    }
 }

@@ -36,10 +36,8 @@ public class LinuxLineMetrics extends LineMetricsImpl {
     /**
      * Constructor
      */
-    public LinuxLineMetrics(    LinuxFont fnt,
-                                FontRenderContext frc,
-                                String str){
-        // TODO : FontRenderContext isn't used now
+    public LinuxLineMetrics(LinuxFont fnt, String str){
+
         float[] metrics = LinuxNativeFont.getNativeLineMetrics(fnt.getFontHandle(), fnt.getSize(), false, false, fnt.fontType);
 
         if (metrics == null){

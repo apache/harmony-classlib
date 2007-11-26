@@ -161,13 +161,20 @@ public class CompositeFont extends FontPeerImpl{
      * @param frc specified FontRenderContext 
      * @param at specified AffineTransform
      */
-     @Override
+    @Override
     public LineMetrics getLineMetrics(String str, FontRenderContext frc , AffineTransform at){
+        AffineTransform frcAt = null;
         LineMetricsImpl lm = (LineMetricsImpl)(this.nlm.clone());
         lm.setNumChars(str.length());
-
+        if (frc != null)
+            frcAt = frc.getTransform();
+        
         if ((at != null) && (!at.isIdentity())){
+            if (frcAt != null)
+                at.concatenate(frcAt);
             lm.scale((float)at.getScaleX(), (float)at.getScaleY());
+        } else if ((frcAt != null) && (!frcAt.isIdentity())){
+            lm.scale((float)frcAt.getScaleX(), (float)frcAt.getScaleY());
         }
 
         return lm;
@@ -315,7 +322,11 @@ public class CompositeFont extends FontPeerImpl{
      */
     public Rectangle2D getStringBounds(char[] chars, int start, int end, FontRenderContext frc){
 
-        LineMetrics lm = getLineMetrics();
+        if (nlm == null){
+            setDefaultLineMetrics("", frc); //$NON-NLS-1$
+        }
+
+        LineMetrics lm = nlm;
         float minY = -lm.getAscent();
         float minX = 0;
         float height = lm.getHeight();

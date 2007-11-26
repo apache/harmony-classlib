@@ -63,19 +63,19 @@ public class LdapSearchResult {
         }
     }
 
-    private void decodeDone(Object value) {
+    protected void decodeDone(Object value) {
         result = new LdapResult();
         result.decodeValues((Object[]) value);
     }
 
-    private void decodeRef(Object value) {
+    protected void decodeRef(Object value) {
         Collection<byte[]> list = (Collection<byte[]>) value;
         for (byte[] bs : list) {
             refURLs.add(Utils.getString(bs));
         }
     }
 
-    private void decodeEntry(Object value) {
+    protected void decodeEntry(Object value) {
         Object[] values = (Object[]) value;
         String name = Utils.getString((byte[]) values[0]);
 

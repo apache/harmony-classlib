@@ -62,24 +62,7 @@ public class XSurface extends Surface {
     }
 
     void setRoi(Rectangle2D roi) {
-        if (roi.getX() < 0 || roi.getY() < 0) {
-            double x = roi.getX();
-            double y = roi.getY();
-            double width = roi.getWidth();
-            double height = (int) roi.getHeight();
-            if (x < 0) {
-                width += x;
-                x = 0;
-            }
-            if (y < 0) {
-                height += y;
-                y = 0;
-            }
-
-            this.roi = new Rectangle2D.Double(x, y, width, height);
-        } else {
-            this.roi = roi;
-        }
+        this.roi = roi;
     }
 
     public ColorModel getColorModel() {

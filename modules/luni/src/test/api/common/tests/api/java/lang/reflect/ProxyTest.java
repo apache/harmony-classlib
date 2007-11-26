@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.UndeclaredThrowableException;
 
+import java.security.AllPermission;
+import java.security.ProtectionDomain;
+
 import tests.support.Support_Proxy_I1;
 import tests.support.Support_Proxy_I2;
 import tests.support.Support_Proxy_ParentException;
@@ -72,21 +75,19 @@ public class ProxyTest extends junit.framework.TestCase {
 				.isProxyClass(Proxy.getProxyClass(null,
 						new Class[] { Comparable.class })));
 
-		boolean aborted = false;
 		try {
 			Proxy.getProxyClass(null, new Class[] { Support_Proxy_I1.class,
 					Support_Proxy_I2.class });
-		} catch (IllegalArgumentException e) {
-			aborted = true;
+            fail("Default classLoader should not see app class ");
+		} catch (IllegalArgumentException expected) {
 		}
-		assertTrue("Default classLoader should not see app class ", aborted);
 	}
 
 	/**
 	 * @tests java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader,
 	 *        java.lang.Class[], java.lang.reflect.InvocationHandler)
 	 */
-	public void test_newProxyInstanceLjava_lang_ClassLoader$Ljava_lang_ClassLjava_lang_reflect_InvocationHandler() {
+	public void test_newProxyInstanceLjava_lang_ClassLoader$Ljava_lang_ClassLjava_lang_reflect_InvocationHandler() throws Exception {
 		Object p = Proxy.newProxyInstance(Support_Proxy_I1.class
 				.getClassLoader(), new Class[] { Support_Proxy_I1.class,
 				Support_Proxy_I2.class }, new InvocationHandler() {
@@ -116,42 +117,31 @@ public class ProxyTest extends junit.framework.TestCase {
 		int[] result = (int[]) proxy.array(new long[] { 100L, -200L });
 		assertEquals("Failed base type conversion test ", -200, result[0]);
 
-		boolean worked = false;
 		try {
 			proxy.string("");
+            fail("Problem converting exception");
 		} catch (Support_Proxy_SubException e) {
-			worked = true;
-		} catch (Support_Proxy_ParentException e) { // is never thrown
 		}
-		assertTrue("Problem converting exception ", worked);
 
-		worked = false;
 		try {
 			proxy.string("clone");
-		} catch (Support_Proxy_ParentException e) { // is never thrown
+            fail("Problem converting exception");
 		} catch (UndeclaredThrowableException e) {
-			worked = true;
+            assertSame(Support_Proxy_ParentException.class, e.getCause().getClass());
 		}
-		assertTrue("Problem converting exception ", worked);
 
-		worked = false;
 		try {
 			proxy.string("error");
-		} catch (Support_Proxy_ParentException e) { // is never thrown
-		} catch (UndeclaredThrowableException e) {
-		} catch (RuntimeException e) {
-			worked = e.getClass() == ArrayStoreException.class;
+            fail("Problem converting exception");
+		} catch (ArrayStoreException e) {
 		}
-		assertTrue("Problem converting exception ", worked);
 
-		worked = false;
 		try {
 			proxy.string("any");
-		} catch (Support_Proxy_ParentException e) { // is never thrown
+            fail("Problem converting exception");
 		} catch (UndeclaredThrowableException e) {
-			worked = true;
+            assertSame(IllegalAccessException.class, e.getCause().getClass());
 		}
-		assertTrue("Problem converting exception ", worked);
 
 		Broken1 proxyObject = (Broken1) Proxy.newProxyInstance(Broken1.class
 				.getClassLoader(), new Class[] { Broken1.class },
@@ -207,13 +197,11 @@ public class ProxyTest extends junit.framework.TestCase {
 
 		assertTrue("Did not return invocation handler ", Proxy
 				.getInvocationHandler(p) == handler);
-		boolean aborted = false;
 		try {
 			Proxy.getInvocationHandler("");
+            fail("Did not detect non proxy object");
 		} catch (IllegalArgumentException e) {
-			aborted = true;
 		}
-		assertTrue("Did not detect non proxy object ", aborted);
 	}
         
     //Regression Test for HARMONY-2355
@@ -224,6 +212,31 @@ public class ProxyTest extends junit.framework.TestCase {
                                 ITestReturnString.class },
                         new TestProxyHandler(new TestProxyImpl()));
         assertNotNull(o);
+    }
+
+    public void test_getProxyClass_loader() {
+        Class pc = Proxy.getProxyClass(null,
+                new Class[] { Runnable.class});
+        assertSame(null, pc.getClassLoader());
+        
+        ProtectionDomain pd = pc.getProtectionDomain();
+        ProtectionDomain od = Object.class.getProtectionDomain();
+        assertTrue(pd.implies(new AllPermission()));
+        assertSame(od.getClassLoader(), pd.getClassLoader());
+        assertEquals(od.toString(), pd.toString());
+    }
+
+    public void test_getProxyClass_package() {
+        Class pc = Proxy.getProxyClass(PkgIntf.class.getClassLoader(),
+                new Class[] { PkgIntf.class});
+        assertSame(PkgIntf.class.getPackage(), pc.getPackage());
+        assertSame(PkgIntf.class.getClassLoader(), pc.getClassLoader());
+        
+        ProtectionDomain pd = pc.getProtectionDomain();
+        ProtectionDomain od = Object.class.getProtectionDomain();
+        assertTrue(pd.implies(new AllPermission()));
+        assertSame(od.getClassLoader(), pd.getClassLoader());
+        assertEquals(od.toString(), pd.toString());
     }
 
     public void test_newProxyInstance_withNonCompatibleReturnTypes() {
@@ -280,3 +293,5 @@ public class ProxyTest extends junit.framework.TestCase {
 	protected void tearDown() {
 	}
 }
+
+interface PkgIntf {}

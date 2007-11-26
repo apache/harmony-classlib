@@ -18,6 +18,7 @@ package org.apache.harmony.sql.internal.rowset;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Blob;
@@ -41,11 +42,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.sql.RowSet;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetInternal;
+import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.BaseRowSet;
@@ -70,8 +75,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     private RowSetMetaData meta;
 
     private CachedRow currentRow;
-
-    private CachedRow originalRow;
 
     // start from : 1.
     private int currentRowIndex;
@@ -103,6 +106,27 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public CachedRowSetImpl(String providerID) throws SyncFactoryException {
         syncProvider = SyncFactory.getInstance(providerID);
+        initialProperties();
+    }
+
+    private void initialProperties() {
+        try {
+            setEscapeProcessing(true);
+            setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            setConcurrency(ResultSet.CONCUR_UPDATABLE);
+            setType(ResultSet.TYPE_SCROLL_INSENSITIVE);
+            setMaxRows(0);
+            setQueryTimeout(0);
+            setShowDeleted(false);
+            setUsername(null);
+            setPassword(null);
+            setMaxFieldSize(0);
+            setTypeMap(null);
+            setFetchSize(0);
+        } catch (SQLException e) {
+            // ignore, never reached
+        }
+
     }
 
     public CachedRowSetImpl() throws SyncFactoryException {
@@ -138,7 +162,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             RowSetWriter rowSetWriter = syncProvider.getRowSetWriter();
             CachedRowSetImpl input = (CachedRowSetImpl) createCopy();
             rowSetWriter.writeData(input);
-            // setOriginalRow();
+            /*
+             * FIXME: if no conflicts happen when writeData, then call
+             * setOriginalRow()
+             */
             notifyRowSetChanged();
         } catch (SQLException e) {
             // TODO deal with the exception
@@ -176,123 +203,112 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public CachedRowSet createCopy() throws SQLException {
         CachedRowSetImpl output;
         try {
+            /*
+             * the attribute of BaseRowSet which are needed to deep copy
+             */
+            // BaseRowSet.params <Hashtable>
+            Object[] paramsObjArray = super.getParams().clone();
+            Hashtable<Object, Object> paramsHashtable = new Hashtable<Object, Object>();
+            for (int i = 0; i < paramsObjArray.length; i++) {
+                paramsHashtable.put(Integer.valueOf(i), paramsObjArray[i]);
+            }
+            // BaseRowSet.listeners <Vector>
+            Vector<RowSetListener> listeners = new Vector<RowSetListener>();
+
+            /*
+             * deep copy BaseRowSet
+             */
             output = (CachedRowSetImpl) super.clone();
-            // restore "this"'s states
-            int temp = currentRowIndex;
-            CachedRow cr;
-            if (currentRow != null) {
-                cr = currentRow.createClone();
-            } else {
-                cr = null;
+            // BaseRowSet.params
+            Field paramsField = output.getClass().getSuperclass()
+                    .getDeclaredField("params");
+            paramsField.setAccessible(true);
+            paramsField.set(output, paramsHashtable);
+            // BaseRowSet.listeners
+            Field listenersField = output.getClass().getSuperclass()
+                    .getDeclaredField("listeners");
+            listenersField.setAccessible(true);
+            listenersField.set(output, listeners);
+            // BaseRowSet.map
+            if (super.getTypeMap() != null) {
+                Map<String, Class<?>> originalTypeMap = super.getTypeMap();
+                Map<String, Class<?>> copyTypeMap = new HashMap<String, Class<?>>();
+                copyTypeMap.putAll(originalTypeMap);
+                output.setTypeMap(copyTypeMap);
             }
 
-            first();
+            /*
+             * deep copy CachedRowSetImpl
+             */
+            // CachedRowSetImpl.rows <ArrayList>
+            ArrayList<CachedRow> copyRows = new ArrayList<CachedRow>();
+            for (int i = 0; i < rows.size(); i++) {
+                copyRows.add(rows.get(i).createClone());
+            }
+            output.setRows(copyRows, columnCount);
+            // CachedRowSetImpl.meta <RowSetMetaData>
+            output.setMetaData(copyMetaData(getMetaData()));
+            // set currentRow
+            if ((currentRowIndex > 0) && (currentRowIndex <= rows.size())) {
+                output.absolute(currentRowIndex);
+            }
+            // others
+            if (getKeyColumns() != null) {
+                output.setKeyColumns(getKeyColumns().clone());
+            }
+            // CachedRowSetImpl.originalResultSet
+            CachedRowSetImpl copyOriginalRs = new CachedRowSetImpl();
+            copyOriginalRs.populate(getOriginal());
+            output.originalResultSet = copyOriginalRs;
 
-            // Deep Copy
-            ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-
-            do {
-                data.add(currentRow.createClone());
-            } while (next());
-
-            // TODO: should be the same granularity with RI using Debug tool
-            // inspect!
-            ((CachedRowSetImpl) output).setRows(data, columnCount);
-            output.setMetaData(((RowSetMetaDataImpl) getMetaData()));
-            output.originalResultSet = originalResultSet;
-            output.setUrl(getUrl());
-            output.setTableName(getTableName());
-
-            // Constraints
-            output.setReadOnly(isReadOnly());
-            output.setConcurrency(getConcurrency());
-            output.setType(getType());
-
-            // recovery this's state for the modification of the operation
-            // first() and next();
-            currentRow = cr;
-            currentRowIndex = temp;
+            /*
+             * TODO uncomment after getMatchColumnIndexes and
+             * getMatchColumnNames implemented
+             */
+            // if (getMatchColumnIndexes() != null) {
+            // output.setMatchColumn(getMatchColumnIndexes().clone());
+            // }
+            // if (getMatchColumnNames() != null) {
+            // output.setMatchColumn(getMatchColumnNames().clone());
+            // }
+            output.setSyncProvider(getSyncProvider().getProviderID());
+            if (insertRow != null) {
+                output.insertRow = insertRow.createClone();
+            }
 
             return output;
         } catch (CloneNotSupportedException e) {
-            // FIXME deal with the exception
-            e.printStackTrace();
-            return null;
+            // TODO add error message
+            throw new SQLException();
+        } catch (NoSuchFieldException e) {
+            // TODO add error message
+            throw new SQLException();
+        } catch (IllegalAccessException e) {
+            // TODO add error message
+            throw new SQLException();
         }
     }
 
     public CachedRowSet createCopyNoConstraints() throws SQLException {
-        CachedRowSetImpl output;
-        try {
-            output = (CachedRowSetImpl) super.clone();
-            // restore "this"'s states
-            int temp = currentRowIndex;
-            CachedRow cr;
-            if (currentRow != null) {
-                cr = currentRow.createClone();
-            } else {
-                cr = null;
-            }
-
-            first();
-
-            // Deep Copy
-            ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-            do {
-                data.add(currentRow.createClone());
-            } while (next());
-
-            // TODO: should be the same granularity with RI using Debug tool
-            // inspect!
-            ((CachedRowSetImpl) output).setRows(data, columnCount);
-            output.setMetaData((RowSetMetaData) (getMetaData()));
-            output.originalResultSet = originalResultSet;
-            output.setUrl(getUrl());
-            output.setTableName(getTableName());
-
-            // recovery this's state for the modification of the operation
-            // first() and next();
-            currentRow = cr;
-            currentRowIndex = temp;
-
-            return output;
-        } catch (CloneNotSupportedException e) {
-            // FIXME deal with the exception
-            e.printStackTrace();
-            return null;
-        }
+        CachedRowSetImpl output = (CachedRowSetImpl) createCopy();
+        output.initialProperties();
+        return output;
     }
 
     public CachedRowSet createCopySchema() throws SQLException {
-        // For webRowSet: represent the table structure: Columns
-        CachedRowSetImpl result;
-        try {
-            // copy data from BaseRowSet
-            result = (CachedRowSetImpl) super.clone();
-            // deep copy meta data
-            result.meta = copyMetaData(meta);
-            result.columnCount = columnCount;
-            result.keyCols = keyCols == null ? null : keyCols.clone();
-            result.originalResultSet = new CachedRowSetImpl(syncProvider
-                    .getProviderID());
-            result.pageSize = pageSize;
-            result.setSyncProvider(syncProvider.getProviderID());
-            result.setTableName(getTableName());
+        CachedRowSetImpl output = (CachedRowSetImpl) createCopy();
 
-            // clean up rows data
-            result.currentColumn = null;
-            result.currentRowIndex = 0;
-            result.insertRow = null;
-            result.originalRow = null;
-            result.pageNumber = 1;
-            result.rememberedCursorPosition = 0;
-            result.rows = new ArrayList<CachedRow>();
-            result.sqlwarn = null;
-            return result;
-        } catch (CloneNotSupportedException e) {
-            // TODO add error message
-            throw new SQLException();
-        }
+        // clean up rows data
+        output.currentColumn = null;
+        output.currentRow = null;
+        output.currentRowIndex = 0;
+        output.insertRow = null;
+        output.pageNumber = 1;
+        output.rememberedCursorPosition = 0;
+        output.rows = new ArrayList<CachedRow>();
+        output.sqlwarn = null;
+
+        return output;
     }
 
     public RowSet createShared() throws SQLException {
@@ -340,11 +356,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException();
         }
 
-        CachedRowSetImpl specialRset = new CachedRowSetImpl();
+        CachedRowSetImpl originalRowRset = new CachedRowSetImpl();
         ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-        data.add(originalRow);
-        specialRset.setRows(data, columnCount);
-        return specialRset;
+        CachedRow originalCachedRow = rows.get(getRow() - 1).getOriginal();
+        data.add(originalCachedRow);
+        originalRowRset.setRows(data, columnCount);
+        originalRowRset.setType(ResultSet.TYPE_SCROLL_INSENSITIVE);
+        originalRowRset.setConcurrency(ResultSet.CONCUR_UPDATABLE);
+        return originalRowRset;
     }
 
     public int getPageSize() {
@@ -377,7 +396,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void populate(ResultSet rs, int startRow) throws SQLException {
-        initParams();
         meta = copyMetaData(rs.getMetaData());
 
         new CachedRowSetReader(rs, startRow).readData(this);
@@ -400,23 +418,38 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         RowSetMetaDataImpl rowSetMetaData = new RowSetMetaDataImpl();
         rowSetMetaData.setColumnCount(metaData.getColumnCount());
         for (int columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++) {
-            rowSetMetaData.setAutoIncrement(columnIndex, metaData.isAutoIncrement(columnIndex));
-            rowSetMetaData.setCaseSensitive(columnIndex, metaData.isCaseSensitive(columnIndex));
-            rowSetMetaData.setCatalogName(columnIndex, metaData.getCatalogName(columnIndex));
+            rowSetMetaData.setAutoIncrement(columnIndex, metaData
+                    .isAutoIncrement(columnIndex));
+            rowSetMetaData.setCaseSensitive(columnIndex, metaData
+                    .isCaseSensitive(columnIndex));
+            rowSetMetaData.setCatalogName(columnIndex, metaData
+                    .getCatalogName(columnIndex));
             rowSetMetaData.setColumnDisplaySize(columnIndex, metaData
                     .getColumnDisplaySize(columnIndex));
-            rowSetMetaData.setColumnLabel(columnIndex, metaData.getColumnLabel(columnIndex));
-            rowSetMetaData.setColumnName(columnIndex, metaData.getColumnName(columnIndex));
-            rowSetMetaData.setColumnType(columnIndex, metaData.getColumnType(columnIndex));
-            rowSetMetaData.setColumnTypeName(columnIndex, metaData.getColumnTypeName(columnIndex));
-            rowSetMetaData.setCurrency(columnIndex, metaData.isCurrency(columnIndex));
-            rowSetMetaData.setNullable(columnIndex, metaData.isNullable(columnIndex));
-            rowSetMetaData.setPrecision(columnIndex, metaData.getPrecision(columnIndex));
-            rowSetMetaData.setScale(columnIndex, metaData.getScale(columnIndex));
-            rowSetMetaData.setSchemaName(columnIndex, metaData.getSchemaName(columnIndex));
-            rowSetMetaData.setSearchable(columnIndex, metaData.isSearchable(columnIndex));
-            rowSetMetaData.setSigned(columnIndex, metaData.isSigned(columnIndex));
-            rowSetMetaData.setTableName(columnIndex, metaData.getTableName(columnIndex));
+            rowSetMetaData.setColumnLabel(columnIndex, metaData
+                    .getColumnLabel(columnIndex));
+            rowSetMetaData.setColumnName(columnIndex, metaData
+                    .getColumnName(columnIndex));
+            rowSetMetaData.setColumnType(columnIndex, metaData
+                    .getColumnType(columnIndex));
+            rowSetMetaData.setColumnTypeName(columnIndex, metaData
+                    .getColumnTypeName(columnIndex));
+            rowSetMetaData.setCurrency(columnIndex, metaData
+                    .isCurrency(columnIndex));
+            rowSetMetaData.setNullable(columnIndex, metaData
+                    .isNullable(columnIndex));
+            rowSetMetaData.setPrecision(columnIndex, metaData
+                    .getPrecision(columnIndex));
+            rowSetMetaData
+                    .setScale(columnIndex, metaData.getScale(columnIndex));
+            rowSetMetaData.setSchemaName(columnIndex, metaData
+                    .getSchemaName(columnIndex));
+            rowSetMetaData.setSearchable(columnIndex, metaData
+                    .isSearchable(columnIndex));
+            rowSetMetaData.setSigned(columnIndex, metaData
+                    .isSigned(columnIndex));
+            rowSetMetaData.setTableName(columnIndex, metaData
+                    .getTableName(columnIndex));
         }
         return rowSetMetaData;
     }
@@ -457,13 +490,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void setOriginalRow() throws SQLException {
 
+        // FIXME re-implements this method
         if (currentRow == null) {
             // TODO add error messages
             throw new SQLException();
         }
-        originalRow = currentRow;
         currentRow.setNonUpdateable();
-
     }
 
     public void setPageSize(int size) throws SQLException {
@@ -491,6 +523,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int size() {
+        if (rows == null) {
+            return 0;
+        }
         return rows.size();
     }
 
@@ -565,42 +600,60 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean absolute(int row) throws SQLException {
-        if (rows.size() == 0) {
+        return doAbsolute(row, true);
+    }
+
+    /**
+     * internal implement of absolute
+     * 
+     * @param row
+     *            index of row cursor to move
+     * @param checkType
+     *            whether to check property ResultSet.TYPE_FORWARD_ONLY
+     * @return whether the cursor is on result set
+     * @throws SQLException
+     */
+    private boolean doAbsolute(int row, boolean checkType) throws SQLException {
+        if (rows == null || rows.size() == 0) {
             return false;
         }
-        if (getType() == ResultSet.TYPE_FORWARD_ONLY) {
-            // TODO add error messages
-            throw new SQLException();
+
+        if (checkType && getType() == ResultSet.TYPE_FORWARD_ONLY) {
+            // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
+            throw new SQLException(Messages.getString("rowset.8"));
         }
+
         if (row < 0) {
             row = rows.size() + row + 1;
-        } else if (row == 0) {
-            currentRowIndex = row;
+        }
+
+        if (row <= 0) {
+            currentRowIndex = 0;
             currentRow = null;
-            return true;
+            return false;
+        }
+
+        if (row > rows.size()) {
+            currentRowIndex = rows.size() + 1;
+            currentRow = null;
+            return false;
         }
 
         currentRowIndex = row;
-        currentRow = (CachedRow) rows.get(currentRowIndex - 1);
+        currentRow = rows.get(currentRowIndex - 1);
         return true;
     }
 
     public void afterLast() throws SQLException {
-        if (getType() == TYPE_FORWARD_ONLY) {
-            // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
-            throw new SQLException(Messages.getString("rowset.8"));
+        if (rows == null) {
+            return;
         }
-        currentRowIndex = rows.size() + 1;
-        currentRow = null;
+
+        doAbsolute(rows.size() + 1, true);
     }
 
     public void beforeFirst() throws SQLException {
-        if (getType() == TYPE_FORWARD_ONLY) {
-            // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
-            throw new SQLException(Messages.getString("rowset.8"));
-        }
-        currentRowIndex = 0;
-        currentRow = null;
+        doAbsolute(0, true);
     }
 
     public void cancelRowUpdates() throws SQLException {
@@ -614,7 +667,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void close() throws SQLException {
 
         // TODO need more concerns!
-        rows.clear();
+        if (rows != null) {
+            rows.clear();
+        }
         currentRowIndex = 0;
         currentRow = null;
         meta = null;
@@ -638,7 +693,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean first() throws SQLException {
-        return absolute(1);
+        return doAbsolute(1, true);
     }
 
     public Array getArray(int columnIndex) throws SQLException {
@@ -840,7 +895,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int getRow() throws SQLException {
-        throw new NotImplementedException();
+        // FIXME need more tests
+        if (currentRow == null) {
+            return 0;
+        }
+
+        return currentRowIndex;
     }
 
     public short getShort(int columnIndex) throws SQLException {
@@ -945,23 +1005,35 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean isAfterLast() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null || rows.size() == 0) {
+            return false;
+        }
+
+        return currentRowIndex > rows.size();
     }
 
     public boolean isBeforeFirst() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null || rows.size() == 0) {
+            return false;
+        }
+
+        return currentRowIndex == 0;
     }
 
     public boolean isFirst() throws SQLException {
-        throw new NotImplementedException();
+        return currentRowIndex == 1;
     }
 
     public boolean isLast() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null || rows.size() == 0) {
+            return false;
+        }
+
+        return currentRowIndex == rows.size();
     }
 
     public boolean last() throws SQLException {
-        return absolute(-1);
+        return doAbsolute(-1, true);
     }
 
     public void moveToCurrentRow() throws SQLException {
@@ -981,29 +1053,40 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean next() throws SQLException {
-        currentRowIndex++;
-        if (rows.size() < currentRowIndex) {
-            return false;
-        }
-        currentRow = rows.get(currentRowIndex - 1);
-        return true;
+        /*
+         * spec next() is identical with relative(1), but they can't:
+         * 
+         * next() doesn't check TYPE_FORWARD_ONLY property, relative(1) does.
+         */
+        return doAbsolute(currentRowIndex + 1, false);
     }
 
     public boolean previous() throws SQLException {
-        currentRowIndex--;
-        if (rows.size() < currentRowIndex) {
-            return false;
-        }
-        currentRow = rows.get(currentRowIndex - 1);
-        return true;
+        return doAbsolute(currentRowIndex - 1, true);
     }
 
     public void refreshRow() throws SQLException {
         throw new NotImplementedException();
     }
 
-    public boolean relative(int rows) throws SQLException {
-        throw new NotImplementedException();
+    public boolean relative(int moveRows) throws SQLException {
+        if (currentRow == null) {
+            // TODO add error message
+            throw new SQLException();
+        }
+
+        int index = getRow() + moveRows;
+        if (index <= 0) {
+            beforeFirst();
+            return false;
+        }
+
+        if (index > rows.size()) {
+            afterLast();
+            return false;
+        }
+
+        return doAbsolute(index, true);
     }
 
     public boolean rowDeleted() throws SQLException {

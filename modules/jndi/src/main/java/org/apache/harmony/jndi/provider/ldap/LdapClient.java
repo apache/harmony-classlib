@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.naming.CommunicationException;
 import javax.naming.ConfigurationException;
@@ -34,9 +36,13 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
+import org.apache.harmony.jndi.provider.ldap.LdapContextImpl.UnsolicitedListener;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
+import org.apache.harmony.jndi.provider.ldap.event.ECNotificationControl;
+import org.apache.harmony.jndi.provider.ldap.event.PersistentSearchControl;
+import org.apache.harmony.jndi.provider.ldap.event.PersistentSearchResult;
 import org.apache.harmony.security.asn1.ASN1Integer;
 
 /**
@@ -83,6 +89,11 @@ public class LdapClient {
      * responsible for dispatching received messages
      */
     private Dispatcher dispatcher;
+
+    /**
+     * registered UnsolicitedListener
+     */
+    private List<UnsolicitedListener> unls = new ArrayList<UnsolicitedListener>();
 
     // constructor for test
     public LdapClient() {
@@ -163,8 +174,7 @@ public class LdapClient {
 
                             // Unsolicited Notification
                             if (messageId == 0) {
-                                // TODO return instance of
-                                // UnsolicitedNotificationImpl
+                                return new UnsolicitedNotificationImpl();
                             }
 
                             // get response operation according messageId
@@ -211,7 +221,7 @@ public class LdapClient {
         private void processResponse(LdapMessage response, Exception ex) {
             // unsolicited notification
             if (response.getMessageId() == 0) {
-                // TODO notify unsolicited listeners
+                notifyUnls(response);
                 return;
             }
 
@@ -224,7 +234,7 @@ public class LdapClient {
                 // persistent search response
                 if (element.lock == null) {
 
-                    // TODO notify persistent search listeners
+                    notifyPersistenSearchListener(element);
 
                 } else {
                     /*
@@ -259,6 +269,14 @@ public class LdapClient {
 
         } // end of processResponse
     } // Dispatcher
+
+    private void notifyUnls(LdapMessage response) {
+        UnsolicitedNotificationImpl un = (UnsolicitedNotificationImpl) response
+                .getResponseOp();
+        for (UnsolicitedListener listener : unls) {
+            listener.receiveNotification(un, response.getControls());
+        }
+    }
 
     /**
      * Carry out the ldap operation encapsulated in operation with controls.
@@ -408,6 +426,34 @@ public class LdapClient {
         LdapMessage request = new LdapMessage(opIndex, op, controls);
         out.write(request.encode());
         out.flush();
+    }
+
+    public int addPersistentSearch(SearchOp op) throws IOException {
+        LdapMessage request = new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_REQUEST, op.getRequest(),
+                new Control[] { new PersistentSearchControl() });
+
+        Integer messageID = Integer.valueOf(request.getMessageId());
+
+        // set lock to null, indicate this is persistent search
+        requests.put(messageID, new Element(null, new LdapMessage(op
+                .getResponse())));
+        try {
+            out.write(request.encode());
+            out.flush();
+            return request.getMessageId();
+        } catch (IOException e) {
+            // send request faild, remove request from list
+            requests.remove(messageID);
+            throw e;
+        }
+
+    }
+
+    public void removePersistentSearch(int messageId, Control[] controls)
+            throws IOException {
+        requests.remove(Integer.valueOf(messageId));
+        abandon(messageId, controls);
     }
 
     /**
@@ -639,4 +685,36 @@ public class LdapClient {
         this.dispatcher = new Dispatcher();
         this.dispatcher.start();
     }
+
+    public void addUnsolicitedListener(UnsolicitedListener listener) {
+        if (unls == null) {
+            unls = new ArrayList<UnsolicitedListener>();
+        }
+
+        if (!unls.contains(listener)) {
+            unls.add(listener);
+        }
+    }
+
+    private void notifyPersistenSearchListener(Element element) {
+        PersistentSearchResult psr = (PersistentSearchResult) ((SearchOp) element.response
+                .getResponseOp()).getSearchResult();
+        // test error
+        if (psr.getResult() != null) {
+            psr.receiveNotificationHook(psr.getResult());
+        }
+
+        // notify listener
+        Control[] cs = element.response.getControls();
+        if (cs != null) {
+            for (int i = 0; i < cs.length; i++) {
+                Control control = cs[i];
+                if (ECNotificationControl.OID.equals(control.getID())) {
+                    psr.receiveNotificationHook(new ECNotificationControl(
+                            control.getEncodedValue()));
+                }
+            }
+        }
+    }
+
 }

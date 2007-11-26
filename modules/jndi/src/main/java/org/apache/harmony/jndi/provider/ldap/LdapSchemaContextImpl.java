@@ -17,12 +17,12 @@
 package org.apache.harmony.jndi.provider.ldap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -49,6 +49,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
+import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
 import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
 
@@ -69,7 +70,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
     public static final String LDAP_SYNTAXES = "ldapsyntaxes";
 
     public static final String MATCHING_RULES = "matchingrules";
-    
+
     protected String subschemasubentry = null;
 
     final private static Hashtable<String, String> schemaJndi2Ldap = new Hashtable<String, String>();
@@ -94,8 +95,8 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     private BasicAttributes schemaAttributes;
 
-    public LdapSchemaContextImpl(LdapContextImpl ctx, Hashtable<Object, Object> env,
-            Name dn) throws InvalidNameException {
+    public LdapSchemaContextImpl(LdapContextImpl ctx,
+            Hashtable<Object, Object> env, Name dn) throws InvalidNameException {
         super(ctx, env, dn.getPrefix(0).toString());
         parent = ctx;
         rdn = dn;
@@ -291,7 +292,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         ModifyOp op = new ModifyOp(targetDN);
         Hashtable<String, Object> classDef = parent.findSchemaDefInfo(
                 schemaJndi2Ldap.get(name.get(0).toLowerCase()), name.get(1));
-        if(null ==classDef) {
+        if (null == classDef) {
             throw new NameNotFoundException(name.toString());
         }
         String oldValue = (String) classDef.get("orig");
@@ -364,7 +365,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
         try {
             doBasicOperation(op);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // TODO need to handle referal exception in the future
         }
     }
@@ -440,11 +441,6 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
     }
 
     public NamingEnumeration<SearchResult> search(Name name,
-            Attributes attributes) throws NamingException {
-        return search(name, attributes, null);
-    }
-
-    public NamingEnumeration<SearchResult> search(Name name,
     // Used to filter attribute value
             Attributes attributes,
             // Used to filter attribute name
@@ -481,7 +477,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                 attrMatcher.put(newAttr);
             }
         }
-        
+
         // Attribute selector
         TreeSet<String> attrSel = new TreeSet<String>();
 
@@ -490,7 +486,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                 null, null);
         String schemaType = null;
 
-        LinkedList<String> attrValues = new LinkedList<String>();;
+        LinkedList<String> attrValues = new LinkedList<String>();
         int size = targetDN.size();
         switch (size) {
         case 0:
@@ -564,6 +560,9 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             }
             break;
         case 1:
+            if (hasAttributes2Return) {
+                attrSel.addAll(Arrays.asList(as));
+            }
             schemaType = schemaJndi2Ldap.get(name.get(0).toLowerCase());
             if (null == schemaType) {
                 throw new NameNotFoundException(name.toString());
@@ -577,33 +576,41 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                     NamingEnumeration<Attribute> filters = attrMatcher.getAll();
                     String id = attrValues.get(i);
                     Hashtable<String, Object> schemaDef = schemas.get(id);
+                    boolean matched = true;
                     while (filters.hasMore()) {
                         Attribute filter = filters.next();
                         Object values = schemaDef.get(filter.getID());
-                        /* 
-                         * Attribute definition will only be retrieved when it is
-                         * designated in attrFilter
-                         */ 
-                        if (match(filter, values)) {
-                            basicAttributes = new BasicAttributes();
-                            for (Iterator<String> iterator = schemaDef.keySet()
-                                    .iterator(); iterator.hasNext();) {
-                                String key = iterator.next();
-                                if (key.equals("orig")) {
-                                    continue;
-                                }
-                                Object value = schemaDef.get(key);
-                                basicAttributes.put(key, value);
-                            }
-                            SearchResult pair = new SearchResult(id, null,
-                                    basicAttributes);
-                            enumeration.add(pair);
+                        /*
+                         * Attribute definition will only be retrieved when it
+                         * is designated in attrFilter
+                         */
+                        if (values == null || !match(filter, values)) {
+                            matched = false;
+                            break;
                         }
+                    }
+                    if (matched) {
+                        basicAttributes = new BasicAttributes();
+                        for (Iterator<String> iterator = schemaDef.keySet()
+                                .iterator(); iterator.hasNext();) {
+                            String key = iterator.next();
+                            if (key.equals("orig")) {
+                                continue;
+                            }
+                            if (hasAttributes2Return && attrSel.contains(key)
+                                    || !hasAttributes2Return) {
+                                basicAttributes.put(key, schemaDef.get(key));
+                            }
+                        }
+                        SearchResult pair = new SearchResult(id, null,
+                                basicAttributes);
+                        enumeration.add(pair);
                     }
                 }
             } else {
                 for (int i = 0; i < attrValues.size(); i++) {
-                    Hashtable<String, Object> schemaDef = schemas.get(attrValues.get(i));
+                    Hashtable<String, Object> schemaDef = schemas
+                            .get(attrValues.get(i));
                     basicAttributes = new BasicAttributes();
                     for (Iterator<String> iterator = schemaDef.keySet()
                             .iterator(); iterator.hasNext();) {
@@ -611,11 +618,13 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                         if (key.equals("orig")) {
                             continue;
                         }
-                        Object value = schemaDef.get(key);
-                        basicAttributes.put(key, value);
+                        if (hasAttributes2Return && attrSel.contains(key)
+                                || !hasAttributes2Return) {
+                            basicAttributes.put(key, schemaDef.get(key));
+                        }
                     }
-                    SearchResult pair = new SearchResult(attrValues.get(i), null,
-                            basicAttributes);
+                    SearchResult pair = new SearchResult(attrValues.get(i),
+                            null, basicAttributes);
                     enumeration.add(pair);
                 }
             }
@@ -647,7 +656,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         while (attrValues.hasMore()) {
             Object attrValue = attrValues.next();
             for (int i = 0; i < v.size(); i++) {
-                if (attrValue.equals(v.get(i))) {
+                if (attrValue.equals("*") || attrValue.equals(v.get(i))) {
                     return true;
                 }
             }
@@ -658,22 +667,25 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
     public NamingEnumeration<SearchResult> search(Name name, String filter,
             Object[] objs, SearchControls searchControls)
             throws NamingException {
+
         checkName(name);
 
         if (filter == null) {
             throw new NullPointerException(Messages.getString("ldap.28")); //$NON-NLS-1$
         }
-
-        if (objs == null) {
-            objs = new Object[0];
+        if (filter.length() == 0) {
+            throw new StringIndexOutOfBoundsException();
+        }
+        if (!filter.startsWith("(")) {
+            StringBuilder filterWrapper = new StringBuilder("(");
+            filterWrapper.append(filter).append(")");
+            filter = filterWrapper.toString();
         }
 
-        if (searchControls == null) {
+        if (null == searchControls) {
             searchControls = new SearchControls();
         }
 
-        // get absolute dn name
-        String targetDN = getTargetDN(name, contextDn);
         FilterParser filterParser = new FilterParser(filter);
         filterParser.setArgs(objs);
         Filter f = null;
@@ -686,20 +698,28 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             throw ex;
         }
 
-        LdapSearchResult result = doSearch(targetDN, f, searchControls);
+        BasicAttributes matchingAttrs = new BasicAttributes();
+        extractMatchingAttributes(f, matchingAttrs);
 
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        Map<String, Attributes> entries = result.getEntries();
-        for (String dn : entries.keySet()) {
-            String relativeName = convertToRelativeName(dn, rdn.toString());
-            SearchResult sr = new SearchResult(relativeName, null, entries
-                    .get(dn));
-            sr.setNameInNamespace(dn);
-            list.add(sr);
-        }
-
-        return new LdapNamingEnumeration<SearchResult>(list, result
-                .getException());
+        return search(name, matchingAttrs, searchControls
+                .getReturningAttributes());
     }
 
+    private void extractMatchingAttributes(Filter f,
+            BasicAttributes matchingAttrs) {
+        if (!f.isLeaf()) {
+            List<Filter> children = f.getChildren();
+            for (Iterator iter = children.iterator(); iter.hasNext();) {
+                extractMatchingAttributes((Filter) iter.next(), matchingAttrs);
+            }
+        } else {
+            Object value = f.getValue();
+            if (value instanceof AttributeTypeAndValuePair) {
+                AttributeTypeAndValuePair pair = (AttributeTypeAndValuePair) value;
+                matchingAttrs.put(pair.getType(), pair.getValue());
+            } else {
+                matchingAttrs.put((String) value, "*");
+            }
+        }
+    }
 }

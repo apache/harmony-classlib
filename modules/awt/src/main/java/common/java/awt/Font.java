@@ -318,7 +318,7 @@ public class Font implements Serializable {
         return this.createGlyphVector(frc, chars);
     }
 
-    public GlyphVector createGlyphVector(FontRenderContext frc, int[] glyphCodes) throws org.apache.harmony.luni.util.NotImplementedException {
+    public GlyphVector createGlyphVector(FontRenderContext frc, int[] glyphCodes){
         int length = glyphCodes.length;        
         char[] chars = new char[length];        
         FontPeerImpl peer = (FontPeerImpl) getPeer();
@@ -748,6 +748,7 @@ public class Font implements Serializable {
         Rectangle2D bounds;
 
         AffineTransform transform = getTransform();
+        AffineTransform frcTransform = frc.getTransform();
 
         // XXX: for transforms where an angle between basis vectors is not 90
         // degrees Rectanlge2D class doesn't fit as Logical bounds.
@@ -766,7 +767,10 @@ public class Font implements Serializable {
             System.arraycopy(chars, start, subChars, 0, len);
             bounds = createGlyphVector(frc, subChars).getLogicalBounds();
         }
-
+        
+        if (!(frcTransform.isIdentity()))
+            return frcTransform.createTransformedShape(bounds).getBounds2D();
+        
         return bounds;
     }
 
