@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.harmony.pack200.IcBands.ICTuple;
+import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
@@ -999,6 +999,31 @@ public class ClassBands extends BandSet {
         return fieldFlags;
     }
 
+    /**
+     * Answer an ArrayList of the LineNumberTables corresponding to all classes.
+     * If a class doesn't have a LineNumberTable, the corresponding element in this
+     * list will be null.
+     * @return ArrayList
+     */
+    // TODO: the class file spec allows >1 LineNumberTable per method. Does Pack200 spec fold them all into one? (If not, need to handle that case.)
+    public ArrayList getLineNumberAttributes() {
+    	ArrayList lineNumberList = new ArrayList();
+    	for(int classIndex=0; classIndex < codeAttributes.length; classIndex++) {
+    		boolean foundLineNumberTable = false;
+    		for(int attributeIndex = 0; attributeIndex < codeAttributes[classIndex].size(); attributeIndex++) {
+    			Attribute attribute = (Attribute)codeAttributes[classIndex].get(attributeIndex);
+    			if(attribute.getClass() == LineNumberTableAttribute.class) {
+    				foundLineNumberTable = true;
+    				lineNumberList.add(attribute);
+    			}
+    		}
+    		if(!foundLineNumberTable) {
+    			lineNumberList.add(null);
+    		}
+    	}
+    	return lineNumberList;
+    }
+    
     public ArrayList[][] getMethodAttributes() {
         return methodAttributes;
     }

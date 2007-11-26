@@ -31,6 +31,8 @@ import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
 import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.SegmentHeader;
+import org.apache.harmony.pack200.bytecode.Attribute;
+import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
 
 import junit.framework.TestCase;
 
@@ -178,6 +180,32 @@ public class BcBandsTest extends AbstractBandsTestCase {
                 }
             }
             return attributes;
+        }
+        
+        public ArrayList getLineNumberAttributes() {
+        	int totalMethods = 0;
+        	for(int classIndex = 0; classIndex < numMethods.length; classIndex++) {
+        		totalMethods = totalMethods + numMethods[classIndex];
+        	}
+        	ArrayList[] codeAttributes = new ArrayList[totalMethods];
+        	for(int index = 0; index < codeAttributes.length; index++) {
+        		codeAttributes[index] = new ArrayList();
+        	}
+        	ArrayList lineNumberList = new ArrayList();
+        	for(int classIndex=0; classIndex < codeAttributes.length; classIndex++) {
+        		boolean foundLineNumberTable = false;
+        		for(int attributeIndex = 0; attributeIndex < codeAttributes[classIndex].size(); attributeIndex++) {
+        			Attribute attribute = (Attribute)codeAttributes[classIndex].get(attributeIndex);
+        			if(attribute.getClass() == LineNumberTableAttribute.class) {
+        				foundLineNumberTable = true;
+        				lineNumberList.add(attribute);
+        			}
+        		}
+        		if(!foundLineNumberTable) {
+        			lineNumberList.add(null);
+        		}
+        	}
+        	return lineNumberList;
         }
     }
 

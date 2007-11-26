@@ -21,8 +21,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class ClassConstantPool {
@@ -74,7 +76,7 @@ public class ClassConstantPool {
 	}
 
 	public void resolve(Segment segment) {
-		System.out.println("\n\nResolving (Segment.resolve(Segment)");
+		SegmentUtils.debug("\n\nResolving (Segment.resolve(Segment)");
 		HashMap sortMap = new HashMap();
 		List cpAll = null;
 		// TODO: HACK - this is a 1.5 api.
@@ -101,7 +103,7 @@ public class ClassConstantPool {
 			}
 		}
 		for(int xindex=0; xindex < sortedList.size(); xindex++) {
-			System.out.println(sortedList.get(xindex));
+			SegmentUtils.debug(sortedList.get(xindex).toString());
 		}
 		resolve();
 	}

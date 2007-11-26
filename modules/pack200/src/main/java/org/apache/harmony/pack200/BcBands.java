@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
+import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -360,6 +361,12 @@ public class BcBands extends BandSet {
                    CodeAttribute attr = new CodeAttribute(maxStack, maxLocal,
                            methodByteCodePacked[c][m], segment, operandManager);
                    methodAttributes[c][m].add(attr);
+                   // Fix up the line numbers
+                   LineNumberTableAttribute lineNumberTable = (LineNumberTableAttribute)segment.getClassBands().getLineNumberAttributes().get(i);
+                   if(null != lineNumberTable) {
+                	   attr.attributes.add(lineNumberTable);
+                       lineNumberTable.renumberLineNumberTable(attr.byteCodeOffsets);
+                   }
                    i++;
                }
            }

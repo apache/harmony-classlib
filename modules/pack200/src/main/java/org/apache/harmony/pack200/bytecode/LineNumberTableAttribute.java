@@ -18,12 +18,17 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.harmony.pack200.SegmentUtils;
 
 public class LineNumberTableAttribute extends Attribute {
 
     private int line_number_table_length;
     private int[] start_pcs;
     private int[] line_numbers;
+    private boolean renumbered = false;
     
     public LineNumberTableAttribute(int line_number_table_length, int[] start_pcs, int[] line_numbers) {
         super("LineNumberTable");
@@ -44,8 +49,38 @@ public class LineNumberTableAttribute extends Attribute {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
+     */
     public String toString() {
         return "LineNumberTable: " + line_number_table_length + " lines";
     }
 
+	/* (non-Javadoc)
+	 * @see org.apache.harmony.pack200.bytecode.Attribute#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
+	 */
+	protected void resolve(ClassConstantPool pool) {
+		pool.add(getAttributeName());
+		super.resolve(pool);
+	}
+
+	/**
+	 * In Pack200, line number tables are BCI renumbered.
+	 * This method takes the byteCodeOffsets (which is
+	 * a List of Integers specifying the offset in the
+	 * byte code array of each instruction) and updates the
+	 * start_pcs so that it points to the instruction index
+	 * itself, not the BCI renumbering of the instruction.
+	 * 
+	 * @param byteCodeOffsets List of Integer offsets of the bytecode array
+	 */
+	public void renumberLineNumberTable(List byteCodeOffsets) {
+		if(renumbered) {
+			throw new Error("Trying to renumber a line number table that has already been renumbered");
+		}
+		renumbered = true;
+		for(int index=0; index < line_numbers.length; index++) {
+			start_pcs[index] = ((Integer)byteCodeOffsets.get(start_pcs[index])).intValue();
+		}
+	}
 }

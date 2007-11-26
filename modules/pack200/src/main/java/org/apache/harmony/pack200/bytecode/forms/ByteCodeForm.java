@@ -541,6 +541,29 @@ public class ByteCodeForm {
         return false;
     }
 
+    
+    /**
+     * This method will answer true if the receiver is
+     * a multi-bytecode instruction (such as
+     * aload0_putfield_super); otherwise, it will answer
+     * false.
+     * 
+     * @return boolean true if multibytecode, false otherwise
+     */
+    public boolean hasMultipleByteCodes() {
+    	if(rewrite.length > 1) {
+             // Currently, all multi-bytecode instructions
+             // begin with aload_0, so this is how we test.
+    		if(rewrite[0] == 42) {
+    			// If there's an instruction (not a negative
+    			// number, which is an operand) after the
+    			// aload_0, it's a multibytecode instruction.
+    			return(rewrite[1] > 0);
+    		}
+    	}
+    	return false;
+    }
+    
     /**
      * When passed a byteCode, an OperandTable and a
      * SegmentConstantPool, this method will set the

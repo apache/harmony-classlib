@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.pack200.SegmentUtils;
 
 public class CodeAttribute extends Attribute {
 	public List attributes = new ArrayList();
@@ -30,6 +31,7 @@ public class CodeAttribute extends Attribute {
 	public int codeLength;
 	public List exceptionTable = new ArrayList(); // of ExceptionTableEntry
 	// instances
+	public List byteCodeOffsets = new ArrayList();
 	public int maxLocals;
 	public int maxStack;
 
@@ -39,11 +41,25 @@ public class CodeAttribute extends Attribute {
 		this.maxLocals = maxLocals;
 		this.maxStack = maxStack;
 		this.codeLength = 0;
+		byteCodeOffsets.add(new Integer(0));
 		for (int i = 0; i < codePacked.length; i++) {
 			ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
 			byteCode.extractOperands(operandManager, segment);
 			byteCodes.add(byteCode);
 			this.codeLength += byteCode.getLength();
+			int lastBytecodePosition = ((Integer)byteCodeOffsets.get(byteCodeOffsets.size() - 1)).intValue();
+			// This code assumes all multiple byte bytecodes are
+			// replaced by a single-byte bytecode followed by
+			// another bytecode.
+			if(byteCode.hasMultipleByteCodes()) {
+				byteCodeOffsets.add(new Integer(lastBytecodePosition + 1));
+			}
+			// I've already added the first element (at 0) before
+			// entering this loop, so make sure I don't add one
+			// after the last element.
+			if(i < (codePacked.length - 1)) {
+				byteCodeOffsets.add(new Integer(lastBytecodePosition + byteCode.getLength()));
+			}
 		}
 	}
 
@@ -72,6 +88,7 @@ public class CodeAttribute extends Attribute {
 		Iterator it = attributes.iterator();
 		while (it.hasNext()) {
 			Attribute attribute = (Attribute) it.next();
+			SegmentUtils.debug("CodeAttribute resolving " + attribute);
 			attribute.resolve(pool);
 		}
 		it = byteCodes.iterator();

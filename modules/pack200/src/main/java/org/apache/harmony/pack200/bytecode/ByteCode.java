@@ -18,7 +18,9 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+
 import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.pack200.SegmentUtils;
 import org.apache.harmony.pack200.bytecode.forms.ByteCodeForm;
 
 public class ByteCode extends ClassFileEntry {
@@ -131,12 +133,12 @@ public class ByteCode extends ClassFileEntry {
 				
 				case 4:
 					// TODO: need to handle wides?
-					System.out.println("Need to handle wides");
+					SegmentUtils.debug("Need to handle wides");
 					// figure out and if so, handle and put a break here.
 					// break;
 				
 				default: 
-					System.out.println("Unhandled resolve " + this);
+					SegmentUtils.debug("Unhandled resolve " + this);
 				}
 			}
 		}
@@ -181,7 +183,7 @@ public class ByteCode extends ClassFileEntry {
 	 */
 	public void setOperandInt(int operand, int position) {
 		int firstOperandIndex = getByteCodeForm().firstOperandIndex();
-		int byteCodeFormLength = getByteCodeForm().operandLength();
+		int byteCodeFormLength = getByteCodeForm().getRewrite().length;
 		if (firstOperandIndex < 1) {
 			// No operand rewriting permitted for this bytecode
 			throw new Error("Trying to rewrite " + this + " that has no rewrite");
@@ -259,5 +261,17 @@ public class ByteCode extends ClassFileEntry {
 	
 	public int[] getNestedPosition(int index) {
 		return getNestedPositions()[index];
+	}
+
+    /**
+     * This method will answer true if the receiver is
+     * a multi-bytecode instruction (such as
+     * aload0_putfield_super); otherwise, it will answer
+     * false.
+     * 
+     * @return boolean true if multibytecode, false otherwise
+     */
+	public boolean hasMultipleByteCodes() {
+		return getByteCodeForm().hasMultipleByteCodes();
 	}
 }
