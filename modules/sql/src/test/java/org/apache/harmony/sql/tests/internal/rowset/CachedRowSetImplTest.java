@@ -1144,6 +1144,199 @@ public class CachedRowSetImplTest extends TestCase {
 
     }
 
+    public void testRelative() throws Exception {
+        /*
+         * ri throw SQLException, but spec say relative(1) is identical to next
+         */
+        try {
+            crset.relative(1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        assertTrue(crset.next());
+        assertEquals("hermit", crset.getString(2));
+
+        assertTrue(crset.relative(2));
+        assertEquals("test3", crset.getString(2));
+
+        assertTrue(crset.relative(-1));
+        assertEquals("test", crset.getString(2));
+
+        assertTrue(crset.relative(0));
+        assertEquals("test", crset.getString(2));
+
+        assertFalse(crset.relative(-5));
+        assertEquals(0, crset.getRow());
+
+        assertTrue(crset.next());
+        assertEquals("hermit", crset.getString(2));
+        assertTrue(crset.relative(3));
+        assertEquals("test4", crset.getString(2));
+
+        assertFalse(crset.relative(3));
+        assertEquals(0, crset.getRow());
+
+        assertTrue(crset.isAfterLast());
+        assertTrue(crset.previous());
+
+        // non-bug different
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertEquals(DEFAULT_ROW_COUNT, crset.getRow());
+            assertEquals("test4", crset.getString(2));
+        }
+    }
+
+    public void testAbsolute() throws Exception {
+        // non-bug different
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertFalse(crset.absolute(0));
+        }
+        
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
+        assertTrue(crset.absolute(1));
+        assertEquals(1, crset.getInt(1));
+        assertTrue(crset.absolute(4));
+        assertEquals(4, crset.getInt(1));
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+
+        // when position the cursor beyond the first/last row in the result set
+        assertFalse(crset.absolute(10));
+        assertTrue(crset.isAfterLast());
+        assertTrue(crset.previous());
+        assertFalse(crset.absolute(-10));
+        assertTrue(crset.isBeforeFirst());
+        assertTrue(crset.next());
+
+        /*
+         * when the given row number is negative, spec says absolute(-1) equals
+         * last(). However, the return value of absolute(negative) is false when
+         * run on RI. The Harmony follows the spec.
+         */
+        if (System.getProperty("Testing Harmony") == "true") {
+            assertTrue(crset.absolute(-1));
+            assertEquals(4, crset.getInt(1));
+            assertTrue(crset.absolute(-3));
+            assertEquals(2, crset.getInt(1));
+            assertFalse(crset.absolute(-5));
+        }
+
+        crset.setType(ResultSet.TYPE_FORWARD_ONLY);
+        try {
+            crset.absolute(1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            crset.absolute(-1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+
+    public void testNextAndPrevious() throws Exception {
+        /*
+         * This method is also used to test isBeforeFirst(), isAfterLast(),
+         * isFirst(),isLast()
+         */
+        // Test for next()
+        assertTrue(crset.isBeforeFirst());
+        assertFalse(crset.isAfterLast());
+        assertFalse(crset.isFirst());
+        assertFalse(crset.isLast());
+        assertTrue(crset.next());
+        assertTrue(crset.isFirst());
+        assertEquals(1, crset.getInt(1));
+
+        assertTrue(crset.next());
+        assertFalse(crset.isFirst());
+        assertTrue(crset.next());
+        assertTrue(crset.next());
+        assertTrue(crset.isLast());
+        assertEquals(4, crset.getInt(1));
+        assertFalse(crset.next());
+        // assertFalse(crset.next());
+        assertFalse(crset.isBeforeFirst());
+        assertTrue(crset.isAfterLast());
+
+        // Test for previous()
+        assertTrue(crset.previous());
+        assertEquals(4, crset.getInt(1));
+        assertTrue(crset.isLast());
+        assertTrue(crset.previous());
+        assertTrue(crset.previous());
+        assertTrue(crset.previous());
+        assertEquals(1, crset.getInt(1));
+        assertTrue(crset.isFirst());
+        assertFalse(crset.previous());
+        assertTrue(crset.isBeforeFirst());
+        // assertFalse(crset.previous());
+
+        assertTrue(crset.next());
+        assertTrue(crset.next());
+        assertEquals(2, crset.getInt(1));
+
+        // Test for previous()'s Exception
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
+        crset.setType(ResultSet.TYPE_FORWARD_ONLY);
+        assertEquals(ResultSet.TYPE_FORWARD_ONLY, crset.getType());
+        try {
+            crset.previous();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+    }
+
+    public void testFirstAndLast() throws Exception {
+        /*
+         * This method is used to test afterLast(), beforeFist(), first(),
+         * last()
+         */
+        assertTrue(crset.isBeforeFirst());
+        assertTrue(crset.first());
+        assertTrue(crset.isFirst());
+        assertFalse(crset.isBeforeFirst());
+        crset.beforeFirst();
+        assertTrue(crset.isBeforeFirst());
+        assertTrue(crset.last());
+        assertTrue(crset.isLast());
+
+        assertTrue(crset.first());
+        assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
+        crset.setType(ResultSet.TYPE_FORWARD_ONLY);
+        assertEquals(ResultSet.TYPE_FORWARD_ONLY, crset.getType());
+
+        try {
+            crset.beforeFirst();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+
+        try {
+            crset.first();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            crset.last();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        assertTrue(crset.isFirst());
+    }
+
     public class Listener implements RowSetListener, Cloneable {
 
         private String tag = null;

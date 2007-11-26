@@ -597,42 +597,60 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean absolute(int row) throws SQLException {
-        if (rows.size() == 0) {
+        return doAbsolute(row, true);
+    }
+
+    /**
+     * internal implement of absolute
+     * 
+     * @param row
+     *            index of row cursor to move
+     * @param checkType
+     *            whether to check property ResultSet.TYPE_FORWARD_ONLY
+     * @return whether the cursor is on result set
+     * @throws SQLException
+     */
+    private boolean doAbsolute(int row, boolean checkType) throws SQLException {
+        if (rows == null || rows.size() == 0) {
             return false;
         }
-        if (getType() == ResultSet.TYPE_FORWARD_ONLY) {
-            // TODO add error messages
-            throw new SQLException();
+
+        if (checkType && getType() == ResultSet.TYPE_FORWARD_ONLY) {
+            // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
+            throw new SQLException(Messages.getString("rowset.8"));
         }
+
         if (row < 0) {
             row = rows.size() + row + 1;
-        } else if (row == 0) {
-            currentRowIndex = row;
+        }
+
+        if (row <= 0) {
+            currentRowIndex = 0;
             currentRow = null;
-            return true;
+            return false;
+        }
+
+        if (row > rows.size()) {
+            currentRowIndex = rows.size() + 1;
+            currentRow = null;
+            return false;
         }
 
         currentRowIndex = row;
-        currentRow = (CachedRow) rows.get(currentRowIndex - 1);
+        currentRow = rows.get(currentRowIndex - 1);
         return true;
     }
 
     public void afterLast() throws SQLException {
-        if (getType() == TYPE_FORWARD_ONLY) {
-            // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
-            throw new SQLException(Messages.getString("rowset.8"));
+        if (rows == null) {
+            return;
         }
-        currentRowIndex = rows.size() + 1;
-        currentRow = null;
+
+        doAbsolute(rows.size() + 1, true);
     }
 
     public void beforeFirst() throws SQLException {
-        if (getType() == TYPE_FORWARD_ONLY) {
-            // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
-            throw new SQLException(Messages.getString("rowset.8"));
-        }
-        currentRowIndex = 0;
-        currentRow = null;
+        doAbsolute(0, true);
     }
 
     public void cancelRowUpdates() throws SQLException {
@@ -672,7 +690,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean first() throws SQLException {
-        return absolute(1);
+        return doAbsolute(1, true);
     }
 
     public Array getArray(int columnIndex) throws SQLException {
@@ -984,23 +1002,35 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean isAfterLast() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null || rows.size() == 0) {
+            return false;
+        }
+
+        return currentRowIndex > rows.size();
     }
 
     public boolean isBeforeFirst() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null || rows.size() == 0) {
+            return false;
+        }
+
+        return currentRowIndex == 0;
     }
 
     public boolean isFirst() throws SQLException {
-        throw new NotImplementedException();
+        return currentRowIndex == 1;
     }
 
     public boolean isLast() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null || rows.size() == 0) {
+            return false;
+        }
+
+        return currentRowIndex == rows.size();
     }
 
     public boolean last() throws SQLException {
-        return absolute(-1);
+        return doAbsolute(-1, true);
     }
 
     public void moveToCurrentRow() throws SQLException {
@@ -1020,29 +1050,40 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean next() throws SQLException {
-        currentRowIndex++;
-        if (rows.size() < currentRowIndex) {
-            return false;
-        }
-        currentRow = rows.get(currentRowIndex - 1);
-        return true;
+        /*
+         * spec next() is identical with relative(1), but they can't:
+         * 
+         * next() doesn't check TYPE_FORWARD_ONLY property, relative(1) does.
+         */
+        return doAbsolute(currentRowIndex + 1, false);
     }
 
     public boolean previous() throws SQLException {
-        currentRowIndex--;
-        if (rows.size() < currentRowIndex) {
-            return false;
-        }
-        currentRow = rows.get(currentRowIndex - 1);
-        return true;
+        return doAbsolute(currentRowIndex - 1, true);
     }
 
     public void refreshRow() throws SQLException {
         throw new NotImplementedException();
     }
 
-    public boolean relative(int rows) throws SQLException {
-        throw new NotImplementedException();
+    public boolean relative(int moveRows) throws SQLException {
+        if (currentRow == null) {
+            // TODO add error message
+            throw new SQLException();
+        }
+
+        int index = getRow() + moveRows;
+        if (index <= 0) {
+            beforeFirst();
+            return false;
+        }
+
+        if (index > rows.size()) {
+            afterLast();
+            return false;
+        }
+
+        return doAbsolute(index, true);
     }
 
     public boolean rowDeleted() throws SQLException {
