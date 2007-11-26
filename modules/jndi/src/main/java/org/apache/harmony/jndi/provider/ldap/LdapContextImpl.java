@@ -19,6 +19,8 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -51,6 +53,13 @@ import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.event.EventContext;
+import javax.naming.event.EventDirContext;
+import javax.naming.event.NamespaceChangeListener;
+import javax.naming.event.NamingEvent;
+import javax.naming.event.NamingExceptionEvent;
+import javax.naming.event.NamingListener;
+import javax.naming.event.ObjectChangeListener;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.ControlFactory;
 import javax.naming.ldap.ExtendedRequest;
@@ -59,6 +68,8 @@ import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.ManageReferralControl;
 import javax.naming.ldap.Rdn;
+import javax.naming.ldap.UnsolicitedNotificationEvent;
+import javax.naming.ldap.UnsolicitedNotificationListener;
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.NamingManager;
 
@@ -66,6 +77,8 @@ import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 import org.apache.harmony.jndi.internal.parser.LdapNameParser;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
+import org.apache.harmony.jndi.provider.ldap.event.ECNotificationControl;
+import org.apache.harmony.jndi.provider.ldap.event.PersistentSearchResult;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
 import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
 import org.apache.harmony.jndi.provider.ldap.sasl.SaslBind;
@@ -74,7 +87,7 @@ import org.apache.harmony.jndi.provider.ldap.sasl.SaslBind;
  * This context implements LdapContext, it's main entry point of all JNDI ldap
  * operations.
  */
-public class LdapContextImpl implements LdapContext {
+public class LdapContextImpl implements LdapContext, EventDirContext {
 
     /**
      * ldap connection
@@ -106,6 +119,10 @@ public class LdapContextImpl implements LdapContext {
      * connection controls for this context
      */
     private Control[] connCtls;
+
+    private HashMap<NamingListener, List<Integer>> listeners;
+
+    private List<UnsolicitedNotificationListener> unls;
 
     private static final Control NON_CRITICAL_MANAGE_REF_CONTROL = new ManageReferralControl(
             Control.NONCRITICAL);
@@ -1626,5 +1643,365 @@ public class LdapContextImpl implements LdapContext {
             // jndi.2E=The name is null
             throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
+    }
+
+    @Override
+    protected void finalize() {
+        try {
+            close();
+        } catch (NamingException e) {
+            // ignore
+        }
+    }
+
+    public void addNamingListener(Name name, String filter,
+            Object[] filterArgs, SearchControls searchControls,
+            NamingListener namingListener) throws NamingException {
+        checkName(name);
+
+        if (namingListener == null) {
+            return;
+        }
+
+        if (!(name instanceof LdapName)) {
+            if (name instanceof CompositeName && name.size() == 1) {
+                name = name.getPrefix(1);
+            } else {
+                // FIXME: read message from file
+                throw new InvalidNameException(
+                        "Target cannot span multiple namespaces: "
+                                + name.toString());
+            }
+        }
+
+        if (namingListener instanceof UnsolicitedNotificationListener) {
+            if (unls == null) {
+                unls = new ArrayList<UnsolicitedNotificationListener>();
+                addUnsolicitedListener();
+            }
+
+            unls.add((UnsolicitedNotificationListener) namingListener);
+
+            if (!(namingListener instanceof NamespaceChangeListener)
+                    && !(namingListener instanceof ObjectChangeListener)) {
+                return;
+            }
+        }
+
+        if (filter == null) {
+            throw new NullPointerException(Messages.getString("ldap.28")); //$NON-NLS-1$
+        }
+
+        if (filterArgs == null) {
+            filterArgs = new Object[0];
+        }
+
+        if (searchControls == null) {
+            searchControls = new SearchControls();
+        }
+
+        FilterParser filterParser = new FilterParser(filter);
+        filterParser.setArgs(filterArgs);
+        Filter f = null;
+        try {
+            f = filterParser.parse();
+        } catch (ParseException e) {
+            InvalidSearchFilterException ex = new InvalidSearchFilterException(
+                    Messages.getString("ldap.29")); //$NON-NLS-1$
+            ex.setRootCause(e);
+            throw ex;
+        }
+
+        String targetDN = getTargetDN(name, contextDn);
+
+        Name tempName = new LdapName(contextDn.toString());
+        tempName.addAll(name);
+        String baseDN = tempName.toString();
+
+        int messageId = doPersistentSearch(targetDN, baseDN, f, searchControls,
+                namingListener);
+
+        if (listeners == null) {
+            listeners = new HashMap<NamingListener, List<Integer>>();
+        }
+
+        List<Integer> idList = listeners.get(namingListener);
+        if (idList == null) {
+            idList = new ArrayList<Integer>();
+        }
+
+        idList.add(Integer.valueOf(messageId));
+    }
+
+    public void addNamingListener(Name name, String filter,
+            SearchControls searchControls, NamingListener namingListener)
+            throws NamingException {
+        addNamingListener(name, filter, new Object[0], searchControls,
+                namingListener);
+    }
+
+    public void addNamingListener(String name, String filter,
+            Object[] filterArgs, SearchControls searchControls,
+            NamingListener namingListener) throws NamingException {
+        addNamingListener(convertFromStringToName(name), filter, filterArgs,
+                searchControls, namingListener);
+    }
+
+    public void addNamingListener(String name, String filter,
+            SearchControls searchControls, NamingListener namingListener)
+            throws NamingException {
+        addNamingListener(convertFromStringToName(name), filter,
+                searchControls, namingListener);
+    }
+
+    public static interface UnsolicitedListener {
+        public void receiveNotification(UnsolicitedNotificationImpl un,
+                Control[] cs);
+    }
+
+    public void addNamingListener(Name name, int scope,
+            NamingListener namingListener) throws NamingException {
+        checkName(name);
+
+        if (namingListener == null) {
+            return;
+        }
+
+        // only ldap name is supportted
+        if (!(name instanceof LdapName)) {
+            if (name instanceof CompositeName && name.size() == 1) {
+                name = name.getPrefix(0);
+            } else {
+                // ldap.32=Target cannot span multiple namespaces: {0}
+                throw new InvalidNameException(Messages.getString("ldap.32", //$NON-NLS-1$
+                        new Object[] { name.toString() }));
+            }
+        }
+
+        if (namingListener instanceof UnsolicitedNotificationListener) {
+            if (unls == null) {
+                unls = new ArrayList<UnsolicitedNotificationListener>();
+                addUnsolicitedListener();
+            }
+
+            unls.add((UnsolicitedNotificationListener) namingListener);
+
+            if (!(namingListener instanceof NamespaceChangeListener)
+                    && !(namingListener instanceof ObjectChangeListener)) {
+                return;
+            }
+        }
+
+        // ri is silent in this case
+        if (scope != EventContext.OBJECT_SCOPE
+                && scope != EventContext.ONELEVEL_SCOPE
+                && scope != EventContext.SUBTREE_SCOPE) {
+            // ldap.33=Scope should be one of 'OBJECT_SCOPE', 'ONELEVEL_SCOPE'
+            // or 'SUBTREE_SCOPE'
+            throw new IllegalArgumentException(Messages.getString("ldap.33")); //$NON-NLS-1$
+        }
+
+        String targetDN = getTargetDN(name, contextDn);
+
+        Filter filter = new Filter(Filter.PRESENT_FILTER);
+        filter.setValue("objectClass");
+
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(scope);
+
+        Name tempName = new LdapName(contextDn.toString());
+        tempName.addAll(name);
+        String baseDN = tempName.toString();
+
+        int messageId = doPersistentSearch(targetDN, baseDN, filter, controls,
+                namingListener);
+
+        if (listeners == null) {
+            listeners = new HashMap<NamingListener, List<Integer>>();
+        }
+
+        List<Integer> idList = listeners.get(namingListener);
+        if (idList == null) {
+            idList = new ArrayList<Integer>();
+            listeners.put(namingListener, idList);
+        }
+
+        idList.add(Integer.valueOf(messageId));
+
+    }
+
+    private void addUnsolicitedListener() {
+        client.addUnsolicitedListener(new UnsolicitedListener() {
+
+            public void receiveNotification(UnsolicitedNotificationImpl un,
+                    Control[] cs) {
+                EventObject event = null;
+                try {
+                    un.setControls(narrowingControls(cs));
+                    event = new UnsolicitedNotificationEvent(this, un);
+                } catch (NamingException e) {
+                    event = new NamingExceptionEvent(LdapContextImpl.this, e);
+                }
+
+                for (UnsolicitedNotificationListener listener : unls) {
+                    notifyNamingListener(listener, event);
+                }
+
+            }
+
+        });
+    }
+
+    private int doPersistentSearch(String targetDN, final String baseDN,
+            Filter filter, SearchControls controls,
+            NamingListener namingListener) throws CommunicationException {
+
+        SearchOp op = new SearchOp(targetDN, controls, filter);
+
+        final NamingListener listener = namingListener;
+        op.setSearchResult(new PersistentSearchResult() {
+
+            @Override
+            public void receiveNotificationHook(Object obj) {
+                EventObject event = null;
+                // construct event
+                if (obj instanceof ECNotificationControl) {
+                    ECNotificationControl control = (ECNotificationControl) obj;
+                    event = constructNamingEvent(this, control, baseDN);
+                }
+
+                if (obj instanceof LdapResult) {
+                    LdapResult ldapResult = (LdapResult) obj;
+                    NamingException ex = LdapUtils
+                            .getExceptionFromResult(ldapResult);
+                    // may not happen
+                    if (ex == null) {
+                        return;
+                    }
+
+                    event = new NamingExceptionEvent(LdapContextImpl.this, ex);
+                }
+
+                // notify listener
+                notifyNamingListener(listener, event);
+            }
+
+        });
+
+        try {
+            return client.addPersistentSearch(op);
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException();
+            ex.setRootCause(e);
+            throw ex;
+        }
+    }
+
+    private void notifyNamingListener(final NamingListener listener,
+            final EventObject event) {
+        /*
+         * start new thread to notify listener, so user code may not affect
+         * dispatcher thread
+         */
+        Thread thread = new Thread(new Runnable() {
+
+            public void run() {
+                if (event instanceof NamingEvent) {
+                    NamingEvent namingEvent = (NamingEvent) event;
+                    namingEvent.dispatch(listener);
+                } else if (event instanceof NamingExceptionEvent) {
+                    NamingExceptionEvent exceptionEvent = (NamingExceptionEvent) event;
+                    listener.namingExceptionThrown(exceptionEvent);
+                } else if (event instanceof UnsolicitedNotificationEvent) {
+                    UnsolicitedNotificationEvent namingEvent = (UnsolicitedNotificationEvent) event;
+                    namingEvent
+                            .dispatch((UnsolicitedNotificationListener) listener);
+                }
+
+            }
+
+        });
+
+        thread.start();
+    }
+
+    public void addNamingListener(String s, int i, NamingListener namingListener)
+            throws NamingException {
+        addNamingListener(convertFromStringToName(s), i, namingListener);
+    }
+
+    public void removeNamingListener(NamingListener namingListener)
+            throws NamingException {
+        if (listeners == null || !listeners.containsKey(namingListener)) {
+            return;
+        }
+
+        if (namingListener instanceof UnsolicitedNotificationListener) {
+            unls.remove(namingListener);
+        }
+
+        List<Integer> idList = listeners.remove(namingListener);
+        if (idList == null) {
+            return;
+        }
+
+        try {
+            for (Integer id : idList) {
+                client.removePersistentSearch(id.intValue(), requestControls);
+            }
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException();
+            ex.setRootCause(e);
+        }
+    }
+
+    public boolean targetMustExist() throws NamingException {
+        // FIXME
+        return false;
+    }
+
+    private NamingEvent constructNamingEvent(PersistentSearchResult result,
+            ECNotificationControl control, String baseDN) {
+        Binding newBinding = null;
+        Binding oldBinding = null;
+
+        switch (control.getChangeType()) {
+        case ECNotificationControl.ADD:
+            String newName = convertToRelativeName(result.getDn(), baseDN);
+            newBinding = new Binding(newName, null);
+            newBinding.setNameInNamespace(result.getDn());
+            break;
+        case ECNotificationControl.DELETE:
+            String deleteName = convertToRelativeName(result.getDn(), baseDN);
+            oldBinding = new Binding(deleteName, null);
+            oldBinding.setNameInNamespace(result.getDn());
+            break;
+        case ECNotificationControl.MODIFY_DN:
+            if (result.getDn() != null) {
+                newBinding = new Binding(convertToRelativeName(result.getDn(),
+                        baseDN), null);
+                newBinding.setNameInNamespace(result.getDn());
+            }
+
+            if (control.getPreviousDN() != null) {
+                oldBinding = new Binding(convertToRelativeName(control
+                        .getPreviousDN(), baseDN), null);
+                oldBinding.setNameInNamespace(control.getPreviousDN());
+            }
+            break;
+        case ECNotificationControl.MODIFY:
+            String relativeName = convertToRelativeName(result.getDn(), baseDN);
+            newBinding = new Binding(relativeName, null);
+            newBinding.setNameInNamespace(result.getDn());
+            // FIXME: how to get old binding?
+            oldBinding = new Binding(relativeName, null);
+            oldBinding.setNameInNamespace(result.getDn());
+        }
+
+        NamingEvent event = new NamingEvent(this, control.getJNDIChangeType(),
+                newBinding, oldBinding, Integer.valueOf(control
+                        .getChangeNumber()));
+
+        return event;
     }
 }
