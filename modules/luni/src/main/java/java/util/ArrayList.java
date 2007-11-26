@@ -43,10 +43,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     private transient E[] array;
 
     /**
-     * Constructs a new instance of ArrayList with zero capacity.
+     * Constructs a new instance of ArrayList with capacity for ten elements.
      */
     public ArrayList() {
-        this(0);
+        this(10);
     }
 
     /**

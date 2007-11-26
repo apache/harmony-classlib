@@ -74,6 +74,13 @@ public class MockLdapClient extends LdapClient {
     }
 
     @Override
+    public int addPersistentSearch(SearchOp op) throws IOException {
+        request = op.getRequest();
+        response = op.getResponse();
+        return new LdapMessage(response).getMessageId();
+    }
+
+    @Override
     public void doOperationWithoutResponse(int opIndex, ASN1Encodable op,
             Control[] controls) throws IOException {
         request = op;

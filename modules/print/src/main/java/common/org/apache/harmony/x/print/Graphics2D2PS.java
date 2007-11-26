@@ -25,8 +25,10 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.font.GlyphVector;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
@@ -35,17 +37,30 @@ import java.io.PrintStream;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
 
 public class Graphics2D2PS extends CommonGraphics2D {
 
-    private static final Font DEF_FONT = new Font("Courier", Font.PLAIN, 12); //$NON-NLS-1$
+    private static final Font                DEF_FONT;
+    private static final Map<String, String> FONT_MAP;
 
-    private final PrintStream out_stream;
-    private final PageFormat  format;
-    private final Rectangle   defaultClip;
-    private double            yscale   = 1;
+    private final PrintStream                out_stream;
+    private final PageFormat                 format;
+    private final Rectangle                  defaultClip;
+    private double                           yscale = 1;
+
+    static {
+        DEF_FONT = new Font("Dialog", Font.PLAIN, 12); //$NON-NLS-1$
+        FONT_MAP = new HashMap<String, String>();
+        FONT_MAP.put("Serif", "Times"); //$NON-NLS-1$ //$NON-NLS-2$
+        FONT_MAP.put("SansSerif", "Helvetica"); //$NON-NLS-1$ //$NON-NLS-2$
+        FONT_MAP.put("Monospaced", "Courier"); //$NON-NLS-1$ //$NON-NLS-2$
+        FONT_MAP.put("Dialog", "Helvetica"); //$NON-NLS-1$ //$NON-NLS-2$
+        FONT_MAP.put("DialogInput", "Courier"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
     public Graphics2D2PS(final PrintStream stream, final PageFormat format) {
         super();
@@ -56,15 +71,15 @@ public class Graphics2D2PS extends CommonGraphics2D {
         out_stream = stream;
         this.format = format != null ? format : new PageFormat();
         defaultClip = new Rectangle((int) this.format.getImageableX(),
-                        (int) this.format.getImageableY(), (int) this.format
-                                        .getImageableWidth(), (int) this.format
-                                        .getImageableHeight());
+                        (int) this.format.getImageableY(),
+                        (int) this.format.getImageableWidth(),
+                        (int) this.format.getImageableHeight());
         PS.printHeader(stream);
         resetGraphics();
         setColor(fgColor);
         setFont(DEF_FONT);
         setClip(defaultClip);
-        ps(PS.gsave);
+        ps(PS.setDefGstate);
     }
 
     public Graphics2D2PS(final PrintStream stream) {
@@ -78,7 +93,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
 
     public void startPage(final int number) {
         ps(PS.comment, "Page: " + number + " " + number); //$NON-NLS-1$ //$NON-NLS-2$
-        ps(PS.grestore);
+        ps(PS.restoreDefGstate);
         resetGraphics();
     }
 
@@ -101,7 +116,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
         final float h = (float) imageGIF.getHeight();
 
         drawImage(image, x, convY(y), true, ((float) width) / w,
-                        ((float) height) / h);
+            ((float) height) / h);
         return true;
     }
 
@@ -131,7 +146,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
         fillRect(x, y, width, height);
         setColor(cur_color);
         drawImage(image, x, convY(y), true, ((float) width) / w,
-                        ((float) height) / h);
+            ((float) height) / h);
         return true;
     }
 
@@ -197,7 +212,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
         setColor(cur_color);
 
         return drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2,
-                        imageObserver);
+            imageObserver);
 
     }
 
@@ -218,9 +233,29 @@ public class Graphics2D2PS extends CommonGraphics2D {
     }
 
     public void drawString(final String text, final int x, final int y) {
-        if (text != null) {
-            ps(PS.moveto, x, convY(y));
-            ps(PS.show, "(" + wrapString(text) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (text == null) {
+            return;
+        }
+
+        StringBuffer sb = new StringBuffer(text.length());
+        int lastX = x;
+
+        for (int i = 0; i < text.length(); i++) {
+            if (text.codePointAt(i) < 256) {
+                sb.append(text.charAt(i));
+            } else {
+                if (sb.length() > 0) {
+                    lastX += drawPSString(sb.toString(), lastX, y);
+                    sb = new StringBuffer(text.length() - i);
+                }
+
+                lastX += drawStringShape(String.valueOf(text.charAt(i)), lastX,
+                    y);
+            }
+        }
+
+        if (sb.length() > 0) {
+            drawPSString(sb.toString(), lastX, y);
         }
     }
 
@@ -235,8 +270,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
         final char[] cc = new char[n];
         int i = 0;
 
-        for (char c = iterator.first(); c != CharacterIterator.DONE; c = iterator
-                        .next()) {
+        for (char c = iterator.first(); c != CharacterIterator.DONE; c = iterator.next()) {
             cc[i++] = c;
         }
         drawChars(cc, 0, n, x, y);
@@ -342,33 +376,44 @@ public class Graphics2D2PS extends CommonGraphics2D {
     private void drawShape(final Shape shape, final boolean fill,
                     final boolean stroke) {
         final float[] coords = new float[6];
-        final PathIterator pathIterator = shape
-                        .getPathIterator((AffineTransform) null);
-        int i;
+        final PathIterator pathIterator = shape.getPathIterator((AffineTransform) null);
+        float x = 0;
+        float y = 0;
 
         ps(PS.newpath);
 
         while (!pathIterator.isDone()) {
-            i = pathIterator.currentSegment(coords);
-            switch (i) {
+            switch (pathIterator.currentSegment(coords)) {
             case PathIterator.SEG_MOVETO: {
                 ps(PS.moveto, (int) coords[0], convY((int) coords[1]));
+                x = coords[0];
+                y = coords[1];
                 break;
             }
             case PathIterator.SEG_LINETO: {
                 ps(PS.lineto, (int) coords[0], convY((int) coords[1]));
+                x = coords[0];
+                y = coords[1];
                 break;
             }
             case PathIterator.SEG_QUADTO: {
-                // XXX: improvement required
-                ps(PS.lineto, (int) coords[0], convY((int) coords[1]));
-                ps(PS.lineto, (int) coords[2], convY((int) coords[3]));
+                final float x1 = (x + 2 * coords[0]) / 3;
+                final float y1 = (y + 2 * coords[1]) / 3;
+                final float x2 = (2 * coords[2] + coords[0]) / 3;
+                final float y2 = (2 * coords[3] + coords[1]) / 3;
+
+                x = coords[2];
+                y = coords[3];
+                ps(PS.curveto, x1, convY((int) y1), x2, convY((int) y2), x,
+                    convY((int) y));
                 break;
             }
             case PathIterator.SEG_CUBICTO: {
                 ps(PS.curveto, (int) coords[0], convY((int) coords[1]),
-                                (int) coords[2], convY((int) coords[3]),
-                                (int) coords[4], convY((int) coords[5]));
+                    (int) coords[2], convY((int) coords[3]), (int) coords[4],
+                    convY((int) coords[5]));
+                x = coords[4];
+                y = coords[5];
                 break;
             }
             case PathIterator.SEG_CLOSE: {
@@ -395,8 +440,23 @@ public class Graphics2D2PS extends CommonGraphics2D {
     }
 
     public void setFont(final Font font) {
+        // looking for direct mapping of <name>.<style> to PostScript name
+        String psName = FONT_MAP.get(font.getName() + "." + font.getStyle()); //$NON-NLS-1$
+
+        if (psName == null) {
+            // looking for font name mapping
+            final String name = FONT_MAP.get(font.getName());
+            if (name != null) {
+                psName = PSFont.getPSName(name, font.getStyle());
+            }
+        }
+
+        if (psName == null) {
+            psName = PSFont.Helvetica.psName;
+        }
+
+        ps(PS.setfnt, psName, font.getSize());
         super.setFont(font);
-        ps(PS.setfnt, font.getName(), font.getSize());
     }
 
     public void translate(final int x, final int y) {
@@ -463,12 +523,24 @@ public class Graphics2D2PS extends CommonGraphics2D {
     public void setTransform(final AffineTransform transform) {
         super.setTransform(transform);
         ps(PS.concat, matrix[0], matrix[1], matrix[2], matrix[3], matrix[4],
-                        matrix[5]);
+            matrix[5]);
     }
 
     private static String wrapString(final String str) {
         return str.replace("\\", "\\\\").replace("\n", "\\\n").replace("\r", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
-                        "\\\r").replace("(", "\\(").replace(")", "\\)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "\\\r").replace("(", "\\(").replace(")", "\\)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    }
+
+    private static String threebytes2Hex(int b) {
+        final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                        'A', 'B', 'C', 'D', 'E', 'F' };
+        final char[] ret = new char[6];
+
+        for (int i = 0; i < 6; i++) {
+            ret[5 - i] = hex[b & 0x0F];
+            b = b >> 4;
+        }
+        return new String(ret);
     }
 
     private void drawImage(final Image image, final int x, final int y) {
@@ -599,16 +671,20 @@ public class Graphics2D2PS extends CommonGraphics2D {
         ps(PS.stroke);
     }
 
-    private static String threebytes2Hex(int b) {
-        final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                        'A', 'B', 'C', 'D', 'E', 'F' };
-        final char[] ret = new char[6];
+    private int drawPSString(final String text, final int x, final int y) {
+        final Rectangle2D r = font.getStringBounds(text, frc);
+        final double w = r.getWidth();
 
-        for (int i = 0; i < 6; i++) {
-            ret[5 - i] = hex[b & 0x0F];
-            b = b >> 4;
-        }
-        return new String(ret);
+        ps(PS.show, "(" + wrapString(text) + ")", w, x, convY(y)); //$NON-NLS-1$ //$NON-NLS-2$
+        return (int) w;
+    }
+
+    private int drawStringShape(final String str, final int x, final int y) {
+        final TextLayout l = new TextLayout(str, font, frc);
+
+        drawShape(l.getOutline(AffineTransform.getTranslateInstance(x, y)),
+            true, true);
+        return (int) font.getStringBounds(str, frc).getWidth();
     }
 
     /**
@@ -653,14 +729,16 @@ public class Graphics2D2PS extends CommonGraphics2D {
             scalefont,
             setfont,
             setlinewidth,
-            show,
+            show(null, "%s %s %s %s S"), //$NON-NLS-1$
             showpage,
             stroke,
             translate,
             comment(null, "%%%%%s"), //$NON-NLS-1$
             concat(null, "[%s %s %s %s %s %s] concat"), //$NON-NLS-1$
             setcolor("C", null), //$NON-NLS-1$
-            setfnt(null, "/%s %s F"); //$NON-NLS-1$
+            setfnt(null, "/%s %s F"), //$NON-NLS-1$
+            setDefGstate(null, "/DEF_GSTATE gstate def"), //$NON-NLS-1$
+            restoreDefGstate(null, "DEF_GSTATE setgstate"); //$NON-NLS-1$
 
         final String name;
         final String format;
@@ -670,7 +748,7 @@ public class Graphics2D2PS extends CommonGraphics2D {
         }
 
         PS(final String name, final String format) {
-            this.name = (name != null) ? name : toString();
+            this.name = (name != null) ? name : name();
             this.format = format;
         }
 
@@ -682,6 +760,8 @@ public class Graphics2D2PS extends CommonGraphics2D {
             out.println("%%EndComments"); //$NON-NLS-1$
             out.println("/F {exch findfont exch scalefont setfont} def"); //$NON-NLS-1$
             out.println("/C {setrgbcolor} bind def"); //$NON-NLS-1$
+            out.println("/S {gsave moveto 1 index stringwidth pop div 1 scale " //$NON-NLS-1$
+                + "show grestore} def"); //$NON-NLS-1$
         }
 
         static void printFooter(final PrintStream out) {
@@ -698,6 +778,40 @@ public class Graphics2D2PS extends CommonGraphics2D {
                 }
                 out.println(name);
             }
+        }
+    }
+
+    private enum PSFont {
+            Times_Roman("Times", null, Font.PLAIN), //$NON-NLS-1$
+            Times_Italic("Times", null, Font.ITALIC), //$NON-NLS-1$
+            Times_Bold("Times", null, Font.BOLD), //$NON-NLS-1$
+            Times_BoldItalic("Times", null, Font.BOLD + Font.ITALIC), //$NON-NLS-1$
+            Helvetica("Helvetica", null, Font.PLAIN), //$NON-NLS-1$
+            Helvetica_Oblique("Helvetica", null, Font.ITALIC), //$NON-NLS-1$
+            Helvetica_Bold("Helvetica", null, Font.BOLD), //$NON-NLS-1$
+            Helvetica_BoldOblique("Helvetica", null, Font.BOLD + Font.ITALIC), //$NON-NLS-1$
+            Courier("Courier", null, Font.PLAIN), //$NON-NLS-1$
+            Courier_Oblique("Courier", null, Font.ITALIC), //$NON-NLS-1$
+            Courier_Bold("Courier", null, Font.BOLD), //$NON-NLS-1$
+            Courier_BoldOblique("Courier", null, Font.BOLD + Font.ITALIC); //$NON-NLS-1$
+
+        final String name;
+        final String psName;
+        final int    style;
+
+        PSFont(final String name, final String psName, final int style) {
+            this.name = name;
+            this.psName = (psName != null) ? psName : name().replace('_', '-');
+            this.style = style;
+        }
+
+        static String getPSName(final String name, final int style) {
+            for (PSFont f : values()) {
+                if ((f.style == style) && f.name.equalsIgnoreCase(name)) {
+                    return f.psName;
+                }
+            }
+            return null;
         }
     }
 }

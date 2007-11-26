@@ -371,7 +371,11 @@ public abstract class FontPeerImpl implements FontPeer{
      * @param frc specified FontRenderContext
      */
     public Rectangle2D getMaxCharBounds(FontRenderContext frc) {
-        return maxCharBounds;
+        if (frc != null){
+            AffineTransform at = frc.getTransform();
+            return at.createTransformedShape(maxCharBounds).getBounds2D();
+        } else 
+            return maxCharBounds;
     }
 
     /**

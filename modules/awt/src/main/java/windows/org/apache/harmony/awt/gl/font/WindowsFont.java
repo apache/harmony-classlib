@@ -330,11 +330,19 @@ public class WindowsFont extends FontPeerImpl{
      */
     @Override
     public LineMetrics getLineMetrics(String str, FontRenderContext frc, AffineTransform at) {
+        AffineTransform frcAt = null;
         LineMetricsImpl lm = getDefaultLineMetrics();
         lm.setNumChars(str.length());
+        
+        if (frc != null)
+            frcAt = frc.getTransform();
 
         if ((at != null) && (!at.isIdentity())){
+            if (frcAt != null) 
+                at.concatenate(frcAt);
             lm.scale((float)at.getScaleX(), (float)at.getScaleY());
+        } else if ((frcAt != null) && (!frcAt.isIdentity())){
+            lm.scale((float)frcAt.getScaleX(), (float)frcAt.getScaleY());
         }
 
         return lm;

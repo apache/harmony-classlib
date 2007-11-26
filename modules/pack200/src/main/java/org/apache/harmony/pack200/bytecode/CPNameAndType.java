@@ -37,6 +37,10 @@ public class CPNameAndType extends ConstantPoolEntry {
 		this.descriptor = new CPUTF8(descriptor.substring(colon+1));
 	}
 
+	protected ClassFileEntry[] getNestedClassFileEntries() {
+		return new ClassFileEntry[] { name, descriptor };
+	}
+
 	
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
