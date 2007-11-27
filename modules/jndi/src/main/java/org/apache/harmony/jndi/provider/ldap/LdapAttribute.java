@@ -29,7 +29,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.DirContext;
 
-import org.apache.harmony.accessibility.internal.nls.Messages;
+import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
