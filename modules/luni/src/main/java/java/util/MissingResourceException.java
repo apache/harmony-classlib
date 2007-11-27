@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 /**
  * This runtime exception is thrown by ResourceBundle when a resouce bundle
  * cannot be found or a resource is missing from a resource bundle.
@@ -26,47 +25,47 @@ package java.util;
  */
 public class MissingResourceException extends RuntimeException {
 
-	private static final long serialVersionUID = -4876345176062000401L;
+    private static final long serialVersionUID = -4876345176062000401L;
 
-	String className, key;
+    String className, key;
 
-	/**
-	 * Constructs a new instance of this class with its walkback, message, the
-	 * class name of the resource bundle and the name of the missing resource.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 * @param className
-	 *            String The class name of the resource bundle.
-	 * @param resourceName
-	 *            String The name of the missing resource.
-	 */
-	public MissingResourceException(String detailMessage, String className,
-			String resourceName) {
-		super(detailMessage);
-		this.className = className;
-		key = resourceName;
-	}
+    /**
+     * Constructs a new instance of this class with its walkback, message, the
+     * class name of the resource bundle and the name of the missing resource.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     * @param className
+     *            String The class name of the resource bundle.
+     * @param resourceName
+     *            String The name of the missing resource.
+     */
+    public MissingResourceException(String detailMessage, String className,
+            String resourceName) {
+        super(detailMessage);
+        this.className = className;
+        key = resourceName;
+    }
 
-	/**
-	 * Answers the class name of the resource bundle from which a resource could
-	 * not be found, or in the case of a missing resource, the name of the
-	 * missing resource bundle.
-	 * 
-	 * @return String The class name of the resource bundle.
-	 */
-	public String getClassName() {
-		return className;
-	}
+    /**
+     * Answers the class name of the resource bundle from which a resource could
+     * not be found, or in the case of a missing resource, the name of the
+     * missing resource bundle.
+     * 
+     * @return String The class name of the resource bundle.
+     */
+    public String getClassName() {
+        return className;
+    }
 
-	/**
-	 * Answers the name of the missing resource, or an empty string if the
-	 * resource bundle is missing.
-	 * 
-	 * @return String The name of the missing resource.
-	 */
-	public String getKey() {
-		return key;
-	}
+    /**
+     * Answers the name of the missing resource, or an empty string if the
+     * resource bundle is missing.
+     * 
+     * @return String The name of the missing resource.
+     */
+    public String getKey() {
+        return key;
+    }
 
 }

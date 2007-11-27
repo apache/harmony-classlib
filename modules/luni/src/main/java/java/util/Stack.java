@@ -17,94 +17,93 @@
 
 package java.util;
 
-
 /**
  * <code>Stack</code> is a Last-In/First-Out(LIFO) data structure which
  * represents a stack of objects. It enables users to pop and push onto the
  * stack, including null objects. There is no limit to the size of the stack
  */
 public class Stack<E> extends Vector<E> {
-	
-	private static final long serialVersionUID = 1224463164541339165L;
 
-	/**
-	 * Constructs a stack with the default size of <code>Vector</code>.
-	 */
-	public Stack() {
-		super();
-	}
+    private static final long serialVersionUID = 1224463164541339165L;
 
-	/**
-	 * Determines if the stack is empty or not.
-	 * 
-	 * @return true if the stack is empty, false otherwise
-	 */
-	public boolean empty() {
-		return elementCount == 0;
-	}
+    /**
+     * Constructs a stack with the default size of <code>Vector</code>.
+     */
+    public Stack() {
+        super();
+    }
 
-	/**
-	 * Returns the element at the top of the stack without removing it.
-	 * 
-	 * @return the element at the top of the Stack
-	 * @exception EmptyStackException
-	 *                when empty() is true
-	 * @see #pop
-	 */
-	@SuppressWarnings("unchecked")
+    /**
+     * Determines if the stack is empty or not.
+     * 
+     * @return true if the stack is empty, false otherwise
+     */
+    public boolean empty() {
+        return elementCount == 0;
+    }
+
+    /**
+     * Returns the element at the top of the stack without removing it.
+     * 
+     * @return the element at the top of the Stack
+     * @exception EmptyStackException
+     *                when empty() is true
+     * @see #pop
+     */
+    @SuppressWarnings("unchecked")
     public synchronized E peek() {
-		try {
-			return (E)elementData[elementCount - 1];
-		} catch (IndexOutOfBoundsException e) {
-			throw new EmptyStackException();
-		}
-	}
-
-	/**
-	 * Returns the element at the top of the stack and removes it.
-	 * 
-	 * @return the element at the top of the stack.
-	 * @exception EmptyStackException
-	 *                when empty() is true
-	 * @see #peek
-	 * @see #push
-	 */
-	@SuppressWarnings("unchecked")
-    public synchronized E pop() {
-		if(elementCount == 0){
+        try {
+            return (E) elementData[elementCount - 1];
+        } catch (IndexOutOfBoundsException e) {
             throw new EmptyStackException();
         }
-		final int index = --elementCount;
-		final E obj = (E)elementData[index];
-		elementData[index] = null;
+    }
+
+    /**
+     * Returns the element at the top of the stack and removes it.
+     * 
+     * @return the element at the top of the stack.
+     * @exception EmptyStackException
+     *                when empty() is true
+     * @see #peek
+     * @see #push
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized E pop() {
+        if (elementCount == 0) {
+            throw new EmptyStackException();
+        }
+        final int index = --elementCount;
+        final E obj = (E) elementData[index];
+        elementData[index] = null;
         modCount++;
-		return obj;
-	}
+        return obj;
+    }
 
-	/**
-	 * Pushes the object from the parameter onto the top of the stack.
-	 * 
-	 * @param object
-	 *            The object to be added to the stack
-	 * 
-	 * @return the object argument
-	 * 
-	 * @see #peek
-	 * @see #pop
-	 */
-	public E push(E object) {
-		addElement(object);
-		return object;
-	}
+    /**
+     * Pushes the object from the parameter onto the top of the stack.
+     * 
+     * @param object
+     *            The object to be added to the stack
+     * 
+     * @return the object argument
+     * 
+     * @see #peek
+     * @see #pop
+     */
+    public E push(E object) {
+        addElement(object);
+        return object;
+    }
 
-	/**
-	 * Returns the index of the first occurrence of the object.
-	 * 
-	 * @return the index of the first occurrence of the object
-	 * @param o
-	 *            the object to be searched
-	 */
-	public synchronized int search(Object object) {
+    /**
+     * Returns the index of the first occurrence of the object.
+     * 
+     * @return the index of the first occurrence of the object
+     * @param o
+     *            the object to be searched
+     */
+    public synchronized int search(Object object) {
         final Object[] dumpArray = elementData;
         final int size = elementCount;
         if (object != null) {
@@ -121,5 +120,5 @@ public class Stack<E> extends Vector<E> {
             }
         }
         return -1;
-	}
+    }
 }

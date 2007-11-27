@@ -721,9 +721,9 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
      * @return long
      * 
      * @deprecated use: <code>
-     *	Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-     *	cal.set(year + 1900, month, day, hour, minute, second);
-     * 	cal.getTime().getTime();</code>
+     * Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+     * cal.set(year + 1900, month, day, hour, minute, second);
+     * cal.getTime().getTime();</code>
      */
     @Deprecated
     public static long UTC(int year, int month, int day, int hour, int minute,
