@@ -400,7 +400,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
         }
         if (object instanceof List) {
             List<?> list = (List<?>) object;
-            if (list.size() != size()) {
+            if (list.size() != elementCount) {
                 return false;
             }
 
@@ -830,7 +830,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     protected void removeRange(int start, int end) {
-        if (start >= 0 && start <= end && end <= size()) {
+        if (start >= 0 && start <= end && end <= elementCount) {
             if (start == end) {
                 return;
             }
@@ -1022,7 +1022,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
             return "[]"; //$NON-NLS-1$
         }
         int length = elementCount - 1;
-        StringBuffer buffer = new StringBuffer(size() * 16);
+        StringBuffer buffer = new StringBuffer(elementCount * 16);
         buffer.append('[');
         for (int i = 0; i < length; i++) {
             if (elementData[i] == this) {
