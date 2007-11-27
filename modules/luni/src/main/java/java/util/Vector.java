@@ -960,7 +960,7 @@ public class Vector<E> extends AbstractList<E> implements List<E>,
      * 
      * @exception IndexOutOfBoundsException
      *                when <code>start < 0 or <code>end > size()</code>
-     * @exception	IllegalArgumentException when <code>start > end</code>
+     * @exception IllegalArgumentException when <code>start > end</code>
      */
     @Override
     public synchronized List<E> subList(int start, int end) {
