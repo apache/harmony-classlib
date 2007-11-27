@@ -335,7 +335,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             ps.setObject(i + 1, params[i]);
 
         if (ps.execute()) {
-            populate(ps.getResultSet());
+            doPopulate(ps.getResultSet(), true);
         }
     }
 
@@ -388,25 +388,51 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         return false;
     }
 
-    public void populate(ResultSet data) throws SQLException {
-        populate(data, -1);
+    public void populate(ResultSet rs) throws SQLException {
+        doPopulate(rs, false);
     }
 
     public void populate(ResultSet rs, int startRow) throws SQLException {
+        if (startRow == 1) {
+            rs.beforeFirst();
+        } else if (startRow <= 0 || !rs.absolute(startRow - 1)) {
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
+
+        doPopulate(rs, true);
+    }
+
+    private void doPopulate(ResultSet rs, boolean isPaging) throws SQLException {
         meta = copyMetaData(rs.getMetaData());
 
-        new CachedRowSetReader(rs, startRow).readData(this);
+        /*
+         * this method not support paging, so before readData set pageSize and
+         * maxRowsto 0 and restore previous values after readData
+         */
+        if (!isPaging) {
+            int prePageSize = getPageSize();
+            setPageSize(0);
+            int preMaxRows = getMaxRows();
+            setMaxRows(0);
+            // FIXME use SyncProvider to get RowSetReader
+            new CachedRowSetReader(rs).readData(this);
+            setPageSize(prePageSize);
+            setMaxRows(preMaxRows);
+        } else {
+            // FIXME use SyncProvider to get RowSetReader
+            new CachedRowSetReader(rs).readData(this);
+        }
 
         setTableName(rs.getMetaData().getTableName(1));
 
         originalResultSet = new CachedRowSetImpl();
-        new CachedRowSetReader(this, startRow).readData(originalResultSet);
+        // FIXME use SyncProvider to get RowSetReader
+        new CachedRowSetReader(this).readData(originalResultSet);
         originalResultSet.setMetaData((RowSetMetaData) (getMetaData()));
 
         // recovery the states
-        currentRow = null;
-        currentRowIndex = 0;
-
+        beforeFirst();
     }
 
     // deep copy of ResultSetMetaData
