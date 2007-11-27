@@ -26,15 +26,24 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class AccessibleStateSet {
+
     protected Vector<AccessibleState> states;
 
     public AccessibleStateSet() {
-        initStorage();
+        super();
     }
 
-    public AccessibleStateSet(final AccessibleState[] states) {
-        initStorage(states.length);
-        addAll(states);
+    public AccessibleStateSet(AccessibleState[] states) {
+        super();
+        if (states.length == 0) {
+            return;
+        }
+        this.states = new Vector<AccessibleState>(states.length);
+        for (AccessibleState element : states) {
+            if (!this.states.contains(element)) {
+                this.states.addElement(element);
+            }
+        }
     }
 
     public boolean add(final AccessibleState state) {
@@ -47,17 +56,22 @@ public class AccessibleStateSet {
     }
 
     public void addAll(final AccessibleState[] states) {
+        if (states.length == 0) {
+            return;
+        }
         initStorage(states.length);
         for (AccessibleState element : states) {
-            add(element);
+            if (!this.states.contains(element)) {
+                this.states.addElement(element);
+            }
         }
     }
 
-    public boolean contains(final AccessibleState state) {
+    public boolean contains(AccessibleState state) {
         return states == null ? false : states.contains(state);
     }
 
-    public boolean remove(final AccessibleState state) {
+    public boolean remove(AccessibleState state) {
         return states == null ? false : states.remove(state);
     }
 
@@ -68,17 +82,17 @@ public class AccessibleStateSet {
     }
 
     public AccessibleState[] toArray() {
-        return states == null ? new AccessibleState[0] :
-            states.toArray(new AccessibleState[states.size()]);
+        return states == null ? new AccessibleState[0] : states
+                .toArray(new AccessibleState[states.size()]);
     }
 
     @Override
     public String toString() {
         if (states == null) {
-            return "null"; //$NON-NLS-1$
+            return null;
         }
         StringBuffer str = new StringBuffer();
-        for (Iterator<AccessibleState> it = states.iterator(); it.hasNext(); ) {
+        for (Iterator<AccessibleState> it = states.iterator(); it.hasNext();) {
             str.append(it.next().toString());
             if (it.hasNext()) {
                 str.append(","); //$NON-NLS-1$
@@ -99,4 +113,3 @@ public class AccessibleStateSet {
         }
     }
 }
-

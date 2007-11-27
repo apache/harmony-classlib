@@ -18,6 +18,7 @@
 package javax.accessibility;
 
 import java.util.Arrays;
+import java.util.Vector;
 
 import junit.framework.TestCase;
 
@@ -29,7 +30,8 @@ public class AccessibleStateSetTest extends TestCase {
     @Override
     public void setUp() {
         stateSet = new AccessibleStateSet();
-        statesArray = new AccessibleState[] { AccessibleState.ACTIVE, AccessibleState.ARMED };
+        statesArray = new AccessibleState[] { AccessibleState.ACTIVE,
+                AccessibleState.ARMED };
         stateSet.addAll(statesArray);
     }
 
@@ -40,7 +42,8 @@ public class AccessibleStateSetTest extends TestCase {
     }
 
     public void testAccessibleStateSet() throws Exception {
-        AccessibleState[] statesArray = { AccessibleState.ACTIVE, AccessibleState.ARMED };
+        AccessibleState[] statesArray = { AccessibleState.ACTIVE,
+                AccessibleState.ARMED };
         stateSet = new AccessibleStateSet(statesArray);
         assertNotNull(stateSet.states);
 
@@ -52,8 +55,10 @@ public class AccessibleStateSetTest extends TestCase {
     }
 
     public void testAddContains() throws Exception {
-        assertTrue("Must contain added state", stateSet.contains(AccessibleState.ACTIVE));
-        assertTrue("Must contain added state", stateSet.contains(AccessibleState.ARMED));
+        assertTrue("Must contain added state", stateSet
+                .contains(AccessibleState.ACTIVE));
+        assertTrue("Must contain added state", stateSet
+                .contains(AccessibleState.ARMED));
         boolean added = stateSet.add(AccessibleState.ACTIVE);
         assertEquals("Should not add duplicate item", 2, stateSet.states.size());
         assertFalse("Should not add duplicate item", added);
@@ -73,8 +78,8 @@ public class AccessibleStateSetTest extends TestCase {
     public void testAddAll() {
         stateSet.addAll(statesArray);
         stateSet.addAll(statesArray);
-        assertEquals("Should not add duplicate items", statesArray.length, stateSet.states
-                .size());
+        assertEquals("Should not add duplicate items", statesArray.length,
+                stateSet.states.size());
 
         try {
             stateSet.addAll(null);
@@ -87,7 +92,8 @@ public class AccessibleStateSetTest extends TestCase {
         boolean removed = stateSet.remove(AccessibleState.ICONIFIED);
         assertFalse("Should not remove non-existing item", removed);
         removed = stateSet.remove(AccessibleState.ACTIVE);
-        assertFalse("Should remove existing item", stateSet.contains(AccessibleState.ACTIVE));
+        assertFalse("Should remove existing item", stateSet
+                .contains(AccessibleState.ACTIVE));
         assertTrue("Should remove existing item", removed);
     }
 
@@ -102,9 +108,11 @@ public class AccessibleStateSetTest extends TestCase {
 
     public void testToString() throws Exception {
         String stateSetString = stateSet.toString();
-        assertTrue("String representation should contain elements representation",
+        assertTrue(
+                "String representation should contain elements representation",
                 stateSetString.indexOf(AccessibleState.ACTIVE.toString()) >= 0);
-        assertTrue("String representation should contain elements representation",
+        assertTrue(
+                "String representation should contain elements representation",
                 stateSetString.indexOf(AccessibleState.ARMED.toString()) >= 0);
 
         stateSet.states = null;
@@ -129,4 +137,20 @@ public class AccessibleStateSetTest extends TestCase {
         stateSet.states = null;
         Arrays.asList(stateSet.toArray());
     }
+
+    // Regression for HARMONY-2457
+    public void test_constructor() {
+        TestAccessibleStateSet obj = new TestAccessibleStateSet();
+        assertNull(obj.states);
+    }
+
+    static class TestAccessibleStateSet extends AccessibleStateSet {
+        Vector states;
+
+        TestAccessibleStateSet() {
+            super();
+            states = super.states;
+        }
+    }
+
 }
