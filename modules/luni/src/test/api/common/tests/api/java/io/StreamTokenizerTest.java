@@ -17,6 +17,7 @@
 
 package tests.api.java.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -382,6 +383,14 @@ public class StreamTokenizerTest extends junit.framework.TestCase {
 		assertTrue("toString failed." + st.toString(),
 			   st.toString().equals(
 						"Token[ABC], line 1"));
+
+		// Regression test for HARMONY-4070
+        byte[] data = new byte[] { (byte) '-' };
+        StreamTokenizer tokenizer = new StreamTokenizer(
+                new ByteArrayInputStream(data));
+        tokenizer.nextToken();
+        String result = tokenizer.toString();
+        assertEquals("Token['-'], line 1", result);
 	}
 
 	/**
