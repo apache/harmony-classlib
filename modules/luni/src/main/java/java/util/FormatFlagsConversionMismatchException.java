@@ -23,61 +23,61 @@ import java.io.Serializable;
  * incompatible.
  */
 public class FormatFlagsConversionMismatchException extends
-		IllegalFormatException implements Serializable {
+        IllegalFormatException implements Serializable {
 
-	private static final long serialVersionUID = 19120414L;
+    private static final long serialVersionUID = 19120414L;
 
-	private String f;
+    private String f;
 
-	private char c;
+    private char c;
 
-	/**
-	 * Construct a FormatFlagsConversionMismatchException with the flags and
-	 * conversion specified.
-	 * 
-	 * @param f
-	 *            The flags
-	 * @param c
-	 *            The conversion
-	 */
-	public FormatFlagsConversionMismatchException(String f, char c) {
-		if (null == f) {
-			throw new NullPointerException();
-		}
-		this.f = f;
-		this.c = c;
-	}
+    /**
+     * Construct a FormatFlagsConversionMismatchException with the flags and
+     * conversion specified.
+     * 
+     * @param f
+     *            The flags
+     * @param c
+     *            The conversion
+     */
+    public FormatFlagsConversionMismatchException(String f, char c) {
+        if (null == f) {
+            throw new NullPointerException();
+        }
+        this.f = f;
+        this.c = c;
+    }
 
-	/**
-	 * Returns the incompatible format flag.
-	 * 
-	 * @return The incompatible format flag.
-	 */
-	public String getFlags() {
-		return f;
-	}
+    /**
+     * Returns the incompatible format flag.
+     * 
+     * @return The incompatible format flag.
+     */
+    public String getFlags() {
+        return f;
+    }
 
-	/**
-	 * Returns the incompatible Conversion.
-	 * 
-	 * @return The incompatible Conversion.
-	 */
-	public char getConversion() {
-		return c;
-	}
+    /**
+     * Returns the incompatible Conversion.
+     * 
+     * @return The incompatible Conversion.
+     */
+    public char getConversion() {
+        return c;
+    }
 
-	/**
-	 * Returns the message string of the FormatFlagsConversionMismatchException.
-	 * 
-	 * @return The message string of the FormatFlagsConversionMismatchException.
-	 */
-	@Override
+    /**
+     * Returns the message string of the FormatFlagsConversionMismatchException.
+     * 
+     * @return The message string of the FormatFlagsConversionMismatchException.
+     */
+    @Override
     public String getMessage() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("Mismatched Convertor =");
-		buffer.append(c);
-		buffer.append(", Flags= ");
-		buffer.append(f);
-		return buffer.toString();
-	}
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Mismatched Convertor =");
+        buffer.append(c);
+        buffer.append(", Flags= ");
+        buffer.append(f);
+        return buffer.toString();
+    }
 }

@@ -21,44 +21,45 @@ package java.util;
  * out in the format specifier.
  */
 public class DuplicateFormatFlagsException extends IllegalFormatException {
-    
-	private static final long serialVersionUID = 18890531L;
 
-	private String flags;
+    private static final long serialVersionUID = 18890531L;
 
-	/**
+    private String flags;
+
+    /**
      * Constructs a DuplicateFormatFlagsException which flags is specified.
      * 
-     * @param f The format flags that contain a duplicate flag.
+     * @param f
+     *            The format flags that contain a duplicate flag.
      */
-	public DuplicateFormatFlagsException(String f) {
-		if (null == f) {
-			throw new NullPointerException();
-		}
-		flags = f;
-	}
+    public DuplicateFormatFlagsException(String f) {
+        if (null == f) {
+            throw new NullPointerException();
+        }
+        flags = f;
+    }
 
-	/**
-	 * Returns the format flags that contain a duplicate flag.
-	 * 
-	 * @return The format flags that contain a duplicate flag.
-	 */
-	public String getFlags() {
-		return flags;
-	}
+    /**
+     * Returns the format flags that contain a duplicate flag.
+     * 
+     * @return The format flags that contain a duplicate flag.
+     */
+    public String getFlags() {
+        return flags;
+    }
 
-	/**
-	 * Returns the message string of the DuplicateFormatFlagsException.
-	 * 
-	 * @return The message string of the DuplicateFormatFlagsException.
-	 */
-	@Override
+    /**
+     * Returns the message string of the DuplicateFormatFlagsException.
+     * 
+     * @return The message string of the DuplicateFormatFlagsException.
+     */
+    @Override
     public String getMessage() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("Flags of the DuplicateFormatFlagsException is'");
-		buffer.append(flags);
-		buffer.append("'");
-		return buffer.toString();
-	}
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Flags of the DuplicateFormatFlagsException is'");
+        buffer.append(flags);
+        buffer.append("'");
+        return buffer.toString();
+    }
 
 }
