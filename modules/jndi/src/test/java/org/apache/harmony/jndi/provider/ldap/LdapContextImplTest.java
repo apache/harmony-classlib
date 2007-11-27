@@ -18,7 +18,9 @@
 package org.apache.harmony.jndi.provider.ldap;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,7 @@ import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -50,7 +53,7 @@ import org.apache.harmony.jndi.provider.ldap.event.PersistentSearchResult;
 
 public class LdapContextImplTest extends TestCase {
     private LdapContextImpl context;
-    
+
     public void test_getSchema() throws NamingException {
         context = new LdapContextImpl(new MockLdapClient(), null, "");
         try {
@@ -59,7 +62,7 @@ public class LdapContextImplTest extends TestCase {
         } catch (NullPointerException e) {
             // expected
         }
-        
+
         try {
             context.getSchema((String) null);
             fail("Should throw NullPointerException");
@@ -549,6 +552,113 @@ public class LdapContextImplTest extends TestCase {
         assertEquals("ignore", preValue);
         returnedEnv = (Hashtable<Object, Object>) context.getEnvironment();
         assertFalse(returnedEnv.containsKey(Context.REFERRAL));
+    }
+
+    public void test_bind() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+        context.bind("cn=bind", "it's bind");
+
+        AddOp op = (AddOp) client.getRequest();
+        assertEquals("cn=bind,cn=test", op.getEntry());
+        List<LdapAttribute> attrList = op.getAttributeList();
+        // has attribute: objectClass, javaClassNames, javaClassName,
+        // javaSerializedData, cn
+        assertEquals(5, attrList.size());
+        Map<String, LdapAttribute> map = new HashMap<String, LdapAttribute>();
+        for (Iterator iter = attrList.iterator(); iter.hasNext();) {
+            LdapAttribute attr = (LdapAttribute) iter.next();
+            map.put(attr.getID(), attr);
+        }
+
+        assertTrue(map.containsKey("objectClass"));
+        Attribute attribute = map.get("objectClass");
+        NamingEnumeration<?> enu = attribute.getAll();
+        HashSet<Object> valueSet = new HashSet<Object>();
+        while (enu.hasMore()) {
+            valueSet.add(enu.next());
+        }
+        // objectClass has values: top, javaContainer, javaObject,
+        // javaSerializedObject
+        assertEquals(4, valueSet.size());
+        assertTrue(valueSet.contains("top"));
+        assertTrue(valueSet.contains("javaContainer"));
+        assertTrue(valueSet.contains("javaObject"));
+        assertTrue(valueSet.contains("javaSerializedObject"));
+
+        assertTrue(map.containsKey("javaClassNames"));
+        attribute = map.get("javaClassNames");
+        enu = attribute.getAll();
+        valueSet = new HashSet<Object>();
+        while (enu.hasMore()) {
+            valueSet.add(enu.next());
+        }
+
+        assertEquals(5, valueSet.size());
+        assertTrue(valueSet.contains("java.io.Serializable"));
+        assertTrue(valueSet.contains("java.lang.CharSequence"));
+        assertTrue(valueSet.contains("java.lang.Comparable"));
+        assertTrue(valueSet.contains("java.lang.Object"));
+        assertTrue(valueSet.contains("java.lang.String"));
+
+        assertTrue(map.containsKey("javaClassName"));
+        attribute = map.get("javaClassName");
+        assertEquals(1, attribute.size());
+        assertEquals(String.class.getName(), attribute.get(0));
+
+        assertTrue(map.containsKey("javaSerializedData"));
+        assertEquals(1, attribute.size());
+        attribute = map.get("javaSerializedData");
+
+        assertTrue(map.containsKey("cn"));
+        attribute = map.get("cn");
+        assertEquals(1, attribute.size());
+        assertEquals("bind", attribute.get(0));
+    }
+
+    public void test_lookup() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        context = new LdapContextImpl(client, env, "cn=test");
+        context.lookup("cn=lookup");
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("cn=lookup,cn=test", op.getBaseObject());
+        SearchControls controls = op.getControls();
+        assertEquals(SearchControls.OBJECT_SCOPE, controls.getSearchScope());
+        assertNull(controls.getReturningAttributes());
+
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", filter.getValue());
+    }
+
+    public void test_listBinding() throws Exception {
+        MockLdapClient client = new MockLdapClient();
+        context = new LdapContextImpl(client, new Hashtable<Object, Object>(),
+                "cn=test");
+
+        context.list("cn=listBinding");
+
+        SearchOp op = (SearchOp) client.getRequest();
+        assertEquals("cn=listBinding,cn=test", op.getBaseObject());
+        assertFalse(op.isTypesOnly());
+        SearchControls controls = op.getControls();
+        assertEquals(SearchControls.ONELEVEL_SCOPE, controls.getSearchScope());
+        Filter filter = op.getFilter();
+        assertEquals(Filter.PRESENT_FILTER, filter.getType());
+        assertEquals("objectClass", (String) filter.getValue());
+
+        Name name = new CompositeName("usr/bin");
+        try {
+            context.list(name);
+            fail("should throws InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
     }
 
     public void test_addNamingListener() throws Exception {

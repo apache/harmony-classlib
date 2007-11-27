@@ -17,8 +17,14 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.Binding;
@@ -45,8 +52,11 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
+import javax.naming.Referenceable;
+import javax.naming.StringRefAddr;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InvalidSearchFilterException;
@@ -72,6 +82,7 @@ import javax.naming.ldap.UnsolicitedNotificationEvent;
 import javax.naming.ldap.UnsolicitedNotificationListener;
 import javax.naming.spi.DirectoryManager;
 import javax.naming.spi.NamingManager;
+import javax.naming.spi.DirStateFactory.Result;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
@@ -93,7 +104,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      * ldap connection
      */
     private LdapClient client;
-    
+
     private boolean isClosed;
 
     /**
@@ -305,8 +316,158 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     public void bind(Name name, Object obj, Attributes attributes)
             throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * contex
+             */
+            DirContext nns = (DirContext) findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            nns.bind(remainingName, attributes);
+            return;
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+        if (obj == null && attributes == null) {
+            // ldap.2E=cannot bind null object without attributes
+            throw new IllegalArgumentException(Messages.getString("ldap.2E")); //$NON-NLS-1$
+        }
+
+        if (obj == null) {
+            createSubcontext(name, attributes);
+            return;
+        }
+
+        Result result = DirectoryManager.getStateToBind(obj, name, this, env,
+                attributes);
+        Object o = result.getObject();
+
+        Attributes attrs = null;
+
+        if (o instanceof Reference) {
+            attrs = convertRefToAttribute((Reference) o);
+        } else if (o instanceof Referenceable) {
+            attrs = convertRefToAttribute(((Referenceable) o).getReference());
+        } else if (o instanceof Serializable) {
+            attrs = convertSerialToAttribute((Serializable) o);
+        } else if (o instanceof DirContext) {
+            DirContext cxt = (DirContext) o;
+            attrs = cxt.getAttributes("");
+        } else {
+            throw new IllegalArgumentException(Messages.getString("ldap.24")); //$NON-NLS-1$
+        }
+
+        NamingEnumeration<? extends Attribute> enu = attrs.getAll();
+        if (result.getAttributes() != null) {
+            Attributes resultAttributes = result.getAttributes();
+
+            while (enu.hasMore()) {
+                Attribute element = enu.next();
+                if (element.getID().equalsIgnoreCase("objectClass")) {
+                    element = mergeAttribute(resultAttributes
+                            .get("objectClass"), element);
+                    if (resultAttributes.get("objectClass") != null) {
+                        element.remove("javaContainer");
+                    }
+                    resultAttributes.put(element);
+                } else if (resultAttributes.get(element.getID()) == null) {
+                    resultAttributes.put(element);
+                }
+            }
+
+            createSubcontext(name, resultAttributes);
+        } else {
+            createSubcontext(name, attrs);
+        }
+    }
+
+    private Attributes convertSerialToAttribute(Serializable serializable)
+            throws NamingException {
+        Attributes attrs = new BasicAttributes();
+
+        Attribute objectClass = new BasicAttribute("objectClass");
+        objectClass.add("top");
+        objectClass.add("javaContainer");
+        objectClass.add("javaObject");
+        objectClass.add("javaSerializedObject");
+        attrs.put(objectClass);
+
+        Attribute javaClassNames = new BasicAttribute("javaClassNames");
+        javaClassNames.add(serializable.getClass().getName());
+        javaClassNames.add(Object.class.getName());
+
+        Class[] cs = serializable.getClass().getInterfaces();
+        for (Class c : cs) {
+            javaClassNames.add(c.getName());
+        }
+
+        // add all ancestors class
+        Class sup = serializable.getClass().getSuperclass();
+        while (sup != null && !sup.getName().equals(Object.class.getName())) {
+            javaClassNames.add(sup.getName());
+            sup = sup.getSuperclass();
+        }
+        attrs.put(javaClassNames);
+
+        attrs.put("javaClassName", serializable.getClass().getName());
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(bout);
+            out.writeObject(serializable);
+            out.close();
+        } catch (IOException e) {
+            // TODO need add more detail messages?
+            NamingException ex = new NamingException();
+            ex.setRootCause(e);
+            throw ex;
+        }
+
+        byte[] bytes = bout.toByteArray();
+        attrs.put("javaSerializedData", bytes);
+
+        return attrs;
+    }
+
+    private Attributes convertRefToAttribute(Reference ref) {
+        Attributes attrs = new BasicAttributes();
+
+        Attribute objectClass = new BasicAttribute("objectClass");
+        objectClass.add("top");
+        objectClass.add("javaContainer");
+        objectClass.add("javaObject");
+        objectClass.add("javaNamingReference");
+        attrs.put(objectClass);
+
+        Attribute className = new BasicAttribute("javaClassName");
+        className.add(ref.getClassName());
+        attrs.put(className);
+
+        Attribute address = new BasicAttribute("javaReferenceAddress");
+        Enumeration<RefAddr> enu = ref.getAll();
+        int index = 0;
+        String separator = (String) env.get("java.naming.ldap.ref.separator");
+        if (separator == null) {
+            // use default separator '#'
+            separator = "#";
+        }
+        while (enu.hasMoreElements()) {
+            RefAddr addr = enu.nextElement();
+            StringBuilder builder = new StringBuilder();
+            builder.append(separator + index);
+            builder.append(separator + addr.getType());
+            builder.append(separator + addr.getContent());
+            address.add(builder.toString());
+            index++;
+        }
+        attrs.put(address);
+
+        return attrs;
     }
 
     public void bind(String s, Object obj, Attributes attributes)
@@ -499,7 +660,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return getAttributes(convertFromStringToName(s), as);
     }
 
-
     public static Hashtable<String, Hashtable<String, Hashtable<String, Object>>> schemaTree = new Hashtable<String, Hashtable<String, Hashtable<String, Object>>>();
 
     private LdapSchemaContextImpl ldapSchemaCtx = null;
@@ -639,8 +799,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      * 'numericStringMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 ) TODO check
      * with RFC to see whether all the schema definition has been catered for
      */
-    private static void parseValue(String schemaType,
-            String value,
+    private static void parseValue(String schemaType, String value,
             Hashtable<String, Hashtable<String, Object>> schemaDefs) {
         StringTokenizer st = new StringTokenizer(value);
         // Skip (
@@ -771,6 +930,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return new LdapSchemaAttrDefContextImpl(new CompositeName(name), env,
                 attrDef, this);
     }
+
     public DirContext getSchemaClassDefinition(Name name)
             throws NamingException {
         if (null == ldapSchemaCtx) {
@@ -893,13 +1053,16 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         for (ModificationItem item : modificationItems) {
             switch (item.getModificationOp()) {
             case DirContext.ADD_ATTRIBUTE:
-                op.addModification(0, new LdapAttribute(item.getAttribute(), this));
+                op.addModification(0, new LdapAttribute(item.getAttribute(),
+                        this));
                 break;
             case DirContext.REMOVE_ATTRIBUTE:
-                op.addModification(1, new LdapAttribute(item.getAttribute(), this));
+                op.addModification(1, new LdapAttribute(item.getAttribute(),
+                        this));
                 break;
             case DirContext.REPLACE_ATTRIBUTE:
-                op.addModification(2, new LdapAttribute(item.getAttribute(), this));
+                op.addModification(2, new LdapAttribute(item.getAttribute(),
+                        this));
                 break;
             default:
                 throw new IllegalArgumentException(Messages.getString(
@@ -922,8 +1085,25 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     public void rebind(Name name, Object obj, Attributes attributes)
             throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        Attributes attrs = null;
+        try {
+            attrs = getAttributes(name);
+        } catch (NameNotFoundException e) {
+            // entry does not exist, just do bind
+            bind(name, obj, attributes);
+            return;
+        }
+
+        if (attributes == null && obj instanceof DirContext) {
+            attributes = ((DirContext) obj).getAttributes("");
+            if (attributes == null) {
+                attributes = attrs;
+            }
+        }
+
+        destroySubcontext(name);
+
+        bind(name, obj, attributes);
     }
 
     public void rebind(String s, Object obj, Attributes attributes)
@@ -1409,8 +1589,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return dn.substring(0, index - 1);
     }
 
-    protected String getTargetDN(Name name, Name prefix) throws NamingException,
-            InvalidNameException {
+    protected String getTargetDN(Name name, Name prefix)
+            throws NamingException, InvalidNameException {
         Name target = null;
         if (name.size() == 0) {
             target = prefix;
@@ -1486,8 +1666,44 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     public NamingEnumeration<Binding> listBindings(Name name)
             throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * contex
+             */
+            DirContext nns = (DirContext) findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            return nns.listBindings(remainingName);
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+
+        NamingEnumeration<NameClassPair> enu = list(name);
+
+        List<Binding> bindings = new ArrayList<Binding>();
+
+        while (enu.hasMore()) {
+            NameClassPair pair = enu.next();
+            Object bound = null;
+            if (!pair.getClassName().equals(DirContext.class.getName())) {
+                bound = lookup(pair.getName());
+            } else {
+                bound = new LdapContextImpl(this, env, contextDn.toString());
+            }
+
+            Binding binding = new Binding(pair.getName(), bound.getClass()
+                    .getName(), bound);
+            binding.setNameInNamespace(pair.getNameInNamespace());
+            bindings.add(binding);
+
+        }
+
+        // FIXME: deal with exception
+        return new LdapNamingEnumeration<Binding>(bindings, null);
     }
 
     public NamingEnumeration<Binding> listBindings(String s)
@@ -1496,8 +1712,134 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public Object lookup(Name name) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        checkName(name);
+
+        if (name instanceof CompositeName && name.size() > 1) {
+            /*
+             * multi ns, find next ns context, delegate operation to the next
+             * context
+             */
+            DirContext nns = (DirContext) findNnsContext(name);
+            Name remainingName = name.getSuffix(1);
+            return nns.lookup(remainingName);
+        }
+
+        /*
+         * there is only one ldap ns
+         */
+        Attributes attributes = getAttributes(name);
+        if (!hasAttribute(attributes, "objectClass", "javaContainer")
+                && !hasAttribute(attributes, "objectClass", "javaObject")) {
+            // this is no java object, return the context
+
+            // get absolute dn name
+            String targetDN = getTargetDN(name, contextDn);
+            return new LdapContextImpl(this, env, targetDN);
+        }
+
+        Object boundObject = null;
+        // serializable object
+        if (hasAttribute(attributes, "objectClass", "javaSerializedObject")) {
+            byte[] data = (byte[]) attributes.get("javaSerializedData").get();
+            ObjectInputStream in = null;
+            try {
+                in = new ObjectInputStream(new ByteArrayInputStream(data));
+                boundObject = in.readObject();
+            } catch (IOException e) {
+                NamingException ex = new NamingException();
+                ex.setRootCause(e);
+                throw ex;
+            } catch (ClassNotFoundException e) {
+                // TODO use javaCodebase attribute to load class defination
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
+            }
+        } else if (hasAttribute(attributes, "objectClass",
+                "javaNamingReference")) {
+            String className = (String) attributes.get("javaClassName").get();
+
+            Attribute temp = attributes.get("javaFactory");
+            String factory = null;
+            if (temp != null) {
+                factory = (String) temp.get();
+            }
+
+            temp = attributes.get("javaCodebase");
+            String location = null;
+            if (temp != null) {
+                location = (String) temp.get();
+            }
+
+            Reference ref = new Reference(className, factory, location);
+            Attribute refAddress = attributes.get("javaReferenceAddress");
+            if (refAddress != null) {
+                NamingEnumeration<?> enu = refAddress.getAll();
+                String separator = (String) env
+                        .get("java.naming.ldap.ref.separator");
+                if (separator == null) {
+                    separator = "#";
+                }
+                TreeMap<Integer, StringRefAddr> addrsMap = new TreeMap<Integer, StringRefAddr>();
+
+                // sort addresses to TreeMap
+                while (enu.hasMore()) {
+                    String address = (String) enu.next();
+                    StringTokenizer st = new StringTokenizer(address, separator);
+                    int index = Integer.parseInt(st.nextToken());
+                    String type = st.nextToken();
+                    String content = st.nextToken();
+                    StringRefAddr refAddr = new StringRefAddr(type, content);
+                    addrsMap.put(Integer.valueOf(index), refAddr);
+                    // ref.add(index, refAddr);
+                }
+
+                for (StringRefAddr addr : addrsMap.values()) {
+                    ref.add(addr);
+                }
+            }
+            boundObject = ref;
+        }
+
+        try {
+            boundObject = DirectoryManager.getObjectInstance(boundObject, name,
+                    this, env);
+            if (boundObject == null) {
+                boundObject = new LdapContextImpl(this, env, getTargetDN(name,
+                        contextDn));
+            }
+            return boundObject;
+
+        } catch (NamingException e) {
+            throw e;
+        } catch (Exception e) {
+            // jndi.83=NamingManager.getObjectInstance() failed
+            throw (NamingException) new NamingException(Messages
+                    .getString("jndi.83")).initCause(e); //$NON-NLS-1$
+        }
+    }
+
+    private boolean hasAttribute(Attributes attributes, String type,
+            Object value) throws NamingException {
+        Attribute attr = attributes.get(type);
+        if (attr == null) {
+            return false;
+        }
+
+        NamingEnumeration<?> enu = attr.getAll();
+        while (enu.hasMore()) {
+            Object o = enu.next();
+            if (value.equals(o)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Object lookup(String s) throws NamingException {
@@ -1515,7 +1857,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      * @throws InvalidNameException
      *             occurs error while converting
      */
-    protected Name convertFromStringToName(String s) throws InvalidNameException {
+    protected Name convertFromStringToName(String s)
+            throws InvalidNameException {
         if (s == null) {
             // jndi.2E=The name is null
             throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
