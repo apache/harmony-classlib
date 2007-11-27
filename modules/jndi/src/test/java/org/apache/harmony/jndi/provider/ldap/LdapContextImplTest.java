@@ -70,6 +70,23 @@ public class LdapContextImplTest extends TestCase {
             // expected
         }
     }
+    
+    public void test_getSchemaClassDefinition() throws NamingException {
+        context = new LdapContextImpl(new MockLdapClient(), null, "");
+        try {
+            context.getSchemaClassDefinition((Name) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            context.getSchemaClassDefinition((String) null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 
     public void test_composeName_LNameLName() throws Exception {
         context = new LdapContextImpl(new MockLdapClient(), null, "");
