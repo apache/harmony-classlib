@@ -370,9 +370,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     @Override
     public void fill(Shape s) {
         if (!nativeBrush || composite != AlphaComposite.SrcOver) {
-            s = transform.createTransformedShape(s);
-            MultiRectArea mra = jsr.rasterize(s, 0.5);
-            super.fillMultiRectAreaPaint(mra);
+            super.fill(s);
             return;
         }
 
@@ -384,9 +382,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     @Override
     public void fillRect(int x, int y, int width, int height) {
         if (!nativeBrush || composite != AlphaComposite.SrcOver) {
-            Shape s = transform.createTransformedShape(new Rectangle(x, y, width, height));
-            MultiRectArea mra = jsr.rasterize(s, 0.5);
-            super.fillMultiRectAreaPaint(mra);
+            super.fillRect(x, y, width, height);
             return;
         }
 
