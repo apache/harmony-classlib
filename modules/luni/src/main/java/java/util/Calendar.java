@@ -725,10 +725,12 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 *            the time as the number of milliseconds since Jan. 1, 1970
 	 */
 	public void setTimeInMillis(long milliseconds) {
-		time = milliseconds;
+            if(!isTimeSet || !areFieldsSet || time!=milliseconds){	
+        	time = milliseconds;
 		isTimeSet = true;
 		areFieldsSet = false;
 		complete();
+	    }
 	}
 
 	/**
@@ -739,6 +741,7 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 */
 	public void setTimeZone(TimeZone timezone) {
 		zone = timezone;
+		areFieldsSet = false;
 	}
 
 	/**
