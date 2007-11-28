@@ -246,11 +246,12 @@ public class LdapClient {
                                     .getExtendedRequest().getID().equals(
                                             StartTlsRequest.OID)) {
                         /*
-                         * When establishing TLS by StartTls extended operation, no 
+                         * When establishing TLS by StartTls extended operation,
+                         * no
                          */
                         isStopped = true;
                     }
-                    
+
                     synchronized (element.lock) {
                         element.lock.notify();
                     }
@@ -347,16 +348,24 @@ public class LdapClient {
      */
     private LdapMessage waitResponse(Integer messageID, Object lock)
             throws IOException {
+        Element element = requests.get(messageID);
 
-        synchronized (lock) {
-            try {
-                lock.wait(MAX_WAIT_TIME);
-            } catch (InterruptedException e) {
-                // ignore
+        /*
+         * test if dispatcher has not received response message from server,
+         * wait response
+         */
+        if (element.response.getMessageId() != messageID.intValue()) {
+
+            synchronized (lock) {
+                try {
+                    lock.wait(MAX_WAIT_TIME);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
         }
-
-        Element element = requests.get(messageID);
+        
+        element = requests.get(messageID);
 
         // wait time out
         if (element.response.getMessageId() != messageID.intValue()) {
@@ -669,7 +678,7 @@ public class LdapClient {
     protected void finalize() {
         close();
     }
-    
+
     public Socket getSocket() {
         return this.socket;
     }

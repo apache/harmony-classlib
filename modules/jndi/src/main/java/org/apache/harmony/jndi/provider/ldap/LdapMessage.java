@@ -218,4 +218,8 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         return responseOp;
     }
 
+    public ASN1Encodable getRequestOp() {
+        return requestOp;
+    }
+
 }
