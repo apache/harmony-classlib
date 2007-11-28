@@ -607,7 +607,7 @@ public class StreamTokenizer {
                 result.append(sval);
                 break;
             default:
-                if (tokenTypes[ttype] == TOKEN_QUOTE) {
+                if (ttype == TT_UNKNOWN || tokenTypes[ttype] == TOKEN_QUOTE) {
                     result.append(sval);
                 } else {
                     result.append('\'');
