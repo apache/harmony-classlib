@@ -23,108 +23,108 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentUtils;
 
 public class CodeAttribute extends Attribute {
-	public List attributes = new ArrayList();
-	public List byteCodes = new ArrayList();
-	public int codeLength;
-	public List exceptionTable = new ArrayList(); // of ExceptionTableEntry
-	// instances
-	public List byteCodeOffsets = new ArrayList();
-	public int maxLocals;
-	public int maxStack;
+    public List attributes = new ArrayList();
+    // instances
+    public List byteCodeOffsets = new ArrayList();
+    public List byteCodes = new ArrayList();
+    public int codeLength;
+    public List exceptionTable = new ArrayList(); // of ExceptionTableEntry
+    public int maxLocals;
+    public int maxStack;
 
-	public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
-			Segment segment, OperandManager operandManager) {
-		super("Code"); //$NON-NLS-1$
-		this.maxLocals = maxLocals;
-		this.maxStack = maxStack;
-		this.codeLength = 0;
-		byteCodeOffsets.add(new Integer(0));
-		for (int i = 0; i < codePacked.length; i++) {
-			ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
-			byteCode.extractOperands(operandManager, segment);
-			byteCodes.add(byteCode);
-			this.codeLength += byteCode.getLength();
-			int lastBytecodePosition = ((Integer)byteCodeOffsets.get(byteCodeOffsets.size() - 1)).intValue();
-			// This code assumes all multiple byte bytecodes are
-			// replaced by a single-byte bytecode followed by
-			// another bytecode.
-			if(byteCode.hasMultipleByteCodes()) {
-				byteCodeOffsets.add(new Integer(lastBytecodePosition + 1));
-			}
-			// I've already added the first element (at 0) before
-			// entering this loop, so make sure I don't add one
-			// after the last element.
-			if(i < (codePacked.length - 1)) {
-				byteCodeOffsets.add(new Integer(lastBytecodePosition + byteCode.getLength()));
-			}
-		}
-	}
+    public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
+            Segment segment, OperandManager operandManager) {
+        super("Code"); //$NON-NLS-1$
+        this.maxLocals = maxLocals;
+        this.maxStack = maxStack;
+        this.codeLength = 0;
+        byteCodeOffsets.add(new Integer(0));
+        for (int i = 0; i < codePacked.length; i++) {
+            ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
+            byteCode.extractOperands(operandManager, segment);
+            byteCodes.add(byteCode);
+            this.codeLength += byteCode.getLength();
+            int lastBytecodePosition = ((Integer) byteCodeOffsets
+                    .get(byteCodeOffsets.size() - 1)).intValue();
+            // This code assumes all multiple byte bytecodes are
+            // replaced by a single-byte bytecode followed by
+            // another bytecode.
+            if (byteCode.hasMultipleByteCodes()) {
+                byteCodeOffsets.add(new Integer(lastBytecodePosition + 1));
+            }
+            // I've already added the first element (at 0) before
+            // entering this loop, so make sure I don't add one
+            // after the last element.
+            if (i < (codePacked.length - 1)) {
+                byteCodeOffsets.add(new Integer(lastBytecodePosition
+                        + byteCode.getLength()));
+            }
+        }
+    }
 
-	protected int getLength() {
-		int attributesSize = 0;
-		Iterator it = attributes.iterator();
-		while (it.hasNext()) {
-			Attribute attribute = (Attribute) it.next();
-			attributesSize += attribute.getLength();
-		}
-		return 2 + 2 + 4 + codeLength + exceptionTable.size() * (2 + 2 + 2 + 2)
-				+ 2 + attributesSize;
-	}
+    protected int getLength() {
+        int attributesSize = 0;
+        Iterator it = attributes.iterator();
+        while (it.hasNext()) {
+            Attribute attribute = (Attribute) it.next();
+            attributesSize += attribute.getLengthIncludingHeader();
+        }
+        return 2 + 2 + 4 + codeLength + 2 + exceptionTable.size()
+                * (2 + 2 + 2 + 2) + 2 + attributesSize;
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		ArrayList nestedEntries = new ArrayList();
-		nestedEntries.add(getAttributeName());
-		nestedEntries.addAll(byteCodes);
-		ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries.size()];
-		nestedEntries.toArray(nestedEntryArray);
-		return nestedEntryArray;
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        ArrayList nestedEntries = new ArrayList();
+        nestedEntries.add(getAttributeName());
+        nestedEntries.addAll(byteCodes);
+        ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries
+                .size()];
+        nestedEntries.toArray(nestedEntryArray);
+        return nestedEntryArray;
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		Iterator it = attributes.iterator();
-		while (it.hasNext()) {
-			Attribute attribute = (Attribute) it.next();
-			SegmentUtils.debug("CodeAttribute resolving " + attribute);
-			attribute.resolve(pool);
-		}
-		it = byteCodes.iterator();
-		while (it.hasNext()) {
-			ByteCode byteCode = (ByteCode) it.next();
-			byteCode.resolve(pool);
-		}
-	}
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        Iterator it = attributes.iterator();
+        while (it.hasNext()) {
+            Attribute attribute = (Attribute) it.next();
+            attribute.resolve(pool);
+        }
+        it = byteCodes.iterator();
+        while (it.hasNext()) {
+            ByteCode byteCode = (ByteCode) it.next();
+            byteCode.resolve(pool);
+        }
+    }
 
-	public String toString() {
-		// TODO More Info here later
-		return "Code: " + getLength() + " bytes";
-	}
+    public String toString() {
+        return "Code: " + getLength() + " bytes";
+    }
 
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(maxStack);
-		dos.writeShort(maxLocals);
-		dos.writeInt(codeLength);
-		Iterator it = byteCodes.iterator();
-		while (it.hasNext()) {
-			ByteCode byteCode = (ByteCode) it.next();
-			byteCode.write(dos);
-		}
-		dos.writeShort(exceptionTable.size());
-		Iterator exceptionTableEntries = exceptionTable.iterator();
-		while (exceptionTableEntries.hasNext()) {
-			ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTableEntries
-					.next();
-			entry.write(dos);
-		}
-		dos.writeShort(attributes.size());
-		it = attributes.iterator();
-		while (it.hasNext()) {
-			Attribute attribute = (Attribute) it.next();
-			attribute.write(dos);
-		}
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(maxStack);
+        dos.writeShort(maxLocals);
+        dos.writeInt(codeLength);
+        Iterator it = byteCodes.iterator();
+        while (it.hasNext()) {
+            ByteCode byteCode = (ByteCode) it.next();
+            byteCode.write(dos);
+        }
+        dos.writeShort(exceptionTable.size());
+        Iterator exceptionTableEntries = exceptionTable.iterator();
+        while (exceptionTableEntries.hasNext()) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) exceptionTableEntries
+                    .next();
+            entry.write(dos);
+        }
+        dos.writeShort(attributes.size());
+        it = attributes.iterator();
+        while (it.hasNext()) {
+            Attribute attribute = (Attribute) it.next();
+            attribute.write(dos);
+        }
+    }
 
 }
