@@ -20,6 +20,7 @@
  */
 package javax.swing;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -793,6 +794,23 @@ public class JComboBoxTest extends SwingTestCase {
     public void testInstallAncestorListener() throws Exception {
         assertEquals(1, comboBox.getAncestorListeners().length);
     }
+    
+    public void testHarmony5223() {
+        ComboBoxEditor editor = new NullComboBoxEditor();
+        comboBox.setEditor(editor);
+        assertEquals(editor, comboBox.getEditor());
+    }
+    
+    public class NullComboBoxEditor extends BasicComboBoxEditor {
+        public NullComboBoxEditor() {
+            super();
+        }
+
+        public Component getEditorComponent() {
+            return null;
+        }
+    }
+
 
     private class ActionController implements ActionListener {
         private ActionEvent event;

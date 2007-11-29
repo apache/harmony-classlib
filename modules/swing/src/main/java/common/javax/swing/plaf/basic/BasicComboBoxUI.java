@@ -408,8 +408,10 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     public void addEditor() {
         editor = comboBox.getEditor().getEditorComponent();
-        configureEditor();
-        comboBox.add(editor);
+        if (editor != null) {
+            configureEditor();
+            comboBox.add(editor);
+        }
     }
 
     public void removeEditor() {
