@@ -549,15 +549,17 @@ public final class LinuxEvent extends NativeEvent {
 
     private void translateButtonModifiers(int state) {
         translateModifiers(state);
+        
+        final int m = (mouseButton == MouseEvent.BUTTON1)
+            ? InputEvent.BUTTON1_DOWN_MASK
+            : (mouseButton == MouseEvent.BUTTON2) ? InputEvent.BUTTON2_DOWN_MASK
+            : (mouseButton == MouseEvent.BUTTON3) ? InputEvent.BUTTON3_DOWN_MASK 
+            : 0;
 
-        if (mouseButton == MouseEvent.BUTTON1) {
-            modifiers |= InputEvent.BUTTON1_DOWN_MASK;
-        }
-        if (mouseButton == MouseEvent.BUTTON2) {
-            modifiers |= InputEvent.BUTTON2_DOWN_MASK;
-        }
-        if (mouseButton == MouseEvent.BUTTON3) {
-            modifiers |= InputEvent.BUTTON3_DOWN_MASK;
+        if (eventId == MouseEvent.MOUSE_PRESSED) {
+            modifiers |= m;
+        } else if (eventId == MouseEvent.MOUSE_RELEASED) {
+            modifiers &= ~m;
         }
     }
 

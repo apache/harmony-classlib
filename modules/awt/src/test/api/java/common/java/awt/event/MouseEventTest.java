@@ -22,7 +22,10 @@ package java.awt.event;
 
 import java.awt.Button;
 import java.awt.Component;
+import java.awt.Frame;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Robot;
 
 import junit.framework.TestCase;
 
@@ -144,5 +147,82 @@ public class MouseEventTest extends TestCase {
         assertEquals(
                 event.paramString(),
                 "unknown type,(100,200),button=1,modifiers=Alt+Button2,extModifiers=Alt+Button2,clickCount=10");
+    }
+    
+    public void testHarmony5215() throws Exception {
+        final Frame f = new Frame();
+        final Point l = MouseInfo.getPointerInfo().getLocation();
+        final Robot r = new Robot();
+        final MouseEvent[] e = new MouseEvent[1];
+
+        f.addMouseListener(new MouseAdapter() {
+            public void mouseReleased(final MouseEvent event) {
+                synchronized (e) {
+                    e[0] = event;
+                    e.notify();
+                }
+            }
+
+            public void mousePressed(final MouseEvent event) {
+                synchronized (e) {
+                    e[0] = event;
+                    e.notify();
+                }
+            }
+        });
+
+        f.setSize(100, 100);
+        f.setVisible(true);
+        r.mouseMove(f.getX() + 50, f.getY() + 50);
+
+        try {
+            synchronized (e) {
+                r.mousePress(InputEvent.BUTTON1_MASK);
+                e.wait(5000);
+                assertEquals(InputEvent.BUTTON1_MASK, e[0].getModifiers());
+                assertEquals(InputEvent.BUTTON1_DOWN_MASK,
+                    e[0].getModifiersEx());
+
+                r.mouseRelease(InputEvent.BUTTON1_MASK);
+                e.wait(5000);
+                assertEquals(InputEvent.BUTTON1_MASK, e[0].getModifiers());
+                assertEquals(0, e[0].getModifiersEx());
+
+                r.mousePress(InputEvent.BUTTON1_MASK);
+                e.wait(5000);
+                r.mousePress(InputEvent.BUTTON2_MASK);
+                e.wait(5000);
+                assertEquals(InputEvent.BUTTON2_MASK, e[0].getModifiers());
+                assertEquals(InputEvent.BUTTON1_DOWN_MASK
+                    | InputEvent.BUTTON2_DOWN_MASK, e[0].getModifiersEx());
+
+                r.mouseRelease(InputEvent.BUTTON2_MASK);
+                e.wait(5000);
+                assertEquals(InputEvent.BUTTON2_MASK, e[0].getModifiers());
+                assertEquals(InputEvent.BUTTON1_DOWN_MASK,
+                    e[0].getModifiersEx());
+
+                r.mousePress(InputEvent.BUTTON2_MASK);
+                e.wait(5000);
+                r.mousePress(InputEvent.BUTTON3_MASK);
+                e.wait(5000);
+                assertEquals(InputEvent.BUTTON3_MASK, e[0].getModifiers());
+                assertEquals(InputEvent.BUTTON1_DOWN_MASK
+                    | InputEvent.BUTTON2_DOWN_MASK
+                    | InputEvent.BUTTON3_DOWN_MASK, e[0].getModifiersEx());
+
+                r.mouseRelease(InputEvent.BUTTON3_MASK);
+                e.wait(5000);
+                assertEquals(InputEvent.BUTTON3_MASK, e[0].getModifiers());
+                assertEquals(InputEvent.BUTTON1_DOWN_MASK
+                    | InputEvent.BUTTON2_DOWN_MASK, e[0].getModifiersEx());
+            }
+        } finally {
+            r.mouseRelease(InputEvent.BUTTON1_MASK);
+            r.mouseRelease(InputEvent.BUTTON2_MASK);
+            r.mouseRelease(InputEvent.BUTTON3_MASK);
+            r.mouseMove(l.x, l.y);
+            f.dispose();
+        }
     }
 }
