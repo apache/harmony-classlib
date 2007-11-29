@@ -45,6 +45,8 @@ import javax.naming.event.NamingListener;
 import javax.naming.ldap.BasicControl;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.PagedResultsControl;
+import javax.naming.ldap.SortControl;
 
 import junit.framework.TestCase;
 
@@ -795,6 +797,37 @@ public class LdapContextImplTest extends TestCase {
         context.removeNamingListener(listener);
     }
 
+    public void test_reconnect() throws Exception {
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        env
+        .put("java.naming.ldap.control.connect",
+                new Control[] { new PagedResultsControl(10,
+                        Control.NONCRITICAL) });
+
+        MockLdapClient client = new MockLdapClient();
+        context = new LdapContextImpl(client, env, "cn=test");
+        
+        Control[] controls = context.getConnectControls();
+        assertNotNull(controls);
+        Control c = controls[0];
+        assertTrue(c instanceof PagedResultsControl);
+        assertEquals(Control.NONCRITICAL, ((PagedResultsControl) c).isCritical());
+
+        context.reconnect(new Control[] { new SortControl("",
+                Control.NONCRITICAL) });
+        
+        controls = context.getConnectControls();
+        assertNotNull(controls);
+        assertEquals(1, controls.length);
+        c = controls[0];
+        assertTrue(c instanceof SortControl);
+        assertEquals(Control.NONCRITICAL, ((SortControl) c).isCritical());
+        
+        context.reconnect(null);
+        
+        assertNull(context.getConnectControls());
+    }
+    
     public static class TestNamingListener implements NamespaceChangeListener {
 
         private NamingEvent event;

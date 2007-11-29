@@ -20,6 +20,7 @@ package org.apache.harmony.jndi.provider.ldap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.naming.ldap.Control;
@@ -178,6 +179,16 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
             responseOp.decodeValues((Object[]) chosen.getValue());
         }
 
+        if (values[2] != null) {
+            Collection<Object[]> list = (Collection<Object[]>) values[2];
+            controls = new Control[list.size()];
+            int index = 0;
+            for (Object[] objects : list) {
+                LdapControl lcontrol = new LdapControl();
+                lcontrol.decodeValues(objects);
+                controls[index++] = lcontrol.getControl();
+            }
+        }
     }
 
     public void encodeValues(Object[] values) {

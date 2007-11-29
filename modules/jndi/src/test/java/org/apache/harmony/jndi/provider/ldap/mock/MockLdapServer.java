@@ -129,6 +129,11 @@ public class MockLdapServer implements Runnable {
                             }
                         };
                         request.decode(in);
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            //ignore
+                        }
                         out.write(response.encode());
                     }
                     responses = null;

@@ -142,6 +142,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     private static final String LDAP_DEREF_ALIASES = "java.naming.ldap.derefAliases"; //$NON-NLS-1$
 
+    private static final String LDAP_CONTROL_CONNECT = "java.naming.ldap.control.connect"; //$NON-NLS-1$
+
     private static final String LDAP_TYPES_ONLY = "java.naming.ldap.typesOnly"; //$NON-NLS-1$
 
     /**
@@ -158,7 +160,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         connectionProperties.add(Context.SECURITY_CREDENTIALS);
         connectionProperties.add(Context.SECURITY_PRINCIPAL);
         connectionProperties.add(Context.SECURITY_PROTOCOL);
-        connectionProperties.add("java.naming.ldap.factory.socket");
+        connectionProperties.add("java.naming.ldap.factory.socket"); //$NON-NLS-1$
     }
 
     /**
@@ -173,6 +175,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             Hashtable<Object, Object> environment, String dn)
             throws InvalidNameException {
         initial(context.client, environment, dn);
+
+        // connection request controls are inheritied
+        connCtls = context.connCtls;
+        // request controls are not inheritied
     }
 
     /**
@@ -210,6 +216,13 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         contextDn = new LdapName(dn);
         parser = new LdapNameParser(dn);
+
+        if (env.get(Context.REFERRAL) == null
+                || env.get(Context.REFERRAL).equals("ignore")) { //$NON-NLS-1$
+            requestControls = new Control[] { NON_CRITICAL_MANAGE_REF_CONTROL };
+        }
+
+        connCtls = (Control[]) env.get(LDAP_CONTROL_CONNECT);
     }
 
     /**
@@ -255,8 +268,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public Control[] getConnectControls() throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        return copyControls(connCtls);
     }
 
     public Control[] getRequestControls() throws NamingException {
@@ -277,14 +289,22 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return rtValue;
     }
 
-    public LdapContext newInstance(Control[] ac) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+	public LdapContext newInstance(Control[] reqCtrls) throws NamingException {
+        LdapContextImpl instance = new LdapContextImpl(this, env, contextDn
+                .toString());
+		instance.setRequestControls(reqCtrls);
+        return instance;
     }
 
     public void reconnect(Control[] ac) throws NamingException {
-        // TODO not yet implemented
-        throw new NotYetImplementedException();
+        connCtls = ac;
+        try {
+            doBindOperation(connCtls);
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException();
+            ex.setRootCause(e);
+            throw ex;
+        }
     }
 
     public void setRequestControls(Control[] controls) throws NamingException {
