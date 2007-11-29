@@ -349,7 +349,7 @@ public abstract class FileSystemView {
     public boolean isFileSystemRoot(final File dir) {
         File[] roots = File.listRoots();
         for (int i = 0; i < roots.length; i++) {
-            if (roots.equals(dir)) {
+            if (roots[i].equals(dir)) {
                 return true;
             }
         }
