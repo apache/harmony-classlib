@@ -24,12 +24,15 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public abstract class ImageInputStreamSpi extends IIOServiceProvider implements
         RegisterableService {
     protected Class<?> inputClass;
 
-    protected ImageInputStreamSpi() {
-        throw new UnsupportedOperationException("Not supported yet");
+    protected ImageInputStreamSpi() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public ImageInputStreamSpi(String vendorName, String version, Class<?> inputClass) {

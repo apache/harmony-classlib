@@ -20,6 +20,7 @@ package org.apache.harmony.x.imageio.plugins.png;
 
 import org.apache.harmony.awt.gl.image.DecodingImageSource;
 import org.apache.harmony.awt.gl.image.OffscreenImage;
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.x.imageio.plugins.jpeg.IISDecodingImageSource;
 
 import javax.imageio.ImageReader;
@@ -40,36 +41,36 @@ public class PNGImageReader  extends ImageReader {
         super(imageReaderSpi);
     }
 
-    public int getNumImages(boolean allowSearch) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+    public int getNumImages(boolean allowSearch) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public int getWidth(int imageIndex) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+    public int getWidth(int imageIndex) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public int getHeight(int imageIndex) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+    public int getHeight(int imageIndex) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    @Override
-    public IIOMetadata getStreamMetadata() throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+    public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @Override
-    public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
-        //-- TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+    public IIOMetadata getStreamMetadata() throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public IIOMetadata getImageMetadata(int imageIndex) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @Override

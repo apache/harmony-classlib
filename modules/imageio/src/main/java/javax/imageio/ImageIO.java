@@ -23,6 +23,9 @@ package javax.imageio;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.spi.*;
+
+import org.apache.harmony.luni.util.NotImplementedException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,25 +43,28 @@ public final class ImageIO {
     private ImageIO() {}
     
 
-    public static void scanForPlugins() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static void scanForPlugins() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static void setUseCache(boolean useCache) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static void setUseCache(boolean useCache) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static boolean getUseCache() {
-        // TODO implement
+        // TODO: implement
         return false;
     }
 
-    public static void setCacheDirectory(File cacheDirectory) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static void setCacheDirectory(File cacheDirectory) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static File getCacheDirectory() {
-        // TODO implement
+    public static File getCacheDirectory() throws NotImplementedException {
+        // TODO: implement
         //-- null indicates system-dep default temporary directory
         return null;
     }
@@ -99,12 +105,14 @@ public final class ImageIO {
         return null;
     }
 
-    public static String[] getReaderFormatNames() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static String[] getReaderFormatNames() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static String[] getReaderMIMETypes() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static String[] getReaderMIMETypes() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static Iterator<ImageReader> getImageReaders(Object input) {
@@ -139,16 +147,19 @@ public final class ImageIO {
         return new SpiIteratorToReadersIteratorWrapper(it);
     }
 
-    public static Iterator<ImageReader> getImageReadersByMIMEType(String MIMEType) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static Iterator<ImageReader> getImageReadersByMIMEType(String MIMEType) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static String[] getWriterFormatNames() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static String[] getWriterFormatNames() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static String[] getWriterMIMETypes() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static String[] getWriterMIMETypes() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static Iterator<ImageWriter> getImageWritersByFormatName(String formatName) {
@@ -171,16 +182,19 @@ public final class ImageIO {
         return new SpiIteratorToWritersIteratorWrapper(it);
     }
 
-    public static Iterator<ImageWriter> getImageWritersByMIMEType(String MIMEType) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static Iterator<ImageWriter> getImageWritersByMIMEType(String MIMEType) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static ImageWriter getImageWriter(ImageReader reader) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static ImageWriter getImageWriter(ImageReader reader) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static ImageReader getImageReader(ImageWriter writer) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static ImageReader getImageReader(ImageWriter writer) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static Iterator<ImageWriter> getImageWriters(ImageTypeSpecifier type,
@@ -200,8 +214,9 @@ public final class ImageIO {
     }
 
     public static Iterator<ImageTranscoder> getImageTranscoders(ImageReader reader,
-                                               ImageWriter writer) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                               ImageWriter writer) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static BufferedImage read(File input) throws IOException {

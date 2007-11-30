@@ -28,6 +28,9 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.metadata.IIOMetadata;
+
+import org.apache.harmony.luni.util.NotImplementedException;
+
 import java.io.IOException;
 import java.awt.image.*;
 import java.awt.*;
@@ -166,22 +169,26 @@ public class JPEGImageWriter extends ImageWriter {
     }
 
 
-    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam imageWriteParam) {
-        throw new UnsupportedOperationException("not supported yet");
+    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam imageWriteParam) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier imageTypeSpecifier, ImageWriteParam imageWriteParam) {
-        throw new UnsupportedOperationException("not supported yet");
-    }
-
-    @Override
-    public IIOMetadata convertStreamMetadata(IIOMetadata iioMetadata, ImageWriteParam imageWriteParam) {
-        throw new UnsupportedOperationException("not supported yet");
+    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier imageTypeSpecifier, ImageWriteParam imageWriteParam) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @Override
-    public IIOMetadata convertImageMetadata(IIOMetadata iioMetadata, ImageTypeSpecifier imageTypeSpecifier, ImageWriteParam imageWriteParam) {
-        throw new UnsupportedOperationException("not supported yet");
+    public IIOMetadata convertStreamMetadata(IIOMetadata iioMetadata, ImageWriteParam imageWriteParam) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public IIOMetadata convertImageMetadata(IIOMetadata iioMetadata, ImageTypeSpecifier imageTypeSpecifier, ImageWriteParam imageWriteParam) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @Override
@@ -270,6 +277,7 @@ public class JPEGImageWriter extends ImageWriter {
         }
 
         if (cm instanceof IndexColorModel) {
+            // TODO: implement
             throw new UnsupportedOperationException("IndexColorModel is not supported yet");
         }
 

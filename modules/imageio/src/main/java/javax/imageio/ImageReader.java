@@ -26,6 +26,9 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.event.IIOReadWarningListener;
 import javax.imageio.event.IIOReadProgressListener;
 import javax.imageio.event.IIOReadUpdateListener;
+
+import org.apache.harmony.luni.util.NotImplementedException;
+
 import java.util.Locale;
 import java.util.List;
 import java.util.Iterator;
@@ -125,8 +128,9 @@ public abstract class ImageReader {
         return availableLocales;
     }
 
-    public void setLocale(Locale locale) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void setLocale(Locale locale) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public Locale getLocale() {
@@ -147,28 +151,32 @@ public abstract class ImageReader {
         return (float) getWidth(imageIndex) / getHeight(imageIndex);
     }
 
-    public ImageTypeSpecifier getRawImageType(int imageIndex) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public ImageTypeSpecifier getRawImageType(int imageIndex) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public abstract Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException;
 
-    public ImageReadParam getDefaultReadParam() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public ImageReadParam getDefaultReadParam() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public abstract IIOMetadata getStreamMetadata() throws IOException;
 
     public IIOMetadata getStreamMetadata(String formatName, Set<String> nodeNames)
-            throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+            throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public abstract IIOMetadata getImageMetadata(int imageIndex) throws IOException;
 
     public IIOMetadata getImageMetadata(int imageIndex, String formatName,
-                                        Set<String> nodeNames) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                        Set<String> nodeNames) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public BufferedImage read(int imageIndex) throws IOException {
@@ -177,12 +185,14 @@ public abstract class ImageReader {
 
     public abstract BufferedImage read(int imageIndex, ImageReadParam param) throws IOException;
 
-    public IIOImage readAll(int imageIndex, ImageReadParam param) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public IIOImage readAll(int imageIndex, ImageReadParam param) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public Iterator<IIOImage> readAll(Iterator<? extends ImageReadParam> params) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Iterator<IIOImage> readAll(Iterator<? extends ImageReadParam> params) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public boolean canReadRaster() {
@@ -213,12 +223,14 @@ public abstract class ImageReader {
         return 0; //def
     }
 
-    public BufferedImage readTile(int imageIndex, int tileX, int tileY) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public BufferedImage readTile(int imageIndex, int tileX, int tileY) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public Raster readTileRaster(int imageIndex, int tileX, int tileY) throws IOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Raster readTileRaster(int imageIndex, int tileX, int tileY) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public RenderedImage readAsRenderedImage(int imageIndex, ImageReadParam param) throws IOException {
@@ -249,88 +261,109 @@ public abstract class ImageReader {
         throw new UnsupportedOperationException("Unsupported"); //def
     }
 
-    public void abort() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void abort() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected boolean abortRequested() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected boolean abortRequested() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void clearAbortRequest() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void clearAbortRequest() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void addIIOReadWarningListener(IIOReadWarningListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void addIIOReadWarningListener(IIOReadWarningListener listener) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void removeIIOReadWarningListener(IIOReadWarningListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void removeIIOReadWarningListener(IIOReadWarningListener listener) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void removeAllIIOReadWarningListeners() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void removeAllIIOReadWarningListeners() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void addIIOReadProgressListener(IIOReadProgressListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void addIIOReadProgressListener(IIOReadProgressListener listener) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void removeIIOReadProgressListener(IIOReadProgressListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void removeIIOReadProgressListener(IIOReadProgressListener listener) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void removeAllIIOReadProgressListeners() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void removeAllIIOReadProgressListeners() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void addIIOReadUpdateListener(IIOReadUpdateListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void addIIOReadUpdateListener(IIOReadUpdateListener listener) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void removeIIOReadUpdateListener(IIOReadUpdateListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void removeIIOReadUpdateListener(IIOReadUpdateListener listener) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void removeAllIIOReadUpdateListeners() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void removeAllIIOReadUpdateListeners() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processSequenceStarted(int minIndex) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processSequenceStarted(int minIndex) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processSequenceComplete() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processSequenceComplete() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processImageStarted(int imageIndex) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processImageStarted(int imageIndex) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processImageProgress(float percentageDone) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processImageProgress(float percentageDone) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processImageComplete() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processImageComplete() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processThumbnailStarted(int imageIndex, int thumbnailIndex) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processThumbnailStarted(int imageIndex, int thumbnailIndex) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processThumbnailProgress(float percentageDone) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processThumbnailProgress(float percentageDone) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processThumbnailComplete() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processThumbnailComplete() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processReadAborted() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processReadAborted() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected void processPassStarted(BufferedImage theImage,
@@ -341,8 +374,9 @@ public abstract class ImageReader {
                                   int minY,
                                   int periodX,
                                   int periodY,
-                                  int[] bands) {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                  int[] bands) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected void processImageUpdate(BufferedImage theImage,
@@ -352,12 +386,14 @@ public abstract class ImageReader {
                                   int height,
                                   int periodX,
                                   int periodY,
-                                  int[] bands) {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                  int[] bands) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processPassComplete(BufferedImage theImage) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processPassComplete(BufferedImage theImage) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected void processThumbnailPassStarted(BufferedImage theThumbnail,
@@ -368,8 +404,9 @@ public abstract class ImageReader {
                                            int minY,
                                            int periodX,
                                            int periodY,
-                                           int[] bands) {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                           int[] bands) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected void processThumbnailUpdate(BufferedImage theThumbnail,
@@ -379,20 +416,24 @@ public abstract class ImageReader {
                                       int height,
                                       int periodX,
                                       int periodY,
-                                       int[] bands) {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                       int[] bands) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processThumbnailPassComplete(BufferedImage theThumbnail) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processThumbnailPassComplete(BufferedImage theThumbnail) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processWarningOccurred(String warning) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processWarningOccurred(String warning) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    protected void processWarningOccurred(String baseName, String keyword) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void processWarningOccurred(String baseName, String keyword) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public void reset() {
@@ -409,8 +450,9 @@ public abstract class ImageReader {
         // do nothing by def
     }
 
-    protected static Rectangle getSourceRegion(ImageReadParam param, int srcWidth, int srcHeight) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected static Rectangle getSourceRegion(ImageReadParam param, int srcWidth, int srcHeight) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected static void computeRegions(ImageReadParam param,
@@ -418,20 +460,23 @@ public abstract class ImageReader {
                                      int srcHeight,
                                      BufferedImage image,
                                      Rectangle srcRegion,
-                                     Rectangle destRegion) {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                     Rectangle destRegion) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected static void checkReadParamBandSettings(ImageReadParam param,
                                                  int numSrcBands,
-                                                 int numDstBands) {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                                 int numDstBands) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     protected static BufferedImage getDestination(ImageReadParam param, Iterator<ImageTypeSpecifier> imageTypes,
                                               int width,
                                               int height)
-                                       throws IIOException {
-        throw new UnsupportedOperationException("Not implemented yet");
+                                       throws IIOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 }

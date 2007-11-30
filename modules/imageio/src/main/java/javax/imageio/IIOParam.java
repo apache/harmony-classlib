@@ -22,6 +22,8 @@ package javax.imageio;
 
 import java.awt.*;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public abstract class IIOParam {
     protected Rectangle sourceRegion;
     protected int sourceXSubsampling = 1;
@@ -123,24 +125,24 @@ public abstract class IIOParam {
         return subsamplingYOffset;
     }
 
-    public void setSourceBands(int[] sourceBands) {
+    public void setSourceBands(int[] sourceBands) throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public int[] getSourceBands() {
+    public int[] getSourceBands() throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public void setDestinationType(ImageTypeSpecifier destinationType) {
+    public void setDestinationType(ImageTypeSpecifier destinationType) throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public ImageTypeSpecifier getDestinationType() {
+    public ImageTypeSpecifier getDestinationType() throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
     public void setDestinationOffset(Point destinationOffset) {
@@ -155,28 +157,28 @@ public abstract class IIOParam {
         return (Point) destinationOffset.clone();        
     }
 
-    public void setController(IIOParamController controller) {
+    public void setController(IIOParamController controller) throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public IIOParamController getController() {
+    public IIOParamController getController() throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public IIOParamController getDefaultController() {
+    public IIOParamController getDefaultController() throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public boolean hasController() {
+    public boolean hasController() throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 
-    public boolean activateController() {
+    public boolean activateController() throws NotImplementedException {
         // TODO implement
-        throw new UnsupportedOperationException("not implemented yet");
+        throw new NotImplementedException();
     }
 }

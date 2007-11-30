@@ -23,6 +23,8 @@ package javax.imageio.spi;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 /**
  * TODO: add all the methods from the spec
  */
@@ -40,8 +42,9 @@ public class ServiceRegistry {
         }
     }
 
-    public static <T> Iterator<T> lookupProviders(Class<T> providerClass, ClassLoader loader) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static <T> Iterator<T> lookupProviders(Class<T> providerClass, ClassLoader loader) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static <T> Iterator<T> lookupProviders(Class<T> providerClass) {
@@ -62,12 +65,14 @@ public class ServiceRegistry {
         categories.addProvider(provider, null);
     }
 
-    public <T> boolean deregisterServiceProvider(T provider, Class<T> category) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public <T> boolean deregisterServiceProvider(T provider, Class<T> category) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void deregisterServiceProvider(Object provider) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public void deregisterServiceProvider(Object provider) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @SuppressWarnings("unchecked")
@@ -80,24 +85,29 @@ public class ServiceRegistry {
         return (Iterator<T>)categories.getProviders(category, useOrdering);
     }
 
-    public <T> T getServiceProviderByClass(Class<T> providerClass) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public <T> T getServiceProviderByClass(Class<T> providerClass) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public <T> boolean setOrdering(Class<T> category, T firstProvider, T secondProvider) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public <T> boolean setOrdering(Class<T> category, T firstProvider, T secondProvider) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public <T> boolean unsetOrdering(Class<T> category, T firstProvider, T secondProvider) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public <T> boolean unsetOrdering(Class<T> category, T firstProvider, T secondProvider) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void deregisterAll(Class<?> category) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public void deregisterAll(Class<?> category) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public void deregisterAll() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public void deregisterAll() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @Override
@@ -106,8 +116,9 @@ public class ServiceRegistry {
         //deregisterAll();
     }
 
-    public boolean contains(Object provider) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public boolean contains(Object provider) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public Iterator<Class<?>> getCategories() {
