@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
 
 import org.apache.harmony.jndi.provider.ldap.LdapMessage;
 import org.apache.harmony.security.asn1.ASN1Integer;
@@ -40,7 +41,7 @@ public class MockLdapServer implements Runnable {
 
     private Socket socket;
 
-    private LdapMessage[] responses;
+	private LinkedList<LdapMessage> responses = new LinkedList<LdapMessage>();
 
     private int port;
 
@@ -93,8 +94,12 @@ public class MockLdapServer implements Runnable {
         return port;
     }
 
-    public void setResponseSeq(LdapMessage[] msges) {
-        this.responses = msges;
+	public void setResponseSeq(LdapMessage[] msges) {
+		synchronized (responses) {
+			for (LdapMessage message : msges) {
+				responses.addLast(message);
+			}
+		}
 
         synchronized (lock) {
             lock.notify();
@@ -109,7 +114,7 @@ public class MockLdapServer implements Runnable {
             in = socket.getInputStream();
             out = socket.getOutputStream();
             while (!isStopped) {
-                if (responses == null) {
+				if (responses.size() == 0) {
                     try {
                         synchronized (lock) {
                             lock.wait();
@@ -119,9 +124,17 @@ public class MockLdapServer implements Runnable {
                     }
                 } else {
 
-                    for (int i = 0; i < responses.length; i++) {
+					while (true) {
+						LdapMessage temp = null;
+						synchronized (responses) {
+							if (responses.size() == 0) {
+								break;
+							}
+							temp = responses.removeFirst();
+						}
+						
                         final MockLdapMessage response = new MockLdapMessage(
-                                responses[i]);
+								temp);
                         LdapMessage request = new LdapMessage(null) {
                             public void decodeValues(Object[] values) {
                                 response.setMessageId(ASN1Integer
@@ -136,7 +149,6 @@ public class MockLdapServer implements Runnable {
                         }
                         out.write(response.encode());
                     }
-                    responses = null;
                 }
             }
         } catch (IOException e) {

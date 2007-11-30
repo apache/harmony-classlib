@@ -40,13 +40,22 @@ public class LdapSearchResult {
 
     /**
      * SearchResultReference from server
-     * TODO: deal with the references
      */
-    private List<String> refURLs = new ArrayList<String>();
+    private List<String> refURLs;
 
     private LdapResult result;
 
     private NamingException ex;
+
+    private String address;
+
+    public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
     public void decodeSearchResponse(Object[] values) {
         ChosenValue chosen = (ChosenValue) values[0];
@@ -69,6 +78,10 @@ public class LdapSearchResult {
     }
 
     protected void decodeRef(Object value) {
+        if (refURLs == null) {
+            refURLs = new ArrayList<String>();
+        }
+
         Collection<byte[]> list = (Collection<byte[]>) value;
         for (byte[] bs : list) {
             refURLs.add(Utils.getString(bs));
@@ -78,6 +91,10 @@ public class LdapSearchResult {
     protected void decodeEntry(Object value) {
         Object[] values = (Object[]) value;
         String name = Utils.getString((byte[]) values[0]);
+
+        if (address != null) {
+        	name = address + name;
+        }
 
         Attributes attrs = null;
 

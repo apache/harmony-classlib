@@ -20,6 +20,9 @@ package org.apache.harmony.jndi.provider.ldap;
 import java.util.Hashtable;
 
 import javax.naming.Context;
+import javax.naming.PartialResultException;
+import javax.naming.ReferralException;
+import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.InitialLdapContext;
@@ -45,6 +48,9 @@ public class LdapContextServerMockedTest extends TestCase {
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "org.apache.harmony.jndi.provider.ldap.LdapContextFactory");
         env.put(Context.PROVIDER_URL, server.getURL());
+        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_PRINCIPAL, "");
+        env.put(Context.SECURITY_CREDENTIALS, "");
     }
 
     @Override
@@ -228,4 +234,97 @@ public class LdapContextServerMockedTest extends TestCase {
         }
 
     }
+
+    public void testRerralIgnore() throws Exception {
+        env.put(Context.REFERRAL, "ignore");
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        DirContext context = new InitialDirContext(env);
+
+        EncodableLdapResult result = new EncodableLdapResult();
+        result = new EncodableLdapResult(LdapResult.REFERRAL, "", "",
+                new String[] { "ldap://localhost" });
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE, result, null) });
+        try {
+            context.getAttributes("cn=test");
+            fail("Should throw PartialResultException");
+        } catch (PartialResultException e) {
+            // expected
+        }
+
+        result = new EncodableLdapResult(LdapResult.REFERRAL, null, null, null);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_DEL_RESPONSE, result, null) });
+        try {
+            context.destroySubcontext("cn=test");
+            fail("Should throw PartialResultException");
+        } catch (PartialResultException e) {
+            // expected
+        }
+    }
+
+    public void testReferralThrow() throws Exception {
+        env.put(Context.REFERRAL, "throw");
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        DirContext context = new InitialDirContext(env);
+
+        EncodableLdapResult result = new EncodableLdapResult(
+                LdapResult.REFERRAL, "", "",
+                new String[] { "ldap://localhost" });
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE, result, null) });
+        try {
+            context.getAttributes("cn=test");
+            fail("Should throw ReferralException");
+        } catch (ReferralException e) {
+            assertEquals("ldap://localhost", e.getReferralInfo());
+        }
+
+        result = new EncodableLdapResult(LdapResult.REFERRAL, "", "",
+                new String[] { "ldap://localhost" });
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_DEL_RESPONSE, result, null) });
+
+        try {
+            context.destroySubcontext("");
+            fail("Should throw ReferralException");
+        } catch (ReferralException e) {
+            assertEquals("ldap://localhost", e.getReferralInfo());
+        }
+    }
+
+    public void testReferralFollow() throws Exception {
+        env.put(Context.REFERRAL, "follow");
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        DirContext context = new InitialDirContext(env);
+
+        MockLdapServer referralServer = new MockLdapServer();
+        referralServer.start();
+
+        EncodableLdapResult result = new EncodableLdapResult(
+                LdapResult.REFERRAL, "", "", new String[] { referralServer
+                        .getURL() });
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE, result, null) });
+
+        referralServer.setResponseSeq(new LdapMessage[] {
+                new LdapMessage(LdapASN1Constant.OP_BIND_RESPONSE,
+                        new BindResponse(), null),
+                new LdapMessage(LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                        new EncodableLdapResult(), null) });
+
+        context.getAttributes("cn=test");
+
+        referralServer.stop();
+    }
+
 }
