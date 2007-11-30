@@ -726,8 +726,16 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         LdapSearchResult result = doSearch(targetDN, filter, controls);
         Iterator<Attributes> it = result.getEntries().values().iterator();
         if (it.hasNext()) {
+            Attributes attributes = it.next();
+            NamingEnumeration<String> ids = attributes.getIDs();
+            while (ids.hasMore()) {
+                LdapAttribute attribute = (LdapAttribute) attributes.get(ids
+                        .next());
+                attribute.setContext(this);
+            }
+
             // FIXME: there must be only one Attributes?
-            return it.next();
+            return attributes;
         } else if (result.getException() != null) {
             throw result.getException();
         }
@@ -1019,7 +1027,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     public DirContext getSchemaClassDefinition(Name name)
             throws NamingException {
         if (null == ldapSchemaCtx) {
-            getSchema(name);
+            getSchema("");
         }
 
         Hashtable<String, ArrayList<String>> classTree = new Hashtable<String, ArrayList<String>>();

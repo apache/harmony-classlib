@@ -133,5 +133,14 @@ public class LdapSchemaContextImplTest extends TestCase {
             // expected
         }
     }
+    
+    public void test_getSchemaClassDefinition() throws NamingException {
+        try {
+            context.getSchemaClassDefinition(new CompositeName(""));
+            fail("Should throw OperationNotSupportedException");
+        } catch (OperationNotSupportedException e) {
+            // expected
+        }
+    }
 
 }
