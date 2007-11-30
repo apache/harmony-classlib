@@ -90,8 +90,8 @@ public class GDITextRenderer extends TextRenderer {
     @SuppressWarnings("deprecation")
     public void drawNormalGlyphVector(Graphics2D g, GlyphVector gv, float x, 
             float y) {
-        AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
-        long hdc = ((WinGDIPGraphics2D)g).getDC();
+        AffineTransform trans = ((WinGDIGraphics2D)g).getTransform();
+        long hdc = ((WinGDIGraphics2D)g).getDC();
 
         x += trans.getTranslateX();
         y += trans.getTranslateY();
@@ -135,8 +135,8 @@ public class GDITextRenderer extends TextRenderer {
     @SuppressWarnings("deprecation")
     public void drawCompositeGlyphVector(Graphics2D g, GlyphVector gv, float x, 
             float y) {
-        AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
-        long hdc = ((WinGDIPGraphics2D)g).getDC();
+        AffineTransform trans = ((WinGDIGraphics2D)g).getTransform();
+        long hdc = ((WinGDIGraphics2D)g).getDC();
 
         x += (int)Math.round(trans.getTranslateX());
         y += (int)Math.round(trans.getTranslateY());
@@ -194,7 +194,7 @@ public class GDITextRenderer extends TextRenderer {
      */
     @SuppressWarnings("deprecation")
     public void drawNormalString(Graphics2D g, String str, int x, int y) {
-        AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
+        AffineTransform trans = ((WinGDIGraphics2D)g).getTransform();
 
         x += (int)Math.round(trans.getTranslateX());
         y += (int)Math.round(trans.getTranslateY());
@@ -202,8 +202,8 @@ public class GDITextRenderer extends TextRenderer {
         WindowsFont wf = (WindowsFont)(g.getFont().getPeer());
         long font = wf.getFontHandle();
         
-        long gi = ((WinGDIPGraphics2D)g).getGraphicsInfo();
-        long hdc = NativeFont.gdiPlusGetHDC(gi);
+        long gi = ((WinGDIGraphics2D)g).getGraphicsInfo();
+        long hdc = ((WinGDIGraphics2D)g).getDC();
 
         win32.SelectObject(hdc, font);
 
@@ -237,7 +237,6 @@ public class GDITextRenderer extends TextRenderer {
         String out = new String(chars, 0, j);
 
         win32.TextOutW(hdc, x, y - wf.getAscent(), out, j);
-        NativeFont.gdiPlusReleaseHDC(gi, hdc);
 
     }
 
@@ -259,10 +258,10 @@ public class GDITextRenderer extends TextRenderer {
             return;
         }
 
-        AffineTransform trans = ((WinGDIPGraphics2D)g).getTransform();
+        AffineTransform trans = ((WinGDIGraphics2D)g).getTransform();
 
-        long gi = ((WinGDIPGraphics2D)g).getGraphicsInfo();
-        long hdc = NativeFont.gdiPlusGetHDC(gi);
+        long gi = ((WinGDIGraphics2D)g).getGraphicsInfo();
+        long hdc = ((WinGDIGraphics2D)g).getDC();
         
         x += (int)Math.round(trans.getTranslateX());
         y += (int)Math.round(trans.getTranslateY());
@@ -320,7 +319,6 @@ public class GDITextRenderer extends TextRenderer {
 
         win32.TextOutW(hdc, xOffset, yOffset, 
                 str.substring(start, start + count), count);
-        NativeFont.gdiPlusReleaseHDC(gi, hdc);
     }
 
 }

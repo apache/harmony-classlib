@@ -53,9 +53,12 @@ public class WinGraphicsDevice extends GLGraphicsDevice {
     private byte []idBytes = null;
 
     static boolean useOpenGL;
+    static boolean useGDI;
     static {
         String opengl = System.getProperty("java2d.opengl"); //$NON-NLS-1$
+        String gdi = System.getProperty("java2d.gdi"); //$NON-NLS-1$
         useOpenGL = opengl != null && opengl.equals("true"); //$NON-NLS-1$
+        useGDI = gdi != null && gdi.equals("true"); //$NON-NLS-1$
     };
 
     public WinGraphicsDevice(int left, int top, int right, int bottom, String id, boolean primary) {

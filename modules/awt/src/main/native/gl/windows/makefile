@@ -29,6 +29,7 @@ HYCFLAGS = $(HYCFLAGS) /D_WIN32_WINNT=0x0500 /I$(SHAREDSUB)include /I$(SHAREDSUB
 BUILDFILES = \
   BitmapSurface.obj \
   GDIBlitter.obj \
+  WinGDIGraphics2D.obj \
   WinGDIPGraphics2D.obj \
   WinGraphicsEnvironment.obj \
   WinThemeGraphics.obj \
