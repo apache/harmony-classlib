@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -1393,7 +1394,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         /*
          * Insert a new row one time
          */
-        crset.setReadOnly(false);
         crset.moveToInsertRow();
         crset.updateInt(1, 5);
         crset.updateString(2, "test5");
@@ -1424,18 +1424,306 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(rs.next());
         assertEquals(5, rs.getInt(1));
 
-        crset.moveToInsertRow();
-        // already exist
-        crset.updateInt(1, 5);
-        crset.updateString(2, "test5");
+        /*
+         * TODO Insert multiple rows one time, uncomment after implemented
+         */
+        // TODO uncomment it after insert methods are implemented
+        // noInitialCrset = newNoInitialInstance();
+        // rs = st.executeQuery("select * from USER_INFO");
+        // noInitialCrset.populate(rs);
+        // noInitialCrset.setReadOnly(false);
+        // noInitialCrset.moveToInsertRow();
+        // for (int i = 6; i <= 20; i++) {
+        // noInitialCrset.updateInt(1, i);
+        // noInitialCrset.updateString(2, "test" + i);
+        // noInitialCrset.insertRow();
+        // }
+        // noInitialCrset.moveToCurrentRow();
+        // noInitialCrset.acceptChanges(conn);
+        // // check the new rows in CachedRowSet
+        // assertEquals(20, noInitialCrset.size());
+        // // check the new rows in DB
+        // rs = st.executeQuery("select * from USER_INFO");
+        // int cursorIndex = 0;
+        // while (rs.next()) {
+        // cursorIndex++;
+        // }
+        // assertEquals(20, cursorIndex);
+    }
 
+    public void testAcceptChanges_InsertException() throws Exception {
+        /*
+         * Insert a new row. One given column's value exceeds the max range.
+         * Therefore, it should throw SyncProviderException.
+         */
+        crset.moveToInsertRow();
+        crset.updateInt(1, 4);
+        crset.updateString(2, "test5");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200000); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
         crset.insertRow();
         crset.moveToCurrentRow();
         try {
             crset.acceptChanges(conn);
-            fail("Should throw SyncProviderException");
+            fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO test SyncResolver
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Insert a new row. The new row's primary key has existed. Therefore,
+         * it should throw SyncProviderException.
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        crset.moveToInsertRow();
+        crset.updateInt(1, 4); // The ID valued 4 has existed in db.
+        crset.updateString(2, "test5");
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+        crset.insertRow();
+        crset.moveToCurrentRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Insert a new row. Before inserting the new row, another new row which
+         * has the same data is inserted into the DB. However, the current
+         * CachedRowSet doesn't know it. In this situation, it should throw
+         * SyncProviderException.
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T,DECIMAL_T, SMALLINT_T, "
+                + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
+                + "?, ?, ?, ?, ?, ? )";
+        PreparedStatement preStmt = conn.prepareStatement(insertSQL);
+        preStmt.setInt(1, 80);
+        preStmt.setString(2, "test" + 80);
+        preStmt.setLong(3, 444423L);
+        preStmt.setBigDecimal(4, new BigDecimal(12));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 41);
+        preStmt.setFloat(7, 4.8F);
+        preStmt.setFloat(8, 4.888F);
+        preStmt.setDouble(9, 4.9999);
+        preStmt.setDate(10, new Date(965324512));
+        preStmt.setTime(11, new Time(452368512));
+        preStmt.setTimestamp(12, new Timestamp(874532105));
+        preStmt.executeUpdate();
+        if (preStmt != null) {
+            preStmt.close();
+        }
+        // check the new row in DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 80");
+        assertTrue(rs.next());
+        assertEquals(80, rs.getInt(1));
+        assertEquals("test80", rs.getString(2));
+
+        // now call CachedRowSet.insertRow()
+        crset.moveToInsertRow();
+        crset.updateInt(1, 80);
+        crset.updateString(2, "test" + 80);
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateInt(6, 41);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+        crset.updateDate(10, new Date(965324512));
+        crset.updateTime(11, new Time(452368512));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+        crset.insertRow();
+        crset.moveToCurrentRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+    }
+
+    public void testAcceptChanges_Delete() throws Exception {
+        /*
+         * Delete all the row. On the first and second row, only two columns
+         * have value, all the others are NULL. When run on RI, deleteRow() will
+         * go wrong and throw Exception. According to the spec, deleteRow() is
+         * supposed to ok.
+         */
+        crset.beforeFirst();
+        while (crset.next()) {
+            crset.deleteRow();
+        }
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            crset.acceptChanges(conn);
+        } else {
+            try {
+                crset.acceptChanges(conn);
+            } catch (NullPointerException e) {
+                // RI would throw NullPointerException when deleting a row in
+                // which some columns' value are null
+            }
+        }
+        // check DB
+        rs = st.executeQuery("select * from USER_INFO");
+        int rowCount = 0;
+        while (rs.next()) {
+            rowCount++;
+        }
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertEquals(0, rowCount);
+        } else {
+            assertEquals(4, rowCount);
+        }
+    }
+
+    public void testAcceptChanges_DeleteException() throws Exception {
+        /*
+         * Delete a row which has been deleted from database
+         */
+        int result = st.executeUpdate("delete from USER_INFO where ID = 3");
+        assertEquals(1, result);
+        // move to the third row which doesn't exist in database
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        crset.deleteRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Delete a row which has been updated in database
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        result = st
+                .executeUpdate("update USER_INFO set NAME = 'update44' where ID = 4");
+        assertEquals(1, result);
+        // move to the updated row
+        crset.absolute(3);
+        assertEquals(4, crset.getInt(1));
+        assertEquals("test4", crset.getString(2));
+        crset.deleteRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+    }
+
+    public void testAcceptChanges_Update() throws Exception {
+        // update the first row
+        assertTrue(crset.absolute(1));
+        crset.updateInt(1, 11);
+        crset.updateString(2, "test11");
+        crset.updateRow();
+        crset.acceptChanges(conn);
+        // check DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 11");
+        assertTrue(rs.next());
+        assertEquals(11, rs.getInt(1));
+        assertEquals("test11", rs.getString(2));
+
+        // update the third row
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+        assertTrue(noInitialCrset.absolute(1));
+        noInitialCrset.updateInt(1, 111);
+        noInitialCrset.updateString(2, "update111");
+        noInitialCrset.updateRow();
+        assertTrue(noInitialCrset.absolute(3));
+        noInitialCrset.updateInt(1, 333);
+        noInitialCrset.updateString(2, "update333");
+        noInitialCrset.updateLong(3, 33333L);
+        noInitialCrset.updateRow();
+        noInitialCrset.acceptChanges(conn);
+        // check DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 111");
+        assertTrue(rs.next());
+        assertEquals(111, rs.getInt(1));
+        assertEquals("update111", rs.getString(2));
+        rs = st.executeQuery("select * from USER_INFO where ID = 333");
+        assertTrue(rs.next());
+        assertEquals(333, rs.getInt(1));
+        assertEquals("update333", rs.getString(2));
+        assertEquals(33333L, rs.getLong(3));
+    }
+
+    public void testAcceptChanges_UpdateException() throws Exception {
+        /*
+         * Update a row which has been deleted from database
+         */
+        int result = st.executeUpdate("delete from USER_INFO where ID = 3");
+        assertEquals(1, result);
+        // move to the third row which doesn't exist in database
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        crset.updateString(2, "update33");
+        crset.updateRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Update a row which has been updated in database
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        result = st
+                .executeUpdate("update USER_INFO set NAME = 'update44' where ID = 4");
+        assertEquals(1, result);
+        // move to the updated row
+        assertTrue(crset.absolute(3));
+        assertEquals(4, crset.getInt(1));
+        assertEquals("test4", crset.getString(2));
+        crset.updateString(2, "change4");
+        crset.updateRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Update a row in which one column's value is out of range
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        assertEquals(3, crset.size());
+        assertTrue(crset.absolute(3));
+        assertEquals(4, crset.getInt(1));
+        crset.updateString(2, "update4");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200000); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.updateRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
         }
     }
 

@@ -156,14 +156,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         try {
             CachedRowSetWriter rowSetWriter = (CachedRowSetWriter) syncProvider
                     .getRowSetWriter();
-            CachedRowSetImpl input = (CachedRowSetImpl) createCopy();
             rowSetWriter.setConnection(con);
-            rowSetWriter.writeData(input);
+            int beforeWriteIndex = currentRowIndex;
+            rowSetWriter.writeData(this);
+            absolute(beforeWriteIndex);
             /*
              * FIXME: if no conflicts happen when writeData, then call
              * setOriginalRow()
              */
             notifyRowSetChanged();
+
         } catch (SyncProviderException e) {
             throw e;
         } catch (SQLException e) {
@@ -1127,12 +1129,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean rowUpdated() throws SQLException {
-
-        boolean sign = false;
-        for (int i = 0; i < meta.getColumnCount(); ++i) {
-            sign = currentRow.getUpdateMask(i) | sign;
+        if (!currentRow.isUpdate()) {
+            return false;
+        } else {
+            boolean sign = false;
+            for (int i = 0; i < meta.getColumnCount(); ++i) {
+                sign = currentRow.getUpdateMask(i) | sign;
+            }
+            return sign;
         }
-        return sign;
     }
 
     public void updateArray(int columnIndex, Array x) throws SQLException {
@@ -1303,7 +1308,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             // TODO add error messages
             throw new SQLException();
         }
-        rows.set(currentRowIndex, currentRow);
+        currentRow.setUpdate();
         notifyRowChanged();
     }
 
