@@ -44,6 +44,8 @@ public class CachedRowSetWriter implements RowSetWriter {
 
     private String tableName;
 
+    private String[] colNames;
+
     private String sql;
 
     private int columnCount;
@@ -55,39 +57,30 @@ public class CachedRowSetWriter implements RowSetWriter {
     private String keyColumnName, whereStatementForOriginal,
             whereStatementForCurrent;
 
-    public boolean writeData(RowSetInternal theRowSet) throws SQLException {
-        // use an optimistic concurrency control mechanism
+    public void setConnection(Connection conn) {
+        originalConnection = conn;
+    }
 
+    public Connection getConnection() {
+        return originalConnection;
+    }
+
+    /**
+     * TODO add transaction
+     */
+    public boolean writeData(RowSetInternal theRowSet) throws SQLException {
         initial(theRowSet);
         // analyse every row and do responsible task.
-        currentRowSet.first();
-        originalRowSet.first();
-        do {
-            // rolling with currentRowSet
-            if (originalRowSet.next()) {
-                // deal with updated or deleted row which need do conflict check
-                if (checkConflictNotExist(originalRowSet)) {
-                    // If all of the values in the data source are already the
-                    // values to be persisted,
-                    // the method acceptChanges does nothing.
-                    if (!checkConflictNotExist(currentRowSet))
-                        writeRowData();
-                } else {
-                    cleanEnvironment();
-                    throw new SyncProviderException(Messages
-                            .getString("rowset.5"));
-                }
-            } else {
-                // deal with inserted row which was added comparing the
-                // originalDataSet
-                // the data can be inserted directly
-                // FIXME: need pre-check before insert into database?
-                writeRowData();
+        currentRowSet.beforeFirst();// currentRowSet.first();
+        originalRowSet.beforeFirst();// originalRowSet.first();
+        while (currentRowSet.next()) {
+            // inserted a new row
+            if (currentRowSet.rowInserted()) {
+                insertCurrentRow();
             }
-        } while (currentRowSet.next());
-
-        cleanEnvironment();
-
+            // TODO: other change, such as update and delete
+        }
+        // TODO release resource
         return true;
     }
 
@@ -95,13 +88,64 @@ public class CachedRowSetWriter implements RowSetWriter {
         currentRowSet = (CachedRowSetImpl) theRowSet;
         // initial environment
         originalRowSet = (CachedRowSet) currentRowSet.getOriginal();
-        originalConnection = currentRowSet.getConnection();
+        // originalConnection = currentRowSet.getConnection();
         cachedKeySet = new CachedRowSetImpl();
         tableName = currentRowSet.getTableName();
         columnCount = currentRowSet.getMetaData().getColumnCount();
         primaryKeys = originalConnection.getMetaData().getPrimaryKeys("",
                 currentRowSet.getMetaData().getSchemaName(1), tableName);
         cachedKeySet.populate(primaryKeys);
+        colNames = new String[columnCount];
+        for (int i = 1; i <= columnCount; i++) {
+            colNames[i - 1] = currentRowSet.getMetaData().getColumnName(i);
+        }
+    }
+
+    /**
+     * Insert the RowSet's current row to DB
+     * 
+     * @throws SQLException
+     */
+    private void insertCurrentRow() throws SQLException {
+        // the first step: generate the insert SQL
+        StringBuffer insertSQL = new StringBuffer("INSERT INTO " + tableName
+                + "(");
+        StringBuffer insertColNames = new StringBuffer();
+        StringBuffer insertPlaceholder = new StringBuffer();
+        Object[] insertColValues = new Object[columnCount];
+
+        int updateCount = 0;
+        for (int i = 1; i <= columnCount; i++) {
+            boolean isColUpdate = currentRowSet.columnUpdated(i);
+            if (isColUpdate) {
+                insertColNames.append(colNames[i - 1] + ",");
+                insertPlaceholder.append("?,");
+                insertColValues[updateCount] = currentRowSet.getObject(i);
+                updateCount++;
+            }
+        }
+        if (updateCount == 0) {
+            return;
+        }
+
+        insertSQL.append(subStringN(insertColNames.toString(), 1));
+        insertSQL.append(") values (");
+        insertSQL.append(subStringN(insertPlaceholder.toString(), 1));
+        insertSQL.append(")");
+
+        // the second step: execute SQL
+        PreparedStatement preSt = originalConnection.prepareStatement(insertSQL
+                .toString());
+        for (int i = 0; i < updateCount; i++) {
+            preSt.setObject(i + 1, insertColValues[i]);
+        }
+        try {
+            preSt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO generate SyncProviderException
+            throw new SyncProviderException();
+        }
+        preSt.close();
     }
 
     private void writeRowData() throws SQLException {
@@ -248,19 +292,5 @@ public class CachedRowSetWriter implements RowSetWriter {
         }
         return true;
     }
-
-    private void cleanEnvironment() {
-        try {
-            originalRowSet.close();
-            originalConnection.close();
-            cachedKeySet.close();
-            statement.close();
-            currentRowSet.close();
-            primaryKeys.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    // end class
 
 }
