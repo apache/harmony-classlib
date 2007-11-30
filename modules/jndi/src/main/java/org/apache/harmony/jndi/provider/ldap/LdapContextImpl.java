@@ -1216,13 +1216,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         /*
          * there is only one ldap ns
          */
-        if (filter == null) {
-            throw new NullPointerException(Messages.getString("ldap.28")); //$NON-NLS-1$
-        }
-
-        if (objs == null) {
-            objs = new Object[0];
-        }
 
         if (searchControls == null) {
             searchControls = new SearchControls();
@@ -1230,17 +1223,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         // get absolute dn name
         String targetDN = getTargetDN(name, contextDn);
-        FilterParser filterParser = new FilterParser(filter);
-        filterParser.setArgs(objs);
-        Filter f = null;
-        try {
-            f = filterParser.parse();
-        } catch (ParseException e) {
-            InvalidSearchFilterException ex = new InvalidSearchFilterException(
-                    Messages.getString("ldap.29")); //$NON-NLS-1$
-            ex.setRootCause(e);
-            throw ex;
-        }
+        
+        Filter f = LdapUtils.parseFilter(filter, objs);
 
         LdapSearchResult result = doSearch(targetDN, f, searchControls);
 
@@ -2115,29 +2099,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             }
         }
 
-        if (filter == null) {
-            throw new NullPointerException(Messages.getString("ldap.28")); //$NON-NLS-1$
-        }
-
-        if (filterArgs == null) {
-            filterArgs = new Object[0];
-        }
-
         if (searchControls == null) {
             searchControls = new SearchControls();
         }
 
-        FilterParser filterParser = new FilterParser(filter);
-        filterParser.setArgs(filterArgs);
-        Filter f = null;
-        try {
-            f = filterParser.parse();
-        } catch (ParseException e) {
-            InvalidSearchFilterException ex = new InvalidSearchFilterException(
-                    Messages.getString("ldap.29")); //$NON-NLS-1$
-            ex.setRootCause(e);
-            throw ex;
-        }
+        Filter f = LdapUtils.parseFilter(filter, filterArgs);
 
         String targetDN = getTargetDN(name, contextDn);
 

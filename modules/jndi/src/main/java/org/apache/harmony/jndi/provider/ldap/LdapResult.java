@@ -149,22 +149,6 @@ public class LdapResult implements ASN1Decodable {
         return referrals;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public void setMachedDN(String machedDN) {
-        this.machedDN = machedDN;
-    }
-
-    public void setReferrals(String[] referrals) {
-        this.referrals = referrals;
-    }
-
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
-    }
-
     public int getResultCode() {
         return resultCode;
     }

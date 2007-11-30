@@ -571,13 +571,9 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
             context = new LdapContextImpl(client,
                     (Hashtable<Object, Object>) environment, dn);
 
-            if (objs == null) {
-                objs = new Object[0];
-            }
-
             Filter f = parser.getFilter();
             if (f == null) {
-                f = LdapUtils.parseFilter(filter);
+                f = LdapUtils.parseFilter(filter, objs);
             }
 
             if (searchControls == null) {

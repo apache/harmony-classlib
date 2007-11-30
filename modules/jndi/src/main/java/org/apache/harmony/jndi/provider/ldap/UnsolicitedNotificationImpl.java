@@ -21,7 +21,6 @@ import javax.naming.NamingException;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.UnsolicitedNotification;
 
-import org.apache.harmony.jndi.internal.Util;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Decodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 
@@ -48,7 +47,7 @@ public class UnsolicitedNotificationImpl implements UnsolicitedNotification,
     }
 
     public NamingException getException() {
-        return Util.getExceptionFromErrorCode(result.getResultCode());
+        return LdapUtils.getExceptionFromResult(result);
     }
 
     public String[] getReferrals() {
