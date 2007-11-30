@@ -17,9 +17,15 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.sql.SQLException;
+
+import javax.sql.RowSetMetaData;
+import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.spi.SyncResolver;
 
+import org.apache.harmony.sql.internal.rowset.CachedRow;
 import org.apache.harmony.sql.internal.rowset.SyncResolverImpl;
+
 
 public class SyncResolverTest extends CachedRowSetTestCase {
     @Override
@@ -67,7 +73,7 @@ public class SyncResolverTest extends CachedRowSetTestCase {
         // }
         //
         // SyncResolver resolver = ex.getSyncResolver();
-        SyncResolver resolver = new SyncResolverImpl();
+        SyncResolver resolver = new SyncResolverImpl(null);
 
         try {
             resolver.absolute(1);
@@ -263,5 +269,129 @@ public class SyncResolverTest extends CachedRowSetTestCase {
         } catch (UnsupportedOperationException e) {
             // expected
         }
+    }
+
+    public void testGetConflictValue() throws Exception {
+
+        RowSetMetaData metadata = new RowSetMetaDataImpl();
+        metadata.setColumnCount(DEFAULT_COLUMN_COUNT);
+
+        SyncResolverImpl resolver = new SyncResolverImpl(metadata);
+        resolver.addConflictRow(
+                new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 1,
+                SyncResolver.INSERT_ROW_CONFLICT);
+
+        resolver.addConflictRow(
+                new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 2,
+                SyncResolver.INSERT_ROW_CONFLICT);
+
+        // before call nextConflict
+        try {
+            resolver.getConflictValue(1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Invalid cursor position
+        }
+
+        try {
+            resolver.getConflictValue(-1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Invalid column index
+        }
+        try {
+            resolver.getConflictValue("not exist");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Invalid column name
+        }
+
+        assertTrue(resolver.nextConflict());
+
+        for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+            assertNull(resolver.getConflictValue(i));
+        }
+
+        assertTrue(resolver.nextConflict());
+
+        for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+            assertNull(resolver.getConflictValue(i));
+        }
+
+        assertFalse(resolver.nextConflict());
+        assertEquals(0, resolver.getRow());
+
+        /*
+         * ri throw SQLException after call nextConflict again, it's not
+         * reasonable
+         */
+        try {
+            resolver.getConflictValue(1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected Invalid cursor position
+        }
+
+    }
+
+    public void testNextPreviousConflict() throws Exception {
+
+        RowSetMetaData metadata = new RowSetMetaDataImpl();
+        metadata.setColumnCount(DEFAULT_COLUMN_COUNT);
+
+        SyncResolverImpl resolver = new SyncResolverImpl(metadata);
+        resolver.addConflictRow(
+                new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 1,
+                SyncResolver.INSERT_ROW_CONFLICT);
+
+        resolver.addConflictRow(
+                new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 2,
+                SyncResolver.INSERT_ROW_CONFLICT);
+
+        assertTrue(resolver.nextConflict());
+        assertTrue(resolver.nextConflict());
+        assertFalse(resolver.nextConflict());
+        assertFalse(resolver.nextConflict());
+
+        assertTrue(resolver.previousConflict());
+        assertTrue(resolver.previousConflict());
+        assertFalse(resolver.previousConflict());
+        assertFalse(resolver.previousConflict());
+    }
+
+    public void testGetStatus() throws Exception {
+
+        RowSetMetaData metadata = new RowSetMetaDataImpl();
+        metadata.setColumnCount(DEFAULT_COLUMN_COUNT);
+
+        SyncResolverImpl resolver = new SyncResolverImpl(metadata);
+        resolver.addConflictRow(
+                new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 1,
+                SyncResolver.INSERT_ROW_CONFLICT);
+
+        resolver.addConflictRow(
+                new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 2,
+                SyncResolver.INSERT_ROW_CONFLICT);
+        
+        try {
+            resolver.getStatus();
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        assertTrue(resolver.nextConflict());
+        assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
+        assertTrue(resolver.nextConflict());
+        assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
+        assertFalse(resolver.nextConflict());
+
+        try {
+            resolver.getStatus();
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
     }
 }

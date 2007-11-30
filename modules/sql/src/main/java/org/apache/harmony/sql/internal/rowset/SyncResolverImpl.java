@@ -31,13 +31,17 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
+import javax.sql.RowSetMetaData;
 import javax.sql.rowset.BaseRowSet;
 import javax.sql.rowset.spi.SyncResolver;
 
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.sql.internal.nls.Messages;
 
 /**
  * TODO seems RI's implementation is not complete, now we follow RI throw
@@ -50,29 +54,88 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
 
     private static final long serialVersionUID = 4964648528867743289L;
 
+    private List<ConflictedRow> conflictRows;
+
+    private int currentIndex;
+
+    private RowSetMetaData metadata;
+
+    private static class ConflictedRow {
+        CachedRow row;
+
+        int index;
+
+        int status;
+
+        public ConflictedRow(CachedRow row, int index, int status) {
+            this.row = row;
+            this.index = index;
+            this.status = status;
+        }
+    }
+
+    public SyncResolverImpl(RowSetMetaData metadata) {
+        super();
+        this.metadata = metadata;
+        conflictRows = new ArrayList<ConflictedRow>();
+        currentIndex = -1;
+    }
+
+    public void addConflictRow(CachedRow row, int rowIndex, int status) {
+        conflictRows.add(new ConflictedRow(row, rowIndex, status));
+    }
+
     public Object getConflictValue(int index) throws SQLException {
-        // TODO not yet implemented
-        throw new NotImplementedException();
+        if (index <= 0 || index > metadata.getColumnCount()) {
+            // sql.27=Invalid column index :{0}
+            throw new SQLException(Messages.getString("sql.27", Integer //$NON-NLS-1$
+                    .valueOf(index)));
+        }
+
+        if (currentIndex < 0 || currentIndex >= conflictRows.size()) {
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
+
+        return conflictRows.get(currentIndex).row.getObject(index);
     }
 
     public Object getConflictValue(String columnName) throws SQLException {
-        // TODO not yet implemented
-        throw new NotImplementedException();
+        return getConflictValue(getIndexByName(columnName));
     }
 
     public int getStatus() {
-        // TODO not yet implemented
-        throw new NotImplementedException();
+        if (currentIndex < 0 || currentIndex >= conflictRows.size()) {
+            /*
+             * invalid cursor, can't throw SQLException, we throw
+             * NullPointerException instead
+             */
+            // rowset.7=Not a valid cursor
+            throw new NullPointerException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
+
+        return conflictRows.get(currentIndex).status;
     }
 
+    /**
+     * TODO close input stream and clear warning chain as spec say
+     */
     public boolean nextConflict() throws SQLException {
-        // TODO not yet implemented
-        throw new NotImplementedException();
+        if (currentIndex == conflictRows.size()) {
+            return false;
+        }
+
+        currentIndex++;
+        return currentIndex >= 0 && currentIndex < conflictRows.size();
     }
 
     public boolean previousConflict() throws SQLException {
-        // TODO not yet implemented
-        throw new NotImplementedException();
+        if (currentIndex == -1) {
+            return false;
+        }
+
+        currentIndex--;
+        return currentIndex >= 0 && currentIndex < conflictRows.size();
     }
 
     public void setResolvedValue(int index, Object obj) throws SQLException {
@@ -83,14 +146,24 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
 
     public void setResolvedValue(String columnName, Object obj)
             throws SQLException {
-        // TODO not yet implemented
-        throw new NotImplementedException();
-
+        setResolvedValue(getIndexByName(columnName), obj);
     }
 
     public int getRow() throws SQLException {
-        // TODO not yet implemented
-        throw new NotImplementedException();
+        if (currentIndex < 0 || currentIndex >= conflictRows.size()) {
+            return 0;
+        }
+        return conflictRows.get(currentIndex).index;
+    }
+
+    private int getIndexByName(String columnName) throws SQLException {
+        for (int i = 1; i <= metadata.getColumnCount(); i++) {
+            if (columnName.equalsIgnoreCase(metadata.getColumnName(i))) {
+                return i;
+            }
+        }
+        // rowset.1=Not a valid column name
+        throw new SQLException(Messages.getString("rowset.1"));
     }
 
     public void execute() throws SQLException {
