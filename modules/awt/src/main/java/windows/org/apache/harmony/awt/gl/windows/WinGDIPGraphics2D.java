@@ -359,7 +359,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
 
     @Override
     public void drawOval(int x, int y, int width, int height) {
-        if (!nativePen) {
+        if (!nativePen || composite != AlphaComposite.SrcOver) {
             super.drawOval(x, y, width, height);
             return;
         }
