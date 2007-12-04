@@ -182,30 +182,17 @@ public class BcBandsTest extends AbstractBandsTestCase {
             return attributes;
         }
         
-        public ArrayList getLineNumberAttributes() {
-        	int totalMethods = 0;
-        	for(int classIndex = 0; classIndex < numMethods.length; classIndex++) {
-        		totalMethods = totalMethods + numMethods[classIndex];
-        	}
-        	ArrayList[] codeAttributes = new ArrayList[totalMethods];
-        	for(int index = 0; index < codeAttributes.length; index++) {
-        		codeAttributes[index] = new ArrayList();
-        	}
-        	ArrayList lineNumberList = new ArrayList();
-        	for(int classIndex=0; classIndex < codeAttributes.length; classIndex++) {
-        		boolean foundLineNumberTable = false;
-        		for(int attributeIndex = 0; attributeIndex < codeAttributes[classIndex].size(); attributeIndex++) {
-        			Attribute attribute = (Attribute)codeAttributes[classIndex].get(attributeIndex);
-        			if(attribute.getClass() == LineNumberTableAttribute.class) {
-        				foundLineNumberTable = true;
-        				lineNumberList.add(attribute);
-        			}
-        		}
-        		if(!foundLineNumberTable) {
-        			lineNumberList.add(null);
-        		}
-        	}
-        	return lineNumberList;
+        public ArrayList getOrderedCodeAttributes() {
+            int totalMethods = 0;
+            for(int classIndex = 0; classIndex < numMethods.length; classIndex++) {
+                totalMethods = totalMethods + numMethods[classIndex];
+            }
+            ArrayList orderedAttributeList = new ArrayList();
+            for(int classIndex=0; classIndex < totalMethods; classIndex++) {
+                ArrayList currentAttributes = new ArrayList();
+                orderedAttributeList.add(currentAttributes);
+            }
+            return orderedAttributeList;
         }
     }
 
@@ -392,7 +379,9 @@ public class BcBandsTest extends AbstractBandsTestCase {
                 (byte) 162, (byte) 163, (byte) 164, (byte) 165, (byte) 166,
                 (byte) 167, (byte) 168, (byte) 170, (byte) 171, (byte) 198, (byte) 199, (byte) 200, (byte) 201, (byte) 255,
                 0, 0, // bc_case_count (required by tableswitch (170) and lookupswitch (171))
-                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}; // bc_label band
+//                Now that we're actually doing real label lookup, need valid labels
+//                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_label band                
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(16, bcBands.getMethodByteCodePacked()[0][0].length);

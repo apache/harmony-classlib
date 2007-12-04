@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import org.apache.harmony.pack200.bytecode.Attribute;
+import org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
 import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
@@ -343,6 +345,7 @@ public class BcBands extends BandSet {
         operandManager.setSegment(segment);
 
         int i = 0;
+        ArrayList orderedCodeAttributes = segment.getClassBands().getOrderedCodeAttributes();
         for (int c = 0; c < classCount; c++) {
            int numberOfMethods = methodFlags[c].length;
            for (int m = 0; m < numberOfMethods; m++) {
@@ -361,13 +364,22 @@ public class BcBands extends BandSet {
                    CodeAttribute attr = new CodeAttribute(maxStack, maxLocal,
                            methodByteCodePacked[c][m], segment, operandManager);
                    methodAttributes[c][m].add(attr);
-                   // Fix up the line numbers
-                   LineNumberTableAttribute lineNumberTable = (LineNumberTableAttribute)segment.getClassBands().getLineNumberAttributes().get(i);
-                   if(null != lineNumberTable) {
-                	   attr.attributes.add(lineNumberTable);
-                       lineNumberTable.renumberLineNumberTable(attr.byteCodeOffsets);
-                   }
-                   i++;
+                   // Should I add all the attributes in here?
+                 ArrayList currentAttributes = (ArrayList)orderedCodeAttributes.get(i);
+                 for(int index=0;index < currentAttributes.size(); index++) {
+                     Attribute currentAttribute = (Attribute)currentAttributes.get(index);
+                     // TODO: The line below adds the LocalVariableTable
+                     // and LineNumber attributes. Currently things are
+                     // broken because these tables don't get renumbered
+                     // properly. Commenting out the add so the class files
+                     // will verify.
+                     //attr.attributes.add(currentAttribute);
+                     // Fix up the line numbers if needed
+                     if(currentAttribute.hasBCIRenumbering()) {
+                         ((BCIRenumberedAttribute)currentAttribute).renumber(attr.byteCodeOffsets);
+                     }
+                 }
+                 i++;
                }
            }
        }

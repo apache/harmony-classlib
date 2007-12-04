@@ -35,6 +35,9 @@ public class ByteCode extends ClassFileEntry {
 	private int[][] nestedPositions;
 	private int[] rewrite;
 
+    private int byteCodeOffset = -1;
+    private int byteCodeTarget = -1;
+
 	protected ByteCode(int opcode) {
 		this(opcode, ClassFileEntry.NONE);
 	}
@@ -193,10 +196,25 @@ public class ByteCode extends ClassFileEntry {
 			throw new Error("Trying to rewrite " + this + " with an int at position " + position + " but this won't fit in the rewrite array");
 		}
 		
-		rewrite[firstOperandIndex + position] = (operand & 0xFF00) >> 8;
-		rewrite[firstOperandIndex + position + 1] = operand & 0xFF;		
+	    rewrite[firstOperandIndex + position] = (operand & 0xFF00) >> 8;
+	    rewrite[firstOperandIndex + position + 1] = operand & 0xFF;
 	}
 	
+	/**
+	 * This is just like setOperandInt, but takes special care when the
+	 * operand is less than 0 to make sure it's written correctly.
+	 * @param operand int to set the rewrite bytes to
+	 * @param position int position of the operands in the rewrite bytes
+	 */
+	public void setOperandSignedInt(int operand, int position) {
+	    if(operand >= 0) {
+	        setOperandInt(operand, position);
+	    } else {
+	        int twosComplementOperand = 0x10000 + operand;
+	        setOperandInt(twosComplementOperand, position);
+	    }
+	}
+
 	/**
 	 * Given an int operand, treat it as a byte and set
 	 * the rewrite byte for that position to that value.
@@ -274,4 +292,54 @@ public class ByteCode extends ClassFileEntry {
 	public boolean hasMultipleByteCodes() {
 		return getByteCodeForm().hasMultipleByteCodes();
 	}
+
+    /**
+     * ByteCodes may need to know their position in the
+     * code array (in particular, label byte codes need
+     * to know where they are in order to calculate their
+     * targets). This method lets the CodeAttribute specify
+     * where the byte code is.
+     * 
+     * Since there are no aload0+label instructions, this
+     * method doesn't worry about multioperation bytecodes.
+     * 
+     * @param byteCodeOffset int position in code array.
+     */
+    public void setByteCodeIndex(int byteCodeOffset) {
+        this.byteCodeOffset = byteCodeOffset;
+    }
+
+
+    public int getByteCodeIndex() {
+        return byteCodeOffset;
+    }
+    
+    /**
+     * Some ByteCodes (in particular, LabelForm bytecodes)
+     * have to keep track of a byteCodeTarget. This is
+     * initially an offset in the CodeAttribute array
+     * relative to the byteCodeOffset, but later gets fixed
+     * up to point to the absolute position in the CodeAttribute
+     * array. This method sets the target.
+     * 
+     * @param byteCodeTarget int index in array
+     */
+    public void setByteCodeTarget(int byteCodeTarget) {
+        this.byteCodeTarget = byteCodeTarget;
+    }
+    
+    public int getByteCodeTarget() {
+        return byteCodeTarget;
+    }
+    
+    /**
+     * Some ByteCodes (in particular, those with the Label
+     * form) need to be fixed up after all the bytecodes
+     * in the CodeAttribute have been added. (This can't
+     * be done beforehand because the CodeAttribute needs
+     * to be complete before targets can be assigned.)
+     */
+    public void applyByteCodeTargetFixup(CodeAttribute codeAttribute) {
+        getByteCodeForm().fixUpByteCodeTarget(this, codeAttribute);
+    }
 }

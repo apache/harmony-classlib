@@ -62,7 +62,12 @@ public class ClassConstantPool {
 	public int indexOf(ClassFileEntry entry) {
 		if (!resolved)
 			throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
-		return entries.indexOf(entry) + 1;
+		int entryIndex = entries.indexOf(entry);
+		// If the entry isn't found, answer -1. Otherwise answer the entry.
+		if(entryIndex != -1) {
+		    return entryIndex + 1;
+		}
+		return -1;
 	}
 
 	public int size() {

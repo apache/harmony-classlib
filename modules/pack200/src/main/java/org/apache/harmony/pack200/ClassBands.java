@@ -1000,30 +1000,26 @@ public class ClassBands extends BandSet {
     }
 
     /**
-     * Answer an ArrayList of the LineNumberTables corresponding to all classes.
-     * If a class doesn't have a LineNumberTable, the corresponding element in this
-     * list will be null.
+     * Answer an ArrayList of ArrayLists which hold the the code attributes
+     * corresponding to all classes in order.
+     * 
+     * If a class doesn't have any attributes, the corresponding element in this
+     * list will be an empty ArrayList.
      * @return ArrayList
      */
-    // TODO: the class file spec allows >1 LineNumberTable per method. Does Pack200 spec fold them all into one? (If not, need to handle that case.)
-    public ArrayList getLineNumberAttributes() {
-    	ArrayList lineNumberList = new ArrayList();
-    	for(int classIndex=0; classIndex < codeAttributes.length; classIndex++) {
-    		boolean foundLineNumberTable = false;
-    		for(int attributeIndex = 0; attributeIndex < codeAttributes[classIndex].size(); attributeIndex++) {
-    			Attribute attribute = (Attribute)codeAttributes[classIndex].get(attributeIndex);
-    			if(attribute.getClass() == LineNumberTableAttribute.class) {
-    				foundLineNumberTable = true;
-    				lineNumberList.add(attribute);
-    			}
-    		}
-    		if(!foundLineNumberTable) {
-    			lineNumberList.add(null);
-    		}
-    	}
-    	return lineNumberList;
+    public ArrayList getOrderedCodeAttributes() {
+        ArrayList orderedAttributeList = new ArrayList();
+        for(int classIndex=0; classIndex < codeAttributes.length; classIndex++) {
+            ArrayList currentAttributes = new ArrayList();
+            for(int attributeIndex = 0; attributeIndex < codeAttributes[classIndex].size(); attributeIndex++) {
+                Attribute attribute = (Attribute)codeAttributes[classIndex].get(attributeIndex);
+                currentAttributes.add(attribute);
+            }
+            orderedAttributeList.add(currentAttributes);
+        }
+        return orderedAttributeList;
     }
-    
+
     public ArrayList[][] getMethodAttributes() {
         return methodAttributes;
     }

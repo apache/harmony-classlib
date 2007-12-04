@@ -43,9 +43,12 @@ public class CodeAttribute extends Attribute {
         byteCodeOffsets.add(new Integer(0));
         for (int i = 0; i < codePacked.length; i++) {
             ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
+            // Setting the offset must happen before extracting operands
+            // because label bytecodes need to know their offsets.
+            byteCode.setByteCodeIndex(i);
             byteCode.extractOperands(operandManager, segment);
             byteCodes.add(byteCode);
-            this.codeLength += byteCode.getLength();
+            codeLength += byteCode.getLength();
             int lastBytecodePosition = ((Integer) byteCodeOffsets
                     .get(byteCodeOffsets.size() - 1)).intValue();
             // This code assumes all multiple byte bytecodes are
@@ -61,6 +64,12 @@ public class CodeAttribute extends Attribute {
                 byteCodeOffsets.add(new Integer(lastBytecodePosition
                         + byteCode.getLength()));
             }
+        }
+        // Now that all the bytecodes know their positions and
+        // sizes, fix up the byte code targets
+        for (int i = 0; i < codePacked.length; i++) {
+            ByteCode byteCode = (ByteCode)byteCodes.get(i);
+            byteCode.applyByteCodeTargetFixup(this);
         }
     }
 
