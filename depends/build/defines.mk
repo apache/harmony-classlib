@@ -79,13 +79,13 @@ endif
 MDLLIBFILES = $(LIBPATH)libhycommon.a
 
 ifeq ($(HY_NO_THR),false)
-MDLLIBFILES += $(DLLPATH)libhythr$(HY_SHLIB_SUFFIX)
+MDLLIBFILES += $(DLLPATH)libhythr$(HY_LINKLIB_SUFFIX)
 else
 DEFINES += -DHY_NO_THR
 endif
 
 ifeq ($(HY_NO_SIG),false)
-MDLLIBFILES += $(DLLPATH)libhysig$(HY_SHLIB_SUFFIX)
+MDLLIBFILES += $(DLLPATH)libhysig$(HY_LINKLIB_SUFFIX)
 else
 DEFINES += -DHY_NO_SIG
 endif
@@ -99,5 +99,5 @@ DEFINES += -DHY_LOCAL_ZLIB
 OSLIBS += -lz
 MDLLIBZLIB =
 else
-MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_SHLIB_SUFFIX)
+MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
 endif
