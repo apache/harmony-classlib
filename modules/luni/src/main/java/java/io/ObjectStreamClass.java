@@ -267,6 +267,7 @@ public class ObjectStreamClass implements Serializable {
         boolean externalizable = isExternalizable(cl);
         if (externalizable) {
             flags |= ObjectStreamConstants.SC_EXTERNALIZABLE;
+            flags |= ObjectStreamConstants.SC_BLOCK_DATA; // use protocol version 2 by default
         } else if (serializable) {
             flags |= ObjectStreamConstants.SC_SERIALIZABLE;
         }
