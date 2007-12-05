@@ -33,6 +33,7 @@ import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.Utils;
+import org.apache.harmony.awt.gl.XORComposite;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.LinuxNativeFont;
 import org.apache.harmony.awt.wtk.NativeWindow;
@@ -383,6 +384,19 @@ public class XGraphics2D extends CommonGraphics2D {
                     (int) points[0], (int) points[1],
                     (int) points[2], (int) points[3]
             );
+            if (composite instanceof XORComposite) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                x11.XDrawLine(
+                        display,
+                        drawable,
+                        gc,
+                        (int) points[0], (int) points[1],
+                        (int) points[2], (int) points[3]
+                );
+                xSetForeground(fgColor.getRGB());
+            }
         } else {
             super.drawLine(x1, y1, x2, y2);
         }
@@ -515,6 +529,18 @@ public class XGraphics2D extends CommonGraphics2D {
 
     public void drawOval(int x, int y, int width, int height) {
         drawArc(x, y, width, height, 0, 360);
+    }
+
+    @Override
+    public void setXORMode(Color color) {
+        super.setXORMode(color);
+        x11.XSetFunction(display, gc, X11Defs.GXxor);
+        simpleComposite = true;
+    }
+
+    @Override
+    public void setPaintMode() {
+        setComposite(AlphaComposite.SrcOver);
     }
 
     public void setComposite(Composite composite) {
