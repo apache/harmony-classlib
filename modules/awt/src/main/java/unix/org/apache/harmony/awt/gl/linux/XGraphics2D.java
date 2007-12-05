@@ -521,12 +521,58 @@ public class XGraphics2D extends CommonGraphics2D {
         super.setComposite(composite);
         if (composite instanceof AlphaComposite) {
             AlphaComposite acomp = (AlphaComposite) composite;
-            if (acomp.getRule() == AlphaComposite.SRC) {
-                simpleComposite = true;
-            } else if (acomp.getAlpha() != 1.0f) {
-                simpleComposite = false;
-            } else {
-                simpleComposite = true;
+            int rule = acomp.getRule();
+            float srca = acomp.getAlpha();
+
+            switch(rule){
+                case AlphaComposite.CLEAR:
+                case AlphaComposite.SRC_OUT:
+                    x11.XSetFunction(display, gc, X11Defs.GXclear);                
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.SRC:
+                case AlphaComposite.SRC_IN:
+                    if(srca == 0.0f) x11.XSetFunction(display, gc, X11Defs.GXclear);
+                    else x11.XSetFunction(display, gc, X11Defs.GXcopy);
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.DST:
+                case AlphaComposite.DST_OVER:
+                    x11.XSetFunction(display, gc, X11Defs.GXnoop);                
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.SRC_ATOP:
+                case AlphaComposite.SRC_OVER:
+                    x11.XSetFunction(display, gc, X11Defs.GXcopy);                
+                    if(srca == 1.0f){
+                        simpleComposite = true;
+                    }else{
+                        simpleComposite = false;
+                    }
+                    break;
+
+                case AlphaComposite.DST_IN:
+                case AlphaComposite.DST_ATOP:
+                    if(srca != 0.0f){
+                        x11.XSetFunction(display, gc, X11Defs.GXnoop);                
+                    } else {
+                        x11.XSetFunction(display, gc, X11Defs.GXclear);                
+                    }
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.DST_OUT:
+                case AlphaComposite.XOR:
+                    if(srca != 1.0f){
+                        x11.XSetFunction(display, gc, X11Defs.GXnoop);                
+                    } else {
+                        x11.XSetFunction(display, gc, X11Defs.GXclear);                
+                    }
+                    simpleComposite = true;
+                    break;
             }
         } else {
             simpleComposite = false;
