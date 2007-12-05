@@ -25,13 +25,7 @@ import java.util.Set;
 import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.Context;
 import javax.naming.ldap.Control;
-import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.sasl.RealmCallback;
-import javax.security.sasl.RealmChoiceCallback;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslException;
@@ -39,7 +33,6 @@ import javax.security.sasl.SaslException;
 import org.apache.harmony.jndi.provider.ldap.BindOp;
 import org.apache.harmony.jndi.provider.ldap.LdapClient;
 import org.apache.harmony.jndi.provider.ldap.LdapResult;
-import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
 
 /**
@@ -253,59 +246,5 @@ public class SaslBind {
             }
         }
         return "";
-    }
-}
-
-/*
- * Default callback handler, may be customized through
- * "java.naming.security.sasl.realm".
- */
-class DefaultCallbackHandler implements CallbackHandler {
-    
-    private static final String JAVA_NAMING_SECURITY_SASL_REALM = "java.naming.security.sasl.realm";
-
-    private Hashtable env;
-
-    private String realm = "";
-
-    public DefaultCallbackHandler() {
-
-    }
-
-    public DefaultCallbackHandler(Hashtable env) {
-        this.env = env;
-    }
-
-    public void handle(Callback[] callbacks) throws java.io.IOException,
-            UnsupportedCallbackException {
-        for (int i = 0; i < callbacks.length; i++) {
-            if (callbacks[i] instanceof RealmChoiceCallback) {
-                // TODO what to do here?
-                // RealmChoiceCallback rcc = (RealmChoiceCallback) callbacks[i];
-
-            } else if (callbacks[i] instanceof RealmCallback) {
-                RealmCallback rc = (RealmCallback) callbacks[i];
-                if (env.get(JAVA_NAMING_SECURITY_SASL_REALM) != null) {
-                    realm = (String) env.get(JAVA_NAMING_SECURITY_SASL_REALM);
-                    rc.setText(realm);
-                } else {
-                    rc.setText(realm);
-                }
-            } else if (callbacks[i] instanceof PasswordCallback) {
-                PasswordCallback pc = (PasswordCallback) callbacks[i];
-                pc.setPassword(Utils.getCharArray(env
-                        .get(Context.SECURITY_CREDENTIALS)));
-            } else if (callbacks[i] instanceof NameCallback) {
-                //authentication Id
-                NameCallback nc = (NameCallback) callbacks[i];
-                nc.setName((String) env.get(Context.SECURITY_PRINCIPAL));
-            } else {
-                throw new UnsupportedCallbackException(callbacks[i]);
-            }
-        }
-    }
-
-    public void setRealm(String realm) {
-        this.realm = realm;
     }
 }

@@ -22,6 +22,8 @@ package javax.imageio.spi;
 
 import java.util.Locale;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public abstract class IIOServiceProvider implements RegisterableService {
 
     protected String vendorName;
@@ -38,16 +40,18 @@ public abstract class IIOServiceProvider implements RegisterableService {
         this.version = version;
     }
 
-    public IIOServiceProvider() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public IIOServiceProvider() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public void onRegistration(ServiceRegistry registry, Class<?> category) {
         // the default impl. does nothing
     }
 
-    public void onDeregistration(ServiceRegistry registry, Class<?> category) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public void onDeregistration(ServiceRegistry registry, Class<?> category) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public String getVendorName() {

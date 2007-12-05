@@ -19,51 +19,49 @@ package java.util;
 import java.io.Serializable;
 
 /**
- * 
  * The unchecked exception will be thrown out if the combination of the format
  * flags is illegal.
- * 
  */
 public class IllegalFormatFlagsException extends IllegalFormatException
-		implements Serializable {
-	private static final long serialVersionUID = 790824L;
+        implements Serializable {
 
-	private String flags;
+    private static final long serialVersionUID = 790824L;
 
-	/**
-	 * Constructs an IllegalFormatFlagsException with the specified flags.
-	 * 
-	 * @param f
-	 *            The specified flags.
-	 */
-	public IllegalFormatFlagsException(String f) {
-		if (null == f) {
-			throw new NullPointerException();
-		}
-		flags = f;
-	}
+    private String flags;
 
-	/**
-	 * Return the flags that are illegal.
-	 * 
-	 * @return The flags that are illegal.
-	 */
-	public String getFlags() {
-		return flags;
-	}
+    /**
+     * Constructs an IllegalFormatFlagsException with the specified flags.
+     * 
+     * @param f
+     *            The specified flags.
+     */
+    public IllegalFormatFlagsException(String f) {
+        if (null == f) {
+            throw new NullPointerException();
+        }
+        flags = f;
+    }
 
-	/**
-	 * Return the message string of the IllegalFormatFlagsException.
-	 * 
-	 * @return The message string of the IllegalFormatFlagsException.
-	 */
-	@Override
+    /**
+     * Return the flags that are illegal.
+     * 
+     * @return The flags that are illegal.
+     */
+    public String getFlags() {
+        return flags;
+    }
+
+    /**
+     * Return the message string of the IllegalFormatFlagsException.
+     * 
+     * @return The message string of the IllegalFormatFlagsException.
+     */
+    @Override
     public String getMessage() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("Flags = '");
-		buffer.append(flags);
-		buffer.append("'");
-		return buffer.toString();
-	}
-
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Flags = '");
+        buffer.append(flags);
+        buffer.append("'");
+        return buffer.toString();
+    }
 }

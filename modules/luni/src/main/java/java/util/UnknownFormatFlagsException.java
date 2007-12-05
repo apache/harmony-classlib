@@ -20,42 +20,41 @@ import org.apache.harmony.luni.util.Msg;
 
 /**
  * The unchecked exception will be thrown out if there is an unknown flag.
- * 
  */
 public class UnknownFormatFlagsException extends IllegalFormatException {
 
-	private static final long serialVersionUID = 19370506L;
+    private static final long serialVersionUID = 19370506L;
 
-	private String flags;
+    private String flags;
 
-	/**
-	 * Constructs an UnknownFormatFlagsException with the specified flags.
-	 * 
-	 * @param f
-	 *            The specified flags.
-	 */
-	public UnknownFormatFlagsException(String f) {
-		if (null == f) {
-			throw new NullPointerException();
-		}
-		flags = f;
-	}
+    /**
+     * Constructs an UnknownFormatFlagsException with the specified flags.
+     * 
+     * @param f
+     *            The specified flags.
+     */
+    public UnknownFormatFlagsException(String f) {
+        if (null == f) {
+            throw new NullPointerException();
+        }
+        flags = f;
+    }
 
-	/**
-	 * Returns the flags associated with the exception.
-	 * 
-	 * @return The flags associated with the exception.
-	 */
-	public String getFlags() {
-		return flags;
-	}
+    /**
+     * Returns the flags associated with the exception.
+     * 
+     * @return The flags associated with the exception.
+     */
+    public String getFlags() {
+        return flags;
+    }
 
-	/**
-	 * Returns the message associated with the exception.
-	 * 
-	 * @return The message associated with the exception.
-	 */
-	@Override
+    /**
+     * Returns the message associated with the exception.
+     * 
+     * @return The message associated with the exception.
+     */
+    @Override
     public String getMessage() {
         return Msg.getString("K034a", flags);
     }

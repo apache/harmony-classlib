@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-#include "gl_GDI.h"
+#include "gl_GDIPlus.h"
 #include "java_awt_BasicStroke.h"
 #include "java_awt_geom_PathIterator.h"
 #include "org_apache_harmony_awt_gl_windows_WinGDIGraphics2D.h"
@@ -79,7 +79,26 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_
     //initialize default transform
     XFORM xform; xform.eM11=1; xform.eM12=0;  xform.eM21=0;  xform.eM22=1;  xform.eDx=0;  xform.eDy=0;
     gi->xform = xform;
+    gi->gclip = CreateRectRgn(x,y,x+width,y+height);
 
+    return (jlong)gi;
+}
+
+/*
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIGraphics2D
+ * Method:    createGraphicsInfoFor
+ * Signature: (JC)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_createGraphicsInfoFor
+  (JNIEnv * env, jobject obj, jlong hdc, jchar pageUnit) {
+        GraphicsInfo * gi = (GraphicsInfo *) malloc(sizeof(GraphicsInfo));
+
+    gi->hdc = (HDC) hdc;
+    gi->hpen = NULL;
+    gi->hbrush = NULL;
+    //initialize default transform
+    XFORM xform; xform.eM11=1; xform.eM12=0;  xform.eM21=0;  xform.eM22=1;  xform.eDx=0;  xform.eDy=0;
+    gi->xform = xform;
     return (jlong)gi;
 }
 
@@ -124,6 +143,9 @@ static inline GraphicsInfo *createCompatibleImageInfo(JNIEnv *env, HDC hdc, jint
 
     XFORM xform; xform.eM11=1; xform.eM12=0;  xform.eM21=0;  xform.eM22=1;  xform.eDx=0;  xform.eDy=0;
     gi->xform = xform;
+    gi->gclip = CreateRectRgn(0, 0, width, height);
+    SelectClipRgn(gi->hdc, gi->gclip);
+
     return gi; 
 }
 
@@ -177,6 +199,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_
     XFORM xform; xform.eM11=origgi->xform.eM11; xform.eM12=origgi->xform.eM12;  xform.eM21=origgi->xform.eM21;  xform.eM22=origgi->xform.eM22;  xform.eDx=origgi->xform.eDx;  xform.eDy=origgi->xform.eDy;
     gi->xform = xform;
     gi->hrgn = NULL;
+    gi->gclip = origgi->gclip;
 
     return (jlong)gi;
 }
@@ -198,6 +221,9 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_d
         DeleteObject(gi->hpen);
     if(gi->hrgn){
         DeleteObject(gi->hrgn);
+    }
+    if(gi->gclip){
+        DeleteObject(gi->gclip);
     }
     if(gi->hbrush)
         DeleteObject(gi->hbrush);
@@ -727,7 +753,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_r
     GraphicsInfo *gi = (GraphicsInfo *)gip;
     DeleteObject(gi->hrgn);
     gi->hrgn = NULL;
-    SelectClipRgn(gi->hdc, NULL);
+    SelectClipRgn(gi->hdc, gi->gclip);
 }
 
 /*

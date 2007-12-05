@@ -92,4 +92,19 @@ public final class SegmentUtils {
 	private SegmentUtils() {
 		// Intended to be a helper class
 	}
+	
+    /**
+     * This is a debugging message to aid the developer in writing this
+     * class. If the property 'debug.pack200' is set, this will
+	 * generate messages to stderr; otherwise, it will be silent.
+     * 
+     * @param message
+     * @deprecated this may be removed from production code
+     */
+    public static void debug(String message) {
+        if (System.getProperty("debug.pack200") != null) {
+            System.err.println(message);
+        }
+    }
+
 }

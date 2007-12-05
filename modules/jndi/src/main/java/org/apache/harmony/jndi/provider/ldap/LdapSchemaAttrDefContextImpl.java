@@ -72,10 +72,4 @@ public class LdapSchemaAttrDefContextImpl extends LdapContextImpl {
     public Attributes getAttributes(String s) throws NamingException {
         return getAttributes(convertFromStringToName(s));
     }
-
-    public Attributes getAttributes(String s, String[] as)
-            throws NamingException {
-        return getAttributes(convertFromStringToName(s), as);
-    }
-
 }

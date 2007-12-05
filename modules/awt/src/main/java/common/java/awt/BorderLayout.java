@@ -291,10 +291,6 @@ public class BorderLayout implements LayoutManager2, Serializable {
             validate(target);
             valid = wasValid;
 
-            if (visibleComponentsNumber == 0) {
-                return target.addInsets(new Dimension(0, 0));
-            }
-
             return target.addInsets(calculateLayoutSize(prefCompSizes));
         } finally {
             toolkit.unlockAWT();
@@ -429,16 +425,19 @@ public class BorderLayout implements LayoutManager2, Serializable {
         visibleComponentsNumber = 0;
 
         for (Component comp : components) {
-            if (comp.isVisible()) {
-                int index = constraints2Index(components2Constraints.get(comp),
-                        target.getComponentOrientation());
+            int index = constraints2Index(components2Constraints.get(comp),
+                    target.getComponentOrientation());
 
+            if (comp.isVisible()) {
                 if (visibleComponents[index] == null) {
                     visibleComponents[index] = comp;
                     visibleComponentsNumber++;
                     minCompSizes[index] = comp.getMinimumSize();
                     prefCompSizes[index] = comp.getPreferredSize();
                 }
+            } else if (visibleComponents[index] == null){
+                 minCompSizes[index] = comp.getMinimumSize();
+                 prefCompSizes[index] = comp.getPreferredSize();
             }
         }
     }

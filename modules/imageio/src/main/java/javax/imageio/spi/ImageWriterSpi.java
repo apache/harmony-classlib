@@ -23,6 +23,9 @@ package javax.imageio.spi;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
+
+import org.apache.harmony.luni.util.NotImplementedException;
+
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 
@@ -33,8 +36,9 @@ public abstract class ImageWriterSpi extends ImageReaderWriterSpi {
     protected Class[] outputTypes;
     protected String[] readerSpiNames;
 
-    protected ImageWriterSpi() {
-        throw new UnsupportedOperationException("Not supported yet");
+    protected ImageWriterSpi() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public ImageWriterSpi(String vendorName, String version, String[] names,
@@ -86,8 +90,9 @@ public abstract class ImageWriterSpi extends ImageReaderWriterSpi {
 
     public abstract ImageWriter createWriterInstance(Object extension) throws IOException;
 
-    public boolean isOwnWriter(ImageWriter writer) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public boolean isOwnWriter(ImageWriter writer) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public String[] getImageReaderSpiNames() {

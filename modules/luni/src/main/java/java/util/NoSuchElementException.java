@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 /**
  * This runtime exception is thrown when trying to retrieve an element past the
  * end of an Enumeration, or the first or last element from an empty Vector.
@@ -27,24 +26,24 @@ package java.util;
  */
 public class NoSuchElementException extends RuntimeException {
 
-	private static final long serialVersionUID = 6769829250639411880L;
+    private static final long serialVersionUID = 6769829250639411880L;
 
-	/**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public NoSuchElementException() {
-		super();
-	}
+    /**
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public NoSuchElementException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public NoSuchElementException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public NoSuchElementException(String detailMessage) {
+        super(detailMessage);
+    }
 
 }

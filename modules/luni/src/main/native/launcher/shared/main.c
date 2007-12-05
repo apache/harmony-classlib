@@ -36,7 +36,7 @@
 
 #define PORT_LIB_OPTION "_org.apache.harmony.vmi.portlib"
 
-#define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable."
+#define HY_COPYRIGHT_STRING "Apache Harmony Launcher : (c) Copyright 1991, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 /* Tools launchers will invoke HY_TOOLS_PACKAGE+"."+<execname>+"."+HY_TOOLS_MAIN_TYPE */
 #define HY_TOOLS_PACKAGE "org.apache.harmony.tools"

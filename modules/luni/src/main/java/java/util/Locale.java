@@ -171,8 +171,8 @@ public final class Locale implements Cloneable, Serializable {
 				.doPrivileged(new PriviAction<String>("user.language", "en")); //$NON-NLS-1$ //$NON-NLS-2$
 		String region = AccessController.doPrivileged(new PriviAction<String>(
 				"user.country", "US")); //$NON-NLS-1$ //$NON-NLS-2$
-		String variant = AccessController
-				.doPrivileged(new PriviAction<String>("user.variant", "")); //$NON-NLS-1$ //$NON-NLS-2$
+        String variant = AccessController.doPrivileged(new PriviAction<String>(
+                "user.variant", "")); //$NON-NLS-1$ //$NON-NLS-2$
 		defaultLocale = new Locale(language, region, variant);
 	}
     
@@ -192,6 +192,7 @@ public final class Locale implements Cloneable, Serializable {
 
 	/**
 	 * Constructs a new Locale using the specified language.
+     * 
 	 * @param language 
 	 * 
 	 */
@@ -201,6 +202,7 @@ public final class Locale implements Cloneable, Serializable {
 
 	/**
 	 * Constructs a new Locale using the specified language and country codes.
+     * 
 	 * @param language 
 	 * @param country 
 	 * 
@@ -216,9 +218,9 @@ public final class Locale implements Cloneable, Serializable {
      * @param language
      * @param country
      * @param variant
-     * @throws NullPointerException if <code>language</code>,
-     *         <code>country</code> or <code>variant</code> is
-     *         <code>null</code>.
+     * @throws NullPointerException
+     *             if <code>language</code>, <code>country</code> or
+     *             <code>variant</code> is <code>null</code>.
      */
     public Locale(String language, String country, String variant) {
         if (language == null || country == null || variant == null) {
@@ -317,7 +319,8 @@ public final class Locale implements Cloneable, Serializable {
                             String name = list[i];
                             if (name.startsWith(classPrefix)
                                     && name.endsWith(".class")) { //$NON-NLS-1$
-                                result.add(name.substring(0,
+                                result
+                                        .add(name.substring(0,
                                                 name.length() - 6));
                             }
                         }
@@ -333,7 +336,8 @@ public final class Locale implements Cloneable, Serializable {
 							String name = e.getName();
 							if (name.startsWith(prefix)
                                     && name.endsWith(".class")) {//$NON-NLS-1$
-                                result.add(name.substring(last+1, name.length() - 6));
+                                result.add(name.substring(last + 1, name
+                                        .length() - 6));
                             }
 						}
 						zip.close();
@@ -349,8 +353,8 @@ public final class Locale implements Cloneable, Serializable {
 			int index = name.indexOf('_');
 			int nextIndex = name.indexOf('_', index + 1);
 			if (nextIndex == -1) {
-                locales[i++] = new Locale(name
-                        .substring(index + 1, name.length()), ""); //$NON-NLS-1$
+                locales[i++] = new Locale(name.substring(index + 1, name
+                        .length()), ""); //$NON-NLS-1$
 			}else{
     			String language = name.substring(index + 1, nextIndex);
     			String variant;
@@ -642,7 +646,8 @@ public final class Locale implements Cloneable, Serializable {
 	 */
 	public static String[] getISOLanguages() {
 		ListResourceBundle bundle = new Language();
-		Enumeration<String> keys = bundle.getKeys(); // to initialize the table
+        Enumeration<String> keys = bundle.getKeys(); // to initialize the
+                                                        // table
 		String[] result = new String[bundle.table.size()];
 		int index = 0;
 		while (keys.hasMoreElements()) {
@@ -730,9 +735,11 @@ public final class Locale implements Cloneable, Serializable {
 	}
 
 	static ResourceBundle getBundle(final String clName, final Locale locale) {
-		return AccessController.doPrivileged(new PrivilegedAction<ResourceBundle>() {
+        return AccessController
+                .doPrivileged(new PrivilegedAction<ResourceBundle>() {
 					public ResourceBundle run() {
-						return ResourceBundle.getBundle("org.apache.harmony.luni.internal.locale." //$NON-NLS-1$
+                        return ResourceBundle.getBundle(
+                                "org.apache.harmony.luni.internal.locale." //$NON-NLS-1$
 								+ clName, locale);
 					}
 				});

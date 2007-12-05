@@ -17,7 +17,6 @@
 package org.apache.harmony.pack200;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPDouble;
@@ -29,7 +28,6 @@ import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPMethodRef;
 import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
-import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
 public class SegmentConstantPool {

@@ -103,7 +103,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     public void add(int location, E object) {
-        int size = size();
+        int size = lastIndex - firstIndex;
         if (0 < location && location < size) {
             if (firstIndex == 0 && lastIndex == array.length) {
                 growForInsert(location, 1);
@@ -168,7 +168,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     public boolean addAll(int location, Collection<? extends E> collection) {
-        int size = size();
+        int size = lastIndex - firstIndex;
         if (location < 0 || location > size) {
             throw new IndexOutOfBoundsException();
         }
@@ -330,7 +330,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     public E get(int location) {
-        if (0 <= location && location < size()) {
+        if (0 <= location && location < (lastIndex - firstIndex)) {
             return array[firstIndex + location];
         }
         throw new IndexOutOfBoundsException();
@@ -500,7 +500,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     @Override
     public E remove(int location) {
         E result;
-        int size = size();
+        int size = lastIndex - firstIndex;
         if (0 <= location && location < size) {
             if (location == size - 1) {
                 result = array[--lastIndex];
@@ -562,11 +562,11 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     protected void removeRange(int start, int end) {
-        if (start >= 0 && start <= end && end <= size()) {
+        if (start >= 0 && start <= end && end <= (lastIndex - firstIndex)) {
             if (start == end) {
                 return;
             }
-            int size = size();
+            int size = lastIndex - firstIndex;
             if (end == size) {
                 Arrays.fill(array, firstIndex + start, lastIndex, null);
                 lastIndex = firstIndex + start;
@@ -601,7 +601,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     public E set(int location, E object) {
-        if (0 <= location && location < size()) {
+        if (0 <= location && location < (lastIndex - firstIndex)) {
             E result = array[firstIndex + location];
             array[firstIndex + location] = object;
             return result;
@@ -626,7 +626,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     public Object[] toArray() {
-        int size = size();
+        int size = lastIndex - firstIndex;
         Object[] result = new Object[size];
         System.arraycopy(array, firstIndex, result, 0, size);
         return result;
@@ -650,7 +650,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
     @Override
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] contents) {
-        int size = size();
+        int size = lastIndex - firstIndex;
         if (size > contents.length) {
             Class<?> ct = contents.getClass().getComponentType();
             contents = (T[]) Array.newInstance(ct, size);
@@ -668,7 +668,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      * @see #size
      */
     public void trimToSize() {
-        int size = size();
+        int size = lastIndex - firstIndex;
         E[] newArray = newElementArray(size);
         System.arraycopy(array, firstIndex, newArray, 0, size);
         array = newArray;
@@ -682,7 +682,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
 
     private void writeObject(ObjectOutputStream stream) throws IOException {
         ObjectOutputStream.PutField fields = stream.putFields();
-        fields.put("size", size()); //$NON-NLS-1$
+        fields.put("size", lastIndex - firstIndex); //$NON-NLS-1$
         stream.writeFields();
         stream.writeInt(array.length);
         Iterator<?> it = iterator();

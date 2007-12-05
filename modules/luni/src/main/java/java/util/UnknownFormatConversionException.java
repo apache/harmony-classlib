@@ -20,10 +20,9 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * The unchecked exception will be thrown out if the format conversion is
  * unknown.
- * 
- * 
  */
 public class UnknownFormatConversionException extends IllegalFormatException {
+
 	private static final long serialVersionUID = 19060418L;
 
 	private String s;

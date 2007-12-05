@@ -24,44 +24,45 @@ import java.io.Serializable;
  * Formatter.
  */
 public class IllegalFormatCodePointException extends IllegalFormatException
-		implements Serializable {
-	private static final long serialVersionUID = 19080630L;
+        implements Serializable {
 
-	private int c;
+    private static final long serialVersionUID = 19080630L;
 
-	/**
-	 * Constructs an IllegalFormatCodePointException which is specified by the
-	 * invalid Unicode code point.
-	 * 
-	 * @param c
-	 *            The invalid Unicode code point.
-	 */
-	public IllegalFormatCodePointException(int c) {
-		this.c = c;
-	}
+    private int c;
 
-	/**
-	 * Return the invalid Unicode code point.
-	 * 
-	 * @return The invalid Unicode code point.
-	 */
-	public int getCodePoint() {
-		return c;
-	}
+    /**
+     * Constructs an IllegalFormatCodePointException which is specified by the
+     * invalid Unicode code point.
+     * 
+     * @param c
+     *            The invalid Unicode code point.
+     */
+    public IllegalFormatCodePointException(int c) {
+        this.c = c;
+    }
 
-	/**
-	 * Return the message string of the IllegalFormatCodePointException.
-	 * 
-	 * @return The message string of the IllegalFormatCodePointException.
-	 */
-	@Override
+    /**
+     * Return the invalid Unicode code point.
+     * 
+     * @return The invalid Unicode code point.
+     */
+    public int getCodePoint() {
+        return c;
+    }
+
+    /**
+     * Return the message string of the IllegalFormatCodePointException.
+     * 
+     * @return The message string of the IllegalFormatCodePointException.
+     */
+    @Override
     public String getMessage() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("Code point is ");
-		char[] chars = Character.toChars(c);
-		for (int i = 0; i < chars.length; i++) {
-			buffer.append(chars[i]);
-		}
-		return buffer.toString();
-	}
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Code point is ");
+        char[] chars = Character.toChars(c);
+        for (int i = 0; i < chars.length; i++) {
+            buffer.append(chars[i]);
+        }
+        return buffer.toString();
+    }
 }

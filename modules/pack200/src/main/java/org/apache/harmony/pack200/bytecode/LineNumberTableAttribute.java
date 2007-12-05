@@ -18,8 +18,9 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
-public class LineNumberTableAttribute extends Attribute {
+public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     private int line_number_table_length;
     private int[] start_pcs;
@@ -44,8 +45,22 @@ public class LineNumberTableAttribute extends Attribute {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
+     */
     public String toString() {
         return "LineNumberTable: " + line_number_table_length + " lines";
     }
 
+	/* (non-Javadoc)
+	 * @see org.apache.harmony.pack200.bytecode.Attribute#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
+	 */
+	protected void resolve(ClassConstantPool pool) {
+		pool.add(getAttributeName());
+		super.resolve(pool);
+	}
+
+    protected int[] getStartPCs() {
+        return start_pcs;
+    }
 }

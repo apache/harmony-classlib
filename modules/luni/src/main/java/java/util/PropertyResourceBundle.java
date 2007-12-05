@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -32,6 +31,7 @@ import java.io.Reader;
  * @since 1.1
  */
 public class PropertyResourceBundle extends ResourceBundle {
+
 	Properties resources;
 
 	/**

@@ -145,6 +145,19 @@ public class GregorianCalendarTest extends junit.framework.TestCase {
         SimpleTimeZone timezone = new SimpleTimeZone(-3600 * 24 * 1000 * 2,
                 "GMT");
         GregorianCalendar gc = new GregorianCalendar(timezone);
+
+	   // Regression test for HARMONY-5195
+           Calendar c1 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+           c1.set(Calendar.YEAR,1999);
+           c1.set(Calendar.MONTH,Calendar.JUNE);
+           c1.set(Calendar.DAY_OF_MONTH,2);
+           c1.set(Calendar.HOUR,15);
+           c1.set(Calendar.MINUTE,34);
+           c1.set(Calendar.SECOND,16);
+           assertEquals(34,c1.get(Calendar.MINUTE));
+           c1.setTimeZone(new SimpleTimeZone(60000, "ONE MINUTE"));
+           assertEquals(35,c1.get(Calendar.MINUTE));
+
 	}
 
 	/**

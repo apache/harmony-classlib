@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.harmony.sql.tests.internal.rowset;
 
 import java.math.BigDecimal;
@@ -22,9 +23,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -36,101 +35,16 @@ import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.spi.SyncProviderException;
 
-import junit.framework.TestCase;
+public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
-public class CachedRowSetImplTest extends TestCase {
-
-    private static final String DERBY_URL_Create = "jdbc:derby:src/test/resources/TESTDB;create=true";
-
-    private static final String DERBY_URL = "jdbc:derby:src/test/resources/TESTDB";
-
-    private Connection conn = null;
-
-    private Statement st;
-
-    private ResultSet rs;
-
-    private CachedRowSet crset;
-
-    private CachedRowSet noInitialCrset;
-
-    private final static int DEFAULT_COLUMN_COUNT = 12;
-
-    private final static int DEFAULT_ROW_COUNT = 4;
-
+    @Override
     public void setUp() throws Exception {
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-
-        try {
-            conn = DriverManager.getConnection(DERBY_URL);
-        } catch (SQLException e) {
-            try {
-                conn = DriverManager.getConnection(DERBY_URL_Create);
-            } catch (SQLException ee) {
-                throw new SQLException("Create DB Failure!");
-            }
-        }
-
-        st = conn.createStatement();
-        rs = conn.getMetaData().getTables(null, "APP", "USER_INFO", null);
-        String createTableSQL = "create table USER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(10) NOT NULL, BIGINT_T BIGINT, "
-                + "NUMERIC_T NUMERIC, DECIMAL_T DECIMAL, SMALLINT_T SMALLINT, FLOAT_T FLOAT, REAL_T REAL, DOUBLE_T DOUBLE,"
-                + "DATE_T DATE, TIME_T TIME, TIMESTAMP_T TIMESTAMP)";
-        String alterTableSQL = "ALTER TABLE USER_INFO  ADD CONSTRAINT USER_INFO_PK Primary Key (ID)";
-
-        if (!rs.next()) {
-            st.execute(createTableSQL);
-            st.execute(alterTableSQL);
-        }
-
-        insertData();
-        rs = st.executeQuery("select * from USER_INFO");
-        try {
-            crset = (CachedRowSet) Class.forName(
-                    "com.sun.rowset.CachedRowSetImpl").newInstance();
-            noInitialCrset = (CachedRowSet) Class.forName(
-                    "com.sun.rowset.CachedRowSetImpl").newInstance();
-        } catch (ClassNotFoundException e) {
-
-            crset = (CachedRowSet) Class.forName(
-                    "org.apache.harmony.sql.internal.rowset.CachedRowSetImpl")
-                    .newInstance();
-            noInitialCrset = (CachedRowSet) Class.forName(
-                    "org.apache.harmony.sql.internal.rowset.CachedRowSetImpl")
-                    .newInstance();
-
-            System.setProperty("Testing Harmony", "true");
-        }
-        crset.populate(rs);
-        rs = st.executeQuery("select * from USER_INFO");
-        crset.setUrl(DERBY_URL);
+        super.setUp();
     }
 
-    private void reloadCachedRowSet() throws SQLException {
-        rs = st.executeQuery("select * from USER_INFO");
-        crset.populate(rs);
-        rs = st.executeQuery("select * from USER_INFO");
-        crset.setUrl(DERBY_URL);
-    }
-
+    @Override
     public void tearDown() throws Exception {
-        if (rs != null) {
-            rs.close();
-        }
-        if (crset != null) {
-            crset.close();
-        }
-        if (st != null) {
-            st.close();
-        }
-        if (conn != null) {
-            /*
-             * if doesn't call rollback, ri will throw exception then block
-             * java.sql.SQLException: Invalid transaction state.
-             */
-            conn.rollback();
-            conn.close();
-        }
+        super.tearDown();
     }
 
     public void testGetOriginalRow() throws Exception {
@@ -331,12 +245,12 @@ public class CachedRowSetImplTest extends TestCase {
          */
         crset.acceptChanges();
 
-        rs = st.executeQuery("select * from USER_INFO");
+        rs = st.executeQuery("select * from USER_INFO where NAME = 'hermit'");
         rs.next();
-        assertEquals(rs.getString(2), "hermit");
+        assertEquals("hermit", rs.getString(2));
+        rs = st.executeQuery("select * from USER_INFO where NAME = 'test4'");
         rs.next();
-        rs.next();
-        assertEquals(rs.getString(2), "test4");
+        assertEquals("test4", rs.getString(2));
 
     }
 
@@ -370,6 +284,63 @@ public class CachedRowSetImplTest extends TestCase {
 
         crset.first();
         assertEquals("hermit", crset.getString(2));
+    }
+
+    public void testExecute3() throws Exception {
+        // insert 15 more rows for test
+        insertMoreData(15);
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.setUrl(DERBY_URL);
+        noInitialCrset.setPageSize(5);
+        noInitialCrset.setCommand("select * from USER_INFO");
+        noInitialCrset.execute();
+        rs = st.executeQuery("select * from USER_INFO");
+        int cursorIndex = 0;
+        while (noInitialCrset.next() && rs.next()) {
+            cursorIndex++;
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+                assertEquals(rs.getObject(i), noInitialCrset.getObject(i));
+            }
+        }
+        // The pageSize works here. CachedRowSet only get 5 rows from ResultSet.
+        assertEquals(5, cursorIndex);
+
+        // change a command
+        noInitialCrset = newNoInitialInstance();
+        noInitialCrset.setUrl(null);
+        // The pageSize still work here
+        noInitialCrset.setPageSize(5);
+        assertEquals(5, noInitialCrset.getPageSize());
+        noInitialCrset.setCommand("select * from USER_INFO where NAME like ?");
+        noInitialCrset.setString(1, "test%");
+        Connection aConn = DriverManager.getConnection(DERBY_URL);
+        noInitialCrset.execute(aConn);
+        aConn.close();
+        cursorIndex = 1;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
+            assertEquals(cursorIndex, noInitialCrset.getInt(1));
+        }
+        assertEquals(6, cursorIndex);
+
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+
+        noInitialCrset.setUrl(DERBY_URL);
+        noInitialCrset.setPageSize(5);
+        noInitialCrset.setMaxRows(2);
+        noInitialCrset.setCommand("select * from USER_INFO");
+
+        noInitialCrset.execute();
+
+        rs = st.executeQuery("select * from USER_INFO");
+        cursorIndex = 0;
+        while (noInitialCrset.next() && rs.next()) {
+            cursorIndex++;
+        }
+        // maxRows works here
+        assertEquals(2, cursorIndex);
     }
 
     public void testCreateShared() throws Exception {
@@ -749,7 +720,8 @@ public class CachedRowSetImplTest extends TestCase {
         rs.next();
         rs.next();
         rs.next();
-        assertEquals(rs.getString(2), "copyTest3");
+        // TODO: Uncomment it when Writer is implemented fully.
+        // assertEquals(rs.getString(2), "copyTest3");
 
         reloadCachedRowSet();
         crset.absolute(2);
@@ -919,50 +891,6 @@ public class CachedRowSetImplTest extends TestCase {
         assertFalse(crset.next());
     }
 
-    private void isMetaDataEquals(ResultSetMetaData expected,
-            ResultSetMetaData actual) throws SQLException {
-        assertEquals(expected.getColumnCount(), actual.getColumnCount());
-
-        int columnCount = expected.getColumnCount();
-
-        for (int column = 1; column <= columnCount; column++) {
-            assertEquals(expected.isAutoIncrement(column), actual
-                    .isAutoIncrement(column));
-            assertEquals(expected.isCaseSensitive(column), actual
-                    .isCaseSensitive(column));
-            assertEquals(expected.isCurrency(column), actual.isCurrency(column));
-            assertEquals(expected.isDefinitelyWritable(column), actual
-                    .isDefinitelyWritable(column));
-            assertEquals(expected.isReadOnly(column), actual.isReadOnly(column));
-            assertEquals(expected.isSearchable(column), actual
-                    .isSearchable(column));
-            assertEquals(expected.isSigned(column), actual.isSigned(column));
-            assertEquals(expected.isWritable(column), actual.isWritable(column));
-            assertEquals(expected.isNullable(column), actual.isNullable(column));
-            assertEquals(expected.getCatalogName(column), actual
-                    .getCatalogName(column));
-            assertEquals(expected.getColumnClassName(column), actual
-                    .getColumnClassName(column));
-            assertEquals(expected.getColumnDisplaySize(column), actual
-                    .getColumnDisplaySize(column));
-            assertEquals(expected.getColumnLabel(column), actual
-                    .getColumnLabel(column));
-            assertEquals(expected.getColumnName(column), actual
-                    .getColumnName(column));
-            assertEquals(expected.getColumnType(column), actual
-                    .getColumnType(column));
-            assertEquals(expected.getColumnTypeName(column), actual
-                    .getColumnTypeName(column));
-            assertEquals(expected.getPrecision(column), actual
-                    .getPrecision(column));
-            assertEquals(expected.getScale(column), actual.getScale(column));
-            assertEquals(expected.getSchemaName(column), actual
-                    .getSchemaName(column));
-            assertEquals(expected.getTableName(column), actual
-                    .getTableName(column));
-        }
-    }
-
     public void testAfterLast() throws Exception {
         try {
             rs.afterLast();
@@ -1018,73 +946,199 @@ public class CachedRowSetImplTest extends TestCase {
         }
     }
 
-    public void testPopulate() throws Exception {
-        CachedRowSet cc = crset.createCopy();
+    public void testPopulate_LResultSet() throws Exception {
+        // insert 15 more rows for test
+        insertMoreData(15);
 
-        try {
-            crset.populate(rs, 0);
-            fail("should throw exception");
-        } catch (Exception e) {
-            // expected
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.setMaxRows(15);
+        assertEquals(15, noInitialCrset.getMaxRows());
+
+        noInitialCrset.populate(rs);
+
+        assertTrue(noInitialCrset.isBeforeFirst());
+        int cursorIndex = 0;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
         }
-        crset.populate(rs);
-        crset.first();
-        assertEquals("hermit", crset.getString(2));
+        // setMaxRows no effect, we follow ri
+        assertEquals(20, cursorIndex);
 
-        crset.populate(cc, 2);
-        crset.first();
-        assertEquals("test", crset.getString(2));
+        /*
+         * The pageSize won't work when call method populate(ResultSet) without
+         * second parameter
+         */
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
 
-        crset.populate(cc, 1);
-        crset.first();
-        assertEquals("hermit", crset.getString(2));
+        noInitialCrset.setMaxRows(15);
+        assertEquals(15, noInitialCrset.getMaxRows());
+
+        noInitialCrset.setPageSize(5);
+        assertEquals(5, noInitialCrset.getPageSize());
+
+        noInitialCrset.populate(rs);
+
+        assertTrue(noInitialCrset.isBeforeFirst());
+        rs = st.executeQuery("select * from USER_INFO");
+        cursorIndex = 0;
+        while (noInitialCrset.next() && rs.next()) {
+            cursorIndex++;
+        }
+        /*
+         * It's supposed to only get five rows in CachedRowSet as the
+         * CachedRowSet's pageSize is 5. However, the pageSize doesn't work in
+         * RI. The CachedRowSet gets all the data from ResultSet. We follow ri.
+         */
+        assertEquals(20, cursorIndex);
+
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        // cursor move two rows
+        rs.next();
+        rs.next();
+
+        noInitialCrset.populate(rs);
+        assertTrue(noInitialCrset.isBeforeFirst());
+        cursorIndex = 0;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
+        }
+        assertEquals(18, cursorIndex);
     }
 
-    private void insertData() throws Exception {
+    public void testPopulate_LResultSet_I() throws Exception {
+        // insert 15 more rows for test
+        insertMoreData(15);
 
-        st.executeUpdate("delete from USER_INFO");
-
-        // first row
-        st.executeUpdate("insert into USER_INFO(ID,NAME) values (1,'hermit')");
-        // second row
-        st.executeUpdate("insert into USER_INFO(ID,NAME) values (2,'test')");
-
-        String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
-                + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
-                + "?, ?, ?, ?, ?, ? )";
-        PreparedStatement preStmt = conn.prepareStatement(insertSQL);
-        // third row
-        preStmt.setInt(1, 3);
-        preStmt.setString(2, "test3");
-        preStmt.setLong(3, 3333L);
-        preStmt.setBigDecimal(4, new BigDecimal(123));
-        preStmt.setBigDecimal(5, new BigDecimal(23));
-        preStmt.setInt(6, 13);
-        preStmt.setFloat(7, 3.7F);
-        preStmt.setFloat(8, 3.888F);
-        preStmt.setDouble(9, 3.9999);
-        preStmt.setDate(10, new Date(523654123));
-        preStmt.setTime(11, new Time(966554221));
-        preStmt.setTimestamp(12, new Timestamp(521342100));
-        preStmt.executeUpdate();
-        // fourth row
-        preStmt.setInt(1, 4);
-        preStmt.setString(2, "test4");
-        preStmt.setLong(3, 444423L);
-        preStmt.setBigDecimal(4, new BigDecimal(12));
-        preStmt.setBigDecimal(5, new BigDecimal(23));
-        preStmt.setInt(6, 41);
-        preStmt.setFloat(7, 4.8F);
-        preStmt.setFloat(8, 4.888F);
-        preStmt.setDouble(9, 4.9999);
-        preStmt.setDate(10, new Date(965324512));
-        preStmt.setTime(11, new Time(452368512));
-        preStmt.setTimestamp(12, new Timestamp(874532105));
-        preStmt.executeUpdate();
-
-        if (preStmt != null) {
-            preStmt.close();
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.setPageSize(5);
+        try {
+            noInitialCrset.populate(rs, 1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
         }
+
+        // create a scrollable and updatable ResultSet
+        st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                ResultSet.CONCUR_UPDATABLE);
+        rs = st.executeQuery("select * from USER_INFO");
+
+        noInitialCrset = newNoInitialInstance();
+        noInitialCrset.setPageSize(6);
+        noInitialCrset.populate(rs, 6);
+        int cursorIndex = 5;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
+            assertEquals(cursorIndex, noInitialCrset.getInt(1));
+        }
+        assertEquals(11, cursorIndex);
+
+        st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                ResultSet.CONCUR_UPDATABLE);
+        rs = st.executeQuery("select * from USER_INFO");
+
+        noInitialCrset = newNoInitialInstance();
+
+        noInitialCrset.setPageSize(6);
+        noInitialCrset.setMaxRows(5);
+
+        noInitialCrset.populate(rs, 6);
+        cursorIndex = 0;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
+            assertEquals(cursorIndex + 5, noInitialCrset.getInt(1));
+        }
+        // only get MaxRows
+        assertEquals(5, cursorIndex);
+
+        st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                ResultSet.CONCUR_UPDATABLE);
+        rs = st.executeQuery("select * from USER_INFO");
+
+        noInitialCrset = newNoInitialInstance();
+
+        noInitialCrset.setMaxRows(5);
+        try {
+            noInitialCrset.setPageSize(6);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Page size cannot be greater than maxRows
+        }
+
+    }
+
+    public void testPopulate_use_copy() throws Exception {
+        // insert 15 more rows for test
+        insertMoreData(15);
+
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.close();
+        crset.populate(rs);
+
+        CachedRowSet crsetCopy = crset.createCopy();
+        assertEquals(0, crsetCopy.getPageSize());
+        noInitialCrset.setPageSize(5);
+        // if it doesn't specify the startRow for method populate(), then the
+        // pageSize wouldn't work.
+        assertTrue(crsetCopy.isBeforeFirst());
+        noInitialCrset.populate(crsetCopy);
+        assertTrue(crsetCopy.isAfterLast());
+        int cursorIndex = 0;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+                assertEquals(cursorIndex, noInitialCrset.getInt(1));
+            }
+        }
+        assertEquals(20, cursorIndex);
+
+        try {
+            noInitialCrset.populate(crsetCopy, 0);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // invalid cursor position
+        }
+
+        try {
+            noInitialCrset.populate(crsetCopy, -1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // invalid cursor position
+        }
+
+        try {
+            noInitialCrset.populate(crsetCopy, 100);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // invalid cursor position
+        }
+
+        // specify the startRow, then the noInitialCrset will get only 5 rows
+        noInitialCrset.populate(crsetCopy, 1);
+        assertEquals(5, noInitialCrset.getPageSize());
+        assertTrue(noInitialCrset.isBeforeFirst());
+        cursorIndex = 0;
+        rs = st.executeQuery("select * from USER_INFO");
+        while (noInitialCrset.next() && rs.next()) {
+            cursorIndex++;
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+                assertEquals(cursorIndex, noInitialCrset.getInt(1));
+                assertEquals(rs.getObject(i), noInitialCrset.getObject(i));
+            }
+        }
+        // the pageSize works here
+        assertEquals(5, cursorIndex);
+
+        // the noInitialCrset would fetch data from the eleventh row
+        noInitialCrset.populate(crsetCopy, 11);
+        cursorIndex = 10;
+        while (noInitialCrset.next()) {
+            cursorIndex++;
+            assertEquals(cursorIndex, noInitialCrset.getInt(1));
+        }
+        assertEquals(15, cursorIndex);
     }
 
     public void testConstructor() throws Exception {
@@ -1193,7 +1247,7 @@ public class CachedRowSetImplTest extends TestCase {
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertFalse(crset.absolute(0));
         }
-        
+
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
         assertTrue(crset.absolute(1));
         assertEquals(1, crset.getInt(1));
@@ -1319,7 +1373,6 @@ public class CachedRowSetImplTest extends TestCase {
             // expected
         }
 
-
         try {
             crset.first();
             fail("should throw SQLException");
@@ -1335,6 +1388,343 @@ public class CachedRowSetImplTest extends TestCase {
         }
 
         assertTrue(crset.isFirst());
+    }
+
+    public void testAcceptChanges_Insert() throws Exception {
+        /*
+         * Insert a new row one time
+         */
+        crset.moveToInsertRow();
+        crset.updateInt(1, 5);
+        crset.updateString(2, "test5");
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateInt(6, 41);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+        crset.updateDate(10, new Date(965324512));
+        crset.updateTime(11, new Time(452368512));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+        crset.insertRow();
+        crset.moveToCurrentRow();
+        crset.acceptChanges(conn);
+        // check the new row in CachedRowSet
+        crset.beforeFirst();
+        String newRowValue = "";
+        while (crset.next()) {
+            if (crset.getInt(1) == 5) {
+                newRowValue = "test5";
+            }
+        }
+        assertEquals("test5", newRowValue);
+        // check the new row in DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 5");
+        assertTrue(rs.next());
+        assertEquals(5, rs.getInt(1));
+
+        /*
+         * TODO Insert multiple rows one time, uncomment after implemented
+         */
+        // TODO uncomment it after insert methods are implemented
+        // noInitialCrset = newNoInitialInstance();
+        // rs = st.executeQuery("select * from USER_INFO");
+        // noInitialCrset.populate(rs);
+        // noInitialCrset.setReadOnly(false);
+        // noInitialCrset.moveToInsertRow();
+        // for (int i = 6; i <= 20; i++) {
+        // noInitialCrset.updateInt(1, i);
+        // noInitialCrset.updateString(2, "test" + i);
+        // noInitialCrset.insertRow();
+        // }
+        // noInitialCrset.moveToCurrentRow();
+        // noInitialCrset.acceptChanges(conn);
+        // // check the new rows in CachedRowSet
+        // assertEquals(20, noInitialCrset.size());
+        // // check the new rows in DB
+        // rs = st.executeQuery("select * from USER_INFO");
+        // int cursorIndex = 0;
+        // while (rs.next()) {
+        // cursorIndex++;
+        // }
+        // assertEquals(20, cursorIndex);
+    }
+
+    public void testAcceptChanges_InsertException() throws Exception {
+        /*
+         * Insert a new row. One given column's value exceeds the max range.
+         * Therefore, it should throw SyncProviderException.
+         */
+        crset.moveToInsertRow();
+        crset.updateInt(1, 4);
+        crset.updateString(2, "test5");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200000); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.insertRow();
+        crset.moveToCurrentRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Insert a new row. The new row's primary key has existed. Therefore,
+         * it should throw SyncProviderException.
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        crset.moveToInsertRow();
+        crset.updateInt(1, 4); // The ID valued 4 has existed in db.
+        crset.updateString(2, "test5");
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+        crset.insertRow();
+        crset.moveToCurrentRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Insert a new row. Before inserting the new row, another new row which
+         * has the same data is inserted into the DB. However, the current
+         * CachedRowSet doesn't know it. In this situation, it should throw
+         * SyncProviderException.
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T,DECIMAL_T, SMALLINT_T, "
+                + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
+                + "?, ?, ?, ?, ?, ? )";
+        PreparedStatement preStmt = conn.prepareStatement(insertSQL);
+        preStmt.setInt(1, 80);
+        preStmt.setString(2, "test" + 80);
+        preStmt.setLong(3, 444423L);
+        preStmt.setBigDecimal(4, new BigDecimal(12));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 41);
+        preStmt.setFloat(7, 4.8F);
+        preStmt.setFloat(8, 4.888F);
+        preStmt.setDouble(9, 4.9999);
+        preStmt.setDate(10, new Date(965324512));
+        preStmt.setTime(11, new Time(452368512));
+        preStmt.setTimestamp(12, new Timestamp(874532105));
+        preStmt.executeUpdate();
+        if (preStmt != null) {
+            preStmt.close();
+        }
+        // check the new row in DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 80");
+        assertTrue(rs.next());
+        assertEquals(80, rs.getInt(1));
+        assertEquals("test80", rs.getString(2));
+
+        // now call CachedRowSet.insertRow()
+        crset.moveToInsertRow();
+        crset.updateInt(1, 80);
+        crset.updateString(2, "test" + 80);
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateInt(6, 41);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+        crset.updateDate(10, new Date(965324512));
+        crset.updateTime(11, new Time(452368512));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+        crset.insertRow();
+        crset.moveToCurrentRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+    }
+
+    public void testAcceptChanges_Delete() throws Exception {
+        /*
+         * Delete all the row. On the first and second row, only two columns
+         * have value, all the others are NULL. When run on RI, deleteRow() will
+         * go wrong and throw Exception. According to the spec, deleteRow() is
+         * supposed to ok.
+         */
+        crset.beforeFirst();
+        while (crset.next()) {
+            crset.deleteRow();
+        }
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            crset.acceptChanges(conn);
+        } else {
+            try {
+                crset.acceptChanges(conn);
+            } catch (NullPointerException e) {
+                // RI would throw NullPointerException when deleting a row in
+                // which some columns' value are null
+            }
+        }
+        // check DB
+        rs = st.executeQuery("select * from USER_INFO");
+        int rowCount = 0;
+        while (rs.next()) {
+            rowCount++;
+        }
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertEquals(0, rowCount);
+        } else {
+            assertEquals(4, rowCount);
+        }
+    }
+
+    public void testAcceptChanges_DeleteException() throws Exception {
+        /*
+         * Delete a row which has been deleted from database
+         */
+        int result = st.executeUpdate("delete from USER_INFO where ID = 3");
+        assertEquals(1, result);
+        // move to the third row which doesn't exist in database
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        crset.deleteRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Delete a row which has been updated in database
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        result = st
+                .executeUpdate("update USER_INFO set NAME = 'update44' where ID = 4");
+        assertEquals(1, result);
+        // move to the updated row
+        crset.absolute(3);
+        assertEquals(4, crset.getInt(1));
+        assertEquals("test4", crset.getString(2));
+        crset.deleteRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+    }
+
+    public void testAcceptChanges_Update() throws Exception {
+        // update the first row
+        assertTrue(crset.absolute(1));
+        crset.updateInt(1, 11);
+        crset.updateString(2, "test11");
+        crset.updateRow();
+        crset.acceptChanges(conn);
+        // check DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 11");
+        assertTrue(rs.next());
+        assertEquals(11, rs.getInt(1));
+        assertEquals("test11", rs.getString(2));
+
+        // update the third row
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+        assertTrue(noInitialCrset.absolute(1));
+        noInitialCrset.updateInt(1, 111);
+        noInitialCrset.updateString(2, "update111");
+        noInitialCrset.updateRow();
+        assertTrue(noInitialCrset.absolute(3));
+        noInitialCrset.updateInt(1, 333);
+        noInitialCrset.updateString(2, "update333");
+        noInitialCrset.updateLong(3, 33333L);
+        noInitialCrset.updateRow();
+        noInitialCrset.acceptChanges(conn);
+        // check DB
+        rs = st.executeQuery("select * from USER_INFO where ID = 111");
+        assertTrue(rs.next());
+        assertEquals(111, rs.getInt(1));
+        assertEquals("update111", rs.getString(2));
+        rs = st.executeQuery("select * from USER_INFO where ID = 333");
+        assertTrue(rs.next());
+        assertEquals(333, rs.getInt(1));
+        assertEquals("update333", rs.getString(2));
+        assertEquals(33333L, rs.getLong(3));
+    }
+
+    public void testAcceptChanges_UpdateException() throws Exception {
+        /*
+         * Update a row which has been deleted from database
+         */
+        int result = st.executeUpdate("delete from USER_INFO where ID = 3");
+        assertEquals(1, result);
+        // move to the third row which doesn't exist in database
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        crset.updateString(2, "update33");
+        crset.updateRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Update a row which has been updated in database
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        result = st
+                .executeUpdate("update USER_INFO set NAME = 'update44' where ID = 4");
+        assertEquals(1, result);
+        // move to the updated row
+        assertTrue(crset.absolute(3));
+        assertEquals(4, crset.getInt(1));
+        assertEquals("test4", crset.getString(2));
+        crset.updateString(2, "change4");
+        crset.updateRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
+
+        /*
+         * Update a row in which one column's value is out of range
+         */
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        crset.populate(rs);
+        assertEquals(3, crset.size());
+        assertTrue(crset.absolute(3));
+        assertEquals(4, crset.getInt(1));
+        crset.updateString(2, "update4");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200000); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.updateRow();
+        try {
+            crset.acceptChanges(conn);
+            fail("should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // TODO analysis SyncProviderException
+        }
     }
 
     public class Listener implements RowSetListener, Cloneable {

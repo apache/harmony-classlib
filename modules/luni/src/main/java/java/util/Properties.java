@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -60,11 +59,9 @@ public class Properties extends Hashtable<Object,Object> {
 
     private transient DocumentBuilder builder = null;
 
-    private static final String PROP_DTD_NAME 
-            = "http://java.sun.com/dtd/properties.dtd";
+    private static final String PROP_DTD_NAME = "http://java.sun.com/dtd/properties.dtd";
 
-    private static final String PROP_DTD 
-            = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    private static final String PROP_DTD = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             + "    <!ELEMENT properties (comment?, entry*) >"
             + "    <!ATTLIST properties version CDATA #FIXED \"1.0\" >"
             + "    <!ELEMENT comment (#PCDATA) >"
@@ -591,7 +588,9 @@ public class Properties extends Hashtable<Object,Object> {
             return keys();
         }
 
-		Hashtable<Object, Object> set = new Hashtable<Object, Object>(defaults.size() + size());
+        Hashtable<Object, Object> set = new Hashtable<Object, Object>(defaults
+                .size()
+                + size());
 		Enumeration<?> keys = defaults.propertyNames();
 		while (keys.hasMoreElements()) {
 			set.put(keys.nextElement(), set);
@@ -759,7 +758,8 @@ public class Properties extends Hashtable<Object,Object> {
         }
         
         if (builder == null) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = DocumentBuilderFactory
+                    .newInstance();
             factory.setValidating(true);
             
             try {
@@ -783,16 +783,16 @@ public class Properties extends Hashtable<Object,Object> {
             });
             
             builder.setEntityResolver(new EntityResolver() {
-                public InputSource resolveEntity(String publicId, String systemId)
-                        throws SAXException, IOException {
+                public InputSource resolveEntity(String publicId,
+                        String systemId) throws SAXException, IOException {
                     if (systemId.equals(PROP_DTD_NAME)) {
                         InputSource result = new InputSource(new StringReader(
                                 PROP_DTD));
                         result.setSystemId(PROP_DTD_NAME);
                         return result;
                     }
-                    throw new SAXException(
-                            "Invalid DOCTYPE declaration: " + systemId);
+                    throw new SAXException("Invalid DOCTYPE declaration: "
+                            + systemId);
                 }
             });
         }
@@ -811,8 +811,8 @@ public class Properties extends Hashtable<Object,Object> {
                 String value = entry.getTextContent();
                 
                 /*
-                 * key != null & value != null
-                 * but key or(and) value can be empty String
+                 * key != null & value != null but key or(and) value can be
+                 * empty String
                  */
                 put(key, value);
             }
@@ -823,8 +823,7 @@ public class Properties extends Hashtable<Object,Object> {
         }
     }
     
-    public void storeToXML(OutputStream os, String comment) 
-            throws IOException {
+    public void storeToXML(OutputStream os, String comment) throws IOException {
         storeToXML(os, comment, "UTF-8");
     }
     
@@ -855,7 +854,8 @@ public class Properties extends Hashtable<Object,Object> {
             encodingCanonicalName = "UTF-8";
         }
 
-        PrintStream printStream = new PrintStream(os, false, encodingCanonicalName);
+        PrintStream printStream = new PrintStream(os, false,
+                encodingCanonicalName);
         
         printStream.print("<?xml version=\"1.0\" encoding=\"");
         printStream.print(encodingCanonicalName);
@@ -889,13 +889,11 @@ public class Properties extends Hashtable<Object,Object> {
     private String substitutePredefinedEntries(String s) {
         
         /*
-         * substitution for predefined character entities
-         * to use them safely in XML
+         * substitution for predefined character entities to use them safely in
+         * XML
          */
-        return s.replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll("\u0027", "&apos;")
-            .replaceAll("\"", "&quot;");
+        return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(
+                ">", "&gt;").replaceAll("\u0027", "&apos;").replaceAll("\"",
+                "&quot;");
     }	
 }

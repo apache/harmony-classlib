@@ -143,11 +143,13 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
         super.addRenderingHints(hints);
         if (!FontManager.IS_FONTLIB) {
             Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            /*
             if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
                 NativeFont.setAntialiasing(gi,true);
             } else {
                 NativeFont.setAntialiasing(gi,false);
             }
+            */
         }
     }
     
@@ -342,9 +344,7 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
     @Override
     public void fill(Shape s) {
         if (!nativeBrush || composite != AlphaComposite.SrcOver) {
-            s = transform.createTransformedShape(s);
-            MultiRectArea mra = jsr.rasterize(s, 0.5);
-            super.fillMultiRectAreaPaint(mra);
+            super.fill(s);
             return;
         }
 
@@ -356,9 +356,7 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
     @Override
     public void fillRect(int x, int y, int width, int height) {
         if (!nativeBrush || composite != AlphaComposite.SrcOver) {
-            Shape s = transform.createTransformedShape(new Rectangle(x, y, width, height));
-            MultiRectArea mra = jsr.rasterize(s, 0.5);
-            super.fillMultiRectAreaPaint(mra);
+            super.fillRect(x, y, width, height);
             return;
         }
 
@@ -520,6 +518,7 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
 
     // Creates native GraphicsInfo structure
     private native long createGraphicsInfo(long hwnd, int x, int y, int width, int height);
+    private native long createGraphicsInfoFor(long hdc, char pageUnit);
     static native long createCompatibleImageInfo(long hwnd, int width, int height);
     static native long createCompatibleImageInfo(byte[] bytes, int width, int height);
     private native long copyImageInfo(long gi);
@@ -559,11 +558,13 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
         super.setRenderingHint(key,value);
         if (!FontManager.IS_FONTLIB) {
             Object val = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            /*
             if (val == RenderingHints.VALUE_ANTIALIAS_ON) {
                 NativeFont.setAntialiasing(gi,true);
             } else {
                 NativeFont.setAntialiasing(gi,false);
             }
+            */
         }
     }
 
@@ -572,11 +573,13 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
         super.setRenderingHints(hints);
         if (!FontManager.IS_FONTLIB) {
             Object value = this.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+            /*
             if (value == RenderingHints.VALUE_ANTIALIAS_ON) {
                 NativeFont.setAntialiasing(gi,true);
             } else {
                 NativeFont.setAntialiasing(gi,false);
             }
+            */
         }
     }
 

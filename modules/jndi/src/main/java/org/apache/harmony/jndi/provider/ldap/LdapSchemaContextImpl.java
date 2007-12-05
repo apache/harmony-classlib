@@ -18,7 +18,6 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.naming.Binding;
+import javax.naming.CompositeName;
 import javax.naming.ConfigurationException;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
@@ -93,10 +93,8 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     private Name rdn = null;
 
-    private BasicAttributes schemaAttributes;
-
-    public LdapSchemaContextImpl(LdapContextImpl ctx,
-            Hashtable<Object, Object> env, Name dn) throws InvalidNameException {
+    public LdapSchemaContextImpl(LdapContextImpl ctx, Hashtable<Object, Object> env,
+            Name dn) throws InvalidNameException {
         super(ctx, env, dn.getPrefix(0).toString());
         parent = ctx;
         rdn = dn;
@@ -134,8 +132,11 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             throw new SchemaViolationException(Messages.getString("jndi.8D"));
         }
 
-        if (!LdapContextImpl.schemaTree.keySet().contains(
-                schemaJndi2Ldap.get(schemaType.toString().toLowerCase()))) {
+        String schema = schemaJndi2Ldap.get(schemaType.toString().toLowerCase());
+        if (null == schema) {
+            throw new SchemaViolationException(Messages.getString("jndi.8D"));
+        }
+        if (!LdapContextImpl.schemaTree.keySet().contains(schema)) {
             throw new SchemaViolationException(Messages.getString("jndi.8E"));
         }
         String targetDN = rdn.toString() + parent.subschemasubentry;
@@ -166,8 +167,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
         ModifyOp op = new ModifyOp(targetDN);
         BasicAttribute schemaEntry = new LdapAttribute(new BasicAttribute(
-                schemaJndi2Ldap.get(schemaType.toString().toLowerCase()),
-                builder.toString()), parent);
+                schema, builder.toString()), parent);
         op.addModification(jndi2ldap[DirContext.ADD_ATTRIBUTE],
                 new LdapAttribute(schemaEntry, parent));
 
@@ -181,36 +181,45 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     public DirContext createSubcontext(String name, Attributes attributes)
             throws NamingException {
-        return createSubcontext(convertFromStringToName(name), attributes);
+        Name n = convertFromStringToName(name);
+        return createSubcontext(n, attributes);
     }
 
     public Attributes getAttributes(Name name) throws NamingException {
-        if (null != schemaAttributes) {
-            return schemaAttributes;
-        }
-        Name schemaName = name;
-        if (schemaName.size() == 0) {
-            schemaName = rdn;
-        }
-        if (schemaName.size() != 2) {
-            throw new NameNotFoundException(name.toString());
-        }
-        Hashtable<String, Object> schemaDef = parent.findSchemaDefInfo(
-                schemaJndi2Ldap.get(schemaName.get(0).toLowerCase()),
-                schemaName.get(1).toLowerCase());
-        if (null == schemaDef) {
-            throw new NameNotFoundException(name.toString());
-        }
-        schemaAttributes = new BasicAttributes();
-        Enumeration<String> keys = schemaDef.keys();
-        while (keys.hasMoreElements()) {
-            String id = keys.nextElement();
-            if (id.equals("orig")) {
-                continue;
+        Name targetDN = (rdn.size() != 0) ? name.addAll(rdn) : name;
+
+        BasicAttributes schemaAttributes = new BasicAttributes();
+
+        Set<String> keyset = null;
+        int size = targetDN.size();
+        switch (size) {
+        case 0:
+            break;
+        case 1:
+            String schemaType = schemaJndi2Ldap.get(name.get(0).toLowerCase());
+            if (null == schemaType) {
+                throw new NameNotFoundException(name.toString());
             }
-            Object value = schemaDef.get(id);
-            schemaAttributes.put(new LdapAttribute(
-                    new BasicAttribute(id, value), parent));
+            schemaAttributes.put(new BasicAttribute("objectclass", name.get(0)
+                    .toLowerCase()));
+            break;
+        default:
+            Hashtable<String, Object> classDef = parent.findSchemaDefInfo(
+                    schemaJndi2Ldap.get(name.get(0).toLowerCase()), name.get(1));
+            if (null == classDef) {
+                throw new NameNotFoundException(name.toString());
+            }
+            schemaAttributes = new BasicAttributes();
+            keyset = classDef.keySet();
+            for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
+                String id = i.next();
+                if (id.equals("orig")) {
+                    continue;
+                }
+                Object value = classDef.get(id);
+                schemaAttributes
+                        .put(new BasicAttribute(id.toLowerCase(), value));
+            }
         }
         return schemaAttributes;
     }
@@ -231,13 +240,13 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     public Attributes getAttributes(String attributeName)
             throws NamingException {
-        Name name = convertFromStringToName(attributeName);
+        Name name = new CompositeName(attributeName);
         return getAttributes(name);
     }
 
     public Attributes getAttributes(String name, String[] as)
             throws NamingException {
-        return getAttributes(convertFromStringToName(name), as);
+        return getAttributes(new CompositeName(name), as);
     }
 
     private void checkName(Name name) {
@@ -282,20 +291,35 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             throws NamingException {
         checkName(name);
 
-        if (modificationItems == null) {
-            // FIXME: spec say ModificationItem may not be null, but ri
-            // silence in this case
-            throw new NullPointerException(Messages.getString("ldap.27")); //$NON-NLS-1$
-        }
+        Name targetDN = (rdn.size() != 0) ? name.addAll(rdn) : name;
+        int size = targetDN.size();
+        ModifyOp op = new ModifyOp(targetDN.toString());
+        String oldValue = "(objectclass)";
+        switch (size) {
+        case 0:
+            break;
+        case 1:
+            String schemaType = schemaJndi2Ldap.get(name.get(0).toLowerCase());
+            if (null == schemaType) {
+                throw new NameNotFoundException(name.toString());
+            }
+            if (modificationItems == null) {
+                throw new NullPointerException(Messages.getString("ldap.27")); //$NON-NLS-1$
+            }
+            break;
+        default:
+            Hashtable<String, Object> classDef = parent
+                    .findSchemaDefInfo(schemaJndi2Ldap.get(name.get(0)
+                            .toLowerCase()), name.get(1));
+            if (modificationItems == null) {
+                throw new NullPointerException(Messages.getString("ldap.27")); //$NON-NLS-1$
+            }
+            if (null == classDef) {
+                throw new NameNotFoundException(name.toString());
+            }
 
-        String targetDN = rdn.toString() + parent.subschemasubentry;
-        ModifyOp op = new ModifyOp(targetDN);
-        Hashtable<String, Object> classDef = parent.findSchemaDefInfo(
-                schemaJndi2Ldap.get(name.get(0).toLowerCase()), name.get(1));
-        if (null == classDef) {
-            throw new NameNotFoundException(name.toString());
+            oldValue = (String) classDef.get("orig");
         }
-        String oldValue = (String) classDef.get("orig");
         BasicAttribute oldAttr = new LdapAttribute(new BasicAttribute(
                 OBJECT_CLASSES, oldValue), parent);
         StringBuilder addValue = new StringBuilder();
@@ -304,39 +328,43 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             addValue.append(attr.getID()).append(" ").append(attr.get());
         }
         addValue.append(" )");
-        BasicAttribute newAttr = new LdapAttribute(new BasicAttribute(
-                OBJECT_CLASSES, oldValue.replace(")", addValue.toString())),
-                this);
+        BasicAttribute newAttr = new LdapAttribute(
+                new BasicAttribute(OBJECT_CLASSES, oldValue.replace(")",
+                        addValue.toString())), this);
         op.addModification(jndi2ldap[DirContext.REMOVE_ATTRIBUTE],
                 new LdapAttribute(oldAttr, parent));
         op.addModification(jndi2ldap[DirContext.ADD_ATTRIBUTE],
                 new LdapAttribute(newAttr, parent));
-
+        
         try {
             doBasicOperation(op);
-        } catch (ReferralException e) {
-            // TODO handle referral in the future
+        } catch (Exception e) {
+            throw new SchemaViolationException("Cannot modify schema root");
         }
 
     }
 
     public void modifyAttributes(String s, int i, Attributes attributes)
             throws NamingException {
-        modifyAttributes(convertFromStringToName(s), i, attributes);
+        Name name = convertFromStringToName(s);
+        modifyAttributes(name, i, attributes);
     }
 
     public void modifyAttributes(String s, ModificationItem[] modificationItems)
             throws NamingException {
-        modifyAttributes(convertFromStringToName(s), modificationItems);
+        Name name = convertFromStringToName(s);
+        modifyAttributes(name, modificationItems);
 
     }
 
     public Context createSubcontext(Name name) throws NamingException {
-        return createSubcontext(name, null);
+        DirContext subContext = createSubcontext(name, null);
+        return subContext;
     }
 
     public Context createSubcontext(String name) throws NamingException {
-        return createSubcontext(convertFromStringToName(name));
+        Name n = convertFromStringToName(name);
+        return createSubcontext(n);
     }
 
     public void destroySubcontext(Name name) throws NamingException {
@@ -374,15 +402,47 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         destroySubcontext(convertFromStringToName(name));
     }
 
-    public NamingEnumeration<NameClassPair> list(Name n) throws NamingException {
-        Set<String> keyset = LdapContextImpl.schemaTree.keySet();
+    public NamingEnumeration<NameClassPair> list(Name name)
+            throws NamingException {
+        Name targetDN = name.addAll(rdn);
+
         LdapNamingEnumeration<NameClassPair> enumeration = new LdapNamingEnumeration<NameClassPair>(
                 null, null);
-        for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
-            String schemaType = i.next();
-            NameClassPair pair = new NameClassPair(schemaLdap2Jndi
-                    .get(schemaType.toLowerCase()), this.getClass().getName());
-            enumeration.add(pair);
+        Set<String> keyset = null;
+        int size = targetDN.size();
+        switch (size) {
+        case 0:
+            keyset = LdapContextImpl.schemaTree.keySet();
+            for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
+                String schemaType = i.next();
+                NameClassPair pair = new NameClassPair(schemaLdap2Jndi
+                        .get(schemaType.toLowerCase()), this.getClass()
+                        .getName());
+                enumeration.add(pair);
+            }
+            break;
+        case 1:
+            String schemaType = schemaJndi2Ldap.get(name.get(0).toLowerCase());
+            if (null == schemaType) {
+                throw new NameNotFoundException(name.toString());
+            }
+            Hashtable<String, Hashtable<String, Object>> schemas = LdapContextImpl.schemaTree
+                    .get(schemaType);
+            keyset = schemas.keySet();
+            for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
+                schemaType = i.next();
+                NameClassPair pair = new NameClassPair(
+                        schemaType.toLowerCase(), this.getClass().getName());
+                enumeration.add(pair);
+            }
+            break;
+        default:
+            schemaType = schemaJndi2Ldap.get(name.getPrefix(1).toString()
+                    .toLowerCase());
+            if (null == schemaType) {
+                throw new NameNotFoundException(name.toString());
+            }
+            list(name.getSuffix(1));
         }
         return enumeration;
     }
@@ -394,37 +454,56 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         return list(convertFromStringToName(name));
     }
 
-    public NamingEnumeration<Binding> listBindings(Name n)
+    public NamingEnumeration<Binding> listBindings(Name name)
             throws NamingException {
-        // TODO Auto-generated method stub
-        return null;
+        Name targetDN = name.addAll(rdn);
+
+        LdapNamingEnumeration<Binding> enumeration = new LdapNamingEnumeration<Binding>(
+                null, null);
+        Set<String> keyset = null;
+        int size = targetDN.size();
+        switch (size) {
+        case 0:
+            keyset = LdapContextImpl.schemaTree.keySet();
+            for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
+                String schemaType = i.next();
+                Binding binding = new Binding(schemaLdap2Jndi.get(schemaType
+                        .toLowerCase()), this.getClass().getName(), null);
+                enumeration.add(binding);
+            }
+            break;
+        case 1:
+            String schemaType = schemaJndi2Ldap.get(name.get(0).toLowerCase());
+            if (null == schemaType) {
+                throw new NameNotFoundException(name.toString());
+            }
+            Hashtable<String, Hashtable<String, Object>> schemas = LdapContextImpl.schemaTree
+                    .get(schemaType);
+            keyset = schemas.keySet();
+            for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
+                schemaType = i.next();
+                Binding binding = new Binding(schemaType.toLowerCase(), this
+                        .getClass().getName(), null);
+                enumeration.add(binding);
+            }
+            break;
+        default:
+            schemaType = schemaJndi2Ldap.get(name.getPrefix(1).toString()
+                    .toLowerCase());
+            if (null == schemaType) {
+                throw new NameNotFoundException(name.toString());
+            }
+            list(name.getSuffix(1));
+        }
+        return enumeration;
     }
 
-    public NamingEnumeration<Binding> listBindings(String s)
+    public NamingEnumeration<Binding> listBindings(String name)
             throws NamingException {
-        // TODO Auto-generated method stub
-        return null;
+        return listBindings(convertFromStringToName(name));
     }
 
     public Object lookup(Name n) throws NamingException {
-        if (n.size() == 0) {
-            return this;
-        }
-        if (n.size() == 1) {
-            throw new NameNotFoundException(n.toString());
-        }
-        Hashtable<String, Object> schemaDef = parent.findSchemaDefInfo(
-        // mapping jndi schema type name to ldap native name
-                schemaJndi2Ldap.get(
-                // get [0, 1) as the jndi schema type name
-                        n.getPrefix(1).toString().toLowerCase()),
-                // schema name
-                n.getSuffix(1).toString().toLowerCase()); // find SchemaDef
-        // Info.
-
-        if (null == schemaDef) {
-            throw new NameNotFoundException(n.toString());
-        }
         return new LdapSchemaContextImpl(parent, env, n.addAll(rdn));
     }
 
@@ -438,6 +517,11 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     public void rename(String sOld, String sNew) throws NamingException {
         throw new SchemaViolationException(Messages.getString("jndi.err.01"));
+    }
+
+    public NamingEnumeration<SearchResult> search(Name name,
+            Attributes attributes) throws NamingException {
+        return search(name, attributes, null);
     }
 
     public NamingEnumeration<SearchResult> search(Name name,

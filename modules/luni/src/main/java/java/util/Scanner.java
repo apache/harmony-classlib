@@ -58,18 +58,17 @@ import java.util.regex.Pattern;
  */
 public final class Scanner implements Iterator<String> {
 
-    //  Default delimiting pattern.
+    // Default delimiting pattern.
     private static final Pattern DEFAULT_DELIMITER = Pattern
             .compile("\\p{javaWhitespace}+"); //$NON-NLS-1$
-    
+
     // The boolean's pattern.
     private static final Pattern BOOLEAN_PATTERN = Pattern.compile(
             "true|false", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
-    
-    
+
     // Pattern used to recognize line terminator.
     private static final Pattern LINE_TERMINATOR;
-    
+
     // Pattern used to recognize multiple line terminators.
     private static final Pattern MULTI_LINE_TERMINATOR;
 
@@ -77,24 +76,19 @@ public final class Scanner implements Iterator<String> {
     private static final Pattern LINE_PATTERN;
 
     static {
-        String terminator = "\n|\r\n|\r|\u0085|\u2028|\u2029";  //$NON-NLS-1$
-        
+        String terminator = "\n|\r\n|\r|\u0085|\u2028|\u2029"; //$NON-NLS-1$
+
         LINE_TERMINATOR = Pattern.compile(terminator);
-        
+
         StringBuilder multiTerminator = new StringBuilder();
-        MULTI_LINE_TERMINATOR = Pattern
-            .compile(multiTerminator.append("(") //$NON-NLS-1$
-                    .append(terminator)
-                    .append(")+").toString()); //$NON-NLS-1$
+        MULTI_LINE_TERMINATOR = Pattern.compile(multiTerminator.append("(") //$NON-NLS-1$
+                .append(terminator).append(")+").toString()); //$NON-NLS-1$
         StringBuilder line = new StringBuilder();
-        LINE_PATTERN = Pattern
-            .compile(line.append(".*(") //$NON-NLS-1$
-                    .append(terminator)
-                    .append(")|.+(") //$NON-NLS-1$
-                    .append(terminator)
-                    .append(")?").toString()); //$NON-NLS-1$
+        LINE_PATTERN = Pattern.compile(line.append(".*(") //$NON-NLS-1$
+                .append(terminator).append(")|.+(") //$NON-NLS-1$
+                .append(terminator).append(")?").toString()); //$NON-NLS-1$
     }
-    
+
     // The pattern matches anything.
     private static final Pattern ANY_PATTERN = Pattern.compile("(?s).*"); //$NON-NLS-1$
 
@@ -127,24 +121,24 @@ public final class Scanner implements Iterator<String> {
     // The length of the buffer.
     private int bufferLength = 0;
 
-    // Record the status of this scanner. True if the scanner 
+    // Record the status of this scanner. True if the scanner
     // is closed.
     private boolean closed = false;
 
     private IOException lastIOException;
-    
+
     private boolean matchSuccessful = false;
-    
+
     private DecimalFormat decimalFormat;
-    
+
     // Records whether the underlying readable has more input.
     private boolean inputExhausted = false;
-    
+
     private Object cacheHasNextValue = null;
-    
+
     private int cachehasNextIndex = -1;
-    
-    private enum DataType{
+
+    private enum DataType {
         /*
          * Stands for Integer
          */
@@ -179,7 +173,7 @@ public final class Scanner implements Iterator<String> {
      * @throws FileNotFoundException
      *             if the specified file is not found
      * @throws IllegalArgumentException
-     *            if the specified coding does not exist
+     *             if the specified coding does not exist
      */
     public Scanner(File src, String charsetName) throws FileNotFoundException {
         if (null == src) {
@@ -235,7 +229,7 @@ public final class Scanner implements Iterator<String> {
      * @param charsetName
      *            the encoding type of the input stream
      * @throws IllegalArgumentException
-     *            if the specified character set is not found
+     *             if the specified character set is not found
      */
     public Scanner(InputStream src, String charsetName) {
         if (null == src) {
@@ -284,7 +278,7 @@ public final class Scanner implements Iterator<String> {
      * @param charsetName
      *            the encoding type of the content in the ReadableByteChannel
      * @throws IllegalArgumentException
-     *            if the specified character set is not found           
+     *             if the specified character set is not found
      */
     public Scanner(ReadableByteChannel src, String charsetName) {
         if (null == src) {
@@ -372,10 +366,10 @@ public final class Scanner implements Iterator<String> {
         matcher.usePattern(pattern);
 
         /*
-         * TODO The following 2 statements are used to deal with regex's
-         * bug. java.util.regex.Matcher.region(int start, int end)
-         * implementation does not have any effects when called. They will be
-         * removed once the bug is fixed.
+         * TODO The following 2 statements are used to deal with regex's bug.
+         * java.util.regex.Matcher.region(int start, int end) implementation
+         * does not have any effects when called. They will be removed once the
+         * bug is fixed.
          */
         int oldLimit = buffer.limit();
         buffer.limit(horizonLineSeparator);
@@ -385,8 +379,9 @@ public final class Scanner implements Iterator<String> {
         if (matcher.find()) {
             // The scanner advances past the input that matched
             findStartIndex = matcher.end();
-            // If the matched pattern is immediately followed by line terminator. 
-            if(horizonLineSeparator == matcher.end()) {
+            // If the matched pattern is immediately followed by line
+            // terminator.
+            if (horizonLineSeparator == matcher.end()) {
                 findStartIndex += terminatorLength;
             }
             matchSuccessful = true;
@@ -534,11 +529,10 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns true if this scanner has one or more tokens remaining to 
-     * parse. Will block if the data is still being read.
+     * Returns true if this scanner has one or more tokens remaining to parse.
+     * Will block if the data is still being read.
      * 
-     * @return true 
-     *             if this scanner has one or more tokens remaining
+     * @return true if this scanner has one or more tokens remaining
      * @throws IllegalStateException
      *             if the scanner has been closed
      */
@@ -563,14 +557,15 @@ public final class Scanner implements Iterator<String> {
         checkNull(pattern);
         matchSuccessful = false;
         saveCurrentStatus();
-        //if the next token exists, set the match region, otherwise return false
+        // if the next token exists, set the match region, otherwise return
+        // false
         if (!setTokenRegion()) {
             recoverPreviousStatus();
             return false;
         }
         matcher.usePattern(pattern);
         boolean hasNext = false;
-        //check whether next token matches the specified pattern
+        // check whether next token matches the specified pattern
         if (matcher.matches()) {
             cachehasNextIndex = findStartIndex;
             matchSuccessful = true;
@@ -579,7 +574,6 @@ public final class Scanner implements Iterator<String> {
         recoverPreviousStatus();
         return hasNext;
     }
-
 
     /**
      * Returns true if this scanner has one or more tokens remaining to parse
@@ -668,8 +662,7 @@ public final class Scanner implements Iterator<String> {
      * Returns true if this scanner's next token can be translated into a valid
      * boolean value.
      * 
-     * @return true 
-     *             if the next token in this scanner's input can be translated
+     * @return true if the next token in this scanner's input can be translated
      *         into a valid boolean value
      * @throws IllegalStateException
      *             if the scanner has been closed
@@ -799,7 +792,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-            	cacheHasNextValue = Integer.valueOf(intString, radix);
+                cacheHasNextValue = Integer.valueOf(intString, radix);
                 isIntValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -807,7 +800,7 @@ public final class Scanner implements Iterator<String> {
         }
         return isIntValue;
     }
-    
+
     /**
      * Returns true if there is another line in the input. Otherwise, returns
      * false. When waiting for input, the scanner may be blocked.
@@ -884,7 +877,6 @@ public final class Scanner implements Iterator<String> {
         return isLongValue;
     }
 
-
     /**
      * Returns true if this scanner's next token can be translated into a valid
      * short value in the default radix.
@@ -916,7 +908,7 @@ public final class Scanner implements Iterator<String> {
             String intString = matcher.group();
             intString = removeLocaleInfo(intString, DataType.INT);
             try {
-            	cacheHasNextValue = Short.valueOf(intString, radix);
+                cacheHasNextValue = Short.valueOf(intString, radix);
                 isShortValue = true;
             } catch (NumberFormatException e) {
                 matchSuccessful = false;
@@ -938,8 +930,7 @@ public final class Scanner implements Iterator<String> {
     /**
      * Return the locale of this scanner.
      * 
-     * @return 
-     *             the locale of this scanner
+     * @return the locale of this scanner
      */
     public Locale locale() {
         return locale;
@@ -1064,13 +1055,13 @@ public final class Scanner implements Iterator<String> {
      *             BigDecimal
      */
     public BigDecimal nextBigDecimal() {
-    	checkClosed();
-		Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof BigDecimal) {
-			findStartIndex = cachehasNextIndex;
-			return (BigDecimal) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof BigDecimal) {
+            findStartIndex = cachehasNextIndex;
+            return (BigDecimal) obj;
+        }
         Pattern floatPattern = getFloatPattern();
         String floatString = next(floatPattern);
         floatString = removeLocaleInfoFromFloat(floatString);
@@ -1128,13 +1119,13 @@ public final class Scanner implements Iterator<String> {
      *             BigInteger
      */
     public BigInteger nextBigInteger(int radix) {
-    	checkClosed();
-		Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof BigInteger) {
-			findStartIndex = cachehasNextIndex;
-			return (BigInteger) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof BigInteger) {
+            findStartIndex = cachehasNextIndex;
+            return (BigInteger) obj;
+        }
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1150,8 +1141,7 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns the next token as a boolean. Will block if input is being
-     * read.
+     * Returns the next token as a boolean. Will block if input is being read.
      * 
      * @return the next token as a boolean
      * @throws IllegalStateException
@@ -1165,7 +1155,7 @@ public final class Scanner implements Iterator<String> {
     public boolean nextBoolean() {
         return Boolean.parseBoolean(next(BOOLEAN_PATTERN));
     }
-    
+
     /**
      * Returns the next token as a byte. Will block if input is being read.
      * 
@@ -1185,16 +1175,16 @@ public final class Scanner implements Iterator<String> {
     }
 
     /**
-     * Returns the next token as a byte with the specified radix. Will
-     * block if input is being read.
+     * Returns the next token as a byte with the specified radix. Will block if
+     * input is being read.
      * 
-     * If the next token can be translated into a byte the following is
-     * done: All locale specific prefixes, group separators, and locale specific
+     * If the next token can be translated into a byte the following is done:
+     * All locale specific prefixes, group separators, and locale specific
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
      * via {@link Character#digit(char, int)}, a negative sign (-) is added if
      * the locale specific negative prefix or suffix was present. Finally the
-     * resulting String is passed to {@link Byte#parseByte(String, int)}}
-     * with the specified radix.
+     * resulting String is passed to {@link Byte#parseByte(String, int)}} with
+     * the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into byte value
@@ -1209,13 +1199,13 @@ public final class Scanner implements Iterator<String> {
      */
     @SuppressWarnings("boxing")
     public byte nextByte(int radix) {
-    	checkClosed();
-    	Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof Byte) {
-			findStartIndex = cachehasNextIndex;
-			return (Byte) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof Byte) {
+            findStartIndex = cachehasNextIndex;
+            return (Byte) obj;
+        }
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1253,13 +1243,13 @@ public final class Scanner implements Iterator<String> {
      */
     @SuppressWarnings("boxing")
     public double nextDouble() {
-    	checkClosed();
-    	Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof Double) {
-			findStartIndex = cachehasNextIndex;
-			return (Double) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof Double) {
+            findStartIndex = cachehasNextIndex;
+            return (Double) obj;
+        }
         Pattern floatPattern = getFloatPattern();
         String floatString = next(floatPattern);
         floatString = removeLocaleInfoFromFloat(floatString);
@@ -1297,13 +1287,13 @@ public final class Scanner implements Iterator<String> {
      */
     @SuppressWarnings("boxing")
     public float nextFloat() {
-    	checkClosed();
-    	Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof Float) {
-			findStartIndex = cachehasNextIndex;
-			return (Float) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof Float) {
+            findStartIndex = cachehasNextIndex;
+            return (Float) obj;
+        }
         Pattern floatPattern = getFloatPattern();
         String floatString = next(floatPattern);
         floatString = removeLocaleInfoFromFloat(floatString);
@@ -1361,15 +1351,15 @@ public final class Scanner implements Iterator<String> {
      */
     @SuppressWarnings("boxing")
     public int nextInt(int radix) {
-    	checkClosed();
-    	Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof Integer) {
-			findStartIndex = cachehasNextIndex;
-			return (Integer) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof Integer) {
+            findStartIndex = cachehasNextIndex;
+            return (Integer) obj;
+        }
         Pattern integerPattern = getIntegerPattern(radix);
-        String intString=next(integerPattern);
+        String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
         int intValue = 0;
         try {
@@ -1419,7 +1409,7 @@ public final class Scanner implements Iterator<String> {
             if (!inputExhausted) {
                 readMore();
                 resetMatcher();
-            } 
+            }
         }
         // Find text without line terminator here.
         if (null != result) {
@@ -1458,8 +1448,8 @@ public final class Scanner implements Iterator<String> {
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
      * via {@link Character#digit(char, int)}, a negative sign (-) is added if
      * the locale specific negative prefix or suffix was present. Finally the
-     * resulting String is passed to  {@link Long#parseLong(String, int)}}
-     * with the specified radix.
+     * resulting String is passed to {@link Long#parseLong(String, int)}} with
+     * the specified radix.
      * 
      * @param radix
      *            the radix used to translate the token into a long value
@@ -1474,13 +1464,13 @@ public final class Scanner implements Iterator<String> {
      */
     @SuppressWarnings("boxing")
     public long nextLong(int radix) {
-    	checkClosed();
-    	Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof Long) {
-			findStartIndex = cachehasNextIndex;
-			return (Long) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof Long) {
+            findStartIndex = cachehasNextIndex;
+            return (Long) obj;
+        }
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1522,7 +1512,7 @@ public final class Scanner implements Iterator<String> {
      * suffixes are removed. Then non-ASCII digits are mapped into ASCII digits
      * via {@link Character#digit(char, int)}, a negative sign (-) is added if
      * the locale specific negative prefix or suffix was present. Finally the
-     * resulting String is passed to  {@link Short#parseShort(String, int)}}
+     * resulting String is passed to {@link Short#parseShort(String, int)}}
      * with the specified radix.
      * 
      * @param radix
@@ -1538,13 +1528,13 @@ public final class Scanner implements Iterator<String> {
      */
     @SuppressWarnings("boxing")
     public short nextShort(int radix) {
-    	checkClosed();
-    	Object obj = cacheHasNextValue;
-		cacheHasNextValue = null;
-		if (obj instanceof Short) {
-			findStartIndex = cachehasNextIndex;
-			return (Short) obj;
-		}
+        checkClosed();
+        Object obj = cacheHasNextValue;
+        cacheHasNextValue = null;
+        if (obj instanceof Short) {
+            findStartIndex = cachehasNextIndex;
+            return (Short) obj;
+        }
         Pattern integerPattern = getIntegerPattern(radix);
         String intString = next(integerPattern);
         intString = removeLocaleInfo(intString, DataType.INT);
@@ -1680,12 +1670,11 @@ public final class Scanner implements Iterator<String> {
 
     /**
      * 
-     * Set the locale of this scanner to a specified locale. 
-     *
+     * Set the locale of this scanner to a specified locale.
+     * 
      * @param l
-     *              the specified locale to use
-     * @return
-     *              this scanner
+     *            the specified locale to use
+     * @return this scanner
      */
     public Scanner useLocale(Locale l) {
         if (null == l) {
@@ -1729,7 +1718,7 @@ public final class Scanner implements Iterator<String> {
         buffer.limit(0);
         matcher = delimiter.matcher(buffer);
     }
-    
+
     /*
      * Check the scanner's state, if it is closed, IllegalStateException will be
      * thrown.
@@ -1739,10 +1728,10 @@ public final class Scanner implements Iterator<String> {
             throw new IllegalStateException();
         }
     }
-    
+
     /*
-     * Check the given pattern. If it is null, then a NullPointerException
-     * will be thrown.
+     * Check the given pattern. If it is null, then a NullPointerException will
+     * be thrown.
      */
     private void checkNull(Pattern pattern) {
         if (null == pattern) {
@@ -1770,12 +1759,12 @@ public final class Scanner implements Iterator<String> {
     }
 
     /*
-     * Change the matcher's status to  last find position
+     * Change the matcher's status to last find position
      */
     private void recoverPreviousStatus() {
         findStartIndex = preStartIndex;
     }
-    
+
     /*
      * Get integer's pattern
      */
@@ -1785,10 +1774,10 @@ public final class Scanner implements Iterator<String> {
                     .getString("KA00e", radix)); //$NON-NLS-1$
         }
         decimalFormat = (DecimalFormat) NumberFormat.getInstance(locale);
-        
-        String allAvailableDigits="0123456789abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$ 
-        String ASCIIDigit=allAvailableDigits.substring(0, radix);
-        String nonZeroASCIIDigit=allAvailableDigits.substring(1, radix);
+
+        String allAvailableDigits = "0123456789abcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$ 
+        String ASCIIDigit = allAvailableDigits.substring(0, radix);
+        String nonZeroASCIIDigit = allAvailableDigits.substring(1, radix);
 
         StringBuilder digit = new StringBuilder("((?i)[").append(ASCIIDigit) //$NON-NLS-1$ 
                 .append("]|\\p{javaDigit})"); //$NON-NLS-1$
@@ -1869,10 +1858,10 @@ public final class Scanner implements Iterator<String> {
         String positivePrefix = ""; //$NON-NLS-1$
         String positiveSuffix = ""; //$NON-NLS-1$
         if (!decimalFormat.getPositivePrefix().equals("")) { //$NON-NLS-1$
-            positivePrefix = "\\Q" + decimalFormat.getPositivePrefix()+"\\E"; //$NON-NLS-1$ //$NON-NLS-2$
+            positivePrefix = "\\Q" + decimalFormat.getPositivePrefix() + "\\E"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (!decimalFormat.getPositiveSuffix().equals("")) { //$NON-NLS-1$
-            positiveSuffix = "\\Q" + decimalFormat.getPositiveSuffix()+"\\E"; //$NON-NLS-1$ //$NON-NLS-2$
+            positiveSuffix = "\\Q" + decimalFormat.getPositiveSuffix() + "\\E"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         StringBuilder signedNumeral = new StringBuilder()
                 .append(positivePrefix).append(unSignNumeral).append(
@@ -1887,10 +1876,10 @@ public final class Scanner implements Iterator<String> {
         String negativePrefix = ""; //$NON-NLS-1$
         String negativeSuffix = ""; //$NON-NLS-1$
         if (!decimalFormat.getNegativePrefix().equals("")) { //$NON-NLS-1$
-            negativePrefix = "\\Q" + decimalFormat.getNegativePrefix()+"\\E"; //$NON-NLS-1$//$NON-NLS-2$
+            negativePrefix = "\\Q" + decimalFormat.getNegativePrefix() + "\\E"; //$NON-NLS-1$//$NON-NLS-2$
         }
         if (!decimalFormat.getNegativeSuffix().equals("")) { //$NON-NLS-1$
-            negativeSuffix = "\\Q" + decimalFormat.getNegativeSuffix()+"\\E"; //$NON-NLS-1$//$NON-NLS-2$
+            negativeSuffix = "\\Q" + decimalFormat.getNegativeSuffix() + "\\E"; //$NON-NLS-1$//$NON-NLS-2$
         }
         StringBuilder signedNumeral = new StringBuilder()
                 .append(negativePrefix).append(unSignNumeral).append(
@@ -1903,11 +1892,10 @@ public final class Scanner implements Iterator<String> {
      */
     private String removeLocaleInfoFromFloat(String floatString) {
         // If the token is HexFloat
-        if (-1 != floatString.indexOf('x')
-                || -1 != floatString.indexOf('X')) {
+        if (-1 != floatString.indexOf('x') || -1 != floatString.indexOf('X')) {
             return floatString;
         }
-        
+
         int exponentIndex;
         String decimalNumeralString;
         String exponentString;
@@ -1923,7 +1911,7 @@ public final class Scanner implements Iterator<String> {
         }
         return removeLocaleInfo(floatString, DataType.FLOAT);
     }
-    
+
     /*
      * Remove the locale specific prefixes, group separators, and locale
      * specific suffixes from input string
@@ -1952,11 +1940,11 @@ public final class Scanner implements Iterator<String> {
             }
         }
         if (DataType.FLOAT == type) {
-            if (tokenBuilder.toString().equals(decimalFormat.getDecimalFormatSymbols()
-                    .getNaN())) {
+            if (tokenBuilder.toString().equals(
+                    decimalFormat.getDecimalFormatSymbols().getNaN())) {
                 result.append("NaN");//$NON-NLS-1$ 
-            } else if (tokenBuilder.toString().equals(decimalFormat
-                    .getDecimalFormatSymbols().getInfinity())) {
+            } else if (tokenBuilder.toString().equals(
+                    decimalFormat.getDecimalFormatSymbols().getInfinity())) {
                 result.append("Infinity");//$NON-NLS-1$ 
             } else {
                 for (int i = 0; i < tokenBuilder.length(); i++) {
@@ -1980,7 +1968,7 @@ public final class Scanner implements Iterator<String> {
         }
         return result.toString();
     }
-    
+
     /*
      * Remove positive and negative sign from the parameter stringBuilder, and
      * return whether the input string is negative
@@ -2167,7 +2155,8 @@ public final class Scanner implements Iterator<String> {
             }
         } catch (IOException e) {
             // Consider the scenario: readable puts 4 chars into
-            // buffer and then an IOException is thrown out. In this case, buffer is
+            // buffer and then an IOException is thrown out. In this case,
+            // buffer is
             // actually grown, but readable.read() will never return.
             bufferLength = buffer.position();
             /*
@@ -2177,7 +2166,6 @@ public final class Scanner implements Iterator<String> {
             readCount = -1;
             lastIOException = e;
         }
-
 
         buffer.flip();
         buffer.position(oldPosition);

@@ -17,6 +17,7 @@
 
 package tests.api.java.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
+import tests.api.java.util.ArrayListTest.MockArrayList;
 import tests.support.Support_ListTest;
 
 public class VectorTest extends junit.framework.TestCase {
@@ -907,6 +909,22 @@ public class VectorTest extends junit.framework.TestCase {
 		String result = v.toString();
 		assertTrue("should contain self ref", result.indexOf("(this") > -1);
 	}
+    
+    public void test_override_size() throws Exception {
+        Vector v = new Vector(); 
+        Vector testv = new MockVector();
+        // though size is overriden, it should passed without exception
+        testv.add(1);
+        testv.add(2);
+        testv.clear();
+        
+        testv.add(1);
+        testv.add(2);
+        v.add(1);
+        v.add(2);
+        // RI's bug here
+        assertTrue(testv.equals(v));
+    }
 
 	/**
 	 * @tests java.util.Vector#trimToSize()
@@ -922,6 +940,13 @@ public class VectorTest extends junit.framework.TestCase {
 	protected Vector vectorClone(Vector s) {
 		return (Vector) s.clone();
 	}
+    
+    public class MockVector extends Vector{
+        @Override
+        public synchronized int size() {
+            return 0;
+        }
+    }
 
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method

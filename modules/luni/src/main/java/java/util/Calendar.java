@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -178,8 +177,8 @@ public abstract class Calendar implements Serializable, Cloneable,
 
 	/**
 	 * Answers if the Date specified by this Calendar instance is after the Date
-	 * specified by the parameter. The comparison is not dependent on the
-	 * time zones of the Calendars.
+     * specified by the parameter. The comparison is not dependent on the time
+     * zones of the Calendars.
 	 * 
 	 * @param calendar
 	 *            the Calendar instance to compare
@@ -752,11 +751,13 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 *            the time as the number of milliseconds since Jan. 1, 1970
 	 */
 	public void setTimeInMillis(long milliseconds) {
+        if (!isTimeSet || !areFieldsSet || time != milliseconds) {
 		time = milliseconds;
 		isTimeSet = true;
 		areFieldsSet = false;
 		complete();
 	}
+    }
 
 	/**
 	 * Sets the timezone used by this Calendar.
@@ -766,6 +767,7 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 */
 	public void setTimeZone(TimeZone timezone) {
 		zone = timezone;
+        areFieldsSet = false;
 	}
 
 	/**
@@ -774,13 +776,15 @@ public abstract class Calendar implements Serializable, Cloneable,
 	 * @return the string representation of this Calendar
 	 */
 	@Override
+    @SuppressWarnings("nls")
     public String toString() {
-		StringBuffer result = new StringBuffer(getClass().getName() + "[time=" //$NON-NLS-1$
-				+ (isTimeSet ? String.valueOf(time) : "?") + ",areFieldsSet="  //$NON-NLS-1$//$NON-NLS-2$
-				+ areFieldsSet +
-				// ",areAllFieldsSet=" + areAllFieldsSet +
-				",lenient=" + lenient + ",zone=" + zone + ",firstDayOfWeek=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ firstDayOfWeek + ",minimalDaysInFirstWeek=" //$NON-NLS-1$
+        StringBuffer result = new StringBuffer(getClass().getName() + "[time="
+                + (isTimeSet ? String.valueOf(time) : "?")
+                + ",areFieldsSet="
+                + areFieldsSet
+                + // ",areAllFieldsSet=" + areAllFieldsSet +
+                ",lenient=" + lenient + ",zone=" + zone + ",firstDayOfWeek="
+                + firstDayOfWeek + ",minimalDaysInFirstWeek="
 				+ minimalDaysInFirstWeek);
 		for (int i = 0; i < FIELD_COUNT; i++) {
 			result.append(',');
@@ -970,46 +974,48 @@ public abstract class Calendar implements Serializable, Cloneable,
 	}
 
 	private static final ObjectStreamField[] serialPersistentFields = {
-			new ObjectStreamField("areFieldsSet", Boolean.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("fields", int[].class), //$NON-NLS-1$
-			new ObjectStreamField("firstDayOfWeek", Integer.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("isSet", boolean[].class), //$NON-NLS-1$
-			new ObjectStreamField("isTimeSet", Boolean.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("lenient", Boolean.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("minimalDaysInFirstWeek", Integer.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("nextStamp", Integer.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("serialVersionOnStream", Integer.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("time", Long.TYPE), //$NON-NLS-1$
-			new ObjectStreamField("zone", TimeZone.class), }; //$NON-NLS-1$
+            new ObjectStreamField("areFieldsSet", Boolean.TYPE),
+            new ObjectStreamField("fields", int[].class),
+            new ObjectStreamField("firstDayOfWeek", Integer.TYPE),
+            new ObjectStreamField("isSet", boolean[].class),
+            new ObjectStreamField("isTimeSet", Boolean.TYPE),
+            new ObjectStreamField("lenient", Boolean.TYPE),
+            new ObjectStreamField("minimalDaysInFirstWeek", Integer.TYPE),
+            new ObjectStreamField("nextStamp", Integer.TYPE),
+            new ObjectStreamField("serialVersionOnStream", Integer.TYPE),
+            new ObjectStreamField("time", Long.TYPE),
+            new ObjectStreamField("zone", TimeZone.class), };
 
+    @SuppressWarnings("nls")
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		complete();
 		ObjectOutputStream.PutField putFields = stream.putFields();
-		putFields.put("areFieldsSet", areFieldsSet); //$NON-NLS-1$
-		putFields.put("fields", this.fields); //$NON-NLS-1$
-		putFields.put("firstDayOfWeek", firstDayOfWeek); //$NON-NLS-1$
-		putFields.put("isSet", isSet); //$NON-NLS-1$
-		putFields.put("isTimeSet", isTimeSet); //$NON-NLS-1$
-		putFields.put("lenient", lenient); //$NON-NLS-1$
-		putFields.put("minimalDaysInFirstWeek", minimalDaysInFirstWeek); //$NON-NLS-1$
-		putFields.put("nextStamp", 2 /* MINIMUM_USER_STAMP */); //$NON-NLS-1$
-		putFields.put("serialVersionOnStream", 1); //$NON-NLS-1$
-		putFields.put("time", time); //$NON-NLS-1$
-		putFields.put("zone", zone); //$NON-NLS-1$
+        putFields.put("areFieldsSet", areFieldsSet);
+        putFields.put("fields", this.fields);
+        putFields.put("firstDayOfWeek", firstDayOfWeek);
+        putFields.put("isSet", isSet);
+        putFields.put("isTimeSet", isTimeSet);
+        putFields.put("lenient", lenient);
+        putFields.put("minimalDaysInFirstWeek", minimalDaysInFirstWeek);
+        putFields.put("nextStamp", 2 /* MINIMUM_USER_STAMP */);
+        putFields.put("serialVersionOnStream", 1);
+        putFields.put("time", time);
+        putFields.put("zone", zone);
 		stream.writeFields();
 	}
 
+    @SuppressWarnings("nls")
 	private void readObject(ObjectInputStream stream) throws IOException,
 			ClassNotFoundException {
 		ObjectInputStream.GetField readFields = stream.readFields();
-		areFieldsSet = readFields.get("areFieldsSet", false); //$NON-NLS-1$
-		this.fields = (int[]) readFields.get("fields", null); //$NON-NLS-1$
-		firstDayOfWeek = readFields.get("firstDayOfWeek", Calendar.SUNDAY); //$NON-NLS-1$
-		isSet = (boolean[]) readFields.get("isSet", null); //$NON-NLS-1$
-		isTimeSet = readFields.get("isTimeSet", false); //$NON-NLS-1$
-		lenient = readFields.get("lenient", true); //$NON-NLS-1$
-		minimalDaysInFirstWeek = readFields.get("minimalDaysInFirstWeek", 1); //$NON-NLS-1$
-		time = readFields.get("time", 0L); //$NON-NLS-1$
-		zone = (TimeZone) readFields.get("zone", null); //$NON-NLS-1$
+        areFieldsSet = readFields.get("areFieldsSet", false);
+        this.fields = (int[]) readFields.get("fields", null);
+        firstDayOfWeek = readFields.get("firstDayOfWeek", Calendar.SUNDAY);
+        isSet = (boolean[]) readFields.get("isSet", null);
+        isTimeSet = readFields.get("isTimeSet", false);
+        lenient = readFields.get("lenient", true);
+        minimalDaysInFirstWeek = readFields.get("minimalDaysInFirstWeek", 1);
+        time = readFields.get("time", 0L);
+        zone = (TimeZone) readFields.get("zone", null);
 	}
 }

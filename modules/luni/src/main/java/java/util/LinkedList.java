@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,6 +27,7 @@ import java.lang.reflect.Array;
  * LinkedList is an implementation of List, backed by a linked list. All
  * optional operations are supported, adding, removing and replacing. The
  * elements can be any objects.
+ * 
  * @since 1.2
  */
 public class LinkedList<E> extends AbstractSequentialList<E> implements
@@ -244,8 +244,8 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
 	}
 
 	/**
-	 * Constructs a new instance of <code>LinkedList</code> that holds 
-	 * all of the elements contained in the supplied <code>collection</code>
+     * Constructs a new instance of <code>LinkedList</code> that holds all of
+     * the elements contained in the supplied <code>collection</code>
 	 * argument. The order of the elements in this new <code>LinkedList</code> 
 	 * will be determined by the iteration order of <code>collection</code>. 
 	 * 
@@ -322,12 +322,14 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * in this LinkedList. The objects are added in the order they are returned
      * from the <code>Collection</code> iterator.
      * 
-     * @param location the index at which to insert
-     * @param collection the Collection of objects
+     * @param location
+     *            the index at which to insert
+     * @param collection
+     *            the Collection of objects
      * @return true if this LinkedList is modified, false otherwise
      * 
-     * @exception IndexOutOfBoundsException when
-     *            <code>location < 0 || > size()</code>
+     * @exception IndexOutOfBoundsException
+     *                when <code>location < 0 || > size()</code>
      */
     @Override
     public boolean addAll(int location, Collection<? extends E> collection) {
@@ -360,7 +362,6 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
         modCount++;
         return true;
     }
-
 
 	/**
 	 * Adds the objects in the specified Collection to this LinkedList.

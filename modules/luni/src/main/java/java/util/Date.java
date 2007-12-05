@@ -378,7 +378,7 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
         int commentLevel = 0;
         int offset = 0, length = string.length(), state = 0;
         int year = -1, month = -1, date = -1;
-        int hour = -1, minute = -1, second = -1, zoneOffset = 0, minutesOffset =0;
+        int hour = -1, minute = -1, second = -1, zoneOffset = 0, minutesOffset = 0;
         boolean zone = false;
         final int PAD = 0, LETTERS = 1, NUMBERS = 2;
         StringBuffer buffer = new StringBuffer();
@@ -721,9 +721,9 @@ public class Date implements Serializable, Cloneable, Comparable<Date> {
      * @return long
      * 
      * @deprecated use: <code>
-     *	Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-     *	cal.set(year + 1900, month, day, hour, minute, second);
-     * 	cal.getTime().getTime();</code>
+     * Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+     * cal.set(year + 1900, month, day, hour, minute, second);
+     * cal.getTime().getTime();</code>
      */
     @Deprecated
     public static long UTC(int year, int month, int day, int hour, int minute,

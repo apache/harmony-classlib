@@ -607,8 +607,13 @@ public class StreamTokenizer {
                 result.append(sval);
                 break;
             default:
-                result.append(sval);
-                break;
+                if (ttype == TT_UNKNOWN || tokenTypes[ttype] == TOKEN_QUOTE) {
+                    result.append(sval);
+                } else {
+                    result.append('\'');
+                    result.append((char) ttype);
+                    result.append('\'');
+                }
         }
         result.append("], line "); //$NON-NLS-1$
         result.append(lineNumber);

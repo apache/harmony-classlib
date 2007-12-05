@@ -17,98 +17,97 @@
 
 package java.util;
 
-
 /**
  * SortedSet is a Set which iterates its elements in sorted order.
  */
 public interface SortedSet<E> extends Set<E> {
-	
-	/**
-	 * Answers the Comparator used to compare elements in this SortedSet.
-	 * 
-	 * @return a Comparator or null if the natural order is used
-	 */
-	public Comparator<? super E> comparator();
 
-	/**
-	 * Answer the first sorted element in this SortedSet.
-	 * 
-	 * @return the first sorted element
-	 * 
-	 * @exception NoSuchElementException
-	 *                when this SortedSet is empty
-	 */
-	public E first();
+    /**
+     * Answers the Comparator used to compare elements in this SortedSet.
+     * 
+     * @return a Comparator or null if the natural order is used
+     */
+    public Comparator<? super E> comparator();
 
-	/**
-	 * Answers a SortedSet of the specified portion of this SortedSet which
-	 * contains elements less than the end element. The returned SortedSet is
-	 * backed by this SortedSet so changes to one are reflected by the other.
-	 * 
-	 * @param end
-	 *            the end element
-	 * @return a subset where the elements are less than <code>end</code>
-	 * 
-	 * @exception ClassCastException
-	 *                when the class of the end element is inappropriate for
-	 *                this SubSet
-	 * @exception NullPointerException
-	 *                when the end element is null and this SortedSet does not
-	 *                support null elements
-	 */
-	public SortedSet<E> headSet(E end);
+    /**
+     * Answer the first sorted element in this SortedSet.
+     * 
+     * @return the first sorted element
+     * 
+     * @exception NoSuchElementException
+     *                when this SortedSet is empty
+     */
+    public E first();
 
-	/**
-	 * Answer the last sorted element in this SortedSet.
-	 * 
-	 * @return the last sorted element
-	 * 
-	 * @exception NoSuchElementException
-	 *                when this SortedSet is empty
-	 */
-	public E last();
+    /**
+     * Answers a SortedSet of the specified portion of this SortedSet which
+     * contains elements less than the end element. The returned SortedSet is
+     * backed by this SortedSet so changes to one are reflected by the other.
+     * 
+     * @param end
+     *            the end element
+     * @return a subset where the elements are less than <code>end</code>
+     * 
+     * @exception ClassCastException
+     *                when the class of the end element is inappropriate for
+     *                this SubSet
+     * @exception NullPointerException
+     *                when the end element is null and this SortedSet does not
+     *                support null elements
+     */
+    public SortedSet<E> headSet(E end);
 
-	/**
-	 * Answers a SortedSet of the specified portion of this SortedSet which
-	 * contains elements greater or equal to the start element but less than the
-	 * end element. The returned SortedSet is backed by this SortedMap so
-	 * changes to one are reflected by the other.
-	 * 
-	 * @param start
-	 *            the start element
-	 * @param end
-	 *            the end element
-	 * @return a subset where the elements are greater or equal to
-	 *         <code>start</code> and less than <code>end</code>
-	 * 
-	 * @exception ClassCastException
-	 *                when the class of the start or end element is
-	 *                inappropriate for this SubSet
-	 * @exception NullPointerException
-	 *                when the start or end element is null and this SortedSet
-	 *                does not support null elements
-	 * @exception IllegalArgumentException
-	 *                when the start element is greater than the end element
-	 */
-	public SortedSet<E> subSet(E start, E end);
+    /**
+     * Answer the last sorted element in this SortedSet.
+     * 
+     * @return the last sorted element
+     * 
+     * @exception NoSuchElementException
+     *                when this SortedSet is empty
+     */
+    public E last();
 
-	/**
-	 * Answers a SortedSet of the specified portion of this SortedSet which
-	 * contains elements greater or equal to the start element. The returned
-	 * SortedSet is backed by this SortedSet so changes to one are reflected by
-	 * the other.
-	 * 
-	 * @param start
-	 *            the start element
-	 * @return a subset where the elements are greater or equal to
-	 *         <code>start</code>
-	 * 
-	 * @exception ClassCastException
-	 *                when the class of the start element is inappropriate for
-	 *                this SubSet
-	 * @exception NullPointerException
-	 *                when the start element is null and this SortedSet does not
-	 *                support null elements
-	 */
-	public SortedSet<E> tailSet(E start);
+    /**
+     * Answers a SortedSet of the specified portion of this SortedSet which
+     * contains elements greater or equal to the start element but less than the
+     * end element. The returned SortedSet is backed by this SortedMap so
+     * changes to one are reflected by the other.
+     * 
+     * @param start
+     *            the start element
+     * @param end
+     *            the end element
+     * @return a subset where the elements are greater or equal to
+     *         <code>start</code> and less than <code>end</code>
+     * 
+     * @exception ClassCastException
+     *                when the class of the start or end element is
+     *                inappropriate for this SubSet
+     * @exception NullPointerException
+     *                when the start or end element is null and this SortedSet
+     *                does not support null elements
+     * @exception IllegalArgumentException
+     *                when the start element is greater than the end element
+     */
+    public SortedSet<E> subSet(E start, E end);
+
+    /**
+     * Answers a SortedSet of the specified portion of this SortedSet which
+     * contains elements greater or equal to the start element. The returned
+     * SortedSet is backed by this SortedSet so changes to one are reflected by
+     * the other.
+     * 
+     * @param start
+     *            the start element
+     * @return a subset where the elements are greater or equal to
+     *         <code>start</code>
+     * 
+     * @exception ClassCastException
+     *                when the class of the start element is inappropriate for
+     *                this SubSet
+     * @exception NullPointerException
+     *                when the start element is null and this SortedSet does not
+     *                support null elements
+     */
+    public SortedSet<E> tailSet(E start);
 }
