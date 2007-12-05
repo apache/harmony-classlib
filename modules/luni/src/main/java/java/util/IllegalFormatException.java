@@ -24,12 +24,12 @@ import java.io.Serializable;
  * is allowed to be instantiated.
  */
 public class IllegalFormatException extends IllegalArgumentException implements
-		Serializable {
+        Serializable {
 
-	private static final long serialVersionUID = 18830826L;
+    private static final long serialVersionUID = 18830826L;
 
-	// the constructor is not callable from outside from the package
-	IllegalFormatException() {
-		// do nothing
-	}
+    // the constructor is not callable from outside from the package
+    IllegalFormatException() {
+        // do nothing
+    }
 }

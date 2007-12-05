@@ -74,6 +74,9 @@ public class TreeMapTest extends junit.framework.TestCase {
             if (null == o1) {
                 return -1;
             }
+            if (null == o2) { // comparator should be symmetric
+                return 1;
+            }
             return o1.compareTo(o2);
         }
     }
@@ -327,6 +330,48 @@ public class TreeMapTest extends junit.framework.TestCase {
         treemap = new TreeMap();
 		SortedMap<String, String> headMap =  treemap.headMap("100");
 		headMap.headMap("100");
+
+	SortedMap<Integer,Integer> intMap,sub;
+        int size = 16;
+        intMap = new TreeMap<Integer,Integer>();
+        for(int i=0; i<size; i++) {
+            intMap.put(i,i);
+        }
+        sub = intMap.headMap(-1);
+        assertEquals("size should be zero",sub.size(),0);
+        assertTrue("submap should be empty",sub.isEmpty());
+        try{
+            sub.firstKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+        
+        try{
+            sub.lastKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+
+        size = 256;
+        intMap = new TreeMap<Integer,Integer>();
+        for(int i=0; i<size; i++) {
+            intMap.put(i,i);
+        }
+        sub = intMap.headMap(-1);
+        assertEquals("size should be zero",sub.size(),0);
+        assertTrue("submap should be empty",sub.isEmpty());
+        try{
+            sub.firstKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+        
+        try{
+            sub.lastKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+
     }
 
     /**
@@ -469,6 +514,48 @@ public class TreeMapTest extends junit.framework.TestCase {
 
         // Regression for Harmony-1066
         assertTrue(tail instanceof Serializable);
+
+	SortedMap<Integer,Integer> intMap,sub;
+        int size = 16;
+        intMap = new TreeMap<Integer,Integer>();
+        for(int i=0; i<size; i++) {
+            intMap.put(i,i);
+        }
+        sub = intMap.tailMap(size);
+        assertEquals("size should be zero",sub.size(),0);
+        assertTrue("submap should be empty",sub.isEmpty());
+        try{
+            sub.firstKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+        
+        try{
+            sub.lastKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+
+        size = 256;
+        intMap = new TreeMap<Integer,Integer>();
+        for(int i=0; i<size; i++) {
+            intMap.put(i,i);
+        }
+        sub = intMap.tailMap(size);
+        assertEquals("size should be zero",sub.size(),0);
+        assertTrue("submap should be empty",sub.isEmpty());
+        try{
+            sub.firstKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+        
+        try{
+            sub.lastKey();
+            fail("java.util.NoSuchElementException should be thrown");
+        } catch(java.util.NoSuchElementException e) {
+        }
+
     }
 
     /**

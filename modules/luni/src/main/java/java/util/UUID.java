@@ -63,8 +63,10 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * Constructs an instance with the specified bits.
      * </p>
      * 
-     * @param mostSigBits The 64 most significant bits of the UUID.
-     * @param leastSigBits The 64 least significant bits of the UUID.
+     * @param mostSigBits
+     *            The 64 most significant bits of the UUID.
+     * @param leastSigBits
+     *            The 64 least significant bits of the UUID.
      */
     public UUID(long mostSigBits, long leastSigBits) {
         super();
@@ -204,54 +206,58 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * Parses a UUID string with the format defined by {@link #toString()}.
      * </p>
      * 
-     * @param uuid The UUID string to parse.
+     * @param uuid
+     *            The UUID string to parse.
      * @return A UUID instance.
-     * @throws NullPointerException if <code>uuid</code> is <code>null</code>.
-     * @throws IllegalArgumentException if <code>uuid</code> is not formatted
-     *         correctly.
+     * @throws NullPointerException
+     *             if <code>uuid</code> is <code>null</code>.
+     * @throws IllegalArgumentException
+     *             if <code>uuid</code> is not formatted correctly.
      */
     public static UUID fromString(String uuid) {
         if (uuid == null) {
             throw new NullPointerException();
         }
-        
+
         int[] position = new int[5];
         int lastPosition = 1;
         int startPosition = 0;
-        
+
         int i = 0;
-        for (; i < position.length  && lastPosition > 0; i++) {
-        	position[i] = uuid.indexOf("-", startPosition); //$NON-NLS-1$
-        	lastPosition = position[i];
-        	startPosition = position[i] + 1;
+        for (; i < position.length && lastPosition > 0; i++) {
+            position[i] = uuid.indexOf("-", startPosition); //$NON-NLS-1$
+            lastPosition = position[i];
+            startPosition = position[i] + 1;
         }
 
         // should have and only can have four "-" in UUID
-        if(i != position.length || lastPosition != -1)
-        {
-        	throw new IllegalArgumentException(Msg.getString("KA014") + uuid); //$NON-NLS-1$
+        if (i != position.length || lastPosition != -1) {
+            throw new IllegalArgumentException(Msg.getString("KA014") + uuid); //$NON-NLS-1$
         }
 
-		long m1 = Long.parseLong(uuid.substring(0, position[0]), 16);
-		long m2 = Long.parseLong(uuid.substring(position[0]+ 1, position[1]), 16);
-		long m3 = Long.parseLong(uuid.substring(position[1] + 1, position[2]), 16);
+        long m1 = Long.parseLong(uuid.substring(0, position[0]), 16);
+        long m2 = Long.parseLong(uuid.substring(position[0] + 1, position[1]),
+                16);
+        long m3 = Long.parseLong(uuid.substring(position[1] + 1, position[2]),
+                16);
 
-		long lsb1 = Long.parseLong(uuid.substring(position[2] + 1, position[3]), 16);
-		long lsb2 = Long.parseLong(uuid.substring(position[3]+ 1), 16);
+        long lsb1 = Long.parseLong(
+                uuid.substring(position[2] + 1, position[3]), 16);
+        long lsb2 = Long.parseLong(uuid.substring(position[3] + 1), 16);
 
-		long msb = (m1 << 32) | (m2 << 16) | m3;
-		long lsb = (lsb1 << 48) | lsb2;
-		
-		return new UUID(msb, lsb);
-	}
+        long msb = (m1 << 32) | (m2 << 16) | m3;
+        long lsb = (lsb1 << 48) | lsb2;
+
+        return new UUID(msb, lsb);
+    }
 
     /**
-	 * <p>
-	 * The 64 least significant bits of the UUID.
-	 * </p>
-	 * 
-	 * @return A long value.
-	 */
+     * <p>
+     * The 64 least significant bits of the UUID.
+     * </p>
+     * 
+     * @return A long value.
+     */
     public long getLeastSignificantBits() {
         return leastSigBits;
     }
@@ -312,7 +318,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * </p>
      * 
      * @return A long value.
-     * @throws UnsupportedOperationException if {@link #version()} is not 1.
+     * @throws UnsupportedOperationException
+     *             if {@link #version()} is not 1.
      */
     public long timestamp() {
         if (version != 1) {
@@ -328,7 +335,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * </p>
      * 
      * @return A long value.
-     * @throws UnsupportedOperationException if {@link #version()} is not 1.
+     * @throws UnsupportedOperationException
+     *             if {@link #version()} is not 1.
      */
     public int clockSequence() {
         if (version != 1) {
@@ -344,7 +352,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * </p>
      * 
      * @return A long value.
-     * @throws UnsupportedOperationException if {@link #version()} is not 1.
+     * @throws UnsupportedOperationException
+     *             if {@link #version()} is not 1.
      */
     public long node() {
         if (version != 1) {
@@ -360,7 +369,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * significant.
      * </p>
      * 
-     * @param uuid The UUID to compare to.
+     * @param uuid
+     *            The UUID to compare to.
      * @return A value of -1, 0 or 1 if this UUID is less than, equal to or
      *         greater than <code>uuid</code>.
      */
@@ -391,7 +401,8 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * then <code>true</code> is returned.
      * </p>
      * 
-     * @param object The Object to compare to.
+     * @param object
+     *            The Object to compare to.
      * @return A <code>true</code> if this UUID is equal to
      *         <code>object</code> or <code>false</code> if not.
      */
@@ -485,9 +496,12 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * Resets the transient fields to match the behavior of the constructor.
      * </p>
      * 
-     * @param in The InputStream to read from.
-     * @throws IOException if <code>in</code> throws it.
-     * @throws ClassNotFoundException if <code>in</code> throws it.
+     * @param in
+     *            The InputStream to read from.
+     * @throws IOException
+     *             if <code>in</code> throws it.
+     * @throws ClassNotFoundException
+     *             if <code>in</code> throws it.
      */
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {

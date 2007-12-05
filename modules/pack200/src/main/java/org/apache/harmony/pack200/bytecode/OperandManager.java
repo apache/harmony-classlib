@@ -166,14 +166,6 @@ public class OperandManager {
 		return bcInitRef[bcInitRefIndex++];
 	}
 
-	public static void main(String args[]) {
-		int foo[] = {1, 172, 3, 4};
-		OperandManager op = new OperandManager(foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo, foo);
-		for(int index=0; index < 4; index++) {
-			System.out.println(op.nextByte());
-		}
-	}
-
 	public void setSegment(Segment segment) {
 		this.segment = segment;
 	}

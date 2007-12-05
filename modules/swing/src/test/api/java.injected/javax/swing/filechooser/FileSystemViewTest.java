@@ -144,6 +144,12 @@ public class FileSystemViewTest extends SwingTestCase {
             dir.delete();
         }
     }
+    
+    public void testHarmony5211() {
+        File []roots = File.listRoots();
+        for (int i = 0; i < roots.length; i++)
+            assertTrue(view.isFileSystemRoot(roots[i]));
+    }
 
     private static void assertNotEmpty(final String name) {
         assertNotNull(name);

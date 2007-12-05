@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -31,90 +30,91 @@ import java.io.InputStream;
  * @since 1.1
  */
 public class PropertyResourceBundle extends ResourceBundle {
-	Properties resources;
 
-	/**
-	 * Constructs a new instance of PropertyResourceBundle and loads the
-	 * properties file from the specified input stream.
-	 * 
-	 * @param stream
-	 *            the input stream
-	 * @throws IOException 
-	 */
-	public PropertyResourceBundle(InputStream stream) throws IOException {
-		resources = new Properties();
-		resources.load(stream);
-	}
-    
-    @SuppressWarnings("unchecked")
-    private Enumeration<String> getLocalKeys() {
-        return (Enumeration<String>)resources.propertyNames();
+    Properties resources;
+
+    /**
+     * Constructs a new instance of PropertyResourceBundle and loads the
+     * properties file from the specified input stream.
+     * 
+     * @param stream
+     *            the input stream
+     * @throws IOException
+     */
+    public PropertyResourceBundle(InputStream stream) throws IOException {
+        resources = new Properties();
+        resources.load(stream);
     }
 
-	/**
-	 * Answers the names of the resources contained in this
-	 * PropertyResourceBundle.
-	 * 
-	 * @return an Enumeration of the resource names
-	 */
-	@Override
+    @SuppressWarnings("unchecked")
+    private Enumeration<String> getLocalKeys() {
+        return (Enumeration<String>) resources.propertyNames();
+    }
+
+    /**
+     * Answers the names of the resources contained in this
+     * PropertyResourceBundle.
+     * 
+     * @return an Enumeration of the resource names
+     */
+    @Override
     public Enumeration<String> getKeys() {
-		if (parent == null) {
+        if (parent == null) {
             return getLocalKeys();
         }
-		return new Enumeration<String>() {
-			Enumeration<String> local = getLocalKeys();
+        return new Enumeration<String>() {
+            Enumeration<String> local = getLocalKeys();
 
-			Enumeration<String> pEnum = parent.getKeys();
+            Enumeration<String> pEnum = parent.getKeys();
 
-			String nextElement;
+            String nextElement;
 
-			private boolean findNext() {
-				if (nextElement != null) {
+            private boolean findNext() {
+                if (nextElement != null) {
                     return true;
                 }
-				while (pEnum.hasMoreElements()) {
-					String next = pEnum.nextElement();
-					if (!resources.containsKey(next)) {
-						nextElement = next;
-						return true;
-					}
-				}
-				return false;
-			}
+                while (pEnum.hasMoreElements()) {
+                    String next = pEnum.nextElement();
+                    if (!resources.containsKey(next)) {
+                        nextElement = next;
+                        return true;
+                    }
+                }
+                return false;
+            }
 
-			public boolean hasMoreElements() {
-				if (local.hasMoreElements()) {
+            public boolean hasMoreElements() {
+                if (local.hasMoreElements()) {
                     return true;
                 }
-				return findNext();
-			}
+                return findNext();
+            }
 
-			public String nextElement() {
-				if (local.hasMoreElements()) {
+            public String nextElement() {
+                if (local.hasMoreElements()) {
                     return local.nextElement();
                 }
-				if (findNext()) {
-					String result = nextElement;
-					nextElement = null;
-					return result;
-				}
-				// Cause an exception
-				return pEnum.nextElement();
-			}
-		};
-	}
+                if (findNext()) {
+                    String result = nextElement;
+                    nextElement = null;
+                    return result;
+                }
+                // Cause an exception
+                return pEnum.nextElement();
+            }
+        };
+    }
 
-	/**
-	 * Answers the named resource from this PropertyResourceBundle, or null if
-	 * the resource is not found.
-	 * 
-	 * @param key
-	 *            the name of the resource
-	 * @return the resource object
-	 */
-	@Override
+    /**
+     * Answers the named resource from this PropertyResourceBundle, or null if
+     * the resource is not found.
+     * 
+     * @param key
+     *            the name of the resource
+     * @return the resource object
+     */
+    @Override
     public Object handleGetObject(String key) {
-		return resources.get(key);
-	}
+        return resources.get(key);
+    }
 }

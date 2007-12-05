@@ -75,22 +75,26 @@ public class PNGImageWriter extends ImageWriter {
     }
 
     @Override
-    public IIOMetadata convertStreamMetadata(IIOMetadata arg0, ImageWriteParam arg1) {
+    public IIOMetadata convertStreamMetadata(IIOMetadata arg0, ImageWriteParam arg1) throws NotImplementedException {
+        // TODO: implement
         throw new NotImplementedException();
     }
 
     @Override
-    public IIOMetadata convertImageMetadata(IIOMetadata arg0, ImageTypeSpecifier arg1, ImageWriteParam arg2) {
+    public IIOMetadata convertImageMetadata(IIOMetadata arg0, ImageTypeSpecifier arg1, ImageWriteParam arg2) throws NotImplementedException {
+        // TODO: implement
         throw new NotImplementedException();
     }
 
     @Override
-    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier arg0, ImageWriteParam arg1) {
+    public IIOMetadata getDefaultImageMetadata(ImageTypeSpecifier arg0, ImageWriteParam arg1) throws NotImplementedException {
+        // TODO: implement
         throw new NotImplementedException();
     }
 
     @Override
-    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam arg0) {
+    public IIOMetadata getDefaultStreamMetadata(ImageWriteParam arg0) throws NotImplementedException {
+        // TODO: implement
         throw new NotImplementedException();
     }
 

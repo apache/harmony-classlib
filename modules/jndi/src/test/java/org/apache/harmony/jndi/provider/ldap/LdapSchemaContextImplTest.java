@@ -21,6 +21,7 @@ import java.util.Hashtable;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NamingException;
+import javax.naming.OperationNotSupportedException;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SchemaViolationException;
@@ -123,5 +124,23 @@ public class LdapSchemaContextImplTest extends TestCase {
 			// expected
 		}
 	}
+
+    public void test_getNameInNamespace() throws NamingException {
+        try {
+            context.getNameInNamespace();
+            fail("Should throw OperationNotSupportedException");
+        } catch (OperationNotSupportedException e) {
+            // expected
+        }
+    }
+    
+    public void test_getSchemaClassDefinition() throws NamingException {
+        try {
+            context.getSchemaClassDefinition(new CompositeName(""));
+            fail("Should throw OperationNotSupportedException");
+        } catch (OperationNotSupportedException e) {
+            // expected
+        }
+    }
 
 }

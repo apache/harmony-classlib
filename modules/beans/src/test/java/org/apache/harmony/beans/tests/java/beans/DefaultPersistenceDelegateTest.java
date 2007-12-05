@@ -374,6 +374,28 @@ public class DefaultPersistenceDelegateTest extends TestCase {
         assertNull(e.getArguments()[0]);
     }
 
+    public void testInstantiate_NPE() {
+
+        try {
+            testDefaultPersistenceDelegate obj = new testDefaultPersistenceDelegate();
+            obj.initialize(Object.class, null, new Object(), new Encoder());
+            fail("NullPointerException should be thrown");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    class testDefaultPersistenceDelegate extends DefaultPersistenceDelegate {
+        testDefaultPersistenceDelegate() {
+            super();
+        }
+
+        public void initialize(Class<?> type, Object oldInstance,
+                Object newInstance, Encoder out) {
+            super.initialize(type, oldInstance, newInstance, out);
+        }
+    }
+        
     /*
      * Tests mutatesTo() under normal conditions without any properties.
      */

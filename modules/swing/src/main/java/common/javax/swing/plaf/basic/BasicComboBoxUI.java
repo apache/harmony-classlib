@@ -407,7 +407,14 @@ public class BasicComboBoxUI extends ComboBoxUI {
     }
 
     public void addEditor() {
-        editor = comboBox.getEditor().getEditorComponent();
+        ComboBoxEditor cbe = comboBox.getEditor();
+        if (cbe == null)
+            return;
+            
+        editor = cbe.getEditorComponent();
+        if (editor == null)
+            return;
+        
         configureEditor();
         comboBox.add(editor);
     }

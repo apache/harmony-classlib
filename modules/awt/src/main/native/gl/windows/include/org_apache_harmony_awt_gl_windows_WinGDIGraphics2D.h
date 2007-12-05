@@ -71,6 +71,14 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_
 
 /*
  * Class:     org_apache_harmony_awt_gl_windows_WinGDIGraphics2D
+ * Method:    createGraphicsInfoFor
+ * Signature: (JC)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIGraphics2D_createGraphicsInfoFor
+  (JNIEnv *, jobject, jlong, jchar);
+
+/*
+ * Class:     org_apache_harmony_awt_gl_windows_WinGDIGraphics2D
  * Method:    createCompatibleImageInfo
  * Signature: (JII)J
  */

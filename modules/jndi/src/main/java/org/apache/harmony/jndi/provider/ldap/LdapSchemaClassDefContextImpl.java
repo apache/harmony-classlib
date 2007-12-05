@@ -54,8 +54,9 @@ public class LdapSchemaClassDefContextImpl extends LdapContextImpl {
             for (int j = 0; j < classes.size(); j++) {
                 String className = classes.get(j);
                 Hashtable<String, Object> classDefInfo = context
-                        .findSchemaDefInfo(LdapSchemaContextImpl.OBJECT_CLASSES,
-                                className);
+                        .findSchemaDefInfo(
+                                LdapSchemaContextImpl.OBJECT_CLASSES, className
+                                        .toLowerCase());
                 as = new BasicAttributes();
                 Set<String> keySet = classDefInfo.keySet();
                 for (Iterator<String> iterator = keySet.iterator(); iterator

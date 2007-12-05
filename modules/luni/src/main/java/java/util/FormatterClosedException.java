@@ -20,16 +20,15 @@ import java.io.Serializable;
 
 /**
  * The unchecked exception will be thrown out if the formatter has been closed.
- * 
  */
 public class FormatterClosedException extends IllegalStateException implements
-		Serializable {
-	private static final long serialVersionUID = 18111216L;
+        Serializable {
 
-	/**
-	 * Constructs an instance of FormatterClosedException.
-	 * 
-	 */
-	public FormatterClosedException() {
-	}
+    private static final long serialVersionUID = 18111216L;
+
+    /**
+     * Constructs an instance of FormatterClosedException.
+     */
+    public FormatterClosedException() {
+    }
 }

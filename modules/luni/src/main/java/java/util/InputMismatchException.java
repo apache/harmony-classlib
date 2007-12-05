@@ -24,25 +24,25 @@ import java.io.Serializable;
  * @see Scanner
  */
 public class InputMismatchException extends NoSuchElementException implements
-		Serializable {
+        Serializable {
 
-	static final long serialVersionUID = 8811230760997066428L;
-	
-	/**
-	 * Constructs a InputMismatchException with no error message
-	 * 
-	 */
-	public InputMismatchException() {
-		super();
-	}
+    static final long serialVersionUID = 8811230760997066428L;
 
-	/**
-	 * Constructs a InputMismatchException with msg as its error message
-	 * 
-	 * @param msg
-	 *            The specified error message
-	 */
-	public InputMismatchException(String msg) {
-		super(msg);
-	}
+    /**
+     * Constructs a InputMismatchException with no error message
+     * 
+     */
+    public InputMismatchException() {
+        super();
+    }
+
+    /**
+     * Constructs a InputMismatchException with msg as its error message
+     * 
+     * @param msg
+     *            The specified error message
+     */
+    public InputMismatchException(String msg) {
+        super(msg);
+    }
 }

@@ -19,24 +19,16 @@ package org.apache.harmony.sql.internal.rowset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.sql.RowSetInternal;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.spi.SyncProviderException;
 
-import org.apache.harmony.sql.internal.nls.Messages;
-
 public class CachedRowSetWriter implements RowSetWriter {
 
-    private ResultSet primaryKeys;
-
     private CachedRowSet originalRowSet;
-
-    private CachedRowSet cachedKeySet;
 
     private CachedRowSetImpl currentRowSet;
 
@@ -44,223 +36,270 @@ public class CachedRowSetWriter implements RowSetWriter {
 
     private String tableName;
 
-    private String sql;
+    private String[] colNames;
 
     private int columnCount;
 
-    private int signal = 0;
+    public void setConnection(Connection conn) {
+        originalConnection = conn;
+    }
 
-    private Statement statement;
+    public Connection getConnection() {
+        return originalConnection;
+    }
 
-    private String keyColumnName, whereStatementForOriginal,
-            whereStatementForCurrent;
-
+    /**
+     * TODO add transaction
+     */
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
-        // use an optimistic concurrency control mechanism
-
         initial(theRowSet);
         // analyse every row and do responsible task.
-        currentRowSet.first();
-        originalRowSet.first();
-        do {
-            // rolling with currentRowSet
-            if (originalRowSet.next()) {
-                // deal with updated or deleted row which need do conflict check
-                if (checkConflictNotExist(originalRowSet)) {
-                    // If all of the values in the data source are already the
-                    // values to be persisted,
-                    // the method acceptChanges does nothing.
-                    if (!checkConflictNotExist(currentRowSet))
-                        writeRowData();
-                } else {
-                    cleanEnvironment();
-                    throw new SyncProviderException(Messages
-                            .getString("rowset.5"));
+        currentRowSet.beforeFirst();// currentRowSet.first();
+        originalRowSet.beforeFirst();// originalRowSet.first();
+        while (currentRowSet.next()) {
+            if (currentRowSet.rowInserted()) {
+                insertCurrentRow();
+            } else if (currentRowSet.rowDeleted()) {
+                if (isConflictExistForCurrentRow()) {
+                    // TODO: conflict exists, should throw SyncProviderException
+                    throw new SyncProviderException();
                 }
-            } else {
-                // deal with inserted row which was added comparing the
-                // originalDataSet
-                // the data can be inserted directly
-                // FIXME: need pre-check before insert into database?
-                writeRowData();
+
+                deleteCurrentRow();
+
+            } else if (currentRowSet.rowUpdated()) {
+                if (isConflictExistForCurrentRow()) {
+                    // TODO: conflict exists, should throw SyncProviderException
+                    throw new SyncProviderException();
+                }
+                
+                updateCurrentRow();
             }
-        } while (currentRowSet.next());
-
-        cleanEnvironment();
-
+        }
+        // TODO release resource
         return true;
+    }
+
+    /**
+     * Insert the RowSet's current row to DB
+     * 
+     * @throws SQLException
+     */
+    @SuppressWarnings("nls")
+    private void insertCurrentRow() throws SQLException {
+        /*
+         * the first step: generate the insert SQL
+         */
+        StringBuffer insertSQL = new StringBuffer("INSERT INTO " + tableName
+                + "(");
+        StringBuffer insertColNames = new StringBuffer();
+        StringBuffer insertPlaceholder = new StringBuffer();
+        Object[] insertColValues = new Object[columnCount];
+
+        int updateCount = 0;
+        for (int i = 1; i <= columnCount; i++) {
+            boolean isColUpdate = currentRowSet.columnUpdated(i);
+            if (isColUpdate) {
+                insertColNames.append(colNames[i - 1] + ",");
+                insertPlaceholder.append("?,");
+                insertColValues[updateCount] = currentRowSet.getObject(i);
+                updateCount++;
+            }
+        }
+        if (updateCount == 0) {
+            return;
+        }
+
+        insertSQL.append(subStringN(insertColNames.toString(), 1));
+        insertSQL.append(") values (");
+        insertSQL.append(subStringN(insertPlaceholder.toString(), 1));
+        insertSQL.append(")");
+
+        /*
+         * the second step: execute SQL
+         */
+        PreparedStatement preSt = getConnection().prepareStatement(
+                insertSQL.toString());
+        for (int i = 0; i < updateCount; i++) {
+            preSt.setObject(i + 1, insertColValues[i]);
+        }
+        try {
+            preSt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO generate SyncProviderException
+            throw new SyncProviderException();
+        } finally {
+            preSt.close();
+        }
+    }
+
+    /**
+     * Delete the current row from DB
+     * 
+     * @throws SQLException
+     */
+    private void deleteCurrentRow() throws SQLException {
+        /*
+         * the first step: generate the delete SQL
+         */
+        StringBuffer deleteSQL = new StringBuffer("DELETE FROM " + tableName //$NON-NLS-1$
+                + " WHERE "); //$NON-NLS-1$
+        deleteSQL.append(generateQueryCondition());
+
+        /*
+         * the second step: execute SQL
+         */
+        PreparedStatement preSt = getConnection().prepareStatement(
+                deleteSQL.toString());
+        fillParamInPreStatement(preSt, 1);
+        preSt.executeUpdate();
+    }
+
+    /**
+     * Update the current row to DB
+     * 
+     * @throws SQLException
+     */
+    @SuppressWarnings("nls")
+    private void updateCurrentRow() throws SQLException {
+        /*
+         * the first step: generate the delete SQL
+         */
+        StringBuffer updateSQL = new StringBuffer("UPDATE " + tableName
+                + " SET ");
+        StringBuffer updateCols = new StringBuffer();
+        Object[] updateColValues = new Object[columnCount];
+        int[] updateColIndexs = new int[columnCount];
+
+        int updateCount = 0;
+        for (int i = 1; i <= columnCount; i++) {
+            boolean isColUpdate = currentRowSet.columnUpdated(i);
+            if (isColUpdate) {
+                updateCols.append(colNames[i - 1] + " = ?, ");
+                updateColValues[updateCount] = currentRowSet.getObject(i);
+                updateColIndexs[updateCount] = i;
+                updateCount++;
+            }
+        }
+        if (updateCount == 0) {
+            return;
+        }
+        updateSQL.append(subStringN(updateCols.toString(), 2));
+        updateSQL.append(" WHERE ");
+        updateSQL.append(generateQueryCondition());
+
+        /*
+         * the second step: execute SQL
+         */
+        PreparedStatement preSt = getConnection().prepareStatement(
+                updateSQL.toString());
+        // the SET part of SQL
+        for (int i = 0; i < updateCount; i++) {
+            if (updateColValues[i] == null) {
+                preSt.setNull(i + 1, currentRowSet.getMetaData().getColumnType(
+                        updateColIndexs[i]));
+            } else {
+                preSt.setObject(i + 1, updateColValues[i]);
+            }
+        }
+        // the WHERE part of SQL
+        fillParamInPreStatement(preSt, updateCount + 1);
+        try {
+            preSt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO generate SyncProviderException
+            throw new SyncProviderException();
+        } finally {
+            preSt.close();
+        }
     }
 
     private void initial(RowSetInternal theRowSet) throws SQLException {
         currentRowSet = (CachedRowSetImpl) theRowSet;
         // initial environment
         originalRowSet = (CachedRowSet) currentRowSet.getOriginal();
-        originalConnection = currentRowSet.getConnection();
-        cachedKeySet = new CachedRowSetImpl();
+        // originalConnection = currentRowSet.getConnection();
         tableName = currentRowSet.getTableName();
         columnCount = currentRowSet.getMetaData().getColumnCount();
-        primaryKeys = originalConnection.getMetaData().getPrimaryKeys("",
-                currentRowSet.getMetaData().getSchemaName(1), tableName);
-        cachedKeySet.populate(primaryKeys);
+        colNames = new String[columnCount];
+        for (int i = 1; i <= columnCount; i++) {
+            colNames[i - 1] = currentRowSet.getMetaData().getColumnName(i);
+        }
     }
 
-    private void writeRowData() throws SQLException {
-        try {
-            createScriptForWriteBack();
-            statement = originalConnection.prepareStatement(sql);
-            switch (signal) {
-            case 0:
-                fillParasOfKeys(currentRowSet, 0);
-                break;
-            case 1:
-                fillParasOfAllColumn();
-                break;
-            case 2:
-                fillParasOfAllColumn();
-                fillParasOfKeys(currentRowSet, columnCount);
-                break;
-            default:
-                break;
+    /**
+     * Compare the current row's data between database and CachedRowSet to check
+     * whether it has been changed in database.
+     * 
+     * @return if conflict exists, return true; else, return false
+     * @throws SQLException
+     */
+    private boolean isConflictExistForCurrentRow() throws SQLException {
+        boolean isExist = true;
+        originalRowSet.absolute(currentRowSet.getRow()); // the original data
+
+        StringBuffer querySQL = new StringBuffer("SELECT COUNT(*) FROM " //$NON-NLS-1$
+                + tableName + " WHERE "); //$NON-NLS-1$
+        querySQL.append(generateQueryCondition());
+
+        PreparedStatement preSt = getConnection().prepareStatement(
+                querySQL.toString());
+        fillParamInPreStatement(preSt, 1);
+        ResultSet queryRs = preSt.executeQuery();
+        if (queryRs.next()) {
+            if (queryRs.getInt(1) == 1) {
+                isExist = false;
             }
-            ((PreparedStatement) statement).executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            new SQLException(Messages.getString("rowset.6"));
         }
+        queryRs.close();
+        preSt.close();
 
+        return isExist;
     }
 
-    private void createScriptForWriteBack() throws SQLException {
-        cachedKeySet.first();
-        whereStatementForCurrent = "";
-        String insertCollector = "", updateCollector = "";
-        // FIXME:uses getUpdateMask()
-
-        do {
-            keyColumnName = cachedKeySet.getString("COLUMN_NAME");
-            whereStatementForCurrent = whereStatementForCurrent + keyColumnName
-                    + " = ? " + " and ";
-        } while (cachedKeySet.next());
-
-        whereStatementForCurrent = subStringN(whereStatementForCurrent, 5);
-
-        // insertCollector: all column
-        for (int i = 1; i <= columnCount; i++) {
-            insertCollector = insertCollector + " ? " + " , ";
+    /**
+     * Generate the query condition after the keyword "WHERE" in SQL. Expression
+     * likes as: COLUMN1 = ? AND COLUMN2 = ?
+     * 
+     * @return the SQL query expression
+     */
+    @SuppressWarnings("nls")
+    private String generateQueryCondition() throws SQLException {
+        StringBuffer queryCondtion = new StringBuffer(" ");
+        for (int i = 0; i < colNames.length; i++) {
+            if (originalRowSet.getObject(i + 1) == null) {
+                queryCondtion.append(colNames[i] + " is null ");
+            } else {
+                queryCondtion.append(colNames[i] + " = ? ");
+            }
+            if (i != colNames.length - 1) {
+                queryCondtion.append(" and ");
+            }
         }
-        insertCollector = subStringN(insertCollector, 3);
+        return queryCondtion.toString();
+    }
 
-        // update: all column
-        ResultSetMetaData tempRSMD = currentRowSet.getMetaData();
+    /**
+     * Fill all the parameters in PreparedStatement
+     * 
+     * @param preSt
+     *            PreparedStatement
+     * @param fromIndex
+     *            It must be greater than 0
+     * @throws SQLException
+     */
+    private void fillParamInPreStatement(PreparedStatement preSt, int fromIndex)
+            throws SQLException {
+        int notNullCount = fromIndex;
         for (int i = 1; i <= columnCount; i++) {
-            updateCollector = updateCollector + tempRSMD.getColumnName(i)
-                    + "= ? , ";
-        }
-        updateCollector = subStringN(updateCollector, 3);
-
-        if (currentRowSet.getCurrentRow().isDelete()) {
-            // paras of where: pks
-            sql = " delete from " + tableName + " where "
-                    + whereStatementForCurrent;
-            signal = 0;
-        } else if (currentRowSet.getCurrentRow().isInsert()) {
-            // paras of insert : all
-            sql = " insert into " + tableName + " values " + " ( "
-                    + insertCollector + " ) ";
-            signal = 1;
-        } else {
-            // paras of update and where : all + pks
-            sql = " update " + tableName + " set " + updateCollector
-                    + " where " + whereStatementForCurrent;
-            signal = 2;
+            if (originalRowSet.getObject(i) != null) {
+                preSt.setObject(notNullCount, originalRowSet.getObject(i));
+                notNullCount++;
+            }
         }
     }
 
     private String subStringN(String input, int n) {
-        input = input.substring(0, input.length() - n);
-        return input;
+        return input.substring(0, input.length() - n);
     }
-
-    private void createScriptForCheck() throws SQLException {
-        // formulate the Query SQL
-        String tempSelector = "";
-        whereStatementForOriginal = "";
-        cachedKeySet.first();
-        for (int i = 1; i <= columnCount; i++)
-            tempSelector = tempSelector
-                    + originalRowSet.getMetaData().getColumnName(i) + ", ";
-        tempSelector = tempSelector.substring(0, tempSelector.length() - 2);
-        sql = "select " + tempSelector + " from " + tableName + " where ";
-        do {
-            keyColumnName = cachedKeySet.getString("COLUMN_NAME");
-            whereStatementForOriginal = whereStatementForOriginal
-                    + keyColumnName + " = ? " + " and ";
-            whereStatementForOriginal = subStringN(whereStatementForOriginal, 5);
-        } while (cachedKeySet.next());
-        cachedKeySet.first();
-        sql = sql + whereStatementForOriginal;
-    }
-
-    private void fillParasOfKeys(CachedRowSet inputRS, int from)
-            throws SQLException {
-        cachedKeySet.first();
-        int i = from + 1;
-        do {
-            keyColumnName = cachedKeySet.getString("COLUMN_NAME");
-            ((PreparedStatement) statement).setObject(i++, inputRS
-                    .getObject(keyColumnName));
-        } while (cachedKeySet.next());
-    }
-
-    private void fillParasOfAllColumn() throws SQLException {
-        for (int i = 1; i <= columnCount; i++) {
-            ResultSetMetaData rsmd = currentRowSet.getMetaData();
-            if (currentRowSet.getObject(i) == null) {
-                ((PreparedStatement) statement).setNull(i, rsmd
-                        .getColumnType(i));
-            } else {
-                ((PreparedStatement) statement).setObject(i, currentRowSet
-                        .getObject(i));
-            }
-        }
-    }
-
-    private boolean checkConflictNotExist(CachedRowSet crs) {
-        try {
-            createScriptForCheck();
-            statement = originalConnection.prepareStatement(sql);
-            fillParasOfKeys(originalRowSet, 0);
-            ResultSet dataInDB = ((PreparedStatement) statement).executeQuery();
-            sql = "";
-            // compare line by line, column by column
-            if (dataInDB.next()) {
-                for (int i = 1; i <= dataInDB.getMetaData().getColumnCount(); i++) {
-                    if (dataInDB.getObject(i) == crs.getObject(i)) {
-                        continue;
-                    }
-                    if (!(dataInDB.getObject(i).equals(crs.getObject(i)))) {
-                        return false;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-    private void cleanEnvironment() {
-        try {
-            originalRowSet.close();
-            originalConnection.close();
-            cachedKeySet.close();
-            statement.close();
-            currentRowSet.close();
-            primaryKeys.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    // end class
-
 }

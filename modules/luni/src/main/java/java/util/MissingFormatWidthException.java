@@ -19,45 +19,44 @@ package java.util;
 /**
  * The unchecked exception will be thrown out if the format width is missing but
  * is required.
- * 
- * 
  */
 public class MissingFormatWidthException extends IllegalFormatException {
-	private static final long serialVersionUID = 15560123L;
 
-	private String s;
+    private static final long serialVersionUID = 15560123L;
 
-	/**
-	 * Constructs a MissingFormatWidthException with the specified format
-	 * specifier.
-	 * 
-	 * @param s
-	 *            The specified format specifier.
-	 */
-	public MissingFormatWidthException(String s) {
-		if (null == s) {
-			throw new NullPointerException();
-		}
-		this.s = s;
-	}
+    private String s;
 
-	/**
-	 * Returns the format specifier associated with the exception.
-	 * 
-	 * @return The format specifier associated with the exception.
-	 */
-	public String getFormatSpecifier() {
-		return s;
-	}
+    /**
+     * Constructs a MissingFormatWidthException with the specified format
+     * specifier.
+     * 
+     * @param s
+     *            The specified format specifier.
+     */
+    public MissingFormatWidthException(String s) {
+        if (null == s) {
+            throw new NullPointerException();
+        }
+        this.s = s;
+    }
 
-	/**
-	 * Returns the message of the exception.
-	 * 
-	 * @return The message of the exception.
-	 */
-	@Override
+    /**
+     * Returns the format specifier associated with the exception.
+     * 
+     * @return The format specifier associated with the exception.
+     */
+    public String getFormatSpecifier() {
+        return s;
+    }
+
+    /**
+     * Returns the message of the exception.
+     * 
+     * @return The message of the exception.
+     */
+    @Override
     public String getMessage() {
-		return s;
-	}
+        return s;
+    }
 
 }

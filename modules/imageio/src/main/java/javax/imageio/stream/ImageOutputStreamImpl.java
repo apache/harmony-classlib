@@ -25,6 +25,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 public abstract class ImageOutputStreamImpl extends ImageInputStreamImpl
 		implements ImageOutputStream {
 
@@ -189,22 +191,22 @@ public abstract class ImageOutputStreamImpl extends ImageInputStreamImpl
 		}
 	}
 
-	public void writeBit(int bit) throws IOException {
-		// -- TODO implement
-		throw new UnsupportedOperationException("Not implemented yet");
+	public void writeBit(int bit) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
 	}
 
-	public void writeBits(long bits, int numBits) throws IOException {
-		// -- TODO implement
-		throw new UnsupportedOperationException("Not implemented yet");
+	public void writeBits(long bits, int numBits) throws IOException, NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
 	}
 
-	protected final void flushBits() throws IOException {
+	protected final void flushBits() throws IOException, NotImplementedException {
 		if (bitOffset == 0) {
 			return;
 		}
 
-		// -- TODO implement
-		throw new UnsupportedOperationException("Not implemented yet");
+		// TODO: implement
+        throw new NotImplementedException();
 	}
 }

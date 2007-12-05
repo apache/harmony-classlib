@@ -540,6 +540,18 @@ public class ArrayListTest extends junit.framework.TestCase {
         list.addAll(0, collection);
         assertEquals(14, list.size());
     }
+    
+    public void test_override_size() throws Exception {
+        ArrayList testlist = new MockArrayList();
+        // though size is overriden, it should passed without exception
+        testlist.add("test_0");
+        testlist.add("test_1");
+        testlist.add("test_2");
+        testlist.add(1,"test_3");
+        testlist.get(1);
+        testlist.remove(2);
+        testlist.set(1, "test_4");
+    }
 
     public static class ArrayListExtend extends ArrayList {
 
@@ -556,6 +568,12 @@ public class ArrayListTest extends junit.framework.TestCase {
 
         public int size() {
             return size;
+        }
+    }
+    
+    public class MockArrayList extends ArrayList {
+        public int size() {
+            return 0;
         }
     }
 

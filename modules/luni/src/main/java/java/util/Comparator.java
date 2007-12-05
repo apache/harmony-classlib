@@ -24,30 +24,30 @@ package java.util;
  * @since 1.2
  */
 public interface Comparator<T> {
-	/**
-	 * Compare the two objects to determine the relative ordering.
-	 * 
-	 * @param object1
-	 *            an Object to compare
-	 * @param object2
-	 *            an Object to compare
-	 * @return an int < 0 if object1 is less than object2, 0 if they are equal,
-	 *         and > 0 if object1 is greater
-	 * 
-	 * @exception ClassCastException
-	 *                when objects are not the correct type
-	 */
-	public int compare(T object1, T object2);
+    /**
+     * Compare the two objects to determine the relative ordering.
+     * 
+     * @param object1
+     *            an Object to compare
+     * @param object2
+     *            an Object to compare
+     * @return an int < 0 if object1 is less than object2, 0 if they are equal,
+     *         and > 0 if object1 is greater
+     * 
+     * @exception ClassCastException
+     *                when objects are not the correct type
+     */
+    public int compare(T object1, T object2);
 
-	/**
-	 * Compares the argument to the receiver, and answers true if they represent
-	 * the <em>same</em> object using a class specific comparison.
-	 * 
-	 * @param object
-	 *            Object the object to compare with this object.
-	 * @return boolean <code>true</code> if the object is the same as this
-	 *         object <code>false</code> if it is different from this object.
-	 * @see Object#hashCode
-	 */
-	public boolean equals(Object object);
+    /**
+     * Compares the argument to the receiver, and answers true if they represent
+     * the <em>same</em> object using a class specific comparison.
+     * 
+     * @param object
+     *            Object the object to compare with this object.
+     * @return boolean <code>true</code> if the object is the same as this
+     *         object <code>false</code> if it is different from this object.
+     * @see Object#hashCode
+     */
+    public boolean equals(Object object);
 }

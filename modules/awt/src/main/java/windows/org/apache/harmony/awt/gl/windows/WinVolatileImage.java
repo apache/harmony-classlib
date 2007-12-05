@@ -59,7 +59,10 @@ public class WinVolatileImage extends GLVolatileImage {
         hwnd = nw.getId();
         this.width = width;
         this.height = height;
-        gi = WinGDIPGraphics2D.createCompatibleImageInfo(hwnd, width, height);
+        if(WinGraphicsDevice.useGDI)
+            gi = WinGDIGraphics2D.createCompatibleImageInfo(hwnd, width, height);
+        else
+            gi = WinGDIPGraphics2D.createCompatibleImageInfo(hwnd, width, height);
         surface = new BitmapSurface(gi , width, height);
     }
 
@@ -73,7 +76,10 @@ public class WinVolatileImage extends GLVolatileImage {
         this.gc = gc;
         this.width = width;
         this.height = height;
-        gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);
+        if(WinGraphicsDevice.useGDI)
+            gi = WinGDIGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);
+        else 
+            gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);
         surface = new BitmapSurface(gi , width, height);
     }
 
@@ -86,11 +92,19 @@ public class WinVolatileImage extends GLVolatileImage {
     public Graphics2D createGraphics() {
         if (gi == 0) {
             if (hwnd != 0 && gc == null) {
-                gi = WinGDIPGraphics2D.createCompatibleImageInfo(hwnd, width, height);
+                if(WinGraphicsDevice.useGDI)
+                    gi = WinGDIGraphics2D.createCompatibleImageInfo(hwnd, width, height);
+                else 
+                    gi = WinGDIPGraphics2D.createCompatibleImageInfo(hwnd, width, height);
             } else if (hwnd == 0 && gc != null) {
-                gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);
+                if(WinGraphicsDevice.useGDI)
+                    gi = WinGDIGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);
+                else
+                    gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);
             }
         }
+        if(WinGraphicsDevice.useGDI)
+            return new WinGDIGraphics2D(this, width, height);
         return new WinGDIPGraphics2D(this, width, height);
     }
 
@@ -120,7 +134,10 @@ public class WinVolatileImage extends GLVolatileImage {
             return IMAGE_OK;
         }
         
-        gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);        
+        if(WinGraphicsDevice.useGDI)
+            gi = WinGDIGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);        
+        else 
+            gi = WinGDIPGraphics2D.createCompatibleImageInfo(((WinGraphicsDevice)gc.getDevice()).getIDBytes(), width, height);        
         return IMAGE_RESTORED;
     }
 
@@ -153,7 +170,10 @@ public class WinVolatileImage extends GLVolatileImage {
     @Override
     public void flush() {
         if (gi != 0) {
-            WinGDIPGraphics2D.disposeGraphicsInfo(gi);
+            if(WinGraphicsDevice.useGDI)
+                WinGDIGraphics2D.disposeGraphicsInfo(gi);
+            else 
+                WinGDIPGraphics2D.disposeGraphicsInfo(gi);
             gi = 0;
         }
         if (surface != null) surface.dispose();

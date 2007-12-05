@@ -49,18 +49,22 @@ public class WinGraphics2DFactory extends CommonGraphics2DFactory {
         Insets ins = nw.getInsets();
         if (WinGraphicsDevice.useOpenGL) {
             return new OGLGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
-        } else {
-            return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
         }
+        if (WinGraphicsDevice.useGDI) {
+            return new WinGDIGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
+        }
+        return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, clip);
     }
 
     public Graphics2D getGraphics2D(NativeWindow nw, int tx, int ty, int width, int height) {
         Insets ins = nw.getInsets();
         if (WinGraphicsDevice.useOpenGL) {
             return new OGLGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
-        } else {
-            return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
         }
+        if (WinGraphicsDevice.useGDI) {
+            return new WinGDIGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
+        }
+        return new WinGDIPGraphics2D(nw, tx - ins.left, ty - ins.top, width, height);
     }
 
     public GraphicsEnvironment createGraphicsEnvironment(WindowFactory wf) {

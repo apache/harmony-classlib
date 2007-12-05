@@ -24,34 +24,34 @@ package java.util;
 
 public interface Formattable {
 
-	/**
-	 * Formats the object using the specified formatter.
-	 * 
-	 * @param formatter
-	 *            The formatter to use in the formatTo.
-	 * @param flags
-	 *            The flags applied to the output format, which is a bitmask
-	 *            that is any combination of FormattableFlags.LEFT_JUSTIFY,
-	 *            FormattableFlags.UPPERCASE, and FormattableFlags.ALTERNATE. If
-	 *            no such flag is set, the output is formatted by the default
-	 *            formatting of the implementation of the interface.
-	 * @param width
-	 *            The minimum number of characters that should be written to the
-	 *            output. Additional space ' ' is added to the output if the
-	 *            length of the converted value is less than the width until the
-	 *            length equals the width. These spaces are added at the
-	 *            beginning by default unless the flag
-	 *            FormattableFlags.LEFT_JUSTIFY is set, which denotes that
-	 *            padding should be added at the end. If width is -1, then no
-	 *            minimum requirement.
-	 * @param precision
-	 *            The maximum number of characters that can be written to the
-	 *            output. The procedure to trunk the output according to the
-	 *            precision is invoked before that of padding to width. If the
-	 *            precision is -1, then no maximum requirement.
-	 * @throws IllegalFormatException
-	 *             If any of the parameters is not supported.
-	 */
-	void formatTo(Formatter formatter, int flags, int width, int precision)
-			throws IllegalFormatException;
+    /**
+     * Formats the object using the specified formatter.
+     * 
+     * @param formatter
+     *            The formatter to use in the formatTo.
+     * @param flags
+     *            The flags applied to the output format, which is a bitmask
+     *            that is any combination of FormattableFlags.LEFT_JUSTIFY,
+     *            FormattableFlags.UPPERCASE, and FormattableFlags.ALTERNATE. If
+     *            no such flag is set, the output is formatted by the default
+     *            formatting of the implementation of the interface.
+     * @param width
+     *            The minimum number of characters that should be written to the
+     *            output. Additional space ' ' is added to the output if the
+     *            length of the converted value is less than the width until the
+     *            length equals the width. These spaces are added at the
+     *            beginning by default unless the flag
+     *            FormattableFlags.LEFT_JUSTIFY is set, which denotes that
+     *            padding should be added at the end. If width is -1, then no
+     *            minimum requirement.
+     * @param precision
+     *            The maximum number of characters that can be written to the
+     *            output. The procedure to trunk the output according to the
+     *            precision is invoked before that of padding to width. If the
+     *            precision is -1, then no maximum requirement.
+     * @throws IllegalFormatException
+     *             If any of the parameters is not supported.
+     */
+    void formatTo(Formatter formatter, int flags, int width, int precision)
+            throws IllegalFormatException;
 }

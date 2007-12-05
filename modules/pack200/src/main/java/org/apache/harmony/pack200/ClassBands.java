@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.harmony.pack200.IcBands.ICTuple;
+import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
@@ -997,6 +997,27 @@ public class ClassBands extends BandSet {
 
     public long[][] getFieldFlags() {
         return fieldFlags;
+    }
+
+    /**
+     * Answer an ArrayList of ArrayLists which hold the the code attributes
+     * corresponding to all classes in order.
+     * 
+     * If a class doesn't have any attributes, the corresponding element in this
+     * list will be an empty ArrayList.
+     * @return ArrayList
+     */
+    public ArrayList getOrderedCodeAttributes() {
+        ArrayList orderedAttributeList = new ArrayList();
+        for(int classIndex=0; classIndex < codeAttributes.length; classIndex++) {
+            ArrayList currentAttributes = new ArrayList();
+            for(int attributeIndex = 0; attributeIndex < codeAttributes[classIndex].size(); attributeIndex++) {
+                Attribute attribute = (Attribute)codeAttributes[classIndex].get(attributeIndex);
+                currentAttributes.add(attribute);
+            }
+            orderedAttributeList.add(currentAttributes);
+        }
+        return orderedAttributeList;
     }
 
     public ArrayList[][] getMethodAttributes() {

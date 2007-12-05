@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.CodeAttribute;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 public class ByteCodeForm {
@@ -295,7 +296,7 @@ public class ByteCodeForm {
         byteCodeArray[229] = new SuperFieldRefForm(229, "aload_0_invokestatic_super", new int[] {42, 184, -1, -1});
         byteCodeArray[230] = new ThisInitMethodRefForm(230, "invokespecial_this_init", new int[] {183, -1, -1});
         byteCodeArray[231] = new SuperInitMethodRefForm(231, "invokespecial_super_init", new int[] {183, -1, -1});
-        byteCodeArray[232] = new NewInitMethodRefForm(232, "invokespecial_new_init", new int[] {184, -1, -1});
+        byteCodeArray[232] = new NewInitMethodRefForm(232, "invokespecial_new_init", new int[] {183, -1, -1});
         byteCodeArray[233] = new ClassRefForm(233, "cldc", new int[] {18, -1}); 
         byteCodeArray[234] = new IntRefForm(234, "ildc", new int[] {18, -1});
         byteCodeArray[235] = new FloatRefForm(235, "fldc", new int[] {18, -1});
@@ -541,6 +542,29 @@ public class ByteCodeForm {
         return false;
     }
 
+    
+    /**
+     * This method will answer true if the receiver is
+     * a multi-bytecode instruction (such as
+     * aload0_putfield_super); otherwise, it will answer
+     * false.
+     * 
+     * @return boolean true if multibytecode, false otherwise
+     */
+    public boolean hasMultipleByteCodes() {
+    	if(rewrite.length > 1) {
+             // Currently, all multi-bytecode instructions
+             // begin with aload_0, so this is how we test.
+    		if(rewrite[0] == 42) {
+    			// If there's an instruction (not a negative
+    			// number, which is an operand) after the
+    			// aload_0, it's a multibytecode instruction.
+    			return(rewrite[1] > 0);
+    		}
+    	}
+    	return false;
+    }
+    
     /**
      * When passed a byteCode, an OperandTable and a
      * SegmentConstantPool, this method will set the
@@ -553,5 +577,18 @@ public class ByteCodeForm {
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager) {
         throw new Error("My subclass should have implemented this");        
+    }
+
+    /**
+     * The ByteCodeForm knows how to fix up a bytecode if
+     * it needs to be fixed up because it holds a Label
+     * bytecode.
+     * @param byteCode a ByteCode to be fixed up
+     * @param codeAttribute a CodeAttribute used to determine how
+     *   the ByteCode should be fixed up.
+     */
+    public void fixUpByteCodeTarget(ByteCode byteCode, CodeAttribute codeAttribute) {
+        // Most ByteCodeForms don't have any fixing up to do.
+        return;
     }
 }

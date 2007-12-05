@@ -89,7 +89,7 @@ public class LdapUtils {
         errorCodesMap.put(80, NamingException.class);
     }
 
-    public static Filter parseFilter(String filter)
+    public static Filter parseFilter(String filter, Object[] args)
             throws InvalidSearchFilterException {
         if (filter == null) {
             // ldap.28=Parameter of filter should not be null
@@ -97,6 +97,13 @@ public class LdapUtils {
         }
 
         FilterParser parser = new FilterParser(filter);
+        
+        if (args == null) {
+            args = new Object[0];
+        }
+        
+        parser.setArgs(args);
+        
         try {
             return parser.parse();
         } catch (ParseException e) {

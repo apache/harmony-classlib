@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 /**
  * String tokenizer is used to break a string apart into tokens.
  * 
@@ -29,173 +28,173 @@ package java.util;
  * maximal block of text between delimiters.
  */
 public class StringTokenizer implements Enumeration<Object> {
-	
-	private String string;
 
-	private String delimiters;
+    private String string;
 
-	private boolean returnDelimiters;
+    private String delimiters;
 
-	private int position;
+    private boolean returnDelimiters;
 
-	/**
-	 * Constructs a new StringTokenizer for string using whitespace as the
-	 * delimiter, returnDelimiters is false.
-	 * 
-	 * @param string
-	 *            the string to be tokenized
-	 */
-	public StringTokenizer(String string) {
-		this(string, " \t\n\r\f", false); //$NON-NLS-1$
-	}
+    private int position;
 
-	/**
-	 * Constructs a new StringTokenizer for string using the specified
-	 * delimiters, returnDelimiters is false.
-	 * 
-	 * @param string
-	 *            the string to be tokenized
-	 * @param delimiters
-	 *            the delimiters to use
-	 */
-	public StringTokenizer(String string, String delimiters) {
-		this(string, delimiters, false);
-	}
+    /**
+     * Constructs a new StringTokenizer for string using whitespace as the
+     * delimiter, returnDelimiters is false.
+     * 
+     * @param string
+     *            the string to be tokenized
+     */
+    public StringTokenizer(String string) {
+        this(string, " \t\n\r\f", false); //$NON-NLS-1$
+    }
 
-	/**
-	 * Constructs a new StringTokenizer for string using the specified
-	 * delimiters and returning delimiters as tokens when specified.
-	 * 
-	 * @param string
-	 *            the string to be tokenized
-	 * @param delimiters
-	 *            the delimiters to use
-	 * @param returnDelimiters
-	 *            true to return each delimiter as a token
-	 */
-	public StringTokenizer(String string, String delimiters,
-			boolean returnDelimiters) {
-		if (string != null) {
-			this.string = string;
-			this.delimiters = delimiters;
-			this.returnDelimiters = returnDelimiters;
-			this.position = 0;
-		} else
-			throw new NullPointerException();
-	}
+    /**
+     * Constructs a new StringTokenizer for string using the specified
+     * delimiters, returnDelimiters is false.
+     * 
+     * @param string
+     *            the string to be tokenized
+     * @param delimiters
+     *            the delimiters to use
+     */
+    public StringTokenizer(String string, String delimiters) {
+        this(string, delimiters, false);
+    }
 
-	/**
-	 * Returns the number of unprocessed tokens remaining in the string.
-	 * 
-	 * @return number of tokens that can be retreived before an exception will
-	 *         result
-	 */
-	public int countTokens() {
-		int count = 0;
-		boolean inToken = false;
-		for (int i = position, length = string.length(); i < length; i++) {
-			if (delimiters.indexOf(string.charAt(i), 0) >= 0) {
-				if (returnDelimiters)
-					count++;
-				if (inToken) {
-					count++;
-					inToken = false;
-				}
-			} else {
-				inToken = true;
-			}
-		}
-		if (inToken)
-			count++;
-		return count;
-	}
+    /**
+     * Constructs a new StringTokenizer for string using the specified
+     * delimiters and returning delimiters as tokens when specified.
+     * 
+     * @param string
+     *            the string to be tokenized
+     * @param delimiters
+     *            the delimiters to use
+     * @param returnDelimiters
+     *            true to return each delimiter as a token
+     */
+    public StringTokenizer(String string, String delimiters,
+            boolean returnDelimiters) {
+        if (string != null) {
+            this.string = string;
+            this.delimiters = delimiters;
+            this.returnDelimiters = returnDelimiters;
+            this.position = 0;
+        } else
+            throw new NullPointerException();
+    }
 
-	/**
-	 * Returns true if unprocessed tokens remain.
-	 * 
-	 * @return true if unprocessed tokens remain
-	 */
-	public boolean hasMoreElements() {
-		return hasMoreTokens();
-	}
+    /**
+     * Returns the number of unprocessed tokens remaining in the string.
+     * 
+     * @return number of tokens that can be retreived before an exception will
+     *         result
+     */
+    public int countTokens() {
+        int count = 0;
+        boolean inToken = false;
+        for (int i = position, length = string.length(); i < length; i++) {
+            if (delimiters.indexOf(string.charAt(i), 0) >= 0) {
+                if (returnDelimiters)
+                    count++;
+                if (inToken) {
+                    count++;
+                    inToken = false;
+                }
+            } else {
+                inToken = true;
+            }
+        }
+        if (inToken)
+            count++;
+        return count;
+    }
 
-	/**
-	 * Returns true if unprocessed tokens remain.
-	 * 
-	 * @return true if unprocessed tokens remain
-	 */
-	public boolean hasMoreTokens() {
-		int length = string.length();
-		if (position < length) {
-			if (returnDelimiters)
-				return true; // there is at least one character and even if
-			// it is a delimiter it is a token
+    /**
+     * Returns true if unprocessed tokens remain.
+     * 
+     * @return true if unprocessed tokens remain
+     */
+    public boolean hasMoreElements() {
+        return hasMoreTokens();
+    }
 
-			// otherwise find a character which is not a delimiter
-			for (int i = position; i < length; i++)
-				if (delimiters.indexOf(string.charAt(i), 0) == -1)
-					return true;
-		}
-		return false;
-	}
+    /**
+     * Returns true if unprocessed tokens remain.
+     * 
+     * @return true if unprocessed tokens remain
+     */
+    public boolean hasMoreTokens() {
+        int length = string.length();
+        if (position < length) {
+            if (returnDelimiters)
+                return true; // there is at least one character and even if
+            // it is a delimiter it is a token
 
-	/**
-	 * Returns the next token in the string as an Object.
-	 * 
-	 * @return next token in the string as an Object
-	 * @exception NoSuchElementException
-	 *                if no tokens remain
-	 */
-	public Object nextElement() {
-		return nextToken();
-	}
+            // otherwise find a character which is not a delimiter
+            for (int i = position; i < length; i++)
+                if (delimiters.indexOf(string.charAt(i), 0) == -1)
+                    return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Returns the next token in the string as a String.
-	 * 
-	 * @return next token in the string as a String
-	 * @exception NoSuchElementException
-	 *                if no tokens remain
-	 */
-	public String nextToken() {
-		int i = position;
-		int length = string.length();
+    /**
+     * Returns the next token in the string as an Object.
+     * 
+     * @return next token in the string as an Object
+     * @exception NoSuchElementException
+     *                if no tokens remain
+     */
+    public Object nextElement() {
+        return nextToken();
+    }
 
-		if (i < length) {
-			if (returnDelimiters) {
-				if (delimiters.indexOf(string.charAt(position), 0) >= 0)
-					return String.valueOf(string.charAt(position++));
-				for (position++; position < length; position++)
-					if (delimiters.indexOf(string.charAt(position), 0) >= 0)
-						return string.substring(i, position);
-				return string.substring(i);
-			}
+    /**
+     * Returns the next token in the string as a String.
+     * 
+     * @return next token in the string as a String
+     * @exception NoSuchElementException
+     *                if no tokens remain
+     */
+    public String nextToken() {
+        int i = position;
+        int length = string.length();
 
-			while (i < length && delimiters.indexOf(string.charAt(i), 0) >= 0)
-				i++;
-			position = i;
-			if (i < length) {
-				for (position++; position < length; position++)
-					if (delimiters.indexOf(string.charAt(position), 0) >= 0)
-						return string.substring(i, position);
-				return string.substring(i);
-			}
-		}
-		throw new NoSuchElementException();
-	}
+        if (i < length) {
+            if (returnDelimiters) {
+                if (delimiters.indexOf(string.charAt(position), 0) >= 0)
+                    return String.valueOf(string.charAt(position++));
+                for (position++; position < length; position++)
+                    if (delimiters.indexOf(string.charAt(position), 0) >= 0)
+                        return string.substring(i, position);
+                return string.substring(i);
+            }
 
-	/**
-	 * Returns the next token in the string as a String. The delimiters used are
-	 * changed to the specified delimiters.
-	 * 
-	 * @param delims
-	 *            the new delimiters to use
-	 * @return next token in the string as a String
-	 * @exception NoSuchElementException
-	 *                if no tokens remain
-	 */
-	public String nextToken(String delims) {
-		this.delimiters = delims;
-		return nextToken();
-	}
+            while (i < length && delimiters.indexOf(string.charAt(i), 0) >= 0)
+                i++;
+            position = i;
+            if (i < length) {
+                for (position++; position < length; position++)
+                    if (delimiters.indexOf(string.charAt(position), 0) >= 0)
+                        return string.substring(i, position);
+                return string.substring(i);
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    /**
+     * Returns the next token in the string as a String. The delimiters used are
+     * changed to the specified delimiters.
+     * 
+     * @param delims
+     *            the new delimiters to use
+     * @return next token in the string as a String
+     * @exception NoSuchElementException
+     *                if no tokens remain
+     */
+    public String nextToken(String delims) {
+        this.delimiters = delims;
+        return nextToken();
+    }
 }

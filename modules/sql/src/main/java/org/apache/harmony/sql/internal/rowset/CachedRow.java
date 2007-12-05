@@ -70,6 +70,8 @@ public class CachedRow implements Cloneable {
 
     public void setDelete() {
         isDelete = true;
+        isUpdate = false;
+        isInsert = false;
     }
 
     public void undoDelete() {
@@ -82,6 +84,8 @@ public class CachedRow implements Cloneable {
 
     public void setInsert() {
         isInsert = true;
+        isUpdate = false;
+        isDelete = false;
     }
 
     public boolean isInsert() {
@@ -90,6 +94,8 @@ public class CachedRow implements Cloneable {
 
     public void setUpdate() {
         isUpdate = true;
+        isInsert = false;
+        isDelete = false;
     }
 
     public void undoUpdate() {

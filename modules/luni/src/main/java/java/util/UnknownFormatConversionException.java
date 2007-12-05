@@ -20,40 +20,39 @@ import org.apache.harmony.luni.util.Msg;
 /**
  * The unchecked exception will be thrown out if the format conversion is
  * unknown.
- * 
- * 
  */
 public class UnknownFormatConversionException extends IllegalFormatException {
-	private static final long serialVersionUID = 19060418L;
 
-	private String s;
+    private static final long serialVersionUID = 19060418L;
 
-	/**
-	 * Constructs an UnknownFormatConversionException with the unknown format
-	 * conversion.
-	 * 
-	 * @param s
-	 *            The unknown format conversion
-	 */
-	public UnknownFormatConversionException(String s) {
-		this.s = s;
-	}
+    private String s;
 
-	/**
-	 * Returns the conversion associated with the exception.
-	 * 
-	 * @return The conversion associated with the exception.
-	 */
-	public String getConversion() {
-		return s;
-	}
+    /**
+     * Constructs an UnknownFormatConversionException with the unknown format
+     * conversion.
+     * 
+     * @param s
+     *            The unknown format conversion
+     */
+    public UnknownFormatConversionException(String s) {
+        this.s = s;
+    }
 
-	/**
-	 * Returns the message of the exception.
-	 * 
-	 * @return The message of the exception.
-	 */
-	@Override
+    /**
+     * Returns the conversion associated with the exception.
+     * 
+     * @return The conversion associated with the exception.
+     */
+    public String getConversion() {
+        return s;
+    }
+
+    /**
+     * Returns the message of the exception.
+     * 
+     * @return The message of the exception.
+     */
+    @Override
     public String getMessage() {
         return Msg.getString("K0349", s);
     }

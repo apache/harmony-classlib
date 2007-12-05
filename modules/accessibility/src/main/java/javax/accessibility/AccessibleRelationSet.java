@@ -26,34 +26,58 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class AccessibleRelationSet {
+
     protected Vector<AccessibleRelation> relations;
 
     public AccessibleRelationSet() {
-        initStorage();
+        super();
     }
 
     public AccessibleRelationSet(final AccessibleRelation[] relations) {
-        initStorage(relations.length);
-        addAll(relations);
+        if (relations.length != 0) {
+            this.relations = new Vector<AccessibleRelation>(relations.length);
+            for (AccessibleRelation relation : relations) {
+                add(relation);
+            }
+        }
     }
 
-    public boolean add(final AccessibleRelation relation) {
+    public boolean add(AccessibleRelation relation) {
         initStorage();
-        if (contains(relation.key)) {
-            return false;
+
+        AccessibleRelation currentRelation = get(relation.getKey());
+        if (currentRelation == null) {
+            relations.addElement(relation);
+            return true;
         }
-        relations.add(relation);
+
+        Object[] currentTarget = currentRelation.getTarget();
+        int combinedLength = currentTarget.length + relation.getTarget().length;
+        Object[] combinedTarget = new Object[combinedLength];
+
+        for (int i = 0; i < currentTarget.length; i++) {
+            combinedTarget[i] = currentTarget[i];
+        }
+        int index = 0;
+        for (int i = currentTarget.length; i < combinedLength; i++) {
+            combinedTarget[i] = relation.getTarget()[index++];
+        }
+
+        currentRelation.setTarget(combinedTarget);
+
         return true;
     }
 
-    public void addAll(final AccessibleRelation[] relations) {
-        initStorage(relations.length);
-        for (AccessibleRelation element : relations) {
-            add(element);
+    public void addAll(AccessibleRelation[] relations) {
+        if (relations.length != 0) {
+            initStorage();
+            for (AccessibleRelation relation : relations) {
+                add(relation);
+            }
         }
     }
 
-    public boolean remove(final AccessibleRelation relation) {
+    public boolean remove(AccessibleRelation relation) {
         return relations != null && relations.remove(relation);
     }
 
@@ -67,16 +91,16 @@ public class AccessibleRelationSet {
         return relations == null ? 0 : relations.size();
     }
 
-    public boolean contains(final String key) {
+    public boolean contains(String key) {
         return get(key) != null;
     }
 
-    public AccessibleRelation get(final String key) {
+    public AccessibleRelation get(String key) {
         if (relations == null) {
             return null;
         }
         for (AccessibleRelation rel : relations) {
-            if(key.equals(rel.key)) {
+            if (key.equals(rel.key)) {
                 return rel;
             }
         }
@@ -84,8 +108,8 @@ public class AccessibleRelationSet {
     }
 
     public AccessibleRelation[] toArray() {
-        return relations == null ? new AccessibleRelation[0] :
-            relations.toArray(new AccessibleRelation[relations.size()]);
+        return relations == null ? new AccessibleRelation[0] : relations
+                .toArray(new AccessibleRelation[relations.size()]);
     }
 
     @Override
@@ -94,7 +118,8 @@ public class AccessibleRelationSet {
             return ""; //$NON-NLS-1$
         }
         StringBuffer result = new StringBuffer();
-        for (Iterator<AccessibleRelation> it = relations.iterator(); it.hasNext(); ) {
+        for (Iterator<AccessibleRelation> it = relations.iterator(); it
+                .hasNext();) {
             result.append(it.next());
             if (it.hasNext()) {
                 result.append(","); //$NON-NLS-1$
@@ -103,15 +128,8 @@ public class AccessibleRelationSet {
         return result.toString();
     }
 
-
-    private void initStorage(final int capacity) {
-        if(relations == null) {
-            relations = new Vector<AccessibleRelation>(capacity);
-        }
-    }
-
     private void initStorage() {
-        if(relations == null) {
+        if (relations == null) {
             relations = new Vector<AccessibleRelation>();
         }
     }

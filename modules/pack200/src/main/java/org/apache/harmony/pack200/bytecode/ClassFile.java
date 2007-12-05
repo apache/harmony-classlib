@@ -56,7 +56,7 @@ public class ClassFile {
 			fields[i].write(dos);
 		}
 		dos.writeShort(methods.length);
-		for(int i=0;i<methods.length;i++) {
+        for(int i=0;i<methods.length;i++) {
 			methods[i].write(dos);
 		}
 		dos.writeShort(attributes.length);

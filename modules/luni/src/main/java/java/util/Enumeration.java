@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 /**
  * An Enumeration is used to sequence over a collection of objects.
  * 
@@ -27,24 +26,24 @@ package java.util;
  * @version 1.0
  */
 public interface Enumeration<E> {
-	/**
-	 * Answers if this Enumeration has more elements.
-	 * 
-	 * @return true if there are more elements, false otherwise
-	 * 
-	 * @see #nextElement
-	 */
-	public boolean hasMoreElements();
+    /**
+     * Answers if this Enumeration has more elements.
+     * 
+     * @return true if there are more elements, false otherwise
+     * 
+     * @see #nextElement
+     */
+    public boolean hasMoreElements();
 
-	/**
-	 * Answers the next element in this Enumeration.
-	 * 
-	 * @return the next element in this Enumeration
-	 * 
-	 * @exception NoSuchElementException
-	 *                when there are no more elements
-	 * 
-	 * @see #hasMoreElements
-	 */
-	public E nextElement();
+    /**
+     * Answers the next element in this Enumeration.
+     * 
+     * @return the next element in this Enumeration
+     * 
+     * @exception NoSuchElementException
+     *                when there are no more elements
+     * 
+     * @see #hasMoreElements
+     */
+    public E nextElement();
 }

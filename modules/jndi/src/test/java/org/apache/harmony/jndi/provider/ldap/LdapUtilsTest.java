@@ -20,9 +20,11 @@ package org.apache.harmony.jndi.provider.ldap;
 import javax.naming.CommunicationException;
 import javax.naming.NamingException;
 import javax.naming.TimeLimitExceededException;
+import javax.naming.directory.InvalidSearchFilterException;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.security.asn1.ASN1Integer;
 
@@ -50,6 +52,37 @@ public class LdapUtilsTest extends TestCase {
         ex = LdapUtils.getExceptionFromResult(result);
         assertTrue(ex instanceof TimeLimitExceededException);
         assertEquals("[LDAP: error code 3]", ex.getMessage());
+    }
+
+    public void test_parseFilter() throws Exception {
+        try {
+            LdapUtils.parseFilter(null, new Object[0]);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            LdapUtils.parseFilter("object=*", null);
+            fail("Should throw InvalidSearchFilterException");
+        } catch (InvalidSearchFilterException e) {
+            // expected
+        }
+        
+
+        Filter filter = LdapUtils.parseFilter("(cn={0})", new Object[] { "value" });
+        assertEquals(Filter.EQUALITY_MATCH_FILTER, filter.getType());
+        assertTrue(filter.getValue() instanceof AttributeTypeAndValuePair);
+        AttributeTypeAndValuePair pair = (AttributeTypeAndValuePair) filter.getValue();
+        assertEquals("cn", pair.getType());
+        assertEquals("value", pair.getValue());
+
+        filter = LdapUtils.parseFilter("(cn=test)", null);
+        assertEquals(Filter.EQUALITY_MATCH_FILTER, filter.getType());
+        assertTrue(filter.getValue() instanceof AttributeTypeAndValuePair);
+        pair = (AttributeTypeAndValuePair) filter.getValue();
+        assertEquals("cn", pair.getType());
+        assertEquals("test", pair.getValue());
     }
 
     private LdapResult getLdapResult(int errorCode, String message) {

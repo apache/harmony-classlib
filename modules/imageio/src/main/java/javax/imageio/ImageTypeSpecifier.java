@@ -26,6 +26,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.color.ColorSpace;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 /**
  * TODO implement all the methods
  */
@@ -63,16 +65,18 @@ public class ImageTypeSpecifier {
                                                   int blueMask,
                                                   int alphaMask,
                                                   int transferType,
-                                                  boolean isAlphaPremultiplied) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                                  boolean isAlphaPremultiplied) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static ImageTypeSpecifier createInterleaved(ColorSpace colorSpace,
                                                        int[] bandOffsets,
                                                        int dataType,
                                                        boolean hasAlpha,
-                                                       boolean isAlphaPremultiplied) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                                       boolean isAlphaPremultiplied) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
 
@@ -81,21 +85,24 @@ public class ImageTypeSpecifier {
                                                   int[] bandOffsets,
                                                   int dataType,
                                                   boolean hasAlpha,
-                                                  boolean isAlphaPremultiplied) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                                  boolean isAlphaPremultiplied) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static ImageTypeSpecifier createGrayscale(int bits,
                                                      int dataType,
-                                                     boolean isSigned) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                                     boolean isSigned) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static ImageTypeSpecifier createGrayscale(int bits,
                                                      int dataType,
                                                      boolean isSigned,
-                                                     boolean isAlphaPremultiplied) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                                     boolean isAlphaPremultiplied) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static ImageTypeSpecifier createIndexed(byte[] redLUT,
@@ -103,12 +110,14 @@ public class ImageTypeSpecifier {
                                                    byte[] blueLUT,
                                                    byte[] alphaLUT,
                                                    int bits,
-                                                   int dataType) {
-        throw new UnsupportedOperationException("Not supported yet");
+                                                   int dataType) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
-    public static ImageTypeSpecifier createFromBufferedImageType(int bufferedImageType) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public static ImageTypeSpecifier createFromBufferedImageType(int bufferedImageType) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public static ImageTypeSpecifier createFromRenderedImage(RenderedImage image) {
@@ -118,8 +127,9 @@ public class ImageTypeSpecifier {
         return new ImageTypeSpecifier(image);
     }
 
-    public int getBufferedImageType() {
-        throw new UnsupportedOperationException("Not supported yet");
+    public int getBufferedImageType() throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     public int getNumComponents() {
@@ -152,8 +162,9 @@ public class ImageTypeSpecifier {
         return colorModel;
     }
 
-    public BufferedImage createBufferedImage(int width, int height) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public BufferedImage createBufferedImage(int width, int height) throws NotImplementedException {
+        // TODO: implement
+        throw new NotImplementedException();
     }
 
     @Override

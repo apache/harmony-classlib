@@ -31,6 +31,8 @@ import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
 import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.SegmentHeader;
+import org.apache.harmony.pack200.bytecode.Attribute;
+import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
 
 import junit.framework.TestCase;
 
@@ -178,6 +180,19 @@ public class BcBandsTest extends AbstractBandsTestCase {
                 }
             }
             return attributes;
+        }
+        
+        public ArrayList getOrderedCodeAttributes() {
+            int totalMethods = 0;
+            for(int classIndex = 0; classIndex < numMethods.length; classIndex++) {
+                totalMethods = totalMethods + numMethods[classIndex];
+            }
+            ArrayList orderedAttributeList = new ArrayList();
+            for(int classIndex=0; classIndex < totalMethods; classIndex++) {
+                ArrayList currentAttributes = new ArrayList();
+                orderedAttributeList.add(currentAttributes);
+            }
+            return orderedAttributeList;
         }
     }
 
@@ -364,7 +379,9 @@ public class BcBandsTest extends AbstractBandsTestCase {
                 (byte) 162, (byte) 163, (byte) 164, (byte) 165, (byte) 166,
                 (byte) 167, (byte) 168, (byte) 170, (byte) 171, (byte) 198, (byte) 199, (byte) 200, (byte) 201, (byte) 255,
                 0, 0, // bc_case_count (required by tableswitch (170) and lookupswitch (171))
-                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}; // bc_label band
+//                Now that we're actually doing real label lookup, need valid labels
+//                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_label band                
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(16, bcBands.getMethodByteCodePacked()[0][0].length);

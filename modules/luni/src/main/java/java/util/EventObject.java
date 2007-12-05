@@ -17,7 +17,6 @@
 
 package java.util;
 
-
 import java.io.Serializable;
 
 /**
@@ -27,44 +26,44 @@ import java.io.Serializable;
  * @see EventListener
  */
 public class EventObject implements Serializable {
-	
-	private static final long serialVersionUID = 5516075349620653480L;
 
-	/**
-	 * The event source.
-	 */
-	protected transient Object source;
+    private static final long serialVersionUID = 5516075349620653480L;
 
-	/**
-	 * Constructs a new instance of this class.
-	 * 
-	 * @param source
-	 *            the object which fired the event
-	 */
-	public EventObject(Object source) {
-		if (source != null) {
+    /**
+     * The event source.
+     */
+    protected transient Object source;
+
+    /**
+     * Constructs a new instance of this class.
+     * 
+     * @param source
+     *            the object which fired the event
+     */
+    public EventObject(Object source) {
+        if (source != null) {
             this.source = source;
         } else {
             throw new IllegalArgumentException();
         }
-	}
+    }
 
-	/**
-	 * Answers the event source.
-	 * 
-	 * @return the object which fired the event
-	 */
-	public Object getSource() {
-		return source;
-	}
+    /**
+     * Answers the event source.
+     * 
+     * @return the object which fired the event
+     */
+    public Object getSource() {
+        return source;
+    }
 
-	/**
-	 * Answers the string representation of this EventObject.
-	 * 
-	 * @return the string representation of this EventObject
-	 */
-	@Override
+    /**
+     * Answers the string representation of this EventObject.
+     * 
+     * @return the string representation of this EventObject
+     */
+    @Override
     public String toString() {
-		return getClass().getName() + "[source=" + source + ']'; //$NON-NLS-1$
-	}
+        return getClass().getName() + "[source=" + source + ']'; //$NON-NLS-1$
+    }
 }

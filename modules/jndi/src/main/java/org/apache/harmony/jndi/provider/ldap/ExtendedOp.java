@@ -34,6 +34,8 @@ public class ExtendedOp implements LdapOperation, ASN1Encodable,
     private ExtendedResponse response;
 
     private LdapResult result;
+    
+    private Object[] responseValues;
 
     public ExtendedOp(ExtendedRequest request) {
         this.request = request;
@@ -60,6 +62,26 @@ public class ExtendedOp implements LdapOperation, ASN1Encodable,
     }
 
     public ExtendedResponse getExtendedResponse() {
+
+        if (result != null && result.getResultCode() == 0
+                && responseValues != null) {
+            String id = null;
+            if (responseValues[4] != null) {
+                id = Utils.getString((byte[]) responseValues[4]);
+            }
+            byte[] value = (byte[]) responseValues[5];
+            int length = 0;
+            if (value != null) {
+                length = value.length;
+            }
+            
+            try {
+                response = request.createExtendedResponse(id, value, 0, length);
+            } catch (NamingException e) {
+                // FIXME: how to deal with this exception
+                e.printStackTrace();
+            }
+        }
         return response;
     }
 
@@ -74,16 +96,7 @@ public class ExtendedOp implements LdapOperation, ASN1Encodable,
 
     public void decodeValues(Object[] values) {
         result = new LdapResult();
-        result.decodeValues(values);
-        if (values[4] != null) {
-            String id = Utils.getString((byte[]) values[4]);
-            byte[] value = (byte[]) values[5];
-            try {
-                response = request.createExtendedResponse(id, value, 0,
-                        value.length);
-            } catch (NamingException e) {
-                // FIXME: how to deal with this exception
-            }
-        }
+        result.decodeValues(values);       
+        this.responseValues = values;
     }
 }

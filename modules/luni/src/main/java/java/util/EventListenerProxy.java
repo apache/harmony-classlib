@@ -17,24 +17,23 @@
 
 package java.util;
 
-
 /**
  * This abstract class provides a simple wrapper to types of EventListener.
  * 
  */
 public abstract class EventListenerProxy implements EventListener {
 
-	private final EventListener listener;
+    private final EventListener listener;
 
-	/**
-	 * @param listener
-	 */
-	public EventListenerProxy(EventListener listener) {
-		super();
-		this.listener = listener;
-	}
+    /**
+     * @param listener
+     */
+    public EventListenerProxy(EventListener listener) {
+        super();
+        this.listener = listener;
+    }
 
-	public EventListener getListener() {
-		return listener;
-	}
+    public EventListener getListener() {
+        return listener;
+    }
 }
