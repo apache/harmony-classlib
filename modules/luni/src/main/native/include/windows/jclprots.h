@@ -405,8 +405,6 @@ extern "C"
     PROTOTYPE ((JNIEnv * env, jclass fdClazz));
   JNIEXPORT void JNICALL Java_java_io_FileDescriptor_sync
     PROTOTYPE ((JNIEnv * env, jobject recv));
-  JNIEXPORT jboolean JNICALL Java_java_io_FileDescriptor_valid
-    PROTOTYPE ((JNIEnv * env, jobject recv));
     
   /* NativesCommonProcess*/
   JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl

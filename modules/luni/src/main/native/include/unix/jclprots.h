@@ -228,7 +228,6 @@ void throwIndexOutOfBoundsException PROTOTYPE((JNIEnv* env));
 /* NativesCommonFileDescriptor*/
 void JNICALL Java_java_io_FileDescriptor_oneTimeInitialization PROTOTYPE((JNIEnv * env, jclass fdClazz));
 void JNICALL Java_java_io_FileDescriptor_sync PROTOTYPE((JNIEnv * env, jobject recv));
-jboolean JNICALL Java_java_io_FileDescriptor_valid PROTOTYPE((JNIEnv * env, jobject recv));
 
 /* NativesCommonProcess*/
 jint JNICALL Java_org_apache_harmony_luni_internal_process_ProcessInputStream_availableImpl PROTOTYPE((JNIEnv * env, jobject recv));

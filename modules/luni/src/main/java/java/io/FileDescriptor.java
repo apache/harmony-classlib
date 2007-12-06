@@ -93,5 +93,7 @@ public final class FileDescriptor {
      * @return <code>true</code> if this FileDescriptor is valid,
      *         <code>false</code> otherwise
      */
-    public native boolean valid();
+    public boolean valid() {
+        return descriptor != -1;
+    }
 }
