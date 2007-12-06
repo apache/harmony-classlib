@@ -438,6 +438,21 @@ public class XGraphics2D extends CommonGraphics2D {
                     X11Defs.CoordModeOrigin
             );
 
+            if (composite instanceof XORComposite) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                x11.XDrawLines(
+                        display,
+                        drawable,
+                        gc,
+                        xPoints,
+                        npoints+1,
+                        X11Defs.CoordModeOrigin
+                );
+                xSetForeground(fgColor.getRGB());
+            }
+
             Utils.memaccess.free(xPoints);
         } else {
             super.drawPolygon(xpoints, ypoints, npoints);
@@ -479,6 +494,21 @@ public class XGraphics2D extends CommonGraphics2D {
                     npoints,
                     X11Defs.CoordModeOrigin
             );
+
+            if (composite instanceof XORComposite) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                x11.XDrawLines(
+                        display,
+                        drawable,
+                        gc,
+                        xPoints,
+                        npoints,
+                        X11Defs.CoordModeOrigin
+                );
+                xSetForeground(fgColor.getRGB());
+            }
 
             Utils.memaccess.free(xPoints);
         } else {
