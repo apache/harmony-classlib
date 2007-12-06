@@ -212,10 +212,11 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         if (config == null) {
-            if (img == null) {
+            if (nw != null) {
                 config = new WinGraphicsConfiguration(nw.getId(), getDC());
-            } else {
-                long hwnd = img.getHWND();
+            } else if (img != null) {
+                final long hwnd = img.getHWND();
+                
                 if(hwnd != 0){
                     config = new WinGraphicsConfiguration(hwnd, getDC());
                 }else{
