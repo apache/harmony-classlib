@@ -237,15 +237,24 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     </target>
 
     <target name="-check-unix-x86_64" if="is.x86_64" unless="is.windows" depends="-check-unix-common">
-        <check-one-link src="${lcms.home}/lib/liblcms.so"
+        <condition property="lcms.lib.home" value="${lcms.home}/lib64" else="${lcms.home}/lib">
+            <available file="${lcms.home}/lib64/liblcms.so"/>
+        </condition>
+        <check-one-link src="${lcms.lib.home}/liblcms.so"
                         dest="depends/libs/build/lcms/liblcms.${hy.platform}"
                         message="${lcms.msg}" />
 
-        <check-one-link src="${png.home}/lib/libpng.so"
+        <condition property="png.lib.home" value="${png.home}/lib64" else="${png.home}/lib">
+            <available file="${png.home}/lib64/libpng.so"/>
+        </condition>
+        <check-one-link src="${png.lib.home}/libpng.so"
                         dest="depends/libs/build/png/libpng.${hy.platform}"
                         message="${png.msg}" />
 
-        <check-one-link src="${jpeg.home}/lib/libjpeg.so"
+        <condition property="jpeg.lib.home" value="${jpeg.home}/lib64" else="${jpeg.home}/lib">
+            <available file="${jpeg.home}/lib64/libjpeg.so"/>
+        </condition>
+        <check-one-link src="${jpeg.lib.home}/libjpeg.so"
                         dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
                         message="${jpeg.msg}" />
     </target>
