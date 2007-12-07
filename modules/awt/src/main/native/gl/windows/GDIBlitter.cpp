@@ -70,22 +70,20 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltBGIm
       SelectObject(tmpDC, brush);
       PatBlt(tmpDC, 0, 0, w, h, PATCOPY);
       
-      int count;
       int *regions;
       if(dirtyRegions == 0){
-          regCount = 1;
+          regCount = 4;
           regions = (int *)malloc(4 * sizeof(int));
           regions[0] = 0;
           regions[1] = 0;
           regions[2] = srcSurf->width - 1;
           regions[3] = srcSurf->height - 1;
       } else {
-          count = regCount;
-          regions = (int *)malloc(count * sizeof(int));
-          env->GetIntArrayRegion(dirtyRegions, 1, count, regions);
+          regions = (int *)malloc(regCount * sizeof(int));
+          env->GetIntArrayRegion(dirtyRegions, 1, regCount, regions);
       }
 
-      if(initBitmap(srcSurf, env, srcData, true, regions, count)){
+      if(initBitmap(srcSurf, env, srcData, true, regions, regCount)){
           BLENDFUNCTION bf;
           bf.AlphaFormat = AC_SRC_ALPHA;
           bf.BlendOp = AC_SRC_OVER;
@@ -213,22 +211,20 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_bltImag
 
       srcSurf->invalidated = invalidated != 0;
       
-      int count;
       int *regions;
       if(dirtyRegions == 0){
-          regCount = 1;
+          regCount = 4;
           regions = (int *)malloc(4 * sizeof(int));
           regions[0] = 0;
           regions[1] = 0;
           regions[2] = srcSurf->width - 1;
           regions[3] = srcSurf->height - 1;
       } else {
-          count = regCount;
-          regions = (int *)malloc(count * sizeof(int));
-          env->GetIntArrayRegion(dirtyRegions, 1, count, regions);
+          regions = (int *)malloc(regCount * sizeof(int));
+          env->GetIntArrayRegion(dirtyRegions, 1, regCount, regions);
       }
 
-      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct, regions, count)){
+      if(!initBlitData(srcSurf, env, srcData, compType, srca, &blitStruct, regions, regCount)){
           return;
       }
 
@@ -409,21 +405,19 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImag
 
       srcSurf->invalidated = invalidated != 0;
 
-      int count;
       int *regions;
       if(dirtyRegions == 0){
-          regCount = 1;
+          regCount = 4;
           regions = (int *)malloc(4 * sizeof(int));
           regions[0] = 0;
           regions[1] = 0;
           regions[2] = srcSurf->width - 1;
           regions[3] = srcSurf->height - 1;
       } else {
-          count = regCount;
-          regions = (int *)malloc(count * sizeof(int));
-          env->GetIntArrayRegion(dirtyRegions, 1, count, regions);
+          regions = (int *)malloc(regCount * sizeof(int));
+          env->GetIntArrayRegion(dirtyRegions, 1, regCount, regions);
       }
-      if(!initBitmap(srcSurf, env, srcData, true, regions, count)) return;
+      if(!initBitmap(srcSurf, env, srcData, true, regions, regCount)) return;
 
       BYTE r = (BYTE)((xorcolor >> 16) & 0xff);
       BYTE g = (BYTE)((xorcolor >> 8) & 0xff);
