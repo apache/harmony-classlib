@@ -539,8 +539,8 @@ public class XGraphics2D extends CommonGraphics2D {
     public void drawArc(int x, int y, int width, int height, int sa, int ea) {
         if (
                 nativeLines && nativePaint &&
-                !transparentColor && simpleComposite &&
-                (transform.getType() & AffineTransform.TYPE_TRANSLATION) != 0
+                !scalingTransform && !transparentColor &&
+                simpleComposite
         ) {
             Point2D orig = new Point2D.Float(x, y);
             transform.transform(orig, orig);
@@ -552,6 +552,21 @@ public class XGraphics2D extends CommonGraphics2D {
                     width, height,
                     sa << 6, ea << 6
             );
+
+            if (composite instanceof XORComposite) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                x11.XDrawArc(
+                        display,
+                        drawable,
+                        gc,
+                        (int) orig.getX(), (int) orig.getY(),
+                        width, height,
+                        sa << 6, ea << 6
+                );
+                xSetForeground(fgColor.getRGB());
+            }
         } else {
             super.drawArc(x, y, width, height, sa, ea);
         }
