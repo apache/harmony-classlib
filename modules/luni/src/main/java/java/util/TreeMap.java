@@ -1862,10 +1862,10 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         } else {
             toDelete = node.next;
         }
-        if (node.left != null) {
-            toConnect = node.left;
+        if (toDelete.left != null) {
+            toConnect = toDelete.left;
         } else {
-            toConnect = node.right;
+            toConnect = toDelete.right;
         }
         if (toConnect != null) {
             toConnect.parent = toDelete.parent;
