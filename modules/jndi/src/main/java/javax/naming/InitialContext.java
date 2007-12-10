@@ -72,7 +72,7 @@ import org.apache.harmony.jndi.internal.nls.Messages;
  * to construct a classname suffix in the following form:<br>
  * 
  * <pre>
- *     &lt;package_prefix&gt; . &lt;scheme&gt; . &lt;scheme&gt;URLContextFactory
+ *            &lt;package_prefix&gt; . &lt;scheme&gt; . &lt;scheme&gt;URLContextFactory
  * </pre>
  * 
  * Several variants of the classname are constructed using each element of the
@@ -124,6 +124,16 @@ public class InitialContext implements Context {
      * the the sources of JNDI environment properties. Initially null.
      */
     protected Hashtable<Object, Object> myProps;
+
+    /**
+     * Contains loaded properties for each classloader
+     */
+    private static Hashtable<ClassLoader, Hashtable<Object, Object>> propsCache = new Hashtable<ClassLoader, Hashtable<Object, Object>>();
+    
+    /**
+     * Contians properties load from java.home/lib/jndi.properties
+     */
+    private static Hashtable<Object, Object> libProperties = null;
 
     /**
      * Constructs an <code>InitialContext</code> instance without using any
@@ -203,11 +213,26 @@ public class InitialContext implements Context {
         EnvironmentReader.readSystemProperties(myProps);
 
         // 4.1 Read application/applet resource files
-        EnvironmentReader.readApplicationResourceFiles(myProps);
-
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (propsCache.containsKey(cl)) {
+            EnvironmentReader.mergeEnvironment(propsCache.get(cl), myProps,
+                    true);
+        } else {
+            Hashtable<Object, Object> appProps = new Hashtable<Object, Object>();
+            EnvironmentReader.readApplicationResourceFiles(appProps);
+            propsCache.put(cl, appProps);
+            EnvironmentReader.mergeEnvironment(appProps, myProps, true);
+        }
+        
         // 4.2 Read "java.home"/lib/jndi.properties
-        EnvironmentReader.readLibraryResourceFile(myProps);
-
+        if (libProperties == null) {
+            libProperties = new Hashtable<Object, Object>();
+            EnvironmentReader.readLibraryResourceFile(libProperties);
+        }
+        
+        EnvironmentReader.mergeEnvironment(libProperties, myProps, true);
+        
+        
         // 5. No need to read service provider resource files
 
         // if JNDI standard property "java.naming.factory.initial" has a
@@ -217,6 +242,7 @@ public class InitialContext implements Context {
             // defaultInitCtx
             getDefaultInitCtx();
         }
+
     }
 
     /**
@@ -362,7 +388,7 @@ public class InitialContext implements Context {
                 if (null == ctx) {
                     ctx = getDefaultInitCtx();
                 }
-                contextCache.put(scheme, ctx);               
+                contextCache.put(scheme, ctx);
             }
             return ctx;
         }
@@ -505,7 +531,7 @@ public class InitialContext implements Context {
     }
 
     public Object addToEnvironment(String propName, Object propVal)
-            throws NamingException {        
+            throws NamingException {
         synchronized (contextCache) {
             myProps.put(propName, propVal);
             contextCache.clear();
@@ -534,7 +560,6 @@ public class InitialContext implements Context {
     public String getNameInNamespace() throws NamingException {
         return getDefaultInitCtx().getNameInNamespace();
     }
-    
-    
-    private HashMap<String, Context> contextCache = new HashMap<String, Context>();   
+
+    private HashMap<String, Context> contextCache = new HashMap<String, Context>();
 }
