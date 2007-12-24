@@ -316,7 +316,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      *             If an error occurs attempting to drain the data
      */
     protected void drain() throws IOException {
-        if (primitiveTypes == null) {
+        if (primitiveTypes == null || primitiveTypesBuffer == null) {
             return;
         }
 
