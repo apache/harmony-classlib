@@ -18,6 +18,7 @@ package tests.api.java.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -540,6 +541,67 @@ public class DataInputStreamTest extends junit.framework.TestCase {
                 assertTrue("Incorrect string read", dis.readUTF().equals(unihw));
 	}
 
+    static class TestDataInputStream implements DataInput {
+        public boolean readBoolean() throws IOException {
+            return false;
+        }
+
+        public byte readByte() throws IOException {
+            return (byte) 0;
+        }
+
+        public char readChar() throws IOException {
+            return (char) 0;
+        }
+
+        public double readDouble() throws IOException {
+            return 0.0;
+        }
+
+        public float readFloat() throws IOException {
+            return (float) 0.0;
+        }
+
+        public void readFully(byte[] buffer) throws IOException {
+        }
+
+        public void readFully(byte[] buffer, int offset, int count)
+            throws IOException {
+        }
+
+        public int readInt() throws IOException {
+            return 0;
+        }
+
+        public String readLine() throws IOException {
+            return null;
+        }
+
+        public long readLong() throws IOException {
+            return (long) 0;
+        }
+
+        public short readShort() throws IOException {
+            return (short) 0;
+        }
+
+        public int readUnsignedByte() throws IOException {
+            return 0;
+        }
+
+        public int readUnsignedShort() throws IOException {
+            return 0;
+        }
+
+        public String readUTF() throws IOException {
+            return DataInputStream.readUTF(this);
+        }
+
+        public int skipBytes(int count) throws IOException {
+            return 0;
+        }
+    }
+
 	/**
 	 * @tests java.io.DataInputStream#readUTF(java.io.DataInput)
 	 */
@@ -553,6 +615,9 @@ public class DataInputStreamTest extends junit.framework.TestCase {
                                 dis.available() == unihw.length() + 2);
                 assertTrue("Incorrect string read", DataInputStream.readUTF(dis)
                                 .equals(unihw));
+
+                // Regression test for HARMONY-5336
+                new TestDataInputStream().readUTF();
 	}
 
 	/**

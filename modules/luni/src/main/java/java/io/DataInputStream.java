@@ -413,10 +413,13 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 
 
     String decodeUTF(int utfSize) throws IOException {
+        return decodeUTF(utfSize, this);
+    }
 
+    private static String decodeUTF(int utfSize, DataInput in) throws IOException {
         byte[] buf = new byte[utfSize];
         char[] out = new char[utfSize];
-        readFully(buf, 0, utfSize);
+        in.readFully(buf, 0, utfSize);
 
         return Util.convertUTF8WithBuf(buf, out, 0, utfSize);
     }
@@ -434,7 +437,7 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutput#writeUTF(java.lang.String)
      */
     public static final String readUTF(DataInput in) throws IOException {
-        return in.readUTF();
+        return decodeUTF(in.readUnsignedShort(), in);
     }
 
     /**
