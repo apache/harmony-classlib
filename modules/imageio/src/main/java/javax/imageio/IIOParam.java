@@ -87,11 +87,11 @@ public abstract class IIOParam {
             throw new IllegalArgumentException("sourceYSubsampling <= 0");
         }
 
-        if (subsamplingXOffset <= 0 || subsamplingXOffset >= sourceXSubsampling) {
+        if ((subsamplingXOffset < 0) || (subsamplingXOffset >= sourceXSubsampling)) {
             throw new IllegalArgumentException("subsamplingXOffset is wrong");
         }
 
-        if (subsamplingYOffset <= 0 || subsamplingYOffset >= sourceYSubsampling) {
+        if ((subsamplingYOffset < 0) || (subsamplingYOffset >= sourceYSubsampling)) {
             throw new IllegalArgumentException("subsamplingYOffset is wrong");
         }
 
