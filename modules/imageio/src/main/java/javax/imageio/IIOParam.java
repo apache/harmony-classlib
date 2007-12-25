@@ -22,8 +22,6 @@ package javax.imageio;
 
 import java.awt.*;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public abstract class IIOParam {
     protected Rectangle sourceRegion;
     protected int sourceXSubsampling = 1;
@@ -125,24 +123,36 @@ public abstract class IIOParam {
         return subsamplingYOffset;
     }
 
-    public void setSourceBands(int[] sourceBands) throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public void setSourceBands(final int[] sourceBands) {
+        if (sourceBands == null) {
+            this.sourceBands = null;
+        } else {
+            for (int i = 0; i < sourceBands.length; i++) {
+                if (sourceBands[i] < 0) {
+                    throw new IllegalArgumentException("negative value");
+                }
+                
+                for (int j = i + 1; j < sourceBands.length; j++) {
+                    if (sourceBands[i] == sourceBands[j]) {
+                        throw new IllegalArgumentException("duplicate value");
+                    }
+                }
+            }
+            
+            this.sourceBands = sourceBands.clone();
+        }
     }
 
-    public int[] getSourceBands() throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public int[] getSourceBands() {
+        return (sourceBands != null) ? sourceBands.clone() : null;
     }
 
-    public void setDestinationType(ImageTypeSpecifier destinationType) throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public void setDestinationType(final ImageTypeSpecifier destinationType) {
+        this.destinationType = destinationType;
     }
 
-    public ImageTypeSpecifier getDestinationType() throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public ImageTypeSpecifier getDestinationType() {
+        return destinationType;
     }
 
     public void setDestinationOffset(Point destinationOffset) {
@@ -157,28 +167,29 @@ public abstract class IIOParam {
         return (Point) destinationOffset.clone();        
     }
 
-    public void setController(IIOParamController controller) throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public void setController(final IIOParamController controller) {
+        this.controller = controller;
     }
 
-    public IIOParamController getController() throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public IIOParamController getController(){
+        return controller;
     }
 
-    public IIOParamController getDefaultController() throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public IIOParamController getDefaultController() {
+        return defaultController;
     }
 
-    public boolean hasController() throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public boolean hasController() {
+        return (controller != null);
     }
 
-    public boolean activateController() throws NotImplementedException {
-        // TODO implement
-        throw new NotImplementedException();
+    public boolean activateController() {
+        final IIOParamController controller = getController();
+        
+        if (controller == null) {
+            throw new IllegalStateException("controller wasn't set");
+        }
+        
+        return controller.activate(this);
     }
 }
