@@ -99,17 +99,17 @@ inline void updateCache
 
         case INT_ARGB:
             {
-                unsigned char *src, *s, *dst, *d, sa;
-
-                src_stride = srcSurf->scanline_stride_byte;
-                dst_stride = srcSurf->width << 2;
-
-                src_offset = y * src_stride + ((x + w) << 2) - 1;
-                dst_offset = y * dst_stride + ((x + w) << 2) - 1;
-                src = (unsigned char *)srcDataPtr + src_offset;
-                dst = (unsigned char *)bmpDataPtr + dst_offset;
-
                 if(alphaPre){
+                    unsigned char *src, *s, *dst, *d, sa;
+
+                    src_stride = srcSurf->scanline_stride_byte;
+                    dst_stride = srcSurf->width << 2;
+
+                    src_offset = y * src_stride + ((x + w) << 2) - 1;
+                    dst_offset = y * dst_stride + ((x + w) << 2) - 1;
+                    src = (unsigned char *)srcDataPtr + src_offset;
+                    dst = (unsigned char *)bmpDataPtr + dst_offset;
+
                     for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
                         s = src;
                         d = dst;
@@ -129,28 +129,23 @@ inline void updateCache
                             }
                         }
                     }
+
                     srcSurf->isAlphaPre = true;
                 }else{
-                    for(int _y = h; _y > 0; _y--, src += src_stride, dst += dst_stride){
-                        s = src;
-                        d = dst;
+                    unsigned int *src, *dst;
 
-                        for(int _x = w; _x > 0; _x--){
-                            sa = *s--;
-                            if(sa == 0){
-                                *d-- = 0;
-                                *d-- = 0;
-                                *d-- = 0;
-                                *d-- = 0;
-                                s -= 3;
-                            }else{
-                                *d-- = sa;
-                                *d-- = MUL(sa, *s--);
-                                *d-- = MUL(sa, *s--);
-                                *d-- = MUL(sa, *s--);
-                            }
-                        }
+                    src_stride = srcSurf->scanline_stride;
+                    dst_stride = srcSurf->width;
+
+                    src_offset = y * src_stride + x;
+                    dst_offset = y * dst_stride + x;
+                    src = (unsigned int *)srcDataPtr + src_offset;
+                    dst = (unsigned int *)bmpDataPtr + dst_offset;
+
+                    for(int _y = 0; _y < h; _y++, src += src_stride, dst += dst_stride){
+                        memcpy(dst, src, w * sizeof(int));
                     }
+
                     srcSurf->isAlphaPre = false;
                 }
             }
@@ -303,17 +298,10 @@ inline void updateCache
                             g = *s--;
                             b = *s--;
                             a = *s--;
-                            if(a == 0){
-                                *d-- = 0;
-                                *d-- = 0;
-                                *d-- = 0;
-                                *d-- = 0;
-                            }else{
-                                *d-- = a;
-                                *d-- = r;
-                                *d-- = g;
-                                *d-- = b;
-                            }
+                            *d-- = a;
+                            *d-- = r;
+                            *d-- = g;
+                            *d-- = b;
                         }
                     }
                     srcSurf->isAlphaPre = false;

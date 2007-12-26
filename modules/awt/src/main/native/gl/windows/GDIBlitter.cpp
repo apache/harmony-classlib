@@ -417,7 +417,7 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImag
           regions = (int *)malloc(regCount * sizeof(int));
           env->GetIntArrayRegion(dirtyRegions, 1, regCount, regions);
       }
-      if(!initBitmap(srcSurf, env, srcData, true, regions, regCount)) return;
+      if(!initBitmap(srcSurf, env, srcData, false, regions, regCount)) return;
 
       BYTE r = (BYTE)((xorcolor >> 16) & 0xff);
       BYTE g = (BYTE)((xorcolor >> 8) & 0xff);
@@ -450,8 +450,38 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_windows_GDIBlitter_xorImag
 
       HGDIOBJ oldBrush = SelectObject(dstSurf->gi->hdc, brush);
 
-      BitBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
-              srcX, srcY, 0x960169);
+      if(srcSurf->has_alpha){
+
+          int scanline_word = srcSurf->width / 16;
+          if(srcSurf->width % 16 != 0) scanline_word++;
+
+          BYTE *pm = (BYTE *)calloc(scanline_word * srcSurf->height * 2, 1);
+
+          int byteIdx = 0;
+          unsigned int *p = (unsigned int *)srcSurf->bmpData;
+          for(int y = 0; y < srcSurf->height; y++){
+              for(int x = 0, shift = 7; x < srcSurf->width; x++, shift--, p++){
+                  if(shift < 0 ){
+                      shift = 7;
+                      byteIdx++;
+                  } 
+                  unsigned int pixel = (*p >> 24) & 0xff;
+                  if(pixel > 127) pm[byteIdx] |= 1 << shift;
+              }
+              if(byteIdx % 2 != 0) byteIdx++;
+              else byteIdx += 2;
+          }      
+
+          HBITMAP mask = CreateBitmap(srcSurf->width, srcSurf->height, 1, 1, pm);
+          free(pm);
+          MaskBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
+                  srcX, srcY, mask, srcX, srcY, MAKEROP4(0x960169, 0xAA0029));
+          DeleteObject(mask);
+      }else{
+
+          BitBlt(dstSurf->gi->hdc, dstX, dstY, width, height, srcSurf->srcDC,
+                  srcX, srcY, 0x960169);
+      }
 
       SelectObject(dstSurf->gi->hdc, oldBrush);
 
