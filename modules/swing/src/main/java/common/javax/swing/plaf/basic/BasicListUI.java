@@ -640,8 +640,10 @@ public class BasicListUI extends ListUI {
     }
 
     protected void paintCell(final Graphics g, final int row, final Rectangle rowBounds, final ListCellRenderer cellRenderer, final ListModel dataModel, final ListSelectionModel selModel, final int leadIndex) {
-        Component renderer = list.getCellRenderer().getListCellRendererComponent(list, dataModel.getElementAt(row), row, selModel.isSelectedIndex(row), list.isFocusOwner() && selModel.getLeadSelectionIndex() == row);
-        rendererPane.paintComponent(g, renderer, list, rowBounds.x, rowBounds.y, rowBounds.width, rowBounds.height);
+        if (list.getCellRenderer() != null){
+             Component renderer = list.getCellRenderer().getListCellRendererComponent(list, dataModel.getElementAt(row), row, selModel.isSelectedIndex(row), list.isFocusOwner() && selModel.getLeadSelectionIndex() == row);
+             rendererPane.paintComponent(g, renderer, list, rowBounds.x, rowBounds.y, rowBounds.width, rowBounds.height);
+      }
     }
 
     protected void selectNextIndex() {

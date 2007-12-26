@@ -299,6 +299,8 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
 
             private Component getRenderingComponent() {
+                if(list.getCellRenderer()==null)
+                    return null;
                 return list.getCellRenderer().getListCellRendererComponent(list, list.getModel().getElementAt(indexInParent), indexInParent, false, false);
             }
         }
@@ -585,8 +587,9 @@ public class JList extends JComponent implements Scrollable, Accessible {
             Object oldValue = this.prototypeCellValue;
             this.prototypeCellValue = prototypeCellValue;
             firePropertyChange(PROTOTYPE_CELL_VALUE_CHANGED_PROPERTY, oldValue, prototypeCellValue);
-
-            Dimension prototypePreferredSize = getCellRenderer().getListCellRendererComponent(this, prototypeCellValue, 0, false, false).getPreferredSize();
+            Dimension prototypePreferredSize = new Dimension(0,0);
+            if (getCellRenderer() != null)
+            prototypePreferredSize = getCellRenderer().getListCellRendererComponent(this, prototypeCellValue, 0, false, false).getPreferredSize();
             this.fixedCellWidth = prototypePreferredSize.width;
             this.fixedCellHeight = prototypePreferredSize.height;
         }
@@ -985,6 +988,9 @@ public class JList extends JComponent implements Scrollable, Accessible {
         if (index == -1) {
             return super.getToolTipText();
         }
+        if (cellRenderer == null) {
+        return super.getToolTipText();
+        }
         Component renderer = cellRenderer.getListCellRendererComponent(this, model.getElementAt(index), index, false, false);
         String result = null;
         if (renderer instanceof JComponent) {
@@ -1025,6 +1031,8 @@ public class JList extends JComponent implements Scrollable, Accessible {
 
     private int getMaximumCellWidth() {
         int result = 0;
+        if(cellRenderer==null)
+            return result;
         for (int i = 0; i < model.getSize(); i++) {
             int width = cellRenderer.getListCellRendererComponent(this, model.getElementAt(i), i, false, false).getPreferredSize().width;
             if (result < width) {

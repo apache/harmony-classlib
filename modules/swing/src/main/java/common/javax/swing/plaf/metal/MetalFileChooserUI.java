@@ -335,18 +335,18 @@ public class MetalFileChooserUI extends BasicFileChooserUI {
 
             public void configure() {
                 Rectangle editorBounds = list.getCellBounds(editingIndex, editingIndex);
-                JLabel renderer = (JLabel)list.getCellRenderer().getListCellRendererComponent(list, list.getModel().getElementAt(editingIndex), editingIndex, true, true);
-                String text = renderer.getText();
-                setText(text);
-                Icon icon = renderer.getIcon();
-                if (icon != null) {
-                    int offset = icon.getIconWidth() + renderer.getIconTextGap();
-                    editorBounds.x += offset;
-                    editorBounds.width -= offset;
+                if(list.getCellRenderer()!=null){                
+                    JLabel renderer = (JLabel)list.getCellRenderer().getListCellRendererComponent(list, list.getModel().getElementAt(editingIndex), editingIndex, true, true);
+                    String text = renderer.getText();
+                    setText(text);
+                    Icon icon = renderer.getIcon();
+                    if (icon != null) {
+                           int offset = icon.getIconWidth() + renderer.getIconTextGap();
+                           editorBounds.x += offset;
+                           editorBounds.width -= offset;
+                    }
                 }
-
                 setBounds(editorBounds);
-
                 requestFocus();
                 selectAll();
             }
