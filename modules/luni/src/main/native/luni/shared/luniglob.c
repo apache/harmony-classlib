@@ -346,10 +346,6 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
             returnCode = JNI_ERR;
             goto cleanup;
         }
-        if (!bootstrapClassPath) {
-            /* no such property yet */
-            bootstrapClassPath = "";
-        }
 
         qsort(props, number, sizeof(key_value_pair), props_compare);
 
@@ -362,11 +358,13 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
             if (tokensScanned == 1)
             {
                 char *oldPath = bootstrapClassPath;
-                bootstrapClassPath = str_concat (PORTLIB, 
-                    bootstrapClassPath, cpSeparator,
-                    bootDirectory, props[i].value, NULL);
-                if (i != 0) 
-                {
+                if (!oldPath) {
+                    bootstrapClassPath = str_concat (PORTLIB, 
+                        bootDirectory, props[i].value, NULL);
+                } else {
+                    bootstrapClassPath = str_concat (PORTLIB, 
+                        bootstrapClassPath, cpSeparator,
+                        bootDirectory, props[i].value, NULL);
                     hymem_free_memory (oldPath);
                 }
 
