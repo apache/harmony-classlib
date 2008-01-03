@@ -50,10 +50,10 @@ public class MultiANewArrayForm extends NewClassRefForm {
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
+            OperandManager operandManager, int codeLength) {
         // multianewarray has a class ref and a dimension.
         // The superclass handles the class ref.
-        super.setByteCodeOperands(byteCode, operandManager);
+        super.setByteCodeOperands(byteCode, operandManager, codeLength);
         
         // We have to handle the dimension.
         int dimension = operandManager.nextByte();

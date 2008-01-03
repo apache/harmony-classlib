@@ -28,6 +28,8 @@ import org.apache.harmony.pack200.SegmentConstantPool;
  */
 public class OperandManager {
 	
+    int[] bcCaseCount;
+    int[][] bcCaseValue;
     int[] bcByte;
     int[] bcShort;
     int[] bcLocal;
@@ -47,6 +49,8 @@ public class OperandManager {
 	int[] bcSuperMethod;
 	int[] bcInitRef;
     
+	int bcCaseCountIndex = 0;
+	int bcCaseValueIndex = 0;
 	int bcByteIndex = 0;
 	int bcShortIndex = 0;
 	int bcLocalIndex = 0;
@@ -72,7 +76,9 @@ public class OperandManager {
 	String superClass = null;
 	String newClass = null;
 	
-	public OperandManager(int[] bcByte, int[]  bcShort, int[]  bcLocal, int[]  bcLabel, int[]  bcIntRef, int[]  bcFloatRef, int[]  bcLongRef, int[]  bcDoubleRef, int[]  bcStringRef, int[]  bcClassRef, int[]  bcFieldRef, int[]  bcMethodRef, int[] bcIMethodRef, int[] bcThisField, int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod, int[] bcInitRef) {
+	public OperandManager(int[] bcCaseCount, int[][] bcCaseValue, int[] bcByte, int[]  bcShort, int[]  bcLocal, int[]  bcLabel, int[]  bcIntRef, int[]  bcFloatRef, int[]  bcLongRef, int[]  bcDoubleRef, int[]  bcStringRef, int[]  bcClassRef, int[]  bcFieldRef, int[]  bcMethodRef, int[] bcIMethodRef, int[] bcThisField, int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod, int[] bcInitRef) {
+	    this.bcCaseCount = bcCaseCount;
+	    this.bcCaseValue = bcCaseValue;
 	    this.bcByte = bcByte;
 	    this.bcShort = bcShort;
 	    this.bcLocal = bcLocal;
@@ -93,6 +99,14 @@ public class OperandManager {
 	    this.bcSuperMethod = bcSuperMethod;
 	    this.bcInitRef = bcInitRef;
 	}
+    
+    public int nextCaseCount() {
+        return bcCaseCount[bcCaseCountIndex++];       
+    }
+    
+    public int[] nextCaseValues() {
+        return bcCaseValue[bcCaseValueIndex++];       
+    }
     
 	public int nextByte() {
 		return bcByte[bcByteIndex++];		

@@ -294,8 +294,8 @@ public class BcBandsTest extends AbstractBandsTestCase {
     public void testBcCaseBands() throws IOException, Pack200Exception {
         byte[] bytes = new byte[] {(byte)170,(byte)171, (byte)255,
                 2, 5, // bc_case_count
-                8, 8, 8, 8, 8, 8, 8, // bc_case_value
-                8, 8}; // bc_label                
+                0, 1, 0, 1, 2, 3, 4, // bc_case_value
+                0, 0, 0, 0, 0, 0, 0, 0, 0}; // bc_label                
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -307,7 +307,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
         assertEquals(2, bc_case_value.length);
         assertEquals(2, bc_case_value[0].length);
         assertEquals(5, bc_case_value[1].length);
-        assertEquals(2, bcBands.getBcLabel().length);
+        assertEquals(9, bcBands.getBcLabel().length);
     }
     
     /**

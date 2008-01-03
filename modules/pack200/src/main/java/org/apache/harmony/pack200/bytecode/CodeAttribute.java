@@ -46,7 +46,7 @@ public class CodeAttribute extends Attribute {
             // Setting the offset must happen before extracting operands
             // because label bytecodes need to know their offsets.
             byteCode.setByteCodeIndex(i);
-            byteCode.extractOperands(operandManager, segment);
+            byteCode.extractOperands(operandManager, segment, codeLength);
             byteCodes.add(byteCode);
             codeLength += byteCode.getLength();
             int lastBytecodePosition = ((Integer) byteCodeOffsets

@@ -90,8 +90,12 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
     public void renumber(List byteCodeOffsets) {
         // First fix up the start_pcs
         super.renumber(byteCodeOffsets);
+        // lengths are BRANCH5 encoded, not BCI-encoded.
+        // In other words - renumber(x) - renumber(x0)?
+        // Add the offset to the value?
         // Next fix up the lengths
-        int maxLength = ((Integer)byteCodeOffsets.get(byteCodeOffsets.size() - 1)).intValue();
+        int lastInstruction = ((Integer)byteCodeOffsets.get(byteCodeOffsets.size() - 1)).intValue();
+        int maxLength = lastInstruction + 1;
         for(int index=0; index < lengths.length; index++) {
             // Need to special case when the length is greater than the size
             int revisedLength = -1;
@@ -100,7 +104,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             // end of the byte code offsets. Need to determine which this is.
             if(encodedLength == byteCodeOffsets.size()) {
                 // Pointing to one past the end of the byte code array
-                revisedLength = maxLength - start_pcs[index] + 1;
+                revisedLength = maxLength - start_pcs[index];
             } else {
                 // We're indexed into the byte code array
                 revisedLength = ((Integer)byteCodeOffsets.get(encodedLength)).intValue();                

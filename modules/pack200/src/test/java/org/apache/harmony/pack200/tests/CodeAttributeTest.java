@@ -77,7 +77,9 @@ public class CodeAttributeTest extends TestCase {
     public class MockOperandManager extends OperandManager {
 
         public MockOperandManager() {
-            super(new int[] {}, // bcByte
+            super(new int[] {}, // bcCaseCount
+                    new int[][] {}, // bcCaseValues
+                    new int[] {}, // bcByte
                     new int[] {}, // bcShort
                     new int[] {}, // bcLocal
                     new int[] {}, // bcLabel

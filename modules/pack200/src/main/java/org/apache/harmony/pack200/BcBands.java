@@ -299,7 +299,15 @@ public class BcBands extends BandSet {
         // other bytecode bands
         debug("Parsed *bc_codes (" + bcParsed + ")");
         bcCaseCount = decodeBandInt("bc_case_count", in, Codec.UNSIGNED5, bcCaseCountCount);
-        bcCaseValue = decodeBandInt("bc_case_value", in, Codec.DELTA5, bcCaseCount);
+        // TODO HACK HACK: Not sure how this should be done.
+        // bcCaseValue = decodeBandInt("bc_case_value", in, Codec.DELTA5, new int[]{1} /* to test tableswitch */);
+        bcCaseValue = decodeBandInt("bc_case_value", in, Codec.DELTA5, bcCaseCount /* to test lookupswitch */);
+        // Every case value needs a label. We weren't able to count these
+        // above, because we didn't know how many cases there were.
+        // Have to correct it now.
+        for(int index=0; index < bcCaseCountCount; index++) {
+            bcLabelCount += bcCaseCount[index];
+        }
         bcByte = decodeBandInt("bc_byte", in, Codec.BYTE1, bcByteCount);
         bcShort = decodeBandInt("bc_short", in, Codec.DELTA5, bcShortCount);
         bcLocal = decodeBandInt("bc_local", in, Codec.UNSIGNED5, bcLocalCount);
@@ -337,10 +345,10 @@ public class BcBands extends BandSet {
         bcEscSize = decodeBandInt("bc_escsize", in, Codec.UNSIGNED5, bcEscCount);
         bcEscByte = decodeBandInt("bc_escbyte", in, Codec.BYTE1, bcEscSize);
 
-        OperandManager operandManager = new OperandManager(bcByte, bcShort,
-                bcLocal, bcLabel, bcIntRef, bcFloatRef, bcLongRef, bcDoubleRef,
-                bcStringRef, bcClassRef, bcFieldRef, bcMethodRef, bcIMethodRef,
-                bcThisField, bcSuperField, bcThisMethod, bcSuperMethod,
+        OperandManager operandManager = new OperandManager(bcCaseCount, bcCaseValue,
+                bcByte, bcShort, bcLocal, bcLabel, bcIntRef, bcFloatRef, bcLongRef,
+                bcDoubleRef, bcStringRef, bcClassRef, bcFieldRef, bcMethodRef,
+                bcIMethodRef, bcThisField, bcSuperField, bcThisMethod, bcSuperMethod,
                 bcInitRef);
         operandManager.setSegment(segment);
 
@@ -373,7 +381,9 @@ public class BcBands extends BandSet {
                      // broken because these tables don't get renumbered
                      // properly. Commenting out the add so the class files
                      // will verify.
-                     //attr.attributes.add(currentAttribute);
+    //                 if(currentAttribute.getClass() == LineNumberTableAttribute.class) {
+                         attr.attributes.add(currentAttribute);
+    //                 }
                      // Fix up the line numbers if needed
                      if(currentAttribute.hasBCIRenumbering()) {
                          ((BCIRenumberedAttribute)currentAttribute).renumber(attr.byteCodeOffsets);

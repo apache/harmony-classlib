@@ -50,9 +50,9 @@ public class LabelForm extends ByteCodeForm {
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTarget(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.CodeAttribute)
      */
-    public void fixUpByteCodeTarget(ByteCode byteCode, CodeAttribute codeAttribute) {
+    public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
         // LabelForms need to fix up the target of label operations
-        int originalTarget = byteCode.getByteCodeTarget();
+        int originalTarget = byteCode.getByteCodeTargets()[0];
         int sourceIndex = byteCode.getByteCodeIndex();
         int absoluteInstructionTargetIndex = sourceIndex + originalTarget;
         int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
@@ -60,7 +60,7 @@ public class LabelForm extends ByteCodeForm {
         // The operand is the difference between the source instruction
         // and the destination instruction.
         // TODO: Probably have to do something other than setOperandInt if this is widened.
-        byteCode.setOperandSignedInt(targetValue - sourceValue, 0);
+        byteCode.setOperandSigned2Bytes(targetValue - sourceValue, 0);
         if(widened) {
             byteCode.setNestedPositions(new int[][] {{0,4}});
         } else {
@@ -72,8 +72,8 @@ public class LabelForm extends ByteCodeForm {
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
-        byteCode.setByteCodeTarget(operandManager.nextLabel());
+            OperandManager operandManager, int codeLength) {
+        byteCode.setByteCodeTargets(new int[] {operandManager.nextLabel()});
         // The byte code operands actually get set later -
         // once we have all the bytecodes - in fixUpByteCodeTarget().
         return;
