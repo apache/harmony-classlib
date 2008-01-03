@@ -20,7 +20,6 @@ package java.net;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.io.OutputStream;
 
 import org.apache.harmony.luni.platform.INetworkSystem;
@@ -33,9 +32,9 @@ import org.apache.harmony.luni.util.Msg;
  * Streaming sockets are wrapped by two classes, ServerSocket and Socket at the
  * server and client end of a connection respectively. At the server there are
  * two types of sockets engaged in communication, the <code>ServerSocket</code>
- * on a well known port (hereafter refered to as the listener) used to establish
- * a connection and the resulting <code>Socket</code> (hereafter refered to as
- * host).
+ * on a well known port (hereafter referred to as the listener) used to
+ * establish a connection and the resulting <code>Socket</code> (hereafter
+ * referred to as host).
  * 
  * Some of the <code>SocketImpl</code> instance variable values must be
  * interpreted in the context of the wrapper. See the getter methods for these
@@ -82,7 +81,7 @@ public abstract class SocketImpl implements SocketOptions {
      * Answer the number of bytes that may be read from this socket without
      * blocking. This call does not block.
      * 
-     * @return int the number of bytes that may be read without blocking
+     * @return the number of bytes that may be read without blocking
      * @exception SocketException
      *                if an error occurs while peeking
      */
@@ -155,10 +154,10 @@ public abstract class SocketImpl implements SocketOptions {
     }
 
     /**
-     * Answer the socket's address. Refering to the class comment: Listener: The
-     * local machines IP address to which this socket is bound. Host: The client
-     * machine, to which this socket is connected. Client: The host machine, to
-     * which this socket is connected.
+     * Answer the socket's address. Referring to the class comment: Listener:
+     * The local machines IP address to which this socket is bound. Host: The
+     * client machine, to which this socket is connected. Client: The host
+     * machine, to which this socket is connected.
      * 
      * @return InetAddress the socket address
      */
@@ -180,7 +179,7 @@ public abstract class SocketImpl implements SocketOptions {
      * demand will go to the IP stack to get the bound value. See the class
      * comment for the context of the local port.
      * 
-     * @return int the socket localport
+     * @return the socket localport
      */
 
     protected int getLocalPort() {
@@ -211,7 +210,7 @@ public abstract class SocketImpl implements SocketOptions {
      * Answer the socket's remote port. This value is not meaningful when the
      * socketImpl is wrapped by a ServerSocket.
      * 
-     * @return int the remote port the socket is connected to
+     * @return the remote port the socket is connected to
      */
     protected int getPort() {
         return port;
@@ -246,7 +245,7 @@ public abstract class SocketImpl implements SocketOptions {
      * Answers a string containing a concise, human-readable description of the
      * socket.
      * 
-     * @return String the description
+     * @return the description
      */
     @SuppressWarnings("nls")
     @Override
@@ -266,7 +265,7 @@ public abstract class SocketImpl implements SocketOptions {
      *            the offset into the buffer
      * @param count
      *            the number of bytes to write
-     * @return int the actual number of bytes written
+     * @return the actual number of bytes written
      * @exception IOException
      *                thrown if an error occurs while writing
      */
@@ -281,11 +280,11 @@ public abstract class SocketImpl implements SocketOptions {
     /**
      * Shutdown the input portion of the socket.
      * 
-     * The default implementation always throws an {@link IOException}
-     * to indicate that the subclass should have overridden this
-     * method.
+     * The default implementation always throws an {@link IOException} to
+     * indicate that the subclass should have overridden this method.
      * 
-     * @throws IOException Always.  Designed to be subclassed.
+     * @throws IOException
+     *             Always. Designed to be subclassed.
      */
     protected void shutdownInput() throws IOException {
         // KA025=Method has not been implemented
@@ -295,11 +294,11 @@ public abstract class SocketImpl implements SocketOptions {
     /**
      * Shutdown the output portion of the socket.
      * 
-     * The default implementation always throws an {@link IOException}
-     * to indicate that the subclass should have overridden this
-     * method.
+     * The default implementation always throws an {@link IOException} to
+     * indicate that the subclass should have overridden this method.
      * 
-     * @throws IOException Always.  Designed to be subclassed.
+     * @throws IOException
+     *             Always. Designed to be subclassed.
      */
     protected void shutdownOutput() throws IOException {
         // KA025=Method has not been implemented
