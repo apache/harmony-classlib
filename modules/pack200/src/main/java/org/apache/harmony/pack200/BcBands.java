@@ -19,7 +19,6 @@ package org.apache.harmony.pack200;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
-import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -70,14 +68,6 @@ public class BcBands extends BandSet {
      */
     public BcBands(Segment segment) {
         super(segment);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
-     */
-    public void pack(OutputStream outputStream) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)

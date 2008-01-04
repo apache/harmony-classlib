@@ -98,28 +98,46 @@ public class AttributeLayout implements IMatcher {
 	private long mask;
     
     private String name;
+    private boolean isDefault;
+    private int backwardsCallCount;
+    
 
+    /**
+     * Construct a default AttributeLayout
+     *  (equivalent to <code>new AttributeLayout(name, context, layout, index, true);</code>)
+     * @param name
+     * @param context
+     * @param layout
+     * @param index
+     * @throws Pack200Exception
+     */
 	public AttributeLayout(String name, int context, String layout, int index)
 			throws Pack200Exception {
-		super();
+		this(name, context, layout, index, true);
+	}
+    
+    public AttributeLayout(String name, int context, String layout, int index,
+            boolean isDefault) throws Pack200Exception {
+        super();
         this.index = index;
         this.context = context;
-		if (index >= 0) {
-			this.mask = 1L << index;
-		} else {
-			this.mask = 0;
-		}
+        if (index >= 0) {
+            this.mask = 1L << index;
+        } else {
+            this.mask = 0;
+        }
         if (context != CONTEXT_CLASS && context != CONTEXT_CODE
                 && context != CONTEXT_FIELD && context != CONTEXT_METHOD)
             throw new Pack200Exception("Attribute context out of range: "
                     + context);
-		if (layout == null) // || layout.length() == 0)
-			throw new Pack200Exception("Cannot have a null layout");
+        if (layout == null) // || layout.length() == 0)
+            throw new Pack200Exception("Cannot have a null layout");
         if (name == null || name.length() == 0)
-                throw new Pack200Exception("Cannot have an unnamed layout");
+            throw new Pack200Exception("Cannot have an unnamed layout");
         this.name = name;
-		this.layout = layout;
-	}
+        this.layout = layout;
+        this.isDefault = isDefault;
+    }
     
     
 	public boolean equals(Object obj) {
@@ -243,18 +261,19 @@ public class AttributeLayout implements IMatcher {
     
     public int numBackwardsCallables() {
         if(layout == "*") {
-            return 1; // TODO: complicated attributes (shouldn't be *'s at all...)
+            return 1;
+        } else {
+            return backwardsCallCount;
         }
-        int num = 0;
-        String[] split = layout.split("\\(");
-        if(split.length > 0) {
-            for (int i = 1; i < split.length; i++) {
-                if(split[i].startsWith("-") || split[i].startsWith("0")) {
-                    num++;
-                }
-            }
-        }
-        return num;
+    }
+
+
+    public boolean isDefaultLayout() {
+        return isDefault;
+    }
+
+    public void setBackwardsCallCount(int backwardsCallCount) {
+        this.backwardsCallCount = backwardsCallCount;
     }
 
 }

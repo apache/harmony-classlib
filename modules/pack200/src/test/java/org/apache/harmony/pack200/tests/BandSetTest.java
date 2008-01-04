@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.BandSet;
 import org.apache.harmony.pack200.Codec;
-import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
 import org.apache.harmony.pack200.SegmentHeader;

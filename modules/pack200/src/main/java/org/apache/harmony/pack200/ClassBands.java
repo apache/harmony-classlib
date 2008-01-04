@@ -18,16 +18,18 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.harmony.pack200.IcBands.ICTuple;
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
+import org.apache.harmony.pack200.bytecode.CPNameAndType;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
+import org.apache.harmony.pack200.bytecode.EnclosingMethodAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
 import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
 import org.apache.harmony.pack200.bytecode.LocalVariableTableAttribute;
@@ -36,7 +38,7 @@ import org.apache.harmony.pack200.bytecode.SignatureAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
- * 
+ * Pack200 Class Bands
  */
 public class ClassBands extends BandSet {
 
@@ -106,16 +108,6 @@ public class ClassBands extends BandSet {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
-     */
-    public void pack(OutputStream outputStream) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
@@ -143,6 +135,10 @@ public class ClassBands extends BandSet {
             Pack200Exception {
         fieldDescr = parseReferences("field_descr", in, Codec.DELTA5,
                 classFieldCount, cpBands.getCpDescriptor());
+        parseFieldAttrBands(in);
+    }
+
+    private void parseFieldAttrBands(InputStream in) throws IOException, Pack200Exception {
         fieldFlags = parseFlags("field_flags", in, classFieldCount,
                 Codec.UNSIGNED5, options.hasFieldFlagsHi());
         int fieldAttrCount = SegmentUtils.countBit16(fieldFlags);
@@ -154,6 +150,15 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_FIELD);
         int[] fieldAttrCalls = decodeBandInt("field_attr_calls", in,
                 Codec.UNSIGNED5, callCount);
+        
+        // Assign empty field attributes
+        fieldAttributes = new ArrayList[classCount][];
+        for (int i = 0; i < classCount; i++) {
+            fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
+            for (int j = 0; j < fieldFlags[i].length; j++) {
+                fieldAttributes[i][j] = new ArrayList();
+            }
+        }
 
         AttributeLayout constantValueLayout = attrMap.getAttributeLayout(
                 "ConstantValue", AttributeLayout.CONTEXT_FIELD);
@@ -172,11 +177,38 @@ public class ClassBands extends BandSet {
                 Codec.UNSIGNED5, signatureCount);
         int signatureIndex = 0;
 
-        fieldAttributes = new ArrayList[classCount][];
+        int backwardsCallsUsed = parseFieldMetadataBands(in, fieldAttrCalls);
+        
+        // Parse non-predefined attribute bands
+        int backwardsCallIndex = backwardsCallsUsed;
+        int limit = options.hasFieldFlagsHi() ? 62 : 31;
+        AttributeLayout[] otherLayouts = new AttributeLayout[limit + 1];
+        int[] counts = new int[limit + 1];
+        List[] otherAttributes = new List[limit + 1];
+        for (int i = 0; i < limit; i++) {
+            AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_FIELD);
+            if(layout != null && !(layout.isDefaultLayout())) {
+                otherLayouts[i] = layout;
+                counts[i] = SegmentUtils.countMatches(fieldFlags,
+                        layout);
+            }
+        }
+        for (int i = 0; i < counts.length; i++) {
+            if(counts[i] > 0) {
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                otherAttributes[i] = bands.parseAttributes(in, counts[i]);
+                int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
+                if(numBackwardsCallables > 0) {
+                    int[] backwardsCalls = new int[numBackwardsCallables];
+                    System.arraycopy(fieldAttrCalls, backwardsCallIndex, backwardsCalls, 0, numBackwardsCallables);
+                    bands.setBackwardsCalls(backwardsCalls);
+                    backwardsCallIndex+= numBackwardsCallables;
+                }
+            }
+        }
+
         for (int i = 0; i < classCount; i++) {
-            fieldAttributes[i] = new ArrayList[fieldFlags[i].length];
             for (int j = 0; j < fieldFlags[i].length; j++) {
-                fieldAttributes[i][j] = new ArrayList();
                 long flag = fieldFlags[i][j];
                 if (constantValueLayout.matches(flag)) {
                     // we've got a value to read
@@ -205,20 +237,28 @@ public class ClassBands extends BandSet {
                             .add(new SignatureAttribute(value));
                     signatureIndex++;
                 }
+                // Non-predefined attributes
+                for (int k = 0; k < otherLayouts.length; k++) {
+                    if(otherLayouts[k] != null && otherLayouts[k].matches(flag)) {
+                        // Add the next attribute
+                        fieldAttributes[i][j].add(otherAttributes[k].get(0));
+                        otherAttributes[k].remove(0);
+                    }
+                }
             }
         }
-        parseFieldMetadataBands(in, fieldAttrCalls);
-
-        // TODO: Parse other attribute bands
     }
 
     private void parseMethodBands(InputStream in) throws IOException,
             Pack200Exception {
         methodDescr = parseReferences("method_descr", in, Codec.MDELTA5,
-                classMethodCount, cpBands.getCpDescriptor());
+                classMethodCount, cpBands.getCpDescriptor());        
+        parseMethodAttrBands(in);
+    }
+
+    private void parseMethodAttrBands(InputStream in) throws IOException, Pack200Exception {
         methodFlags = parseFlags("method_flags", in, classMethodCount,
                 Codec.UNSIGNED5, options.hasMethodFlagsHi());
-
         int methodAttrCount = SegmentUtils.countBit16(methodFlags);
         int[] methodAttrCounts = decodeBandInt("method_attr_count", in,
                 Codec.UNSIGNED5, methodAttrCount);
@@ -228,7 +268,7 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_METHOD);
         methodAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5,
                 callCount);
-
+        
         // assign empty method attributes
         methodAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
@@ -237,11 +277,98 @@ public class ClassBands extends BandSet {
                 methodAttributes[i][j] = new ArrayList();
             }
         }
-        parseAttributeMethodExceptions(in);
-        parseAttributeMethodSigntaure(in);
-        parseMethodMetadataBands(in, methodAttrCalls);
 
-        // TODO: Parse other attribute bands
+        // Parse method exceptions attributes
+        AttributeLayout methodExceptionsLayout = attrMap.getAttributeLayout(AttributeLayout.ATTRIBUTE_EXCEPTIONS,
+                AttributeLayout.CONTEXT_METHOD);
+        int count = SegmentUtils.countMatches(methodFlags, methodExceptionsLayout);
+        int[] numExceptions = decodeBandInt("method_Exceptions_n", in,
+                Codec.UNSIGNED5, count);
+        String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC",
+                in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
+        
+        // Parse method signature attributes
+        AttributeLayout methodSignatureLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_SIGNATURE,
+                AttributeLayout.CONTEXT_METHOD);
+        int count1 = SegmentUtils.countMatches(methodFlags, methodSignatureLayout);
+        long[] methodSignatureRS = decodeBandLong("method_signature_RS", in,
+                Codec.UNSIGNED5, count1);
+        
+        // Parse method metadata bands
+        int backwardsCallsUsed = parseMethodMetadataBands(in, methodAttrCalls);        
+        
+        // Parse non-predefined attribute bands
+        int backwardsCallIndex = backwardsCallsUsed;
+        int limit = options.hasMethodFlagsHi() ? 62 : 31;
+        AttributeLayout[] otherLayouts = new AttributeLayout[limit + 1];
+        int[] counts = new int[limit + 1];
+        List[] otherAttributes = new List[limit + 1];
+        for (int i = 0; i < limit; i++) {
+            AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_METHOD);
+            if(layout != null && !(layout.isDefaultLayout())) {
+                otherLayouts[i] = layout;
+                counts[i] = SegmentUtils.countMatches(methodFlags,
+                        layout);
+            }
+        }
+        for (int i = 0; i < counts.length; i++) {
+            if(counts[i] > 0) {
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                otherAttributes[i] = bands.parseAttributes(in, counts[i]);
+                int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
+                if(numBackwardsCallables > 0) {
+                    int[] backwardsCalls = new int[numBackwardsCallables];
+                    System.arraycopy(methodAttrCalls, backwardsCallIndex, backwardsCalls, 0, numBackwardsCallables);
+                    bands.setBackwardsCalls(backwardsCalls);
+                    backwardsCallIndex+= numBackwardsCallables;
+                }
+            }
+        }
+
+        // Add attributes to the attribute arrays
+        int methodExceptionsIndex = 0;
+        int methodSignatureIndex = 0;
+        for (int i = 0; i < methodAttributes.length; i++) {
+            for (int j = 0; j < methodAttributes[i].length; j++) {
+                long flag = methodFlags[i][j];
+                if (methodExceptionsLayout.matches(flag)) {
+                    int n = numExceptions[methodExceptionsIndex];
+                    String[] exceptions = methodExceptionsRS[methodExceptionsIndex];
+                    CPClass[] exceptionClasses = new CPClass[n];
+                    for (int k = 0; k < n; k++) {
+                        exceptionClasses[k] = new CPClass(exceptions[k]);
+                    }
+                    methodAttributes[i][j].add(new ExceptionsAttribute(
+                            exceptionClasses));
+                    methodExceptionsIndex++;
+                }
+                if (methodSignatureLayout.matches(flag)) {
+                    // We've got a signature attribute
+                    long result = methodSignatureRS[methodSignatureIndex];
+                    String desc = methodDescr[i][j];
+                    int colon = desc.indexOf(':');
+                    String type = desc.substring(colon + 1);
+                    // TODO Got to get better at this ... in any case, it should
+                    // be e.g. KIB or KIH
+                    if (type.equals("B") || type.equals("H"))
+                        type = "I";
+                    Object value = methodSignatureLayout.getValue(result, type, cpBands
+                            .getConstantPool());
+                    methodAttributes[i][j]
+                            .add(new ConstantValueAttribute(value));
+                    methodSignatureIndex++;
+                }
+                // Non-predefined attributes
+                for (int k = 0; k < otherLayouts.length; k++) {
+                    if(otherLayouts[k] != null && otherLayouts[k].matches(flag)) {
+                        // Add the next attribute
+                        methodAttributes[i][j].add(otherAttributes[k].get(0));
+                        otherAttributes[k].remove(0);
+                    }
+                }
+            }
+        }
     }
 
     private int getCallCount(int[][] methodAttrIndexes, long[][] flags,
@@ -268,71 +395,6 @@ public class ClassBands extends BandSet {
             }
         }
         return callCount;
-    }
-
-    private void parseAttributeMethodSigntaure(InputStream in)
-            throws IOException, Pack200Exception {
-        AttributeLayout layout = attrMap.getAttributeLayout(
-                AttributeLayout.ATTRIBUTE_SIGNATURE,
-                AttributeLayout.CONTEXT_METHOD);
-        int count = SegmentUtils.countMatches(methodFlags, layout);
-        long[] methodSignatureRS = decodeBandLong("method_signature_RS", in,
-                Codec.UNSIGNED5, count);
-        int index = 0;
-        for (int i = 0; i < methodAttributes.length; i++) {
-            for (int j = 0; j < methodAttributes[i].length; j++) {
-                long flag = methodFlags[i][j];
-                if (layout.matches(flag)) {
-                    // we've got a signature attribute
-                    long result = methodSignatureRS[index];
-                    String desc = methodDescr[i][j];
-                    int colon = desc.indexOf(':');
-                    String type = desc.substring(colon + 1);
-                    // TODO Got to get better at this ... in any case, it should
-                    // be e.g. KIB or KIH
-                    if (type.equals("B") || type.equals("H"))
-                        type = "I";
-                    Object value = layout.getValue(result, type, cpBands
-                            .getConstantPool());
-                    methodAttributes[i][j]
-                            .add(new ConstantValueAttribute(value));
-                    index++;
-                }
-            }
-        }
-    }
-
-    /**
-     * @param in
-     * @throws Pack200Exception
-     * @throws IOException
-     */
-    private void parseAttributeMethodExceptions(InputStream in)
-            throws Pack200Exception, IOException {
-        AttributeLayout layout = attrMap.getAttributeLayout("Exceptions",
-                AttributeLayout.CONTEXT_METHOD);
-        int count = SegmentUtils.countMatches(methodFlags, layout);
-        int[] numExceptions = decodeBandInt("method_Exceptions_n", in,
-                Codec.UNSIGNED5, count);
-        String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC",
-                in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
-        int index = 0;
-        for (int i = 0; i < classCount; i++) {
-            for (int j = 0; j < methodFlags[i].length; j++) {
-                long flag = methodFlags[i][j];
-                if (layout.matches(flag)) {
-                    int n = numExceptions[index];
-                    String[] exceptions = methodExceptionsRS[index];
-                    CPClass[] exceptionClasses = new CPClass[n];
-                    for (int k = 0; k < n; k++) {
-                        exceptionClasses[k] = new CPClass(exceptions[k]);
-                    }
-                    methodAttributes[i][j].add(new ExceptionsAttribute(
-                            exceptionClasses));
-                    index++;
-                }
-            }
-        }
     }
 
     private void parseClassAttrBands(InputStream in) throws IOException,
@@ -371,10 +433,11 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_CLASS);
         int enclosingMethodCount = SegmentUtils.countMatches(classFlags,
                 enclosingMethodLayout);
-        int[] enclosingMethodRC = decodeBandInt("class_EnclosingMethod_RC", in,
-                Codec.UNSIGNED5, enclosingMethodCount);
-        int[] enclosingMethodRDN = decodeBandInt("class_EnclosingMethod_RDN",
-                in, Codec.UNSIGNED5, enclosingMethodCount);
+        String[] enclosingMethodRC = parseReferences(
+                "class_EnclosingMethod_RC", in, Codec.UNSIGNED5,
+                enclosingMethodCount, cpClass);
+        String[] enclosingMethodRDN = parseReferences(
+                "class_EnclosingMethod_RDN", in, Codec.UNSIGNED5, enclosingMethodCount, cpBands.getCpDescriptor());
 
         AttributeLayout signatureLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SIGNATURE,
@@ -384,7 +447,7 @@ public class ClassBands extends BandSet {
         int[] classSignature = decodeBandInt("class_Signature_RS", in,
                 Codec.UNSIGNED5, signatureCount);
 
-        parseClassMetadataBands(in, classAttrCalls);
+        int backwardsCallsUsed = parseClassMetadataBands(in, classAttrCalls);
 
         AttributeLayout innerClassLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_INNER_CLASSES,
@@ -425,7 +488,34 @@ public class ClassBands extends BandSet {
         int defaultVersionMajor = header.getDefaultClassMajorVersion();
         int defaultVersionMinor = header.getDefaultClassMinorVersion();
 
-        // TODO: Parse other attribute bands
+
+        // Parse non-predefined attribute bands
+        int backwardsCallIndex = backwardsCallsUsed;
+        int limit = options.hasClassFlagsHi() ? 62 : 31;
+        AttributeLayout[] otherLayouts = new AttributeLayout[limit + 1];
+        int[] counts = new int[limit + 1];
+        List[] otherAttributes = new List[limit + 1];
+        for (int i = 0; i < limit; i++) {
+            AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_CLASS);
+            if(layout != null && !(layout.isDefaultLayout())) {
+                otherLayouts[i] = layout;
+                counts[i] = SegmentUtils.countMatches(classFlags,
+                        layout);
+            }
+        }
+        for (int i = 0; i < counts.length; i++) {
+            if(counts[i] > 0) {
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                otherAttributes[i] = bands.parseAttributes(in, counts[i]);
+                int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
+                if(numBackwardsCallables > 0) {
+                    int[] backwardsCalls = new int[numBackwardsCallables];
+                    System.arraycopy(classAttrCalls, backwardsCallIndex, backwardsCalls, 0, numBackwardsCallables);
+                    bands.setBackwardsCalls(backwardsCalls);
+                    backwardsCallIndex+= numBackwardsCallables;
+                }
+            }
+        }
 
         // Now process the attribute bands we have parsed
         int sourceFileIndex = 0;
@@ -468,7 +558,10 @@ public class ClassBands extends BandSet {
                 sourceFileIndex++;
             }
             if (enclosingMethodLayout.matches(flag)) {
-                // long result =
+                CPClass theClass = new CPClass(enclosingMethodRC[enclosingMethodIndex]);
+                CPNameAndType theMethod = new CPNameAndType(enclosingMethodRDN[enclosingMethodIndex]);
+                classAttributes[i].add(new EnclosingMethodAttribute(theClass, theMethod));
+                enclosingMethodIndex++;
             }
             if (signatureLayout.matches(flag)) {
                 long result = classSignature[signatureIndex];
@@ -513,6 +606,14 @@ public class ClassBands extends BandSet {
                 // Fill in with defaults
                 classVersionMajor[i] = defaultVersionMajor;
                 classVersionMinor[i] = defaultVersionMinor;
+            }
+            // Non-predefined attributes
+            for (int j = 0; j < otherLayouts.length; j++) {
+                if(otherLayouts[j] != null && otherLayouts[j].matches(flag)) {
+                    // Add the next attribute
+                    classAttributes[i].add(otherAttributes[j].get(0));
+                    otherAttributes[j].remove(0);
+                }
             }
         }
     }
@@ -689,6 +790,34 @@ public class ClassBands extends BandSet {
                 "code_LocalVariableTypeTable_slot", in, Codec.UNSIGNED5,
                 localVariableTypeTableN);
 
+        // Parse non-predefined attribute bands
+        int backwardsCallIndex = 0;
+        int limit = options.hasCodeFlagsHi() ? 62 : 31;
+        AttributeLayout[] otherLayouts = new AttributeLayout[limit + 1];
+        int[] counts = new int[limit + 1];
+        List[] otherAttributes = new List[limit + 1];
+        for (int i = 0; i < limit; i++) {
+            AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_CODE);
+            if(layout != null && !(layout.isDefaultLayout())) {
+                otherLayouts[i] = layout;
+                counts[i] = SegmentUtils.countMatches(codeFlags,
+                        layout);
+            }
+        }
+        for (int i = 0; i < counts.length; i++) {
+            if(counts[i] > 0) {
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                otherAttributes[i] = bands.parseAttributes(in, counts[i]);
+                int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
+                if(numBackwardsCallables > 0) {
+                    int[] backwardsCalls = new int[numBackwardsCallables];
+                    System.arraycopy(codeAttrCalls, backwardsCallIndex, backwardsCalls, 0, numBackwardsCallables);
+                    bands.setBackwardsCalls(backwardsCalls);
+                    backwardsCallIndex+= numBackwardsCallables;
+                }
+            }
+        }     
+
         int lineNumberIndex = 0;
         int lvtIndex = 0;
         int lvttIndex = 0;
@@ -723,8 +852,16 @@ public class ClassBands extends BandSet {
                 lvttIndex++;
                 codeAttributes[i].add(lvtta);
             }
+            // Non-predefined attributes
+            for (int j = 0; j < otherLayouts.length; j++) {
+                if(otherLayouts[j] != null && otherLayouts[j].matches(codeFlags[i])) {
+                    // Add the next attribute
+                    codeAttributes[i].add(otherAttributes[j].get(0));
+                    otherAttributes[j].remove(0);
+                }
+            }
         }
-        // TODO: Parse other attribute bands
+        
     }
 
     private CPUTF8[][] stringsToCPUTF8(String[][] strings) {
@@ -748,8 +885,9 @@ public class ClassBands extends BandSet {
         return cpUTF8s;
     }
 
-    private void parseFieldMetadataBands(InputStream in, int[] fieldAttrCalls)
+    private int parseFieldMetadataBands(InputStream in, int[] fieldAttrCalls)
             throws Pack200Exception, IOException {
+        int backwardsCallsUsed = 0;
         String[] RxA = new String[] { "RVA", "RIA" };
 
         AttributeLayout rvaLayout = attrMap.getAttributeLayout(
@@ -765,11 +903,14 @@ public class ClassBands extends BandSet {
         int[] backwardsCalls = new int[] {0, 0};
         if(rvaCount > 0) {
             backwardsCalls[0] = fieldAttrCalls[0];
+            backwardsCallsUsed++;
             if(riaCount > 0) {
                 backwardsCalls[1] = fieldAttrCalls[1];
+                backwardsCallsUsed++;
             }
         } else if (riaCount > 0) {
             backwardsCalls[1] = fieldAttrCalls[0];
+            backwardsCallsUsed++;
         }
         MetadataBandGroup[] mb = parseMetadata(in, RxA, RxACount, backwardsCalls, "field");
         Iterator rvaAttributesIterator = mb[0].getAttributes().iterator();
@@ -784,6 +925,7 @@ public class ClassBands extends BandSet {
                 }
             }
         }
+        return backwardsCallsUsed;
     }
 
     private MetadataBandGroup[] parseMetadata(InputStream in, String[] RxA, int[] RxACount,
@@ -884,14 +1026,16 @@ public class ClassBands extends BandSet {
         return mbg;
     }
 
-    private void parseMethodMetadataBands(InputStream in, int[] methodAttrCalls)
+    private int parseMethodMetadataBands(InputStream in, int[] methodAttrCalls)
             throws Pack200Exception, IOException {
+        int backwardsCallsUsed = 0;
         String[] RxA = new String[] { "RVA", "RIA", "RVPA", "RIPA", "AD" };
         int[] rxaCounts = new int[] { 0, 0, 0, 0, 0 };
         int[] backwardsCalls = new int[5];
         int methodAttrIndex = 0;
         for (int i = 0; i < backwardsCalls.length; i++) {
             if(rxaCounts[i] > 0) {
+                backwardsCallsUsed++;
                 backwardsCalls[i] = methodAttrCalls[methodAttrIndex];
                 methodAttrIndex++;
             } else {
@@ -936,9 +1080,19 @@ public class ClassBands extends BandSet {
                 }
             }
         }
+        return backwardsCallsUsed;
     }
 
-    private void parseClassMetadataBands(InputStream in, int[] classAttrCalls) throws Pack200Exception, IOException {
+    /**
+     * Parse the class metadata bands and return the number of backwards callables
+     * @param in
+     * @param classAttrCalls
+     * @return
+     * @throws Pack200Exception
+     * @throws IOException
+     */
+    private int parseClassMetadataBands(InputStream in, int[] classAttrCalls) throws Pack200Exception, IOException {
+        int numBackwardsCalls = 0;
         String[] RxA = new String[] { "RVA", "RIA" };
 
         AttributeLayout rvaLayout = attrMap.getAttributeLayout(
@@ -952,11 +1106,14 @@ public class ClassBands extends BandSet {
         int[] RxACount = new int[] { rvaCount, riaCount };
         int[] backwardsCalls = new int[] {0, 0};
         if(rvaCount > 0) {
+            numBackwardsCalls++;
             backwardsCalls[0] = classAttrCalls[0];
             if(riaCount > 0) {
+                numBackwardsCalls++;
                 backwardsCalls[1] = classAttrCalls[1];
             }
         } else if (riaCount > 0) {
+            numBackwardsCalls++;
             backwardsCalls[1] = classAttrCalls[0];
         }
         MetadataBandGroup[] mbgs = parseMetadata(in, RxA, RxACount, backwardsCalls, "class");
@@ -970,6 +1127,7 @@ public class ClassBands extends BandSet {
                 classAttributes[i].add(riaAttributesIterator.next());
             }
         }
+        return numBackwardsCalls;
     }
 
     public int[] getClassFieldCount() {

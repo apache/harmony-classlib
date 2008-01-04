@@ -18,7 +18,6 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Parses the file band headers (not including the actual bits themselves).
@@ -48,14 +47,6 @@ public class FileBands extends BandSet {
     public FileBands(Segment segment) {
         super(segment);
         this.cpUTF8 = segment.getCpBands().getCpUTF8();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
-     */
-    public void pack(OutputStream outputStream) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)

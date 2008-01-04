@@ -18,7 +18,6 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  *
@@ -38,14 +37,6 @@ public class AttrDefinitionBands extends BandSet {
     public AttrDefinitionBands(Segment segment) {
         super(segment);
         this.cpUTF8 = segment.getCpBands().getCpUTF8();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
-     */
-    public void pack(OutputStream outputStream) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)
@@ -73,9 +64,11 @@ public class AttrDefinitionBands extends BandSet {
             if(index == -1) {
                 index = overflowIndex++;
             }
-            attributeDefinitionMap.add(new AttributeLayout(
+            AttributeLayout layout = new AttributeLayout(
                     attributeDefinitionName[i], context,
-                    attributeDefinitionLayout[i], index));
+                    attributeDefinitionLayout[i], index, false);
+            NewAttributeBands newBands = new NewAttributeBands(segment, layout);
+            attributeDefinitionMap.add(layout, newBands);
         }
         attributeDefinitionMap.checkMap();
     }
