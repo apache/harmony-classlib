@@ -229,7 +229,7 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
 		tmpfile.deleteOnExit();
 		FileOutputStream fos = new FileOutputStream(tmpfile);
 		byte[] b = new byte[10];
-		for (int i = 10; i < b.length; i++) {
+		for (int i = 0; i < b.length; i++) {
 			b[i] = (byte) i;
 		}
 		fos.write(b);
