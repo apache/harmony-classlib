@@ -30,7 +30,8 @@ public class CPClass extends ConstantPoolEntry {
 	public   CPClass(String name) {
 		super(ConstantPoolEntry.CP_Class);
 		this.name = name;
-		this.utf8 = new CPUTF8(name);
+		this.domain = ClassConstantPool.DOMAIN_CLASSREF;
+		this.utf8 = new CPUTF8(name, ClassConstantPool.DOMAIN_NORMALASCIIZ);
 	}
 
 	
@@ -84,4 +85,9 @@ public class CPClass extends ConstantPoolEntry {
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(index);
 	}
+	
+   public String comparisonString() {
+        return getName();
+   }
+
 }

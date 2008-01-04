@@ -29,7 +29,7 @@ import org.apache.harmony.pack200.SegmentConstantPool;
 public class OperandManager {
 	
     int[] bcCaseCount;
-    int[][] bcCaseValue;
+    int[] bcCaseValue;
     int[] bcByte;
     int[] bcShort;
     int[] bcLocal;
@@ -48,6 +48,7 @@ public class OperandManager {
 	int[] bcThisMethod;
 	int[] bcSuperMethod;
 	int[] bcInitRef;
+	int[] wideByteCodes;
     
 	int bcCaseCountIndex = 0;
 	int bcCaseValueIndex = 0;
@@ -69,6 +70,7 @@ public class OperandManager {
 	int bcThisMethodIndex = 0;
 	int bcSuperMethodIndex = 0;
 	int bcInitRefIndex = 0;
+	int wideByteCodeIndex = 0;
     
 	Segment segment = null;
 	
@@ -76,7 +78,7 @@ public class OperandManager {
 	String superClass = null;
 	String newClass = null;
 	
-	public OperandManager(int[] bcCaseCount, int[][] bcCaseValue, int[] bcByte, int[]  bcShort, int[]  bcLocal, int[]  bcLabel, int[]  bcIntRef, int[]  bcFloatRef, int[]  bcLongRef, int[]  bcDoubleRef, int[]  bcStringRef, int[]  bcClassRef, int[]  bcFieldRef, int[]  bcMethodRef, int[] bcIMethodRef, int[] bcThisField, int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod, int[] bcInitRef) {
+	public OperandManager(int[] bcCaseCount, int[] bcCaseValue, int[] bcByte, int[]  bcShort, int[]  bcLocal, int[]  bcLabel, int[]  bcIntRef, int[]  bcFloatRef, int[]  bcLongRef, int[]  bcDoubleRef, int[]  bcStringRef, int[]  bcClassRef, int[]  bcFieldRef, int[]  bcMethodRef, int[] bcIMethodRef, int[] bcThisField, int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod, int[] bcInitRef, int[] wideByteCodes) {
 	    this.bcCaseCount = bcCaseCount;
 	    this.bcCaseValue = bcCaseValue;
 	    this.bcByte = bcByte;
@@ -98,13 +100,14 @@ public class OperandManager {
 	    this.bcThisMethod = bcThisMethod;
 	    this.bcSuperMethod = bcSuperMethod;
 	    this.bcInitRef = bcInitRef;
+	    this.wideByteCodes = wideByteCodes;
 	}
     
     public int nextCaseCount() {
         return bcCaseCount[bcCaseCountIndex++];       
     }
     
-    public int[] nextCaseValues() {
+    public int nextCaseValues() {
         return bcCaseValue[bcCaseValueIndex++];       
     }
     
@@ -180,6 +183,10 @@ public class OperandManager {
 		return bcInitRef[bcInitRefIndex++];
 	}
 
+	public int nextWideByteCode() {
+	    return wideByteCodes[wideByteCodeIndex++];
+	}
+	
 	public void setSegment(Segment segment) {
 		this.segment = segment;
 	}

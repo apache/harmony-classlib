@@ -26,6 +26,7 @@ import org.apache.harmony.pack200.bytecode.CPFloat;
 import org.apache.harmony.pack200.bytecode.CPInteger;
 import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 public abstract class BandSet {
     
@@ -451,7 +452,7 @@ public abstract class BandSet {
             if (index < 0 || index >= reference.length)
                 throw new Pack200Exception(
                         "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
-            result[i1] = new CPUTF8(reference[index]);
+            result[i1] = new CPUTF8(reference[index], ClassConstantPool.DOMAIN_UNDEFINED);
         }
         return result;
     }
@@ -472,7 +473,7 @@ public abstract class BandSet {
             if (index < 0 || index >= reference.length)
                 throw new Pack200Exception(
                         "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
-            result1[i1] = new CPUTF8(reference[index]);
+            result1[i1] = new CPUTF8(reference[index], ClassConstantPool.DOMAIN_UNDEFINED);
         }
         CPUTF8[] refs = result1;
         int pos = 0;

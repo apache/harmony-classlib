@@ -56,8 +56,15 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 
 	byte tag;
 
+	protected int domain = ClassConstantPool.DOMAIN_UNDEFINED;
+	public static int creationOrderCount = 100;
+	public String comparisonString() {
+	    return "" + creationOrder;
+	}
+	public int creationOrder = -1;
 	ConstantPoolEntry(byte tag) {
 		this.tag = tag;
+		this.creationOrder = creationOrderCount++;
 	}
 
 	public abstract boolean equals(Object obj);
@@ -66,6 +73,14 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 		return tag;
 	}
 
+	public int getDomain() {
+	    return domain;
+	}
+	
+	public void setDomain(int newDomain) {
+	    this.domain = newDomain;
+	}
+	
 	public abstract int hashCode();
 
 	public void doWrite(DataOutputStream dos) throws IOException {

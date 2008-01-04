@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
+import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -24,7 +26,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
  * bytecodes which have IMethod references (and only
  * IMethod references).
  */
-public class IMethodRefForm extends ByteCodeForm {
+public class IMethodRefForm extends ReferenceForm {
 
     public IMethodRefForm(int opcode, String name, 
             int[] rewrite) {
@@ -39,13 +41,21 @@ public class IMethodRefForm extends ByteCodeForm {
         return true;
     }
 
+    protected int getOffset(OperandManager operandManager) {
+        return operandManager.nextIMethodRef();
+    }
+
+    protected int getPoolID() {
+        return SegmentConstantPool.CP_IMETHOD;
+    }
+    
     /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.Segment)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-//TODO: implement this. Removed the error message because
-//        it causes failures in the JUnit tests.
-//        throw new Error("Not implemented yet");        
+        super.setByteCodeOperands(byteCode, operandManager, codeLength);
+        int count=((CPInterfaceMethodRef)byteCode.getNestedClassFileEntries()[0]).invokeInterfaceCount();
+        byteCode.getRewrite()[3] = count;
     }
 }

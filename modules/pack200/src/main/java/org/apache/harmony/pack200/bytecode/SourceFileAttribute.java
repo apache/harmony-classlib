@@ -27,7 +27,7 @@ public class SourceFileAttribute extends Attribute {
 
 	public SourceFileAttribute(String name) {
 		super("SourceFile"); //$NON-NLS-1$
-		this.name = new CPUTF8(name);
+		this.name = new CPUTF8(name, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 	}
 
 	public boolean equals(Object obj) {

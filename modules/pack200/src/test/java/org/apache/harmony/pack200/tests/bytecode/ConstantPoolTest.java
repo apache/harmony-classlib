@@ -29,8 +29,8 @@ public class ConstantPoolTest extends TestCase {
 		pool = new ClassConstantPool();
 	}
 	public void testDuplicateUTF8() {
-		CPUTF8 u1 = new CPUTF8("thing");
-		CPUTF8 u2 = new CPUTF8("thing");
+		CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_UNDEFINED);
+		CPUTF8 u2 = new CPUTF8("thing", ClassConstantPool.DOMAIN_UNDEFINED);
 		pool.add(u1);
 		pool.add(u2);
 		assertEquals(1,pool.size());
@@ -44,8 +44,8 @@ public class ConstantPoolTest extends TestCase {
 		assertEquals(2,pool.size());
 	}
 	public void testIndex() {
-		pool.add(new CPUTF8("OtherThing"));
-		CPUTF8 u1 = new CPUTF8("thing");
+		pool.add(new CPUTF8("OtherThing", ClassConstantPool.DOMAIN_UNDEFINED));
+		CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_UNDEFINED);
 		pool.add(u1);
 		pool.resolve();
 		assertTrue(pool.indexOf(u1) > 0);

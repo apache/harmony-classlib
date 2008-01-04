@@ -18,6 +18,7 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
@@ -58,17 +59,25 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
         }
     }
 
+
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        ArrayList nestedEntries = new ArrayList();
+        nestedEntries.add(getAttributeName());
+        for (int i = 0; i < local_variable_table_length; i++) {
+            nestedEntries.add(names[i]);
+            nestedEntries.add(descriptors[i]);
+        }
+        ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries
+                .size()];
+        nestedEntries.toArray(nestedEntryArray);
+        return nestedEntryArray;        
+    }
+    
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
-        pool.add(getAttributeName());
         name_indexes = new int[local_variable_table_length];
         descriptor_indexes = new int[local_variable_table_length];
         for (int i = 0; i < local_variable_table_length; i++) {
-            // TODO: is this the right place to add the names and descriptors?
-            // Maybe some API to say where they should be added if they're not
-            // already in the cp?
-            pool.add(names[i]);
-            pool.add(descriptors[i]);
             names[i].resolve(pool);
             descriptors[i].resolve(pool);
             name_indexes[i] = pool.indexOf(names[i]);
@@ -88,26 +97,47 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
      * @see org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute#renumber(java.util.List)
      */
     public void renumber(List byteCodeOffsets) {
-        // First fix up the start_pcs
+        // Remember the unrenumbered start_pcs, since that's used later
+        // to calculate end position.
+        int[] unrenumbered_start_pcs = new int[start_pcs.length];
+        System.arraycopy(start_pcs, 0, unrenumbered_start_pcs, 0, start_pcs.length);
+
+        // Next renumber start_pcs in place
         super.renumber(byteCodeOffsets);
+
         // lengths are BRANCH5 encoded, not BCI-encoded.
-        // In other words - renumber(x) - renumber(x0)?
-        // Add the offset to the value?
-        // Next fix up the lengths
+        // In other words:
+        //  start_pc is BCI5 start_pc
+        //  end_pc is byteCodeOffset[(index of start_pc in byteCodeOffset) + (encoded length)]
+        //  real length = end_pc - start_pc
+        // special case if end_pc is beyond end of bytecode array
+
+        // First figure out the maximum size of the byteCodeOffsets array
         int lastInstruction = ((Integer)byteCodeOffsets.get(byteCodeOffsets.size() - 1)).intValue();
-        int maxLength = lastInstruction + 1;
+        int maxSize = lastInstruction + 1;
+        
+        // Iterate through the lengths and update each in turn.
+        // This is done in place in the lengths array.
         for(int index=0; index < lengths.length; index++) {
-            // Need to special case when the length is greater than the size
+            int start_pc = start_pcs[index];
             int revisedLength = -1;
             int encodedLength = lengths[index];
+            
+            // First get the index of the start_pc in the byteCodeOffsets
+            int indexOfStartPC = unrenumbered_start_pcs[index];
+            // Given the index of the start_pc, we can now add
+            // the encodedLength to it to get the stop index.
+            int stopIndex = indexOfStartPC + encodedLength;
+            
             // Length can either be an index into the byte code offsets, or one beyond the
             // end of the byte code offsets. Need to determine which this is.
-            if(encodedLength == byteCodeOffsets.size()) {
+            if(stopIndex == byteCodeOffsets.size()) {
                 // Pointing to one past the end of the byte code array
-                revisedLength = maxLength - start_pcs[index];
+                revisedLength = maxSize - start_pc;
             } else {
                 // We're indexed into the byte code array
-                revisedLength = ((Integer)byteCodeOffsets.get(encodedLength)).intValue();                
+                int stopValue = ((Integer)byteCodeOffsets.get(stopIndex)).intValue();
+                revisedLength = stopValue - start_pc;                
             }
             lengths[index] = revisedLength;
         }

@@ -22,6 +22,7 @@ import java.io.IOException;
 public class CPFloat extends CPConstantNumber {
 	public CPFloat(java.lang.Float value) {
 		super(ConstantPoolEntry.CP_Float,value);
+	      this.domain = ClassConstantPool.DOMAIN_FLOAT;
 	}
 
 	

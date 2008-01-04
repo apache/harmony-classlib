@@ -23,6 +23,7 @@ public class CPInteger extends CPConstantNumber {
 
 	public CPInteger(java.lang.Integer value) {
 		super(ConstantPoolEntry.CP_Integer,value);
+		this.domain = ClassConstantPool.DOMAIN_INTEGER;
 	}
 
 	

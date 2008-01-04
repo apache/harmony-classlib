@@ -25,6 +25,7 @@ public class CPMethodRef extends CPRef {
 		super(ConstantPoolEntry.CP_Methodref, className, descriptor);
 		this.className = new CPClass(className);
 		this.descriptor = new CPNameAndType(descriptor);
+        this.domain = ClassConstantPool.DOMAIN_METHOD;
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {

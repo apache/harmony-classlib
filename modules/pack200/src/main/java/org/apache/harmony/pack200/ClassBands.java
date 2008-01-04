@@ -26,6 +26,7 @@ import org.apache.harmony.pack200.IcBands.ICTuple;
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
 import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
@@ -199,7 +200,7 @@ public class ClassBands extends BandSet {
                     int colon = desc.indexOf(':');
                     String type = desc.substring(colon + 1);
                     CPUTF8 value = new CPUTF8((String) signatureLayout.getValue(result, type,
-                            cpBands.getConstantPool()));
+                            cpBands.getConstantPool()), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
                     fieldAttributes[i][j]
                             .add(new SignatureAttribute(value));
                     signatureIndex++;
@@ -651,6 +652,22 @@ public class ClassBands extends BandSet {
                 "code_LocalVariableTable_slot", in, Codec.UNSIGNED5,
                 localVariableTableN);
 
+        // Fix up localVariableTableTypeRS - for some reason,
+        // native signatures end up in DOMAINNORMALASCIIZ
+        // while nonnatives end up in DOMAINSIGNATUREASCIIZ.
+        // TODO: is this the right thing to do?
+        for(int x=0; x < localVariableTableTypeRS.length; x++) {
+            for(int y=0; y < localVariableTableTypeRS[x].length; y++) {
+                CPUTF8 element = localVariableTableTypeRS[x][y];
+                // TODO: come up with a better test for native vs nonnative signatures?
+                if(element.underlyingString().length() > 2) {
+                    element.setDomain(ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+                } else {
+                    element.setDomain(ClassConstantPool.DOMAIN_NORMALASCIIZ);
+                }
+            }
+        }
+        
         int lengthLocalVariableTypeTableNBand = SegmentUtils.countMatches(
                 codeFlags, localVariableTypeTableLayout);
         int[] localVariableTypeTableN = decodeBandInt(
@@ -715,7 +732,7 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < strings.length; i++) {
             cpUTF8s[i] = new CPUTF8[strings[i].length];
             for (int j = 0; j < strings[i].length; j++) {
-                cpUTF8s[i][j] = new CPUTF8(strings[i][j]);
+                cpUTF8s[i][j] = new CPUTF8(strings[i][j], ClassConstantPool.DOMAIN_NORMALASCIIZ);
             }
         }
         return cpUTF8s;
@@ -726,7 +743,7 @@ public class ClassBands extends BandSet {
     private CPUTF8[] stringsToCPUTF8(String[] strings) {
         CPUTF8[] cpUTF8s = new CPUTF8[strings.length];
         for (int i = 0; i < strings.length; i++) {
-            cpUTF8s[i] = new CPUTF8(strings[i]);
+            cpUTF8s[i] = new CPUTF8(strings[i], ClassConstantPool.DOMAIN_UNDEFINED);
         }
         return cpUTF8s;
     }
