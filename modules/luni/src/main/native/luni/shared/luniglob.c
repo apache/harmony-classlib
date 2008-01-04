@@ -358,7 +358,7 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
             if (tokensScanned == 1)
             {
                 char *oldPath = bootstrapClassPath;
-                if (!oldPath) {
+                if ((!oldPath) || (strlen(bootstrapClassPath) == 0)) {
                     bootstrapClassPath = str_concat (PORTLIB, 
                         bootDirectory, props[i].value, NULL);
                 } else {
