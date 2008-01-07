@@ -129,6 +129,7 @@
 
     <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
         <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
+        <touch file="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
     </target>
 
     <target name="-extract-mx4j" unless="mx4j.uptodate">
@@ -153,6 +154,7 @@
             </fileset>
         </copy>
         <delete dir="${mx4j.dir}.tmp" />
+	<touch file="${mx4j.jar}" />
     </target>
 
     <target name="-extract-xerces" unless="xerces.uptodate">
@@ -165,6 +167,7 @@
             </fileset>
         </copy>
         <delete dir="${xerces.dir}.tmp" />
+	<touch file="${xerces.dir}/xercesImpl.jar" />
     </target>
 
     <target name="-extract-idea-from-bcprov" unless="bcprov.uptodate">
