@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,6 @@ import java.util.StringTokenizer;
 import org.apache.harmony.luni.internal.net.www.MimeTable;
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
-import org.apache.harmony.luni.util.Util;
 
 /**
  * The URLConnection class is responsible for establishing a connection to an
@@ -505,18 +505,23 @@ public abstract class URLConnection {
      * @param field
      *            the field in question
      * @param defaultValue
-     *            the default value if no field is found
+     *            the default value if no field is found or the value is invalid
      * @return milliseconds since epoch
      * 
      * @see #ifModifiedSince
      * @see #setIfModifiedSince
      */
+    @SuppressWarnings("deprecation")
     public long getHeaderFieldDate(String field, long defaultValue) {
         String date = getHeaderField(field);
         if (date == null) {
             return defaultValue;
         }
-        return java.util.Date.parse(date);
+        try {
+            return Date.parse(date);
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 
     /**

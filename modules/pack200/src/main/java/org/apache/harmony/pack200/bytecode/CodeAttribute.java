@@ -46,7 +46,7 @@ public class CodeAttribute extends Attribute {
             // Setting the offset must happen before extracting operands
             // because label bytecodes need to know their offsets.
             byteCode.setByteCodeIndex(i);
-            byteCode.extractOperands(operandManager, segment);
+            byteCode.extractOperands(operandManager, segment, codeLength);
             byteCodes.add(byteCode);
             codeLength += byteCode.getLength();
             int lastBytecodePosition = ((Integer) byteCodeOffsets
@@ -64,13 +64,23 @@ public class CodeAttribute extends Attribute {
                 byteCodeOffsets.add(new Integer(lastBytecodePosition
                         + byteCode.getLength()));
             }
+            if(byteCode.getOpcode() == 0xC4) {
+                // Special processing for wide bytecode - it knows what its
+                // instruction is from the opcode manager, so ignore the
+                // next instruction
+                i++;
+            }
         }
         // Now that all the bytecodes know their positions and
         // sizes, fix up the byte code targets
-        for (int i = 0; i < codePacked.length; i++) {
+        // At this point, byteCodes may be a different size than
+        // codePacked because of wide bytecodes.
+        for (int i = 0; i < byteCodes.size(); i++) {
             ByteCode byteCode = (ByteCode)byteCodes.get(i);
             byteCode.applyByteCodeTargetFixup(this);
         }
+        // TODO: By the time I get here, the input stream
+        // is somehow confused. 
     }
 
     protected int getLength() {
@@ -88,6 +98,9 @@ public class CodeAttribute extends Attribute {
         ArrayList nestedEntries = new ArrayList();
         nestedEntries.add(getAttributeName());
         nestedEntries.addAll(byteCodes);
+        // TODO: Is this the right place to add code attribute
+        // attributes?
+        nestedEntries.addAll(attributes);
         ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries
                 .size()];
         nestedEntries.toArray(nestedEntryArray);
@@ -136,4 +149,11 @@ public class CodeAttribute extends Attribute {
         }
     }
 
+    public void addAttribute(Attribute attribute) {
+        attributes.add(attribute);
+    }
+    
+    public List attributes() {
+        return attributes;
+    }
 }

@@ -36,7 +36,7 @@ public class ByteCode extends ClassFileEntry {
 	private int[] rewrite;
 
     private int byteCodeOffset = -1;
-    private int byteCodeTarget = -1;
+    private int[] byteCodeTargets = null;
 
 	protected ByteCode(int opcode) {
 		this(opcode, ClassFileEntry.NONE);
@@ -69,14 +69,13 @@ public class ByteCode extends ClassFileEntry {
 		return true;
 	}
 
-	public void extractOperands(OperandManager operandManager, Segment segment) {
+	public void extractOperands(OperandManager operandManager, Segment segment, int codeLength) {
 		// Given an OperandTable, figure out which operands
 		// the receiver needs and stuff them in operands.
 		// Later on the operands can be rewritten (But that's
 		// later, not now).
-
 		ByteCodeForm currentByteCodeForm = getByteCodeForm();
-		currentByteCodeForm.setByteCodeOperands(this, operandManager);
+		currentByteCodeForm.setByteCodeOperands(this, operandManager, codeLength);
 	}
 
 	protected ByteCodeForm getByteCodeForm() {
@@ -131,7 +130,7 @@ public class ByteCode extends ClassFileEntry {
 					break;
 					
 				case 2: 
-					setOperandInt(pool.indexOf(nested[index]), getNestedPosition(index)[0]);
+					setOperand2Bytes(pool.indexOf(nested[index]), getNestedPosition(index)[0]);
 					break;
 				
 				case 4:
@@ -172,7 +171,7 @@ public class ByteCode extends ClassFileEntry {
 			rewrite[index + firstOperandIndex] = operands[index] & 0xFF;
 		}
 	}
-	
+    
 	/**
 	 * Given an int operand, set the rewrite bytes for
 	 * that position and the one immediately following it
@@ -184,7 +183,7 @@ public class ByteCode extends ClassFileEntry {
 	 *  position 0 is the first -1, position 1 is the second -1,
 	 *  etc.
 	 */
-	public void setOperandInt(int operand, int position) {
+	public void setOperand2Bytes(int operand, int position) {
 		int firstOperandIndex = getByteCodeForm().firstOperandIndex();
 		int byteCodeFormLength = getByteCodeForm().getRewrite().length;
 		if (firstOperandIndex < 1) {
@@ -206,12 +205,12 @@ public class ByteCode extends ClassFileEntry {
 	 * @param operand int to set the rewrite bytes to
 	 * @param position int position of the operands in the rewrite bytes
 	 */
-	public void setOperandSignedInt(int operand, int position) {
+	public void setOperandSigned2Bytes(int operand, int position) {
 	    if(operand >= 0) {
-	        setOperandInt(operand, position);
+	        setOperand2Bytes(operand, position);
 	    } else {
 	        int twosComplementOperand = 0x10000 + operand;
-	        setOperandInt(twosComplementOperand, position);
+	        setOperand2Bytes(twosComplementOperand, position);
 	    }
 	}
 
@@ -315,31 +314,60 @@ public class ByteCode extends ClassFileEntry {
     }
     
     /**
-     * Some ByteCodes (in particular, LabelForm bytecodes)
-     * have to keep track of a byteCodeTarget. This is
-     * initially an offset in the CodeAttribute array
-     * relative to the byteCodeOffset, but later gets fixed
+     * Some ByteCodes (in particular, those with labels)
+     * have to keep track of byteCodeTargets. These are
+     * initially offsets in the CodeAttribute array
+     * relative to the byteCodeOffset, but later get fixed
      * up to point to the absolute position in the CodeAttribute
-     * array. This method sets the target.
+     * array. This method sets the targets.
      * 
      * @param byteCodeTarget int index in array
      */
-    public void setByteCodeTarget(int byteCodeTarget) {
-        this.byteCodeTarget = byteCodeTarget;
+    public void setByteCodeTargets(int[] byteCodeTargets) {
+        this.byteCodeTargets = byteCodeTargets;
     }
     
-    public int getByteCodeTarget() {
-        return byteCodeTarget;
+    public int[] getByteCodeTargets() {
+        return byteCodeTargets;
     }
     
     /**
-     * Some ByteCodes (in particular, those with the Label
-     * form) need to be fixed up after all the bytecodes
-     * in the CodeAttribute have been added. (This can't
+     * Some ByteCodes (in particular, those with labels
+     * need to be fixed up after all the bytecodes in the
+     * CodeAttribute have been added. (This can't
      * be done beforehand because the CodeAttribute needs
      * to be complete before targets can be assigned.)
      */
     public void applyByteCodeTargetFixup(CodeAttribute codeAttribute) {
-        getByteCodeForm().fixUpByteCodeTarget(this, codeAttribute);
+        getByteCodeForm().fixUpByteCodeTargets(this, codeAttribute);
+    }
+
+    /**
+     * Some bytecodes (the ones with variable lengths) can't
+     * have a static rewrite array - they need the ability to
+     * update the array. This method permits that.
+     * 
+     * Note that this should not be called from bytecodes
+     * which have a static rewrite; use the table in ByteCodeForm
+     * instead to specify those rewrites.
+     * 
+     * @param rewrite
+     */
+    public void setRewrite(int[] rewrite) {
+        this.rewrite = rewrite;
+    }
+    
+    /**
+     * Some bytecodes (the ones with variable lengths) can't
+     * have a static rewrite array - they need the ability to
+     * update the array. This method permits their associated
+     * bytecode formst to query their rewrite array.
+     * 
+     * Note that this should not be called from bytecodes
+     * which have a static rewrite; use the table in ByteCodeForm
+     * instead to specify those rewrites.
+     */
+    public int[] getRewrite() {
+        return rewrite;
     }
 }

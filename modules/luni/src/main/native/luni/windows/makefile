@@ -53,6 +53,6 @@ MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
   $(LIBPATH)hyfdlibm$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13200000
-COMMENT=/comment:"LUNI component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"LUNI component native code. (c) Copyright 1991, 2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

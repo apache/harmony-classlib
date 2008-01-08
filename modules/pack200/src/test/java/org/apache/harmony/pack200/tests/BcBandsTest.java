@@ -57,7 +57,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 	    public String[] getCpString() {
         	String[] classes = new String[100];
         	for(int index=0; index < 100; index++) {
-        		classes[index] = "java/lang/Stri:ng";
+        		classes[index] = "java/lang/Stri:ng(J)";
         	}
         	return classes;
 	    }
@@ -74,14 +74,22 @@ public class BcBandsTest extends AbstractBandsTestCase {
 	    	return getCpString();
 	    }
 	    
-	    public String[] getCpMethodClass() {
-	    	return getCpClass();
-	    }
-	    
-	    public String[] getCpMethodDescriptor() {
-	    	return getCpString();
-	    }
-	    
+        public String[] getCpMethodClass() {
+            return getCpClass();
+        }
+        
+        public String[] getCpMethodDescriptor() {
+            return getCpString();
+        }
+        
+        public String[] getCpIMethodClass() {
+            return getCpClass();
+        }
+        
+        public String[] getCpIMethodDescriptor() {
+            return getCpString();
+        }
+        
 	    public int[] getCpInt() {
         	int[] elements = new int[100];
         	for(int index=0; index < 100; index++) {
@@ -292,22 +300,21 @@ public class BcBandsTest extends AbstractBandsTestCase {
      * @throws IOException 
      */
     public void testBcCaseBands() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)170,(byte)171, (byte)255,
+        byte[] bytes = new byte[] { (byte)170, (byte)171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte)255, 
                 2, 5, // bc_case_count
-                8, 8, 8, 8, 8, 8, 8, // bc_case_value
-                8, 8}; // bc_label                
+                0, 0, 0, 0, 0, 0, 0, // bc_case_value
+                0, 0, 0, 0, 0, 0, 0, 0, 0}; // bc_label                
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
-        assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
+        assertEquals(18, bcBands.getMethodByteCodePacked()[0][0].length);
         int[] bc_case_count = bcBands.getBcCaseCount();
         assertEquals(2, bc_case_count.length);
         assertEquals(2, bc_case_count[0]);
         assertEquals(5, bc_case_count[1]);
-        int[][] bc_case_value = bcBands.getBcCaseValue();
-        assertEquals(2, bc_case_value.length);
-        assertEquals(2, bc_case_value[0].length);
-        assertEquals(5, bc_case_value[1].length);
-        assertEquals(2, bcBands.getBcLabel().length);
+        int[] bc_case_value = bcBands.getBcCaseValue();
+        assertEquals(0, bc_case_value[0]);
+        assertEquals(0, bc_case_value[1]);
+        assertEquals(9, bcBands.getBcLabel().length);
     }
     
     /**
@@ -341,10 +348,9 @@ public class BcBandsTest extends AbstractBandsTestCase {
      */
     public void testBcShortBand() throws IOException, Pack200Exception {
     	//TODO: Need to fix this testcase so it has enough data to pass.
-    	if(true) return;
         byte[] bytes = new byte[] {17, (byte)196, (byte)132, (byte)255, 
                 8, 8,// bc_short band
-                8, 8}; // bc_locals band (required by wide iinc (196, 132))
+                8, 8, 8, 8}; // bc_locals band (required by wide iinc (196, 132))
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(3, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -377,15 +383,29 @@ public class BcBandsTest extends AbstractBandsTestCase {
     public void testBcLabelBand() throws IOException, Pack200Exception {
         byte[] bytes = new byte[] {(byte) 159, (byte) 160, (byte) 161,
                 (byte) 162, (byte) 163, (byte) 164, (byte) 165, (byte) 166,
-                (byte) 167, (byte) 168, (byte) 170, (byte) 171, (byte) 198, (byte) 199, (byte) 200, (byte) 201, (byte) 255,
-                0, 0, // bc_case_count (required by tableswitch (170) and lookupswitch (171))
+                (byte) 167, (byte) 168,  (byte) 170, (byte) 171,  (byte) 198, (byte) 199, (byte) 200, (byte) 201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 255,
+                2, 2, // bc_case_count (required by tableswitch (170) and lookupswitch (171))
+                0, 0, 0, 0, // bc_case_value
 //                Now that we're actually doing real label lookup, need valid labels
 //                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_label band                
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label band
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
-        assertEquals(16, bcBands.getMethodByteCodePacked()[0][0].length);
-        assertEquals(16, bcBands.getBcLabel().length);
+        assertEquals(36, bcBands.getMethodByteCodePacked()[0][0].length);
+        assertEquals(20, bcBands.getBcLabel().length);
+    }
+    
+    public void testWideForms() throws IOException, Pack200Exception {
+        byte[] bytes = new byte[] {(byte) 196, (byte) 54, // wide istore
+                (byte) 196, (byte) 132, // wide iinc
+                (byte) 255, 
+                0, // bc_short band
+                0, 0, 0, 1}; // bc_locals band 
+        InputStream in = new ByteArrayInputStream(bytes);
+        bcBands.unpack(in);
+        assertEquals(4, bcBands.getMethodByteCodePacked()[0][0].length);
+        assertEquals(4, bcBands.getBcLocal().length);
+        assertEquals(1, bcBands.getBcShort().length);
     }
     
     /**

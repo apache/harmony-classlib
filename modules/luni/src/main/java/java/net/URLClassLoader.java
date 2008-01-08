@@ -1173,7 +1173,7 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     Class<?> findClassImpl(String className) {
-        Class loadedClass = findLoadedClass(className);
+        Class<?> loadedClass = findLoadedClass(className);
         if (null != loadedClass) {
             return loadedClass;
         }

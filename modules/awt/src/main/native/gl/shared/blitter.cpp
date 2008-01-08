@@ -819,10 +819,10 @@ void src_over_byteindexed_intargb
       r = (unsigned char)((xorcolor >> 16) & 0xff);
       g = (unsigned char)((xorcolor >> 8) & 0xff);
       b = (unsigned char)(xorcolor & 0xff);
-
       for(int _sy = srcY, _dy = dstY, maxY = srcY + height; _sy < maxY; _sy++, _dy++){
           for(int _sx = srcX, _dx = dstX, maxX = srcX + width; _sx < maxX; _sx++, _dx++){
               getRGB(_sx, _sy, srcStruct, srcData, sr, sg, sb, sa, false);
+              if(sa < 128) continue;
               getRGB(_dx, _dy, dstStruct, dstData, dr, dg, db, da, false);
               dr ^= (r ^ sr);
               dg ^= (g ^ sg);

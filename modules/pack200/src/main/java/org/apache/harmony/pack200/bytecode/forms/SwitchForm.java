@@ -17,9 +17,10 @@
 package org.apache.harmony.pack200.bytecode.forms;
 
 import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.CodeAttribute;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
-public class SwitchForm extends ByteCodeForm {
+public abstract class SwitchForm extends VariableInstructionForm {
 
     public SwitchForm(int opcode, String name) {
         super(opcode, name);
@@ -43,9 +44,29 @@ public class SwitchForm extends ByteCodeForm {
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
-//TODO: implement this. Removed the error message because
-//        it causes failures in the JUnit tests.
-//        throw new Error("Not implemented yet");        
+            OperandManager operandManager, int codeLength) {
     }
+    
+    /* (non-Javadoc)
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTargets(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.CodeAttribute)
+     */
+    public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
+        // SwitchForms need to fix up the target of label operations
+        int[] originalTargets = byteCode.getByteCodeTargets();
+        int numberOfLabels = originalTargets.length;
+        int[] replacementTargets = new int[numberOfLabels];
+        
+        int sourceIndex = byteCode.getByteCodeIndex();
+        int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
+        for(int index=0; index < numberOfLabels; index++) {
+            int absoluteInstructionTargetIndex = sourceIndex + originalTargets[index];
+            int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
+            replacementTargets[index] = targetValue - sourceValue;
+        }
+        int[] rewriteArray = byteCode.getRewrite();
+        for(int index=0; index < numberOfLabels; index++) {
+            setRewrite4Bytes(replacementTargets[index], rewriteArray);
+        }
+    }
+
 }

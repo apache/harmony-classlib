@@ -20,17 +20,6 @@
 #include "exceptions.h"
 #include "harmonyglob.h"
 
-JNIEXPORT jboolean JNICALL
-Java_java_io_FileDescriptor_valid (JNIEnv * env, jobject recv)
-{
-  /**
-    * Currently only answer false if the descriptor is -1.  Possibly there 
-    * could be an OS check to see if the handle has been invalidated 
-    */
-  void *descriptor = getJavaIoFileDescriptorContentsAsAPointer (env, recv);
-  return (IDATA) descriptor != -1;
-}
-
 JNIEXPORT void JNICALL
 Java_java_io_FileDescriptor_syncImpl (JNIEnv * env, jobject recv)
 {

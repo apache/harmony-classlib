@@ -102,15 +102,31 @@ public class MessageFormat extends Format {
         Vector<Format> localFormats = new Vector<Format>();
         while (position.getIndex() < length) {
             if (Format.upTo(template, position, buffer, '{')) {
-                byte arg;
+                int arg = 0;
                 int offset = position.getIndex();
-                if (offset >= length
-                        || (arg = (byte) Character.digit(template
-                                .charAt(offset++), 10)) == -1) {
+                if (offset >= length) {
                     // text.19=Invalid argument number
                     throw new IllegalArgumentException(Messages
                             .getString("text.19")); //$NON-NLS-1$
                 }
+                // Get argument number
+                char ch;
+                while ((ch = template.charAt(offset++)) != '}' && ch != ',') {
+                    if (ch < '0' && ch > '9') {
+                        // text.19=Invalid argument number
+                        throw new IllegalArgumentException(Messages
+                            .getString("text.19")); //$NON-NLS-1$
+                    }
+                    
+                    arg = arg * 10 + (ch - '0');
+                    
+                    if (arg < 0 || offset >= length) {
+                        // text.19=Invalid argument number
+                        throw new IllegalArgumentException(Messages
+                            .getString("text.19")); //$NON-NLS-1$
+                    }
+                }
+                offset--;
                 position.setIndex(offset);
                 localFormats.addElement(parseVariable(template, position));
                 if (argCount >= args.length) {

@@ -22,7 +22,7 @@
 LIBBASE=hysecurity
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
-BUILDFILES = security_copyright.obj getWindowsRandom.obj
+BUILDFILES = $(SHAREDSUB)security_copyright.obj getWindowsRandom.obj
 VIRTFILES = $(LIBBASE).res
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
@@ -30,6 +30,6 @@ SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x1300000
-COMMENT=/comment:"Security component native code. (c) Copyright 2006 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"Security component native code. (c) Copyright 2006,2007 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

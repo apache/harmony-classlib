@@ -267,7 +267,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
       (*env)->DeleteLocalRef(env, gotFD);
 
-      my_pollfds[val].fd = hysocketP->sock;
+      /* hysocketP is -1 if the socket is closed */
+      my_pollfds[val].fd = hysocketP == -1 ? -1 : hysocketP->sock;
       my_pollfds[val].events = POLLIN | POLLPRI;
       my_pollfds[val].revents = 0;
   }
@@ -277,7 +278,8 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
 	  hysocketP = getJavaIoFileDescriptorContentsAsAPointer	(env, gotFD);
       (*env)->DeleteLocalRef(env, gotFD);
 
-      my_pollfds[countReadC + val].fd = hysocketP->sock;
+      /* hysocketP is -1 if the socket is closed */
+      my_pollfds[countReadC + val].fd = hysocketP == -1 ? -1 : hysocketP->sock;
       my_pollfds[countReadC + val].events = POLLOUT;
       my_pollfds[countReadC + val].revents = 0;
   }

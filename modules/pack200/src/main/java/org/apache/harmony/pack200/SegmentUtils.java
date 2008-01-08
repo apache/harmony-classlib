@@ -20,29 +20,81 @@ package org.apache.harmony.pack200;
 public final class SegmentUtils {
     
 	public static int countArgs(String descriptor) {
-		int bra = descriptor.indexOf("(");
-		int ket = descriptor.indexOf(")");
-		if (bra == -1 || ket == -1 || ket < bra)
-			throw new IllegalArgumentException("No arguments");
-
-		boolean inType = false;
-		int count = 0;
-		for (int i = bra + 1; i < ket; i++) {
-			char charAt = descriptor.charAt(i);
-			if (inType && charAt == ';') {
-				inType = false;
-			} else if (!inType && charAt == 'L') {
-				inType = true;
-				count++;
-			} else if (charAt == '[' || inType) {
-				// NOP
-			} else {
-				count++;
-			}
-		}
-		return count;
+	    return countArgs(descriptor, 1);
+//		int bra = descriptor.indexOf("(");
+//		int ket = descriptor.indexOf(")");
+//		if (bra == -1 || ket == -1 || ket < bra)
+//			throw new IllegalArgumentException("No arguments");
+//
+//		boolean inType = false;
+//		int count = 0;
+//		for (int i = bra + 1; i < ket; i++) {
+//			char charAt = descriptor.charAt(i);
+//			if (inType && charAt == ';') {
+//				inType = false;
+//			} else if (!inType && charAt == 'L') {
+//				inType = true;
+//				count++;
+//			} else if (charAt == '[' || inType) {
+//				// NOP
+//			} else {
+//				count++;
+//			}
+//		}
+//		return count;
 	}
 
+	public static int countInvokeInterfaceArgs(String descriptor) {
+	    return countArgs(descriptor, 2);
+	}
+	
+	/**
+	 * Count the number of arguments in the descriptor. Each
+	 * long or double counts as widthOfLongsAndDoubles; all other
+	 * arguments count as 1.
+	 * @param descriptor String for which arguments are counted
+	 * @param widthOfLongsAndDoubles int increment to apply for longs
+	 *   doubles. This is typically 1 when counting arguments alone,
+	 *   or 2 when counting arguments for invokeinterface.
+	 * @return integer count
+	 */
+	protected static int countArgs(String descriptor, int widthOfLongsAndDoubles) {
+	    int bra = descriptor.indexOf("(");
+	    int ket = descriptor.indexOf(")");
+	    if (bra == -1 || ket == -1 || ket < bra)
+	        throw new IllegalArgumentException("No arguments");
+
+	    boolean inType = false;
+	    boolean consumingNextType = false;
+	    int count = 0;
+	    for (int i = bra + 1; i < ket; i++) {
+	        char charAt = descriptor.charAt(i);
+	        if (inType && charAt == ';') {
+	            inType = false;
+	            consumingNextType = false;
+	        } else if (!inType && charAt == 'L') {
+	            inType = true;
+	            count++;
+	        } else if (charAt == '[') {
+	            consumingNextType = true;
+	        } else if(inType) {
+	            // NOP
+	        } else {
+	            if(consumingNextType) {
+	                count++;
+	                consumingNextType = false;
+	            } else {
+	                if(charAt == 'D' || charAt == 'J') {
+	                    count+=widthOfLongsAndDoubles;
+	                } else {
+	                    count++;
+	                }
+	            }
+	        }
+	    }
+	    return count;
+	}
+	   
 	public static int countMatches(long[] flags, IMatcher matcher) {
 		int count = 0;
 		for (int i = 0; i < flags.length; i++) {

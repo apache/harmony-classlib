@@ -68,29 +68,24 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
     }
 
-    static class HashMapIterator<E, KT, VT> implements Iterator<E> {
+    private static class AbstractMapIterator<K, V>  {
         private int position = 0;
-
         int expectedModCount;
+        Entry<K, V> futureEntry;
+        Entry<K, V> currentEntry;
+        Entry<K, V> prevEntry;
 
-        final MapEntry.Type<E, KT, VT> type;
+        final HashMap<K, V> associatedMap;
 
-        boolean canRemove = false;
 
-        Entry<KT, VT> entry;
-
-        Entry<KT, VT> lastEntry;
-
-        final HashMap<KT, VT> associatedMap;
-
-        HashMapIterator(MapEntry.Type<E, KT, VT> value, HashMap<KT, VT> hm) {
+        AbstractMapIterator(HashMap<K, V> hm) {
             associatedMap = hm;
-            type = value;
             expectedModCount = hm.modCount;
+            futureEntry = null;
         }
 
         public boolean hasNext() {
-            if (entry != null) {
+            if (futureEntry != null) {
                 return true;
             }
             while (position < associatedMap.elementData.length) {
@@ -103,52 +98,84 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             return false;
         }
 
-        void checkConcurrentMod() throws ConcurrentModificationException {
+        final void checkConcurrentMod() throws ConcurrentModificationException {
             if (expectedModCount != associatedMap.modCount) {
                 throw new ConcurrentModificationException();
             }
         }
 
-        public E next() {
+        final void makeNext() {
             checkConcurrentMod();
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-
-            MapEntry<KT, VT> result;
-            if (entry == null) {
-                result = lastEntry = associatedMap.elementData[position++];
-                entry = lastEntry.next;
+            if (futureEntry == null) {
+                currentEntry = associatedMap.elementData[position++];
+                futureEntry = currentEntry.next;
+                prevEntry = null;
             } else {
-                if (lastEntry.next != entry) {
-                    lastEntry = lastEntry.next;
+                if(currentEntry!=null){
+                    prevEntry = currentEntry;
                 }
-                result = entry;
-                entry = entry.next;
+                currentEntry = futureEntry;
+                futureEntry = futureEntry.next;
             }
-            canRemove = true;
-            return type.get(result);
         }
 
-        public void remove() {
+        public final void remove() {
             checkConcurrentMod();
-            if (!canRemove) {
+            if (currentEntry==null) {
                 throw new IllegalStateException();
             }
-
-            canRemove = false;
-            associatedMap.modCount++;
-            if (lastEntry.next == entry) {
-                while (associatedMap.elementData[--position] == null) {
-                    // Do nothing
-                }
-                associatedMap.elementData[position] = associatedMap.elementData[position].next;
-                entry = null;
+            if(prevEntry==null){
+                int index = currentEntry.origKeyHash & (associatedMap.elementData.length - 1);
+                //assert associatedMap.elementData[index] == currentEntry;
+                associatedMap.elementData[index] = associatedMap.elementData[index].next;
             } else {
-                lastEntry.next = entry;
+                prevEntry.next = currentEntry.next;
             }
-            associatedMap.elementCount--;
+            currentEntry = null;
             expectedModCount++;
+            associatedMap.modCount++;
+            associatedMap.elementCount--;
+
+        }
+    }
+
+
+    private static class EntryIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
+
+        EntryIterator (HashMap<K, V> map) {
+            super(map);
+        }
+
+        public Map.Entry<K, V> next() {
+            makeNext();
+            return currentEntry;
+        }
+    }
+
+    private static class KeyIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<K> {
+
+        KeyIterator (HashMap<K, V> map) {
+            super(map);
+        }
+
+        public K next() {
+            makeNext();
+            return currentEntry.key;
+        }
+    }
+
+    private static class ValueIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<V> {
+
+        ValueIterator (HashMap<K, V> map) {
+            super(map);
+        }
+
+        public V next() {
+            makeNext();
+            return currentEntry.value;
         }
     }
 
@@ -175,9 +202,13 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
         @Override
         public boolean remove(Object object) {
-            if (contains(object)) {
-                associatedMap.remove(((Map.Entry<?, ?>) object).getKey());
-                return true;
+            if (object instanceof Map.Entry) {
+                Map.Entry<?, ?> oEntry = (Map.Entry<?, ?>) object;
+                Entry<KT,VT> entry = associatedMap.getEntry(oEntry.getKey());
+                if(valuesEq(entry, oEntry)) {
+                    associatedMap.removeEntry(entry);
+                    return true;
+                }
             }
             return false;
         }
@@ -185,34 +216,29 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         @Override
         public boolean contains(Object object) {
             if (object instanceof Map.Entry) {
-                Object key = ((Map.Entry<?, ?>) object).getKey();
-                Entry<KT, VT> entry;
-                if (key == null) {
-                    entry = associatedMap.findNullKeyEntry();
-                } else {
-                    int hash = key.hashCode();
-                    int index = hash & (associatedMap.elementData.length - 1);
-                    entry = associatedMap.findNonNullKeyEntry(key, index, hash);
-                }
-                return entry == null ? false : entry.equals(object);
+                Map.Entry<?, ?> oEntry = (Map.Entry<?, ?>) object;
+                Entry entry = associatedMap.getEntry(oEntry.getKey());
+                return valuesEq(entry, oEntry);
             }
             return false;
         }
 
+        private static boolean valuesEq(Entry entry, Map.Entry<?, ?> oEntry) {
+            return (entry != null) &&
+                                   ((entry.value == null) ?
+                                    (oEntry.getValue() == null) :
+                                    (entry.value.equals(oEntry.getValue())));
+        }
+
         @Override
         public Iterator<Map.Entry<KT, VT>> iterator() {
-            return new HashMapIterator<Map.Entry<KT, VT>, KT, VT>(
-                    new MapEntry.Type<Map.Entry<KT, VT>, KT, VT>() {
-                        public Map.Entry<KT, VT> get(MapEntry<KT, VT> entry) {
-                            return entry;
-                        }
-                    }, associatedMap);
+            return new EntryIterator<KT,VT> (associatedMap);
         }
     }
 
     /**
      * Create a new element array
-     * 
+     *
      * @param s
      * @return Reference to the element array
      */
@@ -223,7 +249,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Constructs a new empty instance of HashMap.
-     * 
+     *
      */
     public HashMap() {
         this(DEFAULT_SIZE);
@@ -231,10 +257,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Constructs a new instance of HashMap with the specified capacity.
-     * 
+     *
      * @param capacity
      *            the initial capacity of this HashMap
-     * 
+     *
      * @exception IllegalArgumentException
      *                when the capacity is less than zero
      */
@@ -249,7 +275,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             throw new IllegalArgumentException();
         }
     }
-    
+
     private static final int calculateCapacity(int x) {
         if(x >= 1 << 30){
             return 1 << 30;
@@ -269,13 +295,13 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     /**
      * Constructs a new instance of HashMap with the specified capacity and load
      * factor.
-     * 
-     * 
+     *
+     *
      * @param capacity
      *            the initial capacity
      * @param loadFactor
      *            the initial load factor
-     * 
+     *
      * @exception IllegalArgumentException
      *                when the capacity is less than zero or the load factor is
      *                less or equal to zero
@@ -295,7 +321,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
     /**
      * Constructs a new instance of HashMap containing the mappings from the
      * specified Map.
-     * 
+     *
      * @param map
      *            the mappings to add
      */
@@ -306,7 +332,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Removes all mappings from this HashMap, leaving it empty.
-     * 
+     *
      * @see #isEmpty
      * @see #size
      */
@@ -321,9 +347,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Answers a new HashMap with the same mappings and size as this HashMap.
-     * 
+     *
      * @return a shallow copy of this HashMap
-     * 
+     *
      * @see java.lang.Cloneable
      */
     @Override
@@ -355,7 +381,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Searches this HashMap for the specified key.
-     * 
+     *
      * @param key
      *            the object to search for
      * @return true if <code>key</code> is a key of this HashMap, false
@@ -363,20 +389,13 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      */
     @Override
     public boolean containsKey(Object key) {
-        Entry<K, V> m;
-        if (key == null) {
-            m = findNullKeyEntry();
-        } else {
-            int hash = key.hashCode();
-            int index = hash & (elementData.length - 1);
-            m = findNonNullKeyEntry(key, index, hash);
-        }
+        Entry<K, V> m = getEntry(key);
         return m != null;
     }
 
     /**
      * Searches this HashMap for the specified value.
-     * 
+     *
      * @param value
      *            the object to search for
      * @return true if <code>value</code> is a value of this HashMap, false
@@ -412,7 +431,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * Answers a Set of the mappings contained in this HashMap. Each element in
      * the set is a Map.Entry. The set is backed by this HashMap so changes to
      * one are reflected by the other. The set does not support adding.
-     * 
+     *
      * @return a Set of the mappings
      */
     @Override
@@ -422,13 +441,21 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Answers the value of the mapping with the specified key.
-     * 
+     *
      * @param key
      *            the key
      * @return the value of the mapping with the specified key
      */
     @Override
     public V get(Object key) {
+        Entry<K, V> m = getEntry(key);
+        if (m != null) {
+            return m.value;
+        }
+        return null;
+    }
+
+    final Entry<K, V> getEntry(Object key) {
         Entry<K, V> m;
         if (key == null) {
             m = findNullKeyEntry();
@@ -437,10 +464,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
             int index = hash & (elementData.length - 1);
             m = findNonNullKeyEntry(key, index, hash);
         }
-        if (m != null) {
-            return m.value;
-        }
-        return null;
+        return m;
     }
 
     final Entry<K,V> findNonNullKeyEntry(Object key, int index, int keyHash) {
@@ -450,7 +474,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         }
         return m;
     }
-  
+
     final Entry<K,V> findNullKeyEntry() {
         Entry<K,V> m = elementData[0];
         while (m != null && m.key != null)
@@ -460,9 +484,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Answers if this HashMap has no elements, a size of zero.
-     * 
+     *
      * @return true if this HashMap has no elements, false otherwise
-     * 
+     *
      * @see #size
      */
     @Override
@@ -474,7 +498,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * Answers a Set of the keys contained in this HashMap. The set is backed by
      * this HashMap so changes to one are reflected by the other. The set does
      * not support adding.
-     * 
+     *
      * @return a Set of the keys
      */
     @Override
@@ -504,12 +528,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
                 @Override
                 public Iterator<K> iterator() {
-                    return new HashMapIterator<K, K, V>(
-                            new MapEntry.Type<K, K, V>() {
-                                public K get(MapEntry<K, V> entry) {
-                                    return entry.key;
-                                }
-                            }, HashMap.this);
+                    return new KeyIterator<K,V> (HashMap.this);
                 }
             };
         }
@@ -518,7 +537,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Maps the specified key to the specified value.
-     * 
+     *
      * @param key
      *            the key
      * @param value
@@ -579,7 +598,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * Copies all the mappings in the given map to this map. These mappings will
      * replace all mappings that this map had for any of the keys currently in
      * the given map.
-     * 
+     *
      * @param map
      *            the Map to copy mappings from
      * @throws NullPointerException
@@ -626,7 +645,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Removes a mapping with the specified key from this HashMap.
-     * 
+     *
      * @param key
      *            the key of the mapping to remove
      * @return the value of the removed mapping or null if key is not a key in
@@ -641,7 +660,23 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return null;
     }
 
-    Entry<K, V> removeEntry(Object key) {
+    final void removeEntry(Entry<K, V> entry) {
+        int index = entry.origKeyHash & (elementData.length - 1);
+        Entry<K, V> m = elementData[index];
+        if (m == entry) {
+            elementData[index] = entry.next;
+        } else {
+            while (m.next != entry && m.next != null) {
+                m = m.next;
+            }
+            m.next = entry.next;
+
+        }
+        modCount++;
+        elementCount--;
+    }
+
+    final Entry<K, V> removeEntry(Object key) {
         int index = 0;
         Entry<K, V> entry;
         Entry<K, V> last = null;
@@ -675,7 +710,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
     /**
      * Answers the number of mappings in this HashMap.
-     * 
+     *
      * @return the number of mappings in this HashMap
      */
     @Override
@@ -687,7 +722,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
      * Answers a Collection of the values contained in this HashMap. The
      * collection is backed by this HashMap so changes to one are reflected by
      * the other. The collection does not support adding.
-     * 
+     *
      * @return a Collection of the values
      */
     @Override
@@ -711,12 +746,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
 
                 @Override
                 public Iterator<V> iterator() {
-                    return new HashMapIterator<V, K, V>(
-                            new MapEntry.Type<V, K, V>() {
-                                public V get(MapEntry<K, V> entry) {
-                                    return entry.value;
-                                }
-                            }, HashMap.this);
+                    return new ValueIterator<K,V> (HashMap.this);
                 }
             };
         }

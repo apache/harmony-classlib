@@ -33,6 +33,7 @@ import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.gl.Surface;
 import org.apache.harmony.awt.gl.Utils;
+import org.apache.harmony.awt.gl.XORComposite;
 import org.apache.harmony.awt.gl.font.FontManager;
 import org.apache.harmony.awt.gl.font.LinuxNativeFont;
 import org.apache.harmony.awt.wtk.NativeWindow;
@@ -61,10 +62,14 @@ public class XGraphics2D extends CommonGraphics2D {
     boolean nativeLines = true;
     boolean nativePaint = true;
     boolean transparentColor = false;
-    boolean scalingTransform = false;
     boolean simpleComposite = true;
+    boolean xor_mode = false;
 
     boolean indexModel = false;
+ 
+    static{
+        System.loadLibrary("gl");
+    }
 
     public XGraphics2D(long drawable, int tx, int ty, MultiRectArea clip) {
         super(tx, ty, clip);
@@ -124,8 +129,8 @@ public class XGraphics2D extends CommonGraphics2D {
         return draw;
     }
 
-    private static final long createGC(long display, long win) {
-        return x11.XCreateGC(display, win, 0, 0);
+    private final long createGC(long display, long win) {
+        return createGC(display, win, 0L, 0L);
     }
 
     public GraphicsConfiguration getDeviceConfiguration() {
@@ -137,7 +142,7 @@ public class XGraphics2D extends CommonGraphics2D {
         x += transform.getTranslateX();
         y += transform.getTranslateY();
 
-        x11.XCopyArea(display, drawable, drawable, gc, x, y, width, height, dx+x, dy+y);
+        copyArea(display, drawable, drawable, gc, x, y, width, height, dx+x, dy+y);
     }
 
     // Caller should free native pointer to rects after using it
@@ -156,18 +161,6 @@ public class XGraphics2D extends CommonGraphics2D {
         }
 
         return x11.createXRectangle(rects);
-    }
-
-    protected void fillMultiRectAreaColor(MultiRectArea mra) {
-        if (transparentColor || !simpleComposite) {
-            super.fillMultiRectAreaColor(mra);
-        } else {
-            int vertices[] = mra.rect;
-            int nRects = (vertices[0]-1) >> 2;
-            X11.XRectangle xRects = createXRects(vertices);
-            x11.XFillRectangles(display, drawable, gc, xRects, nRects);
-            xRects.free();
-        }
     }
 
     public void setPaint(Paint paint) {
@@ -210,22 +203,8 @@ public class XGraphics2D extends CommonGraphics2D {
             argb_val = icm.getRGB(pixel);
         }
 
-        short xRed = (short) ((argb_val & 0x00FF0000) >> 8);
-        short xGreen = (short) (argb_val & 0x0000FF00);
-        short xBlue = (short) ((argb_val & 0x000000FF) << 8);
+        setForeground(display, gc, xConfig.xcolormap, argb_val);
 
-        // Create XColor
-        X11.XColor xcolor = x11.createXColor(true);
-        xcolor.set_red(xRed);
-        xcolor.set_green(xGreen);
-        xcolor.set_blue(xBlue);
-
-        // Allocate cmap cell
-        x11.XAllocColor(display, xConfig.xcolormap, xcolor);
-        x11.XSetForeground(display, gc, xcolor.get_pixel());
-
-        // Cleanup
-        xcolor.free();
     }
 
     public void dispose() {
@@ -237,11 +216,11 @@ public class XGraphics2D extends CommonGraphics2D {
         }
 
         if (gc != 0) {
-            x11.XFreeGC(display, gc);
+            freeGC(display, gc);
             gc = 0;
         }
         if (imageGC != 0) {
-            x11.XFreeGC(display, imageGC);
+            freeGC(display, imageGC);
             imageGC = 0;
         }
     }
@@ -250,15 +229,14 @@ public class XGraphics2D extends CommonGraphics2D {
         if (mra == null) {
             resetXClip(gc);
         } else {
-            int nRects = mra.getRectCount();
-            X11.XRectangle xrects = createXRects(mra.rect);
-            x11.XSetClipRectangles(display, gc, 0, 0, xrects, nRects, X11Defs.Unsorted);
-            xrects.free();
+            int vertices[] = mra.rect;
+            int numVert = vertices[0] - 1;
+            setClipRectangles(display, gc, 0, 0, vertices, numVert);
         }
     }
 
     void resetXClip(long gc) {
-        x11.XSetClipMask(display, gc, X11Defs.None);
+        setClipMask(display, gc, X11Defs.None);
     }
 
     void setXftClip(MultiRectArea mra) {
@@ -287,10 +265,11 @@ public class XGraphics2D extends CommonGraphics2D {
     }
 
     void setGCFunction(int func) {
-        x11.XSetFunction(display, gc, func);
+        setFunction(display, gc, func);
     }
+
     void setImageGCFunction(int func) { // Note: works with imageGC
-        x11.XSetFunction(display, imageGC, func);
+        setFunction(display, imageGC, func);
     }
 
     Surface getSurface() {
@@ -306,51 +285,26 @@ public class XGraphics2D extends CommonGraphics2D {
                 return;
             }
 
-            X11.XGCValues gcVals = x11.createXGCValues(true);
-            gcVals.set_line_width(Math.round(bs.getLineWidth()));
-            gcVals.set_join_style(bs.getLineJoin());
-            gcVals.set_cap_style(bs.getEndCap()+1);
-            gcVals.set_dash_offset(Math.round(bs.getDashPhase()));
+            int line_width = (int)(bs.getLineWidth() + 0.5f);
+            int join_style = bs.getLineJoin();
+            int cap_style = bs.getEndCap()+1;
+            int dash_offset = (int)(bs.getDashPhase() + 0.5f);
 
-            int n = 0;
+            float fdashes[] = bs.getDashArray();
 
-            if (bs.getDashArray() == null) {
-                gcVals.set_line_style(X11Defs.LineSolid);
-                gcVals.set_dashes((byte)1);
-            } else {
-                gcVals.set_line_style(X11Defs.LineOnOffDash);
+            int len = 0;
+            byte bdashes[] = null;
 
-                n = bs.getDashArray().length;
+            if(fdashes != null){
+                len = fdashes.length;
+                bdashes = new byte[len];
 
-                if (n == 1) {
-                    gcVals.set_dashes((byte)Math.round(bs.getDashArray()[0]));
-                } else {
-                    long dashList = Utils.memaccess.malloc(n);
-                    float[] dashArray = bs.getDashArray();
-                    for (int i = 0; i < n; i++) {
-                        Utils.memaccess.setByte(dashList+i, (byte) Math.round(dashArray[i]));
-                    }
-                    x11.XSetDashes(
-                            display,
-                            gc,
-                            Math.round(bs.getDashPhase()),
-                            dashList,
-                            bs.getDashArray().length
-                    );
-                    Utils.memaccess.free(dashList);
+                for(int i = 0; i < len; i++){
+                    bdashes[i] = (byte)(fdashes[i] + 0.5f);
                 }
             }
 
-            x11.XChangeGC(
-                    display,
-                    gc,
-                    X11Defs.GCLineWidth | X11Defs.GCJoinStyle |
-                    X11Defs.GCCapStyle | X11Defs.GCDashOffset |
-                    X11Defs.GCLineStyle | (n==1 ? X11Defs.GCDashList : 0),
-                    gcVals
-            );
-
-            gcVals.free();
+            setStroke(display, gc, line_width, join_style, cap_style, dash_offset, bdashes, len);
 
             nativeLines = true;
         } else {
@@ -360,173 +314,545 @@ public class XGraphics2D extends CommonGraphics2D {
 
     public void setTransform(AffineTransform transform) {
         super.setTransform(transform);
-
-        if ((transform.getType() & AffineTransform.TYPE_MASK_SCALE) != 0) {
-            scalingTransform = true;
-        } else {
-            scalingTransform = false;
-        }
     }
 
     public void drawLine(int x1, int y1, int x2, int y2) {
         if (
                 nativeLines && nativePaint &&
-                !scalingTransform && !transparentColor &&
-                simpleComposite
+                !transparentColor && simpleComposite
         ) {
-            float points[] = new float[]{x1, y1, x2, y2};
-            transform.transform(points, 0, points, 0, 2);
-            x11.XDrawLine(
-                    display,
-                    drawable,
-                    gc,
-                    (int) points[0], (int) points[1],
-                    (int) points[2], (int) points[3]
-            );
+            int type = transform.getType();
+            if (type < 2) {
+              
+                int tx = (int) transform.getTranslateX();
+                int ty = (int) transform.getTranslateY();
+
+                x1 += tx;
+                y1 += ty;
+                x2 += tx;
+                y2 += ty;
+
+                drawLine(display, drawable, gc, x1, y1, x2, y2);       
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    drawLine(display, drawable, gc, x1, y1, x2, y2);       
+                    xSetForeground(fgColor.getRGB());
+                }
+            } else {
+
+                float points[] = new float[]{x1, y1, x2, y2};
+                transform.transform(points, 0, points, 0, 2);
+
+                x1 = (int)points[0];
+                y1 = (int)points[1];
+                x2 = (int)points[2];
+                y2 = (int)points[3];
+
+                drawLine(display, drawable, gc, x1, y1, x2, y2);       
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    drawLine(display, drawable, gc, x1, y1, x2, y2);       
+                    xSetForeground(fgColor.getRGB());
+                }
+            }
         } else {
             super.drawLine(x1, y1, x2, y2);
         }
     }
 
-    public void drawPolygon(int[] xpoints, int[] ypoints, int npoints) {
-        if (
-                nativeLines && nativePaint &&
-                !scalingTransform && !transparentColor &&
-                simpleComposite
-        ) {
-            float points[] = new float[npoints<<1];
-            int i;
-            for (i = 0; i < npoints; i++) {
-                points[i<<1] = xpoints[i];
-                points[(i<<1) + 1] = ypoints[i];
-            }
-            transform.transform(points, 0, points, 0, npoints);
-
-            // Create XPoint's
-            long xPoints = Utils.memaccess.malloc((npoints+1) << 2); // sizeof XPoint = 4
-            long ptr = xPoints;
-
-            for (i = 0; i < npoints; i++) {
-                Utils.memaccess.setShort(ptr, (short) points[i<<1]);
-                Utils.memaccess.setShort(ptr+2, (short) points[(i<<1)+1]);
-                ptr += 4; // sizeof XPoint = 4
-            }
-            // Add first point again to close path
-            Utils.memaccess.setShort(ptr, (short) points[0]);
-            Utils.memaccess.setShort(ptr+2, (short) points[1]);
-
-            x11.XDrawLines(
-                    display,
-                    drawable,
-                    gc,
-                    xPoints,
-                    npoints+1,
-                    X11Defs.CoordModeOrigin
-            );
-
-            Utils.memaccess.free(xPoints);
-        } else {
-            super.drawPolygon(xpoints, ypoints, npoints);
-        }
-    }
-
-    public void drawPolygon(Polygon polygon) {
-        drawPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-    }
-
+    @Override
     public void drawPolyline(int[] xpoints, int[] ypoints, int npoints) {
         if (
                 nativeLines && nativePaint &&
-                !scalingTransform && !transparentColor &&
-                simpleComposite
+                !transparentColor && simpleComposite
         ) {
-            float points[] = new float[npoints<<1];
-            for (int i = 0; i < npoints; i++) {
-                points[i<<1] = xpoints[i];
-                points[(i<<1) + 1] = ypoints[i];
+
+            short points[] = new short[npoints << 1];
+
+            int type = transform.getType();
+            if (type < 2) {
+              
+                int tx = (int) transform.getTranslateX();
+                int ty = (int) transform.getTranslateY();
+
+                for (int idx = 0, i = 0; i < npoints; i++){
+                    points[idx++] = (short)(xpoints[i] + tx);
+                    points[idx++] = (short)(ypoints[i] + ty);
+                }
+
+                drawLines(display, drawable, gc, points, points.length);
+            } else {
+
+                float fpoints[] = new float[npoints << 1];
+
+                for (int idx = 0, i = 0; i < npoints; i++){
+                    fpoints[idx++] = xpoints[i];
+                    fpoints[idx++] = ypoints[i];
+                }
+
+                transform.transform(fpoints, 0, fpoints, 0, npoints);
+                for (int i = 0; i < fpoints.length; i++)
+                    points[i] = (short)(fpoints[i] + 0.5f);
+
+                drawLines(display, drawable, gc, points, points.length);
             }
-            transform.transform(points, 0, points, 0, npoints);
 
-            // Create XPoint's
-            long xPoints = Utils.memaccess.malloc((npoints) << 2); // sizeof XPoint = 4
-            long ptr = xPoints;
-
-            for (int i = 0; i < npoints; i++) {
-                Utils.memaccess.setShort(ptr, (short) points[i<<1]);
-                Utils.memaccess.setShort(ptr+2, (short) points[(i<<1)+1]);
-                ptr += 4; // sizeof XPoint = 4
+            if (xor_mode) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                drawLines(display, drawable, gc, points, points.length);
+                xSetForeground(fgColor.getRGB());
             }
-
-            x11.XDrawLines(
-                    display,
-                    drawable,
-                    gc,
-                    xPoints,
-                    npoints,
-                    X11Defs.CoordModeOrigin
-            );
-
-            Utils.memaccess.free(xPoints);
         } else {
             super.drawPolyline(xpoints, ypoints, npoints);
         }
     }
 
+    @Override
+    public void drawPolygon(int[] xpoints, int[] ypoints, int npoints) {
+        if (
+                nativeLines && nativePaint &&
+                !transparentColor && simpleComposite
+        ) {
+
+            short points[] = new short[(npoints << 1) + 2];
+
+            int type = transform.getType();
+            if (type < 2) {
+              
+                int tx = (int) transform.getTranslateX();
+                int ty = (int) transform.getTranslateY();
+
+                int idx = 0;
+                for (int i = 0; i < npoints; i++){
+                    points[idx++] = (short)(xpoints[i] + tx);
+                    points[idx++] = (short)(ypoints[i] + ty);
+                }
+                points[idx++] = (short)(xpoints[0] + tx);
+                points[idx++] = (short)(ypoints[0] + ty);
+
+                drawLines(display, drawable, gc, points, points.length);
+            } else {
+
+                float fpoints[] = new float[npoints << 1];
+
+                for (int idx = 0, i = 0; i < npoints; i++){
+                    fpoints[idx++] = xpoints[i];
+                    fpoints[idx++] = ypoints[i];
+                }
+
+                transform.transform(fpoints, 0, fpoints, 0, npoints);
+                int i = 0;
+                for (; i < fpoints.length; i++)
+                    points[i] = (short)(fpoints[i] + 0.5f);
+                points[i++] = (short)(fpoints[0] + 0.5f);
+                points[i++] = (short)(fpoints[1] + 0.5f);
+
+                drawLines(display, drawable, gc, points, points.length);
+            }
+
+            if (xor_mode) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                drawLines(display, drawable, gc, points, points.length);
+                xSetForeground(fgColor.getRGB());
+            }
+        } else {
+            super.drawPolygon(xpoints, ypoints, npoints);
+        }
+    }
+
+    @Override
+    public void drawPolygon(Polygon polygon) {
+        drawPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+    }
+
+    @Override
     public void drawRect(int x, int y, int width, int height) {
         if (
                 nativeLines && nativePaint &&
-                !transparentColor && simpleComposite &&
-                (transform.getType() & AffineTransform.TYPE_TRANSLATION) != 0
+                !transparentColor && simpleComposite
         ) {
-            Point2D rectOrig = new Point2D.Float(x, y);
-            transform.transform(rectOrig, rectOrig);
-            x11.XDrawRectangle(
-                    display,
-                    drawable,
-                    gc,
-                    (int) rectOrig.getX(), (int) rectOrig.getY(),
-                    width, height
-            );
+            int type = transform.getType();
+            if (type < 2) {
+                x += (int)transform.getTranslateX();
+                y += (int)transform.getTranslateY();
+                drawRectangle(display, drawable, gc, x, y, width, height);
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    drawRectangle(display, drawable, gc, x, y, width, height);
+                    xSetForeground(fgColor.getRGB());
+                }
+
+            } else if (type < 7) {
+                float points[] = new float[]{x, y, x + width - 1, y + height - 1};
+                transform.transform(points, 0, points, 0, 2);
+
+                if (points[0] < points[2]){
+                    x = (int)points[0];
+                    width = (int)(points[2] - points[0]) + 1;
+                } else {
+                    x = (int)points[2];
+                    width = (int)(points[0] - points[2]) + 1;
+                }
+
+                if (points[1] < points[3]){
+                    y = (int)points[1];
+                    height = (int)(points[3] - points[1]) + 1;
+                } else {
+                    y = (int)points[3];
+                    height = (int)(points[1] - points[3]) + 1;
+                }
+
+                drawRectangle(display, drawable, gc, x, y, width, height);
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    drawRectangle(display, drawable, gc, x, y, width, height);
+                    xSetForeground(fgColor.getRGB());
+                }
+            } else {
+                float fpoints[] = new float[]{x, y, x + width - 1, y, x + width - 1, y + height - 1, x, y + height - 1};
+                transform.transform(fpoints, 0, fpoints, 0, 4);
+
+                short points[] = new short[fpoints.length + 2];
+
+                int i = 0;
+                for (; i < fpoints.length; i++)
+                    points[i] = (short)(fpoints[i] + 0.5f);
+                points[i++] = (short)(fpoints[0] + 0.5f);
+                points[i++] = (short)(fpoints[1] + 0.5f);
+
+                drawLines(display, drawable, gc, points, points.length);
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    drawLines(display, drawable, gc, points, points.length);
+                    xSetForeground(fgColor.getRGB());
+                }
+            }
         } else {
             super.drawRect(x, y, width, height);
         }
     }
 
+    @Override
     public void drawArc(int x, int y, int width, int height, int sa, int ea) {
         if (
                 nativeLines && nativePaint &&
                 !transparentColor && simpleComposite &&
-                (transform.getType() & AffineTransform.TYPE_TRANSLATION) != 0
+                transform.getType() < 2
         ) {
-            Point2D orig = new Point2D.Float(x, y);
-            transform.transform(orig, orig);
-            x11.XDrawArc(
+            x += (int)transform.getTranslateX();
+            y += (int)transform.getTranslateY();
+            drawArc(
                     display,
                     drawable,
                     gc,
-                    (int) orig.getX(), (int) orig.getY(),
+                    x, y,
                     width, height,
                     sa << 6, ea << 6
             );
+
+            if (xor_mode) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                drawArc(
+                        display,
+                        drawable,
+                        gc,
+                        x, y,
+                        width, height,
+                        sa << 6, ea << 6
+                );
+                xSetForeground(fgColor.getRGB());
+            }
         } else {
             super.drawArc(x, y, width, height, sa, ea);
         }
     }
 
+    @Override
     public void drawOval(int x, int y, int width, int height) {
         drawArc(x, y, width, height, 0, 360);
     }
 
+    @Override
+    public void fillRect(int x, int y, int width, int height) {
+        if (
+                nativeLines && nativePaint &&
+                !transparentColor && simpleComposite
+        ) {
+            int type = transform.getType();
+            if (type < 2) {
+
+                x += (int)transform.getTranslateX();
+                y += (int)transform.getTranslateY();
+                fillRectangle(display, drawable, gc, x, y, width, height);
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    fillRectangle(display, drawable, gc, x, y, width, height);
+                    xSetForeground(fgColor.getRGB());
+                }
+
+            } else if (type < 7) {
+                float points[] = new float[]{x, y, x + width - 1, y + height - 1};
+                transform.transform(points, 0, points, 0, 2);
+
+                if (points[0] < points[2]){
+                    x = (int)points[0];
+                    width = (int)(points[2] - points[0]) + 1;
+                } else {
+                    x = (int)points[2];
+                    width = (int)(points[0] - points[2]) + 1;
+                }
+
+                if (points[1] < points[3]){
+                    y = (int)points[1];
+                    height = (int)(points[3] - points[1]) + 1;
+                } else {
+                    y = (int)points[3];
+                    height = (int)(points[1] - points[3]) + 1;
+                }
+
+                fillRectangle(display, drawable, gc, x, y, width, height);
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    fillRectangle(display, drawable, gc, x, y, width, height);
+                    xSetForeground(fgColor.getRGB());
+                }
+            } else {
+                float points[] = new float[]{x, y, x + width - 1, y, x + width - 1, y + height - 1, x, y + height - 1};
+                transform.transform(points, 0, points, 0, 4);
+
+                short spoints[] = new short[points.length];
+                for (int i = 0; i < points.length; i++)
+                    spoints[i] = (short)(points[i] + 0.5f);
+                fillPolygon(display, drawable, gc, spoints, spoints.length);
+
+                if (xor_mode) {
+                    XORComposite xor = (XORComposite)composite;
+                    Color xorcolor = xor.getXORColor();
+                    xSetForeground(xorcolor.getRGB());
+                    fillPolygon(display, drawable, gc, spoints, spoints.length);
+                    xSetForeground(fgColor.getRGB());
+                }
+            }
+        } else {
+            super.fill(new Rectangle(x, y, width, height));
+        }
+    }
+
+    protected void fillMultiRectAreaColor(MultiRectArea mra) {
+        if (
+                nativeLines && nativePaint && 
+                !transparentColor && simpleComposite
+        ) {
+            int vertices[] = mra.rect;
+            int numVert = vertices[0] - 1;
+            fillRectangles(display, drawable, gc, vertices, numVert);
+
+            if (xor_mode) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                fillRectangles(display, drawable, gc, vertices, numVert);
+                xSetForeground(fgColor.getRGB());
+            }
+        } else {
+            super.fillMultiRectAreaColor(mra);
+        }
+    }
+
+    @Override
+    public void fillPolygon(Polygon p) {
+        fillPolygon(p.xpoints, p.ypoints, p.npoints);
+    }
+
+    @Override
+    public void fillPolygon(int[] xpoints, int[] ypoints, int npoints ) {
+        if (
+                nativeLines && nativePaint &&
+                !transparentColor && simpleComposite
+        ) {
+
+            short points[] = new short[npoints << 1];
+
+            int type = transform.getType();
+            if (type < 2) {
+              
+                int tx = (int) transform.getTranslateX();
+                int ty = (int) transform.getTranslateY();
+
+                for (int idx = 0, i = 0; i < npoints; i++){
+                    points[idx++] = (short)(xpoints[i] + tx);
+                    points[idx++] = (short)(ypoints[i] + ty);
+                }
+
+                fillPolygon(display, drawable, gc, points, points.length);
+            } else {
+
+                float fpoints[] = new float[npoints << 1];
+
+                for (int idx = 0, i = 0; i < npoints; i++){
+                    fpoints[idx++] = xpoints[i];
+                    fpoints[idx++] = ypoints[i];
+
+                }
+                transform.transform(fpoints, 0, fpoints, 0, npoints);
+
+                for (int i = 0; i < fpoints.length; i++)
+                    points[i] = (short)(fpoints[i] + 0.5f);
+
+                fillPolygon(display, drawable, gc, points, points.length);
+            }
+
+            if (xor_mode) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                fillPolygon(display, drawable, gc, points, points.length);
+                xSetForeground(fgColor.getRGB());
+            }
+        } else {
+            super.fillPolygon(xpoints, ypoints, npoints);
+        }
+    }
+
+    @Override
+    public void fillArc(int x, int y, int width, int height, int sa, int ea) {
+        if (
+                nativeLines && nativePaint &&
+                !transparentColor && simpleComposite &&
+                transform.getType() < 2
+        ) {
+            x += (int)transform.getTranslateX();
+            y += (int)transform.getTranslateY();
+            fillArc(
+                    display,
+                    drawable,
+                    gc,
+                    x, y,
+                    width, height,
+                    sa << 6, ea << 6
+            );
+
+            if (xor_mode) {
+                XORComposite xor = (XORComposite)composite;
+                Color xorcolor = xor.getXORColor();
+                xSetForeground(xorcolor.getRGB());
+                fillArc(
+                        display,
+                        drawable,
+                        gc,
+                        x, y,
+                        width, height,
+                        sa << 6, ea << 6
+                );
+                xSetForeground(fgColor.getRGB());
+            }
+        } else {
+            super.fillArc(x, y, width, height, sa, ea);
+        }
+    }
+
+    @Override
+    public void fillOval(int x, int y, int width, int height) {
+        fillArc(x, y, width, height, 0, 360);
+    }
+
+    @Override
+    public void setXORMode(Color color) {
+        super.setXORMode(color);
+        setFunction(display, gc, X11Defs.GXxor);
+        xor_mode = true;
+        simpleComposite = true;
+    }
+
+    @Override
+    public void setPaintMode() {
+        setComposite(AlphaComposite.SrcOver);
+    }
+
     public void setComposite(Composite composite) {
         super.setComposite(composite);
+        xor_mode = false;
         if (composite instanceof AlphaComposite) {
             AlphaComposite acomp = (AlphaComposite) composite;
-            if (acomp.getRule() == AlphaComposite.SRC) {
-                simpleComposite = true;
-            } else if (acomp.getAlpha() != 1.0f) {
-                simpleComposite = false;
-            } else {
-                simpleComposite = true;
+            int rule = acomp.getRule();
+            float srca = acomp.getAlpha();
+
+            switch(rule){
+                case AlphaComposite.CLEAR:
+                case AlphaComposite.SRC_OUT:
+                    setFunction(display, gc, X11Defs.GXclear);                
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.SRC:
+                case AlphaComposite.SRC_IN:
+                    if(srca == 0.0f) setFunction(display, gc, X11Defs.GXclear);
+                    else setFunction(display, gc, X11Defs.GXcopy);
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.DST:
+                case AlphaComposite.DST_OVER:
+                    setFunction(display, gc, X11Defs.GXnoop);                
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.SRC_ATOP:
+                case AlphaComposite.SRC_OVER:
+                    setFunction(display, gc, X11Defs.GXcopy);                
+                    if(srca == 1.0f){
+                        simpleComposite = true;
+                    }else{
+                        simpleComposite = false;
+                    }
+                    break;
+
+                case AlphaComposite.DST_IN:
+                case AlphaComposite.DST_ATOP:
+                    if(srca != 0.0f){
+                        setFunction(display, gc, X11Defs.GXnoop);                
+                    } else {
+                        setFunction(display, gc, X11Defs.GXclear);                
+                    }
+                    simpleComposite = true;
+                    break;
+
+                case AlphaComposite.DST_OUT:
+                case AlphaComposite.XOR:
+                    if(srca != 1.0f){
+                        setFunction(display, gc, X11Defs.GXnoop);                
+                    } else {
+                        setFunction(display, gc, X11Defs.GXclear);                
+                    }
+                    simpleComposite = true;
+                    break;
             }
         } else {
             simpleComposite = false;
@@ -589,4 +915,41 @@ public class XGraphics2D extends CommonGraphics2D {
         this.fill(sh);
 
     }
+
+    // Native methods
+
+    // GC methods
+    // Creating and Releasing
+    private native long createGC(long display, long drawable, long valuemask, long values);
+    private native int freeGC(long display, long gc);
+
+    // Setting GC function
+    private native int setFunction(long display, long gc, int func);
+
+    // Stroke (line attributes)
+    private native int setStroke(long display, long gc, int line_width, int join_style, int cap_style, int dash_offset, byte dashes[], int len);
+
+    // Foreground
+    private native int setForeground(long display, long gc, long colormap, int argb_val);
+
+    // Clipping
+    private native int setClipMask(long display, long gc, long pixmap);
+    private native int setClipRectangles(long display, long gc, int clip_x_origin, int clip_y_origin, int clip_rects[], int num_rects);
+
+    // Drawing methods
+
+    private native int drawArc(long display, long drawable, long gc, int x, int y, int width, int height, int startAngle, int angle);
+    private native int drawLine(long display, long drawable, long gc, int x1, int y1, int x2, int y2);       
+    private native int drawLines(long display, long drawable, long gc, short points[], int numPoints);
+    private native int drawRectangle(long display, long drawable, long gc, int x, int y, int width, int height);
+
+    // Filling methods
+
+    private native int fillRectangles(long display, long drawable, long gc, int vertices[], int numVert);
+    private native int fillRectangle(long display, long drawable, long gc, int x, int y, int width, int height);
+    private native int fillPolygon(long display, long drawable, long gc, short points[], int numPoints);
+    private native int fillArc(long display, long drawable, long gc, int x, int y, int width, int height, int startAngle, int angle);
+
+    private native int copyArea(long display, long src, long dst, long gc, int src_x, int src_y, int width, int height, int dst_x, int dst_y);
+
 }

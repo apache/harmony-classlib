@@ -120,19 +120,16 @@ public class WinFileTest extends TestCase {
 
         f = new File(folder, FILENAME);        
         assertEquals("Invalid file name", FILENAME, f.getName()); 
-        if (f.exists()) {
-            byte tmp[] = new byte[256];
-            String wasRed;
-            int n;
+        assertTrue("File does not exist", f.exists());
+        byte tmp[] = new byte[256];
+        String wasRed;
+        int n;
 
-            fis = new FileInputStream(f);
-            n = fis.read(tmp);
-            fis.close();
-            wasRed = new String(tmp, 0, n, CNTNT_CHARSET);
-            assertEquals("Invalid content was red", CONTENT, wasRed);
-        } else {
-            fail("File does not exist");
-        }
+        fis = new FileInputStream(f);
+        n = fis.read(tmp);
+        fis.close();
+        wasRed = new String(tmp, 0, n, CNTNT_CHARSET);
+        assertEquals("Invalid content was red", CONTENT, wasRed);
     }
 
 

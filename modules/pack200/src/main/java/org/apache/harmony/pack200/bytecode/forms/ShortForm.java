@@ -42,7 +42,7 @@ public class ShortForm extends ByteCodeForm {
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
-        byteCode.setOperandInt(operandManager.nextShort(), 0);
+            OperandManager operandManager, int codeLength) {
+        byteCode.setOperand2Bytes(operandManager.nextShort(), 0);
     }
 }

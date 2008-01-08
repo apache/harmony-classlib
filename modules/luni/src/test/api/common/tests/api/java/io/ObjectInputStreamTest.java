@@ -20,6 +20,7 @@ package tests.api.java.io;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,8 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
 import java.io.NotActiveException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectInputValidation;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
@@ -1034,6 +1037,57 @@ public class ObjectInputStreamTest extends junit.framework.TestCase implements
         testArray = (TestArray) oin.readObject();
         Integer[] integers = new Integer[] { 10, 20 };
         assertTrue(java.util.Arrays.equals(integers, testArray.array));
+    }
+
+    public static class TestExtObject implements Externalizable {
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(10);
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            in.readInt();
+        }
+    }
+
+    static class TestObjectOutputStream extends ObjectOutputStream {
+        private ObjectStreamClass[] objs;
+        private int pos = 0;
+
+        public TestObjectOutputStream(OutputStream out, ObjectStreamClass[] objs) throws IOException {
+            super(out);
+            this.objs = objs;
+        }
+
+        protected void writeClassDescriptor(ObjectStreamClass osc) throws IOException {
+            objs[pos++] = osc;        }
+    }
+
+    static class TestObjectInputStream extends ObjectInputStream {
+        private ObjectStreamClass[] objs;
+        private int pos = 0;
+
+        public TestObjectInputStream(InputStream in, ObjectStreamClass[] objs) throws IOException {
+            super(in);
+            this.objs = objs;
+        }
+
+        protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException {
+            return (ObjectStreamClass) objs[pos++];
+        }
+    }
+
+    // Regression test for HARMONY-4996
+    public void test_readObject_replacedClassDescriptor() throws Exception {
+        ObjectStreamClass[] objs = new ObjectStreamClass[1000];
+        PipedOutputStream pout = new PipedOutputStream();
+        PipedInputStream pin = new PipedInputStream(pout);
+        ObjectOutputStream oout = new TestObjectOutputStream(pout, objs);
+        oout.writeObject(new TestExtObject());
+        oout.writeObject("test");
+        oout.close();
+        ObjectInputStream oin = new TestObjectInputStream(pin, objs);
+        oin.readObject();
+        oin.readObject();
     }
 
     /**

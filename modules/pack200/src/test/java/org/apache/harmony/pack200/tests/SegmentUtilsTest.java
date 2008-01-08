@@ -14,8 +14,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.apache.harmony.pack200.tests;
+
 
 import junit.framework.TestCase;
 
@@ -50,6 +50,17 @@ public class SegmentUtilsTest extends TestCase {
 		assertEquals(3, SegmentUtils.countArgs("(Lblah/blah;DLbLah;)V"));
 	}
 
+	public void testCountInvokeInterfaceArgs() {
+	    assertEquals(1, SegmentUtils.countInvokeInterfaceArgs("(Z)V"));
+        assertEquals(2, SegmentUtils.countInvokeInterfaceArgs("(D)V"));
+        assertEquals(2, SegmentUtils.countInvokeInterfaceArgs("(J)V"));
+        assertEquals(1, SegmentUtils.countInvokeInterfaceArgs("([D)V"));
+        assertEquals(1, SegmentUtils.countInvokeInterfaceArgs("([[D)V"));
+        assertEquals(4, SegmentUtils.countInvokeInterfaceArgs("(DD)V"));
+        assertEquals(3, SegmentUtils.countInvokeInterfaceArgs("(Lblah/blah;D)V"));
+        assertEquals(4, SegmentUtils.countInvokeInterfaceArgs("(Lblah/blah;DLbLah;)V"));
+        assertEquals(4, SegmentUtils.countInvokeInterfaceArgs("([Lblah/blah;DLbLah;)V"));
+	}
 	public void testMatches() {
 		long[] oneToTen = new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		assertEquals(6, SegmentUtils.countMatches(new long[][] { oneToTen,

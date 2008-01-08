@@ -296,6 +296,8 @@ public class BasicTableUI extends TableUI {
     public void installUI(final JComponent c) {
         table = (JTable)c;
         rendererPane = new CellRendererPane();
+        rendererPane.setVisible(false);
+        table.add(rendererPane);
 
         installDefaults();
         installListeners();

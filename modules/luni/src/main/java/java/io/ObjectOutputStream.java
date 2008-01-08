@@ -38,6 +38,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         ObjectStreamConstants {
 
     /*
+     * Mask to zero SC_BLOC_DATA bit.
+     */
+    private static final byte NOT_SC_BLOCK_DATA = (byte) (SC_BLOCK_DATA ^ 0xFF);
+
+    /*
      * How many nested levels to writeObject. We may not need this.
      */
     private int nestedLevels;
@@ -311,7 +316,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      *             If an error occurs attempting to drain the data
      */
     protected void drain() throws IOException {
-        if (primitiveTypes == null) {
+        if (primitiveTypes == null || primitiveTypesBuffer == null) {
             return;
         }
 
@@ -1531,12 +1536,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         boolean externalizable = false;
         externalizable = ObjectStreamClass.isExternalizable(classDesc
                 .forClass());
-        if (protocolVersion != PROTOCOL_VERSION_1) {
-            // Change for 1.2. Objects can be saved in old format
-            // (PROTOCOL_VERSION_1) or in the 1.2 format (PROTOCOL_VERSION_2).
-            // Nested "if" check to optimize checking. Second check is more
-            // expensive.
-            if (externalizable) {
+
+        if (externalizable) {
+            if (protocolVersion == PROTOCOL_VERSION_1) {
+                flags &= NOT_SC_BLOCK_DATA;
+            } else {
+                // Change for 1.2. Objects can be saved in old format
+                // (PROTOCOL_VERSION_1) or in the 1.2 format (PROTOCOL_VERSION_2).
                 flags |= SC_BLOCK_DATA;
             }
         }

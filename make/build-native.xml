@@ -133,6 +133,7 @@
     <target name="layout.windows" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
         <!-- workaround until msdll is moved. -->
         <copy file="${msvcr.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
+        <copy file="${msvcp.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
     </target>
 
     <target name="layout.zos" if="is.zos">

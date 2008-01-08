@@ -17,7 +17,7 @@ include $(HY_HDK)/build/make/defines.mk
 
 PNG_DIR=$(HY_HDK)/../depends/libs/build/png
 
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR)
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(PNG_DIR) -I/usr/X11R6/include -I/usr/include -Iinclude
 
 BUILDFILES = \
   $(SHAREDSUB)/blitter.o \
@@ -25,6 +25,7 @@ BUILDFILES = \
   $(SHAREDSUB)/LUTTables.o \
   $(SHAREDSUB)/pngdecoder.o \
   $(SHAREDSUB)/SurfaceDataStructure.o \
+  XGraphics2D.o \
   libpng.a
 
 ifneq ($(HY_ZIP_API),true)

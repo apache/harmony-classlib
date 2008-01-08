@@ -25,7 +25,8 @@ public class CPString extends CPConstant {
 
 	public CPString(java.lang.String value) {
 		super(ConstantPoolEntry.CP_String,value);
-		this.name = new CPUTF8((String) getValue());
+		this.domain = ClassConstantPool.DOMAIN_STRING;
+		this.name = new CPUTF8((String) getValue(), ClassConstantPool.DOMAIN_NORMALASCIIZ);
 
 	}
 
@@ -53,4 +54,7 @@ public class CPString extends CPConstant {
 		return new ClassFileEntry[] { name };
  	}
 
+	public String comparisonString() {
+	    return (String)getValue();
+	}
 }

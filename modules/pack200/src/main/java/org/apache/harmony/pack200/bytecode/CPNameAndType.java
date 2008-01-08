@@ -19,6 +19,8 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.apache.harmony.pack200.SegmentUtils;
+
 
 public class CPNameAndType extends ConstantPoolEntry {
 
@@ -32,9 +34,35 @@ public class CPNameAndType extends ConstantPoolEntry {
 
 	public CPNameAndType(String descriptor) {
 		super(ConstantPoolEntry.CP_NameAndType);
+		int descriptorDomain = ClassConstantPool.DOMAIN_UNDEFINED;
 		int colon = descriptor.indexOf(':');
-		this.name = new CPUTF8(descriptor.substring(0,colon));
-		this.descriptor = new CPUTF8(descriptor.substring(colon+1));
+		String nameString = descriptor.substring(0,colon);
+		String descriptorString = descriptor.substring(colon+1);
+		// For some reason, descriptors which have just plain
+		// native types are stored in DOMAIN_NORMALASCIIZ rather
+		// than in DOMAIN_SIGNATUREASCIIZ. This might indicate
+		// that DOMAIN_SIGNATUREASCIIZ is poorly named.
+		boolean nativeDescriptor = true;
+		for(int index=0; index < descriptorString.length(); index++) {
+		    char currentChar = descriptorString.charAt(index);
+		    if(Character.isLetter(currentChar)) {
+		        if(currentChar == 'L') {
+		            nativeDescriptor = false;
+		        }
+		        break;
+		    }
+		}
+		this.domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
+		this.name = new CPUTF8(nameString, ClassConstantPool.DOMAIN_NORMALASCIIZ);
+		if((nameString.equals("<init>")) || (nameString.equals("<clinit>")) || nativeDescriptor ) {
+		    // Signatures for init methods are stored with the init methods.
+		    // Not sure why. Similarly, native signatures are stored
+		    // there as well.
+		    descriptorDomain = ClassConstantPool.DOMAIN_NORMALASCIIZ;
+		} else {
+		    descriptorDomain = ClassConstantPool.DOMAIN_SIGNATUREASCIIZ;
+		}
+		this.descriptor = new CPUTF8(descriptorString, descriptorDomain);
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
@@ -94,4 +122,14 @@ public class CPNameAndType extends ConstantPoolEntry {
 		return true;
 	}
 
+	/**
+	 * Answers the invokeinterface count argument when the
+	 * receiver is treated as an invokeinterface target.
+	 * This value is not meaningful if the receiver is not
+     * an invokeinterface target.
+	 * @return count
+	 */
+	public int invokeInterfaceCount() {
+	    return 1 + SegmentUtils.countInvokeInterfaceArgs(descriptor.underlyingString());
+	}
 }
