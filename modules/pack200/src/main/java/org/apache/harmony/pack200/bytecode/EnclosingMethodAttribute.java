@@ -24,12 +24,12 @@ public class EnclosingMethodAttribute extends Attribute {
     private int class_index;
     private int method_index;
     private CPClass cpClass;
-    private CPMethod cpMethod;
+    private CPNameAndType method;
 
-    public EnclosingMethodAttribute(CPClass cpClass, CPMethod cpMethod) {
+    public EnclosingMethodAttribute(CPClass cpClass, CPNameAndType method) {
         super("EnclosingMethod");
         this.cpClass = cpClass;
-        this.cpMethod = cpMethod;
+        this.method = method;
     }
 
     /* (non-Javadoc)
@@ -43,8 +43,8 @@ public class EnclosingMethodAttribute extends Attribute {
         super.resolve(pool);
         cpClass.resolve(pool);
         class_index = pool.indexOf(cpClass);
-        cpMethod.resolve(pool);
-        method_index = pool.indexOf(cpMethod);
+        method.resolve(pool);
+        method_index = pool.indexOf(method);
     }
 
     /* (non-Javadoc)

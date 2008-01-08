@@ -23,9 +23,10 @@ import java.io.UnsupportedEncodingException;
 public class CPUTF8 extends ConstantPoolEntry {
 	private String utf8;
 
-	public CPUTF8(String utf8) {
+	public CPUTF8(String utf8, int domain) {
 		super(ConstantPoolEntry.CP_UTF8);
 		this.utf8 = utf8;
+		this.domain = domain;
 	}
 
 	
@@ -74,4 +75,25 @@ public class CPUTF8 extends ConstantPoolEntry {
 		dos.write(bytes);
 	}
 
+	public String underlyingString() {
+	    return utf8;
+	}
+	
+	public String comparisonString() {
+	    String returnValue = utf8;
+	    if(utf8.endsWith(";")) {
+	        StringBuffer alphaChars = new StringBuffer();
+	        StringBuffer extraChars = new StringBuffer();
+	        extraChars.append((char)0xFFFF);
+	        for(int index=0; index < utf8.length(); index++) {
+	            if( (utf8.charAt(index) == '(') || (utf8.charAt(index) == ')') || (utf8.charAt(index) == '[') || (utf8.charAt(index) == ']') ) {
+	                extraChars.append(utf8.charAt(index));
+	            } else {
+	                alphaChars.append(utf8.charAt(index));
+	            }
+	        }
+	        returnValue = alphaChars.toString() + extraChars.toString();
+	    }
+	    return returnValue;
+	}
 }

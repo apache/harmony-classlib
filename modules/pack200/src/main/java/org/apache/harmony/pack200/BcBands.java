@@ -19,14 +19,13 @@ package org.apache.harmony.pack200;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
-import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -40,7 +39,7 @@ public class BcBands extends BandSet {
     // The bands
     // TODO:  Haven't resolved references yet.  Do we want to?
     private int[] bcCaseCount;
-    private int[][] bcCaseValue;
+    private int[] bcCaseValue;
     private int[] bcByte;
     private int[] bcLocal;
     private int[] bcShort;
@@ -69,14 +68,6 @@ public class BcBands extends BandSet {
      */
     public BcBands(Segment segment) {
         super(segment);
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
-     */
-    public void pack(OutputStream outputStream) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)
@@ -126,6 +117,9 @@ public class BcBands extends BandSet {
                        AttributeLayout.CONTEXT_METHOD);
        methodByteCodePacked = new byte[classCount][][];
        int bcParsed = 0;
+       
+       List switchIsTableSwitch = new ArrayList();
+       List wideByteCodes = new ArrayList();
        for (int c = 0; c < classCount; c++) {
            int numberOfMethods = methodFlags[c].length;
            methodByteCodePacked[c] = new byte[numberOfMethods][];
@@ -200,7 +194,12 @@ public class BcBands extends BandSet {
                            bcLabelCount++;
                            break;
                        case 170: // tableswitch
+                           switchIsTableSwitch.add(new Boolean(true));
+                           bcCaseCountCount++;
+                           bcLabelCount++;
+                           break;
                        case 171: // lookupswitch
+                           switchIsTableSwitch.add(new Boolean(false));
                            bcCaseCountCount++;
                            bcLabelCount++;
                            break;
@@ -260,6 +259,7 @@ public class BcBands extends BandSet {
                            break;
                        case 196: // wide
                             int nextInstruction = 0xff & methodByteCodePacked[c][m][i+1];
+                            wideByteCodes.add(new Integer(nextInstruction));
                             if (nextInstruction == 132) { // iinc
                                 bcLocalCount += 2;
                                 bcShortCount++;
@@ -299,7 +299,22 @@ public class BcBands extends BandSet {
         // other bytecode bands
         debug("Parsed *bc_codes (" + bcParsed + ")");
         bcCaseCount = decodeBandInt("bc_case_count", in, Codec.UNSIGNED5, bcCaseCountCount);
-        bcCaseValue = decodeBandInt("bc_case_value", in, Codec.DELTA5, bcCaseCount);
+        int bcCaseValueCount = 0;
+        for (int i = 0; i < bcCaseCount.length; i++) {
+            boolean isTableSwitch = ((Boolean)switchIsTableSwitch.get(i)).booleanValue();
+            if(isTableSwitch) {
+                bcCaseValueCount += 1;
+            } else {
+                bcCaseValueCount += bcCaseCount[i];
+            }
+        }
+        bcCaseValue = decodeBandInt("bc_case_value", in, Codec.DELTA5, bcCaseValueCount );
+        // Every case value needs a label. We weren't able to count these
+        // above, because we didn't know how many cases there were.
+        // Have to correct it now.
+        for(int index=0; index < bcCaseCountCount; index++) {
+            bcLabelCount += bcCaseCount[index];
+        }
         bcByte = decodeBandInt("bc_byte", in, Codec.BYTE1, bcByteCount);
         bcShort = decodeBandInt("bc_short", in, Codec.DELTA5, bcShortCount);
         bcLocal = decodeBandInt("bc_local", in, Codec.UNSIGNED5, bcLocalCount);
@@ -337,11 +352,15 @@ public class BcBands extends BandSet {
         bcEscSize = decodeBandInt("bc_escsize", in, Codec.UNSIGNED5, bcEscCount);
         bcEscByte = decodeBandInt("bc_escbyte", in, Codec.BYTE1, bcEscSize);
 
-        OperandManager operandManager = new OperandManager(bcByte, bcShort,
-                bcLocal, bcLabel, bcIntRef, bcFloatRef, bcLongRef, bcDoubleRef,
-                bcStringRef, bcClassRef, bcFieldRef, bcMethodRef, bcIMethodRef,
-                bcThisField, bcSuperField, bcThisMethod, bcSuperMethod,
-                bcInitRef);
+        int[] wideByteCodeArray = new int[wideByteCodes.size()];
+        for(int index=0; index < wideByteCodeArray.length; index++) {
+            wideByteCodeArray[index] = ((Integer)wideByteCodes.get(index)).intValue();
+        }
+        OperandManager operandManager = new OperandManager(bcCaseCount, bcCaseValue,
+                bcByte, bcShort, bcLocal, bcLabel, bcIntRef, bcFloatRef, bcLongRef,
+                bcDoubleRef, bcStringRef, bcClassRef, bcFieldRef, bcMethodRef,
+                bcIMethodRef, bcThisField, bcSuperField, bcThisMethod, bcSuperMethod,
+                bcInitRef, wideByteCodeArray);
         operandManager.setSegment(segment);
 
         int i = 0;
@@ -357,26 +376,19 @@ public class BcBands extends BandSet {
                    if (!staticModifier.matches(methodFlag))
                        maxLocal++; // one for 'this' parameter
                    maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
-                   // TODO Move creation of code attribute until after constant
-                   // pool resolved
                    operandManager.setCurrentClass(segment.getClassBands().getClassThis()[c]);
                    operandManager.setSuperClass(segment.getClassBands().getClassSuper()[c]);
-                   CodeAttribute attr = new CodeAttribute(maxStack, maxLocal,
+                   CodeAttribute codeAttr = new CodeAttribute(maxStack, maxLocal,
                            methodByteCodePacked[c][m], segment, operandManager);
-                   methodAttributes[c][m].add(attr);
+                   methodAttributes[c][m].add(codeAttr);
                    // Should I add all the attributes in here?
                  ArrayList currentAttributes = (ArrayList)orderedCodeAttributes.get(i);
                  for(int index=0;index < currentAttributes.size(); index++) {
                      Attribute currentAttribute = (Attribute)currentAttributes.get(index);
-                     // TODO: The line below adds the LocalVariableTable
-                     // and LineNumber attributes. Currently things are
-                     // broken because these tables don't get renumbered
-                     // properly. Commenting out the add so the class files
-                     // will verify.
-                     //attr.attributes.add(currentAttribute);
+                     codeAttr.addAttribute(currentAttribute);
                      // Fix up the line numbers if needed
                      if(currentAttribute.hasBCIRenumbering()) {
-                         ((BCIRenumberedAttribute)currentAttribute).renumber(attr.byteCodeOffsets);
+                         ((BCIRenumberedAttribute)currentAttribute).renumber(codeAttr.byteCodeOffsets);
                      }
                  }
                  i++;
@@ -407,7 +419,7 @@ public class BcBands extends BandSet {
         return bcCaseCount;
     }
 
-    public int[][] getBcCaseValue() {
+    public int[] getBcCaseValue() {
         return bcCaseValue;
     }
 

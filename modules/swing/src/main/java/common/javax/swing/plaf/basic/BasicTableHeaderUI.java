@@ -266,6 +266,8 @@ public class BasicTableHeaderUI extends TableHeaderUI {
     public void installUI(final JComponent c) {
         header = (JTableHeader)c;
         rendererPane = new CellRendererPane();
+        rendererPane.setVisible(false);
+        header.add(rendererPane);
 
         installDefaults();
         installListeners();

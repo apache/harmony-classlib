@@ -38,8 +38,8 @@ public class CPMember extends ClassFileEntry {
 	transient int descriptorIndex;
 	public CPMember(String descriptor, long flags, List attributes) {
 		int colon = descriptor.indexOf(':');
-		this.name = new CPUTF8(descriptor.substring(0,colon));
-		this.descriptor = new CPUTF8(descriptor.substring(colon+1));
+		this.name = new CPUTF8(descriptor.substring(0,colon), ClassConstantPool.DOMAIN_NORMALASCIIZ);
+		this.descriptor = new CPUTF8(descriptor.substring(colon+1), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
 		this.flags = (short) flags;
 		this.attributes = (attributes == null ? new ArrayList() : attributes);
 	}

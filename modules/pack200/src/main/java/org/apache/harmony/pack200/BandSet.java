@@ -19,19 +19,23 @@ package org.apache.harmony.pack200;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
+import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPDouble;
+import org.apache.harmony.pack200.bytecode.CPFieldRef;
 import org.apache.harmony.pack200.bytecode.CPFloat;
 import org.apache.harmony.pack200.bytecode.CPInteger;
+import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
 import org.apache.harmony.pack200.bytecode.CPLong;
+import org.apache.harmony.pack200.bytecode.CPMethodRef;
+import org.apache.harmony.pack200.bytecode.CPNameAndType;
+import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 public abstract class BandSet {
     
     public abstract void unpack(InputStream inputStream) throws IOException, Pack200Exception;
-    
-    public abstract void pack(OutputStream outputStream);
     
     protected Segment segment;
     
@@ -451,7 +455,7 @@ public abstract class BandSet {
             if (index < 0 || index >= reference.length)
                 throw new Pack200Exception(
                         "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
-            result[i1] = new CPUTF8(reference[index]);
+            result[i1] = new CPUTF8(reference[index], ClassConstantPool.DOMAIN_UNDEFINED);
         }
         return result;
     }
@@ -472,7 +476,7 @@ public abstract class BandSet {
             if (index < 0 || index >= reference.length)
                 throw new Pack200Exception(
                         "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
-            result1[i1] = new CPUTF8(reference[index]);
+            result1[i1] = new CPUTF8(reference[index], ClassConstantPool.DOMAIN_UNDEFINED);
         }
         CPUTF8[] refs = result1;
         int pos = 0;
@@ -481,6 +485,107 @@ public abstract class BandSet {
             result[i] = new CPUTF8[num];
             System.arraycopy(refs, pos, result[i], 0, num);
             pos += num;
+        }
+        return result;
+    }
+
+    public CPString[] parseCPStringReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpString();        
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPString[] result = new CPString[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPString(reference[index]);
+        }
+        return result;
+    }
+
+    public CPInterfaceMethodRef[] parseCPInterfaceMethodRefReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpIMethodClass();
+        String[] descriptors = segment.getCpBands().getCpIMethodDescriptor();
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPInterfaceMethodRef[] result = new CPInterfaceMethodRef[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPInterfaceMethodRef(reference[index], descriptors[index]);
+        }
+        return result;
+    }
+
+    public CPMethodRef[] parseCPMethodRefReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpMethodClass();        
+        String[] descriptors = segment.getCpBands().getCpMethodDescriptor();
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPMethodRef[] result = new CPMethodRef[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPMethodRef(reference[index], descriptors[index]);
+        }
+        return result;
+    }
+
+    public CPFieldRef[] parseCPFieldRefReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpFieldClass();        
+        String[] descriptors = segment.getCpBands().getCpFieldDescriptor();
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPFieldRef[] result = new CPFieldRef[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPFieldRef(reference[index], descriptors[index]);
+        }
+        return result;
+    }
+
+    public CPNameAndType[] parseCPDescriptorReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpDescriptor();        
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPNameAndType[] result = new CPNameAndType[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPNameAndType(reference[index]);
+        }
+        return result;
+    }
+
+    public CPUTF8[] parseCPSignatureReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpSignature();        
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPUTF8[] result = new CPUTF8[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPUTF8(reference[index], ClassConstantPool.DOMAIN_UNDEFINED);
+        }
+        return result;
+    }
+
+    public CPClass[] parseCPClassReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
+        String[] reference = segment.getCpBands().getCpClass();        
+        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        CPClass[] result = new CPClass[indices.length];
+        for (int i1 = 0; i1 < count; i1++) {
+            int index = indices[i1];
+            if (index < 0 || index >= reference.length)
+                throw new Pack200Exception(
+                        "Something has gone wrong during parsing references, index = " + index + ", array size = " + reference.length);
+            result[i1] = new CPClass(reference[index]);
         }
         return result;
     }

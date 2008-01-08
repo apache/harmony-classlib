@@ -107,62 +107,47 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
         putAll(m);
     }
 
-    static final class LinkedHashIterator<E, KT, VT> extends
-            HashMapIterator<E, KT, VT> {
-        LinkedHashIterator(MapEntry.Type<E, KT, VT> value,
-                LinkedHashMap<KT, VT> hm) {
-            super(value, hm);
-            entry = hm.head;
+    private static class AbstractMapIterator<K, V>  {
+        int expectedModCount;
+        LinkedHashMapEntry<K, V>  futureEntry;
+        LinkedHashMapEntry<K, V>  currentEntry;
+        final LinkedHashMap<K, V> associatedMap;
+
+        AbstractMapIterator(LinkedHashMap<K, V> map) {
+            expectedModCount = map.modCount;
+            futureEntry = map.head;
+            associatedMap = map;
         }
 
-        @Override
         public boolean hasNext() {
-            return (entry != null);
+            return (futureEntry != null);
         }
 
-        @Override
-        public E next() {
+        final void checkConcurrentMod() throws ConcurrentModificationException {
+            if (expectedModCount != associatedMap.modCount) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        final void makeNext() {
             checkConcurrentMod();
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            E result = type.get(entry);
-            lastEntry = entry;
-            entry = ((LinkedHashMapEntry<KT, VT>) entry).chainForward;
-            canRemove = true;
-            return result;
+            currentEntry = futureEntry;
+            futureEntry = futureEntry.chainForward;
         }
 
-        @Override
         public void remove() {
             checkConcurrentMod();
-            if (!canRemove) {
+            if (currentEntry==null) {
                 throw new IllegalStateException();
             }
-
-            canRemove = false;
-            associatedMap.modCount++;
-
-            int index = (lastEntry.key == null) ? 0
-                    : (lastEntry.key.hashCode() & 0x7FFFFFFF)
-                            % associatedMap.elementData.length;
-            LinkedHashMapEntry<KT, VT> m = (LinkedHashMapEntry<KT, VT>) associatedMap.elementData[index];
-            if (m == lastEntry) {
-                associatedMap.elementData[index] = lastEntry.next;
-            } else {
-                while (m.next != null) {
-                    if (m.next == lastEntry) {
-                        break;
-                    }
-                    m = (LinkedHashMapEntry<KT, VT>) m.next;
-                }
-                // assert m.next == entry
-                m.next = lastEntry.next;
-            }
-            LinkedHashMapEntry<KT, VT> lhme = (LinkedHashMapEntry<KT, VT>) lastEntry;
-            LinkedHashMapEntry<KT, VT> p = lhme.chainBackward;
-            LinkedHashMapEntry<KT, VT> n = lhme.chainForward;
-            LinkedHashMap<KT, VT> lhm = (LinkedHashMap<KT, VT>) associatedMap;
+            associatedMap.removeEntry(currentEntry);
+            LinkedHashMapEntry<K, V> lhme =  currentEntry;
+            LinkedHashMapEntry<K, V> p = lhme.chainBackward;
+            LinkedHashMapEntry<K, V> n = lhme.chainForward;
+            LinkedHashMap<K, V> lhm = associatedMap;
             if (p != null) {
                 p.chainForward = n;
                 if (n != null) {
@@ -178,8 +163,44 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
                     lhm.tail = null;
                 }
             }
-            associatedMap.elementCount--;
+            currentEntry = null;
             expectedModCount++;
+        }
+    }
+
+    private static class EntryIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
+
+        EntryIterator (LinkedHashMap<K, V> map) {
+            super(map);
+        }
+
+        public Map.Entry<K, V> next() {
+            makeNext();
+            return currentEntry;
+        }
+    }
+
+    private static class KeyIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<K> {
+
+        KeyIterator (LinkedHashMap<K, V> map) {
+            super(map);
+        }
+
+        public K next() {
+            makeNext();
+            return currentEntry.key;
+        }
+    }
+
+    private static class ValueIterator <K, V> extends AbstractMapIterator<K, V> implements Iterator<V> {
+
+        ValueIterator (LinkedHashMap<K, V> map) {
+            super(map);
+        }
+
+        public V next() {
+            makeNext();
+            return currentEntry.value;
         }
     }
 
@@ -191,12 +212,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
 
         @Override
         public Iterator<Map.Entry<KT, VT>> iterator() {
-            return new LinkedHashIterator<Map.Entry<KT, VT>, KT, VT>(
-                    new MapEntry.Type<Map.Entry<KT, VT>, KT, VT>() {
-                        public Map.Entry<KT, VT> get(MapEntry<KT, VT> entry) {
-                            return entry;
-                        }
-                    }, (LinkedHashMap<KT, VT>) hashMap());
+            return new EntryIterator<KT,VT>((LinkedHashMap<KT, VT>) hashMap());
         }
     }
 
@@ -494,12 +510,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
 
                 @Override
                 public Iterator<K> iterator() {
-                    return new LinkedHashIterator<K, K, V>(
-                            new MapEntry.Type<K, K, V>() {
-                                public K get(MapEntry<K, V> entry) {
-                                    return entry.key;
-                                }
-                            }, LinkedHashMap.this);
+                    return new KeyIterator<K,V>(LinkedHashMap.this);
                 }
             };
         }
@@ -534,12 +545,7 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
 
                 @Override
                 public Iterator<V> iterator() {
-                    return new LinkedHashIterator<V, K, V>(
-                            new MapEntry.Type<V, K, V>() {
-                                public V get(MapEntry<K, V> entry) {
-                                    return entry.value;
-                                }
-                            }, LinkedHashMap.this);
+                    return new ValueIterator<K,V>(LinkedHashMap.this);
                 }
             };
         }

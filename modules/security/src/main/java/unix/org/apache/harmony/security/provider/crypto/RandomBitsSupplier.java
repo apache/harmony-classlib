@@ -60,7 +60,7 @@ public class RandomBitsSupplier implements SHA1_Data {
     /**
      * value of field is "true" only if a device is available
      */
-    private static boolean serviceAvailable;
+    private static boolean serviceAvailable = false;
 
 
     static {
@@ -76,16 +76,25 @@ public class RandomBitsSupplier implements SHA1_Data {
                                 bis = new BufferedInputStream(
                                           new FileInputStream(file));
                                 randomFile = file;
+                                serviceAvailable = true;
                                 return null;
                             }
                         } catch (FileNotFoundException e) {
                         }
                     }
+
+                    // If we have come out of the above loop, then we have been unable to
+                    // access /dev/*random, so try to fall back to using the system random() API
+                    try {
+                        System.loadLibrary(LIBRARY_NAME); 
+                        serviceAvailable = true;
+                    } catch (UnsatisfiedLinkError e) {
+                        serviceAvailable = false;
+                    }
                     return null;
                 }
             }
         );
-        serviceAvailable = (bis != null);
     }
 
 
@@ -98,12 +107,12 @@ public class RandomBitsSupplier implements SHA1_Data {
 
 
     /**
-     * On the Linux platform with "random" devices available,
+     * On platforms with "random" devices available,
      * the method reads random bytes from the device.  <BR>
      *
      * In case of any runtime failure ProviderException gets thrown.
      */
-    private static synchronized byte[] getLinuxRandomBits(int numBytes) {
+    private static synchronized byte[] getUnixDeviceRandom(int numBytes) {
 
         byte[] bytes = new byte[numBytes];
 
@@ -118,7 +127,6 @@ public class RandomBitsSupplier implements SHA1_Data {
 
                 // the below case should not occur because /dev/random or /dev/urandom is a special file
                 // hence, if it is happened there is some internal problem
-                //
                 if ( bytesRead == -1 ) {
                     throw new ProviderException(
                         Messages.getString("security.193") ); //$NON-NLS-1$
@@ -136,12 +144,20 @@ public class RandomBitsSupplier implements SHA1_Data {
             // actually there should be no IOException because device is a special file;
             // hence, there is either some internal problem or, for instance,
             // device was removed in runtime, or something else
-            //
             throw new ProviderException(
                 Messages.getString("security.194"), e ); //$NON-NLS-1$
         }
         return bytes; 
     }
+
+
+    /**
+     * On platforms with no "random" devices available, this native 
+     * method uses system API calls to generate random numbers<BR> 
+     *
+     * In case of any runtime failure ProviderException gets thrown.
+     */
+    private static native synchronized boolean getUnixSystemRandom(byte[] randomBits, int numBytes);
 
 
     /**
@@ -161,12 +177,27 @@ public class RandomBitsSupplier implements SHA1_Data {
             throw new IllegalArgumentException(Messages.getString("security.195", numBytes)); //$NON-NLS-1$
         }
 
+        // We have been unable to get a random device or fall back to the
+        // native security module code - throw an exception.
         if ( !serviceAvailable ) {
             throw new ProviderException(
                 Messages.getString("security.196")); //$NON-NLS-1$
         }
 
-        return getLinuxRandomBits(numBytes);
-    }
+        byte[] randomBits;
+        if (bis != null) {
+            // Random devices exist
+            randomBits = getUnixDeviceRandom(numBytes);
+        } else {
+            // No random devices exist, use the system random() call
+            randomBits = new byte[numBytes];
+            if (!getUnixSystemRandom(randomBits, numBytes)) {
+                // Even the system call has failed, throw an exception
+                throw new ProviderException(
+                    Messages.getString("security.196") ); //$NON-NLS-1$
+            }
+        }
 
+        return randomBits;
+    }
 }

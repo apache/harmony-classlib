@@ -18,7 +18,6 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Pack200 Inner Class Bands
@@ -47,14 +46,6 @@ public class IcBands extends BandSet {
         super(segment);
         this.cpClass = segment.getCpBands().getCpClass();
         this.cpUTF8 = segment.getCpBands().getCpUTF8();
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.BandSet#pack(java.io.OutputStream)
-     */
-    public void pack(OutputStream outputStream) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)

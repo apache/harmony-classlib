@@ -23,6 +23,7 @@ public class CPLong extends CPConstantNumber {
 
 	public CPLong(java.lang.Long value) {
 		super(ConstantPoolEntry.CP_Long,value);
+        this.domain = ClassConstantPool.DOMAIN_LONG;
 	}
 
 	

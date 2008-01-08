@@ -198,6 +198,8 @@ public class AttributeLayoutMap {
     // the value of their context constants (AttributeLayout.CONTEXT_CLASS etc.)
     private final Map[] layouts = new Map[] {classLayouts, fieldLayouts, methodLayouts, codeLayouts};
 
+    private final Map layoutsToBands = new HashMap();
+    
 	public AttributeLayoutMap() throws Pack200Exception {
 		AttributeLayout[] defaultAttributeLayouts = getDefaultAttributeLayouts();
 		for (int i = 0; i < defaultAttributeLayouts.length; i++) {
@@ -208,6 +210,13 @@ public class AttributeLayoutMap {
 	public void add(AttributeLayout layout) {
         layouts[layout.getContext()].put(new Integer(layout.getIndex()), layout);
 	}
+    
+
+
+    public void add(AttributeLayout layout, NewAttributeBands newBands) {
+        add(layout);
+        layoutsToBands.put(layout, newBands);
+    }
 
 	public AttributeLayout getAttributeLayout(String name, int context)
 			throws Pack200Exception {
@@ -257,6 +266,10 @@ public class AttributeLayoutMap {
                 }
             }
         }
+    }
+
+    public NewAttributeBands getAttributeBands(AttributeLayout layout) {
+        return (NewAttributeBands) layoutsToBands.get(layout);
     }
     
 }

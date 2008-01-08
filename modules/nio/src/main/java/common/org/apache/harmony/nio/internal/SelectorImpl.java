@@ -359,8 +359,14 @@ final class SelectorImpl extends AbstractSelector {
      */
     void modKey(SelectionKey sk) {
         // TODO: update indexes rather than recreate the key
-        delKey(sk);
-        addKey(sk);
+        synchronized (this) {
+            synchronized (keysSet) {
+                synchronized (selectedKeys) {
+                    delKey(sk);
+                    addKey(sk);
+                }
+            }
+        }
     }
 
     /**
@@ -578,6 +584,9 @@ final class SelectorImpl extends AbstractSelector {
         return unaddableSelectedKeys;
     }
 
+    /*
+     * Assumes calling thread holds locks on 'this', 'keysSet', and 'selectedKeys'. 
+     */
     private void doCancel() {
         Set<SelectionKey> cancelledKeys = cancelledKeys();
         synchronized (cancelledKeys) {

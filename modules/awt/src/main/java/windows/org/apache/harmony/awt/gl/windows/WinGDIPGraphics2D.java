@@ -55,6 +55,7 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     private NativeWindow nw = null;
     private long hdc = 0;
     private long gi = 0;
+    private char pageUnit = 1;
 
     private final Dimension size;
 
@@ -155,6 +156,8 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
      */
     public WinGDIPGraphics2D(final long hdc, final char pageUnit,
                     final int width, final int height) {
+        this.hdc = hdc;
+        this.pageUnit = pageUnit;
         size = new Dimension(width, height);
         gi = createGraphicsInfoFor(hdc, pageUnit);
 
@@ -190,12 +193,18 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
             System.err.println("WinGDIPGraphics2D.create()"); //$NON-NLS-1$
         }
 
-        WinGDIPGraphics2D res = null;
-        if (img == null) {
-            res = new WinGDIPGraphics2D(nw, origPoint.x, origPoint.y, size.width, size.height);
-        } else {
+        final WinGDIPGraphics2D res;
+
+        if (img != null) {
             res = new WinGDIPGraphics2D(img, gi, size.width, size.height);
+        } else if (nw != null) {
+            res = new WinGDIPGraphics2D(nw, origPoint.x, origPoint.y,
+                            size.width, size.height);
+        } else {
+            res = new WinGDIPGraphics2D(getDC(), pageUnit, size.width,
+                            size.height);
         }
+
         copyInternalFields(res);
         return res;
     }
@@ -203,10 +212,11 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     @Override
     public GraphicsConfiguration getDeviceConfiguration() {
         if (config == null) {
-            if (img == null) {
+            if (nw != null) {
                 config = new WinGraphicsConfiguration(nw.getId(), getDC());
-            } else {
-                long hwnd = img.getHWND();
+            } else if (img != null) {
+                final long hwnd = img.getHWND();
+                
                 if(hwnd != 0){
                     config = new WinGraphicsConfiguration(hwnd, getDC());
                 }else{

@@ -25,13 +25,14 @@ import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPMember;
 import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 public class ClassFileEntryTest extends TestCase {
 	public void testUTF8() {
-		CPUTF8 u1 = new CPUTF8(new String("thing")); //$NON-NLS-1$
-		CPUTF8 u2 = new CPUTF8(new String("thing")); //$NON-NLS-1$
-		CPUTF8 u3 = new CPUTF8(new String("otherthing")); //$NON-NLS-1$
+		CPUTF8 u1 = new CPUTF8(new String("thing"), ClassConstantPool.DOMAIN_UNDEFINED); //$NON-NLS-1$
+		CPUTF8 u2 = new CPUTF8(new String("thing"), ClassConstantPool.DOMAIN_UNDEFINED); //$NON-NLS-1$
+		CPUTF8 u3 = new CPUTF8(new String("otherthing"), ClassConstantPool.DOMAIN_UNDEFINED); //$NON-NLS-1$
 		checkEquality(u1, u2, "thing", u3);
 	}
 	private void checkEquality(Object equal1, Object equal2, String toString, Object unequal) {

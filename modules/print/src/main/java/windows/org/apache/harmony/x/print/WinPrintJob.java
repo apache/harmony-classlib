@@ -364,7 +364,7 @@ class WinPrintJob implements CancelablePrintJob {
                 startJob(pdc, getDocName(pageable, docAttrs, attributes),
                                 getDestinationPath(attributes));
 
-                for (int i = 0; i <= pages; i++) {
+                for (int i = 0; i < pages; i++) {
                     if ((ranges != null) && !ranges.contains(i)) {
                         continue;
                     }

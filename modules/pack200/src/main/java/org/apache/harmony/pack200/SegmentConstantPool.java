@@ -28,6 +28,7 @@ import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPMethodRef;
 import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
 public class SegmentConstantPool {
@@ -230,7 +231,7 @@ public class SegmentConstantPool {
         } else if (index < 0) {
             throw new Pack200Exception("Cannot have a negative range");
         } else if (cp == UTF_8) {
-            return new CPUTF8(bands.getCpUTF8()[index]);
+            return new CPUTF8(bands.getCpUTF8()[index], ClassConstantPool.DOMAIN_NORMALASCIIZ);
         } else if (cp == CP_INT) {
             return new CPInteger(new Integer(bands.getCpInt()[index]));
         } else if (cp == CP_FLOAT) {

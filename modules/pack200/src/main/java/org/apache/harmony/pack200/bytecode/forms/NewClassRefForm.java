@@ -44,7 +44,7 @@ public class NewClassRefForm extends ClassRefForm {
      * @see org.apache.harmony.pack200.bytecode.forms.ReferenceForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandManager)
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
+            OperandManager operandManager, int codeLength) {
         ClassFileEntry[] nested = null;
         int offset = getOffset(operandManager);
         if(offset == 0) {

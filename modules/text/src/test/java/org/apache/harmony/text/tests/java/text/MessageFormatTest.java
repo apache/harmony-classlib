@@ -765,4 +765,12 @@ public class MessageFormatTest extends TestCase {
         assertEquals(etalon, obj.format(new Object[]{new Date((new Date().getTime()))})); 
     } 
 
+    public void testHARMONY5323() { 
+    	Object []messageArgs = new Object[11];
+    	for (int i = 0; i < messageArgs.length; i++)
+    		messageArgs[i] = "dumb"+i;
+    	    	
+		String res = MessageFormat.format("bgcolor=\"{10}\"", messageArgs);
+        assertEquals(res, "bgcolor=\"dumb10\"");
+    } 
 }

@@ -232,8 +232,8 @@ public class ByteCodeForm {
         byteCodeArray[167] = new LabelForm(167, "goto", new int[] {167, -1, -1});
         byteCodeArray[168] = new LabelForm(168, "jsr", new int[] {168, -1, -1});
         byteCodeArray[169] = new LocalForm(169, "ret", new int[] {169, -1});
-        byteCodeArray[170] = new SwitchForm(170, "tableswitch");
-        byteCodeArray[171] = new SwitchForm(171, "lookupswitch");
+        byteCodeArray[170] = new TableSwitchForm(170, "tableswitch");
+        byteCodeArray[171] = new LookupSwitchForm(171, "lookupswitch");
         byteCodeArray[172] = new NoArgumentForm(172, "ireturn");
         byteCodeArray[173] = new NoArgumentForm(173, "lreturn");
         byteCodeArray[174] = new NoArgumentForm(174, "freturn");
@@ -572,10 +572,13 @@ public class ByteCodeForm {
      * 
      * @param byteCode ByteCode to be updated (!)
      * @param operandManager OperandTable from which to draw info
-     * @param globalPool SegmentConstantPool used to index into
+     * @param codeLength Length of bytes (excluding this bytecode)
+     *      from the beginning of the method. Used in calculating
+     *      padding for some variable-length bytecodes (such as
+     *      lookupswitch, tableswitch).
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
+            OperandManager operandManager, int codeLength) {
         throw new Error("My subclass should have implemented this");        
     }
 
@@ -587,7 +590,7 @@ public class ByteCodeForm {
      * @param codeAttribute a CodeAttribute used to determine how
      *   the ByteCode should be fixed up.
      */
-    public void fixUpByteCodeTarget(ByteCode byteCode, CodeAttribute codeAttribute) {
+    public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
         // Most ByteCodeForms don't have any fixing up to do.
         return;
     }

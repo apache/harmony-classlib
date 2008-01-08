@@ -118,7 +118,7 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D
  */
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_windows_WinGDIPGraphics2D_createGraphicsInfoFor
   (JNIEnv * env, jobject obj, jlong hdc, jchar pageUnit) {
-        GraphicsInfo * gi = (GraphicsInfo *) malloc(sizeof(GraphicsInfo));
+        GraphicsInfo * gi = (GraphicsInfo *) calloc(1, sizeof(GraphicsInfo));
 
         gi->hdc = (HDC) hdc;
         gi->graphics = new Graphics(gi->hdc);

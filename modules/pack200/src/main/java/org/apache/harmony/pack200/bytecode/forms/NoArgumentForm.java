@@ -44,7 +44,7 @@ public class NoArgumentForm extends ByteCodeForm {
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
-            OperandManager operandManager) {
+            OperandManager operandManager, int codeLength) {
         // Nothing to do for no-argument form
     }
 }

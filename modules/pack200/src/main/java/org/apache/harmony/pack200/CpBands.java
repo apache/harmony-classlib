@@ -18,7 +18,6 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class CpBands extends BandSet {
@@ -78,10 +77,6 @@ public class CpBands extends BandSet {
         parseCpField(in);
         parseCpMethod(in);
         parseCpIMethod(in);
-    }
-
-    public void pack(OutputStream outputStream) {
-        
     }
     
     /**
