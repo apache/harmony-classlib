@@ -33,6 +33,6 @@ public class Unpack {
 		JarOutputStream out = new JarOutputStream(
 				args.length > 1 ? (OutputStream) new FileOutputStream(args[1])
 						: (OutputStream) new BufferedOutputStream(System.out));
-		Segment.parse(in).writeJar(out, in);
+		Segment.parse(in).writeJar(out);
 	}
 }

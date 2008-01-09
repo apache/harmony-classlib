@@ -329,7 +329,7 @@ public class SegmentHeader {
     private long[] decodeScalar(String name, InputStream in, BHSDCodec codec,
             int n) throws IOException, Pack200Exception {
         // TODO Remove debugging code
-//        debug("Parsed #" + name + " (" + n + ")");
+        debug("Parsed #" + name + " (" + n + ")");
         return codec.decode(n, in);
     }
     
