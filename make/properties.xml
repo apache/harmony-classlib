@@ -127,6 +127,7 @@
             <or>
                 <equals arg1="x86" arg2="${os.arch}"/>
                 <equals arg1="i386" arg2="${os.arch}"/>
+                <equals arg1="i686" arg2="${os.arch}"/>
             </or>
         </and>
     </condition>
