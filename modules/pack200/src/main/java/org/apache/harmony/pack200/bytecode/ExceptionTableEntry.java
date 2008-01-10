@@ -18,18 +18,44 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class ExceptionTableEntry {
 
-	public int catchType;
-	public int endPC;
-	public int handlerPC;
-	public int startPC;
+    private int startPC;
+    private int endPC;
+    private int handlerPC;
+    private CPClass catchType;    
+
+    private int startPcRenumbered;
+    private int endPcRenumbered;
+    private int handlerPcRenumbered;
+    private int catchTypeIndex;
+
+    public ExceptionTableEntry(int startPC, int endPC, int handlerPC, CPClass catchType) {
+        this.startPC = startPC;
+        this.endPC = endPC;
+        this.handlerPC = handlerPC;
+        this.catchType = catchType;
+    }
 
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeShort(startPC);
-		dos.writeShort(endPC);
-		dos.writeShort(handlerPC);
-		dos.writeShort(catchType);
+		dos.writeShort(startPcRenumbered);
+		dos.writeShort(endPcRenumbered);
+		dos.writeShort(handlerPcRenumbered);
+		dos.writeShort(catchTypeIndex);
 	}
+    
+    public void renumber(List byteCodeOffsets) {
+        startPcRenumbered = ((Integer)byteCodeOffsets.get(startPC)).intValue();
+        int endPcIndex = startPC + endPC;
+        endPcRenumbered = ((Integer)byteCodeOffsets.get(endPcIndex)).intValue();
+        int handlerPcIndex = endPcIndex + handlerPC;
+        handlerPcRenumbered = ((Integer)byteCodeOffsets.get(handlerPcIndex)).intValue();
+    }
+    
+    public void resolve(ClassConstantPool pool) {
+        catchType.resolve(pool);
+        catchTypeIndex = pool.indexOf(catchType);
+    }
 }

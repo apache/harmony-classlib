@@ -24,22 +24,23 @@ import java.util.List;
 
 import org.apache.harmony.pack200.Segment;
 
-public class CodeAttribute extends Attribute {
+public class CodeAttribute extends BCIRenumberedAttribute {
     public List attributes = new ArrayList();
     // instances
     public List byteCodeOffsets = new ArrayList();
     public List byteCodes = new ArrayList();
     public int codeLength;
-    public List exceptionTable = new ArrayList(); // of ExceptionTableEntry
+    public List exceptionTable; // of ExceptionTableEntry
     public int maxLocals;
     public int maxStack;
 
     public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
-            Segment segment, OperandManager operandManager) {
+            Segment segment, OperandManager operandManager, List exceptionTable) {
         super("Code"); //$NON-NLS-1$
         this.maxLocals = maxLocals;
         this.maxStack = maxStack;
         this.codeLength = 0;
+        this.exceptionTable = exceptionTable;
         byteCodeOffsets.add(new Integer(0));
         for (int i = 0; i < codePacked.length; i++) {
             ByteCode byteCode = ByteCode.getByteCode(codePacked[i] & 0xff);
@@ -119,6 +120,10 @@ public class CodeAttribute extends Attribute {
             ByteCode byteCode = (ByteCode) it.next();
             byteCode.resolve(pool);
         }
+        for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
+            entry.resolve(pool);            
+        }
     }
 
     public String toString() {
@@ -155,5 +160,17 @@ public class CodeAttribute extends Attribute {
     
     public List attributes() {
         return attributes;
+    }
+
+    protected int[] getStartPCs() {
+        // Do nothing here as we've overriden renumber
+        return null;
+    }
+
+    public void renumber(List byteCodeOffsets) {
+        for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
+            entry.renumber(byteCodeOffsets);            
+        }
     }
 }
