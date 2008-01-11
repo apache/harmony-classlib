@@ -29,11 +29,15 @@ Import-Package: java.awt,
  java.text,
  java.util,
  javax.accessibility,
+ javax.imageio,
  javax.swing,
  javax.swing.border,
  javax.swing.event,
- javax.swing.text
+ javax.swing.text,
+ org.apache.harmony.awt.gl,
+ org.apache.harmony.awt.gl.windows
 Export-Package: javax.print,
  javax.print.attribute,
  javax.print.attribute.standard,
- javax.print.event
+ javax.print.event,
+ org.apache.harmony.x.print
