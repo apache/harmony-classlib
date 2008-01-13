@@ -203,12 +203,12 @@ public class Applet extends Panel {
     }
 
     public void play(URL url, String name) {
-        AudioClip clip = newAudioClip(appendURL(url, name));
+        AudioClip clip = getAudioClip(url, name);
         clip.play();
     }
 
     public void play(URL url) {
-        AudioClip clip = newAudioClip(url);
+        AudioClip clip = getAudioClip(url);
         clip.play();
     }
 
