@@ -467,7 +467,11 @@ properties in preference to these:
         <sequential>
             <subant target="@{target}">
                 <property name="hy.test.vm.name" value="${hy.test.vm.name}"/>
-                <dirset dir="modules" includes="${build.module}" excludes="${exclude.module}" />
+                <dirset dir="modules"
+                        includes="${build.module}"
+                        excludes="${exclude.module}">
+                    <exclude name=".*" />
+                </dirset>
             </subant>
         </sequential>
     </macrodef>
