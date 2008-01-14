@@ -17,43 +17,29 @@
 package org.apache.harmony.pack200.bytecode.forms;
 
 import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for those
- * bytecodes which have class references (and only
- * class references).
+ * This class is used for representations of cldc and
+ * cldc_w. In these cases, a narrow class ref has one
+ * byte and a wide class ref has two bytes.
  */
-public class ClassRefForm extends ReferenceForm {
+public class NarrowClassRefForm extends ClassRefForm {
 
-    protected boolean widened = false;
-    
-    public ClassRefForm(int opcode, String name, int[] rewrite) {
+    public NarrowClassRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
-    public ClassRefForm(int opcode, String name, int[] rewrite, boolean widened) {
-        this(opcode, name, rewrite);
-        this.widened = widened;
-    }
+    public NarrowClassRefForm(int opcode, String name, int[] rewrite,
+            boolean widened) {
+        super(opcode, name, rewrite, widened);
+     }
 
-    public int getOperandType() {
-        return TYPE_CLASSREF;
-    }
-
-    public boolean hasClassRefOperand() {
-        return true;
-    }
-
-    protected int getOffset(OperandManager operandManager) {
-        return operandManager.nextClassRef();
-    }
-
-    protected int getPoolID() {
-        return SegmentConstantPool.CP_CLASS;
+    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
+        super.setNestedEntries(byteCode, operandManager, offset);
+        if(!widened) {
+            byteCode.setNestedPositions(new int[][] {{0,1}});
+        }
     }
 }

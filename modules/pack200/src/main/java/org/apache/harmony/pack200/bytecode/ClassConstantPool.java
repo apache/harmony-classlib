@@ -81,9 +81,10 @@ public class ClassConstantPool {
     public static int DOMAIN_FIELD = 10;
     public static int DOMAIN_METHOD = 11;
     public static int DOMAIN_ATTRIBUTEASCIIZ = 12;
+    public static int NUM_DOMAINS = DOMAIN_ATTRIBUTEASCIIZ + 1;
 
-    protected SortedSet sortedEntries = new TreeSet(new PoolComparator());
-    
+//    protected SortedSet sortedEntries = new TreeSet(new PoolComparator());
+    protected ClassPoolSet classPoolSet = new ClassPoolSet();
 	public String toString() {
 		return entries.toString();
 	}
@@ -100,44 +101,17 @@ public class ClassConstantPool {
 // This is a handy way to see what's adding a ClassFileEntry - set a breakpoint on the print 
 //	    if(entry instanceof CPUTF8) {
 //	        System.out.println("AAH:" + ((CPUTF8)entry).comparisonString());
-//	        if (((CPUTF8)entry).comparisonString().matches("Ljava.*")) {
+//	        if (((CPUTF8)entry).underlyingString().matches("Code")) {
 //	            System.out.println("Adding");
 //	        }
 //	    }
 		if (entry instanceof ConstantPoolEntry) {
+            classPoolSet.add(entry);
 			if (!entries.contains(entry)) {
 				entries.add(entry);
-				sortedEntries.add(entry);
 				// TODO This will be a bugger when they're sorted.
 				if (entry instanceof CPLong ||entry instanceof CPDouble)
 					entries.add(entry); //these get 2 slots because of their size
-			} else {
-			    // TODO: This is awful. If I'm presented with
-			    // an entry that has a lower domain than the
-			    // current entry but is otherwise the same,
-			    // change its domain and rebalance the tree.
-			    // And by "rebalance" I mean destroy and recreate
-			    // the tree.
-			    Iterator iterator = sortedEntries.iterator();
-			    boolean replaceTree = false;
-			    SortedSet newSortedSet = new TreeSet(new PoolComparator());
-			    while(iterator.hasNext()) {
-			        ConstantPoolEntry storedEntry = (ConstantPoolEntry)iterator.next();
-			        if(storedEntry.equals(entry)) {
-			            if(storedEntry.getDomain() > ((ConstantPoolEntry)entry).getDomain()) {
-			                // need to blow away the tree.
-			                replaceTree = true;
-			                newSortedSet.add(entry);
-			            } else {
-			                newSortedSet.add(storedEntry);
-			            }
-			        } else {
-			            newSortedSet.add(storedEntry);
-			        }
-			        if(replaceTree) {
-			            sortedEntries = newSortedSet;
-			        }
-			    }
 			}
 		} else {
 			if (!others.contains(entry))
@@ -177,42 +151,15 @@ public class ClassConstantPool {
 		// In an ideal world, you wouldn't actually add to it unless you're
 		// sure.
         entries = new ArrayList();
-//      entries.addAll(sortedEntries);
-      Iterator sortedIterator = sortedEntries.iterator();
+      Iterator sortedIterator = classPoolSet.iterator();
       while(sortedIterator.hasNext()) {
           ConstantPoolEntry entry = (ConstantPoolEntry)sortedIterator.next();
           entries.add(entry);
+          // need to do this both here and in the sort below
+          // so the indices are correct.
           if (entry instanceof CPLong ||entry instanceof CPDouble)
               entries.add(entry); //these get 2 slots because of their size
       }
-//		HashMap sortMap = new HashMap();
-//		List cpAll = null;
-//		// TODO: HACK - this is a 1.5 api.
-//		// Need to do the right thing and do it with 1.4 API.
-//		try {
-//			cpAll = Arrays.asList(segment.getConstantPool().getCpAll());
-//		} catch (Pack200Exception ex) {
-//			ex.printStackTrace();
-//		}
-//		Iterator it = entries.iterator();
-//		while(it.hasNext()) {
-//			ClassFileEntry entry = (ClassFileEntry) it.next();
-//			int indexInCpAll = cpAll.indexOf(entry);
-//			if(indexInCpAll > 0) {
-//				sortMap.put(new Integer(indexInCpAll), entry);
-//			} else {
-//				sortMap.put(new Integer(99999), entry);
-//			}
-//		}
-//		ArrayList sortedList = new ArrayList();
-//		for(int index=0; index < 99999; index++) {
-//			if(sortMap.containsKey(new Integer(index))) {
-//				sortedList.add((ClassFileEntry)sortMap.get(new Integer(index)));
-//			}
-//		}
-//		for(int xindex=0; xindex < sortedList.size(); xindex++) {
-//			SegmentUtils.debug(sortedList.get(xindex).toString());
-//		}
 		resolve();
 	}
 	
@@ -227,7 +174,25 @@ public class ClassConstantPool {
 		while (it.hasNext()) {
 			ClassFileEntry entry = (ClassFileEntry) it.next();
 			entry.resolve(this);
-		}		
+		}
+		
+		// Now that everything has been resolved, do one
+		// final sort of the class pool. This fixes up
+		// references, which are sorted by index in the
+		// class pool.
+		it = entries.iterator();
+		ClassPoolSet finalSort = new ClassPoolSet();
+		while(it.hasNext()) {
+		    finalSort.add(it.next());
+		}
+		it = finalSort.iterator();
+		entries = new ArrayList();
+		while(it.hasNext()) {
+		    ClassFileEntry entry = (ClassFileEntry) it.next();
+		    entries.add(entry);
+	        if (entry instanceof CPLong ||entry instanceof CPDouble)
+	            entries.add(entry); //these get 2 slots because of their size
+		}
 	}
 
 }

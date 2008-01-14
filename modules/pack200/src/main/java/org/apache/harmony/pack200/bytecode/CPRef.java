@@ -77,6 +77,37 @@ public abstract class CPRef extends ConstantPoolEntry {
 		classNameIndex = pool.indexOf(className);
 	}
 
+   public String comparisonString() {
+        // This one is tricky. The sorting appears to be
+        // done based on the indices of the method descriptor
+        // and class name in the classpool *after* sorting them.
+       
+       // If we haven't yet been resolved, just do a normal
+       // compare (so things like .contains() work).
+        if(!isResolved()) {
+            return super.comparisonString();
+        }
+        
+        // If we get here, the receiver has been resolved; there
+        // is a different sort order.
+        StringBuffer result = new StringBuffer();
+        // Pad all numbers to 6 digits so they sort correctly.
+        int padLength = 6;
+        int classIndexLength = ("" + classNameIndex).length();
+        int nameAndTypeIndexLength = ("" + nameAndTypeIndex).length();
+        
+        for(int index=0; index < (padLength - classIndexLength); index++) {
+            result.append('0');
+        }
+        result.append("" + classNameIndex);
+        result.append(":");
+        for(int index=0; index < (padLength - nameAndTypeIndexLength); index++) {
+            result.append('0');
+        }
+        result.append("" + nameAndTypeIndex);
+        return result.toString();
+    }
+
 	public String toString() {
 		String type;
 		if (getTag() == ConstantPoolEntry.CP_Fieldref) {
