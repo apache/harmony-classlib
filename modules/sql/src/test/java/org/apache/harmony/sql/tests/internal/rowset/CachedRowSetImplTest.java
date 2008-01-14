@@ -712,16 +712,16 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crsetCopy.updateRow();
         crsetCopy.acceptChanges();
 
-        assertEquals(crsetCopy.getString(2), "copyTest3");
+        assertEquals("copyTest3", crsetCopy.getString(2));
 
-        assertEquals(crset.getString(2), "test3");
+        assertEquals("test3", crset.getString(2));
 
         rs = st.executeQuery("select * from USER_INFO");
         rs.next();
         rs.next();
         rs.next();
         // TODO: Uncomment it when Writer is implemented fully.
-        // assertEquals(rs.getString(2), "copyTest3");
+        // assertEquals("copyTest3", rs.getString(2));
 
         reloadCachedRowSet();
         crset.absolute(2);
@@ -831,13 +831,13 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         copy.updateRow();
         copy.acceptChanges();
 
-        assertEquals(copy.getString(2), "updated");
-        assertEquals(crset.getString(2), "test3");
+        assertEquals("updated", copy.getString(2));
+        assertEquals("test3", crset.getString(2));
 
         crset.updateString(2, "again");
 
-        assertEquals(copy.getString(2), "updated");
-        assertEquals(crset.getString(2), "again");
+        assertEquals("updated", copy.getString(2));
+        assertEquals("again", crset.getString(2));
 
         crset.updateRow();
         try {
@@ -854,7 +854,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             // expected
         }
 
-        assertEquals(copy.getString(2), "updated");
+        assertEquals("updated", copy.getString(2));
 
         crset.absolute(3);
         // data doesn't change
