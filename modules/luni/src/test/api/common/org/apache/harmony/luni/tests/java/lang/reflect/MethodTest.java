@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.lang.reflect;
+package org.apache.harmony.luni.tests.java.lang.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -538,32 +538,17 @@ public class MethodTest extends junit.framework.TestCase {
 	 * @tests java.lang.reflect.Method#toString()
 	 */
 	public void test_toString() throws Exception {
-		// Test for method java.lang.String java.lang.reflect.Method.toString()
-		Method mth = null;
-		Class[] parms = { int.class, short.class, String.class, boolean.class,
-				Object.class, long.class, byte.class, char.class, double.class,
-				float.class };
-		mth = TestMethod.class.getDeclaredMethod("printTest", parms);
+        Method mth = null;
+        Class[] parms = { int.class, short.class, String.class, boolean.class,
+                Object.class, long.class, byte.class, char.class, double.class,
+                float.class };
+        mth = TestMethod.class.getDeclaredMethod("printTest", parms);
 
-		assertTrue(
-				"Returned incorrect string for method: " + mth.toString(),
-				mth
-						.toString()
-						.equals(
-								"public static final void tests.api.java.lang.reflect.MethodTest$TestMethod.printTest(int,short,java.lang.String,boolean,java.lang.Object,long,byte,char,double,float)"));
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+        assertTrue(
+                "Returned incorrect string for method: " + mth.toString(),
+                mth
+                        .toString()
+                        .equals(
+                                "public static final void org.apache.harmony.luni.tests.java.lang.reflect.MethodTest$TestMethod.printTest(int,short,java.lang.String,boolean,java.lang.Object,long,byte,char,double,float)"));
+    }
 }

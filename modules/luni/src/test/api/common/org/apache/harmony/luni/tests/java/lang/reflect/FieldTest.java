@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.lang.reflect;
+package org.apache.harmony.luni.tests.java.lang.reflect;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -1046,29 +1046,15 @@ public class FieldTest extends junit.framework.TestCase {
 	 * @tests java.lang.reflect.Field#toString()
 	 */
 	public void test_toString() throws Exception {
-		// Test for method java.lang.String java.lang.reflect.Field.toString()
-		Field f = null;
+        Field f = null;
 
-		f = TestField.class.getDeclaredField("x");
+        f = TestField.class.getDeclaredField("x");
 
-                assertEquals("Field returned incorrect string",
-				"private static final int tests.api.java.lang.reflect.FieldTest$TestField.x",
-						f.toString());
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+        assertEquals(
+                "Field returned incorrect string",
+                "private static final int org.apache.harmony.luni.tests.java.lang.reflect.FieldTest$TestField.x",
+                f.toString());
+    }
 }
 
 class TestAccess {

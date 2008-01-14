@@ -15,12 +15,12 @@
  *  limitations under the License.
  */
 
-package tests.api.java.lang.ref;
+package org.apache.harmony.luni.tests.java.lang.ref;
 
+import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 
-public class WeakReferenceTest extends junit.framework.TestCase {
+public class PhantomReferenceTest extends junit.framework.TestCase {
 	static Boolean bool;
 
 	protected void doneSuite() {
@@ -28,42 +28,37 @@ public class WeakReferenceTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.ref.WeakReference#WeakReference(java.lang.Object,
+	 * @tests java.lang.ref.PhantomReference#get()
+	 */
+	public void test_get() {
+		ReferenceQueue rq = new ReferenceQueue();
+		bool = new Boolean(false);
+		PhantomReference pr = new PhantomReference(bool, rq);
+		assertNull("Same object returned.", pr.get());
+	}
+
+	/**
+	 * @tests java.lang.ref.PhantomReference#PhantomReference(java.lang.Object,
 	 *        java.lang.ref.ReferenceQueue)
 	 */
-	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() {
+	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() throws Exception {
 		ReferenceQueue rq = new ReferenceQueue();
 		bool = new Boolean(true);
+                PhantomReference pr = new PhantomReference(bool, rq);
                 // Allow the finalizer to run to potentially enqueue
-                WeakReference wr = new WeakReference(bool, rq);
-                assertTrue("Initialization failed.", ((Boolean) wr.get())
-                                .booleanValue());
+                Thread.sleep(1000);
+                assertTrue("Initialization failed.", !pr.isEnqueued());
 
                 // need a reference to bool so the jit does not optimize it away
 		assertTrue("should always pass", bool.booleanValue());
 
 		boolean exception = false;
 		try {
-			new WeakReference(bool, null);
+			new PhantomReference(bool, null);
 		} catch (NullPointerException e) {
 			exception = true;
 		}
 		assertTrue("Should not throw NullPointerException", !exception);
-	}
-
-	/**
-	 * @tests java.lang.ref.WeakReference#WeakReference(java.lang.Object)
-	 */
-	public void test_ConstructorLjava_lang_Object() throws Exception {
-		bool = new Boolean(true);
-                WeakReference wr = new WeakReference(bool);
-                // Allow the finalizer to run to potentially enqueue
-                Thread.sleep(1000);
-                assertTrue("Initialization failed.", ((Boolean) wr.get())
-                                .booleanValue());
-
-                // need a reference to bool so the jit does not optimize it away
-		assertTrue("should always pass", bool.booleanValue());
 	}
 
 	protected void setUp() {

@@ -14,13 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package org.apache.harmony.luni.tests.java.lang.ref;
 
-package tests.api.java.lang.ref;
-
-import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 
-public class PhantomReferenceTest extends junit.framework.TestCase {
+public class SoftReferenceTest extends junit.framework.TestCase {
 	static Boolean bool;
 
 	protected void doneSuite() {
@@ -28,37 +27,42 @@ public class PhantomReferenceTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 * @tests java.lang.ref.PhantomReference#get()
-	 */
-	public void test_get() {
-		ReferenceQueue rq = new ReferenceQueue();
-		bool = new Boolean(false);
-		PhantomReference pr = new PhantomReference(bool, rq);
-		assertNull("Same object returned.", pr.get());
-	}
-
-	/**
-	 * @tests java.lang.ref.PhantomReference#PhantomReference(java.lang.Object,
+	 * @tests java.lang.ref.SoftReference#SoftReference(java.lang.Object,
 	 *        java.lang.ref.ReferenceQueue)
 	 */
-	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() throws Exception {
+	public void test_ConstructorLjava_lang_ObjectLjava_lang_ref_ReferenceQueue() {
 		ReferenceQueue rq = new ReferenceQueue();
 		bool = new Boolean(true);
-                PhantomReference pr = new PhantomReference(bool, rq);
-                // Allow the finalizer to run to potentially enqueue
-                Thread.sleep(1000);
-                assertTrue("Initialization failed.", !pr.isEnqueued());
-
-                // need a reference to bool so the jit does not optimize it away
-		assertTrue("should always pass", bool.booleanValue());
+                SoftReference sr = new SoftReference(bool, rq);
+                assertTrue("Initialization failed.", ((Boolean) sr.get())
+                                .booleanValue());
 
 		boolean exception = false;
 		try {
-			new PhantomReference(bool, null);
+			new SoftReference(bool, null);
 		} catch (NullPointerException e) {
 			exception = true;
 		}
 		assertTrue("Should not throw NullPointerException", !exception);
+	}
+
+	/**
+	 * @tests java.lang.ref.SoftReference#SoftReference(java.lang.Object)
+	 */
+	public void test_ConstructorLjava_lang_Object() {
+		bool = new Boolean(true);
+                SoftReference sr = new SoftReference(bool);
+                assertTrue("Initialization failed.", ((Boolean) sr.get())
+                                .booleanValue());
+	}
+
+	/**
+	 * @tests java.lang.ref.SoftReference#get()
+	 */
+	public void test_get() {
+		bool = new Boolean(false);
+		SoftReference sr = new SoftReference(bool);
+		assertTrue("Same object not returned.", bool == sr.get());
 	}
 
 	protected void setUp() {

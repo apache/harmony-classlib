@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package tests.api.java.lang.reflect;
+package org.apache.harmony.luni.tests.java.lang.reflect;
 
 import java.lang.reflect.ReflectPermission;
 

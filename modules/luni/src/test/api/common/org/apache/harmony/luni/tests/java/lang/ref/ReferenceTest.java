@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package tests.api.java.lang.ref;
+package org.apache.harmony.luni.tests.java.lang.ref;
 
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
