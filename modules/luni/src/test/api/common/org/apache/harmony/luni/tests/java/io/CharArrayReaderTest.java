@@ -188,7 +188,6 @@ public class CharArrayReaderTest extends junit.framework.TestCase {
 
         CharArrayReader reader = new CharArrayReader(data, offsetLength, length);
         reader.reset();
-        System.out.print("\nAfter reset(): ");
         for (int i = 0; i < length; i++)
             assertEquals(data[offsetLength + i], (char) reader.read());
     }
