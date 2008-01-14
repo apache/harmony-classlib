@@ -27,8 +27,9 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.harmony.luni.tests.support.B;
+
 import tests.support.resource.Support_Resources;
-import tests.api.java.util.support.B;
 
 public class ResourceBundleTest extends junit.framework.TestCase {
 
