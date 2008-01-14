@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.luni.util;
+package org.apache.harmony.luni.tests.util;
+
+import org.apache.harmony.luni.util.Util;
 
 import junit.framework.TestCase;
 
