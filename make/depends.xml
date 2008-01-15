@@ -482,7 +482,7 @@ File @{dest} has incorrect md5 checksum.
         <attribute name="src" />
         <attribute name="dest" />
         <sequential>
-            <echo>Checking for @{dest}</echo>
+            <echo level="info">Checking for @{dest}</echo>
         <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
         <fail>

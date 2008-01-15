@@ -452,7 +452,7 @@ properties in preference to these:
         <condition property="hy.test.vm.name" value="drl" else="ibm" >
             <contains string="${test.vm.info.tmp}" substring="harmony" />
         </condition>
-        <echo message="hy.test.vm.name = ${hy.test.vm.name}" />
+        <echo level="verbose" message="hy.test.vm.name = ${hy.test.vm.name}" />
     </target>
 
     <target name="-get-test-vm-output" if="test.jre.home">
