@@ -59,7 +59,6 @@ public class LabelForm extends ByteCodeForm {
         int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
         // The operand is the difference between the source instruction
         // and the destination instruction.
-        // TODO: Probably have to do something other than setOperandInt if this is widened.
         byteCode.setOperandSigned2Bytes(targetValue - sourceValue, 0);
         if(widened) {
             byteCode.setNestedPositions(new int[][] {{0,4}});

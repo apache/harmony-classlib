@@ -64,27 +64,22 @@ public class SegmentTest extends TestCase {
     
     // Test with an archive containing Harmony's SQL module, packed with -E1
     public void testWithSqlE1() throws Exception {
-    	// This test will not pass until we handle inner classes
-    	// correctly.
-     	if(!handlingInnerClasses) return;
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/sql-e1.pack.gz");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("s", "ql-e1.jar")));
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", "-e1.jar")));
         segment.writeJar(out);
     }
     
     // Test with an archive containing Harmony's SQL module
     public void testWithSql() throws Exception {
-    	// This test will not pass until we handle inner classes
-    	// correctly.
      	if(!handlingInnerClasses) return;
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("s", "ql.jar")));
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", ".jar")));
         segment.writeJar(out);
     }
     
@@ -115,7 +110,7 @@ public class SegmentTest extends TestCase {
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("jn", "di-e1.jar")));
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("jndi", "-e1.jar")));
         segment.writeJar(out);
     }
     

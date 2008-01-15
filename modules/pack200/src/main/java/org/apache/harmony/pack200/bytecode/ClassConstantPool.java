@@ -17,16 +17,10 @@
 package org.apache.harmony.pack200.bytecode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
-import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
 import org.apache.harmony.pack200.SegmentUtils;
 

@@ -16,10 +16,7 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
-import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.SegmentConstantPool;
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
