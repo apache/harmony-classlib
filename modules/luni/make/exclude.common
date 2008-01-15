@@ -1,2 +1,2 @@
-tests/api/java/net/URLClassLoaderTest.java
-tests/api/java/net/ExcludedProxyTest.java
+org/apache/harmony/luni/tests/java/net/URLClassLoaderTest.java
+org/apache/harmony/luni/tests/java/net/ExcludedProxyTest.java

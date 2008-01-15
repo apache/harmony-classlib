@@ -21,48 +21,44 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import junit.framework.TestCase;
 import tests.support.Support_Configuration;
 
-public class URLEncoderTest extends TestCase {
+public class URLDecoderTest extends junit.framework.TestCase {
 
-    /**
-     * @tests java.net.URLEncoder#encode(java.lang.String)
+	/**
+     * @tests java.net.URLDecoder#URLDecoder()
      */
-    @SuppressWarnings("deprecation")
-    public void test_encodeLjava_lang_String() {
-        // Test for method java.lang.String
-        // java.net.URLEncoder.encode(java.lang.String)
-        final String URL = "http://" + Support_Configuration.HomeAddress;
-        final String URL2 = "telnet://justWantToHaveFun.com:400";
-        final String URL3 = "file://myServer.org/a file with spaces.jpg";
+    public void test_Constructor() throws Exception {
+        URLDecoder ud = new URLDecoder();
+        assertNotNull("Constructor failed.", ud);
+    }
 
+	/**
+	 * @tests java.net.URLDecoder#decode(java.lang.String)
+	 */
+	public void test_decodeLjava_lang_String() throws Exception {
+		// Test for method java.lang.String
+		// java.net.URLDecoder.decode(java.lang.String)
+		final String URL = "http://" + Support_Configuration.HomeAddress;
+		final String URL2 = "telnet://justWantToHaveFun.com:400";
+        final String URL3 = "file://myServer.org/a file with spaces.jpg";
         assertTrue("1. Incorrect encoding/decoding", URLDecoder.decode(
                 URLEncoder.encode(URL)).equals(URL));
         assertTrue("2. Incorrect encoding/decoding", URLDecoder.decode(
                 URLEncoder.encode(URL2)).equals(URL2));
         assertTrue("3. Incorrect encoding/decoding", URLDecoder.decode(
                 URLEncoder.encode(URL3)).equals(URL3));
-    }
+	}
 
     /**
-     * @tests URLEncoder#encode(String, String)
+     * @tests java.net.URLDecoder#decode(java.lang.String, java.lang.String)
      */
-    public void test_encodeLjava_lang_StringLjava_lang_String()
-            throws Exception {
-        // Regression for HARMONY-24
+    public void test_decodeLjava_lang_String_Ljava_lang_String() {
+        // Regression for HARMONY-467
         try {
-            URLEncoder.encode("str", "unknown_enc");
-            fail("Assert 0: Should throw UEE for invalid encoding");
+            URLDecoder.decode("", "");
+            fail("UnsupportedEncodingException expected");
         } catch (UnsupportedEncodingException e) {
-            // expected
-        }
-        // Regression for HARMONY-1233
-        try {
-            URLEncoder.encode(null, "harmony");
-            fail("NullPointerException expected");
-        } catch (NullPointerException e) {
-            // expected
         }
     }
 }
