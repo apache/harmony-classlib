@@ -37,15 +37,6 @@
         </or>
     </fileset>
     
-    <condition property="iculib.zip" 
-        value="${depends.oss}/icu4c-3.4-harmony-windows.x86_64.zip"
-        else="${depends.oss}/icu4c-3.4-harmony.zip">
-        <and>
-            <isset property="is.windows"/>
-            <isset property="is.x86_64"/>
-        </and>
-    </condition>
-
     <property name="instrument.exclude.file" location="${hy.hdk}/build/instrument.exclude" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
@@ -64,16 +55,6 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
-    <target name="overlay-oss">
-        <mkdir dir="${hy.instrument.src.main.native}/icu4c/unicode" />
-        <unzip src="${iculib.zip}" dest="${hy.instrument.src.main.native}/icu4c/unicode" />
-        <chmod dir="${hy.instrument.src.main.native}/icu4c/unicode" perm="ugo+r" />
-    </target>
-    
-    <target name="clean-overlay-oss">
-        <delete dir="${hy.instrument.src.main.native}/icu4c" quiet="true" />
-    </target>
-    
     <!-- Build native code -->
     <target name="build-native" >
         <make dir="${hy.instrument.src.main.native}/instrument/${hy.os.family}" />
