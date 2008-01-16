@@ -19,6 +19,7 @@ package org.apache.harmony.pack200;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPDouble;
@@ -359,9 +360,9 @@ public abstract class BandSet {
         /*
          * Note - this is not in the spec, but seems to be used as an
          * optimization by the RI for bands where the minimum and maximum values
-         * are known (ie reference bands). It will not hurt any encoding that is
-         * following the spec because all the values decoded will be inside the
-         * range anyway.
+         * are known (ie reference bands). It will not hurt any implementation
+         * that is following the spec because all the values decoded will be
+         * inside the range anyway.
          */
         if (codecUsed instanceof BHSDCodec) {
             for (int i = 0; i < returnBand.length; i++) {
@@ -370,6 +371,24 @@ public abstract class BandSet {
                 }
                 while (returnBand[i] > maxValue) {
                     returnBand[i] -= ((BHSDCodec) codecUsed).cardinality();
+                }
+            }
+        } else if (codecUsed instanceof PopulationCodec) {
+            PopulationCodec popCodec = (PopulationCodec)codecUsed;
+            long[] favoured = (long[]) popCodec.getFavoured().clone();
+            Arrays.sort(favoured);
+            for (int i = 0; i < returnBand.length; i++) {
+                if(returnBand[i] < 0 || returnBand[i] > maxValue) {
+                    boolean favouredValue = Arrays.binarySearch(favoured, returnBand[i]) > -1;
+                    Codec theCodec = favouredValue ? popCodec.getFavouredCodec(): popCodec.getUnvafouredCodec();
+                    if(theCodec instanceof BHSDCodec) {
+                        while (returnBand[i] < 0) {
+                            returnBand[i] +=  ((BHSDCodec) theCodec).cardinality();
+                        }
+                        while (returnBand[i] > maxValue) {
+                            returnBand[i] -= ((BHSDCodec) theCodec).cardinality();
+                        }
+                    }
                 }
             }
         }
