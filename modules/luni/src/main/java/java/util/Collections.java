@@ -1839,7 +1839,7 @@ public class Collections {
         if (!(list instanceof RandomAccess)) {
             Object[] array = list.toArray();
             for (int i = array.length - 1; i > 0; i--) {
-                int index = random.nextInt() % (i + 1);
+                int index = random.nextInt(i + 1);
                 if (index < 0) {
                     index = -index;
                 }
@@ -1858,7 +1858,7 @@ public class Collections {
         } else {
             List<Object> rawList = (List<Object>) list;
             for (int i = rawList.size() - 1; i > 0; i--) {
-                int index = random.nextInt() % (i + 1);
+                int index = random.nextInt(i + 1);
                 if (index < 0) {
                     index = -index;
                 }

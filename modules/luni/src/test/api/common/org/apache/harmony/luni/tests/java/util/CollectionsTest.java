@@ -629,6 +629,13 @@ public class CollectionsTest extends junit.framework.TestCase {
 		LinkedList ll2 = new LinkedList();
 		ll2.addAll(ll);
 		testShuffle(ll2, "Random Access", true);
+        
+        List l = new ArrayList();
+        l.add('a');
+        l.add('b');
+        l.add('c');
+        Collections.shuffle(l, new Random(12345678921L));
+        assertEquals("acb", l.get(0).toString()+l.get(1)+l.get(2));
 	}
 
 	/**
