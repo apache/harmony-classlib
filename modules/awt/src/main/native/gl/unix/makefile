@@ -25,6 +25,8 @@ BUILDFILES = \
   $(SHAREDSUB)/LUTTables.o \
   $(SHAREDSUB)/pngdecoder.o \
   $(SHAREDSUB)/SurfaceDataStructure.o \
+  gl.o \
+  XBlitter.o \
   XGraphics2D.o \
   libpng.a
 

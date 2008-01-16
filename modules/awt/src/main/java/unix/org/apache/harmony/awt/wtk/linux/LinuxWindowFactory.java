@@ -43,7 +43,7 @@ public final class LinuxWindowFactory implements WindowFactory {
     private static final X11 x11 = X11.getInstance();
     private static final NativeBridge bridge = NativeBridge.getInstance();
 
-    private final XServerConnection xConnection = new XServerConnection(x11);
+    private final XServerConnection xConnection = XServerConnection.getInstance();
     private final long display = xConnection.getDisplay();
     private final int screen = xConnection.getScreen();
     final WindowManager wm;

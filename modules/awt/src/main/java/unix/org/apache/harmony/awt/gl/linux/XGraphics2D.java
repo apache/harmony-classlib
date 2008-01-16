@@ -66,10 +66,6 @@ public class XGraphics2D extends CommonGraphics2D {
     boolean xor_mode = false;
 
     boolean indexModel = false;
- 
-    static{
-        System.loadLibrary("gl");
-    }
 
     public XGraphics2D(long drawable, int tx, int ty, MultiRectArea clip) {
         super(tx, ty, clip);
@@ -89,6 +85,41 @@ public class XGraphics2D extends CommonGraphics2D {
         blitter = XBlitter.getInstance();
         Rectangle bounds = clip.getBounds();
         dstSurf = new XSurface(this, bounds.width, bounds.height);
+        if (!FontManager.IS_FONTLIB) {
+            jtr = DrawableTextRenderer.inst;
+        }
+
+        //setTransformedClip(clip);
+        setClip(clip);
+
+        if (xConfig.getColorModel() instanceof IndexColorModel) {
+            indexModel = true;
+        }
+    }
+
+    public XGraphics2D(XVolatileImage image, int tx, int ty, int width, int height) {
+        this(image, tx, ty, new MultiRectArea(new Rectangle(width, height)));
+    }
+
+    public XGraphics2D(XVolatileImage image, int tx, int ty, MultiRectArea clip) {
+        super(tx, ty, clip);
+        drawable = image.getPixmap();
+        xConfig = (XGraphicsConfiguration) getDeviceConfiguration();
+        display = xConfig.dev.display;
+        gc = createGC(display, drawable);
+
+        X11.Visual visual = xConfig.info.get_visual();
+        xftDraw = createXftDraw(display, drawable, visual.lock());
+        visual.unlock();
+
+        imageGC = createGC(display, drawable);
+
+        //xSetForeground(argb); // Set default foregroung to black
+
+        blitter = XBlitter.getInstance();
+        Rectangle bounds = clip.getBounds();
+        dstSurf = image.getImageSurface();
+
         if (!FontManager.IS_FONTLIB) {
             jtr = DrawableTextRenderer.inst;
         }
@@ -214,6 +245,9 @@ public class XGraphics2D extends CommonGraphics2D {
             LinuxNativeFont.freeXftDrawNative(this.xftDraw);
             xftDraw = 0;
         }
+
+        if(dstSurf instanceof XSurface) 
+            dstSurf.dispose();
 
         if (gc != 0) {
             freeGC(display, gc);
