@@ -20,48 +20,33 @@ package org.apache.harmony.luni.tests.java.io;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
+import java.io.IOException;
 
 public class EOFExceptionTest extends junit.framework.TestCase {
 
-	/**
-	 * @tests java.io.EOFException#EOFException()
-	 */
-	public void test_Constructor() throws Exception {
-		// Test for method java.io.EOFException()
-		try {
-			new DataInputStream(new ByteArrayInputStream(new byte[1]))
-					.readShort();
-		} catch (EOFException e) {
-			return;
-		}
-		fail("Failed to generate EOFException");
-	}
+    /**
+     * @tests java.io.EOFException#EOFException()
+     */
+    public void test_Constructor() throws Exception {
+        try {
+            new DataInputStream(new ByteArrayInputStream(new byte[1]))
+                    .readShort();
+            fail("Failed to generate EOFException");
+        } catch (EOFException e) {
+            // Expected
+        }
+    }
 
-	/**
-	 * @tests java.io.EOFException#EOFException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() throws Exception {
-		// Test for method java.io.EOFException(java.lang.String)
-		try {
-			new DataInputStream(new ByteArrayInputStream(new byte[1]))
-					.readShort();
-		} catch (EOFException e) {
-			return;
-		}
-		fail("Failed to generate EOFException");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.io.EOFException#EOFException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() throws IOException {
+        try {
+            new DataInputStream(new ByteArrayInputStream(new byte[1]))
+                    .readShort();
+            fail("Failed to generate EOFException");
+        } catch (EOFException e) {
+            // Expected
+        }
+    }
 }

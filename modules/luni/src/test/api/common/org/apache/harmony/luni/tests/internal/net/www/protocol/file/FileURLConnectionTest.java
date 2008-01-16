@@ -19,10 +19,9 @@ package org.apache.harmony.luni.tests.internal.net.www.protocol.file;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.harmony.luni.internal.net.www.protocol.file.FileURLConnection;
-
 import junit.framework.TestCase;
 
+import org.apache.harmony.luni.internal.net.www.protocol.file.FileURLConnection;
 
 /**
  * Tests for <code>FileURLConnection</code> class constructors and methods.
@@ -36,11 +35,12 @@ public class FileURLConnectionTest extends TestCase {
         return new FileURLConnection(url).getContentType();
     }
 
-    public void testGetContentType() throws Exception {
+    public void testGetContentType() throws IOException  {
         // Regression for HARMONY-4699
         assertEquals(getContentType("test.rtf"), "application/rtf");
         assertEquals(getContentType("test.java"), "text/plain");
-        assertEquals(getContentType("test.doc"), "application/msword"); // RI would return "content/unknown"
+        // RI would return "content/unknown"
+        assertEquals(getContentType("test.doc"), "application/msword");
         assertEquals(getContentType("test.htx"), "text/html");
         assertEquals(getContentType("test.xml"), "application/xml");
         assertEquals(getContentType("."), "text/plain");
