@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-import tests.api.java.util.ArrayListTest.MockArrayList;
 import tests.support.Support_ListTest;
 
 public class VectorTest extends junit.framework.TestCase {
