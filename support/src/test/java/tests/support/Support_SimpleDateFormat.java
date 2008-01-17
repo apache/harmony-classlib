@@ -59,10 +59,10 @@ public class Support_SimpleDateFormat extends Support_Format {
 				.applyPattern("G GGGG y yy yyyy M MM MMM MMMM d dd ddd k kk kkk H HH HHH h hh hhh m mmm s ss sss S SS SSS EE EEEE D DD DDD F FF w www W WWW a  aaa  K KKK z zzzz Z ZZZZ");
 
 		StringBuffer textbuffer = new StringBuffer(
-				"AD AD 99 99 1999 9 09 Sep September 13 13 013 17 17 017 17 17 017 5 05");
+				"AD Anno Domini 1999 99 1999 9 09 Sep September 13 13 013 17 17 017 17 17 017 5 05");
 		textbuffer
 				.append(" 005 19 019 1 01 001 0 00 000 Mon Monday 256 256 256 2 02 38 038 3 003 PM");
-		textbuffer.append("  PM  5 005 EDT Eastern Daylight Time -0400 -0400");
+		textbuffer.append("  PM  5 005 GMT-05:00 GMT-05:00 -0500 GMT-05:00");
 
 		// to avoid passing the huge Stringbuffer each time.
 		super.text = textbuffer.toString();
@@ -188,7 +188,7 @@ public class Support_SimpleDateFormat extends Support_Format {
 		Vector<FieldContainer> v = new Vector<FieldContainer>();
 		v.add(new FieldContainer(0, 1, Field.HOUR1));
 		v.add(new FieldContainer(2, 4, Field.MINUTE));
-		v.add(new FieldContainer(5, 8, Field.TIME_ZONE));
+		v.add(new FieldContainer(5, 14, Field.TIME_ZONE));
 		return v;
 	}
 
@@ -253,10 +253,10 @@ public class Support_SimpleDateFormat extends Support_Format {
 		v.add(new FieldContainer(145, 147, Field.AM_PM));
 		v.add(new FieldContainer(149, 150, Field.HOUR0));
 		v.add(new FieldContainer(151, 154, Field.HOUR0));
-		v.add(new FieldContainer(155, 158, Field.TIME_ZONE));
-		v.add(new FieldContainer(159, 180, Field.TIME_ZONE));
+		v.add(new FieldContainer(155, 164, Field.TIME_ZONE));
+		v.add(new FieldContainer(165, 174, Field.TIME_ZONE));
+		v.add(new FieldContainer(175, 180, Field.TIME_ZONE));
 		v.add(new FieldContainer(181, 186, Field.TIME_ZONE));
-		v.add(new FieldContainer(187, 192, Field.TIME_ZONE));
 		return v;
 	}
 

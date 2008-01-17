@@ -69,6 +69,10 @@ public class SimpleTimeZone extends TimeZone {
 
     private int dstSavings = 3600000;
 
+    private transient com.ibm.icu.util.TimeZone icuTZ;
+
+    private boolean isSimple;
+
     /**
      * Constructs a new SimpleTimeZone using the specified offset for standard
      * time from GMT and the specified time zone ID.
@@ -81,6 +85,12 @@ public class SimpleTimeZone extends TimeZone {
     public SimpleTimeZone(int offset, String name) {
         setID(name);
         rawOffset = offset;
+        icuTZ = com.ibm.icu.util.TimeZone.getTimeZone(name);
+        if (icuTZ instanceof com.ibm.icu.util.SimpleTimeZone) {
+            isSimple = true;
+            icuTZ.setRawOffset(offset);
+        }
+        useDaylight = icuTZ.useDaylightTime();
     }
 
     /**
@@ -159,7 +169,17 @@ public class SimpleTimeZone extends TimeZone {
     public SimpleTimeZone(int offset, String name, int startMonth,
             int startDay, int startDayOfWeek, int startTime, int endMonth,
             int endDay, int endDayOfWeek, int endTime, int daylightSavings) {
-        this(offset, name);
+        icuTZ = com.ibm.icu.util.TimeZone.getTimeZone(name);
+        if (icuTZ instanceof com.ibm.icu.util.SimpleTimeZone) {
+            isSimple = true;
+            com.ibm.icu.util.SimpleTimeZone tz = (com.ibm.icu.util.SimpleTimeZone)icuTZ;
+            tz.setRawOffset(offset);
+            tz.setStartRule(startMonth, startDay, startDayOfWeek, startTime);
+            tz.setEndRule(endMonth, endDay, endDayOfWeek, endTime);
+            tz.setDSTSavings(daylightSavings);
+        }
+        setID(name);
+        rawOffset = offset;
         if (daylightSavings <= 0) {
             throw new IllegalArgumentException(Msg.getString(
                     "K00e9", daylightSavings)); //$NON-NLS-1$
@@ -168,6 +188,8 @@ public class SimpleTimeZone extends TimeZone {
 
         setStartRule(startMonth, startDay, startDayOfWeek, startTime);
         setEndRule(endMonth, endDay, endDayOfWeek, endTime);
+        
+        useDaylight = daylightSavings > 0 || icuTZ.useDaylightTime();
     }
 
     /**
@@ -312,123 +334,7 @@ public class SimpleTimeZone extends TimeZone {
         if (month != Calendar.FEBRUARY || day != 29 || !isLeapYear(year)) {
             checkDay(month, day);
         }
-
-        if (!useDaylightTime() || era != GregorianCalendar.AD
-                || year < startYear) {
-            return rawOffset;
-        }
-        if (endMonth < startMonth) {
-            if (month > endMonth && month < startMonth) {
-                return rawOffset;
-            }
-        } else {
-            if (month < startMonth || month > endMonth) {
-                return rawOffset;
-            }
-        }
-
-        int ruleDay = 0, daysInMonth, firstDayOfMonth = mod7(dayOfWeek - day);
-        if (month == startMonth) {
-            switch (startMode) {
-            case DOM_MODE:
-                ruleDay = startDay;
-                break;
-            case DOW_IN_MONTH_MODE:
-                if (startDay >= 0) {
-                    ruleDay = mod7(startDayOfWeek - firstDayOfMonth) + 1
-                            + (startDay - 1) * 7;
-                } else {
-                    daysInMonth = GregorianCalendar.DaysInMonth[startMonth];
-                    if (startMonth == Calendar.FEBRUARY && isLeapYear(year)) {
-                        daysInMonth += 1;
-                    }
-                    ruleDay = daysInMonth
-                            + 1
-                            + mod7(startDayOfWeek
-                                    - (firstDayOfMonth + daysInMonth))
-                            + startDay * 7;
-                }
-                break;
-            case DOW_GE_DOM_MODE:
-                ruleDay = startDay
-                        + mod7(startDayOfWeek
-                                - (firstDayOfMonth + startDay - 1));
-                break;
-            case DOW_LE_DOM_MODE:
-                ruleDay = startDay
-                        + mod7(startDayOfWeek
-                                - (firstDayOfMonth + startDay - 1));
-                if (ruleDay != startDay) {
-                    ruleDay -= 7;
-                }
-                break;
-            }
-            if (ruleDay > day || ruleDay == day && time < startTime) {
-                return rawOffset;
-            }
-        }
-
-        int ruleTime = endTime - dstSavings;
-        int nextMonth = (month + 1) % 12;
-        if (month == endMonth || (ruleTime < 0 && nextMonth == endMonth)) {
-            switch (endMode) {
-            case DOM_MODE:
-                ruleDay = endDay;
-                break;
-            case DOW_IN_MONTH_MODE:
-                if (endDay >= 0) {
-                    ruleDay = mod7(endDayOfWeek - firstDayOfMonth) + 1
-                            + (endDay - 1) * 7;
-                } else {
-                    daysInMonth = GregorianCalendar.DaysInMonth[endMonth];
-                    if (endMonth == Calendar.FEBRUARY && isLeapYear(year)) {
-                        daysInMonth++;
-                    }
-                    ruleDay = daysInMonth
-                            + 1
-                            + mod7(endDayOfWeek
-                                    - (firstDayOfMonth + daysInMonth)) + endDay
-                            * 7;
-                }
-                break;
-            case DOW_GE_DOM_MODE:
-                ruleDay = endDay
-                        + mod7(endDayOfWeek - (firstDayOfMonth + endDay - 1));
-                break;
-            case DOW_LE_DOM_MODE:
-                ruleDay = endDay
-                        + mod7(endDayOfWeek - (firstDayOfMonth + endDay - 1));
-                if (ruleDay != endDay) {
-                    ruleDay -= 7;
-                }
-                break;
-            }
-
-            int ruleMonth = endMonth;
-            if (ruleTime < 0) {
-                int changeDays = 1 - (ruleTime / 86400000);
-                ruleTime = (ruleTime % 86400000) + 86400000;
-                ruleDay -= changeDays;
-                if (ruleDay <= 0) {
-                    if (--ruleMonth < Calendar.JANUARY) {
-                        ruleMonth = Calendar.DECEMBER;
-                    }
-                    ruleDay += GregorianCalendar.DaysInMonth[ruleMonth];
-                    if (ruleMonth == Calendar.FEBRUARY && isLeapYear(year)) {
-                        ruleDay++;
-                    }
-                }
-            }
-
-            if (month == ruleMonth) {
-                if (ruleDay < day || ruleDay == day && time >= ruleTime) {
-                    return rawOffset;
-                }
-            } else if (nextMonth != ruleMonth) {
-                return rawOffset;
-            }
-        }
-        return rawOffset + dstSavings;
+        return icuTZ.getOffset(era, year, month, day, dayOfWeek, time);
     }
 
     /**
@@ -442,13 +348,7 @@ public class SimpleTimeZone extends TimeZone {
      */
     @Override
     public int getOffset(long time) {
-        if (!useDaylightTime()) {
-            return rawOffset;
-        }
-        if (daylightSavings == null) {
-            daylightSavings = new GregorianCalendar(this);
-        }
-        return daylightSavings.getOffset(time + rawOffset);
+        return icuTZ.getOffset(time);
     }
 
     /**
@@ -521,15 +421,7 @@ public class SimpleTimeZone extends TimeZone {
      */
     @Override
     public boolean inDaylightTime(Date time) {
-        // check for null pointer
-        long millis = time.getTime();
-        if (!useDaylightTime()) {
-            return false;
-        }
-        if (daylightSavings == null) {
-            daylightSavings = new GregorianCalendar(this);
-        }
-        return daylightSavings.getOffset(millis + rawOffset) != rawOffset;
+        return icuTZ.inDaylightTime(time);
     }
 
     private boolean isLeapYear(int year) {
@@ -537,11 +429,6 @@ public class SimpleTimeZone extends TimeZone {
             return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
         }
         return year % 4 == 0;
-    }
-
-    private int mod7(int num1) {
-        int rem = num1 % 7;
-        return (num1 < 0 && rem < 0) ? 7 + rem : rem;
     }
 
     /**
@@ -627,6 +514,10 @@ public class SimpleTimeZone extends TimeZone {
         endDayOfWeek = 0; // Initialize this value for hasSameRules()
         endTime = time;
         setEndMode();
+        if (isSimple) {
+            ((com.ibm.icu.util.SimpleTimeZone) icuTZ).setEndRule(month,
+                    dayOfMonth, time);
+        }
     }
 
     /**
@@ -650,6 +541,10 @@ public class SimpleTimeZone extends TimeZone {
         endDayOfWeek = dayOfWeek;
         endTime = time;
         setEndMode();
+        if (isSimple) {
+            ((com.ibm.icu.util.SimpleTimeZone) icuTZ).setEndRule(month, day,
+                    dayOfWeek, time);
+        }
     }
 
     /**
@@ -675,6 +570,10 @@ public class SimpleTimeZone extends TimeZone {
         endDayOfWeek = -dayOfWeek;
         endTime = time;
         setEndMode();
+        if (isSimple) {
+            ((com.ibm.icu.util.SimpleTimeZone) icuTZ).setEndRule(month, day,
+                    dayOfWeek, time, after);
+        }
     }
 
     /**
@@ -738,6 +637,10 @@ public class SimpleTimeZone extends TimeZone {
         startDayOfWeek = 0; // Initialize this value for hasSameRules()
         startTime = time;
         setStartMode();
+        if (isSimple) {
+            ((com.ibm.icu.util.SimpleTimeZone) icuTZ).setStartRule(month,
+                    dayOfMonth, time);
+        }
     }
 
     /**
@@ -761,6 +664,10 @@ public class SimpleTimeZone extends TimeZone {
         startDayOfWeek = dayOfWeek;
         startTime = time;
         setStartMode();
+        if (isSimple) {
+            ((com.ibm.icu.util.SimpleTimeZone) icuTZ).setStartRule(month, day,
+                    dayOfWeek, time);
+        }
     }
 
     /**
@@ -786,6 +693,10 @@ public class SimpleTimeZone extends TimeZone {
         startDayOfWeek = -dayOfWeek;
         startTime = time;
         setStartMode();
+        if (isSimple) {
+            ((com.ibm.icu.util.SimpleTimeZone) icuTZ).setStartRule(month, day,
+                    dayOfWeek, time, after);
+        }
     }
 
     /**

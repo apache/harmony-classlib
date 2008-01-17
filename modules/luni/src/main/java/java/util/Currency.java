@@ -19,8 +19,6 @@ package java.util;
 
 import java.io.Serializable;
 
-import org.apache.harmony.luni.util.Msg;
-
 /**
  * This class represents a currency as identified in the ISO 4217 currency
  * codes.
@@ -32,10 +30,6 @@ public final class Currency implements Serializable {
     private static Hashtable<String, Currency> codesToCurrencies = new Hashtable<String, Currency>();
 
     private String currencyCode;
-
-    private static String currencyVars = "EURO, HK, PREEURO"; //$NON-NLS-1$
-
-    private transient int defaultFractionDigits;
 
     /**
      * @param currencyCode
@@ -60,20 +54,7 @@ public final class Currency implements Serializable {
         Currency currency = codesToCurrencies.get(currencyCode);
 
         if (currency == null) {
-            ResourceBundle bundle = Locale.getBundle(
-                    "ISO4CurrenciesToDigits", Locale.getDefault()); //$NON-NLS-1$
             currency = new Currency(currencyCode);
-
-            String defaultFractionDigits = null;
-            try {
-                defaultFractionDigits = bundle.getString(currencyCode);
-            } catch (MissingResourceException e) {
-                throw new IllegalArgumentException(
-                        org.apache.harmony.luni.util.Msg.getString(
-                                "K0322", currencyCode)); //$NON-NLS-1$
-            }
-            currency.defaultFractionDigits = Integer
-                    .parseInt(defaultFractionDigits);
             codesToCurrencies.put(currencyCode, currency);
         }
 
@@ -91,21 +72,11 @@ public final class Currency implements Serializable {
      *             if the locale's country is not a supported ISO 3166 Country
      */
     public static Currency getInstance(Locale locale) {
-        String country = locale.getCountry();
-        String variant = locale.getVariant();
-        if (!variant.equals("") && currencyVars.indexOf(variant) > -1) { //$NON-NLS-1$
-            country = country + "_" + variant; //$NON-NLS-1$
+        com.ibm.icu.util.Currency currency = com.ibm.icu.util.Currency.getInstance(locale);
+        if(currency == null) {
+            return null;
         }
-
-        ResourceBundle bundle = Locale.getBundle(
-                "ISO4Currencies", Locale.getDefault()); //$NON-NLS-1$
-        String currencyCode = null;
-        try {
-            currencyCode = bundle.getString(country);
-        } catch (MissingResourceException e) {
-            throw new IllegalArgumentException(Msg.getString(
-                    "K0323", locale.toString())); //$NON-NLS-1$
-        }
+        String currencyCode = currency.getCurrencyCode();
 
         if (currencyCode.equals("None")) { //$NON-NLS-1$
             return null;
@@ -161,35 +132,7 @@ public final class Currency implements Serializable {
         if (locale.getCountry().equals("")) { //$NON-NLS-1$
             return currencyCode;
         }
-
-        // check in the Locale bundle first, if the local has the same currency
-        ResourceBundle bundle = Locale.getBundle("Locale", locale); //$NON-NLS-1$
-        if (((String) bundle.getObject("IntCurrencySymbol")) //$NON-NLS-1$
-                .equals(currencyCode)) {
-            return (String) bundle.getObject("CurrencySymbol"); //$NON-NLS-1$
-        }
-
-        // search for a Currency bundle
-        bundle = null;
-        try {
-            bundle = Locale.getBundle("Currency", locale); //$NON-NLS-1$
-        } catch (MissingResourceException e) {
-            return currencyCode;
-        }
-
-        // is the bundle found for a different country? (for instance the
-        // default locale's currency bundle)
-        if (!bundle.getLocale().getCountry().equals(locale.getCountry())) {
-            return currencyCode;
-        }
-
-        // check if the currency bundle for this locale
-        // has an entry for this currency
-        String result = (String) bundle.handleGetObject(currencyCode);
-        if (result != null) {
-            return result;
-        }
-        return currencyCode;
+        return com.ibm.icu.util.Currency.getInstance(currencyCode).getSymbol(locale);
     }
 
     /**
@@ -200,7 +143,7 @@ public final class Currency implements Serializable {
      * @return the default number of fraction digits for this currency
      */
     public int getDefaultFractionDigits() {
-        return defaultFractionDigits;
+        return com.ibm.icu.util.Currency.getInstance(currencyCode).getDefaultFractionDigits();
     }
 
     /**

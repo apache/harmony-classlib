@@ -1,2 +1,7 @@
 org/apache/harmony/luni/tests/java/net/URLClassLoaderTest.java
 org/apache/harmony/luni/tests/java/net/ExcludedProxyTest.java
+org/apache/harmony/luni/tests/java/util/CurrencyTest.java
+org/apache/harmony/luni/tests/java/util/FormatterTest.java
+org/apache/harmony/luni/tests/java/util/GregorianCalendarTest.java
+org/apache/harmony/luni/tests/java/util/LocaleTest.java
+org/apache/harmony/luni/tests/java/util/ScannerTest.java

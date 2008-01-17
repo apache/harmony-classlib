@@ -24,14 +24,12 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.harmony.luni.internal.locale.Country;
-import org.apache.harmony.luni.internal.locale.Language;
 import org.apache.harmony.luni.util.PriviAction;
-import org.apache.harmony.luni.util.Util;
+
+import com.ibm.icu.util.ULocale;
 
 /**
  * Locale represents a language/country/variant combination. It is an identifier
@@ -174,15 +172,17 @@ public final class Locale implements Cloneable, Serializable {
     private transient String languageCode;
     private transient String variantCode;
 
-    /**
-     * Constructs a default which is used during static initialization of the
-     * default for the platform.
-     */
-    private Locale() {
-        languageCode = "en"; //$NON-NLS-1$
-        countryCode = "US"; //$NON-NLS-1$
-        variantCode = ""; //$NON-NLS-1$
-    }
+    private transient ULocale uLocale;
+
+	/**
+	 * Constructs a default which is used during static initialization of the
+	 * default for the platform.
+	 */
+	private Locale() {
+		languageCode = "en"; //$NON-NLS-1$
+		countryCode = "US"; //$NON-NLS-1$
+		variantCode = ""; //$NON-NLS-1$
+	}
 
     /**
      * Constructs a new Locale using the specified language.
@@ -220,7 +220,14 @@ public final class Locale implements Cloneable, Serializable {
         if (language == null || country == null || variant == null) {
             throw new NullPointerException();
         }
-        languageCode = Util.toASCIILowerCase(language);
+        if(language.length() == 0 && country.length() == 0){
+            languageCode = "";
+            countryCode = "";
+            variantCode = variant;
+            return;
+        }
+        this.uLocale = new ULocale(language, country, variant);
+        languageCode = uLocale.getLanguage();
         // Map new language codes to the obsolete language
         // codes so the correct resource bundles will be used.
         if (languageCode.equals("he")) {//$NON-NLS-1$
@@ -232,9 +239,9 @@ public final class Locale implements Cloneable, Serializable {
         }
 
         // countryCode is defined in ASCII character set
-        countryCode = Util.toASCIIUpperCase(country);
+        countryCode = uLocale.getCountry();
 
-        variantCode = variant;
+        variantCode = uLocale.getVariant();
     }
 
     /**
@@ -365,22 +372,19 @@ public final class Locale implements Cloneable, Serializable {
         return locales;
     }
 
-    /**
-     * Gets the list of installed Locales.
-     * 
-     * @return an array of Locale
-     */
-    public static Locale[] getAvailableLocales() {
-        if (availableLocales == null) {
-            availableLocales = AccessController
-                    .doPrivileged(new PrivilegedAction<Locale[]>() {
-                        public Locale[] run() {
-                            return find("org/apache/harmony/luni/internal/locale/Locale_"); //$NON-NLS-1$
-                        }
-                    });
+	/**
+	 * Gets the list of installed Locales.
+	 * 
+	 * @return an array of Locale
+	 */
+	public static Locale[] getAvailableLocales() {
+		ULocale[] ulocales =  ULocale.getAvailableLocales();
+        Locale[] locales = new Locale[ulocales.length];
+        for (int i = 0; i < locales.length; i++) {
+            locales[i] = ulocales[i].toLocale();
         }
-        return availableLocales.clone();
-    }
+        return locales;
+	}
 
     /**
      * Gets the country code for this Locale.
@@ -411,35 +415,18 @@ public final class Locale implements Cloneable, Serializable {
         return getDisplayCountry(getDefault());
     }
 
-    /**
-     * Gets the full country name in the specified Locale for the country code
-     * of this Locale. If there is no matching country name, the country code is
-     * returned.
-     * 
-     * @param locale
-     *            the Locale
-     * @return a country name
-     */
-    public String getDisplayCountry(Locale locale) {
-        if (countryCode.length() == 0) {
-            return countryCode;
-        }
-        try {
-            // First try the specified locale
-            ResourceBundle bundle = getBundle("Country", locale); //$NON-NLS-1$
-            String result = (String) bundle.handleGetObject(countryCode);
-            if (result != null) {
-                return result;
-            }
-            // Now use the default locale
-            if (locale != Locale.getDefault()) {
-                bundle = getBundle("Country", Locale.getDefault()); //$NON-NLS-1$
-            }
-            return bundle.getString(countryCode);
-        } catch (MissingResourceException e) {
-            return countryCode;
-        }
-    }
+	/**
+	 * Gets the full country name in the specified Locale for the country code
+	 * of this Locale. If there is no matching country name, the country code is
+	 * returned.
+	 * 
+	 * @param locale
+	 *            the Locale
+	 * @return a country name
+	 */
+	public String getDisplayCountry(Locale locale) {
+		return ULocale.forLocale(this).getDisplayCountry(ULocale.forLocale(locale));
+	}
 
     /**
      * Gets the full language name in the default Locale for the language code
@@ -452,35 +439,18 @@ public final class Locale implements Cloneable, Serializable {
         return getDisplayLanguage(getDefault());
     }
 
-    /**
-     * Gets the full language name in the specified Locale for the language code
-     * of this Locale. If there is no matching language name, the language code
-     * is returned.
-     * 
-     * @param locale
-     *            the Locale
-     * @return a language name
-     */
-    public String getDisplayLanguage(Locale locale) {
-        if (languageCode.length() == 0) {
-            return languageCode;
-        }
-        try {
-            // First try the specified locale
-            ResourceBundle bundle = getBundle("Language", locale); //$NON-NLS-1$
-            String result = (String) bundle.handleGetObject(languageCode);
-            if (result != null) {
-                return result;
-            }
-            // Now use the default locale
-            if (locale != Locale.getDefault()) {
-                bundle = getBundle("Language", Locale.getDefault()); //$NON-NLS-1$
-            }
-            return bundle.getString(languageCode);
-        } catch (MissingResourceException e) {
-            return languageCode;
-        }
-    }
+	/**
+	 * Gets the full language name in the specified Locale for the language code
+	 * of this Locale. If there is no matching language name, the language code
+	 * is returned.
+	 * 
+	 * @param locale
+	 *            the Locale
+	 * @return a language name
+	 */
+	public String getDisplayLanguage(Locale locale) {
+        return ULocale.forLocale(this).getDisplayLanguage(ULocale.forLocale(locale));
+	}
 
     /**
      * Gets the full language, country, and variant names in the default Locale
@@ -540,76 +510,44 @@ public final class Locale implements Cloneable, Serializable {
         return getDisplayVariant(getDefault());
     }
 
-    /**
-     * Gets the full variant name in the specified Locale for the variant code
-     * of this Locale. If there is no matching variant name, the variant code is
-     * returned.
-     * 
-     * @param locale
-     *            the Locale
-     * @return a variant name
-     */
-    public String getDisplayVariant(Locale locale) {
-        if (variantCode.length() == 0) {
-            return variantCode;
-        }
-        ResourceBundle bundle;
-        try {
-            bundle = getBundle("Variant", locale); //$NON-NLS-1$
-        } catch (MissingResourceException e) {
-            return variantCode.replace('_', ',');
-        }
+	/**
+	 * Gets the full variant name in the specified Locale for the variant code
+	 * of this Locale. If there is no matching variant name, the variant code is
+	 * returned.
+	 * 
+	 * @param locale
+	 *            the Locale
+	 * @return a variant name
+	 */
+	public String getDisplayVariant(Locale locale) {
+        return ULocale.forLocale(this).getDisplayVariant(ULocale.forLocale(locale));
+	}
 
-        StringBuffer result = new StringBuffer();
-        StringTokenizer tokens = new StringTokenizer(variantCode, "_"); //$NON-NLS-1$
-        while (tokens.hasMoreTokens()) {
-            String code, variant = tokens.nextToken();
-            try {
-                code = bundle.getString(variant);
-            } catch (MissingResourceException e) {
-                code = variant;
-            }
-            result.append(code);
-            if (tokens.hasMoreTokens()) {
-                result.append(',');
-            }
-        }
-        return result.toString();
-    }
+	/**
+	 * Gets the three letter ISO country code which corresponds to the country
+	 * code for this Locale.
+	 * 
+	 * @return a three letter ISO language code
+	 * 
+	 * @exception MissingResourceException
+	 *                when there is no matching three letter ISO country code
+	 */
+	public String getISO3Country() throws MissingResourceException {
+        return ULocale.forLocale(this).getISO3Country();
+	}
 
-    /**
-     * Gets the three letter ISO country code which corresponds to the country
-     * code for this Locale.
-     * 
-     * @return a three letter ISO language code
-     * 
-     * @exception MissingResourceException
-     *                when there is no matching three letter ISO country code
-     */
-    public String getISO3Country() throws MissingResourceException {
-        if (countryCode.length() == 0) {
-            return ""; //$NON-NLS-1$
-        }
-        ResourceBundle bundle = getBundle("ISO3Countries", this); //$NON-NLS-1$
-        return bundle.getString(countryCode);
-    }
-
-    /**
-     * Gets the three letter ISO language code which corresponds to the language
-     * code for this Locale.
-     * 
-     * @return a three letter ISO language code
-     * 
-     * @exception MissingResourceException
-     *                when there is no matching three letter ISO language code
-     */
-    public String getISO3Language() throws MissingResourceException {
-        if (languageCode.length() == 0) {
-            return ""; //$NON-NLS-1$
-        }
-        ResourceBundle bundle = getBundle("ISO3Languages", this); //$NON-NLS-1$
-        return bundle.getString(languageCode);
-    }
+	/**
+	 * Gets the three letter ISO language code which corresponds to the language
+	 * code for this Locale.
+	 * 
+	 * @return a three letter ISO language code
+	 * 
+	 * @exception MissingResourceException
+	 *                when there is no matching three letter ISO language code
+	 */
+	public String getISO3Language() throws MissingResourceException {
+        return ULocale.forLocale(this).getISO3Language();
+	}
 
     /**
      * Gets the list of two letter ISO country codes which can be used as the
@@ -618,37 +556,18 @@ public final class Locale implements Cloneable, Serializable {
      * @return an array of String
      */
     public static String[] getISOCountries() {
-        ListResourceBundle bundle = new Country();
-
-        // To initialize the table
-        Enumeration<String> keys = bundle.getKeys();
-        int size = bundle.table.size();
-        String[] result = new String[size];
-        int index = 0;
-        while (keys.hasMoreElements()) {
-            String element = keys.nextElement();
-            result[index++] = element;
-        }
-        return result;
+        return ULocale.getISOCountries();
     }
 
-    /**
-     * Gets the list of two letter ISO language codes which can be used as the
-     * language code for a Locale.
-     * 
-     * @return an array of String
-     */
-    public static String[] getISOLanguages() {
-        ListResourceBundle bundle = new Language();
-        Enumeration<String> keys = bundle.getKeys(); // to initialize the
-                                                        // table
-        String[] result = new String[bundle.table.size()];
-        int index = 0;
-        while (keys.hasMoreElements()) {
-            result[index++] = keys.nextElement();
-        }
-        return result;
-    }
+	/**
+	 * Gets the list of two letter ISO language codes which can be used as the
+	 * language code for a Locale.
+	 * 
+	 * @return an array of String
+	 */
+	public static String[] getISOLanguages() {
+        return ULocale.getISOLanguages();
+	}
 
     /**
      * Gets the language code for this Locale.
@@ -726,17 +645,6 @@ public final class Locale implements Cloneable, Serializable {
             result.append(variantCode);
         }
         return result.toString();
-    }
-
-    static ResourceBundle getBundle(final String clName, final Locale locale) {
-        return AccessController
-                .doPrivileged(new PrivilegedAction<ResourceBundle>() {
-                    public ResourceBundle run() {
-                        return ResourceBundle.getBundle(
-                                "org.apache.harmony.luni.internal.locale." //$NON-NLS-1$
-                                        + clName, locale);
-                    }
-                });
     }
 
     private static final ObjectStreamField[] serialPersistentFields = {
