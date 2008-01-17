@@ -27,11 +27,11 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
 
     public String fileName;
 
-    java.io.FileOutputStream fos;
+    FileOutputStream fos;
 
-    java.io.FileInputStream fis;
+    FileInputStream fis;
 
-    java.io.File f;
+    File f;
 
     byte[] ibuf = new byte[4096];
 
@@ -40,17 +40,15 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.FileOutputStream#FileOutputStream(java.io.File)
      */
-    public void test_ConstructorLjava_io_File() throws Exception {
-        // Test for method java.io.FileOutputStream(java.io.File)
+    public void test_ConstructorLjava_io_File() throws IOException {
         f = new File(fileName = System.getProperty("user.home"), "fos.tst");
-        fos = new java.io.FileOutputStream(f);
+        fos = new FileOutputStream(f);
     }
 
     /**
      * @tests java.io.FileOutputStream#FileOutputStream(java.io.FileDescriptor)
      */
-    public void test_ConstructorLjava_io_FileDescriptor() throws Exception {
-        // Test for method java.io.FileOutputStream(java.io.FileDescriptor)
+    public void test_ConstructorLjava_io_FileDescriptor() throws IOException {
         f = new File(fileName = System.getProperty("user.home"), "fos.tst");
         fileName = f.getAbsolutePath();
         fos = new FileOutputStream(fileName);
@@ -65,8 +63,7 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.FileOutputStream#FileOutputStream(java.lang.String)
      */
-    public void test_ConstructorLjava_lang_String() throws Exception {
-        // Test for method java.io.FileOutputStream(java.lang.String)
+    public void test_ConstructorLjava_lang_String() throws IOException {
         f = new File(fileName = System.getProperty("user.home"), "fos.tst");
         fileName = f.getAbsolutePath();
         fos = new FileOutputStream(fileName);
@@ -79,13 +76,12 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
      * @tests java.io.FileOutputStream#FileOutputStream(java.lang.String,
      *        boolean)
      */
-    public void test_ConstructorLjava_lang_StringZ() throws Exception {
-        // Test for method java.io.FileOutputStream(java.lang.String, boolean)
-        f = new java.io.File(System.getProperty("user.home"), "fos.tst");
-        fos = new java.io.FileOutputStream(f.getPath(), false);
+    public void test_ConstructorLjava_lang_StringZ() throws IOException {
+        f = new File(System.getProperty("user.home"), "fos.tst");
+        fos = new FileOutputStream(f.getPath(), false);
         fos.write("HI".getBytes(), 0, 2);
         fos.close();
-        fos = new java.io.FileOutputStream(f.getPath(), true);
+        fos = new FileOutputStream(f.getPath(), true);
         fos.write(fileString.getBytes());
         fos.close();
         byte[] buf = new byte[fileString.length() + 2];
@@ -98,28 +94,23 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.FileOutputStream#close()
      */
-    public void test_close() throws Exception {
-        // Test for method void java.io.FileOutputStream.close()
-
-        f = new java.io.File(System.getProperty("user.home"), "output.tst");
-        fos = new java.io.FileOutputStream(f.getPath());
+    public void test_close() throws IOException {
+        f = new File(System.getProperty("user.home"), "output.tst");
+        fos = new FileOutputStream(f.getPath());
         fos.close();
 
         try {
             fos.write(fileString.getBytes());
             fail("Close test failed - wrote to closed stream");
-        } catch (java.io.IOException e) {
-            // correct
+        } catch (IOException e) {
+            // Expected
         }
-
     }
 
     /**
      * @tests java.io.FileOutputStream#getFD()
      */
-    public void test_getFD() throws Exception {
-        // Test for method java.io.FileDescriptor
-        // java.io.FileOutputStream.getFD()
+    public void test_getFD() throws IOException {
         f = new File(fileName = System.getProperty("user.home"), "testfd");
         fileName = f.getAbsolutePath();
         fos = new FileOutputStream(f);
@@ -131,12 +122,11 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.FileOutputStream#write(byte[])
      */
-    public void test_write$B() throws Exception {
-        // Test for method void java.io.FileOutputStream.write(byte [])
-        f = new java.io.File(System.getProperty("user.home"), "output.tst");
-        fos = new java.io.FileOutputStream(f.getPath());
+    public void test_write$B() throws IOException {
+        f = new File(System.getProperty("user.home"), "output.tst");
+        fos = new FileOutputStream(f.getPath());
         fos.write(fileString.getBytes());
-        fis = new java.io.FileInputStream(f.getPath());
+        fis = new FileInputStream(f.getPath());
         byte rbytes[] = new byte[4000];
         fis.read(rbytes, 0, fileString.length());
         assertTrue("Incorrect string returned", new String(rbytes, 0,
@@ -147,10 +137,10 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
      * @tests java.io.FileOutputStream#write(byte[], int, int)
      */
     public void test_write$BII() throws IOException {
-        f = new java.io.File(System.getProperty("user.home"), "output.tst");
-        fos = new java.io.FileOutputStream(f.getPath());
+        f = new File(System.getProperty("user.home"), "output.tst");
+        fos = new FileOutputStream(f.getPath());
         fos.write(fileString.getBytes(), 0, fileString.length());
-        fis = new java.io.FileInputStream(f.getPath());
+        fis = new FileInputStream(f.getPath());
         byte rbytes[] = new byte[4000];
         fis.read(rbytes, 0, fileString.length());
         assertTrue("Incorrect bytes written", new String(rbytes, 0, fileString
@@ -171,97 +161,103 @@ public class FileOutputStreamTest extends junit.framework.TestCase {
     /**
      * @tests java.io.FileOutputStream#write(int)
      */
-    public void test_writeI() throws Exception {
-        // Test for method void java.io.FileOutputStream.write(int)
-        f = new java.io.File(System.getProperty("user.home"), "output.tst");
-        fos = new java.io.FileOutputStream(f.getPath());
+    public void test_writeI() throws IOException {
+        f = new File(System.getProperty("user.home"), "output.tst");
+        fos = new FileOutputStream(f.getPath());
         fos.write('t');
-        fis = new java.io.FileInputStream(f.getPath());
+        fis = new FileInputStream(f.getPath());
         assertEquals("Incorrect char written", 't', fis.read());
     }
 
     /**
      * @tests java.io.FileOutputStream#write(byte[], int, int)
      */
-    public void test_write$BII2() throws Exception {
+    public void test_write$BII2() throws IOException {
         // Regression for HARMONY-437
-
-        f = new java.io.File(System.getProperty("user.home"), "output.tst");
-        fos = new java.io.FileOutputStream(f.getPath());
+        f = new File(System.getProperty("user.home"), "output.tst");
+        fos = new FileOutputStream(f.getPath());
 
         try {
             fos.write(null, 1, 1);
             fail("NullPointerException must be thrown");
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
 
         try {
             fos.write(new byte[1], -1, 1);
             fail("IndexOutOfBoundsException must be thrown if off <0");
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException e) {
+        }
 
         try {
             fos.write(new byte[1], 0, -1);
             fail("IndexOutOfBoundsException must be thrown if len <0");
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException e) {
+        }
 
         try {
             fos.write(new byte[1], 0, 5);
             fail("IndexOutOfBoundsException must be thrown if off+len > b.length");
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException e) {
+        }
 
         try {
             fos.write(new byte[10], Integer.MAX_VALUE, 5);
             fail("IndexOutOfBoundsException expected");
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException e) {
+        }
 
         try {
             fos.write(new byte[10], 5, Integer.MAX_VALUE);
             fail("IndexOutOfBoundsException expected");
-        } catch (IndexOutOfBoundsException e) {}
+        } catch (IndexOutOfBoundsException e) {
+        }
         fos.close();
     }
 
     /**
      * @tests java.io.FileOutputStream#write(byte[], int, int)
      */
-    public void test_write$BII3() throws Exception {
+    public void test_write$BII3() throws IOException {
         // Regression for HARMONY-834
-        //no exception expected
+        // no exception expected
         new FileOutputStream(new FileDescriptor()).write(new byte[1], 0, 0);
     }
 
     /**
      * @tests java.io.FileOutputStream#getChannel()
      */
-    public void test_getChannel() throws Exception {
-		// Regression for HARMONY-508
-		File tmpfile = File.createTempFile("FileOutputStream", "tmp");
-		tmpfile.deleteOnExit();
-		FileOutputStream fos = new FileOutputStream(tmpfile);
-		byte[] b = new byte[10];
-		for (int i = 0; i < b.length; i++) {
-			b[i] = (byte) i;
-		}
-		fos.write(b);
-		fos.flush();
-		fos.close();
-		FileOutputStream f = new FileOutputStream(tmpfile, true);
-		assertEquals(10, f.getChannel().position()); 
+    public void test_getChannel() throws IOException {
+        // Regression for HARMONY-508
+        File tmpfile = File.createTempFile("FileOutputStream", "tmp");
+        tmpfile.deleteOnExit();
+        FileOutputStream fos = new FileOutputStream(tmpfile);
+        byte[] b = new byte[10];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = (byte) i;
+        }
+        fos.write(b);
+        fos.flush();
+        fos.close();
+        FileOutputStream f = new FileOutputStream(tmpfile, true);
+        assertEquals(10, f.getChannel().position());
     }
 
     /**
      * Tears down the fixture, for example, close a network connection. This
      * method is called after a test is executed.
      */
+    @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        try {
-            if (f != null)
-                f.delete();
-            if (fis != null)
-                fis.close();
-            if (fos != null)
-                fos.close();
-        } catch (Exception e) {}
+        if (f != null) {
+            f.delete();
+        }
+        if (fis != null) {
+            fis.close();
+        }
+        if (fos != null) {
+            fos.close();
+        }
     }
 }

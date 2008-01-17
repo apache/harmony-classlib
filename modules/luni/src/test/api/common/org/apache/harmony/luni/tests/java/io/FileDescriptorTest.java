@@ -22,36 +22,35 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class FileDescriptorTest extends junit.framework.TestCase {
 
-	private static String platformId = "JDK"
-			+ System.getProperty("java.vm.version").replace('.', '-');
+    private static String platformId = "JDK"
+            + System.getProperty("java.vm.version").replace('.', '-');
 
-	FileOutputStream fos;
+    FileOutputStream fos;
 
-	BufferedOutputStream os;
+    BufferedOutputStream os;
 
-	FileInputStream fis;
+    FileInputStream fis;
 
-	File f;
+    File f;
 
-	/**
-	 * @tests java.io.FileDescriptor#FileDescriptor()
-	 */
-	public void test_Constructor() {
-		// Test for method java.io.FileDescriptor()
-		FileDescriptor fd = new FileDescriptor();
-		assertTrue("Failed to create FileDescriptor",
-				fd instanceof FileDescriptor);
-	}
+    /**
+     * @tests java.io.FileDescriptor#FileDescriptor()
+     */
+    public void test_Constructor() {
+        FileDescriptor fd = new FileDescriptor();
+        assertTrue("Failed to create FileDescriptor",
+                fd instanceof FileDescriptor);
+    }
 
-	/**
-	 * @tests java.io.FileDescriptor#sync()
-	 */
-       public void test_sync() throws Exception {
-		// Test for method void java.io.FileDescriptor.sync()
+    /**
+     * @tests java.io.FileDescriptor#sync()
+     */
+    public void test_sync() throws IOException {
         f = new File(System.getProperty("user.dir"), "fd" + platformId + ".tst");
         f.delete();
         fos = new FileOutputStream(f.getPath());
@@ -62,64 +61,53 @@ public class FileDescriptorTest extends junit.framework.TestCase {
         int length = "Test String".length();
         assertEquals("Bytes were not written after sync", length, fis
                 .available());
-        
+
         // Regression test for Harmony-1494
         fd = fis.getFD();
         fd.sync();
         assertEquals("Bytes were not written after sync", length, fis
                 .available());
-        
+
         RandomAccessFile raf = new RandomAccessFile(f, "r");
-        fd = raf.getFD(); 
+        fd = raf.getFD();
         fd.sync();
         raf.close();
-	}
+    }
 
-	/**
-	 * @tests java.io.FileDescriptor#valid()
-	 */
-	public void test_valid() throws Exception {
-		// Test for method boolean java.io.FileDescriptor.valid()
-                f = new File(System.getProperty("user.dir"), "fd.tst");
-                f.delete();
-                os = new BufferedOutputStream(fos = new FileOutputStream(f
-                                .getPath()), 4096);
-                FileDescriptor fd = fos.getFD();
-                assertTrue("Valid fd returned false", fd.valid());
-                os.close();
-                assertTrue("Invalid fd returned true", !fd.valid());
-	}
+    /**
+     * @tests java.io.FileDescriptor#valid()
+     */
+    public void test_valid() throws IOException {
+        f = new File(System.getProperty("user.dir"), "fd.tst");
+        f.delete();
+        os = new BufferedOutputStream(fos = new FileOutputStream(f.getPath()),
+                4096);
+        FileDescriptor fd = fos.getFD();
+        assertTrue("Valid fd returned false", fd.valid());
+        os.close();
+        assertTrue("Invalid fd returned true", !fd.valid());
+    }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-		try {
-			os.close();
-		} catch (Exception e) {
-		}
-		try {
-			fis.close();
-		} catch (Exception e) {
-		}
-		try {
-			fos.close();
-		} catch (Exception e) {
-		}
-		try {
-			f.delete();
-		} catch (Exception e) {
-		}
-	}
-
-	protected void doneSuite() {
-	}
+    /**
+     * Tears down the fixture, for example, close a network connection. This
+     * method is called after a test is executed.
+     */
+    protected void tearDown() {
+        try {
+            os.close();
+        } catch (Exception e) {
+        }
+        try {
+            fis.close();
+        } catch (Exception e) {
+        }
+        try {
+            fos.close();
+        } catch (Exception e) {
+        }
+        try {
+            f.delete();
+        } catch (Exception e) {
+        }
+    }
 }

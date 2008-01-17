@@ -29,26 +29,12 @@ public class FileNotFoundExceptionTest extends junit.framework.TestCase {
         assertNull(e.getMessage());
     }
 
-	/**
-	 * @tests java.io.FileNotFoundException#FileNotFoundException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		String message = "Cannot found file: 9://0//l";
+    /**
+     * @tests java.io.FileNotFoundException#FileNotFoundException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        String message = "Cannot found file: 9://0//l";
         FileNotFoundException e = new FileNotFoundException(message);
         assertSame(message, e.getMessage());
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    }
 }
