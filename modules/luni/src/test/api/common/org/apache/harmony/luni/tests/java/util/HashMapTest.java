@@ -153,13 +153,22 @@ public class HashMapTest extends junit.framework.TestCase {
 	 * @tests java.util.HashMap#clear()
 	 */
 	public void test_clear() {
-		// Test for method void java.util.HashMap.clear()
 		hm.clear();
 		assertEquals("Clear failed to reset size", 0, hm.size());
 		for (int i = 0; i < hmSize; i++)
 			assertNull("Failed to clear all elements",
 					hm.get(objArray2[i]));
         
+		// Check clear on a large loaded map of Integer keys
+		HashMap<Integer, String> map = new HashMap<Integer, String>();
+        for (int i = -32767; i < 32768; i++) {
+            map.put(i, "foobar");
+        }
+        map.clear();
+        assertEquals("Failed to reset size on large integer map", 0, hm.size());
+        for (int i = -32767; i < 32768; i++) {
+            assertNull("Failed to clear integer map values", map.get(i));
+        }
 	}
 
 	/**
@@ -350,22 +359,72 @@ public class HashMapTest extends junit.framework.TestCase {
 	 * @tests java.util.HashMap#put(java.lang.Object, java.lang.Object)
 	 */
 	public void test_putLjava_lang_ObjectLjava_lang_Object() {
-		// Test for method java.lang.Object
-		// java.util.HashMap.put(java.lang.Object, java.lang.Object)
-		hm.put("KEY", "VALUE");
-		assertEquals("Failed to install key/value pair", 
-				"VALUE", hm.get("KEY"));
+        hm.put("KEY", "VALUE");
+        assertEquals("Failed to install key/value pair", "VALUE", hm.get("KEY"));
 
-		HashMap m = new HashMap();
-		m.put(new Short((short) 0), "short");
-		m.put(null, "test");
-		m.put(new Integer(0), "int");
-		assertEquals("Failed adding to bucket containing null", "short", m.get(
-				new Short((short) 0)));
-		assertEquals("Failed adding to bucket containing null2", "int", m.get(
-				new Integer(0)));
-	}
+        HashMap<Object,Object> m = new HashMap<Object,Object>();
+        m.put(new Short((short) 0), "short");
+        m.put(null, "test");
+        m.put(new Integer(0), "int");
+        assertEquals("Failed adding to bucket containing null", "short", m
+                .get(new Short((short) 0)));
+        assertEquals("Failed adding to bucket containing null2", "int", m
+                .get(new Integer(0)));
+        
+        // Check my actual key instance is returned
+        HashMap<Integer, String> map = new HashMap<Integer, String>();
+        for (int i = -32767; i < 32768; i++) {
+            map.put(i, "foobar");
+        }
+        Integer myKey = new Integer(0);
+        // Put a new value at the old key position
+        map.put(myKey, "myValue");
+        assertTrue(map.containsKey(myKey));
+        assertEquals("myValue", map.get(myKey));
+        boolean found = false;
+        for (Iterator<Integer> itr = map.keySet().iterator(); itr.hasNext();) {
+            Integer key = itr.next();
+            if (found = key == myKey) {
+                break;
+            }
+        }
+        assertFalse("Should not find new key instance in hashmap", found);
 
+        // Add a new key instance and check it is returned
+        assertNotNull(map.remove(myKey));
+        map.put(myKey, "myValue");
+        assertTrue(map.containsKey(myKey));
+        assertEquals("myValue", map.get(myKey));
+        for (Iterator<Integer> itr = map.keySet().iterator(); itr.hasNext();) {
+            Integer key = itr.next();
+            if (found = key == myKey) {
+                break;
+            }
+        }
+        assertTrue("Did not find new key instance in hashmap", found);
+
+        // Ensure keys with identical hashcode are stored separately
+        HashMap<Object,Object> objmap = new HashMap<Object, Object>();
+        for (int i = 0; i < 32768; i++) {
+            objmap.put(i, "foobar");
+        }
+        // Put non-equal object with same hashcode
+        MyKey aKey = new MyKey();
+        assertNull(objmap.put(aKey, "value"));
+        assertNull(objmap.remove(new MyKey()));
+        assertEquals("foobar", objmap.get(0));
+        assertEquals("value", objmap.get(aKey));
+    }
+	
+    static class MyKey {
+        public MyKey() {
+            super();
+        }
+        
+        public int hashCode() {
+            return 0;
+        }
+    }
 	/**
 	 * @tests java.util.HashMap#putAll(java.util.Map)
 	 */
@@ -407,8 +466,6 @@ public class HashMapTest extends junit.framework.TestCase {
 	 * @tests java.util.HashMap#remove(java.lang.Object)
 	 */
 	public void test_removeLjava_lang_Object() {
-		// Test for method java.lang.Object
-		// java.util.HashMap.remove(java.lang.Object)
 		int size = hm.size();
 		Integer y = new Integer(9);
 		Integer x = ((Integer) hm.remove(y.toString()));
@@ -423,6 +480,30 @@ public class HashMapTest extends junit.framework.TestCase {
 		assertNull("Failed with same hash as null",
 				m.remove(new Integer(0)));
 		assertEquals("Failed with null key", "test", m.remove(null));
+		
+		HashMap<Integer, Object> map = new HashMap<Integer, Object>();
+        for (int i = 0; i < 32768; i++) {
+            map.put(i, "const");
+        }
+        Object[] values = new Object[32768];
+        for (int i = 0; i < 32768; i++) {
+            values[i] = new Object();
+            map.put(i, values[i]);
+        }
+        for (int i = 32767; i >= 0; i--) {
+            assertEquals("Failed to remove same value", values[i], map.remove(i));
+        }
+
+        // Ensure keys with identical hashcode are removed properly
+        map = new HashMap<Integer, Object>();
+        for (int i = -32767; i < 32768; i++) {
+            map.put(i, "foobar");
+        }
+        // Remove non equal object with same hashcode
+        assertNull(map.remove(new MyKey()));
+        assertEquals("foobar", map.get(0));
+        map.remove(0);
+        assertNull(map.get(0));
 	}
 
 	/**
