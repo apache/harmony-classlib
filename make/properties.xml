@@ -319,6 +319,9 @@
     </condition>
     <property name="hy.libstdc++.suffix" value="" />
 
+    <property name="hy.platform.variant"
+              value="${hy.platform}${hy.libstdc++.suffix}" />
+
     <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>
