@@ -123,7 +123,7 @@ public class CodecEncoding {
 			int h = code + 1;
 			// This handles the special cases for invalid combinations of data.
 			return new BHSDCodec(b,h,s,d);			
-		} else if (value >= 117 && value <= 140) {
+		} else if (value >= 117 && value <= 140) { // Run codec
 			int offset = value - 117;
 			int kx = offset & 3;
 			boolean kbflag = (offset >> 2 & 1) == 1;
@@ -146,7 +146,7 @@ public class CodecEncoding {
 				bCodec = getCodec(in.read(),in,defaultCodec); 
 			}
 			return new RunCodec(k,aCodec,bCodec);
-		} else if (value >= 141 && value <= 188) {
+		} else if (value >= 141 && value <= 188) { // Population Codec
 			int offset = value - 141;
 			boolean fdef = (offset & 1) == 1; 
 			boolean udef = (offset >> 1 & 1) == 1;
@@ -166,9 +166,9 @@ public class CodecEncoding {
 				return new PopulationCodec(fCodec,l,uCodec);
 			} else {
 				Codec fCodec = (fdef ? defaultCodec : getCodec(in.read(),in,defaultCodec) );
+                Codec tCodec = getCodec(in.read(),in,defaultCodec);
 				Codec uCodec = (udef ? defaultCodec : getCodec(in.read(),in,defaultCodec) );
-				Codec tCodec = getCodec(in.read(),in,defaultCodec);
-				return new PopulationCodec(fCodec,uCodec,tCodec);
+				return new PopulationCodec(fCodec,tCodec,uCodec);
 			}
 		} else {
 			throw new Pack200Exception("Invalid codec encoding byte (" + value + ") found" );

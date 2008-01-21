@@ -125,7 +125,7 @@
 
         <!-- Copy across dependency shared libs -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${depends.libs}${hy.libstdc++.suffix}" includes="*${shlib.suffix}*" />
+            <fileset dir="${icudll.dir}" includes="*${shlib.suffix}*" />
         </copy>
 
     </target>

@@ -1,5 +1,5 @@
-tests/api/java/net/MulticastSocketTest.java
-tests/api/java/util/ArrayListTest.java
+org/apache/harmony/luni/tests/java/net/MulticastSocketTest.java
+org/apache/harmony/luni/tests/java/util/ArrayListTest.java
 
 # HARMONY-4043 (was duplicate HARMONY-4753)
 org/apache/harmony/luni/tests/java/lang/SecurityManager2Test.java

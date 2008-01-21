@@ -39,7 +39,7 @@ public class XVolatileImage extends GLVolatileImage {
 
     private long pixmap;
     private XGraphicsConfiguration xconf;
-    private XGraphics2D lastGraphics = null;
+    Surface surface;
 
     int width, height;
 
@@ -54,6 +54,9 @@ public class XVolatileImage extends GLVolatileImage {
                 w, h,
                 xconf.info.get_depth()
         );
+
+        surface = new PixmapSurface(display, pixmap, xconf.info.lock(), w, h);
+        xconf.info.unlock();
     }
 
     public long getPixmap() {
@@ -73,8 +76,7 @@ public class XVolatileImage extends GLVolatileImage {
     }
 
     public Graphics2D createGraphics() {
-        lastGraphics = new XGraphics2D(pixmap, 0, 0, width, height);
-        return lastGraphics;
+        return new XGraphics2D(this, 0, 0, width, height);
     }
 
     public int validate(GraphicsConfiguration graphicsConfiguration) {
@@ -278,13 +280,11 @@ public class XVolatileImage extends GLVolatileImage {
     }
 
     public void finalize() {
+        surface.dispose();
         x11.XFreePixmap(xconf.dev.display, pixmap);
     }
 
     public Surface getImageSurface() {
-        if (lastGraphics == null)
-            createGraphics();
-
-        return lastGraphics.getSurface();
+        return surface;
     }
 }

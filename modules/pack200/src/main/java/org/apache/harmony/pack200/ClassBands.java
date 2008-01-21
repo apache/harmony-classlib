@@ -92,6 +92,14 @@ public class ClassBands extends BandSet {
 
     private int[] methodAttrCalls;
 
+    private int[][] codeHandlerStartP;
+
+    private int[][] codeHandlerEndPO;
+
+    private int[][] codeHandlerCatchPO;
+
+    private String[][] codeHandlerClassRCN;
+
     /**
      * @param segment
      */
@@ -667,18 +675,29 @@ public class ClassBands extends BandSet {
                 throw new IllegalStateException("Shouldn't get here either");
             }
         }
-        int sumCodeHandlerCount = 0;
-        for (int i = 0; i < codeHandlerCount.length; i++) {
-            sumCodeHandlerCount += codeHandlerCount[i];
+        codeHandlerStartP = decodeBandInt("code_handler_start_P", in,
+                        Codec.BCI5, codeHandlerCount);
+        codeHandlerEndPO = decodeBandInt("code_handler_end_PO", in,
+                        Codec.BRANCH5, codeHandlerCount);
+        codeHandlerCatchPO = decodeBandInt("code_handler_catch_PO", in,
+                        Codec.BRANCH5, codeHandlerCount);
+        int[][] codeHandlerClassRCNints = decodeBandInt("code_handler_class_RCN", in,
+                        Codec.UNSIGNED5, codeHandlerCount);
+        // The codeHandlerClassRCN band contains incremented references to
+        // cp_Class so we can't use parseReferences(..) here.
+        String[] cpClass = cpBands.getCpClass();
+        codeHandlerClassRCN = new String[codeHandlerClassRCNints.length][];
+        for (int i = 0; i < codeHandlerClassRCNints.length; i++) {
+            codeHandlerClassRCN[i] = new String[codeHandlerClassRCNints[i].length];
+            for (int j = 0; j < codeHandlerClassRCNints[i].length; j++) {
+                int handlerClassReference = codeHandlerClassRCNints[i][j];
+                if(handlerClassReference == 0) {
+                    codeHandlerClassRCN[i][j] = null;
+                } else {
+                    codeHandlerClassRCN[i][j] = cpClass[handlerClassReference - 1];
+                }
+            }
         }
-        int[] codeHandlerStartP = decodeBandInt("code_handler_start_P", in,
-                Codec.BCI5, sumCodeHandlerCount);
-        int[] codeHandlerEndPO = decodeBandInt("code_handler_end_PO", in,
-                Codec.BRANCH5, sumCodeHandlerCount);
-        int[] codeHandlerCatchPO = decodeBandInt("code_handler_catch_PO", in,
-                Codec.BRANCH5, sumCodeHandlerCount);
-        int[] codeHandlerClassRCN = decodeBandInt("code_handler_class_RCN", in,
-                Codec.UNSIGNED5, sumCodeHandlerCount);
 
         int codeFlagsCount = segment.getSegmentHeader().getOptions()
                 .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
@@ -1227,6 +1246,26 @@ public class ClassBands extends BandSet {
      */
     public int[] getClassVersionMinor() {
         return classVersionMinor;
+    }
+
+    public int[] getCodeHandlerCount() {
+        return codeHandlerCount;
+    }
+
+    public int[][] getCodeHandlerCatchPO() {
+        return codeHandlerCatchPO;
+    }
+
+    public String[][] getCodeHandlerClassRCN() {
+        return codeHandlerClassRCN;
+    }
+
+    public int[][] getCodeHandlerEndPO() {
+        return codeHandlerEndPO;
+    }
+
+    public int[][] getCodeHandlerStartP() {
+        return codeHandlerStartP;
     }
 
 }

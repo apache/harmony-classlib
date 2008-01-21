@@ -54,10 +54,9 @@ public class CPNameAndType extends ConstantPoolEntry {
 		}
 		this.domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
 		this.name = new CPUTF8(nameString, ClassConstantPool.DOMAIN_NORMALASCIIZ);
-		if((nameString.equals("<init>")) || (nameString.equals("<clinit>")) || nativeDescriptor ) {
-		    // Signatures for init methods are stored with the init methods.
-		    // Not sure why. Similarly, native signatures are stored
-		    // there as well.
+		if( nativeDescriptor ) {
+		    // Native signatures are stored in DOMAIN_NORMALASCIIZ, not
+		    // DOMAIN_SIGNATUREASCIIZ for some reason.
 		    descriptorDomain = ClassConstantPool.DOMAIN_NORMALASCIIZ;
 		} else {
 		    descriptorDomain = ClassConstantPool.DOMAIN_SIGNATUREASCIIZ;
@@ -132,4 +131,43 @@ public class CPNameAndType extends ConstantPoolEntry {
 	public int invokeInterfaceCount() {
 	    return 1 + SegmentUtils.countInvokeInterfaceArgs(descriptor.underlyingString());
 	}
+	
+
+    /* (non-Javadoc)
+     * @see org.apache.harmony.pack200.bytecode.ConstantPoolEntry#comparisonString()
+     */
+    public String comparisonString() {
+        // First come those things which don't have an
+        // associated signature. Then come the native signatures, 
+        // then finally the class signatures.
+        // TODO: I think Character.MAX_VALUE is no longer the
+        // biggest character, what with the weird codepage thing
+        // going on. How to sort these things so that even if
+        // they're in some oddball codepage they'll still end
+        // up sorted correctly?
+        String descriptorString = descriptor.underlyingString();
+        StringBuffer comparisonBuffer = new StringBuffer();
+        if((descriptorString.indexOf("(")) == -1) {
+            // it's a variable reference
+            comparisonBuffer.append(descriptor.underlyingString());
+        } else {
+            // it's a signature. Append something that will
+            // make the comparison buffer bigger than all
+            // non-signature references.
+            comparisonBuffer.append(Character.MAX_VALUE);
+            // do the natives first
+            if(descriptorString.length() <= 4) {
+                // it's a native signature
+                comparisonBuffer.append(descriptor.underlyingString());
+            } else {
+                // it's a non-native signature. Append something
+                // that will make the comparison buffer bigger
+                // than all native signature references.
+                comparisonBuffer.append(Character.MAX_VALUE);
+                comparisonBuffer.append(descriptor.underlyingString());
+            }
+        }
+        comparisonBuffer.append(name.underlyingString());
+        return comparisonBuffer.toString();
+    }
 }

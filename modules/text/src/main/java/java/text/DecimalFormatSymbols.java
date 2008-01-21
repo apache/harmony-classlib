@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * DecimalFormatSymbols holds the symbols used in the formating and parsing of
@@ -64,20 +63,30 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
      *            the Locale
      */
     public DecimalFormatSymbols(Locale locale) {
-        ResourceBundle bundle = Format.getBundle(locale);
-        patternChars = bundle.getString("DecimalPatternChars").toCharArray(); //$NON-NLS-1$
-        infinity = bundle.getString("Infinity"); //$NON-NLS-1$
-        NaN = bundle.getString("NaN"); //$NON-NLS-1$
+        com.ibm.icu.text.DecimalFormatSymbols icuSymbols = new com.ibm.icu.text.DecimalFormatSymbols(
+                locale);
+        infinity = icuSymbols.getInfinity();
+        NaN = icuSymbols.getNaN();
         this.locale = locale;
-        try {
+        currencySymbol = icuSymbols.getCurrencySymbol();
+        intlCurrencySymbol = icuSymbols.getInternationalCurrencySymbol();
+        if (locale.getCountry().length() == 0) {
+            currency = Currency.getInstance("XXX");
+        } else {
             currency = Currency.getInstance(locale);
-            currencySymbol = currency.getSymbol(locale);
-            intlCurrencySymbol = currency.getCurrencyCode();
-        } catch (IllegalArgumentException e) {
-            currency = Currency.getInstance("XXX"); //$NON-NLS-1$
-            currencySymbol = bundle.getString("CurrencySymbol"); //$NON-NLS-1$
-            intlCurrencySymbol = bundle.getString("IntCurrencySymbol"); //$NON-NLS-1$
         }
+        patternChars = new char[10];
+        patternChars[ZeroDigit] = icuSymbols.getZeroDigit();
+        patternChars[Digit] = icuSymbols.getDigit();
+        patternChars[DecimalSeparator] = icuSymbols.getDecimalSeparator();
+        patternChars[GroupingSeparator] = icuSymbols.getGroupingSeparator();
+        patternChars[PatternSeparator] = icuSymbols.getPatternSeparator();
+        patternChars[Percent] = icuSymbols.getPercent();
+        patternChars[PerMill] = icuSymbols.getPerMill();
+        patternChars[Exponent] = icuSymbols.getExponentSeparator().charAt(0);
+        patternChars[MonetaryDecimalSeparator] = icuSymbols.getMonetaryDecimalSeparator();
+        patternChars[MinusSign] = icuSymbols.getMinusSign();
+        
     }
 
     /**
@@ -539,5 +548,9 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
         } catch (IllegalArgumentException e) {
             currency = null;
         }
+    }
+    
+    Locale getLocale(){
+        return locale;
     }
 }

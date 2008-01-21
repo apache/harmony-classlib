@@ -16,6 +16,9 @@
  */
 package org.apache.harmony.pack200.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.CpBands;
@@ -35,9 +38,8 @@ public class CodeAttributeTest extends TestCase {
 
         public MockCodeAttribute(int maxStack, int maxLocals,
                 byte[] codePacked, Segment segment,
-                OperandManager operandManager) {
-            super(maxStack, maxLocals, codePacked, segment, operandManager);
-            // TODO Auto-generated constructor stub
+                OperandManager operandManager, List exceptionTable) {
+            super(maxStack, maxLocals, codePacked, segment, operandManager, exceptionTable);
         }
 
         public int getLength() {
@@ -146,7 +148,8 @@ public class CodeAttributeTest extends TestCase {
                 2, // maxLocals
                 mixedByteArray, // codePacked
                 segment, // segment
-                operandManager // operandManager
+                operandManager, // operandManager
+                new ArrayList()
         );
         assertEquals(29, attribute.getLength());
 
@@ -164,7 +167,8 @@ public class CodeAttributeTest extends TestCase {
                 2, // maxLocals
                 mixedByteArray, // codePacked
                 segment, // segment
-                operandManager // operandManager
+                operandManager, // operandManager
+                new ArrayList()
         );
         assertEquals(2, attribute.maxLocals);
         assertEquals(3, attribute.maxStack);
@@ -187,7 +191,8 @@ public class CodeAttributeTest extends TestCase {
                 3, // maxLocals
                 singleByteArray, // codePacked
                 segment, // segment
-                operandManager // operandManager
+                operandManager, // operandManager
+                new ArrayList()
         );
         assertEquals(3, attribute.maxLocals);
         assertEquals(4, attribute.maxStack);

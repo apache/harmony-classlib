@@ -31,8 +31,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import org.apache.harmony.luni.tests.java.util.HashMapTest.ReusableKey;
-
 import tests.support.Support_MapTest2;
 import tests.support.Support_UnmodifiableCollectionTest;
 
@@ -683,10 +681,25 @@ public class HashtableTest extends junit.framework.TestCase {
 			htfull.put("FKey " + i, "FVal " + i);
 	}
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    static class ReusableKey {
+        private int key = 0;
+
+        public void setKey(int key) {
+            this.key = key;
+        }
+
+        public int hashCode() {
+            return key;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof ReusableKey)) {
+                return false;
+            }
+            return key == ((ReusableKey) o).key;
+        }
+    }
 }

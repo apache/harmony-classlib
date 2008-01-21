@@ -25,8 +25,9 @@
     where possible.
     </description>
 
-    <property file="make/depends.properties" />
     <import file="${basedir}/make/properties.xml" />
+    <property file="make/${hy.platform.variant}/depends.properties" />
+    <property file="make/depends.properties" />
 
     <target name="check" description="Check whether dependencies are available"
             depends="-check,-check-win,-check-unix,-extract" />
@@ -48,6 +49,7 @@
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
         <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
         <check-one-file src="${derby.url}" dest="${derby.jar}" />
+        <check-one-file src="${icudll.url}" dest="${icudll.zip}" />
     </target>
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
@@ -107,7 +109,7 @@
     </target>
 
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-idea-from-bcprov" />
+         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-idea-from-bcprov,-extract-icudlls" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -125,11 +127,15 @@
             <srcfiles dir="depends/files/bcprov"
                       includes="**/IDEAEngine.class" />
         </uptodate>
+        <uptodate property="icudlls.uptodate"
+                  srcfile="${icudll.zip}"
+                  targetfile="${icudll.dir}/uptodate" />
 
     </target>
 
     <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
         <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
+        <touch file="${dejavu-fonts.fonts.dir}/DejaVuSerif.ttf" />
     </target>
 
     <target name="-extract-mx4j" unless="mx4j.uptodate">
@@ -154,6 +160,7 @@
             </fileset>
         </copy>
         <delete dir="${mx4j.dir}.tmp" />
+	<touch file="${mx4j.jar}" />
     </target>
 
     <target name="-extract-xerces" unless="xerces.uptodate">
@@ -166,6 +173,7 @@
             </fileset>
         </copy>
         <delete dir="${xerces.dir}.tmp" />
+	<touch file="${xerces.dir}/xercesImpl.jar" />
     </target>
 
     <target name="-extract-idea-from-bcprov" unless="bcprov.uptodate">
@@ -178,6 +186,11 @@
                 <include name="**/IDEAEngine.class" />
             </fileset>
         </zip>
+    </target>
+
+    <target name="-extract-icudlls" unless="icudlls.uptodate">
+        <unzip src="${icudll.zip}" dest="${icudll.dir}" />
+        <touch file="${icudll.dir}/uptodate" />
     </target>
 
     <!-- 
@@ -412,6 +425,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${derby.url}"
                        dest="${derby.jar}"
                        md5="${derby.md5}" />
+    <mkdir dir="${icudll.dir}" />
+    <download-one-file src="${icudll.url}"
+                       dest="${icudll.zip}"
+                       md5="${icudll.md5}" />
     </target>
 
     <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
@@ -484,7 +501,7 @@ File @{dest} has incorrect md5 checksum.
         <attribute name="src" />
         <attribute name="dest" />
         <sequential>
-            <echo>Checking for @{dest}</echo>
+            <echo level="info">Checking for @{dest}</echo>
         <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
         <fail>

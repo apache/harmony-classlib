@@ -40,6 +40,8 @@ public class FileBands extends BandSet {
     private long[] fileSize;
 
     private String[] cpUTF8;
+
+    private InputStream in;
     
     /**
      * @param header
@@ -73,10 +75,11 @@ public class FileBands extends BandSet {
         } else {
             fileOptions = new long[numberOfFiles];
         }
+        this.in = in; // store for use by processFileBits(), which is called later
     }
     
-
-    public void processFileBits(InputStream in) throws IOException,
+    // TODO: stream the file bits directly somehow
+    public void processFileBits() throws IOException,
             Pack200Exception {
         // now read in the bytes
         int numberOfFiles = header.getNumberOfFiles();
@@ -86,8 +89,9 @@ public class FileBands extends BandSet {
             // TODO This breaks if file_size > 2^32. Probably an array is
             // not the right choice, and we should just serialize it here?
             fileBits[i] = new byte[size];
-            for (int j = 0; j < size; j++) {
-                fileBits[i][j] = (byte) Codec.BYTE1.decode(in);
+            int read = in.read(fileBits[i]);
+            if(read < size) {
+                throw new Pack200Exception("Expected to read " + size +" bytes but read " + read);
             }
         }
     }

@@ -53,5 +53,4 @@ public class ClassRefForm extends ReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_CLASS;
     }
-
 }

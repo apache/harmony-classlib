@@ -760,9 +760,9 @@ public class MessageFormatTest extends TestCase {
         Locale.setDefault(Locale.CANADA); 
         TimeZone.setDefault(TimeZone.getTimeZone("UTC")); 
         String pat="text here {0, date, yyyyyyyyy } and here"; 
-        String etalon="text here 000002006 and here"; 
+        String etalon="text here  000002007  and here"; 
         MessageFormat obj = new MessageFormat(pat); 
-        assertEquals(etalon, obj.format(new Object[]{new Date((new Date().getTime()))})); 
+        assertEquals(etalon, obj.format(new Object[]{new Date(1198141737640L)})); 
     } 
 
     public void testHARMONY5323() { 

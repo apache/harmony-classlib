@@ -27,9 +27,11 @@
 #include <jni.h>
 
 #ifdef _WIN32
-
 #include "gl_GDIPlus.h"
+#endif
 
+#ifdef unix
+#include "XSurfaceInfo.h"
 #endif
 
 // Color Space constants
@@ -146,7 +148,7 @@ typedef struct _SURFACE_STRUCTURE{
     bool isAlphaPre;
 
 #ifdef _WIN32
-    // VolataileImage
+    // WinVolataileImage
     GraphicsInfo *gi;
     GLBITMAPINFO bmpInfo;
 
@@ -154,6 +156,16 @@ typedef struct _SURFACE_STRUCTURE{
     HDC srcDC;
     DWORD rtc;
     BOOL isTrueColor;
+#endif
+
+#ifdef unix
+    // XVolatileImage
+    XImage *ximage;
+
+    Display *display;
+    Drawable drawable;
+    GC gc;
+    XVisualInfo *visual_info;
 #endif
 
 

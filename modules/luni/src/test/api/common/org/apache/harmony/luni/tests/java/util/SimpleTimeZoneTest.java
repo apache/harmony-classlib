@@ -189,20 +189,20 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	public void test_getOffsetIIIIII() {
 		// Test for method int java.util.SimpleTimeZone.getOffset(int, int, int,
 		// int, int, int)
-		st1 = (SimpleTimeZone) TimeZone.getTimeZone("EST");
+        TimeZone st1 = TimeZone.getTimeZone("EST");
 		assertTrue("Incorrect offset returned", st1.getOffset(
 				GregorianCalendar.AD, 1998, Calendar.NOVEMBER, 11,
 				Calendar.WEDNESDAY, 0) == -(5 * 60 * 60 * 1000));
 
-		st1 = (SimpleTimeZone) TimeZone.getTimeZone("EST");
-		assertTrue("Incorrect offset returned", st1.getOffset(
-				GregorianCalendar.AD, 1998, Calendar.JUNE, 11,
-				Calendar.THURSDAY, 0) == -(4 * 60 * 60 * 1000));
+        st1 = TimeZone.getTimeZone("EST");
+        assertEquals("Incorrect offset returned", -(5 * 60 * 60 * 1000), st1
+                .getOffset(GregorianCalendar.AD, 1998, Calendar.JUNE, 11,
+                        Calendar.THURSDAY, 0));
 	}
 
 	/**
-	 * @tests java.util.SimpleTimeZone#getRawOffset()
-	 */
+     * @tests java.util.SimpleTimeZone#getRawOffset()
+     */
 	public void test_getRawOffset() {
 		// Test for method int java.util.SimpleTimeZone.getRawOffset()
 		st1 = (SimpleTimeZone) TimeZone.getTimeZone("EST");
@@ -251,32 +251,32 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	public void test_inDaylightTimeLjava_util_Date() {
 		// Test for method boolean
 		// java.util.SimpleTimeZone.inDaylightTime(java.util.Date)
-		SimpleTimeZone zone = (SimpleTimeZone) TimeZone.getTimeZone("EST");
+        TimeZone zone = TimeZone.getTimeZone("EST");
 		GregorianCalendar gc = new GregorianCalendar(1998, Calendar.JUNE, 11);
-		assertTrue("Returned incorrect daylight value1", zone.inDaylightTime(gc
+		assertFalse("Returned incorrect daylight value1", zone.inDaylightTime(gc
 				.getTime()));
 		gc = new GregorianCalendar(1998, Calendar.NOVEMBER, 11);
-		assertTrue("Returned incorrect daylight value2", !(zone
-				.inDaylightTime(gc.getTime())));
+        assertFalse("Returned incorrect daylight value1", zone.inDaylightTime(gc
+                .getTime()));
 		gc = new GregorianCalendar(zone);
 		gc.set(1999, Calendar.APRIL, 4, 1, 59, 59);
 		assertTrue("Returned incorrect daylight value3", !(zone
 				.inDaylightTime(gc.getTime())));
 		Date date = new Date(gc.getTime().getTime() + 1000);
-		assertTrue("Returned incorrect daylight value4", zone
+		assertFalse("Returned incorrect daylight value4", zone
 				.inDaylightTime(date));
 		gc.set(1999, Calendar.OCTOBER, 31, 1, 0, 0);
 		assertTrue("Returned incorrect daylight value5", !(zone
 				.inDaylightTime(gc.getTime())));
 		date = new Date(gc.getTime().getTime() - 1000);
-		assertTrue("Returned incorrect daylight value6", zone
+		assertFalse("Returned incorrect daylight value6", zone
 				.inDaylightTime(date));
 
 		assertTrue("Returned incorrect daylight value7", !zone
 				.inDaylightTime(new Date(891752400000L + 7200000 - 1)));
-		assertTrue("Returned incorrect daylight value8", zone
+		assertFalse("Returned incorrect daylight value8", zone
 				.inDaylightTime(new Date(891752400000L + 7200000)));
-		assertTrue("Returned incorrect daylight value9", zone
+		assertFalse("Returned incorrect daylight value9", zone
 				.inDaylightTime(new Date(909288000000L + 7200000 - 1)));
 		assertTrue("Returned incorrect daylight value10", !zone
 				.inDaylightTime(new Date(909288000000L + 7200000)));
@@ -329,7 +329,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	public void test_setEndRuleIIIIZ() {
 		// Test for method void java.util.SimpleTimeZone.setEndRule(int, int,
 		// int, int, boolean)
-		SimpleTimeZone st = (SimpleTimeZone) TimeZone.getDefault().clone();
+        SimpleTimeZone st = new SimpleTimeZone(1000, "Test_TZ");
 		// Spec indicates that both end and start must be set or result is
 		// undefined
 		st.setStartRule(Calendar.NOVEMBER, 8, Calendar.SUNDAY, 1, false);
@@ -410,7 +410,7 @@ public class SimpleTimeZoneTest extends junit.framework.TestCase {
 	public void test_setStartRuleIIIIZ() {
 		// Test for method void java.util.SimpleTimeZone.setStartRule(int, int,
 		// int, int, boolean)
-		SimpleTimeZone st = (SimpleTimeZone) TimeZone.getDefault().clone();
+        SimpleTimeZone st = new SimpleTimeZone(0, "Test");
 		// Spec indicates that both end and start must be set or result is
 		// undefined
 		st.setStartRule(Calendar.NOVEMBER, 1, Calendar.SUNDAY, 1, true);

@@ -83,6 +83,10 @@ inline void updateCache
             {
                 unsigned int *src, *dst;
 
+#ifdef unix
+                unsigned int *s, *d;
+#endif
+
                 src_stride = srcSurf->scanline_stride;
                 dst_stride = srcSurf->width;
 
@@ -92,7 +96,16 @@ inline void updateCache
                 dst = (unsigned int *)bmpDataPtr + dst_offset;
 
                 for(int _y = 0; _y < h; _y++, src += src_stride, dst += dst_stride){
+#ifdef _WIN32
                     memcpy(dst, src, w * sizeof(int));
+#endif
+
+#ifdef unix
+                    s = src, d = dst;
+                    for(int _x = 0; _x < w; _x++, s++, d++){
+                        *d = 0xff000000 | *s;
+                    }
+#endif
                 }
             }
             break;
@@ -668,10 +681,11 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_awt_gl_ImageSurface_createSurfSt
                     env->ReleasePrimitiveArrayCritical(bandOffsets, p, 0);
                     break;
             }
-            surf->bmp_byte_stride = surf->width << 2;
             surf->invalidated = true;
+            surf->bmp_byte_stride = surf->width << 2;
 
 #ifdef _WIN32
+
             surf->bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
             surf->bmpInfo.bmiHeader.biWidth = surf->width;
             surf->bmpInfo.bmiHeader.biHeight = -surf->height;

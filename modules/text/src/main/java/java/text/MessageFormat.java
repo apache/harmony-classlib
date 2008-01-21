@@ -39,6 +39,8 @@ public class MessageFormat extends Format {
 
     private static final long serialVersionUID = 6479157306784022952L;
 
+    private static com.ibm.icu.text.MessageFormat format;
+
     private Locale locale = Locale.getDefault();
 
     transient private String[] strings;
@@ -444,7 +446,12 @@ public class MessageFormat extends Format {
      *                when the pattern cannot be parsed
      */
     public static String format(String template, Object... objects) {
-        return new MessageFormat(template).format(objects);
+        if (format == null) {
+            format = new com.ibm.icu.text.MessageFormat(template);
+        } else if (!template.equals(format.toPattern())){
+            format.applyPattern(template);
+        }
+        return format.format(objects);
     }
 
     /**

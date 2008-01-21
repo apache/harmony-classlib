@@ -1489,6 +1489,94 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_awt_gl_render_NativeImageBlitter_
 
 #endif
 
+#ifdef unix
+          if(!srcSurf->ximage){
+              if(XImageByteOrder(srcSurf->display) == LSBFirst){
+                  srcSurf->ximage = XGetImage(srcSurf->display, srcSurf->drawable, 0, 0, 
+                     srcSurf->width, srcSurf->height, ~(0L), ZPixmap);
+              }else{
+                  XImage *tmp = XGetImage(srcSurf->display, srcSurf->drawable, 0, 0, 
+                      1, 1, ~(0L), ZPixmap);
+
+                  srcSurf->ximage = XCreateImage(srcSurf->display, srcSurf->visual_info->visual,
+                      tmp->depth, tmp->format, tmp->xoffset, (char *)malloc(tmp->width * tmp->height * tmp->bytes_per_line),
+                      srcSurf->width, srcSurf->height, tmp->bitmap_pad, 0);
+
+                  XDestroyImage(tmp);
+ 
+                  srcSurf->ximage->byte_order = LSBFirst;
+
+                  XGetSubImage(srcSurf->display, srcSurf->drawable, 0, 0, 
+                      srcSurf->width, srcSurf->height, ~(0L), ZPixmap, srcSurf->ximage, 0, 0);
+              }
+              srcSurf->scanline_stride_byte = srcSurf->ximage->bytes_per_line;
+
+              char *info = (char *)srcSurf->visual_info;
+              int visual_class = (int)*((int *)(info + sizeof(Visual *) + sizeof(VisualID) + sizeof(int) + sizeof(unsigned int)));
+              int bpp = srcSurf->ximage->bits_per_pixel;
+
+              switch(visual_class){ 
+              case TrueColor:
+              case DirectColor:
+                  if(bpp == 32){
+                      srcSurf->scanline_stride = srcSurf->scanline_stride_byte >> 2;
+                      if(srcSurf->visual_info->red_mask == 0xff0000 && srcSurf->visual_info->green_mask == 0xff00 &&
+                          srcSurf->visual_info->blue_mask == 0xff){
+ 
+                          srcSurf->ss_type = INT_RGB;
+                          srcSurf->red_mask = 0xff0000;
+                          srcSurf->green_mask = 0xff00;
+                          srcSurf->blue_mask = 0xff;
+                      } else if (srcSurf->visual_info->red_mask == 0xff && srcSurf->visual_info->green_mask == 0xff00 &&
+                          srcSurf->visual_info->blue_mask == 0xff0000){
+
+                          srcSurf->ss_type = INT_BGR;
+                          srcSurf->red_mask = 0xff;
+                          srcSurf->green_mask = 0xff00;
+                          srcSurf->blue_mask = 0xff0000;
+                      } else {
+                          srcSurf->ss_type = -1;
+                      }
+                  }else if(bpp == 16){
+                      srcSurf->scanline_stride = srcSurf->scanline_stride_byte >> 1;
+                      if(srcSurf->visual_info->red_mask == 0x7c00 && srcSurf->visual_info->green_mask == 0x03e0 &&
+                          srcSurf->visual_info->blue_mask == 0x1f){
+
+                          srcSurf->ss_type = USHORT_555;
+                          srcSurf->red_mask = 0x7c00;
+                          srcSurf->green_mask = 0x03e0;
+                          srcSurf->blue_mask = 0x1f;
+                      } else if (srcSurf->visual_info->red_mask == 0xf800 && srcSurf->visual_info->green_mask == 0x07e0 &&
+                          srcSurf->visual_info->blue_mask == 0x1f){
+
+                          srcSurf->ss_type = USHORT_565;
+                          srcSurf->red_mask = 0xf800;
+                          srcSurf->green_mask = 0x07e0;
+                          srcSurf->blue_mask = 0x1f;
+                      } else {
+                          srcSurf->ss_type = -1;
+                      }
+                  }else{
+                          srcSurf->ss_type = -1;
+                  }
+                  break;
+              case StaticGray:
+              case PseudoColor:
+              case GrayScale:
+              case StaticColor: 
+                  // TODO: Need to implement parsing of others visual types
+                  srcSurf->ss_type = -1;
+                  break;
+              default:
+                  srcSurf->ss_type = -1;
+              }
+          } else {
+                 XGetSubImage(srcSurf->display, srcSurf->drawable, 0, 0, 
+                     srcSurf->width, srcSurf->height, ~(0L), ZPixmap, srcSurf->ximage, 0, 0);
+          }
+          srcDataPtr = srcSurf->ximage->data;
+#endif
+          srcType = srcSurf->ss_type;
       }else{
           srcDataPtr = env->GetPrimitiveArrayCritical((jarray)srcData, 0);
       }

@@ -41,7 +41,7 @@ import java.util.ResourceBundle.Control;
 import org.apache.harmony.luni.tests.java.util.ControlTest.CanSetSM;
 
 import tests.support.resource.Support_Resources;
-import tests.api.java.util.support.B;
+import org.apache.harmony.luni.tests.support.B;
 
 /**
  * Test cases for java.util.ResourceBundle.

@@ -489,9 +489,9 @@ public class JavaBlitter implements Blitter {
 
         float[] corners = {
             x, y,
-            x + width, y,
-            x + width, y + height,
-            x, y + height
+            x + width + 1, y,
+            x + width + 1, y + height + 1,
+            x, y + height + 1
         };
 
         at.transform(corners, 0, corners, 0, 4);

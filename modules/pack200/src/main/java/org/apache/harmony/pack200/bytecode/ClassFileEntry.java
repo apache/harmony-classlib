@@ -42,6 +42,10 @@ public abstract class ClassFileEntry {
 		resolved = true;
 	}
 
+	protected boolean isResolved() {
+	    return resolved;
+	}
+	
 	public abstract String toString();
 
 	public final void write(DataOutputStream dos) throws IOException {

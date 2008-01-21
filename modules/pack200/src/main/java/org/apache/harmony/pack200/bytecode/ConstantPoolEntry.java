@@ -59,7 +59,7 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 	protected int domain = ClassConstantPool.DOMAIN_UNDEFINED;
 	public static int creationOrderCount = 100;
 	public String comparisonString() {
-	    return "" + creationOrder;
+	    return toString();
 	}
 	public int creationOrder = -1;
 	ConstantPoolEntry(byte tag) {

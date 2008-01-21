@@ -1155,20 +1155,4 @@ public class EnumMapTest extends TestCase {
         enumColorMap.put(Color.Blue, 3);
         SerializationTest.verifyGolden(this, enumColorMap);
     }
-
-    /**
-     * Sets up the fixture.
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /**
-     * Tears down the fixture.
-     */
-    @Override
-    protected void tearDown() throws Exception{
-        super.tearDown();
-    }
 }
