@@ -291,6 +291,7 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
     char *bootDirectory;
     char *propsFile;
     char *bootstrapClassPath = NULL;
+    char *currentBootstrapClassPath = NULL;
     vmiError rcGetProperty;
     jint returnCode;
     key_value_pair * props = NULL;
@@ -347,6 +348,9 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
             goto cleanup;
         }
 
+        /* Save current bootstrapClassPath so we don't free it */
+        currentBootstrapClassPath = bootstrapClassPath;
+
         qsort(props, number, sizeof(key_value_pair), props_compare);
 
         for (;i < number; i++) 
@@ -365,7 +369,9 @@ readClassPathFromPropertiesFile (VMInterface *vmInterface)
                     bootstrapClassPath = str_concat (PORTLIB, 
                         bootstrapClassPath, cpSeparator,
                         bootDirectory, props[i].value, NULL);
-                    hymem_free_memory (oldPath);
+                    if (oldPath != currentBootstrapClassPath) {
+                        hymem_free_memory (oldPath);
+                    }
                 }
 
                 if (!bootstrapClassPath)
