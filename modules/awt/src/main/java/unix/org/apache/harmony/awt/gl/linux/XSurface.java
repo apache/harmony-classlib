@@ -32,255 +32,55 @@ import java.awt.geom.Rectangle2D;
 import org.apache.harmony.awt.gl.*;
 
 public class XSurface extends Surface {
-    private static final X11 x11 = X11.getInstance();
-
-    //int width, height; // XXX - todo - use from superclass
-
-    XGraphics2D g2d;
-
-    private BufferedImage lastSnapshot = null;
-    boolean needServerData = true;
-
-    private Rectangle2D roi; // Rectangle of interest
-
-    private ImageSurface imageSurface;
-
-    // Cached parameters for XCreateImage
-    boolean cachedXCIParams = false;
-    int depthXCI;
-    int offsetXCI;
-    int formatXCI;
-    int bitmapPadXCI;
-    int bytesPerLineXCI;
-
 
     XSurface(XGraphics2D g2d, int width, int height) {
-        this.g2d = g2d;
+        surfaceDataPtr = createSurfData(g2d.display, g2d.drawable, g2d.imageGC, g2d.xConfig.info.lock(), width, height);
+        g2d.xConfig.info.unlock();
         this.width = width;
         this.height = height;
-        roi = new Rectangle2D.Float(0, 0, width, height);
     }
-
-    void setRoi(Rectangle2D roi) {
-        this.roi = roi;
-    }
-
-    public ColorModel getColorModel() {
-        return g2d.xConfig.getColorModel();
-    }
-
-    public WritableRaster getRaster() {
-        if (needServerData) {
-            long pixmap = x11.XCreatePixmap(
-                    g2d.display,
-                    x11.XRootWindow(g2d.display, g2d.xConfig.dev.screen),
-                    (int) roi.getWidth(), (int) roi.getHeight(),
-                    g2d.xConfig.info.get_depth()
-            );
-
-            x11.XCopyArea(
-                    g2d.display,
-                    g2d.drawable,
-                    pixmap,
-                    g2d.imageGC,
-                    (int) roi.getX(),
-                    (int) roi.getY(),
-                    (int) roi.getWidth(), (int) roi.getHeight(),
-                    0, 0
-            );
-
-            if (!cachedXCIParams) {
-                long xImagePtr = x11.XGetImage(
-                        g2d.display,
-                        pixmap,
-                        0, 0,
-                        1, 1,
-                        ~(0L), // All bits set to 1, should be same as XAllPlanes() result
-                        X11Defs.ZPixmap
-                );
-
-                if (xImagePtr == 0) // Check obtained XImage pointer
-                    return null;
-
-                X11.XImage xTmpImage = x11.createXImage(xImagePtr);
-                depthXCI = xTmpImage.get_depth();
-                formatXCI = xTmpImage.get_format();
-                offsetXCI = xTmpImage.get_xoffset();
-                bitmapPadXCI = xTmpImage.get_bitmap_pad();
-                bytesPerLineXCI = xTmpImage.get_bytes_per_line();
-                xTmpImage.get_f().destroy_image(xTmpImage);
-
-                cachedXCIParams = true;
-            }
-
-            X11.Visual visual = g2d.xConfig.info.get_visual();
-
-            long xImagePtr = x11.XCreateImage(
-                    g2d.display,
-                    visual.lock(),
-                    depthXCI,
-                    formatXCI,
-                    offsetXCI,
-                    Utils.memaccess.malloc(height*width*bytesPerLineXCI),
-                    width, height,
-                    bitmapPadXCI,
-                    0
-            );
-            visual.unlock();
-
-            X11.XImage xImage = x11.createXImage(xImagePtr);
-            xImage.set_byte_order(X11Defs.LSBFirst);
-
-            xImage = x11.XGetSubImage(
-                    g2d.display,
-                    pixmap,
-                    0, 0,
-                    (int) roi.getWidth(), (int) roi.getHeight(),
-                    ~(0L), // All bits set to 1, should be same as XAllPlanes() result
-                    X11Defs.ZPixmap,
-                    xImage, 0, 0
-            );
-            x11.XFreePixmap(g2d.display, pixmap);
-            lastSnapshot = XVolatileImage.biFromXImage(xImage, g2d.xConfig);
-
-            // Cleanup
-            xImage.get_f().destroy_image(xImage);
-        } else {
-            lastSnapshot = g2d.xConfig.createCompatibleImage(width, height);
-        }
-
-        return lastSnapshot.getRaster();
-    }
-
-    void putImage(MultiRectArea clip, int x, int y, int width, int height) {
-        putImage(
-                clip,
-                lastSnapshot.getRaster(),
-                x, y, width, height 
-        );
-    }
-
-    void putImage(
-            MultiRectArea clip, Raster r,
-            int dstX, int dstY,
-            int dstWidth, int dstHeight
-    ) {
-        if (r == null) // Just blit last snapshot
-            r = lastSnapshot.getRaster();
-
-        Object data;
-        AwtImageBackdoorAccessor dbAccess = AwtImageBackdoorAccessor.getInstance();
-        data = dbAccess.getData(r.getDataBuffer());
-        LockedArray lockedData = Utils.arraccess.lockArrayShort(data);
-
-        SampleModel sm = r.getSampleModel();
-        int scanlineStride;
-        if (sm instanceof ComponentSampleModel) {
-            scanlineStride = ((ComponentSampleModel) sm).getScanlineStride();
-        } else if (sm instanceof SinglePixelPackedSampleModel) {
-            scanlineStride = ((SinglePixelPackedSampleModel) sm).getScanlineStride();
-        } else if (sm instanceof MultiPixelPackedSampleModel) {
-            scanlineStride = ((MultiPixelPackedSampleModel) sm).getScanlineStride();
-        } else {
-            return;
-        }
-
-        int pad;
-        if (data instanceof byte[]) {
-            pad = 8;
-        } else if (data instanceof short[]) {
-            pad = 16;
-            scanlineStride *= 2;
-        } else if (data instanceof int[]) {
-            pad = 32;
-            scanlineStride *= 4;
-        } else {
-            return;
-        }
-
-        X11.Visual visual = g2d.xConfig.info.get_visual();
-
-        long xImagePtr = x11.XCreateImage(
-                g2d.display,
-                visual.lock(),
-                g2d.xConfig.info.get_depth(),
-                X11Defs.ZPixmap,
-                0,
-                lockedData.getAddress(),
-                r.getWidth(),
-                r.getHeight(),
-                pad,
-                scanlineStride
-        );
-        visual.unlock();
-
-        g2d.setXClip(clip, g2d.imageGC);
-
-        X11.XImage xImage = x11.createXImage(xImagePtr);
-        xImage.set_byte_order(X11Defs.LSBFirst); // Set byte order explicitly
-
-        x11.XPutImage(
-                g2d.display,
-                g2d.drawable,
-                g2d.imageGC,
-                xImagePtr,
-                0, 0,
-                dstX, dstY,
-                dstWidth, dstHeight
-        );
-
-        g2d.resetXClip(g2d.imageGC);
-
-        lockedData.release();
-
-        xImage.set_data(NativeBridge.getInstance().createInt8Pointer(0, true));
-        xImage.get_f().destroy_image(xImage);
-    }
-
+    @Override
     public void dispose() {
-        return;
+        if (surfaceDataPtr == 0) {
+            return;
+        }
+        
+        dispose(surfaceDataPtr);
+        surfaceDataPtr = 0;
     }
 
-    public XGraphics2D getGraphics() {
-        return g2d;
-    }
-
-    /*
-    public int getWidth() { // XXX - todo - use from superclass
-        return this.width;
-    }
-
-    public int getHeight() { // XXX - todo - use from superclass
-        return this.height;
-    }
-    */
-
+    @Override
     public long lock() {
         return 0;
     }
 
+    @Override
     public void unlock() {
+
     }
 
-    public boolean isNativeDrawable() {
-        return true;
+    @Override
+    public ColorModel getColorModel() {
+        return null;
     }
 
+    @Override
+    public WritableRaster getRaster() {
+        return null;
+    }
+
+    @Override
     public int getSurfaceType() {
-        return BufferedImage.TYPE_CUSTOM;
+        return 0;
     }
 
+    @Override
     public Surface getImageSurface() {
-        if (imageSurface == null) {
-            imageSurface = new ImageSurface(getColorModel(), getRaster());
-        } else {
-            imageSurface.setRaster(getRaster());
-        }
-
-        return imageSurface;
+        return this;
     }
 
-    protected void finalize() throws Throwable {
-        imageSurface.dispose();
-    }
+    private native long createSurfData(long display, long drawable, long gc, long visual_info, int width, int height);
+
+    private native void dispose(long structPtr);
+
 }

@@ -20,7 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class Attribute extends ClassFileEntry {
-    private final CPUTF8 attributeName;
+    protected final CPUTF8 attributeName;
 
     private int attributeNameIndex;
 

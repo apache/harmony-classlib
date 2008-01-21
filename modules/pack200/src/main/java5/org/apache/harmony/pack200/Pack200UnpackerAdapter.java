@@ -48,7 +48,7 @@ public class Pack200UnpackerAdapter extends Pack200Adapter implements Unpacker {
 		try {
 			while (in.available() > 0) {
 				Segment s = Segment.parse(in);
-				s.writeJar(out, in);
+				s.writeJar(out);
 				out.flush();
 			}
 		} catch (Pack200Exception e) {

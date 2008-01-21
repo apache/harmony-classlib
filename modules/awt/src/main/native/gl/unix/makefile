@@ -25,6 +25,8 @@ BUILDFILES = \
   $(SHAREDSUB)/LUTTables.o \
   $(SHAREDSUB)/pngdecoder.o \
   $(SHAREDSUB)/SurfaceDataStructure.o \
+  gl.o \
+  XBlitter.o \
   XGraphics2D.o \
   libpng.a
 
@@ -36,7 +38,7 @@ MDLLIBFILES += $(MDLLIBZLIB) \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
 	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-OSLIBS += $(STDCLIBS)
+OSLIBS += $(STDCLIBS) $(XLIBS)
 
 DLLNAME=../libgl$(HY_SHLIB_SUFFIX)
 EXPNAME=HYGL_0.1

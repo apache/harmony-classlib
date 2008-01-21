@@ -25,7 +25,9 @@ import java.util.List;
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CodeAttribute;
+import org.apache.harmony.pack200.bytecode.ExceptionTableEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -365,23 +367,46 @@ public class BcBands extends BandSet {
 
         int i = 0;
         ArrayList orderedCodeAttributes = segment.getClassBands().getOrderedCodeAttributes();
+        
+        // Exception table fields
+        int[] handlerCount = segment.getClassBands().getCodeHandlerCount();
+        int[][] handlerStartPCs = segment.getClassBands().getCodeHandlerStartP();
+        int[][] handlerEndPCs = segment.getClassBands().getCodeHandlerEndPO();
+        int[][] handlerCatchPCs = segment.getClassBands().getCodeHandlerCatchPO();
+        String[][] handlerClassTypes = segment.getClassBands().getCodeHandlerClassRCN();
+
         for (int c = 0; c < classCount; c++) {
-           int numberOfMethods = methodFlags[c].length;
-           for (int m = 0; m < numberOfMethods; m++) {
-               long methodFlag = methodFlags[c][m];
-               if (!abstractModifier.matches(methodFlag)
-                       && !nativeModifier.matches(methodFlag)) {
-                   int maxStack = codeMaxStack[i];
-                   int maxLocal = codeMaxNALocals[i];
-                   if (!staticModifier.matches(methodFlag))
-                       maxLocal++; // one for 'this' parameter
-                   maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
-                   operandManager.setCurrentClass(segment.getClassBands().getClassThis()[c]);
-                   operandManager.setSuperClass(segment.getClassBands().getClassSuper()[c]);
-                   CodeAttribute codeAttr = new CodeAttribute(maxStack, maxLocal,
-                           methodByteCodePacked[c][m], segment, operandManager);
-                   methodAttributes[c][m].add(codeAttr);
-                   // Should I add all the attributes in here?
+            int numberOfMethods = methodFlags[c].length;
+            for (int m = 0; m < numberOfMethods; m++) {
+                long methodFlag = methodFlags[c][m];
+                if (!abstractModifier.matches(methodFlag)
+                        && !nativeModifier.matches(methodFlag)) {
+                    int maxStack = codeMaxStack[i];
+                    int maxLocal = codeMaxNALocals[i];
+                    if (!staticModifier.matches(methodFlag))
+                        maxLocal++; // one for 'this' parameter
+                    maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
+                    operandManager.setCurrentClass(segment.getClassBands()
+                            .getClassThis()[c]);
+                    operandManager.setSuperClass(segment.getClassBands()
+                            .getClassSuper()[c]);
+                    List exceptionTable = new ArrayList();
+                    if(handlerCount != null) {
+                        for (int j = 0; j < handlerCount[i]; j++) {
+                            String handlerClass = handlerClassTypes[i][j];
+                            CPClass cpHandlerClass = new CPClass(handlerClass);
+                            ExceptionTableEntry entry = new ExceptionTableEntry(
+                                    handlerStartPCs[i][j], handlerEndPCs[i][j],
+                                    handlerCatchPCs[i][j], cpHandlerClass);
+                            exceptionTable.add(entry);
+                        }
+                    }
+                    CodeAttribute codeAttr = new CodeAttribute(maxStack,
+                            maxLocal, methodByteCodePacked[c][m], segment,
+                            operandManager, exceptionTable);
+                    methodAttributes[c][m].add(codeAttr);
+                    codeAttr.renumber(codeAttr.byteCodeOffsets);
+                    // Should I add all the attributes in here?
                  ArrayList currentAttributes = (ArrayList)orderedCodeAttributes.get(i);
                  for(int index=0;index < currentAttributes.size(); index++) {
                      Attribute currentAttribute = (Attribute)currentAttributes.get(index);

@@ -26,6 +26,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 
+#include "XSurfaceInfo.h"
 #include "org_apache_harmony_awt_gl_linux_XGraphics2D.h"
 
 JNIEXPORT jlong JNICALL 

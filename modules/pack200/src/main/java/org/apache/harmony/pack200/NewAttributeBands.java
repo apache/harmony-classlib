@@ -391,11 +391,11 @@ public class NewAttributeBands extends BandSet {
             } else if (tag.startsWith("PO")) {
                 char uint_type = tag.substring(2).toCharArray()[0];
                 int length = getLength(uint_type);
-                attribute.addBCOffset(length, value);
+                attribute.addBCOffset(length, (int) value);
             } else if (tag.startsWith("P")) {
                 char uint_type = tag.substring(1).toCharArray()[0];
                 int length = getLength(uint_type);
-                attribute.addBCIndex(length, value);                
+                attribute.addBCIndex(length, (int) value);                
             } else if (tag.startsWith("OS")) {
                 char uint_type = tag.substring(1).toCharArray()[0];
                 int length = getLength(uint_type);
@@ -406,11 +406,11 @@ public class NewAttributeBands extends BandSet {
                 } else if(length == 4) {
                     value = (int)value;
                 }
-                attribute.addBCLength(length, value);  
+                attribute.addBCLength(length, (int) value);  
             } else if (tag.startsWith("O")) {
                 char uint_type = tag.substring(1).toCharArray()[0];
                 int length = getLength(uint_type);
-                attribute.addBCLength(length, value);                
+                attribute.addBCLength(length, (int) value);                
             }
         }
 

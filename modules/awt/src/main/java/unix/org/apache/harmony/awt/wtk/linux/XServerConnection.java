@@ -31,8 +31,10 @@ class XServerConnection {
 
     private final X11 x11;
 
-    public XServerConnection(X11 x11) {
-        this.x11 = x11;
+    private static XServerConnection instance = new XServerConnection();
+
+    private XServerConnection() {
+        this.x11 = X11.getInstance();;
         display = x11.XOpenDisplay(0); //0 - we use default display only
         if (display == 0) {
             String name = System.getProperty("DISPLAY"); //$NON-NLS-1$
@@ -40,7 +42,15 @@ class XServerConnection {
             throw new InternalError(Messages.getString("awt.0F", //$NON-NLS-1$ 
                     (name != null ? name : ""))); //$NON-NLS-1$
         }
+
         screen = x11.XDefaultScreen(display);
+
+        System.loadLibrary("gl");
+        init(display, screen);
+    }
+
+    public static XServerConnection getInstance(){
+        return instance;
     }
 
     public void close() {
@@ -54,4 +64,6 @@ class XServerConnection {
     public int getScreen() {
         return screen;
     }
+
+    private native void init(long display, int screen);
 }

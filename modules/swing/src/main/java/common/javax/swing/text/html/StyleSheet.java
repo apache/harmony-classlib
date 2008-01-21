@@ -817,12 +817,12 @@ public class StyleSheet extends StyleContext {
 
     public AttributeSet removeAttributes(final AttributeSet old,
                                          final AttributeSet rem) {
-        return removeAttributes(old, new NameConverterEnumeration(old, rem));
+        return localRemoveAttributes(old, new NameConverterEnumeration(old, rem));
     }
 
     public AttributeSet removeAttributes(final AttributeSet old,
                                          final Enumeration<?> names) {
-        return removeAttributes(old, new NameConverterEnumeration(names));
+        return localRemoveAttributes(old, new NameConverterEnumeration(names));
     }
 
     public void addCSSAttribute(final MutableAttributeSet attr,
@@ -1251,7 +1251,7 @@ public class StyleSheet extends StyleContext {
        return result;
     }
 
-    private AttributeSet removeAttributes(final AttributeSet toModify,
+    private AttributeSet localRemoveAttributes(final AttributeSet toModify,
                                           final NameConverterEnumeration keys) {
         if (!keys.isUnderline() && !keys.isLineThrough()) {
             return super.removeAttributes(toModify, keys);

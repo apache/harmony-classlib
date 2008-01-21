@@ -97,7 +97,7 @@ public class Segment {
 		} else {
 			in.reset();
 		}
-		segment.parseSegment(in);
+        segment.parseSegment(in);
 		return segment;
 	}
 
@@ -268,9 +268,9 @@ public class Segment {
 	 * @throws Pack200Exception
 	 *             if an error occurs whilst unpacking data
 	 */
-	public void writeJar(JarOutputStream out, InputStream in)
+	public void writeJar(JarOutputStream out)
 			throws IOException, Pack200Exception {
-		fileBands.processFileBits(in);
+		fileBands.processFileBits();
 		DataOutputStream dos = new DataOutputStream(out);
         String[] fileName = fileBands.getFileName();
         long[] fileModtime = fileBands.getFileModtime();

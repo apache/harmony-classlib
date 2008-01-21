@@ -29,90 +29,123 @@ import org.apache.harmony.pack200.Segment;
  * Tests for org.apache.harmony.pack200.Segment, which is the main class for pack200.
  */
 public class SegmentTest extends TestCase {
+    
+    InputStream in;
+    JarOutputStream out;
 
 	boolean handlingInnerClasses = false;
 
 	public void testHelloWorld() throws Exception {
-        InputStream in = Segment.class
-            .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        segment.writeJar(new JarOutputStream(new FileOutputStream(File.createTempFile("Hello", "World.jar"))), in);
-	}
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("hello", "world.jar")));
+        segment.writeJar(out);
+    }
 
 	public void testJustResources() throws Exception {
-        InputStream in = Segment.class
-            .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
         Segment segment = Segment.parse(in);
-		assertNotNull(segment);
-        segment.writeJar(new JarOutputStream(new FileOutputStream(File.createTempFile("just", "Resources.jar"))), in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("just", "resources.jar")));
+        segment.writeJar(out);
 	}
 
 	public void testJustResourcesGZip() throws Exception {
-		assertNotNull(Segment
-				.parse(Segment.class
-						.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack.gz")));
-	}
+       in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("Just", "ResourcesGz.jar")));
+        segment.writeJar(out);
+    }
     
     // Test with an archive containing Harmony's SQL module, packed with -E1
     public void testWithSqlE1() throws Exception {
-    	// This test will not pass until we handle inner classes
-    	// correctly.
-     	if(!handlingInnerClasses) return;
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/sql-e1.pack.gz")));
-    
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sql-e1.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", "-e1.jar")));
+        segment.writeJar(out);
     }
     
     // Test with an archive containing Harmony's SQL module
     public void testWithSql() throws Exception {
-    	// This test will not pass until we handle inner classes
-    	// correctly.
      	if(!handlingInnerClasses) return;
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz")));
-    
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", ".jar")));
+        segment.writeJar(out);
     }
     
     // Test with an archive containing Harmony's Pack200 module, packed with -E1
     public void testWithPack200E1() throws Exception {
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200-e1.pack.gz")));
-    
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200-e1.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200-e1.jar")));
+        segment.writeJar(out);
     }
     
     // Test with an archive containing Harmony's Pack200 module
     public void testWithPack200() throws Exception {
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200.pack.gz")));
-    
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200.jar")));
+        segment.writeJar(out);
     }
     
     // Test with an archive containing Harmony's JNDI module
     public void testWithJNDIE1() throws Exception {
     	if(!handlingInnerClasses) return;
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz")));
-    
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("jndi", "-e1.jar")));
+        segment.writeJar(out);
     }
     
     // Test with an archive containing Annotations
     public void testWithAnnotations() throws Exception {
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/annotations.pack.gz")));
+
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/annotations.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("ann", "otations.jar")));
+        segment.writeJar(out);
     
     }
  
     public void testInterfaceOnly() throws Exception {
-        assertNotNull(Segment
-                .parse(Segment.class
-                        .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack")));
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("Interface", "Only.jar")));
+        segment.writeJar(out);
+    }
+    
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        try {
+            if (in != null) {
+                in.close();
+            }
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 
 }

@@ -18,7 +18,6 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 

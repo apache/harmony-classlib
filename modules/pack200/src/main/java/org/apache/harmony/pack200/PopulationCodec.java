@@ -24,6 +24,7 @@ public class PopulationCodec extends Codec {
 	private Codec tokenCodec;
 	private Codec unvafouredCodec;
 	private int l;
+    private long[] favoured;
 	
 	public PopulationCodec(Codec favouredCodec, Codec tableCodec, Codec unvafouredCodec) {
 		this.favouredCodec = favouredCodec;
@@ -52,7 +53,7 @@ public class PopulationCodec extends Codec {
 
 	
 	public long[] decode(int n, InputStream in) throws IOException, Pack200Exception {
-		long favoured[] = new long[n]; // there must be <= n  values, but probably a lot less
+		favoured = new long[n]; // there must be <= n  values, but probably a lot less
 		long result[];
 		// read table of favorites first
 		long smallest = Long.MAX_VALUE;
@@ -71,7 +72,7 @@ public class PopulationCodec extends Codec {
 				// ensure that -X and +X -> +X
 				smallest = Math.abs(smallest);
 			}
-		} 
+		}
 		// if tokenCodec needs to be derived from the T, L and K values
 		if (tokenCodec == null) {
 			if (k < 256) {
@@ -101,5 +102,17 @@ public class PopulationCodec extends Codec {
             }
         }
 		return result;
+    }
+
+    public long[] getFavoured() {
+        return favoured;
+    }
+
+    public Codec getFavouredCodec() {
+        return favouredCodec;
+    }
+
+    public Codec getUnvafouredCodec() {
+        return unvafouredCodec;
     }
 }

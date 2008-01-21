@@ -29,7 +29,6 @@ public class CPUTF8 extends ConstantPoolEntry {
 		this.domain = domain;
 	}
 
-	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -45,7 +44,6 @@ public class CPUTF8 extends ConstantPoolEntry {
 			return false;
 		return true;
 	}
-
 	
 	public int hashCode() {
 		final int PRIME = 31;
@@ -80,20 +78,36 @@ public class CPUTF8 extends ConstantPoolEntry {
 	}
 	
 	public String comparisonString() {
-	    String returnValue = utf8;
-	    if(utf8.endsWith(";")) {
-	        StringBuffer alphaChars = new StringBuffer();
-	        StringBuffer extraChars = new StringBuffer();
-	        extraChars.append((char)0xFFFF);
-	        for(int index=0; index < utf8.length(); index++) {
-	            if( (utf8.charAt(index) == '(') || (utf8.charAt(index) == ')') || (utf8.charAt(index) == '[') || (utf8.charAt(index) == ']') ) {
-	                extraChars.append(utf8.charAt(index));
-	            } else {
-	                alphaChars.append(utf8.charAt(index));
-	            }
-	        }
-	        returnValue = alphaChars.toString() + extraChars.toString();
-	    }
-	    return returnValue;
+	    // Should use either normalComparisonString or signatureComparisonString.
+	    // If we get here, that might indicate an error.
+	    throw new Error("Should use specific kinds of comparisonString() on CPUTF8s");
 	}
+
+	public String normalComparisonString() {
+        return utf8;
+    }
+
+    public String signatureComparisonString() {
+        StringBuffer alphaChars = new StringBuffer();
+        StringBuffer extraChars = new StringBuffer();
+        if(utf8.length() > 0){
+            if(utf8.charAt(0) == '(') {
+                // Things with return values (which apparently
+                // always begin with '(') sort after things
+                // without return values.
+                // TODO: need a better way for this - possibly in the comparator?
+                alphaChars.append(Character.MAX_VALUE);
+            }
+        }
+        // TODO: need a better way for this - possibly in the comparator?
+        extraChars.append(Character.MAX_VALUE);
+        for(int index=0; index < utf8.length(); index++) {
+            if( (utf8.charAt(index) == '(') || (utf8.charAt(index) == ')') || (utf8.charAt(index) == '[') || (utf8.charAt(index) == ']') ) {
+                extraChars.append(utf8.charAt(index));
+            } else {
+                alphaChars.append(utf8.charAt(index));
+            }
+        }
+        return(alphaChars.toString() + extraChars.toString());
+    }
 }
