@@ -107,8 +107,29 @@
         <antcall target="-awt-tar-extract" />
     </target>
 
+    <target name="-temporary-warning" if="is.windows">
+        <!-- TODO: Remove this target in a week or two or when we
+             update to icu4c 3.8
+          -->
+        <condition property="windows.warn">
+            <not><available file="${icudll.dir}/icuuc.lib" /></not>
+        </condition>
+        <fail if="windows.warn">
+...
+
+
+Please remove the directory:
+
+  ${icudll.dir}
+
+and re-run "ant fetch-depends" to get a new version of icu-3.4.zip.  Sorry
+for the inconvinience.
+
+        </fail>
+    </target>
+
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-idea-from-bcprov,-extract-icudlls" />
+            depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-idea-from-bcprov,-extract-icudlls,-temporary-warning" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -131,6 +152,7 @@
                   targetfile="${icudll.dir}/uptodate" />
 
     </target>
+
 
     <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
         <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
