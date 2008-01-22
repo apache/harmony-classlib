@@ -15,7 +15,7 @@
 
 DEFINES += -DLINUX -DLINUX_PPC64 -DHYPPC64 -DIPv6_FUNCTION_SUPPORT
 OPT += -fpic -m64
-XLIBS = -L/usr/X11R6/lib64 -lX11 -lXft
+XLIBS = -L/usr/X11R6/lib64 -lX11 -lXft -lXext
 
 ASFLAGS += -a64
 LDFLAGS += -m64
