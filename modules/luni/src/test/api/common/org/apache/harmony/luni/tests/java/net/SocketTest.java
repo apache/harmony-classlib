@@ -63,7 +63,7 @@ public class SocketTest extends SocketTestCase {
                 s1 = ss.accept();
                 ss.close();
                 Thread.sleep(4000);
-            } catch (java.io.InterruptedIOException x) {
+            } catch (InterruptedIOException x) {
                 System.out.println(Thread.currentThread()
                         + ", accept() timeout fired: " + x);
             } catch (InterruptedException x) {
@@ -73,7 +73,7 @@ public class SocketTest extends SocketTestCase {
                 try {
                     if (s1 != null)
                         s1.close();
-                } catch (java.io.IOException e) {
+                } catch (IOException e) {
                 }
             }
         }
@@ -360,15 +360,16 @@ public class SocketTest extends SocketTestCase {
      */
     @SuppressWarnings("deprecation")
     public void test_ConstructorLjava_lang_StringIZ() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost().getHostAddress(), sport, true);
-        
+        Socket client = new Socket(InetAddress.getLocalHost().getHostAddress(),
+                sport, true);
+
         assertEquals("Failed to create socket", sport, client.getPort());
         client.close();
-        
-        client = new Socket(InetAddress.getLocalHost().getHostName(), sport, false);
+
+        client = new Socket(InetAddress.getLocalHost().getHostName(), sport,
+                false);
         client.close();
         server.close();
     }
@@ -377,13 +378,12 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#Socket(java.net.InetAddress, int)
      */
     public void test_ConstructorLjava_net_InetAddressI() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
         Socket client = new Socket(InetAddress.getLocalHost(), sport);
-        
+
         assertEquals("Failed to create socket", sport, client.getPort());
-        
+
         client.close();
         server.close();
     }
@@ -394,9 +394,7 @@ public class SocketTest extends SocketTestCase {
      */
     public void test_ConstructorLjava_net_InetAddressILjava_net_InetAddressI()
             throws IOException {
-
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
         Socket client = new Socket(InetAddress.getLocalHost(), sport,
                 InetAddress.getLocalHost(), 0);
@@ -421,10 +419,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#close()
      */
     public void test_close() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSoLinger(false, 100);
@@ -447,10 +444,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getInetAddress()
      */
     public void test_getInetAddress() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         assertTrue("Returned incorrect InetAdrees", client.getInetAddress()
                 .equals(InetAddress.getLocalHost()));
@@ -528,8 +524,7 @@ public class SocketTest extends SocketTestCase {
      */
     public void test_getKeepAlive() {
         try {
-            ServerSocket server = new ServerSocket();
-            server.bind(null);
+            ServerSocket server = new ServerSocket(0);
             int sport = server.getLocalPort();
             Socket client = new Socket(InetAddress.getLocalHost(), sport, null,
                     0);
@@ -551,10 +546,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getLocalAddress()
      */
     public void test_getLocalAddress() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         assertTrue("Returned incorrect InetAddress", client.getLocalAddress()
                 .equals(InetAddress.getLocalHost()));
@@ -590,10 +584,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getLocalPort()
      */
     public void test_getLocalPort() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         assertNotSame("Returned incorrect port", 0, client.getLocalPort());
 
@@ -606,8 +599,6 @@ public class SocketTest extends SocketTestCase {
      */
     @SuppressWarnings("deprecation")
     public void test_getOutputStream() throws IOException {
-        // Test for method java.io.OutputStream
-        // java.net.Socket.getOutputStream()
         int sport = startServer("SServer getOutputStream");
         int portNumber = Support_PortManager.getNextPort();
         client = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
@@ -683,10 +674,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getPort()
      */
     public void test_getPort() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         assertEquals("Returned incorrect port", sport, client.getPort());
 
@@ -698,10 +688,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getSoLinger()
      */
     public void test_getSoLinger() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSoLinger(true, 200);
@@ -720,10 +709,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getReceiveBufferSize()
      */
     public void test_getReceiveBufferSize() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setReceiveBufferSize(130);
@@ -742,10 +730,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getSendBufferSize()
      */
     public void test_getSendBufferSize() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSendBufferSize(134);
@@ -764,10 +751,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getSoTimeout()
      */
     public void test_getSoTimeout() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSoTimeout(100);
@@ -786,10 +772,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getTcpNoDelay()
      */
     public void test_getTcpNoDelay() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             boolean bool = !client.getTcpNoDelay();
@@ -809,12 +794,18 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setKeepAlive(boolean)
      */
     public void test_setKeepAliveZ() throws IOException {
+
+        class TestSocket extends Socket {
+            public TestSocket(SocketImpl impl) throws SocketException {
+                super(impl);
+            }
+        }
+
         // There is not really a good test for this as it is there to detect
         // crashed machines. Just make sure we can set it
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setKeepAlive(true);
@@ -831,12 +822,6 @@ public class SocketTest extends SocketTestCase {
         new TestSocket((SocketImpl) null).setKeepAlive(true);
     }
 
-    class TestSocket extends Socket {
-        public TestSocket(SocketImpl impl) throws SocketException {
-            super(impl);
-        }
-    }
-
     /**
      * @tests java.net.Socket#setSocketImplFactory(java.net.SocketImplFactory)
      */
@@ -849,10 +834,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setSendBufferSize(int)
      */
     public void test_setSendBufferSizeI() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSendBufferSize(134);
@@ -871,10 +855,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setReceiveBufferSize(int)
      */
     public void test_setReceiveBufferSizeI() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setReceiveBufferSize(130);
@@ -893,10 +876,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setSoLinger(boolean, int)
      */
     public void test_setSoLingerZI() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSoLinger(true, 500);
@@ -915,10 +897,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setSoTimeout(int)
      */
     public void test_setSoTimeoutI() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             client.setSoTimeout(100);
@@ -936,10 +917,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setTcpNoDelay(boolean)
      */
     public void test_setTcpNoDelayZ() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         try {
             boolean bool;
@@ -959,10 +939,9 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#toString()
      */
     public void test_toString() throws IOException {
-        ServerSocket server = new ServerSocket();
-        server.bind(null);
+        ServerSocket server = new ServerSocket(0);
         int sport = server.getLocalPort();
-        Socket client = new Socket(InetAddress.getLocalHost(), sport, null, 0);
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
         assertTrue("Returned incorrect string: " + client.toString()
                 + " localHost: " + InetAddress.getLocalHost(), client
@@ -977,49 +956,45 @@ public class SocketTest extends SocketTestCase {
     /**
      * @tests java.net.Socket#shutdownInput()
      */
-    public void test_shutdownInput() throws Exception {
-        InetAddress addr = InetAddress.getLocalHost();
-        int port = Support_PortManager.getNextPort();
-        ServerSocket serverSocket = new ServerSocket(port, 5, addr);
-        Socket theSocket = new Socket(addr, port);
-        Socket servSock = serverSocket.accept();
+    public void test_shutdownInput() throws IOException {
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
-        InputStream theInput = theSocket.getInputStream();
-        OutputStream theOutput = servSock.getOutputStream();
+        Socket worker = server.accept();
+        worker.setTcpNoDelay(true);
+
+        InputStream theInput = client.getInputStream();
+        OutputStream theOutput = worker.getOutputStream();
 
         // shutdown the input
-        theSocket.shutdownInput();
+        client.shutdownInput();
 
         // send the regular data
         String sendString = new String("Test");
         theOutput.write(sendString.getBytes());
         theOutput.flush();
 
-        // give things some time to settle
-        Thread.sleep(1000);
-
         // RI fails here. It is a RI bug not to return 0 to indicate EOF
         assertEquals(0, theInput.available());
 
-        theSocket.close();
-        serverSocket.close();
+        client.close();
+        server.close();
     }
 
     /**
      * @tests java.net.Socket#shutdownOutput()
      */
     public void test_shutdownOutput() throws IOException {
-        InetAddress addr = InetAddress.getLocalHost();
-        int port = Support_PortManager.getNextPort();
-        ServerSocket serverSocket = new ServerSocket(port, 5, addr);
-        Socket theSocket = new Socket(addr, port);
-        Socket servSock = serverSocket.accept();
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
 
-        InputStream theInput = theSocket.getInputStream();
-        OutputStream theOutput = servSock.getOutputStream();
+        Socket worker = server.accept();
+        OutputStream theOutput = worker.getOutputStream();
 
         // shutdown the output
-        servSock.shutdownOutput();
+        worker.shutdownOutput();
 
         // send the regular data
         String sendString = new String("Test");
@@ -1027,11 +1002,12 @@ public class SocketTest extends SocketTestCase {
             theOutput.write(sendString.getBytes());
             theOutput.flush();
             fail("No exception when writing on socket with output shutdown");
-        } catch (Exception e) {
+        } catch (IOException e) {
+            // Expected
         }
 
-        theSocket.close();
-        serverSocket.close();
+        client.close();
+        server.close();
     }
 
     /**
@@ -1040,43 +1016,33 @@ public class SocketTest extends SocketTestCase {
     public void test_getLocalSocketAddress() throws IOException {
         // set up server connect and then validate that we get the right
         // response for the local address
-        int sport = startServer("SServer getLocSocketAddress");
-        int portNumber = Support_PortManager.getNextPort();
-        client = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
-        assertTrue(
-                "Returned incorrect InetSocketAddress(1):"
-                        + client.getLocalSocketAddress().toString()
-                        + "Expected: "
-                        + (new InetSocketAddress(InetAddress.getLocalHost(),
-                                portNumber)).toString(), client
-                        .getLocalSocketAddress().equals(
-                                new InetSocketAddress(InetAddress
-                                        .getLocalHost(), portNumber)));
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+        int clientPort = client.getLocalPort();
+
+        assertEquals("Returned incorrect InetSocketAddress(1):",
+                new InetSocketAddress(InetAddress.getLocalHost(), clientPort),
+                client.getLocalSocketAddress());
         client.close();
+        server.close();
 
         // now create a socket that is not bound and validate we get the
         // right answer
-        Socket theSocket = new Socket();
+        client = new Socket();
         assertNull(
                 "Returned incorrect InetSocketAddress -unbound socket- Expected null",
-                theSocket.getLocalSocketAddress());
+                client.getLocalSocketAddress());
 
         // now bind the socket and make sure we get the right answer
-        portNumber = Support_PortManager.getNextPort();
-        theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
-                portNumber));
-        assertTrue(
-                "Returned incorrect InetSocketAddress(2):"
-                        + theSocket.getLocalSocketAddress().toString()
-                        + "Expected: "
-                        + (new InetSocketAddress(InetAddress.getLocalHost(),
-                                portNumber)).toString(), theSocket
-                        .getLocalSocketAddress().equals(
-                                new InetSocketAddress(InetAddress
-                                        .getLocalHost(), portNumber)));
-        theSocket.close();
+        client.bind(new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        clientPort = client.getLocalPort();
+        assertEquals("Returned incorrect InetSocketAddress(2):",
+                new InetSocketAddress(InetAddress.getLocalHost(), clientPort),
+                client.getLocalSocketAddress());
+        client.close();
 
-        // now validate thet behaviour when the any address is returned
+        // now validate the behaviour when the any address is returned
         client = new Socket();
         client.bind(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0));
 
@@ -1130,145 +1096,146 @@ public class SocketTest extends SocketTestCase {
     public void test_getRemoteSocketAddress() throws IOException {
         // set up server connect and then validate that we get the right
         // response for the remote address
-        int sport = startServer("SServer getLocRemoteAddress");
-        int portNumber = Support_PortManager.getNextPort();
-        client = new Socket(InetAddress.getLocalHost(), sport, null, portNumber);
-        assertTrue("Returned incorrect InetSocketAddress(1):"
-                + client.getLocalSocketAddress().toString(),
-                client.getRemoteSocketAddress()
-                        .equals(
-                                new InetSocketAddress(InetAddress
-                                        .getLocalHost(), sport)));
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+
+        assertEquals("Returned incorrect InetSocketAddress(1):",
+                new InetSocketAddress(InetAddress.getLocalHost(), sport),
+                client.getRemoteSocketAddress());
         client.close();
 
-        // now create one that is not connect and validate that we get the
+        // now create one that is not connected and validate that we get the
         // right answer
         Socket theSocket = new Socket();
-        portNumber = Support_PortManager.getNextPort();
-        theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(),
-                portNumber));
-
-        assertNull("Returned incorrect InetSocketAddress -unconnected socket:"
-                + "Expected: NULL", theSocket.getRemoteSocketAddress());
+        theSocket.bind(new InetSocketAddress(InetAddress.getLocalHost(), 0));
+        assertNull("Returned incorrect InetSocketAddress -unconnected socket:",
+                theSocket.getRemoteSocketAddress());
 
         // now connect and validate we get the right answer
         theSocket.connect(new InetSocketAddress(InetAddress.getLocalHost(),
                 sport));
-        assertTrue("Returned incorrect InetSocketAddress(2):"
-                + theSocket.getRemoteSocketAddress().toString(),
-                theSocket.getRemoteSocketAddress()
-                        .equals(
-                                new InetSocketAddress(InetAddress
-                                        .getLocalHost(), sport)));
+        assertEquals("Returned incorrect InetSocketAddress(2):",
+                new InetSocketAddress(InetAddress.getLocalHost(), sport),
+                theSocket.getRemoteSocketAddress());
         theSocket.close();
 
+        server.close();
     }
 
     /**
      * @tests java.net.Socket#isBound()
      */
     public void test_isBound() throws IOException {
-        InetAddress addr = InetAddress.getLocalHost();
-        int port = Support_PortManager.getNextPort();
-        ServerSocket serverSocket = new ServerSocket(port, 5, addr);
-        Socket theSocket = new Socket(addr, port);
-        Socket servSock = serverSocket.accept();
-        assertTrue("Socket indicated  not bound when it should be (1)",
-                theSocket.isBound());
-        theSocket.close();
-        serverSocket.close();
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+        Socket worker = server.accept();
+
+        assertTrue("Socket indicated  not bound when it should be (1)", client
+                .isBound());
+        worker.close();
+        client.close();
+        server.close();
 
         // now do it with the new constructors and revalidate. Connect causes
         // the socket to be bound
         InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort());
-        theSocket = new Socket();
-        assertFalse("Socket indicated bound when it was not (2)", theSocket
+                .getLocalHost(), 0);
+        client = new Socket();
+        assertFalse("Socket indicated bound when it was not (2)", client
                 .isBound());
-        serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        servSock = serverSocket.accept();
-        assertTrue("Socket indicated not bound when it should be (2)",
-                theSocket.isBound());
-        theSocket.close();
-        serverSocket.close();
 
-        // now test when we bind explicitely
-        InetSocketAddress theLocalAddress = new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort());
-        theSocket = new Socket();
-        assertFalse("Socket indicated bound when it was not (3)", theSocket
+        server = new ServerSocket();
+        server.bind(theAddress);
+        InetSocketAddress boundAddress = new InetSocketAddress(server
+                .getInetAddress(), server.getLocalPort());
+        client.connect(boundAddress);
+        worker = server.accept();
+        assertTrue("Socket indicated not bound when it should be (2)", client
                 .isBound());
-        theSocket.bind(theLocalAddress);
-        assertTrue("Socket indicated not bound when it should be (3a)",
-                theSocket.isBound());
-        theSocket.close();
-        assertTrue("Socket indicated not bound when it should be (3b)",
-                theSocket.isBound());
+        worker.close();
+        client.close();
+        server.close();
+
+        // now test when we bind explicitly
+        InetSocketAddress theLocalAddress = new InetSocketAddress(InetAddress
+                .getLocalHost(), 0);
+        client = new Socket();
+        assertFalse("Socket indicated bound when it was not (3)", client
+                .isBound());
+        client.bind(theLocalAddress);
+        assertTrue("Socket indicated not bound when it should be (3a)", client
+                .isBound());
+        client.close();
+        assertTrue("Socket indicated not bound when it should be (3b)", client
+                .isBound());
     }
 
     /**
      * @tests java.net.Socket#isConnected()
      */
     public void test_isConnected() throws IOException {
-        InetAddress addr = InetAddress.getLocalHost();
-        int port = Support_PortManager.getNextPort();
-        ServerSocket serverSocket = new ServerSocket(port, 5, addr);
-        Socket theSocket = new Socket(addr, port);
-        Socket servSock = serverSocket.accept();
-        assertTrue("Socket indicated  not connected when it should be",
-                theSocket.isConnected());
-        theSocket.close();
-        serverSocket.close();
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+        Socket worker = server.accept();
+
+        assertTrue("Socket indicated  not connected when it should be", client
+                .isConnected());
+        client.close();
+        worker.close();
+        server.close();
 
         // now do it with the new constructors and revalidate
         InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort());
-        theSocket = new Socket();
-        assertFalse("Socket indicated connected when it was not", theSocket
+                .getLocalHost(), 0);
+        client = new Socket();
+        assertFalse("Socket indicated connected when it was not", client
                 .isConnected());
-        serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        servSock = serverSocket.accept();
-        assertTrue("Socket indicated  not connected when it should be",
-                theSocket.isConnected());
-        theSocket.close();
-        serverSocket.close();
+
+        server = new ServerSocket();
+        server.bind(theAddress);
+        InetSocketAddress boundAddress = new InetSocketAddress(server
+                .getInetAddress(), server.getLocalPort());
+        client.connect(boundAddress);
+        worker = server.accept();
+        assertTrue("Socket indicated  not connected when it should be", client
+                .isConnected());
+        client.close();
+        worker.close();
+        server.close();
     }
 
     /**
      * @tests java.net.Socket#isClosed()
      */
     public void test_isClosed() throws IOException {
-        InetAddress addr = InetAddress.getLocalHost();
-        int port = Support_PortManager.getNextPort();
-        ServerSocket serverSocket = new ServerSocket(port, 5, addr);
-        Socket theSocket = new Socket(addr, port);
-        Socket servSock = serverSocket.accept();
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+        Socket worker = server.accept();
 
         // validate isClosed returns expected values
-        assertFalse("Socket should indicate it is not closed(1):", theSocket
+        assertFalse("Socket should indicate it is not closed(1):", client
                 .isClosed());
-        theSocket.close();
-        assertTrue("Socket should indicate it is closed(1):", theSocket
-                .isClosed());
-
-        theSocket = new Socket(addr, port);
-        assertFalse("Socket should indicate it is not closed(2):", theSocket
-                .isClosed());
-        theSocket.close();
-        assertTrue("Socket should indicate it is closed(2):", theSocket
-                .isClosed());
+        client.close();
+        assertTrue("Socket should indicate it is closed(1):", client.isClosed());
 
         // validate that isClosed works ok for sockets returned from
         // ServerSocket.accept()
-        assertFalse("Server Socket should indicate it is not closed:", servSock
+        assertFalse("Accepted Socket should indicate it is not closed:", worker
                 .isClosed());
-        servSock.close();
-        assertTrue("Server Socket should indicate it is closed:", servSock
+        worker.close();
+        assertTrue("Accepted Socket should indicate it is closed:", worker
                 .isClosed());
+
+        assertFalse("Server Socket should indicate it is not closed:", server
+                .isClosed());
+        server.close();
+        assertTrue("Server Socket should indicate it is closed:", server
+                .isClosed());
+
     }
 
     /**
@@ -1891,72 +1858,74 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#isInputShutdown()
      */
     public void test_isInputShutdown() throws IOException {
-        InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort());
-        Socket theSocket = new Socket();
-        ServerSocket serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        Socket servSock = serverSocket.accept();
-        InputStream theInput = theSocket.getInputStream();
-        OutputStream theOutput = servSock.getOutputStream();
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+
+        Socket worker = server.accept();
+        InputStream theInput = client.getInputStream();
+        OutputStream theOutput = worker.getOutputStream();
 
         // make sure we get the right answer with newly connected socket
         assertFalse("Socket indicated input shutdown when it should not have",
-                theSocket.isInputShutdown());
+                client.isInputShutdown());
 
         // shutdown the output
-        theSocket.shutdownInput();
+        client.shutdownInput();
 
         // make sure we get the right answer once it is shut down
         assertTrue(
                 "Socket indicated input was NOT shutdown when it should have been",
-                theSocket.isInputShutdown());
+                client.isInputShutdown());
 
-        theSocket.close();
-        serverSocket.close();
+        client.close();
+        worker.close();
+        server.close();
 
         // make sure we get the right answer for closed sockets
         assertFalse(
                 "Socket indicated input was shutdown when socket was closed",
-                servSock.isInputShutdown());
+                worker.isInputShutdown());
 
+        theInput.close();
+        theOutput.close();
     }
 
     /**
      * @tests java.net.Socket#isOutputShutdown()
      */
     public void test_isOutputShutdown() throws IOException {
-        InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort());
-        Socket theSocket = new Socket();
-        ServerSocket serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        Socket servSock = serverSocket.accept();
-        InputStream theInput = theSocket.getInputStream();
-        OutputStream theOutput = servSock.getOutputStream();
+        ServerSocket server = new ServerSocket(0);
+        int sport = server.getLocalPort();
+        Socket client = new Socket(InetAddress.getLocalHost(), sport);
+
+        Socket worker = server.accept();
+        InputStream theInput = client.getInputStream();
+        OutputStream theOutput = worker.getOutputStream();
 
         // make sure we get the right answer with newly connected socket
         assertFalse("Socket indicated output shutdown when it should not have",
-                servSock.isOutputShutdown());
+                worker.isOutputShutdown());
 
         // shutdown the output
-        servSock.shutdownOutput();
+        worker.shutdownOutput();
 
         // make sure we get the right answer once it is shut down
         assertTrue(
                 "Socket indicated output was NOT shutdown when it should have been",
-                servSock.isOutputShutdown());
+                worker.isOutputShutdown());
 
-        theSocket.close();
-        serverSocket.close();
+        client.close();
+        worker.close();
+        server.close();
 
         // make sure we get the right answer for closed sockets
         assertFalse(
                 "Socket indicated output was output shutdown when the socket was closed",
-                theSocket.isOutputShutdown());
+                client.isOutputShutdown());
 
+        theInput.close();
+        theOutput.close();
     }
 
     /**
@@ -2106,10 +2075,7 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#setOOBInline(boolean)
      */
     public void test_setOOBInlineZ() {
-        // mostly tested in getOOBInline. Just set to make sure call works ok
         try {
-            new InetSocketAddress(InetAddress.getLocalHost(),
-                    Support_PortManager.getNextPort());
             Socket theSocket = new Socket();
             theSocket.setOOBInline(true);
             assertTrue("expected OOBIline to be true", theSocket.getOOBInline());
@@ -2123,24 +2089,21 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#getOOBInline()
      */
     public void test_getOOBInline() {
-
         try {
-            new InetSocketAddress(InetAddress.getLocalHost(),
-                    Support_PortManager.getNextPort());
             Socket theSocket = new Socket();
 
-            // validate that value reflects what we set it to true after true,
-            // false after false and false after false false
             theSocket.setOOBInline(true);
             assertTrue("expected OOBIline to be true", theSocket.getOOBInline());
-            theSocket.setOOBInline(false);
-            assertFalse("expected OOBIline to be true", theSocket
-                    .getOOBInline());
-            theSocket.setOOBInline(false);
-            assertFalse("expected OOBIline to be true", theSocket
-                    .getOOBInline());
-            ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_OOBINLINE);
 
+            theSocket.setOOBInline(false);
+            assertFalse("expected OOBIline to be false", theSocket
+                    .getOOBInline());
+
+            theSocket.setOOBInline(false);
+            assertFalse("expected OOBIline to be false", theSocket
+                    .getOOBInline());
+
+            ensureExceptionThrownIfOptionIsUnsupportedOnOS(SO_OOBINLINE);
         } catch (Exception e) {
             handleException(e, SO_OOBINLINE);
         }
@@ -2156,8 +2119,6 @@ public class SocketTest extends SocketTestCase {
             int IPTOS_THROUGHPUT = 0x8;
             int IPTOS_LOWDELAY = 0x10;
 
-            new InetSocketAddress(InetAddress.getLocalHost(),
-                    Support_PortManager.getNextPort());
             Socket theSocket = new Socket();
 
             // validate that value set must be between 0 and 255
@@ -2165,17 +2126,21 @@ public class SocketTest extends SocketTestCase {
                 theSocket.setTrafficClass(256);
                 fail("No exception was thrown when traffic class set to 256");
             } catch (IllegalArgumentException e) {
+                // Expected
             }
 
             try {
                 theSocket.setTrafficClass(-1);
                 fail("No exception was thrown when traffic class set to -1");
             } catch (IllegalArgumentException e) {
+                // Expected
             }
 
             // now validate that we can set it to some good values
             theSocket.setTrafficClass(IPTOS_LOWCOST);
+            theSocket.setTrafficClass(IPTOS_RELIABILTY);
             theSocket.setTrafficClass(IPTOS_THROUGHPUT);
+            theSocket.setTrafficClass(IPTOS_LOWDELAY);
             ensureExceptionThrownIfOptionIsUnsupportedOnOS(IP_TOS);
         } catch (Exception e) {
             handleException(e, IP_TOS);
@@ -2187,21 +2152,15 @@ public class SocketTest extends SocketTestCase {
      */
     public void test_getTrafficClass() {
         try {
-            int IPTOS_LOWCOST = 0x2;
-            int IPTOS_RELIABILTY = 0x4;
-            int IPTOS_THROUGHPUT = 0x8;
-            int IPTOS_LOWDELAY = 0x10;
-
-            new InetSocketAddress(InetAddress.getLocalHost(),
-                    Support_PortManager.getNextPort());
-            Socket theSocket = new Socket();
-
             /*
              * we cannot actually check that the values are set as if a platform
              * does not support the option then it may come back unset even
              * though we set it so just get the value to make sure we can get it
              */
-            int trafficClass = theSocket.getTrafficClass();
+            int trafficClass = new Socket().getTrafficClass();
+            assertTrue(0 <= trafficClass);
+            assertTrue(trafficClass <= 255);
+
             ensureExceptionThrownIfOptionIsUnsupportedOnOS(IP_TOS);
         } catch (Exception e) {
             handleException(e, IP_TOS);
@@ -2211,315 +2170,293 @@ public class SocketTest extends SocketTestCase {
     /**
      * @tests java.net.Socket#getChannel()
      */
-    public void test_getChannel() throws Exception {
+    public void test_getChannel() {
         assertNull(new Socket().getChannel());
     }
 
     /**
      * @tests java.net.Socket#sendUrgentData(int)
      */
-    public void test_sendUrgentDataI() {
-
+    public void test_sendUrgentDataI() throws Exception {
         // Some platforms may not support urgent data in this case we will not
         // run these tests. For now run on all platforms until we find those
         // that do not support urgent data
         String platform = System.getProperty("os.name");
-        if (!platform.equals("Dummy")) {
-            // validate that when OOBInline is false that any urgent data
-            // is silently ignored
-            String urgentData = "U";
-            try {
-                InetSocketAddress theAddress = new InetSocketAddress(
-                        InetAddress.getLocalHost(), Support_PortManager
-                                .getNextPort());
-                Socket theSocket = new Socket();
-                ServerSocket serverSocket = new ServerSocket();
-                serverSocket.bind(theAddress);
-                theSocket.connect(theAddress);
-                Socket servSock = serverSocket.accept();
-                InputStream theInput = theSocket.getInputStream();
-                OutputStream theOutput = servSock.getOutputStream();
-
-                // send the regular data
-                String sendString = new String("Test");
-                theOutput.write(sendString.getBytes());
-                theOutput.flush();
-
-                // send the urgent data which should not be received
-                theSocket.setOOBInline(false);
-                servSock.sendUrgentData(urgentData.getBytes()[0]);
-                theOutput.write(sendString.getBytes());
-                theOutput.flush();
-
-                // give things some time to settle
-                Thread.sleep(1000);
-
-                int totalBytesRead = 0;
-                byte[] myBytes = new byte[100];
-                while (theInput.available() > 0) {
-                    int bytesRead = theInput.read(myBytes, totalBytesRead,
-                            myBytes.length - totalBytesRead);
-                    totalBytesRead = totalBytesRead + bytesRead;
-                }
-
-                String receivedString = new String(myBytes, 0, totalBytesRead);
-                assertTrue("Urgent Data seems to have been received:"
-                        + receivedString + ":" + sendString, receivedString
-                        .equals(sendString + sendString));
-
-                theSocket.close();
-                serverSocket.close();
-
-                // now validate that urgent data is received as expected. Expect
-                // that it should be between the two writes.
-                theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                        Support_PortManager.getNextPort());
-                theSocket = new Socket();
-                serverSocket = new ServerSocket();
-                serverSocket.bind(theAddress);
-                theSocket.connect(theAddress);
-                servSock = serverSocket.accept();
-                theInput = theSocket.getInputStream();
-                theOutput = servSock.getOutputStream();
-
-                // send the regular data
-                sendString = new String("Test - Urgent Data");
-                theOutput.write(sendString.getBytes());
-                theOutput.flush();
-
-                // send the urgent data which should be received
-                theSocket.setOOBInline(true);
-                servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-                theOutput.write(sendString.getBytes());
-                theOutput.flush();
-
-                Thread.sleep(1000);
-
-                totalBytesRead = 0;
-                myBytes = new byte[100];
-                while (theInput.available() > 0) {
-                    int bytesRead = theInput.read(myBytes, totalBytesRead,
-                            myBytes.length - totalBytesRead);
-                    totalBytesRead = totalBytesRead + bytesRead;
-                }
-
-                receivedString = new String(myBytes, 0, totalBytesRead);
-                assertTrue("Urgent Data was not received with one urgent byte:"
-                        + receivedString + ":" + sendString + urgentData
-                        + sendString, receivedString.equals(sendString
-                        + urgentData + sendString));
-
-                theSocket.close();
-                serverSocket.close();
-
-                // now test case where we try to send two urgent bytes.
-                theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                        Support_PortManager.getNextPort());
-                theSocket = new Socket();
-                serverSocket = new ServerSocket();
-                serverSocket.bind(theAddress);
-                theSocket.connect(theAddress);
-                servSock = serverSocket.accept();
-                theInput = theSocket.getInputStream();
-                theOutput = servSock.getOutputStream();
-
-                // send the regular data
-                sendString = new String("Test - Urgent Data");
-                theOutput.write(sendString.getBytes());
-                theOutput.flush();
-
-                // send the urgent data which should not be received
-                theSocket.setOOBInline(true);
-                servSock.sendUrgentData(urgentData.getBytes()[0]);
-                servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-                theOutput.write(sendString.getBytes());
-                theOutput.flush();
-
-                Thread.sleep(1000);
-
-                totalBytesRead = 0;
-                myBytes = new byte[100];
-                while (theInput.available() > 0) {
-                    int bytesRead = theInput.read(myBytes, totalBytesRead,
-                            myBytes.length - totalBytesRead);
-                    totalBytesRead = totalBytesRead + bytesRead;
-                }
-
-                receivedString = new String(myBytes, 0, totalBytesRead);
-                assertTrue(
-                        "Did not get right byte of urgent data when two sent:"
-                                + receivedString + ":" + sendString
-                                + urgentData + urgentData + sendString,
-                        receivedString.equals(sendString + urgentData
-                                + urgentData + sendString));
-
-                theSocket.close();
-                serverSocket.close();
-
-                /*
-                 * TODO : These do not currently pass on XP SP2 and Server 2003
-                 */
-                if (!platform.startsWith("Windows")) {
-                    // now test the case were we send turn the OOBInline on/off
-                    theAddress = new InetSocketAddress(InetAddress
-                            .getLocalHost(), Support_PortManager.getNextPort());
-                    theSocket = new Socket();
-                    serverSocket = new ServerSocket();
-                    serverSocket.bind(theAddress);
-                    theSocket.connect(theAddress);
-                    servSock = serverSocket.accept();
-                    theInput = theSocket.getInputStream();
-                    theOutput = servSock.getOutputStream();
-
-                    // send the regular data
-                    sendString = new String("Test - Urgent Data");
-                    theOutput.write(sendString.getBytes());
-                    theOutput.flush();
-
-                    // send the urgent data which should be received
-                    theSocket.setOOBInline(true);
-                    servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-                    theOutput.write(sendString.getBytes());
-                    theOutput.flush();
-
-                    Thread.sleep(1000);
-
-                    totalBytesRead = 0;
-                    myBytes = new byte[100];
-                    while (theInput.available() > 0) {
-                        int bytesRead = theInput.read(myBytes, totalBytesRead,
-                                myBytes.length - totalBytesRead);
-                        totalBytesRead = totalBytesRead + bytesRead;
-                    }
-
-                    receivedString = new String(myBytes, 0, totalBytesRead);
-                    assertTrue(
-                            "Did not get urgent data when turning on/off(1):"
-                                    + receivedString + ":" + sendString
-                                    + urgentData + sendString, receivedString
-                                    .equals(sendString + urgentData
-                                            + sendString));
-
-                    // send the regular data
-                    sendString = new String("Test - Urgent Data");
-                    theOutput.write(sendString.getBytes());
-                    theOutput.flush();
-
-                    // send the urgent data which should not be received
-                    theSocket.setOOBInline(false);
-                    servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-                    // send trailing data
-                    theOutput.write(sendString.getBytes());
-                    theOutput.flush();
-
-                    Thread.sleep(1000);
-
-                    totalBytesRead = 0;
-                    myBytes = new byte[100];
-                    while (theInput.available() > 0) {
-                        int bytesRead = theInput.read(myBytes, totalBytesRead,
-                                myBytes.length - totalBytesRead);
-                        totalBytesRead = totalBytesRead + bytesRead;
-                    }
-
-                    receivedString = new String(myBytes, 0, totalBytesRead);
-                    assertTrue(
-                            "Got unexpected data data when turning on/off(2):"
-                                    + receivedString + ":" + sendString
-                                    + sendString, receivedString
-                                    .equals(sendString + sendString));
-
-                    // now turn back on and get data. Here we also
-                    // get the previously sent byte of urgent data as it is
-                    // still in the urgent buffer
-
-                    // send the regular data
-                    sendString = new String("Test - Urgent Data");
-                    theOutput.write(sendString.getBytes());
-                    theOutput.flush();
-
-                    // send the urgent data which should be received again
-                    theSocket.setOOBInline(true);
-                    servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-                    theOutput.write(sendString.getBytes());
-                    theOutput.flush();
-
-                    Thread.sleep(1000);
-
-                    totalBytesRead = 0;
-                    myBytes = new byte[100];
-                    while (theInput.available() > 0) {
-                        int bytesRead = theInput.read(myBytes, totalBytesRead,
-                                myBytes.length - totalBytesRead);
-                        totalBytesRead = totalBytesRead + bytesRead;
-                    }
-
-                    receivedString = new String(myBytes, 0, totalBytesRead);
-                    // depending on the platform we may get the previously sent
-                    // urgent data or not (examples windows-yes, Linux-no).
-                    // So accept either so long as we get the urgent data from
-                    // when it was on.
-                    assertTrue(
-                            "Did not get urgent data when turning on/off(3) GOT:"
-                                    + receivedString + ":Expected" + urgentData
-                                    + sendString + urgentData + sendString
-                                    + ":OR:" + sendString + urgentData
-                                    + sendString,
-                            (receivedString.equals(urgentData + sendString
-                                    + urgentData + sendString) || receivedString
-                                    .equals(sendString + urgentData
-                                            + sendString)));
-
-                    theSocket.close();
-                    serverSocket.close();
-                }
-
-                // now test the case where there is only urgent data
-                theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                        Support_PortManager.getNextPort());
-                theSocket = new Socket();
-                serverSocket = new ServerSocket();
-                serverSocket.bind(theAddress);
-                theSocket.connect(theAddress);
-                servSock = serverSocket.accept();
-                theInput = theSocket.getInputStream();
-                theOutput = servSock.getOutputStream();
-
-                // send the urgent data which should not be received.
-                theSocket.setOOBInline(true);
-                servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-                Thread.sleep(1000);
-
-                totalBytesRead = 0;
-                myBytes = new byte[100];
-                while (theInput.available() > 0) {
-                    int bytesRead = theInput.read(myBytes, totalBytesRead,
-                            myBytes.length - totalBytesRead);
-                    totalBytesRead = totalBytesRead + bytesRead;
-                }
-
-                receivedString = new String(myBytes, 0, totalBytesRead);
-                assertTrue("Did not get urgent data only urgent data sent:"
-                        + receivedString + ":" + urgentData, receivedString
-                        .equals(urgentData));
-
-            } catch (Exception e) {
-                // for platforms that do not support urgent data we expect an
-                // exception. For the others report an error.
-                // TODO : Need to introduce a better test for the exception
-                // so that the failure only occurs on platforms that support
-                // urgent data
-                fail("Platform:" + platform
-                        + ": Got exception during sendUrgent data tests"
-                        + e.toString());
-            }
+        if (platform.equals("Dummy")) {
+            return;
         }
+        // validate that when OOBInline is false that any urgent data
+        // is silently ignored
+        String urgentData = "U";
+        InetSocketAddress theAddress = new InetSocketAddress(InetAddress
+                .getLocalHost(), Support_PortManager.getNextPort());
+        Socket theSocket = new Socket();
+        ServerSocket serverSocket = new ServerSocket();
+        serverSocket.bind(theAddress);
+        theSocket.connect(theAddress);
+        Socket servSock = serverSocket.accept();
+        InputStream theInput = theSocket.getInputStream();
+        OutputStream theOutput = servSock.getOutputStream();
+
+        // send the regular data
+        String sendString = new String("Test");
+        theOutput.write(sendString.getBytes());
+        theOutput.flush();
+
+        // send the urgent data which should not be received
+        theSocket.setOOBInline(false);
+        servSock.sendUrgentData(urgentData.getBytes()[0]);
+        theOutput.write(sendString.getBytes());
+        theOutput.flush();
+
+        // give things some time to settle
+        Thread.sleep(1000);
+
+        int totalBytesRead = 0;
+        byte[] myBytes = new byte[100];
+        while (theInput.available() > 0) {
+            int bytesRead = theInput.read(myBytes, totalBytesRead,
+                    myBytes.length - totalBytesRead);
+            totalBytesRead = totalBytesRead + bytesRead;
+        }
+
+        String receivedString = new String(myBytes, 0, totalBytesRead);
+        assertTrue("Urgent Data seems to have been received:" + receivedString
+                + ":" + sendString, receivedString.equals(sendString
+                + sendString));
+
+        theSocket.close();
+        serverSocket.close();
+
+        // now validate that urgent data is received as expected. Expect
+        // that it should be between the two writes.
+        theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
+                Support_PortManager.getNextPort());
+        theSocket = new Socket();
+        serverSocket = new ServerSocket();
+        serverSocket.bind(theAddress);
+        theSocket.connect(theAddress);
+        servSock = serverSocket.accept();
+        theInput = theSocket.getInputStream();
+        theOutput = servSock.getOutputStream();
+
+        // send the regular data
+        sendString = new String("Test - Urgent Data");
+        theOutput.write(sendString.getBytes());
+        theOutput.flush();
+
+        // send the urgent data which should be received
+        theSocket.setOOBInline(true);
+        servSock.sendUrgentData(urgentData.getBytes()[0]);
+
+        theOutput.write(sendString.getBytes());
+        theOutput.flush();
+
+        Thread.sleep(1000);
+
+        totalBytesRead = 0;
+        myBytes = new byte[100];
+        while (theInput.available() > 0) {
+            int bytesRead = theInput.read(myBytes, totalBytesRead,
+                    myBytes.length - totalBytesRead);
+            totalBytesRead = totalBytesRead + bytesRead;
+        }
+
+        receivedString = new String(myBytes, 0, totalBytesRead);
+        assertTrue("Urgent Data was not received with one urgent byte:"
+                + receivedString + ":" + sendString + urgentData + sendString,
+                receivedString.equals(sendString + urgentData + sendString));
+
+        theSocket.close();
+        serverSocket.close();
+
+        // now test case where we try to send two urgent bytes.
+        theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
+                Support_PortManager.getNextPort());
+        theSocket = new Socket();
+        serverSocket = new ServerSocket();
+        serverSocket.bind(theAddress);
+        theSocket.connect(theAddress);
+        servSock = serverSocket.accept();
+        theInput = theSocket.getInputStream();
+        theOutput = servSock.getOutputStream();
+
+        // send the regular data
+        sendString = new String("Test - Urgent Data");
+        theOutput.write(sendString.getBytes());
+        theOutput.flush();
+
+        // send the urgent data which should not be received
+        theSocket.setOOBInline(true);
+        servSock.sendUrgentData(urgentData.getBytes()[0]);
+        servSock.sendUrgentData(urgentData.getBytes()[0]);
+
+        theOutput.write(sendString.getBytes());
+        theOutput.flush();
+
+        Thread.sleep(1000);
+
+        totalBytesRead = 0;
+        myBytes = new byte[100];
+        while (theInput.available() > 0) {
+            int bytesRead = theInput.read(myBytes, totalBytesRead,
+                    myBytes.length - totalBytesRead);
+            totalBytesRead = totalBytesRead + bytesRead;
+        }
+
+        receivedString = new String(myBytes, 0, totalBytesRead);
+        assertTrue("Did not get right byte of urgent data when two sent:"
+                + receivedString + ":" + sendString + urgentData + urgentData
+                + sendString, receivedString.equals(sendString + urgentData
+                + urgentData + sendString));
+
+        theSocket.close();
+        serverSocket.close();
+
+        /*
+         * TODO : These do not currently pass on XP SP2 and Server 2003
+         */
+        if (!platform.startsWith("Windows")) {
+            // now test the case were we send turn the OOBInline on/off
+            theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
+                    Support_PortManager.getNextPort());
+            theSocket = new Socket();
+            serverSocket = new ServerSocket();
+            serverSocket.bind(theAddress);
+            theSocket.connect(theAddress);
+            servSock = serverSocket.accept();
+            theInput = theSocket.getInputStream();
+            theOutput = servSock.getOutputStream();
+
+            // send the regular data
+            sendString = new String("Test - Urgent Data");
+            theOutput.write(sendString.getBytes());
+            theOutput.flush();
+
+            // send the urgent data which should be received
+            theSocket.setOOBInline(true);
+            servSock.sendUrgentData(urgentData.getBytes()[0]);
+
+            theOutput.write(sendString.getBytes());
+            theOutput.flush();
+
+            Thread.sleep(1000);
+
+            totalBytesRead = 0;
+            myBytes = new byte[100];
+            while (theInput.available() > 0) {
+                int bytesRead = theInput.read(myBytes, totalBytesRead,
+                        myBytes.length - totalBytesRead);
+                totalBytesRead = totalBytesRead + bytesRead;
+            }
+
+            receivedString = new String(myBytes, 0, totalBytesRead);
+            assertTrue("Did not get urgent data when turning on/off(1):"
+                    + receivedString + ":" + sendString + urgentData
+                    + sendString, receivedString.equals(sendString + urgentData
+                    + sendString));
+
+            // send the regular data
+            sendString = new String("Test - Urgent Data");
+            theOutput.write(sendString.getBytes());
+            theOutput.flush();
+
+            // send the urgent data which should not be received
+            theSocket.setOOBInline(false);
+            servSock.sendUrgentData(urgentData.getBytes()[0]);
+
+            // send trailing data
+            theOutput.write(sendString.getBytes());
+            theOutput.flush();
+
+            Thread.sleep(1000);
+
+            totalBytesRead = 0;
+            myBytes = new byte[100];
+            while (theInput.available() > 0) {
+                int bytesRead = theInput.read(myBytes, totalBytesRead,
+                        myBytes.length - totalBytesRead);
+                totalBytesRead = totalBytesRead + bytesRead;
+            }
+
+            receivedString = new String(myBytes, 0, totalBytesRead);
+            assertTrue("Got unexpected data data when turning on/off(2):"
+                    + receivedString + ":" + sendString + sendString,
+                    receivedString.equals(sendString + sendString));
+
+            // now turn back on and get data. Here we also
+            // get the previously sent byte of urgent data as it is
+            // still in the urgent buffer
+
+            // send the regular data
+            sendString = new String("Test - Urgent Data");
+            theOutput.write(sendString.getBytes());
+            theOutput.flush();
+
+            // send the urgent data which should be received again
+            theSocket.setOOBInline(true);
+            servSock.sendUrgentData(urgentData.getBytes()[0]);
+
+            theOutput.write(sendString.getBytes());
+            theOutput.flush();
+
+            Thread.sleep(1000);
+
+            totalBytesRead = 0;
+            myBytes = new byte[100];
+            while (theInput.available() > 0) {
+                int bytesRead = theInput.read(myBytes, totalBytesRead,
+                        myBytes.length - totalBytesRead);
+                totalBytesRead = totalBytesRead + bytesRead;
+            }
+
+            receivedString = new String(myBytes, 0, totalBytesRead);
+            // depending on the platform we may get the previously sent
+            // urgent data or not (examples windows-yes, Linux-no).
+            // So accept either so long as we get the urgent data from
+            // when it was on.
+            assertTrue("Did not get urgent data when turning on/off(3) GOT:"
+                    + receivedString + ":Expected" + urgentData + sendString
+                    + urgentData + sendString + ":OR:" + sendString
+                    + urgentData + sendString,
+                    (receivedString.equals(urgentData + sendString + urgentData
+                            + sendString) || receivedString.equals(sendString
+                            + urgentData + sendString)));
+
+            theSocket.close();
+            serverSocket.close();
+        }
+
+        // now test the case where there is only urgent data
+        theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
+                Support_PortManager.getNextPort());
+        theSocket = new Socket();
+        serverSocket = new ServerSocket();
+        serverSocket.bind(theAddress);
+        theSocket.connect(theAddress);
+        servSock = serverSocket.accept();
+        theInput = theSocket.getInputStream();
+        theOutput = servSock.getOutputStream();
+
+        // send the urgent data which should not be received.
+        theSocket.setOOBInline(true);
+        servSock.sendUrgentData(urgentData.getBytes()[0]);
+
+        Thread.sleep(1000);
+
+        totalBytesRead = 0;
+        myBytes = new byte[100];
+        while (theInput.available() > 0) {
+            int bytesRead = theInput.read(myBytes, totalBytesRead,
+                    myBytes.length - totalBytesRead);
+            totalBytesRead = totalBytesRead + bytesRead;
+        }
+
+        receivedString = new String(myBytes, 0, totalBytesRead);
+        assertTrue("Did not get urgent data only urgent data sent:"
+                + receivedString + ":" + urgentData, receivedString
+                .equals(urgentData));
+
     }
 
     /*
@@ -2534,6 +2471,19 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#Socket(Proxy)
      */
     public void test_ConstructorLjava_net_Proxy_Exception() {
+
+        class MockSecurityManager extends SecurityManager {
+
+            public void checkConnect(String host, int port) {
+                if ("127.0.0.1".equals(host)) {
+                    throw new SecurityException("permission is not allowed");
+                }
+            }
+
+            public void checkPermission(Permission permission) {
+                return;
+            }
+        }
 
         SocketAddress addr1 = InetSocketAddress.createUnresolved("127.0.0.1",
                 80);
@@ -2604,8 +2554,8 @@ public class SocketTest extends SocketTestCase {
     public void test_connect_unresolved_unknown() throws Exception {
         Socket socket = new Socket();
         try {
-            socket.connect(InetSocketAddress.createUnresolved("unknownhost.invalid",
-                    12345));
+            socket.connect(InetSocketAddress.createUnresolved(
+                    "unknownhost.invalid", 12345));
             fail("Should throw UnknownHostException");
         } catch (UnknownHostException e) {
             // expected
@@ -2644,7 +2594,7 @@ public class SocketTest extends SocketTestCase {
      * @tests Socket#getOutputStream()
      */
     public void test_getOutputStream_shutdownOutput() throws Exception {
-        // regression test for Harmony-873
+        // Regression test for HARMONY-873
         ServerSocket ss = new ServerSocket(0);
         Socket s = new Socket("127.0.0.1", ss.getLocalPort());
         ss.accept();
@@ -2661,8 +2611,9 @@ public class SocketTest extends SocketTestCase {
      * @tests Socket#shutdownInput()
      * @tests Socket#shutdownOutput()
      */
-    public void test_shutdownInputOutput_twice() throws Exception {
-        // regression test for Harmony-2944
+    @SuppressWarnings("deprecation")
+    public void test_shutdownInputOutput_twice() throws IOException {
+        // Regression test for HARMONY-2944
         Socket s = new Socket("0.0.0.0", 0, false);
         s.shutdownInput();
 
@@ -2670,7 +2621,7 @@ public class SocketTest extends SocketTestCase {
             s.shutdownInput();
             fail("should throw SocketException");
         } catch (SocketException se) {
-            // expected
+            // Expected
         }
         s.shutdownOutput();
 
@@ -2678,7 +2629,7 @@ public class SocketTest extends SocketTestCase {
             s.shutdownOutput();
             fail("should throw SocketException");
         } catch (SocketException se) {
-            // expected
+            // Expected
         }
     }
 
@@ -2705,20 +2656,6 @@ public class SocketTest extends SocketTestCase {
         this.host = "localhost";
         this.port = 0;
         this.failureException = null;
-    }
-
-    static class MockSecurityManager extends SecurityManager {
-
-        public void checkConnect(String host, int port) {
-            if ("127.0.0.1".equals(host)) {
-                throw new SecurityException("permission is not allowed");
-            }
-        }
-
-        public void checkPermission(Permission permission) {
-            return;
-        }
-
     }
 
     /**
