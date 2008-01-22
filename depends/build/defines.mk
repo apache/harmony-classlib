@@ -63,7 +63,12 @@ DEFINES += -D_REENTRANT
 INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 
 ifndef HYDEBUGCFLAGS
+ifneq ($(HY_OS),zos)
 HYDEBUGCFLAGS = -ggdb -O0
+else
+# z/OS has different debug flags
+HYDEBUGCFLAGS = -g -O0
+endif
 endif
 
 ifndef HYRELEASECFLAGS  
