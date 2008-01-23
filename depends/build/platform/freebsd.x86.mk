@@ -17,4 +17,4 @@ DEFINES += -DFREEBSD -DFREEBSD_X86 -DHYX86 -DNEEDS_SYS_TYPES -DIPv6_FUNCTION_SUP
 OPT += -fpic -march=pentium3
 OSLIBS = -lpthread -lm
 INCLUDES += -I/usr/local/include
-XLIBS = -L/usr/local/lib -lX11 -lXft -lXext
+XLIBS = -L/usr/local/lib -lX11 -lXft -lXext -lXtst

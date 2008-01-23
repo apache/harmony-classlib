@@ -27,7 +27,7 @@ DLL_LDFLAGS = -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE)
 CXX_DLL_LD = $(CXX)
 STDCLIBS = -lstdc++
 OSLIBS = -lc -lm
-XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext
+XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext -lXtst
 MDLLIBPREFIX = -Xlinker --start-group
 MDLLIBSUFFIX = -Xlinker --end-group
 EXELDFLAGS = $(LDFLAGS)
