@@ -29,6 +29,10 @@ import org.apache.harmony.awt.wtk.*;
 
 public final class LinuxWTK extends WTK {
 
+    static {
+        System.loadLibrary("gl");
+    }
+
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getGraphicsFactory()
      */
@@ -89,14 +93,9 @@ public final class LinuxWTK extends WTK {
         return null;
     }
 
-    public boolean getLockingState(int keyCode) {
-        // TODO implement
-        return false;
-    }
+    public native boolean getLockingState(int keyCode);
 
-    public void setLockingState(int keyCode, boolean on) {
-        // TODO implement
-    }
+    public native void setLockingState(int keyCode, boolean on);
 
     private final LinuxWindowFactory windowFactory = new LinuxWindowFactory();
     private final LinuxEventQueue eventQueue = new LinuxEventQueue(windowFactory);
