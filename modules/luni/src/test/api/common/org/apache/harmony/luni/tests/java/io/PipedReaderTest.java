@@ -72,6 +72,50 @@ public class PipedReaderTest extends junit.framework.TestCase {
         // Test for method java.io.PipedReader(java.io.PipedWriter)
         preader = new PipedReader(new PipedWriter());
     }
+    
+    /**
+     * @tests java.io.PipedReader#PipedReader(java.io.PipedWriter,
+     *        int)
+     * @since 1.6
+     */
+    public void test_Constructor_LPipedWriter_I() throws Exception {
+        // Test for method java.io.PipedReader(java.io.PipedWriter,
+        // int)
+        try {
+            preader = new PipedReader(null, -1);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            preader = new PipedReader(null, 0);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.io.PipedReader#PipedReader(int)
+     * @since 1.6
+     */
+    public void test_Constructor_I() throws Exception {
+        // Test for method java.io.PipedReader(int)
+        try {
+            preader = new PipedReader(-1);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            preader = new PipedReader(0);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
 
     /**
      * @tests java.io.PipedReader#close()

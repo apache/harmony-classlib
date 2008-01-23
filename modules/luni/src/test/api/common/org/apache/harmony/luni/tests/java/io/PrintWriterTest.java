@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Locale;
@@ -36,6 +37,22 @@ public class PrintWriterTest extends junit.framework.TestCase {
 			return "Bogus";
 		}
 	}
+    
+    /**
+     * @since 1.6
+     */
+    static class MockPrintWriter extends PrintWriter {
+
+        public MockPrintWriter(OutputStream out, boolean autoflush) {
+            super(out, autoflush);
+        }
+
+        @Override
+        public void clearError() {
+            super.clearError();
+        }
+
+    }
 
 	PrintWriter pw;
 
@@ -184,6 +201,20 @@ public class PrintWriterTest extends junit.framework.TestCase {
 		assertTrue("Failed to return error", pw.checkError());
 	}
 
+    /**
+     * @tests java.io.PrintWriter#clearError()
+     * @since 1.6
+     */
+    public void test_clearError() {
+        // Test for method boolean java.io.PrintWriter.clearError()
+        MockPrintWriter mpw = new MockPrintWriter(new ByteArrayOutputStream(), false);
+        mpw.close();
+        mpw.print(490000000000.08765);
+        assertTrue("Failed to return error", mpw.checkError());
+        mpw.clearError();
+        assertFalse("Internal error state has not be cleared", mpw.checkError());
+    }
+    
 	/**
 	 * @tests java.io.PrintWriter#close()
 	 */

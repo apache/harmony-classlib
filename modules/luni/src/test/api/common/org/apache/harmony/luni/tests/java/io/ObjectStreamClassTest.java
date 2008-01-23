@@ -17,6 +17,10 @@
 
 package org.apache.harmony.luni.tests.java.io;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
@@ -34,6 +38,33 @@ public class ObjectStreamClassTest extends junit.framework.TestCase {
 		public static long getUID() {
 			return serialVersionUID;
 		}
+	}
+    
+    /**
+     * @since 1.6 
+     */
+    static class NonSerialzableClass {
+        private static final long serialVersionUID = 1l;
+        public static long getUID() {
+            return serialVersionUID;
+        }
+    }
+    
+    /**
+     * @since 1.6
+     */
+    static class ExternalizableClass implements Externalizable {
+
+        private static final long serialVersionUID = -4285635779249689129L;
+
+        public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
+            throw new ClassNotFoundException();
+        }
+
+        public void writeExternal(ObjectOutput output) throws IOException {
+            throw new IOException();
+        }
+        
 	}
 
 	/**
@@ -109,6 +140,33 @@ public class ObjectStreamClassTest extends junit.framework.TestCase {
 						"org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$DummyClass"));
 	}
 
+    /**
+     * @tests java.io.ObjectStreamClass#lookupAny(java.lang.Class)
+     * @since 1.6
+     */
+    public void test_lookupAnyLjava_lang_Class() {
+        // Test for method java.io.ObjectStreamClass
+        // java.io.ObjectStreamClass.lookupAny(java.lang.Class)
+        ObjectStreamClass osc = ObjectStreamClass.lookupAny(DummyClass.class);
+        assertEquals("lookup returned wrong class: " + osc.getName(),
+                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$DummyClass", osc
+                        .getName());
+        
+        osc = ObjectStreamClass.lookupAny(NonSerialzableClass.class);
+        assertEquals("lookup returned wrong class: " + osc.getName(),
+                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$NonSerialzableClass",
+                osc.getName());
+        
+        osc = ObjectStreamClass.lookupAny(ExternalizableClass.class);        
+        assertEquals("lookup returned wrong class: " + osc.getName(),
+                "org.apache.harmony.luni.tests.java.io.ObjectStreamClassTest$ExternalizableClass",
+                osc.getName());
+
+        osc = ObjectStreamClass.lookup(NonSerialzableClass.class);
+        assertNull(osc);
+        
+    }
+    
 	/**
 	 * @tests java.io.ObjectStreamClass#toString()
 	 */

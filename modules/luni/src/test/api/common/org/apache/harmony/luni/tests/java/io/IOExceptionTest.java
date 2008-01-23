@@ -51,6 +51,52 @@ public class IOExceptionTest extends junit.framework.TestCase {
 		fail("Failed to generate exception");
 	}
 
+    /**
+     * @tests java.io.IOException#IOException(java.lang.String,
+     *        java.lang.Throwable)
+     * @since 1.6
+     */
+    public void test_ConstructorLString_LThrowable() {
+        // Test for constructor java.io.IOException(java.lang.String, java.lang.Throwable)
+
+        IOException ioException = new IOException(
+                "A dummy IOException", new Throwable("A dummy Throwable")); //$NON-NLS-1$//$NON-NLS-2$
+        assertEquals("A dummy IOException", ioException.getMessage()); //$NON-NLS-1$
+
+        try {
+            throw new IOException(
+                    "A dummy error", new Throwable("Some error message")); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (IOException e) {
+            return;
+        } catch (Exception e) {
+            fail("Exception during IOException test" + e.toString()); //$NON-NLS-1$
+        }
+        fail("Failed to generate exception"); //$NON-NLS-1$
+    }
+
+    /**
+     * @tests java.io.IOException#IOException(java.lang.Throwable)
+     * @since 1.6
+     */
+    public void test_Constructor_LThrowable() {
+        // Test for constructor java.io.IOException(java.lang.Throwable)
+        Throwable cause = new Throwable("A dummy Throwable"); //$NON-NLS-1$
+        IOException ioException = new IOException(cause); 
+        assertEquals(cause.toString(), ioException.getMessage());
+        
+        ioException = new IOException((Throwable)null);
+        assertNull(ioException.getMessage());
+        
+        try {
+            throw new IOException(new Throwable("Some error message")); //$NON-NLS-1$
+        } catch (IOException e) {
+            return;
+        } catch (Exception e) {
+            fail("Exception during IOException test" + e.toString()); //$NON-NLS-1$
+        }
+        fail("Failed to generate exception"); //$NON-NLS-1$
+    }
+    
 	/**
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
