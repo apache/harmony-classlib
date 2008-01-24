@@ -128,6 +128,11 @@ public class ProxyTest extends TestCase {
 		// ensure no NPE is thrown
 		proxy.toString();
 
+		// Regression test for Java 6 spec change
+		proxy = new Proxy(Proxy.Type.HTTP, address);
+		assertTrue(proxy.toString().contains("@"));
+		proxy = new Proxy(Proxy.Type.SOCKS, address);
+		assertTrue(proxy.toString().contains(address.toString()));
 	}
 
 	/**
