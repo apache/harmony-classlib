@@ -17,6 +17,7 @@
 
 package org.apache.harmony.luni.internal.reflect;
 
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -38,9 +39,7 @@ public final class ProxyClassFile implements ProxyConstants {
 
     private static Method ObjectHashCodeMethod;
 
-    private static Method ObjectToStringMethod;
-
-    private static Method ClassForNameMethod;
+    private static Method ObjectToStringMethod;    
 
     private static Method ClassGetMethod;
 
@@ -54,8 +53,8 @@ public final class ProxyClassFile implements ProxyConstants {
 
     public static byte[] generateBytes(String typeName, Class[] interfaces) {
         ProxyClassFile classFile = new ProxyClassFile(typeName, interfaces);
-        classFile.addFields();
         classFile.findMethods(interfaces);
+        classFile.addFields();        
         classFile.addMethods();
         classFile.addAttributes();
         return classFile.getBytes();
@@ -139,9 +138,12 @@ public final class ProxyClassFile implements ProxyConstants {
     private int constantPoolOffset;
 
     private ProxyMethod[] proxyMethods;
+    
+    private String typeName;
 
     ProxyClassFile(String typeName, Class[] interfaces) {
         super();
+        this.typeName = typeName;        
         header = new byte[INITIAL_HEADER_SIZE];
         // generate the magic numbers inside the header
         header[headerOffset++] = (byte) (0xCAFEBABEL >> 24);
@@ -152,7 +154,7 @@ public final class ProxyClassFile implements ProxyConstants {
         header[headerOffset++] = 0;
         header[headerOffset++] = 0;
         header[headerOffset++] = 0;
-        header[headerOffset++] = 46;
+        header[headerOffset++] = 49;
         constantPoolOffset = headerOffset;
         headerOffset += 2;
         constantPool = new ProxyConstantPool(this);
@@ -190,14 +192,119 @@ public final class ProxyClassFile implements ProxyConstants {
         header[constantPoolOffset] = (byte) constantPoolCount;
     }
 
-    private void addFields() {
-        writeUnsignedShort(0); // we have no fields
+    private void writeStaticInitializer() {
+    	writeUnsignedShort(AccStatic);
+    	writeUnsignedShort(constantPool.literalIndex(new char[] {'<', 'c', 'l', 'i', 'n', 'i', 't', '>'}));
+    	writeUnsignedShort(constantPool.literalIndex(new char[]{'(', ')','V'}));
+    	writeUnsignedShort(1); //todo add Exceptions    	
+        generateCodeAttribute3();        
+    }    
+    
+    private void completeCodeDescription(int codeLength, int offset, int maxLocals) {    	
+        writeUnsignedWord(codeLength + 8, offset);         
+        writeUnsignedShort(maxLocals + 10, offset + 4);
+        writeUnsignedShort(maxLocals, offset + 6);        
+        writeUnsignedWord(codeLength - 12, offset + 8);        
+    }   
+    
+    private void initializeField(ProxyMethod m, int index) {
+    	String methodName = m.method.getName();
+    	Class[] params = m.method.getParameterTypes();
+    	int paramLengths = params.length;
+        writeLdcWithClass(m.getDeclaringClass().getName());
+        writeLdc(methodName);       
+        writeIntConstant(paramLengths); 
+        writeUnsignedByte(OPC_anewarray);
+        writeUnsignedShort(constantPool.typeIndex("java/lang/Class"));       
+        for (int i = 0; i < paramLengths; i++) {
+            writeUnsignedByte(OPC_dup);
+            writeIntConstant(i);      
+             if (params[i].isPrimitive()) {            	
+            	writeUnsignedByte(OPC_getstatic);
+                writeUnsignedShort(constantPool.literalIndex(typeWrapperName(params[i]),
+                		                                     "TYPE", Class.class));     
+
+            } else {
+                writeLdcWithClass(params[i].getName());
+            }                 
+            writeUnsignedByte(OPC_aastore); 
+        }        
+        
+        if (ClassGetMethod == null) {
+            try {
+                ClassGetMethod = Class.class.getMethod("getMethod",
+                        new Class[] { String.class, Class[].class });
+            } catch (NoSuchMethodException e) {
+                throw new InternalError();
+            }
+        }
+        writeUnsignedByte(OPC_invokevirtual);
+        writeUnsignedShort(constantPool.literalIndex(ClassGetMethod));         
+        writeUnsignedByte(OPC_putstatic);                   
+        writeUnsignedShort(constantPool.literalIndex(typeName, 
+        		                                     getFieldNamebyMethodName(methodName, index),
+        		           Method.class));
     }
+    
+    private void generateCodeAttribute3() {    	
+    	writeUnsignedShort(constantPool.literalIndex(CodeName));      
+        int codeStart = contentsOffset;       
+        writeUnsignedWord(0); //skip these fields so far        
+        writeUnsignedWord(0);        
+        writeUnsignedWord(0);        
+        for (int i = 0; i < proxyMethods.length; i ++) {        	
+        	initializeField(proxyMethods[i], i);      	
+        }       
+        int gotoTarget = contentsOffset;
+        writeUnsignedByte(OPC_goto);
+        int targetForGotoOffset = contentsOffset;
+        writeUnsignedShort(4); //to be updated        
+        int handlerStart = contentsOffset - codeStart - 12;        
+        generateExceptionHandler();
+        gotoTarget = contentsOffset - gotoTarget;        
+        writeUnsignedByte(OPC_return);
+        writeUnsignedShort(gotoTarget, targetForGotoOffset);
+        completeCodeDescription(contentsOffset - codeStart, codeStart, 1);        
+        writeUnsignedShort(1);
+        writeUnsignedShort(0);
+        writeUnsignedShort(handlerStart);
+        writeUnsignedShort(handlerStart);
+        writeUnsignedShort(constantPool.typeIndex("java/lang/Exception"));                
+        writeUnsignedShort(0); // there are no attributes for the code        
+    }
+    
+    //return handlerStart
+    private void generateExceptionHandler() {    	
+    	//writeUnsignedByte(OPC_astore_0);    	
+    	writeUnsignedByte(OPC_astore_0);
+    	writeUnsignedByte(OPC_aload_0);
+    	
+    	writeUnsignedByte(OPC_getstatic);
+        writeUnsignedShort(constantPool.literalIndex("java/lang/System", 
+                                                     "err",
+                                                     PrintStream.class));
+        Method m = null;
+    	try {
+    		m = Exception.class.getMethod("printStackTrace", new Class[] {PrintStream.class});
+    	} catch (Exception e) {
+    		e.printStackTrace(System.err);
+    	}
+    	
+    	writeUnsignedByte(OPC_invokevirtual);
+        writeUnsignedShort(constantPool.literalIndex(m));
+    }   
+        
+    
+    private String getFieldNamebyMethodName(String methodName, int index) {
+    	return methodName + "Method" + index;
+    }
+    
 
     private void addMethods() {
         int methodCount = proxyMethods.length;
-        writeUnsignedShort(methodCount + 1);
-
+        writeUnsignedShort(methodCount + 2);
+        
+          
         // save constructor
         writeUnsignedShort(AccPublic);
         writeUnsignedShort(constantPool.literalIndex(Init));
@@ -228,15 +335,15 @@ public final class ProxyClassFile implements ProxyConstants {
         writeUnsignedShort(0); // no exceptions table
         writeUnsignedShort(0); // there are no attributes for the code
         // attribute
+                
 
         for (int i = 0; i < methodCount; i++) {
             ProxyMethod pMethod = proxyMethods[i];
             Method method = pMethod.method;
             writeUnsignedShort(AccPublic | AccFinal);
-            writeUnsignedShort(constantPool.literalIndex(method.getName()
-                    .toCharArray()));
-            writeUnsignedShort(constantPool
-                    .literalIndex(getConstantPoolName(method)));
+            writeUnsignedShort(constantPool.literalIndex(method.getName().toCharArray()));            
+            writeUnsignedShort(constantPool.literalIndex(getConstantPoolName(method)));    
+            
             Class[] thrownsExceptions = pMethod.commonExceptions;
             int eLength = thrownsExceptions.length;
             if (eLength > 0) {
@@ -255,8 +362,10 @@ public final class ProxyClassFile implements ProxyConstants {
             } else {
                 writeUnsignedShort(1); // store just the code attribute
             }
-            generateCodeAttribute(pMethod);
+            generateCodeAttribute(pMethod, i);
         }
+        
+        writeStaticInitializer();
     }
 
     private void findMethods(Class[] interfaces) {
@@ -280,9 +389,9 @@ public final class ProxyClassFile implements ProxyConstants {
         }
 
         ArrayList<ProxyMethod> allMethods = new ArrayList<ProxyMethod>(25);
-        allMethods.add(new ProxyMethod(ObjectEqualsMethod));
-        allMethods.add(new ProxyMethod(ObjectHashCodeMethod));
-        allMethods.add(new ProxyMethod(ObjectToStringMethod));
+        allMethods.add(new ProxyMethod(Object.class, ObjectEqualsMethod));
+        allMethods.add(new ProxyMethod(Object.class, ObjectHashCodeMethod));
+        allMethods.add(new ProxyMethod(Object.class, ObjectToStringMethod));
 
         HashSet<Class<?>> interfacesSeen = new HashSet<Class<?>>();
         for (Class<?> element : interfaces) {
@@ -293,7 +402,20 @@ public final class ProxyClassFile implements ProxyConstants {
         allMethods.toArray(proxyMethods);
     }
 
-    private void findMethods(Class<?> nextInterface,
+    private void addFields() {
+	    //writeUnsignedShort(0); // we have no fields        
+	    int methodCount = proxyMethods.length;
+	    writeUnsignedShort(methodCount);
+	    for (int i = 0; i < methodCount; i ++) {
+	        writeUnsignedShort(AccPublic | AccStatic);
+	        String methodName = getFieldNamebyMethodName(proxyMethods[i].method.getName(), i);
+	        writeUnsignedShort(constantPool.literalIndex(methodName.toCharArray()));
+	        writeUnsignedShort(constantPool.literalIndex("Ljava/lang/reflect/Method;".toCharArray()));
+	        writeUnsignedShort(0);
+	    }       
+	}
+
+	private void findMethods(Class<?> nextInterface,
             ArrayList<ProxyMethod> allMethods, HashSet<Class<?>> interfacesSeen) {
         /*
          * add the nextInterface's methods to allMethods if an equivalent method
@@ -313,7 +435,7 @@ public final class ProxyClassFile implements ProxyConstants {
                     continue nextMethod;
                 }
             }
-            allMethods.add(new ProxyMethod(method));
+            allMethods.add(new ProxyMethod(nextInterface, method));
         }
 
         Class<?>[] superInterfaces = nextInterface.getInterfaces();
@@ -323,7 +445,7 @@ public final class ProxyClassFile implements ProxyConstants {
         }
     }
 
-    private void generateCodeAttribute(ProxyMethod pMethod) {
+    private void generateCodeAttribute(ProxyMethod pMethod, int index)  {
         int codeAttributeOffset = contentsOffset;
         int contentsLength = contents.length;
         if (contentsOffset + 20 + 100 >= contentsLength) {
@@ -359,7 +481,9 @@ public final class ProxyClassFile implements ProxyConstants {
         writeUnsignedByte(OPC_aload_0);
         Method method = pMethod.method;
         Class[] argTypes = method.getParameterTypes();
-        genCallGetMethod(method.getDeclaringClass(), method.getName(), argTypes);
+        writeUnsignedByte(OPC_getstatic);
+        writeUnsignedShort(constantPool.literalIndex(typeName, 
+                getFieldNamebyMethodName(pMethod.method.getName(), index),Method.class));        
         int maxLocals = genInvokeArgs(argTypes);
         writeUnsignedByte(OPC_invokeinterface);
         if (HandlerInvokeMethod == null) {
@@ -450,52 +574,7 @@ public final class ProxyClassFile implements ProxyConstants {
         contents[codeAttributeOffset + 13] = (byte) codeLength;
     }
 
-    /**
-     * Perform call to Class.getMethod(String, Class[]) receiver 13 ldc 37
-     * (java.lang.String) "java.lang.Object" 15 invokestatic 43
-     * java.lang.Class.forName(Ljava.lang.String;)Ljava.lang.Class; selector 37
-     * ldc 55 (java.lang.String) "equals" plus method args 39 iconst0 40
-     * anewarray 39 java.lang.Class or 39 iconst1 40 anewarray 39
-     * java.lang.Class 43 dup 44 iconst0 53 ldc 37 (java.lang.String)
-     * "java.lang.Object" 55 invokestatic 43
-     * java.lang.Class.forName(Ljava.lang.String;)Ljava.lang.Class; 77 aastore
-     * or 39 iconst2 40 anewarray 39 java.lang.Class 43 dup 44 iconst0 45
-     * getstatic 102 java.lang.Integer.TYPE Ljava.lang.Class; 48 aastore 49 dup
-     * 50 iconst1 51 getstatic 104 java.lang.Boolean.TYPE Ljava.lang.Class; 54
-     * aastore then 78 invokevirtual 59
-     * java.lang.Class.getMethod(Ljava.lang.String;[Ljava.lang.Class;)Ljava.lang.reflect.Method;
-     */
-    private void genCallGetMethod(Class<?> receiverType, String selector,
-            Class[] argTypes) {
-        genCallClassForName(receiverType.getName());
-        writeLdc(selector);
-        int length = argTypes.length;
-        writeIntConstant(length);
-        writeUnsignedByte(OPC_anewarray);
-        writeUnsignedShort(constantPool.typeIndex("java/lang/Class"));
-        for (int i = 0; i < length; i++) {
-            writeUnsignedByte(OPC_dup);
-            writeIntConstant(i);
-            Class<?> type = argTypes[i];
-            if (type.isPrimitive()) {
-                writeUnsignedByte(OPC_getstatic);
-                writeUnsignedShort(constantPool.literalIndex(typeField(type)));
-            } else {
-                genCallClassForName(type.getName());
-            }
-            writeUnsignedByte(OPC_aastore);
-        }
-        writeUnsignedByte(OPC_invokevirtual);
-        if (ClassGetMethod == null) {
-            try {
-                ClassGetMethod = Class.class.getMethod("getMethod",
-                        new Class[] { String.class, Class[].class });
-            } catch (NoSuchMethodException e) {
-                throw new InternalError();
-            }
-        }
-        writeUnsignedShort(constantPool.literalIndex(ClassGetMethod));
-    }
+    
 
     /**
      * Add argument array for call to InvocationHandler.invoke
@@ -669,21 +748,7 @@ public final class ProxyClassFile implements ProxyConstants {
             writeUnsignedShort(constantPool.typeIndex(type.getName()));
             writeUnsignedByte(OPC_areturn);
         }
-    }
-
-    private void genCallClassForName(String typeName) {
-        writeLdc(typeName);
-        writeUnsignedByte(OPC_invokestatic);
-        if (ClassForNameMethod == null) {
-            try {
-                ClassForNameMethod = Class.class.getMethod("forName",
-                        new Class[] { String.class });
-            } catch (NoSuchMethodException e) {
-                throw new InternalError();
-            }
-        }
-        writeUnsignedShort(constantPool.literalIndex(ClassForNameMethod));
-    }
+    }    
 
     private void genLoadArg(int argByteOffset) {
         if (argByteOffset > 255) {
@@ -911,6 +976,20 @@ public final class ProxyClassFile implements ProxyConstants {
             writeUnsignedByte(index);
         }
     }
+    
+    private void writeLdcWithClass(String name) {       
+        int index = constantPool.typeIndex(name);
+        if (index <= 0) {
+            throw new InternalError();
+        }
+        if (index > 255) {
+            writeUnsignedByte(OPC_ldc_w);
+            writeUnsignedShort(index);
+        } else {
+            writeUnsignedByte(OPC_ldc);
+            writeUnsignedByte(index);
+        }
+    }  
 
     private void writeUnsignedByte(int b) {
         try {
@@ -921,7 +1000,7 @@ public final class ProxyClassFile implements ProxyConstants {
                     + INCREMENT_SIZE]), 0, actualLength);
             contents[contentsOffset - 1] = (byte) b;
         }
-    }
+    }   
 
     private void writeUnsignedShort(int b) {
         writeUnsignedByte(b >>> 8);
@@ -934,4 +1013,28 @@ public final class ProxyClassFile implements ProxyConstants {
         writeUnsignedByte(b >>> 8);
         writeUnsignedByte(b);
     }
+    
+    private void writeUnsignedByte(int b, int offset) {
+        try {
+            contents[offset] = (byte) b;
+        } catch (IndexOutOfBoundsException e) {
+            int actualLength = contents.length;
+            System.arraycopy(contents, 0, (contents = new byte[actualLength
+                    + INCREMENT_SIZE]), 0, actualLength);
+            contents[offset - 1] = (byte) b;
+        }
+    }   
+    
+    private void writeUnsignedShort(int b, int offset) {
+        writeUnsignedByte(b >>> 8, offset);
+        writeUnsignedByte(b, offset + 1);
+    }
+
+    private void writeUnsignedWord(int b, int offset) {
+        writeUnsignedByte(b >>> 24, offset);
+        writeUnsignedByte(b >>> 16, offset + 1);
+        writeUnsignedByte(b >>> 8, offset + 2);
+        writeUnsignedByte(b, offset + 3);
+    }
+    
 }

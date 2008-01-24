@@ -121,23 +121,27 @@ class ProxyConstantPool implements ProxyConstants {
 		}
 		return index;
 	}
-
-	int literalIndex(Field aField) {
+	
+        int literalIndex(Field aField) {	
+        	return literalIndex(aField.getDeclaringClass().getName(), aField.getName(), aField.getType());
+	}
+	
+	int literalIndex(String declaringClass, String name, Class clazz) {
 		int index;
-		if ((index = fieldCache.get(aField)) < 0) {
-			int classIndex = typeIndex(aField.getDeclaringClass().getName());
+		String key = declaringClass + "." + name;
+		if ((index = fieldCache.get(key)) < 0) {
+			int classIndex = typeIndex(declaringClass);	
 			int nameAndTypeIndex = literalIndexForNameAndType(
-					literalIndex(aField.getName().toCharArray()),
-					literalIndex(ProxyClassFile.getConstantPoolName(aField
-							.getType())));
-			index = fieldCache.put(aField, currentIndex++);
+					literalIndex(name.toCharArray()),
+					literalIndex(ProxyClassFile.getConstantPoolName(clazz)));
+			index = fieldCache.put(key, currentIndex++);
 			writeU1(FieldRefTag);
 			writeU2(classIndex);
 			writeU2(nameAndTypeIndex);
 		}
 		return index;
-	}
-
+	} 	
+	
 	int literalIndex(Constructor<?> aMethod) {
 		int index;
 		if ((index = methodCache.get(aMethod)) < 0) {
@@ -251,7 +255,7 @@ class ProxyConstantPool implements ProxyConstants {
 		return index;
 	}
 
-	private int literalIndexForNameAndType(int nameIndex, int typeIndex) {
+	 int literalIndexForNameAndType(int nameIndex, int typeIndex) {
 		int index;
 		int[] key = new int[] { nameIndex, typeIndex };
 		if ((index = nameAndTypeCache.get(key)) == -1) {
