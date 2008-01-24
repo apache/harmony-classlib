@@ -18,14 +18,18 @@
 package org.apache.harmony.luni.tests.java.net;
 
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 public class NetworkInterfaceTest extends junit.framework.TestCase {
 
 	// private member variables used for tests
+    Enumeration<NetworkInterface> theInterfaces = null;
+
 	boolean atLeastOneInterface = false;
 
 	boolean atLeastTwoInterfaces = false;
@@ -409,7 +413,105 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 		}
 	}
 
-	protected void setUp() {
+    private class MockSecurityManager extends SecurityManager {
+        @Override
+        public void checkConnect(String host, int port) {
+            throw new SecurityException();
+        }
+    }
+
+    /**
+     * 
+     * @tests java.net.NetworkInterface#getInterfaceAddresses()
+     * 
+     * @since 1.6
+     */
+    public void test_getInterfaceAddresses() throws SocketException {
+        if (theInterfaces != null) {
+            SecurityManager oldSM = System.getSecurityManager();
+            System.setSecurityManager(new MockSecurityManager());
+            
+            while (theInterfaces.hasMoreElements()) {
+                NetworkInterface netif = theInterfaces.nextElement();
+                assertEquals(netif.getName()
+                        + " getInterfaceAddresses should contain no element", 0,
+                        netif.getInterfaceAddresses().size());
+            }
+            System.setSecurityManager(oldSM);
+            
+            theInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (theInterfaces.hasMoreElements()) {
+                NetworkInterface netif = theInterfaces.nextElement();
+                List<InterfaceAddress> interfaceAddrs = netif.getInterfaceAddresses();
+                assertTrue(interfaceAddrs instanceof ArrayList);
+                for (InterfaceAddress addr : interfaceAddrs) {
+                    assertNotNull(addr);                    
+                }
+                
+                List<InterfaceAddress> interfaceAddrs2 = netif.getInterfaceAddresses();
+                // RI fails on this since it cannot tolerate null broadcast address. 
+                assertEquals(interfaceAddrs, interfaceAddrs2);              
+            }
+        }
+    }   
+    
+    /**
+     * @tests java.net.NetworkInterface#isLoopback()
+     * 
+     * @since 1.6
+     */
+    public void test_isLoopback() throws SocketException {  
+        if (theInterfaces != null) {
+            while (theInterfaces.hasMoreElements()) {
+                NetworkInterface netif = theInterfaces.nextElement();
+                boolean loopback = false;
+                Enumeration<InetAddress> addrs = netif.getInetAddresses();
+                while(addrs != null && addrs.hasMoreElements()){
+                    if(addrs.nextElement().isLoopbackAddress()){
+                        loopback = true;
+                        break;
+                    }
+                }
+                assertEquals(loopback, netif.isLoopback());
+            }
+        }
+    }
+    
+    /**
+     * @tests java.net.NetworkInterface#getHardwareAddress()
+     * 
+     * @since 1.6
+     */
+    public void test_getHardwareAddress() throws SocketException {
+        if (theInterfaces != null) {
+            while (theInterfaces.hasMoreElements()) {
+                NetworkInterface netif = theInterfaces.nextElement();
+                byte[] hwAddr = netif.getHardwareAddress();
+                if (netif.isLoopback()) {
+                    assertTrue(hwAddr == null || hwAddr.length == 0);
+                } else {
+                    assertTrue(hwAddr.length >= 0);
+                }
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @tests java.net.NetworkInterface#getHardwareAddress()
+     * 
+     * @since 1.6
+     */
+    public void test_getMTU() throws SocketException {      
+        if (theInterfaces != null) {
+            while (theInterfaces.hasMoreElements()) {
+                NetworkInterface netif = theInterfaces.nextElement();
+                assertTrue(netif.getName() + "has non-positive MTU", netif.getMTU() >= 0);
+            }           
+        }
+    }
+    
+	protected void setUp() throws SocketException {
 
 		Enumeration theInterfaces = null;
 		try {
@@ -474,6 +576,7 @@ public class NetworkInterfaceTest extends junit.framework.TestCase {
 				}
 			}// end if atLeastOneInterface
 		}
+        theInterfaces = NetworkInterface.getNetworkInterfaces();
 	}
 
 	protected void tearDown() {
