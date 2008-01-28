@@ -2016,7 +2016,7 @@ public class Collections {
      * calling rotate(list, 3) or rotate(list, -7) would modify the list to look
      * like this: [8, 9, 0, 1, 2, 3, 4, 5, 6, 7]
      * 
-     * @param list
+     * @param lst
      * @param dist
      *            It can be any integer: 0, positive, negative, larger than the
      *            list size
@@ -2509,10 +2509,12 @@ public class Collections {
     /**
      * Returns a dynamically typesafe view of the specified map.
      * 
-     * @param c
+     * @param m
      *            the map
-     * @param type
-     *            the type of the elements is permitted to insert
+     * @param keyType
+     *            the type of keys permitted to be inserted
+     * @param valueType
+     *            the type of values permitted to be inserted
      * 
      * @return a typesafe map
      */
@@ -2524,7 +2526,7 @@ public class Collections {
     /**
      * Returns a dynamically typesafe view of the specified list.
      * 
-     * @param c
+     * @param list
      *            the list
      * @param type
      *            the type of the elements is permitted to insert
@@ -2555,10 +2557,12 @@ public class Collections {
     /**
      * Returns a dynamically typesafe view of the specified sorted map.
      * 
-     * @param c
+     * @param m
      *            the sorted map
-     * @param type
-     *            the type of the elements is permitted to insert
+     * @param keyType
+     *            the type of keys permitted to be inserted
+     * @param valueType
+     *            the type of values permitted to be inserted
      * 
      * @return a typesafe sorted map
      */

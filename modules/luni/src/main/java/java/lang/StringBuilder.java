@@ -269,7 +269,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * according to the rule defined by {@link String#valueOf(char[])}.
      * </p>
      * 
-     * @param str The <code>char[]</code> value to append to this object.
+     * @param ch The <code>char[]</code> value to append to this object.
      * @return A reference to this object.
      * 
      * @see String#valueOf(char[])
@@ -443,7 +443,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * </p>
      * 
      * @param offset The index of this object to insert the value.
-     * @param b The <code>int</code> value to insert into this object.
+     * @param i The <code>int</code> value to insert into this object.
      * @return A reference to this object.
      * 
      * @throws StringIndexOutOfBoundsException if <code>offset</code> is
@@ -465,7 +465,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * </p>
      * 
      * @param offset The index of this object to insert the value.
-     * @param b The <code>long</code> value to insert into this object.
+     * @param l The <code>long</code> value to insert into this object.
      * @return A reference to this object.
      * 
      * @throws StringIndexOutOfBoundsException if <code>offset</code> is
@@ -487,7 +487,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * </p>
      * 
      * @param offset The index of this object to insert the value.
-     * @param b The <code>float</code> value to insert into this object.
+     * @param f The <code>float</code> value to insert into this object.
      * @return A reference to this object.
      * 
      * @throws StringIndexOutOfBoundsException if <code>offset</code> is
@@ -531,7 +531,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * </p>
      * 
      * @param offset The index of this object to insert the value.
-     * @param b The <code>Object</code> value to insert into this object.
+     * @param obj The <code>Object</code> value to insert into this object.
      * @return A reference to this object.
      * 
      * @throws StringIndexOutOfBoundsException if <code>offset</code> is

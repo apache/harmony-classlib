@@ -184,7 +184,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      * All writes to the target can now take place through this PrintStream. Its
      * encoding character set is the default charset in the VM.
      * 
-     * @param file
+     * @param fileName
      *            the file to provide convenience methods on.
      * @throws FileNotFoundException
      *             if the file does not exist or cannot be opened to write. Or
@@ -203,7 +203,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      * All writes to the target can now take place through this PrintStream. Its
      * encoding character set name is <code>csn</code>.
      * 
-     * @param file
+     * @param fileName
      *            the file to provide convenience methods on.
      * @param csn
      *            the character set name

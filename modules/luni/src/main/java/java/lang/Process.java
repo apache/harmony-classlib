@@ -17,7 +17,6 @@
 
 package java.lang;
 
-
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -27,60 +26,60 @@ import java.io.OutputStream;
  */
 public abstract class Process {
 
-	/**
-	 * Terimates the receiver and closes any associated streams.
-	 */
-	abstract public void destroy();
+    /**
+     * Terminates the receiver and closes any associated streams.
+     */
+    abstract public void destroy();
 
-	/**
-	 * Answers the exit value of the receiving Process. It is available only
-	 * when the OS subprocess is finished.
-	 * 
-	 * @return The exit value of the receiver.
-	 * 
-	 * @throws IllegalThreadStateException
-	 *             If the receiver has not terminated.
-	 */
-	abstract public int exitValue();
+    /**
+     * Answers the exit value of the receiving Process. It is available only
+     * when the OS subprocess is finished.
+     * 
+     * @return The exit value of the receiver.
+     * 
+     * @throws IllegalThreadStateException
+     *             If the receiver has not terminated.
+     */
+    abstract public int exitValue();
 
-	/**
-	 * Answers the receiver's error output stream.
-	 * <p>
-	 * Note: This is an InputStream which allows reading of the other threads
-	 * "stderr".
-	 * 
-	 * @return The error stream associated with the receiver
-	 */
-	abstract public InputStream getErrorStream();
+    /**
+     * Answers the receiver's error output stream.
+     * <p>
+     * Note: This is an InputStream which allows reading of the other threads
+     * "stderr".
+     * 
+     * @return The error stream associated with the receiver
+     */
+    abstract public InputStream getErrorStream();
 
-	/**
-	 * Answers the receiver's standard input stream
-	 * <p>
-	 * Note: This is an InputStream which allows reading from the other process'
-	 * "stdout".
-	 * 
-	 * @return The receiver's process' stdin.
-	 */
-	abstract public InputStream getInputStream();
+    /**
+     * Answers the receiver's standard input stream
+     * <p>
+     * Note: This is an InputStream which allows reading from the other process'
+     * "stdout".
+     * 
+     * @return The receiver's process' stdin.
+     */
+    abstract public InputStream getInputStream();
 
-	/**
-	 * Answers the receiver's standard output stream
-	 * <p>
-	 * Note: This is an OutputStream which allows writing to the other process'
-	 * "stdin".
-	 * 
-	 * @return The receiver's process' stdout.
-	 */
-	abstract public OutputStream getOutputStream();
+    /**
+     * Answers the receiver's standard output stream
+     * <p>
+     * Note: This is an OutputStream which allows writing to the other process'
+     * "stdin".
+     * 
+     * @return The receiver's process' stdout.
+     */
+    abstract public OutputStream getOutputStream();
 
-	/**
-	 * Causes the calling thread to wait for the process associated with the
-	 * receiver to finish executing.
-	 * 
-	 * @return The exit value of the Process being waited on
-	 * 
-	 * @throws InterruptedException
-	 *             If the calling thread is interrupted
-	 */
-	abstract public int waitFor() throws InterruptedException;
+    /**
+     * Causes the calling thread to wait for the process associated with the
+     * receiver to finish executing.
+     * 
+     * @return The exit value of the Process being waited on
+     * 
+     * @throws InterruptedException
+     *             If the calling thread is interrupted
+     */
+    abstract public int waitFor() throws InterruptedException;
 }

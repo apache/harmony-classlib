@@ -17,7 +17,6 @@
 
 package java.lang;
 
-
 /**
  * This runtime exception is thrown when the an invalid arithmetic operation is
  * attempted.
@@ -27,20 +26,20 @@ public class ArithmeticException extends RuntimeException {
     private static final long serialVersionUID = 2256477558314496007L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ArithmeticException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public ArithmeticException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ArithmeticException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public ArithmeticException(String detailMessage) {
+        super(detailMessage);
+    }
 }

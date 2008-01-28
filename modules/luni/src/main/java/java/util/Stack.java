@@ -100,7 +100,7 @@ public class Stack<E> extends Vector<E> {
      * Returns the index of the first occurrence of the object.
      * 
      * @return the index of the first occurrence of the object
-     * @param o
+     * @param object
      *            the object to be searched
      */
     public synchronized int search(Object object) {
