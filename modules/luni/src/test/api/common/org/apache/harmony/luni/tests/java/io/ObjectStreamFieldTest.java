@@ -32,133 +32,125 @@ import java.util.Date;
 
 public class ObjectStreamFieldTest extends junit.framework.TestCase {
 
-	static class DummyClass implements Serializable {
-		private static final long serialVersionUID = 999999999999998L;
+    static class DummyClass implements Serializable {
+        private static final long serialVersionUID = 999999999999998L;
 
-		long bam = 999L;
+        long bam = 999L;
 
-		int ham = 9999;
+        int ham = 9999;
 
-		int sam = 8888;
+        int sam = 8888;
 
-		Object hola = new Object();
+        Object hola = new Object();
 
-		public static long getUID() {
-			return serialVersionUID;
-		}
-	}
-
-	ObjectStreamClass osc;
-
-	ObjectStreamField hamField;
-
-	ObjectStreamField samField;
-
-	ObjectStreamField bamField;
-
-	ObjectStreamField holaField;
-
-	/**
-	 * @tests java.io.ObjectStreamField#ObjectStreamField(java.lang.String,
-	 *        java.lang.Class)
-	 */
-	public void test_ConstructorLjava_lang_StringLjava_lang_Class() {
-		// Test for method java.io.ObjectStreamField(java.lang.String,
-		// java.lang.Class)
-		assertTrue("Used to test", true);
-	}
-
-	public void test_equalsLjava_lang_Object() {
-	    // Regression test for HARMONY-4273
-	    assertTrue(samField.equals(samField));
-	    assertFalse(samField.equals(hamField));
-	    assertFalse(samField.equals("fish"));
-	    assertFalse(samField.equals(null));
+        public static long getUID() {
+            return serialVersionUID;
+        }
     }
 
-	/**
-	 * @tests java.io.ObjectStreamField#compareTo(java.lang.Object)
-	 */
-	public void test_compareToLjava_lang_Object() {
-		// Test for method int
-		// java.io.ObjectStreamField.compareTo(java.lang.Object)
-		assertTrue("Object compared to int did not return > 0", holaField
-				.compareTo(hamField) > 0);
-		assertEquals("Int compared to itself did not return 0", 0, hamField
-				.compareTo(hamField));
-		assertTrue("(Int)ham compared to (Int)sam did not return < 0", hamField
-				.compareTo(samField) < 0);
-	}
+    ObjectStreamClass osc;
 
-	/**
-	 * @tests java.io.ObjectStreamField#getName()
-	 */
-	public void test_getName() {
-		// Test for method java.lang.String java.io.ObjectStreamField.getName()
-		assertEquals("Field did not return correct name", "hola", holaField.getName()
-				);
-	}
+    ObjectStreamField hamField;
 
-	/**
-	 * @tests java.io.ObjectStreamField#getOffset()
-	 */
-	public void test_getOffset() {
-		// Test for method int java.io.ObjectStreamField.getOffset()
-		ObjectStreamField[] osfArray;
-		osfArray = osc.getFields();
-		assertTrue("getOffset did not return reasonable values", osfArray[0]
-				.getOffset() != osfArray[1].getOffset());
-		assertEquals("getOffset for osfArray[0].getOffset() did not return 0",
-				0, osfArray[0].getOffset());
-		assertEquals("osfArray[1].getOffset() did not return	8", 8, osfArray[1]
-				.getOffset());
-		assertEquals("osfArray[2].getOffset() did not return 12", 12, osfArray[2]
-				.getOffset());
-	}
+    ObjectStreamField samField;
 
-	/**
-	 * @tests java.io.ObjectStreamField#getType()
-	 */
-	public void test_getType() {
-		// Test for method java.lang.Class java.io.ObjectStreamField.getType()
-		assertTrue("getType on an Object field did not answer Object",
-				holaField.getType().equals(Object.class));
-	}
+    ObjectStreamField bamField;
 
-	/**
-	 * @tests java.io.ObjectStreamField#getTypeCode()
-	 */
-	public void test_getTypeCode() {
-		// Test for method char java.io.ObjectStreamField.getTypeCode()
-		assertEquals("getTypeCode on an Object field did not answer 'L'",
-				'L', holaField.getTypeCode());
-		assertEquals("getTypeCode on a long field did not answer 'J'", 'J', bamField
-				.getTypeCode());
-	}
+    ObjectStreamField holaField;
 
-	/**
-	 * @tests java.io.ObjectStreamField#getTypeString()
-	 */
-	public void test_getTypeString() {
-		assertTrue("getTypeString returned: " + holaField.getTypeString(),
-				holaField.getTypeString().indexOf("Object") >= 0);
-		assertNull("Primitive types' strings should be null", hamField.getTypeString());
-        
+    /**
+     * @tests java.io.ObjectStreamField#ObjectStreamField(java.lang.String,
+     *        java.lang.Class)
+     */
+    public void test_ConstructorLjava_lang_StringLjava_lang_Class() {
+        assertTrue("Used to test", true);
+    }
+
+    public void test_equalsLjava_lang_Object() {
+        // Regression test for HARMONY-4273
+        assertTrue(samField.equals(samField));
+        assertFalse(samField.equals(hamField));
+        assertFalse(samField.equals("fish"));
+        assertFalse(samField.equals(null));
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#compareTo(java.lang.Object)
+     */
+    public void test_compareToLjava_lang_Object() {
+        assertTrue("Object compared to int did not return > 0", holaField
+                .compareTo(hamField) > 0);
+        assertEquals("Int compared to itself did not return 0", 0, hamField
+                .compareTo(hamField));
+        assertTrue("(Int)ham compared to (Int)sam did not return < 0", hamField
+                .compareTo(samField) < 0);
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#getName()
+     */
+    public void test_getName() {
+        assertEquals("Field did not return correct name", "hola", holaField
+                .getName());
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#getOffset()
+     */
+    public void test_getOffset() {
+        ObjectStreamField[] osfArray;
+        osfArray = osc.getFields();
+        assertTrue("getOffset did not return reasonable values", osfArray[0]
+                .getOffset() != osfArray[1].getOffset());
+        assertEquals("getOffset for osfArray[0].getOffset() did not return 0",
+                0, osfArray[0].getOffset());
+        assertEquals("osfArray[1].getOffset() did not return	8", 8, osfArray[1]
+                .getOffset());
+        assertEquals("osfArray[2].getOffset() did not return 12", 12,
+                osfArray[2].getOffset());
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#getType()
+     */
+    public void test_getType() {
+        assertTrue("getType on an Object field did not answer Object",
+                holaField.getType().equals(Object.class));
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#getTypeCode()
+     */
+    public void test_getTypeCode() {
+        assertEquals("getTypeCode on an Object field did not answer 'L'", 'L',
+                holaField.getTypeCode());
+        assertEquals("getTypeCode on a long field did not answer 'J'", 'J',
+                bamField.getTypeCode());
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#getTypeString()
+     */
+    public void test_getTypeString() {
+        assertTrue("getTypeString returned: " + holaField.getTypeString(),
+                holaField.getTypeString().indexOf("Object") >= 0);
+        assertNull("Primitive types' strings should be null", hamField
+                .getTypeString());
+
         ObjectStreamField osf = new ObjectStreamField("s", String.class, true);
         assertTrue(osf.getTypeString() == "Ljava/lang/String;");
-	}
+    }
 
-	/**
-	 * @tests java.io.ObjectStreamField#toString()
-	 */
-	public void test_toString() {
-		// Test for method java.lang.String java.io.ObjectStreamField.toString()
-		assertTrue("toString on a long returned: " + bamField.toString(),
-				bamField.toString().indexOf("bam") >= 0);
-	}
-    
     /**
-     * @tests java.io.ObjectStreamField#getType() 
+     * @tests java.io.ObjectStreamField#toString()
+     */
+    public void test_toString() {
+        assertTrue("toString on a long returned: " + bamField.toString(),
+                bamField.toString().indexOf("bam") >= 0);
+    }
+
+    /**
+     * @tests java.io.ObjectStreamField#getType()
      */
     public void test_getType_Deserialized() throws IOException,
             ClassNotFoundException {
@@ -177,11 +169,12 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         ObjectStreamField field = oc.getField("i");
         assertEquals(Object.class, field.getType());
     }
-    
+
     /**
      * @tests java.io.ObjectStreamField#getType()
      */
-    public void test_getType_MockObjectInputStream() throws IOException, ClassNotFoundException {
+    public void test_getType_MockObjectInputStream() throws IOException,
+            ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(new SerializableObject());
@@ -197,10 +190,10 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         ObjectStreamField field = oc.getField("i");
         assertEquals(Object.class, field.getType());
     }
-    
+
     public void test_isUnshared() throws Exception {
         SerializableObject2 obj = new SerializableObject2();
-        
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(obj);
@@ -210,43 +203,36 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bais);
         SerializableObject2 newObj = (SerializableObject2) ois.readObject();
-        
+
         ObjectInputStream.GetField getField = newObj.getGetField();
         ObjectStreamClass objectStreamClass = getField.getObjectStreamClass();
-        
+
         assertTrue(objectStreamClass.getField("i").isUnshared());
         assertFalse(objectStreamClass.getField("d").isUnshared());
         assertTrue(objectStreamClass.getField("s").isUnshared());
-        
+
         assertEquals(1000, getField.get("i", null));
         assertEquals(SerializableObject2.today, getField.get("d", null));
         assertEquals("Richard", getField.get("s", null));
-        
+
         assertTrue(objectStreamClass.getField("s").getTypeString() == "Ljava/lang/String;");
-        
+
         assertEquals(0, objectStreamClass.getField("d").getOffset());
         assertEquals(1, objectStreamClass.getField("i").getOffset());
         assertEquals(2, objectStreamClass.getField("s").getOffset());
     }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-		osc = ObjectStreamClass.lookup(DummyClass.class);
-		bamField = osc.getField("bam");
-		samField = osc.getField("sam");
-		hamField = osc.getField("ham");
-		holaField = osc.getField("hola");
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * Sets up the fixture, for example, open a network connection. This method
+     * is called before a test is executed.
+     */
+    protected void setUp() {
+        osc = ObjectStreamClass.lookup(DummyClass.class);
+        bamField = osc.getField("bam");
+        samField = osc.getField("sam");
+        hamField = osc.getField("ham");
+        holaField = osc.getField("hola");
+    }
 }
 
 class SerializableObject implements Serializable {
@@ -257,9 +243,9 @@ class SerializableObject implements Serializable {
     public Date d;
 
     public Integer i;
-    
+
     public Exception e;
-    
+
     public SerializableObject() {
         d = new Date();
         i = new Integer(1);
@@ -299,7 +285,7 @@ class MockObjectInputStream extends ObjectInputStream {
     public ObjectStreamClass readClassDescriptor() throws IOException,
             ClassNotFoundException {
         ObjectStreamClass osc = super.readClassDescriptor();
-        //To get the ObjectStreamClass of SerializableObject
+        // To get the ObjectStreamClass of SerializableObject
         if (osc.getSerialVersionUID() == -2953957835918368056L) {
             temp = osc;
         }
@@ -314,21 +300,20 @@ class MockObjectInputStream extends ObjectInputStream {
 class SerializableObject2 implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private static final ObjectStreamField[] serialPersistentFields = {
-        new ObjectStreamField("i", Integer.class, true),
-        new ObjectStreamField("d", Date.class, false),
-        new ObjectStreamField("s", String.class, true),
-    };
-    
+            new ObjectStreamField("i", Integer.class, true),
+            new ObjectStreamField("d", Date.class, false),
+            new ObjectStreamField("s", String.class, true), };
+
     private ObjectInputStream.GetField getField;
-    
+
     public static Date today = new Date(1172632429156l);
-    
+
     public ObjectInputStream.GetField getGetField() {
         return getField;
     }
-    
+
     private void writeObject(ObjectOutputStream o) throws IOException {
         ObjectOutputStream.PutField putField = o.putFields();
         putField.put("i", new Integer(1000));

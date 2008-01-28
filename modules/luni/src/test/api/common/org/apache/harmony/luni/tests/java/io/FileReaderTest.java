@@ -24,7 +24,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileReaderTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class FileReaderTest extends TestCase {
 
     FileReader br;
 
@@ -101,14 +103,20 @@ public class FileReaderTest extends junit.framework.TestCase {
     protected void tearDown() {
         try {
             bw.close();
+        } catch (Exception e) {
+            // Ignore
+        }
+        try {
             br.close();
         } catch (Exception e) {
+            // Ignore
         }
-
         try {
-            if (fis != null)
+            if (fis != null) {
                 fis.close();
+            }
         } catch (Exception e) {
+            // Ignore
         }
         f.delete();
     }

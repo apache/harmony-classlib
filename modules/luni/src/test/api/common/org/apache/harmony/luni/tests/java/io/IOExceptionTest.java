@@ -19,49 +19,35 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.IOException;
 
-public class IOExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.io.IOException#IOException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.io.IOException()
-		try {
-			throw new IOException();
-		} catch (IOException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during IOException test" + e.toString());
-		}
-		fail("Failed to generate exception");
-	}
+public class IOExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.io.IOException#IOException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.io.IOException(java.lang.String)
-		try {
-			throw new IOException("Some error message");
-		} catch (IOException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during IOException test" + e.toString());
-		}
-		fail("Failed to generate exception");
-	}
+    /**
+     * @tests java.io.IOException#IOException()
+     */
+    public void test_Constructor() {
+        try {
+            if (true) {
+                throw new IOException();
+            }
+            fail("Exception during IOException test");
+        } catch (IOException e) {
+            // Expected
+        }
+    }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.io.IOException#IOException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        try {
+            if (true) {
+                throw new IOException("Some error message");
+            }
+            fail("Failed to generate exception");
+        } catch (IOException e) {
+            // Expected
+        }
+    }
 }

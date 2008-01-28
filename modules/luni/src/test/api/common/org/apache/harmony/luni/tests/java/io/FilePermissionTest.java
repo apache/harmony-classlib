@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.FilePermission;
 import java.security.PermissionCollection;
 
-public class FilePermissionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class FilePermissionTest extends TestCase {
 
     FilePermission readAllFiles = new FilePermission("<<ALL FILES>>", "read");
 

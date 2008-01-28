@@ -23,7 +23,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class FileOutputStreamTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class FileOutputStreamTest extends TestCase {
 
     public String fileName;
 

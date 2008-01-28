@@ -19,38 +19,24 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.NotActiveException;
 
-public class NotActiveExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.io.NotActiveException#NotActiveException()
-	 */
+public class NotActiveExceptionTest extends TestCase {
+
+    /**
+     * @tests java.io.NotActiveException#NotActiveException()
+     */
     public void test_Constructor() {
-        // Test for method java.io.NotActiveException()
         NotActiveException e = new NotActiveException();
         assertNull(e.getMessage());
     }
 
-	/**
-	 * @tests java.io.NotActiveException#NotActiveException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.io.NotActiveException(java.lang.String)
+    /**
+     * @tests java.io.NotActiveException#NotActiveException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
         String message = "Exception message";
         NotActiveException e = new NotActiveException(message);
         assertSame(message, e.getMessage());
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    }
 }
