@@ -28,8 +28,6 @@ import tests.support.Support_Configuration;
 
 public class DatagramPacketTest extends junit.framework.TestCase {
 
-    DatagramPacket dp;
-
     volatile boolean started = false;
 
     /**
@@ -361,7 +359,7 @@ public class DatagramPacketTest extends junit.framework.TestCase {
             // Expected
         }
 
-        // now validate we can set it correctly
+        // Now validate we can set it correctly
         InetSocketAddress theAddress = new InetSocketAddress(InetAddress
                 .getLocalHost(), 2049);
         thePacket = new DatagramPacket(buf, 1);
