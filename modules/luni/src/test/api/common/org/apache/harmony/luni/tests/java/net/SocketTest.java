@@ -36,7 +36,6 @@ import java.net.UnknownHostException;
 import java.security.Permission;
 
 import tests.support.Support_Configuration;
-import tests.support.Support_PortManager;
 
 public class SocketTest extends SocketTestCase {
     private class ClientThread implements Runnable {
@@ -1533,284 +1532,193 @@ public class SocketTest extends SocketTestCase {
      * @tests java.net.Socket#sendUrgentData(int)
      */
     public void test_sendUrgentDataI() throws Exception {
-        // Some platforms may not support urgent data in this case we will not
-        // run these tests. For now run on all platforms until we find those
-        // that do not support urgent data
+        /*
+         * Some platforms may not support urgent data in this case we will not
+         * run these tests. For now run on all platforms until we find those
+         * that do not support urgent data
+         */
         String platform = System.getProperty("os.name");
         if (platform.equals("Dummy")) {
             return;
         }
-        // validate that when OOBInline is false that any urgent data
-        // is silently ignored
-        String urgentData = "U";
-        InetSocketAddress theAddress = new InetSocketAddress(InetAddress
-                .getLocalHost(), Support_PortManager.getNextPort());
-        Socket theSocket = new Socket();
-        ServerSocket serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        Socket servSock = serverSocket.accept();
-        InputStream theInput = theSocket.getInputStream();
-        OutputStream theOutput = servSock.getOutputStream();
 
-        // send the regular data
+        /*
+         * Test 1: Validate that when OOBInline is false that any urgent data is
+         * silently ignored
+         */
+        InetAddress localHost = InetAddress.getLocalHost();
+        ServerSocket server = new ServerSocket(0, 5, localHost);
+        SocketAddress serverAddress = new InetSocketAddress(localHost, server
+                .getLocalPort());
+
+        Socket client = new Socket();
+        client.setOOBInline(false);
+
+        client.connect(serverAddress);
+        Socket worker = server.accept();
+        worker.setTcpNoDelay(true);
+        OutputStream theOutput = worker.getOutputStream();
+
+        // Send the regular data
         String sendString = new String("Test");
         theOutput.write(sendString.getBytes());
         theOutput.flush();
 
-        // send the urgent data which should not be received
-        theSocket.setOOBInline(false);
-        servSock.sendUrgentData(urgentData.getBytes()[0]);
+        // Send the urgent data byte which should not be received
+        worker.sendUrgentData("UrgentData".getBytes()[0]);
         theOutput.write(sendString.getBytes());
-        theOutput.flush();
+        worker.shutdownOutput();
+        worker.close();
 
-        // give things some time to settle
-        Thread.sleep(1000);
-
+        // Try to read the bytes back
         int totalBytesRead = 0;
         byte[] myBytes = new byte[100];
-        while (theInput.available() > 0) {
+        InputStream theInput = client.getInputStream();
+        while (true) {
             int bytesRead = theInput.read(myBytes, totalBytesRead,
                     myBytes.length - totalBytesRead);
+            if (bytesRead == -1) {
+                break;
+            }
             totalBytesRead = totalBytesRead + bytesRead;
         }
+
+        client.close();
+        server.close();
 
         String receivedString = new String(myBytes, 0, totalBytesRead);
-        assertTrue("Urgent Data seems to have been received:" + receivedString
-                + ":" + sendString, receivedString.equals(sendString
-                + sendString));
-
-        theSocket.close();
-        serverSocket.close();
-
-        // now validate that urgent data is received as expected. Expect
-        // that it should be between the two writes.
-        theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                Support_PortManager.getNextPort());
-        theSocket = new Socket();
-        serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        servSock = serverSocket.accept();
-        theInput = theSocket.getInputStream();
-        theOutput = servSock.getOutputStream();
-
-        // send the regular data
-        sendString = new String("Test - Urgent Data");
-        theOutput.write(sendString.getBytes());
-        theOutput.flush();
-
-        // send the urgent data which should be received
-        theSocket.setOOBInline(true);
-        servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-        theOutput.write(sendString.getBytes());
-        theOutput.flush();
-
-        Thread.sleep(1000);
-
-        totalBytesRead = 0;
-        myBytes = new byte[100];
-        while (theInput.available() > 0) {
-            int bytesRead = theInput.read(myBytes, totalBytesRead,
-                    myBytes.length - totalBytesRead);
-            totalBytesRead = totalBytesRead + bytesRead;
-        }
-
-        receivedString = new String(myBytes, 0, totalBytesRead);
-        assertTrue("Urgent Data was not received with one urgent byte:"
-                + receivedString + ":" + sendString + urgentData + sendString,
-                receivedString.equals(sendString + urgentData + sendString));
-
-        theSocket.close();
-        serverSocket.close();
-
-        // now test case where we try to send two urgent bytes.
-        theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                Support_PortManager.getNextPort());
-        theSocket = new Socket();
-        serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        servSock = serverSocket.accept();
-        theInput = theSocket.getInputStream();
-        theOutput = servSock.getOutputStream();
-
-        // send the regular data
-        sendString = new String("Test - Urgent Data");
-        theOutput.write(sendString.getBytes());
-        theOutput.flush();
-
-        // send the urgent data which should not be received
-        theSocket.setOOBInline(true);
-        servSock.sendUrgentData(urgentData.getBytes()[0]);
-        servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-        theOutput.write(sendString.getBytes());
-        theOutput.flush();
-
-        Thread.sleep(1000);
-
-        totalBytesRead = 0;
-        myBytes = new byte[100];
-        while (theInput.available() > 0) {
-            int bytesRead = theInput.read(myBytes, totalBytesRead,
-                    myBytes.length - totalBytesRead);
-            totalBytesRead = totalBytesRead + bytesRead;
-        }
-
-        receivedString = new String(myBytes, 0, totalBytesRead);
-        assertTrue("Did not get right byte of urgent data when two sent:"
-                + receivedString + ":" + sendString + urgentData + urgentData
-                + sendString, receivedString.equals(sendString + urgentData
-                + urgentData + sendString));
-
-        theSocket.close();
-        serverSocket.close();
+        assertEquals("Urgent data was received", sendString + sendString,
+                receivedString);
 
         /*
-         * TODO : These do not currently pass on XP SP2 and Server 2003
+         * Test 2: Now validate that urgent data is received as expected. Expect
+         * that it should be between the two writes.
          */
-        if (!platform.startsWith("Windows")) {
-            // now test the case were we send turn the OOBInline on/off
-            theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                    Support_PortManager.getNextPort());
-            theSocket = new Socket();
-            serverSocket = new ServerSocket();
-            serverSocket.bind(theAddress);
-            theSocket.connect(theAddress);
-            servSock = serverSocket.accept();
-            theInput = theSocket.getInputStream();
-            theOutput = servSock.getOutputStream();
+        server = new ServerSocket(0, 5, localHost);
+        serverAddress = new InetSocketAddress(localHost, server.getLocalPort());
 
-            // send the regular data
-            sendString = new String("Test - Urgent Data");
-            theOutput.write(sendString.getBytes());
-            theOutput.flush();
+        client = new Socket();
+        client.setOOBInline(true);
 
-            // send the urgent data which should be received
-            theSocket.setOOBInline(true);
-            servSock.sendUrgentData(urgentData.getBytes()[0]);
+        client.connect(serverAddress);
+        worker = server.accept();
+        worker.setTcpNoDelay(true);
+        theOutput = worker.getOutputStream();
 
-            theOutput.write(sendString.getBytes());
-            theOutput.flush();
+        // Send the regular data
+        sendString = new String("Test - Urgent Data");
+        theOutput.write(sendString.getBytes());
 
-            Thread.sleep(1000);
+        // Send the urgent data (one byte) which should be received
+        client.setOOBInline(true);
+        byte urgentByte = "UrgentData".getBytes()[0];
+        worker.sendUrgentData(urgentByte);
 
-            totalBytesRead = 0;
-            myBytes = new byte[100];
-            while (theInput.available() > 0) {
-                int bytesRead = theInput.read(myBytes, totalBytesRead,
-                        myBytes.length - totalBytesRead);
-                totalBytesRead = totalBytesRead + bytesRead;
-            }
+        // Send more data, the urgent byte must stay in position
+        theOutput.write(sendString.getBytes());
+        worker.shutdownOutput();
+        worker.close();
 
-            receivedString = new String(myBytes, 0, totalBytesRead);
-            assertTrue("Did not get urgent data when turning on/off(1):"
-                    + receivedString + ":" + sendString + urgentData
-                    + sendString, receivedString.equals(sendString + urgentData
-                    + sendString));
-
-            // send the regular data
-            sendString = new String("Test - Urgent Data");
-            theOutput.write(sendString.getBytes());
-            theOutput.flush();
-
-            // send the urgent data which should not be received
-            theSocket.setOOBInline(false);
-            servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-            // send trailing data
-            theOutput.write(sendString.getBytes());
-            theOutput.flush();
-
-            Thread.sleep(1000);
-
-            totalBytesRead = 0;
-            myBytes = new byte[100];
-            while (theInput.available() > 0) {
-                int bytesRead = theInput.read(myBytes, totalBytesRead,
-                        myBytes.length - totalBytesRead);
-                totalBytesRead = totalBytesRead + bytesRead;
-            }
-
-            receivedString = new String(myBytes, 0, totalBytesRead);
-            assertTrue("Got unexpected data data when turning on/off(2):"
-                    + receivedString + ":" + sendString + sendString,
-                    receivedString.equals(sendString + sendString));
-
-            // now turn back on and get data. Here we also
-            // get the previously sent byte of urgent data as it is
-            // still in the urgent buffer
-
-            // send the regular data
-            sendString = new String("Test - Urgent Data");
-            theOutput.write(sendString.getBytes());
-            theOutput.flush();
-
-            // send the urgent data which should be received again
-            theSocket.setOOBInline(true);
-            servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-            theOutput.write(sendString.getBytes());
-            theOutput.flush();
-
-            Thread.sleep(1000);
-
-            totalBytesRead = 0;
-            myBytes = new byte[100];
-            while (theInput.available() > 0) {
-                int bytesRead = theInput.read(myBytes, totalBytesRead,
-                        myBytes.length - totalBytesRead);
-                totalBytesRead = totalBytesRead + bytesRead;
-            }
-
-            receivedString = new String(myBytes, 0, totalBytesRead);
-            // depending on the platform we may get the previously sent
-            // urgent data or not (examples windows-yes, Linux-no).
-            // So accept either so long as we get the urgent data from
-            // when it was on.
-            assertTrue("Did not get urgent data when turning on/off(3) GOT:"
-                    + receivedString + ":Expected" + urgentData + sendString
-                    + urgentData + sendString + ":OR:" + sendString
-                    + urgentData + sendString,
-                    (receivedString.equals(urgentData + sendString + urgentData
-                            + sendString) || receivedString.equals(sendString
-                            + urgentData + sendString)));
-
-            theSocket.close();
-            serverSocket.close();
-        }
-
-        // now test the case where there is only urgent data
-        theAddress = new InetSocketAddress(InetAddress.getLocalHost(),
-                Support_PortManager.getNextPort());
-        theSocket = new Socket();
-        serverSocket = new ServerSocket();
-        serverSocket.bind(theAddress);
-        theSocket.connect(theAddress);
-        servSock = serverSocket.accept();
-        theInput = theSocket.getInputStream();
-        theOutput = servSock.getOutputStream();
-
-        // send the urgent data which should not be received.
-        theSocket.setOOBInline(true);
-        servSock.sendUrgentData(urgentData.getBytes()[0]);
-
-        Thread.sleep(1000);
-
+        // Try to read the bytes back
         totalBytesRead = 0;
         myBytes = new byte[100];
-        while (theInput.available() > 0) {
+        theInput = client.getInputStream();
+        while (true) {
             int bytesRead = theInput.read(myBytes, totalBytesRead,
                     myBytes.length - totalBytesRead);
+            if (bytesRead == -1) {
+                break;
+            }
             totalBytesRead = totalBytesRead + bytesRead;
         }
 
+        client.close();
+        server.close();
+
         receivedString = new String(myBytes, 0, totalBytesRead);
-        assertTrue("Did not get urgent data only urgent data sent:"
-                + receivedString + ":" + urgentData, receivedString
-                .equals(urgentData));
+        assertEquals("Urgent data was not received with one urgent byte",
+                sendString + (char) urgentByte + sendString, receivedString);
+
+        /*
+         * Test 3: Now validate that urgent data is received as expected. Expect
+         * that it should be between the two writes.
+         */
+        server = new ServerSocket(0, 5, localHost);
+        serverAddress = new InetSocketAddress(localHost, server.getLocalPort());
+
+        client = new Socket();
+        client.setOOBInline(true);
+
+        client.connect(serverAddress);
+        worker = server.accept();
+        worker.setTcpNoDelay(true);
+        theOutput = worker.getOutputStream();
+
+        // Send the regular data
+        sendString = new String("Test - Urgent Data");
+        theOutput.write(sendString.getBytes());
+
+        // Send the urgent data (one byte) which should be received
+        client.setOOBInline(true);
+        byte urgentByte1 = "UrgentData".getBytes()[0];
+        byte urgentByte2 = "UrgentData".getBytes()[1];
+        worker.sendUrgentData(urgentByte1);
+        worker.sendUrgentData(urgentByte2);
+
+        // Send more data, the urgent byte must stay in position
+        theOutput.write(sendString.getBytes());
+        worker.shutdownOutput();
+        worker.close();
+
+        // Try to read the bytes back
+        totalBytesRead = 0;
+        myBytes = new byte[100];
+        theInput = client.getInputStream();
+        while (true) {
+            int bytesRead = theInput.read(myBytes, totalBytesRead,
+                    myBytes.length - totalBytesRead);
+            if (bytesRead == -1) {
+                break;
+            }
+            totalBytesRead = totalBytesRead + bytesRead;
+        }
+
+        client.close();
+        server.close();
+
+        receivedString = new String(myBytes, 0, totalBytesRead);
+        assertEquals("Urgent data was not received with two urgent bytes",
+                sendString + (char) urgentByte1 + (char) urgentByte2
+                        + sendString, receivedString);
+
+        /*
+         * Test 4: Now test the case where there is only urgent data.
+         */
+        server = new ServerSocket(0, 5, localHost);
+        serverAddress = new InetSocketAddress(localHost, server.getLocalPort());
+
+        client = new Socket();
+        client.setOOBInline(true);
+
+        client.connect(serverAddress);
+        worker = server.accept();
+        worker.setTcpNoDelay(true);
+
+        // Send the urgent data (one byte) which should be received
+        client.setOOBInline(true);
+        urgentByte = "UrgentData".getBytes()[0];
+        worker.sendUrgentData(urgentByte);
+        worker.close();
+
+        // Try to read the bytes back
+        theInput = client.getInputStream();
+        int byteRead = theInput.read();
+
+        client.close();
+        server.close();
+
+        assertEquals("Sole urgent data was not received", (int) urgentByte,
+                byteRead);
     }
 
     /**
