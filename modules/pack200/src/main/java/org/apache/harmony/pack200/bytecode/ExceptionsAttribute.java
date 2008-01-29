@@ -44,7 +44,7 @@ public class ExceptionsAttribute extends Attribute {
 		this.exceptions = exceptions;
 	}
 
-	
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -58,7 +58,7 @@ public class ExceptionsAttribute extends Attribute {
 		return true;
 	}
 
-	
+
 	protected int getLength() {
 		return 2 + 2 * exceptions.length;
 	}
@@ -68,11 +68,11 @@ public class ExceptionsAttribute extends Attribute {
 		for (int i = 0; i < exceptions.length; i++) {
 			result[i] = exceptions[i];
 		}
-		result[exceptions.length] = getAttributeName(); 
+		result[exceptions.length] = getAttributeName();
 		return result;
 	}
 
-	
+
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -93,7 +93,7 @@ public class ExceptionsAttribute extends Attribute {
 		return "Exceptions:" + exceptions;
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(exceptionIndexes.length);
 		for (int i = 0; i < exceptionIndexes.length; i++) {

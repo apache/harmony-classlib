@@ -25,7 +25,7 @@ import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class ClassConstantPool {
-    
+
     // These are the domains in sorted order.
     public static int DOMAIN_UNDEFINED = 0;
     public static int DOMAIN_INTEGER = 1;
@@ -57,7 +57,7 @@ public class ClassConstantPool {
 		// We don't want duplicates.
 		// Only add in constant pools, but resolve all types since they may
 		// introduce new constant pool entries
-// This is a handy way to see what's adding a ClassFileEntry - set a breakpoint on the print 
+// This is a handy way to see what's adding a ClassFileEntry - set a breakpoint on the print
 //	    if(entry instanceof CPFieldRef) {
 //	        SegmentUtils.debug("AAH:" + ((CPFieldRef)entry).comparisonString());
 //	        if (((CPUTF8)entry).underlyingString().matches("Code")) {
@@ -121,7 +121,7 @@ public class ClassConstantPool {
       }
 		resolve();
 	}
-	
+
 	public void resolve() {
 		resolved= true;
 		Iterator it = entries.iterator();
@@ -134,7 +134,7 @@ public class ClassConstantPool {
 			ClassFileEntry entry = (ClassFileEntry) it.next();
 			entry.resolve(this);
 		}
-		
+
 		// Now that everything has been resolved, do one
 		// final sort of the class pool. This fixes up
 		// references, which are sorted by index in the
@@ -160,7 +160,7 @@ public class ClassConstantPool {
 	 * classes when generating the set of relevant inner
 	 * classes (ic_relevant())
 	 * @return ArrayList collection of all classes.
-	 * 
+	 *
 	 * NOTE: when this list is answered, the classes may not
 	 * yet be resolved.
 	 */

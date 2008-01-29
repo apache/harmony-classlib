@@ -38,7 +38,7 @@ public class EnclosingMethodAttribute extends Attribute {
     protected int getLength() {
         return 4;
     }
-    
+
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         cpClass.resolve(pool);

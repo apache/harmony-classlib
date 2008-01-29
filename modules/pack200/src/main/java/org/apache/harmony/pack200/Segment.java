@@ -42,19 +42,19 @@ import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
  * combine (non-GZipped) archives into a single large archive by concatenation
  * alone. Thus all the hard work in unpacking an archive falls to understanding
  * a segment.
- * 
+ *
  * This class implements the Pack200 specification by an entry point ({@link #parse(InputStream)})
  * which in turn delegates to a variety of other parse methods. Each parse
  * method corresponds (roughly) to the name of the bands in the Pack200
  * specification.
- * 
+ *
  * The first component of a segment is the header; this contains (amongst other
  * things) the expected counts of constant pool entries, which in turn defines
  * how many values need to be read from the stream. Because values are variable
  * width (see {@link Codec}), it is not possible to calculate the start of the
  * next segment, although one of the header values does hint at the size of the
  * segment if non-zero, which can be used for buffering purposes.
- * 
+ *
  * Note that this does not perform any buffering of the input stream; each value
  * will be read on a byte-by-byte basis. It does not perform GZip decompression
  * automatically; both of these are expected to be done by the caller if the
@@ -70,7 +70,7 @@ public class Segment {
 	 * Decode a segment from the given input stream. This does not attempt to
 	 * re-assemble or export any class files, but it contains enough information
 	 * to be able to re-assemble class files by external callers.
-	 * 
+	 *
 	 * @param in
 	 *            the input stream to read from TODO At this point, this must be
 	 *            a non-GZipped input stream, but this decoding could be done in
@@ -107,7 +107,7 @@ public class Segment {
     private SegmentHeader header;
 
     private CpBands cpBands;
-    
+
     private AttrDefinitionBands attrDefinitionBands;
 
     private IcBands icBands;
@@ -170,30 +170,30 @@ public class Segment {
 		boolean addedClasses = false;
 		InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute("InnerClasses");
 		IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
-		
+
 		for(int index = 0; index < ic_relevant.length; index++) {
 		    String innerClassString = ic_relevant[index].thisClassString();
 		    String outerClassString = ic_relevant[index].outerClassString();
 		    String simpleClassName = ic_relevant[index].simpleClassName();
-		    
+
 		    CPClass innerClass = null;
 		    CPUTF8 innerName = null;
 		    CPClass outerClass = null;
-		    
+
 		    if(ic_relevant[index].isAnonymous()) {
 		        innerClass = new CPClass(innerClassString);
 		    } else {
 	            innerClass = new CPClass(innerClassString);
 	            innerName = new CPUTF8(simpleClassName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 		    }
-		    
+
 		    // TODO: I think we need to worry about if the
 		    // OUTER class is a member or not - not the
 		    // ic_relevant itself.
 //		    if(ic_relevant[index].isMember()) {
 		        outerClass = new CPClass(outerClassString);
 //		    }
-		    
+
 	        int flags = ic_relevant[index].F;
 	        innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass, innerName, flags);
 	        addedClasses = true;
@@ -236,7 +236,7 @@ public class Segment {
 	/**
 	 * This performs the actual work of parsing against a non-static instance of
 	 * Segment.
-	 * 
+	 *
 	 * @param in
 	 *            the input stream to read from
 	 * @throws IOException
@@ -249,7 +249,7 @@ public class Segment {
 			Pack200Exception {
 		debug("-------");
         header = new SegmentHeader();
-        header.unpack(in);        
+        header.unpack(in);
         cpBands = new CpBands(this);
         cpBands.unpack(in);
         attrDefinitionBands = new AttrDefinitionBands(this);
@@ -263,11 +263,11 @@ public class Segment {
         fileBands = new FileBands(this);
         fileBands.unpack(in);
 	}
-    
+
     /**
      * Unpacks a packed stream (either .pack. or .pack.gz) into a corresponding
      * JarOuputStream.
-     * 
+     *
      * @throws Pack200Exception
      *             if there is a problem unpacking
      * @throws IOException
@@ -281,13 +281,13 @@ public class Segment {
         // that possibility
         parse(in).unpack(in, out);
     }
-    
+
     /**
      * This is a local debugging message to aid the developer in writing this
      * class. It will be removed before going into production. If the property
      * 'debug.pack200' is set, this will generate messages to stderr; otherwise,
      * it will be silent.
-     * 
+     *
      * @param message
      * @deprecated this should be removed from production code
      */
@@ -305,7 +305,7 @@ public class Segment {
 	 * reading, since the file bits may not be loaded and thus just copied from
 	 * one stream to another. Doesn't close the output stream when finished, in
 	 * case there are more entries (e.g. further segments) to be written.
-	 * 
+	 *
 	 * @param out
 	 *            the JarOutputStream to write data to
 	 * @param in
@@ -324,7 +324,7 @@ public class Segment {
         long[] fileOptions = fileBands.getFileOptions();
         long[] fileSize = fileBands.getFileSize();
         byte[][] fileBits = fileBands.getFileBits();
-       
+
 		// out.setLevel(JarEntry.DEFLATED)
 		// now write the files out
 		int classNum = 0;

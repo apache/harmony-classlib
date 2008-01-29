@@ -31,7 +31,7 @@ public class IcTuple {
     private boolean initialized = false;
     private boolean anonymous = false;
     private boolean member = true;
-    
+
     /**
      * Answer true if the receiver is predicted;
      * answer false if the receiver is specified
@@ -44,7 +44,7 @@ public class IcTuple {
 
     /**
      * Break the receiver into components at $ boundaries.
-     * 
+     *
      * @return
      */
     public String[] innerBreakAtDollar(String className) {
@@ -68,7 +68,7 @@ public class IcTuple {
         }
         return result;
     }
-    
+
     /**
      * Answer the outer class name for the receiver.
      * This may either be specified or inferred from
@@ -81,7 +81,7 @@ public class IcTuple {
         }
         return cachedOuterClassString;
     }
-    
+
     /**
      * Answer the inner class name for the receiver.
      * @return String name of inner class
@@ -92,7 +92,7 @@ public class IcTuple {
         }
         return cachedSimpleClassName;
     }
-    
+
     /**
      * Answer the full name of the inner class represented
      * by this tuple (including its outer component)
@@ -106,17 +106,17 @@ public class IcTuple {
             return C2 + "$" + N;
         }
     }
-    
+
     public boolean isMember() {
         initializeClassStrings();
         return member;
     }
-    
+
     public boolean isAnonymous() {
         initializeClassStrings();
         return anonymous;
     }
-    
+
     private void initializeClassStrings() {
         if(initialized) {
             return;
@@ -181,7 +181,7 @@ public class IcTuple {
         }
         return true;
     }
-    
+
     public String toString() {
         StringBuffer result = new StringBuffer();
         result.append(this.getClass().getName());

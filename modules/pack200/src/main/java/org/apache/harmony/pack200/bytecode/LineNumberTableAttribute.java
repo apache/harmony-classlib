@@ -24,7 +24,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     private int line_number_table_length;
     private int[] start_pcs;
     private int[] line_numbers;
-    
+
     public LineNumberTableAttribute(int line_number_table_length, int[] start_pcs, int[] line_numbers) {
         super("LineNumberTable");
         this.line_number_table_length = line_number_table_length;
@@ -57,7 +57,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] {getAttributeName()};
     }
-    
+
 	/* (non-Javadoc)
 	 * @see org.apache.harmony.pack200.bytecode.Attribute#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
 	 */

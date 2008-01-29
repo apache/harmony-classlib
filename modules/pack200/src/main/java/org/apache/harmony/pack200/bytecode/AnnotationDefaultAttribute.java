@@ -38,7 +38,7 @@ public class AnnotationDefaultAttribute extends AnnotationsAttribute {
     protected void writeBody(DataOutputStream dos) throws IOException {
         element_value.writeBody(dos);
     }
-    
+
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         element_value.resolve(pool);

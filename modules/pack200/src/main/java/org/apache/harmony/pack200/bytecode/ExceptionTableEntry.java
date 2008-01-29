@@ -25,7 +25,7 @@ public class ExceptionTableEntry {
     private int startPC;
     private int endPC;
     private int handlerPC;
-    private CPClass catchType;    
+    private CPClass catchType;
 
     private int startPcRenumbered;
     private int endPcRenumbered;
@@ -45,7 +45,7 @@ public class ExceptionTableEntry {
 		dos.writeShort(handlerPcRenumbered);
 		dos.writeShort(catchTypeIndex);
 	}
-    
+
     public void renumber(List byteCodeOffsets) {
         startPcRenumbered = ((Integer)byteCodeOffsets.get(startPC)).intValue();
         int endPcIndex = startPC + endPC;
@@ -53,7 +53,7 @@ public class ExceptionTableEntry {
         int handlerPcIndex = endPcIndex + handlerPC;
         handlerPcRenumbered = ((Integer)byteCodeOffsets.get(handlerPcIndex)).intValue();
     }
-    
+
     public void resolve(ClassConstantPool pool) {
         catchType.resolve(pool);
         catchTypeIndex = pool.indexOf(catchType);

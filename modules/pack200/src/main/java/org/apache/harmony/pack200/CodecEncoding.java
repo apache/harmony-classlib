@@ -40,7 +40,7 @@ public class CodecEncoding {
 			new BHSDCodec(5, 16, 2), new BHSDCodec(5, 32), new BHSDCodec(5, 32, 1),
 			new BHSDCodec(5, 32, 2), new BHSDCodec(5, 64), new BHSDCodec(5, 64, 1),
 			new BHSDCodec(5, 64, 2), new BHSDCodec(5, 128), new BHSDCodec(5, 128, 1),
-			new BHSDCodec(5, 128, 2), new BHSDCodec(5, 4, 0, 1), 
+			new BHSDCodec(5, 128, 2), new BHSDCodec(5, 4, 0, 1),
 			new BHSDCodec(5, 4, 1, 1), new BHSDCodec(5, 4, 2, 1),
 			new BHSDCodec(5, 16, 0, 1), new BHSDCodec(5, 16, 1, 1),
 			new BHSDCodec(5, 16, 2, 1), new BHSDCodec(5, 32, 0, 1),
@@ -80,7 +80,7 @@ public class CodecEncoding {
 			new BHSDCodec(4, 240, 0, 1), new BHSDCodec(4, 240, 1, 1),
 			new BHSDCodec(4, 248, 0, 1), new BHSDCodec(4, 248, 1, 1) };
 
-	/** 
+	/**
 	 * Returns the codec specified by the given value byte and optional byte header.
 	 * If the value is >=116, then bytes may be consumed from the secondary input
 	 * stream, which is taken to be the contents of the band_headers byte array.
@@ -91,17 +91,17 @@ public class CodecEncoding {
 	 * @param in the input stream to read additional byte headers from
 	 * @param defaultCodec TODO
 	 * @return the corresponding codec, or <code>null</code> if the default should be used
-	 * @throws IOException 
+	 * @throws IOException
 	 * @throws IOException if there is a problem reading from the input stream (which
 	 * in reality, is never, since the band_headers are likely stored in a byte array
 	 * and accessed via a ByteArrayInputStream. However, an EOFException could occur
 	 * if things go wrong)
-	 * @throws Pack200Exception 
+	 * @throws Pack200Exception
 	 */
 	public static Codec getCodec(int value, InputStream in, Codec defaultCodec) throws IOException, Pack200Exception {
 		// Sanity check to make sure that no-one has changed
 		// the canonical codecs, which would really cause havoc
-		if (canonicalCodec.length != 116) 
+		if (canonicalCodec.length != 116)
 			throw new Error("Canonical encodings have been incorrectly modified");
 		if (value < 0) {
 			throw new IllegalArgumentException(
@@ -122,7 +122,7 @@ public class CodecEncoding {
 				throw new EOFException("End of buffer read whilst trying to decode codec");
 			int h = code + 1;
 			// This handles the special cases for invalid combinations of data.
-			return new BHSDCodec(b,h,s,d);			
+			return new BHSDCodec(b,h,s,d);
 		} else if (value >= 117 && value <= 140) { // Run codec
 			int offset = value - 117;
 			int kx = offset & 3;
@@ -138,17 +138,17 @@ public class CodecEncoding {
 			if (adef) {
 				aCodec = defaultCodec;
 			} else {
-				aCodec = getCodec(in.read(),in,defaultCodec); 
+				aCodec = getCodec(in.read(),in,defaultCodec);
 			}
 			if (bdef) {
 				bCodec = defaultCodec;
 			} else {
-				bCodec = getCodec(in.read(),in,defaultCodec); 
+				bCodec = getCodec(in.read(),in,defaultCodec);
 			}
 			return new RunCodec(k,aCodec,bCodec);
 		} else if (value >= 141 && value <= 188) { // Population Codec
 			int offset = value - 141;
-			boolean fdef = (offset & 1) == 1; 
+			boolean fdef = (offset & 1) == 1;
 			boolean udef = (offset >> 1 & 1) == 1;
 			int tdefl = offset >> 2;
 			boolean tdef = tdefl != 0;

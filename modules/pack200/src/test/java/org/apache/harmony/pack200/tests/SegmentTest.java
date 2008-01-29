@@ -29,7 +29,7 @@ import org.apache.harmony.pack200.Segment;
  * Tests for org.apache.harmony.pack200.Segment, which is the main class for pack200.
  */
 public class SegmentTest extends TestCase {
-    
+
     InputStream in;
     JarOutputStream out;
 
@@ -59,7 +59,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("Just", "ResourcesGz.jar")));
         segment.writeJar(out);
     }
-    
+
     // Test with an archive containing Harmony's SQL module, packed with -E1
     public void testWithSqlE1() throws Exception {
         in = Segment.class
@@ -69,7 +69,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", "-e1.jar")));
         segment.writeJar(out);
     }
-    
+
     // Test with an archive containing Harmony's SQL module
     public void testWithSql() throws Exception {
         in = Segment.class
@@ -79,7 +79,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", ".jar")));
         segment.writeJar(out);
     }
-    
+
     // Test with an archive containing Harmony's Pack200 module, packed with -E1
     public void testWithPack200E1() throws Exception {
         in = Segment.class
@@ -89,7 +89,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200-e1.jar")));
         segment.writeJar(out);
     }
-    
+
     // Test with an archive containing Harmony's Pack200 module
     public void testWithPack200() throws Exception {
         in = Segment.class
@@ -99,7 +99,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200.jar")));
         segment.writeJar(out);
     }
-    
+
     // Test with an archive containing Harmony's JNDI module
     public void testWithJNDIE1() throws Exception {
         in = Segment.class
@@ -109,7 +109,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("jndi", "-e1.jar")));
         segment.writeJar(out);
     }
-    
+
     // Test with an archive containing Annotations
     public void testWithAnnotations() throws Exception {
 
@@ -119,9 +119,9 @@ public class SegmentTest extends TestCase {
         assertNotNull(segment);
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("ann", "otations.jar")));
         segment.writeJar(out);
-    
+
     }
- 
+
     public void testInterfaceOnly() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
@@ -130,7 +130,7 @@ public class SegmentTest extends TestCase {
         out = new JarOutputStream(new FileOutputStream(File.createTempFile("Interface", "Only.jar")));
         segment.writeJar(out);
     }
-    
+
     protected void tearDown() throws Exception {
         super.tearDown();
         try {

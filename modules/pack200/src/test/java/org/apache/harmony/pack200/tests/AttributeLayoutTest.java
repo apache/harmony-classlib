@@ -45,7 +45,7 @@ public class AttributeLayoutTest extends TestCase {
 						return null;
 					return data[cp][(int)index];
 				}
-				
+
 			};
 		}
 	}

@@ -25,23 +25,23 @@ import org.apache.harmony.pack200.SegmentUtils;
 public abstract class BCIRenumberedAttribute extends Attribute {
 
     protected boolean renumbered = false;
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.Attribute#hasBCIRenumbering()
      */
     public boolean hasBCIRenumbering() {
         return true;
     }
-    
+
     public BCIRenumberedAttribute(String attributeName) {
         super(attributeName);
     }
-    
+
     protected abstract int getLength();
     protected abstract void writeBody(DataOutputStream dos) throws IOException;
     public abstract String toString();
     protected abstract int[] getStartPCs();
-    
+
     /**
      * In Pack200, line number tables are BCI renumbered.
      * This method takes the byteCodeOffsets (which is
@@ -49,7 +49,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
      * byte code array of each instruction) and updates the
      * start_pcs so that it points to the instruction index
      * itself, not the BCI renumbering of the instruction.
-     * 
+     *
      * @param byteCodeOffsets List of Integer offsets of the bytecode array
      */
     public void renumber(List byteCodeOffsets) {

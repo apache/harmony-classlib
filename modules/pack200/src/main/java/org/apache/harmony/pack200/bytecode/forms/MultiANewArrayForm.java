@@ -37,7 +37,7 @@ public class MultiANewArrayForm extends NewClassRefForm {
     public int getOperandType() {
         return TYPE_MULTIANEWARRAY;
     }
-    
+
     public boolean hasMultianewarrayOperand() {
         return true;
     }
@@ -54,7 +54,7 @@ public class MultiANewArrayForm extends NewClassRefForm {
         // multianewarray has a class ref and a dimension.
         // The superclass handles the class ref.
         super.setByteCodeOperands(byteCode, operandManager, codeLength);
-        
+
         // We have to handle the dimension.
         int dimension = operandManager.nextByte();
         byteCode.setOperandByte(dimension, 2);

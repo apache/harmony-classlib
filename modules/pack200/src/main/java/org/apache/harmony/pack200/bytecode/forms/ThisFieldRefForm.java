@@ -49,7 +49,7 @@ public class ThisFieldRefForm extends ClassSpecificReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_FIELD;
     }
-    
+
     protected String context(OperandManager operandManager) {
         return operandManager.getCurrentClass();
     }

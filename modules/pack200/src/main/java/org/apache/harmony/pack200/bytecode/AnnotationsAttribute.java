@@ -24,29 +24,29 @@ import java.io.IOException;
  */
 public abstract class AnnotationsAttribute extends Attribute {
 
-    
+
     /**
      * Class to represent the annotation structure for class file attributes
      */
     public static class Annotation {
-        
+
         private int num_pairs;
         private CPUTF8[] element_names;
         private ElementValue[] element_values;
         private CPUTF8 type;
-        
+
         // Resolved values
         private int type_index;
         private int[] name_indexes;
-        
-    
+
+
         public Annotation(int num_pairs, CPUTF8 type, CPUTF8[] element_names, ElementValue[] element_values) {
             this.num_pairs = num_pairs;
             this.type = type;
             this.element_names = element_names;
             this.element_values = element_values;
         }
-    
+
         public int getLength() {
             int length = 4;
             for (int i = 0; i < num_pairs; i++) {
@@ -55,7 +55,7 @@ public abstract class AnnotationsAttribute extends Attribute {
             }
             return length;
         }
-        
+
         public void resolve(ClassConstantPool pool) {
             type.resolve(pool);
             type_index = pool.indexOf(type);
@@ -75,22 +75,22 @@ public abstract class AnnotationsAttribute extends Attribute {
                 element_values[i].writeBody(dos);
             }
         }
-        
+
     }
 
     public static class ElementValue {
-        
+
         private Object value;
         private int tag;
-        
+
         // resolved value index if it's a constant
         private int constant_value_index = -1;
-    
+
         public ElementValue(int tag, Object value) {
             this.tag = tag;
             this.value = value;
         }
-        
+
         public void resolve(ClassConstantPool pool) {
             if(value instanceof CPConstant) {
                 ((CPConstant)value).resolve(pool);
@@ -100,7 +100,7 @@ public abstract class AnnotationsAttribute extends Attribute {
                 constant_value_index = pool.indexOf((CPClass)value);
             } else if (value instanceof CPNameAndType) {
                 ((CPNameAndType)value).resolve(pool);
-            } else if (value instanceof Annotation) {            
+            } else if (value instanceof Annotation) {
                 ((Annotation)value).resolve(pool);
             } else if (value instanceof ElementValue[]) {
                 ElementValue[] nestedValues = (ElementValue[])value;
@@ -116,7 +116,7 @@ public abstract class AnnotationsAttribute extends Attribute {
                 dos.writeShort(constant_value_index);
             } else if (value instanceof CPNameAndType) {
                 ((CPNameAndType)value).writeBody(dos);
-            } else if (value instanceof Annotation) {            
+            } else if (value instanceof Annotation) {
                 ((Annotation)value).writeBody(dos);
             } else if (value instanceof ElementValue[]) {
                 ElementValue[] nestedValues = (ElementValue[])value;
@@ -158,6 +158,6 @@ public abstract class AnnotationsAttribute extends Attribute {
         super(attributeName);
     }
 
-    
+
 
 }

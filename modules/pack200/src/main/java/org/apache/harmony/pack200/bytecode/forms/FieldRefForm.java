@@ -34,7 +34,7 @@ public class FieldRefForm extends ReferenceForm {
     public int getOperandType() {
         return TYPE_FIELDREF;
     }
-    
+
     public boolean hasFieldRefOperand() {
         return true;
     }

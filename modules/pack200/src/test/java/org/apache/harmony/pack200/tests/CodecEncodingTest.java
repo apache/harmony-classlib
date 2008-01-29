@@ -29,11 +29,11 @@ import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.pack200.Pack200Exception;
 
 /**
- * 
+ *
  */
 public class CodecEncodingTest extends TestCase {
-	
-    public void testCanonicalEncodings() throws IOException, Pack200Exception { 
+
+    public void testCanonicalEncodings() throws IOException, Pack200Exception {
 		Codec defaultCodec = new BHSDCodec(2,16,0,0);
 		assertEquals(defaultCodec,CodecEncoding.getCodec(0,null, defaultCodec));
 		Map map = new HashMap();
@@ -162,5 +162,5 @@ public class CodecEncodingTest extends TestCase {
 		assertEquals("(5,128,2,1)",CodecEncoding.getCodec(116,new ByteArrayInputStream(new byte[] { 0x25, (byte)0x7F}), null).toString());
 		assertEquals("(2,128,1,1)",CodecEncoding.getCodec(116,new ByteArrayInputStream(new byte[] { 0x0B, (byte)0x7F}), null).toString());
 	}
-    
+
 }

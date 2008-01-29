@@ -28,7 +28,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
 public abstract class SingleByteReferenceForm extends ReferenceForm {
 
     protected boolean widened = false;
-    
+
     public SingleByteReferenceForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
@@ -38,13 +38,13 @@ public abstract class SingleByteReferenceForm extends ReferenceForm {
     protected abstract int getOffset(OperandManager operandManager);
 
     protected abstract int getPoolID();
-    
+
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
         super.setNestedEntries(byteCode, operandManager, offset);
         if(widened) {
             byteCode.setNestedPositions(new int[][] {{0,2}});
         } else {
-            byteCode.setNestedPositions(new int[][] {{0,1}});            
+            byteCode.setNestedPositions(new int[][] {{0,1}});
         }
     }
 }

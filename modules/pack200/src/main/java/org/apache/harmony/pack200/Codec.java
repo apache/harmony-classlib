@@ -31,7 +31,7 @@ import java.io.InputStream;
  * as a sequence of 10x1s. This allows the absolute value of a coded integer to
  * fall outside of the 'small number' range, whilst still being encoded as a
  * single byte.
- * 
+ *
  * A codec is configured with four parameters:
  * <dl>
  * <dt>B</dt>
@@ -65,7 +65,7 @@ import java.io.InputStream;
  * instance of the Codec to be cloned for each use.)
  * <dt>
  * </dl>
- * 
+ *
  * Codecs are notated as (B,H,S,D) and either D or S,D may be omitted if zero.
  * Thus {@link #BYTE1} is denoted (1,256,0,0) or (1,256). The
  * {@link #toString()} method prints out the condensed form of the encoding.
@@ -74,24 +74,24 @@ import java.io.InputStream;
  * {@link #UNSIGNED5}) are unsigned; otherwise, in most cases, they are signed.
  * The presence of the word Delta ({@link #DELTA5}, {@link #UDELTA5})
  * indicates a delta encoding is used.
- * 
+ *
  * This codec is really quite cool for storing compressed information, and could
  * be used entirely separately from the Pack200 implementation for efficient
  * transfer of integer data if required.
- * 
+ *
  * Note that all information is byte-oriented; for decoding float/double
  * information, the bit values are converted (not cast) into a long type. Note
  * that long values are used throughout even though most may be cast to ints;
  * this is primarily to avoid having to worry about signed values, even if it
  * would be more efficient to do so.
- * 
+ *
  * There are a number of standard codecs ({@link #UDELTA5}, {@link #UNSIGNED5},
  * {@link #BYTE1}, {@link #CHAR3}) that are used in the implementation of many
  * bands; but there are a variety of other ones, and indeed the specification
  * assumes that other combinations of values can result in more specific and
  * efficient formats. There are also a sequence of canonical encodings defined
  * by the Pack200 specification, which allow a codec to be referred to by
- * canonical number. {@link CodecEncoding#canonicalCodec}) 
+ * canonical number. {@link CodecEncoding#canonicalCodec})
  */
 public abstract class Codec {
 	/**
@@ -149,7 +149,7 @@ public abstract class Codec {
 	 * Decode a sequence of bytes from the given input stream, returning the
 	 * value as a long. Note that this method can only be applied for non-delta
 	 * encodings.
-	 * 
+	 *
 	 * @param in
 	 *            the input stream to read from
 	 * @return the value as a long
@@ -168,7 +168,7 @@ public abstract class Codec {
 	 * previous value must be passed in as a parameter. If it is a non-delta
 	 * encoding, then it does not matter what value is passed in, so it makes
 	 * sense for the value to be passed in by default using code similar to:
-	 * 
+	 *
 	 * <pre>
 	 * long last = 0;
 	 * while (condition) {
@@ -176,7 +176,7 @@ public abstract class Codec {
 	 * 	// do something with last
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * @param in
 	 *            the input stream to read from
 	 * @param last
@@ -198,7 +198,7 @@ public abstract class Codec {
 	 * This should probably be used in most cases, since some codecs
 	 * (such as @{link PopCodec}) only work when the number of values
 	 * to be read is known.
-	 * 
+	 *
 	 * @param n
 	 *            the number of values to decode
 	 * @param in
@@ -221,10 +221,10 @@ public abstract class Codec {
 		}
 		return result;
 	}
-    
+
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in

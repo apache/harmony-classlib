@@ -35,7 +35,7 @@ public abstract class ReferenceForm extends ByteCodeForm {
 
     protected abstract int getPoolID();
     protected abstract int getOffset(OperandManager operandManager);
-    
+
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
         SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;

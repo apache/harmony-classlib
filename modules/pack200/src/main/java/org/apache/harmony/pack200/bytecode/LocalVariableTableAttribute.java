@@ -70,9 +70,9 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
         ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries
                 .size()];
         nestedEntries.toArray(nestedEntryArray);
-        return nestedEntryArray;        
+        return nestedEntryArray;
     }
-    
+
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         name_indexes = new int[local_variable_table_length];
@@ -84,7 +84,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             descriptor_indexes[i] = pool.indexOf(descriptors[i]);
         }
     }
-    
+
     public String toString() {
         return "LocalVariableTable: " + + local_variable_table_length + " variables";
     }
@@ -115,20 +115,20 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
         // First figure out the maximum size of the byteCodeOffsets array
         int lastInstruction = ((Integer)byteCodeOffsets.get(byteCodeOffsets.size() - 1)).intValue();
         int maxSize = lastInstruction + 1;
-        
+
         // Iterate through the lengths and update each in turn.
         // This is done in place in the lengths array.
         for(int index=0; index < lengths.length; index++) {
             int start_pc = start_pcs[index];
             int revisedLength = -1;
             int encodedLength = lengths[index];
-            
+
             // First get the index of the start_pc in the byteCodeOffsets
             int indexOfStartPC = unrenumbered_start_pcs[index];
             // Given the index of the start_pc, we can now add
             // the encodedLength to it to get the stop index.
             int stopIndex = indexOfStartPC + encodedLength;
-            
+
             // Length can either be an index into the byte code offsets, or one beyond the
             // end of the byte code offsets. Need to determine which this is.
             if(stopIndex == byteCodeOffsets.size()) {
@@ -137,7 +137,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             } else {
                 // We're indexed into the byte code array
                 int stopValue = ((Integer)byteCodeOffsets.get(stopIndex)).intValue();
-                revisedLength = stopValue - start_pc;                
+                revisedLength = stopValue - start_pc;
             }
             lengths[index] = revisedLength;
         }

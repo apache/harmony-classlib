@@ -25,12 +25,12 @@ public class CPFloat extends CPConstantNumber {
 	      this.domain = ClassConstantPool.DOMAIN_FLOAT;
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeFloat(getNumber().floatValue());
 	}
 
-	
+
 	public String toString() {
 		return "Float: " + getValue();
 	}

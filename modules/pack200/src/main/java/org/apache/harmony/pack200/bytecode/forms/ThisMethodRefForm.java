@@ -28,7 +28,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
  */
 public class ThisMethodRefForm extends ClassSpecificReferenceForm {
 
-    public ThisMethodRefForm(int opcode, String name, 
+    public ThisMethodRefForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
         // TODO Auto-generated constructor stub
@@ -37,11 +37,11 @@ public class ThisMethodRefForm extends ClassSpecificReferenceForm {
     public int getOperandType() {
         return TYPE_THISMETHODREF;
     }
-    
+
     public boolean hasThisMethodRefOperand() {
         return true;
     }
-    
+
     protected int getOffset(OperandManager operandManager) {
         return operandManager.nextThisMethodRef();
     }
@@ -49,7 +49,7 @@ public class ThisMethodRefForm extends ClassSpecificReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_METHOD;
     }
-    
+
     protected String context(OperandManager operandManager) {
         return operandManager.getCurrentClass();
     }

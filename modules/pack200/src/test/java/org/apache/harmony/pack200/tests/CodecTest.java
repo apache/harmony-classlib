@@ -159,7 +159,7 @@ public class CodecTest extends TestCase {
 		assertTrue(byte2s.encodes(128));
 		assertTrue(byte2s.encodes(191));
 		assertFalse(byte2s.encodes(192));
-		assertFalse(byte2s.encodes(256));		
+		assertFalse(byte2s.encodes(256));
 	}
 
 	public void testRunCodec() throws Exception {

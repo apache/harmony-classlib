@@ -29,7 +29,7 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
  * Pack200 Inner Class Bands
  */
 public class IcBands extends BandSet {
-    
+
 
     private IcTuple[] icAll;
 
@@ -61,7 +61,7 @@ public class IcBands extends BandSet {
                 outerClasses, cpClass);
         String[] icName = parseReferences("ic_name", in, Codec.DELTA5, outerClasses,
                 cpUTF8);
-        
+
         // Construct IC tuples
         icAll = new IcTuple[icThisClass.length];
         int index = 0;
@@ -136,7 +136,7 @@ public class IcBands extends BandSet {
                 }
             }
         }
-        
+
         IcTuple[] result = new IcTuple[relevantTuples.size()];
         for(int index=0; index < result.length; index++) {
             result[index] = (IcTuple)relevantTuples.get(index);
@@ -144,5 +144,5 @@ public class IcBands extends BandSet {
         }
         return result;
     }
-  
+
 }

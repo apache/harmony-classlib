@@ -37,7 +37,7 @@ public abstract class AbstractBandsTestCase extends TestCase {
         public int getClassCount() {
             return numClasses;
         }
-        
+
         public SegmentOptions getOptions() {
             try {
                 return new SegmentOptions(0);
@@ -52,7 +52,7 @@ public abstract class AbstractBandsTestCase extends TestCase {
         public MockAttributeDefinitionBands(Segment segment) {
             super(segment);
         }
-        
+
         public AttributeLayoutMap getAttributeDefinitionMap() {
             try {
                 return new AttributeLayoutMap();
@@ -61,21 +61,21 @@ public abstract class AbstractBandsTestCase extends TestCase {
             }
             return null;
         }
-        
-       
+
+
 
     }
 
     public class MockSegment extends Segment {
-        
+
         protected AttrDefinitionBands getAttrDefinitionBands() {
             return new MockAttributeDefinitionBands(this);
-        }     
-        
+        }
+
         public SegmentHeader getSegmentHeader() {
             return new MockSegmentHeader();
         }
     }
-    
-    
+
+
 }

@@ -68,7 +68,7 @@ public class CPNameAndType extends ConstantPoolEntry {
 		return new ClassFileEntry[] { name, descriptor };
 	}
 
-	
+
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
 		descriptorIndex = pool.indexOf(descriptor);
@@ -79,18 +79,18 @@ public class CPNameAndType extends ConstantPoolEntry {
 	 * field_info { u2 access_flags; u2 name_index; u2 descriptor_index; u2
 	 * attributes_count; attribute_info attributes[attributes_count]; }
 	 */
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(nameIndex);
 		dos.writeShort(descriptorIndex);
 	}
 
-	
+
 	public String toString() {
 		return "NameAndType: " + name + "(" + descriptor + ")";
 	}
 
-	
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -99,7 +99,7 @@ public class CPNameAndType extends ConstantPoolEntry {
 		return result;
 	}
 
-	
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -131,14 +131,14 @@ public class CPNameAndType extends ConstantPoolEntry {
 	public int invokeInterfaceCount() {
 	    return 1 + SegmentUtils.countInvokeInterfaceArgs(descriptor.underlyingString());
 	}
-	
+
 
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.ConstantPoolEntry#comparisonString()
      */
     public String comparisonString() {
         // First come those things which don't have an
-        // associated signature. Then come the native signatures, 
+        // associated signature. Then come the native signatures,
         // then finally the class signatures.
         // TODO: I think Character.MAX_VALUE is no longer the
         // biggest character, what with the weird codepage thing

@@ -38,7 +38,7 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
     public int getOperandType() {
         return TYPE_NEWINITMETHODREF;
     }
-    
+
     public boolean hasNewInitMethodRefOperand() {
         return true;
     }
@@ -47,7 +47,7 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
         String result = operandManager.getNewClass();
         return result;
     }
-    
+
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
         SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;

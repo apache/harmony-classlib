@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.apache.harmony.pack200.IcTuple;
 
 public class ICTupleTest extends TestCase {
-    
+
     public void testPredictedClassTupleParsing() {
         IcTuple tuple = new IcTuple();
         tuple.C = "orw/SimpleHelloWorld$SimpleHelloWorldInner";
@@ -54,7 +54,7 @@ public class ICTupleTest extends TestCase {
         assertEquals("1", tuple.simpleClassName());
         assertEquals("java/util/AbstractList", tuple.outerClassString());
     }
-    
+
     public void testExplicitClassTupleParsing() {
         IcTuple tuple = new IcTuple();
         tuple.C = "Foo$$2$Local";

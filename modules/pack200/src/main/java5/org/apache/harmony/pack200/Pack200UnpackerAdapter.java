@@ -36,7 +36,7 @@ import org.apache.harmony.pack200.Segment;
 public class Pack200UnpackerAdapter extends Pack200Adapter implements Unpacker {
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.jar.Pack200.Unpacker#unpack(java.io.InputStream,
 	 *      java.util.jar.JarOutputStream)
 	 */
@@ -60,7 +60,7 @@ public class Pack200UnpackerAdapter extends Pack200Adapter implements Unpacker {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.jar.Pack200.Unpacker#unpack(java.io.File,
 	 *      java.util.jar.JarOutputStream)
 	 */

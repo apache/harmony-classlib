@@ -37,11 +37,11 @@ public class SuperMethodRefForm extends ClassSpecificReferenceForm {
     public int getOperandType() {
         return TYPE_SUPERMETHODREF;
     }
-    
+
     public boolean hasSuperMethodRefOperand() {
         return true;
     }
-    
+
     protected int getOffset(OperandManager operandManager) {
         return operandManager.nextSuperMethodRef();
     }
@@ -49,7 +49,7 @@ public class SuperMethodRefForm extends ClassSpecificReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_METHOD;
     }
-    
+
     protected String context(OperandManager operandManager) {
         return operandManager.getSuperClass();
     }

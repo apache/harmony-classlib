@@ -27,23 +27,23 @@ import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class InnerClassesAttribute extends Attribute {
-    
+
     class InnerClassesEntry {
         CPClass inner_class_info;
         CPClass outer_class_info;
         CPUTF8 inner_class_name;
-        
+
         int inner_class_info_index = -1;
         int outer_class_info_index = -1;
         int inner_name_index = -1;
         int inner_class_access_flags = -1;
-        
+
         public InnerClassesEntry(IcTuple icTuple) {
             this(icTuple.C, icTuple.C2, icTuple.N, icTuple.F);
         }
-        
+
         public InnerClassesEntry(String innerString, String outerString, String nameString, int flags) {
-            
+
         }
         public InnerClassesEntry(CPClass innerClass, CPClass outerClass, CPUTF8 innerName, int flags) {
             this.inner_class_info = innerClass;
@@ -51,10 +51,10 @@ public class InnerClassesAttribute extends Attribute {
             this.inner_class_name = innerName;
             this.inner_class_access_flags = flags;
         }
-        
+
         /**
          * Determine the indices of the things in the receiver
-         * which point to elements of the ClassConstantPool 
+         * which point to elements of the ClassConstantPool
          * @param pool ClassConstantPool which holds the
          *      CPClass and CPUTF8 objects.
          */
@@ -85,19 +85,19 @@ public class InnerClassesAttribute extends Attribute {
                 outer_class_info_index = 0;
             }
         }
-        
+
         public void write(DataOutputStream dos) throws IOException {
             dos.writeShort(inner_class_info_index);
             dos.writeShort(outer_class_info_index);
             dos.writeShort(inner_name_index);
             dos.writeShort(inner_class_access_flags);
         }
-        
+
     }
-    
+
     private List innerClasses = new ArrayList();
     private List nestedClassFileEntries = new ArrayList();
-    
+
     public InnerClassesAttribute(String name) {
         super("InnerClasses"); //$NON-NLS-1$
         nestedClassFileEntries.add(getAttributeName());
@@ -155,7 +155,7 @@ public class InnerClassesAttribute extends Attribute {
         // Hack so I can see what's being written.
         super.doWrite(dos);
     }
-    
+
     protected void writeBody(DataOutputStream dos) throws IOException {
         dos.writeShort(innerClasses.size());
         Iterator it = innerClasses.iterator();
@@ -164,7 +164,7 @@ public class InnerClassesAttribute extends Attribute {
             entry.write(dos);
         }
     }
-    
+
     public void addInnerClassesEntry(CPClass innerClass, CPClass outerClass, CPUTF8 innerName, int flags) {
         if(innerClass != null) {
             nestedClassFileEntries.add(innerClass);
@@ -177,7 +177,7 @@ public class InnerClassesAttribute extends Attribute {
         }
         addInnerClassesEntry(new InnerClassesEntry(innerClass, outerClass, innerName, flags));
     }
-    
+
     private void addInnerClassesEntry(InnerClassesEntry innerClassesEntry) {
         innerClasses.add(innerClassesEntry);
     }

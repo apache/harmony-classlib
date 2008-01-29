@@ -114,7 +114,7 @@ public class ClassBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
@@ -157,7 +157,7 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_FIELD);
         int[] fieldAttrCalls = decodeBandInt("field_attr_calls", in,
                 Codec.UNSIGNED5, callCount);
-        
+
         // Assign empty field attributes
         fieldAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
@@ -185,7 +185,7 @@ public class ClassBands extends BandSet {
         int signatureIndex = 0;
 
         int backwardsCallsUsed = parseFieldMetadataBands(in, fieldAttrCalls);
-        
+
         // Parse non-predefined attribute bands
         int backwardsCallIndex = backwardsCallsUsed;
         int limit = options.hasFieldFlagsHi() ? 62 : 31;
@@ -202,7 +202,7 @@ public class ClassBands extends BandSet {
         }
         for (int i = 0; i < counts.length; i++) {
             if(counts[i] > 0) {
-                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);
                 otherAttributes[i] = bands.parseAttributes(in, counts[i]);
                 int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
                 if(numBackwardsCallables > 0) {
@@ -259,7 +259,7 @@ public class ClassBands extends BandSet {
     private void parseMethodBands(InputStream in) throws IOException,
             Pack200Exception {
         methodDescr = parseReferences("method_descr", in, Codec.MDELTA5,
-                classMethodCount, cpBands.getCpDescriptor());        
+                classMethodCount, cpBands.getCpDescriptor());
         parseMethodAttrBands(in);
     }
 
@@ -275,7 +275,7 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_METHOD);
         methodAttrCalls = decodeBandInt("code_attr_calls", in, Codec.UNSIGNED5,
                 callCount);
-        
+
         // assign empty method attributes
         methodAttributes = new ArrayList[classCount][];
         for (int i = 0; i < classCount; i++) {
@@ -293,7 +293,7 @@ public class ClassBands extends BandSet {
                 Codec.UNSIGNED5, count);
         String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC",
                 in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
-        
+
         // Parse method signature attributes
         AttributeLayout methodSignatureLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SIGNATURE,
@@ -301,10 +301,10 @@ public class ClassBands extends BandSet {
         int count1 = SegmentUtils.countMatches(methodFlags, methodSignatureLayout);
         long[] methodSignatureRS = decodeBandLong("method_signature_RS", in,
                 Codec.UNSIGNED5, count1);
-        
+
         // Parse method metadata bands
-        int backwardsCallsUsed = parseMethodMetadataBands(in, methodAttrCalls);        
-        
+        int backwardsCallsUsed = parseMethodMetadataBands(in, methodAttrCalls);
+
         // Parse non-predefined attribute bands
         int backwardsCallIndex = backwardsCallsUsed;
         int limit = options.hasMethodFlagsHi() ? 62 : 31;
@@ -321,7 +321,7 @@ public class ClassBands extends BandSet {
         }
         for (int i = 0; i < counts.length; i++) {
             if(counts[i] > 0) {
-                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);
                 otherAttributes[i] = bands.parseAttributes(in, counts[i]);
                 int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
                 if(numBackwardsCallables > 0) {
@@ -414,7 +414,7 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < classCount; i++) {
             classAttributes[i] = new ArrayList();
         }
-        
+
         classFlags = parseFlags("class_flags", in, classCount, Codec.UNSIGNED5,
                 options.hasClassFlagsHi());
         int classAttrCount = SegmentUtils.countBit16(classFlags);
@@ -512,7 +512,7 @@ public class ClassBands extends BandSet {
         }
         for (int i = 0; i < counts.length; i++) {
             if(counts[i] > 0) {
-                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);
                 otherAttributes[i] = bands.parseAttributes(in, counts[i]);
                 int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
                 if(numBackwardsCallables > 0) {
@@ -750,7 +750,7 @@ public class ClassBands extends BandSet {
                 .getAttributeLayout(
                         AttributeLayout.ATTRIBUTE_LOCAL_VARIABLE_TYPE_TABLE,
                         AttributeLayout.CONTEXT_CODE);
-        
+
         int lengthLocalVariableNBand = SegmentUtils.countMatches(codeFlags,
                 localVariableTableLayout);
         int[] localVariableTableN = decodeBandInt("code_LocalVariableTable_N",
@@ -786,7 +786,7 @@ public class ClassBands extends BandSet {
                 }
             }
         }
-        
+
         int lengthLocalVariableTypeTableNBand = SegmentUtils.countMatches(
                 codeFlags, localVariableTypeTableLayout);
         int[] localVariableTypeTableN = decodeBandInt(
@@ -824,7 +824,7 @@ public class ClassBands extends BandSet {
         }
         for (int i = 0; i < counts.length; i++) {
             if(counts[i] > 0) {
-                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);                
+                NewAttributeBands bands = attrMap.getAttributeBands(otherLayouts[i]);
                 otherAttributes[i] = bands.parseAttributes(in, counts[i]);
                 int numBackwardsCallables = otherLayouts[i].numBackwardsCallables();
                 if(numBackwardsCallables > 0) {
@@ -834,7 +834,7 @@ public class ClassBands extends BandSet {
                     backwardsCallIndex+= numBackwardsCallables;
                 }
             }
-        }     
+        }
 
         int lineNumberIndex = 0;
         int lvtIndex = 0;
@@ -879,7 +879,7 @@ public class ClassBands extends BandSet {
                 }
             }
         }
-        
+
     }
 
     private CPUTF8[][] stringsToCPUTF8(String[][] strings) {
@@ -892,7 +892,7 @@ public class ClassBands extends BandSet {
         }
         return cpUTF8s;
     }
-    
+
 
 
     private CPUTF8[] stringsToCPUTF8(String[] strings) {
@@ -934,7 +934,7 @@ public class ClassBands extends BandSet {
         Iterator rvaAttributesIterator = mb[0].getAttributes().iterator();
         Iterator riaAttributesIterator = mb[1].getAttributes().iterator();
         for (int i = 0; i < fieldFlags.length; i++) {
-            for (int j = 0; j < fieldFlags[i].length; j++) {                
+            for (int j = 0; j < fieldFlags[i].length; j++) {
                 if(rvaLayout.matches(fieldFlags[i][j])) {
                     fieldAttributes[i][j].add(rvaAttributesIterator.next());
                 }
@@ -969,7 +969,7 @@ public class ClassBands extends BandSet {
                         pairCount += mbg[i].pair_N[j][k];
                     }
                 }
-                
+
                 mbg[i].name_RU = stringsToCPUTF8(parseReferences(contextName + "_" + rxa
                         + "_name_RU", in, Codec.UNSIGNED5, pairCount, cpBands.getCpUTF8()));
             }
@@ -1195,7 +1195,7 @@ public class ClassBands extends BandSet {
     /**
      * Answer an ArrayList of ArrayLists which hold the the code attributes
      * corresponding to all classes in order.
-     * 
+     *
      * If a class doesn't have any attributes, the corresponding element in this
      * list will be an empty ArrayList.
      * @return ArrayList
@@ -1229,7 +1229,7 @@ public class ClassBands extends BandSet {
      * Returns null if all classes should use the default major and minor
      * version or an array of integers containing the major version numberss to
      * use for each class in the segment
-     * 
+     *
      * @return Class file major version numbers, or null if none specified
      */
     public int[] getClassVersionMajor() {
@@ -1240,7 +1240,7 @@ public class ClassBands extends BandSet {
      * Returns null if all classes should use the default major and minor
      * version or an array of integers containing the minor version numberss to
      * use for each class in the segment
-     * 
+     *
      * @return Class file minor version numbers, or null if none specified
      */
     public int[] getClassVersionMinor() {

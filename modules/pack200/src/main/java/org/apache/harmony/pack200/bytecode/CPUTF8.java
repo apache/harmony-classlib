@@ -44,7 +44,7 @@ public class CPUTF8 extends ConstantPoolEntry {
 			return false;
 		return true;
 	}
-	
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -76,7 +76,7 @@ public class CPUTF8 extends ConstantPoolEntry {
 	public String underlyingString() {
 	    return utf8;
 	}
-	
+
 	public String comparisonString() {
 	    // Should use either normalComparisonString or signatureComparisonString.
 	    // If we get here, that might indicate an error.

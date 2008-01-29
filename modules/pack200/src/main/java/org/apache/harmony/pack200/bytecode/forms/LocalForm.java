@@ -39,7 +39,7 @@ public class LocalForm extends ByteCodeForm {
     public int getOperandType() {
         return TYPE_LOCAL;
     }
-    
+
     public boolean hasLocalOperand() {
         return true;
     }

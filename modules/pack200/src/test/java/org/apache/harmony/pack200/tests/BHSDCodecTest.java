@@ -30,12 +30,12 @@ import org.apache.harmony.pack200.Pack200Exception;
  */
 public class BHSDCodecTest extends TestCase {
 
-    
+
     public void testEncodeDecode() throws IOException, Pack200Exception {
         for (int i = 1; i < 116; i++) {
-            
+
             BHSDCodec codec = (BHSDCodec) CodecEncoding.getCodec(i, null, null);
-            
+
             // Test encode-decode with a selection of numbers within the range of the codec
             long delta = (codec.largest() - codec.smallest()) / 4;
             for (long j = codec.smallest(); j <= codec.largest() + 1; j += delta) {
@@ -47,11 +47,11 @@ public class BHSDCodecTest extends TestCase {
                             + ", got: " + decoded);
                 }
             }
-            
-            // Test encode-decode with 0            
+
+            // Test encode-decode with 0
             assertEquals(0, codec.decode(new ByteArrayInputStream(codec.encode(
                     0, 0)), 0));
         }
     }
-    
+
 }

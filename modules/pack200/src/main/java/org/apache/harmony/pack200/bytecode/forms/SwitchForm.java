@@ -35,18 +35,18 @@ public abstract class SwitchForm extends VariableInstructionForm {
     public int getOperandType() {
         return TYPE_SWITCH;
     }
-    
+
     public boolean hasSwitchOperand() {
         return true;
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTargets(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.CodeAttribute)
      */
@@ -55,7 +55,7 @@ public abstract class SwitchForm extends VariableInstructionForm {
         int[] originalTargets = byteCode.getByteCodeTargets();
         int numberOfLabels = originalTargets.length;
         int[] replacementTargets = new int[numberOfLabels];
-        
+
         int sourceIndex = byteCode.getByteCodeIndex();
         int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
         for(int index=0; index < numberOfLabels; index++) {
