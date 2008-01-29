@@ -1267,4 +1267,8 @@ public class ClassBands extends BandSet {
         return codeHandlerStartP;
     }
 
+    public IcTuple[][] getIcLocal() {
+        return icLocal;
+    }
+
 }
