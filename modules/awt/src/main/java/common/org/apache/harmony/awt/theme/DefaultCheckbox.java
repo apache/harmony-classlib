@@ -86,10 +86,13 @@ public class DefaultCheckbox extends DefaultStyle {
     }
 
     public static void drawText(Graphics g, TextState s, Rectangle r) {
+        String text = s.getText();
+        if (text == null){
+            return;
+        }
         int baseX = r.x;
         int h = getTextSize(s).height;
         int baseY = r.y + r.height - h / 5;
-        String text = s.getText();
         g.setFont(s.getFont());
         g.setColor(s.getTextColor());
         if (s.isEnabled()) {
