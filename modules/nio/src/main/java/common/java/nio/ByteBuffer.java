@@ -718,7 +718,7 @@ public abstract class ByteBuffer extends Buffer implements
      * 
      * @param byteOrder
      *            The byte order to set. If <code>null</code> then the order
-     *            will be {@link ByteOrder.LITTLE_ENDIAN LITTLE_ENDIAN}.
+     *            will be {@link ByteOrder#LITTLE_ENDIAN LITTLE_ENDIAN}.
      * @return This buffer
      * @see ByteOrder
      */
