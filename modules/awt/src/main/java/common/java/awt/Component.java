@@ -1888,7 +1888,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
                 ((Graphics2D)g).setBackground(this.getBackground());
             }
             g.setColor(foreColor);
-            g.setFont(font);
+            g.setFont(getFont());
             return g;
         } finally {
             toolkit.unlockAWT();
