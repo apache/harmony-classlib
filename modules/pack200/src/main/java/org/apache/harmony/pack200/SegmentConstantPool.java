@@ -220,6 +220,9 @@ public class SegmentConstantPool {
     	}
     	// We didn't return in the for loop, so the desiredMatch
     	// with desiredIndex must not exist in the array.
+    	if(secondaryCompareRegex.equals("^<init>.*")) {
+    	    SegmentUtils.debug("self halt");
+    	}
     	return -1;
     }
     

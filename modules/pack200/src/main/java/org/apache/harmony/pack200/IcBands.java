@@ -18,22 +18,20 @@ package org.apache.harmony.pack200;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.harmony.pack200.bytecode.CPClass;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 /**
  * Pack200 Inner Class Bands
  */
 public class IcBands extends BandSet {
     
-    public static class ICTuple {
 
-        public String C; // this class
-        public int F; // flags
-        public String C2; // outer class
-        public String N; // name
-
-    }
-
-    private ICTuple[] icAll;
+    private IcTuple[] icAll;
 
     private String[] cpUTF8;
 
@@ -65,10 +63,10 @@ public class IcBands extends BandSet {
                 cpUTF8);
         
         // Construct IC tuples
-        icAll = new ICTuple[icThisClass.length];
+        icAll = new IcTuple[icThisClass.length];
         int index = 0;
         for (int i = 0; i < icThisClass.length; i++) {
-            icAll[i] = new ICTuple();
+            icAll[i] = new IcTuple();
             icAll[i].C = icThisClass[i];
             icAll[i].F = icFlags[i];
             if((icFlags[i] & 1<<16) != 0) {
@@ -79,9 +77,72 @@ public class IcBands extends BandSet {
         }
     }
 
-    public ICTuple[] getIcTuples() {
+    public IcTuple[] getIcTuples() {
         return icAll;
     }
 
+    /**
+     * Answer the relevant IcTuples for the specified className
+     * and class constant pool.
+     * @param className String name of the class X for ic_relevant(X)
+     * @param cp ClassConstantPool used to generate ic_relevant(X)
+     * @return array of IcTuple
+     */
+    public IcTuple[] getRelevantIcTuples(String className, ClassConstantPool cp) {
+        List relevantTuples = new ArrayList();
+        IcTuple[] allTuples = getIcTuples();
+        int allTuplesSize = allTuples.length;
+        SegmentUtils.debug("-------\nRelevant() " + className);
+        for(int index=0; index < allTuplesSize; index++) {
+            if(allTuples[index].outerClassString().equals(className)) {
+                relevantTuples.add(allTuples[index]);
+            }
+        }
+
+        SegmentUtils.debug("self halt");
+        List classPoolClasses = cp.allClasses();
+        boolean changed = true;
+        // For every class in both ic_this_class and cp,
+        // add it to ic_relevant. Repeat until no more
+        // changes to ic_relevant.
+        while(changed) {
+            changed = false;
+            for(int allTupleIndex=0; allTupleIndex < allTuplesSize; allTupleIndex++) {
+                Iterator it = classPoolClasses.iterator();
+                SegmentUtils.debug("\n\n----\nLooking through class pool for: " + allTuples[allTupleIndex].thisClassString());
+                while(it.hasNext()) {
+                    CPClass classInPool = (CPClass)it.next();
+                    String poolClassName = classInPool.name;
+                    SegmentUtils.debug("    " + poolClassName);
+                    if(poolClassName.equals(allTuples[allTupleIndex].thisClassString())) {
+                        // If the tuple isn't already in there, then add it
+                        SegmentUtils.debug("     -> match");
+                        if(relevantTuples.indexOf(allTuples[allTupleIndex]) == -1) {
+                            SegmentUtils.debug("        -> added");
+                            relevantTuples.add(allTuples[allTupleIndex]);
+                            changed = true;
+                        }
+                    }
+                    // TODO: is this right?
+                    if(poolClassName.equals(allTuples[allTupleIndex].outerClassString())) {
+                        // If the tuple isn't already in there, then add it
+                        SegmentUtils.debug("     -> omatch");
+                        if(relevantTuples.indexOf(allTuples[allTupleIndex]) == -1) {
+                            SegmentUtils.debug("        -> oadded");
+                            relevantTuples.add(allTuples[allTupleIndex]);
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        IcTuple[] result = new IcTuple[relevantTuples.size()];
+        for(int index=0; index < result.length; index++) {
+            result[index] = (IcTuple)relevantTuples.get(index);
+            SegmentUtils.debug("Returning relevantTuple: " + result[index].thisClassString());
+        }
+        return result;
+    }
   
 }

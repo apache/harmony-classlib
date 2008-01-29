@@ -28,9 +28,11 @@ import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPField;
 import org.apache.harmony.pack200.bytecode.CPMethod;
+import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ClassFile;
 import org.apache.harmony.pack200.bytecode.ClassFileEntry;
+import org.apache.harmony.pack200.bytecode.InnerClassesAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
@@ -162,6 +164,51 @@ public class Segment {
 		for (i = 0; i < cfMethods.length; i++) {
 			cfMethods[i] = cp.add(new CPMethod(classBands.getMethodDescr()[classNum][i],
                     classBands.getMethodFlags()[classNum][i], classBands.getMethodAttributes()[classNum][i]));
+		}
+		// TODO: maybe this is a better place to add ic_relevant?
+		// This seems like the right thing to do.
+		boolean addedClasses = false;
+		InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute("InnerClasses");
+		IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
+		
+		for(int index = 0; index < ic_relevant.length; index++) {
+		    String innerClassString = ic_relevant[index].thisClassString();
+		    String outerClassString = ic_relevant[index].outerClassString();
+		    String simpleClassName = ic_relevant[index].simpleClassName();
+		    
+		    CPClass innerClass = null;
+		    CPUTF8 innerName = null;
+		    CPClass outerClass = null;
+		    
+		    if(ic_relevant[index].isAnonymous()) {
+		        innerClass = new CPClass(innerClassString);
+		    } else {
+	            innerClass = new CPClass(innerClassString);
+	            innerName = new CPUTF8(simpleClassName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+		    }
+		    
+		    // TODO: I think we need to worry about if the
+		    // OUTER class is a member or not - not the
+		    // ic_relevant itself.
+//		    if(ic_relevant[index].isMember()) {
+		        outerClass = new CPClass(outerClassString);
+//		    }
+		    
+	        int flags = ic_relevant[index].F;
+	        innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass, innerName, flags);
+	        addedClasses = true;
+		}
+		if(addedClasses) {
+		    // Need to add the InnerClasses attribute to the
+		    // existing classFile attributes.
+		    Attribute[] originalAttrs = classFile.attributes;
+		    Attribute[] newAttrs = new Attribute[originalAttrs.length + 1];
+		    for(int index=0; index < originalAttrs.length; index++) {
+		        newAttrs[index] = originalAttrs[index];
+		    }
+		    newAttrs[newAttrs.length - 1] = innerClassesAttribute;
+		    classFile.attributes = newAttrs;
+		    cp.add(innerClassesAttribute);
 		}
 		// sort CP according to cp_All
 		cp.resolve(this);

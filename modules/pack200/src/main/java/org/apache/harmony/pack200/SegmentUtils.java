@@ -21,27 +21,6 @@ public final class SegmentUtils {
     
 	public static int countArgs(String descriptor) {
 	    return countArgs(descriptor, 1);
-//		int bra = descriptor.indexOf("(");
-//		int ket = descriptor.indexOf(")");
-//		if (bra == -1 || ket == -1 || ket < bra)
-//			throw new IllegalArgumentException("No arguments");
-//
-//		boolean inType = false;
-//		int count = 0;
-//		for (int i = bra + 1; i < ket; i++) {
-//			char charAt = descriptor.charAt(i);
-//			if (inType && charAt == ';') {
-//				inType = false;
-//			} else if (!inType && charAt == 'L') {
-//				inType = true;
-//				count++;
-//			} else if (charAt == '[' || inType) {
-//				// NOP
-//			} else {
-//				count++;
-//			}
-//		}
-//		return count;
 	}
 
 	public static int countInvokeInterfaceArgs(String descriptor) {
@@ -141,6 +120,39 @@ public final class SegmentUtils {
 		return count;
 	}
 
+	/**
+	 * Given a String classX (the name of a class) and the
+	 * collection of inner class tuples ic_all, answer
+	 * ic_relevant(classX)
+	 * @param classX String class name
+	 * @param ic_all ICTuple[] all the inner class tuples
+	 * @return ICTuple[] all the relevant tuples sorted as in 
+	 */
+	public static IcTuple[] icRelevant(String classX, IcTuple[] ic_all) {
+	    return null;
+	}
+	
+	public static boolean isRelevant(String outerClass, IcTuple tuple) {
+	    if(tuple.C.equals(outerClass)) {
+	        // If the outer class name is explicitly
+	        // specified and it's the correct one, the
+	        // tuple is relevant.
+	        return true;
+	    }
+	    
+	    if(tuple.C != null) {
+	        // If the outer class name is explicitly specified
+	        // (non-null) and it's not the correct one, the
+	        // tuple is not relevant.
+	        return false;
+	    }
+	    
+	    // Now we know that tuple.C is null, so it might be
+	    // relevant. Find out.
+	    return false;
+	}
+	
+	
 	private SegmentUtils() {
 		// Intended to be a helper class
 	}

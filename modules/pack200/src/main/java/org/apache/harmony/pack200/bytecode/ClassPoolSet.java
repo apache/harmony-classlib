@@ -25,6 +25,8 @@ import java.util.TreeSet;
 /**
  * This class implements the special set (which is aware of
  * domains) used when generating ClassConstantPools.
+ * It's called a Set, but isn't quite a Collection - it
+ * doesn't implement all the API required.
  */
 public class ClassPoolSet {
 

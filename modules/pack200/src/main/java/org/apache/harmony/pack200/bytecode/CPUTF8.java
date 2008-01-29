@@ -84,10 +84,14 @@ public class CPUTF8 extends ConstantPoolEntry {
 	}
 
 	public String normalComparisonString() {
+	   // TODO: what to do about inner classes?
+	   if(utf8==null) {return "null:utf8 (probably an inner class?)";};
         return utf8;
     }
 
     public String signatureComparisonString() {
+        // TODO: what to do about inner classes?
+        if(utf8==null) {return "null:utf8 (probably an inner class?)";};
         StringBuffer alphaChars = new StringBuffer();
         StringBuffer extraChars = new StringBuffer();
         if(utf8.length() > 0){

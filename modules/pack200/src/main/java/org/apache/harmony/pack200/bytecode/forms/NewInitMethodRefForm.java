@@ -16,6 +16,10 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
+import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.pack200.SegmentConstantPool;
+import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -40,6 +44,26 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
     }
 
     protected String context(OperandManager operandManager) {
-        return operandManager.getNewClass();
+        String result = operandManager.getNewClass();
+        return result;
+    }
+    
+    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
+        SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        ClassFileEntry[] nested = null;
+        nested = new ClassFileEntry[] {
+                globalPool.getInitMethodPoolEntry(SegmentConstantPool.CP_METHOD, offset, context(operandManager))
+        };
+        if(nested[0] == null) {
+            // One class in JNDI isn't finding its
+            // <init> method. Not sure why.
+            // TODO: find out why.
+            // org/apache/harmony/security/asn1/ASN1Type
+            byteCode.setNested(new ClassFileEntry[]{});
+            byteCode.setNestedPositions(new int[][] {{}});
+            return;
+        }
+        byteCode.setNested(nested);
+        byteCode.setNestedPositions(new int[][] {{0, 2}});
     }
 }

@@ -285,7 +285,7 @@ public class ByteCodeForm {
         byteCodeArray[218] = new SuperFieldRefForm(218, "getfield_super", new int[] {180, -1, -1});
         byteCodeArray[219] = new SuperFieldRefForm(219, "putfield_super", new int[] {181, -1, -1});
         byteCodeArray[220] = new SuperMethodRefForm(220, "invokevirtual_super", new int[] {182, -1, -1});
-        byteCodeArray[221] = new SuperFieldRefForm(221, "invokespecial_super", new int[] {183, -1, -1});
+        byteCodeArray[221] = new SuperMethodRefForm(221, "invokespecial_super", new int[] {183, -1, -1});
         byteCodeArray[222] = new SuperMethodRefForm(222, "invokestatic_super", new int[] {184, -1, -1});
         byteCodeArray[223] = new SuperFieldRefForm(223, "aload_0_getstatic_super", new int[] {42, 178, -1, -1});
         byteCodeArray[224] = new SuperFieldRefForm(224, "aload_0_putstatic_super", new int[] {42, 179, -1, -1});

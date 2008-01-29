@@ -17,7 +17,6 @@
 package org.apache.harmony.pack200.bytecode;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,40 +26,6 @@ import org.apache.harmony.pack200.SegmentUtils;
 
 public class ClassConstantPool {
     
-    class PoolComparator implements Comparator {
-        /* (non-Javadoc)
-         * Note: this comparator imposes orderings that are inconsistent with equals.
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        public int compare(Object o1, Object o2) {
-            // If we compare anything other than ConstantPoolEntries
-            // with this comparator, it is an error.
-            ConstantPoolEntry cpe1 = (ConstantPoolEntry)o1;
-            ConstantPoolEntry cpe2 = (ConstantPoolEntry)o2;
-
-            int domain1 = cpe1.getDomain();
-            int domain2 = cpe2.getDomain();
-            
-            if(domain1 < domain2) {
-                return -1;
-            }
-            if(domain1 > domain2) {
-                return 1;
-            }
-            
-            // Domains must be the same, need to compare
-            // based on name.
-            // TODO: what means name?
-            String compare1 = cpe1.comparisonString();
-            String compare2 = cpe2.comparisonString();
-            return compare1.compareTo(compare2);
-//            if(cpe1.creationOrder < cpe2.creationOrder) {
-//                return -1;
-//            } else {
-//                return 1;
-//            }
-        }
-    }
     // These are the domains in sorted order.
     public static int DOMAIN_UNDEFINED = 0;
     public static int DOMAIN_INTEGER = 1;
@@ -93,10 +58,10 @@ public class ClassConstantPool {
 		// Only add in constant pools, but resolve all types since they may
 		// introduce new constant pool entries
 // This is a handy way to see what's adding a ClassFileEntry - set a breakpoint on the print 
-//	    if(entry instanceof CPUTF8) {
-//	        System.out.println("AAH:" + ((CPUTF8)entry).comparisonString());
+//	    if(entry instanceof CPFieldRef) {
+//	        SegmentUtils.debug("AAH:" + ((CPFieldRef)entry).comparisonString());
 //	        if (((CPUTF8)entry).underlyingString().matches("Code")) {
-//	            System.out.println("Adding");
+//	            SegmentUtils.debug("Adding");
 //	        }
 //	    }
 		if (entry instanceof ConstantPoolEntry) {
@@ -189,4 +154,22 @@ public class ClassConstantPool {
 		}
 	}
 
+	/**
+	 * Answer the collection of CPClasses currently held
+	 * by the ClassPoolSet. This is used to calculate relevant
+	 * classes when generating the set of relevant inner
+	 * classes (ic_relevant())
+	 * @return ArrayList collection of all classes.
+	 * 
+	 * NOTE: when this list is answered, the classes may not
+	 * yet be resolved.
+	 */
+	public List allClasses() {
+	    List classesList = new ArrayList();
+	    Iterator it = classPoolSet.partialIterator(DOMAIN_CLASSREF, DOMAIN_CLASSREF);
+	    while(it.hasNext()) {
+	        classesList.add(it.next());
+	    }
+	    return classesList;
+	}
 }

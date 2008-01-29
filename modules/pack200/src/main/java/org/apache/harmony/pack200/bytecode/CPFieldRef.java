@@ -59,7 +59,9 @@ public class CPFieldRef extends ConstantPoolEntry {
 		return "FieldRef: " + className + "#" + nameAndType;
 	}
 
-
+    public String comparisonString() {
+        return (className.getName() + Character.MAX_VALUE) + nameAndType.descriptor + Character.MAX_VALUE + nameAndType.name;
+    }
 	
 	public int hashCode() {
 		final int PRIME = 31;

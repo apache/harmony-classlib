@@ -19,6 +19,8 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import org.apache.harmony.pack200.IcBands;
+
 
 public class CPClass extends ConstantPoolEntry {
 	private int index;
@@ -87,6 +89,8 @@ public class CPClass extends ConstantPoolEntry {
 	}
 	
    public String comparisonString() {
+       // TODO: what to do about inner classes?
+       if(name==null) {return "null:name (probably an inner class?)";};
         return getName();
    }
 

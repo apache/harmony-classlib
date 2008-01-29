@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.pack200.IcBands.ICTuple;
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPNameAndType;
@@ -60,7 +59,7 @@ public class ClassBands extends BandSet {
 
     private int[] classVersionMinor;
 
-    private IcBands.ICTuple[][] icLocal;
+    private IcTuple[][] icLocal;
 
     private ArrayList[] codeAttributes;
 
@@ -532,7 +531,7 @@ public class ClassBands extends BandSet {
         int innerClassIndex = 0;
         int innerClassC2NIndex = 0;
         int versionIndex = 0;
-        icLocal = new IcBands.ICTuple[classCount][];
+        icLocal = new IcTuple[classCount][];
         for (int i = 0; i < classCount; i++) {
             long flag = classFlags[i];
 
@@ -581,9 +580,9 @@ public class ClassBands extends BandSet {
             if (innerClassLayout.matches(flag)) {
                 // Just create the tuples for now because the attributes are
                 // decided at the end when creating class constant pools
-                icLocal[i] = new IcBands.ICTuple[classInnerClassesN[innerClassIndex]];
+                icLocal[i] = new IcTuple[classInnerClassesN[innerClassIndex]];
                 for (int j = 0; j < icLocal[i].length; j++) {
-                    IcBands.ICTuple icTuple = new IcBands.ICTuple();
+                    IcTuple icTuple = new IcTuple();
                     icTuple.C = cpClass[classInnerClassesRC[innerClassIndex][j]];
                     icTuple.F = classInnerClassesF[innerClassIndex][j];
                     if (icTuple.F != 0) {
@@ -593,7 +592,7 @@ public class ClassBands extends BandSet {
                     } else {
                         // Get from icBands
                         IcBands icBands = segment.getIcBands();
-                        ICTuple[] icAll = icBands.getIcTuples();
+                        IcTuple[] icAll = icBands.getIcTuples();
                         for (int k = 0; k < icAll.length; k++) {
                             if (icAll[k].C.equals(icTuple.C)) {
                                 icTuple.C2 = icAll[k].C2;

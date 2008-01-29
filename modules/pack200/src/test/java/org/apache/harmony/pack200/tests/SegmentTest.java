@@ -33,8 +33,6 @@ public class SegmentTest extends TestCase {
     InputStream in;
     JarOutputStream out;
 
-	boolean handlingInnerClasses = false;
-
 	public void testHelloWorld() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
@@ -74,7 +72,6 @@ public class SegmentTest extends TestCase {
     
     // Test with an archive containing Harmony's SQL module
     public void testWithSql() throws Exception {
-     	if(!handlingInnerClasses) return;
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz");
         Segment segment = Segment.parse(in);
@@ -105,7 +102,6 @@ public class SegmentTest extends TestCase {
     
     // Test with an archive containing Harmony's JNDI module
     public void testWithJNDIE1() throws Exception {
-    	if(!handlingInnerClasses) return;
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz");
         Segment segment = Segment.parse(in);
