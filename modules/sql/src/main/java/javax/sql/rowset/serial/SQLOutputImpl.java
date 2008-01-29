@@ -71,7 +71,7 @@ public class SQLOutputImpl implements SQLOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see java.sql.SQLOutput#writeArray(Array))
+     * @see java.sql.SQLOutput#writeArray(Array)
      */
     @SuppressWarnings("unchecked")
     public void writeArray(Array theArray) throws SQLException {
@@ -86,7 +86,7 @@ public class SQLOutputImpl implements SQLOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see java.sql.SQLOutput#writeAsciiStream(InputStream))
+     * @see java.sql.SQLOutput#writeAsciiStream(InputStream)
      */
     @SuppressWarnings("unchecked")
     public void writeAsciiStream(InputStream theStream) throws SQLException {
@@ -108,7 +108,7 @@ public class SQLOutputImpl implements SQLOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see java.sql.SQLOutput#writeBigDecimal(BigDecimal))
+     * @see java.sql.SQLOutput#writeBigDecimal(BigDecimal)
      */
     @SuppressWarnings("unchecked")
     public void writeBigDecimal(BigDecimal theBigDecimal) throws SQLException {
@@ -122,7 +122,7 @@ public class SQLOutputImpl implements SQLOutput {
      * and writeAsciiStream in RI. Keep their implementation same temporarily
      * until some bug is found.
      * 
-     * @see java.sql.SQLOutput#writeBinaryStream(InputStream))
+     * @see java.sql.SQLOutput#writeBinaryStream(InputStream)
      */
     @SuppressWarnings("unchecked")
     public void writeBinaryStream(InputStream theStream) throws SQLException {
@@ -132,7 +132,7 @@ public class SQLOutputImpl implements SQLOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see java.sql.SQLOutput#writeBlob(Blob))
+     * @see java.sql.SQLOutput#writeBlob(Blob)
      */
     @SuppressWarnings("unchecked")
     public void writeBlob(Blob theBlob) throws SQLException {
@@ -177,7 +177,7 @@ public class SQLOutputImpl implements SQLOutput {
     /**
      * {@inheritDoc}
      * 
-     * @see java.sql.SQLOutput#writeCharacterStream(Reader))
+     * @see java.sql.SQLOutput#writeCharacterStream(Reader)
      */
     @SuppressWarnings("unchecked")
     public void writeCharacterStream(Reader theStream) throws SQLException {
