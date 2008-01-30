@@ -446,6 +446,11 @@ public class MessageFormat extends Format {
      *                when the pattern cannot be parsed
      */
     public static String format(String template, Object... objects) {
+        for (int i = 0; i < objects.length; i++) {
+            if (objects[i] == null) {
+                objects[i] = "null";
+            }
+        }
         if (format == null) {
             format = new com.ibm.icu.text.MessageFormat(template);
         } else if (!template.equals(format.toPattern())){

@@ -763,6 +763,8 @@ public class MessageFormatTest extends TestCase {
         String etalon="text here  000002007  and here"; 
         MessageFormat obj = new MessageFormat(pat); 
         assertEquals(etalon, obj.format(new Object[]{new Date(1198141737640L)})); 
+        
+        assertEquals("nullABC", MessageFormat.format("{0}{1}", new String[]{null, "ABC"}));
     } 
 
     public void testHARMONY5323() { 
