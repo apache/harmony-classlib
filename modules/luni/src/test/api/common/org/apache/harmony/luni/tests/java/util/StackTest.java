@@ -184,6 +184,7 @@ public class StackTest extends junit.framework.TestCase {
 		testStack.setLength(20);
 		try{
 			testStack.pop();
+			fail("Should throw ArrayIndexOutOfBoundsException here");
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{
