@@ -280,6 +280,7 @@ public class ArraysTest extends junit.framework.TestCase {
         Object[] string_objects = new String[] { "one" };
         try {
             Arrays.binarySearch(string_objects, object);
+            fail("No expected ClassCastException");
         } catch (ClassCastException e) {
             // Expected
         }
