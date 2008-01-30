@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -67,15 +68,14 @@ public class Segment {
 
 
 	/**
+     * TODO: Do we need this method now we have Archive as the main entry point?
+     *
 	 * Decode a segment from the given input stream. This does not attempt to
 	 * re-assemble or export any class files, but it contains enough information
 	 * to be able to re-assemble class files by external callers.
 	 *
 	 * @param in
-	 *            the input stream to read from TODO At this point, this must be
-	 *            a non-GZipped input stream, but this decoding could be done in
-	 *            this method in the future (but perhaps more likely on an
-	 *            archive as a whole)
+	 *            the input stream to read from
 	 * @return a segment parsed from the input stream
 	 * @throws IOException
 	 *             if a problem occurs during reading from the underlying stream
@@ -86,19 +86,6 @@ public class Segment {
 	public static Segment parse(InputStream in) throws IOException,
 			Pack200Exception {
 		Segment segment = new Segment();
-		// See if file is GZip compressed
-		if (!in.markSupported()) {
-			in = new BufferedInputStream(in);
-			if (!in.markSupported())
-				throw new IllegalStateException();
-		}
-		in.mark(2);
-		if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
-			in.reset();
-			in = new BufferedInputStream(new GZIPInputStream(in));
-		} else {
-			in.reset();
-		}
         segment.parseSegment(in);
 		return segment;
 	}
@@ -117,6 +104,10 @@ public class Segment {
     private BcBands bcBands;
 
     private FileBands fileBands;
+
+    private boolean overrideDeflateHint;
+
+    private boolean deflateHint;
 
 	private ClassFile buildClassFile(int classNum) throws Pack200Exception {
 		ClassFile classFile = new ClassFile();
@@ -276,10 +267,9 @@ public class Segment {
     public void unpack(InputStream in, JarOutputStream out) throws IOException,
             Pack200Exception {
         if (!in.markSupported())
-            in = new BufferedInputStream(in);
-        // TODO Can handle multiple concatenated streams, so should deal with
-        // that possibility
-        parse(in).unpack(in, out);
+            in = new BufferedInputStream(in);        
+        parseSegment(in);
+        writeJar(out);
     }
 
     /**
@@ -336,6 +326,9 @@ public class Segment {
 			long modtime = archiveModtime + fileModtime[i];
 			boolean deflate = (fileOptions[i] & 1) == 1
 					|| options.shouldDeflate();
+            if (overrideDeflateHint) { // Overridden by a command line argument
+                deflate = deflateHint;
+            }
 			boolean isClass = (fileOptions[i] & 2) == 2 || name == null
 					|| name.equals("");
 			if (isClass) {
@@ -403,6 +396,28 @@ public class Segment {
 
     protected IcBands getIcBands() {
         return icBands;
+    }
+
+
+    public void setLogLevel(int logLevel) {
+
+    }
+
+    public void setLogStream(OutputStream stream) {
+
+    }
+
+    public void log(int logLevel, String message) {
+
+    }
+
+    /**
+     * Override the archive's deflate hint with the given boolean
+     * @param deflateHint - the deflate hint to use
+     */
+    public void overrideDeflateHint(boolean deflateHint) {
+        this.overrideDeflateHint = true;
+        this.deflateHint = deflateHint;
     }
 
 }
