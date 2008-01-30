@@ -102,7 +102,8 @@ public class LocaleTest extends junit.framework.TestCase {
         // regression test for HARMONY-1514
         // HashSet can filter duplicate locales
         Set<Locale> localesSet = new HashSet<Locale>(Arrays.asList(locales));
-        assertEquals(localesSet.size(), locales.length);
+        // Non-bug difference for HARMONY-5442
+        assertTrue(localesSet.size() <= locales.length);
     }
 
 	/**
@@ -137,8 +138,9 @@ public class LocaleTest extends junit.framework.TestCase {
 				.getDisplayCountry().equals("Canada"));
         
         // Regression for Harmony-1146
+        // Non-bug difference for HARMONY-5442
         Locale l_countryCD = new Locale("", "CD"); //$NON-NLS-1$ //$NON-NLS-2$
-                assertEquals("The Democratic Republic Of Congo", //$NON-NLS-1$
+                assertEquals("Congo - Kinshasa", //$NON-NLS-1$
                         l_countryCD.getDisplayCountry()); 
 	}
 
@@ -254,8 +256,10 @@ public class LocaleTest extends junit.framework.TestCase {
         assertEquals("ave", l.getISO3Language());
         
         // Regression for Harmony-1146
+        
+        // Non-bug difference for HARMONY-5442
         Locale l_CountryCS = new Locale("", "CS"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals("SCG", l_CountryCS.getISO3Country()); //$NON-NLS-1$
+        assertEquals("", l_CountryCS.getISO3Country()); //$NON-NLS-1$
         
         // Regression for Harmony-1129
         l = new Locale("ak", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -294,10 +298,10 @@ public class LocaleTest extends junit.framework.TestCase {
 		// Assumes always at least 131 ISOlanguages...
 		String[] isoLang = Locale.getISOLanguages();
 		int length = isoLang.length;
-		assertTrue("Random element in wrong format.", (isoLang[length / 2]
-				.length() == 2)
-				&& isoLang[length / 2].toLowerCase()
-						.equals(isoLang[length / 2]));
+		
+		// Non-bug difference for HARMONY-5442
+		assertTrue(isoLang[length / 2].length() == 3);
+		assertTrue(isoLang[length / 2].toLowerCase().equals(isoLang[length / 2]));
 		assertTrue("Wrong number of ISOLanguages.", length > 130);
 	}
 
@@ -351,10 +355,12 @@ public class LocaleTest extends junit.framework.TestCase {
 		assertEquals("Wrong representation 1", "en", l.toString());
 		l = new Locale("", "CA");
 		assertEquals("Wrong representation 2", "_CA", l.toString());
+		
+		// Non-bug difference for HARMONY-5442
 		l = new Locale("", "CA", "var");
-		assertEquals("Wrong representation 2.5", "_CA_var", l.toString());
+		assertEquals("Wrong representation 2.5", "_CA_VAR", l.toString());
 		l = new Locale("en", "", "WIN");
-		assertEquals("Wrong representation 4", "en__WIN", l.toString());
+		assertEquals("Wrong representation 4", "en_WIN", l.toString());
 		l = new Locale("en", "CA");
 		assertEquals("Wrong representation 6", "en_CA", l.toString());
 		l = new Locale("en", "CA", "VAR");
@@ -375,9 +381,10 @@ public class LocaleTest extends junit.framework.TestCase {
 
         List<String> languages = Arrays.asList(Locale.getISOLanguages());
         assertTrue(languages.contains("ak"));
-
+        
+		// Non-bug difference for HARMONY-5442
         List<String> countries = Arrays.asList(Locale.getISOCountries());
-        assertTrue(countries.contains("CS"));
+        assertFalse(countries.contains("CS"));
     }
 
 	/**
