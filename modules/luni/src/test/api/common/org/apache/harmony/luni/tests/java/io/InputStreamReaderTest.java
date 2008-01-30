@@ -300,8 +300,11 @@ public class InputStreamReaderTest extends TestCase {
      * @tests java.io.InputStreamReader#getEncoding()
      */
     public void test_getEncoding() throws IOException {
-        is = new InputStreamReader(fis, "8859_1");
-        assertEquals("Returned incorrect encoding", "8859_1", is.getEncoding());
+        try {
+            is = new InputStreamReader(fis, "8859_1");
+        } catch (UnsupportedEncodingException e) {
+            assertEquals("Returned incorrect encoding", "8859_1", is.getEncoding());
+        }
 
         InputStreamReader in = null;
         byte b[] = new byte[5];
