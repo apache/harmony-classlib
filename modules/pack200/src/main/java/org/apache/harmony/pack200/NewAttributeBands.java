@@ -47,7 +47,7 @@ public class NewAttributeBands extends BandSet {
     private List attributes;
 
     private int backwardsCallCount;
-    
+
     private List attributeLayoutElements;
 
     public NewAttributeBands(Segment segment, AttributeLayout attributeLayout) throws IOException {
@@ -59,7 +59,7 @@ public class NewAttributeBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
@@ -78,7 +78,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Parse the bands relating to this AttributeLayout and return the correct
      * class file attributes as a List of {@link Attribute}
-     * @throws Pack200Exception 
+     * @throws Pack200Exception
      */
     public List parseAttributes(InputStream in, int occurrenceCount)
             throws IOException, Pack200Exception {
@@ -129,7 +129,7 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Resolve calls in the attribute layout and returns the number of backwards calls
-     * 
+     *
      * @param tokens -
      *            the attribute layout as a List of AttributeElements
      */
@@ -145,7 +145,7 @@ public class NewAttributeBands extends BandSet {
                     if (layoutElement instanceof Call) {
                         // Set the callable for each call
                         Call call = (Call) layoutElement;
-                        int index = call.callableIndex; 
+                        int index = call.callableIndex;
                         if (index == 0) { // Calls the parent callable
                             backwardsCalls++;
                             call.setCallable(callable);
@@ -319,17 +319,17 @@ public class NewAttributeBands extends BandSet {
 
         /**
          * Read the bands associated with this part of the layout
-         * 
+         *
          * @param in
          * @param count
-         * @throws Pack200Exception 
-         * @throws IOException 
+         * @throws Pack200Exception
+         * @throws IOException
          */
         public void readBands(InputStream in, int count) throws IOException, Pack200Exception;
 
         /**
          * Add the band data for this element at the given index to the attribute
-         * 
+         *
          * @param index
          * @param attribute
          */
@@ -342,18 +342,18 @@ public class NewAttributeBands extends BandSet {
         protected int getLength(char uint_type) {
             int length = 0;;
             switch(uint_type) {
-            case 'B': 
+            case 'B':
                 length = 1;
                 break;
-            case 'H': 
+            case 'H':
                 length = 2;
                 break;
-            case 'I': 
+            case 'I':
                 length = 4;
                 break;
-            case 'V': 
+            case 'V':
                 length = 0;
-                break;            
+                break;
             }
             return length;
         }
@@ -369,7 +369,7 @@ public class NewAttributeBands extends BandSet {
         }
 
         public void readBands(InputStream in, int count) throws IOException, Pack200Exception {
-            band = decodeBandLong(attributeLayout.getName() + "_" + tag, in, (BHSDCodec) getCodec(tag), count);
+            band = decodeBandLong(attributeLayout.getName() + "_" + tag, in, getCodec(tag), count);
         }
 
         public void addToAttribute(int n, NewAttribute attribute) {
@@ -395,7 +395,7 @@ public class NewAttributeBands extends BandSet {
             } else if (tag.startsWith("P")) {
                 char uint_type = tag.substring(1).toCharArray()[0];
                 int length = getLength(uint_type);
-                attribute.addBCIndex(length, (int) value);                
+                attribute.addBCIndex(length, (int) value);
             } else if (tag.startsWith("OS")) {
                 char uint_type = tag.substring(1).toCharArray()[0];
                 int length = getLength(uint_type);
@@ -406,11 +406,11 @@ public class NewAttributeBands extends BandSet {
                 } else if(length == 4) {
                     value = (int)value;
                 }
-                attribute.addBCLength(length, (int) value);  
+                attribute.addBCLength(length, (int) value);
             } else if (tag.startsWith("O")) {
                 char uint_type = tag.substring(1).toCharArray()[0];
                 int length = getLength(uint_type);
-                attribute.addBCLength(length, (int) value);                
+                attribute.addBCLength(length, (int) value);
             }
         }
 
@@ -442,7 +442,7 @@ public class NewAttributeBands extends BandSet {
             countElement.readBands(in, count);
             int arrayCount = 0;
             for (int i = 0; i < count; i++) {
-                arrayCount += countElement.getValue(i);                
+                arrayCount += countElement.getValue(i);
             }
             for (Iterator iter = layoutElements.iterator(); iter.hasNext();) {
                 LayoutElement element = (LayoutElement) iter.next();
@@ -453,14 +453,14 @@ public class NewAttributeBands extends BandSet {
         public void addToAttribute(int index, NewAttribute attribute) {
             // Add the count value
             countElement.addToAttribute(index, attribute);
-            
+
             // Add the corresponding array values
             int offset = 0;
             for (int i = 0; i < index; i++) {
                 offset += countElement.getValue(i);
             }
             long numElements = countElement.getValue(index);
-            for (int i = offset; i < offset + numElements; i++) {                
+            for (int i = offset; i < offset + numElements; i++) {
                 for (Iterator iter = layoutElements.iterator(); iter.hasNext();) {
                     LayoutElement element = (LayoutElement) iter.next();
                     element.addToAttribute(i, attribute);
@@ -469,13 +469,13 @@ public class NewAttributeBands extends BandSet {
         }
     }
 
-    
+
     /**
      * A Union is a type of layout element where the tag value acts as a
      * selector for one of the union cases
      */
     private class Union extends LayoutElement {
-        
+
         private Integral unionTag;
         private List unionCases;
         private List defaultCaseBody;
@@ -506,7 +506,7 @@ public class NewAttributeBands extends BandSet {
             for (int i = 0; i < values.length; i++) {
                 boolean found = false;
                 for (Iterator iter = unionCases.iterator(); iter.hasNext();) {
-                    UnionCase unionCase = (UnionCase) iter.next();                    
+                    UnionCase unionCase = (UnionCase) iter.next();
                     if(unionCase.hasTag(values[i])) {
                         found = true;
                     }
@@ -592,7 +592,7 @@ public class NewAttributeBands extends BandSet {
              */
             if(callableIndex > 0) {
                 callable.addCount(count);
-            } 
+            }
         }
 
         public void addToAttribute(int n, NewAttribute attribute) {
@@ -606,7 +606,7 @@ public class NewAttributeBands extends BandSet {
     private class Reference extends LayoutElement {
 
         private String tag;
-        
+
         private Object band;
 
         private int length;
@@ -677,13 +677,13 @@ public class NewAttributeBands extends BandSet {
     private class Callable implements AttributeLayoutElement {
 
         private List body;
-        
+
         private boolean isBackwardsCallable;
 
         public Callable(List body) throws IOException {
             this.body = body;
         }
-        
+
         private int count;
         private int index;
 
@@ -692,11 +692,11 @@ public class NewAttributeBands extends BandSet {
          * so they don't have to keep track of the internal index
          * of the callable
          * @param attribute
-         */        
+         */
         public void addNextToAttribute(NewAttribute attribute) {
             for (Iterator iter = body.iterator(); iter.hasNext();) {
                 LayoutElement element = (LayoutElement) iter.next();
-                element.addToAttribute(index, attribute);                
+                element.addToAttribute(index, attribute);
             }
             index++;
         }
@@ -721,7 +721,7 @@ public class NewAttributeBands extends BandSet {
             // Ignore n because bands also contain element parts from calls
             for (Iterator iter = body.iterator(); iter.hasNext();) {
                 LayoutElement element = (LayoutElement) iter.next();
-                element.addToAttribute(index, attribute);                
+                element.addToAttribute(index, attribute);
             }
             index++;
         }
@@ -729,7 +729,7 @@ public class NewAttributeBands extends BandSet {
         public boolean isBackwardsCallable() {
             return isBackwardsCallable;
         }
-        
+
         /**
          * Tells this Callable that it is a backwards callable
          */
@@ -737,7 +737,7 @@ public class NewAttributeBands extends BandSet {
             this.isBackwardsCallable = true;
         }
     }
-    
+
     /**
      * A Union case
      */
@@ -899,7 +899,7 @@ public class NewAttributeBands extends BandSet {
      * Once the attribute bands have been read the callables can be informed
      * about the number of times each is subject to a backwards call. This
      * method is used to set this information.
-     * 
+     *
      * @param backwardsCalls
      *            one int for each backwards callable, which contains the number
      *            of times that callable is subject to a backwards call.

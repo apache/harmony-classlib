@@ -155,8 +155,8 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *            the integer
      * @return this StringBuffer
      */
-    public StringBuffer append(int i) {
-        return append(Integer.toString(i));
+    public StringBuffer append(int value) {
+        return append(Integer.toString(value));
     }
 
     /**
@@ -203,7 +203,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
     /**
      * Adds the specified StringBuffer to the end of this StringBuffer.
      * 
-     * @param sbuffer
+     * @param sb
      *            the StringBuffer
      * @return this StringBuffer
      * 
@@ -472,8 +472,8 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *             when buffer is null
      */
     @Override
-    public synchronized void getChars(int start, int end, char[] buffer, int idx) {
-        super.getChars(start, end, buffer, idx);
+    public synchronized void getChars(int start, int end, char[] buffer, int index) {
+        super.getChars(start, end, buffer, index);
     }
 
     /**

@@ -214,7 +214,7 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      *            the byte array into which the data is read
      * @param offset
      *            the offset the operation start at
-     * @param count
+     * @param length
      *            the maximum number of bytes to read
      * 
      * @throws IOException

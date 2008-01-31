@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SegmentHeader {
-   
+
     private int archiveMajor;
 
-    private int archiveMinor;    
-    
+    private int archiveMinor;
+
     private long archiveModtime;
 
     private long archiveSize;
@@ -74,14 +74,14 @@ public class SegmentHeader {
     private int segmentsRemaining;
 
     private SegmentOptions options;
-    
-    
+
+
     /**
      * The magic header for a Pack200 Segment is 0xCAFED00D. I wonder where they
      * get their inspiration from ...
      */
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
-    
+
     public void unpack(InputStream in) throws IOException,
             Pack200Exception, Error, Pack200Exception {
         long word[] = decodeScalar("archive_magic_word", in, Codec.BYTE1,
@@ -99,17 +99,17 @@ public class SegmentHeader {
         parseArchiveSpecialCounts(in);
         parseCpCounts(in);
         parseClassCounts(in);
-        
+
         if (getBandHeadersSize() > 0) {
-            byte[] bandHeaders = new byte[(int) getBandHeadersSize()];
+            byte[] bandHeaders = new byte[getBandHeadersSize()];
             readFully(in, bandHeaders);
             setBandHeadersData(bandHeaders);
         }
     }
-    
+
     /**
      * Sets the minor version of this archive
-     * 
+     *
      * @param version
      *            the minor version of the archive
      * @throws Pack200Exception
@@ -120,10 +120,10 @@ public class SegmentHeader {
             throw new Pack200Exception("Invalid segment minor version");
         archiveMinor = version;
     }
-    
+
     /**
      * Sets the major version of this archive.
-     * 
+     *
      * @param version
      *            the minor version of the archive
      * @throws Pack200Exception
@@ -134,7 +134,7 @@ public class SegmentHeader {
             throw new Pack200Exception("Invalid segment major version: " + version);
         archiveMajor = version;
     }
-    
+
     public long getArchiveModtime() {
         return archiveModtime;
     }
@@ -222,16 +222,16 @@ public class SegmentHeader {
     public long getArchiveSize() {
         return archiveSize;
     }
-    
+
     /**
      * Obtain the band headers data as an input stream. If no band headers are
      * present, this will return an empty input stream to prevent any further
      * reads taking place.
-     * 
+     *
      * Note that as a stream, data consumed from this input stream can't be
      * re-used. Data is only read from this stream if the encoding is such that
      * additional information needs to be decoded from the stream itself.
-     * 
+     *
      * @return the band headers input stream
      */
     public InputStream getBandHeadersInputStream() {
@@ -241,19 +241,19 @@ public class SegmentHeader {
         return bandHeadersInputStream;
 
     }
-    
+
     public int getNumberOfFiles() {
         return numberOfFiles;
     }
-    
+
     public int getSegmentsRemaining() {
         return segmentsRemaining;
     }
-    
+
     public SegmentOptions getOptions() {
         return options;
     }
-    
+
     private void parseArchiveFileCounts(InputStream in) throws IOException,
             Pack200Exception {
         if (options.hasArchiveFileCounts()) {
@@ -276,7 +276,7 @@ public class SegmentHeader {
                     in, Codec.UNSIGNED5));
         }
     }
-    
+
     private void parseClassCounts(InputStream in) throws IOException,
             Pack200Exception {
         innerClassCount = (int)decodeScalar("ic_count", in, Codec.UNSIGNED5);
@@ -286,7 +286,7 @@ public class SegmentHeader {
                 Codec.UNSIGNED5);
         classCount = (int)decodeScalar("class_count", in, Codec.UNSIGNED5);
     }
-    
+
     private void parseCpCounts(InputStream in) throws IOException,
             Pack200Exception {
         cpUTF8Count = (int)decodeScalar("cp_Utf8_count", in, Codec.UNSIGNED5);
@@ -306,11 +306,11 @@ public class SegmentHeader {
         cpMethodCount = (int)decodeScalar("cp_Method_count", in, Codec.UNSIGNED5);
         cpIMethodCount = (int)decodeScalar("cp_Imethod_count", in, Codec.UNSIGNED5);
     }
-    
+
     /**
      * Decode a number of scalars from the band file. A scalar is like a band,
      * but does not perform any band code switching.
-     * 
+     *
      * @param name
      *            the name of the scalar (primarily for logging/debugging
      *            purposes)
@@ -332,11 +332,11 @@ public class SegmentHeader {
         debug("Parsed #" + name + " (" + n + ")");
         return codec.decode(n, in);
     }
-    
+
     /**
      * Decode a scalar from the band file. A scalar is like a band, but does not
      * perform any band code switching.
-     * 
+     *
      * @param name
      *            the name of the scalar (primarily for logging/debugging
      *            purposes)
@@ -358,7 +358,7 @@ public class SegmentHeader {
         debug("Parsed #" + name + " as " + ret);
         return ret;
     }
-    
+
     public void setArchiveModtime(long archiveModtime) {
         this.archiveModtime = archiveModtime;
     }
@@ -370,7 +370,7 @@ public class SegmentHeader {
     private void setAttributeDefinitionCount(long valuie) {
         this.attributeDefinitionCount = (int) valuie;
     }
-    
+
     private void setBandHeadersData(byte[] bandHeaders) {
         this.bandHeadersInputStream = new ByteArrayInputStream(bandHeaders);
     }
@@ -378,12 +378,12 @@ public class SegmentHeader {
     public void setSegmentsRemaining(long value) {
         segmentsRemaining = (int) value;
     }
-    
+
     /**
      * Completely reads in a byte array, akin to the implementation in
      * {@link java.lang.DataInputStream}. TODO Refactor out into a separate
      * InputStream handling class
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @param data
@@ -411,7 +411,7 @@ public class SegmentHeader {
     public int getBandHeadersSize() {
         return bandHeadersSize;
     }
-    
+
     protected void debug(String message) {
       if (System.getProperty("debug.pack200") != null) {
           System.err.println(message);

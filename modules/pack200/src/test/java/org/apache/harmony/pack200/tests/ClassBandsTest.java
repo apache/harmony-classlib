@@ -29,45 +29,45 @@ import org.apache.harmony.pack200.Segment;
  *
  */
 public class ClassBandsTest extends AbstractBandsTestCase {
-    
+
     private String[] cpClasses;
     private String[] cpDescriptor;
     private String[] cpUTF8;
-    
+
     public class MockCpBands extends CpBands {
 
         public MockCpBands(Segment segment) {
             super(segment);
         }
-        
+
         public String[] getCpClass() {
             return cpClasses;
         }
-        
+
         public String[] getCpDescriptor() {
             return cpDescriptor;
         }
-        
+
         public String[] getCpUTF8() {
             return cpUTF8;
         }
-        
+
         public int[] getCpInt() {
             return new int[0];
         }
-        
+
         public double[] getCpDouble() {
             return new double[0];
         }
-        
+
         public long[] getCpLong() {
-            return new long[0];            
+            return new long[0];
         }
-        
+
         public float[] getCpFloat() {
             return new float[0];
         }
-        
+
         public String[] getCpSignature() {
             return new String[0];
         }
@@ -78,11 +78,11 @@ public class ClassBandsTest extends AbstractBandsTestCase {
             return new MockCpBands(this);
         }
     }
-    
-    
-    
+
+
+
     ClassBands classBands = new ClassBands(new MockSegment());
-    
+
     public void testSimple() throws IOException, Pack200Exception {
         cpClasses = new String[] { "Class1", "Class2", "Class3", "Interface1", "Interface2" };
         cpDescriptor = new String[0];
@@ -119,7 +119,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         assertEquals(cpClasses[4], classBands.getClassInterfaces()[0][1]);
         cpClasses = null;
     }
-    
+
     public void testWithMethods() throws Pack200Exception, IOException {
         cpClasses = new String[] { "Class1", "Class2", "Class3" };
         cpDescriptor = new String[] {"method1", "method2", "method3"};
@@ -133,7 +133,7 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         byte[] methodFlagsLo = classBands.encodeBandLong(new long[]{0, 0, 0}, Codec.UNSIGNED5);
         byte[] classFlags = Codec.UNSIGNED5.encode(0, 0);
         byte[][] allArrays = new byte[][] { classThis, classSuper,
-                classInterfaceCount, classFieldCount, classMethodCount, 
+                classInterfaceCount, classFieldCount, classMethodCount,
                 methodDescr, methodFlagsLo, classFlags, };
         int total = 0;
         for (int i = 0; i < allArrays.length; i++) {
@@ -156,15 +156,15 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         assertEquals(cpDescriptor[0], classBands.getMethodDescr()[0][0]);
         assertEquals(cpDescriptor[1], classBands.getMethodDescr()[0][1]);
         assertEquals(cpDescriptor[2], classBands.getMethodDescr()[0][2]);
-        
+
         cpClasses = null;
         cpDescriptor = null;
     }
-    
+
     public void testWithFields() {
-        
+
     }
-    
-    
-    
+
+
+
 }

@@ -55,35 +55,35 @@ public class LookupSwitchForm extends SwitchForm {
 
         // All this gets dumped into the rewrite bytes of the
         // poor bytecode.
-        
-        
+
+
         // Unlike most byte codes, the LookupSwitch is a
         // variable-sized bytecode. Because of this, the
         // rewrite array has to be defined here individually
         // for each bytecode, rather than in the ByteCodeForm
         // class.
-        
+
         // First, there's the bytecode. Then there are 0-3
         // bytes of padding so that the first (default)
         // label is on a 4-byte offset.
-        int padLength = 3 - (codeLength % 4); 
+        int padLength = 3 - (codeLength % 4);
         int rewriteSize = 1 + padLength + 4 // defaultbytes
             + 4 // npairs
             + (4 * case_values.length)
             + (4 * case_pcs.length);
-        
+
         int[] newRewrite = new int[rewriteSize];
         int rewriteIndex = 0;
-        
+
         // Fill in what we can now
         // opcode
         newRewrite[rewriteIndex++] = byteCode.getOpcode();
-        
+
         // padding
         for(int index=0; index < padLength; index++) {
             newRewrite[rewriteIndex++] = 0;
         }
-        
+
         // defaultbyte
         // This gets overwritten by fixUpByteCodeTargets
         newRewrite[rewriteIndex++] = -1;

@@ -25,7 +25,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class FileDescriptorTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class FileDescriptorTest extends TestCase {
 
     private static String platformId = "JDK"
             + System.getProperty("java.vm.version").replace('.', '-');

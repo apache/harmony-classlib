@@ -43,6 +43,6 @@ public class AttributeLayoutMapTest extends TestCase {
 		layout = b.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
 		assertNotNull(layout);
 		assertEquals("RUNH",layout.getLayout());
-		
+
 	}
 }

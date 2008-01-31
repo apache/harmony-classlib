@@ -33,7 +33,7 @@ public class ShortForm extends ByteCodeForm {
     public int getOperandType() {
         return TYPE_SHORT;
     }
-    
+
     public boolean hasShortOperand() {
         return true;
     }

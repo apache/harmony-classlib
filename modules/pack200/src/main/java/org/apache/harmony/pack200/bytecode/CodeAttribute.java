@@ -84,7 +84,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
             byteCode.applyByteCodeTargetFixup(this);
         }
         // TODO: By the time I get here, the input stream
-        // is somehow confused. 
+        // is somehow confused.
     }
 
     protected int getLength() {
@@ -125,7 +125,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
         }
         for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
             ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
-            entry.resolve(pool);            
+            entry.resolve(pool);
         }
     }
 
@@ -160,7 +160,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     public void addAttribute(Attribute attribute) {
         attributes.add(attribute);
     }
-    
+
     public List attributes() {
         return attributes;
     }
@@ -173,7 +173,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     public void renumber(List byteCodeOffsets) {
         for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
             ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
-            entry.renumber(byteCodeOffsets);            
+            entry.renumber(byteCodeOffsets);
         }
     }
 }

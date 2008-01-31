@@ -95,8 +95,7 @@ public class FileTest extends TestCase {
             dirName += slash;
         }
         dirName += "input.tst";
-        assertTrue("Test 1: Created Incorrect File " + f.getPath(), f.getPath()
-                .equals(dirName));
+        assertEquals("Test 1: Created Incorrect File ", dirName, f.getPath());
 
         String fileName = null;
         try {
@@ -107,15 +106,15 @@ public class FileTest extends TestCase {
 
         d = null;
         f = new File(d, "input.tst");
-        assertTrue("Test 2: Created Incorrect File " + f.getPath(), f
-                .getAbsolutePath().equals(dirName));
+        assertEquals("Test 2: Created Incorrect File",
+                     dirName, f.getAbsolutePath());
 
         // Regression test for HARMONY-382
         File s = null;
         f = new File("/abc");
         d = new File(s, "/abc");
-        assertEquals("Test3: Created Incorrect File " + d.getAbsolutePath(), f
-                .getAbsolutePath(), d.getAbsolutePath());
+        assertEquals("Test3: Created Incorrect File",
+                     d.getAbsolutePath(), f.getAbsolutePath());
 
         // Regression test for HARMONY-21
         File path = new File("/dir/file");
@@ -138,8 +137,8 @@ public class FileTest extends TestCase {
             dirName += File.separator;
         }
         dirName += fileName;
-        assertTrue("Assert 2: Created incorrect file " + f.getPath(), f
-                .getPath().equals(dirName));
+        assertEquals("Assert 2: Created incorrect file ",
+                     dirName, f.getPath());
 
         // Check null argument is handled
         try {
@@ -178,8 +177,7 @@ public class FileTest extends TestCase {
         fileName += "input.tst";
 
         File f = new File(fileName);
-        assertTrue("Created incorrect File " + f.getPath(), f.getPath().equals(
-                fileName));
+        assertEquals("Created incorrect File", fileName, f.getPath());
     }
 
     /**
@@ -194,8 +192,8 @@ public class FileTest extends TestCase {
             userDir += slash;
         }
         userDir += "input.tst";
-        assertTrue("Test 1: Created Incorrect File.", f.getAbsolutePath()
-                .equals(userDir));
+        assertEquals("Test 1: Created Incorrect File.",
+                     userDir, f.getAbsolutePath());
 
         dirName = System.getProperty("user.dir");
         fileName = null;
@@ -208,8 +206,7 @@ public class FileTest extends TestCase {
 
         fileName = "input.tst";
         f = new File(dirName, fileName);
-        assertTrue("Test 2: Created Incorrect File", f.getPath()
-                .equals(userDir));
+        assertEquals("Test 2: Created Incorrect File", userDir, f.getPath());
 
         // Regression test for HARMONY-382
         String s = null;
@@ -226,23 +223,17 @@ public class FileTest extends TestCase {
         File ref1 = new File("/dir1/file1");
 
         File file1 = new File("/", "/dir1/file1");
-        assertEquals("wrong result 1: " + file1, ref1.getPath(), file1
-                .getPath());
+        assertEquals("wrong result 1", ref1.getPath(), file1.getPath());
         File file2 = new File("/", "//dir1/file1");
-        assertTrue("wrong result 2: " + file2, file2.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 2", ref1.getPath(), file2.getPath());
         File file3 = new File("\\", "\\dir1\\file1");
-        assertTrue("wrong result 3: " + file3, file3.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 3", ref1.getPath(), file3.getPath());
         File file4 = new File("\\", "\\\\dir1\\file1");
-        assertTrue("wrong result 4: " + file4, file4.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 4", ref1.getPath(), file4.getPath());
 
         File ref2 = new File("/lib/content-types.properties");
         File file5 = new File("/", "lib/content-types.properties");
-        assertTrue("wrong result 5: " + file5, file5.getPath().equals(
-                ref2.getPath()));
-
+        assertEquals("wrong result 5", ref2.getPath(), file5.getPath());
     }
 
     /**
@@ -253,22 +244,17 @@ public class FileTest extends TestCase {
 
         File root = new File("/");
         File file1 = new File(root, "/dir1/file1");
-        assertTrue("wrong result 1: " + file1, file1.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 1", ref1.getPath(), file1.getPath());
         File file2 = new File(root, "//dir1/file1");
-        assertTrue("wrong result 2: " + file2, file2.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 2", ref1.getPath(), file2.getPath());
         File file3 = new File(root, "\\dir1\\file1");
-        assertTrue("wrong result 3: " + file3, file3.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 3", ref1.getPath(), file3.getPath());
         File file4 = new File(root, "\\\\dir1\\file1");
-        assertTrue("wrong result 4: " + file4, file4.getPath().equals(
-                ref1.getPath()));
+        assertEquals("wrong result 4", ref1.getPath(), file4.getPath());
 
         File ref2 = new File("/lib/content-types.properties");
         File file5 = new File(root, "lib/content-types.properties");
-        assertTrue("wrong result 5: " + file5, file5.getPath().equals(
-                ref2.getPath()));
+        assertEquals("wrong result 5", ref2.getPath(), file5.getPath());
     }
 
     /**
@@ -354,7 +340,7 @@ public class FileTest extends TestCase {
                 .compareTo(f2));
         assertTrue("f3.compareTo(f1) did not result in value < 0", f3
                 .compareTo(f1) < 0);
-        assertTrue("f1.compareTo(f3) did not result in vale > 0", f1
+        assertTrue("f1.compareTo(f3) did not result in value > 0", f1
                 .compareTo(f3) > 0);
     }
 
@@ -417,11 +403,10 @@ public class FileTest extends TestCase {
         if (!dirName.endsWith(slash)) {
             dirName += slash;
         }
-        assertTrue("File Saved To Wrong Directory.", dirName.equals(dir
-                .getPath()
-                + slash));
-        assertEquals("File Saved With Incorrect Name.", "tempfile.tst", f1
-                .getName());
+        assertEquals("File Saved To Wrong Directory.",
+                     dir.getPath() + slash, dirName);
+        assertEquals("File Saved With Incorrect Name.", "tempfile.tst",
+                     f1.getName());
 
         // Test for creating a file that already exists.
         assertFalse("File Already Exists, createNewFile Should Return False.",
@@ -480,9 +465,9 @@ public class FileTest extends TestCase {
             if (!tempDir.endsWith(slash)) {
                 tempDir += slash;
             }
-            assertTrue(
+            assertEquals(
                     "File did not save to the default temporary-file location.",
-                    fileLocation.equals(tempDir));
+                    tempDir, fileLocation);
 
             // Test to see if correct suffix was used to create the tempfile.
             File currentFile;
@@ -564,9 +549,9 @@ public class FileTest extends TestCase {
                 if (!base.endsWith(slash)) {
                     base += slash;
                 }
-                assertTrue(
+                assertEquals(
                         "File not created in the default temporary-file location.",
-                        fileLocation.equals(base));
+                        base, fileLocation);
                 fileName = currentFile.getName();
                 assertTrue("File created with incorrect suffix.", fileName
                         .endsWith(".tmp"));
@@ -643,8 +628,8 @@ public class FileTest extends TestCase {
         File dir = new File(System.getProperty("user.dir"), platformId
                 + "filechk");
         dir.mkdir();
-        assertTrue("Directory Does Not Exist", dir.exists()
-                && dir.isDirectory());
+        assertTrue("Directory does not exist", dir.exists());
+        assertTrue("Directory is not directory", dir.isDirectory());
         File f = new File(dir, "filechk.tst");
         FileOutputStream fos = new FileOutputStream(f);
         fos.close();
@@ -777,16 +762,19 @@ public class FileTest extends TestCase {
             base += slash;
         }
         File f = new File(base, "temp.tst");
-        assertTrue("Test 1: Incorrect Path Returned.", f.getAbsolutePath()
-                .equals(base + "temp.tst"));
+        assertEquals("Test 1: Incorrect Path Returned.",
+                     base + "temp.tst", f.getAbsolutePath());
+
         f = new File(base + "Temp" + slash + slash + slash + "Testing" + slash
                 + "temp.tst");
-        assertTrue("Test 2: Incorrect Path Returned.", f.getAbsolutePath()
-                .equals(base + "Temp" + slash + "Testing" + slash + "temp.tst"));
+        assertEquals("Test 2: Incorrect Path Returned.",
+		     base + "Temp" + slash + "Testing" + slash + "temp.tst",
+                     f.getAbsolutePath());
+
         f = new File(base + "a" + slash + slash + ".." + slash + "temp.tst");
-        assertTrue("Test 3: Incorrect Path Returned." + f.getAbsolutePath(), f
-                .getAbsolutePath().equals(
-                        base + "a" + slash + ".." + slash + "temp.tst"));
+        assertEquals("Test 3: Incorrect Path Returned.",
+                     base + "a" + slash + ".." + slash + "temp.tst",
+                     f.getAbsolutePath());
         f.delete();
     }
 
@@ -951,7 +939,7 @@ public class FileTest extends TestCase {
         assertEquals("Test 1: Returned incorrect name", "name.tst", f.getName());
 
         f = new File("");
-        assertTrue("Test 2: Returned incorrect name", f.getName().equals(""));
+        assertEquals("Test 2: Returned incorrect name", "", f.getName());
 
         f.delete();
     }
@@ -963,15 +951,15 @@ public class FileTest extends TestCase {
         File f = new File("p.tst");
         assertNull("Incorrect path returned", f.getParent());
         f = new File(System.getProperty("user.home"), "p.tst");
-        assertTrue("Incorrect path returned", f.getParent().equals(
-                System.getProperty("user.home")));
+        assertEquals("Incorrect path returned",
+                     System.getProperty("user.home"), f.getParent());
         f.delete();
 
         File f1 = new File("/directory");
-        assertTrue("Wrong parent test 1", f1.getParent().equals(slash));
+        assertEquals("Wrong parent test 1", slash, f1.getParent());
         f1 = new File("/directory/file");
-        assertTrue("Wrong parent test 2", f1.getParent().equals(
-                slash + "directory"));
+        assertEquals("Wrong parent test 2",
+                     slash + "directory", f1.getParent());
         f1 = new File("directory/file");
         assertEquals("Wrong parent test 3", "directory", f1.getParent());
         f1 = new File("/");
@@ -981,11 +969,10 @@ public class FileTest extends TestCase {
 
         if (File.separatorChar == '\\' && new File("d:/").isAbsolute()) {
             f1 = new File("d:/directory");
-            assertTrue("Wrong parent test 1a", f1.getParent().equals(
-                    "d:" + slash));
+            assertEquals("Wrong parent test 1a", "d:" + slash, f1.getParent());
             f1 = new File("d:/directory/file");
-            assertTrue("Wrong parent test 2a", f1.getParent().equals(
-                    "d:" + slash + "directory"));
+            assertEquals("Wrong parent test 2a",
+                         "d:" + slash + "directory", f1.getParent());
             f1 = new File("d:directory/file");
             assertEquals("Wrong parent test 3a", "d:directory", f1.getParent());
             f1 = new File("d:/");
@@ -1029,15 +1016,14 @@ public class FileTest extends TestCase {
         File f3 = new File("c:");
         File f4 = new File(base + "a" + slash + slash + ".." + slash
                 + "filechk.tst");
-        assertTrue("getPath returned incorrect path(f1) " + f1.getPath(), f1
-                .getPath().equals(fname));
-        assertTrue("getPath returned incorrect path(f2) " + f2.getPath(), f2
-                .getPath().equals("filechk.tst"));
-        assertTrue("getPath returned incorrect path(f3) " + f3.getPath(), f3
-                .getPath().equals("c:"));
-        assertTrue("getPath returned incorrect path(f4) " + f4.getPath(), f4
-                .getPath().equals(
-                        base + "a" + slash + ".." + slash + "filechk.tst"));
+        assertEquals("getPath returned incorrect path(f1)",
+                     fname, f1.getPath());
+        assertEquals("getPath returned incorrect path(f2)",
+                     "filechk.tst", f2.getPath());
+        assertEquals("getPath returned incorrect path(f3)","c:", f3.getPath());
+        assertEquals("getPath returned incorrect path(f4)",
+                     base + "a" + slash + ".." + slash + "filechk.tst",
+                     f4.getPath());
         f1.delete();
         f2.delete();
         f3.delete();
@@ -1197,8 +1183,8 @@ public class FileTest extends TestCase {
         fos.close();
         f.setLastModified(315550800000L);
         lastModifiedTime = f.lastModified();
-        assertTrue("LastModified Time Incorrect: " + lastModifiedTime,
-                lastModifiedTime == 315550800000L);
+        assertEquals("LastModified Time Incorrect",
+                     315550800000L, lastModifiedTime);
         f.delete();
 
         // Regression for HARMONY-2146
@@ -1216,8 +1202,8 @@ public class FileTest extends TestCase {
         FileOutputStream fos = new FileOutputStream(f);
         fos.write(fileString.getBytes());
         fos.close();
-        assertTrue("Incorrect file length returned: " + f.length(),
-                f.length() == fileString.length());
+        assertEquals("Incorrect file length returned",
+		     fileString.length(), f.length());
         f.delete();
 
         // regression test for HARMONY-1497
@@ -1516,8 +1502,8 @@ public class FileTest extends TestCase {
 
             // Test to see if the correct number of files are returned.
             File[] flist = baseDir.listFiles(fileFilter);
-            assertTrue("Incorrect Number Of Files Returned.",
-                    flist.length == files.length);
+            assertEquals("Incorrect Number Of Files Returned.",
+                         files.length, flist.length);
 
             // Checking to make sure the correct files were are listed in the
             // array.
@@ -1795,7 +1781,8 @@ public class FileTest extends TestCase {
             }
         }
 
-        assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+        assertTrue("mkdir failed", dir.mkdir());
+	assertTrue("mkdir worked but exists check failed", dir.exists());
         dir.deleteOnExit();
 
         String longDirName = "abcdefghijklmnopqrstuvwx";// 24 chars
@@ -1807,7 +1794,8 @@ public class FileTest extends TestCase {
         while (dir.getCanonicalPath().length() < 256 - longDirName.length()) {
             sb.append(longDirName + File.separator);
             dir = new File(sb.toString());
-            assertTrue("mkdir failed", dir.mkdir() && dir.exists());
+            assertTrue("mkdir failed", dir.mkdir());
+	    assertTrue("mkdir worked but exists check failed", dir.exists());
             dir.deleteOnExit();
         }
 
@@ -1815,7 +1803,9 @@ public class FileTest extends TestCase {
             sb.append(0);
             dir = new File(sb.toString());
             assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
-                    dir.mkdir() && dir.exists());
+                    dir.mkdir());
+            assertTrue("mkdir " + dir.getCanonicalPath().length()
+                       + " worked but exists check failed", dir.exists());
             dir.deleteOnExit();
         }
         dir = new File(sb2.toString());
@@ -1824,7 +1814,9 @@ public class FileTest extends TestCase {
             sb2.append(0);
             dir = new File(sb2.toString());
             assertTrue("mkdir " + dir.getCanonicalPath().length() + " failed",
-                    dir.mkdir() && dir.exists());
+                    dir.mkdir());
+            assertTrue("mkdir " + dir.getCanonicalPath().length()
+                       + " worked but exists check failed", dir.exists());
             dir.deleteOnExit();
         }
 
@@ -1834,9 +1826,11 @@ public class FileTest extends TestCase {
                 "\u4E03\u516B\u4E5D" };
         for (int i = 0; i < ss.length; i++) {
             dir = new File(newbase, ss[i]);
-            assertTrue("mkdir " + dir.getCanonicalPath() + " failed", dir
-                    .mkdir()
-                    && dir.exists());
+            assertTrue("mkdir " + dir.getCanonicalPath() + " failed",
+                       dir.mkdir());
+            assertTrue("mkdir " + dir.getCanonicalPath()
+                       + " worked but exists check failed",
+                       dir.exists());
             dir.deleteOnExit();
         }
     }
@@ -1885,8 +1879,8 @@ public class FileTest extends TestCase {
 
             assertTrue("Test 1: File Rename Failed", f.renameTo(rfile));
             assertTrue("Test 2: File Rename Failed.", rfile.exists());
-            assertTrue("Test 3: Size Of File Changed.",
-                    rfile.length() == lengthOfFile);
+            assertEquals("Test 3: Size Of File Changed.",
+                         lengthOfFile, rfile.length());
 
             fos = new FileOutputStream(rfile);
             fos.close();
@@ -1915,28 +1909,28 @@ public class FileTest extends TestCase {
             // Subtracting 100 000 milliseconds from the orgTime of File f1
             f1.setLastModified(orgTime - 100000);
             long lastModified = f1.lastModified();
-            assertTrue("Test 1: LastModifed time incorrect: " + lastModified,
-                    lastModified == (orgTime - 100000));
+            assertEquals("Test 1: LastModifed time incorrect",
+                         orgTime - 100000, lastModified);
             // Subtracting 10 000 000 milliseconds from the orgTime of File f1
             f1.setLastModified(orgTime - 10000000);
             lastModified = f1.lastModified();
-            assertTrue("Test 2: LastModifed time incorrect: " + lastModified,
-                    lastModified == (orgTime - 10000000));
+            assertEquals("Test 2: LastModifed time incorrect",
+                         orgTime - 10000000, lastModified);
             // Adding 100 000 milliseconds to the orgTime of File f1
             f1.setLastModified(orgTime + 100000);
             lastModified = f1.lastModified();
-            assertTrue("Test 3: LastModifed time incorrect: " + lastModified,
-                    lastModified == (orgTime + 100000));
+            assertEquals("Test 3: LastModifed time incorrect",
+                         orgTime + 100000, lastModified);
             // Adding 10 000 000 milliseconds from the orgTime of File f1
             f1.setLastModified(orgTime + 10000000);
             lastModified = f1.lastModified();
-            assertTrue("Test 4: LastModifed time incorrect: " + lastModified,
-                    lastModified == (orgTime + 10000000));
+            assertEquals("Test 4: LastModifed time incorrect",
+                         orgTime + 10000000, lastModified);
             // Trying to set time to an exact number
             f1.setLastModified(315550800000L);
             lastModified = f1.lastModified();
-            assertTrue("Test 5: LastModified time incorrect: " + lastModified,
-                    lastModified == 315550800000L);
+            assertEquals("Test 5: LastModified time incorrect",
+                         315550800000L, lastModified);
             String osName = System.getProperty("os.name", "unknown");
             if (osName.equals("Windows 2000") || osName.equals("Windows NT")) {
                 // Trying to set time to a large exact number
@@ -1944,8 +1938,10 @@ public class FileTest extends TestCase {
                 long next = f1.lastModified();
                 // Dec 31 23:59:59 EST 2107 is overflow on FAT file systems, and
                 // the call fails
-                assertTrue("Test 6: LastModified time incorrect: " + next,
-                        !result || next == 4354837199000L);
+                if (result) {
+                    assertEquals("Test 6: LastModified time incorrect",
+                                 4354837199000L, next);
+                }
             }
             // Trying to set time to a negative number
             try {
@@ -2052,11 +2048,11 @@ public class FileTest extends TestCase {
     public void test_toString() {
         String fileName = System.getProperty("user.home") + slash + "input.tst";
         File f = new File(fileName);
-        assertTrue("Incorrect string returned", f.toString().equals(fileName));
+        assertEquals("Incorrect string returned", fileName, f.toString());
 
         if (File.separatorChar == '\\') {
             String result = new File("c:\\").toString();
-            assertTrue("Removed backslash: " + result, result.equals("c:\\"));
+            assertEquals("Removed backslash", "c:\\", result);
         }
     }
 
@@ -2078,10 +2074,9 @@ public class FileTest extends TestCase {
         }
 
         URI uri = dir.toURI();
-        assertTrue("Test 1A: Incorrect URI Returned.", new File(uri).equals(dir
-                .getAbsoluteFile()));
-        assertTrue("Test 1B: Incorrect URI Returned.", uri.equals(new URI(
-                "file", null, newURIPath, null, null)));
+        assertEquals("Test 1A: Incorrect URI Returned.", dir.getAbsoluteFile(), new File(uri));
+        assertEquals("Test 1B: Incorrect URI Returned.",
+                     new URI("file", null, newURIPath, null, null), uri);
 
         // Test for toURI with a file name with illegal chars.
         File f = new File(dir, "te% \u20ac st.tst");
@@ -2092,10 +2087,10 @@ public class FileTest extends TestCase {
         }
 
         uri = f.toURI();
-        assertTrue("Test 2A: Incorrect URI Returned.", new File(uri).equals(f
-                .getAbsoluteFile()));
-        assertTrue("Test 2B: Incorrect URI Returned.", uri.equals(new URI(
-                "file", null, newURIPath, null, null)));
+        assertEquals("Test 2A: Incorrect URI Returned.",
+                     f.getAbsoluteFile(), new File(uri));
+        assertEquals("Test 2B: Incorrect URI Returned.",
+                     new URI("file", null, newURIPath, null, null), uri);
 
         // Regression test for HARMONY-3207
         dir = new File(""); // current directory
@@ -2122,8 +2117,8 @@ public class FileTest extends TestCase {
         if (!newDirURL.endsWith("/")) {
             newDirURL += '/';
         }
-        assertTrue("Test 1: Incorrect URL Returned.", newDirURL.equals(dir
-                .toURL().toString()));
+        assertEquals("Test 1: Incorrect URL Returned.",
+                     dir.toURL().toString(), newDirURL);
 
         // Test for toURL with a file.
         File f = new File(dir, "test.tst");
@@ -2134,8 +2129,8 @@ public class FileTest extends TestCase {
         } else {
             newURL = "file:/" + newURL;
         }
-        assertTrue("Test 2: Incorrect URL Returned.", newURL.equals(f.toURL()
-                .toString()));
+        assertEquals("Test 2: Incorrect URL Returned.",
+                     f.toURL().toString(), newURL);
 
         // Regression test for HARMONY-3207
         dir = new File(""); // current directory

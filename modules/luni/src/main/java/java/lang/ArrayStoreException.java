@@ -17,7 +17,6 @@
 
 package java.lang;
 
-
 /**
  * This runtime exception is thrown when a program attempts to store into an
  * array an element of a a type which the array can not hold..
@@ -27,20 +26,20 @@ public class ArrayStoreException extends RuntimeException {
     private static final long serialVersionUID = -4522193890499838241L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public ArrayStoreException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public ArrayStoreException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public ArrayStoreException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public ArrayStoreException(String detailMessage) {
+        super(detailMessage);
+    }
 }

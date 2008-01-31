@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -28,9 +29,11 @@ import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPField;
 import org.apache.harmony.pack200.bytecode.CPMethod;
+import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ClassFile;
 import org.apache.harmony.pack200.bytecode.ClassFileEntry;
+import org.apache.harmony.pack200.bytecode.InnerClassesAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
@@ -40,19 +43,19 @@ import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
  * combine (non-GZipped) archives into a single large archive by concatenation
  * alone. Thus all the hard work in unpacking an archive falls to understanding
  * a segment.
- * 
+ *
  * This class implements the Pack200 specification by an entry point ({@link #parse(InputStream)})
  * which in turn delegates to a variety of other parse methods. Each parse
  * method corresponds (roughly) to the name of the bands in the Pack200
  * specification.
- * 
+ *
  * The first component of a segment is the header; this contains (amongst other
  * things) the expected counts of constant pool entries, which in turn defines
  * how many values need to be read from the stream. Because values are variable
  * width (see {@link Codec}), it is not possible to calculate the start of the
  * next segment, although one of the header values does hint at the size of the
  * segment if non-zero, which can be used for buffering purposes.
- * 
+ *
  * Note that this does not perform any buffering of the input stream; each value
  * will be read on a byte-by-byte basis. It does not perform GZip decompression
  * automatically; both of these are expected to be done by the caller if the
@@ -65,15 +68,14 @@ public class Segment {
 
 
 	/**
+     * TODO: Do we need this method now we have Archive as the main entry point?
+     *
 	 * Decode a segment from the given input stream. This does not attempt to
 	 * re-assemble or export any class files, but it contains enough information
 	 * to be able to re-assemble class files by external callers.
-	 * 
+	 *
 	 * @param in
-	 *            the input stream to read from TODO At this point, this must be
-	 *            a non-GZipped input stream, but this decoding could be done in
-	 *            this method in the future (but perhaps more likely on an
-	 *            archive as a whole)
+	 *            the input stream to read from
 	 * @return a segment parsed from the input stream
 	 * @throws IOException
 	 *             if a problem occurs during reading from the underlying stream
@@ -84,19 +86,6 @@ public class Segment {
 	public static Segment parse(InputStream in) throws IOException,
 			Pack200Exception {
 		Segment segment = new Segment();
-		// See if file is GZip compressed
-		if (!in.markSupported()) {
-			in = new BufferedInputStream(in);
-			if (!in.markSupported())
-				throw new IllegalStateException();
-		}
-		in.mark(2);
-		if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
-			in.reset();
-			in = new BufferedInputStream(new GZIPInputStream(in));
-		} else {
-			in.reset();
-		}
         segment.parseSegment(in);
 		return segment;
 	}
@@ -105,7 +94,7 @@ public class Segment {
     private SegmentHeader header;
 
     private CpBands cpBands;
-    
+
     private AttrDefinitionBands attrDefinitionBands;
 
     private IcBands icBands;
@@ -115,6 +104,10 @@ public class Segment {
     private BcBands bcBands;
 
     private FileBands fileBands;
+
+    private boolean overrideDeflateHint;
+
+    private boolean deflateHint;
 
 	private ClassFile buildClassFile(int classNum) throws Pack200Exception {
 		ClassFile classFile = new ClassFile();
@@ -163,6 +156,51 @@ public class Segment {
 			cfMethods[i] = cp.add(new CPMethod(classBands.getMethodDescr()[classNum][i],
                     classBands.getMethodFlags()[classNum][i], classBands.getMethodAttributes()[classNum][i]));
 		}
+		// TODO: maybe this is a better place to add ic_relevant?
+		// This seems like the right thing to do.
+		boolean addedClasses = false;
+		InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute("InnerClasses");
+		IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
+
+		for(int index = 0; index < ic_relevant.length; index++) {
+		    String innerClassString = ic_relevant[index].thisClassString();
+		    String outerClassString = ic_relevant[index].outerClassString();
+		    String simpleClassName = ic_relevant[index].simpleClassName();
+
+		    CPClass innerClass = null;
+		    CPUTF8 innerName = null;
+		    CPClass outerClass = null;
+
+		    if(ic_relevant[index].isAnonymous()) {
+		        innerClass = new CPClass(innerClassString);
+		    } else {
+	            innerClass = new CPClass(innerClassString);
+	            innerName = new CPUTF8(simpleClassName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+		    }
+
+		    // TODO: I think we need to worry about if the
+		    // OUTER class is a member or not - not the
+		    // ic_relevant itself.
+//		    if(ic_relevant[index].isMember()) {
+		        outerClass = new CPClass(outerClassString);
+//		    }
+
+	        int flags = ic_relevant[index].F;
+	        innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass, innerName, flags);
+	        addedClasses = true;
+		}
+		if(addedClasses) {
+		    // Need to add the InnerClasses attribute to the
+		    // existing classFile attributes.
+		    Attribute[] originalAttrs = classFile.attributes;
+		    Attribute[] newAttrs = new Attribute[originalAttrs.length + 1];
+		    for(int index=0; index < originalAttrs.length; index++) {
+		        newAttrs[index] = originalAttrs[index];
+		    }
+		    newAttrs[newAttrs.length - 1] = innerClassesAttribute;
+		    classFile.attributes = newAttrs;
+		    cp.add(innerClassesAttribute);
+		}
 		// sort CP according to cp_All
 		cp.resolve(this);
 		// print out entries
@@ -189,7 +227,7 @@ public class Segment {
 	/**
 	 * This performs the actual work of parsing against a non-static instance of
 	 * Segment.
-	 * 
+	 *
 	 * @param in
 	 *            the input stream to read from
 	 * @throws IOException
@@ -202,7 +240,7 @@ public class Segment {
 			Pack200Exception {
 		debug("-------");
         header = new SegmentHeader();
-        header.unpack(in);        
+        header.unpack(in);
         cpBands = new CpBands(this);
         cpBands.unpack(in);
         attrDefinitionBands = new AttrDefinitionBands(this);
@@ -216,11 +254,11 @@ public class Segment {
         fileBands = new FileBands(this);
         fileBands.unpack(in);
 	}
-    
+
     /**
      * Unpacks a packed stream (either .pack. or .pack.gz) into a corresponding
      * JarOuputStream.
-     * 
+     *
      * @throws Pack200Exception
      *             if there is a problem unpacking
      * @throws IOException
@@ -229,18 +267,17 @@ public class Segment {
     public void unpack(InputStream in, JarOutputStream out) throws IOException,
             Pack200Exception {
         if (!in.markSupported())
-            in = new BufferedInputStream(in);
-        // TODO Can handle multiple concatenated streams, so should deal with
-        // that possibility
-        parse(in).unpack(in, out);
+            in = new BufferedInputStream(in);        
+        parseSegment(in);
+        writeJar(out);
     }
-    
+
     /**
      * This is a local debugging message to aid the developer in writing this
      * class. It will be removed before going into production. If the property
      * 'debug.pack200' is set, this will generate messages to stderr; otherwise,
      * it will be silent.
-     * 
+     *
      * @param message
      * @deprecated this should be removed from production code
      */
@@ -258,7 +295,7 @@ public class Segment {
 	 * reading, since the file bits may not be loaded and thus just copied from
 	 * one stream to another. Doesn't close the output stream when finished, in
 	 * case there are more entries (e.g. further segments) to be written.
-	 * 
+	 *
 	 * @param out
 	 *            the JarOutputStream to write data to
 	 * @param in
@@ -277,7 +314,7 @@ public class Segment {
         long[] fileOptions = fileBands.getFileOptions();
         long[] fileSize = fileBands.getFileSize();
         byte[][] fileBits = fileBands.getFileBits();
-       
+
 		// out.setLevel(JarEntry.DEFLATED)
 		// now write the files out
 		int classNum = 0;
@@ -289,6 +326,9 @@ public class Segment {
 			long modtime = archiveModtime + fileModtime[i];
 			boolean deflate = (fileOptions[i] & 1) == 1
 					|| options.shouldDeflate();
+            if (overrideDeflateHint) { // Overridden by a command line argument
+                deflate = deflateHint;
+            }
 			boolean isClass = (fileOptions[i] & 2) == 2 || name == null
 					|| name.equals("");
 			if (isClass) {
@@ -356,6 +396,28 @@ public class Segment {
 
     protected IcBands getIcBands() {
         return icBands;
+    }
+
+
+    public void setLogLevel(int logLevel) {
+
+    }
+
+    public void setLogStream(OutputStream stream) {
+
+    }
+
+    public void log(int logLevel, String message) {
+
+    }
+
+    /**
+     * Override the archive's deflate hint with the given boolean
+     * @param deflateHint - the deflate hint to use
+     */
+    public void overrideDeflateHint(boolean deflateHint) {
+        this.overrideDeflateHint = true;
+        this.deflateHint = deflateHint;
     }
 
 }

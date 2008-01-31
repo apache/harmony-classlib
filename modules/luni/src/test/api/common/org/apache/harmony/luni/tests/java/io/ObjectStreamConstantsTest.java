@@ -17,28 +17,29 @@
 package org.apache.harmony.luni.tests.java.io;
 
 import java.io.ObjectStreamConstants;
+
 import junit.framework.TestCase;
 
 public class ObjectStreamConstantsTest extends TestCase {
 
-	/**
-	 * @tests java.io.ObjectStreamConstants#TC_ENUM
-	 */
-	public void test_TC_ENUM() {
-		assertEquals(126, ObjectStreamConstants.TC_ENUM);
-	}
+    /**
+     * @tests java.io.ObjectStreamConstants#TC_ENUM
+     */
+    public void test_TC_ENUM() {
+        assertEquals(126, ObjectStreamConstants.TC_ENUM);
+    }
 
-	/**
-	 * @tests java.io.ObjectStreamConstants#SC_ENUM
-	 */
-	public void test_SC_ENUM() {
-		assertEquals(16, ObjectStreamConstants.SC_ENUM);
-	}
+    /**
+     * @tests java.io.ObjectStreamConstants#SC_ENUM
+     */
+    public void test_SC_ENUM() {
+        assertEquals(16, ObjectStreamConstants.SC_ENUM);
+    }
 
-	/**
-	 * @tests java.io.ObjectStreamConstants#TC_MAX
-	 */
-	public void test_TC_MAX() {
-		assertEquals(126, ObjectStreamConstants.TC_MAX);
-	}
+    /**
+     * @tests java.io.ObjectStreamConstants#TC_MAX
+     */
+    public void test_TC_MAX() {
+        assertEquals(126, ObjectStreamConstants.TC_MAX);
+    }
 }

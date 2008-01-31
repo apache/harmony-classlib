@@ -39,13 +39,13 @@ import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleParameterAnn
  * Group of metadata bands, e.g. class_RVA_bands, method_AD_bands etc
  */
 public class MetadataBandGroup {
-        
+
     private String type;
 
     public MetadataBandGroup(String type) {
         this.type = type;
     }
-    
+
     private List attributes;
 
     public int[] param_NB;
@@ -64,7 +64,7 @@ public class MetadataBandGroup {
     public CPUTF8[] cases_RU;
     public int[] casearray_N;
     public CPUTF8[] nesttype_RS;
-    public int[] nestpair_N;        
+    public int[] nestpair_N;
     public CPUTF8[] nestname_RU;
 
     private Iterator caseI_Iterator;
@@ -86,9 +86,9 @@ public class MetadataBandGroup {
     private Iterator casearray_Iterator;
 
     private Iterator T_iterator;
-    
+
     private Iterator nesttype_RS_Iterator;
-    
+
     private Iterator nestpair_N_Iterator;
 
     private Iterator nestname_RU_Iterator;
@@ -98,8 +98,8 @@ public class MetadataBandGroup {
     private Iterator type_RS_Iterator;
 
     private Iterator pair_N_Iterator;
-    
-   
+
+
     public List getAttributes() {
         if(attributes == null) {
             attributes = new ArrayList();
@@ -146,13 +146,13 @@ public class MetadataBandGroup {
         Annotation[] annotations = new Annotation[numAnnotations];
         for (int i = 0; i < numAnnotations; i++) {
             annotations[i] = getAnnotation(types[i], pairCounts[i], namesIterator);
-        }        
+        }
         return new RuntimeVisibleorInvisibleAnnotationsAttribute(type
                 .equals("RVA") ? "RuntimeVisibleAnnotations"
                 : "RuntimeInvisibleAnnotations",
                 annotations);
     }
-    
+
     private Attribute getParameterAttribute(int numParameters, Iterator namesIterator ) {
         ParameterAnnotation[] parameter_annotations = new ParameterAnnotation[numParameters];
         for (int i = 0; i < numParameters; i++) {
@@ -215,7 +215,7 @@ public class MetadataBandGroup {
             case '@':
                 CPUTF8 type = (CPUTF8) nesttype_RS_Iterator.next();
                 int numPairs = ((Integer)nestpair_N_Iterator.next()).intValue();
-                
+
                 return getAnnotation(type, numPairs, nestname_RU_Iterator);
         }
         return null;
@@ -228,5 +228,5 @@ public class MetadataBandGroup {
         }
         return boxed;
     }
-    
+
 }

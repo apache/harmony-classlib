@@ -69,7 +69,7 @@ public class LocalVariableTypeTableAttribute extends Attribute {
             signature_indexes[i] = pool.indexOf(signatures[i]);
         }
     }
-    
+
     public String toString() {
         return "LocalVariableTypeTable: " + + local_variable_type_table_length + " varaibles";
     }

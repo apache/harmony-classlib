@@ -28,7 +28,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
 public class LabelForm extends ByteCodeForm {
 
     protected boolean widened = false;
-    
+
     public LabelForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
         // TODO Auto-generated constructor stub
@@ -66,7 +66,7 @@ public class LabelForm extends ByteCodeForm {
             byteCode.setNestedPositions(new int[][] {{0,2}});
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */

@@ -17,6 +17,7 @@ Import-Package: java.io,
  java.security,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.luni.util,
- org.apache.harmony.xnet.provider.jsse;hy_usage=suncompat
+ org.apache.harmony.rmi.transport;hy_usage="suncompat",
+ org.apache.harmony.xnet.provider.jsse;hy_usage="suncompat"
 Export-Package: com.sun.net.ssl.internal.ssl,
  sun.misc

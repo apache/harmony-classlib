@@ -1704,7 +1704,7 @@ public final class Scanner implements Iterator<String> {
     /**
      * Remove is not a supported operation on Scanner.
      * 
-     * @throw UnsupportedOperationException if this method is invoked
+     * @throws UnsupportedOperationException if this method is invoked
      */
     public void remove() {
         throw new UnsupportedOperationException();

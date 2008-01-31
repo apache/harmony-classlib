@@ -28,7 +28,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
  */
 public class IMethodRefForm extends ReferenceForm {
 
-    public IMethodRefForm(int opcode, String name, 
+    public IMethodRefForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
     }
@@ -48,7 +48,7 @@ public class IMethodRefForm extends ReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_IMETHOD;
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.Segment)
      */

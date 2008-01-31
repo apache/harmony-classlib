@@ -51,7 +51,7 @@ public class RunCodec extends Codec {
 			return value;
 		} else {
 			this.last = bCodec.decode(in,last);
-			return this.last;			
+			return this.last;
 		}
 	}
 	public String toString() {

@@ -84,11 +84,11 @@ public class Beans {
      * If the specified class loader is null, the system class loader is used.
      * </p>
      * 
-     * @param loader
+     * @param cls
      *            the specified class loader. It can be null.
-     * @param name
+     * @param beanName
      *            the name of the JavaBean
-     * @param context
+     * @param beanContext
      *            the beancontext in which the bean instance will be added.
      * @return an instance of the specified JavaBean.
      * @throws IOException
@@ -139,9 +139,9 @@ public class Beans {
      * called.)
      * </p>
      * 
-     * @param loader
+     * @param cls
      *            the specified class loader. It can be null.
-     * @param name
+     * @param beanName
      *            the name of the JavaBean
      * @param context
      *            the beancontext in which the bean instance will be added.
@@ -219,12 +219,12 @@ public class Beans {
      * 
      * @param bean
      *            the original bean object.
-     * @param type
+     * @param targetType
      *            the specified view type.
      * @return a type view of the given bean.
      */
-    public static Object getInstanceOf(Object bean, @SuppressWarnings("unused")
-    Class<?> targetType) {
+    @SuppressWarnings("unused")
+    public static Object getInstanceOf(Object bean, Class<?> targetType) {
         return bean;
     }
 
@@ -234,7 +234,7 @@ public class Beans {
      * 
      * @param bean
      *            the specified bean object.
-     * @param type
+     * @param targetType
      *            the specifed view type.
      * @return true if the specified bean object can be viewed as the specified
      *         type; otherwise, return false;
@@ -250,7 +250,7 @@ public class Beans {
     /**
      * Set whether or not a GUI is available in the bean's current environment.
      * 
-     * @param value
+     * @param isGuiAvailable
      *            should be <code>true</code> to signify that a GUI is
      *            available, <code>false</code> otherwise.
      * @throws SecurityException
@@ -267,7 +267,7 @@ public class Beans {
      * Used to indicate whether of not it's in an application construction
      * environment.
      * 
-     * @param value
+     * @param isDesignTime
      *            true to indicate that it's in application construction
      *            environment.
      * @throws SecurityException

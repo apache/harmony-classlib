@@ -25,6 +25,8 @@ import java.util.TreeSet;
 /**
  * This class implements the special set (which is aware of
  * domains) used when generating ClassConstantPools.
+ * It's called a Set, but isn't quite a Collection - it
+ * doesn't implement all the API required.
  */
 public class ClassPoolSet {
 
@@ -32,7 +34,7 @@ public class ClassPoolSet {
         /* (non-Javadoc)
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {            
+        public int compare(Object o1, Object o2) {
             if(o1.equals(o2)) {
                 return 0;
             }
@@ -53,7 +55,7 @@ public class ClassPoolSet {
             // with this comparator, it is an error.
             ConstantPoolEntry cpe1 = (ConstantPoolEntry)o1;
             ConstantPoolEntry cpe2 = (ConstantPoolEntry)o2;
-            
+
             // Domains must be the same, need to compare
             // based on comparisonString.
             String compare1 = cpe1.comparisonString();
@@ -71,7 +73,7 @@ public class ClassPoolSet {
             if(classCompare != 0) {
                 return classCompare;
             }
-            
+
             // Now that we've reached this point, we're
             // comparing objects of the same class. Since
             // they have the same class, we can make the
@@ -96,7 +98,7 @@ public class ClassPoolSet {
             if(classCompare != 0) {
                 return classCompare;
             }
-            
+
             // Now that we've reached this point, we're
             // comparing objects of the same class. Since
             // they have the same class, we can make the
@@ -130,13 +132,13 @@ public class ClassPoolSet {
         comparators[ClassConstantPool.DOMAIN_FIELD] = new PoolComparator();
         comparators[ClassConstantPool.DOMAIN_METHOD] = new PoolComparator();
         comparators[ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ] = new NormalAsciizComparator();
-        
+
         for(int index=0; index < ClassConstantPool.NUM_DOMAINS; index++) {
             sets[index] = new TreeSet(comparators[index]);
         }
     }
-    
-    
+
+
     /**
      * Answer the index of the first set which contains the entry
      * passed in as the parameter.
@@ -151,7 +153,7 @@ public class ClassPoolSet {
         }
         return -1;
     }
-    
+
     /**
      * @param set
      * @param testEntry
@@ -176,7 +178,7 @@ public class ClassPoolSet {
      * that. If the parameter exists in a lower precedence
      * domain, remove it from the lower domain and add it to
      * the higher one.
-     * 
+     *
      * @param entry ConstantPoolEntry to add
      * @return ConstantPoolEntry from the domain where it's stored
      */
@@ -184,13 +186,13 @@ public class ClassPoolSet {
         ConstantPoolEntry cpEntry = (ConstantPoolEntry)entry;
         int entryDomain = cpEntry.getDomain();
         int currentStoredDomain = findFirstSetContaining(cpEntry);
-        
+
         if(currentStoredDomain < 0) {
             // Entry is not currently stored; just store it.
             sets[entryDomain].add(cpEntry);
             return cpEntry;
         }
-        
+
         if(currentStoredDomain <= entryDomain) {
             // Entry is either already in this place
             // or in a higher-precedence (numerically lower)
@@ -198,7 +200,7 @@ public class ClassPoolSet {
             // domain.
             return getStoredEntry(currentStoredDomain, cpEntry);
         }
-        
+
         // Entry is in a lower-precedence (numerically higher)
         // domain. Need to remove it from the lower-precedence
         // domain and add it to the higher precedence domain.
@@ -228,6 +230,6 @@ public class ClassPoolSet {
         for(int index=start; index <= stop; index++) {
             someElements.addAll(sets[index]);
         }
-        return someElements.iterator();        
+        return someElements.iterator();
     }
 }

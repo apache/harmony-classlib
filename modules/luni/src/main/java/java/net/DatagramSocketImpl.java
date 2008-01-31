@@ -135,7 +135,8 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      * 
      * @param addr
      *            the multicast group to be joined
-     * @@throws IOException may be thrown while joining a group
+     * @throws IOException
+     *             may be thrown while joining a group
      */
     protected abstract void join(InetAddress addr) throws IOException;
 
@@ -148,7 +149,8 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      *            the multicast group to be joined
      * @param netInterface
      *            the network interface on which the addresses should be dropped
-     * @@throws IOException may be thrown while joining a group
+     * @throws IOException
+     *             may be thrown while joining a group
      */
     protected abstract void joinGroup(SocketAddress addr,
             NetworkInterface netInterface) throws IOException;
@@ -158,7 +160,8 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      * 
      * @param addr
      *            the multicast group to be left
-     * @@throws IOException May be thrown while leaving the group
+     * @throws IOException
+     *             May be thrown while leaving the group
      */
     protected abstract void leave(InetAddress addr) throws IOException;
 
@@ -169,7 +172,8 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      *            the multicast group to be left
      * @param netInterface
      *            the network interface on which the addresses should be dropped
-     * @@throws IOException May be thrown while leaving the group
+     * @throws IOException
+     *             May be thrown while leaving the group
      */
     protected abstract void leaveGroup(SocketAddress addr,
             NetworkInterface netInterface) throws IOException;
@@ -224,7 +228,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      * 
      * @param ttl
      *            the time-to-live, 0<ttl<= 255
-     * @@throws IOException The exception thrown while setting the TTL
+     * @throws IOException The exception thrown while setting the TTL
      */
     protected abstract void setTimeToLive(int ttl) throws IOException;
 
@@ -233,7 +237,7 @@ public abstract class DatagramSocketImpl implements SocketOptions {
      * 
      * @param ttl
      *            the time-to-live, 0<ttl<= 255
-     * @@throws IOException The exception thrown while setting the TTL
+     * @throws IOException The exception thrown while setting the TTL
      * @deprecated Replaced by setTimeToLive
      * @see #setTimeToLive(int)
      */

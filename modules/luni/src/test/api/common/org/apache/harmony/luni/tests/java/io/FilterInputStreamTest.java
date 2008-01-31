@@ -18,21 +18,24 @@
 package org.apache.harmony.luni.tests.java.io;
 
 import java.io.File;
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
+import junit.framework.TestCase;
 import tests.support.Support_PlatformFile;
 
-public class FilterInputStreamTest extends junit.framework.TestCase {
+public class FilterInputStreamTest extends TestCase {
 
-    static class MyFilterInputStream extends java.io.FilterInputStream {
-        public MyFilterInputStream(java.io.InputStream is) {
+    static class MyFilterInputStream extends FilterInputStream {
+        public MyFilterInputStream(InputStream is) {
             super(is);
         }
     }
 
     private String fileName;
 
-    private java.io.InputStream is;
+    private InputStream is;
 
     byte[] ibuf = new byte[4096];
 
@@ -157,6 +160,7 @@ public class FilterInputStreamTest extends junit.framework.TestCase {
         try {
             is.close();
         } catch (Exception e) {
+            // Ignored
         }
         new File(fileName).delete();
     }

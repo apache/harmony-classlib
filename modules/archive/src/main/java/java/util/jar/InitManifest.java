@@ -85,7 +85,7 @@ class InitManifest {
             }
             it = list.iterator();
             String line = it.next();
-            if (line.length() < 7
+            if (line.length() < 6
                     || !Util.toASCIILowerCase(line.substring(0, 5)).equals(
                             "name:")) { //$NON-NLS-1$
                 throw new IOException(Messages.getString("archive.23")); //$NON-NLS-1$

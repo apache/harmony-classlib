@@ -34,7 +34,7 @@ public class CPClass extends ConstantPoolEntry {
 		this.utf8 = new CPUTF8(name, ClassConstantPool.DOMAIN_NORMALASCIIZ);
 	}
 
-	
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -60,7 +60,7 @@ public class CPClass extends ConstantPoolEntry {
 		return new ClassFileEntry[] { utf8, };
 	}
 
-	
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -81,12 +81,14 @@ public class CPClass extends ConstantPoolEntry {
 	public String getName() {
 		return name;
 	}
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(index);
 	}
-	
+
    public String comparisonString() {
+       // TODO: what to do about inner classes?
+       if(name==null) {return "null:name (probably an inner class?)";};
         return getName();
    }
 

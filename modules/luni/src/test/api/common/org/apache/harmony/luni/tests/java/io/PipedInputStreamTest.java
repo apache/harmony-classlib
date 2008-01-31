@@ -20,63 +20,63 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-public class PipedInputStreamTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	static class PWriter implements Runnable {
-		PipedOutputStream pos;
+public class PipedInputStreamTest extends TestCase {
 
-		public byte bytes[];
+    static class PWriter implements Runnable {
+        PipedOutputStream pos;
 
-		public void run() {
-			try {
-				pos.write(bytes);
-				synchronized (this) {
-					notify();
-				}
-			} catch (IOException e) {
-				e.printStackTrace(System.out);
-				System.out.println("Could not write bytes");
-			}
-		}
+        public byte bytes[];
 
-		public PWriter(PipedOutputStream pout, int nbytes) {
-			pos = pout;
-			bytes = new byte[nbytes];
-			for (int i = 0; i < bytes.length; i++)
-				bytes[i] = (byte) (System.currentTimeMillis() % 9);
-		}
-	}
+        public void run() {
+            try {
+                pos.write(bytes);
+                synchronized (this) {
+                    notify();
+                }
+            } catch (IOException e) {
+                e.printStackTrace(System.out);
+                System.out.println("Could not write bytes");
+            }
+        }
 
-	Thread t;
+        public PWriter(PipedOutputStream pout, int nbytes) {
+            pos = pout;
+            bytes = new byte[nbytes];
+            for (int i = 0; i < bytes.length; i++) {
+                bytes[i] = (byte) (System.currentTimeMillis() % 9);
+            }
+        }
+    }
 
-	PWriter pw;
+    Thread t;
 
-	PipedInputStream pis;
+    PWriter pw;
 
-	PipedOutputStream pos;
+    PipedInputStream pis;
 
-	/**
-	 * @tests java.io.PipedInputStream#PipedInputStream()
-	 */
-	public void test_Constructor() {
-		// Test for method java.io.PipedInputStream()
-		// Used in tests
-	}
+    PipedOutputStream pos;
 
-	/**
-	 * @tests java.io.PipedInputStream#PipedInputStream(java.io.PipedOutputStream)
-	 */
-	public void test_ConstructorLjava_io_PipedOutputStream() throws Exception {
-        // Test for method java.io.PipedInputStream(java.io.PipedOutputStream)
+    /**
+     * @tests java.io.PipedInputStream#PipedInputStream()
+     */
+    public void test_Constructor() {
+        // Used in tests
+    }
+
+    /**
+     * @tests java.io.PipedInputStream#PipedInputStream(java.io.PipedOutputStream)
+     */
+    public void test_ConstructorLjava_io_PipedOutputStream() throws IOException {
         pis = new PipedInputStream(new PipedOutputStream());
         pis.available();
     }
 
-	/**
-	 * @tests java.io.PipedInputStream#available()
-	 */
-	public void test_available() throws Exception {
-        // Test for method int java.io.PipedInputStream.available()
+    /**
+     * @tests java.io.PipedInputStream#available()
+     */
+    public void test_available() throws Exception {
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
 
@@ -95,38 +95,35 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
         // We know the PipedInputStream buffer size is 1024.
         // Writing another byte would cause the write to wait
         // for a read before returning
-        for (int i = 0; i < 1024; i++)
+        for (int i = 0; i < 1024; i++) {
             pout.write(i);
-        assertEquals("Incorrect available count", 1024 , pin.available());
+        }
+        assertEquals("Incorrect available count", 1024, pin.available());
     }
 
-	/**
-	 * @tests java.io.PipedInputStream#close()
-	 */
-	public void test_close() throws IOException {
-		// Test for method void java.io.PipedInputStream.close()
-		pis = new PipedInputStream();
-		pos = new PipedOutputStream();
+    /**
+     * @tests java.io.PipedInputStream#close()
+     */
+    public void test_close() throws IOException {
+        pis = new PipedInputStream();
+        pos = new PipedOutputStream();
         pis.connect(pos);
         pis.close();
-		try {
-			pos.write((byte) 127);
+        try {
+            pos.write((byte) 127);
             fail("Failed to throw expected exception");
-		} catch (IOException e) {
-			// The spec for PipedInput saya an exception should be thrown if
-			// a write is attempted to a closed input. The PipedOuput spec
-			// indicates that an exception should be thrown only when the
-			// piped input thread is terminated without closing
-			return;
-		}
-	}
+        } catch (IOException e) {
+            // The spec for PipedInput saya an exception should be thrown if
+            // a write is attempted to a closed input. The PipedOuput spec
+            // indicates that an exception should be thrown only when the
+            // piped input thread is terminated without closing
+        }
+    }
 
-	/**
-	 * @tests java.io.PipedInputStream#connect(java.io.PipedOutputStream)
-	 */
-	public void test_connectLjava_io_PipedOutputStream() throws Exception {
-        // Test for method void
-        // java.io.PipedInputStream.connect(java.io.PipedOutputStream)
+    /**
+     * @tests java.io.PipedInputStream#connect(java.io.PipedOutputStream)
+     */
+    public void test_connectLjava_io_PipedOutputStream() throws Exception {
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
         assertEquals("Non-conected pipe returned non-zero available bytes", 0,
@@ -143,11 +140,10 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                 .available());
     }
 
-	/**
-	 * @tests java.io.PipedInputStream#read()
-	 */
-	public void test_read() throws Exception {
-        // Test for method int java.io.PipedInputStream.read()
+    /**
+     * @tests java.io.PipedInputStream#read()
+     */
+    public void test_read() throws Exception {
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
 
@@ -164,11 +160,10 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                 .read());
     }
 
-	/**
-	 * @tests java.io.PipedInputStream#read(byte[], int, int)
-	 */
-	public void test_read$BII() throws Exception {
-        // Test for method int java.io.PipedInputStream.read(byte [], int, int)
+    /**
+     * @tests java.io.PipedInputStream#read(byte[], int, int)
+     */
+    public void test_read$BII() throws Exception {
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
 
@@ -189,8 +184,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.io.PipedInputStream#read(byte[], int, int)
-     * Regression for HARMONY-387
+     * @tests java.io.PipedInputStream#read(byte[], int, int) Regression for
+     *        HARMONY-387
      */
     public void test_read$BII_2() throws IOException {
         PipedInputStream obj = new PipedInputStream();
@@ -250,8 +245,9 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
             public void run() {
                 try {
                     pos.write(1);
-                    while (readerAlive)
+                    while (readerAlive) {
                         ;
+                    }
                     try {
                         // should throw exception since reader thread
                         // is now dead
@@ -259,7 +255,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                     } catch (IOException e) {
                         pass = true;
                     }
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
         }
         WriteRunnable writeRunnable = new WriteRunnable();
@@ -272,7 +269,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                 try {
                     pis.read();
                     pass = true;
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
         }
         ;
@@ -280,12 +278,14 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
         Thread readThread = new Thread(readRunnable);
         writeThread.start();
         readThread.start();
-        while (readThread.isAlive())
+        while (readThread.isAlive()) {
             ;
+        }
         writeRunnable.readerAlive = false;
         assertTrue("reader thread failed to read", readRunnable.pass);
-        while (writeThread.isAlive())
+        while (writeThread.isAlive()) {
             ;
+        }
         assertTrue("writer thread failed to recognize dead reader",
                 writeRunnable.pass);
 
@@ -316,7 +316,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
             try {
                 // wait for thread t to get to the call to pis.receive
                 Thread.sleep(100);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
             // now we close
             pos.close();
         }
@@ -331,17 +332,18 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                 myRun.pass);
     }
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() throws Exception {
-		try {
-			if (t != null) {
-				t.interrupt();
+    /**
+     * Tears down the fixture, for example, close a network connection. This
+     * method is called after a test is executed.
+     */
+    @Override
+    protected void tearDown() throws Exception {
+        try {
+            if (t != null) {
+                t.interrupt();
             }
-		} catch (Exception ignore) {
-		}
+        } catch (Exception ignore) {
+        }
         super.tearDown();
-	}
+    }
 }

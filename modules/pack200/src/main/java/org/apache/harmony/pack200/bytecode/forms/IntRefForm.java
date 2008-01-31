@@ -39,11 +39,11 @@ public class IntRefForm extends SingleByteReferenceForm {
     public int getOperandType() {
         return TYPE_INTREF;
     }
-    
+
     public boolean hasIntRefOperand() {
         return true;
     }
-    
+
     protected int getOffset(OperandManager operandManager) {
         return operandManager.nextIntRef();
     }

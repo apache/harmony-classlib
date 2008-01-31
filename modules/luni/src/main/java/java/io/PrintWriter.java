@@ -341,7 +341,7 @@ public class PrintWriter extends Writer {
      *            The arguments list. If there are more arguments than those
      *            specified by the format string, then the additional arguments
      *            are ignored.
-     * @return
+     * @return the PrintWriter.
      * @throws IllegalFormatException
      *             If the format string is illegal or incompatible with the
      *             arguments or the arguments are less than those required by
@@ -681,10 +681,10 @@ public class PrintWriter extends Writer {
      * PrintWriter.append(<code>c</code>) works the same way as
      * PrintWriter.write(<code>c</code>).
      * 
-     * @override Writer.append
      * @param c
      *            The character appended to the PrintWriter.
      * @return The PrintWriter.
+     * @see Writer#append(char)
      */
     @Override
     public PrintWriter append(char c) {
@@ -698,10 +698,10 @@ public class PrintWriter extends Writer {
      * PrintWriter.write(<code>csq</code>.toString()). If <code>csq</code>
      * is null, then "null" will be substituted for <code>csq</code>
      * 
-     * @override Writer.append
      * @param csq
      *            The CharSequence appended to the PrintWriter.
      * @return The PrintWriter
+     * @see Writer#append(CharSequence)
      */
     @Override
     public PrintWriter append(CharSequence csq) {
@@ -722,7 +722,6 @@ public class PrintWriter extends Writer {
      * <code>csq</code> is null, then "null" will be substituted for
      * <code>csq</code>.
      * 
-     * @override Writer.append
      * @param csq
      *            The CharSequence appended to the PrintWriter.
      * @param start
@@ -735,6 +734,7 @@ public class PrintWriter extends Writer {
      * @throws IndexOutOfBoundsException
      *             If start is less than end, end is greater than the length of
      *             the CharSequence, or start or end is negative.
+     * @see Writer#append(CharSequence, int, int)
      */
     @Override
     public PrintWriter append(CharSequence csq, int start, int end) {

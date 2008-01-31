@@ -37,7 +37,7 @@ public class SuperFieldRefForm extends ClassSpecificReferenceForm {
     public int getOperandType() {
         return TYPE_SUPERFIELDREF;
     }
-    
+
     public boolean hasSuperFieldRefOperand() {
         return true;
     }
@@ -49,7 +49,7 @@ public class SuperFieldRefForm extends ClassSpecificReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_FIELD;
     }
-    
+
     protected String context(OperandManager operandManager) {
         return operandManager.getSuperClass();
     }

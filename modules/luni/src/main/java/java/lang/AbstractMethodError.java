@@ -17,12 +17,11 @@
 
 package java.lang;
 
-
 /**
- * This error is thrown when the VM notices that a an attempt is being made to
+ * This error is thrown when the VM notices that an attempt is being made to
  * invoke an abstract method.
- * <p>
- * Note that this can only occur when inconsistant class files are being loaded,
+ * </p>
+ * Note that this can only occur when inconsistent class files are being loaded,
  * since invoking an abstract method is a compile time error.
  */
 public class AbstractMethodError extends IncompatibleClassChangeError {
@@ -30,20 +29,20 @@ public class AbstractMethodError extends IncompatibleClassChangeError {
     private static final long serialVersionUID = -1654391082989018462L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public AbstractMethodError() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public AbstractMethodError() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public AbstractMethodError(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public AbstractMethodError(String detailMessage) {
+        super(detailMessage);
+    }
 }

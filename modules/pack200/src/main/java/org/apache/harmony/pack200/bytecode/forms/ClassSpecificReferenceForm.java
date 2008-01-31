@@ -36,11 +36,11 @@ public abstract class ClassSpecificReferenceForm extends ReferenceForm {
         super(opcode, name, rewrite);
         // TODO Auto-generated constructor stub
     }
-    
+
     protected abstract int getOffset(OperandManager operandManager);
     protected abstract int getPoolID();
     protected abstract String context(OperandManager operandManager);
-    
+
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
         SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;

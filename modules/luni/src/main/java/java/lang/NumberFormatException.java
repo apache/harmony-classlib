@@ -17,30 +17,29 @@
 
 package java.lang;
 
-
 /**
  * This runtime exception is thrown when a "string to number" conversion routine
  * is passed an invalid value.
  */
-public class NumberFormatException extends java.lang.IllegalArgumentException {
+public class NumberFormatException extends IllegalArgumentException {
 
     private static final long serialVersionUID = -2848938806368998894L;
 
     /**
-	 * Constructs a new instance of this class with its walkback filled in.
-	 */
-	public NumberFormatException() {
-		super();
-	}
+     * Constructs a new instance of this class with its walkback filled in.
+     */
+    public NumberFormatException() {
+        super();
+    }
 
-	/**
-	 * Constructs a new instance of this class with its walkback and message
-	 * filled in.
-	 * 
-	 * @param detailMessage
-	 *            String The detail message for the exception.
-	 */
-	public NumberFormatException(String detailMessage) {
-		super(detailMessage);
-	}
+    /**
+     * Constructs a new instance of this class with its walkback and message
+     * filled in.
+     * 
+     * @param detailMessage
+     *            String The detail message for the exception.
+     */
+    public NumberFormatException(String detailMessage) {
+        super(detailMessage);
+    }
 }

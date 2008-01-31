@@ -23,10 +23,12 @@ import org.apache.harmony.luni.util.Msg;
 
 class ProxyMethod {
     Method method;
+    Class declaringClass;
 
     Class[] commonExceptions;
 
-    ProxyMethod(Method method) {
+    ProxyMethod(Class declaringClass, Method method) {
+    	this.declaringClass = declaringClass;
         this.method = method;
         this.commonExceptions = method.getExceptionTypes();
     }
@@ -127,6 +129,10 @@ class ProxyMethod {
             }
         }
         return true;
+    }
+    
+    Class getDeclaringClass() {
+    	return declaringClass;
     }
 
 }

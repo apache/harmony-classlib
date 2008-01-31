@@ -61,7 +61,7 @@ public class SegmentOptions {
 
 	/**
 	 * Creates a new segment options with the given integer value.
-	 * 
+	 *
 	 * @param options
 	 *            the integer value to use as the flags
 	 * @throws Pack200Exception

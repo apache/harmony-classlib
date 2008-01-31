@@ -49,7 +49,7 @@ public abstract class Pack200Adapter {
 		support.removePropertyChangeListener(listener);
 	}
 
-	/** 
+	/**
 	 * Completion between 0..1
 	 * @param value
 	 */

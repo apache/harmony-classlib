@@ -26,7 +26,7 @@ import java.util.List;
  * A New (i.e. non-predefined) Class File attribute
  */
 public class NewAttribute extends BCIRenumberedAttribute {
-    
+
     private List lengths = new ArrayList(); // List of Integers
     private List body = new ArrayList();
     private ClassConstantPool pool;
@@ -135,20 +135,20 @@ public class NewAttribute extends BCIRenumberedAttribute {
         lengths.add(new Integer(length));
         body.add(ref);
     }
-    
+
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);
         for (Iterator iter = body.iterator(); iter.hasNext();) {
-            Object element = (Object) iter.next();
+            Object element = iter.next();
             if(element instanceof ClassFileEntry) {
                 ((ClassFileEntry)element).resolve(pool);
             }
         }
         this.pool = pool;
     }
-    
+
     private static class BCOffset extends BCValue {
-        
+
         private int offset;
         private int index;
 
@@ -161,9 +161,9 @@ public class NewAttribute extends BCIRenumberedAttribute {
         }
 
     }
-    
+
     private static class BCIndex extends BCValue {
-        
+
         private int index;
 
         public BCIndex(int index) {
@@ -172,14 +172,14 @@ public class NewAttribute extends BCIRenumberedAttribute {
     }
 
     private static class BCLength extends BCValue {
-        
+
         private int length;
 
         public BCLength(int length) {
             this.length = length;
         }
     }
-    
+
     // Bytecode-related value (either a bytecode index or a length)
     private static abstract class BCValue {
 
@@ -195,12 +195,12 @@ public class NewAttribute extends BCIRenumberedAttribute {
         // Don't need to return anything here as we've overridden renumber
         return null;
     }
-    
+
     public void renumber(List byteCodeOffsets) {
         if(!renumbered) {
             Object previous = null;
             for (Iterator iter = body.iterator(); iter.hasNext();) {
-                Object obj = (Object) iter.next();
+                Object obj = iter.next();
                 if(obj instanceof BCIndex) {
                     BCIndex bcIndex = (BCIndex) obj;
                     bcIndex.setActualValue(((Integer)byteCodeOffsets.get(bcIndex.index)).intValue());
@@ -209,14 +209,14 @@ public class NewAttribute extends BCIRenumberedAttribute {
                     if(previous instanceof BCIndex) {
                         int index = ((BCIndex)previous).index + bcOffset.offset;
                         bcOffset.setIndex(index);
-                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(index)).intValue()); 
+                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(index)).intValue());
                     } else if(previous instanceof BCOffset) {
                         int index = ((BCOffset)previous).index + bcOffset.offset;
                         bcOffset.setIndex(index);
-                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(index)).intValue()); 
+                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(index)).intValue());
                     } else {
                         // Not sure if this should be able to happen
-                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(bcOffset.offset)).intValue());  
+                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(bcOffset.offset)).intValue());
                     }
                 } else if (obj instanceof BCLength) {
                     // previous must be a BCIndex
@@ -224,7 +224,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
                     BCIndex prevIndex = (BCIndex) previous;
                     int index = prevIndex.index + bcLength.length;
                     int actualLength = ((Integer)byteCodeOffsets.get(index)).intValue() - prevIndex.actualValue;
-                    bcLength.setActualValue(actualLength);  
+                    bcLength.setActualValue(actualLength);
                 }
                 previous = obj;
             }

@@ -20,7 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class SignatureAttribute extends Attribute {
-    
+
     private int signature_index;
     private CPUTF8 signature;
 
@@ -41,7 +41,7 @@ public class SignatureAttribute extends Attribute {
         signature.resolve(pool);
         signature_index = pool.indexOf(signature);
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */

@@ -23,47 +23,36 @@ import java.io.RandomAccessFile;
 
 import junit.framework.TestCase;
 
-/**
- * TODO Type description
- */
 public class OpenRandomFileTest extends TestCase {
 
-	public static void main(String[] args) {
-		new OpenRandomFileTest().testOpenEmptyFile();
-	}
+    public static void main(String[] args) throws IOException {
+        new OpenRandomFileTest().testOpenEmptyFile();
+    }
 
-	public OpenRandomFileTest() {
-		super();
-	}
+    public OpenRandomFileTest() {
+        super();
+    }
 
-	public void testOpenNonEmptyFile() {
-		try {
-			File file = File.createTempFile("test", "tmp");
-			assertTrue(file.exists());
-			file.deleteOnExit();
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-			fos.close();
+    public void testOpenNonEmptyFile() throws IOException {
+        File file = File.createTempFile("test", "tmp");
+        assertTrue(file.exists());
+        file.deleteOnExit();
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        fos.close();
 
-			String fileName = file.getCanonicalPath();
-			RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
-			raf.close();
-		} catch (IOException ex) {
-			fail(ex.getLocalizedMessage());
-		}
-	}
+        String fileName = file.getCanonicalPath();
+        RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+        raf.close();
+    }
 
-	public void testOpenEmptyFile() {
-		try {
-			File file = File.createTempFile("test", "tmp");
-			assertTrue(file.exists());
-			file.deleteOnExit();
+    public void testOpenEmptyFile() throws IOException {
+        File file = File.createTempFile("test", "tmp");
+        assertTrue(file.exists());
+        file.deleteOnExit();
 
-			String fileName = file.getCanonicalPath();
-			RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
-			raf.close();
-		} catch (IOException ex) {
-			fail(ex.getLocalizedMessage());
-		}
-	}
+        String fileName = file.getCanonicalPath();
+        RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+        raf.close();
+    }
 }

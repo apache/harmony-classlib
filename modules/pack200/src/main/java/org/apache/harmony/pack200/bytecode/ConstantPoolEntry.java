@@ -20,7 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * 
+ *
  */
 public abstract class ConstantPoolEntry extends ClassFileEntry {
 	public static final byte CP_Class = 7;
@@ -35,9 +35,9 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 
 	/*
 	 * class MemberRef extends ConstantPoolEntry { private int index;
-	 * 
+	 *
 	 * Class(String name) { super(CP_Class); index = pool.indexOf(name); }
-	 * 
+	 *
 	 * void writeBody(DataOutputStream dos) throws IOException {
 	 * dos.writeShort(index); } }
 	 */
@@ -76,11 +76,11 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 	public int getDomain() {
 	    return domain;
 	}
-	
+
 	public void setDomain(int newDomain) {
 	    this.domain = newDomain;
 	}
-	
+
 	public abstract int hashCode();
 
 	public void doWrite(DataOutputStream dos) throws IOException {

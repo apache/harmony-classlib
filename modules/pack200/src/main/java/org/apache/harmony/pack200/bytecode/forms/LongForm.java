@@ -25,7 +25,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
  * long references).
  */
 public class LongForm extends ReferenceForm {
-    
+
     public LongForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
         // TODO Auto-generated constructor stub
@@ -34,7 +34,7 @@ public class LongForm extends ReferenceForm {
     public int getOperandType() {
         return TYPE_LONG;
     }
-    
+
     public boolean hasLongOperand() {
         return true;
     }

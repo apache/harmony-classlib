@@ -189,11 +189,12 @@ public class Header implements Cloneable {
     }
 
     /**
-     * Answers the value corresponding to the specified key, null if no such key
-     * exists.
+     * Answers the value corresponding to the specified key.
      * 
      * @param key
-     * @return
+     *            the key to look up.
+     * @return Answers the value for the given key, or <code>null</code> if no
+     *         such key exists.
      */
     public String get(String key) {
         LinkedList<String> result = keyTable.get(key.toLowerCase());
@@ -206,7 +207,7 @@ public class Header implements Cloneable {
     /**
      * Answers the number of keys stored in this header
      * 
-     * @return
+     * @return the number of keys.
      */
     public int length() {
         return props.size() / 2;

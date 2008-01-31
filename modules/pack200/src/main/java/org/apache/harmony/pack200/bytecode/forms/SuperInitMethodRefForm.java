@@ -23,7 +23,7 @@ package org.apache.harmony.pack200.bytecode.forms;
  */
 public class SuperInitMethodRefForm extends InitMethodReferenceForm {
 
-    public SuperInitMethodRefForm(int opcode, String name, 
+    public SuperInitMethodRefForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
         // TODO Auto-generated constructor stub
@@ -32,7 +32,7 @@ public class SuperInitMethodRefForm extends InitMethodReferenceForm {
     public int getOperandType() {
         return TYPE_SUPERINITMETHODREF;
     }
-    
+
     public boolean hasSuperInitMethodRefOperand() {
         return true;
     }

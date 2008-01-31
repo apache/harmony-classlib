@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class CpBands extends BandSet {
-    
+
     public SegmentConstantPool getConstantPool() {
         return pool;
     }
-    
+
 
     private final SegmentConstantPool pool = new SegmentConstantPool(this);
 
@@ -59,11 +59,11 @@ public class CpBands extends BandSet {
 
     private String[] cpUTF8;
 
-    
+
     public CpBands(Segment segment) {
         super(segment);
     }
-    
+
     public void unpack(InputStream in) throws IOException, Pack200Exception {
         parseCpUtf8(in);
         parseCpInt(in);
@@ -78,11 +78,11 @@ public class CpBands extends BandSet {
         parseCpMethod(in);
         parseCpIMethod(in);
     }
-    
+
     /**
      * Parses the constant pool class names, using {@link #cpClassCount} to
      * populate {@link #cpClass} from {@link #cpUTF8}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -106,7 +106,7 @@ public class CpBands extends BandSet {
      * largely to make it easier for representing field and method descriptors
      * (e.g. <code>out:java.lang.PrintStream</code>) in a way that is
      * compatible with passing String arrays.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -144,7 +144,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool field definitions, using {@link #cpFieldCount}
      * to populate {@link #cpFieldClass} and {@link #cpFieldDescriptor}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -177,7 +177,7 @@ public class CpBands extends BandSet {
      * Parses the constant pool interface method definitions, using
      * {@link #cpIMethodCount} to populate {@link #cpIMethodClass} and
      * {@link #cpIMethodDescriptor}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -211,7 +211,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool method definitions, using {@link #cpMethodCount}
      * to populate {@link #cpMethodClass} and {@link #cpMethodDescriptor}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -242,7 +242,7 @@ public class CpBands extends BandSet {
      * representation identical to the bytecode equivalent
      * <code>[Ljava/lang/String;(V)</code> TODO Check that the form is as
      * above and update other types e.g. J
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -291,7 +291,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool strings, using {@link #cpStringCount} to
      * populate {@link #cpString} from indexes into {@link #cpUTF8}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -308,7 +308,7 @@ public class CpBands extends BandSet {
 
     private void parseCpUtf8(InputStream in) throws IOException,
             Pack200Exception {
-        int cpUTF8Count = header.getCpUTF8Count();        
+        int cpUTF8Count = header.getCpUTF8Count();
         cpUTF8 = new String[cpUTF8Count];
         cpUTF8[0] = ""; //$NON-NLS-1$
         int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5, cpUTF8Count-2);
@@ -327,14 +327,14 @@ public class CpBands extends BandSet {
         int[] dataBand = decodeBandInt("cp_Utf8_chars", in, Codec.CHAR3, charCount);
         for (int i = 0; i < data.length; i++) {
             data[i] = (char) dataBand[i];
-        } 
-        
+        }
+
         // Read in the big suffix data
         int[] bigSuffixCounts = decodeBandInt("cp_Utf8_big_suffix", in, Codec.DELTA5, bigSuffixCount);
         int[][] bigSuffixDataBand = decodeBandInt("cp_Utf8_big_chars", in, Codec.DELTA5, bigSuffixCounts);
-        
+
         // Convert big suffix data to characters
-        char bigSuffixData[][] = new char[bigSuffixCount][];        
+        char bigSuffixData[][] = new char[bigSuffixCount][];
         for (int i = 0; i < bigSuffixDataBand.length; i++) {
             bigSuffixData[i] = new char[bigSuffixDataBand[i].length];
             for (int j = 0; j < bigSuffixDataBand[i].length; j++) {
@@ -358,7 +358,7 @@ public class CpBands extends BandSet {
             }
         }
     }
-    
+
     public String[] getCpClass() {
         return cpClass;
     }

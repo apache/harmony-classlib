@@ -16,7 +16,7 @@
 DEFINES += -DMACOSX -DMACOSX_PPC32 -DPPC32 -DIPv6_FUNCTION_SUPPORT
 OPT += -fpic -fno-common
 OSLIBS = -lc -lm -ldl -liconv
-XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext -lXrender -lexpat \
+XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext -lXtst -lXrender -lexpat \
         -L/sw/lib/freetype2/lib -lfreetype -lfontconfig
 MDLLIBPREFIX =
 MDLLIBSUFFIX =

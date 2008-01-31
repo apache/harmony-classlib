@@ -26,12 +26,12 @@ public class CPInteger extends CPConstantNumber {
 		this.domain = ClassConstantPool.DOMAIN_INTEGER;
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeInt(getNumber().intValue());
 	}
 
-	
+
 	public String toString() {
 		return "Integer: " + getValue();
 	}

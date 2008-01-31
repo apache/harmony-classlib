@@ -25,7 +25,7 @@ public class PopulationCodec extends Codec {
 	private Codec unvafouredCodec;
 	private int l;
     private long[] favoured;
-	
+
 	public PopulationCodec(Codec favouredCodec, Codec tableCodec, Codec unvafouredCodec) {
 		this.favouredCodec = favouredCodec;
 		this.tokenCodec = tableCodec;
@@ -40,18 +40,18 @@ public class PopulationCodec extends Codec {
 		this.unvafouredCodec = unvafouredCodec;
 	}
 
-	
+
 	public long decode(InputStream in) throws IOException, Pack200Exception {
 		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
 	}
 
-	
+
 	public long decode(InputStream in, long last) throws IOException,
 			Pack200Exception {
 		throw new Pack200Exception("Population encoding does not work unless the number of elements are known");
 	}
 
-	
+
 	public long[] decode(int n, InputStream in) throws IOException, Pack200Exception {
 		favoured = new long[n]; // there must be <= n  values, but probably a lot less
 		long result[];
@@ -90,7 +90,7 @@ public class PopulationCodec extends Codec {
 			}
 		}
 		// read favorites
-		result = tokenCodec.decode(n, in);		
+		result = tokenCodec.decode(n, in);
         // read unfavorites
         last = 0;
         for(int i = 0; i < n; i++) {
