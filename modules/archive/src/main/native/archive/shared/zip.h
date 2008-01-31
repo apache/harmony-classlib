@@ -21,7 +21,7 @@
 #ifndef HY_ZIP_API
 #include "zipsup.h"
 #else /* HY_ZIP_API */
-#include "hyzip.h"
+#include "vmizip.h"
 #endif /* HY_ZIP_API */
 
 #include "hymutex.h"
@@ -30,7 +30,11 @@ typedef struct JCLZipFile
 {
   struct JCLZipFile *last;
   struct JCLZipFile *next;
+#ifndef HY_ZIP_API
   HyZipFile hyZipFile;
+#else
+  VMIZipFile hyZipFile;
+#endif
 } JCLZipFile;
 
 /* Fake JCLZipFile entry. last, next must be in the same position as JCLZipFile */

@@ -114,7 +114,7 @@ PROTOTYPE ((HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
             const char *namePtr, IDATA nameSize, BOOLEAN isClass,
             UDATA elementOffset));
 UDATA *zipCache_reserveEntry
-PROTOTYPE ((HaZipChunkHeader * chunk, UDATA entryBytes, UDATA stringBytes));
+PROTOTYPE ((HyZipCacheEntry *zce, HaZipChunkHeader * chunk, UDATA entryBytes, UDATA stringBytes));
 HyZipFileEntry *zipCache_searchFileList
 PROTOTYPE ((HaZipDirEntry * dirEntry, const char *namePtr, UDATA nameSize,
             BOOLEAN isClass));
@@ -139,7 +139,7 @@ PROTOTYPE ((const void *src1, const void *src2, UDATA length));
 */
 
 HyZipCache *
-zipCache_new (HyPortLibrary * portLib, char *zipName, IDATA zipNameLength)
+zipCache_new (HyPortLibrary * portLib, char *zipName, IDATA zipNameLength, IDATA zipFileSize, I_64 zipTimeStamp, IDATA startCentralDir)
 {
   HaZipChunkHeader *chunk;
   HyZipCacheEntry *zce;
@@ -150,9 +150,7 @@ zipCache_new (HyPortLibrary * portLib, char *zipName, IDATA zipNameLength)
   if (!chunk)
     return NULL;
 
-  zce =
-    (HyZipCacheEntry *) zipCache_reserveEntry (chunk,
-                                               sizeof (HyZipCacheEntry), 0);
+  zce = (HyZipCacheEntry *) zipCache_reserveEntry (NULL, chunk, sizeof (HyZipCacheEntry), 0);
   if (!zce)
     {
       /* ACTUAL_CHUNK_SIZE is so small it can't hold one HyZipCacheEntry?? */
@@ -164,7 +162,7 @@ zipCache_new (HyPortLibrary * portLib, char *zipName, IDATA zipNameLength)
   zce->currentChunk = chunk;
 
   /* Try to put the name string in this chunk.  If it won't fit, we'll allocate it separately */
-  if (zipCache_reserveEntry (chunk, 0, zipNameLength + 1))
+  if (zipCache_reserveEntry (zce, chunk, 0, zipNameLength + 1))
     {
       zce->info.zipFileName = chunk->endFree;
     }
@@ -179,8 +177,9 @@ zipCache_new (HyPortLibrary * portLib, char *zipName, IDATA zipNameLength)
     }
   memcpy (zce->info.zipFileName, zipName, zipNameLength);
   zce->info.zipFileName[zipNameLength] = '\0';
-  zce->info.zipFileSize = zce->info.startCentralDir = -1;
-  zce->info.zipTimeStamp = -1;
+  zce->info.zipFileSize = zipFileSize;
+  zce->info.startCentralDir = startCentralDir;
+  zce->info.zipTimeStamp = zipTimeStamp;
   /* zce->info.cachePool is already NULL */
   /* zce->info.cachePoolEntry is already NULL */
   zce->root.zipFileOffset = 1;
@@ -431,9 +430,7 @@ zipCache_addToDirList (HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
   HaZipChunkHeader *chunk = zce->currentChunk;
   zce->chunkActiveDir = NULL;
 
-  entry =
-    (HaZipDirEntry *) zipCache_reserveEntry (chunk, sizeof (*entry),
-                                             nameSize + 1);
+  entry = (HaZipDirEntry *) zipCache_reserveEntry (zce, chunk, sizeof (*entry), nameSize + 1);
   if (!entry)
     {
       if (!(chunk = zipCache_allocateChunk (zce->info.portLib)))
@@ -441,8 +438,7 @@ zipCache_addToDirList (HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
       chunk->next = zce->currentChunk;
       zce->currentChunk = chunk;
       entry =
-        (HaZipDirEntry *) zipCache_reserveEntry (chunk, sizeof (*entry),
-                                                 nameSize + 1);
+        (HaZipDirEntry *) zipCache_reserveEntry (zce, chunk, sizeof (*entry), nameSize + 1);
       if (!entry)
         {
           /* ACTUAL_CHUNK_SIZE is so small it can't hold one HaZipDirEntry?? */
@@ -473,9 +469,7 @@ zipCache_addToFileList (HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
 
   if (zce->chunkActiveDir == dirEntry)
     {
-      if (entry =
-          (HyZipFileEntry *) zipCache_reserveEntry (chunk, sizeof (*entry),
-                                                    nameSize + 1))
+      if (entry = (HyZipFileEntry *) zipCache_reserveEntry (zce, chunk, sizeof (*entry), nameSize + 1))
         {
           /* add to end of existing entry */
           zce->chunkActiveDir->fileList->entryCount++;
@@ -483,9 +477,7 @@ zipCache_addToFileList (HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
         }
     }
 
-  record =
-    (HyZipFileRecord *) zipCache_reserveEntry (chunk, sizeof (*record),
-                                               nameSize + 1);
+  record = (HyZipFileRecord *) zipCache_reserveEntry (zce, chunk, sizeof (*record), nameSize + 1);
   if (!record)
     {
       if (!(chunk = zipCache_allocateChunk (zce->info.portLib)))
@@ -493,9 +485,7 @@ zipCache_addToFileList (HyZipCacheEntry * zce, HaZipDirEntry * dirEntry,
       chunk->next = zce->currentChunk;
       zce->currentChunk = chunk;
       zce->chunkActiveDir = NULL;
-      record =
-        (HyZipFileRecord *) zipCache_reserveEntry (chunk, sizeof (*record),
-                                                   nameSize + 1);
+      record = (HyZipFileRecord *) zipCache_reserveEntry (zce, chunk, sizeof (*record), nameSize + 1);
       if (!record)
         {
           /* ACTUAL_CHUNK_SIZE is so small it can't hold one zipFileRecord?? */
@@ -553,7 +543,7 @@ zipCache_freeChunk (HyPortLibrary * portLib, HaZipChunkHeader * chunk)
 /* to the allocated stringBytes. */
 
 UDATA *
-zipCache_reserveEntry (HaZipChunkHeader * chunk, UDATA entryBytes,
+zipCache_reserveEntry (HyZipCacheEntry * zce, HaZipChunkHeader * chunk, UDATA entryBytes,
                        UDATA stringBytes)
 {
   UDATA *entry;
@@ -918,3 +908,25 @@ helper_memicmp (const void *src1, const void *src2, UDATA length)
     }
   return 0;
 }
+
+/**
+ * Return the startCentralDir of the cache.
+ * 
+ * @param[in] zipCache the zip cache
+ * 
+ * @return the startCentralDir of the cache
+ */
+IDATA zipCache_getStartCentralDir(HyZipCache *zipCache) {
+	return zipCache->startCentralDir;
+}
+
+/**
+ * Whack the cache timestamp to keep other people from starting to use it.  Once all the current
+ * users of the cache have stopped using it, it will go away.
+ * 
+ * @param[in] zipCache the zip cache
+ */
+void zipCache_invalidateCache(HyZipCache * zipCache) {
+	zipCache->zipTimeStamp = -2;	
+}
+

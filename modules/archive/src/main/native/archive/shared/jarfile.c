@@ -20,16 +20,20 @@
 #include "exceptions.h"
 #include "jclglob.h"
 #include "jclprots.h"
-#ifndef HY_ZIP_API
 
+#ifndef HY_ZIP_API
 #include "zipsup.h"
 #else /* HY_ZIP_API */
-#include "hyzip.h"
+#include "vmizip.h"
 #endif /* HY_ZIP_API */
 
 /* Build a new ZipEntry from the C struct */
 jobject
+#ifndef HY_ZIP_API
 createZipEntry (JNIEnv * env, HyZipFile * zipFile, HyZipEntry * zipEntry)
+#else
+createZipEntry (JNIEnv * env, VMIZipFile * zipFile, VMIZipEntry * zipEntry)
+#endif
 {
   PORT_ACCESS_FROM_ENV (env);
 #ifdef HY_ZIP_API
@@ -39,7 +43,7 @@ createZipEntry (JNIEnv * env, HyZipFile * zipFile, HyZipEntry * zipEntry)
   jobject java_ZipEntry, extra, entryName;
   jmethodID mid;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   /* Build a new ZipEntry from the C struct */
@@ -97,8 +101,13 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 #endif /* HY_ZIP_API */
 
   JCLZipFile *jclZipFile;
+#ifdef HY_ZIP_API
+  VMIZipFile *zipFile;
+  VMIZipEntry zipEntry;
+#else
   HyZipFile *zipFile;
   HyZipEntry zipEntry;
+#endif
   jobject current;
   jclass javaClass;
   jobject resultArray[RESULT_BUF_SIZE];
@@ -112,7 +121,7 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
   UDATA nameBufSize = MAX_PATH_J;
   IDATA rc;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   nameBuf = (char *) &startNameBuf;
@@ -178,7 +187,7 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 	  if (zip_getZipEntryFromOffset (PORTLIB, zipFile, &zipEntry, offset))
 #else /* HY_ZIP_API */
 	  zipFuncs->zip_initZipEntry (VMI, &zipEntry);
-	  if (zipFuncs->zip_getZipEntryFromOffset (VMI, zipFile, &zipEntry, offset))
+	  if (zipFuncs->zip_getZipEntryFromOffset (VMI, zipFile, &zipEntry, offset, 0))
 #endif /* HY_ZIP_API */
 	    goto cleanup;
 	  current = createZipEntry (env, zipFile, &zipEntry);

@@ -58,7 +58,7 @@
                 <include name="fdlibm.h" />
                 <include name="hymagic.h" />
                 <include name="jsig.h" />
-                <include name="hyzip.h"/>
+                <include name="vmizip.h"/>
             </fileset>
         </copy>
         <copy todir="${hy.jdk}/include" overwrite="yes">

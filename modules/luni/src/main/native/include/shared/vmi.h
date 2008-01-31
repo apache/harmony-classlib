@@ -108,7 +108,7 @@ extern "C"
 
     HyZipCachePool *(JNICALL * GetZipCachePool) (VMInterface * vmi);
 #else /* HY_ZIP_API */
-    struct HyZipFunctionTable *(JNICALL * GetZipFunctions) (VMInterface * vmi);
+    struct VMIZipFunctionTable *(JNICALL * GetZipFunctions) (VMInterface * vmi);
 #endif /* HY_ZIP_API */
     JavaVMInitArgs *(JNICALL * GetInitArgs) (VMInterface * vmi);
     vmiError (JNICALL * GetSystemProperty) (VMInterface * vmi, char *key,

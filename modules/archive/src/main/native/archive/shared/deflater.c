@@ -100,7 +100,7 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
   int wbits = 15;		/*Use MAX for fastest */
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV (env);
-  HyZipFunctionTable *zipFuncs;
+  VMIZipFunctionTable *zipFuncs;
   zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif
 
@@ -119,15 +119,9 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
       throwNewOutOfMemoryError (env, "");
       return -1;
     }
-#ifndef HY_ZIP_API
   stream->opaque = (void *) privatePortLibrary;
   stream->zalloc = zalloc;
   stream->zfree = zfree;
-#else
-  stream->opaque = (void *) VMI;
-  stream->zalloc = zipFuncs->zip_zalloc;
-  stream->zfree =zipFuncs->zip_zfree;
-#endif
   jstream->stream = stream;
   jstream->dict = NULL;
   jstream->inaddr = NULL;
