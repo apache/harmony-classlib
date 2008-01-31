@@ -75,17 +75,25 @@ public class CurrencyTest extends junit.framework.TestCase {
                 + "isn't equal to " + "Currency.getInstance(Locale_"
                 + localeKn.toString() + "))", cGu == cKn);
 
-        // some teritories do not have currencies, like Antarctica
+        // some territories do not have currencies, like Antarctica(AQ)
         Locale loc = new Locale("", "AQ");
+        Currency curr = Currency.getInstance(loc);
+        assertNull(curr);
+        
         try {
-            Currency curr = Currency.getInstance(loc);
-            assertNull(
-                    "Currency.getInstance(new Locale(\"\", \"AQ\")) did not return null",
-                    curr);
-        } catch (IllegalArgumentException e) {
-            fail("Unexpected IllegalArgumentException " + e);
+            Currency.getInstance((Locale) null);
+            fail("should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
         }
-
+        
+        try {
+            Currency.getInstance(new Locale("ABC","DEF"));
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
         // unsupported/legacy iso3 countries
         // RI does not support them.
         loc = new Locale("", "ZR");
@@ -130,7 +138,7 @@ public class CurrencyTest extends junit.framework.TestCase {
         assertEquals("currK.getSymbol()", "KRW", currK.getSymbol());
         assertEquals("currI.getSymbol()", "0#Rs.|1#Re.|1<Rs.", currI
                 .getSymbol());
-        assertEquals("currUS.getSymbol()", "$", currUS.getSymbol());
+        assertEquals("currUS.getSymbol()", "US$", currUS.getSymbol());
     }
 
     /**
@@ -149,37 +157,37 @@ public class CurrencyTest extends junit.framework.TestCase {
         Currency currJ = Currency.getInstance("JPY");
         assertEquals("\uffe5", currJ.getSymbol(Locale.JAPAN));
         assertEquals("JPY", currJ.getSymbol(Locale.JAPANESE));
-        assertEquals("\u00a5", currJ.getSymbol(Locale.FRANCE));
+        assertEquals("\u00a5JP", currJ.getSymbol(Locale.FRANCE));
         assertEquals("JPY", currJ.getSymbol(Locale.FRENCH));
 
         Currency currUS = Currency.getInstance("USD");
-        assertEquals("$", currUS.getSymbol(Locale.JAPAN));
+        assertEquals("US$", currUS.getSymbol(Locale.JAPAN));
 
         Locale.setDefault(new Locale("ja", "JP"));
-        assertEquals("\u00a5", currJ.getSymbol(new Locale("", "JP")));
-        assertEquals("$", currUS.getSymbol(new Locale("", "JP")));
+        assertEquals("JP\u00a5", currJ.getSymbol(new Locale("", "JP")));
+        assertEquals("US$", currUS.getSymbol(new Locale("", "JP")));
 
         Locale.setDefault(Locale.US);
-        assertEquals("\u00a5", currJ.getSymbol(new Locale("", "JP")));
-        assertEquals("$", currUS.getSymbol(new Locale("", "JP")));
+        assertEquals("JP\u00a5", currJ.getSymbol(new Locale("", "JP")));
+        assertEquals("US$", currUS.getSymbol(new Locale("", "JP")));
 
         assertEquals("USD", currUS.getSymbol(Locale.JAPANESE));
-        assertEquals("$", currUS.getSymbol(Locale.FRANCE));
+        assertEquals("$US", currUS.getSymbol(Locale.FRANCE));
         assertEquals("USD", currUS.getSymbol(Locale.FRENCH));
-        assertEquals("$", currUS.getSymbol(new Locale("fr", "FR")));
-        assertEquals("$", currUS.getSymbol(new Locale("", "FR"))); // default
+        assertEquals("$US", currUS.getSymbol(new Locale("fr", "FR")));
+        assertEquals("US$", currUS.getSymbol(new Locale("", "FR"))); // default
         // locale
 
         assertEquals("$", currUS.getSymbol(Locale.US));
         assertEquals("USD", currUS.getSymbol(Locale.ENGLISH));
 
         assertEquals("$", currUS.getSymbol(new Locale("en", "US")));
-        assertEquals("$", currUS.getSymbol(new Locale("", "US")));
+        assertEquals("US$", currUS.getSymbol(new Locale("", "US")));
 
         Currency currCA = Currency.getInstance("CAD");
         assertEquals("CAD", currCA.getSymbol(Locale.JAPAN));
         assertEquals("CAD", currCA.getSymbol(Locale.JAPANESE));
-        assertEquals("CAD", currCA.getSymbol(Locale.FRANCE));
+        assertEquals("$Ca", currCA.getSymbol(Locale.FRANCE));
         assertEquals("CAD", currCA.getSymbol(Locale.FRENCH));
         assertEquals("Can$", currCA.getSymbol(Locale.US));
         assertEquals("CAD", currCA.getSymbol(Locale.ENGLISH));
@@ -194,9 +202,9 @@ public class CurrencyTest extends junit.framework.TestCase {
 
         // tests what happens with improper locales, i.e. countries without the
         // given language
-        assertEquals("currUS.getSymbol(new Locale(\"ar\", \"US\"))", "$",
+        assertEquals("currUS.getSymbol(new Locale(\"ar\", \"US\"))", "US$",
                 currUS.getSymbol(new Locale("ar", "US")));
-        assertEquals("currUS.getSymbol(new Locale(\"ar\", \"CA\"))", "$",
+        assertEquals("currUS.getSymbol(new Locale(\"ar\", \"CA\"))", "US$",
                 currUS.getSymbol(new Locale("ar", "CA")));
         assertEquals("currCA.getSymbol(new Locale(\"ar\", \"US\"))", "CAD",
                 currCA.getSymbol(new Locale("ar", "US")));
@@ -204,7 +212,7 @@ public class CurrencyTest extends junit.framework.TestCase {
                 currCA.getSymbol(new Locale("ar", "CA")));
         assertEquals("currJ.getSymbol(new Locale(\"ja\", \"US\"))", "\uffe5",
                 currJ.getSymbol(new Locale("ja", "US")));
-        assertEquals("currUS.getSymbol(new Locale(\"ja\", \"US\"))", "$",
+        assertEquals("currUS.getSymbol(new Locale(\"ja\", \"US\"))", "US$",
                 currUS.getSymbol(new Locale("ja", "US")));
 
         // cross testing between USD and JPY when locale is JAPANESE JAPAN
@@ -219,20 +227,20 @@ public class CurrencyTest extends junit.framework.TestCase {
         assertEquals("\uffe5", currJ2.getSymbol(new Locale("ja", "JP")));
 
         // no language
-        assertEquals("\u00a5", currJ2.getSymbol(new Locale("", "JP")));
+        assertEquals("JP\u00a5", currJ2.getSymbol(new Locale("", "JP")));
 
         // no country
         assertEquals("JPY", currJ2.getSymbol(new Locale("ja", "")));
 
         // no language
-        assertEquals("\u00a5", currJ2.getSymbol(new Locale("", "US")));
+        assertEquals("JP\u00a5", currJ2.getSymbol(new Locale("", "US")));
 
         // no country
         assertEquals("JPY", currJ2.getSymbol(new Locale("en", "")));
 
         // bogus Locales , when default locale is Locale_ja_JP
-        assertEquals("\u00a5", currJ2.getSymbol(new Locale("ar", "JP")));
-        assertEquals("\u00a5", currJ2.getSymbol(new Locale("ar", "US")));
+        assertEquals("JP\u00a5", currJ2.getSymbol(new Locale("ar", "JP")));
+        assertEquals("JP\u00a5", currJ2.getSymbol(new Locale("ar", "US")));
         assertEquals("\uffe5", currJ2.getSymbol(new Locale("ja", "AE")));
         assertEquals("\u00a5", currJ2.getSymbol(new Locale("en", "AE")));
         assertEquals("currJ.getSymbol(new Locale(\"ja\", \"US\"))", "\uffe5",
@@ -245,20 +253,20 @@ public class CurrencyTest extends junit.framework.TestCase {
         assertEquals("USD", currUS2.getSymbol(new Locale("ja", "")));
 
         // no language
-        assertEquals("$", currUS2.getSymbol(new Locale("", "JP")));
+        assertEquals("US$", currUS2.getSymbol(new Locale("", "JP")));
 
         // no language
-        assertEquals("$", currUS2.getSymbol(new Locale("", "US")));
+        assertEquals("US$", currUS2.getSymbol(new Locale("", "US")));
 
         // no country
         assertEquals("USD", currUS2.getSymbol(new Locale("en", "")));
 
         // bogus Locales , when default locale is Locale_ja_JP
-        assertEquals("$", currUS2.getSymbol(new Locale("ar", "JP")));
-        assertEquals("$", currUS2.getSymbol(new Locale("ar", "US")));
-        assertEquals("$", currUS2.getSymbol(new Locale("ja", "AE")));
-        assertEquals("US$", currUS2.getSymbol(new Locale("en", "AE")));
-        assertEquals("currUS.getSymbol(new Locale(\"ja\", \"US\"))", "$",
+        assertEquals("US$", currUS2.getSymbol(new Locale("ar", "JP")));
+        assertEquals("US$", currUS2.getSymbol(new Locale("ar", "US")));
+        assertEquals("US$", currUS2.getSymbol(new Locale("ja", "AE")));
+        assertEquals("$", currUS2.getSymbol(new Locale("en", "AE")));
+        assertEquals("currUS.getSymbol(new Locale(\"ja\", \"US\"))", "US$",
                 currUS.getSymbol(new Locale("ja", "US")));
 
         Locale.setDefault(Locale.US);
