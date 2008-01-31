@@ -17,12 +17,15 @@
 package org.apache.harmony.pack200;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
@@ -54,18 +57,41 @@ public class Archive {
 
     private boolean deflateHint;
 
+    private String inputFileName;
+
+    /**
+     * Creates an Archive with the given input and output file names.
+     * @param inputFile
+     * @param outputFile
+     * @throws FileNotFoundException if the input file does not exist
+     * @throws IOException
+     */
     public Archive(String inputFile, String outputFile)
             throws FileNotFoundException, IOException {
+        this.inputFileName = inputFile;
         inputStream = new FileInputStream(inputFile);
         outputStream = new JarOutputStream(new FileOutputStream(outputFile));
     }
 
+    /**
+     * Creates an Archive with streams for the input and output files.
+     * Note: If you use this method then calling {@link #setRemovePackFile(boolean)}
+     * will have no effect.
+     * @param inputStream
+     * @param outputStream
+     * @throws IOException
+     */
     public Archive(InputStream inputStream, JarOutputStream outputStream)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
     }
 
+    /**
+     * Unpacks the Archive from the input file to the output file
+     * @throws Pack200Exception
+     * @throws IOException
+     */
     public void unpack() throws Pack200Exception, IOException {
         outputStream.setComment("PACK200");
         try {
@@ -83,22 +109,30 @@ public class Archive {
                 inputStream.reset();
             }
             inputStream.mark(4);
-            int[] jarMagic = { 0xCA, 0xFE, 0xBA, 0xBE }; // Magic word for a Jar file
-            byte word[] = new byte[4];
-            inputStream.read(word);
-            boolean compressedWithE0 = true;
-            for (int m = 0; m < jarMagic.length; m++) {
-                if (word[m] != jarMagic[m]) {
-                    compressedWithE0 = false;
+            int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D }; // Magic word for pack200
+            int word[] = new int[4];
+            for (int i = 0; i < word.length; i++) {
+                word[i] = inputStream.read();
+            }
+            boolean compressedWithE0 = false;
+            for (int m = 0; m < magic.length; m++) {
+                if (word[m] != magic[m]) {
+                    compressedWithE0 = true;
                 }
             }
             inputStream.reset();
             if(compressedWithE0) { // The original Jar was not packed, so just copy it across
-                byte[] bytes = new byte[16384];
-                int bytesRead = 0;
-                while(bytesRead != -1) {
-                    bytesRead = inputStream.read(bytes);                    
-                    outputStream.write(bytes, 0, bytesRead);
+                JarInputStream jarInputStream = new JarInputStream(inputStream);
+                JarEntry jarEntry;
+                while((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                    outputStream.putNextEntry(jarEntry);
+                    byte[] bytes = new byte[16384];
+                    int bytesRead = 0;
+                    while(bytesRead != -1) {
+                        bytesRead = jarInputStream.read(bytes);
+                        outputStream.write(bytes, 0, bytesRead);
+                    }
+                    outputStream.closeEntry();
                 }
             } else {
                 while (inputStream.available() > 0) {
@@ -112,7 +146,7 @@ public class Archive {
                     segment.unpack(inputStream, outputStream);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             try {
                 inputStream.close();
             } finally {
@@ -120,10 +154,17 @@ public class Archive {
             }
         }
         if (removePackFile) {
-
+            File file = new File(inputFileName);
+            file.delete();
         }
     }
 
+    /**
+     * If removePackFile is set to true, the input file is deleted after
+     * unpacking
+     *
+     * @param removePackFile
+     */
     public void setRemovePackFile(boolean removePackFile) {
         this.removePackFile = removePackFile;
     }
