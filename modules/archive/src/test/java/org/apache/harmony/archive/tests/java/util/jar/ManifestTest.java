@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.archive.tests.java.util.jar;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +86,7 @@ public class ManifestTest extends TestCase {
 	/**
 	 * @tests java.util.jar.Manifest#Manifest(java.io.InputStream)
 	 */
-	public void test_ConstructorLjava_io_InputStream() {
+	public void test_ConstructorLjava_io_InputStream() throws IOException {
 		// Test for method java.util.jar.Manifest(java.io.InputStream)
 		/*
 		 * ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -138,6 +139,23 @@ public class ManifestTest extends TestCase {
 				);
 		assertEquals("Bundle-Version not correct", "1.2.0", main
 				.getValue("Bundle-Version"));
+
+        // Regression test for HARMONY-5424
+        String manifestContent = "Manifest-Version: 1.0\nCreated-By: Apache\nPackage: \nBuild-Jdk: 1.4.1_01\n\n"
+                + "Name: \nSpecification-Title: foo\nSpecification-Version: 1.0\nSpecification-Vendor: \n"
+                + "Implementation-Title: \nImplementation-Version: 1.0\nImplementation-Vendor: \n\n";
+        ByteArrayInputStream bis = new ByteArrayInputStream(manifestContent
+                .getBytes());
+        Manifest mf = new Manifest(bis);
+
+        assertTrue("Wrong number of main attributes", mf.getMainAttributes().size() == 4);
+
+        Map<String, Attributes> entries = mf.getEntries();
+        assertTrue("Wrong number of named entries", entries.size() == 1);
+
+        Attributes namedEntryAttributes = (Attributes) (entries.get(""));
+        assertTrue("Wrong number of named entry attributes",
+                namedEntryAttributes.size() == 6);
 	}
 
 	/**

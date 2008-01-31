@@ -42,26 +42,11 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 		public PWriter(PipedOutputStream pout, int nbytes) {
 			pos = pout;
 			bytes = new byte[nbytes];
-			for (int i = 0; i < bytes.length; i++)
+			for (int i = 0; i < bytes.length; i++) {
 				bytes[i] = (byte) (System.currentTimeMillis() % 9);
+		    }
 		}
 	}
-    
-     static class MockPipedInputStream extends PipedInputStream {
-
-        public MockPipedInputStream(java.io.PipedOutputStream src,
-                int bufferSize) throws IOException {
-            super(src, bufferSize);
-        }
-
-        public MockPipedInputStream(int bufferSize) {
-            super(bufferSize);
-        }
-
-        public int bufferLength() {
-            return super.buffer.length;
-        }
-    }
 
 	Thread t;
 
@@ -87,60 +72,6 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
         pis = new PipedInputStream(new PipedOutputStream());
         pis.available();
     }
-    
-     /**
-     * @tests java.io.PipedInputStream#PipedInputStream(java.io.PipedOutputStream,
-     *        int)
-     * @since 1.6
-     */
-    public void test_Constructor_LPipedOutputStream_I() throws Exception {
-        // Test for method java.io.PipedInputStream(java.io.PipedOutputStream,
-        // int)
-        MockPipedInputStream mpis = new MockPipedInputStream(
-                new PipedOutputStream(), 100);
-        int bufferLength = mpis.bufferLength();
-        assertEquals(100, bufferLength);
-        
-        try {
-            pis = new PipedInputStream(null, -1);
-            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-        
-        try {
-            pis = new PipedInputStream(null, 0);
-            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-    }
-
-    /**
-     * @tests java.io.PipedInputStream#PipedInputStream(int)
-     * @since 1.6
-     */
-    public void test_Constructor_I() throws Exception {
-        // Test for method java.io.PipedInputStream(int)
-        MockPipedInputStream mpis = new MockPipedInputStream(100);
-        int bufferLength = mpis.bufferLength();
-        assertEquals(100, bufferLength);
-
-        try {
-            pis = new PipedInputStream(-1);
-            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-        
-        try {
-            pis = new PipedInputStream(0);
-            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-    }
-
 
 	/**
 	 * @tests java.io.PipedInputStream#available()
@@ -165,8 +96,9 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
         // We know the PipedInputStream buffer size is 1024.
         // Writing another byte would cause the write to wait
         // for a read before returning
-        for (int i = 0; i < 1024; i++)
+        for (int i = 0; i < 1024; i++) {
             pout.write(i);
+        }
         assertEquals("Incorrect available count", 1024 , pin.available());
     }
 
@@ -195,8 +127,6 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 	 * @tests java.io.PipedInputStream#connect(java.io.PipedOutputStream)
 	 */
 	public void test_connectLjava_io_PipedOutputStream() throws Exception {
-        // Test for method void
-        // java.io.PipedInputStream.connect(java.io.PipedOutputStream)
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
         assertEquals("Non-conected pipe returned non-zero available bytes", 0,
@@ -217,7 +147,6 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 	 * @tests java.io.PipedInputStream#read()
 	 */
 	public void test_read() throws Exception {
-        // Test for method int java.io.PipedInputStream.read()
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
 
@@ -238,7 +167,6 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 	 * @tests java.io.PipedInputStream#read(byte[], int, int)
 	 */
 	public void test_read$BII() throws Exception {
-        // Test for method int java.io.PipedInputStream.read(byte [], int, int)
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
 
@@ -320,8 +248,9 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
             public void run() {
                 try {
                     pos.write(1);
-                    while (readerAlive)
+                    while (readerAlive) {
                         ;
+                    }
                     try {
                         // should throw exception since reader thread
                         // is now dead
@@ -329,7 +258,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                     } catch (IOException e) {
                         pass = true;
                     }
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
         }
         WriteRunnable writeRunnable = new WriteRunnable();
@@ -342,7 +272,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
                 try {
                     pis.read();
                     pass = true;
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
         }
         ;
@@ -350,12 +281,14 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
         Thread readThread = new Thread(readRunnable);
         writeThread.start();
         readThread.start();
-        while (readThread.isAlive())
+        while (readThread.isAlive()) {
             ;
+        }
         writeRunnable.readerAlive = false;
         assertTrue("reader thread failed to read", readRunnable.pass);
-        while (writeThread.isAlive())
+        while (writeThread.isAlive()) {
             ;
+        }
         assertTrue("writer thread failed to recognize dead reader",
                 writeRunnable.pass);
 
@@ -386,7 +319,8 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
             try {
                 // wait for thread t to get to the call to pis.receive
                 Thread.sleep(100);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
             // now we close
             pos.close();
         }
@@ -414,4 +348,74 @@ public class PipedInputStreamTest extends junit.framework.TestCase {
 		}
         super.tearDown();
 	}
+	
+	    
+     /**
+     * @tests java.io.PipedInputStream#PipedInputStream(java.io.PipedOutputStream,
+     *        int)
+     * @since 1.6
+     */
+    public void test_Constructor_LPipedOutputStream_I() throws Exception {
+        // Test for method java.io.PipedInputStream(java.io.PipedOutputStream,
+        // int)
+        MockPipedInputStream mpis = new MockPipedInputStream(
+                new PipedOutputStream(), 100);
+        int bufferLength = mpis.bufferLength();
+        assertEquals(100, bufferLength);
+        
+        try {
+            pis = new PipedInputStream(null, -1);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            pis = new PipedInputStream(null, 0);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.io.PipedInputStream#PipedInputStream(int)
+     * @since 1.6
+     */
+    public void test_Constructor_I() throws Exception {
+        // Test for method java.io.PipedInputStream(int)
+        MockPipedInputStream mpis = new MockPipedInputStream(100);
+        int bufferLength = mpis.bufferLength();
+        assertEquals(100, bufferLength);
+
+        try {
+            pis = new PipedInputStream(-1);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        
+        try {
+            pis = new PipedInputStream(0);
+            fail("Should throw IllegalArgumentException"); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+	
+    static class MockPipedInputStream extends PipedInputStream {
+
+        public MockPipedInputStream(java.io.PipedOutputStream src,
+                int bufferSize) throws IOException {
+            super(src, bufferSize);
+        }
+
+        public MockPipedInputStream(int bufferSize) {
+            super(bufferSize);
+        }
+
+        public int bufferLength() {
+            return super.buffer.length;
+        }
+    }
 }

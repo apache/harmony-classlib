@@ -25,7 +25,7 @@ public class Pack200Exception extends Exception {
 
 	/**
 	 * Create a new Pack200 exception with the given message and cause
-	 * 
+	 *
 	 * @param message
 	 *            the text message to display
 	 */
@@ -35,7 +35,7 @@ public class Pack200Exception extends Exception {
 
 	/**
 	 * Create a new Pack200 exception with the given message and cause
-	 * 
+	 *
 	 * @param message
 	 *            the text message to display
 	 * @param cause
@@ -47,7 +47,7 @@ public class Pack200Exception extends Exception {
 
 	/**
 	 * Create a new Pack200 exception with the given message and cause
-	 * 
+	 *
 	 * @param cause
 	 *            the throwable that caused this problem
 	 */

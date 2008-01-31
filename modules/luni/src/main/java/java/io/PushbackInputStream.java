@@ -315,7 +315,7 @@ public class PushbackInputStream extends FilterInputStream {
      * @param readlimit
      *            the maximum number of bytes that are able to be read before
      *            the mark becomes invalid
-     * @override the method mark in FilterInputStream
+     * @see FilterInputStream#mark(int)
      */
     @Override
     public void mark(int readlimit) {
@@ -326,9 +326,9 @@ public class PushbackInputStream extends FilterInputStream {
      * Reset current position to the mark made previously int the stream, but
      * the reset method will throw IOException and do nothing else if called.
      * 
-     * @override the method reset in FilterInputStream
      * @throws IOException
      *             If the method is called
+     * @see FilterInputStream#reset()
      */
     @Override
     public void reset() throws IOException {

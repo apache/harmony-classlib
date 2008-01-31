@@ -87,8 +87,8 @@ public class AttributeLayout implements IMatcher {
 		}
 		throw new Pack200Exception("Unknown layout encoding: " + layout);
 	}
-    
-    
+
+
     private int context;
 
     private int index;
@@ -96,11 +96,11 @@ public class AttributeLayout implements IMatcher {
 	private final String layout;
 
 	private long mask;
-    
+
     private String name;
     private boolean isDefault;
     private int backwardsCallCount;
-    
+
 
     /**
      * Construct a default AttributeLayout
@@ -115,7 +115,7 @@ public class AttributeLayout implements IMatcher {
 			throws Pack200Exception {
 		this(name, context, layout, index, true);
 	}
-    
+
     public AttributeLayout(String name, int context, String layout, int index,
             boolean isDefault) throws Pack200Exception {
         super();
@@ -138,8 +138,8 @@ public class AttributeLayout implements IMatcher {
         this.layout = layout;
         this.isDefault = isDefault;
     }
-    
-    
+
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -153,7 +153,7 @@ public class AttributeLayout implements IMatcher {
 				return false;
 		} else if (!layout.equals(other.layout))
 			return false;
-        if(index != other.index) 
+        if(index != other.index)
             return false;
         if(context != other.context)
             return false;
@@ -258,7 +258,7 @@ public class AttributeLayout implements IMatcher {
     public String getName() {
         return name;
     }
-    
+
     public int numBackwardsCallables() {
         if(layout == "*") {
             return 1;

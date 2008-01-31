@@ -28,6 +28,7 @@ BUILDFILES = \
   gl.o \
   XBlitter.o \
   XGraphics2D.o \
+  LockingKeys.o \
   libpng.a
 
 ifneq ($(HY_ZIP_API),true)

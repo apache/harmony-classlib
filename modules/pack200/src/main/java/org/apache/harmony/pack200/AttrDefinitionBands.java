@@ -26,14 +26,14 @@ public class AttrDefinitionBands extends BandSet {
 
     private int[] attributeDefinitionHeader;
 
-    private String[] attributeDefinitionLayout;    
+    private String[] attributeDefinitionLayout;
 
     private String[] attributeDefinitionName;
 
     private AttributeLayoutMap attributeDefinitionMap;
 
     private String[] cpUTF8;
-    
+
     public AttrDefinitionBands(Segment segment) {
         super(segment);
         this.cpUTF8 = segment.getCpBands().getCpUTF8();
@@ -51,9 +51,9 @@ public class AttrDefinitionBands extends BandSet {
                 Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
         attributeDefinitionLayout = parseReferences("attr_definition_layout",
                 in, Codec.UNSIGNED5, attributeDefinitionCount, cpUTF8);
-        
+
         attributeDefinitionMap = new AttributeLayoutMap();
-        
+
         int overflowIndex = 32;
         if(segment.getSegmentHeader().getOptions().hasClassFlagsHi()) {
             overflowIndex = 63;

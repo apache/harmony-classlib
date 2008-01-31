@@ -42,7 +42,7 @@
         <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${xmlsec.url}" dest="${xmlsec.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
-        <check-one-file src="${bcprov.url}" dest="${bcprov.orig.jar}" />
+        <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
@@ -108,8 +108,29 @@
         <antcall target="-awt-tar-extract" />
     </target>
 
+    <target name="-temporary-warning" if="is.windows">
+        <!-- TODO: Remove this target in a week or two or when we
+             update to icu4c 3.8
+          -->
+        <condition property="windows.warn">
+            <not><available file="${icudll.dir}/icuuc.lib" /></not>
+        </condition>
+        <fail if="windows.warn">
+...
+
+
+Please remove the directory:
+
+  ${icudll.dir}
+
+and re-run "ant fetch-depends" to get a new version of icu-3.4.zip.  Sorry
+for the inconvinience.
+
+        </fail>
+    </target>
+
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-idea-from-bcprov,-extract-icudlls" />
+         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-icudlls,-temporary-warning" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -121,17 +142,12 @@
         <uptodate property="xerces.uptodate"
                   srcfile="${xerces.zip}"
                   targetfile="${xerces.dir}/xercesImpl.jar" />
-        <uptodate property="bcprov.uptodate"
-                  targetfile="${bcprov.jar}">
-            <srcfiles file="${bcprov.orig.jar}" />
-            <srcfiles dir="depends/files/bcprov"
-                      includes="**/IDEAEngine.class" />
-        </uptodate>
         <uptodate property="icudlls.uptodate"
                   srcfile="${icudll.zip}"
                   targetfile="${icudll.dir}/uptodate" />
 
     </target>
+
 
     <target name="-extract-dejavu-fonts" unless="dejavu-fonts.uptodate">
         <unzip src="${dejavu-fonts.zip}" dest="${dejavu-fonts.dir}" />
@@ -174,18 +190,6 @@
         </copy>
         <delete dir="${xerces.dir}.tmp" />
 	<touch file="${xerces.dir}/xercesImpl.jar" />
-    </target>
-
-    <target name="-extract-idea-from-bcprov" unless="bcprov.uptodate">
-        <zip destfile="${bcprov.jar}">
-            <zipfileset src="${bcprov.orig.jar}">
-                <exclude name="**/BCKEY.*" />
-                <exclude name="**/IDEAEngine.class" />
-            </zipfileset>
-            <fileset dir="depends/files/bcprov">
-                <include name="**/IDEAEngine.class" />
-            </fileset>
-        </zip>
     </target>
 
     <target name="-extract-icudlls" unless="icudlls.uptodate">
@@ -400,7 +404,7 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${junit.md5}" />
 
     <mkdir dir="${bcprov.dir}" />
-    <download-one-file src="${bcprov.url}" dest="${bcprov.orig.jar}"
+    <download-one-file src="${bcprov.url}" dest="${bcprov.jar}"
                            md5="${bcprov.md5}" />
 
     <mkdir dir="${mx4j.dir}" />

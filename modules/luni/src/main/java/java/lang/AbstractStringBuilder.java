@@ -23,11 +23,9 @@ import java.util.Arrays;
 import org.apache.harmony.luni.util.Msg;
 
 /**
- * <p>
  * A modifiable {@link CharSequence sequence of characters} for use in creating
  * and modifying Strings. This class is intended as a base class for
  * {@link java.lang.StringBuffer} and {@link java.lang.StringBuilder}.
- * </p>
  * 
  * @see java.lang.StringBuffer
  * @see java.lang.StringBuilder
@@ -200,12 +198,10 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Retrieves the character at the <code>index</code>.
-     * </p>
      * 
-     * @param The
-     *            index of character in this object to retrieve.
+     * @param index
+     *            The index of character in this object to retrieve.
      * @return The char value.
      * @throws IndexOutOfBoundsException
      *             if <code>index</code> is negative or greater than or equal
@@ -268,7 +264,6 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Ensures that this object has a minimum capacity available before
      * requiring the internal buffer to be enlarged. The general policy of this
      * method is that if the <code>minimumCapacity</code> is larger than the
@@ -276,9 +271,8 @@ abstract class AbstractStringBuilder {
      * largest value of either the <code>minimumCapacity</code> or the current
      * capacity multiplied by two plus two. Although this is the general policy,
      * there is no guarantee that the capacity will change.
-     * </p>
      * 
-     * @param minimumCapacity
+     * @param min
      *            The new minimum capacity to set.
      */
     public void ensureCapacity(int min) {
@@ -288,10 +282,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Copies the requested sequence of characters to be copied to the
      * <code>char[]</code> passed.
-     * </p>
      * 
      * @param start
      *            The inclusive start index of the characters to copy from this
@@ -386,9 +378,7 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * The current length of this object.
-     * </p>
      * 
      * @return the number of characters in this StringBuffer
      */
@@ -483,9 +473,7 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Sets the character at the <code>index</code> in this object.
-     * </p>
      * 
      * @param index
      *            the zero-based index of the character to replace.
@@ -507,11 +495,9 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Sets the current length to a new value. If the new length is larger than
      * the current length, then the new characters at the end of this object
      * will contain the <code>char</code> value of <code>\u0000</code>.
-     * </p>
      * 
      * @param length
      *            the new length of this StringBuffer
@@ -543,10 +529,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Returns the String value of the subsequence of this object from the
      * <code>start</code> index to the current end.
-     * </p>
      * 
      * @param start
      *            The inclusive start index to begin the subsequence.
@@ -568,10 +552,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Returns the String value of the subsequence of this object from the
      * <code>start</code> index to the <code>start</code> index.
-     * </p>
      * 
      * @param start
      *            The inclusive start index to begin the subsequence.
@@ -595,9 +577,7 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Returns the current String representation of this object.
-     * </p>
      * 
      * @return a String containing the characters in this StringBuilder.
      */
@@ -615,10 +595,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Returns a <code>CharSequence</code> of the subsequence of this object
      * from the <code>start</code> index to the <code>start</code> index.
-     * </p>
      * 
      * @param start
      *            The inclusive start index to begin the subsequence.
@@ -639,7 +617,6 @@ abstract class AbstractStringBuilder {
      * Searches in this StringBuffer for the first index of the specified
      * character. The search for the character starts at the beginning and moves
      * towards the end.
-     * 
      * 
      * @param string
      *            the string to find
@@ -782,10 +759,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Trims off any extra capacity beyond the current length. Note, this method
      * is NOT guaranteed to change the capacity of this object.
-     * </p>
      * 
      * @since 1.5
      */
@@ -799,9 +774,7 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Retrieves the Unicode code point value at the <code>index</code>.
-     * </p>
      * 
      * @param index
      *            The index to the <code>char</code> code unit within this
@@ -822,10 +795,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Retrieves the Unicode code point value that precedes the
      * <code>index</code>.
-     * </p>
      * 
      * @param index
      *            The index to the <code>char</code> code unit within this
@@ -846,10 +817,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Calculates the number of Unicode code points between
      * <code>beginIndex</code> and <code>endIndex</code>.
-     * </p>
      * 
      * @param beginIndex
      *            The inclusive beginning index of the subsequence.
@@ -871,10 +840,8 @@ abstract class AbstractStringBuilder {
     }
 
     /**
-     * <p>
      * Returns the index within this object that is offset from
      * <code>index</code> by <code>codePointOffset</code> code points.
-     * </p>
      * 
      * @param index
      *            The index within this object to calculate the offset from.

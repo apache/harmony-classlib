@@ -33,7 +33,7 @@ public class IincForm extends ByteCodeForm {
     public int getOperandType() {
         return TYPE_IINC;
     }
-    
+
     public boolean hasIincOperand() {
         return true;
     }

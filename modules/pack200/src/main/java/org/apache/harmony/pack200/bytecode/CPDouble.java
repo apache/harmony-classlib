@@ -25,12 +25,12 @@ public class CPDouble extends CPConstantNumber {
         this.domain = ClassConstantPool.DOMAIN_DOUBLE;
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeDouble(getNumber().doubleValue());
 	}
 
-	
+
 	public String toString() {
 		return "Double: " + getValue();
 	}

@@ -26,8 +26,8 @@ package java.net;
  * It should override <code>getPasswordAuthentication()</code> which dictates
  * how the authentication info should be obtained.
  * 
- * @see java.net.Authenticator.setDefault(java.net.ConnectionAuthenticator),
- * @see java.net.getPasswordAuthentication()
+ * @see Authenticator#setDefault(Authenticator)
+ * @see Authenticator#getPasswordAuthentication()
  */
 public abstract class Authenticator {
 

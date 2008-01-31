@@ -35,11 +35,11 @@ public class NoArgumentForm extends ByteCodeForm {
     public int getOperandType() {
         return TYPE_NONE;
     }
-    
+
     public boolean hasNoOperand() {
         return true;
     }
-    
+
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
      */

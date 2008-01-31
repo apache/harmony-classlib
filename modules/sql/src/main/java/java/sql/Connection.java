@@ -135,7 +135,7 @@ public interface Connection extends Wrapper {
      *            one of :
      *            <ul>
      *            <li>{@link ResultSet#CONCUR_UPDATABLE}
-     *            <li>{@link ResultSet#CCONCUR_READ_ONLY}
+     *            <li>{@link ResultSet#CONCUR_READ_ONLY}
      *            </ul>
      * @return a new instance of <code>Statement</code> capable of
      *         manufacturing <code>ResultSet</code>s that satisfy the

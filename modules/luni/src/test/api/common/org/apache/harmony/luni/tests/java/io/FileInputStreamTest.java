@@ -24,9 +24,10 @@ import java.io.FilePermission;
 import java.io.IOException;
 import java.security.Permission;
 
+import junit.framework.TestCase;
 import tests.support.Support_PlatformFile;
 
-public class FileInputStreamTest extends junit.framework.TestCase {
+public class FileInputStreamTest extends TestCase {
 
     public String fileName;
 

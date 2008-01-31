@@ -27,7 +27,7 @@ import org.apache.harmony.pack200.SegmentConstantPool;
  * in super, this and new references.
  */
 public class OperandManager {
-	
+
     int[] bcCaseCount;
     int[] bcCaseValue;
     int[] bcByte;
@@ -49,7 +49,7 @@ public class OperandManager {
 	int[] bcSuperMethod;
 	int[] bcInitRef;
 	int[] wideByteCodes;
-    
+
 	int bcCaseCountIndex = 0;
 	int bcCaseValueIndex = 0;
 	int bcByteIndex = 0;
@@ -71,13 +71,13 @@ public class OperandManager {
 	int bcSuperMethodIndex = 0;
 	int bcInitRefIndex = 0;
 	int wideByteCodeIndex = 0;
-    
+
 	Segment segment = null;
-	
+
 	String currentClass = null;
 	String superClass = null;
 	String newClass = null;
-	
+
 	public OperandManager(int[] bcCaseCount, int[] bcCaseValue, int[] bcByte, int[]  bcShort, int[]  bcLocal, int[]  bcLabel, int[]  bcIntRef, int[]  bcFloatRef, int[]  bcLongRef, int[]  bcDoubleRef, int[]  bcStringRef, int[]  bcClassRef, int[]  bcFieldRef, int[]  bcMethodRef, int[] bcIMethodRef, int[] bcThisField, int[] bcSuperField, int[] bcThisMethod, int[] bcSuperMethod, int[] bcInitRef, int[] wideByteCodes) {
 	    this.bcCaseCount = bcCaseCount;
 	    this.bcCaseValue = bcCaseValue;
@@ -102,67 +102,67 @@ public class OperandManager {
 	    this.bcInitRef = bcInitRef;
 	    this.wideByteCodes = wideByteCodes;
 	}
-    
+
     public int nextCaseCount() {
-        return bcCaseCount[bcCaseCountIndex++];       
+        return bcCaseCount[bcCaseCountIndex++];
     }
-    
+
     public int nextCaseValues() {
-        return bcCaseValue[bcCaseValueIndex++];       
+        return bcCaseValue[bcCaseValueIndex++];
     }
-    
+
 	public int nextByte() {
-		return bcByte[bcByteIndex++];		
+		return bcByte[bcByteIndex++];
 	}
-	
+
 	public int nextShort() {
-		return bcShort[bcShortIndex++];		
+		return bcShort[bcShortIndex++];
 	}
-	
+
 	public int nextLocal() {
-		return bcLocal[bcLocalIndex++];		
+		return bcLocal[bcLocalIndex++];
 	}
-	
+
 	public int nextLabel() {
-		return bcLabel[bcLabelIndex++];		
+		return bcLabel[bcLabelIndex++];
 	}
-	
+
 	public int nextIntRef() {
-		return bcIntRef[bcIntRefIndex++];		
+		return bcIntRef[bcIntRefIndex++];
 	}
-	
+
 	public int nextFloatRef() {
-		return bcFloatRef[bcFloatRefIndex++];		
+		return bcFloatRef[bcFloatRefIndex++];
 	}
-	
+
 	public int nextLongRef() {
-		return bcLongRef[bcLongRefIndex++];		
+		return bcLongRef[bcLongRefIndex++];
 	}
-	
+
 	public int nextDoubleRef() {
-		return bcDoubleRef[bcDoubleRefIndex++];		
+		return bcDoubleRef[bcDoubleRefIndex++];
 	}
-	
+
 	public int nextStringRef() {
-		return bcStringRef[bcStringRefIndex++];		
+		return bcStringRef[bcStringRefIndex++];
 	}
-	
+
 	public int nextClassRef() {
-		return bcClassRef[bcClassRefIndex++];		
+		return bcClassRef[bcClassRefIndex++];
 	}
-	
+
 	public int nextFieldRef() {
-		return bcFieldRef[bcFieldRefIndex++];		
+		return bcFieldRef[bcFieldRefIndex++];
 	}
-	
+
 	public int nextMethodRef() {
-		return bcMethodRef[bcMethodRefIndex++];		
+		return bcMethodRef[bcMethodRefIndex++];
 	}
-	
+
 	public int nextIMethodRef() {
-		return bcIMethodRef[bcIMethodRefIndex++];		
+		return bcIMethodRef[bcIMethodRefIndex++];
 	}
-	
+
 	public int nextThisFieldRef() {
 		return bcThisField[bcThisFieldIndex++];
 	}
@@ -186,18 +186,18 @@ public class OperandManager {
 	public int nextWideByteCode() {
 	    return wideByteCodes[wideByteCodeIndex++];
 	}
-	
+
 	public void setSegment(Segment segment) {
 		this.segment = segment;
 	}
 	public Segment getSegment() {
 		return segment;
 	}
-	
+
 	public SegmentConstantPool globalConstantPool() {
 		return segment.getConstantPool();
 	}
-	
+
 	public void setCurrentClass(String string) {
 		currentClass = string;
 	}
@@ -207,7 +207,7 @@ public class OperandManager {
 	public void setNewClass(String string) {
 		newClass = string;
 	}
-	
+
 	public String getCurrentClass() {
 		if(null==currentClass) {
 			throw new Error("Current class not set yet");

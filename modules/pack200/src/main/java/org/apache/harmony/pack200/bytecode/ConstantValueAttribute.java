@@ -41,7 +41,7 @@ public class ConstantValueAttribute extends Attribute {
 		}
 	}
 
-	
+
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -58,7 +58,7 @@ public class ConstantValueAttribute extends Attribute {
 		return true;
 	}
 
-	
+
 	protected int getLength() {
 		return 2;
 	}
@@ -67,7 +67,7 @@ public class ConstantValueAttribute extends Attribute {
 		return new ClassFileEntry[] { getAttributeName(), entry };
 	}
 
-	
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = super.hashCode();
@@ -85,7 +85,7 @@ public class ConstantValueAttribute extends Attribute {
 		return "Constant:" + entry;
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(constantIndex);
 	}

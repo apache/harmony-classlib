@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * TODO Comment -- quite a lot can be nicked from Codec, since this was created
  * from it
- *  
+ *
  */
 public final class BHSDCodec extends Codec {
 
@@ -53,12 +53,12 @@ public final class BHSDCodec extends Codec {
 	 * Represents signed numbers or not (0=unsigned,1/2=signed)
 	 */
 	private int s;
-    
+
     private long cardinality;
 
 	/**
 	 * Constructs an unsigned, non-delta Codec with the given B and H values.
-	 * 
+	 *
 	 * @param b
 	 *            the maximum number of bytes that a value can be encoded as
 	 *            [1..5]
@@ -71,7 +71,7 @@ public final class BHSDCodec extends Codec {
 
 	/**
 	 * Constructs a non-delta Codec with the given B, H and S values.
-	 * 
+	 *
 	 * @param b
 	 *            the maximum number of bytes that a value can be encoded as
 	 *            [1..5]
@@ -87,7 +87,7 @@ public final class BHSDCodec extends Codec {
 
 	/**
 	 * Constructs a Codec with the given B, H, S and D values.
-	 * 
+	 *
 	 * @param b
 	 *            the maximum number of bytes that a value can be encoded as
 	 *            [1..5]
@@ -128,14 +128,14 @@ public final class BHSDCodec extends Codec {
 	/**
 	 * Returns the cardinality of this codec; that is, the number of distinct
 	 * values that it can contain.
-	 * 
+	 *
 	 * @return the cardinality of this codec
 	 */
 	public long cardinality() {
 		return cardinality;
 	}
 
-	
+
 	public long decode(InputStream in) throws IOException, Pack200Exception {
 		if (d != 0)
 			throw new Pack200Exception(
@@ -143,7 +143,7 @@ public final class BHSDCodec extends Codec {
 		return decode(in, 0);
 	}
 
-	
+
 	public long decode(InputStream in, long last) throws IOException,
 			Pack200Exception {
 		int n = 0;
@@ -172,10 +172,10 @@ public final class BHSDCodec extends Codec {
             double twoPowSMinusOne = twoPowS-1;
             if(u % twoPowS < twoPowSMinusOne) {
                 if(cardinality < Math.pow(2, 32)) {
-                    z = (long) (u - (Math.floor(u/ twoPowS)));                    
+                    z = (long) (u - (Math.floor(u/ twoPowS)));
                 } else {
                     z = cast32((long) (u - (Math.floor(u/ twoPowS))));
-                }                
+                }
             } else {
                 z = (long) (-Math.floor(u/ twoPowS) - 1);
             }
@@ -196,7 +196,7 @@ public final class BHSDCodec extends Codec {
 
     /**
 	 * True if this encoding can code the given value
-	 * 
+	 *
 	 * @param value
 	 *            the value to check
 	 * @return <code>true</code> if the encoding can encode this value
@@ -204,7 +204,7 @@ public final class BHSDCodec extends Codec {
 	public boolean encodes(long value) {
 		return (value >= smallest() && value <= largest());
 	}
-    
+
     public byte[] encode(long value, long last) throws Pack200Exception {
         if (isDelta()) {
             value -= last;
@@ -267,7 +267,7 @@ public final class BHSDCodec extends Codec {
 
 	/**
 	 * Returns the largest value that this codec can represent.
-	 * 
+	 *
 	 * @return the largest value that this codec can represent.
 	 */
 	public long largest() {
@@ -287,7 +287,7 @@ public final class BHSDCodec extends Codec {
 	}
 	/**
 	 * Returns the smallest value that this codec can represent.
-	 * 
+	 *
 	 * @return the smallest value that this codec can represent.
 	 */
 	public long smallest() {

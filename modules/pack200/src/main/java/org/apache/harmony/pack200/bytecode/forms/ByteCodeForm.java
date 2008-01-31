@@ -56,9 +56,9 @@ public class ByteCodeForm {
     protected static final int TYPE_SUPERINITMETHODREF=23;
     protected static final int TYPE_NEWINITMETHODREF=24;
     protected static final int TYPE_NEWCLASSREF=25;
-    
+
     protected static final boolean WIDENED = true;
-    
+
     protected static final Map byteCodes = new HashMap();
     static {
         ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
@@ -285,7 +285,7 @@ public class ByteCodeForm {
         byteCodeArray[218] = new SuperFieldRefForm(218, "getfield_super", new int[] {180, -1, -1});
         byteCodeArray[219] = new SuperFieldRefForm(219, "putfield_super", new int[] {181, -1, -1});
         byteCodeArray[220] = new SuperMethodRefForm(220, "invokevirtual_super", new int[] {182, -1, -1});
-        byteCodeArray[221] = new SuperFieldRefForm(221, "invokespecial_super", new int[] {183, -1, -1});
+        byteCodeArray[221] = new SuperMethodRefForm(221, "invokespecial_super", new int[] {183, -1, -1});
         byteCodeArray[222] = new SuperMethodRefForm(222, "invokestatic_super", new int[] {184, -1, -1});
         byteCodeArray[223] = new SuperFieldRefForm(223, "aload_0_getstatic_super", new int[] {42, 178, -1, -1});
         byteCodeArray[224] = new SuperFieldRefForm(224, "aload_0_putstatic_super", new int[] {42, 179, -1, -1});
@@ -297,14 +297,14 @@ public class ByteCodeForm {
         byteCodeArray[230] = new ThisInitMethodRefForm(230, "invokespecial_this_init", new int[] {183, -1, -1});
         byteCodeArray[231] = new SuperInitMethodRefForm(231, "invokespecial_super_init", new int[] {183, -1, -1});
         byteCodeArray[232] = new NewInitMethodRefForm(232, "invokespecial_new_init", new int[] {183, -1, -1});
-        byteCodeArray[233] = new NarrowClassRefForm(233, "cldc", new int[] {18, -1}); 
+        byteCodeArray[233] = new NarrowClassRefForm(233, "cldc", new int[] {18, -1});
         byteCodeArray[234] = new IntRefForm(234, "ildc", new int[] {18, -1});
         byteCodeArray[235] = new FloatRefForm(235, "fldc", new int[] {18, -1});
         byteCodeArray[236] = new NarrowClassRefForm(236, "cldc_w", new int[] {19, -1, -1}, WIDENED);
         byteCodeArray[237] = new IntRefForm(237, "ildc_w", new int[] {19, -1, -1}, WIDENED);
         byteCodeArray[238] = new FloatRefForm(238, "fldc_w", new int[] {19, -1, -1}, WIDENED);
         byteCodeArray[239] = new DoubleForm(239, "dldc2_w", new int[] {20, -1, -1});
-        
+
         // Reserved bytecodes
         byteCodeArray[254] = new NoArgumentForm(254, "impdep1");
         byteCodeArray[255] = new NoArgumentForm(255, "impdep2");
@@ -312,7 +312,7 @@ public class ByteCodeForm {
         // Bytecodes that aren't defined in the spec but are useful when
         // unpacking (all must be >255)
         // maybe wide versions of the others? etc.
-        
+
         // Put all the bytecodes in a HashMap so we can
         // get them by either name or number
         for (int i = 0; i < byteCodeArray.length; i++) {
@@ -323,13 +323,13 @@ public class ByteCodeForm {
             }
         }
     }
-    
+
     private final int opcode;
     private final String name;
     private final int[] rewrite;
     private int firstOperandIndex;
     private int operandLength;
-    
+
     /**
      * Answer a new instance of this class with the specified
      * opcode and name. Assume no rewrite.
@@ -339,7 +339,7 @@ public class ByteCodeForm {
     public ByteCodeForm(int opcode, String name) {
         this(opcode, name, new int[]{opcode});
     }
-    
+
     /**
      * Answer a new instance of this class with the specified
      * opcode, name, operandType and rewrite
@@ -358,7 +358,7 @@ public class ByteCodeForm {
     protected void calculateOperandPosition() {
         firstOperandIndex = -1;
         operandLength = -1;
-        
+
         // Find the first negative number in the rewrite array
         int iterationIndex = 0;
         while (iterationIndex < rewrite.length) {
@@ -395,19 +395,19 @@ public class ByteCodeForm {
         }
         operandLength = difference + 1;
     }
-    
+
     public static ByteCodeForm get(int opcode) {
         return (ByteCodeForm)byteCodes.get(new Integer(opcode));
     }
-    
+
     public static ByteCodeForm get(String name) {
         return (ByteCodeForm)byteCodes.get(name);
     }
-    
+
     public String toString() {
         return this.getClass().getName() + "(" + getName() + ":" + getOperandType() + ")";
     }
-    
+
     public int getOpcode() {
         return opcode;
     }
@@ -419,21 +419,21 @@ public class ByteCodeForm {
     public int getOperandType() {
         return -1;
     }
-    
+
     public int[] getRewrite() {
         return rewrite;
     }
-    
+
     public int[] getRewriteCopy() {
         int[] result = new int[rewrite.length];
         System.arraycopy(rewrite, 0, result, 0, rewrite.length);
         return result;
     }
-    
+
     public int firstOperandIndex() {
         return firstOperandIndex;
     }
-    
+
     public int operandLength() {
         return operandLength;
     }
@@ -441,7 +441,7 @@ public class ByteCodeForm {
     public boolean hasNoOperand() {
         return false;
     }
-    
+
     public boolean hasByteOperand() {
         return false;
     }
@@ -537,18 +537,18 @@ public class ByteCodeForm {
     public boolean hasNewInitMethodRefOperand() {
         return false;
     }
-    
+
     public boolean hasInitMethodRefOperand() {
         return false;
     }
 
-    
+
     /**
      * This method will answer true if the receiver is
      * a multi-bytecode instruction (such as
      * aload0_putfield_super); otherwise, it will answer
      * false.
-     * 
+     *
      * @return boolean true if multibytecode, false otherwise
      */
     public boolean hasMultipleByteCodes() {
@@ -564,12 +564,12 @@ public class ByteCodeForm {
     	}
     	return false;
     }
-    
+
     /**
      * When passed a byteCode, an OperandTable and a
      * SegmentConstantPool, this method will set the
      * rewrite of the byteCode appropriately.
-     * 
+     *
      * @param byteCode ByteCode to be updated (!)
      * @param operandManager OperandTable from which to draw info
      * @param codeLength Length of bytes (excluding this bytecode)
@@ -579,7 +579,7 @@ public class ByteCodeForm {
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        throw new Error("My subclass should have implemented this");        
+        throw new Error("My subclass should have implemented this");
     }
 
     /**

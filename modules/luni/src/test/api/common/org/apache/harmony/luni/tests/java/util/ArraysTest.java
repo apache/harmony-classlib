@@ -37,6 +37,12 @@ public class ArraysTest extends junit.framework.TestCase {
 		}
 	}
 
+    static class MockComparable implements Comparable{
+        public int compareTo(Object o) {
+            return 0;
+        }
+    }
+    
 	final static int arraySize = 100;
 
 	static Object[] objArray;
@@ -267,6 +273,18 @@ public class ArraysTest extends junit.framework.TestCase {
 		assertTrue(
 				"Binary search succeeded for value not present in array 2",
 				Arrays.binarySearch(objectArray, new Integer(arraySize)) == -(arraySize + 1));
+        
+        Object object = new Object();
+        Object[] objects = new MockComparable[] { new MockComparable() };
+        assertEquals("Should always return 0", 0, Arrays.binarySearch(objects, object));
+
+        Object[] string_objects = new String[] { "one" };
+        try {
+            Arrays.binarySearch(string_objects, object);
+            fail("No expected ClassCastException");
+        } catch (ClassCastException e) {
+            // Expected
+        }
 	}
 
 	/**

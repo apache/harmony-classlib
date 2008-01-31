@@ -19,7 +19,9 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.FileNotFoundException;
 
-public class FileNotFoundExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class FileNotFoundExceptionTest extends TestCase {
 
     /**
      * @tests java.io.FileNotFoundException#FileNotFoundException()

@@ -30,19 +30,19 @@ public class CPString extends CPConstant {
 
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(nameIndex);
 	}
 
-	
+
 	public String toString() {
 		return "String: " + getValue();
 	}
 
 	/**
 	 * Allows the constant pool entries to resolve their nested entries
-	 * 
+	 *
 	 * @param pool
 	 */
 	protected void resolve(ClassConstantPool pool) {

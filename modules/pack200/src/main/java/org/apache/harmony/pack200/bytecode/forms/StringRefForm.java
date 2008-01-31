@@ -55,7 +55,7 @@ public class StringRefForm extends SingleByteReferenceForm {
     protected int getPoolID() {
         return SegmentConstantPool.CP_STRING;
     }
-    
+
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
         SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;
@@ -66,7 +66,7 @@ public class StringRefForm extends SingleByteReferenceForm {
         if(widened) {
             byteCode.setNestedPositions(new int[][]{{0, 2}});
         } else {
-            byteCode.setNestedPositions(new int[][]{{0, 1}});            
+            byteCode.setNestedPositions(new int[][]{{0, 1}});
         }
     }
 }

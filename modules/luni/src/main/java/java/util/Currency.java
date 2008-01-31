@@ -72,9 +72,14 @@ public final class Currency implements Serializable {
      *             if the locale's country is not a supported ISO 3166 Country
      */
     public static Currency getInstance(Locale locale) {
-        com.ibm.icu.util.Currency currency = com.ibm.icu.util.Currency.getInstance(locale);
-        if(currency == null) {
+        com.ibm.icu.util.Currency currency = null;
+        try {
+            currency = com.ibm.icu.util.Currency.getInstance(locale);
+        } catch (IllegalArgumentException e) {
             return null;
+        }
+        if (currency == null) {
+            throw new IllegalArgumentException(locale.getCountry());
         }
         String currencyCode = currency.getCurrencyCode();
 

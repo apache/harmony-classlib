@@ -35,7 +35,7 @@ import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
  * instance of org.apache.harmony.jndi.provider.ldap.filter.Filter according
  * RFC2254. And It also support parse variables of the form {i}.
  * 
- * @see org.apache.harmony.jndi.provider.ldap.filter.Filter
+ * @see org.apache.harmony.jndi.provider.ldap.Filter
  * @see javax.naming.directory.DirContext#search(javax.naming.Name, String,
  *      Object[], javax.naming.directory.SearchControls)
  */

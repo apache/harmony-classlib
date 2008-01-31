@@ -20,9 +20,7 @@ package java.lang;
 import java.io.Serializable;
 
 /**
- * <p>
  * Boolean is the wrapper for the primitive type <code>boolean</code>.
- * </p>
  * 
  * @since 1.0
  */
@@ -36,7 +34,7 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
     private final boolean value;
 
     /**
-     * The java.lang.Class that represents this class.
+     * The {@link java.lang.Class} that represents this class.
      */
     @SuppressWarnings("unchecked")
     public static final Class<Boolean> TYPE = (Class<Boolean>) new boolean[0]
@@ -95,6 +93,7 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * In this case, the argument must also be a Boolean, and the receiver and
      * argument must represent the same boolean value (i.e. both true or both
      * false).
+     * </p>
      * 
      * @param o
      *            the object to compare with this object
@@ -110,18 +109,16 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
     }
 
     /**
-     * <p>
      * Compares this <code>Boolean</code> to another <code>Boolean</code>.
      * If this instance has the same value as the instance passed, then
      * <code>0</code> is returned. If this instance is <code>true</code> and
      * the instance passed is <code>false</code>, then a positive value is
      * returned. If this instance is <code>false</code> and the instance
      * passed is <code>true</code>, then a negative value is returned.
-     * </p>
      * 
      * @param that
      *            The instance to compare to.
-     * @throws java.lang.NullPointerException
+     * @throws NullPointerException
      *             if <code>that</code> is <code>null</code>.
      * @since 1.5
      * @see java.lang.Comparable
@@ -144,7 +141,6 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
      * answer the same value for this method.
      * 
      * @return the receiver's hash
-     * 
      * @see #equals
      */
     @Override
@@ -179,11 +175,9 @@ public final class Boolean implements Serializable, Comparable<Boolean> {
     }
 
     /**
-     * <p>
      * Parses the string as a <code>boolean</code>. If the string is not
      * <code>null</code> and is equal to <code>"true"</code>, regardless
      * case, then <code>true</code> is returned, otherwise <code>false</code>.
-     * </p>
      * 
      * @param s
      *            The string to parse.

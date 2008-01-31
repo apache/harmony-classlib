@@ -17,16 +17,21 @@
 
 package org.apache.harmony.luni.tests.java.io;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+
 import junit.framework.TestCase;
 
 public class FilterOutputStreamTest extends TestCase {
 
-    private java.io.OutputStream os;
+    private OutputStream os;
 
-    java.io.ByteArrayOutputStream bos;
+    ByteArrayOutputStream bos;
 
-    java.io.ByteArrayInputStream bis;
+    ByteArrayInputStream bis;
 
     byte[] ibuf = new byte[4096];
 
@@ -36,8 +41,8 @@ public class FilterOutputStreamTest extends TestCase {
      * @tests java.io.FilterOutputStream#FilterOutputStream(java.io.OutputStream)
      */
     public void test_ConstructorLjava_io_OutputStream() throws IOException {
-        bos = new java.io.ByteArrayOutputStream();
-        os = new java.io.FilterOutputStream(bos);
+        bos = new ByteArrayOutputStream();
+        os = new FilterOutputStream(bos);
         os.write('t');
     }
 
@@ -45,8 +50,8 @@ public class FilterOutputStreamTest extends TestCase {
      * @tests java.io.FilterOutputStream#close()
      */
     public void test_close() throws IOException {
-        bos = new java.io.ByteArrayOutputStream();
-        os = new java.io.FilterOutputStream(bos);
+        bos = new ByteArrayOutputStream();
+        os = new FilterOutputStream(bos);
         os.write(fileString.getBytes(), 0, 500);
         os.flush();
         assertEquals("Bytes not written after flush", 500, bos.size());
@@ -57,8 +62,8 @@ public class FilterOutputStreamTest extends TestCase {
      * @tests java.io.FilterOutputStream#flush()
      */
     public void test_flush() throws IOException {
-        bos = new java.io.ByteArrayOutputStream();
-        os = new java.io.FilterOutputStream(bos);
+        bos = new ByteArrayOutputStream();
+        os = new FilterOutputStream(bos);
         os.write(fileString.getBytes(), 0, 500);
         os.flush();
         assertEquals("Bytes not written after flush", 500, bos.size());
@@ -69,10 +74,10 @@ public class FilterOutputStreamTest extends TestCase {
      * @tests java.io.FilterOutputStream#write(byte[])
      */
     public void test_write$B() throws IOException {
-        bos = new java.io.ByteArrayOutputStream();
-        os = new java.io.FilterOutputStream(bos);
+        bos = new ByteArrayOutputStream();
+        os = new FilterOutputStream(bos);
         os.write(fileString.getBytes());
-        bis = new java.io.ByteArrayInputStream(bos.toByteArray());
+        bis = new ByteArrayInputStream(bos.toByteArray());
         os.flush();
         assertTrue("Bytes not written after flush",
                 bis.available() == fileString.length());
@@ -86,10 +91,10 @@ public class FilterOutputStreamTest extends TestCase {
      * @tests java.io.FilterOutputStream#write(byte[], int, int)
      */
     public void test_write$BII() throws IOException {
-        bos = new java.io.ByteArrayOutputStream();
-        os = new java.io.FilterOutputStream(bos);
+        bos = new ByteArrayOutputStream();
+        os = new FilterOutputStream(bos);
         os.write(fileString.getBytes(), 0, fileString.length());
-        bis = new java.io.ByteArrayInputStream(bos.toByteArray());
+        bis = new ByteArrayInputStream(bos.toByteArray());
         os.flush();
         assertTrue("Bytes not written after flush",
                 bis.available() == fileString.length());
@@ -103,10 +108,10 @@ public class FilterOutputStreamTest extends TestCase {
      * @tests java.io.FilterOutputStream#write(int)
      */
     public void test_writeI() throws IOException {
-        bos = new java.io.ByteArrayOutputStream();
-        os = new java.io.FilterOutputStream(bos);
+        bos = new ByteArrayOutputStream();
+        os = new FilterOutputStream(bos);
         os.write('t');
-        bis = new java.io.ByteArrayInputStream(bos.toByteArray());
+        bis = new ByteArrayInputStream(bos.toByteArray());
         os.flush();
         assertEquals("Byte not written after flush", 1, bis.available());
         byte[] wbytes = new byte[1];
@@ -127,6 +132,7 @@ public class FilterOutputStreamTest extends TestCase {
             if (os != null)
                 os.close();
         } catch (Exception e) {
+            // Ignored
         }
     }
 }

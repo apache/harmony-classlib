@@ -42,7 +42,7 @@ public class FileBands extends BandSet {
     private String[] cpUTF8;
 
     private InputStream in;
-    
+
     /**
      * @param header
      */
@@ -77,7 +77,7 @@ public class FileBands extends BandSet {
         }
         this.in = in; // store for use by processFileBits(), which is called later
     }
-    
+
     // TODO: stream the file bits directly somehow
     public void processFileBits() throws IOException,
             Pack200Exception {

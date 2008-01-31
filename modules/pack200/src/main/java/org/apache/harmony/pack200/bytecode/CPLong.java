@@ -26,12 +26,12 @@ public class CPLong extends CPConstantNumber {
         this.domain = ClassConstantPool.DOMAIN_LONG;
 	}
 
-	
+
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeLong(getNumber().longValue());
 	}
 
-	
+
 	public String toString() {
 		return "Long: " + getValue();
 	}

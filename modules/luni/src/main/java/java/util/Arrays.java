@@ -594,11 +594,11 @@ public class Arrays {
         if (array.length == 0) {
             return -1;
         }
-        Comparable<Object> key = (Comparable<Object>) object;
+
         int low = startIndex, mid = 0, high = endIndex - 1, result = 0;
         while (low <= high) {
             mid = (low + high) >>> 1;
-            if ((result = key.compareTo(array[mid])) > 0) {
+            if ((result = ((Comparable<Object>)array[mid]).compareTo(object)) < 0){
                 low = mid + 1;
             } else if (result == 0) {
                 return mid;
@@ -606,7 +606,7 @@ public class Arrays {
                 high = mid - 1;
             }
         }
-        return -mid - (result <= 0 ? 1 : 2);
+        return -mid - (result >= 0 ? 1 : 2);
     }
 
     /**

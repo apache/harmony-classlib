@@ -108,7 +108,7 @@
     <!-- ================================= 
           target: layout              
          ================================= -->
-    <target name="layout" depends="layout.windows,layout.zos"
+    <target name="layout" depends="-layout.windows,-layout.linklib"
         description="Construct the correct directory structure for native binaries">
 
     	<!-- Create the target directory structure -->
@@ -130,16 +130,18 @@
 
     </target>
 
-    <target name="layout.windows" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
+    <target name="-layout.windows" if="is.windows"
+            depends="-select-win-deps-x86_64,-select-win-deps-x86">
         <!-- workaround until msdll is moved. -->
         <copy file="${msvcr.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
         <copy file="${msvcp.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
     </target>
 
-    <target name="layout.zos" if="is.zos">
-        <!-- on z/OS copy across .x files to link against -->
+    <target name="-layout.linklib" unless="shlib.is.linklib">
+        <!-- on windows copy .lib files and on z/OS copy across .x files
+             to link against -->
         <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${depends.libs}${hy.libstdc++.suffix}" includes="*${linklib.suffix}*" />
+            <fileset dir="${icudll.dir}" includes="*${linklib.suffix}*" />
         </copy>
     </target>
 
@@ -161,15 +163,6 @@
     <!-- ================================= 
           target: overlay-oss              
          ================================= -->
-    <condition property="iculib.zip"
-        value="${depends.oss}/icu4c-3.4-harmony-windows.x86_64.zip"
-        else="${depends.oss}/icu4c-3.4-harmony.zip">
-        <and>
-            <isset property="is.windows"/>
-            <isset property="is.x86_64"/>
-        </and>
-    </condition>
-
     <target name="overlay-oss">
         <ant dir="modules/luni" antfile="build.xml"
              target="overlay-oss" />
@@ -178,9 +171,8 @@
 	     target="overlay-oss" />        
     	
         <mkdir dir="${hy.hdk}/include/icu4c/unicode" />
-        <unzip src="${iculib.zip}" dest="${hy.hdk}/include/icu4c/unicode" />
+        <unzip src="${icuhdr.zip}" dest="${hy.hdk}/include/icu4c/unicode" />
         <chmod dir="${hy.hdk}/include/icu4c/unicode" perm="ugo+r" />
-        <copy file="${hy.hdk}/include/icu4c/unicode/icuuc.lib" todir="${native.lib.target}" overwrite="yes"/>
     </target>
 
     <!-- ================================= 

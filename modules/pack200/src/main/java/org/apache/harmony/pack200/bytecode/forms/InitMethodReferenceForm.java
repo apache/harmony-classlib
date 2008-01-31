@@ -44,7 +44,7 @@ public abstract class InitMethodReferenceForm extends ClassSpecificReferenceForm
     protected int getPoolID() {
         return SegmentConstantPool.CP_METHOD;
     }
-    
+
     protected int getOffset(OperandManager operandManager) {
         return operandManager.nextInitRef();
     }

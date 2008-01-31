@@ -27,7 +27,7 @@ DLL_LDFLAGS = -shared -Wl,-soname=$(@F) -Wl,--version-script,$(EXPFILE)
 CXX_DLL_LD = $(CXX)
 STDCLIBS = -lstdc++
 OSLIBS = -lc -lm
-XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext
+XLIBS = -L/usr/X11R6/lib -lX11 -lXft -lXext -lXtst
 MDLLIBPREFIX = -Xlinker --start-group
 MDLLIBSUFFIX = -Xlinker --end-group
 EXELDFLAGS = $(LDFLAGS)
@@ -63,7 +63,12 @@ DEFINES += -D_REENTRANT
 INCLUDES += -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 
 ifndef HYDEBUGCFLAGS
+ifneq ($(HY_OS),zos)
 HYDEBUGCFLAGS = -ggdb -O0
+else
+# z/OS has different debug flags
+HYDEBUGCFLAGS = -g -O0
+endif
 endif
 
 ifndef HYRELEASECFLAGS  

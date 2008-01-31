@@ -19,67 +19,53 @@ package org.apache.harmony.luni.tests.java.io;
 
 import java.io.InvalidClassException;
 
-public class InvalidClassExceptionTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	/**
-	 * @tests java.io.InvalidClassException#InvalidClassException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		final String message = "A message";
-		try {
-			if (true)
-				throw new java.io.InvalidClassException(message);
-		} catch (InvalidClassException e) {
-			// correct
-			assertTrue("Incorrect message read", e.getMessage().equals(message));
-			return;
-		}
-		fail("Failed to throw exception");
-	}
+public class InvalidClassExceptionTest extends TestCase {
 
-	/**
-	 * @tests java.io.InvalidClassException#InvalidClassException(java.lang.String,
-	 *        java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_StringLjava_lang_String() {
-		// Test for method java.io.InvalidClassException(java.lang.String,
-		// java.lang.String)
-		final String message = "A message";
-		final String className = "Object";
-		try {
-			if (true)
-				throw new java.io.InvalidClassException(className, message);
-		} catch (InvalidClassException e) {
-			// correct
-			String returnedMessage = e.getMessage();
-			assertTrue("Incorrect message read: " + e.getMessage(),
-					returnedMessage.indexOf(className) >= 0
-							&& returnedMessage.indexOf(message) >= 0);
-			return;
-		}
-		fail("Failed to throw exception");
-	}
+    /**
+     * @tests java.io.InvalidClassException#InvalidClassException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        final String message = "A message";
+        try {
+            if (true) {
+                throw new InvalidClassException(message);
+            }
+            fail("Failed to throw exception");
+        } catch (InvalidClassException e) {
+            // correct
+            assertTrue("Incorrect message read", e.getMessage().equals(message));
+        }
+    }
 
-	/**
-	 * @tests java.io.InvalidClassException#getMessage()
-	 */
-	public void test_getMessage() {
-		// Test for method java.lang.String
-		// java.io.InvalidClassException.getMessage()
-		// used to test
-	}
+    /**
+     * @tests java.io.InvalidClassException#InvalidClassException(java.lang.String,
+     *        java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_StringLjava_lang_String() {
+        final String message = "A message";
+        final String className = "Object";
+        try {
+            if (true) {
+                throw new InvalidClassException(className, message);
+            }
+            fail("Failed to throw exception");
+        } catch (InvalidClassException e) {
+            // correct
+            String returnedMessage = e.getMessage();
+            assertTrue("Incorrect message read: " + e.getMessage(),
+                    returnedMessage.indexOf(className) >= 0
+                            && returnedMessage.indexOf(message) >= 0);
+        }
+    }
 
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.io.InvalidClassException#getMessage()
+     */
+    public void test_getMessage() {
+        // Test for method java.lang.String
+        // java.io.InvalidClassException.getMessage()
+        // used to test
+    }
 }

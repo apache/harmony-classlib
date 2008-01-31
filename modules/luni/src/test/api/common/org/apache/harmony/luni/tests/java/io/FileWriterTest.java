@@ -26,7 +26,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileWriterTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
+
+public class FileWriterTest extends TestCase {
 
     FileWriter fw;
 

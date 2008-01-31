@@ -30,4 +30,5 @@ Export-Package: java.rmi,
  java.rmi.dgc,
  java.rmi.registry,
  java.rmi.server,
- javax.activity
+ javax.activity,
+ org.apache.harmony.rmi.transport;hy_usage="suncompat";mandatory:="hy_usage"

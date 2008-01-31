@@ -25,7 +25,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
  * double references).
  */
 public class DoubleForm extends ReferenceForm {
-    
+
     public DoubleForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
         // TODO Auto-generated constructor stub
@@ -34,7 +34,7 @@ public class DoubleForm extends ReferenceForm {
     public int getOperandType() {
         return TYPE_DOUBLE;
     }
-    
+
     public boolean hasDoubleOperand() {
         return true;
     }

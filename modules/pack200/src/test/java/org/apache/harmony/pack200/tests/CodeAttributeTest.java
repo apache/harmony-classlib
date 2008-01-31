@@ -123,7 +123,7 @@ public class CodeAttributeTest extends TestCase {
 
     Segment segment = new MockSegment();
     CpBands cpBands = new MockCpBands(segment);
-    
+
     public byte[] mixedByteArray = { -47, // aload_0_getstatic_this 0, 1
             -46, // aload_0_putstatic_this 4, 5
             1, // aconst_null 8

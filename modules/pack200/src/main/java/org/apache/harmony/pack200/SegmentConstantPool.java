@@ -33,7 +33,7 @@ import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
 public class SegmentConstantPool {
     /**
-     * 
+     *
      */
     private CpBands bands;
 
@@ -89,13 +89,13 @@ public class SegmentConstantPool {
             throw new Error("Get value incomplete");
         }
     }
-    
+
     /**
      * Subset the constant pool of the specified type
      * to be just that which has the specified class
      * name. Answer the ConstantPoolEntry at the
      * desiredIndex of the subsetted pool.
-     * 
+     *
      * @param cp type of constant pool array to search
      * @param desiredIndex index of the constant pool
      * @param desiredClassName class to use to generate a
@@ -117,9 +117,9 @@ public class SegmentConstantPool {
     		throw new Error("Don't know how to handle " + cp);
     	}
     	realIndex = matchSpecificPoolEntryIndex(array, desiredClassName, index);
-    	return getConstantPoolEntry(cp, (long)realIndex);
+    	return getConstantPoolEntry(cp, realIndex);
     }
-    
+
     /**
      * Given the name of a class, answer the CPClass associated
      * with that class. Answer null if the class doesn't exist.
@@ -133,13 +133,13 @@ public class SegmentConstantPool {
     		return null;
     	}
     	try {
-    		return getConstantPoolEntry(CP_CLASS, (long)index);
+    		return getConstantPoolEntry(CP_CLASS, index);
     	}
     	catch (Pack200Exception ex) {
     		throw new Error("Error getting class pool entry");
     	}
     }
-    
+
     /**
      * Answer the init method for the specified class.
      * @param cp constant pool to search (must be CP_METHOD)
@@ -156,7 +156,7 @@ public class SegmentConstantPool {
     	} else {
     		throw new Error("Nothing but CP_METHOD can be an <init>");
     	}
-    	return getConstantPoolEntry(cp, (long)realIndex);
+    	return getConstantPoolEntry(cp, realIndex);
     }
 
     /**
@@ -166,12 +166,12 @@ public class SegmentConstantPool {
      * fields defined in the superclass. Similarly, _this bytecodes
      * use just those methods/fields defined in this class, and _init
      * bytecodes use just those methods that start with <init>.
-     * 
+     *
      * This method takes an array of names, a String to match for,
      * an index and a boolean as parameters, and answers the array
      * position in the array of the indexth element which matches
      * (or equals) the String (depending on the state of the boolean)
-     * 
+     *
      * In other words, if the class array consists of:
      *  Object [position 0, 0th instance of Object]
      *  String [position 1, 0th instance of String]
@@ -181,7 +181,7 @@ public class SegmentConstantPool {
      * then classSpecificPoolEntryIndex(..., "Object", 2, false) will
      * answer 4. classSpecificPoolEntryIndex(..., "String", 0, false)
      * will answer 1.
-     * 
+     *
      * @param nameArray Array of Strings against which the compareString is tested
      * @param compareString String for which to search
      * @param desiredIndex nth element with that match (counting from 0)
@@ -199,7 +199,7 @@ public class SegmentConstantPool {
      *  - the secondaryArray[index] .matches() the secondaryCompareString
      * When the desiredIndex number of hits has been reached, the index
      * into the original two arrays of the element hit is returned.
-     * 
+     *
      * @param primaryArray The first array to search
      * @param secondaryArray The second array (must be same .length as primaryArray)
      * @param primaryCompareString The String to compare against primaryArray using .equals()
@@ -210,7 +210,7 @@ public class SegmentConstantPool {
     protected int matchSpecificPoolEntryIndex(String[] primaryArray, String[] secondaryArray, String primaryCompareString, String secondaryCompareRegex, int desiredIndex) {
     	int instanceCount = -1;
     	for(int index=0; index < primaryArray.length; index++) {
-    		if((primaryArray[index].equals(primaryCompareString)) && 
+    		if((primaryArray[index].equals(primaryCompareString)) &&
     				secondaryArray[index].matches(secondaryCompareRegex)) {
     			instanceCount++;
     			if(instanceCount == desiredIndex) {
@@ -220,10 +220,13 @@ public class SegmentConstantPool {
     	}
     	// We didn't return in the for loop, so the desiredMatch
     	// with desiredIndex must not exist in the array.
+    	if(secondaryCompareRegex.equals("^<init>.*")) {
+    	    SegmentUtils.debug("self halt");
+    	}
     	return -1;
     }
-    
-    
+
+
     public ConstantPoolEntry getConstantPoolEntry(int cp, long value) throws Pack200Exception {
         int index = (int) value;
         if (index == -1) {
@@ -261,7 +264,7 @@ public class SegmentConstantPool {
             throw new Error("Get value incomplete");
         }
     }
-    
+
     public ConstantPoolEntry[] getCpAll() throws Pack200Exception {
         	ArrayList cpAll = new ArrayList();
         	// TODO: this is 1.5-specific. Try to get rid
@@ -296,11 +299,11 @@ public class SegmentConstantPool {
         	for(int index=0; index < bands.getCpIMethodClass().length; index++) {
         		cpAll.add(getConstantPoolEntry(CP_IMETHOD, index));
         	}
-        	
+
         	ConstantPoolEntry[] result = new ConstantPoolEntry[cpAll.size()];
         	cpAll.toArray(result);
         	return result;
         }
 
-	
+
     }

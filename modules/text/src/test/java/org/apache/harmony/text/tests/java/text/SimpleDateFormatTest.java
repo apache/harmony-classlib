@@ -881,7 +881,6 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
                 0xA0, 0x2007, 0x202F };
 
         for (int i = 0; i < not_allowed_chars.length; i++) {
-System.out.println(i);
             ParsePosition pp = new ParsePosition(0);
             Date d = df.parse(not_allowed_chars[i] + "9:07", pp);
             assertNull(d);
@@ -892,7 +891,6 @@ System.out.println(i);
 
             pp = new ParsePosition(0);
             d = df.parse("09:07:" + not_allowed_chars[i] + "6", pp);
-            System.out.println(d);
             assertNull(d);
         }
     }

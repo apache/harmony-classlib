@@ -26,7 +26,7 @@ import java.util.Map;
  * internationalized, and should not be translated.
  */
 public class AttributeLayoutMap {
-    
+
 	// Create all the default AttributeLayouts here
 	private static AttributeLayout[] getDefaultAttributeLayouts()
 			throws Pack200Exception {
@@ -193,13 +193,13 @@ public class AttributeLayoutMap {
     private final Map fieldLayouts = new HashMap();
     private final Map methodLayouts = new HashMap();
     private final Map codeLayouts = new HashMap();
-    
+
     // The order of the maps in this array should not be changed as their indices correspond to
     // the value of their context constants (AttributeLayout.CONTEXT_CLASS etc.)
     private final Map[] layouts = new Map[] {classLayouts, fieldLayouts, methodLayouts, codeLayouts};
 
     private final Map layoutsToBands = new HashMap();
-    
+
 	public AttributeLayoutMap() throws Pack200Exception {
 		AttributeLayout[] defaultAttributeLayouts = getDefaultAttributeLayouts();
 		for (int i = 0; i < defaultAttributeLayouts.length; i++) {
@@ -210,7 +210,7 @@ public class AttributeLayoutMap {
 	public void add(AttributeLayout layout) {
         layouts[layout.getContext()].put(new Integer(layout.getIndex()), layout);
 	}
-    
+
 
 
     public void add(AttributeLayout layout, NewAttributeBands newBands) {
@@ -225,21 +225,21 @@ public class AttributeLayoutMap {
             AttributeLayout layout = (AttributeLayout) iter.next();
             if(layout.getName().equals(name)) {
                 return layout;
-            }            
+            }
         }
         return null;
 	}
-    
+
     public AttributeLayout getAttributeLayout(int index, int context)
             throws Pack200Exception {
         Map map = layouts[context];
         return (AttributeLayout) map.get(new Integer(index));
     }
-    
+
     /**
      * The map should not contain the same layout and name combination more than
      * once for each context.
-     * @throws Pack200Exception 
+     * @throws Pack200Exception
      *
      */
     public void checkMap() throws Pack200Exception {
@@ -271,5 +271,5 @@ public class AttributeLayoutMap {
     public NewAttributeBands getAttributeBands(AttributeLayout layout) {
         return (NewAttributeBands) layoutsToBands.get(layout);
     }
-    
+
 }

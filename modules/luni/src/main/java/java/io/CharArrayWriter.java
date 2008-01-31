@@ -238,10 +238,10 @@ public class CharArrayWriter extends Writer {
      * CharArrayWriter.append(<code>c</code>) works the same way as
      * CharArrayWriter.write(<code>c</code>).
      * 
-     * @override Writer.append
      * @param c
      *            The character appended to the CharArrayWriter.
      * @return The CharArrayWriter.
+     * @see Writer#append(char)
      */
     @Override
     public CharArrayWriter append(char c) {
@@ -256,10 +256,10 @@ public class CharArrayWriter extends Writer {
      * <code>csq</code> is null, then then "null" will be substituted for
      * <code>csq</code>.
      * 
-     * @override Writer.append
      * @param csq
      *            The CharSequence appended to the CharArrayWriter.
      * @return The CharArrayWriter
+     * @see Writer#append(CharSequence)
      */
     @Override
     public CharArrayWriter append(CharSequence csq) {
@@ -280,7 +280,6 @@ public class CharArrayWriter extends Writer {
      * If <code>csq</code> is null, then "null" will be substituted for
      * <code>csq</code>.
      * 
-     * @override Writer.append
      * @param csq
      *            The CharSequence appended to the CharArrayWriter.
      * @param start
@@ -293,6 +292,7 @@ public class CharArrayWriter extends Writer {
      * @throws IndexOutOfBoundsException
      *             If start is less than end, end is greater than the length of
      *             the CharSequence, or start or end is negative.
+     * @see Writer#append(CharSequence, int, int)
      */
     @Override
     public CharArrayWriter append(CharSequence csq, int start, int end) {

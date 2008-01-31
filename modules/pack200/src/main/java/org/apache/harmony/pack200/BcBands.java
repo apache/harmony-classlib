@@ -37,7 +37,7 @@ public class BcBands extends BandSet {
 
     // The bytecodes for each method in each class as they come (i.e. in their packed format)
     private byte[][][] methodByteCodePacked;
-    
+
     // The bands
     // TODO:  Haven't resolved references yet.  Do we want to?
     private int[] bcCaseCount;
@@ -77,7 +77,7 @@ public class BcBands extends BandSet {
      */
     public void unpack(InputStream in) throws IOException,
             Pack200Exception {
-        
+
        AttributeLayoutMap attributeDefinitionMap = segment.getAttrDefinitionBands().getAttributeDefinitionMap();
        int classCount = header.getClassCount();
        long[][] methodFlags = segment.getClassBands().getMethodFlags();
@@ -85,7 +85,7 @@ public class BcBands extends BandSet {
        int[] codeMaxStack = segment.getClassBands().getCodeMaxStack();
        ArrayList[][] methodAttributes = segment.getClassBands().getMethodAttributes();
        String[][] methodDescr = segment.getClassBands().getMethodDescr();
-       
+
        int bcCaseCountCount = 0;
        int bcByteCount = 0;
        int bcShortCount = 0;
@@ -96,14 +96,14 @@ public class BcBands extends BandSet {
        int bcLongRefCount = 0;
        int bcDoubleRefCount = 0;
        int bcStringRefCount = 0;
-       int bcClassRefCount = 0;       
+       int bcClassRefCount = 0;
        int bcFieldRefCount = 0;
        int bcMethodRefCount = 0;
        int bcIMethodRefCount = 0;
        int bcThisFieldCount = 0;
        int bcSuperFieldCount = 0;
        int bcThisMethodCount = 0;
-       int bcSuperMethodCount = 0;       
+       int bcSuperMethodCount = 0;
        int bcInitRefCount = 0;
        int bcEscCount = 0;
        int bcEscRefCount = 0;
@@ -119,7 +119,7 @@ public class BcBands extends BandSet {
                        AttributeLayout.CONTEXT_METHOD);
        methodByteCodePacked = new byte[classCount][][];
        int bcParsed = 0;
-       
+
        List switchIsTableSwitch = new ArrayList();
        List wideByteCodes = new ArrayList();
        for (int c = 0; c < classCount; c++) {
@@ -367,7 +367,7 @@ public class BcBands extends BandSet {
 
         int i = 0;
         ArrayList orderedCodeAttributes = segment.getClassBands().getOrderedCodeAttributes();
-        
+
         // Exception table fields
         int[] handlerCount = segment.getClassBands().getCodeHandlerCount();
         int[][] handlerStartPCs = segment.getClassBands().getCodeHandlerStartP();
@@ -421,7 +421,7 @@ public class BcBands extends BandSet {
            }
        }
     }
-    
+
     private boolean startsWithIf(int codePacked) {
         return (codePacked >= 153 && codePacked <= 166)
         || (codePacked == 198)

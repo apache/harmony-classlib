@@ -21,55 +21,55 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 
-public class PipedReaderTest extends junit.framework.TestCase {
+import junit.framework.TestCase;
 
-	static class PWriter implements Runnable {
-		public PipedWriter pw;
+public class PipedReaderTest extends TestCase {
 
-		public PWriter(PipedReader reader) {
-			try {
-				pw = new PipedWriter(reader);
-			} catch (Exception e) {
-				System.out.println("Couldn't create writer");
-			}
-		}
+    static class PWriter implements Runnable {
+        public PipedWriter pw;
 
-		public PWriter() {
-			pw = new PipedWriter();
-		}
+        public PWriter(PipedReader reader) {
+            try {
+                pw = new PipedWriter(reader);
+            } catch (Exception e) {
+                System.out.println("Couldn't create writer");
+            }
+        }
 
-		public void run() {
-			try {
-				char[] c = new char[11];
-				"Hello World".getChars(0, 11, c, 0);
-				pw.write(c);
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-			} catch (Exception e) {
-				System.out.println("Exception occurred: " + e.toString());
-			}
-		}
-	}
+        public PWriter() {
+            pw = new PipedWriter();
+        }
 
-	PipedReader preader;
+        public void run() {
+            try {
+                char[] c = new char[11];
+                "Hello World".getChars(0, 11, c, 0);
+                pw.write(c);
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+            } catch (Exception e) {
+                System.out.println("Exception occurred: " + e.toString());
+            }
+        }
+    }
 
-	PWriter pwriter;
+    PipedReader preader;
 
-	Thread t;
+    PWriter pwriter;
 
-	/**
+    Thread t;
+
+    /**
      * @tests java.io.PipedReader#PipedReader()
      */
     public void test_Constructor() {
-    // Test for method java.io.PipedReader()
-    // Used in test
+        // Used in test
     }
 
     /**
      * @tests java.io.PipedReader#PipedReader(java.io.PipedWriter)
      */
     public void test_ConstructorLjava_io_PipedWriter() throws IOException {
-        // Test for method java.io.PipedReader(java.io.PipedWriter)
         preader = new PipedReader(new PipedWriter());
     }
     
@@ -121,7 +121,6 @@ public class PipedReaderTest extends junit.framework.TestCase {
      * @tests java.io.PipedReader#close()
      */
     public void test_close() throws Exception {
-        // Test for method void java.io.PipedReader.close()
         char[] c = null;
         preader = new PipedReader();
         t = new Thread(new PWriter(preader), "");
@@ -137,7 +136,6 @@ public class PipedReaderTest extends junit.framework.TestCase {
      * @tests java.io.PipedReader#connect(java.io.PipedWriter)
      */
     public void test_connectLjava_io_PipedWriter() throws Exception {
-        // Test for method void java.io.PipedReader.connect(java.io.PipedWriter)
         char[] c = null;
 
         preader = new PipedReader();
@@ -152,16 +150,15 @@ public class PipedReaderTest extends junit.framework.TestCase {
         try {
             preader.connect(pwriter.pw);
             fail("Failed to throw exception connecting to pre-connected reader");
-        } catch (Exception e) {
-            // Correct
+        } catch (IOException e) {
+            // Expected
         }
     }
 
-	/**
-	 * @tests java.io.PipedReader#read()
-	 */
-	public void test_read() throws Exception {
-        // Test for method int java.io.PipedReader.read()
+    /**
+     * @tests java.io.PipedReader#read()
+     */
+    public void test_read() throws Exception {
         char[] c = null;
         preader = new PipedReader();
         t = new Thread(new PWriter(preader), "");
@@ -174,11 +171,10 @@ public class PipedReaderTest extends junit.framework.TestCase {
         assertEquals("Read incorrect chars", "Hello World", new String(c));
     }
 
-	/**
-	 * @tests java.io.PipedReader#read(char[], int, int)
-	 */
-	public void test_read$CII() throws Exception {
-        // Test for method int java.io.PipedReader.read(char [], int, int)
+    /**
+     * @tests java.io.PipedReader#read(char[], int, int)
+     */
+    public void test_read$CII() throws Exception {
         char[] c = null;
         preader = new PipedReader();
         t = new Thread(new PWriter(preader), "");
@@ -196,16 +192,16 @@ public class PipedReaderTest extends junit.framework.TestCase {
             preader.close();
             preader.read(c, 8, 7);
             fail("Failed to throw exception reading from closed reader");
-        } catch (Exception e) {
-            // Correct
+        } catch (IOException e) {
+            // Expected
         }
     }
 
     /**
      * @tests java.io.PipedReader#read(char[], int, int)
-     * Regression for HARMONY-387
      */
-    public void test_read$CII_2() throws IOException{
+    public void test_read$CII_2() throws IOException {
+        // Regression for HARMONY-387
         PipedWriter pw = new PipedWriter();
         PipedReader obj = null;
         try {
@@ -232,6 +228,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
         } catch (ArrayIndexOutOfBoundsException t) {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException t) {
+            // Expected
         }
     }
 
@@ -248,9 +245,10 @@ public class PipedReaderTest extends junit.framework.TestCase {
         } catch (ArrayIndexOutOfBoundsException t) {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException t) {
+            // Expected
         }
     }
-    
+
     /**
      * @tests java.io.PipedReader#read(char[], int, int)
      */
@@ -268,7 +266,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pr = new PipedReader();
         buf = null;
         pr.close();
@@ -280,7 +278,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
         } finally {
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         buf = new char[10];
@@ -294,7 +292,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         buf = new char[10];
@@ -308,7 +306,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         buf = new char[10];
@@ -322,7 +320,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         pr.close();
@@ -335,7 +333,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         pr.close();
@@ -348,7 +346,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         try {
@@ -360,7 +358,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         try {
@@ -372,7 +370,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         try {
@@ -384,7 +382,7 @@ public class PipedReaderTest extends junit.framework.TestCase {
             pw = null;
             pr = null;
         }
-        
+
         pw = new PipedWriter();
         pr = new PipedReader(pw);
         try {
@@ -399,10 +397,9 @@ public class PipedReaderTest extends junit.framework.TestCase {
     }
 
     /**
-	 * @tests java.io.PipedReader#ready()
-	 */
-	public void test_ready() throws Exception {
-        // Test for method boolean java.io.PipedReader.ready()
+     * @tests java.io.PipedReader#ready()
+     */
+    public void test_ready() throws Exception {
         char[] c = null;
         preader = new PipedReader();
         t = new Thread(new PWriter(preader), "");
@@ -416,14 +413,14 @@ public class PipedReaderTest extends junit.framework.TestCase {
                 preader.ready());
     }
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() throws Exception {
-		if (t != null) {
-			t.interrupt();
+    /**
+     * Tears down the fixture, for example, close a network connection. This
+     * method is called after a test is executed.
+     */
+    protected void tearDown() throws Exception {
+        if (t != null) {
+            t.interrupt();
         }
         super.tearDown();
-	}
+    }
 }
