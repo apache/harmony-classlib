@@ -20,7 +20,6 @@ package java.util;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.DateFormatSymbols;
 
 import org.apache.harmony.luni.util.PriviAction;
 
@@ -61,6 +60,8 @@ public abstract class TimeZone implements Serializable, Cloneable {
     static TimeZone GMT = new SimpleTimeZone(0, "GMT"); // Greenwich Mean Time
 
     private String ID;
+    
+    private com.ibm.icu.util.TimeZone icuTimeZone = null;
 
     private static void initializeAvailable() {
         TimeZone[] zones = TimeZones.getTimeZones();
@@ -77,16 +78,6 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * 
      */
     public TimeZone() {
-    }
-
-    private void appendNumber(StringBuffer buffer, int count, int value) {
-        String string = Integer.toString(value);
-        if (count > string.length()) {
-            for (int i = 0; i < count - string.length(); i++) {
-                buffer.append('0');
-            }
-        }
-        buffer.append(string);
     }
 
     /**
@@ -216,37 +207,11 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * @return the TimeZone name
      */
     public String getDisplayName(boolean daylightTime, int style, Locale locale) {
-        if (style == SHORT || style == LONG) {
-            boolean useDaylight = daylightTime && useDaylightTime();
-            DateFormatSymbols data = new DateFormatSymbols(locale);
-            String id = getID();
-            String[][] zones = data.getZoneStrings();
-            for (int i = 0; i < zones.length; i++) {
-                if (id.equals(zones[i][0])) {
-                    String res = style == SHORT ? zones[i][useDaylight ? 4 : 2]
-                            : zones[i][useDaylight ? 3 : 1];
-                    return res == null ? "" : res;
-                }
-            }
-            int offset = getRawOffset();
-            if (useDaylight && this instanceof SimpleTimeZone) {
-                offset += ((SimpleTimeZone) this).getDSTSavings();
-            }
-            offset /= 60000;
-            char sign = '+';
-            if (offset < 0) {
-                sign = '-';
-                offset = -offset;
-            }
-            StringBuffer buffer = new StringBuffer(9);
-            buffer.append("GMT");
-            buffer.append(sign);
-            appendNumber(buffer, 2, offset / 60);
-            buffer.append(':');
-            appendNumber(buffer, 2, offset % 60);
-            return buffer.toString();
+        if(icuTimeZone == null || !ID.equals(icuTimeZone.getID())){
+            icuTimeZone = com.ibm.icu.util.TimeZone.getTimeZone(ID);
         }
-        throw new IllegalArgumentException();
+        return icuTimeZone.getDisplayName(
+                daylightTime, style, locale);
     }
 
     /**
