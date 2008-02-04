@@ -1838,7 +1838,19 @@ public class BeanContextSupportTest extends TestCase {
     }
 
     public void testSize() {
-        // covered by other testcases
+        @SuppressWarnings("serial")
+        class TestBean extends Component implements BeanContextProxy {
+            public BeanContextChildSupport childSupport = new BeanContextChildSupport();
+
+            public BeanContextChild getBeanContextProxy() {
+                return childSupport;
+            }
+        }
+        
+        // Regression test for HARMONY-1829
+        BeanContextSupport obj = new BeanContextSupport();
+        obj.add(new TestBean());
+        assertEquals(2, obj.size());
     }
 
     /*
