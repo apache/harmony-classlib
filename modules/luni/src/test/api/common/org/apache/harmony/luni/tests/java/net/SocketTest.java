@@ -490,6 +490,8 @@ public class SocketTest extends SocketTestCase {
             fail("No exception when connecting to address nobody listening on");
         } catch (ConnectException e) {
             // Expected
+        } catch (SocketTimeoutException e) {
+            // The other possibility is that the system timed us out.
         }
         theSocket.close();
 
