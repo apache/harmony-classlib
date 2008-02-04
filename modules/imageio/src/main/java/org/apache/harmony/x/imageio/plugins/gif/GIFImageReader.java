@@ -14,16 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-package org.apache.harmony.x.imageio.plugins.png;
+package org.apache.harmony.x.imageio.plugins.gif;
 
 import javax.imageio.spi.ImageReaderSpi;
 
 import org.apache.harmony.x.imageio.plugins.AwtImageReader;
 
-public class PNGImageReader extends AwtImageReader {
+public class GIFImageReader extends AwtImageReader {
 
-    public PNGImageReader(ImageReaderSpi imageReaderSpi) {
+    public GIFImageReader(final ImageReaderSpi imageReaderSpi) {
         super(imageReaderSpi);
     }
 }

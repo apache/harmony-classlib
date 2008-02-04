@@ -14,49 +14,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Rustem Rafikov
- * @version $Revision: 1.2 $
- */
-package org.apache.harmony.x.imageio.plugins.jpeg;
+package org.apache.harmony.x.imageio.plugins;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.harmony.awt.gl.image.DecodingImageSource;
+public class PluginUtils {
 
-import java.io.InputStream;
-import java.io.IOException;
+    public static final String VENDOR_NAME     = "Apache Harmony"; //$NON-NLS-1$
+    public static final String DEFAULT_VERSION = "1.0";           //$NON-NLS-1$
 
-/**
- * This allows usage of the java2d jpegdecoder with ImageInputStream in
- * the JPEGImageReader. Temporary, only to make JPEGImageReader#read(..)
- * working.
- *
- */
-public class IISDecodingImageSource extends DecodingImageSource {
-
-    private final InputStream is;
-
-    public IISDecodingImageSource(ImageInputStream iis) {
-        is = new IISToInputStreamWrapper(iis);
+    /**
+     * Wrap the specified ImageInputStream object in an InputStream.
+     */
+    public static InputStream wrapIIS(final ImageInputStream iis) {
+        return new IisWrapper(iis);
     }
 
-    @Override
-    protected boolean checkConnection() {
-        return true;
-    }
+    private static class IisWrapper extends InputStream {
 
-    @Override
-    protected InputStream getInputStream() {
-        return is;
-    }
+        private final ImageInputStream input;
 
-    static class IISToInputStreamWrapper extends InputStream {
-
-        private ImageInputStream input;
-
-        public IISToInputStreamWrapper(ImageInputStream input) {
-            this.input=input;
+        IisWrapper(final ImageInputStream input) {
+            this.input = input;
         }
 
         @Override
@@ -65,17 +47,18 @@ public class IISDecodingImageSource extends DecodingImageSource {
         }
 
         @Override
-        public int read(byte[] b) throws IOException {
+        public int read(final byte[] b) throws IOException {
             return input.read(b);
         }
 
         @Override
-        public int read(byte[] b, int off, int len) throws IOException {
+        public int read(final byte[] b, final int off, final int len)
+                        throws IOException {
             return input.read(b, off, len);
         }
 
         @Override
-        public long skip(long n) throws IOException {
+        public long skip(final long n) throws IOException {
             return input.skipBytes(n);
         }
 
@@ -85,7 +68,7 @@ public class IISDecodingImageSource extends DecodingImageSource {
         }
 
         @Override
-        public void mark(int readlimit) {
+        public void mark(final int readlimit) {
             input.mark();
         }
 

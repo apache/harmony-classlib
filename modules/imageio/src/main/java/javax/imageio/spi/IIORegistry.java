@@ -22,6 +22,7 @@ package javax.imageio.spi;
 
 import java.util.Arrays;
 
+import org.apache.harmony.x.imageio.plugins.gif.GIFImageReaderSpi;
 import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageReaderSpi;
 import org.apache.harmony.x.imageio.plugins.jpeg.JPEGImageWriterSpi;
 import org.apache.harmony.x.imageio.plugins.png.PNGImageReaderSpi;
@@ -33,24 +34,19 @@ import org.apache.harmony.x.imageio.spi.OutputStreamIOSSpi;
 import org.apache.harmony.x.imageio.spi.RAFIISSpi;
 import org.apache.harmony.x.imageio.spi.RAFIOSSpi;
 
-/**
- * @author Rustem V. Rafikov, Viskov Nikolay
- * @version $Revision: 1.3 $
- */
 public final class IIORegistry extends ServiceRegistry {
 
-    private static IIORegistry instance;
+    private static IIORegistry   instance;
 
     private static final Class[] CATEGORIES = new Class[] {
-        javax.imageio.spi.ImageWriterSpi.class,
-        javax.imageio.spi.ImageReaderSpi.class,
-        javax.imageio.spi.ImageInputStreamSpi.class,
-        //javax.imageio.spi.ImageTranscoderSpi.class,
-        javax.imageio.spi.ImageOutputStreamSpi.class
-    };
+                    javax.imageio.spi.ImageWriterSpi.class,
+                    javax.imageio.spi.ImageReaderSpi.class,
+                    javax.imageio.spi.ImageInputStreamSpi.class,
+                    // javax.imageio.spi.ImageTranscoderSpi.class,
+                    javax.imageio.spi.ImageOutputStreamSpi.class };
 
     private IIORegistry() {
-        super(Arrays.<Class<?>>asList(CATEGORIES).iterator());
+        super(Arrays.<Class<?>> asList(CATEGORIES).iterator());
         registerBuiltinSpis();
         registerApplicationClasspathSpis();
     }
@@ -60,17 +56,18 @@ public final class IIORegistry extends ServiceRegistry {
         registerServiceProvider(new JPEGImageReaderSpi());
         registerServiceProvider(new PNGImageReaderSpi());
         registerServiceProvider(new PNGImageWriterSpi());
+        registerServiceProvider(new GIFImageReaderSpi());
         registerServiceProvider(new FileIOSSpi());
         registerServiceProvider(new FileIISSpi());
         registerServiceProvider(new RAFIOSSpi());
         registerServiceProvider(new RAFIISSpi());
-        registerServiceProvider(new OutputStreamIOSSpi());        
+        registerServiceProvider(new OutputStreamIOSSpi());
         registerServiceProvider(new InputStreamIISSpi());
-        //-- TODO implement
     }
 
     public static IIORegistry getDefaultInstance() {
-        // TODO implement own instance for each ThreadGroup (see also ThreadLocal)
+        // TODO implement own instance for each ThreadGroup (see also
+        // ThreadLocal)
         synchronized (IIORegistry.class) {
             if (instance == null) {
                 instance = new IIORegistry();
@@ -80,6 +77,6 @@ public final class IIORegistry extends ServiceRegistry {
     }
 
     public void registerApplicationClasspathSpis() {
-        //-- TODO implement for non-builtin plugins
+        // -- TODO implement for non-builtin plugins
     }
 }
