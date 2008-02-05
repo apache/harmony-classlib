@@ -504,11 +504,15 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
       message =	(jbyte *)internalBuffer;	
     }
 
-  (*env)->GetByteArrayRegion (env, data, offset, count,	message);
-  
+  (*env)->GetByteArrayRegion (env, data, offset, count, message); 
+  if ((*env)->ExceptionCheck (env)) {
+    goto out;
+  }
+ 
   result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl(env, thisClz,
 	   fileDescriptor, (jlong) message, offset, count);
-    
+
+ out:
   if ((U_8 *)message != internalBuffer)
     {
       hymem_free_memory	(message);
