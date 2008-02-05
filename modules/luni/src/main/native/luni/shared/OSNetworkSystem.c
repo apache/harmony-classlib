@@ -257,43 +257,6 @@ updateSocket (JNIEnv * env,
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
- * Method:    oneTimeInitializationDatagram
- * Signature: (Z)V
- */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_oneTimeInitializationDatagram(JNIEnv * env,
-		   jclass clazz,
-		   jboolean
-		   ipv6support)	
-{
-  jclass lookupClass;
-  jfieldID fid;	
-
-  netInitializeIDCaches	(env, ipv6support);
-
-  lookupClass =	(*env)->FindClass (env,	"java/net/DatagramPacket");
-  if (!lookupClass)
-    return;
-
-  fid =	
-    (*env)->GetFieldID (env, lookupClass, "address",
-      "Ljava/net/InetAddress;");
-  if (!fid)
-    return;
-  HARMONY_CACHE_SET	(env, FID_java_net_DatagramPacket_address, fid);
-
-  fid =	(*env)->GetFieldID (env, lookupClass, "length",	"I");
-  if (!fid)
-    return;
-  HARMONY_CACHE_SET	(env, FID_java_net_DatagramPacket_length, fid);	
-
-  fid =	(*env)->GetFieldID (env, lookupClass, "port", "I");
-  if (!fid)
-    return;
-  HARMONY_CACHE_SET	(env, FID_java_net_DatagramPacket_port,	fid);
-}
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    oneTimeInitializationImpl
  * Signature: (Z)V
  */

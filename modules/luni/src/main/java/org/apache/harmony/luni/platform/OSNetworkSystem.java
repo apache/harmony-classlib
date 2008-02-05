@@ -63,13 +63,6 @@ final class OSNetworkSystem implements INetworkSystem {
 		return ref;
 	}
 
-	// Useing when cache set/get is OK
-	// public static native void oneTimeInitializationDatagram(
-	// boolean jcl_IPv6_support);
-	//
-	// public static native void oneTimeInitializationSocket(
-	// boolean jcl_IPv6_support);
-
 	// --------------------------------------------------
 	// java codes that wrap native codes
 	// --------------------------------------------------
