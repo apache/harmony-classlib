@@ -40,17 +40,17 @@
             <present targetdir="${hy.nio.src.main.java}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
+                        to="\1.java" />
             </present>
             <present targetdir="${hy.nio.src.main.java.platform}" />
             <present targetdir="${hy.nio.src.main.java.platform}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
+                        to="\1.java" />
             </present>
         </or>
     </fileset>
-    
+
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
     <target name="test" depends="-test-module">
@@ -65,7 +65,8 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
+    <target name="-test-module"
+            depends="build, compile-tests, prepare-exclude, run-tests" />
 
     <!-- Build natives.-->
     <target name="build-native">
@@ -74,9 +75,9 @@
         <!-- Copy the built shared libs over to the jre/bin dir -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.nio.src.main.native}/nio">
-                <include name="*${shlib.suffix}*"/>
+                <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
-                <exclude name="*${manifest.suffix}"/>
+                <exclude name="*${manifest.suffix}" />
             </fileset>
         </copy>
         <!-- Copy link exports file on z/OS -->
@@ -93,15 +94,14 @@
         <delete includeemptydirs="true" failonerror="false">
             <fileset refid="classes" />
         </delete>
-        <delete failonerror="false" dir="bin"/>
+        <delete failonerror="false" dir="bin" />
     </target>
 
     <!-- Clean natives. -->
     <target name="clean-native">
         <make dir="${hy.nio.src.main.native}/nio/${hy.os.family}"
-                      target="clean" />
+              target="clean" />
     </target>
-
 
     <target name="compile-java">
         <echo message="Compiling NIO classes" />
@@ -109,17 +109,17 @@
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-            destdir="${hy.build}"
-            compiler="${hy.javac.compiler}"
-            memoryMaximumSize="${hy.javac.maxmem}"
-            source="${hy.javac.source}" 
-            target="${hy.javac.target}"
-            debug="${hy.javac.debug}">
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
 
             <src>
-                <pathelement location="${hy.nio.src.main.java}"/>
+                <pathelement location="${hy.nio.src.main.java}" />
                 <pathelement location="${hy.nio.src.main.java.platform}" />
             </src>
 
@@ -142,22 +142,22 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/nio.jar"
-            manifest="${hy.nio}/META-INF/MANIFEST.MF">
+             manifest="${hy.nio}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
+                <attribute name="Implementation-Version" value="${svn.info}" />
             </manifest>
 
-            <metainf refid="hy.required.metainf-files"/>
+            <metainf refid="hy.required.metainf-files" />
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/nio-src.jar">
             <fileset dir="${hy.nio.src.main.java}" />
             <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
+                <attribute name="Implementation-Version" value="${svn.info}" />
             </manifest>
 
-            <metainf refid="hy.required.metainf-files"/>
+            <metainf refid="hy.required.metainf-files" />
         </jar>
     </target>
 
@@ -170,29 +170,29 @@
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
+               source="${hy.javac.source}"
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
 
-                    <src>
-                        <pathelement location="${hy.nio.src.test.java}"/>
-                        <pathelement
-                             location="${hy.nio.src.test.java.platform}"/>
-                    </src>
+            <src>
+                <pathelement location="${hy.nio.src.test.java}" />
+                <pathelement location="${hy.nio.src.test.java.platform}" />
+            </src>
             <bootclasspath>
-            <fileset dir="${hy.jdk}/jre/lib/boot">
-                <include name="**/*.jar" />
-            </fileset>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
             </bootclasspath>
             <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
     <target name="prepare-exclude">
-       <prepare-exclude-list moduleName="nio" dir="./make"
-                             result="${nio.exclude.file}"/>
+        <prepare-exclude-list moduleName="nio"
+                              dir="./make"
+                              result="${nio.exclude.file}" />
     </target>
 
     <target name="run-tests">
@@ -201,14 +201,14 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-            forkmode="${hy.test.forkmode}"
-            timeout="${hy.test.timeout}"
-            printsummary="withOutAndErr"
-            errorproperty="test.errors"
-            failureproperty="test.failures"
-            showoutput="on"
-            dir="${basedir}"
-            jvm="${test.jre.home}/bin/java">
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
             <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
@@ -218,20 +218,22 @@
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
                 <fileset dir="${hy.nio.src.test.java}">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
                     <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${nio.exclude.file}" unless="test.case" />
+                    <excludesfile name="${nio.exclude.file}"
+                                  unless="test.case" />
                 </fileset>
                 <fileset dir="${hy.nio.src.test.java.platform}">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
                     <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${nio.exclude.file}" unless="test.case" />
+                    <excludesfile name="${nio.exclude.file}"
+                                  unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>
