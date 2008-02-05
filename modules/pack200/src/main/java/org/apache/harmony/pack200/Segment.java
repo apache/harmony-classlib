@@ -21,6 +21,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -68,8 +71,6 @@ public class Segment {
 
 
 	/**
-     * TODO: Do we need this method now we have Archive as the main entry point?
-     *
 	 * Decode a segment from the given input stream. This does not attempt to
 	 * re-assemble or export any class files, but it contains enough information
 	 * to be able to re-assemble class files by external callers.
@@ -86,6 +87,19 @@ public class Segment {
 	public static Segment parse(InputStream in) throws IOException,
 			Pack200Exception {
 		Segment segment = new Segment();
+		// See if file is GZip compressed
+		if (!in.markSupported()) {
+			in = new BufferedInputStream(in);
+			if (!in.markSupported())
+				throw new IllegalStateException();
+		}
+		in.mark(2);
+		if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
+			in.reset();
+			in = new BufferedInputStream(new GZIPInputStream(in));
+		} else {
+			in.reset();
+		}
         segment.parseSegment(in);
 		return segment;
 	}
@@ -128,7 +142,14 @@ public class Segment {
 				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
 						AttributeLayout.CONTEXT_CLASS);
 		if (SOURCE_FILE.matches(classBands.getClassFlags()[classNum])) {
-			String fileName = fullName.substring(i) + ".java";
+		    int firstDollar = SegmentUtils.indexOfFirstDollar(fullName);
+		    String fileName = null;
+
+		    if(firstDollar > -1 && (i <= firstDollar)) {
+		        fileName = fullName.substring(i, firstDollar) + ".java";
+		    } else {
+		        fileName = fullName.substring(i) + ".java";
+		    }
 			classFile.attributes = new Attribute[] { (Attribute) cp
 					.add(new SourceFileAttribute(fileName)) };
 		} else {
@@ -156,40 +177,54 @@ public class Segment {
 			cfMethods[i] = cp.add(new CPMethod(classBands.getMethodDescr()[classNum][i],
                     classBands.getMethodFlags()[classNum][i], classBands.getMethodAttributes()[classNum][i]));
 		}
-		// TODO: maybe this is a better place to add ic_relevant?
-		// This seems like the right thing to do.
-		boolean addedClasses = false;
+
+		// add inner class attribute (if required)
+		boolean addInnerClassesAttr = false;
+		IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
+		boolean ic_local_sent = false;
+		if(ic_local != null) {
+		    ic_local_sent = true;
+		}
 		InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute("InnerClasses");
 		IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
-
-		for(int index = 0; index < ic_relevant.length; index++) {
-		    String innerClassString = ic_relevant[index].thisClassString();
-		    String outerClassString = ic_relevant[index].outerClassString();
-		    String simpleClassName = ic_relevant[index].simpleClassName();
+		IcTuple[] ic_stored = computeIcStored(ic_local, ic_relevant);
+		for(int index = 0; index < ic_stored.length; index++) {
+		    String innerClassString = ic_stored[index].thisClassString();
+		    String outerClassString = ic_stored[index].outerClassString();
+		    String simpleClassName = ic_stored[index].simpleClassName();
 
 		    CPClass innerClass = null;
 		    CPUTF8 innerName = null;
 		    CPClass outerClass = null;
 
-		    if(ic_relevant[index].isAnonymous()) {
+		    if(ic_stored[index].isAnonymous()) {
 		        innerClass = new CPClass(innerClassString);
 		    } else {
 	            innerClass = new CPClass(innerClassString);
 	            innerName = new CPUTF8(simpleClassName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 		    }
 
-		    // TODO: I think we need to worry about if the
-		    // OUTER class is a member or not - not the
-		    // ic_relevant itself.
-//		    if(ic_relevant[index].isMember()) {
+		    if(ic_stored[index].isMember()) {
 		        outerClass = new CPClass(outerClassString);
-//		    }
+		    }
 
-	        int flags = ic_relevant[index].F;
+	        int flags = ic_stored[index].F;
 	        innerClassesAttribute.addInnerClassesEntry(innerClass, outerClass, innerName, flags);
-	        addedClasses = true;
+	        addInnerClassesAttr = true;
 		}
-		if(addedClasses) {
+		// If ic_local is sent and it's empty, don't add
+		// the inner classes attribute.
+		if(ic_local_sent && (ic_local.length == 0)) {
+		    addInnerClassesAttr = false;
+		}
+		
+		// If ic_local is not sent and ic_relevant is empty,
+		// don't add the inner class attribute.
+		if(!ic_local_sent && (ic_relevant.length == 0)) {
+		    addInnerClassesAttr = false;
+		}
+		
+		if(addInnerClassesAttr) {
 		    // Need to add the InnerClasses attribute to the
 		    // existing classFile attributes.
 		    Attribute[] originalAttrs = classFile.attributes;
@@ -225,6 +260,54 @@ public class Segment {
 
 
 	/**
+	 * Given an ic_local and an ic_relevant, use them to
+	 * calculate what should be added as ic_stored.
+	 * @param ic_local IcTuple[] array of local transmitted tuples
+	 * @param ic_relevant IcTuple[] array of relevant tuples
+	 * @return IcTuple[] array of tuples to be stored. If ic_local 
+	 *     is null or empty, the values returned may not be correct.
+	 *     The caller will have to determine if this is the case.
+	 */
+	private IcTuple[] computeIcStored(IcTuple[] ic_local, IcTuple[] ic_relevant) {
+	    List result = new ArrayList();
+	    List resultCopy = new ArrayList();
+	    List localList = new ArrayList();
+	    List relevantList = new ArrayList();
+	    if(ic_local != null) {
+	        // If ic_local is null, this code doesn't get
+	        // executed - which means the list ends up being
+	        // ic_relevant.
+	        for(int index=0; index < ic_local.length; index++) { 
+	            result.add(ic_local[index]);
+	            resultCopy.add(ic_local[index]);
+	            localList.add(ic_local[index]);
+	        }
+	    }
+	    for(int index=0; index < ic_relevant.length; index++) { 
+	        result.add(ic_relevant[index]);
+	        resultCopy.add(ic_relevant[index]);
+	        relevantList.add(ic_relevant[index]);
+	    }
+	    
+	    // Since we're removing while iterating, iterate over
+	    // a copy.
+	    Iterator it = resultCopy.iterator();
+	    
+	    while(it.hasNext()) {
+	        IcTuple tuple = (IcTuple)it.next();
+	        if(localList.contains(tuple) && relevantList.contains(tuple)) {
+	            while(result.remove(tuple)) {};
+	        }
+	    }
+	    IcTuple[] resultArray = new IcTuple[result.size()];
+	    for(int index=0; index < resultArray.length; index++) {
+	        resultArray[index] = (IcTuple)result.get(index);
+	    }
+	    return resultArray;
+    }
+
+
+    /**
 	 * This performs the actual work of parsing against a non-static instance of
 	 * Segment.
 	 *

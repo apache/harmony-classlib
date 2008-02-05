@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.IcTuple;
-import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class InnerClassesAttribute extends Attribute {
@@ -59,11 +58,6 @@ public class InnerClassesAttribute extends Attribute {
          *      CPClass and CPUTF8 objects.
          */
         public void resolve(ClassConstantPool pool) {
-            SegmentUtils.debug("----");
-            SegmentUtils.debug("inner_class_info: " + inner_class_info);
-            SegmentUtils.debug("inner_class_name: " + inner_class_name);
-            SegmentUtils.debug("outer_class_info: " + outer_class_info);
-
             if(inner_class_info != null) {
                 inner_class_info.resolve(pool);
                 inner_class_info_index = pool.indexOf(inner_class_info);

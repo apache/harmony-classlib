@@ -178,8 +178,8 @@ public class SegmentConstantPool {
      *  String [position 2, 1st instance of String]
      *  Object [position 3, 1st instance of Object]
      *  Object [position 4, 2nd instance of Object]
-     * then classSpecificPoolEntryIndex(..., "Object", 2, false) will
-     * answer 4. classSpecificPoolEntryIndex(..., "String", 0, false)
+     * then matchSpecificPoolEntryIndex(..., "Object", 2, false) will
+     * answer 4. matchSpecificPoolEntryIndex(..., "String", 0, false)
      * will answer 1.
      *
      * @param nameArray Array of Strings against which the compareString is tested
@@ -220,9 +220,6 @@ public class SegmentConstantPool {
     	}
     	// We didn't return in the for loop, so the desiredMatch
     	// with desiredIndex must not exist in the array.
-    	if(secondaryCompareRegex.equals("^<init>.*")) {
-    	    SegmentUtils.debug("self halt");
-    	}
     	return -1;
     }
 

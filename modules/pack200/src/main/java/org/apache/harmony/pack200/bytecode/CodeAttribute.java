@@ -83,8 +83,6 @@ public class CodeAttribute extends BCIRenumberedAttribute {
             ByteCode byteCode = (ByteCode)byteCodes.get(i);
             byteCode.applyByteCodeTargetFixup(this);
         }
-        // TODO: By the time I get here, the input stream
-        // is somehow confused.
     }
 
     protected int getLength() {

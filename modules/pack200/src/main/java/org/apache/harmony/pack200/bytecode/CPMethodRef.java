@@ -18,18 +18,15 @@ package org.apache.harmony.pack200.bytecode;
 
 public class CPMethodRef extends CPRef {
 
-	protected CPClass className = null;
-	protected CPNameAndType descriptor = null;
-
 	public CPMethodRef(String className, String descriptor) {
 		super(ConstantPoolEntry.CP_Methodref, className, descriptor);
 		this.className = new CPClass(className);
-		this.descriptor = new CPNameAndType(descriptor);
+		this.nameAndType = new CPNameAndType(descriptor);
         this.domain = ClassConstantPool.DOMAIN_METHOD;
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { className, descriptor };
+		return new ClassFileEntry[] { className, nameAndType };
 	}
 
 }

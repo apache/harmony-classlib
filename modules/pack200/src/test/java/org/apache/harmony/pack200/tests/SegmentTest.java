@@ -65,7 +65,69 @@ public class SegmentTest extends TestCase {
         segment.writeJar(out);
     }
 
-     public void testInterfaceOnly() throws Exception {
+    // Test with an archive containing Harmony's SQL module, packed with -E1
+    public void testWithSqlE1() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sql-e1.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", "-e1.jar")));
+        segment.writeJar(out);
+    }
+
+    // Test with an archive containing Harmony's SQL module
+    public void testWithSql() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", ".jar")));
+        segment.writeJar(out);
+    }
+
+    // Test with an archive containing Harmony's Pack200 module, packed with -E1
+    public void testWithPack200E1() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200-e1.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200-e1.jar")));
+        segment.writeJar(out);
+    }
+
+    // Test with an archive containing Harmony's Pack200 module
+    public void testWithPack200() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200.jar")));
+        segment.writeJar(out);
+    }
+
+    // Test with an archive containing Harmony's JNDI module
+    public void testWithJNDIE1() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("jndi", "-e1.jar")));
+        segment.writeJar(out);
+    }
+
+    // Test with an archive containing Annotations
+    public void testWithAnnotations() throws Exception {
+
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/annotations.pack.gz");
+        Segment segment = Segment.parse(in);
+        assertNotNull(segment);
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile("ann", "otations.jar")));
+        segment.writeJar(out);
+
+    }
+
+    public void testInterfaceOnly() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
         Segment segment = Segment.parse(in);

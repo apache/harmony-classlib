@@ -251,7 +251,7 @@ public class ByteCodeForm {
         byteCodeArray[186] = new NoArgumentForm(186, "xxxunusedxxx");
         byteCodeArray[187] = new NewClassRefForm(187, "new", new int[] {187, -1, -1});
         byteCodeArray[188] = new ByteForm(188, "newarray", new int[] {188, -1});
-        byteCodeArray[189] = new NewClassRefForm(189, "anewarray", new int[] {189, -1, -1});
+        byteCodeArray[189] = new ClassRefForm(189, "anewarray", new int[] {189, -1, -1});
         byteCodeArray[190] = new NoArgumentForm(190, "arraylength");
         byteCodeArray[191] = new NoArgumentForm(191, "athrow");
         byteCodeArray[192] = new ClassRefForm(192, "checkcast", new int[] {192, -1, -1});

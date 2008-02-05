@@ -141,14 +141,6 @@ public class BcBands extends BandSet {
                    }
                    for (int i = 0; i < methodByteCodePacked[c][m].length; i++) {
                        int codePacked = 0xff & methodByteCodePacked[c][m][i];
-                       // TODO a lot of this needs to be encapsulated in the
-                       // place that
-                       // calculates what the arguments are, since (a) it will
-                       // need
-                       // to know where to get them, and (b) what to do with
-                       // them
-                       // once they've been gotten. But that's for another
-                       // time.
                        switch (codePacked) {
                        case 16: // bipush
                        case 188: // newarray
@@ -406,7 +398,6 @@ public class BcBands extends BandSet {
                             operandManager, exceptionTable);
                     methodAttributes[c][m].add(codeAttr);
                     codeAttr.renumber(codeAttr.byteCodeOffsets);
-                    // Should I add all the attributes in here?
                  ArrayList currentAttributes = (ArrayList)orderedCodeAttributes.get(i);
                  for(int index=0;index < currentAttributes.size(); index++) {
                      Attribute currentAttribute = (Attribute)currentAttributes.get(index);

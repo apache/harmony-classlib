@@ -24,7 +24,7 @@ public abstract class CPRef extends ConstantPoolEntry {
 	CPClass className;
 	transient int classNameIndex;
 
-	protected final CPNameAndType nameAndType;
+	protected CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
 
 	public CPRef(byte type, String className, String descriptor) {

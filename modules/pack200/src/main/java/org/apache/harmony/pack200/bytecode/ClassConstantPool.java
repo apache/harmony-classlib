@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class ClassConstantPool {
@@ -68,7 +67,6 @@ public class ClassConstantPool {
             classPoolSet.add(entry);
 			if (!entries.contains(entry)) {
 				entries.add(entry);
-				// TODO This will be a bugger when they're sorted.
 				if (entry instanceof CPLong ||entry instanceof CPDouble)
 					entries.add(entry); //these get 2 slots because of their size
 			}
@@ -105,11 +103,7 @@ public class ClassConstantPool {
 	}
 
 	public void resolve(Segment segment) {
-		SegmentUtils.debug("\n\nResolving (Segment.resolve(Segment)");
-		// TODO: Be careful here, you're obliterating the original entries.
-		// In an ideal world, you wouldn't actually add to it unless you're
-		// sure.
-        entries = new ArrayList();
+	    entries = new ArrayList();
       Iterator sortedIterator = classPoolSet.iterator();
       while(sortedIterator.hasNext()) {
           ConstantPoolEntry entry = (ConstantPoolEntry)sortedIterator.next();
@@ -152,6 +146,21 @@ public class ClassConstantPool {
 	        if (entry instanceof CPLong ||entry instanceof CPDouble)
 	            entries.add(entry); //these get 2 slots because of their size
 		}
+		
+		// Now that the indices have been re-sorted, need
+		// to re-resolve to update references. This should
+		// not add any new entries this time through.
+        it = entries.iterator();
+        while(it.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry)it.next();
+            entry.resolve(this);
+        }
+        // Also need to re-resolve the others.
+        it = others.iterator();
+        while(it.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry)it.next();
+            entry.resolve(this);
+        }
 	}
 
 	/**
