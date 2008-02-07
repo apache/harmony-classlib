@@ -45,4 +45,11 @@ typedef struct JCLZipFileLink
   MUTEX mutex;
 } JCLZipFileLink;
 
+#define THROW_ZIP_EXCEPTION(env, err, type)            \
+  if (err == Z_MEM_ERROR) {                            \
+    throwNewOutOfMemoryError(env, "");                 \
+  } else {                                             \
+    throwNew##type(env, (const char*) zError(err));    \
+  }
+
 #endif /* zip_h */
