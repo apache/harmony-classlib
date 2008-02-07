@@ -21,50 +21,33 @@ import java.net.NoRouteToHostException;
 
 public class NoRouteToHostExceptionTest extends junit.framework.TestCase {
 
-	/**
-	 * @tests java.net.NoRouteToHostException#NoRouteToHostException()
-	 */
-	public void test_Constructor() {
-		// Test for method java.net.NoRouteToHostException()
+    /**
+     * @tests java.net.NoRouteToHostException#NoRouteToHostException()
+     */
+    public void test_Constructor() {
+        try {
+            if (true) {
+                throw new NoRouteToHostException();
+            }
+            fail("Failed to generate expected exception");
+        } catch (NoRouteToHostException e) {
+            // Expected
+        }
+    }
 
-		try {
-			if (true)
-				throw new NoRouteToHostException();
-		} catch (NoRouteToHostException e) {
-			return;
-		}
-		fail("Failed to generate expected exception");
-	}
-
-	/**
-	 * @tests java.net.NoRouteToHostException#NoRouteToHostException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		// Test for method java.net.NoRouteToHostException(java.lang.String)
-		// Cannot test correctly without changing some routing tables !!
-
-		try {
-			if (true)
-				throw new NoRouteToHostException("test");
-		} catch (NoRouteToHostException e) {
-			assertEquals("Threw exception with incorrect message", "test", e.getMessage()
-					);
-			return;
-		}
-		fail("Failed to generate expected exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.net.NoRouteToHostException#NoRouteToHostException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        // Cannot test correctly without changing some routing tables !!
+        try {
+            if (true) {
+                throw new NoRouteToHostException("test");
+            }
+            fail("Failed to generate expected exception");
+        } catch (NoRouteToHostException e) {
+            assertEquals("Threw exception with incorrect message", "test", e
+                    .getMessage());
+        }
+    }
 }

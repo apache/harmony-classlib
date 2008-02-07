@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
@@ -31,22 +30,15 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import junit.framework.TestCase;
+
 import org.apache.harmony.luni.util.InvalidJarIndexException;
 
 import tests.support.Support_Configuration;
 import tests.support.resource.Support_Resources;
-import junit.framework.TestSuite;
 
-public class URLClassLoaderTest extends junit.framework.TestCase {
+public class URLClassLoaderTest extends TestCase {
 
-    public URLClassLoaderTest() {
-        super();
-    }
-    
-    public URLClassLoaderTest(String s) {
-        super(s);
-    }
-    
     class BogusClassLoader extends ClassLoader {
         public URL getResource(String res) {
             try {
@@ -67,7 +59,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
             return super.findClass(cl);
         }
     }
-    
+
     URLClassLoader ucl;
 
     /**
@@ -314,7 +306,7 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                         + "/JarIndex/hyts_42.jar!/bpack/"));
         assertTrue("Resources not found (2)", resourcesFound);
         assertFalse("No more resources expected", en.hasMoreElements());
-       
+
         // Regression test for HARMONY-2357.
         try {
             URLClassLoaderExt cl = new URLClassLoaderExt(new URL[557]);
@@ -325,7 +317,8 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         }
 
         // Regression test for HARMONY-2871.
-        URLClassLoader cl = new URLClassLoader(new URL[] { new URL("file:/foo.jar") });
+        URLClassLoader cl = new URLClassLoader(new URL[] { new URL(
+                "file:/foo.jar") });
 
         try {
             Class.forName("foo.Foo", false, cl);
@@ -369,31 +362,31 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         assertTrue("Returned incorrect resource", !sb.toString().equals(
                 "This is a test resource file"));
     }
-    
+
     public void testFindResource_H3461() throws Exception {
         File userDir = new File(System.getProperty("user.dir"));
         File dir = new File(userDir, "encode#me");
         File f, f2;
         URLClassLoader loader;
         URL dirUrl;
-        
+
         if (!dir.exists()) {
             dir.mkdir();
         }
         dir.deleteOnExit();
         dirUrl = dir.toURI().toURL();
-        loader = new URLClassLoader( new URL[] { dirUrl });
+        loader = new URLClassLoader(new URL[] { dirUrl });
 
         f = File.createTempFile("temp", ".dat", dir);
         f.deleteOnExit();
         f2 = File.createTempFile("bad#name#", ".dat", dir);
         f2.deleteOnExit();
-          
-        assertNotNull("Unable to load resource from path with problematic name",
-            loader.getResource(f.getName()));
-        assertEquals("URL was not correctly encoded",
-            f2.toURI().toURL(),    
-            loader.getResource(f2.getName()));
+
+        assertNotNull(
+                "Unable to load resource from path with problematic name",
+                loader.getResource(f.getName()));
+        assertEquals("URL was not correctly encoded", f2.toURI().toURL(),
+                loader.getResource(f2.getName()));
     }
 
     /**
@@ -420,17 +413,17 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
         assertTrue("too long. UNC path formed? UNC time: " + uncTime
                 + " regular time: " + time, uncTime <= (time * 4));
     }
-    
-    /**
-	 * Regression for Harmony-2237 
-	 */
-	public void test_getResource() throws Exception {		
-		URLClassLoader urlLoader = getURLClassLoader();
-		assertNull(urlLoader.findResource("XXX")); //$NON-NLS-1$
-	}
 
-	private static URLClassLoader getURLClassLoader() {
-		String classPath = System.getProperty("java.class.path");
+    /**
+     * Regression for Harmony-2237
+     */
+    public void test_getResource() throws Exception {
+        URLClassLoader urlLoader = getURLClassLoader();
+        assertNull(urlLoader.findResource("XXX")); //$NON-NLS-1$
+    }
+
+    private static URLClassLoader getURLClassLoader() {
+        String classPath = System.getProperty("java.class.path");
         StringTokenizer tok = new StringTokenizer(classPath, File.pathSeparator);
         Vector<URL> urlVec = new Vector<URL>();
         String resPackage = Support_Resources.RESOURCE_PACKAGE;
@@ -445,15 +438,15 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                 urlVec.addElement(new URL(url));
             }
         } catch (MalformedURLException e) {
-        	// do nothing
+            // do nothing
         }
         URL[] urls = new URL[urlVec.size()];
         for (int i = 0; i < urlVec.size(); i++) {
-        	urls[i] = urlVec.elementAt(i);
-        }            
+            urls[i] = urlVec.elementAt(i);
+        }
         URLClassLoader loader = new URLClassLoader(urls, null);
-		return loader;
-	}
+        return loader;
+    }
 
     /**
      * Regression test for HARMONY-2255
@@ -466,12 +459,4 @@ public class URLClassLoaderTest extends junit.framework.TestCase {
                 "tests/api/java/net/test%25.properties");
         assertNull(in);
     }
-    
-//    public static TestSuite suite() {
-//        TestSuite suite = new TestSuite();
-//        
-//        suite.addTest(new URLClassLoaderTest("testFindResource_H3461"));
-//        suite.addTest(new URLClassLoaderTest("test_getResourceAsStream"));
-//        return suite;
-//    }
 }

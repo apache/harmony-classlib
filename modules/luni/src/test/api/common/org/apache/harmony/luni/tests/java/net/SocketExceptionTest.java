@@ -21,45 +21,31 @@ import java.net.SocketException;
 
 public class SocketExceptionTest extends junit.framework.TestCase {
 
-	/**
-	 * @tests java.net.SocketException#SocketException()
-	 */
-	public void test_Constructor() {
-		try {
-			throw new SocketException();
-		} catch (SocketException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during SocketException test : " + e.getMessage());
-		}
-		fail("Failed to generate expected exception");
-	}
+    /**
+     * @tests java.net.SocketException#SocketException()
+     */
+    public void test_Constructor() {
+        try {
+            if (true) {
+                throw new SocketException();
+            }
+            fail("Failed to generate expected exception");
+        } catch (SocketException e) {
+            // Expected
+        }
+    }
 
-	/**
-	 * @tests java.net.SocketException#SocketException(java.lang.String)
-	 */
-	public void test_ConstructorLjava_lang_String() {
-		try {
-			throw new SocketException("Some error message");
-		} catch (SocketException e) {
-			return;
-		} catch (Exception e) {
-			fail("Exception during SocketException test" + e.toString());
-		}
-		fail("Failed to generate expected exception");
-	}
-
-	/**
-	 * Sets up the fixture, for example, open a network connection. This method
-	 * is called before a test is executed.
-	 */
-	protected void setUp() {
-	}
-
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	protected void tearDown() {
-	}
+    /**
+     * @tests java.net.SocketException#SocketException(java.lang.String)
+     */
+    public void test_ConstructorLjava_lang_String() {
+        try {
+            if (true) {
+                throw new SocketException("Some error message");
+            }
+            fail("Failed to generate expected exception");
+        } catch (SocketException e) {
+            // Expected
+        }
+    }
 }

@@ -21,11 +21,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import junit.framework.TestCase;
 import tests.support.Support_Configuration;
 
-public class URLDecoderTest extends junit.framework.TestCase {
+public class URLDecoderTest extends TestCase {
 
-	/**
+    /**
      * @tests java.net.URLDecoder#URLDecoder()
      */
     public void test_Constructor() throws Exception {
@@ -33,14 +34,12 @@ public class URLDecoderTest extends junit.framework.TestCase {
         assertNotNull("Constructor failed.", ud);
     }
 
-	/**
-	 * @tests java.net.URLDecoder#decode(java.lang.String)
-	 */
-	public void test_decodeLjava_lang_String() throws Exception {
-		// Test for method java.lang.String
-		// java.net.URLDecoder.decode(java.lang.String)
-		final String URL = "http://" + Support_Configuration.HomeAddress;
-		final String URL2 = "telnet://justWantToHaveFun.com:400";
+    /**
+     * @tests java.net.URLDecoder#decode(java.lang.String)
+     */
+    public void test_decodeLjava_lang_String() throws Exception {
+        final String URL = "http://" + Support_Configuration.HomeAddress;
+        final String URL2 = "telnet://justWantToHaveFun.com:400";
         final String URL3 = "file://myServer.org/a file with spaces.jpg";
         assertTrue("1. Incorrect encoding/decoding", URLDecoder.decode(
                 URLEncoder.encode(URL)).equals(URL));
@@ -48,7 +47,7 @@ public class URLDecoderTest extends junit.framework.TestCase {
                 URLEncoder.encode(URL2)).equals(URL2));
         assertTrue("3. Incorrect encoding/decoding", URLDecoder.decode(
                 URLEncoder.encode(URL3)).equals(URL3));
-	}
+    }
 
     /**
      * @tests java.net.URLDecoder#decode(java.lang.String, java.lang.String)
@@ -59,6 +58,7 @@ public class URLDecoderTest extends junit.framework.TestCase {
             URLDecoder.decode("", "");
             fail("UnsupportedEncodingException expected");
         } catch (UnsupportedEncodingException e) {
+            // Expected
         }
     }
 }
