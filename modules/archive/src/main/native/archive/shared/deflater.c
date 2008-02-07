@@ -45,15 +45,15 @@ Java_java_util_zip_Deflater_setDictionaryImpl (JNIEnv * env, jobject recv,
       throwNewOutOfMemoryError (env, "");
       return;
     }
-  (*env)->GetByteArrayRegion (env, dict, off, len, dBytes);
+  (*env)->GetByteArrayRegion (env, dict, off, len, (jbyte *) dBytes);
   err = deflateSetDictionary (stream->stream, (Bytef *) dBytes, len);
   if (err != Z_OK)
     {
       jclmem_free_memory (env, dBytes);
-      throwNewIllegalArgumentException (env, "");
+      THROW_ZIP_EXCEPTION(env, err, IllegalArgumentException);
       return;
     }
-  stream->dict = dBytes;
+  stream->dict = (U_8*) dBytes;
 }
 
 JNIEXPORT jlong JNICALL
@@ -133,11 +133,10 @@ Java_java_util_zip_Deflater_createStream (JNIEnv * env, jobject recv,
 		      wbits,	/*Window bits to use. 15 is fastest but consumes the most memory */
 		      9,	/*Memory allocation for internal compression state. 9 uses the most. */
 		      strategy);
-  if (err != Z_OK)
-    {
-      throwNewIllegalArgumentException (env, "");
-      return -1;
-    }
+  if (err != Z_OK) {
+    THROW_ZIP_EXCEPTION(env, err, IllegalArgumentException);
+    return -1;
+  }
 
   return (jlong) ((IDATA) jstream);
 }
@@ -162,8 +161,10 @@ Java_java_util_zip_Deflater_setInputImpl (JNIEnv * env, jobject recv,
       return;
     }
   in = ((*env)->GetPrimitiveArrayCritical (env, buf, 0));
-  if (in == NULL)
+  if (in == NULL) {
+    throwNewOutOfMemoryError(env, "");
     return;
+  }
   memcpy (stream->inaddr, (in + off), len);
   ((*env)->ReleasePrimitiveArrayCritical (env, buf, in, JNI_ABORT));
   stream->stream->next_in = (Bytef *) stream->inaddr;
@@ -177,8 +178,6 @@ Java_java_util_zip_Deflater_deflateImpl (JNIEnv * env, jobject recv,
 					 jbyteArray buf, int off, int len,
 					 jlong handle, int flushParm)
 {
-  PORT_ACCESS_FROM_ENV (env);
-
   jbyte *out;
   JCLZipStream *stream;
   jint err = 0;
@@ -195,30 +194,35 @@ Java_java_util_zip_Deflater_deflateImpl (JNIEnv * env, jobject recv,
   sin = stream->stream->total_in;
   sout = stream->stream->total_out;
   out = ((*env)->GetPrimitiveArrayCritical (env, buf, 0));
-  if (out == NULL)
+  if (out == NULL) {
+    throwNewOutOfMemoryError(env, "");
     return -1;
+  }
   stream->stream->next_out = (Bytef *) out + off;
   err = deflate (stream->stream, flushParm);
   ((*env)->ReleasePrimitiveArrayCritical (env, buf, out, 0));
-  if (err != Z_OK)
-    {
-      if (err == Z_STREAM_END)
-	{
-	  ((*env)->
-	   SetBooleanField (env, recv,
-			    JCL_CACHE_GET (env,
-					   FID_java_util_zip_Deflater_finished),
-			    JNI_TRUE));
-	  return stream->stream->total_out - sout;
-	}
+  if (err != Z_OK) {
+    if (err == Z_MEM_ERROR) {
+      throwNewOutOfMemoryError(env, "");
+      return 0;
     }
+    if (err == Z_STREAM_END)
+      {
+        ((*env)->
+         SetBooleanField (env, recv,
+                          JCL_CACHE_GET (env,
+                                         FID_java_util_zip_Deflater_finished),
+                          JNI_TRUE));
+        return stream->stream->total_out - sout;
+      }
+  }
   if (flushParm != Z_FINISH)
     {
       /* Need to update the number of input bytes read. */
       ((*env)->
        SetIntField (env, recv,
-		    JCL_CACHE_GET (env, FID_java_util_zip_Deflater_inRead),
-		    (jint) stream->stream->total_in - sin + inBytes));
+                    JCL_CACHE_GET (env, FID_java_util_zip_Deflater_inRead),
+                    (jint) stream->stream->total_in - sin + inBytes));
     }
   return stream->stream->total_out - sout;
 }
@@ -255,8 +259,6 @@ Java_java_util_zip_Deflater_setLevelsImpl (JNIEnv * env, jobject recv,
 					   int level, int strategy,
 					   jlong handle)
 {
-  PORT_ACCESS_FROM_ENV (env);
-
   JCLZipStream *stream;
   jbyte b = 0;
   int err = 0;
@@ -269,8 +271,9 @@ Java_java_util_zip_Deflater_setLevelsImpl (JNIEnv * env, jobject recv,
   stream = (JCLZipStream *) ((IDATA) handle);
   stream->stream->next_out = (Bytef *) & b;
   err = deflateParams (stream->stream, level, strategy);
-  if (err != Z_OK)
-    throwNewIllegalStateException (env, "");
+  if (err != Z_OK) {
+    THROW_ZIP_EXCEPTION(env, err, IllegalStateException);
+  }
 }
 
 JNIEXPORT void JNICALL
