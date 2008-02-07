@@ -204,11 +204,6 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
 	    goto cleanup;
 	}
       javaClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
-	  javaClass = (*env)->NewLocalRef(env, javaClass);
-      if (javaClass == NULL) {
-          result = NULL;
-          goto cleanup;
-      }
       result = ((*env)->NewObjectArray (env, resultCount, javaClass, NULL));
       if (((*env)->ExceptionCheck (env)))
 	{
