@@ -19,6 +19,10 @@ package org.apache.harmony.nio;
 import java.io.FileDescriptor;
 import java.nio.Buffer;
 import java.nio.channels.Channel;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.nio.internal.DirectBuffer;
@@ -49,14 +53,15 @@ public class AddressUtil {
     }
 
     /**
-     * Gets the address of native resource held by the given channel, if has
+     * Gets the address of native resource held by the given channel, if it has
      * any.
      * 
-     * For network related channel, including SocketChannel, ServerSocketChannel
-     * and DatagramChannel, this method returns a int of Socket handler in Linux
-     * while returns a SOCKET (UINT_PTR) in windows.
+     * For network related channel, including {@link SocketChannel},
+     * {@link ServerSocketChannel} and {@link DatagramChannel}, this method
+     * returns the Socket handle (long) in Linux, and returns a SOCKET
+     * (UINT_PTR) in windows.
      * 
-     * For FileChannel, this method returns the native file descriptor.
+     * For {@link FileChannel}, this method returns the native file descriptor.
      * 
      * For other channels, this method return 0, which means unsupported
      * operation.

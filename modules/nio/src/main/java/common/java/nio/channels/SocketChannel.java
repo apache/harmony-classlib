@@ -135,6 +135,7 @@ public abstract class SocketChannel extends AbstractSelectableChannel implements
      * @see java.nio.channels.SelectableChannel#validOps()
      * @return Valid operations in bit-set.
      */
+    @Override
     public final int validOps() {
         return (SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }

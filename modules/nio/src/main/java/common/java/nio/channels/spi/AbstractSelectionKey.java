@@ -41,6 +41,7 @@ public abstract class AbstractSelectionKey extends SelectionKey {
     /**
      * @see java.nio.channels.SelectionKey#isValid()
      */
+    @Override
     public final boolean isValid() {
         return isValid;
     }
@@ -50,6 +51,7 @@ public abstract class AbstractSelectionKey extends SelectionKey {
      * 
      * @see java.nio.channels.SelectionKey#cancel()
      */
+    @Override
     public final void cancel() {
         if (isValid) {
             isValid = false;

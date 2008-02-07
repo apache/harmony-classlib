@@ -191,6 +191,7 @@ public abstract class FileLock {
      * 
      * @return the display string.
      */
+    @Override
     @SuppressWarnings("nls")
     public final String toString() {
         StringBuffer buffer = new StringBuffer(64); // Guess length of string

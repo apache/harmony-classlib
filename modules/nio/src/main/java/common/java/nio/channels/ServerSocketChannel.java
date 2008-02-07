@@ -70,6 +70,7 @@ public abstract class ServerSocketChannel extends AbstractSelectableChannel {
      * @see java.nio.channels.SelectableChannel#validOps()
      * @return Valid operations in bit-set.
      */
+    @Override
     public final int validOps() {
         return SelectionKey.OP_ACCEPT;
     }

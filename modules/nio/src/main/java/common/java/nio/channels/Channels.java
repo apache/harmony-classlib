@@ -487,11 +487,6 @@ public final class Channels {
 
         private ByteBuffer byteBuf;
 
-        /**
-         * @param outputStream
-         * @param enc
-         * @param minBufferCap
-         */
         public ByteChannelWriter(OutputStream aOutputStream,
                 CharsetEncoder aEncoder, int minBufferCap) {
             super(aOutputStream);

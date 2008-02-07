@@ -844,7 +844,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws IndexOutOfBoundsException
      *             when <code>length < 0</code>
      * 
-     * @see #length
+     * @see #length()
      */
     @Override
     public synchronized void setLength(int length) {

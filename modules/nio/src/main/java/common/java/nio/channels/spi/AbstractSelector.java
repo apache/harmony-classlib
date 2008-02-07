@@ -57,6 +57,7 @@ public abstract class AbstractSelector extends Selector {
      * 
      * @see java.nio.channels.Selector#close()
      */
+    @Override
     public synchronized final void close() throws IOException {
         if (isOpen) {
             isOpen = false;
@@ -75,6 +76,7 @@ public abstract class AbstractSelector extends Selector {
     /**
      * @see java.nio.channels.Selector#isOpen()
      */
+    @Override
     public final boolean isOpen() {
         return isOpen;
     }
@@ -84,6 +86,7 @@ public abstract class AbstractSelector extends Selector {
      * 
      * @see java.nio.channels.Selector#provider()
      */
+    @Override
     public final SelectorProvider provider() {
         return provider;
     }
