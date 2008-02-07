@@ -47,7 +47,7 @@ createZipEntry (JNIEnv * env, VMIZipFile * zipFile, VMIZipEntry * zipEntry)
 #endif /* HY_ZIP_API */
 
   /* Build a new ZipEntry from the C struct */
-  entryName = ((*env)->NewStringUTF (env, zipEntry->filename));
+  entryName = ((*env)->NewStringUTF (env, (const char*)zipEntry->filename));
   if (((*env)->ExceptionCheck (env)))
     return NULL;
 
@@ -67,7 +67,7 @@ createZipEntry (JNIEnv * env, VMIZipFile * zipFile, VMIZipEntry * zipEntry)
 	return NULL;
       ((*env)->
        SetByteArrayRegion (env, extra, 0, zipEntry->extraFieldLength,
-			   zipEntry->extraField));
+			   (jbyte*)zipEntry->extraField));
       jclmem_free_memory (env, zipEntry->extraField);
       zipEntry->extraField = NULL;
     }
@@ -114,7 +114,6 @@ Java_java_util_jar_JarFile_getMetaEntriesImpl (JNIEnv * env, jobject recv,
   UDATA resultCount = 0, offset, i;
   void *scanPtr;
   char metaInfName[10];		/* 10 == strlen("META-INF/") + 1 */
-  const UDATA metaInfSize = 10;	/* 10 == strlen("META-INF/") + 1 */
   jobjectArray result = NULL;
   char *nameBuf, *newNameBuf, *oldNameBuf = NULL;
   char startNameBuf[MAX_PATH_J];
