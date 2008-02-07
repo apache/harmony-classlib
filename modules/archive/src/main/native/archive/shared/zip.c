@@ -93,7 +93,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
 
   length = (*env)->GetArrayLength (env, zipName);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, zipName, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, zipName, 0, length, (jbyte*)pathCopy));
   pathCopy[length++] = '\0';
   ioh_convertToPlatform (pathCopy);
 
@@ -145,7 +145,6 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
-  PORT_ACCESS_FROM_ENV (env);
 
   I_32 retval;
   I_32 extraval;
@@ -230,7 +229,7 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
         }
       ((*env)->
        SetByteArrayRegion (env, extra, 0, zipEntry.extraFieldLength,
-                           zipEntry.extraField));
+                           (jbyte*)zipEntry.extraField));
     }
 
   entryClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
@@ -375,7 +374,6 @@ JNIEXPORT jlong JNICALL
 Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
                                                  jlong descriptor)
 {
-  PORT_ACCESS_FROM_ENV (env);
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
@@ -462,7 +460,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
     }
 
   /* Build a new ZipEntry from the C struct */
-  entryName = ((*env)->NewStringUTF (env, zipEntry.filename));
+  entryName = ((*env)->NewStringUTF (env, (const char*)zipEntry.filename));
 
   if (((*env)->ExceptionCheck (env)))
     return NULL;
@@ -499,13 +497,13 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
 #ifndef HY_ZIP_API
           zip_freeZipEntry (PORTLIB, &zipEntry);
 #else /* HY_ZIP_API */
-          zipFuncs->zip_freeZipEntry (VMI, &zipEntry); //not valid zipEntry (-1)
+          zipFuncs->zip_freeZipEntry (VMI, &zipEntry); /* not valid zipEntry (-1) */
 #endif /* HY_ZIP_API */
           return NULL;
         }
       ((*env)->
        SetByteArrayRegion (env, extra, 0, zipEntry.extraFieldLength,
-                           zipEntry.extraField));
+                           (jbyte*)zipEntry.extraField));
       jclmem_free_memory (env, zipEntry.extraField);
       zipEntry.extraField = NULL;
     }
@@ -538,7 +536,6 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
 					                          jlong descriptor,
                                               jstring entryName)
 {
-  PORT_ACCESS_FROM_ENV (env);
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
@@ -609,7 +606,7 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
                          zipEntry.uncompressedSize);
   if (retval == 0)
     (*env)->SetByteArrayRegion (env, buf, 0, zipEntry.uncompressedSize,
-                                zipEntry.data);
+                                (jbyte*)zipEntry.data);
 #ifndef HY_ZIP_API
   zip_freeZipEntry (privatePortLibrary, &zipEntry);
 #else /* HY_ZIP_API */
