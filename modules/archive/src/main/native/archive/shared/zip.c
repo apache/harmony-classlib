@@ -145,6 +145,7 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
+  PORT_ACCESS_FROM_ENV (env);
 
   I_32 retval;
   I_32 extraval;
@@ -377,6 +378,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
+  PORT_ACCESS_FROM_ENV (env);
 
   IDATA nextEntryPointer;
   JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
@@ -539,6 +541,7 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
+  PORT_ACCESS_FROM_ENV (env);
 
   I_32 retval;
 #ifdef HY_ZIP_API
