@@ -41,7 +41,7 @@ public class MultiRectAreaTestCase extends PathIteratorTestCase {
     public MultiRectAreaTestCase(String name) {
         super(name);
        
-        String classPath = "shapes/" + Tools.getClasstPath(this.getClass());
+        String classPath = "../resources/shapes/" + Tools.getClasstPath(this.getClass());
         URL url = ClassLoader.getSystemClassLoader().getResource(classPath);
 
         assertNotNull("Path not found " + classPath, url);
