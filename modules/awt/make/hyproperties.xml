@@ -17,32 +17,42 @@
 -->
 
 <hy>
-   <awt location=".">
-      <src>
-         <main>
-            <java location="src/main/java/common" />
-            <native location="src/main/native" />
-            <resources location="src/main/resources" />
-         </main>
-         <test>
-            <api location="src/test/api" />
-            <resources location="src/test/api/resources" />
-         </test>
-         <natives location="src/natives" />
-      </src>
-      <bin>
-        <main location="bin/main" />
-        <test location="bin/test" />
-      </bin>
-      <packaging>
-      </packaging>
-   </awt>
-
-   <hdk location="../../deploy" />
-   <jdk location="../../deploy/jdk" />
-   <build location="../../build/classes" />
-
-   <tests>
-      <reports location="../../build/test_report" />
-   </tests>
+    <awt location=".">
+        <src>
+            <main>
+                <java location="src/main/java/common"/>
+                <native location="src/main/native"/>
+                <resources location="src/main/resources"/>
+            </main>
+            <test>
+                <api>
+                    <java location="src/test/api/java"/>
+                    <resources location="src/test/api/resources"/>
+                </api>
+                <impl location="src/test/impl">
+                    <boot location="src/test/impl/boot"/>
+                    <resources location="src/test/impl/resources"/>
+                    <native location="src/test/impl/native"/>
+                </impl>
+            </test>
+        </src>
+        <bin>
+            <main location="bin/main"/>
+            <test>
+                <resources location="bin/test/resources"/>
+                <classes location="bin/test/classes"/>
+                <boot location="bin/test/boot"/>
+            </test>
+        </bin>
+        <packaging>
+        </packaging>
+    </awt>
+    
+    <hdk location="../../deploy"/>
+    <jdk location="../../deploy/jdk"/>
+    <build location="../../build/classes"/>
+    
+    <tests>
+        <reports location="../../build/test_report"/>
+    </tests>
 </hy>
