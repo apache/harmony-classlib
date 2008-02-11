@@ -49,10 +49,11 @@ waitForProc (IDATA procHandle)
  *  does a fork/execvp to launch the program
  * 
  *  returns :
- *     0  successful
+ *     0     successful
  *     1001  fork failure errno = ENOMEM
- *     1002 fork failure errno = EAGAIN
- *     -1  error, unknown
+ *     1002  fork failure errno = EAGAIN
+ *     1003  pipe failure errno = EMFILE
+ *     -1    error, unknown
  * 
  *   TODO - fill in windows error codes 
  * 

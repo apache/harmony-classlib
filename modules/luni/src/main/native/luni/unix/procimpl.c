@@ -98,10 +98,11 @@ waitForProc(IDATA procHandle)
  *  does a fork/execvp to launch the program
  * 
  *  returns :
- *     0  successful
+ *     0     successful
  *     1001  fork failure errno = ENOMEM
- *     1002 fork failure errno = EAGAIN
- *     -1  error, unknown
+ *     1002  fork failure errno = EAGAIN
+ *     1003  pipe failure errno = EMFILE
+ *     -1    error, unknown
  * 
  *   Note - there is one error code 'namespace' for execProgram
  *          please coordinate w/ other platform impls
@@ -120,18 +121,19 @@ execProgram(JNIEnv * vmthread, jobject recv,
   int result = -1;
   char *cmd;
   int grdpid, rc = 0;
-  int newFD[3][2];
-  int execvFailure[2];
-  int forkedChildIsRunning[2];
+  int newFD[3][2] = { {0,0}, {0,0}, {0,0} };
+  int execvFailure[2] = {0,0};
+  int forkedChildIsRunning[2] = {0,0};
+  int error = 0;
 
   /* Build the new io pipes (in/out/err) */
-  pipe(newFD[0]);
-  pipe(newFD[1]);
-  pipe(newFD[2]);
+  if (pipe(newFD[0]) == -1) goto error;
+  if (pipe(newFD[1]) == -1) goto error;
+  if (pipe(newFD[2]) == -1) goto error;
 
   /* pipes for synchronization */
-  pipe(forkedChildIsRunning);
-  pipe(execvFailure);
+  if (pipe(forkedChildIsRunning) == -1) goto error;
+  if (pipe(execvFailure) == -1) goto error;
 
   cmd = command[0];
 
@@ -141,31 +143,7 @@ execProgram(JNIEnv * vmthread, jobject recv,
    *   if we fail, lets clean up and bail right here
    */
 
-  if (grdpid == -1) {
-
-    int error = errno;
-
-    close(newFD[0][0]);
-    close(newFD[0][1]);
-    close(newFD[1][0]);
-    close(newFD[1][1]);
-    close(newFD[2][0]);
-    close(newFD[2][1]);
-
-    close(forkedChildIsRunning[0]);
-    close(forkedChildIsRunning[1]);
-
-    close(execvFailure[0]);
-    close(execvFailure[1]);
-
-    if (error == ENOMEM) {
-      result = 1001;
-    } else if (error == EAGAIN) {
-      result = 1002;
-    }
-
-    return result;
-  }
+  if (grdpid == -1) goto error;
 
   if (grdpid == 0) {
     /* Redirect pipes so grand-child inherits new pipes */
@@ -264,6 +242,39 @@ execProgram(JNIEnv * vmthread, jobject recv,
     if (rc != -1) {
       result = 0;
     }
+  }
+
+  return result;
+
+ error:
+
+  error = errno;
+
+  if (execvFailure[0]) close(execvFailure[0]);
+  if (execvFailure[1]) close(execvFailure[1]);
+
+  if (forkedChildIsRunning[0]) close(forkedChildIsRunning[0]);
+  if (forkedChildIsRunning[1]) close(forkedChildIsRunning[1]);
+
+  if (newFD[2][0]) close(newFD[2][0]);
+  if (newFD[2][1]) close(newFD[2][1]);
+
+  if (newFD[1][0]) close(newFD[1][0]);
+  if (newFD[1][1]) close(newFD[1][1]);
+
+  if (newFD[0][0]) close(newFD[0][0]);
+  if (newFD[0][1]) close(newFD[0][1]);
+
+  switch (error) {
+  case ENOMEM:
+    result = 1001;
+    break;
+  case EAGAIN:
+    result = 1002;
+    break;
+  case EMFILE:
+    result = 1003;
+    break;
   }
 
   return result;
