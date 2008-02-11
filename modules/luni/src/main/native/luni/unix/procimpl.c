@@ -25,6 +25,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
 #if defined(MACOSX)
 #include <crt_externs.h>
 #define environ (*_NSGetEnviron())
@@ -147,6 +148,20 @@ execProgram(JNIEnv * vmthread, jobject recv,
   if (grdpid == -1) goto error;
 
   if (grdpid == 0) {
+    /* Close file descriptors that are not used */
+    close(newFD[0][1]);
+    close(newFD[1][0]);
+    close(newFD[2][0]);
+    close(forkedChildIsRunning[0]);
+    close(execvFailure[0]);
+
+    /* Make sure the others close if the exec succeeds */
+    setCloseOnExec(newFD[0][0]); /* dup2 removes this on the new handle */
+    setCloseOnExec(newFD[1][1]);
+    setCloseOnExec(newFD[2][1]);
+    setCloseOnExec(forkedChildIsRunning[1]);
+    setCloseOnExec(execvFailure[1]);
+
     /* Redirect pipes so grand-child inherits new pipes */
     char dummy = '\0';
     dup2(newFD[0][0], 0);
@@ -302,4 +317,13 @@ closeProc(IDATA procHandle)
 {
   /* The procHandle (Process ID) should not be closed, as it isn't a file descriptor. */
   return 0;
+}
+
+int
+setCloseOnExec(int fd)
+{
+  int flags = fcntl(fd, F_GETFD);
+  if (flags == -1) return -1;
+  flags |= FD_CLOEXEC;
+  return fcntl(fd, F_SETFD, flags);
 }
