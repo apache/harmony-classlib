@@ -302,6 +302,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
         if (AvailableZones == null) {
             initializeAvailable();
         }
+
         TimeZone zone = AvailableZones.get(name);
         if (zone == null) {
             if (name.startsWith("GMT") && name.length() > 3) {
@@ -420,6 +421,11 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
         String zone = AccessController.doPrivileged(new PriviAction<String>(
                 "user.timezone"));
+
+        // sometimes DRLVM incorrectly adds "\n" to the end of timezone ID
+        if (zone.contains("\n")) {
+            zone = zone.substring(0, zone.indexOf("\n")); 
+        }
 
         // if property user.timezone is not set, we call the native method
         // getCustomTimeZone
