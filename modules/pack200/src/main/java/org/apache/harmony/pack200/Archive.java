@@ -183,7 +183,6 @@ public class Archive {
         } else if (logLevel == LOG_LEVEL_QUIET) {
             logLevel = LOG_LEVEL_QUIET;
         }
-        ;
     }
 
     public void setLogFile(String logFileName) throws FileNotFoundException {

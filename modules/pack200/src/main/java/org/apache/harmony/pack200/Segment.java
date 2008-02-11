@@ -71,6 +71,8 @@ public class Segment {
 
 
 	/**
+     * TODO: Do we need this method now we have Archive as the main entry point?
+     *
 	 * Decode a segment from the given input stream. This does not attempt to
 	 * re-assemble or export any class files, but it contains enough information
 	 * to be able to re-assemble class files by external callers.
@@ -87,19 +89,6 @@ public class Segment {
 	public static Segment parse(InputStream in) throws IOException,
 			Pack200Exception {
 		Segment segment = new Segment();
-		// See if file is GZip compressed
-		if (!in.markSupported()) {
-			in = new BufferedInputStream(in);
-			if (!in.markSupported())
-				throw new IllegalStateException();
-		}
-		in.mark(2);
-		if (((in.read() & 0xFF) | (in.read() & 0xFF) << 8) == GZIPInputStream.GZIP_MAGIC) {
-			in.reset();
-			in = new BufferedInputStream(new GZIPInputStream(in));
-		} else {
-			in.reset();
-		}
         segment.parseSegment(in);
 		return segment;
 	}
