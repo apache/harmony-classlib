@@ -102,6 +102,7 @@ waitForProc(IDATA procHandle)
  *     1001  fork failure errno = ENOMEM
  *     1002  fork failure errno = EAGAIN
  *     1003  pipe failure errno = EMFILE
+ *     1004  chdir failure errno = ENOENT
  *     -1    error, unknown
  * 
  *   Note - there is one error code 'namespace' for execProgram
@@ -156,7 +157,11 @@ execProgram(JNIEnv * vmthread, jobject recv,
     write(forkedChildIsRunning[1], &dummy, 1);
 
     if (dir) {
-      chdir(dir);
+      if (chdir(dir) == -1) {
+        /* TODO: write errno so parent can return correct error */
+        write(execvFailure[1], &dummy, 1);
+        exit(-1);
+      }
     }
 
     /* ===try to perform the execv : on success, it does not return ===== */

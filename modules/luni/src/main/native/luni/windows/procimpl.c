@@ -53,6 +53,7 @@ waitForProc (IDATA procHandle)
  *     1001  fork failure errno = ENOMEM
  *     1002  fork failure errno = EAGAIN
  *     1003  pipe failure errno = EMFILE
+ *     1004  chdir failure errno = ENOENT
  *     -1    error, unknown
  * 
  *   TODO - fill in windows error codes 
