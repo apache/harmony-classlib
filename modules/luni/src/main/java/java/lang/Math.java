@@ -150,7 +150,9 @@ public final class Math {
 	 *            the value to be converted
 	 * @return the ceiling of the argument.
 	 */
-	public static native double ceil(double d);
+	public static double ceil(double d) {
+            return -floor(-d);
+        } 
 
 	/**
 	 * Answers the closest double approximation of the cosine of the argument
@@ -204,7 +206,13 @@ public final class Math {
 	 *            the value to be converted
 	 * @return the ceiling of the argument.
 	 */
-	public static native double floor(double d);
+	public static double floor(double d) {
+            if (Double.isNaN(d) || Double.isInfinite(d) || d == 0) {
+               return d; 
+            }  
+            double res = (double)(long)d;
+            return d > 0 || res == d ? res : res - 1; 
+        }
     
     /**
      * Answers sqrt(<i>x</i><sup>2</sup>+<i>y</i><sup>2</sup>). The
@@ -287,8 +295,7 @@ public final class Math {
 		if (d1 != d2)
 			return Double.NaN;
 		/* max( +0.0,-0.0) == +0.0 */
-		if (d1 == 0.0
-				&& ((Double.doubleToLongBits(d1) & Double.doubleToLongBits(d2)) & 0x8000000000000000L) == 0)
+		if (d1 == 0.0 && (d1 != -0.0d || d2 != -0.0d))
 			return 0.0;
 		return d1;
 	}
@@ -312,8 +319,7 @@ public final class Math {
 		if (f1 != f2)
 			return Float.NaN;
 		/* max( +0.0,-0.0) == +0.0 */
-		if (f1 == 0.0f
-				&& ((Float.floatToIntBits(f1) & Float.floatToIntBits(f2)) & 0x80000000) == 0)
+		if (f1 == 0.0f && (f1 != -0.0f || f2 != -0.0f))
 			return 0.0f;
 		return f1;
 	}
@@ -365,9 +371,8 @@ public final class Math {
 		if (d1 != d2)
 			return Double.NaN;
 		/* min( +0.0,-0.0) == -0.0 */
-		if (d1 == 0.0
-				&& ((Double.doubleToLongBits(d1) | Double.doubleToLongBits(d2)) & 0x8000000000000000l) != 0)
-			return 0.0 * (-1.0);
+		if (d1 == 0.0 && (d1 == -0.0d || d2 == -0.0d))
+			return -0.0d;
 		return d1;
 	}
 
@@ -390,9 +395,8 @@ public final class Math {
 		if (f1 != f2)
 			return Float.NaN;
 		/* min( +0.0,-0.0) == -0.0 */
-		if (f1 == 0.0f
-				&& ((Float.floatToIntBits(f1) | Float.floatToIntBits(f2)) & 0x80000000) != 0)
-			return 0.0f * (-1.0f);
+		if (f1 == 0.0f	&& (f1 == -0.0f || f2 == -0.0f)) 
+			return -0.0f;
 		return f1;
 	}
 
@@ -444,7 +448,10 @@ public final class Math {
 	 *            the value to be converted
 	 * @return the closest integer to the argument (as a double).
 	 */
-	public static native double rint(double d);
+	public static double rint(double d) {
+            double res = floor(d + 0.5d);
+            return res - d == 0.5d && d > 0 ? res - 1 : res;  
+        }
 
 	/**
 	 * Answers the result of rounding the argument to an integer.
