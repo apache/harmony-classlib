@@ -163,6 +163,7 @@
                 <include name="**/bin/java${exe.suffix}" />
                 <include name="**/bin/javaw${exe.suffix}" />
                 <include name="**/bin/*${shlib.suffix}*" />
+                <include name="**/bin/*.pdb" />
             	<include name="**/bin/harmony*.properties" />
             </fileset>
         </delete>
