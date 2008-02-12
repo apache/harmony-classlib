@@ -20,6 +20,8 @@ package org.apache.harmony.beans.tests.java.beans;
 import java.awt.Color;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.io.InputStream;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -29,6 +31,11 @@ import junit.framework.TestCase;
 public class PropertyEditorManagerRegressionTest extends TestCase {
 
     static String origPath[] = PropertyEditorManager.getEditorSearchPath();
+
+    private final String MOCK_TEST_CLASS_EDITOR = "testPackage.TestClassEditor";
+
+    private final String MOCK_TEST_CLASS_EDITOR_FILE
+            = "binary/java/beans/mock/TestClassEditor.bin";
 
     public void testFindEditorAccordingPath_1() throws Exception {
         // Regression Harmony-1205
@@ -64,6 +71,42 @@ public class PropertyEditorManagerRegressionTest extends TestCase {
                 editor.getClass());
     }
 
+    public void testFindEditorAccordingPath_3() throws Exception {
+        // Regression Harmony-5477
+        class TestClassLoader extends ClassLoader {
+            protected Class<?> findClass(String name) throws ClassNotFoundException {
+                if (!MOCK_TEST_CLASS_EDITOR.equals(name)) {
+                    throw new ClassNotFoundException(name);
+                }
+
+                try {
+                    byte[] buf = new byte[1024];
+                    InputStream in = getResourceAsStream(MOCK_TEST_CLASS_EDITOR_FILE);
+                    int sz = 0;
+                    int read;
+
+                    while ((read = in.read(buf, sz, buf.length - sz)) >= 0) {
+                        sz += read;
+                    }
+                    return defineClass(MOCK_TEST_CLASS_EDITOR, buf, 0, sz);
+                } catch (IOException e) {
+                    throw (ClassNotFoundException) new ClassNotFoundException(
+                            e.getMessage()).initCause(e);
+                }
+            }
+        }
+        PropertyEditorManager.setEditorSearchPath(new String[] { "testPackage" });
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            Thread.currentThread().setContextClassLoader(new TestClassLoader());
+            PropertyEditor editor = PropertyEditorManager.findEditor(TestClass.class);
+            assertEquals(MOCK_TEST_CLASS_EDITOR, editor.getClass().getName());
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldLoader);
+        }
+    }
+
     public void testStringEditor() throws Exception {
         // Regression Harmony-1199
         PropertyEditorManager.setEditorSearchPath(origPath);
@@ -75,7 +118,7 @@ public class PropertyEditorManagerRegressionTest extends TestCase {
         assertEquals(text, editor.getAsText());
     }
     
-    // Regression for HARMONY-4062
+    // Regression Harmony-4062
     public void testColorEditor() {
         PropertyEditor propertyEditor = PropertyEditorManager
                 .findEditor(Color.class);
@@ -105,6 +148,7 @@ public class PropertyEditorManagerRegressionTest extends TestCase {
             //expected.
         }
     }
+
     String[] defaultSearchPath;
     
     public void setUp(){
@@ -115,3 +159,5 @@ public class PropertyEditorManagerRegressionTest extends TestCase {
         PropertyEditorManager.setEditorSearchPath(defaultSearchPath);
     }
 }
+
+class TestClass {}
