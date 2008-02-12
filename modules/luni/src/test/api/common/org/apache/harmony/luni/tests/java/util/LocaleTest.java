@@ -358,9 +358,9 @@ public class LocaleTest extends junit.framework.TestCase {
 		
 		// Non-bug difference for HARMONY-5442
 		l = new Locale("", "CA", "var");
-		assertEquals("Wrong representation 2.5", "_CA_VAR", l.toString());
+		assertEquals("Wrong representation 2.5", "_CA_var", l.toString());
 		l = new Locale("en", "", "WIN");
-		assertEquals("Wrong representation 4", "en_WIN", l.toString());
+		assertEquals("Wrong representation 4", "en__WIN", l.toString());
 		l = new Locale("en", "CA");
 		assertEquals("Wrong representation 6", "en_CA", l.toString());
 		l = new Locale("en", "CA", "VAR");
