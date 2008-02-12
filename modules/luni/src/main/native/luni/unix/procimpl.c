@@ -173,8 +173,7 @@ execProgram(JNIEnv * vmthread, jobject recv,
 
     if (dir) {
       if (chdir(dir) == -1) {
-        /* TODO: write errno so parent can return correct error */
-        write(execvFailure[1], &dummy, 1);
+        write(execvFailure[1], &errno, sizeof(errno));
         exit(-1);
       }
     }
@@ -189,7 +188,7 @@ execProgram(JNIEnv * vmthread, jobject recv,
     /* ===================================================== */
 
     /* if we get here ==> tell the parent that the execv failed ! */
-    write(execvFailure[1], &dummy, 1);
+    write(execvFailure[1], &errno, sizeof(errno));
     /* If the exec failed, we must exit or there will be two VM processes running. */
     exit(rc);
   } else {
@@ -225,6 +224,9 @@ execProgram(JNIEnv * vmthread, jobject recv,
     if (avail > 0) {
       rc = -1;                  /* failure of the execv */
       noDataInThePipe = 0;
+      if (read(execvFailure[0], &error, sizeof(error)) == sizeof(error)) {
+        goto error_with_error_set;
+      }
     }
     nbLoop = 0;
     while (noDataInThePipe) {
@@ -251,6 +253,9 @@ execProgram(JNIEnv * vmthread, jobject recv,
       if (avail > 0) {
         rc = -1;                /* failure of the execv */
         noDataInThePipe = 0;
+        if (read(execvFailure[0], &error, sizeof(error)) == sizeof(error)) {
+          goto error_with_error_set;
+        }
       }
     }                           /* end of the loop. rc==-1 iff the execv failed */
 
@@ -269,6 +274,8 @@ execProgram(JNIEnv * vmthread, jobject recv,
  error:
 
   error = errno;
+
+ error_with_error_set:
 
   if (execvFailure[0]) close(execvFailure[0]);
   if (execvFailure[1]) close(execvFailure[1]);
@@ -294,6 +301,9 @@ execProgram(JNIEnv * vmthread, jobject recv,
     break;
   case EMFILE:
     result = 1003;
+    break;
+  case ENOENT:
+    result = 1004;
     break;
   }
 
