@@ -154,6 +154,7 @@ ${built.files.list}
             <src path="modules/security-kernel/src/main/java" />
             <src path="modules/security/src/main/java/${hy.os.family}" />
             <src path="modules/security/src/main/java/common" />
+            <src path="modules/sound/src/main/java" />
             <src path="modules/sql/src/main/java" />
             <src path="modules/suncompat/src/main/java" />
             <src path="modules/swing/src/main/java/${hy.os.family}" />
