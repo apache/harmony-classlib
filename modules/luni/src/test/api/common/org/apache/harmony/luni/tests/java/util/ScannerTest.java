@@ -5595,11 +5595,12 @@ public class ScannerTest extends TestCase {
                 return 6;
             }
         }
-        s = new Scanner(new CountReadable());
+        CountReadable cr = new CountReadable();
+        s = new Scanner(cr);
         result = s.nextLine();
         // We expect read() to be called only once, otherwise we see the problem
         // when reading from System.in described in Harmony-4774
-        assertEquals(1, cis.counter);
+        assertEquals(1, cr.counter);
         assertEquals("hello", result);        
     }
     
