@@ -406,7 +406,7 @@ public class Deflater {
      * method performs the same as getTotalIn except it returns a long value
      * instead of an integer
      * 
-     * @see getTotalIn
+     * @see #getTotalIn()
      * @return bytes exactly read by deflater
      */
     public synchronized long getBytesRead() {
@@ -422,7 +422,7 @@ public class Deflater {
      * method performs the same as getTotalOut except it returns a long value
      * instead of an integer
      * 
-     * @see getTotalOut
+     * @see #getTotalOut()
      * @return bytes exactly write by deflater
      */
     public synchronized long getBytesWritten() {

@@ -332,7 +332,7 @@ public class Inflater {
      * Inflater. This method performs the same as getTotalIn except it returns a
      * long value instead of an integer
      * 
-     * @see getTotalIn
+     * @see #getTotalIn()
      * @return Total bytes read
      */
     public synchronized long getBytesRead() {
@@ -348,7 +348,7 @@ public class Inflater {
      * Inflater. This method performs the same as getTotalOut except it returns
      * a long value instead of an integer
      * 
-     * @see getTotalOut
+     * @see #getTotalOut()
      * @return Total bytes output
      */
     public synchronized long getBytesWritten() {

@@ -149,17 +149,16 @@ public class DeflaterOutputStream extends FilterOutputStream {
     }
 
     /**
-     * Compress nbytes of data from buf starting at off and write it to the
-     * underlying stream.
+     * Compress data from a buffer and write it to the underlying stream.
      * 
-     * @param buf
+     * @param buffer
      *            Buffer of data to compress
      * @param off
      *            offset in buffer to extract data from
      * @param nbytes
      *            Number of bytes of data to compress and write
      * 
-     * @exception java.io.IOException
+     * @exception IOException
      *                If an error occurs during writing.
      */
     @Override
