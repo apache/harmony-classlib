@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Aleksei Y. Semenov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.tests.java.security.acl;
 
 import java.security.acl.LastOwnerException;
@@ -37,10 +32,13 @@ public class LastOwnerExceptionTest extends TestCase {
         junit.textui.TestRunner.run(LastOwnerExceptionTest.class);
     }
 
+    /**
+     * @tests java.security.acl.LastOwnerException#LastOwnerException()
+     */
     public void testLastOwnerException() {
-        assertNotNull(new LastOwnerException());
-        assertNull(new LastOwnerException().getMessage());
-        assertNull(new LastOwnerException().getCause());
+        LastOwnerException ex = new LastOwnerException();
+        assertNull(ex.getMessage());
+        assertNull(ex.getCause());
     }
 
 }
