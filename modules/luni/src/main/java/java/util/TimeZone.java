@@ -423,13 +423,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
                 "user.timezone"));
 
         // sometimes DRLVM incorrectly adds "\n" to the end of timezone ID
-        if (zone.contains("\n")) {
+        if (zone != null && zone.contains("\n")) {
             zone = zone.substring(0, zone.indexOf("\n")); 
         }
 
         // if property user.timezone is not set, we call the native method
         // getCustomTimeZone
-        if (zone == null) {
+        if (zone == null || zone.length() == 0) {
             int[] tzinfo = new int[10];
             boolean[] isCustomTimeZone = new boolean[1];
 
