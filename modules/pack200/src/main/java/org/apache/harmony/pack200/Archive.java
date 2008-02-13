@@ -127,15 +127,15 @@ public class Archive {
                 while((jarEntry = jarInputStream.getNextJarEntry()) != null) {
                     outputStream.putNextEntry(jarEntry);
                     byte[] bytes = new byte[16384];
-                    int bytesRead = 0;
+                    int bytesRead = jarInputStream.read(bytes);
                     while(bytesRead != -1) {
-                        bytesRead = jarInputStream.read(bytes);
                         outputStream.write(bytes, 0, bytesRead);
+                        bytesRead = jarInputStream.read(bytes);
                     }
                     outputStream.closeEntry();
                 }
             } else {
-                while (inputStream.available() > 0) {
+                while (available(inputStream)) {
                     Segment segment = new Segment();
                     segment.setLogLevel(logLevel);
                     segment.setLogStream(logFile != null ? (OutputStream) logFile
@@ -144,19 +144,28 @@ public class Archive {
                         segment.overrideDeflateHint(deflateHint);
                     }
                     segment.unpack(inputStream, outputStream);
+                    outputStream.flush();
                 }
             }
-        } catch (Exception e) {
+        } finally {
             try {
                 inputStream.close();
-            } finally {
+            } catch (Exception e2) {}
+            try {
                 outputStream.close();
-            }
+            } catch (Exception e2) {}
         }
         if (removePackFile) {
             File file = new File(inputFileName);
             file.delete();
         }
+    }
+
+    private boolean available(InputStream inputStream) throws IOException {
+        inputStream.mark(1);
+        int check = inputStream.read();
+        inputStream.reset();
+        return check != -1;
     }
 
     /**
