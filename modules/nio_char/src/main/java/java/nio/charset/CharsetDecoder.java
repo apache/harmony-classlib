@@ -138,7 +138,7 @@ public abstract class CharsetDecoder {
      * Construct a new <code>CharsetDecoder</code> using given
      * <code>Charset</code>, average number and maximum number of characters
      * created by this decoder for one input byte, and the default replacement
-     * string "\uFFFD".
+     * string "&#92;uFFFD".
      * 
      * @param charset
      *            this decoder's <code>Charset</code>, which create this
