@@ -65,7 +65,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * The two errors can be handled in three ways, the default one is to report the
  * error to the invoker by a {@link CoderResult CoderResult} instance, and the
  * alternatives are to ignore it or to replace the erroneous input with the
- * replacement string. The replacement string is "\uFFFD" by default and can be
+ * replacement string. The replacement string is "&#92;uFFFD" by default and can be
  * changed by invoking {@link #replaceWith(String) replaceWith} method. The
  * invoker of this decoder can choose one way by specifying a
  * {@link CodingErrorAction CodingErrorAction} instance for each error type via

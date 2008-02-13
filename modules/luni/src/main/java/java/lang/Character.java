@@ -370,7 +370,7 @@ public final class Character implements Serializable, Comparable<Character> {
     /**
      * <p>
      * Minimum value of a high surrogate or leading surrogate unit in UTF-16
-     * encoding - <code>'\uD800'</code>.
+     * encoding - <code>'&#92;uD800'</code>.
      * </p>
      * 
      * @since 1.5
@@ -380,7 +380,7 @@ public final class Character implements Serializable, Comparable<Character> {
     /**
      * <p>
      * Maximum value of a high surrogate or leading surrogate unit in UTF-16
-     * encoding - <code>'\uDBFF'</code>.
+     * encoding - <code>'&#92;uDBFF'</code>.
      * </p>
      * 
      * @since 1.5
@@ -390,7 +390,7 @@ public final class Character implements Serializable, Comparable<Character> {
     /**
      * <p>
      * Minimum value of a low surrogate or trailing surrogate unit in UTF-16
-     * encoding - <code>'\uDC00'</code>.
+     * encoding - <code>'&#92;uDC00'</code>.
      * </p>
      * 
      * @since 1.5
@@ -399,7 +399,7 @@ public final class Character implements Serializable, Comparable<Character> {
 
     /**
      * Maximum value of a low surrogate or trailing surrogate unit in UTF-16
-     * encoding - <code>'\uDFFF'</code>.
+     * encoding - <code>'&#92;uDFFF'</code>.
      * </p>
      * 
      * @since 1.5
@@ -408,7 +408,7 @@ public final class Character implements Serializable, Comparable<Character> {
 
     /**
      * <p>
-     * Minimum value of a surrogate unit in UTF-16 encoding - <code>'\uD800'</code>.
+     * Minimum value of a surrogate unit in UTF-16 encoding - <code>'&#92;uD800'</code>.
      * </p>
      * 
      * @since 1.5
@@ -417,7 +417,7 @@ public final class Character implements Serializable, Comparable<Character> {
 
     /**
      * <p>
-     * Maximum value of a surrogate unit in UTF-16 encoding - <code>'\uDFFF'</code>.
+     * Maximum value of a surrogate unit in UTF-16 encoding - <code>'&#92;uDFFF'</code>.
      * </p>
      * 
      * @since 1.5

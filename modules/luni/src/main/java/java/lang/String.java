@@ -1550,7 +1550,7 @@ public final class String implements Serializable, Comparable<String>,
      * Return the index of the specified character into the upperValues table.
      * The upperValues table contains three entries at each position. These
      * three characters are the upper case conversion. If only two characters
-     * are used, the third character in the table is \u0000.
+     * are used, the third character in the table is &#92;u0000.
      * 
      * @param ch
      *            the char being converted to upper case
@@ -1673,7 +1673,7 @@ public final class String implements Serializable, Comparable<String>,
      * Copies this String removing white space characters from the beginning and
      * end of the string.
      * 
-     * @return a new String with characters <code><= \\u0020</code> removed
+     * @return a new String with characters <code><= &#92;u0020</code> removed
      *         from the beginning and the end
      */
     public String trim() {

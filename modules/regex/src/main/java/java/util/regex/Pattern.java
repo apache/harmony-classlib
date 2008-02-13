@@ -215,59 +215,60 @@ public final class Pattern implements Serializable {
     }
 
 	/**
-	 * Return a compiled pattern corresponding to the input regular expression
-	 * string.
-	 * 
-	 * The input <code>flags</code> is a mask of the following flags:
-	 * <dl>
-	 * <dt><code>UNIX_LINES</code> (0x0001)
-	 * <dd>Enables UNIX lines mode where only \n is recognized as a line
-	 * terminator. The default setting of this flag is <em>off</em> indicating
-	 * that all of the following character sequences are recognized as line
-	 * terminators: \n, \r, \r\n, NEL (\u0085), \u2028 and \u2029.
-	 * <dt><code>CASE_INSENSITIVE</code> (0x0002)
-	 * <dd>Directs matching to be done in a way that ignores differences in
-	 * case. If input character sequences are encoded in character sets other
-	 * than ASCII, then the UNICODE_CASE must also be set to enable Unicode case
-	 * detection.
-	 * <dt><code>UNICODE_CASE</code> (0x0040)
-	 * <dd>Enables Unicode case folding if used in conjunction with the
-	 * <code>CASE_INSENSITIVE</code> flag. If <code>CASE_INSENSITIVE</code>
-	 * is not set, then this flag has no effect.
-	 * <dt><code>COMMENTS</code> (0x0004)
-	 * <dd>Directs the pattern compiler to ignore whitespace and comments in
-	 * the pattern. Whitespace consists of sequences including only these
-	 * characters: SP (\u0020), HT (\t or \u0009), LF (\n or ), VT (\u000b), FF
-	 * (\f or \u000c), and CR (\r or ). A comment is any sequence of characters
-	 * beginning with the "#" (\u0023) character and ending in a LF character.
-	 * <dt><code>MULTILINE</code> (0x0008)
-	 * <dd>Turns on multiple line mode for matching of character sequences. By
-	 * default, this mode is off so that the character "^" (\u005e) matches the
-	 * beginning of the entire input sequence and the character "$" (\u0024)
-	 * matches the end of the input character sequence. In multiple line mode,
-	 * the character "^" matches any character in the input sequence which
-	 * immediately follows a line terminator and the character "$" matches any
-	 * character in the input sequence which immediately precedes a line
-	 * terminator.
-	 * <dt><code>DOTALL</code> (0x0020)
-	 * <dd>Enables the DOT (".") character in regular expressions to match line
-	 * terminators. By default, line terminators are not matched by DOT.
-	 * <dt><code>CANON_EQ</code> (0x0080)
-	 * <dd>Enables matching of character sequences which are canonically
-	 * equivalent according to the Unicode standard. Canonical equivalence is
-	 * described here: http://www.unicode.org/reports/tr15/. By default,
-	 * canonical equivalence is not detected while matching.
-	 * </dl>
-	 * 
-	 * @param regex
-	 *            A regular expression string.
-	 * @param flags
-	 *            A set of flags to control the compilation of the pattern.
-	 * @return A compiled pattern
-	 * @throws PatternSyntaxException
-	 *             If the input regular expression does not match the required
-	 *             grammar.
-	 */
+     * Return a compiled pattern corresponding to the input regular expression
+     * string.
+     * 
+     * The input <code>flags</code> is a mask of the following flags:
+     * <dl>
+     * <dt><code>UNIX_LINES</code> (0x0001)
+     * <dd>Enables UNIX lines mode where only \n is recognized as a line
+     * terminator. The default setting of this flag is <em>off</em> indicating
+     * that all of the following character sequences are recognized as line
+     * terminators: \n, \r, \r\n, NEL (&#92;u0085), &#92;u2028 and &#92;u2029.
+     * <dt><code>CASE_INSENSITIVE</code> (0x0002)
+     * <dd>Directs matching to be done in a way that ignores differences in
+     * case. If input character sequences are encoded in character sets other
+     * than ASCII, then the UNICODE_CASE must also be set to enable Unicode case
+     * detection.
+     * <dt><code>UNICODE_CASE</code> (0x0040)
+     * <dd>Enables Unicode case folding if used in conjunction with the
+     * <code>CASE_INSENSITIVE</code> flag. If <code>CASE_INSENSITIVE</code>
+     * is not set, then this flag has no effect.
+     * <dt><code>COMMENTS</code> (0x0004)
+     * <dd>Directs the pattern compiler to ignore whitespace and comments in
+     * the pattern. Whitespace consists of sequences including only these
+     * characters: SP (&#92;u0020), HT (\t or &#92;u0009), LF (\n or ), VT
+     * (&#92;u000b), FF (\f or &#92;u000c), and CR (\r or ). A comment is any
+     * sequence of characters beginning with the "#" (&#92;u0023) character and
+     * ending in a LF character.
+     * <dt><code>MULTILINE</code> (0x0008)
+     * <dd>Turns on multiple line mode for matching of character sequences. By
+     * default, this mode is off so that the character "^" (&#92;u005e) matches
+     * the beginning of the entire input sequence and the character "$"
+     * (&#92;u0024) matches the end of the input character sequence. In multiple
+     * line mode, the character "^" matches any character in the input sequence
+     * which immediately follows a line terminator and the character "$" matches
+     * any character in the input sequence which immediately precedes a line
+     * terminator.
+     * <dt><code>DOTALL</code> (0x0020)
+     * <dd>Enables the DOT (".") character in regular expressions to match line
+     * terminators. By default, line terminators are not matched by DOT.
+     * <dt><code>CANON_EQ</code> (0x0080)
+     * <dd>Enables matching of character sequences which are canonically
+     * equivalent according to the Unicode standard. Canonical equivalence is
+     * described here: http://www.unicode.org/reports/tr15/. By default,
+     * canonical equivalence is not detected while matching.
+     * </dl>
+     * 
+     * @param regex
+     *            A regular expression string.
+     * @param flags
+     *            A set of flags to control the compilation of the pattern.
+     * @return A compiled pattern
+     * @throws PatternSyntaxException
+     *             If the input regular expression does not match the required
+     *             grammar.
+     */
     public static Pattern compile(String regex, int flags)
             throws PatternSyntaxException {
     	

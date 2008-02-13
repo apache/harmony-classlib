@@ -497,7 +497,7 @@ abstract class AbstractStringBuilder {
     /**
      * Sets the current length to a new value. If the new length is larger than
      * the current length, then the new characters at the end of this object
-     * will contain the <code>char</code> value of <code>\u0000</code>.
+     * will contain the <code>char</code> value of <code>&#92;u0000</code>.
      * 
      * @param length
      *            the new length of this StringBuffer
