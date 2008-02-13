@@ -339,6 +339,11 @@ public class TimestampTest extends TestCase {
             }
         }
 
+        // Regression test for HARMONY-5506
+        String date = "1970-01-01 22:17:59.0                 ";
+        Timestamp t = Timestamp.valueOf(date);
+        assertEquals(80279000,t.getTime());
+
     } // end method testValueOfString
 
     /*
