@@ -3695,7 +3695,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
     }
 
     private void processPaintEvent(PaintEvent event) {
-        if (redrawManager == null) {
+        if (redrawManager == null || getIgnoreRepaint()) {
             return;
         }
         Rectangle clipRect = event.getUpdateRect();
@@ -3706,13 +3706,11 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         if (g == null) {
             return;
         }
-        if (!getIgnoreRepaint()) {
-            if (event.getID() == PaintEvent.PAINT) {
-                initGraphics(g, event);
-                paint(g);
-            } else {
-                update(g);
-            }
+        if (event.getID() == PaintEvent.PAINT) {
+            initGraphics(g, event);
+            paint(g);
+        } else {
+            update(g);
         }
         g.dispose();
     }
