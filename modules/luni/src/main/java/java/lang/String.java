@@ -1670,11 +1670,16 @@ public final class String implements Serializable, Comparable<String>,
     }
 
     /**
-     * Copies this String removing white space characters from the beginning and
-     * end of the string.
+     * Answers a copy of this String with white space characters at the
+     * beginning and end removed.
      * 
-     * @return a new String with characters <code><= &#92;u0020</code> removed
-     *         from the beginning and the end
+     * If the receiver has no leading or trailing blanks then it returns itself.
+     * 
+     * Blanks are defined as characters with Unicode value
+     * <code><= &#92;u0020</code>.
+     * 
+     * @return a new String with leading and trailing blanks removed, or this
+     *         string if there are none.
      */
     public String trim() {
         int start = offset, last = offset + count - 1;
