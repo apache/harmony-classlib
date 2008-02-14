@@ -369,7 +369,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
     }
 
   result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl(env, thisClz, fileDescriptor,
-      (jlong)message, offset, count, timeout);  
+      (jlong)message, 0, count, timeout);  
 
   if (result > 0)
     (*env)->SetByteArrayRegion (env, data, offset, result, (jbyte *)message);
@@ -395,7 +395,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
 {
   PORT_ACCESS_FROM_ENV (env);
   hysocket_t hysocketP;	
-  jbyte	*message = (jbyte *)address;
+  jbyte	*message = (jbyte *)(address + offset);
   I_32 result, localCount;
 
   hysocketP =getJavaIoFileDescriptorContentsAsAPointer (env, fileDescriptor);
@@ -473,7 +473,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
   }
  
   result = Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl(env, thisClz,
-	   fileDescriptor, (jlong) message, offset, count);
+	   fileDescriptor, (jlong) message, 0, count);
 
  out:
   if ((U_8 *)message != internalBuffer)
@@ -497,7 +497,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
 {
   PORT_ACCESS_FROM_ENV (env);
   hysocket_t socketP;
-  jbyte	*message = (jbyte *)address;
+  jbyte	*message = (jbyte *)(address+offset);
   I_32 result =	0, sent	= 0;
 
   if(sent < count)
