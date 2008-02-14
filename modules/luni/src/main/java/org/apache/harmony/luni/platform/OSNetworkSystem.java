@@ -82,9 +82,9 @@ final class OSNetworkSystem implements INetworkSystem {
 		return readSocketImpl(aFD, data, offset, count, timeout);
 	}
     
-    public int readDirect(FileDescriptor aFD, long address, int offset, int count,
+    public int readDirect(FileDescriptor aFD, long address, int count,
             int timeout) throws IOException {
-        return readSocketDirectImpl(aFD, address, offset, count, timeout);
+        return readSocketDirectImpl(aFD, address, count, timeout);
     }
 
 	public int write(FileDescriptor aFD, byte[] data, int offset, int count)
@@ -92,9 +92,9 @@ final class OSNetworkSystem implements INetworkSystem {
 		return writeSocketImpl(aFD, data, offset, count);
 	}
     
-    public int writeDirect(FileDescriptor aFD, long address, int offset,
-            int count) throws IOException {
-        return writeSocketDirectImpl(aFD, address, offset, count);
+    public int writeDirect(FileDescriptor aFD, long address, int count)
+            throws IOException {
+        return writeSocketDirectImpl(aFD, address, count);
     }
 
 	public void setNonBlocking(FileDescriptor aFD, boolean block)
@@ -428,13 +428,13 @@ final class OSNetworkSystem implements INetworkSystem {
 			int offset, int count, int timeout) throws IOException;
     
     static native int readSocketDirectImpl(FileDescriptor aFD, long address,
-            int offset, int count, int timeout) throws IOException;
+            int count, int timeout) throws IOException;
 
 	static native int writeSocketImpl(FileDescriptor fd, byte[] data,
 			int offset, int count) throws IOException;
     
     static native int writeSocketDirectImpl(FileDescriptor fd, long address,
-            int offset, int count) throws IOException;
+            int count) throws IOException;
 
 	static native void setNonBlockingImpl(FileDescriptor aFD,
 			boolean block);

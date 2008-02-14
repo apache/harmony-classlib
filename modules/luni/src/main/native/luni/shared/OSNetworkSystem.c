@@ -352,7 +352,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketImpl
 
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) message, 0, count, timeout);
+    (env, thisClz, fileDescriptor, (jlong) message, count, timeout);
 
   if (result > 0) {
     (*env)->SetByteArrayRegion(env, data, offset, result, (jbyte *) message);
@@ -368,16 +368,16 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketImpl
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    readSocketDirectImpl
- * Signature: (Ljava/io/FileDescriptor;JIII)I
+ * Signature: (Ljava/io/FileDescriptor;JII)I
  */
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl
   (JNIEnv * env, jclass thisClz, jobject fileDescriptor, jlong address,
-   jint offset, jint count, jint timeout)
+   jint count, jint timeout)
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t hysocketP;
-  jbyte *message = (jbyte *) (address + offset);
+  jbyte *message = (jbyte *) address;
   I_32 result, localCount;
 
   hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
@@ -447,7 +447,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketImpl
 
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) message, 0, count);
+    (env, thisClz, fileDescriptor, (jlong) message, count);
 
 out:
   if ((U_8 *) message != internalBuffer) {
@@ -465,11 +465,11 @@ out:
 JNIEXPORT jint JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
   (JNIEnv * env, jclass thisClz, jobject fileDescriptor, jlong address,
-   jint offset, jint count)
+   jint count)
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t socketP;
-  jbyte *message = (jbyte *) (address + offset);
+  jbyte *message = (jbyte *) address;
   I_32 result = 0, sent = 0;
 
   if (sent < count) {

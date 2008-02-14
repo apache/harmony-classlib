@@ -31,10 +31,6 @@ import java.nio.channels.Channel;
  */
 public interface INetworkSystem {
 
-	// -----------------------------------------------
-	// Class Const
-	// -----------------------------------------------
-
 	/*
 	 * Socket connect Step start
 	 */
@@ -44,10 +40,6 @@ public interface INetworkSystem {
 	 * Socket connect Step check
 	 */
 	public final int SOCKET_CONNECT_STEP_CHECK = 1;
-
-	// -----------------------------------------------
-	// Methods
-	// -----------------------------------------------
 
 	/*
 	 * socket accept
@@ -67,13 +59,13 @@ public interface INetworkSystem {
 	public int read(FileDescriptor aFD, byte[] data, int offset, int count,
 			int timeout) throws IOException;
     
-    public int readDirect(FileDescriptor aFD, long address, int offset, int count,
+    public int readDirect(FileDescriptor aFD, long address, int count,
             int timeout) throws IOException;
 
 	public int write(FileDescriptor fd, byte[] data, int offset, int count)
 			throws IOException;
     
-    public int writeDirect(FileDescriptor fd, long address, int offset, int count)
+    public int writeDirect(FileDescriptor fd, long address, int count)
             throws IOException;
 
 	public void setNonBlocking(FileDescriptor aFD, boolean block)
