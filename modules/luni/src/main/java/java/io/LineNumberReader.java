@@ -111,6 +111,7 @@ public class LineNumberReader extends BufferedReader {
      *             If the reader is already closed or another IOException
      *             occurs.
      */
+    @SuppressWarnings("fallthrough")
     @Override
     public int read() throws IOException {
         synchronized (lock) {
