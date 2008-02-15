@@ -18,6 +18,7 @@
 package org.apache.harmony.applet;
 
 import java.net.URL;
+import java.util.HashMap;
 
 public class PluginAppletFactory {
 

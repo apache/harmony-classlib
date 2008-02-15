@@ -38,9 +38,9 @@ public class PluginCallback implements Callback {
         appletResize(pluginInstance, appletId, width, height);
     }
 
-    private native void showDocument(int documentId, URL url, String target);
+    private native void showDocument(long pluginInstance, int documentId, URL url, String target);
 
-    private native void showStatus(int documentId, String status);
+    private native void showStatus(long pluginInstance, int documentId, String status);
 
-    private native void appletResize(int appletId, int width, int height);
+    private native void appletResize(long pluginInstance, int appletId, int width, int height);
 }
