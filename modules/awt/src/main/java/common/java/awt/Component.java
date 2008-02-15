@@ -3706,8 +3706,10 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         if (g == null) {
             return;
         }
+
+        initGraphics(g, event);
+
         if (event.getID() == PaintEvent.PAINT) {
-            initGraphics(g, event);
             paint(g);
         } else {
             update(g);
