@@ -35,7 +35,6 @@ import org.apache.harmony.luni.util.Util;
  * @see ZipInputStream
  * @see ZipEntry
  */
-
 public class ZipFile implements ZipConstants {
 
     String fileName;
@@ -50,14 +49,10 @@ public class ZipFile implements ZipConstants {
         ntvinit();
     }
 
-    /**
-     * Open zip file for read.
-     */
+    /** Open ZIP file for read. */
     public static final int OPEN_READ = 1;
 
-    /**
-     * Delete zip file when closed.
-     */
+    /** Delete ZIP file when closed. */
     public static final int OPEN_DELETE = 4;
 
     /**
@@ -65,19 +60,26 @@ public class ZipFile implements ZipConstants {
      * 
      * @param file
      *            the File
+     * @throws ZipException
+     *             if a ZIP format exception occurs reading the file
+     * @throws IOException
+     *             if an IO exception occurs reading the file
      */
     public ZipFile(File file) throws ZipException, IOException {
         this(file.getPath());
     }
 
     /**
-     * Constructs a new ZipFile opened on the specified File using the specified
+     * Constructs a new ZipFile opened on the specified file using the specified
      * mode.
      * 
      * @param file
-     *            the File
+     *            the file
      * @param mode
-     *            the mode to use, either OPEN_READ or OPEN_READ | OPEN_DELETE
+     *            the mode to use, either <code>OPEN_READ</code> or
+     *            <code>OPEN_READ | OPEN_DELETE</code>
+     * @throws IOException
+     *             if an IO exception occurs reading the file
      */
     public ZipFile(File file, int mode) throws IOException {
         if (mode == OPEN_READ || mode == (OPEN_READ | OPEN_DELETE)) {
@@ -101,6 +103,8 @@ public class ZipFile implements ZipConstants {
      * 
      * @param filename
      *            the file path name
+     * @throws IOException
+     *             if an IO exception occured reading the file
      */
     public ZipFile(String filename) throws IOException {
         SecurityManager security = System.getSecurityManager();
@@ -135,6 +139,9 @@ public class ZipFile implements ZipConstants {
 
     /**
      * Closes this ZipFile.
+     * 
+     * @throws IOException
+     *             if an IO exception occured closing the file
      */
     public synchronized void close() throws IOException {
         if (descriptor != -1 && fileName != null) {
@@ -152,9 +159,9 @@ public class ZipFile implements ZipConstants {
     }
 
     /**
-     * Answers all of the zip entries contained in this ZipFile.
+     * Answers all of the ZIP entries contained in this ZipFile.
      * 
-     * @return an Enumeration of the zip entries
+     * @return an Enumeration of the ZIP entries
      */
     public Enumeration<? extends ZipEntry> entries() {
         return new ZFEnum<ZipEntry>();
@@ -182,6 +189,8 @@ public class ZipFile implements ZipConstants {
      * @param entry
      *            the ZipEntry
      * @return an input stream on the ZipEntry data
+     * @throws IOException
+     *             if an IO exception occurs reading the data
      */
     public InputStream getInputStream(ZipEntry entry) throws IOException {
         if (descriptor == -1) {

@@ -34,8 +34,10 @@ import org.apache.harmony.archive.internal.nls.Messages;
 public class ZipOutputStream extends DeflaterOutputStream implements
         ZipConstants {
 
+    /** Method for compressed entries */
     public static final int DEFLATED = 8;
 
+    /** Method for uncompressed entries */
     public static final int STORED = 0;
 
     static final int ZIPDataDescriptorFlag = 8;
@@ -307,6 +309,8 @@ public class ZipOutputStream extends DeflaterOutputStream implements
     /**
      * Sets the ZipFile comment associated with the file being written.
      * 
+     * @param comment
+     *            the file comment
      */
     public void setComment(String comment) {
         if (comment.length() > 0xFFFF) {
@@ -317,9 +321,10 @@ public class ZipOutputStream extends DeflaterOutputStream implements
 
     /**
      * Sets the compression level to be used for writing entry data. This level
-     * may be set on a per entry basis. level must have a value between 0 and
-     * 10.
+     * may be set on a per entry basis.
      * 
+     * @param level
+     *            the compression level, must have a value between 0 and 10.
      */
     public void setLevel(int level) {
         if (level < Deflater.DEFAULT_COMPRESSION

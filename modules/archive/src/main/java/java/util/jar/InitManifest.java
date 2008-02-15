@@ -145,25 +145,19 @@ class InitManifest {
     private int skipFirstEmptyLines(int start, byte[] buf) {
         int res = start;
         if (buf.length > start) {
-           if ((char)buf[res] == '\r') {
-              res ++;
-              if (res < buf.length) {     
-               if ((char)buf[res] == '\n') {
-                   res ++;  
-                   return skipFirstEmptyLines(res, buf);   
-               } else {
-                  return res; 
-               
-               } 
-              }
-              return res;
-           } else if ((char)buf[res] == '\n') {
-              res ++;  
-              return skipFirstEmptyLines(res, buf);   
-           } else {
-             return res;    
-           }                     
-            
+            if ((char) buf[res] == '\r') {
+                res++;
+                if ((res < buf.length) && ((char) buf[res] == '\n')) {
+                    res++;
+                    return skipFirstEmptyLines(res, buf);
+                }
+                return res;
+            } else if ((char) buf[res] == '\n') {
+                res++;
+                return skipFirstEmptyLines(res, buf);
+            } else {
+                return res;
+            }
         }
         return res;
     }

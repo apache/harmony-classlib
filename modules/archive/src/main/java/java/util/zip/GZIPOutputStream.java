@@ -34,6 +34,8 @@ public class GZIPOutputStream extends DeflaterOutputStream {
      * 
      * @param os
      *            OutputStream to write to
+     * @throws IOException
+     *             if an IO error occurs writing to the output stream
      */
     public GZIPOutputStream(OutputStream os) throws IOException {
         this(os, BUF_SIZE);
@@ -47,6 +49,8 @@ public class GZIPOutputStream extends DeflaterOutputStream {
      *            OutputStream to write to
      * @param size
      *            Internal buffer size
+     * @throws IOException
+     *             if an IO error occurs writing to the output stream
      */
     public GZIPOutputStream(OutputStream os, int size) throws IOException {
         super(os, new Deflater(Deflater.DEFAULT_COMPRESSION, true), size);
@@ -70,19 +74,13 @@ public class GZIPOutputStream extends DeflaterOutputStream {
     }
 
     /**
-     * Write up to nbytes of data from buf, starting at offset off, to the
-     * underlying stream in GZIP format.
+     * Write up to nbytes of data from the given buffer, starting at offset off,
+     * to the underlying stream in GZIP format.
      */
     @Override
     public void write(byte[] buffer, int off, int nbytes) throws IOException {
         super.write(buffer, off, nbytes);
         crc.update(buffer, off, nbytes);
-    }
-
-    private int writeShort(int i) throws IOException {
-        out.write(i & 0xFF);
-        out.write((i >> 8) & 0xFF);
-        return i;
     }
 
     private long writeLong(long i) throws IOException {
@@ -91,6 +89,12 @@ public class GZIPOutputStream extends DeflaterOutputStream {
         out.write((int) (i >> 8) & 0xFF);
         out.write((int) (i >> 16) & 0xFF);
         out.write((int) (i >> 24) & 0xFF);
+        return i;
+    }
+
+    private int writeShort(int i) throws IOException {
+        out.write(i & 0xFF);
+        out.write((i >> 8) & 0xFF);
         return i;
     }
 }

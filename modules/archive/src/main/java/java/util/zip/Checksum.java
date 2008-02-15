@@ -17,12 +17,40 @@
 
 package java.util.zip;
 
+/**
+ * Interface to types that can compute a checksum value of given data.
+ */
 public interface Checksum {
+
+    /**
+     * Answers the computed checksum value so far.
+     * 
+     * @return the checksum value
+     */
     public long getValue();
 
+    /**
+     * Reinitialize the checksum computation to its starting value.
+     */
     public void reset();
 
-    public void update(int val);
-
+    /**
+     * Update the checksum value based on the given byte array
+     * 
+     * @param buf
+     *            the data used to update the checksum
+     * @param off
+     *            the starting point for data values
+     * @param nbytes
+     *            the number of bytes to consider
+     */
     public void update(byte[] buf, int off, int nbytes);
+
+    /**
+     * Update the checksum value based on the given data value.
+     * 
+     * @param val
+     *            a single byte value
+     */
+    public void update(int val);
 }
