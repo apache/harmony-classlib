@@ -168,12 +168,27 @@ public class Collections {
         }
     }
 
+    /**
+     * An immutable, serializable, empty <code>List</code>.
+     *
+     * @see Collections#emptyList()
+     */
     @SuppressWarnings("unchecked")
     public static final List EMPTY_LIST = new EmptyList();
 
+    /**
+     * An immutable, serializable, empty <code>Set</code>.
+     * 
+     * @see Collections#emptySet()
+     */
     @SuppressWarnings("unchecked")
     public static final Set EMPTY_SET = new EmptySet();
 
+    /**
+     * An immutable, serializable, empty <code>Map</code>.
+     * 
+     * @see Collections#emptyMap()
+     */
     @SuppressWarnings("unchecked")
     public static final Map EMPTY_MAP = new EmptyMap();
 
@@ -1505,6 +1520,8 @@ public class Collections {
      * Performs a binary search for the specified element in the specified
      * sorted List using the specified Comparator.
      * 
+     * @param <T> The element type
+     * 
      * @param list
      *            the sorted List to search
      * @param object
@@ -2543,7 +2560,7 @@ public class Collections {
     /**
      * Returns a dynamically typesafe view of the specified set.
      * 
-     * @param c
+     * @param s
      *            the set
      * @param type
      *            the type of the elements is permitted to insert
@@ -2574,7 +2591,7 @@ public class Collections {
     /**
      * Returns a dynamically typesafe view of the specified sorted set.
      * 
-     * @param c
+     * @param s
      *            the sorted set
      * @param type
      *            the type of the elements is permitted to insert
@@ -3235,9 +3252,11 @@ public class Collections {
              * Constructs a dynamically typesafe view of the specified map
              * entry.
              * 
-             * @param e -
+             * @param e
              *            the map entry for which a dynamically typesafe view is
              *            to be constructed.
+             * @param valueType
+             *            the type of the value
              */
             public CheckedEntry(Map.Entry<K, V> e, Class<V> valueType) {
                 if (e == null) {

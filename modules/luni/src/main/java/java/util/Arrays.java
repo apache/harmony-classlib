@@ -3037,14 +3037,14 @@ public class Arrays {
     }
 
     /**
-     * <p>
      * Creates a <code>String</code> representation of the <code>byte[]</code>
-     * passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * passed.
+     * 
+     * The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
      * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(byte)} and separated by <code>&quot;, &quot;</code>.
+     * {@link String#valueOf(int)} and separated by <code>&quot;, &quot;</code>.
      * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
      * is returned.
-     * </p>
      * 
      * @param array
      *            The <code>byte</code> array to convert.
@@ -3235,14 +3235,14 @@ public class Arrays {
     }
 
     /**
-     * <p>
      * Creates a <code>String</code> representation of the
-     * <code>short[]</code> passed. The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
+     * <code>short[]</code> passed.
+     * 
+     * The result is surrounded by brackets (<code>&quot;[]&quot;</code>),
      * each element is converted to a <code>String</code> via the
-     * {@link String#valueOf(short)} and separated by
-     * <code>&quot;, &quot;</code>. If the array is <code>null</code>,
-     * then <code>&quot;null&quot;</code> is returned.
-     * </p>
+     * {@link String#valueOf(int)} and separated by <code>&quot;, &quot;</code>.
+     * If the array is <code>null</code>, then <code>&quot;null&quot;</code>
+     * is returned.
      * 
      * @param array
      *            The <code>short</code> array to convert.

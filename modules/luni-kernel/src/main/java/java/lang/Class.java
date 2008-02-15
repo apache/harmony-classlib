@@ -75,12 +75,14 @@ import java.security.ProtectionDomain;
  * 
  * @since 1.0
  */
-public final class Class<T> implements Serializable, AnnotatedElement, GenericDeclaration, Type {
+public final class Class<T> implements Serializable, AnnotatedElement,
+        GenericDeclaration, Type {
 
     private static final long serialVersionUID = 3206093459760846163L;
-    
-    private Class(){
-        //prevent this class to be instantiated, instance should be created by JVM only
+
+    private Class() {
+        // prevent this class to be instantiated, instance should be created by
+        // JVM only
     }
 
     /**
@@ -110,8 +112,10 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * the caller of this method.</li>
      * </ul>
      * 
-     * @param maxDepth maximum depth to walk the stack, -1 for the entire stack
-     * @param stopAtPrivileged stop at privileged classes
+     * @param maxDepth
+     *            maximum depth to walk the stack, -1 for the entire stack
+     * @param stopAtPrivileged
+     *            stop at privileged classes
      * @return the array of the most recent classes on the stack
      */
     static final Class[] getStackClasses(int maxDepth, boolean stopAtPrivileged) {
@@ -120,32 +124,37 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
 
     /**
      * Answers a Class object which represents the class named by the argument.
-     * The name should be the name of a class as described in the class
-     * definition of {@link Class}, however Classes representing base types can
-     * not be found using this method.
      * 
-     * @param className The name of the non-base type class to find
+     * The name should be the name of a class as described in the class
+     * definition of <code>Class</code>, however Classes representing base
+     * types can not be found using this method.
+     * 
+     * @param className
+     *            The name of the non-base type class to find
      * @return the named Class
-     * @throws ClassNotFoundException If the class could not be found
-     * @see {@link Class}
+     * @throws ClassNotFoundException
+     *             If the class could not be found
      */
-    public static Class<?> forName(String className) throws ClassNotFoundException {
+    public static Class<?> forName(String className)
+            throws ClassNotFoundException {
         return null;
     }
 
     /**
      * Answers a Class object which represents the class named by the argument.
      * The name should be the name of a class as described in the class
-     * definition of {@link Class}, however Classes representing base types can
-     * not be found using this method. Security rules will be obeyed.
+     * definition of <code>Class</code>, however Classes representing base
+     * types can not be found using this method. Security rules will be obeyed.
      * 
-     * @param className The name of the non-base type class to find
-     * @param initializeBoolean A boolean indicating whether the class should be
-     *        initialized
-     * @param classLoader The class loader to use to load the class
+     * @param className
+     *            The name of the non-base type class to find
+     * @param initializeBoolean
+     *            A boolean indicating whether the class should be initialized
+     * @param classLoader
+     *            The class loader to use to load the class
      * @return the named class.
-     * @throws ClassNotFoundException If the class could not be found
-     * @see {@link Class}
+     * @throws ClassNotFoundException
+     *             If the class could not be found
      */
     public static Class<?> forName(String className, boolean initializeBoolean,
             ClassLoader classLoader) throws ClassNotFoundException {
@@ -157,8 +166,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * the receiver represents and its super classes and interfaces
      * 
      * @return the class' public class members
-     * @throws SecurityException If member access is not allowed
-     * @see {@link Class}
+     * @throws SecurityException
+     *             If member access is not allowed
      */
     public Class[] getClasses() {
         return null;
@@ -167,7 +176,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
     /**
      * Verify the specified Class using the VM byte code verifier.
      * 
-     * @throws VerifyError if the Class cannot be verified
+     * @throws VerifyError
+     *             if the Class cannot be verified
      */
     void verify() {
         return;
@@ -177,7 +187,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * Answers the annotation of the given type. If there is no annotation the
      * method returns <code>null</code>.
      * 
-     * @param annotationClass the annotation type.
+     * @param annotationClass
+     *            the annotation type.
      * @return the annotation of the given type, or <code>null</code> if none.
      * @since 1.5
      */
@@ -211,8 +222,7 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * the receiver. Answer null if the class was loaded by the system class
      * loader
      * 
-     * @return the receiver's class loader or nil
-     * @see {@link ClassLoader}
+     * @return the receiver's class loader or null
      */
     public ClassLoader getClassLoader() {
         return null;
@@ -236,11 +246,10 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
 
     /**
      * Answers a Class object which represents the receiver's component type if
-     * the receiver represents an array type. Otherwise answers nil. The
+     * the receiver represents an array type. Otherwise answers null. The
      * component type of an array type is the type of the elements of the array.
      * 
      * @return the component type of the receiver.
-     * @see {@link Class}
      */
     public Class<?> getComponentType() {
         return null;
@@ -250,14 +259,17 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * Answers a public Constructor object which represents the constructor
      * described by the arguments.
      * 
-     * @param parameterTypes the types of the arguments.
+     * @param parameterTypes
+     *            the types of the arguments.
      * @return the constructor described by the arguments.
-     * @throws NoSuchMethodException if the constructor could not be found.
-     * @throws SecurityException if member access is not allowed
+     * @throws NoSuchMethodException
+     *             if the constructor could not be found.
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getConstructors
      */
-    public Constructor<T> getConstructor(Class... parameterTypes) throws NoSuchMethodException,
-            SecurityException {
+    public Constructor<T> getConstructor(Class... parameterTypes)
+            throws NoSuchMethodException, SecurityException {
         return null;
     }
 
@@ -266,7 +278,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * constructors which are visible from the current execution context.
      * 
      * @return all visible constructors starting from the receiver.
-     * @throws SecurityException if member access is not allowed
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getMethods
      */
     public Constructor[] getConstructors() throws SecurityException {
@@ -292,8 +305,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * not be visible in the current execution context.
      * 
      * @return the class' class members
-     * @throws SecurityException if member access is not allowed
-     * @see {@link Class}
+     * @throws SecurityException
+     *             if member access is not allowed
      */
     public Class[] getDeclaredClasses() throws SecurityException {
         return new Class[0];
@@ -303,10 +316,13 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * Answers a Constructor object which represents the constructor described
      * by the arguments.
      * 
-     * @param parameterTypes the types of the arguments.
+     * @param parameterTypes
+     *            the types of the arguments.
      * @return the constructor described by the arguments.
-     * @throws NoSuchMethodException if the constructor could not be found.
-     * @throws SecurityException if member access is not allowed
+     * @throws NoSuchMethodException
+     *             if the constructor could not be found.
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getConstructors
      */
     public Constructor<T> getDeclaredConstructor(Class... parameterTypes)
@@ -321,7 +337,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * context.
      * 
      * @return the receiver's constructors.
-     * @throws SecurityException if member access is not allowed
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getMethods
      */
     public Constructor[] getDeclaredConstructors() throws SecurityException {
@@ -333,13 +350,17 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * argument. Note that the Constructor may not be visible from the current
      * execution context.
      * 
-     * @param name The name of the field to look for.
+     * @param name
+     *            The name of the field to look for.
      * @return the field in the receiver named by the argument.
-     * @throws NoSuchFieldException if the requested field could not be found
-     * @throws SecurityException if member access is not allowed
+     * @throws NoSuchFieldException
+     *             if the requested field could not be found
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getDeclaredFields
      */
-    public Field getDeclaredField(String name) throws NoSuchFieldException, SecurityException {
+    public Field getDeclaredField(String name) throws NoSuchFieldException,
+            SecurityException {
         return null;
     }
 
@@ -349,7 +370,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * may not be visible in the current execution context.
      * 
      * @return the receiver's fields.
-     * @throws SecurityException If member access is not allowed
+     * @throws SecurityException
+     *             If member access is not allowed
      * @see #getFields
      */
     public Field[] getDeclaredFields() throws SecurityException {
@@ -361,12 +383,17 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * arguments. Note that the associated method may not be visible from the
      * current execution context.
      * 
-     * @param name the name of the method
-     * @param parameterTypes the types of the arguments.
+     * @param name
+     *            the name of the method
+     * @param parameterTypes
+     *            the types of the arguments.
      * @return the method described by the arguments.
-     * @throws NoSuchMethodException if the method could not be found.
-     * @throws SecurityException If member access is not allowed
-     * @throws NullPointerException if the name parameter is <code>null</code>.
+     * @throws NoSuchMethodException
+     *             if the method could not be found.
+     * @throws SecurityException
+     *             If member access is not allowed
+     * @throws NullPointerException
+     *             if the name parameter is <code>null</code>.
      * @see #getMethods
      */
     public Method getDeclaredMethod(String name, Class... parameterTypes)
@@ -379,7 +406,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * are defined by the receiver. Note that some of the methods which are
      * returned may not be visible in the current execution context.
      * 
-     * @throws SecurityException if member access is not allowed
+     * @throws SecurityException
+     *             if member access is not allowed
      * @return the receiver's methods.
      * @see #getMethods
      */
@@ -447,13 +475,17 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * Answers a Field object describing the field in the receiver named by the
      * argument which must be visible from the current execution context.
      * 
-     * @param name The name of the field to look for.
+     * @param name
+     *            The name of the field to look for.
      * @return the field in the receiver named by the argument.
-     * @throws NoSuchFieldException If the given field does not exist
-     * @throws SecurityException If access is denied
+     * @throws NoSuchFieldException
+     *             If the given field does not exist
+     * @throws SecurityException
+     *             If access is denied
      * @see #getDeclaredFields
      */
-    public Field getField(String name) throws NoSuchFieldException, SecurityException {
+    public Field getField(String name) throws NoSuchFieldException,
+            SecurityException {
         return null;
     }
 
@@ -462,7 +494,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * visible from the current execution context.
      * 
      * @return all visible fields starting from the receiver.
-     * @throws SecurityException If member access is not allowed
+     * @throws SecurityException
+     *             If member access is not allowed
      * @see #getDeclaredFields
      */
     public Field[] getFields() throws SecurityException {
@@ -504,15 +537,19 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * Answers a Method object which represents the method described by the
      * arguments.
      * 
-     * @param name String the name of the method
-     * @param parameterTypes Class[] the types of the arguments.
+     * @param name
+     *            String the name of the method
+     * @param parameterTypes
+     *            Class[] the types of the arguments.
      * @return Method the method described by the arguments.
-     * @throws NoSuchMethodException if the method could not be found.
-     * @throws SecurityException if member access is not allowed
+     * @throws NoSuchMethodException
+     *             if the method could not be found.
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getMethods
      */
-    public Method getMethod(String name, Class... parameterTypes) throws NoSuchMethodException,
-            SecurityException {
+    public Method getMethod(String name, Class... parameterTypes)
+            throws NoSuchMethodException, SecurityException {
         return null;
     }
 
@@ -521,7 +558,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * are visible from the current execution context.
      * 
      * @return Method[] all visible methods starting from the receiver.
-     * @throws SecurityException if member access is not allowed
+     * @throws SecurityException
+     *             if member access is not allowed
      * @see #getDeclaredMethods
      */
     public Method[] getMethods() throws SecurityException {
@@ -542,10 +580,9 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
     /**
      * Answers the name of the class which the receiver represents. For a
      * description of the format which is used, see the class definition of
-     * {@link Class}.
+     * <code>Class</code>.
      * 
      * @return the receiver's name.
-     * @see {@link Class}
      */
     public String getName() {
         return null;
@@ -565,7 +602,7 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
 
     /**
      * Answers the ProtectionDomain of the receiver.
-     * <p>
+     * 
      * Note: In order to conserve space in embedded targets, we allow this
      * method to answer null for classes in the system protection domain (i.e.
      * for system classes). System classes are always given full permissions
@@ -573,7 +610,6 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * java.security.Policy.
      * 
      * @return ProtectionDomain the receiver's ProtectionDomain.
-     * @see {@link Class}
      */
     public ProtectionDomain getProtectionDomain() {
         return null;
@@ -581,11 +617,10 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
 
     /**
      * Answers the ProtectionDomain of the receiver.
-     * <p>
+     * 
      * This method is for internal use only.
      * 
      * @return ProtectionDomain the receiver's ProtectionDomain.
-     * @see {@link Class}
      */
     ProtectionDomain getPDImpl() {
         return null;
@@ -596,9 +631,10 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * resName. The mapping between the resource name and the stream is managed
      * by the class' class loader.
      * 
-     * @param resName the name of the resource.
+     * @param resName
+     *            the name of the resource.
      * @return a stream on the resource.
-     * @see {@link ClassLoader}
+     * @see ClassLoader
      */
     public URL getResource(String resName) {
         return null;
@@ -609,9 +645,10 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * resName. The mapping between the resource name and the stream is managed
      * by the class' class loader.
      * 
-     * @param resName the name of the resource.
+     * @param resName
+     *            the name of the resource.
      * @return a stream on the resource.
-     * @see {@link ClassLoader}
+     * @see ClassLoader
      */
     public InputStream getResourceAsStream(String resName) {
         return null;
@@ -664,12 +701,14 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
     /**
      * Indicates whether or not the given annotation is present for this class.
      * 
-     * @param annotationClass The annotation to look for in this class.
+     * @param annotationClass
+     *            The annotation to look for in this class.
      * @return A value of <code>true</code> if the annotation is present,
      *         otherwise <code>false</code>.
      * @since 1.5
      */
-    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+    public boolean isAnnotationPresent(
+            Class<? extends Annotation> annotationClass) {
         return false;
     }
 
@@ -703,8 +742,10 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * @return <code>true</code> the argument can be assigned into the
      *         receiver <code>false</code> the argument cannot be assigned
      *         into the receiver
-     * @param cls Class the class to test
-     * @throws NullPointerException if the parameter is null
+     * @param cls
+     *            Class the class to test
+     * @throws NullPointerException
+     *             if the parameter is null
      */
     public boolean isAssignableFrom(Class<?> cls) {
         return false;
@@ -729,7 +770,8 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * @return <code>true</code> the argument can be cast to the type of the
      *         receiver <code>false</code> the argument is null or cannot be
      *         cast to the type of the receiver
-     * @param object Object the object to test
+     * @param object
+     *            Object the object to test
      */
     public boolean isInstance(Object object) {
         return false;
@@ -795,11 +837,13 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
      * IllegalAccessException is thrown.
      * 
      * @return a new instance of the class represented by the receiver.
-     * @throws IllegalAccessException if the constructor is not visible to the
-     *         sender.
-     * @throws InstantiationException if the instance could not be created.
+     * @throws IllegalAccessException
+     *             if the constructor is not visible to the sender.
+     * @throws InstantiationException
+     *             if the instance could not be created.
      */
-    public T newInstance() throws IllegalAccessException, InstantiationException {
+    public T newInstance() throws IllegalAccessException,
+            InstantiationException {
         return null;
     }
 
@@ -836,26 +880,29 @@ public final class Class<T> implements Serializable, AnnotatedElement, GenericDe
     }
 
     /**
-     * Casts the receiver to a subclass of the given class.  If successful
+     * Casts the receiver to a subclass of the given class. If successful
      * answers the receiver, otherwise if the cast cannot be made throws a
      * <code>ClassCastException</code>.
      * 
-     * @param clazz the required type.
+     * @param clazz
+     *            the required type.
      * @return this class cast as a subclass of the given type.
-     * @throws ClassCastException if the class cannot be cast to the given type.
+     * @throws ClassCastException
+     *             if the class cannot be cast to the given type.
      */
     public <U> Class<? extends U> asSubclass(Class<U> clazz) {
         return null;
     }
 
     /**
-     * Cast the given object to the type <code>T</code>.
-     * If the object is <code>null</code> the result is also
-     * <code>null</code>.
+     * Cast the given object to the type <code>T</code>. If the object is
+     * <code>null</code> the result is also <code>null</code>.
      * 
-     * @param obj the object to cast
+     * @param obj
+     *            the object to cast
      * @return The object that has been cast.
-     * @throws ClassCastException if the object cannot be cast to the given type.
+     * @throws ClassCastException
+     *             if the object cannot be cast to the given type.
      */
     public T cast(Object obj) {
         return null;
