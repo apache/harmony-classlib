@@ -33,7 +33,6 @@ import org.apache.harmony.text.internal.nls.Messages;
  * obtained from the run index. The level of any particular run indicates the
  * direction of the text as well as the nesting level. Left-to-right runs have
  * even levels while right-to-left runs have odd levels.
- * 
  */
 public final class Bidi {
     /**
@@ -86,9 +85,9 @@ public final class Bidi {
      * 
      * @param paragraph
      * 
-     * @see TextAttribute.BIDI_EMBEDDING
-     * @see TextAttribute.NUMERIC_SHAPING
-     * @see TextAttribute.RUN_DIRECTION
+     * @see java.awt.font.TextAttribute#BIDI_EMBEDDING
+     * @see java.awt.font.TextAttribute#NUMERIC_SHAPING
+     * @see java.awt.font.TextAttribute#RUN_DIRECTION
      */
     public Bidi(AttributedCharacterIterator paragraph) {
         if (paragraph == null) {
