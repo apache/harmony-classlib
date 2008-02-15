@@ -386,7 +386,7 @@ public final class URL implements java.io.Serializable {
 
     /**
      * Constructs a new URL instance using the arguments provided.
-     * <p>
+     * 
      * If the handler argument is non-null, a security check is made to verify
      * that user-defined protocol handlers can be specified.
      * 
@@ -407,20 +407,18 @@ public final class URL implements java.io.Serializable {
     public URL(String protocol, String host, int port, String file,
             URLStreamHandler handler) throws MalformedURLException {
         if (port < -1) {
-            throw new MalformedURLException(org.apache.harmony.luni.util.Msg
-                    .getString("K0325", port)); //$NON-NLS-1$
+            throw new MalformedURLException(Msg.getString("K0325", port)); //$NON-NLS-1$
         }
 
         if (host != null && host.indexOf(":") != -1 && host.charAt(0) != '[') { //$NON-NLS-1$
             host = "[" + host + "]"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        if (protocol != null) {
-            this.protocol = protocol;
-        } else {
-            throw new NullPointerException(Msg.getString("K00b3", protocol)); //$NON-NLS-1$
+        if (protocol == null) {
+            throw new NullPointerException(Msg.getString("K00b3", "null")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
+        this.protocol = protocol;
         this.host = host;
         this.port = port;
 
@@ -443,8 +441,7 @@ public final class URL implements java.io.Serializable {
             setupStreamHandler();
             if (strmHandler == null) {
                 throw new MalformedURLException(
-                        org.apache.harmony.luni.util.Msg.getString(
-                                "K00b3", protocol)); //$NON-NLS-1$
+                        Msg.getString("K00b3", protocol)); //$NON-NLS-1$
             }
         } else {
             SecurityManager sm = System.getSecurityManager();
