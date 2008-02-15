@@ -37,7 +37,7 @@ public interface OperatingSystemMXBean {
      * 
      * @return The underlying architecture of the operating system.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getArch();
@@ -60,7 +60,7 @@ public interface OperatingSystemMXBean {
      * 
      * @return The name of the operating system.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getName();
@@ -73,7 +73,7 @@ public interface OperatingSystemMXBean {
      * 
      * @return The version of the operating system.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getVersion();
