@@ -449,8 +449,11 @@ public final class Math {
 	 * @return the closest integer to the argument (as a double).
 	 */
 	public static double rint(double d) {
+	    if(d == +0.0d || d == -0.0d) {
+	        return d;
+	    }
             double res = floor(d + 0.5d);
-            return res - d == 0.5d && d > 0 ? res - 1 : res;  
+            return res - d == 0.5d && res%2 != 0 ? res - 1 : res;
         }
 
 	/**
