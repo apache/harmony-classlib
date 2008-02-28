@@ -760,7 +760,7 @@ public class ClassBands extends BandSet {
                 localVariableTableN);
         int[][] localVariableTableSpanO = decodeBandInt(
                 "code_LocalVariableTable_span_O", in, Codec.BRANCH5,
-                localVariableTableN);
+                localVariableTableN, false);
         CPUTF8[][] localVariableTableNameRU = stringsToCPUTF8(parseReferences(
                 "code_LocalVariableTable_name_RU", in, Codec.UNSIGNED5,
                 localVariableTableN, cpBands.getCpUTF8()));

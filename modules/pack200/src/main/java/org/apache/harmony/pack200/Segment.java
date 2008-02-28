@@ -206,13 +206,13 @@ public class Segment {
 		if(ic_local_sent && (ic_local.length == 0)) {
 		    addInnerClassesAttr = false;
 		}
-		
+
 		// If ic_local is not sent and ic_relevant is empty,
 		// don't add the inner class attribute.
 		if(!ic_local_sent && (ic_relevant.length == 0)) {
 		    addInnerClassesAttr = false;
 		}
-		
+
 		if(addInnerClassesAttr) {
 		    // Need to add the InnerClasses attribute to the
 		    // existing classFile attributes.
@@ -253,7 +253,7 @@ public class Segment {
 	 * calculate what should be added as ic_stored.
 	 * @param ic_local IcTuple[] array of local transmitted tuples
 	 * @param ic_relevant IcTuple[] array of relevant tuples
-	 * @return IcTuple[] array of tuples to be stored. If ic_local 
+	 * @return IcTuple[] array of tuples to be stored. If ic_local
 	 *     is null or empty, the values returned may not be correct.
 	 *     The caller will have to determine if this is the case.
 	 */
@@ -266,22 +266,22 @@ public class Segment {
 	        // If ic_local is null, this code doesn't get
 	        // executed - which means the list ends up being
 	        // ic_relevant.
-	        for(int index=0; index < ic_local.length; index++) { 
+	        for(int index=0; index < ic_local.length; index++) {
 	            result.add(ic_local[index]);
 	            resultCopy.add(ic_local[index]);
 	            localList.add(ic_local[index]);
 	        }
 	    }
-	    for(int index=0; index < ic_relevant.length; index++) { 
+	    for(int index=0; index < ic_relevant.length; index++) {
 	        result.add(ic_relevant[index]);
 	        resultCopy.add(ic_relevant[index]);
 	        relevantList.add(ic_relevant[index]);
 	    }
-	    
+
 	    // Since we're removing while iterating, iterate over
 	    // a copy.
 	    Iterator it = resultCopy.iterator();
-	    
+
 	    while(it.hasNext()) {
 	        IcTuple tuple = (IcTuple)it.next();
 	        if(localList.contains(tuple) && relevantList.contains(tuple)) {
@@ -339,7 +339,7 @@ public class Segment {
     public void unpack(InputStream in, JarOutputStream out) throws IOException,
             Pack200Exception {
         if (!in.markSupported())
-            in = new BufferedInputStream(in);        
+            in = new BufferedInputStream(in);
         parseSegment(in);
         writeJar(out);
     }
