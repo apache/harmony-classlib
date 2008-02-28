@@ -106,6 +106,17 @@ public class ArchiveTest extends TestCase {
         archive.unpack();
     }
 
+    // Test with a class containing lots of local variables (regression test for
+    // HARMONY-5470)
+    public void testWithLargeClass() throws Exception {
+        in = Archive.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/LargeClass.pack.gz");
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
+                "largeclass", ".jar")));
+        Archive archive = new Archive(in, out);
+        archive.unpack();
+    }
+
     protected void tearDown() throws Exception {
         super.tearDown();
         try {
@@ -126,9 +137,5 @@ public class ArchiveTest extends TestCase {
             }
         }
     }
-
-
-
-
 
 }

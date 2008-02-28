@@ -255,12 +255,12 @@ public class BcBands extends BandSet {
                             int nextInstruction = 0xff & methodByteCodePacked[c][m][i+1];
                             wideByteCodes.add(new Integer(nextInstruction));
                             if (nextInstruction == 132) { // iinc
-                                bcLocalCount += 2;
+                                bcLocalCount ++;
                                 bcShortCount++;
                             } else if (endsWithLoad(nextInstruction)
                                     || endsWithStore(nextInstruction)
                                     || nextInstruction == 169) {
-                                bcLocalCount += 2;
+                                bcLocalCount ++;
                             } else {
                                 debug("Found unhandled " + ByteCode.getByteCode(nextInstruction));
                             }
