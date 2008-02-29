@@ -154,7 +154,7 @@ public abstract class AnnotationsAttribute extends Attribute {
         }
     }
 
-    public AnnotationsAttribute(String attributeName) {
+    public AnnotationsAttribute(CPUTF8 attributeName) {
         super(attributeName);
     }
 

@@ -33,10 +33,11 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     public List exceptionTable; // of ExceptionTableEntry
     public int maxLocals;
     public int maxStack;
+    private static final CPUTF8 attributeName = new CPUTF8("Code", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 
     public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
             Segment segment, OperandManager operandManager, List exceptionTable) {
-        super("Code"); //$NON-NLS-1$
+        super(attributeName); //$NON-NLS-1$
         this.maxLocals = maxLocals;
         this.maxStack = maxStack;
         this.codeLength = 0;

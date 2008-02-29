@@ -24,9 +24,12 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     private int line_number_table_length;
     private int[] start_pcs;
     private int[] line_numbers;
+    private static final CPUTF8 attributeName = new CPUTF8(
+            "LineNumberTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+
 
     public LineNumberTableAttribute(int line_number_table_length, int[] start_pcs, int[] line_numbers) {
-        super("LineNumberTable");
+        super(attributeName);
         this.line_number_table_length = line_number_table_length;
         this.start_pcs = start_pcs;
         this.line_numbers = line_numbers;

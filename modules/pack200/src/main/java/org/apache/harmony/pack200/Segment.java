@@ -140,31 +140,40 @@ public class Segment {
 		        fileName = fullName.substring(i) + ".java";
 		    }
 			classFile.attributes = new Attribute[] { (Attribute) cp
-					.add(new SourceFileAttribute(fileName)) };
+					.add(new SourceFileAttribute(cpBands.cpUTF8Value(fileName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ))) };
 		} else {
 			classFile.attributes = new Attribute[] {};
 		}
 		// this/superclass
-		ClassFileEntry cfThis = cp.add(new CPClass(fullName));
-		ClassFileEntry cfSuper = cp.add(new CPClass(classBands.getClassSuper()[classNum]));
+		ClassFileEntry cfThis = cp.add(cpBands.cpClassValue(fullName));
+		ClassFileEntry cfSuper = cp.add(cpBands.cpClassValue(classBands.getClassSuper()[classNum]));
 		// add interfaces
 		ClassFileEntry cfInterfaces[] = new ClassFileEntry[classBands.getClassInterfaces()[classNum].length];
 		for (i = 0; i < cfInterfaces.length; i++) {
-			cfInterfaces[i] = cp.add(new CPClass(classBands.getClassInterfaces()[classNum][i]));
+			cfInterfaces[i] = cp.add(cpBands.cpClassValue(classBands.getClassInterfaces()[classNum][i]));
 		}
 		// add fields
 		ClassFileEntry cfFields[] = new ClassFileEntry[classBands.getClassFieldCount()[classNum]];
 		// fieldDescr and fieldFlags used to create this
 		for (i = 0; i < cfFields.length; i++) {
-			cfFields[i] = cp.add(new CPField(classBands.getFieldDescr()[classNum][i],
+            String descriptorStr = classBands.getFieldDescr()[classNum][i];
+            int colon = descriptorStr.indexOf(':');
+            CPUTF8 name = cpBands.cpUTF8Value(descriptorStr.substring(0,colon), ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            CPUTF8 descriptor = cpBands.cpUTF8Value(descriptorStr.substring(colon+1), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+            cfFields[i] = cp.add(new CPField(name, descriptor,
                     classBands.getFieldFlags()[classNum][i], classBands.getFieldAttributes()[classNum][i]));
 		}
 		// add methods
 		ClassFileEntry cfMethods[] = new ClassFileEntry[classBands.getClassMethodCount()[classNum]];
 		// fieldDescr and fieldFlags used to create this
 		for (i = 0; i < cfMethods.length; i++) {
-			cfMethods[i] = cp.add(new CPMethod(classBands.getMethodDescr()[classNum][i],
-                    classBands.getMethodFlags()[classNum][i], classBands.getMethodAttributes()[classNum][i]));
+            String descriptorStr = classBands.getMethodDescr()[classNum][i];
+            int colon = descriptorStr.indexOf(':');
+            CPUTF8 name = cpBands.cpUTF8Value(descriptorStr.substring(0,colon), ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            CPUTF8 descriptor = cpBands.cpUTF8Value(descriptorStr.substring(colon+1), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+			cfMethods[i] = cp.add(new CPMethod(name, descriptor, classBands
+                    .getMethodFlags()[classNum][i], classBands
+                    .getMethodAttributes()[classNum][i]));
 		}
 
 		// add inner class attribute (if required)
@@ -187,14 +196,14 @@ public class Segment {
 		    CPClass outerClass = null;
 
 		    if(ic_stored[index].isAnonymous()) {
-		        innerClass = new CPClass(innerClassString);
+		        innerClass = cpBands.cpClassValue(innerClassString);
 		    } else {
-	            innerClass = new CPClass(innerClassString);
-	            innerName = new CPUTF8(simpleClassName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+	            innerClass = cpBands.cpClassValue(innerClassString);
+	            innerName = cpBands.cpUTF8Value(simpleClassName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 		    }
 
 		    if(ic_stored[index].isMember()) {
-		        outerClass = new CPClass(outerClassString);
+		        outerClass = cpBands.cpClassValue(outerClassString);
 		    }
 
 	        int flags = ic_stored[index].F;
@@ -429,7 +438,6 @@ public class Segment {
 			}
 		}
 		dos.flush();
-		out.finish();
 		out.flush();
 	}
 

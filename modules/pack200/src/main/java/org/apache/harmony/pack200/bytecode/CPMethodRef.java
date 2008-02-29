@@ -18,10 +18,8 @@ package org.apache.harmony.pack200.bytecode;
 
 public class CPMethodRef extends CPRef {
 
-	public CPMethodRef(String className, String descriptor) {
+	public CPMethodRef(CPClass className, CPNameAndType descriptor) {
 		super(ConstantPoolEntry.CP_Methodref, className, descriptor);
-		this.className = new CPClass(className);
-		this.nameAndType = new CPNameAndType(descriptor);
         this.domain = ClassConstantPool.DOMAIN_METHOD;
 	}
 

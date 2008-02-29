@@ -21,13 +21,12 @@ import java.io.IOException;
 
 public class CPLong extends CPConstantNumber {
 
-	public CPLong(java.lang.Long value) {
+    public CPLong(Long value) {
 		super(ConstantPoolEntry.CP_Long,value);
         this.domain = ClassConstantPool.DOMAIN_LONG;
 	}
 
-
-	protected void writeBody(DataOutputStream dos) throws IOException {
+    protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeLong(getNumber().longValue());
 	}
 

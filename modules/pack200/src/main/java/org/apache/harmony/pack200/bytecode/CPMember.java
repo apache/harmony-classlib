@@ -22,29 +22,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class CPMember extends ClassFileEntry {
 
 	List attributes;
-
-
 	short flags;
-
 	CPUTF8 name;
 	transient int nameIndex;
-
-
 	private CPUTF8 descriptor;
 	transient int descriptorIndex;
-	public CPMember(String descriptor, long flags, List attributes) {
-		int colon = descriptor.indexOf(':');
-		this.name = new CPUTF8(descriptor.substring(0,colon), ClassConstantPool.DOMAIN_NORMALASCIIZ);
-		this.descriptor = new CPUTF8(descriptor.substring(colon+1), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-		this.flags = (short) flags;
+
+	public CPMember(CPUTF8 name, CPUTF8 descriptor, long flags, List attributes) {
+		this.name = name;
+        this.descriptor = descriptor;
+        this.flags = (short) flags;
 		this.attributes = (attributes == null ? new ArrayList() : attributes);
 	}
-
-
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		int attributeCount = attributes.size();
@@ -57,8 +49,6 @@ public class CPMember extends ClassFileEntry {
 		return entries;
 	}
 
-
-
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
 		nameIndex = pool.indexOf(name);
@@ -69,11 +59,9 @@ public class CPMember extends ClassFileEntry {
 		}
 	}
 
-
 	public String toString() {
 		return "Field: " + name + "(" + descriptor + ")";
 	}
-
 
 	public int hashCode() {
 		final int PRIME = 31;
@@ -84,8 +72,6 @@ public class CPMember extends ClassFileEntry {
 		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
-
-
 
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -115,8 +101,6 @@ public class CPMember extends ClassFileEntry {
 		return true;
 	}
 
-
-
 	protected void doWrite(DataOutputStream dos) throws IOException {
 		dos.writeShort(flags);
 		dos.writeShort(nameIndex);
@@ -127,7 +111,6 @@ public class CPMember extends ClassFileEntry {
 			Attribute attribute = (Attribute) attributes.get(i);
 			attribute.doWrite(dos);
 		}
-
 	}
 
 }

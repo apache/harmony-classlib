@@ -31,7 +31,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
         return true;
     }
 
-    public BCIRenumberedAttribute(String attributeName) {
+    public BCIRenumberedAttribute(CPUTF8 attributeName) {
         super(attributeName);
     }
 

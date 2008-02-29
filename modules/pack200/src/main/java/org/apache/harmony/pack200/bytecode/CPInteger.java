@@ -21,13 +21,12 @@ import java.io.IOException;
 
 public class CPInteger extends CPConstantNumber {
 
-	public CPInteger(java.lang.Integer value) {
+    public CPInteger(Integer value) {
 		super(ConstantPoolEntry.CP_Integer,value);
 		this.domain = ClassConstantPool.DOMAIN_INTEGER;
 	}
 
-
-	protected void writeBody(DataOutputStream dos) throws IOException {
+    protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeInt(getNumber().intValue());
 	}
 

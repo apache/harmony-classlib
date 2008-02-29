@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import org.apache.harmony.pack200.SegmentUtils;
 
-
 public class CPNameAndType extends ConstantPoolEntry {
 
 	CPUTF8 descriptor;
@@ -32,42 +31,16 @@ public class CPNameAndType extends ConstantPoolEntry {
 
 	transient int nameIndex;
 
-	public CPNameAndType(String descriptor) {
+	public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
 		super(ConstantPoolEntry.CP_NameAndType);
-		int descriptorDomain = ClassConstantPool.DOMAIN_UNDEFINED;
-		int colon = descriptor.indexOf(':');
-		String nameString = descriptor.substring(0,colon);
-		String descriptorString = descriptor.substring(colon+1);
-		// For some reason, descriptors which have just plain
-		// native types are stored in DOMAIN_NORMALASCIIZ rather
-		// than in DOMAIN_SIGNATUREASCIIZ. This might indicate
-		// that DOMAIN_SIGNATUREASCIIZ is poorly named.
-		boolean nativeDescriptor = true;
-		for(int index=0; index < descriptorString.length(); index++) {
-		    char currentChar = descriptorString.charAt(index);
-		    if(Character.isLetter(currentChar)) {
-		        if(currentChar == 'L') {
-		            nativeDescriptor = false;
-		        }
-		        break;
-		    }
-		}
-		this.domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
-		this.name = new CPUTF8(nameString, ClassConstantPool.DOMAIN_NORMALASCIIZ);
-		if( nativeDescriptor ) {
-		    // Native signatures are stored in DOMAIN_NORMALASCIIZ, not
-		    // DOMAIN_SIGNATUREASCIIZ for some reason.
-		    descriptorDomain = ClassConstantPool.DOMAIN_NORMALASCIIZ;
-		} else {
-		    descriptorDomain = ClassConstantPool.DOMAIN_SIGNATUREASCIIZ;
-		}
-		this.descriptor = new CPUTF8(descriptorString, descriptorDomain);
+		this.name = name;
+		this.descriptor = descriptor;
+        this.domain = domain;
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		return new ClassFileEntry[] { name, descriptor };
 	}
-
 
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);

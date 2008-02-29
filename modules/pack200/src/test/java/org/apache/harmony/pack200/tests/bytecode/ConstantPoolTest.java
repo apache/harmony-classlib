@@ -18,6 +18,7 @@ package org.apache.harmony.pack200.tests.bytecode;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.pack200.CpBands;
 import org.apache.harmony.pack200.bytecode.CPMember;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
@@ -36,10 +37,10 @@ public class ConstantPoolTest extends TestCase {
 		assertEquals(1,pool.size());
 	}
 	public void testDuplicateField() {
-		CPMember cp1 = new CPMember("name:I",0,null);
+		CPMember cp1 = new CPMember(new CPUTF8("name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ),0,null);
 		pool.add(cp1);
 		assertEquals(2,pool.size());
-		CPMember cp2 = new CPMember("name:I",0,null);
+		CPMember cp2 = new CPMember(new CPUTF8("name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ),0,null);
 		pool.add(cp2);
 		assertEquals(2,pool.size());
 	}

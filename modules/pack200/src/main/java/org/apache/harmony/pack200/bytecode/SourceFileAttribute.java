@@ -19,15 +19,17 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
 public class SourceFileAttribute extends Attribute {
+
 	private CPUTF8 name;
-
 	private int nameIndex;
+    private static final CPUTF8 attributeName = new CPUTF8(
+            "SourceFile", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
-	public SourceFileAttribute(String name) {
-		super("SourceFile"); //$NON-NLS-1$
-		this.name = new CPUTF8(name, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+
+	public SourceFileAttribute(CPUTF8 name) {
+		super(attributeName);
+		this.name = name;
 	}
 
 	public boolean equals(Object obj) {
