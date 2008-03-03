@@ -443,12 +443,13 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(crset.getFetchDirection(), copy.getFetchDirection());
         assertEquals(crset.getPageSize(), copy.getPageSize());
 
+        assertEquals(crset.isBeforeFirst(), copy.isBeforeFirst());
+        assertEquals(crset.isAfterLast(), copy.isAfterLast());
+        assertEquals(crset.isFirst(), copy.isFirst());
+        assertEquals(crset.isLast(), copy.isLast());
+        assertEquals(crset.getRow(), copy.getRow());
+
         // TODO uncomment them after implemented
-        // assertEquals(crset.isBeforeFirst(), crsetCopy.isBeforeFirst());
-        // assertEquals(crset.isAfterLast(), crsetCopy.isAfterLast());
-        // assertEquals(crset.isFirst(), crsetCopy.isFirst());
-        // assertEquals(crset.isLast(), crsetCopy.isLast());
-        // assertEquals(crset.getRow(), copy.getRow());
         // assertNotSame(crset.getWarnings(), copy.getWarnings());
         // assertEquals(crset.getStatement(), copy.getStatement());
         // try {
@@ -720,8 +721,8 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         rs.next();
         rs.next();
         rs.next();
-        // TODO: Uncomment it when Writer is implemented fully.
-        // assertEquals("copyTest3", rs.getString(2));
+
+        assertEquals("copyTest3", rs.getString(2));
 
         reloadCachedRowSet();
         crset.absolute(2);
@@ -729,14 +730,10 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crsetCopy = crset.createCopy();
 
         assertEquals(crset.isReadOnly(), crsetCopy.isReadOnly());
-        // TODO uncomment when isBeforeFirst is implemented
-        // assertEquals(crset.isBeforeFirst(), crsetCopy.isBeforeFirst());
-        // TODO uncomment when isAfterLast is implemented
-        // assertEquals(crset.isAfterLast(), crsetCopy.isAfterLast());
-        // TODO uncomment when isFirst is implemented
-        // assertEquals(crset.isFirst(), crsetCopy.isFirst());
-        // TODO uncomment when isLast is implemented
-        // assertEquals(crset.isLast(), crsetCopy.isLast());
+        assertEquals(crset.isBeforeFirst(), crsetCopy.isBeforeFirst());
+        assertEquals(crset.isAfterLast(), crsetCopy.isAfterLast());
+        assertEquals(crset.isFirst(), crsetCopy.isFirst());
+        assertEquals(crset.isLast(), crsetCopy.isLast());
 
         assertEquals(crset.size(), crsetCopy.size());
         // different metaData object
@@ -848,10 +845,9 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
              * it, and all resource would be released after connection closed.
              */
             crset.acceptChanges(conn);
-            // TODO: wait the implementation of Writer
-            // fail("Should throw SyncProviderException");
+            fail("Should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // expected
+            // expected, TODO test SyncProviderException
         }
 
         assertEquals("updated", copy.getString(2));
@@ -1150,6 +1146,8 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertNull(noInitialCrset.getCommand());
         assertEquals(ResultSet.CONCUR_UPDATABLE, noInitialCrset
                 .getConcurrency());
+        assertEquals(0, crset.getRow());
+        
         // TODO uncomment after impelemented
         // try {
         // crset.getCursorName();
@@ -1169,7 +1167,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         // } catch (SQLException e) {
         // // expected
         // }
-        // assertEquals(0, crset.getRow());
         // assertNull(crset.getStatement());
 
         assertEquals(true, noInitialCrset.getEscapeProcessing());
