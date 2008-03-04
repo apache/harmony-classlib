@@ -130,6 +130,14 @@ public class CachedRow implements Cloneable {
         originalColumnData = columnData.clone();
     }
 
+    public void restoreOriginal() {
+        isUpdate = false;
+        isDelete = false;
+        isInsert = false;
+        mask.flip(0, columnData.length);
+        columnData = originalColumnData.clone();
+    }
+
     public Object getObject(int columnIndex) {
         return columnData[columnIndex - 1];
     }

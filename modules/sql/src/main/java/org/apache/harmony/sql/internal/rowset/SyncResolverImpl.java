@@ -58,7 +58,7 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
 
     private int currentIndex;
 
-    private RowSetMetaData metadata;
+    private ResultSetMetaData metadata;
 
     private static class ConflictedRow {
         CachedRow row;
@@ -74,7 +74,7 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
         }
     }
 
-    public SyncResolverImpl(RowSetMetaData metadata) {
+    public SyncResolverImpl(ResultSetMetaData metadata) {
         super();
         this.metadata = metadata;
         conflictRows = new ArrayList<ConflictedRow>();

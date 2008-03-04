@@ -173,14 +173,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void acceptChanges() throws SyncProviderException {
         if (currentRow == insertRow && currentRow != null) {
+            // TODO add error messages
             throw new SyncProviderException();
         }
 
         try {
             acceptChanges(getConnection());
         } catch (SQLException e) {
-            // FIXME deal with the exception, not just print it
-            e.printStackTrace();
+            SyncProviderException ex = new SyncProviderException();
+            ex.initCause(e);
+            throw ex;
         }
     }
 
@@ -197,21 +199,59 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             int beforeWriteIndex = currentRowIndex;
             rowSetWriter.writeData(this);
             absolute(beforeWriteIndex);
+
+            boolean isChanged = false;
             /*
              * FIXME: if no conflicts happen when writeData, then call
              * setOriginalRow()
              */
+            for (int i = rows.size() - 1; i >= 0; i--) {
+                currentRow = rows.get(i);
+                if (rowDeleted()) {
+                    isChanged = true;
+                    setOriginalRow();
+                } else if (rowInserted() || rowUpdated()) {
+                    isChanged = true;
+                    setOriginalRow();
+                }
+            }
+            // Set originalResultSet
+            if (isChanged) {
+                try {
+                    ArrayList<CachedRow> nowRows = new ArrayList<CachedRow>();
+                    for (int i = 0; i < rows.size(); i++) {
+                        nowRows.add(rows.get(i).createClone());
+                        nowRows.get(i).restoreOriginal();
+                    }
+                    originalResultSet.setRows(nowRows, columnCount);
+                } catch (CloneNotSupportedException cloneE) {
+                    // TODO how to deal with the CloneNotSupportedException
+                    throw new SyncProviderException(cloneE.getMessage());
+                }
+            }
+
+            if (currentRowIndex > rows.size()) {
+                afterLast();
+            } else if (currentRowIndex <= 0) {
+                beforeFirst();
+            } else {
+                absolute(currentRowIndex);
+            }
+
             notifyRowSetChanged();
 
         } catch (SyncProviderException e) {
             throw e;
         } catch (SQLException e) {
-            throw new SyncProviderException(e.getMessage());
+            SyncProviderException ex = new SyncProviderException();
+            ex.initCause(e);
+            throw ex;
         }
     }
 
     public boolean columnUpdated(int idx) throws SQLException {
-        if (currentRow == null || idx > meta.getColumnCount()) {
+        if (currentRow == null || idx > meta.getColumnCount() || idx <= 0
+                || currentRow == insertRow) {
             // rowset.0 = Not a valid position
             throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
         }
@@ -558,13 +598,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void setOriginalRow() throws SQLException {
-
-        // FIXME re-implements this method
         if (currentRow == null) {
             // TODO add error messages
             throw new SQLException();
         }
-        currentRow.setNonUpdateable();
+
+        if (rowDeleted()) {
+            rows.remove(currentRow);
+        } else if (rowUpdated() || rowInserted()) {
+            currentRow.setOriginal();
+        }
     }
 
     public void setPageSize(int size) throws SQLException {
@@ -625,7 +668,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void undoUpdate() throws SQLException {
-        throw new NotImplementedException();
+        if (currentRow == null) {
+            // TODO add error message
+            throw new SQLException();
+        }
+
+        if (currentRow == insertRow) {
+            currentRow = new CachedRow(new Object[columnCount]);
+        } else if (rowUpdated()) {
+            currentRow.restoreOriginal();
+        }
     }
 
     public int[] getMatchColumnIndexes() throws SQLException {
@@ -683,6 +735,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      * @throws SQLException
      */
     private boolean doAbsolute(int row, boolean checkType) throws SQLException {
+        // FIXME need to consider getShowDeleted()
         if (rows == null || rows.size() == 0) {
             return false;
         }
@@ -726,7 +779,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void cancelRowUpdates() throws SQLException {
-        throw new NotImplementedException();
+        if (currentRow == null || currentRow == insertRow) {
+            // TODO add error message
+            throw new SQLException();
+        }
+
+        if (rowUpdated()) {
+            currentRow.restoreOriginal();
+        }
     }
 
     public void clearWarnings() throws SQLException {
@@ -747,6 +807,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void deleteRow() throws SQLException {
         checkValidRow();
+        if (currentRow == insertRow) {
+            // TODO add error message
+            throw new SQLException();
+        }
         currentRow.setDelete();
     }
 
@@ -1169,7 +1233,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public boolean rowDeleted() throws SQLException {
         checkValidRow();
-        checkCursorValid();
         return currentRow.isDelete();
     }
 
@@ -1182,6 +1245,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean rowUpdated() throws SQLException {
+
+        if (currentRow == null || currentRow == insertRow) {
+            // TODO add error message
+            throw new SQLException();
+        }
+
         if (!currentRow.isUpdate()) {
             return false;
         }
@@ -1439,11 +1508,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      */
     private Object convertUpdateValue(int columnIndex, Object value)
             throws SQLException {
-        
+
         if (value == null) {
             return value;
         }
-        
+
         Class type = columnTypes[columnIndex - 1];
 
         /*

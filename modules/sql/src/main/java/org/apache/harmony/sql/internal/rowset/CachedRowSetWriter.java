@@ -25,6 +25,7 @@ import javax.sql.RowSetInternal;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.spi.SyncProviderException;
+import javax.sql.rowset.spi.SyncResolver;
 
 public class CachedRowSetWriter implements RowSetWriter {
 
@@ -39,6 +40,8 @@ public class CachedRowSetWriter implements RowSetWriter {
     private String[] colNames;
 
     private int columnCount;
+
+    private SyncResolverImpl resolver;
 
     public void setConnection(Connection conn) {
         originalConnection = conn;
@@ -56,28 +59,47 @@ public class CachedRowSetWriter implements RowSetWriter {
         // analyse every row and do responsible task.
         currentRowSet.beforeFirst();// currentRowSet.first();
         originalRowSet.beforeFirst();// originalRowSet.first();
+        resolver = null;
         while (currentRowSet.next()) {
             if (currentRowSet.rowInserted()) {
-                insertCurrentRow();
+                try {
+                    insertCurrentRow();
+                } catch (SyncProviderException e) {
+                    addConflict(SyncResolver.INSERT_ROW_CONFLICT);
+                }
             } else if (currentRowSet.rowDeleted()) {
                 if (isConflictExistForCurrentRow()) {
-                    // TODO: conflict exists, should throw SyncProviderException
-                    throw new SyncProviderException();
+                    addConflict(SyncResolver.DELETE_ROW_CONFLICT);
                 }
 
                 deleteCurrentRow();
 
             } else if (currentRowSet.rowUpdated()) {
                 if (isConflictExistForCurrentRow()) {
-                    // TODO: conflict exists, should throw SyncProviderException
-                    throw new SyncProviderException();
+                    addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
                 }
-                
-                updateCurrentRow();
+                try {
+                    updateCurrentRow();
+                } catch (SyncProviderException e) {
+                    addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
+                }
             }
+        }
+
+        if (resolver != null) {
+            throw new SyncProviderException(resolver);
         }
         // TODO release resource
         return true;
+    }
+
+    private void addConflict(int status) throws SQLException {
+        if (resolver == null) {
+            resolver = new SyncResolverImpl(currentRowSet.getMetaData());
+        }
+
+        resolver.addConflictRow(new CachedRow(new Object[columnCount]),
+                currentRowSet.getRow(), status);
     }
 
     /**
@@ -126,7 +148,6 @@ public class CachedRowSetWriter implements RowSetWriter {
         try {
             preSt.executeUpdate();
         } catch (SQLException e) {
-            // TODO generate SyncProviderException
             throw new SyncProviderException();
         } finally {
             preSt.close();
@@ -207,7 +228,6 @@ public class CachedRowSetWriter implements RowSetWriter {
         try {
             preSt.executeUpdate();
         } catch (SQLException e) {
-            // TODO generate SyncProviderException
             throw new SyncProviderException();
         } finally {
             preSt.close();
