@@ -135,7 +135,8 @@ public class ByteCode extends ClassFileEntry {
 
 				case 4:
 					// TODO: need to handle wides?
-					SegmentUtils.debug("Need to handle wides");
+                    SegmentUtils.debug("Need to handle wides");
+                    throw new Error("Instruction argument not handled");
 					// figure out and if so, handle and put a break here.
 					// break;
 

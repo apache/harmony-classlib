@@ -22,11 +22,12 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
 /**
  * This class implements the byte code form for the
  * multianewarray instruction. It has a class reference
- * and a byte operand. Like other NewClassRefForms, it
- * keeps track of the last object created so other New
- * forms can make use of this information.
+ * and a byte operand.
+ * 
+ * MultiANewArrayForms (like other anewarray
+ * forms) do not track the last new().
  */
-public class MultiANewArrayForm extends NewClassRefForm {
+public class MultiANewArrayForm extends ClassRefForm {
 
     public MultiANewArrayForm(int opcode, String name,
             int[] rewrite) {

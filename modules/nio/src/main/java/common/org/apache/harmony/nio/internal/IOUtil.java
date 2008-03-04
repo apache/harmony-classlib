@@ -29,7 +29,7 @@ import java.nio.charset.CoderResult;
 import org.apache.harmony.nio.Util;
 import org.apache.harmony.nio.internal.nls.Messages;
 
-/*
+/**
  * Static methods for I/O util. Used by io package and nio package.
  */
 public final class IOUtil {

@@ -5585,6 +5585,23 @@ public class ScannerTest extends TestCase {
         s = new Scanner("test\n ");
         result = s.nextLine();
         assertEquals("test", result);
+
+        // Regression test for Harmony-4774
+        class CountReadable implements Readable {
+            int counter = 0;
+            public int read(CharBuffer charBuffer) throws IOException {
+                counter++;
+                charBuffer.append("hello\n");
+                return 6;
+            }
+        }
+        CountReadable cr = new CountReadable();
+        s = new Scanner(cr);
+        result = s.nextLine();
+        // We expect read() to be called only once, otherwise we see the problem
+        // when reading from System.in described in Harmony-4774
+        assertEquals(1, cr.counter);
+        assertEquals("hello", result);        
     }
     
     /**

@@ -20,8 +20,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.harmony.pack200.SegmentUtils;
-
 public abstract class BCIRenumberedAttribute extends Attribute {
 
     protected boolean renumbered = false;
@@ -33,7 +31,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
         return true;
     }
 
-    public BCIRenumberedAttribute(String attributeName) {
+    public BCIRenumberedAttribute(CPUTF8 attributeName) {
         super(attributeName);
     }
 
@@ -54,9 +52,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
      */
     public void renumber(List byteCodeOffsets) {
         if(renumbered) {
-            SegmentUtils.debug("Trying to renumber something renumbered");
-            return;
-//            throw new Error("Trying to renumber a line number table that has already been renumbered");
+            throw new Error("Trying to renumber a line number table that has already been renumbered");
         }
         renumbered = true;
         int[] startPCs = getStartPCs();

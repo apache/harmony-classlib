@@ -382,6 +382,9 @@ public class Timestamp extends Date {
             throw new IllegalArgumentException(Messages.getString("sql.3")); //$NON-NLS-1$
         }
 
+        // omit trailing whitespaces
+        s = s.trim();
+
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
         ParsePosition pp = new ParsePosition(0);
 

@@ -104,10 +104,10 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_rea
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    readSocketDirectImpl
- * Signature: (Ljava/io/FileDescriptor;JIII)I
+ * Signature: (Ljava/io/FileDescriptor;JII)I
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl
-  (JNIEnv *, jclass, jobject, jlong, jint, jint, jint);
+  (JNIEnv *, jclass, jobject, jlong, jint, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
@@ -120,10 +120,10 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_wri
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    writeSocketDirectImpl
- * Signature: (Ljava/io/FileDescriptor;JII)I
+ * Signature: (Ljava/io/FileDescriptor;JI)I
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
-  (JNIEnv *, jclass, jobject, jlong, jint, jint);
+  (JNIEnv *, jclass, jobject, jlong, jint);
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem

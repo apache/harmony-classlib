@@ -83,6 +83,7 @@ public abstract class DatagramChannel extends AbstractSelectableChannel
      * @see java.nio.channels.SelectableChannel#validOps()
      * @return Valid operations in bit-set.
      */
+    @Override
     public final int validOps() {
         return (SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }

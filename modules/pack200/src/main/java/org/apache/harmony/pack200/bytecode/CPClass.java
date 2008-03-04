@@ -26,16 +26,15 @@ public class CPClass extends ConstantPoolEntry {
 	public String name;
 
 	private CPUTF8 utf8;
-
-	public   CPClass(String name) {
+    
+    public CPClass(CPUTF8 name) {
 		super(ConstantPoolEntry.CP_Class);
-		this.name = name;
+		this.name = name.underlyingString();
 		this.domain = ClassConstantPool.DOMAIN_CLASSREF;
-		this.utf8 = new CPUTF8(name, ClassConstantPool.DOMAIN_NORMALASCIIZ);
+		this.utf8 = name;
 	}
 
-
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)

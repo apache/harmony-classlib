@@ -67,7 +67,7 @@ class InitManifest {
         mainAttributesChunk = nextChunk(is, list);
 
         Iterator<String> it = list.iterator();
-        while (it.hasNext()) {
+        while (it.hasNext()) {             
             addAttribute(it.next(), current);
         }
 
@@ -109,7 +109,7 @@ class InitManifest {
         return mainAttributesChunk;
     }
 
-    private void addLine(int length, List<String> lines) throws IOException {
+    private void addLine(int length, List<String> lines) throws IOException {        
         if (encoding != null) {
             lines.add(new String(buffer, 0, length, encoding));
         } else {
@@ -118,7 +118,8 @@ class InitManifest {
                     if (charbuf.length < length) {
                         charbuf = new char[length];
                     }
-                    lines.add(Util.convertUTF8WithBuf(buffer, charbuf, 0,
+                    int start = skipFirstEmptyLines(0, buffer);
+                    lines.add(Util.convertUTF8WithBuf(buffer, charbuf, Math.min(Math.max(length - 1, 0), start),
                             length));
                 } catch (UTFDataFormatException e) {
                     usingUTF8 = false;
@@ -135,9 +136,30 @@ class InitManifest {
                 for (int i = length; --i >= 0;) {
                     charbuf[charOffset++] = (char) (buffer[offset++] & 0xff);
                 }
-                lines.add(new String(charbuf, 0, length));
+                int start = skipFirstEmptyLines(0, buffer);
+                lines.add(new String(charbuf, Math.min(Math.max(length - 1, 0), start), length));
             }
         }
+    }
+
+    private int skipFirstEmptyLines(int start, byte[] buf) {
+        int res = start;
+        if (buf.length > start) {
+            if ((char) buf[res] == '\r') {
+                res++;
+                if ((res < buf.length) && ((char) buf[res] == '\n')) {
+                    res++;
+                    return skipFirstEmptyLines(res, buf);
+                }
+                return res;
+            } else if ((char) buf[res] == '\n') {
+                res++;
+                return skipFirstEmptyLines(res, buf);
+            } else {
+                return res;
+            }
+        }
+        return res;
     }
 
     private byte[] nextChunk(InputStream in, List<String> lines)

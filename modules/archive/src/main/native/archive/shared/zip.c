@@ -24,6 +24,33 @@
 void zfree PROTOTYPE ((void *opaque, void *address));
 void *zalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
 
+
+#ifdef HY_ZIP_API
+/*
+	ZLib interface to hymem_allocate_memory.
+*/
+void *
+zalloc (void *opaque, U_32 items, U_32 size)
+{
+  PORT_ACCESS_FROM_PORT (((HyPortLibrary *) opaque));
+
+  return hymem_allocate_memory (items * size);
+}
+
+
+/*
+	ZLib interface to hymem_free_memory.
+*/
+void
+zfree (void *opaque, void *address)
+{
+  PORT_ACCESS_FROM_PORT ((HyPortLibrary *) opaque);
+
+  hymem_free_memory (address);
+}
+
+#endif /* HY_ZIP_API */
+
 /**
   * Throw java.lang.InternalError
   */
@@ -57,7 +84,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
 #ifndef HY_ZIP_API
   HyZipCachePool *zipCachePool;
 #else /* HY_ZIP_API */
-  HyZipFunctionTable *zipFuncs;
+  VMIZipFunctionTable *zipFuncs;
 #endif /* HY_ZIP_API */
 
   jclZipFile = jclmem_allocate_memory (env, sizeof (*jclZipFile));
@@ -66,7 +93,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
 
   length = (*env)->GetArrayLength (env, zipName);
   length = length < HyMaxPath - 1 ? length : HyMaxPath - 1;
-  ((*env)->GetByteArrayRegion (env, zipName, 0, length, pathCopy));
+  ((*env)->GetByteArrayRegion (env, zipName, 0, length, (jbyte*)pathCopy));
   pathCopy[length++] = '\0';
   ioh_convertToPlatform (pathCopy);
 
@@ -79,7 +106,7 @@ Java_java_util_zip_ZipFile_openZipImpl (JNIEnv * env, jobject recv,
 #else /* HY_ZIP_API */
   /* Open the zip file (caching will be managed automatically) */
   zipFuncs = (*VMI)->GetZipFunctions(VMI);
-  retval = zipFuncs->zip_openZipFile(VMI, pathCopy, &(jclZipFile->hyZipFile));
+  retval = zipFuncs->zip_openZipFile(VMI, pathCopy, &(jclZipFile->hyZipFile), ZIP_FLAG_OPEN_CACHE);
 #endif /* HY_ZIP_API */
 
   if (retval)
@@ -117,20 +144,26 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
 {
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
-#endif /* HY_ZIP_API */
+#else
   PORT_ACCESS_FROM_ENV (env);
+#endif /* HY_ZIP_API */
 
   I_32 retval;
   I_32 extraval;
+#ifdef HY_ZIP_API
+  VMIZipFile *zipFile;
+  VMIZipEntry zipEntry;
+#else
   HyZipFile *zipFile;
   HyZipEntry zipEntry;
+#endif
   jobject java_ZipEntry, extra;
   jclass entryClass;
   jmethodID mid;
   const char *entryCopy;
   JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) zipPointer;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   if (jclZipFile == (void *) -1)
@@ -148,7 +181,7 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
   retval = zip_getZipEntry (PORTLIB, zipFile, &zipEntry, entryCopy, TRUE);
 #else /* HY_ZIP_API */
   zipFuncs->zip_initZipEntry (VMI, &zipEntry);
-  retval = zipFuncs->zip_getZipEntry (VMI, zipFile, &zipEntry, entryCopy, TRUE);
+  retval = zipFuncs->zip_getZipEntry (VMI, zipFile, &zipEntry, entryCopy, ZIP_FLAG_FIND_DIRECTORY|ZIP_FLAG_READ_DATA_POINTER);
 #endif /* HY_ZIP_API */
   (*env)->ReleaseStringUTFChars (env, entryName, entryCopy);
   if (retval)
@@ -198,7 +231,7 @@ Java_java_util_zip_ZipFile_getEntryImpl (JNIEnv * env, jobject recv,
         }
       ((*env)->
        SetByteArrayRegion (env, extra, 0, zipEntry.extraFieldLength,
-                           zipEntry.extraField));
+                           (jbyte*)zipEntry.extraField));
     }
 
   entryClass = JCL_CACHE_GET (env, CLS_java_util_zip_ZipEntry);
@@ -243,7 +276,7 @@ Java_java_util_zip_ZipFile_closeZipImpl (JNIEnv * env, jobject recv, jlong zipPo
   JCLZipFileLink *zipfileHandles;
   JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) zipPointer;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   if (jclZipFile != (void *) -1)
@@ -343,15 +376,16 @@ JNIEXPORT jlong JNICALL
 Java_java_util_zip_ZipFile_00024ZFEnum_resetZip (JNIEnv * env, jobject recv,
                                                  jlong descriptor)
 {
-  PORT_ACCESS_FROM_ENV (env);
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
+#else
+  PORT_ACCESS_FROM_ENV (env);
 #endif /* HY_ZIP_API */
 
   IDATA nextEntryPointer;
   JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   if (jclZipFile == (void *) -1)
@@ -382,8 +416,13 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
 
   I_32 retval;
   I_32 extraval;
+#ifdef HY_ZIP_API
+  VMIZipFile *zipFile;
+  VMIZipEntry zipEntry;
+#else
   HyZipFile *zipFile;
   HyZipEntry zipEntry;
+#endif
   jobject java_ZipEntry, extra;
   jclass javaClass;
   jmethodID mid;
@@ -391,7 +430,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
   IDATA nextEntryPointer;
   JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   if (jclZipFile == (void *) -1)
@@ -411,7 +450,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
 #ifndef HY_ZIP_API
     zip_getNextZipEntry (PORTLIB, zipFile, &zipEntry, &nextEntryPointer);
 #else /* HY_ZIP_API */
-    zipFuncs->zip_getNextZipEntry (VMI, zipFile, &zipEntry, &nextEntryPointer);
+    zipFuncs->zip_getNextZipEntry (VMI, zipFile, &zipEntry, &nextEntryPointer, ZIP_FLAG_READ_DATA_POINTER);
 #endif /* HY_ZIP_API */
   if (retval)
     {
@@ -425,7 +464,7 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
     }
 
   /* Build a new ZipEntry from the C struct */
-  entryName = ((*env)->NewStringUTF (env, zipEntry.filename));
+  entryName = ((*env)->NewStringUTF (env, (const char*)zipEntry.filename));
 
   if (((*env)->ExceptionCheck (env)))
     return NULL;
@@ -462,13 +501,13 @@ Java_java_util_zip_ZipFile_00024ZFEnum_getNextEntry (JNIEnv * env,
 #ifndef HY_ZIP_API
           zip_freeZipEntry (PORTLIB, &zipEntry);
 #else /* HY_ZIP_API */
-          zipFuncs->zip_freeZipEntry (VMI, &zipEntry); //not valid zipEntry (-1)
+          zipFuncs->zip_freeZipEntry (VMI, &zipEntry); /* not valid zipEntry (-1) */
 #endif /* HY_ZIP_API */
           return NULL;
         }
       ((*env)->
        SetByteArrayRegion (env, extra, 0, zipEntry.extraFieldLength,
-                           zipEntry.extraField));
+                           (jbyte*)zipEntry.extraField));
       jclmem_free_memory (env, zipEntry.extraField);
       zipEntry.extraField = NULL;
     }
@@ -501,19 +540,24 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
 					                          jlong descriptor,
                                               jstring entryName)
 {
-  PORT_ACCESS_FROM_ENV (env);
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV(env);
 #endif /* HY_ZIP_API */
+  PORT_ACCESS_FROM_ENV (env);
 
   I_32 retval;
+#ifdef HY_ZIP_API
+  VMIZipFile *zipFile;
+  VMIZipEntry zipEntry;
+#else
   HyZipFile *zipFile;
   HyZipEntry zipEntry;
+#endif
   const char *entryCopy;
   jbyteArray buf;
   JCLZipFile *jclZipFile = (JCLZipFile *) (IDATA) descriptor;
 #ifdef HY_ZIP_API
-  HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+  VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
   /* Build the zipFile */
@@ -536,7 +580,7 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
 #ifndef HY_ZIP_API
     zip_getZipEntry (privatePortLibrary, zipFile, &zipEntry, entryCopy, TRUE);
 #else /* HY_ZIP_API */
-    zipFuncs->zip_getZipEntry (VMI, zipFile, &zipEntry, entryCopy, TRUE);
+    zipFuncs->zip_getZipEntry (VMI, zipFile, &zipEntry, entryCopy, ZIP_FLAG_FIND_DIRECTORY|ZIP_FLAG_READ_DATA_POINTER);
 #endif /* HY_ZIP_API */
   (*env)->ReleaseStringUTFChars (env, entryName, entryCopy);
   if (retval)
@@ -567,7 +611,7 @@ Java_java_util_zip_ZipFile_inflateEntryImpl2 (JNIEnv * env, jobject recv,
                          zipEntry.uncompressedSize);
   if (retval == 0)
     (*env)->SetByteArrayRegion (env, buf, 0, zipEntry.uncompressedSize,
-                                zipEntry.data);
+                                (jbyte*)zipEntry.data);
 #ifndef HY_ZIP_API
   zip_freeZipEntry (privatePortLibrary, &zipEntry);
 #else /* HY_ZIP_API */

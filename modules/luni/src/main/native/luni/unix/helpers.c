@@ -298,7 +298,37 @@ jstring
 getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
                        jbooleanArray isCustomTimeZone)
 {
-  return NULL;
+    time_t curTime;
+    struct tm *tmStruct;
+    char tzInfo[9];
+    int h, m;
+
+    time(&curTime);
+    //curTime += 15552000l;
+    tmStruct = localtime(&curTime);
+    // timezone is now set to time zone offset
+    // tmStruct->tm_isdst is set to 1 if DST is in effect
+    strcpy(tzInfo, "GMT");
+    tzInfo[3] = timezone > 0 ? '-' : '+';
+    h = labs(timezone) / 3600;
+    if (tmStruct->tm_isdst) {
+        if (timezone > 0) {
+            h--;
+        } else {
+            h++;
+        }
+    }
+    m = (labs(timezone) % 3600) / 60;
+    tzInfo[4] = h / 10 + '0';
+    tzInfo[5] = h % 10 + '0';
+    tzInfo[6] = m / 10 + '0';
+    tzInfo[7] = m % 10 + '0';
+    tzInfo[8] = 0;
+
+    jboolean fls = JNI_FALSE;
+
+    (*env)->SetBooleanArrayRegion(env, isCustomTimeZone, 0, 1, &fls);
+    return (*env)->NewStringUTF(env, tzInfo);
 }
 
 void

@@ -28,7 +28,7 @@ import java.util.SortedMap;
 /**
  * Class that initialize Packer and Unpacker
  * 
- * @see JSR200
+ * See JSR200
  */
 public abstract class Pack200 {
 
@@ -97,7 +97,7 @@ public abstract class Pack200 {
     /**
      * interface of Packer
      * 
-     * @see JSR 200 specification
+     * See JSR 200 specification
      */
     public static interface Packer {
 
@@ -247,7 +247,7 @@ public abstract class Pack200 {
     /**
      * interface of unpacker
      * 
-     * @see JSR 200 specification
+     * See JSR 200 specification
      */
     public static interface Unpacker {
 

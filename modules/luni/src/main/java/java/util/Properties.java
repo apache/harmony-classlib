@@ -35,15 +35,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.harmony.luni.util.PriviAction;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import org.apache.harmony.luni.internal.nls.Messages;
+import org.apache.harmony.luni.util.PriviAction;
 
 /**
  * Properties is a Hashtable where the keys and values must be Strings. Each
@@ -452,8 +455,9 @@ public class Properties extends Hashtable<Object,Object> {
                     if (++count < 4) {
                         continue;
                     }
-                } else {
-                    throw new IllegalArgumentException();
+                } else if (count <= 4) {
+                    // luni.09=Invalid Unicode sequence: illegal character
+                    throw new IllegalArgumentException(Messages.getString("luni.09"));
                 }
                 mode = NONE;
                 buf[offset++] = (char) unicode;
@@ -572,9 +576,21 @@ public class Properties extends Hashtable<Object,Object> {
             }
             buf[offset++] = nextChar;
         }
+        if (mode == UNICODE && count <= 4) {
+            // luni.08=Invalid Unicode sequence: expected format \\uxxxx
+            throw new IllegalArgumentException(Messages.getString("luni.08"));
+        }
+        if (keyLength == -1 && offset > 0) {
+            keyLength = offset;
+        }
         if (keyLength >= 0) {
             String temp = new String(buf, 0, offset);
-            put(temp.substring(0, keyLength), temp.substring(keyLength));
+            String key = temp.substring(0, keyLength);
+            String value = temp.substring(keyLength);
+            if (mode == SLASH) {
+                value += "\u0000";
+            }
+            put(key, value);
         }
     }   
 

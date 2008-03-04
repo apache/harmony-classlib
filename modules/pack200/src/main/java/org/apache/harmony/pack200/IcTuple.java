@@ -102,7 +102,8 @@ public class IcTuple {
         if(predicted()) {
             return C;
         } else {
-            // TODO: this may not be right.
+            // TODO: this may not be right. What if I 
+            // get a class like Foo#Bar$Baz$Bug?
             return C2 + "$" + N;
         }
     }
@@ -146,26 +147,15 @@ public class IcTuple {
                 member = false;
             }
             if(index + 1 != lastPosition) {
+                // TODO: might need more logic to handle
+                // classes with separators of non-$ characters
+                // (ie Foo#Bar)
                 cachedOuterClassString += '$';
             }
         }
-        // Now special-case: if the last part of the outer
-        // class name is all digits, then the cachedOuterClassString
-        // is null (an anonymous outer class). If the cachedInnerClassString
-        // is all digits, then the cachedInnerClassString is null (an
-        // anonymous inner class).
-        // TODO: Don't know about this - we might need to
-        // do this later on (after we've determined what's
-        // anonymous and what isn't) so we point to the right
-        // class file entries.
-//        if(isAllDigits(nameComponents[lastPosition - 1])) {
-//            cachedOuterClassString = null;
-//            anonymous = false;
-//        }
         if(isAllDigits(cachedSimpleClassName)) {
             anonymous = true;
             member = false;
-//            cachedSimpleClassName = C;
         }
     }
 

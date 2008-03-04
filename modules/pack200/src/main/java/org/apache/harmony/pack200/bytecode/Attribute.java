@@ -24,8 +24,8 @@ public abstract class Attribute extends ClassFileEntry {
 
     private int attributeNameIndex;
 
-    public Attribute(String attributeName) {
-        this.attributeName = new CPUTF8(attributeName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    public Attribute(CPUTF8 attributeName) {
+        this.attributeName = attributeName;
     }
 
     protected void doWrite(DataOutputStream dos) throws IOException {

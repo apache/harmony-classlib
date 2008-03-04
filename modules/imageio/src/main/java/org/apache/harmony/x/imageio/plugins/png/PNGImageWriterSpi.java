@@ -21,7 +21,6 @@
 package org.apache.harmony.x.imageio.plugins.png;
 
 import java.awt.image.ColorModel;
-import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
 import java.util.Locale;
@@ -30,31 +29,27 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 
+import org.apache.harmony.x.imageio.plugins.ImageType;
+import org.apache.harmony.x.imageio.plugins.PluginUtils;
+
 public class PNGImageWriterSpi extends ImageWriterSpi {
 
     public PNGImageWriterSpi() {
-        super("Intel Corporation",// vendorName
-                "1.0",// version
-                new String[] {
-                        "png", "PNG" },// names
-                new String[] {
-                        "png", "PNG" },// suffixes
-                new String[] {
-                    "image/png" },// MIMETypes
-                "org.apache.harmony.x.imageio.plugins.png.PNGImageWriter",// writerClassName
-                STANDARD_OUTPUT_TYPE,// outputTypes
-                new String[] {
-                    "org.apache.harmony.x.imageio.plugins.png.PNGImageWriterSpi" },// readerSpiNames
-                false,// supportsStandardStreamMetadataFormat
-                null,// nativeStreamMetadataFormatName
-                null,// nativeStreamMetadataFormatClassName
-                null,// extraStreamMetadataFormatNames
-                null,// extraStreamMetadataFormatClassNames
-                false,// supportsStandardImageMetadataFormat
-                null,// nativeImageMetadataFormatName
-                null,// nativeImageMetadataFormatClassName
-                null,// extraImageMetadataFormatNames
-                null// extraImageMetadataFormatClassNames
+        super(PluginUtils.VENDOR_NAME, PluginUtils.DEFAULT_VERSION,
+                        ImageType.PNG.getNames(), ImageType.PNG.getSuffixes(),
+                        ImageType.PNG.getMimeTypes(),
+                        PNGImageWriter.class.getName(), STANDARD_OUTPUT_TYPE,
+                        new String[] { PNGImageReaderSpi.class.getName() },
+                        false,// supportsStandardStreamMetadataFormat
+                        null,// nativeStreamMetadataFormatName
+                        null,// nativeStreamMetadataFormatClassName
+                        null,// extraStreamMetadataFormatNames
+                        null,// extraStreamMetadataFormatClassNames
+                        false,// supportsStandardImageMetadataFormat
+                        null,// nativeImageMetadataFormatName
+                        null,// nativeImageMetadataFormatClassName
+                        null,// extraImageMetadataFormatNames
+                        null// extraImageMetadataFormatClassNames
         );
     }
 
@@ -69,29 +64,27 @@ public class PNGImageWriterSpi extends ImageWriterSpi {
         int bitDepth = colorModel.getPixelSize() / numBands;
 
         if (colorModel instanceof IndexColorModel) {
-            if (bitDepth != 1 && bitDepth != 2 && bitDepth != 4 && bitDepth != 8) {
+            if (bitDepth != 1 && bitDepth != 2 && bitDepth != 4
+                && bitDepth != 8) {
                 canEncode = false;
             }
             if (numBands != 1) {
                 canEncode = false;
             }
-        }
-        else if (numBands == 1) {
-            if (bitDepth != 1 && bitDepth != 2 && bitDepth != 4 && bitDepth != 8 && bitDepth != 16) {
+        } else if (numBands == 1) {
+            if (bitDepth != 1 && bitDepth != 2 && bitDepth != 4
+                && bitDepth != 8 && bitDepth != 16) {
                 canEncode = false;
             }
-        }
-        else if (numBands == 2) {
+        } else if (numBands == 2) {
             if (bitDepth != 8 && bitDepth != 16) {
                 canEncode = false;
             }
-        }
-        else if (numBands == 3) {
+        } else if (numBands == 3) {
             if (bitDepth != 8 && bitDepth != 16) {
                 canEncode = false;
             }
-        }
-        else if (numBands == 4) {
+        } else if (numBands == 4) {
             if (bitDepth != 8 && bitDepth != 16) {
                 canEncode = false;
             }
@@ -107,7 +100,7 @@ public class PNGImageWriterSpi extends ImageWriterSpi {
 
     @Override
     public String getDescription(Locale arg0) {
-        return "DRL PNG encoder";
+        return "PNG image encoder"; //$NON-NLS-1$
     }
 
 }

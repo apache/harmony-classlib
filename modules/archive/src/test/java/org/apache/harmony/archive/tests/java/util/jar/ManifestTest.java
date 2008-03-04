@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.jar.Attributes;
@@ -95,15 +94,9 @@ public class ManifestTest extends TestCase {
 		 * assertTrue("Manifests should be equal", myManifest.equals(m2));
 		 */
 
-		Manifest manifest = null;
-		try {
-			manifest = new Manifest(new URL(Support_Resources
-					.getURL(MANIFEST_NAME)).openStream());
-		} catch (MalformedURLException e) {
-			fail("Malformed URL");
-		} catch (IOException e) {
-			fail("IOException");
-		}
+        Manifest manifest = new Manifest(new URL(Support_Resources
+                .getURL(MANIFEST_NAME)).openStream());
+
 		Attributes main = manifest.getMainAttributes();
 		assertEquals("Bundle-Name not correct", "ClientSupport", main.getValue("Bundle-Name")
 				);
@@ -148,14 +141,15 @@ public class ManifestTest extends TestCase {
                 .getBytes());
         Manifest mf = new Manifest(bis);
 
-        assertTrue("Wrong number of main attributes", mf.getMainAttributes().size() == 4);
+        assertEquals("Wrong number of main attributes", 4, mf
+                .getMainAttributes().size());
 
         Map<String, Attributes> entries = mf.getEntries();
-        assertTrue("Wrong number of named entries", entries.size() == 1);
+        assertEquals("Wrong number of named entries", 1, entries.size());
 
         Attributes namedEntryAttributes = (Attributes) (entries.get(""));
-        assertTrue("Wrong number of named entry attributes",
-                namedEntryAttributes.size() == 6);
+        assertEquals("Wrong number of named entry attributes", 6,
+                namedEntryAttributes.size());
 	}
 
 	/**

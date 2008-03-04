@@ -28,20 +28,28 @@ import org.apache.harmony.luni.platform.OSResourcesMonitor;
  */
 public class Deflater {
 
+    /** Constant value representing the best available compression level. */
     public static final int BEST_COMPRESSION = 9;
 
+    /** Constant value representing the fastest available compression level. */
     public static final int BEST_SPEED = 1;
 
+    /** Constant value representing the default compression level. */
     public static final int DEFAULT_COMPRESSION = -1;
 
+    /** Constant value representing the default compression strategy. */
     public static final int DEFAULT_STRATEGY = 0;
 
+    /** Constant value representing the deflate compression strategy. */
     public static final int DEFLATED = 8;
 
+    /** Constant value representing the filtered compression strategy. */
     public static final int FILTERED = 1;
 
+    /** Constant value representing the Huffman compression strategy. */
     public static final int HUFFMAN_ONLY = 2;
 
+    /** Constant value representing the no compression strategy. */
     public static final int NO_COMPRESSION = 0;
 
     private static final int Z_NO_FLUSH = 0;
@@ -112,7 +120,8 @@ public class Deflater {
             throw new IllegalArgumentException();
         }
         compressLevel = level;
-        streamHandle = createStreamWithMemoryEnsurance(compressLevel, strategy, noHeader);
+        streamHandle = createStreamWithMemoryEnsurance(compressLevel, strategy,
+                noHeader);
     }
 
     /**
@@ -186,7 +195,7 @@ public class Deflater {
      * Indicates to the Deflater that all uncompressed input has been provided
      * to it.
      * 
-     * @see #finished
+     * @see #finished()
      */
     public synchronized void finish() {
         flushParm = Z_FINISH;
@@ -279,7 +288,7 @@ public class Deflater {
      * operation <i>must</i> be called after <code>finished()</code> returns
      * <code>true</code> if the <code>Deflater</code> is to be reused.
      * 
-     * @see #finished
+     * @see #finished()
      */
     public synchronized void reset() {
         if (streamHandle == -1) {
@@ -294,15 +303,30 @@ public class Deflater {
 
     private synchronized native void resetImpl(long handle);
 
+    /**
+     * Defines a dictionary to be used for compression by the receiver.
+     * 
+     * @param buf
+     *            the entire set of bytes comprising the dictionary
+     * @see #setDictionary(byte[], int, int)
+     */
     public void setDictionary(byte[] buf) {
         setDictionary(buf, 0, buf.length);
     }
 
     /**
      * Sets the dictionary to be used for compression by this Deflater.
-     * setDictionary() can only be called if this Deflater supports the writing
-     * of ZLIB headers. This is the default behaviour but can be overridden
-     * using Deflater(int, boolean).
+     * 
+     * <code>setDictionary()</code> can only be called if this Deflater
+     * supports the writing of ZLIB headers. This is the default behaviour but
+     * can be overridden using <code>Deflater(int, boolean)</code>.
+     * 
+     * @param buf
+     *            the byte array containing the dictionary
+     * @param off
+     *            offset into the byte array
+     * @param nbytes
+     *            number of bytes comprising the dictionary
      * 
      * @see Deflater#Deflater(int, boolean)
      */
@@ -325,6 +349,9 @@ public class Deflater {
     /**
      * Sets the input buffer the Deflater will use to extract uncompressed bytes
      * for later compression.
+     * 
+     * @param buf
+     *            the input buffer
      */
     public void setInput(byte[] buf) {
         setInput(buf, 0, buf.length);
@@ -334,6 +361,13 @@ public class Deflater {
      * Sets the input buffer the Deflater will use to extract uncompressed bytes
      * for later compression. Input will be taken from the buffer region
      * starting at off and ending at nbytes - 1.
+     * 
+     * @param buf
+     *            the input data byte array
+     * @param off
+     *            offset into the input bytes
+     * @param nbytes
+     *            number of valid bytes in the input array
      */
     public synchronized void setInput(byte[] buf, int off, int nbytes) {
         if (streamHandle == -1) {
@@ -406,7 +440,7 @@ public class Deflater {
      * method performs the same as getTotalIn except it returns a long value
      * instead of an integer
      * 
-     * @see getTotalIn
+     * @see #getTotalIn()
      * @return bytes exactly read by deflater
      */
     public synchronized long getBytesRead() {
@@ -422,7 +456,7 @@ public class Deflater {
      * method performs the same as getTotalOut except it returns a long value
      * instead of an integer
      * 
-     * @see getTotalOut
+     * @see #getTotalOut()
      * @return bytes exactly write by deflater
      */
     public synchronized long getBytesWritten() {
@@ -433,9 +467,11 @@ public class Deflater {
         return getTotalOutImpl(streamHandle);
     }
 
-    private long createStreamWithMemoryEnsurance(int level, int strategy1, boolean noHeader1){
+    private long createStreamWithMemoryEnsurance(int level, int strategy1,
+            boolean noHeader1) {
         OSResourcesMonitor.ensurePhysicalMemoryCapacity();
         return createStream(level, strategy1, noHeader1);
     }
+
     private native long createStream(int level, int strategy1, boolean noHeader1);
 }

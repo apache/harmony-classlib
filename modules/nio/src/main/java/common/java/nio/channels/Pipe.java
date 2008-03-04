@@ -24,7 +24,6 @@ import java.nio.channels.spi.SelectorProvider;
  * A pipe contains two channels. One is the writable sink channel and the other is
  * readable source channel. When bytes are written into the writable channel they
  * can be read from readable channel. The order of these bytes remains unchanged. 
- * 
  */
 public abstract class Pipe {
 
@@ -49,6 +48,7 @@ public abstract class Pipe {
          * 
          * @return a static value of OP_WRITE
          */
+        @Override
         public final int validOps() {
             return SelectionKey.OP_WRITE;
         }
@@ -76,6 +76,7 @@ public abstract class Pipe {
          * 
          * @return a static value of OP_READ
          */
+        @Override
         public final int validOps() {
             return SelectionKey.OP_READ;
         }

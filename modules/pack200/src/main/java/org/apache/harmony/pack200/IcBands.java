@@ -29,8 +29,6 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
  * Pack200 Inner Class Bands
  */
 public class IcBands extends BandSet {
-
-
     private IcTuple[] icAll;
 
     private String[] cpUTF8;
@@ -92,14 +90,12 @@ public class IcBands extends BandSet {
         List relevantTuples = new ArrayList();
         IcTuple[] allTuples = getIcTuples();
         int allTuplesSize = allTuples.length;
-        SegmentUtils.debug("-------\nRelevant() " + className);
         for(int index=0; index < allTuplesSize; index++) {
             if(allTuples[index].outerClassString().equals(className)) {
                 relevantTuples.add(allTuples[index]);
             }
         }
 
-        SegmentUtils.debug("self halt");
         List classPoolClasses = cp.allClasses();
         boolean changed = true;
         // For every class in both ic_this_class and cp,
@@ -109,26 +105,12 @@ public class IcBands extends BandSet {
             changed = false;
             for(int allTupleIndex=0; allTupleIndex < allTuplesSize; allTupleIndex++) {
                 Iterator it = classPoolClasses.iterator();
-                SegmentUtils.debug("\n\n----\nLooking through class pool for: " + allTuples[allTupleIndex].thisClassString());
                 while(it.hasNext()) {
                     CPClass classInPool = (CPClass)it.next();
                     String poolClassName = classInPool.name;
-                    SegmentUtils.debug("    " + poolClassName);
                     if(poolClassName.equals(allTuples[allTupleIndex].thisClassString())) {
                         // If the tuple isn't already in there, then add it
-                        SegmentUtils.debug("     -> match");
                         if(relevantTuples.indexOf(allTuples[allTupleIndex]) == -1) {
-                            SegmentUtils.debug("        -> added");
-                            relevantTuples.add(allTuples[allTupleIndex]);
-                            changed = true;
-                        }
-                    }
-                    // TODO: is this right?
-                    if(poolClassName.equals(allTuples[allTupleIndex].outerClassString())) {
-                        // If the tuple isn't already in there, then add it
-                        SegmentUtils.debug("     -> omatch");
-                        if(relevantTuples.indexOf(allTuples[allTupleIndex]) == -1) {
-                            SegmentUtils.debug("        -> oadded");
                             relevantTuples.add(allTuples[allTupleIndex]);
                             changed = true;
                         }
@@ -137,12 +119,21 @@ public class IcBands extends BandSet {
             }
         }
 
-        IcTuple[] result = new IcTuple[relevantTuples.size()];
-        for(int index=0; index < result.length; index++) {
-            result[index] = (IcTuple)relevantTuples.get(index);
-            SegmentUtils.debug("Returning relevantTuple: " + result[index].thisClassString());
+        // Now order the result as a subsequence of ic_all
+        IcTuple[] orderedRelevantTuples = new IcTuple[relevantTuples.size()];
+        int orderedRelevantIndex = 0;
+        for(int index=0; index < allTuplesSize; index++) {
+            if(relevantTuples.contains(allTuples[index])) {
+                orderedRelevantTuples[orderedRelevantIndex] = allTuples[index];
+                orderedRelevantIndex++;
+            }
         }
-        return result;
+        if(orderedRelevantIndex != orderedRelevantTuples.length) {
+            // This should never happen. If it does, we have a
+            // logic error in the ordering code.
+            throw new Error("Missing a tuple when ordering them");
+        }
+        return orderedRelevantTuples;
     }
 
 }

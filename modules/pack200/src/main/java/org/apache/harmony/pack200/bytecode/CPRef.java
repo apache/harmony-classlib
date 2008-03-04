@@ -24,13 +24,13 @@ public abstract class CPRef extends ConstantPoolEntry {
 	CPClass className;
 	transient int classNameIndex;
 
-	protected final CPNameAndType nameAndType;
+	protected CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
 
-	public CPRef(byte type, String className, String descriptor) {
+	public CPRef(byte type, CPClass className, CPNameAndType descriptor) {
 		super(type);
-		this.className = new CPClass(className);
-		this.nameAndType = new CPNameAndType(descriptor);
+		this.className = className;
+		this.nameAndType = descriptor;
 	}
 
 	public boolean equals(Object obj) {

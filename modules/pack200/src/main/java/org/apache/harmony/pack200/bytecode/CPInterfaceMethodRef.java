@@ -18,7 +18,7 @@ package org.apache.harmony.pack200.bytecode;
 
 public class CPInterfaceMethodRef extends CPRef {
 
-	public CPInterfaceMethodRef(String className, String descriptor) {
+	public CPInterfaceMethodRef(CPClass className, CPNameAndType descriptor) {
 		super(ConstantPoolEntry.CP_InterfaceMethodref, className, descriptor);
 		this.domain = ClassConstantPool.DOMAIN_METHOD;
 	}

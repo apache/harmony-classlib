@@ -31,7 +31,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
     private List body = new ArrayList();
     private ClassConstantPool pool;
 
-    public NewAttribute(String attributeName) {
+    public NewAttribute(CPUTF8 attributeName) {
         super(attributeName);
     }
 

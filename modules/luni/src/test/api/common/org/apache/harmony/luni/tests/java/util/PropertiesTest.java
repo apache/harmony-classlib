@@ -334,6 +334,44 @@ public class PropertiesTest extends junit.framework.TestCase {
         }
         assertEquals("Failed to load when last line contains a comment", "1",
                 prop.get("fred"));
+
+        // Regression tests for HARMONY-5414
+        prop = new Properties();
+        prop.load(new ByteArrayInputStream("a=\\u1234z".getBytes()));
+
+        prop = new Properties();
+        try {
+            prop.load(new ByteArrayInputStream("a=\\u123".getBytes()));
+            fail("Expected IllegalArgumentException due to invalid Unicode sequence");
+        } catch (IllegalArgumentException e) {
+            // Expected
+        }
+
+        prop = new Properties();
+        try {
+            prop.load(new ByteArrayInputStream("a=\\u123z".getBytes()));
+            fail("Expected IllegalArgumentException due to invalid unicode sequence");
+        } catch (IllegalArgumentException expected) {
+            // Expected
+        }
+
+        prop = new Properties();
+        Properties expected = new Properties();
+        expected.put("a", "\u0000");
+        prop.load(new ByteArrayInputStream("a=\\".getBytes()));
+        assertEquals("Failed to read trailing slash value", expected, prop);
+
+        prop = new Properties();
+        expected = new Properties();
+        expected.put("a", "\u1234\u0000");
+        prop.load(new ByteArrayInputStream("a=\\u1234\\".getBytes()));
+        assertEquals("Failed to read trailing slash value #2", expected, prop);
+
+        prop = new Properties();
+        expected = new Properties();
+        expected.put("a", "q");
+        prop.load(new ByteArrayInputStream("a=\\q".getBytes()));
+        assertEquals("Failed to read slash value #3", expected, prop);
     }
 
     /**

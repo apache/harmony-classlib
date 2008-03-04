@@ -986,6 +986,10 @@ public class MathTest extends junit.framework.TestCase {
 				2.0, Math.rint(2.1), 0D);
 		assertTrue("Failed to round properly " + 2.5 + " to even", Math
 				.rint(2.5) == 2.0);
+                assertTrue("Failed to round properly " + (+0.0d),
+                        Math.rint(+0.0d) == +0.0d);
+                assertTrue("Failed to round properly " + (-0.0d),
+                        Math.rint(-0.0d) == -0.0d);
 	}
 
 	/**

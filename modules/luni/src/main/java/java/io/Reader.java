@@ -187,7 +187,7 @@ public abstract class Reader implements Readable, Closeable {
      * action is to throw <code>IOException</code>.
      * 
      * @throws IOException
-     *             If a problem occured or the receiver does not support
+     *             If a problem occurred or the receiver does not support
      *             <code>mark()/reset()</code>.
      */
     public void reset() throws IOException {

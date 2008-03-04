@@ -91,6 +91,13 @@ final class Factory {
         Proxy p = new Proxy(ds, params);
         p.create();
     }
+
+    void createAndRun(int id, long parentWindowId, URL documentBase,
+                int documentId, URL codeBase, String className,
+                String []paramStrings, String name, Object container) {
+        Parameters params = new Parameters(id, parentWindowId, documentBase, documentId, codeBase, className, paramStrings, name, container);
+        createAndRun(params);
+    }
     
     void start(int id) {
         Proxy p = allProxies.get(new Integer(id));

@@ -29,8 +29,8 @@
     <property name="hy.awt.src.main.java.platform"
               value="${hy.awt.src.main.java}/../${hy.os.family}" />
 
-    <property name="hy.awt.src.test.api.java.platform"
-              value="${hy.awt.src.test.api}/java/${hy.os.family}" />
+    <property name="hy.awt.src.test.impl.platform"
+              value="${hy.awt.src.test.impl}/${hy.os.family}" />
 
     <fileset id="classes" dir="${hy.build}">
         <or>
@@ -109,11 +109,6 @@
 
     <target name="copy-resources" depends="-copy-win-resources">
         <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.awt.src.main.java}">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
 
         <mkdir dir="${hy.jdk}/jre/lib/cmm" />
         <copy todir="${hy.jdk}/jre/lib/cmm">
@@ -317,9 +312,8 @@
     <target name="compile-tests" depends="copy-test-resources">
         <echo message="Compiling AWT tests" />
 
-        <mkdir dir="${hy.awt.bin.test}" />
-
-        <javac destdir="${hy.awt.bin.test}"
+        <mkdir dir="${hy.awt.bin.test.boot}" />
+        <javac destdir="${hy.awt.bin.test.boot}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -330,8 +324,7 @@
             <compilerarg line="${build.compilerarg}" />
 
             <src>
-                <pathelement location="${hy.awt.src.test.api}/java/common" />
-                <pathelement location="${hy.awt.src.test.api.java.platform}" />
+                <pathelement location="${hy.awt.src.test.impl.boot}" />
             </src>
                
             <bootclasspath>
@@ -339,36 +332,39 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="../../build/tests" />
+            <classpath location="${basedir}/../../${junit.jar}" />
         </javac>
-        <!--mkdir dir="${hy.awt.src.test.api}/java/common/java/awt/geom/shapes" />
-        <copy todir="${hy.awt.bin.test}/java/awt/geom/shapes" overwrite="yes">
-            <fileset dir="${hy.awt.src.test.api}/java/common/java/awt/geom/shapes" />
-        </copy>
-        <mkdir dir="${hy.awt.src.test.api}/java/common/java/awt/geom/serialization" />
-        <copy todir="${hy.awt.bin.test}/java/awt/geom/serialization" overwrite="yes">
-            <fileset dir="${hy.awt.src.test.api}/java/common/java/awt/geom/serialization" />
-        </copy>
-        <mkdir dir="${hy.awt.src.test.api}/java/common/java/awt/shapes" />
-        <copy todir="${hy.awt.bin.test}/java/awt/shapes" overwrite="yes">
-            <fileset dir="${hy.awt.src.test.api}/java/common/java/awt/shapes" />
-        </copy>
-        <mkdir dir="${hy.awt.src.test.api}/java/common/java/java/serialization" />
-        <copy todir="${hy.awt.bin.test}/java/awt/serialization" overwrite="yes">
-            <fileset dir="${hy.awt.src.test.api}/java/common/java/awt/serialization" />
-        </copy>    
-        <mkdir dir="${hy.awt.src.test.api}/java/common/org/apache/harmony/awt/gl/resources" />
-        <copy todir="${hy.awt.bin.test}/org/apache/harmony/awt/gl/resources" overwrite="yes">
-            <fileset dir="${hy.awt.src.test.api}/java/common/org/apache/harmony/awt/gl/resources" />
-        </copy-->    
+
+        <mkdir dir="${hy.awt.bin.test.classes}" />
+        <javac destdir="${hy.awt.bin.test.classes}"
+               sourcepath=""
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <src>
+                <pathelement location="${hy.awt.src.test.api.java}" />
+                <pathelement location="${hy.awt.src.test.impl.platform}" />
+            </src>
+               
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="${basedir}/../../${junit.jar}" />
+        </javac>
+
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.awt.bin.test}" />
-        <copy todir="${hy.awt.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.awt.src.test.resources}">
-                <exclude name="**/*.java" />
-            </fileset>
+        <mkdir dir="${hy.awt.bin.test.resources}" />
+        <copy todir="${hy.awt.bin.test.resources}" includeemptydirs="false">
+            <fileset dir="${hy.awt.src.test.api.resources}" />
         </copy>
     </target>
 
@@ -378,11 +374,10 @@
     </target>
 
     <target name="run-tests">
-
         <mkdir dir="${hy.tests.reports}" />
-
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
+        <!-- bootclasspath tests -->
         <junit fork="yes"
                forkmode="${hy.test.forkmode}"
                timeout="${hy.test.timeout}"
@@ -394,36 +389,53 @@
                jvm="${test.jre.home}/bin/java">
 
             <jvmarg line="${hy.test.vmargs}" />
-
-            <jvmarg value="-DTEST_SRC_DIR=${hy.awt.bin.test}"/>
-<!--            <jvmarg value="-Djava2d.opengl=true"/> -->
-            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test}${path.separator}${basedir}/../../${junit.jar}"/>
+            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test.boot}${path.separator}${basedir}/../../${junit.jar}"/>
 
             <formatter type="xml" />
 
-            <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no">
+                <fileset dir="${hy.awt.src.test.impl.boot}">
+                    <include name="${converted.tc}" if="test.case" />
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${awt.exclude.file}" unless="test.case" />
+                    <exclude name="**/*Headless*Test.java" />
+                </fileset>
+            </batchtest>
+        </junit>
 
-                <!-- if ${test.case} -->
-                <fileset dir="${hy.awt.src.test.api}/java/common">
+        <!-- classpath tests -->
+        <junit fork="yes"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
+
+            <jvmarg line="${hy.test.vmargs}" />
+            <classpath location="${hy.awt.bin.test.classes}" />
+
+            <formatter type="xml" />
+
+            <batchtest todir="${hy.tests.reports}">
+                <fileset dir="${hy.awt.src.test.api.java}">
                     <include name="${converted.tc}" if="test.case" />
+                    <include name="**/*Test.java" unless="test.case" />
+                    <exclude name="**/*Headless*Test.java" unless="test.case" />
+                    <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>
-                <fileset dir="${hy.awt.src.test.api.java.platform}">
+                <fileset dir="${hy.awt.src.test.impl.platform}">
                     <include name="${converted.tc}" if="test.case" />
-                </fileset>
-                <!-- unless ${test.case} -->
-                <fileset dir="${hy.awt.src.test.api}/java/common">
                     <include name="**/*Test.java" unless="test.case" />
+                    <exclude name="**/*Headless*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case"/>
-                    <exclude name="**/*Headless*Test.java"/>
-                </fileset>
-                <fileset dir="${hy.awt.src.test.api.java.platform}">
-                    <include name="**/*Test.java" unless="test.case" />
-                    <excludesfile name="${awt.exclude.file}" unless="test.case"/>
-                    <exclude name="**/*Headless*Test.java"/>
                 </fileset>
             </batchtest>  
         </junit>
 
+        <!-- headless tests, should be moved to classpath -->
         <junit fork="yes"
                forkmode="${hy.test.forkmode}"
                timeout="${hy.test.timeout}"
@@ -435,20 +447,19 @@
                jvm="${test.jre.home}/bin/java">
 
             <jvmarg line="${hy.test.vmargs}" />
-
-            <jvmarg value="-DTEST_SRC_DIR=${hy.awt.bin.test}"/>
             <jvmarg value="-Djava.awt.headless=true"/>
-            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test}${path.separator}${basedir}/../../${junit.jar}"/>
+            <jvmarg value="-Xbootclasspath/a:${hy.awt.bin.test.boot}${path.separator}${basedir}/../../${junit.jar}"/>
 
             <formatter type="xml" />
 
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
-
-                <fileset dir="${hy.awt.src.test.api}/java/common">
+                <fileset dir="${hy.awt.src.test.impl.boot}">
+                    <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Headless*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>
-                <fileset dir="${hy.awt.src.test.api.java.platform}">
+                <fileset dir="${hy.awt.src.test.impl.platform}">
+                    <include name="${converted.tc}" if="test.case" />
                     <include name="**/*Headless*Test.java" unless="test.case" />
                     <excludesfile name="${awt.exclude.file}" unless="test.case"/>
                 </fileset>

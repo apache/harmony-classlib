@@ -29,10 +29,11 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 public class ClassFileEntryTest extends TestCase {
+
 	public void testUTF8() {
-		CPUTF8 u1 = new CPUTF8(new String("thing"), ClassConstantPool.DOMAIN_UNDEFINED); //$NON-NLS-1$
-		CPUTF8 u2 = new CPUTF8(new String("thing"), ClassConstantPool.DOMAIN_UNDEFINED); //$NON-NLS-1$
-		CPUTF8 u3 = new CPUTF8(new String("otherthing"), ClassConstantPool.DOMAIN_UNDEFINED); //$NON-NLS-1$
+		CPUTF8 u1 = new CPUTF8(new String("thing"), ClassConstantPool.DOMAIN_NORMALASCIIZ); //$NON-NLS-1$
+		CPUTF8 u2 = new CPUTF8(new String("thing"), ClassConstantPool.DOMAIN_NORMALASCIIZ); //$NON-NLS-1$
+		CPUTF8 u3 = new CPUTF8(new String("otherthing"), ClassConstantPool.DOMAIN_NORMALASCIIZ); //$NON-NLS-1$
 		checkEquality(u1, u2, "thing", u3);
 	}
 	private void checkEquality(Object equal1, Object equal2, String toString, Object unequal) {
@@ -45,9 +46,9 @@ public class ClassFileEntryTest extends TestCase {
 		assertFalse(unequal.equals(equal2));
 	}
 	public void testSourceAttribute() {
-		SourceFileAttribute sfa1 = new SourceFileAttribute(new String("Thing.java")); //$NON-NLS-1$
-		SourceFileAttribute sfa2 = new SourceFileAttribute(new String("Thing.java")); //$NON-NLS-1$
-		SourceFileAttribute sfa3 = new SourceFileAttribute(new String("OtherThing.java")); //$NON-NLS-1$
+		SourceFileAttribute sfa1 = new SourceFileAttribute(new CPUTF8(new String("Thing.java"), ClassConstantPool.DOMAIN_NORMALASCIIZ)); //$NON-NLS-1$
+		SourceFileAttribute sfa2 = new SourceFileAttribute(new CPUTF8(new String("Thing.java"), ClassConstantPool.DOMAIN_NORMALASCIIZ)); //$NON-NLS-1$
+		SourceFileAttribute sfa3 = new SourceFileAttribute(new CPUTF8(new String("OtherThing.java"), ClassConstantPool.DOMAIN_NORMALASCIIZ)); //$NON-NLS-1$
 		checkEquality(sfa1,sfa2,"Thing.java",sfa3); //$NON-NLS-1$
 	}
 	public void testCPInteger() {
@@ -75,16 +76,16 @@ public class ClassFileEntryTest extends TestCase {
 		checkEquality(cp1,cp2,"3",cp3); //$NON-NLS-1$
 	}
 	public void testCPString() {
-		CPString cp1 = new CPString(new String("3"));
-		CPString cp2 = new CPString(new String("3"));
-		CPString cp3 = new CPString(new String("5"));
+		CPString cp1 = new CPString(new CPUTF8(new String("3"), ClassConstantPool.DOMAIN_NORMALASCIIZ));
+		CPString cp2 = new CPString(new CPUTF8(new String("3"), ClassConstantPool.DOMAIN_NORMALASCIIZ));
+		CPString cp3 = new CPString(new CPUTF8(new String("5"), ClassConstantPool.DOMAIN_NORMALASCIIZ));
 		checkEquality(cp1,cp2,"3",cp3); //$NON-NLS-1$
 	}
 	public void testCPField() {
-		CPMember cp1 = new CPMember("Name:I", 0, null);
-		CPMember cp2 = new CPMember("Name:I", 0, null);
-		CPMember cp3 = new CPMember("Name:Z", 0, null);
-		CPMember cp4 = new CPMember("GName:I", 0, null);
+		CPMember cp1 = new CPMember(new CPUTF8("Name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+		CPMember cp2 = new CPMember(new CPUTF8("Name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+		CPMember cp3 = new CPMember(new CPUTF8("Name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("Z", ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+		CPMember cp4 = new CPMember(new CPUTF8("GName", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
 		checkEquality(cp1,cp2,"Name",cp3); //$NON-NLS-1$
 		checkEquality(cp1,cp2,"I",cp4); //$NON-NLS-1$
 	}

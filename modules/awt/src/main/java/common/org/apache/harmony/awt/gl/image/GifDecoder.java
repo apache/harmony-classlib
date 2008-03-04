@@ -14,13 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Oleg V. Khaschansky
- * @version $Revision$
- */
-/*
-* Created on 27.01.2005
-*/
+
 package org.apache.harmony.awt.gl.image;
 
 import java.awt.image.ColorModel;
@@ -78,6 +72,8 @@ public class GifDecoder extends ImageDecoder {
 
     private byte screenBuffer[];
     private int screenRGBBuffer[];
+
+    ColorModel gcm;
 
     public GifDecoder(DecodingImageSource src, InputStream is) {
         super(src, is);
@@ -140,7 +136,8 @@ public class GifDecoder extends ImageDecoder {
         if (forceRGB) {
             setColorModel(ColorModel.getRGBdefault());
         } else {
-            setColorModel(gls.globalColorTable.getColorModel(currBlock.transparentColor));
+            gcm = gls.globalColorTable.getColorModel(currBlock.transparentColor);
+            setColorModel(gcm);
         }
 
         // Fill screen buffer with the background or transparent color
@@ -298,7 +295,7 @@ public class GifDecoder extends ImageDecoder {
                                 gb.imageTop,
                                 gb.imageWidth,
                                 gb.imageHeight,
-                                null,
+                                gcm, 
                                 gb.imageData,
                                 0,
                                 gb.imageWidth
@@ -463,7 +460,7 @@ public class GifDecoder extends ImageDecoder {
                         imageTop + currY,
                         imageWidth,
                         numLines,
-                        null,
+                        gcm, 
                         imageData,
                         currY*imageWidth,
                         imageWidth
@@ -546,7 +543,7 @@ public class GifDecoder extends ImageDecoder {
                                 imageTop,
                                 imageWidth,
                                 imageHeight,
-                                null,
+                                gcm, 
                                 data,
                                 0,
                                 imageWidth
@@ -664,7 +661,7 @@ public class GifDecoder extends ImageDecoder {
                         imageTop,
                         imageWidth,
                         imageHeight,
-                        null,
+                        gcm, 
                         (byte [])toSend,
                         offset,
                         imageWidth

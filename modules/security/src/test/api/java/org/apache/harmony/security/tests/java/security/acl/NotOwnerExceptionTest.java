@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Aleksei Y. Semenov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.tests.java.security.acl;
 
 import java.security.acl.NotOwnerException;
@@ -37,10 +32,13 @@ public class NotOwnerExceptionTest extends TestCase {
         junit.textui.TestRunner.run(NotOwnerExceptionTest.class);
     }
 
+    /**
+     * @tests java.security.acl.NotOwnerException#NotOwnerException()
+     */
     public void testNotOwnerException() {
-        assertNotNull(new NotOwnerException());
-        assertNull(new NotOwnerException().getMessage());
-        assertNull(new NotOwnerException().getCause());
+        NotOwnerException ex = new NotOwnerException();
+        assertNull(ex.getMessage());
+        assertNull(ex.getCause());
     }
 
 }

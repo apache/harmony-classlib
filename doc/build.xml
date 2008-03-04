@@ -94,6 +94,111 @@
     </target>
 
     <!-- ================================= 
+          target: jdocs
+          
+          The jdocs target is used to generate a .jdoc file description of the Harmony
+          API suitable for uploading to the JDocs.com website.
+          
+          It has a dependency on a new task defined in "jdocs.jar" and available to download
+          from http://www.jdocs.com/page/AntTask
+          
+          This is work in progress, and currently requires you to manually download and
+          extract the source code for MX4J, Yoko, and XML commons into a 'temp' directory.
+          Plans are to automate that one the doc generation is up and running ok.
+          
+          The task description for jdocs is similar to the javadoc task - so to test it
+          you can always temporarily change it to javadoc and view the output. 
+         ================================= -->
+    <target name="jdocs">
+        <property name="modules.dir" location="${basedir}/../modules"/>
+        <taskdef name="jdocs" classname="com.dzone.jdocs.ant.jdk15.task.Jdocs"/>
+        <jdocs destdir="${basedir}/javadoc"
+            access="protected" >
+
+            <!-- Source files maintained by Harmony -->
+            <packageset dir="${modules.dir}/accessibility/src/main/java/">
+                <!-- This patternset will exclude any non-API packages -->
+                <patternset id="sourcefiles">
+                    <exclude name="org/apache/harmony/**" />
+                    <exclude name="java/awt/dnd/peer" />
+                    <exclude name="java/awt/peer" />
+                </patternset>
+            </packageset>
+
+            <packageset dir="${modules.dir}/annotation/src/main/java/"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/applet/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/archive/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/auth/src/main/java/${hy.os.family}"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/auth/src/main/java/common"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/awt/src/main/java/${hy.os.family}"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/awt/src/main/java/common"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/beans/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/concurrent/src/main/java/"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/concurrent/standard/src/main/java/"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/crypto/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/instrument/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/imageio/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/jndi/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/logging/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/lang-management/src/main/java/"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/luni-kernel/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/luni/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/math/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/misc/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/nio/src/main/java/common"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/nio/src/main/java/${hy.os.family}"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/nio_char/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/pack200/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/pack200/src/main/java5"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/prefs/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/print/src/main/java/${hy.os.family}"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/print/src/main/java/common"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/regex/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/rmi/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/security-kernel/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/security/src/main/java/${hy.os.family}"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/security/src/main/java/common"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/sound/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/sql/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/swing/src/main/java/${hy.os.family}"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/swing/src/main/java/common"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/text/src/main/java"> <patternset refid="sourcefiles"/> </packageset>
+            <packageset dir="${modules.dir}/x-net/src/main/java/"> <patternset refid="sourcefiles"/> </packageset>
+
+            <!-- Source files for our API dependencies -->
+            <!-- MX4J -->
+            <packageset dir="${basedir}/temp/mx4j-3.0.2/src/core/">
+                <include name="javax/**" />
+            </packageset>
+
+            <!-- Apache Yoko -->
+            <packageset dir="${basedir}/temp/yoko-incubating-src-1.0-M2/rmi-spec/src/main/java">
+                <include name="javax/**" />
+            </packageset>
+            <packageset dir="${basedir}/temp/yoko-incubating-src-1.0-M2/yoko-spec-corba/src/main/java">
+                <include name="org/omg/**" />
+            </packageset>
+           
+            <!-- XML commons -->
+            <packageset dir="${basedir}/temp/xml-commons-external-1.3.04-src">
+                <include name="javax/**" />
+                <include name="org/w3c/dom" />
+                <include name="org/w3c/dom/bootstrap" />
+                <include name="org/w3c/dom/events" />
+                <include name="org/w3c/dom/ls" />
+                <include name="org/xml/sax/**" />
+            </packageset>
+            
+            <classpath>
+                <fileset dir="../deploy/jdk/jre/lib/boot">
+                    <include name="**/*.jar" />
+                    <exclude name="**/*-src.jar" />
+                </fileset>
+            </classpath>
+        </jdocs>
+    </target>
+    
+    <!-- ================================= 
           target: clean-kernel    
          ================================= -->
     <target name="clean-kernel" description="Clean away the generated kernel documentation.">

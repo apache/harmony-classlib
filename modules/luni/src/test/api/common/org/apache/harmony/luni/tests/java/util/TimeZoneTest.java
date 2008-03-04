@@ -18,7 +18,9 @@
 package org.apache.harmony.luni.tests.java.util;
 
 import java.util.Calendar;
+import java.util.Formatter;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
@@ -161,7 +163,31 @@ public class TimeZoneTest extends junit.framework.TestCase {
 		assertEquals("default not restored",
                              oldDefault, TimeZone.getDefault());
 	}
-
+    
+    /**
+     * @tests java.util.TimeZone#getDisplayName(java.util.Locale)
+     */
+    public void test_getDisplayNameLjava_util_Locale() {
+        TimeZone timezone = TimeZone.getTimeZone("Asia/Shanghai");
+        assertEquals("\u4e2d\u56fd\u6807\u51c6\u65f6\u95f4", timezone
+                .getDisplayName(Locale.CHINA));
+    }
+    
+    /**
+     * @tests java.util.TimeZone#getDisplayName(boolean, int, java.util.Locale)
+     */
+    public void test_getDisplayNameZILjava_util_Locale() {
+        TimeZone timezone = TimeZone.getTimeZone("Asia/Shanghai");
+        assertEquals("GMT+0800", timezone.getDisplayName(false, TimeZone.SHORT,
+                Locale.CHINA));
+        try {
+            timezone.getDisplayName(false, 100, Locale.CHINA);
+            fail("should throw IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+    
 	protected void setUp() {
 	}
 

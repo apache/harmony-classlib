@@ -18,16 +18,9 @@ package org.apache.harmony.pack200;
 
 import java.util.ArrayList;
 
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CPDouble;
 import org.apache.harmony.pack200.bytecode.CPFieldRef;
-import org.apache.harmony.pack200.bytecode.CPFloat;
-import org.apache.harmony.pack200.bytecode.CPInteger;
 import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
-import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPMethodRef;
-import org.apache.harmony.pack200.bytecode.CPString;
-import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
@@ -60,6 +53,7 @@ public class SegmentConstantPool {
     public static final int CP_METHOD = 11;
     public static final int CP_IMETHOD = 12;
 
+    // TODO: All CP***??
     public Object getValue(int cp, long value) throws Pack200Exception {
         int index = (int) value;
         if (index == -1) {
@@ -77,7 +71,7 @@ public class SegmentConstantPool {
         } else if (cp == CP_DOUBLE) {
             return new Double(bands.getCpDouble()[index]);
         } else if (cp == CP_STRING) {
-            return bands.getCpString()[index];
+            return bands.cpStringValue(bands.getCpString()[index]);
         } else if (cp == CP_CLASS) {
             return bands.getCpClass()[index];
         } else if (cp == SIGNATURE) {
@@ -178,8 +172,8 @@ public class SegmentConstantPool {
      *  String [position 2, 1st instance of String]
      *  Object [position 3, 1st instance of Object]
      *  Object [position 4, 2nd instance of Object]
-     * then classSpecificPoolEntryIndex(..., "Object", 2, false) will
-     * answer 4. classSpecificPoolEntryIndex(..., "String", 0, false)
+     * then matchSpecificPoolEntryIndex(..., "Object", 2, false) will
+     * answer 4. matchSpecificPoolEntryIndex(..., "String", 0, false)
      * will answer 1.
      *
      * @param nameArray Array of Strings against which the compareString is tested
@@ -220,9 +214,6 @@ public class SegmentConstantPool {
     	}
     	// We didn't return in the for loop, so the desiredMatch
     	// with desiredIndex must not exist in the array.
-    	if(secondaryCompareRegex.equals("^<init>.*")) {
-    	    SegmentUtils.debug("self halt");
-    	}
     	return -1;
     }
 
@@ -234,19 +225,19 @@ public class SegmentConstantPool {
         } else if (index < 0) {
             throw new Pack200Exception("Cannot have a negative range");
         } else if (cp == UTF_8) {
-            return new CPUTF8(bands.getCpUTF8()[index], ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            return bands.cpUTF8Value(bands.getCpUTF8()[index], ClassConstantPool.DOMAIN_NORMALASCIIZ);
         } else if (cp == CP_INT) {
-            return new CPInteger(new Integer(bands.getCpInt()[index]));
+            return bands.cpIntegerValue(new Integer(bands.getCpInt()[index]));
         } else if (cp == CP_FLOAT) {
-            return new CPFloat(new Float(bands.getCpFloat()[index]));
+            return bands.cpFloatValue(new Float(bands.getCpFloat()[index]));
         } else if (cp == CP_LONG) {
-            return new CPLong(new Long(bands.getCpLong()[index]));
+            return bands.cpLongValue(new Long(bands.getCpLong()[index]));
         } else if (cp == CP_DOUBLE) {
-            return new CPDouble(new Double(bands.getCpDouble()[index]));
+            return bands.cpDoubleValue(new Double(bands.getCpDouble()[index]));
         } else if (cp == CP_STRING) {
-            return new CPString(bands.getCpString()[index]);
+            return bands.cpStringValue(bands.getCpString()[index]);
         } else if (cp == CP_CLASS) {
-            return new CPClass(bands.getCpClass()[index]);
+            return bands.cpClassValue(bands.getCpClass()[index]);
         } else if (cp == SIGNATURE) {
         	throw new Error("I don't know what to do with signatures yet");
 //            return null /* new CPSignature(bands.getCpSignature()[index]) */;
@@ -254,11 +245,17 @@ public class SegmentConstantPool {
         	throw new Error("I don't know what to do with descriptors yet");
 //            return null /* new CPDescriptor(bands.getCpDescriptor()[index]) */;
         } else if (cp == CP_FIELD) {
-            return new CPFieldRef(bands.getCpFieldClass()[index], bands.getCpFieldDescriptor()[index]);
+            return new CPFieldRef(bands
+                    .cpClassValue(bands.getCpFieldClass()[index]), bands
+                    .cpNameAndTypeValue(bands.getCpFieldDescriptor()[index]));
         } else if (cp == CP_METHOD) {
-            return new CPMethodRef(bands.getCpMethodClass()[index], bands.getCpMethodDescriptor()[index]);
+            return new CPMethodRef(bands
+                    .cpClassValue(bands.getCpMethodClass()[index]), bands
+                    .cpNameAndTypeValue(bands.getCpMethodDescriptor()[index]));
         } else if (cp == CP_IMETHOD) {
-            return new CPInterfaceMethodRef(bands.getCpIMethodClass()[index], bands.getCpIMethodDescriptor()[index]);
+            return new CPInterfaceMethodRef(bands.cpClassValue(bands
+                    .getCpIMethodClass()[index]), bands.cpNameAndTypeValue(bands
+                    .getCpIMethodDescriptor()[index]));
         } else {
             // etc
             throw new Error("Get value incomplete");

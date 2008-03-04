@@ -26,13 +26,23 @@ extern "C"
 {
 #endif
 #include "hyport.h"
-#include "hyzip.h"
+#include "vmizip.h"
 
 #if defined(HY_LOCAL_ZLIB)
 #define HY_ZIP_DLL_NAME "z"
 #else
 #define HY_ZIP_DLL_NAME "hyzlib"
 #endif
+
+typedef struct HyZipCachePool HyZipCachePool;
+
+#define ZIP_CentralEnd  0x6054B50
+#define ZIP_CentralHeader  0x2014B50
+#define ZIP_LocalHeader  0x4034B50
+#define ZIP_DataDescriptor  0x8074B50
+#define ZIP_INTERNAL_MAX  80
+#define ZIP_Unknown  0
+#define ZIP_PKZIP  1
 
   typedef struct HyZipCache
   {
@@ -70,39 +80,42 @@ extern "C"
 
 /* HySourceZipSupport*/
   extern HY_CFUNC I_32 zip_getZipEntryData
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-                HyZipEntry * entry, U_8 * buffer, U_32 bufferSize));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+                VMIZipEntry * entry, U_8 * buffer, U_32 bufferSize));
   extern HY_CFUNC I_32 zip_getZipEntryFromOffset
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-                HyZipEntry * entry, IDATA offset));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+                VMIZipEntry * entry, IDATA offset));
   extern HY_CFUNC I_32 zip_establishCache
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile));
   extern HY_CFUNC void zip_resetZipFile
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
                 IDATA * nextEntryPointer));
   extern HY_CFUNC I_32 zip_getNextZipEntry
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-                HyZipEntry * zipEntry, IDATA * nextEntryPointer));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+                VMIZipEntry * zipEntry, IDATA * nextEntryPointer));
   extern HY_CFUNC I_32 zip_getZipEntry
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-                HyZipEntry * entry, const char *filename,
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+                VMIZipEntry * entry, const char *filename,
                 BOOLEAN findDirectory));
   extern HY_CFUNC I_32 zip_getZipEntryExtraField
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-                HyZipEntry * entry, U_8 * buffer, U_32 bufferSize));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+                VMIZipEntry * entry, U_8 * buffer, U_32 bufferSize));
+  extern HY_CFUNC I_32 zip_getZipEntryRawData
+  PROTOTYPE((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry, 
+                U_8 * buffer, U_32 bufferSize, U_32 offset));
   extern HY_CFUNC void zip_initZipEntry
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipEntry * entry));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipEntry * entry));
   extern HY_CFUNC I_32 zip_openZipFile
-    PROTOTYPE ((HyPortLibrary * portLib, char *filename, HyZipFile * zipFile,
+    PROTOTYPE ((HyPortLibrary * portLib, char *filename, VMIZipFile * zipFile,
                 HyZipCachePool * cachePool));
   extern HY_CFUNC void zip_freeZipEntry
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipEntry * entry));
-  struct HyZipFile;
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipEntry * entry));
+  struct VMIZipFile;
   extern HY_CFUNC I_32 VMCALL zip_closeZipFile
-    PROTOTYPE ((HyPortLibrary * portLib, struct HyZipFile * zipFile));
+    PROTOTYPE ((HyPortLibrary * portLib, struct VMIZipFile * zipFile));
   extern HY_CFUNC I_32 zip_getZipEntryComment
-    PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-                HyZipEntry * entry, U_8 * buffer, U_32 bufferSize));
+    PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+                VMIZipEntry * entry, U_8 * buffer, U_32 bufferSize));
 /* HySourceZipCache*/
   extern HY_CFUNC UDATA zipCache_findElement
     PROTOTYPE ((HyZipCache * zipCache, const char *elementName,
@@ -111,7 +124,7 @@ extern "C"
   extern HY_CFUNC IDATA zipCache_enumGetDirName
     PROTOTYPE ((void *handle, char *nameBuf, UDATA nameBufSize));
   extern HY_CFUNC HyZipCache *zipCache_new
-    PROTOTYPE ((HyPortLibrary * portLib, char *zipName, IDATA zipNameLength));
+    PROTOTYPE ((HyPortLibrary * portLib, char *zipName, IDATA zipNameLength, IDATA zipFileSize, I_64 zipTimeStamp, IDATA startCentralDir));
   extern HY_CFUNC IDATA zipCache_enumNew
     PROTOTYPE ((HyZipCache * zipCache, char *directoryName, void **handle));
   extern HY_CFUNC IDATA zipCache_enumElement
@@ -121,6 +134,10 @@ extern "C"
   extern HY_CFUNC BOOLEAN zipCache_addElement
     PROTOTYPE ((HyZipCache * zipCache, char *elementName,
                 UDATA elementOffset));
+  extern HY_CFUNC IDATA zipCache_getStartCentralDir
+    PROTOTYPE ((HyZipCache *zipCache));
+  extern HY_CFUNC void zipCache_invalidateCache
+    PROTOTYPE ((HyZipCache *zipCache));
 /* HySourceZipCachePool*/
   extern HY_CFUNC BOOLEAN zipCachePool_release
     PROTOTYPE ((HyZipCachePool * zcp, HyZipCache * zipCache));

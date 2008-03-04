@@ -262,7 +262,7 @@ public abstract class ByteBuffer extends Buffer implements
     /**
      * Returns a readonly buffer that shares content with this buffer.
      * <p>
-     * The returned buffer is guaranteed to be a new instance, even this buffer
+     * The returned buffer is guaranteed to be a new instance, even if this buffer
      * is readonly itself. The new buffer's position, limit, capacity and mark
      * are the same as this buffer.
      * </p>

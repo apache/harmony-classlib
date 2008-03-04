@@ -238,7 +238,6 @@ public class OffscreenImage extends Image implements ImageConsumer {
 
     public void setPixels(int x, int y, int w, int h, ColorModel model,
             byte[] pixels, int off, int scansize) {
-
         if(raster == null){
             if(cm == null){
                 if(model == null) {
@@ -252,7 +251,7 @@ public class OffscreenImage extends Image implements ImageConsumer {
         if(model == null) {
             model = cm;
         }
-        if(model != cm){
+        if(model != cm && cm != rgbCM){
             forceToIntARGB();
         }
 
@@ -262,14 +261,15 @@ public class OffscreenImage extends Image implements ImageConsumer {
         synchronized(surfData){
             if(isIntRGB){
                 int buff[] = new int[w];
-                IndexColorModel icm = (IndexColorModel) model;
-                int colorMap[] = new int[icm.getMapSize()];
-                icm.getRGBs(colorMap);
                 int data[] = (int[])surfData;
                 int scanline = raster.getWidth();
                 DataBufferInt dbi = (DataBufferInt) db;
                 int rof = dbi.getOffset() + y * scanline + x;
                 if(model instanceof IndexColorModel){
+
+                    IndexColorModel icm = (IndexColorModel) model;
+                    int colorMap[] = new int[icm.getMapSize()];
+                    icm.getRGBs(colorMap);
 
                     for (int sy = y, sOff = off; sy < y + h; sy++, sOff += scansize,
                         rof += scanline) {

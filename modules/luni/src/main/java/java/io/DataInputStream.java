@@ -29,6 +29,9 @@ import org.apache.harmony.luni.util.Util;
  * @see DataOutputStream
  */
 public class DataInputStream extends FilterInputStream implements DataInput {
+
+    byte[] buff;
+
     /**
      * Constructs a new DataInputStream on the InputStream <code>in</code>.
      * All reads can now be filtered through this stream. Note that data read by
@@ -41,9 +44,6 @@ public class DataInputStream extends FilterInputStream implements DataInput {
      * @see DataOutputStream
      * @see RandomAccessFile
      */
-
-    byte[] buff;
-
     public DataInputStream(InputStream in) {
         super(in);
         buff = new byte[8];

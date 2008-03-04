@@ -15,11 +15,6 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package java.security;
 
 import java.nio.ByteBuffer;
@@ -27,14 +22,8 @@ import java.nio.ByteBuffer;
 import org.apache.harmony.security.fortress.Engine;
 import org.apache.harmony.security.internal.nls.Messages;
 
-
-/**
- * @com.intel.drl.spec_ref
- * 
- */
-
 public abstract class MessageDigest extends MessageDigestSpi {
-    
+
     // The service name
     private static final String SERVICE = "MessageDigest"; //$NON-NLS-1$
 
@@ -49,7 +38,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     protected MessageDigest(String algorithm) {
         this.algorithm = algorithm;
@@ -57,7 +46,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public static MessageDigest getInstance(String algorithm)
             throws NoSuchAlgorithmException {
@@ -82,16 +71,18 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public static MessageDigest getInstance(String algorithm, String provider)
             throws NoSuchAlgorithmException, NoSuchProviderException {
         if ((provider == null) || (provider.length() == 0)) {
-            throw new IllegalArgumentException(Messages.getString("security.02")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("security.02")); //$NON-NLS-1$
         }
         Provider p = Security.getProvider(provider);
         if (p == null) {
-            throw new NoSuchProviderException(Messages.getString("security.03", provider)); //$NON-NLS-1$
+            throw new NoSuchProviderException(Messages.getString(
+                    "security.03", provider)); //$NON-NLS-1$
         }
         return getInstance(algorithm, p);
     }
@@ -115,7 +106,8 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public static MessageDigest getInstance(String algorithm, Provider provider)
             throws NoSuchAlgorithmException {
         if (provider == null) {
-            throw new IllegalArgumentException(Messages.getString("security.04")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("security.04")); //$NON-NLS-1$
         }
         if (algorithm == null) {
             throw new NullPointerException(Messages.getString("security.01")); //$NON-NLS-1$
@@ -139,20 +131,17 @@ public abstract class MessageDigest extends MessageDigestSpi {
     /**
      * Puts the receiver back in an initial state, such that it is ready to
      * compute a new hash.
-     * 
-     * @see java.security.MessageDigest.Wrapper#engineReset()
      */
     public void reset() {
         engineReset();
     }
 
     /**
-     * Includes the argument in the hash value computed
-     * by the receiver.
-     *
-     * @param arg0 byte
-     *             the byte to feed to the hash algorithm
-     *
+     * Includes the argument in the hash value computed by the receiver.
+     * 
+     * @param arg0
+     *            byte the byte to feed to the hash algorithm
+     * 
      * @see #reset()
      */
     public void update(byte arg0) {
@@ -161,11 +150,11 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public void update(byte[] input, int offset, int len) {
         if (input == null ||
-                // offset < 0 || len < 0 ||
+        // offset < 0 || len < 0 ||
                 // checks for negative values are commented out intentionally
                 // see HARMONY-1120 for details
                 (long) offset + (long) len > input.length) {
@@ -177,7 +166,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public void update(byte[] input) {
         if (input == null) {
@@ -200,11 +189,11 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public int digest(byte[] buf, int offset, int len) throws DigestException {
         if (buf == null ||
-                // offset < 0 || len < 0 ||
+        // offset < 0 || len < 0 ||
                 // checks for negative values are commented out intentionally
                 // see HARMONY-1148 for details
                 (long) offset + (long) len > buf.length) {
@@ -216,7 +205,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public byte[] digest(byte[] input) {
         update(input);
@@ -299,7 +288,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public Object clone() throws CloneNotSupportedException {
         if (this instanceof Cloneable) {
@@ -311,7 +300,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
 
     /**
      * @com.intel.drl.spec_ref
-     *  
+     * 
      */
     public final void update(ByteBuffer input) {
         engineUpdate(input);
@@ -323,7 +312,7 @@ public abstract class MessageDigest extends MessageDigestSpi {
      * 
      */
     private static class MessageDigestImpl extends MessageDigest {
-        
+
         // MessageDigestSpi implementation
         private MessageDigestSpi spiImpl;
 

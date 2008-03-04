@@ -24,9 +24,15 @@ import java.util.List;
 
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
+import org.apache.harmony.pack200.bytecode.CPDouble;
+import org.apache.harmony.pack200.bytecode.CPFloat;
+import org.apache.harmony.pack200.bytecode.CPInteger;
+import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPNameAndType;
+import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
 import org.apache.harmony.pack200.bytecode.EnclosingMethodAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
@@ -228,8 +234,8 @@ public class ClassBands extends BandSet {
                         type = "I";
                     Object value = constantValueLayout.getValue(result, type,
                             cpBands.getConstantPool());
-                    fieldAttributes[i][j]
-                            .add(new ConstantValueAttribute(value));
+                    fieldAttributes[i][j].add(new ConstantValueAttribute(
+                            getClassFileEntry(value)));
                     constantValueIndex++;
                 }
                 if (signatureLayout.matches(flag)) {
@@ -238,7 +244,7 @@ public class ClassBands extends BandSet {
                     String desc = fieldDescr[i][j];
                     int colon = desc.indexOf(':');
                     String type = desc.substring(colon + 1);
-                    CPUTF8 value = new CPUTF8((String) signatureLayout.getValue(result, type,
+                    CPUTF8 value = cpBands.cpUTF8Value((String) signatureLayout.getValue(result, type,
                             cpBands.getConstantPool()), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
                     fieldAttributes[i][j]
                             .add(new SignatureAttribute(value));
@@ -254,6 +260,24 @@ public class ClassBands extends BandSet {
                 }
             }
         }
+    }
+
+    private ClassFileEntry getClassFileEntry(Object value) {
+        ClassFileEntry entry = null;
+        if (value instanceof ClassFileEntry) {
+            entry = (ClassFileEntry)value;
+        } else if (value instanceof java.lang.Integer) {
+            entry = cpBands.cpIntegerValue((Integer) value);
+        } else if (value instanceof java.lang.Long) {
+            entry = cpBands.cpLongValue((Long) value);
+        } else if (value instanceof java.lang.Float) {
+            entry = cpBands.cpFloatValue((Float) value);
+        } else if (value instanceof java.lang.Double) {
+            entry = cpBands.cpDoubleValue((Double) value);
+        } else if (value instanceof java.lang.String) {
+            entry = cpBands.cpStringValue((String) value);
+        }
+        return entry;
     }
 
     private void parseMethodBands(InputStream in) throws IOException,
@@ -344,7 +368,7 @@ public class ClassBands extends BandSet {
                     String[] exceptions = methodExceptionsRS[methodExceptionsIndex];
                     CPClass[] exceptionClasses = new CPClass[n];
                     for (int k = 0; k < n; k++) {
-                        exceptionClasses[k] = new CPClass(exceptions[k]);
+                        exceptionClasses[k] = cpBands.cpClassValue(exceptions[k]);
                     }
                     methodAttributes[i][j].add(new ExceptionsAttribute(
                             exceptionClasses));
@@ -362,8 +386,8 @@ public class ClassBands extends BandSet {
                         type = "I";
                     Object value = methodSignatureLayout.getValue(result, type, cpBands
                             .getConstantPool());
-                    methodAttributes[i][j]
-                            .add(new ConstantValueAttribute(value));
+                    methodAttributes[i][j].add(new ConstantValueAttribute(
+                            getClassFileEntry(value)));
                     methodSignatureIndex++;
                 }
                 // Non-predefined attributes
@@ -561,12 +585,12 @@ public class ClassBands extends BandSet {
                     // Add .java to the end
                     value = className + ".java";
                 }
-                classAttributes[i].add(new SourceFileAttribute(value));
+                classAttributes[i].add(new SourceFileAttribute(cpBands.cpUTF8Value(value, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ)));
                 sourceFileIndex++;
             }
             if (enclosingMethodLayout.matches(flag)) {
-                CPClass theClass = new CPClass(enclosingMethodRC[enclosingMethodIndex]);
-                CPNameAndType theMethod = new CPNameAndType(enclosingMethodRDN[enclosingMethodIndex]);
+                CPClass theClass = cpBands.cpClassValue(enclosingMethodRC[enclosingMethodIndex]);
+                CPNameAndType theMethod = cpBands.cpNameAndTypeValue(enclosingMethodRDN[enclosingMethodIndex]);
                 classAttributes[i].add(new EnclosingMethodAttribute(theClass, theMethod));
                 enclosingMethodIndex++;
             }
@@ -574,7 +598,8 @@ public class ClassBands extends BandSet {
                 long result = classSignature[signatureIndex];
                 Object value = signatureLayout.getValue(result, cpBands
                         .getConstantPool());
-                classAttributes[i].add(new ConstantValueAttribute(value));
+                classAttributes[i].add(new ConstantValueAttribute(
+                        getClassFileEntry(value)));
                 signatureIndex++;
             }
             if (innerClassLayout.matches(flag)) {
@@ -760,7 +785,7 @@ public class ClassBands extends BandSet {
                 localVariableTableN);
         int[][] localVariableTableSpanO = decodeBandInt(
                 "code_LocalVariableTable_span_O", in, Codec.BRANCH5,
-                localVariableTableN);
+                localVariableTableN, false);
         CPUTF8[][] localVariableTableNameRU = stringsToCPUTF8(parseReferences(
                 "code_LocalVariableTable_name_RU", in, Codec.UNSIGNED5,
                 localVariableTableN, cpBands.getCpUTF8()));
@@ -887,7 +912,7 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < strings.length; i++) {
             cpUTF8s[i] = new CPUTF8[strings[i].length];
             for (int j = 0; j < strings[i].length; j++) {
-                cpUTF8s[i][j] = new CPUTF8(strings[i][j], ClassConstantPool.DOMAIN_NORMALASCIIZ);
+                cpUTF8s[i][j] = cpBands.cpUTF8Value(strings[i][j], ClassConstantPool.DOMAIN_NORMALASCIIZ);
             }
         }
         return cpUTF8s;
@@ -898,7 +923,7 @@ public class ClassBands extends BandSet {
     private CPUTF8[] stringsToCPUTF8(String[] strings) {
         CPUTF8[] cpUTF8s = new CPUTF8[strings.length];
         for (int i = 0; i < strings.length; i++) {
-            cpUTF8s[i] = new CPUTF8(strings[i], ClassConstantPool.DOMAIN_UNDEFINED);
+            cpUTF8s[i] = cpBands.cpUTF8Value(strings[i], ClassConstantPool.DOMAIN_NORMALASCIIZ);
         }
         return cpUTF8s;
     }
@@ -950,7 +975,7 @@ public class ClassBands extends BandSet {
             int[] backwardsCallCounts, String contextName) throws IOException, Pack200Exception {
         MetadataBandGroup[] mbg = new MetadataBandGroup[RxA.length];
         for (int i = 0; i < RxA.length; i++) {
-            mbg[i] = new MetadataBandGroup(RxA[i]);
+            mbg[i] = new MetadataBandGroup(RxA[i], cpBands);
             String rxa = RxA[i];
             if (rxa.indexOf("P") >= 0) {
                 mbg[i].param_NB = decodeBandInt(contextName + "_" + rxa

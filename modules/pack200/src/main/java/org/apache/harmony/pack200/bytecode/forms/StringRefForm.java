@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
+import org.apache.harmony.pack200.CpBands;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.ByteCode;
@@ -60,7 +61,7 @@ public class StringRefForm extends SingleByteReferenceForm {
         SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;
         nested = new ClassFileEntry[] {
-                new CPString((String)globalPool.getValue(getPoolID(), offset))
+                ((CPString)globalPool.getValue(getPoolID(), offset))
                 };
         byteCode.setNested(nested);
         if(widened) {

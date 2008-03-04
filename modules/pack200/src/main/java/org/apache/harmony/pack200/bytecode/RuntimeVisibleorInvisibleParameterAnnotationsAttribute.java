@@ -23,11 +23,9 @@ public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends Anno
 
     private int num_parameters;
     private ParameterAnnotation[] parameter_annotations;
-    private String name;
 
-    public RuntimeVisibleorInvisibleParameterAnnotationsAttribute(String name, ParameterAnnotation[] parameter_annotations) {
+    public RuntimeVisibleorInvisibleParameterAnnotationsAttribute(CPUTF8 name, ParameterAnnotation[] parameter_annotations) {
         super(name);
-        this.name = name;
         this.num_parameters = parameter_annotations.length;
         this.parameter_annotations = parameter_annotations;
     }
@@ -55,7 +53,7 @@ public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends Anno
     }
 
     public String toString() {
-        return name + ": " + num_parameters + " parameter annotations";
+        return attributeName.underlyingString() + ": " + num_parameters + " parameter annotations";
     }
 
 

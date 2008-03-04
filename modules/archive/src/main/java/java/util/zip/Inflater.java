@@ -28,28 +28,48 @@ import org.apache.harmony.archive.internal.nls.Messages;
  */
 public class Inflater {
 
-    private boolean finished; // Set by the inflateImpl native
-
-    private boolean needsDictionary; // Set by the inflateImpl native
-
-    private long streamHandle = -1;
-
-    int inRead;
-
-    int inLength;
-
-    // Fill in the JNI id caches
-    private static native void oneTimeInitialization();
+    private static final byte MAGIC_NUMBER = 120;
 
     static {
         oneTimeInitialization();
     }
 
-    private static final byte MAGIC_NUMBER = 120;
+    // Fill in the JNI id caches
+    private static native void oneTimeInitialization();
+
+    private boolean finished; // Set by the inflateImpl native
 
     private boolean gotFirstByte = false;
 
+    int inLength;
+
+    int inRead;
+
+    private boolean needsDictionary; // Set by the inflateImpl native
+
     private boolean pass_magic_number_check = true;
+
+    private long streamHandle = -1;
+
+    /**
+     * Constructs a new Inflater instance.
+     */
+    public Inflater() {
+        this(false);
+    }
+
+    /**
+     * Constructs a new Inflater instance. If noHeader is true the Inflater will
+     * not attempt to read a ZLIB header.
+     * 
+     * @param noHeader
+     *            If true, read a ZLIB header from input.
+     */
+    public Inflater(boolean noHeader) {
+        streamHandle = createStream(noHeader);
+    }
+
+    private native long createStream(boolean noHeader1);
 
     /**
      * Release any resources associated with this Inflater. Any unused
@@ -97,6 +117,38 @@ public class Inflater {
     }
 
     private native synchronized int getAdlerImpl(long handle);
+
+    /**
+     * Returns a long int of total number of bytes of input read by the
+     * Inflater. This method performs the same as getTotalIn except it returns a
+     * long value instead of an integer
+     * 
+     * @see #getTotalIn()
+     * @return Total bytes read
+     */
+    public synchronized long getBytesRead() {
+        // Throw NPE here
+        if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
+        return getTotalInImpl(streamHandle);
+    }
+
+    /**
+     * Returns a long int of total number of bytes of input output by the
+     * Inflater. This method performs the same as getTotalOut except it returns
+     * a long value instead of an integer
+     * 
+     * @see #getTotalOut()
+     * @return Total bytes output
+     */
+    public synchronized long getBytesWritten() {
+        // Throw NPE here
+        if (streamHandle == -1) {
+            throw new NullPointerException();
+        }
+        return getTotalOutImpl(streamHandle);
+    }
 
     /**
      * Returns the number of bytes of current input remaining to be read by the
@@ -203,24 +255,6 @@ public class Inflater {
             int nbytes, long handle);
 
     /**
-     * Constructs a new Inflater instance.
-     */
-    public Inflater() {
-        this(false);
-    }
-
-    /**
-     * Constructs a new Inflater instance. If noHeader is true the Inflater will
-     * not attempt to read a ZLIB header.
-     * 
-     * @param noHeader
-     *            If true, read a ZLIB header from input.
-     */
-    public Inflater(boolean noHeader) {
-        streamHandle = createStream(noHeader);
-    }
-
-    /**
      * Indicates whether the input bytes were compressed with a preset
      * dictionary. This method should be called prior to inflate() to determine
      * if a dictionary is required. If so setDictionary() should be called with
@@ -234,6 +268,12 @@ public class Inflater {
         return needsDictionary;
     }
 
+    /**
+     * Answers whether more data is required in the input buffer.
+     * 
+     * @return true if the input buffer is empty, and false otherwise.
+     * @see #setInput(byte[])
+     */
     public synchronized boolean needsInput() {
         return inRead == inLength;
     }
@@ -254,18 +294,33 @@ public class Inflater {
     private native synchronized void resetImpl(long handle);
 
     /**
-     * Sets the preset dictionary to be used for inflation to buf.
-     * needsDictionary() can be called to determine whether the current input
-     * was deflated using a preset dictionary.
+     * Sets the preset dictionary to be used for inflation.
+     * 
+     * <code>needsDictionary()</code> can be called to determine whether the
+     * current input was deflated using a preset dictionary.
      * 
      * @param buf
      *            The buffer containing the dictionary bytes
-     * @see #needsDictionary
+     * @see #needsDictionary()
      */
     public synchronized void setDictionary(byte[] buf) {
         setDictionary(buf, 0, buf.length);
     }
 
+    /**
+     * Sets the dictionary used to inflate the given data.
+     * 
+     * The dictionary should be set if the {@link #inflate(byte[])} returned
+     * zero bytes inflated and {@link #needsDictionary()} returns
+     * <code>true</code>.
+     * 
+     * @param buf
+     *            the bytes containing the dictionary
+     * @param off
+     *            offset into the buffer to the start of the dictionary
+     * @param nbytes
+     *            length of the dictionary, in bytes
+     */
     public synchronized void setDictionary(byte[] buf, int off, int nbytes) {
         if (streamHandle == -1) {
             throw new IllegalStateException();
@@ -327,40 +382,6 @@ public class Inflater {
         }
     }
 
-    /**
-     * Returns a long int of total number of bytes of input read by the
-     * Inflater. This method performs the same as getTotalIn except it returns a
-     * long value instead of an integer
-     * 
-     * @see getTotalIn
-     * @return Total bytes read
-     */
-    public synchronized long getBytesRead() {
-        // Throw NPE here
-        if (streamHandle == -1) {
-            throw new NullPointerException();
-        }
-        return getTotalInImpl(streamHandle);
-    }
-
-    /**
-     * Returns a long int of total number of bytes of input output by the
-     * Inflater. This method performs the same as getTotalOut except it returns
-     * a long value instead of an integer
-     * 
-     * @see getTotalOut
-     * @return Total bytes output
-     */
-    public synchronized long getBytesWritten() {
-        // Throw NPE here
-        if (streamHandle == -1) {
-            throw new NullPointerException();
-        }
-        return getTotalOutImpl(streamHandle);
-    }
-
     private native synchronized void setInputImpl(byte[] buf, int off,
             int nbytes, long handle);
-
-    private native long createStream(boolean noHeader1);
 }

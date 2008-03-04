@@ -101,7 +101,7 @@ JNI_OnUnload (JavaVM * vm, void *reserved)
           PORT_ACCESS_FROM_ENV (env);
 #ifdef HY_ZIP_API
           VMI_ACCESS_FROM_ENV(env);
-          HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+          VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif /* HY_ZIP_API */
 
           /* Detach from the common library */

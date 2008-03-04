@@ -35,6 +35,7 @@ import org.apache.harmony.pack200.bytecode.CPMethodRef;
 import org.apache.harmony.pack200.bytecode.CPNameAndType;
 import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.NewAttribute;
 
 /**
@@ -102,7 +103,9 @@ public class NewAttributeBands extends BandSet {
      * @return
      */
     private Attribute getOneAttribute(int index, List elements) {
-        NewAttribute attribute = new NewAttribute(attributeLayout.getName());
+        NewAttribute attribute = new NewAttribute(segment.getCpBands()
+                .cpUTF8Value(attributeLayout.getName(),
+                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ));
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             AttributeLayoutElement element = (AttributeLayoutElement) iter.next();
             element.addToAttribute(index, attribute);

@@ -89,10 +89,15 @@ public class URLEncoder {
      * 
      * @param s
      *            the string to be converted
+     * @param enc
+     *            the name of a charset to use for encoding unsafe chars
      * @return the converted string
+     * @throws UnsupportedEncodingException
+     *             if the named charset is unsupported
      */
     public static String encode(String s, String enc)
             throws UnsupportedEncodingException {
+
         if (s == null || enc == null) {
             throw new NullPointerException();
         }

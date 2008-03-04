@@ -245,9 +245,10 @@ public final class Locale implements Cloneable, Serializable {
         }
 
         // countryCode is defined in ASCII character set
-        countryCode = uLocale.getCountry();
+        countryCode = country.length()!=0?uLocale.getCountry():"";
 
-        variantCode = uLocale.getVariant();
+        // Work around for be compatible with RI
+        variantCode = variant;
     }
 
 	/**

@@ -54,15 +54,6 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
         nested = new ClassFileEntry[] {
                 globalPool.getInitMethodPoolEntry(SegmentConstantPool.CP_METHOD, offset, context(operandManager))
         };
-        if(nested[0] == null) {
-            // One class in JNDI isn't finding its
-            // <init> method. Not sure why.
-            // TODO: find out why.
-            // org/apache/harmony/security/asn1/ASN1Type
-            byteCode.setNested(new ClassFileEntry[]{});
-            byteCode.setNestedPositions(new int[][] {{}});
-            return;
-        }
         byteCode.setNested(nested);
         byteCode.setNestedPositions(new int[][] {{0, 2}});
     }

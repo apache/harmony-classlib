@@ -38,7 +38,7 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
   int wbits = 15;               /*Use MAX for fastest */
 #ifdef HY_ZIP_API
   VMI_ACCESS_FROM_ENV (env);
-  HyZipFunctionTable *zipFuncs;
+  VMIZipFunctionTable *zipFuncs;
   zipFuncs = (*VMI)->GetZipFunctions(VMI);
 #endif
 
@@ -58,15 +58,9 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
       throwNewOutOfMemoryError (env, "");
       return -1;
     }
-#ifndef HY_ZIP_API
   stream->opaque = (void *) privatePortLibrary;
   stream->zalloc = zalloc;
   stream->zfree = zfree;
-#else
-  stream->opaque = (void *) VMI;
-  stream->zalloc = zipFuncs->zip_zalloc;
-  stream->zfree = zipFuncs->zip_zfree;
-#endif
   stream->adler = 1;
   jstream->stream = stream;
   jstream->dict = NULL;
@@ -81,7 +75,7 @@ Java_java_util_zip_Inflater_createStream (JNIEnv * env, jobject recv,
     {
       jclmem_free_memory (env, stream);
       jclmem_free_memory (env, jstream);
-      throwNewIllegalArgumentException (env, "");
+      THROW_ZIP_EXCEPTION(env, err, IllegalArgumentException);
       return -1;
     }
 
@@ -111,8 +105,10 @@ Java_java_util_zip_Inflater_setInputImpl (JNIEnv * env, jobject recv,
   stream->stream->next_in = (Bytef *) baseAddr;
   stream->stream->avail_in = len;
   in = ((*env)->GetPrimitiveArrayCritical (env, buf, 0));
-  if (in == NULL)
+  if (in == NULL) {
+    throwNewOutOfMemoryError(env, "");
     return;
+  }
   memcpy (baseAddr, (in + off), len);
   ((*env)->ReleasePrimitiveArrayCritical (env, buf, in, JNI_ABORT));
   return;
@@ -123,8 +119,6 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
                                          jbyteArray buf, int off, int len,
                                          jlong handle)
 {
-  PORT_ACCESS_FROM_ENV (env);
-
   jbyte *out;
   JCLZipStream *stream = (JCLZipStream *) ((IDATA) handle);
   jint err = 0;
@@ -139,8 +133,10 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
   sin = stream->stream->total_in;
   sout = stream->stream->total_out;
   out = ((*env)->GetPrimitiveArrayCritical (env, buf, 0));
-  if (out == NULL)
+  if (out == NULL) {
+    throwNewOutOfMemoryError(env, "");
     return -1;
+  }
   stream->stream->next_out = (Bytef *) out + off;
   err = inflate (stream->stream, Z_SYNC_FLUSH);
   ((*env)->ReleasePrimitiveArrayCritical (env, buf, out, 0));
@@ -164,7 +160,7 @@ Java_java_util_zip_Inflater_inflateImpl (JNIEnv * env, jobject recv,
         }
       else
         {
-          throwNewDataFormatException (env, "");
+          THROW_ZIP_EXCEPTION(env, err, DataFormatException);
           return -1;
         }
     }
@@ -222,12 +218,12 @@ Java_java_util_zip_Inflater_setDictionaryImpl (JNIEnv * env, jobject recv,
       throwNewOutOfMemoryError (env, "");
       return;
     }
-  (*env)->GetByteArrayRegion (env, dict, off, len, dBytes);
+  (*env)->GetByteArrayRegion (env, dict, off, len, (jbyte*)dBytes);
   err = inflateSetDictionary (stream->stream, (Bytef *) dBytes, len);
   if (err != Z_OK)
     {
       jclmem_free_memory (env, dBytes);
-      throwNewIllegalArgumentException (env, "");
+      THROW_ZIP_EXCEPTION(env, err, IllegalArgumentException);
       return;
     }
   stream->dict = dBytes;
@@ -244,7 +240,7 @@ Java_java_util_zip_Inflater_resetImpl (JNIEnv * env, jobject recv,
   err = inflateReset (stream->stream);
   if (err != Z_OK)
     {
-      throwNewIllegalArgumentException (env, "");
+      THROW_ZIP_EXCEPTION(env, err, IllegalArgumentException);
       return;
     }
 }

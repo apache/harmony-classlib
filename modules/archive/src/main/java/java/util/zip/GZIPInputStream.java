@@ -26,20 +26,22 @@ import org.apache.harmony.archive.internal.nls.Messages;
 /**
  * The GZIPInputStream class is used to read data stored in the GZIP format.
  */
-public class GZIPInputStream extends java.util.zip.InflaterInputStream {
-    protected CRC32 crc = new CRC32();
+public class GZIPInputStream extends InflaterInputStream {
 
-    protected boolean eos = false;
-
-    public final static int GZIP_MAGIC = 0x8b1f;
-
-    private static final int FHCRC = 2;
+    private static final int FCOMMENT = 16;
 
     private static final int FEXTRA = 4;
 
+    private static final int FHCRC = 2;
+
     private static final int FNAME = 8;
 
-    private static final int FCOMMENT = 16;
+    /** Value of GZIP header magic number. */
+    public final static int GZIP_MAGIC = 0x8b1f;
+
+    protected CRC32 crc = new CRC32();
+
+    protected boolean eos = false;
 
     /**
      * Construct a GZIPInputStream to read from GZIP data from the underlying
@@ -47,6 +49,8 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
      * 
      * @param is
      *            InputStream to read data from
+     * @throws IOException
+     *             if an IO error occurs reading the stream
      */
     public GZIPInputStream(InputStream is) throws IOException {
         this(is, BUF_SIZE);
@@ -60,6 +64,8 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
      *            InputStream to read data from
      * @param size
      *            Internal read buffer size
+     * @throws IOException
+     *             if an IO exception occurs reading the stream
      */
     public GZIPInputStream(InputStream is, int size) throws IOException {
         super(is, new Inflater(true), size);
@@ -107,6 +113,15 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
         }
     }
 
+    /**
+     * Closes this stream and any underlying streams.
+     */
+    @Override
+    public void close() throws IOException {
+        eos = true;
+        super.close();
+    }
+
     private long getLong(byte[] buffer, int off) {
         long l = 0;
         l |= (buffer[off] & 0xFF);
@@ -121,7 +136,8 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
     }
 
     /**
-     * Reads and decompresses GZIP data from the underlying stream into buf.
+     * Reads and decompresses GZIP data from the underlying stream into the
+     * given buffer.
      * 
      * @param buffer
      *            Buffer to receive data
@@ -149,7 +165,7 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
                 // Get non-compressed bytes read by fill
                 int size = inf.getRemaining();
                 final int trailerSize = 8; // crc (4 bytes) + total out (4
-                                            // bytes)
+                // bytes)
                 byte[] b = new byte[trailerSize];
                 int copySize = (size > trailerSize) ? trailerSize : size;
 
@@ -166,15 +182,6 @@ public class GZIPInputStream extends java.util.zip.InflaterInputStream {
             return val;
         }
         throw new ArrayIndexOutOfBoundsException();
-    }
-
-    /**
-     * Closes this stream and any underlying streams.
-     */
-    @Override
-    public void close() throws IOException {
-        eos = true;
-        super.close();
     }
 
     private void readFully(byte[] buffer, int offset, int length)

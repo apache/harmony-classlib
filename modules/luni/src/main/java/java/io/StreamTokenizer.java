@@ -120,7 +120,7 @@ public class StreamTokenizer {
      * specification.
      */
     private StreamTokenizer() {
-        /**
+        /*
          * Initialize the default state per specification. All byte values 'A'
          * through 'Z', 'a' through 'z', and '\u00A0' through '\u00FF' are
          * considered to be alphabetic.
@@ -173,10 +173,10 @@ public class StreamTokenizer {
      * Construct a new StreamTokenizer on the Reader <code>r</code>.
      * Initialize the default state per specification.
      * <UL>
-     * <LI>All byte values 'A' through 'Z', 'a' through 'z', and '\u00A0'
-     * through '\u00FF' are considered to be alphabetic.</LI>
-     * <LI>All byte values '\u0000' through '\u0020' are considered to be white
-     * space. '/' is a comment character.</LI>
+     * <LI>All byte values 'A' through 'Z', 'a' through 'z', and '&#92;u00A0'
+     * through '&#92;u00FF' are considered to be alphabetic.</LI>
+     * <LI>All byte values '&#92;u0000' through '&#92;u0020' are considered to
+     * be white space. '/' is a comment character.</LI>
      * <LI>Single quote '\'' and double quote '"' are string quote characters.</LI>
      * <LI>Numbers are parsed.</LI>
      * <LI>Ends of lines are considered to be white space rather than separate

@@ -21,12 +21,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class CPUTF8 extends ConstantPoolEntry {
-	private String utf8;
 
-	public CPUTF8(String utf8, int domain) {
+    private String utf8;
+
+    public CPUTF8(String utf8, int domain) {
 		super(ConstantPoolEntry.CP_UTF8);
 		this.utf8 = utf8;
 		this.domain = domain;
+        if(domain == ClassConstantPool.DOMAIN_UNDEFINED) {
+            throw new RuntimeException();
+        }
 	}
 
 	public boolean equals(Object obj) {

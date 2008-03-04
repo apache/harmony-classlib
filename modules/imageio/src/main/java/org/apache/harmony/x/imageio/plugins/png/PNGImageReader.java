@@ -15,93 +15,15 @@
  *  limitations under the License.
  */
 
-
 package org.apache.harmony.x.imageio.plugins.png;
 
-import org.apache.harmony.awt.gl.image.DecodingImageSource;
-import org.apache.harmony.awt.gl.image.OffscreenImage;
-import org.apache.harmony.luni.util.NotImplementedException;
-import org.apache.harmony.x.imageio.plugins.jpeg.IISDecodingImageSource;
-
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageReadParam;
-import javax.imageio.plugins.jpeg.JPEGImageReadParam;
 import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.metadata.IIOMetadata;
-import java.io.IOException;
-import java.util.Iterator;
-import java.awt.image.BufferedImage;
 
-public class PNGImageReader  extends ImageReader {
-    ImageInputStream iis;
+import org.apache.harmony.x.imageio.plugins.AwtImageReader;
+
+public class PNGImageReader extends AwtImageReader {
 
     public PNGImageReader(ImageReaderSpi imageReaderSpi) {
         super(imageReaderSpi);
-    }
-
-    public int getNumImages(boolean allowSearch) throws IOException, NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
-    }
-
-    public int getWidth(int imageIndex) throws IOException, NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
-    }
-
-    public int getHeight(int imageIndex) throws IOException, NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
-    }
-
-    public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException, NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public IIOMetadata getStreamMetadata() throws IOException, NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public IIOMetadata getImageMetadata(int imageIndex) throws IOException, NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public BufferedImage read(int i, ImageReadParam imageReadParam) throws IOException {
-        if (iis == null) {
-            throw new IllegalArgumentException("input stream == null");
-        }
-
-        DecodingImageSource source = new IISDecodingImageSource(iis);
-        OffscreenImage image = new OffscreenImage(source);
-        source.addConsumer(image);
-        source.load();
-        // The interrupted flag should be cleared because ImageDecoder interrupts
-        // current thread while decoding (due its architecture).
-        Thread.interrupted();
-        return image.getBufferedImage();
-    }
-
-    @Override
-    public BufferedImage read(int i) throws IOException {
-        return read(i, null);
-    }
-
-    @Override
-    public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
-        super.setInput(input, seekForwardOnly, ignoreMetadata);
-        iis = (ImageInputStream) input;
-    }
-
-    @Override
-    public ImageReadParam getDefaultReadParam() {
-        return new ImageReadParam();
     }
 }

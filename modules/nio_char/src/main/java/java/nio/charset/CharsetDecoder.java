@@ -65,7 +65,7 @@ import org.apache.harmony.niochar.internal.nls.Messages;
  * The two errors can be handled in three ways, the default one is to report the
  * error to the invoker by a {@link CoderResult CoderResult} instance, and the
  * alternatives are to ignore it or to replace the erroneous input with the
- * replacement string. The replacement string is "\uFFFD" by default and can be
+ * replacement string. The replacement string is "&#92;uFFFD" by default and can be
  * changed by invoking {@link #replaceWith(String) replaceWith} method. The
  * invoker of this decoder can choose one way by specifying a
  * {@link CodingErrorAction CodingErrorAction} instance for each error type via
@@ -138,7 +138,7 @@ public abstract class CharsetDecoder {
      * Construct a new <code>CharsetDecoder</code> using given
      * <code>Charset</code>, average number and maximum number of characters
      * created by this decoder for one input byte, and the default replacement
-     * string "\uFFFD".
+     * string "&#92;uFFFD".
      * 
      * @param charset
      *            this decoder's <code>Charset</code>, which create this

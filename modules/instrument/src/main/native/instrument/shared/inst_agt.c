@@ -24,7 +24,7 @@
 #ifndef HY_ZIP_API
 #include <zipsup.h>
 #else /* HY_ZIP_API */
-#include <hyzip.h>
+#include <vmizip.h>
 #endif /* HY_ZIP_API */
 #include <jni.h>
 #include <vmi.h>
@@ -154,8 +154,13 @@ DEALLOCATE:
 
 char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	I_32 retval;
+#ifndef HY_ZIP_API
 	HyZipFile zipFile;
 	HyZipEntry zipEntry;
+#else
+	VMIZipFile zipFile;
+	VMIZipEntry zipEntry;
+#endif
 	char *result;
 	int size = 0;
 	char errorMessage[1024];
@@ -165,14 +170,14 @@ char* Read_Manifest(JavaVM *vm, JNIEnv *env,const char *jar_name){
 	PORT_ACCESS_FROM_JAVAVM(vm);
 
 #ifdef HY_ZIP_API
-	HyZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
+	VMIZipFunctionTable *zipFuncs = (*VMI)->GetZipFunctions(VMI);
 
 #endif /* HY_ZIP_API */
 	/* open zip file */
 #ifndef HY_ZIP_API
 	retval = zip_openZipFile(privatePortLibrary, (char *)jar_name, &zipFile, NULL);
 #else /* HY_ZIP_API */
-	retval = zipFuncs->zip_openZipFile(VMI, (char *)jar_name, &zipFile);
+	retval = zipFuncs->zip_openZipFile(VMI, (char *)jar_name, &zipFile, 0);
 #endif /* HY_ZIP_API */
 	if(retval){
 		sprintf(errorMessage,"failed to open file:%s, %d\n", jar_name, retval);

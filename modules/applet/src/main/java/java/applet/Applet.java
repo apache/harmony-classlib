@@ -169,7 +169,7 @@ public class Applet extends Panel {
     }
 
     public Image getImage(URL url) {
-        return Toolkit.getDefaultToolkit().getImage(url);
+        return getAppletContext().getImage(url);
     }
 
     public Image getImage(URL url, String name) {
@@ -230,7 +230,7 @@ public class Applet extends Panel {
 
     private static URL appendURL(URL url, String name) {
         try {
-            return new URL(url.toString() + name);
+            return new URL(url, name);
         } catch (MalformedURLException e) {
             return null;
         }

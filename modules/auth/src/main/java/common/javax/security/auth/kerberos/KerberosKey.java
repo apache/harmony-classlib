@@ -24,7 +24,7 @@ import javax.security.auth.Destroyable;
 import org.apache.harmony.auth.internal.nls.Messages;
 
 /**
- * @see http://www.ietf.org/rfc/rfc3961.txt
+ * See <a href="http://www.ietf.org/rfc/rfc3961.txt">RFC3961</a>
  */
 public class KerberosKey implements SecretKey, Destroyable {
 

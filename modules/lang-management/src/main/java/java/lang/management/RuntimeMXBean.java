@@ -54,7 +54,7 @@ public interface RuntimeMXBean {
      * 
      * @return The class path.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getClassPath();
@@ -79,7 +79,7 @@ public interface RuntimeMXBean {
      * 
      * @return The library path.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getLibraryPath();
@@ -110,7 +110,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM specification name.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getSpecName();
@@ -123,7 +123,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM specification vendor.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getSpecVendor();
@@ -136,7 +136,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM specification version.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getSpecVersion();
@@ -160,7 +160,7 @@ public interface RuntimeMXBean {
      * 
      * @return The library path.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     Map<String, String> getSystemProperties();
@@ -182,7 +182,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM name.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getVmName();
@@ -195,7 +195,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM vendor.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getVmVendor();
@@ -208,7 +208,7 @@ public interface RuntimeMXBean {
      * 
      * @return The JVM version.
      * @throws SecurityException if the
-     *         {@link SecurityManager#checkPropertiesAccess(String)} doesn't
+     *         {@link SecurityManager#checkPropertyAccess(String)} doesn't
      *         allow access.
      */
     String getVmVersion();

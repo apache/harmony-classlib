@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class ExceptionsAttribute extends Attribute {
+    
+    private static final CPUTF8 attributeName = new CPUTF8(
+            "Exceptions", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
 	private static int hashCode(Object[] array) {
 		final int prime = 31;
@@ -34,16 +37,14 @@ public class ExceptionsAttribute extends Attribute {
 		return result;
 	}
 
-
 	private transient int[] exceptionIndexes;
 
 	private CPClass[] exceptions;
 
 	public ExceptionsAttribute(CPClass[] exceptions) {
-		super("Exceptions"); //$NON-NLS-1$
+		super(attributeName);
 		this.exceptions = exceptions;
 	}
-
 
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -58,7 +59,6 @@ public class ExceptionsAttribute extends Attribute {
 		return true;
 	}
 
-
 	protected int getLength() {
 		return 2 + 2 * exceptions.length;
 	}
@@ -71,7 +71,6 @@ public class ExceptionsAttribute extends Attribute {
 		result[exceptions.length] = getAttributeName();
 		return result;
 	}
-
 
 	public int hashCode() {
 		final int prime = 31;
@@ -92,7 +91,6 @@ public class ExceptionsAttribute extends Attribute {
 	public String toString() {
 		return "Exceptions:" + exceptions;
 	}
-
 
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(exceptionIndexes.length);

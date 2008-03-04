@@ -260,6 +260,10 @@ public class HashMapTest extends junit.framework.TestCase {
 					.getKey())
 					&& hm.containsValue(m.getValue()));
 		}
+        
+        Iterator iter = s.iterator(); 
+        s.remove(iter.next());
+        assertEquals(1001, s.size());
 	}
 
 	/**

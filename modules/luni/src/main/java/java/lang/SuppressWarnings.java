@@ -22,17 +22,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>
  * An annotation that indicates a compiler should suppress any warnings of the
  * type specified in the {@link #value()}.
- * </p>
  * 
  * @since 1.5
  */
 @Target( { ElementType.TYPE, ElementType.FIELD, ElementType.METHOD,
-ElementType.PARAMETER, ElementType.CONSTRUCTOR,
-ElementType.LOCAL_VARIABLE })
+        ElementType.PARAMETER, ElementType.CONSTRUCTOR,
+        ElementType.LOCAL_VARIABLE })
 @Retention(RetentionPolicy.SOURCE)
 public @interface SuppressWarnings {
+
+    /**
+     * Answers the array of warnings that compilers should suppress for the
+     * annotated element.
+     * 
+     * @return an array of warning types to suppress.
+     */
     public String[] value();
 }
