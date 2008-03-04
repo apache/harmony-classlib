@@ -36,13 +36,14 @@ public class SegmentTest extends TestCase {
 
     InputStream in;
     JarOutputStream out;
+    File file;
 
     public void testHelloWorld() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        File file = File.createTempFile("hello", "world.jar");
+        file = File.createTempFile("HelloWorld", ".jar");
         out = new JarOutputStream(new FileOutputStream(file));
         segment.writeJar(out);
         out.close();
@@ -54,6 +55,7 @@ public class SegmentTest extends TestCase {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = reader.readLine();
         assertEquals(line, "Hello world");
+        file.deleteOnExit();
     }
 
     public void testJustResources() throws Exception {
@@ -61,7 +63,8 @@ public class SegmentTest extends TestCase {
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("just", "resources.jar")));
+        file = File.createTempFile("JustResources", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         segment.writeJar(out);
     }
 
@@ -70,7 +73,8 @@ public class SegmentTest extends TestCase {
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
         Segment segment = Segment.parse(in);
         assertNotNull(segment);
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("Interface", "Only.jar")));
+        file = File.createTempFile("InterfaceOnly", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         segment.writeJar(out);
     }
 
@@ -83,6 +87,9 @@ public class SegmentTest extends TestCase {
         } finally {
             if (out != null) {
                 out.close();
+            }
+            if (file != null) {
+                file.delete();
             }
         }
     }

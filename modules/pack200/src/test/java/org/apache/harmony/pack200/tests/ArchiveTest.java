@@ -33,11 +33,13 @@ public class ArchiveTest extends TestCase {
 
     InputStream in;
     JarOutputStream out;
+    File file;
 
     public void testJustResourcesGZip() throws Exception {
-       in = Archive.class
+        in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("Just", "ResourcesGz.jar")));
+        file = File.createTempFile("Just", "ResourcesGz.jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -46,7 +48,8 @@ public class ArchiveTest extends TestCase {
     public void testWithSqlE1() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/sql-e1.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql-e1", ".jar")));
+        file = File.createTempFile("sql-e1", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -55,7 +58,8 @@ public class ArchiveTest extends TestCase {
     public void testWithSql() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/sql.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("sql", ".jar")));
+        file = File.createTempFile("sql", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -64,7 +68,8 @@ public class ArchiveTest extends TestCase {
     public void testWithPack200E1() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200-e1.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200-e1.jar")));
+        file = File.createTempFile("p200-e1", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -73,7 +78,8 @@ public class ArchiveTest extends TestCase {
     public void testWithPack200() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/pack200.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("pack", "200.jar")));
+        file = File.createTempFile("p200", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -82,7 +88,8 @@ public class ArchiveTest extends TestCase {
     public void testWithJNDIE1() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/jndi-e1.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("jndi", "-e1.jar")));
+        file = File.createTempFile("jndi-e1", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -91,7 +98,8 @@ public class ArchiveTest extends TestCase {
     public void testWithAnnotations() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/annotations.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile("ann", "otations.jar")));
+        file = File.createTempFile("annotations", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -100,8 +108,8 @@ public class ArchiveTest extends TestCase {
     public void testWithE0() throws Exception  {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/simple-E0.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
-                "simpleE0", ".jar")));
+        file = File.createTempFile("simple-e0", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
@@ -111,31 +119,29 @@ public class ArchiveTest extends TestCase {
     public void testWithLargeClass() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/LargeClass.pack.gz");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
-                "largeclass", ".jar")));
+        file = File.createTempFile("largeClass", ".jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Archive archive = new Archive(in, out);
         archive.unpack();
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        try {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } finally {
+        if (in != null) {
             try {
-                if (out != null) {
-                    out.close();
-                }
+                in.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        try {
+            if (out != null) {
+                out.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        file.delete();
     }
 
 }
