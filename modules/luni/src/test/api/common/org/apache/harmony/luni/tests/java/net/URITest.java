@@ -221,28 +221,30 @@ public class URITest extends TestCase {
             fail("Assert 0: URI constructor failed to throw exception on invalid input.");
         } catch (URISyntaxException e) {
             // Expected
-            assertEquals("Assert 1: Wrong index in URISyntaxException.", 0, e.getIndex());
+            assertEquals("Assert 1: Wrong index in URISyntaxException.", 0, e
+                    .getIndex());
         }
-        
+
         // Regression test for HARMONY-25
-        // if port value is negative, the authority should be considered registry-based.
+        // if port value is negative, the authority should be considered
+        // registry-based.
         URI uri = new URI("http://host:-8096/path/index.html");
         assertEquals("Assert 2: returned wrong port value,", -1, uri.getPort());
         assertNull("Assert 3: returned wrong host value,", uri.getHost());
         try {
             uri.parseServerAuthority();
             fail("Assert 4: Expected URISyntaxException");
-        } catch (URISyntaxException e){
+        } catch (URISyntaxException e) {
             // Expected
         }
-        
-        uri = new URI("http","//myhost:-8096", null);
+
+        uri = new URI("http", "//myhost:-8096", null);
         assertEquals("Assert 5: returned wrong port value,", -1, uri.getPort());
         assertNull("Assert 6: returned wrong host value,", uri.getHost());
         try {
             uri.parseServerAuthority();
             fail("Assert 7: Expected URISyntaxException");
-        } catch (URISyntaxException e){
+        } catch (URISyntaxException e) {
             // Expected
         }
     }
@@ -280,7 +282,8 @@ public class URITest extends TestCase {
      * @tests java.net.URI#URI(java.lang.String, java.lang.String,
      *        java.lang.String)
      */
-    public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String() throws URISyntaxException {
+    public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_String()
+            throws URISyntaxException {
         URI uri = new URI("mailto", "mduerst@ifi.unizh.ch", null);
         assertNull("wrong userinfo", uri.getUserInfo());
         assertNull("wrong hostname", uri.getHost());
@@ -323,16 +326,11 @@ public class URITest extends TestCase {
      *        java.lang.String)
      */
     public void test_ConstructorLjava_lang_StringLjava_lang_StringLjava_lang_StringILjava_lang_StringLjava_lang_StringLjava_lang_String() {
-        // tests for public URI(String scheme, String userinfo, String host, int
-        // port, String path,
-        // String query, String fragment) throws URISyntaxException
-
         // check for URISyntaxException for invalid Server Authority
         construct1("http", "user", "host\u00DFname", -1, "/file", "query",
                 "fragment"); // unicode chars in host name
         // equivalent to construct1("http", "user", "host\u00dfname", -1,
-        // "/file",
-        // "query", "fragment");
+        // "/file", "query", "fragment");
         construct1("http", "user", "host%20name", -1, "/file", "query",
                 "fragment"); // escaped octets in host name
         construct1("http", "user", "host name", -1, "/file", "query",
@@ -602,10 +600,9 @@ public class URITest extends TestCase {
             URI b = new URI(compareToData[i][0]);
             URI r = new URI(compareToData[i][1]);
             if (b.compareTo(r) != compareToResults[i]) {
-                fail("Test " + i + ": " + compareToData[i][0]
-                        + " compared to " + compareToData[i][1] + " -> "
-                        + b.compareTo(r) + " rather than "
-                        + compareToResults[i]);
+                fail("Test " + i + ": " + compareToData[i][0] + " compared to "
+                        + compareToData[i][1] + " -> " + b.compareTo(r)
+                        + " rather than " + compareToResults[i]);
             }
         }
     }
@@ -713,9 +710,9 @@ public class URITest extends TestCase {
             URI b = new URI(equalsData[i][0]);
             URI r = new URI(equalsData[i][1]);
             if (b.equals(r) != equalsResults[i]) {
-                fail("Error: " + equalsData[i][0] + " == "
-                        + equalsData[i][1] + "? -> " + b.equals(r)
-                        + " expected " + equalsResults[i]);
+                fail("Error: " + equalsData[i][0] + " == " + equalsData[i][1]
+                        + "? -> " + b.equals(r) + " expected "
+                        + equalsResults[i]);
             }
         }
 
@@ -1533,7 +1530,7 @@ public class URITest extends TestCase {
         } catch (URISyntaxException e) {
             // Expected
         }
-        
+
         // regression test for HARMONY-1126
         assertNotNull(URI.create("file://C:/1.txt").parseServerAuthority());
     }
@@ -1590,27 +1587,27 @@ public class URITest extends TestCase {
                         + relativizeData[i][0] + ", " + relativizeData[i][1]
                         + ": " + e);
             }
-        }    
+        }
 
         URI a = new URI("http://host/dir");
-        URI b = new URI("http://host/dir/file?query");      
-        assertEquals("Assert 0: URI relativized incorrectly,",
-                new URI("file?query"), a.relativize(b));        
-    
+        URI b = new URI("http://host/dir/file?query");
+        assertEquals("Assert 0: URI relativized incorrectly,", new URI(
+                "file?query"), a.relativize(b));
+
         // One URI with empty host
         a = new URI("file:///~/first");
         b = new URI("file://tools/~/first");
-        assertEquals("Assert 1: URI relativized incorrectly,",
-                new URI("file://tools/~/first"), a.relativize(b));      
-        assertEquals("Assert 2: URI relativized incorrectly,",
-                new URI("file:///~/first"), b.relativize(a));       
+        assertEquals("Assert 1: URI relativized incorrectly,", new URI(
+                "file://tools/~/first"), a.relativize(b));
+        assertEquals("Assert 2: URI relativized incorrectly,", new URI(
+                "file:///~/first"), b.relativize(a));
 
         // Both URIs with empty hosts
         b = new URI("file:///~/second");
-        assertEquals("Assert 3: URI relativized incorrectly,",
-                new URI("file:///~/second"), a.relativize(b));
-        assertEquals("Assert 4: URI relativized incorrectly,",
-                new URI("file:///~/first"), b.relativize(a));
+        assertEquals("Assert 3: URI relativized incorrectly,", new URI(
+                "file:///~/second"), a.relativize(b));
+        assertEquals("Assert 4: URI relativized incorrectly,", new URI(
+                "file:///~/first"), b.relativize(a));
     }
 
     /**
@@ -1811,13 +1808,13 @@ public class URITest extends TestCase {
      * @tests java.net.URI#toURL()
      */
     public void test_toURL() throws Exception {
-        String absoluteuris[] = new String[] { "mailto:user@ca.ibm.com",
+        String absoluteuris[] = new String[] { "mailto:noreply@apache.org",
                 "urn:isbn:123498989h", "news:software.ibm.com",
-                "http://www.amazon.ca", "file:///d:/temp/results.txt",
+                "http://www.apache.org", "file:///d:/temp/results.txt",
                 "scheme:ssp", };
 
         String relativeuris[] = new String[] { "calculate.pl?isbn=123498989h",
-                "?isbn=123498989h", "//www.amazon.ca", "a.html", "#top",
+                "?isbn=123498989h", "//www.apache.org", "a.html", "#top",
                 "//pc1/", "//user@host/path/file" };
 
         for (int i = 0; i < absoluteuris.length; i++) {

@@ -136,6 +136,12 @@ Java_org_apache_harmony_luni_internal_process_SystemProcess_createImpl (JNIEnv *
         case 1002 : 
             sprintf(errMsg, "Unable to start program : %s", "fork() failed with errno = EAGAIN");
             break;
+        case 1003 : 
+            sprintf(errMsg, "Unable to start program : %s", "too many open files");
+            break;
+        case 1004 : 
+            sprintf(errMsg, "Unable to start program : %s", "no such file or directory");
+            break;
         default:
             sprintf(errMsg, "Unable to start program : %s", "unknown");
             break;

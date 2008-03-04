@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.apache.harmony.testframework.serialization.SerializationTest;
 
@@ -260,6 +261,10 @@ public class HashMapTest extends junit.framework.TestCase {
 					.getKey())
 					&& hm.containsValue(m.getValue()));
 		}
+        
+        Iterator iter = s.iterator(); 
+        s.remove(iter.next());
+        assertEquals(1001, s.size());
 	}
 
 	/**
@@ -607,6 +612,8 @@ public class HashMapTest extends junit.framework.TestCase {
         
         entrySet.remove(copyEntry);
         assertFalse(entrySet.contains(copyEntry));
+        
+        
     }
 
     private static class MockEntry implements Map.Entry {

@@ -24,23 +24,16 @@ public class ConstantValueAttribute extends Attribute {
 
 	private ClassFileEntry entry;
 
-	public ConstantValueAttribute(Object value) {
-		super("ConstantValue"); //$NON-NLS-1$
-		if (value instanceof java.lang.Integer) {
-			this.entry = new CPInteger((Integer) value);
-		} else if (value instanceof java.lang.Long) {
-			this.entry = new CPLong((Long) value);
-		} else if (value instanceof java.lang.Float) {
-			this.entry = new CPFloat((Float) value);
-		} else if (value instanceof java.lang.Double) {
-			this.entry = new CPDouble((Double) value);
-		} else if (value instanceof java.lang.String) {
-			this.entry = new CPString((String) value);
-		} else {
-			throw new Error("Oops, I've not done it again");
-		}
-	}
+    private static final CPUTF8 attributeName = new CPUTF8(
+            "ConstantValue", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
+	public ConstantValueAttribute(ClassFileEntry entry) {
+		super(attributeName);
+        if(entry == null) {
+            throw new NullPointerException();
+        }
+		this.entry = entry;
+	}
 
 	public boolean equals(Object obj) {
 		if (this == obj)

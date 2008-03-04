@@ -22,65 +22,48 @@ package org.apache.harmony.x.imageio.plugins.jpeg;
 
 import java.io.IOException;
 import java.util.Locale;
+
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.spi.ServiceRegistry;
-import javax.imageio.stream.ImageInputStream;
+
+import org.apache.harmony.x.imageio.plugins.ImageSignature;
+import org.apache.harmony.x.imageio.plugins.ImageType;
+import org.apache.harmony.x.imageio.plugins.PluginUtils;
 
 public class JPEGImageReaderSpi extends ImageReaderSpi {
 
     public JPEGImageReaderSpi() {
-        super(JPEGSpiConsts.vendorName, JPEGSpiConsts.version,
-                JPEGSpiConsts.names, JPEGSpiConsts.suffixes,
-                JPEGSpiConsts.MIMETypes, JPEGSpiConsts.readerClassName,
-                STANDARD_INPUT_TYPE, JPEGSpiConsts.writerSpiNames,
-                JPEGSpiConsts.supportsStandardStreamMetadataFormat,
-                JPEGSpiConsts.nativeStreamMetadataFormatName,
-                JPEGSpiConsts.nativeStreamMetadataFormatClassName,
-                JPEGSpiConsts.extraStreamMetadataFormatNames,
-                JPEGSpiConsts.extraStreamMetadataFormatClassNames,
-                JPEGSpiConsts.supportsStandardImageMetadataFormat,
-                JPEGSpiConsts.nativeImageMetadataFormatName,
-                JPEGSpiConsts.nativeImageMetadataFormatClassName,
-                JPEGSpiConsts.extraImageMetadataFormatNames,
-                JPEGSpiConsts.extraImageMetadataFormatClassNames);
+        super(PluginUtils.VENDOR_NAME, PluginUtils.DEFAULT_VERSION,
+                        ImageType.JPEG.getNames(),
+                        ImageType.JPEG.getSuffixes(),
+                        ImageType.JPEG.getMimeTypes(),
+                        JPEGImageReader.class.getName(), STANDARD_INPUT_TYPE,
+                        JPEGSpiConsts.writerSpiNames,
+                        JPEGSpiConsts.supportsStandardStreamMetadataFormat,
+                        JPEGSpiConsts.nativeStreamMetadataFormatName,
+                        JPEGSpiConsts.nativeStreamMetadataFormatClassName,
+                        JPEGSpiConsts.extraStreamMetadataFormatNames,
+                        JPEGSpiConsts.extraStreamMetadataFormatClassNames,
+                        JPEGSpiConsts.supportsStandardImageMetadataFormat,
+                        JPEGSpiConsts.nativeImageMetadataFormatName,
+                        JPEGSpiConsts.nativeImageMetadataFormatClassName,
+                        JPEGSpiConsts.extraImageMetadataFormatNames,
+                        JPEGSpiConsts.extraImageMetadataFormatClassNames);
     }
-
 
     @Override
     public boolean canDecodeInput(Object source) throws IOException {
-        ImageInputStream markable = (ImageInputStream) source;
-        try {
-            markable.mark();
-
-            byte[] signature = new byte[3];
-            markable.seek(0);
-            markable.read(signature, 0, 3);
-            markable.reset();
-
-            if ((signature[0] & 0xFF) == 0xFF &&
-                    (signature[1] & 0xFF) == JPEGConsts.SOI &&
-                    (signature[2] & 0xFF) == 0xFF) { // JPEG
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return ImageSignature.JPEG.verify(source);
     }
 
     @Override
-    public ImageReader createReaderInstance(Object extension) throws IOException {
+    public ImageReader createReaderInstance(Object extension)
+                    throws IOException {
         return new JPEGImageReader(this);
     }
 
     @Override
     public String getDescription(Locale locale) {
-        return "DRL JPEG decoder";
-    }
-
-    @Override
-    public void onRegistration(ServiceRegistry registry, Class<?> category) {
-        // super.onRegistration(registry, category);
+        return "JPEG image decoder"; //$NON-NLS-1$
     }
 }

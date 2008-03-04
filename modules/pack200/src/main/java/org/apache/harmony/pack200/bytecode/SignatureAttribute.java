@@ -24,8 +24,10 @@ public class SignatureAttribute extends Attribute {
     private int signature_index;
     private CPUTF8 signature;
 
+    private static final CPUTF8 attributeName = new CPUTF8("Signature", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+
     public SignatureAttribute(CPUTF8 value) {
-        super("Signature");
+        super(attributeName);
         this.signature = value;
     }
 

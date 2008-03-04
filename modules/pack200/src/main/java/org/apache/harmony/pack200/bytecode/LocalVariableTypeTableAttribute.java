@@ -30,11 +30,14 @@ public class LocalVariableTypeTableAttribute extends Attribute {
     private int[] indexes;
     private CPUTF8[] names;
     private CPUTF8[] signatures;
+    private static final CPUTF8 attributeName = new CPUTF8(
+            "LocalVariableTypeTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+
 
     public LocalVariableTypeTableAttribute(int local_variable_type_table_length,
             int[] start_pcs, int[] lengths, CPUTF8[] names,
             CPUTF8[] signatures, int[] indexes) {
-        super("LocalVariableTypeTable");
+        super(attributeName);
         this.local_variable_type_table_length = local_variable_type_table_length;
         this.start_pcs = start_pcs;
         this.lengths = lengths;

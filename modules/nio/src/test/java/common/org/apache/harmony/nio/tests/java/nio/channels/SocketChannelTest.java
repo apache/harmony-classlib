@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.BindException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -2028,6 +2029,42 @@ public class SocketChannelTest extends TestCase {
         }
     }
     
+    public void testReadByteBuffer_Direct2() throws IOException {
+        byte[] request = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        ByteBuffer buffer = ByteBuffer.allocateDirect(128);
+
+        ServerSocketChannel server = ServerSocketChannel.open();
+        server.socket().bind(
+                new InetSocketAddress(InetAddress.getLocalHost(), 0), 5);
+        Socket client = new Socket(InetAddress.getLocalHost(), server.socket()
+                .getLocalPort());
+        client.setTcpNoDelay(false);
+        Socket worker = server.socket().accept();
+        SocketChannel workerChannel = worker.getChannel();
+
+        OutputStream out = client.getOutputStream();
+        out.write(request);
+        out.close();
+
+        buffer.limit(5);
+        int bytesRead = workerChannel.read(buffer);
+        assertEquals(5, bytesRead);
+        assertEquals(5, buffer.position());
+
+        buffer.limit(request.length);
+        bytesRead = workerChannel.read(buffer);
+        assertEquals(6, bytesRead);
+
+        buffer.flip();
+        assertEquals(request.length, buffer.limit());
+
+        assertEquals(ByteBuffer.wrap(request), buffer);
+
+        client.close();
+        worker.close();
+        server.close();
+    }
+
     public void testReadByteBuffer_BufNull() throws Exception {
         assertTrue(this.server1.isBound());
         java.nio.ByteBuffer readBuf = java.nio.ByteBuffer.allocate(0);

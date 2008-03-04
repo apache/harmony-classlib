@@ -24,7 +24,8 @@ public class PropertyEditorManager {
 
     private static String[] path = { "org.apache.harmony.beans.editors" }; //$NON-NLS-1$
 
-    private static final Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
+    private static final Map<Class<?>, Class<?>> registeredEditors
+               = new HashMap<Class<?>, Class<?>>();
 
     public PropertyEditorManager() {
         // expected
@@ -34,11 +35,12 @@ public class PropertyEditorManager {
         if (targetType == null) {
             throw new NullPointerException();
         }
-
         SecurityManager sm = System.getSecurityManager();
+
         if (sm != null) {
             sm.checkPropertiesAccess();
         }
+
         if (editorClass != null) {
             registeredEditors.put(targetType, editorClass);
         } else {
@@ -46,70 +48,68 @@ public class PropertyEditorManager {
         }
     }
 
+    private static PropertyEditor loadEditor(Class<?> targetType, String className)
+            throws ClassNotFoundException, IllegalAccessException,
+                   InstantiationException {
+        ClassLoader loader = targetType.getClassLoader();
+        Class<?> editorClass = null;
+
+        try {
+            if (loader != null) {
+                editorClass = loader.loadClass(className);
+            } else {
+                loader = ClassLoader.getSystemClassLoader();
+
+                if (loader != null) {
+                    editorClass = loader.loadClass(className);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            // expected
+        }
+
+        if (editorClass == null) {
+            loader = Thread.currentThread().getContextClassLoader();
+            editorClass = loader.loadClass(className);
+        }
+        return (PropertyEditor) editorClass.newInstance();
+    }
+
     public static synchronized PropertyEditor findEditor(Class<?> targetType) {
         if (targetType == null) {
             throw new NullPointerException();
         }
+        Class<?> editorClass = registeredEditors.get(targetType);
 
-        Class<?> editorClass = null;
-        PropertyEditor editor = null;
-
-        editorClass = registeredEditors.get(targetType);
         if (editorClass != null) {
             try {
-                editor = (PropertyEditor) editorClass.newInstance();
-            } catch (Exception e) {
-                // expected
-            }
-        }
-        
-        if (editor == null) {
-            String editorClassName = targetType.getName() + "Editor"; //$NON-NLS-1$
-            ClassLoader loader = targetType.getClassLoader();
-
-            if (loader == null) {
-                loader = Thread.currentThread().getContextClassLoader();
-            }
-
-            try {
-                editorClass = Class.forName(editorClassName, true, loader);
                 return (PropertyEditor) editorClass.newInstance();
-            } catch (ClassNotFoundException cnfe) {
-                String shortEditorClassName = editorClassName
-                        .substring(editorClassName.lastIndexOf(".") + 1); //$NON-NLS-1$
-
-                if (targetType.isPrimitive()) {
-                    shortEditorClassName = shortEditorClassName.substring(0, 1)
-                            .toUpperCase()
-                            + shortEditorClassName.substring(1);
-                }
-                
-                for (String element : path) {
-                    editorClassName = element + "." + shortEditorClassName; //$NON-NLS-1$
-
-                    try {
-                        editorClass = Class.forName(editorClassName, true,
-                                loader);
-                        editorClass.asSubclass(PropertyEditorSupport.class);
-                        break;
-                    } catch (Exception e) {
-                        // expected
-                    }
-                }
             } catch (Exception e) {
                 // expected
             }
-            if(editorClass != null){
-                try {
-                    //FIXME: cache is still needed, but need more investigation to make tests pass
-//                    registeredEditors.put(targetType, editorClass);
-                    editor = (PropertyEditor) editorClass.newInstance();
-                } catch (Exception e) {
-                    // expected
-                }    
+        }
+        String editorClassName = targetType.getName() + "Editor"; //$NON-NLS-1$
+
+        try {
+            return loadEditor(targetType, editorClassName);
+        } catch (Exception exception) {
+            // expected
+        }
+        String shortEditorClassName = (targetType.isPrimitive()
+                ? (editorClassName.substring(0, 1).toUpperCase()
+                        + editorClassName.substring(1))
+                : editorClassName.substring(
+                        editorClassName.lastIndexOf('.') + 1));
+
+        for (String element : path) {
+            try {
+                editorClassName = element + '.' + shortEditorClassName;
+                return loadEditor(targetType, editorClassName);
+            } catch (Exception e) {
+                // expected
             }
         }
-        return editor;
+        return null;
     }
 
     public static void setEditorSearchPath(String[] apath) {

@@ -19,6 +19,17 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.apache.harmony.pack200.bytecode.CPClass;
+import org.apache.harmony.pack200.bytecode.CPDouble;
+import org.apache.harmony.pack200.bytecode.CPFloat;
+import org.apache.harmony.pack200.bytecode.CPInteger;
+import org.apache.harmony.pack200.bytecode.CPLong;
+import org.apache.harmony.pack200.bytecode.CPNameAndType;
+import org.apache.harmony.pack200.bytecode.CPString;
+import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 public class CpBands extends BandSet {
 
@@ -26,38 +37,32 @@ public class CpBands extends BandSet {
         return pool;
     }
 
-
     private final SegmentConstantPool pool = new SegmentConstantPool(this);
 
     private String[] cpClass;
-
     private String[] cpDescriptor;
-
     private double[] cpDouble;
-
     private String[] cpFieldClass;
-
     private String[] cpFieldDescriptor;
-
     private float[] cpFloat;
-
     private String[] cpIMethodClass;
-
     private String[] cpIMethodDescriptor;
-
     private int[] cpInt;
-
     private long[] cpLong;
-
     private String[] cpMethodClass;
-
     private String[] cpMethodDescriptor;
-
     private String[] cpSignature;
-
     private String[] cpString;
-
     private String[] cpUTF8;
+
+    private HashMap[] stringsToCPUTF8 = new HashMap[ClassConstantPool.NUM_DOMAINS];
+    private HashMap stringsToCPStrings = new HashMap();
+    private HashMap longsToCPLongs = new HashMap();
+    private HashMap integersToCPIntegers = new HashMap();
+    private HashMap floatsToCPFloats = new HashMap();
+    private HashMap stringsToCPClass = new HashMap();
+    private HashMap doublesToCPDoubles = new HashMap();
+    private HashMap descriptorsToCPNameAndTypes = new HashMap();
 
 
     public CpBands(Segment segment) {
@@ -417,6 +422,109 @@ public class CpBands extends BandSet {
 
     public String[] getCpUTF8() {
         return cpUTF8;
+    }
+
+    public CPUTF8 cpUTF8Value(String string, int domain) {
+        if(stringsToCPUTF8[domain] == null) {
+            stringsToCPUTF8[domain] = new HashMap();
+        }
+        CPUTF8 cputf8 = (CPUTF8) stringsToCPUTF8[domain].get(string);
+        if(cputf8 == null) {
+            cputf8 = new CPUTF8(string, domain);
+            stringsToCPUTF8[domain].put(string, cputf8);
+        }
+        return cputf8;
+    }
+
+    public CPString cpStringValue(String string) {
+        CPString cpString = (CPString) stringsToCPStrings.get(string);
+        if(cpString == null) {
+            cpString = new CPString(cpUTF8Value(string, ClassConstantPool.DOMAIN_NORMALASCIIZ));
+            stringsToCPStrings.put(string, cpString);
+        }
+        return cpString;
+    }
+
+    public CPLong cpLongValue(Long l) {
+        CPLong cpLong = (CPLong) longsToCPLongs.get(l);
+        if(cpLong == null) {
+            cpLong = new CPLong(l);
+            longsToCPLongs.put(l, cpLong);
+        }
+        return cpLong;
+    }
+
+    public CPInteger cpIntegerValue(Integer i) {
+        CPInteger cpInteger = (CPInteger) integersToCPIntegers.get(i);
+        if(cpInteger == null) {
+            cpInteger = new CPInteger(i);
+            integersToCPIntegers.put(i, cpInteger);
+        }
+        return cpInteger;
+    }
+
+    public CPFloat cpFloatValue(Float f) {
+        CPFloat cpFloat = (CPFloat) floatsToCPFloats.get(f);
+        if(cpFloat == null) {
+            cpFloat = new CPFloat(f);
+            floatsToCPFloats.put(f, cpFloat);
+        }
+        return cpFloat;
+    }
+
+    public CPClass cpClassValue(String string) {
+        CPClass cpString = (CPClass) stringsToCPClass.get(string);
+        if(cpString == null) {
+            cpString = new CPClass(cpUTF8Value(string, ClassConstantPool.DOMAIN_NORMALASCIIZ));
+            stringsToCPClass.put(string, cpString);
+        }
+        return cpString;
+    }
+
+    public CPDouble cpDoubleValue(Double dbl) {
+        CPDouble cpDouble = (CPDouble) doublesToCPDoubles.get(dbl);
+        if(cpDouble == null) {
+            cpDouble = new CPDouble(dbl);
+            doublesToCPDoubles.put(dbl, cpDouble);
+        }
+        return cpDouble;
+    }
+
+    public CPNameAndType cpNameAndTypeValue(String descriptor) {
+        CPNameAndType cpNameAndType = (CPNameAndType) descriptorsToCPNameAndTypes.get(descriptor);
+        if(cpNameAndType == null) {
+            int descriptorDomain = ClassConstantPool.DOMAIN_UNDEFINED;
+            int colon = descriptor.indexOf(':');
+            String nameString = descriptor.substring(0,colon);
+            String descriptorString = descriptor.substring(colon+1);
+            // For some reason, descriptors which have just plain
+            // native types are stored in DOMAIN_NORMALASCIIZ rather
+            // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
+            // that DOMAIN_SIGNATUREASCIIZ is poorly named.
+            boolean nativeDescriptor = true;
+            for(int index=0; index < descriptorString.length(); index++) {
+                char currentChar = descriptorString.charAt(index);
+                if(Character.isLetter(currentChar)) {
+                    if(currentChar == 'L') {
+                        nativeDescriptor = false;
+                    }
+                    break;
+                }
+            }
+            int domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
+            CPUTF8 name = cpUTF8Value(nameString, ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            if( nativeDescriptor ) {
+                // Native signatures are stored in DOMAIN_NORMALASCIIZ, not
+                // DOMAIN_SIGNATUREASCIIZ for some reason.
+                descriptorDomain = ClassConstantPool.DOMAIN_NORMALASCIIZ;
+            } else {
+                descriptorDomain = ClassConstantPool.DOMAIN_SIGNATUREASCIIZ;
+            }
+            CPUTF8 descriptorU = cpUTF8Value(descriptorString, descriptorDomain);
+            cpNameAndType = new CPNameAndType(name, descriptorU, domain);
+            descriptorsToCPNameAndTypes.put(descriptor, cpNameAndType);
+        }
+        return cpNameAndType;
     }
 
 }

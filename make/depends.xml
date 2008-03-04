@@ -26,7 +26,6 @@
     </description>
 
     <import file="${basedir}/make/properties.xml" />
-    <property file="make/${hy.platform.variant}/depends.properties" />
     <property file="make/depends.properties" />
 
     <target name="check" description="Check whether dependencies are available"
@@ -48,7 +47,6 @@
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
         <check-one-file src="${dejavu-fonts.url}" dest="${dejavu-fonts.zip}" />
         <check-one-file src="${derby.url}" dest="${derby.jar}" />
-        <check-one-file src="${icudll.url}" dest="${icudll.zip}" />
     </target>
 
     <target name="-check-win" if="is.windows" depends="-really-check-win" />
@@ -107,29 +105,8 @@
         <antcall target="-awt-tar-extract" />
     </target>
 
-    <target name="-temporary-warning" if="is.windows">
-        <!-- TODO: Remove this target in a week or two or when we
-             update to icu4c 3.8
-          -->
-        <condition property="windows.warn">
-            <not><available file="${icudll.dir}/icuuc.lib" /></not>
-        </condition>
-        <fail if="windows.warn">
-...
-
-
-Please remove the directory:
-
-  ${icudll.dir}
-
-and re-run "ant fetch-depends" to get a new version of icu-3.4.zip.  Sorry
-for the inconvinience.
-
-        </fail>
-    </target>
-
     <target name="-extract"
-         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces,-extract-icudlls,-temporary-warning" />
+         depends="-extract-props,-extract-mx4j,-extract-dejavu-fonts,-extract-xerces" />
 
     <target name="-extract-props">
         <uptodate property="dejavu-fonts.uptodate"
@@ -141,10 +118,6 @@ for the inconvinience.
         <uptodate property="xerces.uptodate"
                   srcfile="${xerces.zip}"
                   targetfile="${xerces.dir}/xercesImpl.jar" />
-        <uptodate property="icudlls.uptodate"
-                  srcfile="${icudll.zip}"
-                  targetfile="${icudll.dir}/uptodate" />
-
     </target>
 
 
@@ -189,11 +162,6 @@ for the inconvinience.
         </copy>
         <delete dir="${xerces.dir}.tmp" />
 	<touch file="${xerces.dir}/xercesImpl.jar" />
-    </target>
-
-    <target name="-extract-icudlls" unless="icudlls.uptodate">
-        <unzip src="${icudll.zip}" dest="${icudll.dir}" />
-        <touch file="${icudll.dir}/uptodate" />
     </target>
 
     <!-- 
@@ -424,10 +392,6 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${derby.url}"
                        dest="${derby.jar}"
                        md5="${derby.md5}" />
-    <mkdir dir="${icudll.dir}" />
-    <download-one-file src="${icudll.url}"
-                       dest="${icudll.zip}"
-                       md5="${icudll.md5}" />
     </target>
 
     <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">

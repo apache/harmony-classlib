@@ -121,37 +121,22 @@ public final class SegmentUtils {
 	}
 
 	/**
-	 * Given a String classX (the name of a class) and the
-	 * collection of inner class tuples ic_all, answer
-	 * ic_relevant(classX)
-	 * @param classX String class name
-	 * @param ic_all ICTuple[] all the inner class tuples
-	 * @return ICTuple[] all the relevant tuples sorted as in
+	 * Answer the index of the first character <= '$'
+	 * in the parameter. This is used instead of indexOf('$')
+	 * because inner classes may be separated by any character
+	 * <= '$' (in other words, Foo#Bar is as valid as Foo$Bar).
+	 * If no $ character is found, answer -1.
+	 * @param string String to search for $
+	 * @return first index of $ character, or -1 if not found
 	 */
-	public static IcTuple[] icRelevant(String classX, IcTuple[] ic_all) {
-	    return null;
-	}
-
-	public static boolean isRelevant(String outerClass, IcTuple tuple) {
-	    if(tuple.C.equals(outerClass)) {
-	        // If the outer class name is explicitly
-	        // specified and it's the correct one, the
-	        // tuple is relevant.
-	        return true;
+	public static int indexOfFirstDollar(String string) {
+	    for(int index=0; index<string.length(); index++) {
+	        if(string.charAt(index) <= '$') {
+	            return index;
+	        }
 	    }
-
-	    if(tuple.C != null) {
-	        // If the outer class name is explicitly specified
-	        // (non-null) and it's not the correct one, the
-	        // tuple is not relevant.
-	        return false;
-	    }
-
-	    // Now we know that tuple.C is null, so it might be
-	    // relevant. Find out.
-	    return false;
+	    return -1;
 	}
-
 
 	private SegmentUtils() {
 		// Intended to be a helper class

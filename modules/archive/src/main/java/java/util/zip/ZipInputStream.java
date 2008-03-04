@@ -89,6 +89,9 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 
     /**
      * Closes the current zip entry and positions to read the next entry.
+     * 
+     * @throws IOException
+     *             if an IO exception occurs closing the entry
      */
     public void closeEntry() throws IOException {
         if (zipClosed) {
@@ -143,6 +146,10 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 
     /**
      * Reads the next zip entry from this ZipInputStream.
+     * 
+     * @return the next entry
+     * @throws IOException
+     *             if an IO exception occurs reading the next entry
      */
     public ZipEntry getNextEntry() throws IOException {
         if (currentEntry != null) {

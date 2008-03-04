@@ -36,6 +36,12 @@
     <property name="depends.libs" location="depends/libs/${hy.platform}" />
     <property name="depends.files" location="depends/files" />
     <property name="native.lib.target" location="${hy.hdk}/lib" />
+    <condition property="needs.vme.v3.hack" value="true">
+        <or>
+            <equals arg1="${hy.platform}" arg2="windows.x86" />
+            <equals arg1="${hy.platform}" arg2="linux.x86" />
+        </or>
+    </condition>
 
     <!-- ================================= 
           target: default              
@@ -108,7 +114,7 @@
     <!-- ================================= 
           target: layout              
          ================================= -->
-    <target name="layout" depends="-layout.windows,-layout.linklib"
+    <target name="layout" depends="-layout.windows,-layout.vme.v3.hack"
         description="Construct the correct directory structure for native binaries">
 
     	<!-- Create the target directory structure -->
@@ -123,11 +129,6 @@
             </fileset>
         </copy>
 
-        <!-- Copy across dependency shared libs -->
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${icudll.dir}" includes="*${shlib.suffix}*" />
-        </copy>
-
     </target>
 
     <target name="-layout.windows" if="is.windows"
@@ -137,11 +138,19 @@
         <copy file="${msvcp.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
     </target>
 
-    <target name="-layout.linklib" unless="shlib.is.linklib">
-        <!-- on windows copy .lib files and on z/OS copy across .x files
-             to link against -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${icudll.dir}" includes="*${linklib.suffix}*" />
+    <target name="-layout.vme.v3.hack" if="needs.vme.v3.hack">
+        <echo>Deploying empty ICU dynamic library stub</echo>
+        <copy todir="${hy.jdk}/jre/bin" verbose="true">
+            <fileset dir="${depends.files}">
+                <include name="hyempty.dll" if="is.windows" />
+            </fileset>
+            <globmapper from="*hyempty.dll" to="*ICUInterface34.dll" />
+        </copy>
+        <copy todir="${hy.jdk}/jre/bin" verbose="true">
+            <fileset dir="${depends.files}">
+                <include name="libhyempty.so" if="is.linux" />
+            </fileset>
+            <globmapper from="*libhyempty.so" to="*libICUInterface34.so" />
         </copy>
     </target>
 
@@ -154,6 +163,7 @@
                 <include name="**/bin/java${exe.suffix}" />
                 <include name="**/bin/javaw${exe.suffix}" />
                 <include name="**/bin/*${shlib.suffix}*" />
+                <include name="**/bin/*.pdb" />
             	<include name="**/bin/harmony*.properties" />
             </fileset>
         </delete>
@@ -169,10 +179,6 @@
 
     	<ant dir="modules/archive" antfile="build.xml" 
 	     target="overlay-oss" />        
-    	
-        <mkdir dir="${hy.hdk}/include/icu4c/unicode" />
-        <unzip src="${icuhdr.zip}" dest="${hy.hdk}/include/icu4c/unicode" />
-        <chmod dir="${hy.hdk}/include/icu4c/unicode" perm="ugo+r" />
     </target>
 
     <!-- ================================= 
@@ -238,7 +244,6 @@
              target="clean-overlay-oss" />
      	<ant dir="modules/archive" antfile="build.xml" 
     	     target="clean-overlay-oss" />
-	<delete dir="${hy.hdk}/include/icu4c" quiet="true" />     
     </target>
 
 </project>

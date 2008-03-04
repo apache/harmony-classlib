@@ -29,6 +29,7 @@ import org.apache.harmony.pack200.bytecode.CPInteger;
 import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPNameAndType;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
+import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleAnnotationsAttribute;
 import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleParameterAnnotationsAttribute;
 import org.apache.harmony.pack200.bytecode.AnnotationsAttribute.Annotation;
@@ -41,9 +42,11 @@ import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleParameterAnn
 public class MetadataBandGroup {
 
     private String type;
+    private CpBands cpBands;
 
-    public MetadataBandGroup(String type) {
+    public MetadataBandGroup(String type, CpBands cpBands) {
         this.type = type;
+        this.cpBands = cpBands;
     }
 
     private List attributes;
@@ -148,9 +151,10 @@ public class MetadataBandGroup {
             annotations[i] = getAnnotation(types[i], pairCounts[i], namesIterator);
         }
         return new RuntimeVisibleorInvisibleAnnotationsAttribute(type
-                .equals("RVA") ? "RuntimeVisibleAnnotations"
-                : "RuntimeInvisibleAnnotations",
-                annotations);
+                .equals("RVA") ? cpBands.cpUTF8Value("RuntimeVisibleAnnotations",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ) : cpBands.cpUTF8Value(
+                "RuntimeInvisibleAnnotations",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ), annotations);
     }
 
     private Attribute getParameterAttribute(int numParameters, Iterator namesIterator ) {
@@ -165,8 +169,11 @@ public class MetadataBandGroup {
             parameter_annotations[i] = new ParameterAnnotation(annotations);
         }
         return new RuntimeVisibleorInvisibleParameterAnnotationsAttribute(type
-                .equals("RVA") ? "RuntimeVisibleParameterAnnotations"
-                : "RuntimeInvisibleParameterAnnotations",
+                .equals("RVA") ? cpBands.cpUTF8Value(
+                "RuntimeVisibleParameterAnnotations",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ) : cpBands.cpUTF8Value(
+                "RuntimeInvisibleParameterAnnotations",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ),
                 parameter_annotations);
     }
 
@@ -201,7 +208,7 @@ public class MetadataBandGroup {
             case 'e':
                 // TODO: check this - it may not work if the first string already has a colon in it
                 String enumString = caseet_Iterator.next() + ":" + caseec_Iterator.next();
-                return new CPNameAndType(enumString);
+                return cpBands.cpNameAndTypeValue(enumString);
             case 's':
                 return cases_Iterator.next();
             case '[':

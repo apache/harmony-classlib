@@ -22,6 +22,7 @@ package org.apache.harmony.applet;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Applet's startup parameters
@@ -66,6 +67,30 @@ final class Parameters {
         this.className = className;
         this.name = name;
         this.container = container;
+    }
+
+    Parameters(int id,
+                long parentWindowId,
+                URL documentBase,
+                int documentId,
+                URL codeBase,
+                String className,
+                String []paramStrings,
+                String name,
+                Object container) {
+
+        this.id = id;
+        this.parentWindowId = parentWindowId;
+        this.documentBase = documentBase;
+        this.documentId = documentId;
+        this.codeBase = codeBase;
+        this.className = className;
+        this.name = name;
+        this.container = container;
+        
+        this.parameters = new HashMap<String, String>(paramStrings.length/2);
+        for (int i = 0; i+1 < paramStrings.length; i += 2)
+            parameters.put(paramStrings[i], paramStrings[i+1]);
     }
 
     String getParameter(String name) {

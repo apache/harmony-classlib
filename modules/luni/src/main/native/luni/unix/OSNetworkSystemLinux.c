@@ -241,6 +241,7 @@ void set_icmp_packet(struct ICMPHeader* icmp_hdr, int packet_size)
  * Class:     org_apache_harmony_luni_platform_OSNetworkSystem
  * Method:    selectImpl
  * Signature: ([Ljava/io/FileDescriptor;[Ljava/io/FileDescriptor;II[IJ)I
+ * Assumption: outFlags is zeroed
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl	
   (JNIEnv * env, jclass	thisClz, jobjectArray readFDArray, jobjectArray	writeFDArray,
@@ -287,24 +288,23 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSNetworkSystem_sel
   result = poll(my_pollfds, n_pollfds, timeout);
 
   if (result > 0) {
+          int changed = 0; /* Record if we actually change the IntArray */
 	  /* output result to int array */
-	  flagArray = (*env)->GetIntArrayElements(env,outFlags,	&isCopy);
+	  flagArray = (*env)->GetIntArrayElements(env, outFlags, &isCopy);
 	  for (val=0; val<countReadC; val++) {
           if (my_pollfds[val].revents & (POLLIN | POLLPRI)) {
               flagArray[val] = SOCKET_OP_READ;
-          } else {
-              flagArray[val] = SOCKET_OP_NONE;
+              changed=1;
           }
       }
 
 	  for (val=0; val<countWriteC; val++) {
           if (my_pollfds[val+countReadC].revents & POLLOUT) {
               flagArray[val+countReadC] = SOCKET_OP_WRITE;
-          } else {
-              flagArray[val+countReadC] = SOCKET_OP_NONE;
+              changed=1;
           }
       }
-      (*env)->ReleaseIntArrayElements(env, outFlags, flagArray, 0);
+          (*env)->ReleaseIntArrayElements(env, outFlags, flagArray, changed ? 0 : JNI_ABORT);
   }
   hymem_free_memory(my_pollfds);
   

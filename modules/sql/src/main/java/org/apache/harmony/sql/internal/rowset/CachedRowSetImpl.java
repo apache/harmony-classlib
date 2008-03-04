@@ -34,8 +34,10 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -96,13 +98,48 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     // TODO where is it initialized
     private CachedRowSetImpl originalResultSet;
 
-    private Object currentColumn;
-
     private SQLWarning sqlwarn;
+
+    private Class[] columnTypes;
+
+    private static Map<Integer, Class> TYPE_MAPPING = initialTypeMapping();
+
+    public static final String PROVIDER_ID = "Apache Harmony HYOptimisticProvider"; //$NON-NLS-1$
 
     public CachedRowSetImpl(String providerID) throws SyncFactoryException {
         syncProvider = SyncFactory.getInstance(providerID);
         initialProperties();
+    }
+
+    private static Map<Integer, Class> initialTypeMapping() {
+        HashMap<Integer, Class> map = new HashMap<Integer, Class>();
+        map.put(Integer.valueOf(Types.ARRAY), Array.class);
+        map.put(Integer.valueOf(Types.BIGINT), Long.class);
+        map.put(Integer.valueOf(Types.BINARY), byte[].class);
+        map.put(Integer.valueOf(Types.BIT), Boolean.class);
+        map.put(Integer.valueOf(Types.BLOB), Blob.class);
+        map.put(Integer.valueOf(Types.BOOLEAN), Boolean.class);
+        map.put(Integer.valueOf(Types.CHAR), String.class);
+        map.put(Integer.valueOf(Types.CLOB), Clob.class);
+        map.put(Integer.valueOf(Types.DATE), Date.class);
+        map.put(Integer.valueOf(Types.DECIMAL), BigDecimal.class);
+        map.put(Integer.valueOf(Types.DOUBLE), Double.class);
+        map.put(Integer.valueOf(Types.FLOAT), Double.class);
+        map.put(Integer.valueOf(Types.INTEGER), Integer.class);
+        map.put(Integer.valueOf(Types.LONGVARBINARY), byte[].class);
+        map.put(Integer.valueOf(Types.LONGVARCHAR), String.class);
+        map.put(Integer.valueOf(Types.NUMERIC), BigDecimal.class);
+        map.put(Integer.valueOf(Types.REAL), Float.class);
+        map.put(Integer.valueOf(Types.REF), Ref.class);
+        map.put(Integer.valueOf(Types.SMALLINT), Short.class);
+        map.put(Integer.valueOf(Types.STRUCT), Struct.class);
+        map.put(Integer.valueOf(Types.TIME), Time.class);
+        map.put(Integer.valueOf(Types.TIMESTAMP), Timestamp.class);
+        map.put(Integer.valueOf(Types.TINYINT), Byte.class);
+        map.put(Integer.valueOf(Types.VARBINARY), byte[].class);
+        map.put(Integer.valueOf(Types.VARCHAR), String.class);
+
+        return map;
     }
 
     private void initialProperties() {
@@ -126,7 +163,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public CachedRowSetImpl() throws SyncFactoryException {
-        this("Apache Harmony HYOptimisticProvider");
+        this(PROVIDER_ID);
     }
 
     public void setRows(ArrayList<CachedRow> data, int cloumnCount) {
@@ -176,7 +213,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public boolean columnUpdated(int idx) throws SQLException {
         if (currentRow == null || idx > meta.getColumnCount()) {
             // rowset.0 = Not a valid position
-            throw new SQLException(Messages.getString("rowset.0"));
+            throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
         }
         return currentRow.getUpdateMask(idx - 1);
     }
@@ -192,7 +229,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             }
         }
         // rowset.1=Not a valid column name
-        throw new SQLException(Messages.getString("rowset.1"));
+        throw new SQLException(Messages.getString("rowset.1")); //$NON-NLS-1$
     }
 
     public void commit() throws SQLException {
@@ -206,7 +243,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
              * the attribute of BaseRowSet which are needed to deep copy
              */
             // BaseRowSet.params <Hashtable>
-            Object[] paramsObjArray = super.getParams().clone();
+            Object[] paramsObjArray = super.getParams();
             Hashtable<Object, Object> paramsHashtable = new Hashtable<Object, Object>();
             for (int i = 0; i < paramsObjArray.length; i++) {
                 paramsHashtable.put(Integer.valueOf(i), paramsObjArray[i]);
@@ -298,7 +335,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         CachedRowSetImpl output = (CachedRowSetImpl) createCopy();
 
         // clean up rows data
-        output.currentColumn = null;
         output.currentRow = null;
         output.currentRowIndex = 0;
         output.insertRow = null;
@@ -407,6 +443,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private void doPopulate(ResultSet rs, boolean isPaging) throws SQLException {
         meta = copyMetaData(rs.getMetaData());
+
+        columnCount = meta.getColumnCount();
+        // initial columnTypes
+        columnTypes = new Class[columnCount];
+        for (int i = 1; i <= columnTypes.length; ++i) {
+            columnTypes[i - 1] = TYPE_MAPPING.get(Integer.valueOf(meta
+                    .getColumnType(i)));
+        }
 
         /*
          * this method not support paging, so before readData set pageSize and
@@ -526,11 +570,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void setPageSize(int size) throws SQLException {
         if (size < 0) {
             // rowset.2=Negative page size
-            throw new SQLException(Messages.getString("rowset.2"));
+            throw new SQLException(Messages.getString("rowset.2")); //$NON-NLS-1$
         }
         if ((getMaxRows() != 0) && (getMaxRows() < size)) {
             // rowset.9=PageSize can not larger than MaxRows
-            throw new SQLException(Messages.getString("rowset.9"));
+            throw new SQLException(Messages.getString("rowset.9")); //$NON-NLS-1$
         }
         pageSize = size;
     }
@@ -542,7 +586,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void setTableName(String tabName) throws SQLException {
         if (tabName == null) {
             // rowset.3=Table name should not be null
-            throw new SQLException("rowset.3");
+            throw new SQLException("rowset.3"); //$NON-NLS-1$
         }
         tableName = tabName;
     }
@@ -645,7 +689,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         if (checkType && getType() == ResultSet.TYPE_FORWARD_ONLY) {
             // rowset.8=The Result Set Type is TYPE_FORWARD_ONLY
-            throw new SQLException(Messages.getString("rowset.8"));
+            throw new SQLException(Messages.getString("rowset.8")); //$NON-NLS-1$
         }
 
         if (row < 0) {
@@ -738,7 +782,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        // TODO re-implement it
+        return (BigDecimal) getObject(columnIndex);
     }
 
     public BigDecimal getBigDecimal(int columnIndex, int scale)
@@ -893,6 +938,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Object getObject(int columnIndex) throws SQLException {
+        // TODO re-implement it
         return currentRow.getObject(columnIndex);
     }
 
@@ -949,12 +995,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         return (String) value;
     }
 
-    private boolean checkCursorValid() throws SQLException {
+    private void checkColumnValid(int columnIndex) throws SQLException {
+        if (columnIndex <= 0 || columnIndex > meta.getColumnCount()) {
+            // sql.27=Invalid column index :{0}
+            throw new SQLException(Messages.getString("sql.27", Integer //$NON-NLS-1$
+                    .valueOf(columnIndex)));
+        }
+    }
+
+    private void checkCursorValid() throws SQLException {
         if ((currentRowIndex <= 0) || (currentRowIndex > rows.size())) {
             // rowset.7=Not a valid cursor
             throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
-        return false;
     }
 
     public String getString(String columnName) throws SQLException {
@@ -1019,7 +1072,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         checkValidRow();
         if (currentRow != insertRow) {
             // rowset.4=Not an insert row
-            throw new SQLException(Messages.getString("rowset.4"));
+            throw new SQLException(Messages.getString("rowset.4")); //$NON-NLS-1$
         }
         insertRow.setInsert();
         rows.add(insertRow);
@@ -1131,21 +1184,21 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public boolean rowUpdated() throws SQLException {
         if (!currentRow.isUpdate()) {
             return false;
-        } else {
-            boolean sign = false;
-            for (int i = 0; i < meta.getColumnCount(); ++i) {
-                sign = currentRow.getUpdateMask(i) | sign;
-            }
-            return sign;
         }
+
+        boolean sign = false;
+        for (int i = 0; i < meta.getColumnCount(); ++i) {
+            sign = currentRow.getUpdateMask(i) | sign;
+        }
+        return sign;
     }
 
     public void updateArray(int columnIndex, Array x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, x);
     }
 
     public void updateArray(String columnName, Array x) throws SQLException {
-        throw new NotImplementedException();
+        updateArray(getIndexByName(columnName), x);
     }
 
     public void updateAsciiStream(int columnIndex, InputStream x, int length)
@@ -1155,12 +1208,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void updateAsciiStream(String columnName, InputStream x, int length)
             throws SQLException {
-        throw new NotImplementedException();
+        updateAsciiStream(getIndexByName(columnName), x, length);
     }
 
     public void updateBigDecimal(int columnIndex, BigDecimal x)
             throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        if (x == null) {
+            throw new NullPointerException();
+        }
+
+        updateByType(columnIndex, x);
     }
 
     public void updateBigDecimal(String columnName, BigDecimal x)
@@ -1175,39 +1232,39 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void updateBinaryStream(String columnName, InputStream x, int length)
             throws SQLException {
-        throw new NotImplementedException();
+        updateBinaryStream(getIndexByName(columnName), x, length);
     }
 
     public void updateBlob(int columnIndex, Blob x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, x);
     }
 
     public void updateBlob(String columnName, Blob x) throws SQLException {
-        throw new NotImplementedException();
+        updateBlob(getIndexByName(columnName), x);
     }
 
     public void updateBoolean(int columnIndex, boolean x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, Boolean.valueOf(x));
     }
 
     public void updateBoolean(String columnName, boolean x) throws SQLException {
-        throw new NotImplementedException();
+        updateBoolean(getIndexByName(columnName), x);
     }
 
     public void updateByte(int columnIndex, byte x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, Byte.valueOf(x));
     }
 
     public void updateByte(String columnName, byte x) throws SQLException {
-        throw new NotImplementedException();
+        updateByte(getIndexByName(columnName), x);
     }
 
     public void updateBytes(int columnIndex, byte[] x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, x);
     }
 
     public void updateBytes(String columnName, byte[] x) throws SQLException {
-        throw new NotImplementedException();
+        updateBytes(getIndexByName(columnName), x);
     }
 
     public void updateCharacterStream(int columnIndex, Reader x, int length)
@@ -1217,19 +1274,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void updateCharacterStream(String columnName, Reader reader,
             int length) throws SQLException {
-        throw new NotImplementedException();
+        updateCharacterStream(getIndexByName(columnName), reader, length);
     }
 
     public void updateClob(int columnIndex, Clob x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, x);
     }
 
     public void updateClob(String columnName, Clob x) throws SQLException {
-        throw new NotImplementedException();
+        updateClob(getIndexByName(columnName), x);
     }
 
     public void updateDate(int columnIndex, Date x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, x);
     }
 
     public void updateDate(String columnName, Date x) throws SQLException {
@@ -1237,7 +1294,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateDouble(int columnIndex, double x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, Double.valueOf(x));
     }
 
     public void updateDouble(String columnName, double x) throws SQLException {
@@ -1245,7 +1302,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateFloat(int columnIndex, float x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, Float.valueOf(x));
     }
 
     public void updateFloat(String columnName, float x) throws SQLException {
@@ -1253,7 +1310,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateInt(int columnIndex, int x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, Integer.valueOf(x));
     }
 
     public void updateInt(String columnName, int x) throws SQLException {
@@ -1261,7 +1318,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateLong(int columnIndex, long x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, Long.valueOf(x));
     }
 
     public void updateLong(String columnName, long x) throws SQLException {
@@ -1269,37 +1326,65 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateNull(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        checkCursorValid();
+        checkColumnValid(columnIndex);
+        currentRow.updateObject(columnIndex, null);
     }
 
     public void updateNull(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        updateNull(getIndexByName(columnName));
     }
 
+    /**
+     * note check type compatibility
+     */
     public void updateObject(int columnIndex, Object x) throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        checkColumnValid(columnIndex);
+        currentRow.updateObject(columnIndex, x);
     }
 
     public void updateObject(int columnIndex, Object x, int scale)
             throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        checkColumnValid(columnIndex);
+        Class type = columnTypes[columnIndex - 1];
+        // ava.sql.Types.DECIMA or java.sql.Types.NUMERIC types
+        if (type.equals(BigDecimal.class)) {
+            /*
+             * TODO ri doesn't check type of x and only support BigDecimal,
+             * should we follow ri here? If not, uncomment below fragment of
+             * code
+             */
+            // if (x instanceof BigDecimal) {
+            x = ((BigDecimal) x).setScale(scale);
+            // } else if (x instanceof Double) {
+            // x = new BigDecimal(((Double) x).doubleValue());
+            // x = ((BigDecimal) x).setScale(scale);
+            // } else if (x instanceof Float) {
+            // x = new BigDecimal(((Float) x).doubleValue());
+            // x = ((BigDecimal) x).setScale(scale);
+            // }
+        }
+
+        currentRow.updateObject(columnIndex, x);
     }
 
     public void updateObject(String columnName, Object x) throws SQLException {
-        throw new NotImplementedException();
+        updateObject(getIndexByName(columnName), x);
     }
 
     public void updateObject(String columnName, Object x, int scale)
             throws SQLException {
-        throw new NotImplementedException();
+        updateObject(getIndexByName(columnName), x, scale);
     }
 
     public void updateRef(int columnIndex, Ref x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, x);
     }
 
     public void updateRef(String columnName, Ref x) throws SQLException {
-        throw new NotImplementedException();
+        updateRef(getIndexByName(columnName), x);
     }
 
     public void updateRow() throws SQLException {
@@ -1313,15 +1398,199 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateShort(int columnIndex, short x) throws SQLException {
-        throw new NotImplementedException();
+        updateByType(columnIndex, Short.valueOf(x));
     }
 
     public void updateShort(String columnName, short x) throws SQLException {
-        throw new NotImplementedException();
+        updateShort(getIndexByName(columnName), x);
     }
 
     public void updateString(int columnIndex, String x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, x);
+    }
+
+    /**
+     * Check type compatibility and update value
+     * 
+     * @param columnIndex
+     * @param value
+     * @throws SQLException
+     */
+    private void updateByType(int columnIndex, Object value)
+            throws SQLException {
+        checkValidRow();
+        checkColumnValid(columnIndex);
+        currentRow.updateObject(columnIndex, convertUpdateValue(columnIndex,
+                value));
+    }
+
+    /**
+     * Convert <code>value</code> to the JDBC type of the
+     * <code>columnIndex</code>. The columnIndex is not checked in this
+     * method, so caller must be sure the <code>columnIndex</code> is valid,
+     * or invoke <code>checkColumnValid</code> before invoke this method.
+     * 
+     * TODO any better ways to do this?
+     * 
+     * @param columnIndex
+     *            index of column to be updated
+     * @param value
+     *            the new value to be updated
+     */
+    private Object convertUpdateValue(int columnIndex, Object value)
+            throws SQLException {
+        
+        if (value == null) {
+            return value;
+        }
+        
+        Class type = columnTypes[columnIndex - 1];
+
+        /*
+         * TODO if type == null, the type mapping is not supported by Harmony
+         * now, leave this type check to JDBC driver
+         */
+
+        if (type == null || type.isInstance(value)) {
+            return value;
+        }
+
+        if (type.equals(Integer.class)) {
+            if (value instanceof Integer || value instanceof Short
+                    || value instanceof Byte) {
+                return value;
+            }
+
+            if (value instanceof Long) {
+                long l = ((Long) value).longValue();
+                if (l >= Integer.MIN_VALUE && l <= Integer.MAX_VALUE) {
+                    return (int) l;
+                }
+            }
+
+            if (value instanceof BigDecimal) {
+                BigDecimal bigDecimal = (BigDecimal) value;
+                try {
+                    return bigDecimal.intValueExact();
+
+                } catch (ArithmeticException e) {
+                    // TODO load from resource file
+                    throw new SQLException("Data Type Mismatch"); //$NON-NLS-1$
+                }
+            }
+
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(Short.class)) {
+            if (value instanceof Short || value instanceof Byte) {
+                return value;
+            }
+            if (value instanceof Long) {
+                long l = ((Long) value).longValue();
+                if (l >= Short.MIN_VALUE && l <= Short.MAX_VALUE) {
+                    return (short) l;
+                }
+            }
+            if (value instanceof Integer) {
+                int i = ((Integer) value).intValue();
+                if (i >= Short.MIN_VALUE && i <= Short.MAX_VALUE) {
+                    return (short) i;
+                }
+            }
+            if (value instanceof BigDecimal) {
+                BigDecimal bigDecimal = (BigDecimal) value;
+                try {
+                    return bigDecimal.intValueExact();
+
+                } catch (ArithmeticException e) {
+                    // TODO load from resource file
+                    throw new SQLException("Data Type Mismatch"); //$NON-NLS-1$
+                }
+            }
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(Byte.class)) {
+            if (value instanceof Byte) {
+                return value;
+            }
+            if (value instanceof Long) {
+                long l = ((Long) value).longValue();
+                if (l >= Byte.MIN_VALUE && l <= Byte.MAX_VALUE) {
+                    return (byte) l;
+                }
+            }
+            if (value instanceof Integer) {
+                int i = ((Integer) value).intValue();
+                if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
+                    return (byte) i;
+                }
+            }
+            if (value instanceof Short) {
+                int i = ((Short) value).shortValue();
+                if (i >= Byte.MIN_VALUE && i <= Byte.MAX_VALUE) {
+                    return (byte) i;
+                }
+            }
+            if (value instanceof BigDecimal) {
+                BigDecimal bigDecimal = (BigDecimal) value;
+                try {
+                    return bigDecimal.byteValueExact();
+
+                } catch (ArithmeticException e) {
+                    // TODO load from resource file
+                    throw new SQLException("Data Type Mismatch"); //$NON-NLS-1$
+                }
+            }
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(Long.class)) {
+            if (value instanceof Integer || value instanceof Short
+                    || value instanceof Byte || value instanceof Long) {
+                return value;
+            }
+            if (value instanceof BigDecimal) {
+                BigDecimal bigDecimal = (BigDecimal) value;
+                try {
+                    return bigDecimal.longValueExact();
+
+                } catch (ArithmeticException e) {
+                    // rowset.10=Data Type Mismatch
+                    throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
+                }
+            }
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(Float.class) || type.equals(Double.class)) {
+            if (value instanceof Float || value instanceof Double
+                    || value instanceof BigDecimal) {
+                return value;
+            }
+            if (value instanceof Number) {
+                return ((Number) value).longValue();
+            }
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(BigDecimal.class)) {
+            return value;
+        }
+
+        // rowset.10=Data Type Mismatch
+        throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
     }
 
     public void updateString(String columnName, String x) throws SQLException {
@@ -1329,7 +1598,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateTime(int columnIndex, Time x) throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, x);
     }
 
     public void updateTime(String columnName, Time x) throws SQLException {
@@ -1338,7 +1607,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void updateTimestamp(int columnIndex, Timestamp x)
             throws SQLException {
-        currentRow.updateObject(columnIndex, x);
+        updateByType(columnIndex, x);
     }
 
     public void updateTimestamp(String columnName, Timestamp x)

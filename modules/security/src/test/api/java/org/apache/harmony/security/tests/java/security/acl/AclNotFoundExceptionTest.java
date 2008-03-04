@@ -38,12 +38,12 @@ public class AclNotFoundExceptionTest extends TestCase {
     }
 
     /**
-     * check default constructor 
-     */    
+     * @tests java.security.acl.AclNotFoundException#AclNotFoundException()
+     */
     public void testAclNotFoundException() {
-        assertNotNull(new AclNotFoundException());
-        assertNull(new AclNotFoundException().getMessage());
-        assertNull(new AclNotFoundException().getCause());
+        AclNotFoundException ex = new AclNotFoundException();
+        assertNull(ex.getMessage());
+        assertNull(ex.getCause());
     }
 
 }

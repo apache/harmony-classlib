@@ -23,6 +23,7 @@
 
 #include <string.h>
 
+#include "vmi.h"
 #include "hyport.h"
 #include "zipsup.h"
 #include "hyzipnls.h"
@@ -54,7 +55,7 @@ struct workBuffer
 
 #define CDEV_CURRENT_FUNCTION _prototypes_private
 I_32 zip_populateCache
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile));
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile, HyZipCentralEnd *endEntry, IDATA startCentralDir));
 
 static I_32 inflateData
 PROTOTYPE ((struct workBuffer * workBuf, U_8 * inputBuffer,
@@ -63,16 +64,16 @@ PROTOTYPE ((struct workBuffer * workBuf, U_8 * inputBuffer,
 I_32 checkZipLibrary PROTOTYPE ((HyPortLibrary * portLib));
 
 I_32 scanForDataDescriptor
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-            HyZipEntry * zipEntry));
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+            VMIZipEntry * zipEntry));
 void zdatafree PROTOTYPE ((void *opaque, void *address));
 static I_32 readZipEntry
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-            HyZipEntry * zipEntry, const char *filename,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+            VMIZipEntry * zipEntry, const char *filename,
             IDATA * enumerationPointer, IDATA * entryStart,
             BOOLEAN findDirectory));
 I_32 scanForCentralEnd
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
             HyZipCentralEnd * endEntry));
 void *zdataalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
 
@@ -80,36 +81,39 @@ void *zdataalloc PROTOTYPE ((void *opaque, U_32 items, U_32 size));
 
 #define CDEV_CURRENT_FUNCTION _prototypes_public
 I_32 zip_getZipEntryData
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile, HyZipEntry * entry,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry,
             U_8 * buffer, U_32 bufferSize));
 I_32 zip_getZipEntryFromOffset
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile, HyZipEntry * entry,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry,
             IDATA offset));
 I_32 zip_establishCache
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile));
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile));
 void zip_resetZipFile
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
             IDATA * nextEntryPointer));
 I_32 zip_getNextZipEntry
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile,
-            HyZipEntry * zipEntry, IDATA * nextEntryPointer));
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile,
+            VMIZipEntry * zipEntry, IDATA * nextEntryPointer));
 I_32 zip_getZipEntry
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile, HyZipEntry * entry,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry,
             const char *filename, BOOLEAN findDirectory));
 I_32 zip_getZipEntryExtraField
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile, HyZipEntry * entry,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry,
             U_8 * buffer, U_32 bufferSize));
+I_32 zip_getZipEntryRawData
+PROTOTYPE((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry, 
+		U_8 * buffer, U_32 bufferSize, U_32 offset));
 void zip_initZipEntry
-PROTOTYPE ((HyPortLibrary * portLib, HyZipEntry * entry));
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipEntry * entry));
 I_32 zip_openZipFile
-PROTOTYPE ((HyPortLibrary * portLib, char *filename, HyZipFile * zipFile,
+PROTOTYPE ((HyPortLibrary * portLib, char *filename, VMIZipFile * zipFile,
             HyZipCachePool * cachePool));
 void zip_freeZipEntry
-PROTOTYPE ((HyPortLibrary * portLib, HyZipEntry * entry));
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipEntry * entry));
 I_32 VMCALL zip_closeZipFile
-PROTOTYPE ((HyPortLibrary * portLib, struct HyZipFile * zipFile));
+PROTOTYPE ((HyPortLibrary * portLib, struct VMIZipFile * zipFile));
 I_32 zip_getZipEntryComment
-PROTOTYPE ((HyPortLibrary * portLib, HyZipFile * zipFile, HyZipEntry * entry,
+PROTOTYPE ((HyPortLibrary * portLib, VMIZipFile * zipFile, VMIZipEntry * entry,
             U_8 * buffer, U_32 bufferSize));
 
 #undef CDEV_CURRENT_FUNCTION
@@ -260,7 +264,7 @@ inflateData (struct workBuffer *workBuf, U_8 * inputBuffer,
 			ZIP_ERR_FILE_CORRUPT
 */
 I_32
-scanForCentralEnd (HyPortLibrary * portLib, HyZipFile * zipFile,
+scanForCentralEnd (HyPortLibrary * portLib, VMIZipFile * zipFile,
                    HyZipCentralEnd * endEntry)
 {
   U_8 *current;
@@ -380,8 +384,8 @@ scanForCentralEnd (HyPortLibrary * portLib, HyZipFile * zipFile,
 			ZIP_ERR_FILE_CORRUPT
 */
 I_32
-scanForDataDescriptor (HyPortLibrary * portLib, HyZipFile * zipFile,
-                       HyZipEntry * zipEntry)
+scanForDataDescriptor (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                       VMIZipEntry * zipEntry)
 {
   U_8 *current;
   U_8 buffer[SCAN_CHUNK_SIZE], descriptor[16];
@@ -542,7 +546,7 @@ scanForDataDescriptor (HyPortLibrary * portLib, HyZipFile * zipFile,
 			ZIP_ERR_INTERNAL_ERROR
 */
 I_32
-zip_populateCache (HyPortLibrary * portLib, HyZipFile * zipFile)
+zip_populateCache (HyPortLibrary * portLib, VMIZipFile * zipFile, HyZipCentralEnd *endEntry, IDATA startCentralDir)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 
@@ -552,32 +556,19 @@ zip_populateCache (HyPortLibrary * portLib, HyZipFile * zipFile)
   IDATA bufferedSize = 0;
   IDATA bytesToRead = 0;
   IDATA filenameCopied;
-  HyZipEntry entry;
-  HyZipCentralEnd endEntry;
+  VMIZipEntry entry;
   U_8 *buffer = NULL;
   U_8 *filename = NULL;
   IDATA filenameSize = 256;     /* Should be sufficient for most filenames */
   U_8 *current;
   U_32 sig;
   U_32 localHeaderOffset;
-  IDATA startCentralDir;
   I_64 seekResult;
 
   if (!zipFile->cache)
     return ZIP_ERR_INTERNAL_ERROR;
 
-  /* Find and read the end-of-central-dir record. */
-  result = scanForCentralEnd (portLib, zipFile, &endEntry);
-  if (result != 0)
-    return result;
-
-  unreadSize = endEntry.dirSize + 4 /* slop */ ;
-#ifndef HY_ZIP_API
-  zipFile->cache->startCentralDir = startCentralDir =
-#else /* HY_ZIP_API */
-  ((HyZipCache *)(zipFile->cache))->startCentralDir = startCentralDir =
-#endif /* HY_ZIP_API */
-    (IDATA) ((UDATA) endEntry.dirOffset);
+  unreadSize = endEntry->dirSize + 4 /* slop */ ;
 
   if (zipFile->pointer != startCentralDir)
     {
@@ -819,8 +810,8 @@ finished:
 			ZIP_ERR_NO_MORE_ENTRIES
 */
 static I_32
-readZipEntry (HyPortLibrary * portLib, HyZipFile * zipFile,
-              HyZipEntry * zipEntry, const char *filename,
+readZipEntry (HyPortLibrary * portLib, VMIZipFile * zipFile,
+              VMIZipEntry * zipEntry, const char *filename,
               IDATA * enumerationPointer, IDATA * entryStart,
               BOOLEAN findDirectory)
 {
@@ -843,11 +834,7 @@ retry:
   readBuffer = NULL;
   /* Guess how many bytes we'll need to read.  If we guess correctly we will do fewer I/O operations */
   headerSize = 30;              /* local zip header size */
-#ifndef HY_ZIP_API
-  if (zipFile->cache && (zipFile->pointer >= zipFile->cache->startCentralDir))
-#else /* HY_ZIP_API */
-  if (zipFile->cache && (zipFile->pointer >= ((HyZipCache *)(zipFile->cache))->startCentralDir))
-#endif /* HY_ZIP_API */
+  if (zipFile->cache && (zipFile->pointer >= zipCache_getStartCentralDir(zipFile->cache)))
     {
       headerSize = 46;          /* central zip header size */
     }
@@ -999,7 +986,7 @@ retry:
     }
   memcpy (zipEntry->filename, current, readLength);
 
-  /* Read the rest of the filename if necessary.  Allocate space in HyZipEntry for it! */
+  /* Read the rest of the filename if necessary.  Allocate space in VMIZipEntry for it! */
   if (readLength < zipEntry->filenameLength)
     {
       result =
@@ -1120,7 +1107,7 @@ finished:
  *
 */
 I_32 VMCALL
-zip_closeZipFile (HyPortLibrary * portLib, struct HyZipFile * zipFile)
+zip_closeZipFile (HyPortLibrary * portLib, struct VMIZipFile * zipFile)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 #if defined(HY_NO_THR)
@@ -1181,10 +1168,9 @@ zip_closeZipFile (HyPortLibrary * portLib, struct HyZipFile * zipFile)
 */
 
 I_32
-zip_establishCache (HyPortLibrary * portLib, HyZipFile * zipFile)
+zip_establishCache (HyPortLibrary * portLib, VMIZipFile * zipFile)
 {
   PORT_ACCESS_FROM_PORT (portLib);
-  I_32 result;
   I_64 timeStamp, actualFileSize;
   IDATA fileSize, filenameLength;
 
@@ -1192,13 +1178,9 @@ zip_establishCache (HyPortLibrary * portLib, HyZipFile * zipFile)
     {
       if (zipFile->cachePool)
         {
-          /* Whack cache timestamp to keep other people from starting to use it (we will create a new one for them
+          /* Invalidate the cache to keep other people from starting to use it (we will create a new one for them
              to start to use instead).  Once all the current users of the cache have stopped using it, it will go away */
-#ifndef HY_ZIP_API
-          zipFile->cache->zipTimeStamp = -2;
-#else /* HY_ZIP_API */
-    	  ((HyZipCache *)(zipFile->cache))->zipTimeStamp = -2;
-#endif /* HY_ZIP_API */
+    	  zipCache_invalidateCache(zipFile->cache);
           zipCachePool_release (zipFile->cachePool, zipFile->cache);
         }
       zipFile->cache = NULL;
@@ -1224,21 +1206,22 @@ zip_establishCache (HyPortLibrary * portLib, HyZipFile * zipFile)
                             fileSize, timeStamp);
   if (!zipFile->cache)
     {
+      I_32 result = 0;
+      HyZipCentralEnd endEntry;
+      IDATA startCentralDir;
+      /* Find and read the end-of-central-dir record. */
+      result = scanForCentralEnd(portLib, zipFile, &endEntry);
+      if ( result != 0) return result;
+      
+      startCentralDir = (IDATA)((UDATA)endEntry.dirOffset);
+      
       /* Build a new cache.  Because caller asked for a cache, fail if we can't provide one */
       zipFile->cache =
-        zipCache_new (portLib, (char *) zipFile->filename, filenameLength);
+        zipCache_new (portLib, (char *) zipFile->filename, filenameLength, fileSize, timeStamp, startCentralDir);
       if (!zipFile->cache)
         return ZIP_ERR_OUT_OF_MEMORY;
 
-#ifndef HY_ZIP_API
-      zipFile->cache->zipFileSize = fileSize;
-      zipFile->cache->zipTimeStamp = timeStamp;
-#else /* HY_ZIP_API */
-      ((HyZipCache *)(zipFile->cache))->zipFileSize = fileSize;
-      ((HyZipCache *)(zipFile->cache))->zipTimeStamp = timeStamp;
-#endif /* HY_ZIP_API */
-
-      result = zip_populateCache (portLib, zipFile);
+      result = zip_populateCache (portLib, zipFile, &endEntry, startCentralDir);
       if (result != 0)
         {
           zipCache_kill (zipFile->cache);
@@ -1270,7 +1253,7 @@ zip_establishCache (HyPortLibrary * portLib, HyZipFile * zipFile)
 */
 
 void
-zip_initZipEntry (HyPortLibrary * portLib, HyZipEntry * entry)
+zip_initZipEntry (HyPortLibrary * portLib, VMIZipEntry * entry)
 {
   memset (entry, 0, sizeof (*entry));
 }
@@ -1290,7 +1273,7 @@ zip_initZipEntry (HyPortLibrary * portLib, HyZipEntry * entry)
 */
 
 void
-zip_freeZipEntry (HyPortLibrary * portLib, HyZipEntry * entry)
+zip_freeZipEntry (HyPortLibrary * portLib, VMIZipEntry * entry)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 
@@ -1340,8 +1323,8 @@ zip_freeZipEntry (HyPortLibrary * portLib, HyZipEntry * entry)
  *
 */
 I_32
-zip_getNextZipEntry (HyPortLibrary * portLib, HyZipFile * zipFile,
-                     HyZipEntry * zipEntry, IDATA * nextEntryPointer)
+zip_getNextZipEntry (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                     VMIZipEntry * zipEntry, IDATA * nextEntryPointer)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 #if defined(HY_NO_THR)
@@ -1404,11 +1387,7 @@ retry:
                                       FALSE);
       if (result != entryStart)
         {
-#ifndef HY_ZIP_API
-          if (result >= zipFile->cache->startCentralDir)
-#else /* HY_ZIP_API */
-          if (result >= ((HyZipCache *)(zipFile->cache))->startCentralDir)
-#endif /* HY_ZIP_API */
+          if (result >= zipCache_getStartCentralDir(zipFile->cache))
             {
               /* ! Cache contents are not valid.  Invalidate it and make a new one */
               if (!retryAllowed)
@@ -1468,8 +1447,8 @@ retry:
 */
 
 I_32
-zip_getZipEntry (HyPortLibrary * portLib, HyZipFile * zipFile,
-                 HyZipEntry * entry, const char *filename,
+zip_getZipEntry (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                 VMIZipEntry * entry, const char *filename,
                  BOOLEAN findDirectory)
 {
   PORT_ACCESS_FROM_PORT (portLib);
@@ -1609,8 +1588,8 @@ retry:
  *
 */
 I_32
-zip_getZipEntryData (HyPortLibrary * portLib, HyZipFile * zipFile,
-                     HyZipEntry * entry, U_8 * buffer, U_32 bufferSize)
+zip_getZipEntryData (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                     VMIZipEntry * entry, U_8 * buffer, U_32 bufferSize)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 #if defined(HY_NO_THR)
@@ -1782,8 +1761,8 @@ finished:
  * @see zip_freeZipEntry
 */
 I_32
-zip_getZipEntryExtraField (HyPortLibrary * portLib, HyZipFile * zipFile,
-                           HyZipEntry * entry, U_8 * buffer, U_32 bufferSize)
+zip_getZipEntryExtraField (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                           VMIZipEntry * entry, U_8 * buffer, U_32 bufferSize)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 #if defined(HY_NO_THR)
@@ -1869,6 +1848,75 @@ finished:
 
 #undef CDEV_CURRENT_FUNCTION
 
+/** 
+ *	Attempt to read the raw data for the zip entry entry.
+ * 
+ * @param[in] portLib the port library
+ * @param[in] zipFile the zip file being read from.
+ * @param[in,out] entry the zip entry
+ * @param[in] buffer may not be NULL
+ * @param[in] bufferSize 
+ * @param[in] offset from the start of the entry data
+
+ * @return 0 on success
+ * @return	ZIP_ERR_FILE_READ_ERROR if there is an error reading from zipEntry
+ * @return	ZIP_ERR_FILE_CORRUPT if zipFile is corrupt
+ * @return	ZIP_ERR_ENTRY_NOT_FOUND if entry is not found
+ * @return 	ZIP_ERR_OUT_OF_MEMORY  if there is not enough memory to complete this call
+ * @return 	ZIP_ERR_BUFFER_TOO_SMALL if buffer is too small to hold the comment for zipFile
+ *
+ * @see zip_freeZipEntry
+ *
+*/
+I_32 zip_getZipEntryRawData(HyPortLibrary* portLib, VMIZipFile* zipFile, VMIZipEntry* entry, U_8* buffer, U_32 bufferSize, U_32 offset)
+{
+	PORT_ACCESS_FROM_PORT(portLib);
+#if defined(HY_NO_THR)
+  THREAD_ACCESS_FROM_PORT(portLib);
+#endif /* HY_NO_THR */
+
+	I_32 result;
+	I_64 seekResult;
+
+	ENTER();
+
+	if((offset + bufferSize) > entry->compressedSize) {
+		EXIT();
+		/* Trying to read past the end of the data. */
+		return ZIP_ERR_INTERNAL_ERROR;
+	}
+
+	/* Just read the data in. */
+	if (zipFile->pointer != (entry->dataPointer + offset))  {
+		seekResult =  hyfile_seek(zipFile->fd, entry->dataPointer + offset, HySeekSet);		
+		if ((seekResult < 0) || (seekResult > HYCONST64(0x7FFFFFFF))) {
+			result = ZIP_ERR_FILE_READ_ERROR;
+			goto finished;
+		}
+		zipFile->pointer = (I_32) seekResult;	
+
+		if (zipFile->pointer != (entry->dataPointer + offset))  {
+			result = ZIP_ERR_FILE_READ_ERROR;
+			goto finished;
+		}
+	}
+	result = hyfile_read(zipFile->fd, buffer, bufferSize);
+	if (result != bufferSize) {
+		result = ZIP_ERR_FILE_READ_ERROR;
+		goto finished;
+	}
+	zipFile->pointer += result;
+	EXIT();
+	return 0;
+
+finished:
+	if (result == ZIP_ERR_FILE_READ_ERROR)  {
+		zipFile->pointer = -1;
+	}
+	EXIT();
+	return result;
+}
+
 #define CDEV_CURRENT_FUNCTION zip_getZipEntryComment
 /**
  *	Read the file comment for entry. 
@@ -1893,8 +1941,8 @@ finished:
 */
 
 I_32
-zip_getZipEntryComment (HyPortLibrary * portLib, HyZipFile * zipFile,
-                        HyZipEntry * entry, U_8 * buffer, U_32 bufferSize)
+zip_getZipEntryComment (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                        VMIZipEntry * entry, U_8 * buffer, U_32 bufferSize)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 #if defined(HY_NO_THR)
@@ -2007,7 +2055,7 @@ finished:
  * @return	ZIP_ERR_OUT_OF_MEMORY if we are out of memory
 */
 I_32
-zip_openZipFile (HyPortLibrary * portLib, char *filename, HyZipFile * zipFile,
+zip_openZipFile (HyPortLibrary * portLib, char *filename, VMIZipFile * zipFile,
                  HyZipCachePool * cachePool)
 {
   PORT_ACCESS_FROM_PORT (portLib);
@@ -2142,18 +2190,14 @@ finished:
  * 
 */
 void
-zip_resetZipFile (HyPortLibrary * portLib, HyZipFile * zipFile,
+zip_resetZipFile (HyPortLibrary * portLib, VMIZipFile * zipFile,
                   IDATA * nextEntryPointer)
 {
   *nextEntryPointer = 0;
   if (zipFile)
     {
       if (zipFile->cache)
-#ifndef HY_ZIP_API
-        *nextEntryPointer = zipFile->cache->startCentralDir;
-#else /* HY_ZIP_API */
-        *nextEntryPointer = ((HyZipCache *)(zipFile->cache))->startCentralDir;
-#endif /* HY_ZIP_API */
+        *nextEntryPointer = zipCache_getStartCentralDir(zipFile->cache);
       else
         {
           I_32 result;
@@ -2190,8 +2234,8 @@ zip_resetZipFile (HyPortLibrary * portLib, HyZipFile * zipFile,
  * @see zip_freeZipEntry
 */
 I_32
-zip_getZipEntryFromOffset (HyPortLibrary * portLib, HyZipFile * zipFile,
-                           HyZipEntry * entry, IDATA offset)
+zip_getZipEntryFromOffset (HyPortLibrary * portLib, VMIZipFile * zipFile,
+                           VMIZipEntry * entry, IDATA offset)
 {
   PORT_ACCESS_FROM_PORT (portLib);
 #if defined(HY_NO_THR)

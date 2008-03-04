@@ -20,18 +20,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class CPString extends CPConstant {
-	private transient int nameIndex;
+
+    private transient int nameIndex;
 	private CPUTF8 name;
 
-	public CPString(java.lang.String value) {
-		super(ConstantPoolEntry.CP_String,value);
+    public CPString(CPUTF8 value) {
+		super(ConstantPoolEntry.CP_String, value);
 		this.domain = ClassConstantPool.DOMAIN_STRING;
-		this.name = new CPUTF8((String) getValue(), ClassConstantPool.DOMAIN_NORMALASCIIZ);
-
+		this.name = value;
 	}
 
-
-	protected void writeBody(DataOutputStream dos) throws IOException {
+    protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(nameIndex);
 	}
 
@@ -55,6 +54,6 @@ public class CPString extends CPConstant {
  	}
 
 	public String comparisonString() {
-	    return (String)getValue();
+	    return ((CPUTF8)getValue()).underlyingString();
 	}
 }

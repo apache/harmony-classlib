@@ -449,7 +449,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 int length = target.remaining();
                 if (target.isDirect()) {
                     long address = AddressUtil.getDirectBufferAddress(target);
-                    readCount = networkSystem.readDirect(fd, address, offset,
+                    readCount = networkSystem.readDirect(fd, address + offset,
                             length, (isBlocking() ? TIMEOUT_BLOCK
                                     : TIMEOUT_NONBLOCK));
                 } else {
@@ -546,7 +546,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 }
                 if (source.isDirect()) {
                     long address = AddressUtil.getDirectBufferAddress(source);
-                    writeCount = networkSystem.writeDirect(fd, address, pos,
+                    writeCount = networkSystem.writeDirect(fd, address + pos,
                             length);
                 } else if (source.hasArray()) {
                     pos += source.arrayOffset();

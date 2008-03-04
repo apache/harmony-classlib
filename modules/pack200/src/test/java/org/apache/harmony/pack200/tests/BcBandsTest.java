@@ -343,12 +343,12 @@ public class BcBandsTest extends AbstractBandsTestCase {
     	//TODO: Need to fix this testcase so it has enough data to pass.
         byte[] bytes = new byte[] {17, (byte)196, (byte)132, (byte)255,
                 8, 8,// bc_short band
-                8, 8, 8, 8}; // bc_locals band (required by wide iinc (196, 132))
+                8}; // bc_locals band (required by wide iinc (196, 132))
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(3, bcBands.getMethodByteCodePacked()[0][0].length);
         assertEquals(2, bcBands.getBcShort().length);
-        assertEquals(2, bcBands.getBcLocal().length);
+        assertEquals(1, bcBands.getBcLocal().length);
     }
 
     /**
@@ -393,11 +393,11 @@ public class BcBandsTest extends AbstractBandsTestCase {
                 (byte) 196, (byte) 132, // wide iinc
                 (byte) 255,
                 0, // bc_short band
-                0, 0, 0, 1}; // bc_locals band
+                0, 1}; // bc_locals band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(4, bcBands.getMethodByteCodePacked()[0][0].length);
-        assertEquals(4, bcBands.getBcLocal().length);
+        assertEquals(2, bcBands.getBcLocal().length);
         assertEquals(1, bcBands.getBcShort().length);
     }
 

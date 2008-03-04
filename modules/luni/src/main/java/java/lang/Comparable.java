@@ -21,14 +21,13 @@ package java.lang;
 /**
  * This interface should be implemented by all classes which wish to define a
  * <em>natural ordering</em> of their instances. The ordering rule must be
- * transitive and invertable (i.e. the sign of the result of x.compareTo(y) must
+ * transitive and invertible (i.e. the sign of the result of x.compareTo(y) must
  * equal the negation of the sign of the result of y.compareTo(x) for all x and
  * y).
  * <p>
- * In addition, it is desireable (but not required) that when the result of
+ * In addition, it is desirable (but not required) that when the result of
  * x.compareTo(y) is zero (and only then) the result of x.equals(y) should be
  * true.
- * 
  */
 public interface Comparable<T> {
 	

@@ -585,6 +585,7 @@ public class SimpleTimeZone extends TimeZone {
     @Override
     public void setRawOffset(int offset) {
         rawOffset = offset;
+        icuTZ.setRawOffset(offset);
     }
 
     private void setStartMode() {

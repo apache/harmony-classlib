@@ -31,11 +31,14 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
     private int[] indexes;
     private CPUTF8[] names;
     private CPUTF8[] descriptors;
+    private static final CPUTF8 attributeName = new CPUTF8(
+            "LocalVariableTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
+
 
     public LocalVariableTableAttribute(int local_variable_table_length,
             int[] start_pcs, int[] lengths, CPUTF8[] names,
             CPUTF8[] descriptors, int[] indexes) {
-        super("LocalVariableTable");
+        super(attributeName);
         this.local_variable_table_length = local_variable_table_length;
         this.start_pcs = start_pcs;
         this.lengths = lengths;
@@ -58,7 +61,6 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             dos.writeShort(indexes[i]);
         }
     }
-
 
     protected ClassFileEntry[] getNestedClassFileEntries() {
         ArrayList nestedEntries = new ArrayList();
@@ -128,7 +130,9 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             // Given the index of the start_pc, we can now add
             // the encodedLength to it to get the stop index.
             int stopIndex = indexOfStartPC + encodedLength;
-
+            if(stopIndex < 0) {
+                System.out.println(stopIndex);
+            }
             // Length can either be an index into the byte code offsets, or one beyond the
             // end of the byte code offsets. Need to determine which this is.
             if(stopIndex == byteCodeOffsets.size()) {

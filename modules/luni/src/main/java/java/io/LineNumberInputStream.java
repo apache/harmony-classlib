@@ -110,6 +110,7 @@ public class LineNumberInputStream extends FilterInputStream {
      *             If the stream is already closed or another IOException
      *             occurs.
      */
+    @SuppressWarnings("fallthrough")
     @Override
     public int read() throws IOException {
         int currentChar = lastChar;

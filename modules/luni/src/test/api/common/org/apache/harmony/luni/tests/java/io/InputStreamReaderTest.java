@@ -300,24 +300,25 @@ public class InputStreamReaderTest extends TestCase {
      * @tests java.io.InputStreamReader#getEncoding()
      */
     public void test_getEncoding() throws IOException {
-        try {
-            is = new InputStreamReader(fis, "8859_1");
-        } catch (UnsupportedEncodingException e) {
-            assertEquals("Returned incorrect encoding", "8859_1", is.getEncoding());
-        }
+        InputStreamReader isr = new InputStreamReader(fis, "8859_1");
+        assertEquals("Returned incorrect encoding when setting 8859_1",
+                "ISO8859_1", isr.getEncoding());
 
-        InputStreamReader in = null;
+        isr = new InputStreamReader(fis, "ISO-8859-1");
+        assertEquals("Returned incorrect encoding when setting ISO-8859-1",
+                "ISO8859_1", isr.getEncoding());
+
         byte b[] = new byte[5];
-        in = new InputStreamReader(new ByteArrayInputStream(b), "UTF-16BE");
-        in.close();
-        assertNull(in.getEncoding());
+        isr = new InputStreamReader(new ByteArrayInputStream(b), "UTF-16BE");
+        isr.close();
+        assertNull(isr.getEncoding());
 
         try {
-            in = new InputStreamReader(System.in, "UTF-16BE");
+            isr = new InputStreamReader(System.in, "UTF-16BE");
         } catch (UnsupportedEncodingException e) {
             // Ignored
         }
-        assertEquals("UnicodeBigUnmarked", in.getEncoding());
+        assertEquals("UnicodeBigUnmarked", isr.getEncoding());
     }
 
     /**

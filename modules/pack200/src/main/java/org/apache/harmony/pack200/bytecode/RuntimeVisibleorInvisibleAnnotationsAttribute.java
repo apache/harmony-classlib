@@ -23,11 +23,9 @@ public class RuntimeVisibleorInvisibleAnnotationsAttribute extends AnnotationsAt
 
     private int num_annotations;
     private Annotation[] annotations;
-    private String name;
 
-    public RuntimeVisibleorInvisibleAnnotationsAttribute(String name, Annotation[] annotations) {
+    public RuntimeVisibleorInvisibleAnnotationsAttribute(CPUTF8 name, Annotation[] annotations) {
         super(name);
-        this.name = name;
         this.num_annotations = annotations.length;
         this.annotations = annotations;
     }
@@ -55,7 +53,7 @@ public class RuntimeVisibleorInvisibleAnnotationsAttribute extends AnnotationsAt
     }
 
     public String toString() {
-        return name + ": " + num_annotations + " annotations";
+        return attributeName.underlyingString() + ": " + num_annotations + " annotations";
     }
 
 }

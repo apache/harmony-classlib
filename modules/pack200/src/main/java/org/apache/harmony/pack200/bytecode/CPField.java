@@ -20,8 +20,8 @@ import java.util.List;
 
 public class CPField extends CPMember {
 
-	public CPField(String descriptor, long flags, List attributes) {
-		super(descriptor, flags, attributes);
+	public CPField(CPUTF8 name, CPUTF8 descriptor, long flags, List attributes) {
+		super(name, descriptor, flags, attributes);
 	}
 
 }

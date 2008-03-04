@@ -31,8 +31,6 @@ public class URLEncoderTest extends TestCase {
      */
     @SuppressWarnings("deprecation")
     public void test_encodeLjava_lang_String() {
-        // Test for method java.lang.String
-        // java.net.URLEncoder.encode(java.lang.String)
         final String URL = "http://" + Support_Configuration.HomeAddress;
         final String URL2 = "telnet://justWantToHaveFun.com:400";
         final String URL3 = "file://myServer.org/a file with spaces.jpg";
@@ -57,6 +55,7 @@ public class URLEncoderTest extends TestCase {
         } catch (UnsupportedEncodingException e) {
             // expected
         }
+
         // Regression for HARMONY-1233
         try {
             URLEncoder.encode(null, "harmony");

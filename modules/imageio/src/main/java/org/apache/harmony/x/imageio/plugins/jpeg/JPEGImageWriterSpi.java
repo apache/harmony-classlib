@@ -20,23 +20,36 @@
  */
 package org.apache.harmony.x.imageio.plugins.jpeg;
 
-import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.ImageWriter;
-import javax.imageio.ImageTypeSpecifier;
 import java.io.IOException;
 import java.util.Locale;
+
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriter;
+import javax.imageio.spi.ImageWriterSpi;
+
+import org.apache.harmony.x.imageio.plugins.ImageType;
+import org.apache.harmony.x.imageio.plugins.PluginUtils;
 
 public class JPEGImageWriterSpi extends ImageWriterSpi {
 
     public JPEGImageWriterSpi() {
-        super(JPEGSpiConsts.vendorName, JPEGSpiConsts.version,
-                JPEGSpiConsts.names, JPEGSpiConsts.suffixes, JPEGSpiConsts.MIMETypes,
-                JPEGSpiConsts.writerClassName, STANDARD_OUTPUT_TYPE,
-                JPEGSpiConsts.readerSpiNames, JPEGSpiConsts.supportsStandardStreamMetadataFormat /*TODO: support st. metadata format*/,
-                JPEGSpiConsts.nativeStreamMetadataFormatName, JPEGSpiConsts.nativeStreamMetadataFormatClassName,
-                JPEGSpiConsts.extraStreamMetadataFormatNames, JPEGSpiConsts.extraStreamMetadataFormatClassNames,
-                JPEGSpiConsts.supportsStandardImageMetadataFormat, JPEGSpiConsts.nativeImageMetadataFormatName, JPEGSpiConsts.nativeImageMetadataFormatClassName,
-                JPEGSpiConsts.extraImageMetadataFormatNames, JPEGSpiConsts.extraImageMetadataFormatClassNames);
+        /* TODO: support st. metadata format */
+        super(PluginUtils.VENDOR_NAME, PluginUtils.DEFAULT_VERSION,
+                        ImageType.JPEG.getNames(),
+                        ImageType.JPEG.getSuffixes(),
+                        ImageType.JPEG.getMimeTypes(),
+                        JPEGImageWriter.class.getName(), STANDARD_OUTPUT_TYPE,
+                        JPEGSpiConsts.readerSpiNames,
+                        JPEGSpiConsts.supportsStandardStreamMetadataFormat,
+                        JPEGSpiConsts.nativeStreamMetadataFormatName,
+                        JPEGSpiConsts.nativeStreamMetadataFormatClassName,
+                        JPEGSpiConsts.extraStreamMetadataFormatNames,
+                        JPEGSpiConsts.extraStreamMetadataFormatClassNames,
+                        JPEGSpiConsts.supportsStandardImageMetadataFormat,
+                        JPEGSpiConsts.nativeImageMetadataFormatName,
+                        JPEGSpiConsts.nativeImageMetadataFormatClassName,
+                        JPEGSpiConsts.extraImageMetadataFormatNames,
+                        JPEGSpiConsts.extraImageMetadataFormatClassNames);
     }
 
     @Override
@@ -51,6 +64,6 @@ public class JPEGImageWriterSpi extends ImageWriterSpi {
 
     @Override
     public String getDescription(Locale locale) {
-        return "DRL JPEG Encoder";
+        return "JPEG image Encoder"; //$NON-NLS-1$
     }
 }

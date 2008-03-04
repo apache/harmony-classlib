@@ -302,7 +302,7 @@ public class BufferedReader extends Reader {
      * <code>'\r\n'</code> or end of stream. The <code>String</code> does not
      * include the newline sequence. 
      * In EBCDIC systems, a new line can also be represented by the 
-     * <code>'\u0085'</code> (NEL) character.
+     * <code>'&#92;u0085'</code> (NEL) character.
      * 
      * @return the contents of the line or null if no characters were read
      *         before end of stream.

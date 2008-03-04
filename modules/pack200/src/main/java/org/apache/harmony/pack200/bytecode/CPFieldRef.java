@@ -19,29 +19,23 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
 public class CPFieldRef extends ConstantPoolEntry {
 
 	CPClass className;
 	transient int classNameIndex;
-
-
 	private CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
-	public CPFieldRef(String className, String descriptor) {
+
+	public CPFieldRef(CPClass className, CPNameAndType descriptor) {
 		super(ConstantPoolEntry.CP_Fieldref);
 		this.domain = ClassConstantPool.DOMAIN_FIELD;
-		this.className = new CPClass(className);
-		this.nameAndType = new CPNameAndType(descriptor);
+		this.className = className;
+		this.nameAndType = descriptor;
 	}
-
-
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		return new ClassFileEntry[] {className, nameAndType};
 	}
-
-
 
 	protected void resolve(ClassConstantPool pool) {
 		super.resolve(pool);
@@ -53,7 +47,6 @@ public class CPFieldRef extends ConstantPoolEntry {
 		dos.writeShort(classNameIndex);
 		dos.writeShort(nameAndTypeIndex);
 	}
-
 
 	public String toString() {
 		return "FieldRef: " + className + "#" + nameAndType;
@@ -70,8 +63,6 @@ public class CPFieldRef extends ConstantPoolEntry {
 		result = PRIME * result + ((nameAndType == null) ? 0 : nameAndType.hashCode());
 		return result;
 	}
-
-
 
 	public boolean equals(Object obj) {
 		if (this == obj)

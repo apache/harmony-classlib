@@ -43,6 +43,82 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
     transient Set<Map.Entry<K, V>> entrySet;
 
     transient Node<K, V> root;
+    
+class MapEntry implements Map.Entry<K, V>, Cloneable {
+		
+		final int offset;
+		final Node<K, V> node;
+		final K key;
+		
+	    MapEntry(Node<K, V> node, int offset) {
+	    	this.node = node;
+	    	this.offset = offset;
+	    	key = node.keys[offset];
+	    }
+
+	    @Override
+	    public Object clone() {
+	        try {
+	            return super.clone();
+	        } catch (CloneNotSupportedException e) {
+	            return null;
+	        }
+	    }
+
+	    @Override
+	    public boolean equals(Object object) {
+	        if (this == object) {
+	            return true;
+	        }
+	        if (object instanceof Map.Entry) {
+	            Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;	            
+	            V value = getValue();
+	            return (key == null ? entry.getKey() == null : key.equals(entry
+	                    .getKey()))
+	                    && (value == null ? entry.getValue() == null : value
+	                            .equals(entry.getValue()));
+	        }
+	        return false;
+	    }
+
+	    public K getKey() {
+	        return key;
+	    }
+
+	    public V getValue() {
+	    	if (node.keys[offset] == key) {
+	    		return node.values[offset];
+	    	}
+	    	if (containsKey(key)) {
+	    		return get(key);
+	    	}
+	    	throw new IllegalStateException();
+	    }
+
+	    @Override
+	    public int hashCode() {
+	    	V value = getValue();
+	        return (key == null ? 0 : key.hashCode())
+	                ^ (value == null ? 0 : value.hashCode());
+	    }
+
+	    public V setValue(V object) {
+	    	if (node.keys[offset] == key) {
+	    		V res = node.values[offset];
+	    		node.values[offset] = object;
+	    		return res;
+	    	}
+	    	if (containsKey(key)) {
+	    		return put(key, object);
+	    	}
+	    	throw new IllegalStateException();
+	    }
+
+	    @Override
+	    public String toString() {
+	        return key + "=" + getValue();
+	    }
+	}
 
     static class Node <K,V> implements Cloneable {
         static final int NODE_SIZE = 64;
@@ -137,7 +213,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
             if (expectedModCount == backingMap.modCount) {
                 if (lastNode != null) {
                     int idx = lastNode.right_idx - lastOffset;
-                    backingMap.remove(lastNode, idx);
+                    backingMap.removeFromIterator(lastNode, idx);
                     lastNode = null;
                     expectedModCount++;
                 } else {
@@ -163,7 +239,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         public Map.Entry<K, V> next() {
             makeNext();
             int idx = lastNode.right_idx - lastOffset;
-            return new MapEntry<K, V>(lastNode.keys[idx], lastNode.values[idx]);
+            return backingMap.new MapEntry(lastNode, idx);
         }
     }
 
@@ -208,7 +284,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
 
         BoundedMapIterator(Node<K, V> startNode, int startOffset, TreeMap<K, V> map,
                            Node<K, V> finalNode, int finalOffset) {
-            super(map, startNode, startOffset);
+            super(map, finalNode==null? null : startNode, startOffset);
             this.finalNode = finalNode;
             this.finalOffset = finalOffset;
         }
@@ -227,9 +303,8 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         }
 
         void makeBoundedNext() {
-            boolean endOfIterator = node == finalNode && offset == finalOffset;
             makeNext();
-            if (endOfIterator) {
+            if (lastNode == finalNode && lastOffset == finalOffset) {
                 node = null;
             }
         }
@@ -246,7 +321,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         public Map.Entry<K, V> next() {
             makeBoundedNext();
             int idx = lastNode.right_idx - lastOffset;
-            return new MapEntry<K, V>(lastNode.keys[idx], lastNode.values[idx]);
+            return backingMap.new MapEntry(lastNode, idx);
         }
     }
 
@@ -1739,7 +1814,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
                 node = node.left;
             } else if (result == 0) {
                 V value = node.values[left_idx];
-                remove(node, left_idx);
+                removeLeftmost(node);
                 return value;
             } else {
                 int right_idx = node.right_idx;
@@ -1750,7 +1825,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
                     node = node.right;
                 } else if (result == 0) {
                     V value = node.values[right_idx];
-                    remove(node, right_idx);
+                    removeRightmost(node);
                     return value;
                 } else { /*search in node*/
                     int low = left_idx + 1, mid = 0, high = right_idx - 1;
@@ -1761,7 +1836,7 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
                             low = mid + 1;
                         } else if (result == 0) {
                             V value = node.values[mid];
-                            remove(node, mid);
+                            removeMiddleElement(node, mid);
                             return value;
                         } else {
                             high = mid - 1;
@@ -1774,79 +1849,39 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         return null;
     }
 
-    void remove(Node<K, V> node, int index) {
+    void removeLeftmost(Node<K, V> node) {
+        int index = node.left_idx;
         if (node.size == 1) {
             deleteNode(node);
         } else if (node.prev != null && (Node.NODE_SIZE - 1 - node.prev.right_idx) > node.size) {
             // move all to prev node and kill it
             Node<K, V> prev = node.prev;
-            int left_idx = node.left_idx;
-            if (index != left_idx) {
-                int size = index - left_idx;
-                System.arraycopy(node.keys,   left_idx, prev.keys,   prev.right_idx + 1, size);
-                System.arraycopy(node.values, left_idx, prev.values, prev.right_idx + 1, size);
-                prev.right_idx += size;
-            }
-            int right_idx = node.right_idx;
-            if (index != right_idx) {
-                int size = right_idx - index;
-                System.arraycopy(node.keys,   index + 1, prev.keys,   prev.right_idx + 1, size);
-                System.arraycopy(node.values, index + 1, prev.values, prev.right_idx + 1, size);
-                prev.right_idx += size;
-            }
-            prev.size += (node.size - 1);
+            int size = node.right_idx - index;
+            System.arraycopy(node.keys,   index + 1, prev.keys,   prev.right_idx + 1, size);
+            System.arraycopy(node.values, index + 1, prev.values, prev.right_idx + 1, size);
+            prev.right_idx += size;
+            prev.size += size;
             deleteNode(node);
         } else if (node.next != null && (node.next.left_idx) > node.size) {
             // move all to next node and kill it
             Node<K, V> next = node.next;
-            int left_idx = node.left_idx;
-            int next_new_left = next.left_idx + node.size - 1;
+            int size = node.right_idx - index;
+            int next_new_left = next.left_idx - size;
             next.left_idx = next_new_left;
-            if (index != left_idx) {
-                int size = index - left_idx;
-                System.arraycopy(node.keys,   left_idx, next.keys,   next_new_left, size);
-                System.arraycopy(node.values, left_idx, next.values, next_new_left, size);
-                next_new_left += size;
-            }
-            int right_idx = node.right_idx;
-            if (index != right_idx) {
-                int size = right_idx - index;
-                System.arraycopy(node.keys,   index + 1, next.keys,   next_new_left, size);
-                System.arraycopy(node.values, index + 1, next.values, next_new_left, size);
-            }
-            next.size += (node.size - 1);
+            System.arraycopy(node.keys,   index + 1, next.keys,   next_new_left, size);
+            System.arraycopy(node.values, index + 1, next.values, next_new_left, size);
+            next.size += size;
             deleteNode(node);
         } else {
-            if (index == node.left_idx) {
-                node.keys[index] = null;
-                node.values[index] = null;
-                node.left_idx++;
-            } else if (index == node.right_idx) {
-                node.keys[index] = null;
-                node.values[index] = null;
-                node.right_idx--;
-            } else if (node.right_idx - index <= index - node.left_idx) {
-                System.arraycopy(node.keys,   index + 1, node.keys,   index, node.right_idx - index);
-                System.arraycopy(node.values, index + 1, node.values, index, node.right_idx - index);
-                node.right_idx--;
-            } else {
-                System.arraycopy(node.keys,   node.left_idx, node.keys,   node.left_idx + 1, index - node.left_idx);
-                System.arraycopy(node.values, node.left_idx, node.values, node.left_idx + 1, index - node.left_idx);
-                node.left_idx++;
-            }
+            node.keys[index] = null;
+            node.values[index] = null;
+            node.left_idx++;
             node.size--;
-            Node<K, V> next = node.next;
             Node<K, V> prev = node.prev;
-            if (next != null && node.right_idx < Node.NODE_SIZE - 1 && next.size == 1) {
-                node.size++;
-                node.right_idx++;
-                node.keys[node.right_idx]   = next.keys[next.left_idx];
-                node.values[node.right_idx] = next.values[next.left_idx];
-                deleteNode(next);
-            } else if (prev != null && node.left_idx > 0 && prev.size == 1) {
+            if (prev != null && prev.size == 1) {
                 node.size++;
                 node.left_idx--;
-                node.keys[node.left_idx]   = prev.keys[prev.left_idx];
+                node.keys  [node.left_idx] = prev.keys  [prev.left_idx];
                 node.values[node.left_idx] = prev.values[prev.left_idx];
                 deleteNode(prev);
             }
@@ -1855,52 +1890,249 @@ public class TreeMap <K, V> extends AbstractMap<K, V> implements SortedMap<K, V>
         size--;
     }
 
-    private void deleteNode(Node<K, V> node) {
-        Node<K, V> toDelete, toConnect;
-        if (node.right == null || node.left == null) {
-            toDelete = node;
+    void removeRightmost(Node<K, V> node) {
+        int index = node.right_idx;
+        if (node.size == 1) {
+            deleteNode(node);
+        } else if (node.prev != null && (Node.NODE_SIZE - 1 - node.prev.right_idx) > node.size) {
+            // move all to prev node and kill it
+            Node<K, V> prev = node.prev;
+            int left_idx = node.left_idx;
+            int size = index - left_idx;
+            System.arraycopy(node.keys,   left_idx, prev.keys,   prev.right_idx + 1, size);
+            System.arraycopy(node.values, left_idx, prev.values, prev.right_idx + 1, size);
+            prev.right_idx += size;
+            prev.size += size;
+            deleteNode(node);
+        } else if (node.next != null && (node.next.left_idx) > node.size) {
+            // move all to next node and kill it
+            Node<K, V> next = node.next;
+            int left_idx = node.left_idx;
+            int size = index - left_idx;
+            int next_new_left = next.left_idx - size;
+            next.left_idx = next_new_left;
+            System.arraycopy(node.keys,   left_idx, next.keys,   next_new_left, size);
+            System.arraycopy(node.values, left_idx, next.values, next_new_left, size);
+            next.size += size;
+            deleteNode(node);
         } else {
-            toDelete = node.next;
-        }
-        if (toDelete.left != null) {
-            toConnect = toDelete.left;
-        } else {
-            toConnect = toDelete.right;
-        }
-        if (toConnect != null) {
-            toConnect.parent = toDelete.parent;
-        }
-        if (toDelete.parent == null) {
-            root = toConnect;
-        } else if (toDelete == toDelete.parent.left) {
-            toDelete.parent.left = toConnect;
-        } else {
-            toDelete.parent.right = toConnect;
-        }
-        if (toDelete != node) {
-            node.keys = toDelete.keys;
-            node.values = toDelete.values;
-            node.size = toDelete.size;
-            node.left_idx = toDelete.left_idx;
-            node.right_idx = toDelete.right_idx;
-            node.next = toDelete.next;
-            if (node.next != null) {
-                node.next.prev = node;
+            node.keys[index] = null;
+            node.values[index] = null;
+            node.right_idx--;
+            node.size--;
+            Node<K, V> next = node.next;
+            if (next != null && next.size == 1) {
+                node.size++;
+                node.right_idx++;
+                node.keys[node.right_idx]   = next.keys[next.left_idx];
+                node.values[node.right_idx] = next.values[next.left_idx];
+                deleteNode(next);
             }
-        } else {
-            if (node.prev != null) {
-                node.prev.next = node.next;
-            }
-            if (node.next != null) {
-                node.next.prev = node.prev;
-            }
         }
-        if (!toDelete.color && root != null) {
-            if (toConnect == null) {
-                fixup(toDelete.parent);
+        modCount++;
+        size--;
+    }
+
+    void removeMiddleElement(Node<K, V> node, int index) {
+        // this function is called iff index if some middle element;
+        // so node.left_idx < index < node.right_idx
+        // condition above assume that node.size > 1
+        if (node.prev != null && (Node.NODE_SIZE - 1 - node.prev.right_idx) > node.size) {
+            // move all to prev node and kill it
+            Node<K, V> prev = node.prev;
+            int left_idx = node.left_idx;
+            int size = index - left_idx;
+            System.arraycopy(node.keys,   left_idx, prev.keys,   prev.right_idx + 1, size);
+            System.arraycopy(node.values, left_idx, prev.values, prev.right_idx + 1, size);
+            prev.right_idx += size;
+            size = node.right_idx - index;
+            System.arraycopy(node.keys,   index + 1, prev.keys,   prev.right_idx + 1, size);
+            System.arraycopy(node.values, index + 1, prev.values, prev.right_idx + 1, size);
+            prev.right_idx += size;
+            prev.size += (node.size - 1);
+            deleteNode(node);
+        } else if (node.next != null && (node.next.left_idx) > node.size) {
+            // move all to next node and kill it
+            Node<K, V> next = node.next;
+            int left_idx = node.left_idx;
+            int next_new_left = next.left_idx - node.size + 1;
+            next.left_idx = next_new_left;
+            int size = index - left_idx;
+            System.arraycopy(node.keys,   left_idx, next.keys,   next_new_left, size);
+            System.arraycopy(node.values, left_idx, next.values, next_new_left, size);
+            next_new_left += size;
+            size = node.right_idx - index;
+            System.arraycopy(node.keys,   index + 1, next.keys,   next_new_left, size);
+            System.arraycopy(node.values, index + 1, next.values, next_new_left, size);
+            next.size += (node.size - 1);
+            deleteNode(node);
+        } else {
+            int moveFromRight = node.right_idx - index;
+            int left_idx = node.left_idx;
+            int moveFromLeft = index - left_idx ;
+            if (moveFromRight <= moveFromLeft) {
+                System.arraycopy(node.keys,   index + 1, node.keys,   index, moveFromRight);
+                System.arraycopy(node.values, index + 1, node.values, index, moveFromRight);
+                Node<K, V> next = node.next;
+                if (next != null && next.size == 1) {
+                    node.keys  [node.right_idx] = next.keys  [next.left_idx];
+                    node.values[node.right_idx] = next.values[next.left_idx];
+                    deleteNode(next);
+                } else {
+                    node.keys  [node.right_idx] = null;
+                    node.values[node.right_idx] = null;
+                    node.right_idx--;
+                    node.size--;
+                }
             } else {
-                fixup(toConnect);
+                System.arraycopy(node.keys,   left_idx , node.keys,   left_idx  + 1, moveFromLeft);
+                System.arraycopy(node.values, left_idx , node.values, left_idx + 1, moveFromLeft);
+                Node<K, V> prev = node.prev;
+                if (prev != null && prev.size == 1) {
+                    node.keys  [left_idx ] = prev.keys  [prev.left_idx];
+                    node.values[left_idx ] = prev.values[prev.left_idx];
+                    deleteNode(prev);
+                } else {
+                    node.keys  [left_idx ] = null;
+                    node.values[left_idx ] = null;
+                    node.left_idx++;
+                    node.size--;
+                }
             }
+        }
+        modCount++;
+        size--;
+    }
+
+    void removeFromIterator(Node<K, V> node, int index) {
+        if (node.size == 1) {
+            // it is safe to delete the whole node here.
+            // iterator already moved to the next node;
+            deleteNode(node);
+        } else {
+            int left_idx = node.left_idx;
+            if (index == left_idx) {
+                Node<K, V> prev = node.prev;
+                if (prev != null && prev.size == 1) {
+                    node.keys  [left_idx] = prev.keys  [prev.left_idx];
+                    node.values[left_idx] = prev.values[prev.left_idx];
+                    deleteNode(prev);
+                } else {
+                    node.keys  [left_idx] = null;
+                    node.values[left_idx] = null;
+                    node.left_idx++;
+                    node.size--;
+                }
+            } else if (index == node.right_idx) {
+                node.keys  [index] = null;
+                node.values[index] = null;
+                node.right_idx--;
+                node.size--;
+            } else {
+                int moveFromRight = node.right_idx - index;
+                int moveFromLeft = index - left_idx;
+                if (moveFromRight <= moveFromLeft) {
+                    System.arraycopy(node.keys,   index + 1, node.keys,   index, moveFromRight );
+                    System.arraycopy(node.values, index + 1, node.values, index, moveFromRight );
+                    node.keys  [node.right_idx] = null;
+                    node.values[node.right_idx] = null;
+                    node.right_idx--;
+                    node.size--;
+                } else {
+                    System.arraycopy(node.keys,   left_idx, node.keys,   left_idx+ 1, moveFromLeft);
+                    System.arraycopy(node.values, left_idx, node.values, left_idx+ 1, moveFromLeft);
+                    node.keys  [left_idx] = null;
+                    node.values[left_idx] = null;
+                    node.left_idx++;
+                    node.size--;
+               }
+            }
+        }
+        modCount++;
+        size--;
+    }
+
+    private void deleteNode(Node<K, V> node) {
+        if (node.right == null) {
+            if (node.left != null) {
+                attachToParent(node, node.left);
+           } else {
+                attachNullToParent(node);
+            }
+            fixNextChain(node);
+        } else if(node.left == null) { // node.right != null
+            attachToParent(node, node.right);
+            fixNextChain(node);
+        } else {
+            // Here node.left!=nul && node.right!=null
+            // node.next should replace node in tree
+            // node.next!=null by tree logic.
+            // node.next.left==null by tree logic.
+            // node.next.right may be null or non-null
+            Node<K, V> toMoveUp = node.next;
+            fixNextChain(node);
+            if(toMoveUp.right==null){
+                attachNullToParent(toMoveUp);
+            } else {
+                attachToParent(toMoveUp, toMoveUp.right);
+            }
+            // Here toMoveUp is ready to replace node
+            toMoveUp.left = node.left;
+            if (node.left != null) {
+            	node.left.parent = toMoveUp;
+            }
+            toMoveUp.right = node.right;
+            if (node.right != null) {
+            	node.right.parent = toMoveUp;
+            }
+            attachToParentNoFixup(node,toMoveUp);
+            toMoveUp.color = node.color;
+        }
+    }
+
+    private void attachToParentNoFixup(Node<K, V> toDelete, Node<K, V> toConnect) {
+        // assert toConnect!=null
+        Node<K,V> parent = toDelete.parent;
+        toConnect.parent = parent;
+        if (parent == null) {
+            root = toConnect;
+        } else if (toDelete == parent.left) {
+            parent.left = toConnect;
+        } else {
+            parent.right = toConnect;
+        }
+    }
+
+    private void attachToParent(Node<K, V> toDelete, Node<K, V> toConnect) {
+        // assert toConnect!=null
+        attachToParentNoFixup(toDelete,toConnect);
+        if (!toDelete.color) {
+            fixup(toConnect);
+        }
+    }
+
+    private void attachNullToParent(Node<K, V> toDelete) {
+        Node<K, V> parent = toDelete.parent;
+        if (parent == null) {
+            root = null;
+        } else {
+            if (toDelete == parent.left) {
+                parent.left = null;
+            } else {
+                parent.right = null;
+            }
+            if (!toDelete.color) {
+                fixup(parent);
+            }
+        }
+    }
+
+    private void fixNextChain(Node<K, V> node) {
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        }
+        if (node.next != null) {
+            node.next.prev = node.prev;
         }
     }
 

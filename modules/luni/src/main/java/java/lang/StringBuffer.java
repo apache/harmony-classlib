@@ -836,7 +836,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * Sets the length of this StringBuffer to the specified length. If there
      * are more than length characters in this StringBuffer, the characters at
      * end are lost. If there are less than length characters in the
-     * StringBuffer, the additional characters are set to <code>\\u0000</code>.
+     * StringBuffer, the additional characters are set to <code>&#92;u0000</code>.
      * 
      * @param length
      *            the new length of this StringBuffer
@@ -844,7 +844,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @throws IndexOutOfBoundsException
      *             when <code>length < 0</code>
      * 
-     * @see #length
+     * @see #length()
      */
     @Override
     public synchronized void setLength(int length) {
