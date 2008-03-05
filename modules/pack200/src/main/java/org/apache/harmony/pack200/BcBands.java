@@ -386,7 +386,13 @@ public class BcBands extends BandSet {
                     if(handlerCount != null) {
                         for (int j = 0; j < handlerCount[i]; j++) {
                             String handlerClass = handlerClassTypes[i][j];
-                            CPClass cpHandlerClass = segment.getCpBands().cpClassValue(handlerClass);
+                            CPClass cpHandlerClass = null;
+                            if(handlerClass != null) {
+                                // The handlerClass will be null if the
+                                // catch is a finally (that is, the
+                                // exception table catch_type should be 0
+                                cpHandlerClass = segment.getCpBands().cpClassValue(handlerClass);
+                            }
                             ExceptionTableEntry entry = new ExceptionTableEntry(
                                     handlerStartPCs[i][j], handlerEndPCs[i][j],
                                     handlerCatchPCs[i][j], cpHandlerClass);

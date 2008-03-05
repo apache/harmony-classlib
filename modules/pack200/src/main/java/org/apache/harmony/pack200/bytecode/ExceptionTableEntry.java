@@ -32,6 +32,22 @@ public class ExceptionTableEntry {
     private int handlerPcRenumbered;
     private int catchTypeIndex;
 
+    /**
+     * Create a new ExceptionTableEntry. Exception tables are
+     * of two kinds: either a normal one (with a Throwable as
+     * the catch_type) or a finally clause (which has no
+     * catch_type). In the class file, the finally clause is
+     * represented as catch_type == 0.
+     * 
+     * To create a finally clause with this method, pass in
+     * null for the catchType.
+     * 
+     * @param startPC int
+     * @param endPC int
+     * @param handlerPC int
+     * @param catchType CPClass (if it's a normal catch) or null
+     *  (if it's a finally clause).
+     */
     public ExceptionTableEntry(int startPC, int endPC, int handlerPC, CPClass catchType) {
         this.startPC = startPC;
         this.endPC = endPC;
@@ -54,7 +70,17 @@ public class ExceptionTableEntry {
         handlerPcRenumbered = ((Integer)byteCodeOffsets.get(handlerPcIndex)).intValue();
     }
 
+    public CPClass getCatchType() {
+        return catchType;
+    }
+    
     public void resolve(ClassConstantPool pool) {
+        if(catchType == null) {
+            // If the catch type is a finally clause
+            // the index is always 0.
+            catchTypeIndex = 0;
+            return;
+        }
         catchType.resolve(pool);
         catchTypeIndex = pool.indexOf(catchType);
     }

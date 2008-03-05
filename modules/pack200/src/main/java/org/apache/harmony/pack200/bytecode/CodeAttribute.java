@@ -101,9 +101,18 @@ public class CodeAttribute extends BCIRenumberedAttribute {
         ArrayList nestedEntries = new ArrayList();
         nestedEntries.add(getAttributeName());
         nestedEntries.addAll(byteCodes);
-        // TODO: Is this the right place to add code attribute
-        // attributes?
         nestedEntries.addAll(attributes);
+        // Don't forget to add the ExceptionTable catch_types
+        for (Iterator iter = exceptionTable.iterator(); iter.hasNext();) {
+            ExceptionTableEntry entry = (ExceptionTableEntry) iter.next();
+            CPClass catchType = entry.getCatchType();
+            // If the catch type is null, this is a finally
+            // block. If it's not null, we need to add the
+            // CPClass to the list of nested class file entries.
+            if(catchType != null) {
+                nestedEntries.add(catchType);
+            }
+        }
         ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries
                 .size()];
         nestedEntries.toArray(nestedEntryArray);
