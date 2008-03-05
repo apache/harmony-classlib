@@ -58,7 +58,9 @@ public class NewClassRefForm extends ClassRefForm {
         } else {
             // Look up the class in the classpool
             try {
-                setNestedEntries(byteCode, operandManager, offset - 1);
+                // Parent takes care of subtracting one from offset
+                // to adjust for 1-based global pool
+                setNestedEntries(byteCode, operandManager, offset);
             } catch (Pack200Exception ex) {
                 throw new Error("Got a pack200 exception. What to do?");
             }
