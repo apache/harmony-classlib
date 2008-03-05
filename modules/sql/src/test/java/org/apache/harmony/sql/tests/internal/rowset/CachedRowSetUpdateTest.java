@@ -750,7 +750,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
             assertEquals(scaled, crset.getObject(5));
         } else {
             /*
-             * seems ri doesn't do scale
+             * TODO seems ri doesn't do scale
              */
             assertEquals(bigDecimal, crset.getBigDecimal(5));
             assertEquals(bigDecimal, crset.getObject(5));

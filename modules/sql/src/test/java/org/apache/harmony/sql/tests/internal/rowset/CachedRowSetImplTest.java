@@ -180,156 +180,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(0, noInitialCrset.size());
     }
 
-    public void testDeleteRow_Exception() throws Exception {
-        /*
-         * This method is mainly used to test exception
-         */
-        noInitialCrset = newNoInitialInstance();
-        try {
-            noInitialCrset.deleteRow();
-            fail("should throw SQLException");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // RI would throw ArrayIndexOutOfBoundsException
-        } catch (SQLException e) {
-            // according to spec, it's supposed to throw SQLException
-        }
-
-        rs = st.executeQuery("SELECT * FROM USER_INFO");
-        noInitialCrset.populate(rs);
-
-        try {
-            noInitialCrset.deleteRow();
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
-        }
-
-        noInitialCrset.moveToInsertRow();
-        try {
-            noInitialCrset.deleteRow();
-            fail("should throw SQLException");
-        } catch (ClassCastException e) {
-            // RI would throw ClassCastException
-        } catch (SQLException e) {
-            // expected
-        }
-
-        noInitialCrset.moveToCurrentRow();
-        assertTrue(noInitialCrset.absolute(4));
-        assertEquals(4, noInitialCrset.getInt(1));
-        noInitialCrset.deleteRow();
-        noInitialCrset.acceptChanges(conn);
-        // check the cursor position after delete
-        assertTrue(noInitialCrset.isAfterLast());
-
-        // check DB
-        rs = st.executeQuery("SELECT COUNT(*) FROM USER_INFO WHERE ID = 4");
-        assertTrue(rs.next());
-        assertEquals(0, rs.getInt(1));
-
-        // check CachedRowSet
-        noInitialCrset.beforeFirst();
-        int index = 0;
-        while (noInitialCrset.next()) {
-            index++;
-            assertEquals(index, noInitialCrset.getInt(1));
-        }
-        assertEquals(3, index);
-    }
-
-    public void testDeleteRow_CursorPos() throws Exception {
-        /*
-         * This method is mainly used to test cursor position after delete
-         */
-        insertMoreData(5);
-        rs = st.executeQuery("SELECT * FROM USER_INFO");
-        noInitialCrset = newNoInitialInstance();
-        noInitialCrset.populate(rs);
-
-        /*
-         * move to the fifth row, then delete it, check the cursor position
-         */
-        assertTrue(noInitialCrset.absolute(5));
-        assertEquals(5, noInitialCrset.getInt(1));
-        noInitialCrset.deleteRow();
-        noInitialCrset.acceptChanges(conn);
-        // the cursor is on the sixth row now, that is move to the next row
-        assertEquals(6, noInitialCrset.getInt(1));
-        assertTrue(noInitialCrset.absolute(5));
-        assertEquals(6, noInitialCrset.getInt(1));
-
-        /*
-         * Delete the sixth row. Then move the cursor to the seventh row. Check
-         * the cursor position after delete.
-         */
-        noInitialCrset.deleteRow();
-        assertTrue(noInitialCrset.next());
-        assertEquals(7, noInitialCrset.getInt(1));
-        noInitialCrset.acceptChanges(conn);
-        /*
-         * We can see the cursor is on the eighth row now.
-         */
-        assertEquals(8, noInitialCrset.getInt(1));
-
-        /*
-         * Delete the row before the last row. Then move the cursor to the last
-         * row before call acceptChanges(). Check the cursor position after
-         * delete.
-         */
-        assertTrue(noInitialCrset.last());
-        assertTrue(noInitialCrset.previous());
-        assertEquals(9, noInitialCrset.getInt(1));
-        noInitialCrset.deleteRow();
-        assertTrue(noInitialCrset.last());
-        assertEquals(10, noInitialCrset.getInt(1));
-        noInitialCrset.acceptChanges(conn);
-        assertTrue(noInitialCrset.isAfterLast());
-    }
-
-    public void testDeleteRow_MultiDel() throws Exception {
-        insertMoreData(5);
-        rs = st.executeQuery("SELECT * FROM USER_INFO");
-        noInitialCrset = newNoInitialInstance();
-        noInitialCrset.populate(rs);
-
-        assertTrue(noInitialCrset.absolute(3));
-        noInitialCrset.deleteRow(); // delete the third row
-        assertTrue(noInitialCrset.next());
-        noInitialCrset.deleteRow(); // delete the fourth row
-        assertTrue(noInitialCrset.next());
-        noInitialCrset.deleteRow(); // delete the fifth row
-        assertTrue(noInitialCrset.first());
-        noInitialCrset.acceptChanges(conn);
-        assertEquals(1, noInitialCrset.getInt(1));
-    }
-
-    public void testRowDeleted() throws Exception {
-        noInitialCrset = newNoInitialInstance();
-        try {
-            noInitialCrset.rowDeleted();
-            fail("should throw SQLException");
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // RI would throw ArrayIndexOutOfBoundsException
-        } catch (SQLException e) {
-            // according to spec, it's supposed to throw SQLException
-        }
-
-        rs = st.executeQuery("SELECT * FROM USER_INFO");
-        noInitialCrset.populate(rs);
-
-        try {
-            noInitialCrset.rowDeleted();
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
-        }
-
-        assertTrue(noInitialCrset.next());
-        assertFalse(noInitialCrset.rowDeleted());
-        noInitialCrset.deleteRow();
-        assertTrue(noInitialCrset.rowDeleted());
-    }
-
     public void testAcceptChanges() throws SQLException {
         crset.setTableName("USER_INFO");
         // FIXME: if the value of column is null, it would go wrong when
@@ -1363,17 +1213,31 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(crset.isAfterLast());
         assertTrue(crset.previous());
 
-        // non-bug different
+        // TODO RI's bug
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertEquals(DEFAULT_ROW_COUNT, crset.getRow());
             assertEquals("test4", crset.getString(2));
+        } else {
+            assertEquals(-1, crset.getRow());
+            assertEquals("test4", crset.getString(2));
+
+            assertTrue(crset.previous());
+            assertEquals(-2, crset.getRow());
+            assertEquals("test3", crset.getString(2));
         }
     }
 
     public void testAbsolute() throws Exception {
-        // non-bug different
+        // TODO non-bug different
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertFalse(crset.absolute(0));
+        } else {
+            try {
+                assertTrue(crset.absolute(0));
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // invalid cursor position
+            }
         }
 
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
@@ -1393,9 +1257,9 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(crset.next());
 
         /*
-         * when the given row number is negative, spec says absolute(-1) equals
-         * last(). However, the return value of absolute(negative) is false when
-         * run on RI. The Harmony follows the spec.
+         * TODO when the given row number is negative, spec says absolute(-1)
+         * equals last(). However, the return value of absolute(negative) is
+         * false when run on RI. The Harmony follows the spec.
          */
         if (System.getProperty("Testing Harmony") == "true") {
             assertTrue(crset.absolute(-1));
@@ -1403,6 +1267,10 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             assertTrue(crset.absolute(-3));
             assertEquals(2, crset.getInt(1));
             assertFalse(crset.absolute(-5));
+        } else {
+            assertFalse(crset.absolute(-1));
+            assertEquals(0, crset.getRow());
+            assertTrue(crset.isBeforeFirst());
         }
 
         crset.setType(ResultSet.TYPE_FORWARD_ONLY);
@@ -2143,6 +2011,257 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             }
 
         }
+    }
+
+    public void testFindColumn() throws SQLException {
+        try {
+            noInitialCrset.findColumn(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            noInitialCrset.findColumn("ID");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            noInitialCrset.findColumn("not exist name");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            crset.findColumn("not exist name");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Invalid column name
+        }
+
+        try {
+            crset.findColumn(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        assertEquals(1, crset.findColumn("ID"));
+
+        assertEquals(1, crset.findColumn("id"));
+
+        assertEquals(7, crset.findColumn("FLOAT_T"));
+
+        assertEquals(7, crset.findColumn("FloaT_T"));
+    }
+
+    /**
+     * TODO test event
+     * 
+     * @throws Exception
+     */
+    public void testRestoreOriginal() throws Exception {
+        // update
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        crset.updateString(2, "update3");
+        assertEquals("update3", crset.getString(2));
+
+        crset.updateRow();
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+            assertTrue(crset.absolute(3));
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+        }
+
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        // insert
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+        crset.next();
+
+        crset.moveToInsertRow();
+        crset.updateInt(1, 5);
+        crset.updateString(2, "test5");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.insertRow();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+
+            int count = 0;
+            crset.beforeFirst();
+            while (crset.next()) {
+                count++;
+            }
+            assertEquals(4, count);
+        } else {
+            assertEquals(0, crset.getRow());
+
+            // assertTrue(crset.next()); throws SQLException
+            crset.beforeFirst();
+            assertTrue(crset.isBeforeFirst());
+            // assertTrue(crset.next()); throws SQLException
+            /*
+             * I can't move cursor to a valid position, so can't do any check
+             */
+        }
+
+        // delete
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        crset.absolute(3);
+        crset.deleteRow();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+            assertTrue(crset.absolute(3));
+            assertEquals(3, crset.getInt(1));
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+            assertTrue(crset.absolute(3));
+            assertEquals(3, crset.getInt(1));
+        }
+
+        crset = newNoInitialInstance();
+
+        crset.restoreOriginal();
+
+        // invoke restoreOriginal cursor out of rowset
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        crset.updateString(2, "update3");
+        assertEquals("update3", crset.getString(2));
+
+        crset.updateRow();
+
+        crset.beforeFirst();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+            assertTrue(crset.absolute(3));
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+        }
+
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+    }
+
+    /**
+     * TODO test event
+     * 
+     * @throws Exception
+     */
+    public void testRestoreOriginal_MultiChanges() throws Exception {
+        insertMoreData(5);
+
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        // row 3 not call updateRow
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        crset.updateString(2, "update3");
+        assertEquals("update3", crset.getString(2));
+
+        // row 4 call updateRow
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertEquals("test4", crset.getString(2));
+
+        crset.updateString(2, "update4");
+        assertEquals("update4", crset.getString(2));
+        crset.updateRow();
+
+        // delete row 5
+        assertTrue(crset.next());
+        assertEquals(5, crset.getInt(1));
+        crset.deleteRow();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+        }
+
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("update3", crset.getString(2));
+
+        assertTrue(crset.next());
+        assertEquals("test4", crset.getString(2));
+
+        assertTrue(crset.next());
+        assertEquals(5, crset.getInt(1));
     }
 
     public class Listener implements RowSetListener, Cloneable {

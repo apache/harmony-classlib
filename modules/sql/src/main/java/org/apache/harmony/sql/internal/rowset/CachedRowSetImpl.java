@@ -43,6 +43,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -74,7 +75,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private CachedRow currentRow;
 
-    // start from : 1.
+    /**
+     * current row index include deleted rows, start from 1
+     */
     private int currentRowIndex;
 
     // the number of the rows in one "page"
@@ -92,6 +95,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     private int[] keyCols;
 
     private int columnCount;
+
+    private int deletedRowCount;
 
     private SyncProvider syncProvider;
 
@@ -197,8 +202,22 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                     .getRowSetWriter();
             rowSetWriter.setConnection(con);
             int beforeWriteIndex = currentRowIndex;
+            boolean isShowDeleted = getShowDeleted();
+            setShowDeleted(true);
+
             rowSetWriter.writeData(this);
+
             absolute(beforeWriteIndex);
+            setShowDeleted(isShowDeleted);
+
+            int index = getRow();
+            if (index == 0) {
+                next();
+                index = getRow();
+                if (index == 0) {
+                    index = rows.size() + 1;
+                }
+            }
 
             boolean isChanged = false;
             /*
@@ -230,12 +249,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                 }
             }
 
-            if (currentRowIndex > rows.size()) {
+            if (index > rows.size()) {
                 afterLast();
-            } else if (currentRowIndex <= 0) {
+            } else if (index <= 0) {
                 beforeFirst();
             } else {
-                absolute(currentRowIndex);
+                absolute(index);
             }
 
             notifyRowSetChanged();
@@ -263,6 +282,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     private int getIndexByName(String columnName) throws SQLException {
+        if (meta == null || columnName == null) {
+            throw new NullPointerException();
+        }
+
         for (int i = 1; i <= meta.getColumnCount(); i++) {
             if (columnName.equalsIgnoreCase(meta.getColumnName(i))) {
                 return i;
@@ -573,7 +596,24 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void restoreOriginal() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null) {
+            return;
+        }
+
+        List<CachedRow> insertedRows = new ArrayList<CachedRow>();
+        for (CachedRow row : rows) {
+            if (row.isInsert()) {
+                insertedRows.add(row);
+            } else if (row.isDelete() || row.isUpdate()) {
+                row.restoreOriginal();
+            }
+        }
+        rows.removeAll(insertedRows);
+        insertRow = null;
+        
+        first();
+
+        // TODO fire rowSetChanged event
     }
 
     public void rollback() throws SQLException {
@@ -605,6 +645,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         if (rowDeleted()) {
             rows.remove(currentRow);
+            deletedRowCount--;
         } else if (rowUpdated() || rowInserted()) {
             currentRow.setOriginal();
         }
@@ -654,12 +695,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void undoDelete() throws SQLException {
-        if (currentRow == null) {
+        if (isAfterLast() || isBeforeFirst()) {
             // TODO add error messages
             throw new SQLException();
         }
-        if (currentRow.isDelete()) {
+
+        if (currentRow != null && !currentRow.isDelete()) {
+            // TODO add error messages
+            throw new SQLException();
+        }
+
+        if (currentRow != null && currentRow.isDelete()) {
             currentRow.undoDelete();
+            deletedRowCount--;
         }
     }
 
@@ -721,21 +769,20 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean absolute(int row) throws SQLException {
-        return doAbsolute(row, true);
+        return doAbsolute(getIndexIncludeDeletedRows(row), true);
     }
 
     /**
      * internal implement of absolute
      * 
      * @param row
-     *            index of row cursor to move
+     *            index of row cursor to move, include deleted rows
      * @param checkType
      *            whether to check property ResultSet.TYPE_FORWARD_ONLY
      * @return whether the cursor is on result set
      * @throws SQLException
      */
     private boolean doAbsolute(int row, boolean checkType) throws SQLException {
-        // FIXME need to consider getShowDeleted()
         if (rows == null || rows.size() == 0) {
             return false;
         }
@@ -812,21 +859,93 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException();
         }
         currentRow.setDelete();
+        deletedRowCount++;
     }
 
     private void checkValidRow() throws SQLException {
         if (currentRow == null) {
-            // rowset.0 = Not a valid position
-            throw new SQLException(Messages.getString("rowset.0"));
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
     }
 
+    /**
+     * convert <code>index</code> consider property <code>showDeleted</code>.
+     * If <code>showDeleted</code> is true, do nothing, otherwise, re-compute
+     * <code>index</code> add deleted rows.
+     * 
+     * @param index
+     *            maybe negative, indicate the row number counting from the end
+     *            of the result set
+     * @return row index include delted rows
+     */
+    private int getIndexIncludeDeletedRows(int index) throws SQLException {
+        if (getShowDeleted()) {
+            return index;
+        }
+
+        if (index == 0) {
+            return 0;
+        }
+
+        if (index > 0) {
+            int indexIncludeDeletedRows = 0;
+            for (; index > 0; ++indexIncludeDeletedRows) {
+                if (indexIncludeDeletedRows == rows.size()) {
+                    indexIncludeDeletedRows += index;
+                    break;
+                }
+
+                if (!rows.get(indexIncludeDeletedRows).isDelete()) {
+                    index--;
+                }
+            }
+            return indexIncludeDeletedRows;
+        }
+
+        // index < 0
+        int indexIncludeDeletedRows = rows.size();
+        for (; index < 0; --indexIncludeDeletedRows) {
+            if (indexIncludeDeletedRows == 0) {
+                break;
+            }
+
+            if (!rows.get(indexIncludeDeletedRows - 1).isDelete()) {
+                index++;
+            }
+        }
+        if (indexIncludeDeletedRows != 0) {
+            indexIncludeDeletedRows++;
+        }
+
+        return indexIncludeDeletedRows;
+    }
+
+    /**
+     * If <code>showDeleted</code> property is true, return the rows size
+     * include deleted rows. Otherwise not include deleted rows.
+     * 
+     * @return
+     * @throws SQLException
+     */
+    private int getValidRowSize() throws SQLException {
+        if (rows == null) {
+            return 0;
+        }
+
+        if (getShowDeleted()) {
+            return rows.size();
+        }
+
+        return rows.size() - deletedRowCount;
+    }
+
     public int findColumn(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getIndexByName(columnName);
     }
 
     public boolean first() throws SQLException {
-        return doAbsolute(1, true);
+        return doAbsolute(getIndexIncludeDeletedRows(1), true);
     }
 
     public Array getArray(int columnIndex) throws SQLException {
@@ -1030,11 +1149,27 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public int getRow() throws SQLException {
         // FIXME need more tests
-        if (currentRow == null) {
+        if (currentRow == null || rows == null) {
             return 0;
         }
 
-        return currentRowIndex;
+        if (!getShowDeleted() && currentRow.isDelete()) {
+            return 0;
+        }
+
+        if (getShowDeleted() || currentRowIndex == 0) {
+            return currentRowIndex;
+        }
+
+        // doesn't show deleted rows, skip them
+        int index = 0;
+        for (int i = 0; i < currentRowIndex; ++i) {
+            if (!rows.get(i).isDelete()) {
+                index++;
+            }
+        }
+        return index;
+
     }
 
     public short getShort(int columnIndex) throws SQLException {
@@ -1064,13 +1199,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             // sql.27=Invalid column index :{0}
             throw new SQLException(Messages.getString("sql.27", Integer //$NON-NLS-1$
                     .valueOf(columnIndex)));
-        }
-    }
-
-    private void checkCursorValid() throws SQLException {
-        if ((currentRowIndex <= 0) || (currentRowIndex > rows.size())) {
-            // rowset.7=Not a valid cursor
-            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
     }
 
@@ -1160,7 +1288,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean isFirst() throws SQLException {
-        return currentRowIndex == 1;
+        return getRow() == 1;
     }
 
     public boolean isLast() throws SQLException {
@@ -1168,11 +1296,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return false;
         }
 
-        return currentRowIndex == rows.size();
+        return getRow() == getValidRowSize();
     }
 
     public boolean last() throws SQLException {
-        return doAbsolute(-1, true);
+        return doAbsolute(getIndexIncludeDeletedRows(-1), true);
     }
 
     public void moveToCurrentRow() throws SQLException {
@@ -1200,11 +1328,67 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
          * 
          * next() doesn't check TYPE_FORWARD_ONLY property, relative(1) does.
          */
-        return doAbsolute(currentRowIndex + 1, false);
+        return doAbsolute(findNextValidRow(), false);
+    }
+
+    /**
+     * Valid row is row which is visible to users. If <code>showDeleted</code>
+     * is true, deleted rows are valid rows, otherwise deleted rows are invalid.
+     * 
+     * @return next valid row
+     * @throws SQLException
+     */
+    private int findNextValidRow() throws SQLException {
+        int index = currentRowIndex + 1;
+
+        if (getShowDeleted()) {
+            return index;
+        }
+
+        if (index > rows.size()) {
+            return rows.size() + 1;
+        }
+
+        while (index <= rows.size()) {
+            if (!rows.get(index - 1).isDelete()) {
+                break;
+            }
+            index++;
+        }
+
+        return index;
     }
 
     public boolean previous() throws SQLException {
-        return doAbsolute(currentRowIndex - 1, true);
+        return doAbsolute(findPreviousValidRow(), true);
+    }
+
+    /**
+     * Valid row is row which is visible to users. If <code>showDeleted</code>
+     * is true, deleted rows are valid rows, otherwise deleted rows are invalid.
+     * 
+     * @return previous valid row
+     * @throws SQLException
+     */
+    private int findPreviousValidRow() throws SQLException {
+        int index = currentRowIndex - 1;
+
+        if (index <= 0) {
+            return 0;
+        }
+
+        if (getShowDeleted()) {
+            return index;
+        }
+
+        while (index > 0) {
+            if (!rows.get(index - 1).isDelete()) {
+                break;
+            }
+            index--;
+        }
+
+        return index;
     }
 
     public void refreshRow() throws SQLException {
@@ -1218,6 +1402,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         }
 
         int index = getRow() + moveRows;
+
         if (index <= 0) {
             beforeFirst();
             return false;
@@ -1228,7 +1413,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return false;
         }
 
-        return doAbsolute(index, true);
+        return doAbsolute(getIndexIncludeDeletedRows(index), true);
     }
 
     public boolean rowDeleted() throws SQLException {
@@ -1395,7 +1580,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateNull(int columnIndex) throws SQLException {
-        checkCursorValid();
+        checkValidRow();
         checkColumnValid(columnIndex);
         currentRow.updateObject(columnIndex, null);
     }
