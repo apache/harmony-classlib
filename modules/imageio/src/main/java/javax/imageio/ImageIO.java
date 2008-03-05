@@ -50,10 +50,9 @@ public final class ImageIO {
 
     public static void setUseCache(boolean useCache) throws NotImplementedException {
         // TODO: implement
-        throw new NotImplementedException();
     }
 
-    public static boolean getUseCache() {
+    public static boolean getUseCache()  throws NotImplementedException {
         // TODO: implement
         return false;
     }
