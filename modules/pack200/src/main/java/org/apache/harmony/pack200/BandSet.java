@@ -130,6 +130,14 @@ public abstract class BandSet {
                 }
             }
         }
+        if(codecUsed instanceof BHSDCodec) {
+            long cardinality = ((BHSDCodec)codecUsed).cardinality();
+            for (int i = 0; i < band.length; i++) {
+                while(band[i] > cardinality) {
+                    band[i] -= cardinality;
+                }
+            }
+        }
         return band;
     }
 
