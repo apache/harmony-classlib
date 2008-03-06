@@ -146,7 +146,7 @@ public class ClassConstantPool {
 	        if (entry instanceof CPLong ||entry instanceof CPDouble)
 	            entries.add(entry); //these get 2 slots because of their size
 		}
-		
+
 		// Now that the indices have been re-sorted, need
 		// to re-resolve to update references. This should
 		// not add any new entries this time through.

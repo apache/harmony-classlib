@@ -54,7 +54,7 @@ public class SegmentTest extends TestCase {
         Process process = Runtime.getRuntime().exec("java -cp " + file.getName() + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld", new String[] {}, file.getParentFile());
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = reader.readLine();
-        assertEquals(line, "Hello world");
+        assertEquals("Hello world", line);
         file.deleteOnExit();
     }
 
