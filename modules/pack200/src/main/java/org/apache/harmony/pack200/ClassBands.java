@@ -34,6 +34,7 @@ import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
+import org.apache.harmony.pack200.bytecode.DeprecatedAttribute;
 import org.apache.harmony.pack200.bytecode.EnclosingMethodAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
 import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
@@ -220,9 +221,16 @@ public class ClassBands extends BandSet {
             }
         }
 
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_FIELD);
+
         for (int i = 0; i < classCount; i++) {
             for (int j = 0; j < fieldFlags[i].length; j++) {
                 long flag = fieldFlags[i][j];
+                if(deprecatedLayout.matches(flag)) {
+                    fieldAttributes[i][j].add(new DeprecatedAttribute());
+                }
                 if (constantValueLayout.matches(flag)) {
                     // we've got a value to read
                     long result = field_constantValue_KQ[constantValueIndex];
@@ -357,12 +365,19 @@ public class ClassBands extends BandSet {
             }
         }
 
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_METHOD);
+
         // Add attributes to the attribute arrays
         int methodExceptionsIndex = 0;
         int methodSignatureIndex = 0;
         for (int i = 0; i < methodAttributes.length; i++) {
             for (int j = 0; j < methodAttributes[i].length; j++) {
                 long flag = methodFlags[i][j];
+                if(deprecatedLayout.matches(flag)) {
+                    methodAttributes[i][j].add(new DeprecatedAttribute());
+                }
                 if (methodExceptionsLayout.matches(flag)) {
                     int n = numExceptions[methodExceptionsIndex];
                     String[] exceptions = methodExceptionsRS[methodExceptionsIndex];
@@ -450,6 +465,10 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_CLASS);
         int[] classAttrCalls = decodeBandInt("class_attr_calls", in,
                 Codec.UNSIGNED5, callCount);
+
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_CLASS);
 
         AttributeLayout sourceFileLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SOURCE_FILE,
@@ -558,7 +577,9 @@ public class ClassBands extends BandSet {
         icLocal = new IcTuple[classCount][];
         for (int i = 0; i < classCount; i++) {
             long flag = classFlags[i];
-
+            if(deprecatedLayout.matches(classFlags[i])) {
+                classAttributes[i].add(new DeprecatedAttribute());
+            }
             if (sourceFileLayout.matches(flag)) {
                 long result = classSourceFile[sourceFileIndex];
                 String value = (String) sourceFileLayout.getValue(result,
