@@ -304,7 +304,12 @@ public final class EnvironmentReader {
 
         String resPath = null;
         // Construct the full filename of "java.home"/lib/jndi.properties
-        resPath = System.getProperty("java.home"); //$NON-NLS-1$
+        resPath = AccessController.doPrivileged(new PrivilegedAction<String>(){
+            public String run() {
+                return System.getProperty("java.home"); //$NON-NLS-1$ 
+            }
+        }); 
+        
         if (!resPath.endsWith(sep)) {
             resPath += sep;
         }
