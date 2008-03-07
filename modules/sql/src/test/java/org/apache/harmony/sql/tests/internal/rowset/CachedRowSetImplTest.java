@@ -1273,6 +1273,25 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             assertTrue(crset.isBeforeFirst());
         }
 
+        crset.moveToInsertRow();
+        try {
+            crset.first();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        crset.updateInt(1, 60);
+        crset.updateString(2, "abc");
+        crset.insertRow();
+        try {
+            crset.absolute(3);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        crset.moveToCurrentRow();
+        assertTrue(crset.absolute(2));
+
         crset.setType(ResultSet.TYPE_FORWARD_ONLY);
         try {
             crset.absolute(1);
@@ -2262,6 +2281,55 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
         assertTrue(crset.next());
         assertEquals(5, crset.getInt(1));
+    }
+
+    public void testRefreshRow() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            noInitialCrset.refreshRow();
+            fail("should throw exception");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // RI throw ArrayIndexOutOfBoundsException
+        } catch (SQLException e) {
+            // expected
+        }
+
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+        assertTrue(noInitialCrset.isBeforeFirst());
+        try {
+            noInitialCrset.refreshRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected: Invalid cursor position
+        }
+
+        // when the cursor is on the insert row
+        noInitialCrset.moveToInsertRow();
+        try {
+            noInitialCrset.refreshRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected: Invalid cursor position
+        }
+
+        // move the cursor to the third row
+        noInitialCrset.moveToCurrentRow();
+        assertTrue(noInitialCrset.absolute(3));
+        // no effect
+        noInitialCrset.refreshRow();
+
+        /*
+         * Update the third row in database. Then call refreshRow().
+         */
+        int result = st
+                .executeUpdate("UPDATE USER_INFO SET NAME = 'update33' WHERE ID = 3");
+        assertEquals(1, result);
+
+        // still no effect.
+        noInitialCrset.refreshRow();
+        assertEquals(3, noInitialCrset.getInt(1));
+        assertEquals("test3", noInitialCrset.getString(2));
     }
 
     public class Listener implements RowSetListener, Cloneable {

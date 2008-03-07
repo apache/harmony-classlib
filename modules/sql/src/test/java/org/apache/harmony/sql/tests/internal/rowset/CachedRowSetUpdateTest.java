@@ -332,14 +332,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
             noInitialCrset.updateInt(1, 10);
             noInitialCrset.updateString(2, "update10");
             noInitialCrset.insertRow();
-            try {
-                noInitialCrset.undoUpdate();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // RI throw SQLException here.
-            }
             noInitialCrset.moveToCurrentRow();
-
             noInitialCrset.absolute(4);
             assertEquals(10, noInitialCrset.getInt(1));
             noInitialCrset.updateString(2, "abc");
@@ -362,6 +355,18 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
                 // RI throw SQLException here.
             }
         }
+
+        noInitialCrset.moveToInsertRow();
+        noInitialCrset.updateInt(1, 10);
+        noInitialCrset.updateString(2, "update10");
+        noInitialCrset.insertRow();
+        try {
+            noInitialCrset.undoUpdate();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // RI throw SQLException here.
+        }
+        noInitialCrset.moveToCurrentRow();
     }
 
     public void testUpdateValue() throws Exception {

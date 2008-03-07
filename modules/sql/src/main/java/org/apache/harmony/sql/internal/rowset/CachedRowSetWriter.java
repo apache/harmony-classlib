@@ -142,10 +142,10 @@ public class CachedRowSetWriter implements RowSetWriter {
          */
         PreparedStatement preSt = getConnection().prepareStatement(
                 insertSQL.toString());
-        for (int i = 0; i < updateCount; i++) {
-            preSt.setObject(i + 1, insertColValues[i]);
-        }
         try {
+            for (int i = 0; i < updateCount; i++) {
+                preSt.setObject(i + 1, insertColValues[i]);
+            }
             preSt.executeUpdate();
         } catch (SQLException e) {
             throw new SyncProviderException();
@@ -172,8 +172,12 @@ public class CachedRowSetWriter implements RowSetWriter {
          */
         PreparedStatement preSt = getConnection().prepareStatement(
                 deleteSQL.toString());
-        fillParamInPreStatement(preSt, 1);
-        preSt.executeUpdate();
+        try {
+            fillParamInPreStatement(preSt, 1);
+            preSt.executeUpdate();
+        } finally {
+            preSt.close();
+        }
     }
 
     /**
@@ -214,18 +218,18 @@ public class CachedRowSetWriter implements RowSetWriter {
          */
         PreparedStatement preSt = getConnection().prepareStatement(
                 updateSQL.toString());
-        // the SET part of SQL
-        for (int i = 0; i < updateCount; i++) {
-            if (updateColValues[i] == null) {
-                preSt.setNull(i + 1, currentRowSet.getMetaData().getColumnType(
-                        updateColIndexs[i]));
-            } else {
-                preSt.setObject(i + 1, updateColValues[i]);
-            }
-        }
-        // the WHERE part of SQL
-        fillParamInPreStatement(preSt, updateCount + 1);
         try {
+            // the SET part of SQL
+            for (int i = 0; i < updateCount; i++) {
+                if (updateColValues[i] == null) {
+                    preSt.setNull(i + 1, currentRowSet.getMetaData()
+                            .getColumnType(updateColIndexs[i]));
+                } else {
+                    preSt.setObject(i + 1, updateColValues[i]);
+                }
+            }
+            // the WHERE part of SQL
+            fillParamInPreStatement(preSt, updateCount + 1);
             preSt.executeUpdate();
         } catch (SQLException e) {
             throw new SyncProviderException();
@@ -264,15 +268,21 @@ public class CachedRowSetWriter implements RowSetWriter {
 
         PreparedStatement preSt = getConnection().prepareStatement(
                 querySQL.toString());
-        fillParamInPreStatement(preSt, 1);
-        ResultSet queryRs = preSt.executeQuery();
-        if (queryRs.next()) {
-            if (queryRs.getInt(1) == 1) {
-                isExist = false;
+        ResultSet queryRs = null;
+        try {
+            fillParamInPreStatement(preSt, 1);
+            queryRs = preSt.executeQuery();
+            if (queryRs.next()) {
+                if (queryRs.getInt(1) == 1) {
+                    isExist = false;
+                }
             }
+        } finally {
+            if (queryRs != null) {
+                queryRs.close();
+            }
+            preSt.close();
         }
-        queryRs.close();
-        preSt.close();
 
         return isExist;
     }
