@@ -121,17 +121,22 @@
         <!-- Build thread dll -->
         <make dir="${hy.portlib.src.main.native}/thread/${hy.os.family}" />
 
+        <antcall target="-build-copy-thread" />
+
+        <!-- Copy link exports file on z/OS -->
+        <copy todir="${hy.hdk}/lib" overwrite="yes">
+            <fileset dir="${hy.portlib.src.main.native}/thread/${hy.os.family}">
+                <include name="*${linklib.suffix}" if="is.zos" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-build-copy-thread" unless="hy.thr.nodeploy">
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.portlib.src.main.native}/thread">
                 <include name="*${shlib.suffix}*" />
                 <include name="*${progdb.suffix}*" if="is.windows" />
                 <exclude name="*${manifest.suffix}"/>
-            </fileset>
-        </copy>
-        <!-- Copy link exports file on z/OS -->
-        <copy todir="${hy.hdk}/lib" overwrite="yes">
-            <fileset dir="${hy.portlib.src.main.native}/thread/${hy.os.family}">
-                <include name="*${linklib.suffix}" if="is.zos" />
             </fileset>
         </copy>
     </target>
