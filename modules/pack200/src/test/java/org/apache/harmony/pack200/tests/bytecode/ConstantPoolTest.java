@@ -18,7 +18,7 @@ package org.apache.harmony.pack200.tests.bytecode;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.CpBands;
+import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.CPMember;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
@@ -50,5 +50,11 @@ public class ConstantPoolTest extends TestCase {
 		pool.add(u1);
 		pool.resolve();
 		assertTrue(pool.indexOf(u1) > 0);
+	}
+	
+	public void testAllClasses() {
+	    pool.add(new CPClass(new CPUTF8("RandomClass", ClassConstantPool.DOMAIN_NORMALASCIIZ)));
+        pool.add(new CPClass(new CPUTF8("RandomClass2", ClassConstantPool.DOMAIN_NORMALASCIIZ)));
+	    assertEquals(2, pool.allClasses().size());
 	}
 }

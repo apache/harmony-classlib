@@ -180,9 +180,12 @@ public class ClassConstantPool {
      */
     public List allClasses() {
         List classesList = new ArrayList();
-        Iterator it = classPoolSet.partialIterator(DOMAIN_CLASSREF, DOMAIN_CLASSREF);
+        Iterator it = entries.iterator();
         while(it.hasNext()) {
-            classesList.add(it.next());
+            ConstantPoolEntry entry = (ConstantPoolEntry)it.next();
+            if(entry.getDomain() == DOMAIN_CLASSREF) {
+                classesList.add(entry);
+            }
         }
         return classesList;
     }
