@@ -83,7 +83,22 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     // the number of the rows in one "page"
     private int pageSize;
 
-    private int pageNumber = 1;
+    /**
+     * used for paging, record row index for next page in ResultSet, start from
+     * 1
+     */
+    private int nextPageRowIndex = -1;
+
+    /**
+     * used for paging, record row index for previous page in ResultSet, start
+     * from 1
+     */
+    private int previousPageRowIndex = -1;
+
+    /**
+     * cached ResultSet for paging in memory
+     */
+    private CachedRowSet cachedResultSet = null;
 
     private String tableName;
 
@@ -208,7 +223,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void acceptChanges(Connection con) throws SyncProviderException {
         if (isCursorOnInsert) {
             // rowset.11=Illegal operation on an insert row
-            throw new SyncProviderException(Messages.getString("rowset.11"));
+            throw new SyncProviderException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
 
         try {
@@ -217,13 +232,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             rowSetWriter.setConnection(con);
             int beforeWriteIndex = currentRowIndex;
             boolean isShowDeleted = getShowDeleted();
+            // writer use next navigate rowset, so must make all rows visible
             setShowDeleted(true);
 
             rowSetWriter.writeData(this);
 
+            // must reset curosr before reset showDeleted
             absolute(beforeWriteIndex);
             setShowDeleted(isShowDeleted);
 
+            // record to the next visible row index
             int index = getRow();
             if (index == 0) {
                 next();
@@ -258,6 +276,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                 }
             }
 
+            deletedRowCount = 0;
+
+            // move cursor
             if (index > rows.size()) {
                 afterLast();
             } else if (index <= 0) {
@@ -410,7 +431,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         output.currentRow = null;
         output.currentRowIndex = 0;
         output.insertRow = null;
-        output.pageNumber = 1;
+        output.nextPageRowIndex = -1;
         output.rememberedCursorPosition = 0;
         output.rows = new ArrayList<CachedRow>();
         output.sqlwarn = null;
@@ -432,7 +453,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void execute(Connection conn) throws SQLException {
-        // ensure the getConnection can works!
+        // TODO ensure the getConnection can works!
         String localCommand = getCommand();
         if (localCommand == null || getParams() == null) {
             // TODO add error messages
@@ -446,6 +467,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         if (ps.execute()) {
             doPopulate(ps.getResultSet(), true);
+        }
+
+        if (getPageSize() != 0) {
+            nextPageRowIndex = rows.size() + 1;
+            previousPageRowIndex = 0;
+            cachedResultSet = null;
+        } else {
+            previousPageRowIndex = -1;
+            nextPageRowIndex = -1;
+            cachedResultSet = null;
         }
     }
 
@@ -490,27 +521,102 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     /**
-     * TODO refill the cachedrowset with pagesize, and the previous rowset was
-     * replaced
+     * TODO refactor paging
      */
     public boolean nextPage() throws SQLException {
-        pageNumber++;
+        if (rows == null || nextPageRowIndex == -1 || getPageSize() == 0) {
+            // TODO load message from resource file
+            throw new SQLException(
+                    "Using execute() method populate data before calling");
+        }
+
+        if (cachedResultSet == null) {
+            // TODO ensure the getConnection can works!
+            String localCommand = getCommand();
+            if (localCommand == null || getParams() == null) {
+                // TODO add error messages
+                throw new SQLException();
+            }
+
+            PreparedStatement ps = getConnection().prepareStatement(
+                    localCommand);
+            Object[] params = getParams();
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i + 1, params[i]);
+            }
+            if (ps.execute()) {
+                ResultSet rs = ps.getResultSet();
+                int index = 1;
+                while (rs.next() && index < nextPageRowIndex - 1) {
+                    index++;
+                }
+
+                doPopulate(rs, true);
+
+                if (rows.size() == 0) {
+                    return false;
+                }
+                previousPageRowIndex = nextPageRowIndex - 1;
+                nextPageRowIndex += rows.size();
+                return true;
+
+            }
+            return false;
+
+        }
+
+        if (cachedResultSet.absolute(nextPageRowIndex)) {
+            cachedResultSet.previous();
+            doPopulate(cachedResultSet, true);
+
+            if (rows.size() == 0) {
+                return false;
+            }
+            previousPageRowIndex = nextPageRowIndex - 1;
+            nextPageRowIndex += rows.size();
+            return true;
+        }
         return false;
+
     }
 
     public void populate(ResultSet rs) throws SQLException {
         doPopulate(rs, false);
+        previousPageRowIndex = -1;
+        nextPageRowIndex = -1;
+        cachedResultSet = null;
     }
 
     public void populate(ResultSet rs, int startRow) throws SQLException {
+        if (rs == null) {
+            // TODO add error messages
+            throw new SQLException();
+        }
+
         if (startRow == 1) {
             rs.beforeFirst();
+            // TODO use next move
         } else if (startRow <= 0 || !rs.absolute(startRow - 1)) {
             // rowset.7=Not a valid cursor
             throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
 
-        doPopulate(rs, true);
+        // paging in memory
+        if (getPageSize() != 0) {
+            cachedResultSet = new CachedRowSetImpl();
+            cachedResultSet.setMaxRows(getMaxRows());
+            cachedResultSet.populate(rs, startRow);
+            doPopulate(cachedResultSet, true);
+
+            nextPageRowIndex = rows.size() + 1;
+            previousPageRowIndex = 0;
+
+        } else {
+            doPopulate(rs, true);
+            previousPageRowIndex = -1;
+            nextPageRowIndex = -1;
+            cachedResultSet = null;
+        }
     }
 
     private void doPopulate(ResultSet rs, boolean isPaging) throws SQLException {
@@ -596,8 +702,94 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean previousPage() throws SQLException {
-        // TODO implement it
-        return false;
+        if (rows == null || previousPageRowIndex == -1 || getPageSize() == 0) {
+            // TODO load message from resource file
+            throw new SQLException(
+                    "Using execute() method populate data before calling");
+        }
+
+        if (previousPageRowIndex == 0) {
+            return false;
+        }
+
+        if (cachedResultSet == null) {
+            // TODO ensure the getConnection can works!
+            String localCommand = getCommand();
+            if (localCommand == null || getParams() == null) {
+                // TODO add error messages
+                throw new SQLException();
+            }
+
+            PreparedStatement ps = getConnection().prepareStatement(
+                    localCommand);
+            Object[] params = getParams();
+            for (int i = 0; i < params.length; i++)
+                ps.setObject(i + 1, params[i]);
+
+            if (ps.execute()) {
+                ResultSet rs = ps.getResultSet();
+                int startIndex = previousPageRowIndex - getPageSize() + 1;
+
+                if (startIndex <= 0) {
+                    startIndex = 1;
+                }
+
+                int index = 0;
+                while (index < startIndex - 1) {
+                    if (!rs.next()) {
+                        break;
+                    }
+                    index++;
+                }
+
+                int prePageSize = getPageSize();
+                if (prePageSize != 0
+                        && previousPageRowIndex - startIndex + 1 != prePageSize) {
+                    setPageSize(previousPageRowIndex - startIndex + 1);
+                }
+                doPopulate(rs, true);
+
+                setPageSize(prePageSize);
+
+                if (rows.size() == 0) {
+                    return false;
+                }
+                nextPageRowIndex = previousPageRowIndex + 1;
+                previousPageRowIndex = startIndex - 1;
+                return true;
+            }
+
+            return false;
+        }
+
+        int startIndex = previousPageRowIndex - getPageSize() + 1;
+
+        if (startIndex <= 0) {
+            startIndex = 1;
+        }
+
+        if (!cachedResultSet.absolute(startIndex)) {
+            return false;
+        }
+
+        cachedResultSet.previous();
+
+        int prePageSize = getPageSize();
+        if (prePageSize != 0
+                && previousPageRowIndex - startIndex + 1 != prePageSize) {
+            setPageSize(previousPageRowIndex - startIndex + 1);
+        }
+
+        doPopulate(cachedResultSet, true);
+
+        setPageSize(prePageSize);
+
+        if (rows.size() == 0) {
+            return false;
+        }
+        nextPageRowIndex = previousPageRowIndex + 1;
+        previousPageRowIndex = startIndex - 1;
+        return true;
     }
 
     public void release() throws SQLException {
@@ -620,6 +812,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         rows.removeAll(insertedRows);
         insertRow = null;
         isCursorOnInsert = false;
+        deletedRowCount = 0;
 
         first();
 
@@ -1191,7 +1384,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public int getRow() throws SQLException {
         // FIXME need more tests
-        if (currentRow == null || rows == null) {
+        if (currentRow == null || rows == null || isCursorOnInsert) {
             return 0;
         }
 
@@ -1459,12 +1652,27 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean relative(int moveRows) throws SQLException {
-        if (currentRow == null) {
-            // TODO add error message
-            throw new SQLException();
-        }
-
+        checkValidRow();
+        // TODO use more effective way to move cursor
         int index = getRow() + moveRows;
+
+        if (isCursorOnInsert || currentRow.isDelete()) {
+            if (moveRows > 0) {
+                if (next()) {
+                    index = getRow() + moveRows - 1;
+                } else {
+                    return false;
+                }
+            }
+
+            if (moveRows < 0) {
+                if (previous()) {
+                    index = getRow() + moveRows + 1;
+                } else {
+                    return false;
+                }
+            }
+        }
 
         if (index <= 0) {
             beforeFirst();

@@ -112,6 +112,9 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         noInitialCrset.populate(rs);
         assertTrue(noInitialCrset.absolute(3));
         noInitialCrset.moveToInsertRow();
+        
+        assertEquals(0, noInitialCrset.getRow());
+        
         try {
             // call insertRow() without call any update method
             noInitialCrset.insertRow();
@@ -123,7 +126,11 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         assertEquals(10, noInitialCrset.getInt(1));
         noInitialCrset.updateString(2, "insert10");
         assertEquals("insert10", noInitialCrset.getString(2));
+
+        assertEquals(0, noInitialCrset.getRow());
         noInitialCrset.insertRow();
+        assertEquals(0, noInitialCrset.getRow());
+        
         noInitialCrset.moveToCurrentRow();
         assertEquals(3, noInitialCrset.getInt(1));
     }

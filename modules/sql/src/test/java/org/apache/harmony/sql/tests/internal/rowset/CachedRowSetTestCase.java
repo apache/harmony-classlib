@@ -174,7 +174,7 @@ public class CachedRowSetTestCase extends TestCase {
         PreparedStatement preStmt = conn.prepareStatement(insertSQL);
 
         // insert 15 rows
-        for (int i = DEFAULT_ROW_COUNT + 1; i <= DEFAULT_ROW_COUNT + rows + 1; i++) {
+        for (int i = DEFAULT_ROW_COUNT + 1; i < DEFAULT_ROW_COUNT + rows + 1; i++) {
             preStmt.setInt(1, i);
             preStmt.setString(2, "test" + i);
             preStmt.setLong(3, 444423L);

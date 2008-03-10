@@ -89,17 +89,17 @@ public class CachedRowSetDeleteTest extends CachedRowSetTestCase {
          */
         assertTrue(noInitialCrset.last());
         assertTrue(noInitialCrset.previous());
-        assertEquals(9, noInitialCrset.getInt(1));
+        assertEquals(8, noInitialCrset.getInt(1));
         noInitialCrset.deleteRow();
         assertTrue(noInitialCrset.last());
-        assertEquals(10, noInitialCrset.getInt(1));
+        assertEquals(9, noInitialCrset.getInt(1));
         noInitialCrset.acceptChanges(conn);
 
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             // TODO RI move cursor incorrectly, we follow spec
             assertTrue(noInitialCrset.isLast());
 
-            assertEquals(10, noInitialCrset.getInt(1));
+            assertEquals(9, noInitialCrset.getInt(1));
             noInitialCrset.acceptChanges(conn);
         } else {
             assertTrue(noInitialCrset.isAfterLast());
@@ -513,6 +513,66 @@ public class CachedRowSetDeleteTest extends CachedRowSetTestCase {
             }
         }
         assertEquals(3, index);
+    }
+
+    public void testAbsolute() throws Exception {
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+        assertFalse(noInitialCrset.getShowDeleted());
+
+        // delete the third row
+        assertTrue(noInitialCrset.absolute(3));
+        assertFalse(noInitialCrset.rowDeleted());
+        noInitialCrset.deleteRow();
+        assertTrue(noInitialCrset.rowDeleted());
+
+        assertTrue(noInitialCrset.previous());
+        assertTrue(noInitialCrset.previous());
+
+        assertEquals(1, noInitialCrset.getInt(1));
+
+        noInitialCrset.absolute(3);
+        assertEquals(4, noInitialCrset.getInt(1));
+    }
+
+    public void testRelative() throws Exception {
+        insertMoreData(10);
+        
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+        assertFalse(crset.getShowDeleted());
+
+        // delete row 6
+        assertTrue(crset.absolute(6));
+        assertFalse(crset.rowDeleted());
+        crset.deleteRow();
+        assertTrue(crset.rowDeleted());
+
+        // delete the third row
+        assertTrue(crset.absolute(3));
+        assertFalse(crset.rowDeleted());
+        assertEquals(3, crset.getInt(1));
+        crset.deleteRow();
+        assertTrue(crset.rowDeleted());
+
+        assertTrue(crset.relative(3));
+        assertEquals(7, crset.getInt(1));
+
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+        assertFalse(crset.getShowDeleted());
+
+        // delete the third row
+        assertTrue(crset.absolute(1));
+        assertEquals(1, crset.getInt(1));
+        assertFalse(crset.rowDeleted());
+        crset.deleteRow();
+        assertTrue(crset.rowDeleted());
+
+        assertFalse(crset.relative(-1));
+        assertTrue(crset.isBeforeFirst());
     }
 
     public void testShowDeleted_True() throws Exception {

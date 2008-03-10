@@ -900,11 +900,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
         int i = 0;
 
+        /*
+         * TODO In RI there are before first page and after last page, according
+         * spec, there shouldn't be, Harmony follow spec
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            i = 2;
+        }
+
         crset.beforeFirst();
         while (crset.nextPage()) {
             while (crset.next()) {
                 assertEquals(++i, crset.getInt(1));
             }
+        }
+
+        /*
+         * TODO In RI there are before first page and after last page, according
+         * spec, there shouldn't be, Harmony follow spec
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            i = 2;
         }
 
         while (crset.previousPage()) {
@@ -939,7 +955,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             cursorIndex++;
         }
         // setMaxRows no effect, we follow ri
-        assertEquals(20, cursorIndex);
+        assertEquals(19, cursorIndex);
 
         /*
          * The pageSize won't work when call method populate(ResultSet) without
@@ -967,7 +983,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
          * CachedRowSet's pageSize is 5. However, the pageSize doesn't work in
          * RI. The CachedRowSet gets all the data from ResultSet. We follow ri.
          */
-        assertEquals(20, cursorIndex);
+        assertEquals(19, cursorIndex);
 
         noInitialCrset = newNoInitialInstance();
         rs = st.executeQuery("select * from USER_INFO");
@@ -981,7 +997,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         while (noInitialCrset.next()) {
             cursorIndex++;
         }
-        assertEquals(18, cursorIndex);
+        assertEquals(17, cursorIndex);
     }
 
     public void testPopulate_LResultSet_I() throws Exception {
@@ -995,6 +1011,15 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             fail("Should throw SQLException");
         } catch (SQLException e) {
             // expected
+        }
+
+        try {
+            noInitialCrset.populate(null, 1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, we follow spec
+        } catch (NullPointerException e) {
+            // ri throw NullPointerException
         }
 
         // create a scrollable and updatable ResultSet
@@ -1069,7 +1094,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
                 assertEquals(cursorIndex, noInitialCrset.getInt(1));
             }
         }
-        assertEquals(20, cursorIndex);
+        assertEquals(19, cursorIndex);
 
         try {
             noInitialCrset.populate(crsetCopy, 0);
