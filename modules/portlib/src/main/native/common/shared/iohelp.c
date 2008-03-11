@@ -52,7 +52,7 @@ ioh_convertToPlatform (char *path)
   if ((pathIndex > path) && (length > (pathIndex - path))
       && (*(pathIndex + 1) == ':'))
     {
-      /* For Example '////c:/*' */
+      /* For Example '////c:/!*' (! added to avoid gcc warning) */
       int newlen = length - (pathIndex - path);
       memmove (path, pathIndex, newlen);
       path[newlen] = '\0';
@@ -61,7 +61,7 @@ ioh_convertToPlatform (char *path)
     {
       if ((pathIndex - path > 3) && (length > (pathIndex - path)))
         {
-          /* For Example '////serverName/*' */
+          /* For Example '////serverName/!*' (! added to avoid gcc warning) */
           int newlen = length - (pathIndex - path) + 2;
           memmove (path, pathIndex - 2, newlen);
           path[newlen] = '\0';
