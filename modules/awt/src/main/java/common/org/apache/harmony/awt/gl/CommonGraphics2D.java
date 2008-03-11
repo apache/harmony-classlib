@@ -180,7 +180,7 @@ public abstract class CommonGraphics2D extends Graphics2D {
 
 
     // Print debug output or not
-    protected static final boolean debugOutput = "1".equals(System.getProperty("g2d.debug")); //$NON-NLS-1$ //$NON-NLS-2$
+    protected static final boolean debugOutput = "1".equals(org.apache.harmony.awt.Utils.getSystemProperty("g2d.debug")); //$NON-NLS-1$ //$NON-NLS-2$
 
     // Constructors
     protected CommonGraphics2D() {

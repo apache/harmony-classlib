@@ -37,7 +37,7 @@ public class GLX extends BasicLibWrapper {
     }
 
     private GLX() {
-        System.loadLibrary("X11Wrapper");
+        org.apache.harmony.awt.Utils.loadLibrary("X11Wrapper");
         init();
     }
 

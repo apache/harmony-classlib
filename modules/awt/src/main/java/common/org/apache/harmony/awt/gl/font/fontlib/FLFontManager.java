@@ -22,6 +22,8 @@ import java.awt.peer.FontPeer;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -37,12 +39,16 @@ public class FLFontManager extends FontManager {
     private ArrayList<Font> allFonts = new ArrayList<Font>(); 
     
     static {
-        System.loadLibrary("FL");
+        org.apache.harmony.awt.Utils.loadLibrary("FL");
     }
 
     public FLFontManager() {
-        
-        Runtime.getRuntime().addShutdownHook(new DisposeNativeHook());
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                Runtime.getRuntime().addShutdownHook(new DisposeNativeHook());
+                return null;
+            }
+        });
 
         initManager();
         

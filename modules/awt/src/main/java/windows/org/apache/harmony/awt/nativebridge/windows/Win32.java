@@ -23,8 +23,8 @@
  */
 package org.apache.harmony.awt.nativebridge.windows;
 
-
 import org.apache.harmony.awt.nativebridge.*;
+import org.apache.harmony.awt.Utils;
 
 public class Win32 extends BasicLibWrapper {
     static Win32 instance;
@@ -37,7 +37,7 @@ public class Win32 extends BasicLibWrapper {
     }
 
     private Win32() {
-        System.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
+        Utils.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
         init();
     }
 

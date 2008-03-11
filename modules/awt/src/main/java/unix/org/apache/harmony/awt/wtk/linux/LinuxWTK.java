@@ -30,7 +30,7 @@ import org.apache.harmony.awt.wtk.*;
 public final class LinuxWTK extends WTK {
 
     static {
-        System.loadLibrary("gl");
+        org.apache.harmony.awt.Utils.loadLibrary("gl");
     }
 
     /**

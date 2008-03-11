@@ -45,7 +45,7 @@ class XServerConnection {
 
         screen = x11.XDefaultScreen(display);
 
-        System.loadLibrary("gl");
+        org.apache.harmony.awt.Utils.loadLibrary("gl");
         init(display, screen);
     }
 

@@ -28,7 +28,7 @@ import org.apache.harmony.awt.wtk.*;
 public class WinWTK extends WTK {
 
     static {
-        System.loadLibrary("gl"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("gl"); //$NON-NLS-1$
     }
 
     /**

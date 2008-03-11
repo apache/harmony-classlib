@@ -36,7 +36,7 @@ import org.apache.harmony.awt.internal.nls.Messages;
 public final class WinDataTransfer {
     
     static {
-        System.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
     }
 
     /**

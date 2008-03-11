@@ -39,7 +39,7 @@ public class X11 extends BasicLibWrapper {
     }
 
     private X11() {
-        System.loadLibrary("X11Wrapper"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("X11Wrapper"); //$NON-NLS-1$
         init();
     }
 

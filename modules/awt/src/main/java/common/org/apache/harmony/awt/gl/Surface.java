@@ -82,7 +82,7 @@ public abstract class Surface implements Transparency{
     private static final int BLUE_555_MASK = 0x001f;
 
     static{
-        System.loadLibrary("gl"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("gl"); //$NON-NLS-1$
         initIDs();
     }
 
