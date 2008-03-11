@@ -32,27 +32,27 @@ public final class BHSDCodec extends Codec {
 	/**
 	 * The maximum number of bytes in each coding word
 	 */
-	private int b;
+	private final int b;
 
 	/**
 	 * Whether delta encoding is used (0=false,1=true)
 	 */
-	private int d;
+	private final int d;
 
 	/**
 	 * The radix of the encoding
 	 */
-	private int h;
+	private final int h;
 
 	/**
 	 * The co-parameter of h; h-256
 	 */
-	private int l;
+	private final int l;
 
 	/**
 	 * Represents signed numbers or not (0=unsigned,1/2=signed)
 	 */
-	private int s;
+	private final int s;
 
     private long cardinality;
 
@@ -157,29 +157,29 @@ public final class BHSDCodec extends Codec {
             n++;
 		} while (n < b & isHigh(x));
 
-// TODO: Decide whether to use this algorithm instead (neater, possibly quicker but less easy to understand)
-//        if (isSigned()) {
-//            int u = ((1 << s) - 1);
-//            if ((z & u) == u) {
-//                z = z >>> s ^ -1L;
-//            } else {
-//                z = z - (z >>> s);
-//            }
-//        }
-        if(isSigned()) {
-            long u = z;
-            long twoPowS = (long)Math.pow(2, s);
-            double twoPowSMinusOne = twoPowS-1;
-            if(u % twoPowS < twoPowSMinusOne) {
-                if(cardinality < Math.pow(2, 32)) {
-                    z = (long) (u - (Math.floor(u/ twoPowS)));
-                } else {
-                    z = cast32((long) (u - (Math.floor(u/ twoPowS))));
-                }
+        if (isSigned()) {
+            int u = ((1 << s) - 1);
+            if ((z & u) == u) {
+                z = z >>> s ^ -1L;
             } else {
-                z = (long) (-Math.floor(u/ twoPowS) - 1);
+                z = z - (z >>> s);
             }
         }
+// This algorithm does the same thing, but is probably slower.  Leaving in for now for readability
+//        if(isSigned()) {
+//            long u = z;
+//            long twoPowS = (long)Math.pow(2, s);
+//            double twoPowSMinusOne = twoPowS-1;
+//            if(u % twoPowS < twoPowSMinusOne) {
+//                if(cardinality < Math.pow(2, 32)) {
+//                    z = (long) (u - (Math.floor(u/ twoPowS)));
+//                } else {
+//                    z = cast32((long) (u - (Math.floor(u/ twoPowS))));
+//                }
+//            } else {
+//                z = (long) (-Math.floor(u/ twoPowS) - 1);
+//            }
+//        }
 	    if (isDelta())
 	        z += last;
 		return z;

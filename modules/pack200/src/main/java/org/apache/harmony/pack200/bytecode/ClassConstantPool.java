@@ -26,27 +26,27 @@ import org.apache.harmony.pack200.Segment;
 public class ClassConstantPool {
 
     // These are the domains in sorted order.
-    public static int DOMAIN_UNDEFINED = 0;
-    public static int DOMAIN_INTEGER = 1;
-    public static int DOMAIN_FLOAT = 2;
-    public static int DOMAIN_STRING = 3;
-    public static int DOMAIN_NORMALASCIIZ = 4;
-    public static int DOMAIN_LONG = 5;
-    public static int DOMAIN_DOUBLE = 6;
-    public static int DOMAIN_CLASSREF = 7;
-    public static int DOMAIN_SIGNATUREASCIIZ = 8;
-    public static int DOMAIN_NAMEANDTYPE = 9;
-    public static int DOMAIN_FIELD = 10;
-    public static int DOMAIN_METHOD = 11;
-    public static int DOMAIN_ATTRIBUTEASCIIZ = 12;
-    public static int NUM_DOMAINS = DOMAIN_ATTRIBUTEASCIIZ + 1;
+    public static final int DOMAIN_UNDEFINED = 0;
+    public static final int DOMAIN_INTEGER = 1;
+    public static final int DOMAIN_FLOAT = 2;
+    public static final int DOMAIN_STRING = 3;
+    public static final int DOMAIN_NORMALASCIIZ = 4;
+    public static final int DOMAIN_LONG = 5;
+    public static final int DOMAIN_DOUBLE = 6;
+    public static final int DOMAIN_CLASSREF = 7;
+    public static final int DOMAIN_SIGNATUREASCIIZ = 8;
+    public static final int DOMAIN_NAMEANDTYPE = 9;
+    public static final int DOMAIN_FIELD = 10;
+    public static final int DOMAIN_METHOD = 11;
+    public static final int DOMAIN_ATTRIBUTEASCIIZ = 12;
+    public static final int NUM_DOMAINS = DOMAIN_ATTRIBUTEASCIIZ + 1;
 
 //    protected SortedSet sortedEntries = new TreeSet(new PoolComparator());
     protected ClassPoolSet classPoolSet = new ClassPoolSet();
     public String toString() {
         return entries.toString();
     }
-    private List others = new ArrayList();
+    private final List others = new ArrayList();
 
     private List entries = new ArrayList();
 
@@ -106,7 +106,7 @@ public class ClassConstantPool {
         classPoolSet = new ClassPoolSet();
         Iterator it = entries.iterator();
         while(it.hasNext()) {
-            classPoolSet.add((ClassFileEntry)it.next());
+            classPoolSet.add(it.next());
         }
         entries = new ArrayList();
       Iterator sortedIterator = classPoolSet.iterator();

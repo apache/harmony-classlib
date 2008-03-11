@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class IcTuple {
 
-    public static int NESTED_CLASS_FLAG = 0x00010000;
+    public static final int NESTED_CLASS_FLAG = 0x00010000;
     public String C; // this class
     public int F; // flags
     public String C2; // outer class
@@ -102,7 +102,7 @@ public class IcTuple {
         if(predicted()) {
             return C;
         } else {
-            // TODO: this may not be right. What if I 
+            // TODO: this may not be right. What if I
             // get a class like Foo#Bar$Baz$Bug?
             return C2 + "$" + N;
         }
@@ -140,7 +140,7 @@ public class IcTuple {
         // If we get to this point, nameComponents.length must be >=2
         int lastPosition = nameComponents.length - 1;
         cachedSimpleClassName = nameComponents[lastPosition];
-        cachedOuterClassString = new String();
+        cachedOuterClassString = "";
         for(int index=0; index < lastPosition; index++) {
             cachedOuterClassString += nameComponents[index];
             if(isAllDigits(nameComponents[index])) {

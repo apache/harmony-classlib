@@ -47,6 +47,7 @@ public class ClassVersionTest extends TestCase {
 		din.readShort(); // MINOR -- don't care
 		assertTrue("Class file has been compiled with Java 1.5 compatibility"
 				+ " instead of 1.4 or lower", din.readShort() < JAVA_15);
+		din.close();
 	}
 
 	public void testCorrectVersionOfAdapter() throws IOException {
@@ -61,6 +62,7 @@ public class ClassVersionTest extends TestCase {
 			din.readShort(); // MINOR -- don't care
 			assertTrue("Class file needs 1.5 compatibility",
 					din.readShort() >= JAVA_15);
+			din.close();
 		}
 	}
 }

@@ -45,7 +45,7 @@ public class Archive {
 
     private InputStream inputStream;
 
-    private JarOutputStream outputStream;
+    private final JarOutputStream outputStream;
 
     private boolean removePackFile;
 
@@ -157,7 +157,10 @@ public class Archive {
         }
         if (removePackFile) {
             File file = new File(inputFileName);
-            file.delete();
+            boolean deleted = file.delete();
+            if(!deleted) {
+            	throw new Pack200Exception("Failed to delete the input file.");
+            }
         }
     }
 

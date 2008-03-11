@@ -31,7 +31,7 @@ public class InnerClassesAttribute extends Attribute {
             "InnerClasses", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
 
-    class InnerClassesEntry {
+    private static class InnerClassesEntry {
         CPClass inner_class_info;
         CPClass outer_class_info;
         CPUTF8 inner_class_name;
@@ -93,8 +93,8 @@ public class InnerClassesAttribute extends Attribute {
 
     }
 
-    private List innerClasses = new ArrayList();
-    private List nestedClassFileEntries = new ArrayList();
+    private final List innerClasses = new ArrayList();
+    private final List nestedClassFileEntries = new ArrayList();
 
     public InnerClassesAttribute(String name) {
         super(attributeName);

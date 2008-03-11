@@ -64,7 +64,7 @@ public class ByteCode extends ClassFileEntry {
 		final ByteCode other = (ByteCode) obj;
 		if (getByteCodeForm() != other.getByteCodeForm())
 			return false;
-		if (!rewrite.equals(other.rewrite))
+		if (rewrite != other.rewrite)
 			return false;
 		return true;
 	}

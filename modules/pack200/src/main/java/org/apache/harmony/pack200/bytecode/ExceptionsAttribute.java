@@ -39,7 +39,7 @@ public class ExceptionsAttribute extends Attribute {
 
 	private transient int[] exceptionIndexes;
 
-	private CPClass[] exceptions;
+	private final CPClass[] exceptions;
 
 	public ExceptionsAttribute(CPClass[] exceptions) {
 		super(attributeName);
@@ -89,7 +89,7 @@ public class ExceptionsAttribute extends Attribute {
 	}
 
 	public String toString() {
-		return "Exceptions:" + exceptions;
+		return "Exceptions: " + exceptions;
 	}
 
 	protected void writeBody(DataOutputStream dos) throws IOException {
