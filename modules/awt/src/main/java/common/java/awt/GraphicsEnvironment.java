@@ -61,11 +61,7 @@ public abstract class GraphicsEnvironment {
 
     public static boolean isHeadless() {
         if (isHeadless == null) {
-            isHeadless = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                public Boolean run() {
-                    return "true".equals(System.getProperty("java.awt.headless")); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            });
+            isHeadless = "true".equals(org.apache.harmony.awt.Utils.getSystemProperty("java.awt.headless")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         
         return isHeadless.booleanValue();

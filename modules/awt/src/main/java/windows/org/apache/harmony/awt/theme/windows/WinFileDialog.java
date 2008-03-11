@@ -223,7 +223,7 @@ public class WinFileDialog extends WinStyle {
 
     private void setDir(String dirName) {
         if (dirName == null) {
-            dirName = System.getProperty("user.dir"); //$NON-NLS-1$
+            dirName = org.apache.harmony.awt.Utils.getSystemProperty("user.dir"); //$NON-NLS-1$
         }
         ofn.set_lpstrInitialDir(nb.createInt16Pointer(dirName, false));
     }

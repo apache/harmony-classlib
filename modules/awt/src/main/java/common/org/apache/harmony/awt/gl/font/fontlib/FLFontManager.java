@@ -52,7 +52,7 @@ public class FLFontManager extends FontManager {
 
         initManager();
         
-        addPath(new File(System.getProperty("java.home") + "/lib/fonts/"));
+        addPath(new File(org.apache.harmony.awt.Utils.getSystemProperty("java.home") + "/lib/fonts/"));
         addPath(new File("C:\\WINNT\\Fonts"));
         addPath(new File("/usr/X11R6/lib/X11/fonts/Type1/"));
         addPath(new File("/usr/X11R6/lib/X11/fonts/truetype/"));

@@ -947,8 +947,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         PrivilegedAction<String[]> action = new PrivilegedAction<String[]>() {
             public String[] run() {
                 String properties[] = new String[2];
-                properties[0] = System.getProperty("awt.image.redrawrate", "100"); //$NON-NLS-1$ //$NON-NLS-2$
-                properties[1] = System.getProperty("awt.image.incrementaldraw", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+                properties[0] = org.apache.harmony.awt.Utils.getSystemProperty("awt.image.redrawrate", "100"); //$NON-NLS-1$ //$NON-NLS-2$
+                properties[1] = org.apache.harmony.awt.Utils.getSystemProperty("awt.image.incrementaldraw", "true"); //$NON-NLS-1$ //$NON-NLS-2$
                 return properties;
             }
         };
