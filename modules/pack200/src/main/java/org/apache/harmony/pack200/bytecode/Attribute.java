@@ -83,6 +83,17 @@ public abstract class Attribute extends ClassFileEntry {
         return false;
     }
 
+    /**
+     * Answer true if the receiver is a source file attribute
+     * (which gets special handling when the class is built);
+     * otherwise answer false.
+     *
+     * @return boolean source file attribute
+     */
+    public boolean isSourceFileAttribute() {
+        return false;
+    }
+
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;

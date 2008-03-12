@@ -144,6 +144,28 @@ public class Segment {
 		} else {
 			classFile.attributes = new Attribute[] {};
 		}
+		
+		// If we see any class attributes, add them to the class's attributes that will
+		// be written out. Keep SourceFileAttributes out since we just
+		// did them above. (One of the computations for SourceFileAttribute
+		// may be redundant.)
+	    ArrayList classAttributes = classBands.getClassAttributes()[classNum];
+	    ArrayList classAttributesWithoutSourceFileAttribute = new ArrayList();
+	    for(int index=0; index < classAttributes.size(); index++) {
+	        Attribute attrib = (Attribute)classAttributes.get(index);
+	        if(!attrib.isSourceFileAttribute()) {
+	            classAttributesWithoutSourceFileAttribute.add(attrib);
+	        }
+	    }
+        Attribute[] originalAttributes = classFile.attributes;
+        classFile.attributes = new Attribute[originalAttributes.length + classAttributesWithoutSourceFileAttribute.size()];
+        System.arraycopy(originalAttributes, 0, classFile.attributes, 0, originalAttributes.length);        
+	    for(int index=0; index < classAttributesWithoutSourceFileAttribute.size(); index++) {
+	        Attribute attrib = ((Attribute)classAttributesWithoutSourceFileAttribute.get(index));
+	        cp.add(attrib);
+	        classFile.attributes[originalAttributes.length + index] = attrib;
+	    }
+
 		// this/superclass
 		ClassFileEntry cfThis = cp.add(cpBands.cpClassValue(fullName));
 		ClassFileEntry cfSuper = cp.add(cpBands.cpClassValue(classBands.getClassSuper()[classNum]));

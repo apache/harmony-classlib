@@ -1189,6 +1189,10 @@ public class ClassBands extends BandSet {
         return numBackwardsCalls;
     }
 
+    public ArrayList[] getClassAttributes() {
+        return classAttributes;
+    }
+
     public int[] getClassFieldCount() {
         return classFieldCount;
     }
