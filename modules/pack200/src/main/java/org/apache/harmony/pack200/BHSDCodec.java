@@ -56,6 +56,10 @@ public final class BHSDCodec extends Codec {
 
     private long cardinality;
 
+    private long smallest;
+
+    private long largest;
+
 	/**
 	 * Constructs an unsigned, non-delta Codec with the given B and H values.
 	 *
@@ -123,6 +127,8 @@ public final class BHSDCodec extends Codec {
         } else {
             cardinality = (long) ((long)(l * (1-Math.pow(h, b))/(1-h)) + Math.pow(h,b));
         }
+        smallest = calculateSmallest();
+        largest = calculateLargest();
 	}
 
 	/**
@@ -202,7 +208,7 @@ public final class BHSDCodec extends Codec {
 	 * @return <code>true</code> if the encoding can encode this value
 	 */
 	public boolean encodes(long value) {
-		return (value >= smallest() && value <= largest());
+		return (value >= smallest && value <= largest);
 	}
 
     public byte[] encode(long value, long last) throws Pack200Exception {
@@ -270,10 +276,17 @@ public final class BHSDCodec extends Codec {
 	 *
 	 * @return the largest value that this codec can represent.
 	 */
-	public long largest() {
+    public long largest() {
+        return largest;
+    }
+
+	private long calculateLargest() {
 		long result;
 		// TODO This can probably be optimized into a better mathematical statement
-		if (s == 0) {
+        if(d == 1) {
+            BHSDCodec bh0 = new BHSDCodec(b, h);
+            return bh0.largest();
+        } else if (s == 0) {
 			result = cardinality() - 1;
 		} else if (s == 1) {
 			result = cardinality() / 2 - 1;
@@ -285,18 +298,30 @@ public final class BHSDCodec extends Codec {
 		return Math.min((s == 0 ? ((long) Integer.MAX_VALUE) << 1
 				: Integer.MAX_VALUE) - 1, result);
 	}
+
 	/**
 	 * Returns the smallest value that this codec can represent.
 	 *
 	 * @return the smallest value that this codec can represent.
 	 */
-	public long smallest() {
+    public long smallest() {
+        return smallest;
+    }
+
+	private long calculateSmallest() {
 		long result;
-		if (isSigned()) {
-			result = -cardinality() / (1 << s);
-		} else {
-			result = 0;
-		}
+         if (d == 1) {
+            BHSDCodec bh0 = new BHSDCodec(b, h);
+            return bh0.smallest();
+        } else if (isSigned()) {
+            result = -cardinality() / (1 << s);
+        } else {
+            if (cardinality > Integer.MAX_VALUE) {
+                result = Integer.MIN_VALUE;
+            } else {
+                result = 0;
+            }
+        }
 		return Math.max(Integer.MIN_VALUE, result);
 	}
 	/**

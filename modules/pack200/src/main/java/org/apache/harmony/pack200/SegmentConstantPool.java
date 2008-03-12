@@ -224,7 +224,7 @@ public class SegmentConstantPool {
      * only place one exists is in matchSpecificPoolEntryIndex().
      * To eliminate this dependency, we've implemented the
      * world's stupidest regexMatch. It knows about the two
-     * forms we care about: 
+     * forms we care about:
      *  .* (aka REGEX_MATCH_ALL)
      *  ^<init>.* (aka REGEX_MATCH_INIT)
      * and will answer correctly if those are passed as the

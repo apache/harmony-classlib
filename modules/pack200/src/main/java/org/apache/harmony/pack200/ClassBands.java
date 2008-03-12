@@ -24,12 +24,7 @@ import java.util.List;
 
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CPDouble;
-import org.apache.harmony.pack200.bytecode.CPFloat;
-import org.apache.harmony.pack200.bytecode.CPInteger;
-import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPNameAndType;
-import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ClassFileEntry;
@@ -806,7 +801,7 @@ public class ClassBands extends BandSet {
                 localVariableTableN);
         int[][] localVariableTableSpanO = decodeBandInt(
                 "code_LocalVariableTable_span_O", in, Codec.BRANCH5,
-                localVariableTableN, false);
+                localVariableTableN);
         CPUTF8[][] localVariableTableNameRU = stringsToCPUTF8(parseReferences(
                 "code_LocalVariableTable_name_RU", in, Codec.UNSIGNED5,
                 localVariableTableN, cpBands.getCpUTF8()));

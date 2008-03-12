@@ -17,6 +17,7 @@
 package org.apache.harmony.pack200.tests;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -36,15 +37,24 @@ public class BHSDCodecTest extends TestCase {
 
             BHSDCodec codec = (BHSDCodec) CodecEncoding.getCodec(i, null, null);
 
-            // Test encode-decode with a selection of numbers within the range of the codec
-            long delta = (codec.largest() - codec.smallest()) / 4;
-            for (long j = codec.smallest(); j <= codec.largest() + 1; j += delta) {
-                byte[] encoded = codec.encode(j, 0);
-                long decoded = codec.decode(new ByteArrayInputStream(encoded),
-                        0);
-                if (j != decoded) {
-                    fail("Failed with codec: " + codec + " expected: " + j
-                            + ", got: " + decoded);
+            if(!codec.isDelta()) {
+                // Test encode-decode with a selection of numbers within the range of the codec
+                long largest = codec.largest();
+                long smallest = codec.isSigned() ? codec.smallest() : 0;
+                long difference = (largest - smallest) / 4;
+                for (long j = smallest; j <= largest; j += difference) {
+                    byte[] encoded = codec.encode(j, 0);
+                    long decoded = 0;
+                    try {
+                        decoded = codec.decode(new ByteArrayInputStream(encoded),
+                                0);
+                    } catch (EOFException e) {
+                        System.out.println(e);
+                    }
+                    if (j != decoded) {
+                        fail("Failed with codec: " + i + ", " + codec + " expected: " + j
+                                + ", got: " + decoded);
+                    }                   
                 }
             }
 

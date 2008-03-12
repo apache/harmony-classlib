@@ -70,32 +70,6 @@ public abstract class BandSet {
     public int[] decodeBandInt(String name, InputStream in,
             BHSDCodec codec, int count) throws IOException,
             Pack200Exception {
-        return decodeBandInt(name, in, codec, count, true);
-    }
-
-    /**
-     * Decode a band and return an array of <code>int</code> values
-     *
-     * @param name
-     *            the name of the band (primarily for logging/debugging
-     *            purposes)
-     * @param in
-     *            the InputStream to decode from
-     * @param defaultCodec
-     *            the default codec for this band
-     * @param count
-     *            the number of elements to read
-     * @return an array of decoded <code>int</code> values
-     * @throws IOException
-     *             if there is a problem reading from the underlying input
-     *             stream
-     * @throws Pack200Exception
-     *             if there is a problem decoding the value or that the value is
-     *             invalid
-     */
-    public int[] decodeBandInt(String name, InputStream in,
-            BHSDCodec codec, int count, boolean negativesAllowed) throws IOException,
-            Pack200Exception {
         int[] band;
         Codec codecUsed = codec;
         if (codec.getB() == 1 || count == 0) {
@@ -121,20 +95,44 @@ public abstract class BandSet {
             // First element should not be discarded
             band = codec.decodeInts(count - 1, in, first);
         }
-        if(!negativesAllowed && codec != codecUsed) {
-            if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isSigned()) {
-                for (int i = 0; i < band.length; i++) {
-                    while(band[i] < 0) {
-                        band[i] += ((BHSDCodec)codecUsed).cardinality();
-                    }
+//        if(!negativesAllowed && codec != codecUsed) {
+//            if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isSigned()) {
+//                for (int i = 0; i < band.length; i++) {
+//                    while(band[i] < 0) {
+//                        band[i] += ((BHSDCodec)codecUsed).cardinality();
+//                    }
+//                }
+//            }
+//        }
+        if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isDelta()) {
+            BHSDCodec bhsd = (BHSDCodec)codecUsed;
+            long cardinality = bhsd.cardinality();
+            for (int i = 0; i < band.length; i++) {
+                while (band[i] > bhsd.largest()) {
+                    band[i] -= cardinality;
+                }
+                while (band[i] < bhsd.smallest()) {
+                    band[i] += cardinality;
                 }
             }
-        }
-        if(codecUsed instanceof BHSDCodec) {
-            long cardinality = ((BHSDCodec)codecUsed).cardinality();
+        } else if (codecUsed instanceof PopulationCodec) {
+            PopulationCodec popCodec = (PopulationCodec) codecUsed;
+            long[] favoured = (long[]) popCodec.getFavoured().clone();
+            Arrays.sort(favoured);
             for (int i = 0; i < band.length; i++) {
-                while(band[i] > cardinality) {
-                    band[i] -= cardinality;
+                boolean favouredValue = Arrays.binarySearch(favoured,
+                        band[i]) > -1;
+                Codec theCodec = favouredValue ? popCodec
+                        .getFavouredCodec() : popCodec.getUnvafouredCodec();
+                if (theCodec instanceof BHSDCodec && ((BHSDCodec) theCodec).isDelta()) {
+                    BHSDCodec bhsd = (BHSDCodec)theCodec;
+                    long cardinality = bhsd.cardinality();
+                    while (band[i] > bhsd.largest()) {
+                        band[i] -= cardinality;
+                    }
+                    while (band[i] < bhsd.smallest()) {
+                        band[i] += cardinality;
+                    }
                 }
             }
         }
@@ -165,40 +163,12 @@ public abstract class BandSet {
     public int[][] decodeBandInt(String name, InputStream in,
             BHSDCodec defaultCodec, int[] counts)
             throws IOException, Pack200Exception {
-        return decodeBandInt(name, in, defaultCodec, counts, true);
-    }
-
-    // TODO: Use this version for all bands that shouldn't have negatives.
-    /**
-     * Decode a band and return an array of <code>int[]</code> values
-     *
-     * @param name
-     *            the name of the band (primarily for logging/debugging
-     *            purposes)
-     * @param in
-     *            the InputStream to decode from
-     * @param defaultCodec
-     *            the default codec for this band
-     * @param counts
-     *            the numbers of elements to read for each int array within the
-     *            array to be returned
-     * @return an array of decoded <code>int[]</code> values
-     * @throws IOException
-     *             if there is a problem reading from the underlying input
-     *             stream
-     * @throws Pack200Exception
-     *             if there is a problem decoding the value or that the value is
-     *             invalid
-     */
-    public int[][] decodeBandInt(String name, InputStream in,
-            BHSDCodec defaultCodec, int[] counts, boolean negativesAllowed)
-            throws IOException, Pack200Exception {
         int[][] result = new int[counts.length][];
         int totalCount = 0;
         for (int i = 0; i < counts.length; i++) {
             totalCount += counts[i];
         }
-        int[] twoDResult = decodeBandInt(name, in, defaultCodec, totalCount, negativesAllowed);
+        int[] twoDResult = decodeBandInt(name, in, defaultCodec, totalCount);
         int index = 0;
         for (int i = 0; i < result.length; i++) {
             result[i] = new int[counts[i]];
@@ -235,6 +205,8 @@ public abstract class BandSet {
         if (codec.getB() == 1 || count == 0) {
             return codec.decode(count, in);
         }
+        Codec codecUsed = codec;
+        long[] band;
         long[] getFirst = codec.decode(1, in);
         if (getFirst.length == 0) {
             return getFirst;
@@ -242,19 +214,53 @@ public abstract class BandSet {
         long first = getFirst[0];
         if (codec.isSigned() && first >= -256 && first <= -1) {
             // Non-default codec should be used
-            Codec nonDefaultCodec = CodecEncoding.getCodec((int) (-1 - first),
+            codecUsed = CodecEncoding.getCodec((int) (-1 - first),
                     header.getBandHeadersInputStream(), codec);
-            return nonDefaultCodec.decode(count, in);
+            band = codecUsed.decode(count, in);
         } else if (!codec.isSigned() && first >= codec.getL()
                 && first <= codec.getL() + 255) {
             // Non-default codec should be used
-            Codec nonDefaultCodec = CodecEncoding.getCodec((int) first
+            codecUsed = CodecEncoding.getCodec((int) first
                     - codec.getL(), header.getBandHeadersInputStream(), codec);
-            return nonDefaultCodec.decode(count, in);
+            band = codecUsed.decode(count, in);
         } else {
             // First element should not be discarded
-            return codec.decode(count - 1, in, first);
+            band = codec.decode(count - 1, in, first);
         }
+
+        if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isDelta()) {
+            BHSDCodec bhsd = (BHSDCodec)codecUsed;
+            long cardinality = bhsd.cardinality();
+            for (int i = 0; i < band.length; i++) {
+                while (band[i] > bhsd.largest()) {
+                    band[i] -= cardinality;
+                }
+                while (band[i] < bhsd.smallest()) {
+                    band[i] += cardinality;
+                }
+            }
+        } else if (codecUsed instanceof PopulationCodec) {
+            PopulationCodec popCodec = (PopulationCodec) codecUsed;
+            long[] favoured = (long[]) popCodec.getFavoured().clone();
+            Arrays.sort(favoured);
+            for (int i = 0; i < band.length; i++) {
+                boolean favouredValue = Arrays.binarySearch(favoured,
+                        band[i]) > -1;
+                Codec theCodec = favouredValue ? popCodec
+                        .getFavouredCodec() : popCodec.getUnvafouredCodec();
+                if (theCodec instanceof BHSDCodec && ((BHSDCodec) theCodec).isDelta()) {
+                    BHSDCodec bhsd = (BHSDCodec)theCodec;
+                    long cardinality = bhsd.cardinality();
+                    while (band[i] > bhsd.largest()) {
+                        band[i] -= cardinality;
+                    }
+                    while (band[i] < bhsd.smallest()) {
+                        band[i] += cardinality;
+                    }
+                }
+            }
+        }
+        return band;
     }
 
     public byte[] encodeBandLong(long[] data, BHSDCodec codec) throws IOException, Pack200Exception {
@@ -396,7 +402,7 @@ public abstract class BandSet {
         }
         // TODO Merge the decode and parsing of a multiple structure into one
         String[] result1 = new String[sum];
-        int[] indices = decodeBandInt(name, in, codec, sum, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, sum);
         for (int i1 = 0; i1 < sum; i1++) {
             int index = indices[i1];
             if (index < 0 || index >= reference.length)
@@ -416,73 +422,6 @@ public abstract class BandSet {
         return result;
     }
 
-    private int[] decodeBandInt(String name, InputStream in, BHSDCodec codec, int count, int maxValue) throws IOException, Pack200Exception {
-        int[] band;
-        Codec codecUsed = codec;
-        if (codec.getB() == 1 || count == 0) {
-            band = codec.decodeInts(count, in);
-        } else {
-            int[] getFirst = codec.decodeInts(1, in);
-            if (getFirst.length == 0) {
-                return new int[0];
-            }
-            int first = getFirst[0];
-            if (codec.isSigned() && first >= -256 && first <= -1) {
-                // Non-default codec should be used
-                codecUsed = CodecEncoding.getCodec((-1 - first),
-                        header.getBandHeadersInputStream(), codec);
-                band = codecUsed.decodeInts(count, in);
-            } else if (!codec.isSigned() && first >= codec.getL()
-                    && first <= codec.getL() + 255) {
-                // Non-default codec should be used
-                codecUsed = CodecEncoding.getCodec(first
-                        - codec.getL(), header.getBandHeadersInputStream(), codec);
-                band = codecUsed.decodeInts(count, in);
-            } else {
-                // First element should not be discarded
-                band = codec.decodeInts(count - 1, in, first);
-            }
-        }
-
-
-        /*
-         * Note - this is not in the spec, but seems to be used as an
-         * optimization by the RI for bands where the minimum and maximum values
-         * are known (ie reference bands). It will not hurt any implementation
-         * that is following the spec because all the values decoded will be
-         * inside the range anyway.
-         */
-        if (codecUsed instanceof BHSDCodec) {
-            for (int i = 0; i < band.length; i++) {
-                while (band[i] < 0) {
-                    band[i] += ((BHSDCodec) codecUsed).cardinality();
-                }
-                while (band[i] > maxValue) {
-                    band[i] -= ((BHSDCodec) codecUsed).cardinality();
-                }
-            }
-        } else if (codecUsed instanceof PopulationCodec) {
-            PopulationCodec popCodec = (PopulationCodec)codecUsed;
-            long[] favoured = (long[]) popCodec.getFavoured().clone();
-            Arrays.sort(favoured);
-            for (int i = 0; i < band.length; i++) {
-                if(band[i] < 0 || band[i] > maxValue) {
-                    boolean favouredValue = Arrays.binarySearch(favoured, band[i]) > -1;
-                    Codec theCodec = favouredValue ? popCodec.getFavouredCodec(): popCodec.getUnvafouredCodec();
-                    if(theCodec instanceof BHSDCodec) {
-                        while (band[i] < 0) {
-                            band[i] +=  ((BHSDCodec) theCodec).cardinality();
-                        }
-                        while (band[i] > maxValue) {
-                            band[i] -= ((BHSDCodec) theCodec).cardinality();
-                        }
-                    }
-                }
-            }
-        }
-        return band;
-    }
-
     /**
      * This is a local debugging message to aid the developer in writing this
      * class. It will be removed before going into production. If the property
@@ -498,7 +437,7 @@ public abstract class BandSet {
 
     public CPInteger[] parseCPIntReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         int[] reference = segment.getCpBands().getCpInt();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPInteger[] result = new CPInteger[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -512,7 +451,7 @@ public abstract class BandSet {
 
     public CPDouble[] parseCPDoubleReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         double[] reference = segment.getCpBands().getCpDouble();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPDouble[] result = new CPDouble[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -526,7 +465,7 @@ public abstract class BandSet {
 
     public CPFloat[] parseCPFloatReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         float[] reference = segment.getCpBands().getCpFloat();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPFloat[] result = new CPFloat[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -540,7 +479,7 @@ public abstract class BandSet {
 
     public CPLong[] parseCPLongReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         long[] reference = segment.getCpBands().getCpLong();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPLong[] result = new CPLong[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -554,7 +493,7 @@ public abstract class BandSet {
 
     public CPUTF8[] parseCPUTF8References(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         String[] reference = segment.getCpBands().getCpUTF8();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPUTF8[] result = new CPUTF8[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -576,7 +515,7 @@ public abstract class BandSet {
             sum += counts[i];
         }
         CPUTF8[] result1 = new CPUTF8[sum];
-        int[] indices = decodeBandInt(name, in, codec, sum, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, sum);
         for (int i1 = 0; i1 < sum; i1++) {
             int index = indices[i1];
             if (index < 0 || index >= reference.length)
@@ -597,7 +536,7 @@ public abstract class BandSet {
 
     public CPString[] parseCPStringReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         String[] reference = segment.getCpBands().getCpString();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPString[] result = new CPString[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -613,7 +552,7 @@ public abstract class BandSet {
         CpBands cpBands = segment.getCpBands();
         String[] reference = cpBands.getCpIMethodClass();
         String[] descriptors = cpBands.getCpIMethodDescriptor();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPInterfaceMethodRef[] result = new CPInterfaceMethodRef[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -632,7 +571,7 @@ public abstract class BandSet {
         CpBands cpBands = segment.getCpBands();
         String[] reference = cpBands.getCpMethodClass();
         String[] descriptors = cpBands.getCpMethodDescriptor();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPMethodRef[] result = new CPMethodRef[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -650,7 +589,7 @@ public abstract class BandSet {
         CpBands cpBands = segment.getCpBands();
         String[] reference = cpBands.getCpFieldClass();
         String[] descriptors = cpBands.getCpFieldDescriptor();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPFieldRef[] result = new CPFieldRef[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -667,7 +606,7 @@ public abstract class BandSet {
     public CPNameAndType[] parseCPDescriptorReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         CpBands cpBands = segment.getCpBands();
         String[] reference = cpBands.getCpDescriptor();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPNameAndType[] result = new CPNameAndType[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -681,7 +620,7 @@ public abstract class BandSet {
 
     public CPUTF8[] parseCPSignatureReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         String[] reference = segment.getCpBands().getCpSignature();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPUTF8[] result = new CPUTF8[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
@@ -695,7 +634,7 @@ public abstract class BandSet {
 
     public CPClass[] parseCPClassReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {
         String[] reference = segment.getCpBands().getCpClass();
-        int[] indices = decodeBandInt(name, in, codec, count, reference.length - 1);
+        int[] indices = decodeBandInt(name, in, codec, count);
         CPClass[] result = new CPClass[indices.length];
         for (int i1 = 0; i1 < count; i1++) {
             int index = indices[i1];
