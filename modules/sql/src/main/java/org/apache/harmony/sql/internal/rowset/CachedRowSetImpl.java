@@ -39,6 +39,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
@@ -123,6 +124,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     private SQLWarning sqlwarn;
 
     private Class[] columnTypes;
+
+    private String[] matchColumnNames;
+
+    private int[] matchColumnIndexes;
+
+    private String cursorName;
 
     private static Map<Integer, Class> TYPE_MAPPING = initialTypeMapping();
 
@@ -496,8 +503,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         CachedRowSetImpl originalRowRset = new CachedRowSetImpl();
         ArrayList<CachedRow> data = new ArrayList<CachedRow>();
-        CachedRow originalCachedRow = rows.get(getRow() - 1).getOriginal();
+        CachedRow originalCachedRow = currentRow.getOriginal();
         data.add(originalCachedRow);
+        originalRowRset.setMetaData(meta);
         originalRowRset.setRows(data, columnCount);
         originalRowRset.setType(ResultSet.TYPE_SCROLL_INSENSITIVE);
         originalRowRset.setConcurrency(ResultSet.CONCUR_UPDATABLE);
@@ -628,6 +636,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         for (int i = 1; i <= columnTypes.length; ++i) {
             columnTypes[i - 1] = TYPE_MAPPING.get(Integer.valueOf(meta
                     .getColumnType(i)));
+        }
+        try {
+            cursorName = rs.getCursorName();
+        } catch (SQLException e) {
+            cursorName = null;
+            // ignore
         }
 
         /*
@@ -886,15 +900,47 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Collection<?> toCollection() throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null) {
+            // sql.38=Object is invalid
+            throw new SQLException(Messages.getString("sql.38"));
+        }
+        List<Vector> list = new ArrayList<Vector>();
+        if (rows.size() > 0) {
+            Vector<Object> vector = null;
+            for (int i = 0; i < rows.size(); i++) {
+                CachedRow row = rows.get(i);
+                vector = new Vector<Object>();
+                for (int j = 1; j <= columnCount; j++) {
+                    vector.add(row.getObject(j));
+                }
+                list.add(vector);
+            }
+        }
+        return list;
     }
 
     public Collection<?> toCollection(int column) throws SQLException {
-        throw new NotImplementedException();
+        if (rows == null) {
+            // sql.38=Object is invalid
+            throw new SQLException(Messages.getString("sql.38"));
+        }
+
+        if (column <= 0 || column > columnCount) {
+            // sql.42=Illegal Argument
+            throw new SQLException(Messages.getString("sql.42"));
+        }
+
+        Vector<Object> vector = new Vector<Object>();
+        if (rows.size() > 0) {
+            for (int i = 0; i < rows.size(); i++) {
+                vector.add(rows.get(i).getObject(column));
+            }
+        }
+        return vector;
     }
 
     public Collection<?> toCollection(String column) throws SQLException {
-        throw new NotImplementedException();
+        return toCollection(getIndexByName(column));
     }
 
     public void undoDelete() throws SQLException {
@@ -943,27 +989,112 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int[] getMatchColumnIndexes() throws SQLException {
-        throw new NotImplementedException();
+        if (matchColumnIndexes == null) {
+            // rowset.13=Set Match columns before getting them
+            throw new SQLException(Messages.getString("rowset.13")); //$NON-NLS-1$
+        }
+
+        return matchColumnIndexes.clone();
     }
 
     public String[] getMatchColumnNames() throws SQLException {
-        throw new NotImplementedException();
+        if (matchColumnNames == null) {
+            // rowset.13=Set Match columns before getting them
+            throw new SQLException(Messages.getString("rowset.13")); //$NON-NLS-1$
+        }
+        return matchColumnNames.clone();
     }
 
     public void setMatchColumn(int columnIdx) throws SQLException {
-        throw new NotImplementedException();
+        if (columnIdx < 0) {
+            // TODO why is 0 valid? load message from resource files
+            throw new SQLException("Match columns should be greater than 0");
+        }
+
+        if (matchColumnIndexes == null) {
+            /*
+             * FIXME initial match column, the default length of array is 10 in
+             * RI, we don't know why, just follow now
+             */
+            matchColumnIndexes = new int[10];
+            Arrays.fill(matchColumnIndexes, -1);
+        }
+
+        matchColumnIndexes[0] = columnIdx;
     }
 
     public void setMatchColumn(int[] columnIdxes) throws SQLException {
-        throw new NotImplementedException();
+        if (columnIdxes == null) {
+            throw new NullPointerException();
+        }
+
+        for (int i : columnIdxes) {
+            if (i < 0) {
+                // TODO why is 0 valid? load message from resource files
+                throw new SQLException("Match columns should be greater than 0");
+            }
+        }
+
+        if (matchColumnIndexes == null) {
+            /*
+             * FIXME initial match column, the default length of array is 10 in
+             * RI, we don't know why, just follow now
+             */
+            matchColumnIndexes = new int[10];
+            Arrays.fill(matchColumnIndexes, -1);
+        }
+
+        int[] newValue = new int[matchColumnIndexes.length + columnIdxes.length];
+        System.arraycopy(columnIdxes, 0, newValue, 0, columnIdxes.length);
+        System.arraycopy(matchColumnIndexes, 0, newValue, columnIdxes.length,
+                matchColumnIndexes.length);
+
+        matchColumnIndexes = newValue;
     }
 
     public void setMatchColumn(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        if (columnName == null || columnName.equals("")) { //$NON-NLS-1$
+            // rowset.12=Match columns should not be empty or null string
+            throw new SQLException(Messages.getString("rowset.12")); //$NON-NLS-1$
+        }
+
+        if (matchColumnNames == null) {
+            /*
+             * FIXME initial match column, the default length of array is 10 in
+             * RI, we don't know why, just follow now
+             */
+            matchColumnNames = new String[10];
+        }
+
+        matchColumnNames[0] = columnName;
     }
 
     public void setMatchColumn(String[] columnNames) throws SQLException {
-        throw new NotImplementedException();
+        if (columnNames == null) {
+            throw new NullPointerException();
+        }
+        for (String name : columnNames) {
+            if (name == null || name.equals("")) { //$NON-NLS-1$
+                // rowset.12=Match columns should not be empty or null string
+                throw new SQLException(Messages.getString("rowset.12")); //$NON-NLS-1$
+            }
+        }
+
+        if (matchColumnNames == null) {
+            /*
+             * FIXME initial match column, the default length of array is 10 in
+             * RI, we don't know why, just follow now
+             */
+            matchColumnNames = new String[10];
+        }
+
+        String[] newValue = new String[matchColumnNames.length
+                + columnNames.length];
+        System.arraycopy(columnNames, 0, newValue, 0, columnNames.length);
+        System.arraycopy(matchColumnNames, 0, newValue, columnNames.length,
+                matchColumnNames.length);
+
+        matchColumnNames = newValue;
     }
 
     public void unsetMatchColumn(int columnIdx) throws SQLException {
@@ -1168,9 +1299,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public Array getArray(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return null;
-        return (Array) obj;
+        }
+        try {
+            return (Array) obj;
+        } catch (ClassCastException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Array getArray(String colName) throws SQLException {
@@ -1187,9 +1324,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return null;
-        return (BigDecimal) obj;
+        }
+        try {
+            return new BigDecimal(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public BigDecimal getBigDecimal(int columnIndex, int scale)
@@ -1216,9 +1359,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public Blob getBlob(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return null;
-        return (Blob) obj;
+        }
+        try {
+            return (Blob) obj;
+        } catch (ClassCastException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Blob getBlob(String columnName) throws SQLException {
@@ -1227,9 +1376,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public boolean getBoolean(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return false;
-        return (Boolean) obj;
+        }
+        try {
+            return Boolean.parseBoolean(obj.toString());
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public boolean getBoolean(String columnName) throws SQLException {
@@ -1238,9 +1393,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public byte getByte(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return 0;
-        return (Byte) obj;
+        }
+        try {
+            return Byte.parseByte(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public byte getByte(String columnName) throws SQLException {
@@ -1251,7 +1412,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         Object obj = getObject(columnIndex);
         if (obj == null)
             return null;
-        return (byte[]) obj;
+        try {
+            return (byte[]) obj;
+        } catch (ClassCastException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public byte[] getBytes(String columnName) throws SQLException {
@@ -1268,9 +1434,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public Clob getClob(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return null;
-        return (Clob) obj;
+        }
+        try {
+            return (Clob) obj;
+        } catch (ClassCastException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Clob getClob(String colName) throws SQLException {
@@ -1278,14 +1450,33 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public String getCursorName() throws SQLException {
-        throw new NotImplementedException();
+        /*
+         * FIXME not sure how to implement it.
+         */
+        if (cursorName == null) {
+            // rowset.14=Positioned updates not supported
+            throw new SQLException(Messages.getString("rowset.14"));
+        }
+        return cursorName;
     }
 
     public Date getDate(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return null;
-        return (Date) obj;
+        }
+        try {
+            if (obj instanceof Date) {
+                return (Date) obj;
+            } else if (obj instanceof Timestamp) {
+                return new Date(((Timestamp) obj).getTime());
+            }
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Date getDate(int columnIndex, Calendar cal) throws SQLException {
@@ -1302,9 +1493,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public double getDouble(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return 0;
-        return (Double) obj;
+        }
+        try {
+            return Double.parseDouble(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public double getDouble(String columnName) throws SQLException {
@@ -1313,9 +1510,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public float getFloat(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return 0;
-        return (Float) obj;
+        }
+        try {
+            return Float.parseFloat(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public float getFloat(String columnName) throws SQLException {
@@ -1324,9 +1527,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public int getInt(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return 0;
-        return (Integer) obj;
+        }
+        try {
+            return Integer.parseInt(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public int getInt(String columnName) throws SQLException {
@@ -1335,9 +1544,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public long getLong(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
             return 0;
-        return (Long) obj;
+        }
+        try {
+            return Long.parseLong(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public long getLong(String columnName) throws SQLException {
@@ -1375,11 +1590,20 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Ref getRef(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            return null;
+        }
+        try {
+            return (Ref) obj;
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Ref getRef(String colName) throws SQLException {
-        throw new NotImplementedException();
+        return getRef(getIndexByName(colName));
     }
 
     public int getRow() throws SQLException {
@@ -1408,11 +1632,20 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public short getShort(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            return 0;
+        }
+        try {
+            return Short.parseShort(obj.toString());
+        } catch (NumberFormatException e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public short getShort(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getShort(getIndexByName(columnName));
     }
 
     public Statement getStatement() throws SQLException {
@@ -1421,12 +1654,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     // columnIndex: from 1 rather than 0
     public String getString(int columnIndex) throws SQLException {
-        checkValidRow();
-        Object value = currentRow.getObject(columnIndex);
-        if (value == null) {
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
             return null;
         }
-        return (String) value;
+        try {
+            return obj.toString();
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     private void checkColumnValid(int columnIndex) throws SQLException {
@@ -1442,7 +1679,22 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Time getTime(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            return null;
+        }
+        try {
+            if (obj instanceof Time) {
+                return (Time) obj;
+            } else if (obj instanceof Timestamp) {
+                return new Time(((Timestamp) obj).getTime());
+            }
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Time getTime(int columnIndex, Calendar cal) throws SQLException {
@@ -1450,15 +1702,29 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Time getTime(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getTime(getIndexByName(columnName));
     }
 
     public Time getTime(String columnName, Calendar cal) throws SQLException {
-        throw new NotImplementedException();
+        return getTime(getIndexByName(columnName), cal);
     }
 
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            return null;
+        }
+        try {
+            if (obj instanceof Date) {
+                return new Timestamp(((Date) obj).getTime());
+            } else if (obj instanceof Time) {
+                return new Timestamp(((Time) obj).getTime());
+            }
+            return Timestamp.valueOf(obj.toString());
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public Timestamp getTimestamp(int columnIndex, Calendar cal)
@@ -1467,20 +1733,29 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Timestamp getTimestamp(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getTimestamp(getIndexByName(columnName));
     }
 
     public Timestamp getTimestamp(String columnName, Calendar cal)
             throws SQLException {
-        throw new NotImplementedException();
+        return getTimestamp(getIndexByName(columnName), cal);
     }
 
     public java.net.URL getURL(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            return null;
+        }
+        try {
+            return (java.net.URL) obj;
+        } catch (Exception e) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10"));
+        }
     }
 
     public java.net.URL getURL(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getURL(getIndexByName(columnName));
     }
 
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {

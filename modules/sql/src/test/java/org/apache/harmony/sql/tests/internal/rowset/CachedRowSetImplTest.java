@@ -27,7 +27,10 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
 
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetListener;
@@ -2355,6 +2358,169 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         noInitialCrset.refreshRow();
         assertEquals(3, noInitialCrset.getInt(1));
         assertEquals("test3", noInitialCrset.getString(2));
+    }
+
+    public void testToCollection() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            noInitialCrset.toCollection();
+            fail("should throw exception");
+        } catch (NullPointerException e) {
+            // RI throw NullPointerException
+        } catch (SQLException e) {
+            // expected
+        }
+
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            rs = st.executeQuery("select * from USER_INFO");
+            noInitialCrset.populate(rs);
+            rs = st.executeQuery("select * from USER_INFO");
+
+            Collection<?> collection = noInitialCrset.toCollection();
+            Iterator iter = collection.iterator();
+            while (iter.hasNext()) {
+                Vector vector = (Vector) iter.next();
+                assertTrue(rs.next());
+                for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+                    assertEquals(rs.getObject(i), vector.get(i - 1));
+                }
+            }
+        }
+    }
+
+    public void testToCollectionInt() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            try {
+                noInitialCrset.toCollection(0);
+                fail("should throw SQLException");
+            } catch (SQLException e) {
+                // expected
+            }
+        } else {
+            assertEquals(0, noInitialCrset.toCollection(-1).size());
+            assertEquals(0, noInitialCrset.toCollection(0).size());
+            assertEquals(Vector.class, noInitialCrset.toCollection(1)
+                    .getClass());
+        }
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+
+        try {
+            noInitialCrset.toCollection(0);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            noInitialCrset.toCollection(13);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        Vector vector = (Vector) noInitialCrset.toCollection(1);
+        Iterator iter = vector.iterator();
+        int index = 0;
+        while (iter.hasNext()) {
+            index++;
+            assertEquals(index, iter.next());
+        }
+        assertEquals(4, index);
+
+        vector = (Vector) noInitialCrset.toCollection(3);
+        iter = vector.iterator();
+        index = 0;
+        while (iter.hasNext()) {
+            index++;
+            if (index == 1 || index == 2) {
+                assertNull(iter.next());
+            } else if (index == 3) {
+                assertEquals("3333", iter.next().toString());
+            } else if (index == 4) {
+                assertEquals("444423", iter.next().toString());
+            }
+        }
+        assertEquals(4, index);
+    }
+
+    public void testToCollectionString() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            assertEquals(0, noInitialCrset.toCollection("ID"));
+            fail("should throw exception");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+
+        try {
+            noInitialCrset.toCollection("valid");
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        Vector vector = (Vector) noInitialCrset.toCollection("ID");
+        Iterator iter = vector.iterator();
+        int index = 0;
+        while (iter.hasNext()) {
+            index++;
+            assertEquals(index, iter.next());
+        }
+        assertEquals(4, index);
+
+        vector = (Vector) noInitialCrset.toCollection("BIGINT_T");
+        iter = vector.iterator();
+        index = 0;
+        while (iter.hasNext()) {
+            index++;
+            if (index == 1 || index == 2) {
+                assertNull(iter.next());
+            } else if (index == 3) {
+                assertEquals("3333", iter.next().toString());
+            } else if (index == 4) {
+                assertEquals("444423", iter.next().toString());
+            }
+        }
+        assertEquals(4, index);
+    }
+
+    public void testGetCursorName() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            noInitialCrset.getCursorName();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        rs = st.executeQuery("select * from USER_INFO");
+        System.out.println("rs 1: " + rs.getCursorName());
+        assertTrue(rs.next());
+        System.out.println("rs 2: " + rs.getCursorName());
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+
+        try {
+            noInitialCrset.getCursorName();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        while (noInitialCrset.next()) {
+            try {
+                noInitialCrset.getCursorName();
+                fail("should throw SQLException");
+            } catch (SQLException e) {
+                // expected
+            }
+        }
     }
 
     public class Listener implements RowSetListener, Cloneable {

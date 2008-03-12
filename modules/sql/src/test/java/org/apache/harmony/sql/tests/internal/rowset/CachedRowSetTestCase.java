@@ -143,9 +143,9 @@ public class CachedRowSetTestCase extends TestCase {
         preStmt.setFloat(7, 3.7F);
         preStmt.setFloat(8, 3.888F);
         preStmt.setDouble(9, 3.9999);
-        preStmt.setDate(10, new Date(523654123));
-        preStmt.setTime(11, new Time(966554221));
-        preStmt.setTimestamp(12, new Timestamp(521342100));
+        preStmt.setDate(10, new Date(52365412356663L));
+        preStmt.setTime(11, new Time(96655422555551L));
+        preStmt.setTimestamp(12, new Timestamp(52365412356663L));
         preStmt.executeUpdate();
         // fourth row
         preStmt.setInt(1, 4);
