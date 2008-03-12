@@ -16,7 +16,6 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
-import org.apache.harmony.pack200.CpBands;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.ByteCode;

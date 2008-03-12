@@ -26,7 +26,7 @@ public class CPClass extends ConstantPoolEntry {
 	public String name;
 
 	private CPUTF8 utf8;
-    
+
     public CPClass(CPUTF8 name) {
 		super(ConstantPoolEntry.CP_Class);
 		this.name = name.underlyingString();

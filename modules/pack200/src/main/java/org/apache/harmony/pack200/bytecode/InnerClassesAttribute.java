@@ -26,7 +26,7 @@ import org.apache.harmony.pack200.IcTuple;
 
 
 public class InnerClassesAttribute extends Attribute {
-    
+
     private static final CPUTF8 attributeName = new CPUTF8(
             "InnerClasses", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 

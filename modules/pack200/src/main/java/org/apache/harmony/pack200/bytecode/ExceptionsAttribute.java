@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class ExceptionsAttribute extends Attribute {
-    
+
     private static final CPUTF8 attributeName = new CPUTF8(
             "Exceptions", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 

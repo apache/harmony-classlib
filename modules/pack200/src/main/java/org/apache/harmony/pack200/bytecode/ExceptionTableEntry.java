@@ -38,10 +38,10 @@ public class ExceptionTableEntry {
      * the catch_type) or a finally clause (which has no
      * catch_type). In the class file, the finally clause is
      * represented as catch_type == 0.
-     * 
+     *
      * To create a finally clause with this method, pass in
      * null for the catchType.
-     * 
+     *
      * @param startPC int
      * @param endPC int
      * @param handlerPC int
@@ -73,7 +73,7 @@ public class ExceptionTableEntry {
     public CPClass getCatchType() {
         return catchType;
     }
-    
+
     public void resolve(ClassConstantPool pool) {
         if(catchType == null) {
             // If the catch type is a finally clause
