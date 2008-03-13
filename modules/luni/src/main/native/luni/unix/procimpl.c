@@ -37,6 +37,8 @@ extern char **environ;
 
 #include "procimpl.h"
 
+int setCloseOnExec(int fd);
+
 void
 sleepFor(unsigned int nanoseconds)
 {
