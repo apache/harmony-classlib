@@ -55,7 +55,7 @@
 typedef flong Fixed;
 typedef long long LONGDT;
 
-typedef enum
+enum
 {
 	ON_CURVE	= 0x01, // on curve or not
 	REPEAT		= 0x08,	// next byte specifies the number of 
