@@ -20,6 +20,8 @@
  */
 
 #include <string>
+#include <string.h>
+#include <stdlib.h>
 #if defined(LINUX)
 #include <ctype.h>
 #endif

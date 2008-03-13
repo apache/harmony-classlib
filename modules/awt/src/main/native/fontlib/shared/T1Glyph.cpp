@@ -19,6 +19,7 @@
  * @version $Revision$
  */
 #include "T1Glyph.h"
+#include <string.h>
 
 T1Glyph::T1Glyph(Type1Map *charStringMap, Type1Map *subrsMap, ufshort unicode, ufshort size, ffloat relativeSize, ffloat* fontBB):Glyph() {
 	_charStringMap = charStringMap;
