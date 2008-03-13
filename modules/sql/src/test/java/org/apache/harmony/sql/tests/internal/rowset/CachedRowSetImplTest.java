@@ -2500,9 +2500,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         }
 
         rs = st.executeQuery("select * from USER_INFO");
-        System.out.println("rs 1: " + rs.getCursorName());
         assertTrue(rs.next());
-        System.out.println("rs 2: " + rs.getCursorName());
         rs = st.executeQuery("select * from USER_INFO");
         noInitialCrset.populate(rs);
 
@@ -2519,6 +2517,52 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
                 fail("should throw SQLException");
             } catch (SQLException e) {
                 // expected
+            }
+        }
+    }
+
+    public void testGetStatement() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        assertNull(noInitialCrset.getStatement());
+
+        rs = st.executeQuery("select * from USER_INFO");
+        assertNotNull(rs.getStatement());
+        noInitialCrset.populate(rs);
+        assertNull(noInitialCrset.getStatement());
+
+        noInitialCrset.setUrl(DERBY_URL);
+        assertNull(noInitialCrset.getStatement());
+    }
+
+    public void testWasNull() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        assertFalse(noInitialCrset.wasNull());
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+        assertFalse(noInitialCrset.wasNull());
+
+        assertTrue(noInitialCrset.next());
+        assertFalse(noInitialCrset.wasNull());
+        assertNull(noInitialCrset.getObject(3));
+        assertTrue(noInitialCrset.wasNull());
+
+        assertNotNull(noInitialCrset.getObject(1));
+        assertFalse(noInitialCrset.wasNull());
+
+        assertNull(noInitialCrset.getObject(5));
+        assertTrue(noInitialCrset.wasNull());
+
+        assertTrue(noInitialCrset.absolute(3));
+        noInitialCrset.updateString(2, "x");
+        assertTrue(noInitialCrset.wasNull());
+
+        assertTrue(noInitialCrset.first());
+        for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+            if (noInitialCrset.getObject(i) == null) {
+                assertTrue(noInitialCrset.wasNull());
+            } else {
+                assertFalse(noInitialCrset.wasNull());
             }
         }
     }

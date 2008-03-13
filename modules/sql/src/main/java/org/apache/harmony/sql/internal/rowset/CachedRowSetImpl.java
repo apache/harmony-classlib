@@ -118,7 +118,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private SyncProvider syncProvider;
 
-    // TODO where is it initialized
     private CachedRowSetImpl originalResultSet;
 
     private SQLWarning sqlwarn;
@@ -130,6 +129,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     private int[] matchColumnIndexes;
 
     private String cursorName;
+
+    private boolean isLastColNull;
+
+    private Connection conn;
 
     private static Map<Integer, Class> TYPE_MAPPING = initialTypeMapping();
 
@@ -211,12 +214,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             currentConn = getConnection();
             acceptChanges(currentConn);
         } catch (SQLException e) {
+            try {
+                currentConn.rollback();
+            } catch (SQLException ex) {
+                // ignore
+            }
             SyncProviderException ex = new SyncProviderException();
             ex.initCause(e);
             throw ex;
         } finally {
+            conn = null;
             if (currentConn != null) {
                 try {
+                    currentConn.commit();
                     currentConn.close();
                 } catch (SQLException ex) {
                     SyncProviderException spe = new SyncProviderException();
@@ -233,7 +243,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SyncProviderException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
 
+        conn = con;
         try {
+            conn.setAutoCommit(false);
             CachedRowSetWriter rowSetWriter = (CachedRowSetWriter) syncProvider
                     .getRowSetWriter();
             rowSetWriter.setConnection(con);
@@ -333,7 +345,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void commit() throws SQLException {
-        getConnection().commit();
+        if (conn == null) {
+            throw new NullPointerException();
+        }
+        conn.commit();
     }
 
     public CachedRowSet createCopy() throws SQLException {
@@ -438,10 +453,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         output.currentRow = null;
         output.currentRowIndex = 0;
         output.insertRow = null;
+        output.isCursorOnInsert = false;
+        output.isLastColNull = false;
         output.nextPageRowIndex = -1;
         output.rememberedCursorPosition = 0;
         output.rows = new ArrayList<CachedRow>();
         output.sqlwarn = null;
+        output.deletedRowCount = 0;
 
         return output;
     }
@@ -460,13 +478,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void execute(Connection conn) throws SQLException {
-        // TODO ensure the getConnection can works!
         String localCommand = getCommand();
         if (localCommand == null || getParams() == null) {
-            // TODO add error messages
-            throw new SQLException();
+            // rowset.16=Not a valid command
+            throw new SQLException(Messages.getString("rowset.16"));
         }
 
+        this.conn = conn;
         PreparedStatement ps = conn.prepareStatement(localCommand);
         Object[] params = getParams();
         for (int i = 0; i < params.length; i++)
@@ -807,7 +825,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void release() throws SQLException {
-        throw new NotImplementedException();
+        // TODO send a rowSetChanged event to all listeners
+        rows = new ArrayList<CachedRow>();
     }
 
     public void restoreOriginal() throws SQLException {
@@ -834,11 +853,17 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void rollback() throws SQLException {
-        throw new NotImplementedException();
+        if (conn == null) {
+            throw new NullPointerException();
+        }
+        conn.rollback();
     }
 
     public void rollback(Savepoint s) throws SQLException {
-        throw new NotImplementedException();
+        if (conn == null) {
+            throw new NullPointerException();
+        }
+        conn.rollback(s);
     }
 
     public void rowSetPopulated(RowSetEvent event, int numRows)
@@ -989,7 +1014,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int[] getMatchColumnIndexes() throws SQLException {
-        if (matchColumnIndexes == null) {
+        if (matchColumnIndexes == null || matchColumnIndexes.length == 0
+                || matchColumnIndexes[0] == -1) {
             // rowset.13=Set Match columns before getting them
             throw new SQLException(Messages.getString("rowset.13")); //$NON-NLS-1$
         }
@@ -998,7 +1024,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public String[] getMatchColumnNames() throws SQLException {
-        if (matchColumnNames == null) {
+        if (matchColumnNames == null || matchColumnNames.length == 0
+                || matchColumnNames[0] == null) {
             // rowset.13=Set Match columns before getting them
             throw new SQLException(Messages.getString("rowset.13")); //$NON-NLS-1$
         }
@@ -1098,19 +1125,69 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void unsetMatchColumn(int columnIdx) throws SQLException {
-        throw new NotImplementedException();
+
+        if (matchColumnIndexes == null || matchColumnIndexes.length == 0
+                || matchColumnIndexes[0] != columnIdx) {
+            throw new SQLException(Messages.getString("rowset.15")); //$NON-NLS-1$
+        }
+
+        matchColumnIndexes[0] = -1;
     }
 
     public void unsetMatchColumn(int[] columnIdxes) throws SQLException {
-        throw new NotImplementedException();
+        if (columnIdxes == null) {
+            throw new NullPointerException();
+        }
+
+        if (columnIdxes.length == 0) {
+            return;
+        }
+
+        if (matchColumnIndexes == null
+                || matchColumnIndexes.length < columnIdxes.length) {
+            throw new SQLException(Messages.getString("rowset.15")); //$NON-NLS-1$
+        }
+
+        for (int i = 0; i < columnIdxes.length; i++) {
+            if (matchColumnIndexes[i] != columnIdxes[i]) {
+                throw new SQLException(Messages.getString("rowset.15")); //$NON-NLS-1$    
+            }
+        }
+
+        Arrays.fill(matchColumnIndexes, 0, columnIdxes.length, -1);
     }
 
     public void unsetMatchColumn(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        if (matchColumnNames == null || matchColumnNames.length == 0
+                || !matchColumnNames[0].equals(columnName)) {
+            throw new SQLException(Messages.getString("rowset.15")); //$NON-NLS-1$
+        }
+
+        matchColumnNames[0] = null;
+
     }
 
     public void unsetMatchColumn(String[] columnName) throws SQLException {
-        throw new NotImplementedException();
+        if (columnName == null) {
+            throw new NullPointerException();
+        }
+
+        if (columnName.length == 0) {
+            return;
+        }
+
+        if (matchColumnNames == null
+                || matchColumnNames.length < columnName.length) {
+            throw new SQLException(Messages.getString("rowset.15")); //$NON-NLS-1$
+        }
+
+        for (int i = 0; i < columnName.length; i++) {
+            if (matchColumnNames[i] != columnName[i]) {
+                throw new SQLException(Messages.getString("rowset.15")); //$NON-NLS-1$    
+            }
+        }
+
+        Arrays.fill(matchColumnNames, 0, columnName.length, null);
     }
 
     public boolean absolute(int row) throws SQLException {
@@ -1190,15 +1267,21 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void close() throws SQLException {
+        String username = getUsername();
+        String password = getPassword();
+        initialProperties();
+        setUsername(username);
+        setPassword(password);
 
-        // TODO need more concerns!
-        if (rows != null) {
-            rows.clear();
-        }
+        rows = new ArrayList<CachedRow>();
         currentRowIndex = 0;
         currentRow = null;
-        meta = null;
-
+        deletedRowCount = 0;
+        isCursorOnInsert = false;
+        isLastColNull = false;
+        matchColumnNames = null;
+        matchColumnIndexes = null;
+        conn = null;
     }
 
     public void deleteRow() throws SQLException {
@@ -1300,8 +1383,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Array getArray(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return (Array) obj;
         } catch (ClassCastException e) {
@@ -1325,8 +1410,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return new BigDecimal(obj.toString());
         } catch (NumberFormatException e) {
@@ -1360,8 +1447,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Blob getBlob(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return (Blob) obj;
         } catch (ClassCastException e) {
@@ -1377,8 +1466,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public boolean getBoolean(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return false;
         }
+        isLastColNull = false;
         try {
             return Boolean.parseBoolean(obj.toString());
         } catch (Exception e) {
@@ -1394,8 +1485,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public byte getByte(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return 0;
         }
+        isLastColNull = false;
         try {
             return Byte.parseByte(obj.toString());
         } catch (NumberFormatException e) {
@@ -1410,8 +1503,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public byte[] getBytes(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
-        if (obj == null)
+        if (obj == null) {
+            isLastColNull = true;
             return null;
+        }
+        isLastColNull = false;
         try {
             return (byte[]) obj;
         } catch (ClassCastException e) {
@@ -1435,8 +1531,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Clob getClob(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return (Clob) obj;
         } catch (ClassCastException e) {
@@ -1463,8 +1561,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Date getDate(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             if (obj instanceof Date) {
                 return (Date) obj;
@@ -1494,8 +1594,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public double getDouble(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return 0;
         }
+        isLastColNull = false;
         try {
             return Double.parseDouble(obj.toString());
         } catch (NumberFormatException e) {
@@ -1511,8 +1613,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public float getFloat(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return 0;
         }
+        isLastColNull = false;
         try {
             return Float.parseFloat(obj.toString());
         } catch (NumberFormatException e) {
@@ -1528,8 +1632,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public int getInt(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return 0;
         }
+        isLastColNull = false;
         try {
             return Integer.parseInt(obj.toString());
         } catch (NumberFormatException e) {
@@ -1545,8 +1651,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public long getLong(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return 0;
         }
+        isLastColNull = false;
         try {
             return Long.parseLong(obj.toString());
         } catch (NumberFormatException e) {
@@ -1572,7 +1680,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             // sql.27=Invalid column index :{0}
             throw new SQLException(Messages.getString("sql.27", columnIndex));
         }
-        return currentRow.getObject(columnIndex);
+        Object obj = currentRow.getObject(columnIndex);
+        if (obj == null) {
+            isLastColNull = true;
+        } else {
+            isLastColNull = false;
+        }
+        return obj;
     }
 
     public Object getObject(int columnIndex, Map<String, Class<?>> map)
@@ -1592,8 +1706,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Ref getRef(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return (Ref) obj;
         } catch (Exception e) {
@@ -1634,8 +1750,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public short getShort(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return 0;
         }
+        isLastColNull = false;
         try {
             return Short.parseShort(obj.toString());
         } catch (NumberFormatException e) {
@@ -1649,15 +1767,17 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Statement getStatement() throws SQLException {
-        throw new NotImplementedException();
+        return null;
     }
 
     // columnIndex: from 1 rather than 0
     public String getString(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return obj.toString();
         } catch (Exception e) {
@@ -1681,8 +1801,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Time getTime(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             if (obj instanceof Time) {
                 return (Time) obj;
@@ -1712,8 +1834,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             if (obj instanceof Date) {
                 return new Timestamp(((Date) obj).getTime());
@@ -1744,8 +1868,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public java.net.URL getURL(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
+            isLastColNull = true;
             return null;
         }
+        isLastColNull = false;
         try {
             return (java.net.URL) obj;
         } catch (Exception e) {
@@ -2426,12 +2552,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean wasNull() throws SQLException {
-        // return (currentColumn instanceof Types(Types.NULL));
-        throw new NotImplementedException();
+        return isLastColNull;
     }
 
     public void execute() throws SQLException {
         execute(getConnection());
+        conn = null;
     }
 
     public Connection getConnection() throws SQLException {

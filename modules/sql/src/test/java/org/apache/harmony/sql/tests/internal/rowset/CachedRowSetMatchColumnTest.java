@@ -457,4 +457,749 @@ public class CachedRowSetMatchColumnTest extends CachedRowSetTestCase {
 
     }
 
+    public void testUnsetMatchColumn_Index_Unpopulate() throws Exception {
+        int[] indexes = null;
+        try {
+            noInitialCrset.unsetMatchColumn(indexes);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        indexes = new int[0];
+
+        noInitialCrset.unsetMatchColumn(indexes);
+
+        indexes = new int[] { 1, 2, 3 };
+        try {
+            noInitialCrset.unsetMatchColumn(indexes);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        try {
+            noInitialCrset.unsetMatchColumn(-2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        try {
+            noInitialCrset.unsetMatchColumn(0);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.setMatchColumn(1);
+        try {
+            noInitialCrset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.unsetMatchColumn(1);
+
+        try {
+            noInitialCrset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn(new int[] { 1, 2, 3 });
+
+        try {
+            noInitialCrset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn(3);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.unsetMatchColumn(1);
+
+        try {
+            noInitialCrset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn(4);
+        indexes = noInitialCrset.getMatchColumnIndexes();
+        assertNotNull(indexes);
+        assertEquals(13, indexes.length);
+        assertEquals(4, indexes[0]);
+        assertEquals(2, indexes[1]);
+        assertEquals(3, indexes[2]);
+        for (int i = 3; i < indexes.length; i++) {
+            assertEquals(-1, indexes[i]);
+        }
+
+        try {
+            noInitialCrset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn(3);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.setMatchColumn(new int[] { 5, 6 });
+        try {
+            noInitialCrset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn(3);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn(4);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn(6);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.unsetMatchColumn(5);
+
+        try {
+            noInitialCrset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn(7);
+        indexes = noInitialCrset.getMatchColumnIndexes();
+        assertNotNull(indexes);
+        assertEquals(15, indexes.length);
+        assertEquals(7, indexes[0]);
+        assertEquals(6, indexes[1]);
+        assertEquals(4, indexes[2]);
+        assertEquals(2, indexes[3]);
+        assertEquals(3, indexes[4]);
+
+        for (int i = 6; i < indexes.length; i++) {
+            assertEquals(-1, indexes[i]);
+        }
+
+        noInitialCrset.unsetMatchColumn(new int[] { 7, 6 });
+        try {
+            noInitialCrset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn(new int[] { 7, 6 });
+        indexes = noInitialCrset.getMatchColumnIndexes();
+
+        assertNotNull(indexes);
+        assertEquals(17, indexes.length);
+        assertEquals(7, indexes[0]);
+        assertEquals(6, indexes[1]);
+        assertEquals(-1, indexes[2]);
+        assertEquals(-1, indexes[3]);
+        assertEquals(4, indexes[4]);
+        assertEquals(2, indexes[5]);
+        assertEquals(3, indexes[6]);
+    }
+
+    public void testUnsetMatchColumn_Index() throws Exception {
+        int[] indexes = null;
+        try {
+            crset.unsetMatchColumn(indexes);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        indexes = new int[0];
+
+        crset.unsetMatchColumn(indexes);
+
+        indexes = new int[] { 1, 2, 3 };
+        try {
+            crset.unsetMatchColumn(indexes);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        try {
+            crset.unsetMatchColumn(-2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        try {
+            crset.unsetMatchColumn(0);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.setMatchColumn(1);
+        try {
+            crset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.unsetMatchColumn(1);
+
+        try {
+            indexes = crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn(new int[] { 1, 2, 3 });
+
+        try {
+            crset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn(3);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.unsetMatchColumn(1);
+
+        try {
+            crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn(4);
+        indexes = crset.getMatchColumnIndexes();
+        assertNotNull(indexes);
+        assertEquals(13, indexes.length);
+        assertEquals(4, indexes[0]);
+        assertEquals(2, indexes[1]);
+        assertEquals(3, indexes[2]);
+        for (int i = 3; i < indexes.length; i++) {
+            assertEquals(-1, indexes[i]);
+        }
+
+        try {
+            crset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn(3);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.setMatchColumn(new int[] { 5, 6 });
+        try {
+            crset.unsetMatchColumn(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn(3);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn(4);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn(6);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.unsetMatchColumn(5);
+
+        try {
+            crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn(7);
+        indexes = crset.getMatchColumnIndexes();
+        assertNotNull(indexes);
+        assertEquals(15, indexes.length);
+        assertEquals(7, indexes[0]);
+        assertEquals(6, indexes[1]);
+        assertEquals(4, indexes[2]);
+        assertEquals(2, indexes[3]);
+        assertEquals(3, indexes[4]);
+
+        for (int i = 6; i < indexes.length; i++) {
+            assertEquals(-1, indexes[i]);
+        }
+
+        crset.unsetMatchColumn(new int[] { 7, 6 });
+        try {
+            crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn(new int[] { 7, 6 });
+        indexes = crset.getMatchColumnIndexes();
+
+        assertNotNull(indexes);
+        assertEquals(17, indexes.length);
+        assertEquals(7, indexes[0]);
+        assertEquals(6, indexes[1]);
+        assertEquals(-1, indexes[2]);
+        assertEquals(-1, indexes[3]);
+        assertEquals(4, indexes[4]);
+        assertEquals(2, indexes[5]);
+        assertEquals(3, indexes[6]);
+
+        crset.unsetMatchColumn(new int[] { 7, 6, -1, -1, 4, 2, 3 });
+        try {
+            indexes = crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+    }
+
+    public void testUnsetMatchColumn_Name_Unpopulate() throws Exception {
+        String[] names = null;
+        try {
+            noInitialCrset.unsetMatchColumn(names);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        names = new String[0];
+
+        noInitialCrset.unsetMatchColumn(names);
+
+        names = new String[] { "1", "2", "3" };
+        try {
+            noInitialCrset.unsetMatchColumn(names);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        /*
+         * TODO behavior of unsetMatchColumn(String) is not the same with
+         * unsetMatchColumn(int) in RI, we think throw SQLException is more
+         * reasonable
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            try {
+                noInitialCrset.unsetMatchColumn("");
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, Columns being unset are not the same as set
+            }
+            try {
+                noInitialCrset.unsetMatchColumn("0");
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, Columns being unset are not the same as set
+            }
+        } else {
+            try {
+                noInitialCrset.unsetMatchColumn("");
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+
+            try {
+                noInitialCrset.unsetMatchColumn("0");
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+
+        }
+
+        noInitialCrset.setMatchColumn("1");
+        try {
+            noInitialCrset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.unsetMatchColumn("1");
+
+        try {
+            noInitialCrset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn(new String[] { "1", "2", "3" });
+
+        try {
+            noInitialCrset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn("3");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.unsetMatchColumn("1");
+
+        try {
+            noInitialCrset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn("4");
+        names = noInitialCrset.getMatchColumnNames();
+        assertNotNull(names);
+        assertEquals(13, names.length);
+        assertEquals("4", names[0]);
+        assertEquals("2", names[1]);
+        assertEquals("3", names[2]);
+        for (int i = 3; i < names.length; i++) {
+            assertNull(names[i]);
+        }
+
+        try {
+            noInitialCrset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn("3");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.setMatchColumn(new String[] { "5", "6" });
+        try {
+            noInitialCrset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn("3");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn("4");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            noInitialCrset.unsetMatchColumn("6");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        noInitialCrset.unsetMatchColumn("5");
+
+        try {
+            noInitialCrset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn("7");
+        names = noInitialCrset.getMatchColumnNames();
+        assertNotNull(names);
+        assertEquals(15, names.length);
+        assertEquals("7", names[0]);
+        assertEquals("6", names[1]);
+        assertEquals("4", names[2]);
+        assertEquals("2", names[3]);
+        assertEquals("3", names[4]);
+
+        for (int i = 6; i < names.length; i++) {
+            assertNull(names[i]);
+        }
+
+        noInitialCrset.unsetMatchColumn(new String[] { "7", "6" });
+        try {
+            noInitialCrset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        noInitialCrset.setMatchColumn(new String[] { "7", "6" });
+        names = noInitialCrset.getMatchColumnNames();
+
+        assertNotNull(names);
+        assertEquals(17, names.length);
+        assertEquals("7", names[0]);
+        assertEquals("6", names[1]);
+        assertNull(names[2]);
+        assertNull(names[3]);
+        assertEquals("4", names[4]);
+        assertEquals("2", names[5]);
+        assertEquals("3", names[6]);
+    }
+
+    public void testUnsetMatchColumn_Name() throws Exception {
+        String[] names = null;
+        try {
+            crset.unsetMatchColumn(names);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        names = new String[0];
+
+        crset.unsetMatchColumn(names);
+
+        names = new String[] { "1", "2", "3" };
+        try {
+            crset.unsetMatchColumn(names);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        /*
+         * TODO behavior of unsetMatchColumn(String) is not the same with
+         * unsetMatchColumn(int) in RI, we think throw SQLException is more
+         * reasonable
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            try {
+                crset.unsetMatchColumn("");
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, Columns being unset are not the same as set
+            }
+            try {
+                crset.unsetMatchColumn("0");
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, Columns being unset are not the same as set
+            }
+        } else {
+            try {
+                crset.unsetMatchColumn("");
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+
+            try {
+                crset.unsetMatchColumn("0");
+                fail("Should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
+            }
+
+        }
+
+        crset.setMatchColumn("1");
+        try {
+            crset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.unsetMatchColumn("1");
+
+        try {
+            crset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn(new String[] { "1", "2", "3" });
+
+        try {
+            crset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn("3");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.unsetMatchColumn("1");
+
+        try {
+            crset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn("4");
+        names = crset.getMatchColumnNames();
+        assertNotNull(names);
+        assertEquals(13, names.length);
+        assertEquals("4", names[0]);
+        assertEquals("2", names[1]);
+        assertEquals("3", names[2]);
+        for (int i = 3; i < names.length; i++) {
+            assertNull(names[i]);
+        }
+
+        try {
+            crset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn("3");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.setMatchColumn(new String[] { "5", "6" });
+        try {
+            crset.unsetMatchColumn("2");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn("3");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn("4");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+        try {
+            crset.unsetMatchColumn("6");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+
+        crset.unsetMatchColumn("5");
+
+        try {
+            crset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn("7");
+        names = crset.getMatchColumnNames();
+        assertNotNull(names);
+        assertEquals(15, names.length);
+        assertEquals("7", names[0]);
+        assertEquals("6", names[1]);
+        assertEquals("4", names[2]);
+        assertEquals("2", names[3]);
+        assertEquals("3", names[4]);
+
+        for (int i = 6; i < names.length; i++) {
+            assertNull(names[i]);
+        }
+
+        crset.unsetMatchColumn(new String[] { "7", "6" });
+        try {
+            crset.getMatchColumnNames();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Set Match columns before getting them
+        }
+
+        crset.setMatchColumn(new String[] { "7", "6" });
+        names = crset.getMatchColumnNames();
+
+        assertNotNull(names);
+        assertEquals(17, names.length);
+        assertEquals("7", names[0]);
+        assertEquals("6", names[1]);
+        assertNull(names[2]);
+        assertNull(names[3]);
+        assertEquals("4", names[4]);
+        assertEquals("2", names[5]);
+        assertEquals("3", names[6]);
+
+        crset = newNoInitialInstance();
+
+        // test whether column name is case sensitive
+        crset.setMatchColumn("TesT");
+        assertEquals("TesT", crset.getMatchColumnNames()[0]);
+        try {
+            crset.unsetMatchColumn("test");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+    }
 }
