@@ -22,17 +22,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.security.AccessController;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.harmony.luni.util.PriviAction;
-
 /**
  * The Manifest class is used to obtain attribute information for a JarFile and
  * its entries.
- * 
  */
 public class Manifest implements Cloneable {
     private static final int LINE_LENGTH_LIMIT = 70;
@@ -235,14 +231,6 @@ public class Manifest implements Cloneable {
      */
     static void write(Manifest manifest, OutputStream out) throws IOException {
         Charset charset = null;
-        String encoding = AccessController
-                .doPrivileged(new PriviAction<String>("manifest.write.encoding")); //$NON-NLS-1$
-        if (encoding != null) {
-            if (encoding.length() == 0) {
-                encoding = "UTF8"; //$NON-NLS-1$
-            }
-            charset = Charset.forName(encoding);
-        }
         String version = manifest.mainAttributes
                 .getValue(Attributes.Name.MANIFEST_VERSION);
         if (version != null) {
@@ -275,7 +263,7 @@ public class Manifest implements Cloneable {
             Attributes.Name name, String value) throws IOException {
         int offset = 0;
         int limit = LINE_LENGTH_LIMIT;
-        byte[] out = (name.toString() + ": ").getBytes("ISO8859_1"); //$NON-NLS-1$ //$NON-NLS-2$
+        byte[] out = (name.toString() + ": ").getBytes("UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (out.length > limit) {
             while (out.length - offset >= limit) {
                 int len = out.length - offset;

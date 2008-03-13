@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UTFDataFormatException;
-import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.harmony.archive.internal.nls.Messages;
-import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.Util;
 
 class InitManifest {
@@ -43,10 +41,6 @@ class InitManifest {
 
     private final ByteArrayOutputStream out = new ByteArrayOutputStream(256);
 
-    private String encoding;
-
-    private boolean usingUTF8 = true;
-
     private final Map<String, Attributes.Name> attributeNames = new HashMap<String, Attributes.Name>();
 
     private final byte[] mainAttributesChunk;
@@ -54,12 +48,6 @@ class InitManifest {
     InitManifest(InputStream is, Attributes main,
             Map<String, Attributes> entries, Map<String, byte[]> chunks,
             String verString) throws IOException {
-        encoding = AccessController.doPrivileged(new PriviAction<String>(
-                "manifest.read.encoding")); //$NON-NLS-1$
-        if ("".equals(encoding)) { //$NON-NLS-1$
-            encoding = null;
-        }
-
         Attributes current = main;
         ArrayList<String> list = new ArrayList<String>();
 
@@ -67,7 +55,7 @@ class InitManifest {
         mainAttributesChunk = nextChunk(is, list);
 
         Iterator<String> it = list.iterator();
-        while (it.hasNext()) {             
+        while (it.hasNext()) {
             addAttribute(it.next(), current);
         }
 
@@ -109,36 +97,16 @@ class InitManifest {
         return mainAttributesChunk;
     }
 
-    private void addLine(int length, List<String> lines) throws IOException {        
-        if (encoding != null) {
-            lines.add(new String(buffer, 0, length, encoding));
-        } else {
-            if (usingUTF8) {
-                try {
-                    if (charbuf.length < length) {
-                        charbuf = new char[length];
-                    }
-                    int start = skipFirstEmptyLines(0, buffer);
-                    lines.add(Util.convertUTF8WithBuf(buffer, charbuf, Math.min(Math.max(length - 1, 0), start),
-                            length));
-                } catch (UTFDataFormatException e) {
-                    usingUTF8 = false;
-                }
+    private void addLine(int length, List<String> lines) throws IOException {
+        try {
+            if (charbuf.length < length) {
+                charbuf = new char[length];
             }
-            if (!usingUTF8) {
-                if (charbuf.length < length) {
-                    charbuf = new char[length];
-                }
-                // If invalid UTF8, convert bytes to chars setting the upper
-                // bytes to zeros
-                int charOffset = 0;
-                int offset = 0;
-                for (int i = length; --i >= 0;) {
-                    charbuf[charOffset++] = (char) (buffer[offset++] & 0xff);
-                }
-                int start = skipFirstEmptyLines(0, buffer);
-                lines.add(new String(charbuf, Math.min(Math.max(length - 1, 0), start), length));
-            }
+            int start = skipFirstEmptyLines(0, buffer);
+            lines.add(Util.convertUTF8WithBuf(buffer, charbuf, Math.min(Math
+                    .max(length - 1, 0), start), length));
+        } catch (UTFDataFormatException e) {
+            throw new IOException(e.getLocalizedMessage());
         }
     }
 
