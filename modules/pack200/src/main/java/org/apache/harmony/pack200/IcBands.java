@@ -55,10 +55,25 @@ public class IcBands extends BandSet {
                 innerClassCount, cpClass);
         int[] icFlags = decodeBandInt("ic_flags", in, Codec.UNSIGNED5, innerClassCount);
         int outerClasses = SegmentUtils.countBit16(icFlags);
-        String[] icOuterClass = parseReferences("ic_outer_class", in, Codec.DELTA5,
-                outerClasses, cpClass);
-        String[] icName = parseReferences("ic_name", in, Codec.DELTA5, outerClasses,
-                cpUTF8);
+        int[] icOuterClassInts = decodeBandInt("ic_outer_class", in, Codec.DELTA5,
+                outerClasses);
+        String[] icOuterClass = new String[outerClasses];
+        for (int i = 0; i < icOuterClass.length; i++) {
+        	if(icOuterClassInts[i] == 0) {
+        		icOuterClass[i] = null;
+        	} else {
+        		icOuterClass[i] = cpClass[icOuterClassInts[i] - 1];
+        	}
+		}
+        int[] icNameInts = decodeBandInt("ic_name", in, Codec.DELTA5, outerClasses);
+        String[] icName = new String[outerClasses];
+        for (int i = 0; i < icName.length; i++) {
+        	if(icNameInts[i] == 0) {
+        		icName[i] = null;
+        	} else {
+        		icName[i] = cpUTF8[icNameInts[i] - 1];
+        	}
+		}
 
         // Construct IC tuples
         icAll = new IcTuple[icThisClass.length];
