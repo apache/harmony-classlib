@@ -159,13 +159,10 @@ int
 platformReadLink (char *link)
 {
 
-  int size = readlink (link, link, HyMaxPath);
+  int size = readlink (link, link, HyMaxPath-1);
   if (size <= 0)
     return FALSE;
-  if (size >= HyMaxPath)
-    link[HyMaxPath - 1] = 0;
-  else
-    link[size] = 0;
+  link[size] = 0;
   return TRUE;
 
 }
