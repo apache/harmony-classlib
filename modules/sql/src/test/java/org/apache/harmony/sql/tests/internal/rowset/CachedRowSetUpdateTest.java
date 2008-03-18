@@ -814,4 +814,43 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.moveToCurrentRow();
         crset.acceptChanges(conn);
     }
+
+    public void testUpdateString() throws Exception {
+        crset.moveToInsertRow();
+
+        crset.updateInt(1, 50);
+        crset.updateString(2, "test100");
+        crset.updateInt(2, 2);
+        assertEquals("2", crset.getObject(2));
+
+        try {
+            crset.updateBytes(2, new byte[] { 1, 2 });
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        crset.updateDate(2, new Date(965324512));
+        assertEquals(new Date(965324512).toString(), crset.getObject(2));
+
+        crset.updateTime(2, new Time(452368512));
+        assertEquals(new Time(452368512).toString(), crset.getObject(2));
+
+        crset.updateTimestamp(2, new Timestamp(874532105));
+        assertEquals(new Timestamp(874532105).toString(), crset.getObject(2));
+
+        crset.updateBigDecimal(2, new BigDecimal(12));
+        assertEquals(new BigDecimal(12).toString(), crset.getObject(2));
+        
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateLong(6, 33);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+        crset.updateDate(10, new Date(965324512));
+        crset.updateTime(11, new Time(452368512));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+    }
 }

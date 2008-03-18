@@ -52,7 +52,9 @@ public class CachedRowSetReader implements RowSetReader {
                 columnData[i] = rs.getObject(i + 1);
             }
 
-            data.add(new CachedRow(columnData));
+            CachedRow currentRow = new CachedRow(columnData);
+            currentRow.setSqlWarning(rs.getWarnings());
+            data.add(currentRow);
 
             if (maxRows > 0 && maxRows == data.size()) {
                 break;

@@ -17,6 +17,7 @@
 package org.apache.harmony.sql.internal.rowset;
 
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.BitSet;
 
 public class CachedRow implements Cloneable {
@@ -33,6 +34,16 @@ public class CachedRow implements Cloneable {
     private boolean isUpdate;
 
     private boolean nonUpdateable = false;
+
+    private SQLWarning sqlWarning = null;
+
+    public SQLWarning getSqlWarning() {
+        return sqlWarning;
+    }
+
+    public void setSqlWarning(SQLWarning sqlWarning) {
+        this.sqlWarning = sqlWarning;
+    }
 
     public CachedRow(Object[] columnData) {
         this.columnData = columnData.clone();

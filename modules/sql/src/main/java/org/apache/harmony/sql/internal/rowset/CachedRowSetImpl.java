@@ -16,8 +16,15 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -120,7 +127,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private CachedRowSetImpl originalResultSet;
 
-    private SQLWarning sqlwarn;
+    private SQLWarning sqlwarn = new SQLWarning();
+
+    private RowSetWarning rowSetWarning = new RowSetWarning();
 
     private Class[] columnTypes;
 
@@ -535,7 +544,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public RowSetWarning getRowSetWarnings() throws SQLException {
-        throw new NotImplementedException();
+        return rowSetWarning;
     }
 
     public SyncProvider getSyncProvider() throws SQLException {
@@ -1263,7 +1272,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void clearWarnings() throws SQLException {
-        throw new NotImplementedException();
+        sqlwarn = null;
     }
 
     public void close() throws SQLException {
@@ -1400,11 +1409,38 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public InputStream getAsciiStream(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            isLastColNull = true;
+            return null;
+        }
+
+        isLastColNull = false;
+        if (obj instanceof String) {
+            obj = ((String) obj).toCharArray();
+        }
+
+        if (obj instanceof char[]) {
+            char[] cs = (char[]) obj;
+            byte[] bs = new byte[cs.length];
+
+            for (int i = 0; i < cs.length; i++) {
+                // if out of range, convert to unknown char ox3F
+                if (cs[i] > Byte.MAX_VALUE || cs[i] < Byte.MIN_VALUE) {
+                    bs[i] = 63;
+                } else {
+                    bs[i] = (byte) cs[i];
+                }
+            }
+
+            return new ByteArrayInputStream(bs);
+        }
+        // rowset.10=Data Type Mismatch
+        throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
     }
 
     public InputStream getAsciiStream(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getAsciiStream(getIndexByName(columnName));
     }
 
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
@@ -1437,11 +1473,23 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public InputStream getBinaryStream(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            isLastColNull = true;
+            return null;
+        }
+
+        isLastColNull = false;
+        if (obj instanceof byte[]) {
+            return new ByteArrayInputStream((byte[]) obj);
+        }
+
+        // rowset.10=Data Type Mismatch
+        throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
     }
 
     public InputStream getBinaryStream(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getBinaryStream(getIndexByName(columnName));
     }
 
     public Blob getBlob(int columnIndex) throws SQLException {
@@ -1521,11 +1569,29 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Reader getCharacterStream(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            isLastColNull = true;
+            return null;
+        }
+        isLastColNull = false;
+        if (obj instanceof String) {
+            return new StringReader((String) obj);
+        }
+
+        if (obj instanceof byte[]) {
+            return new StringReader(new String((byte[]) obj));
+        }
+
+        if (obj instanceof char[]) {
+            return new StringReader(new String((char[]) obj));
+        }
+        // rowset.10=Data Type Mismatch
+        throw new SQLException(Messages.getString("rowset.10"));
     }
 
     public Reader getCharacterStream(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getCharacterStream(getIndexByName(columnName));
     }
 
     public Clob getClob(int columnIndex) throws SQLException {
@@ -1885,15 +1951,42 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
-        throw new NotImplementedException();
+        Object obj = getObject(columnIndex);
+        if (obj == null) {
+            isLastColNull = true;
+            return null;
+        }
+
+        isLastColNull = false;
+
+        if (obj instanceof byte[]) {
+            return new StringBufferInputStream(new String((byte[]) obj));
+        }
+
+        if (obj instanceof String) {
+            return new StringBufferInputStream((String) obj);
+        }
+
+        if (obj instanceof char[]) {
+            return new StringBufferInputStream(new String((char[]) obj));
+        }
+
+        // rowset.10=Data Type Mismatch
+        throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
     }
 
     public InputStream getUnicodeStream(String columnName) throws SQLException {
-        throw new NotImplementedException();
+        return getUnicodeStream(getIndexByName(columnName));
     }
 
     public SQLWarning getWarnings() throws SQLException {
-        throw new NotImplementedException();
+        if (sqlwarn == null) {
+            return null;
+        }
+        if (currentRow != null && currentRow.getSqlWarning() != null) {
+            return currentRow.getSqlWarning();
+        }
+        return sqlwarn;
     }
 
     public void insertRow() throws SQLException {
@@ -2126,9 +2219,37 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         updateArray(getIndexByName(columnName), x);
     }
 
-    public void updateAsciiStream(int columnIndex, InputStream x, int length)
+    public void updateAsciiStream(int columnIndex, InputStream in, int length)
             throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        checkColumnValid(columnIndex);
+        if (isCursorOnInsert && insertRow == null) {
+            insertRow = new CachedRow(new Object[columnCount]);
+            currentRow = insertRow;
+        }
+
+        Class type = columnTypes[columnIndex - 1];
+        if (type != null && !type.equals(String.class)
+                && !type.equals(byte[].class)) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            for (int i = 0; i < length; ++i) {
+                int value = in.read();
+                if (value == -1) {
+                    throw new IndexOutOfBoundsException();
+                }
+                out.write(value);
+            }
+        } catch (IOException e) {
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
+        }
+        updateString(columnIndex, new String(out.toByteArray()));
     }
 
     public void updateAsciiStream(String columnName, InputStream x, int length)
@@ -2150,9 +2271,40 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         updateBigDecimal(getIndexByName(columnName), x);
     }
 
-    public void updateBinaryStream(int columnIndex, InputStream x, int length)
+    public void updateBinaryStream(int columnIndex, InputStream in, int length)
             throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        checkColumnValid(columnIndex);
+        if (isCursorOnInsert && insertRow == null) {
+            insertRow = new CachedRow(new Object[columnCount]);
+            currentRow = insertRow;
+        }
+
+        Class type = columnTypes[columnIndex - 1];
+        if (type != null && !type.equals(byte[].class)) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            int i = 0;
+            for (; i < length; ++i) {
+                int value = in.read();
+                if (value == -1) {
+                    out.write(0);
+                } else {
+                    out.write(value);
+                }
+            }
+
+        } catch (IOException e) {
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
+        }
+
+        updateBytes(columnIndex, out.toByteArray());
     }
 
     public void updateBinaryStream(String columnName, InputStream x, int length)
@@ -2192,9 +2344,38 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         updateBytes(getIndexByName(columnName), x);
     }
 
-    public void updateCharacterStream(int columnIndex, Reader x, int length)
+    public void updateCharacterStream(int columnIndex, Reader in, int length)
             throws SQLException {
-        throw new NotImplementedException();
+        checkValidRow();
+        checkColumnValid(columnIndex);
+        if (isCursorOnInsert && insertRow == null) {
+            insertRow = new CachedRow(new Object[columnCount]);
+            currentRow = insertRow;
+        }
+
+        Class type = columnTypes[columnIndex - 1];
+        if (type != null && !type.equals(String.class)
+                && !type.equals(byte[].class)) {
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
+        }
+
+        StringWriter out = new StringWriter();
+        try {
+            for (int i = 0; i < length; ++i) {
+                int value = in.read();
+                if (value == -1) {
+                    throw new IndexOutOfBoundsException();
+                }
+                out.write(value);
+            }
+        } catch (IOException e) {
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
+        }
+
+        updateString(columnIndex, out.toString());
     }
 
     public void updateCharacterStream(String columnName, Reader reader,
@@ -2389,6 +2570,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         if (type == null || type.isInstance(value)) {
             return value;
+        }
+
+        if (type.equals(byte[].class)) {
+            return value;
+        }
+
+        if (type.equals(String.class)) {
+            if (!(value instanceof Array) && !(value instanceof byte[])) {
+                return value.toString();
+            }
         }
 
         if (type.equals(Integer.class)) {

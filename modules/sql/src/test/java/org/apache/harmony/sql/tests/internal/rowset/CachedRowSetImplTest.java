@@ -846,14 +846,14 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crset.setInt(1, 3);
         crset.execute();
 
-        assertEquals(12, crset.getMetaData().getColumnCount());
+        assertEquals(DEFAULT_COLUMN_COUNT, crset.getMetaData().getColumnCount());
         assertTrue(crset.next());
         assertEquals("test3", crset.getString(2));
         assertFalse(crset.next());
 
         CachedRowSet crsetCopy = crset.createCopy();
         crsetCopy.execute();
-        assertEquals(12, crsetCopy.getMetaData().getColumnCount());
+        assertEquals(DEFAULT_COLUMN_COUNT, crsetCopy.getMetaData().getColumnCount());
         assertTrue(crsetCopy.next());
         assertEquals("test3", crsetCopy.getString(2));
         assertFalse(crsetCopy.next());
@@ -2415,7 +2415,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         }
 
         try {
-            noInitialCrset.toCollection(13);
+            noInitialCrset.toCollection(DEFAULT_COLUMN_COUNT + 1);
             fail("should throw SQLException");
         } catch (SQLException e) {
             // expected

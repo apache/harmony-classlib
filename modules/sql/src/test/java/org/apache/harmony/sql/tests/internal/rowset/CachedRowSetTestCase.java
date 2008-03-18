@@ -131,7 +131,7 @@ public class CachedRowSetTestCase extends TestCase {
 
         String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
                 + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
-                + "?, ?, ?, ?, ?, ? )";
+                + "?, ?, ?, ?, ?, ?)";
         PreparedStatement preStmt = conn.prepareStatement(insertSQL);
         // third row
         preStmt.setInt(1, 3);
@@ -142,7 +142,7 @@ public class CachedRowSetTestCase extends TestCase {
         preStmt.setInt(6, 13);
         preStmt.setFloat(7, 3.7F);
         preStmt.setFloat(8, 3.888F);
-        preStmt.setDouble(9, 3.9999);
+        preStmt.setDouble(9, 3.99999999);
         preStmt.setDate(10, new Date(52365412356663L));
         preStmt.setTime(11, new Time(96655422555551L));
         preStmt.setTimestamp(12, new Timestamp(52365412356663L));
@@ -170,7 +170,7 @@ public class CachedRowSetTestCase extends TestCase {
     protected void insertMoreData(int rows) throws Exception {
         String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
                 + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
-                + "?, ?, ?, ?, ?, ? )";
+                + "?, ?, ?, ?, ?, ?)";
         PreparedStatement preStmt = conn.prepareStatement(insertSQL);
 
         // insert 15 rows
