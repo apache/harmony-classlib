@@ -183,7 +183,7 @@ public class AttributeLayoutMap {
                         AttributeLayout.CONTEXT_METHOD, "*", 23),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_CLASS_FILE_VERSION,
-                        AttributeLayout.CONTEXT_CLASS, "*", 24),
+                        AttributeLayout.CONTEXT_CLASS, "", 24),
                 new AttributeLayout(
                         AttributeLayout.ATTRIBUTE_RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS,
                         AttributeLayout.CONTEXT_METHOD, "*", 24),
