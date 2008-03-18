@@ -324,6 +324,9 @@ public class SecurityTest extends TestCase {
             fail("No expected NullPointerException.");
         } catch (NullPointerException e) {
         }
+        
+        Security.setProperty("myprop","test white space    ");
+        assertEquals("test white space", Security.getProperty("myprop"));
     }
 
     /**
