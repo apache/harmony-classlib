@@ -31,9 +31,9 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 public class IcBands extends BandSet {
     private IcTuple[] icAll;
 
-    private String[] cpUTF8;
+    private final String[] cpUTF8;
 
-    private String[] cpClass;
+    private final String[] cpClass;
 
     /**
      * @param header
@@ -107,7 +107,14 @@ public class IcBands extends BandSet {
         int allTuplesSize = allTuples.length;
         for(int index=0; index < allTuplesSize; index++) {
             if(allTuples[index].outerClassString().equals(className)) {
-                relevantTuples.add(allTuples[index]);
+                // Originally I added all classes (anonymous and not anonymous).
+                // That yielded bad results on some classes. Adding just
+                // the non-anonymous classes (which is not what the
+                // spec specifies) seems to fix up a number of cases
+                // where the classes are otherwise mismatched.
+                if(!allTuples[index].isAnonymous()) {
+                    relevantTuples.add(allTuples[index]);
+                }
             }
         }
 

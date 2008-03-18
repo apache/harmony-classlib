@@ -182,4 +182,35 @@ public class IcTuple {
         result.append(')');
         return result.toString();
     }
+
+    public boolean nullSafeEquals(String stringOne, String stringTwo) {
+        if(null==stringOne) {
+            return null==stringTwo;
+        }
+        return stringOne.equals(stringTwo);
+    }
+
+    public boolean equals(Object object) {
+        if(object.getClass() != this.getClass()) {
+            return false;
+        }
+        IcTuple compareTuple = (IcTuple)object;
+
+        if(!nullSafeEquals(this.C, compareTuple.C)) {
+            return false;
+        }
+
+        if(!nullSafeEquals(this.C2, compareTuple.C2)) {
+            return false;
+        }
+
+        if(!nullSafeEquals(this.N, compareTuple.N)) {
+            return false;
+        }
+        return true;
+    }
+
+    public int hashCode() {
+        return 17 + C.hashCode() + C2.hashCode() + N.hashCode();
+    }
 }

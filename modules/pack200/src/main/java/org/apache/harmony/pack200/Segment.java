@@ -127,29 +127,44 @@ public class Segment {
 		int i = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then
 		// -1+1=0, so str.substring(0)
 		// == str
-		AttributeLayout SOURCE_FILE = attrDefinitionBands.getAttributeDefinitionMap()
-				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
-						AttributeLayout.CONTEXT_CLASS);
-		if (SOURCE_FILE.matches(classBands.getClassFlags()[classNum])) {
-		    int firstDollar = SegmentUtils.indexOfFirstDollar(fullName);
-		    String fileName = null;
 
-		    if(firstDollar > -1 && (i <= firstDollar)) {
-		        fileName = fullName.substring(i, firstDollar) + ".java";
-		    } else {
-		        fileName = fullName.substring(i) + ".java";
-		    }
-			classFile.attributes = new Attribute[] { (Attribute) cp
-					.add(new SourceFileAttribute(cpBands.cpUTF8Value(fileName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ))) };
-		} else {
-			classFile.attributes = new Attribute[] {};
-		}
-		
+		// Get the source file attribute
+        ArrayList classAttributes = classBands.getClassAttributes()[classNum];
+        SourceFileAttribute sourceFileAttribute = null;
+        for(int index=0; index < classAttributes.size(); index++) {
+            if(((Attribute)classAttributes.get(index)).isSourceFileAttribute()) {
+                sourceFileAttribute = ((SourceFileAttribute)classAttributes.get(index));
+            }
+        }
+
+        if(sourceFileAttribute == null) {
+            // If we don't have a source file attribute yet, we need
+            // to infer it from the class.
+            AttributeLayout SOURCE_FILE = attrDefinitionBands.getAttributeDefinitionMap()
+    				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
+    						AttributeLayout.CONTEXT_CLASS);
+    		if (SOURCE_FILE.matches(classBands.getClassFlags()[classNum])) {
+    		    int firstDollar = SegmentUtils.indexOfFirstDollar(fullName);
+    		    String fileName = null;
+
+    		    if(firstDollar > -1 && (i <= firstDollar)) {
+    		        fileName = fullName.substring(i, firstDollar) + ".java";
+    		    } else {
+    		        fileName = fullName.substring(i) + ".java";
+    		    }
+    		    sourceFileAttribute = new SourceFileAttribute(cpBands.cpUTF8Value(fileName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ));
+    			classFile.attributes = new Attribute[] { (Attribute) cp
+    					.add(sourceFileAttribute) };
+    		} else {
+                classFile.attributes = new Attribute[] {};
+            }
+        } else {
+            classFile.attributes = new Attribute[] { (Attribute) cp.add(sourceFileAttribute)};
+        }
+
 		// If we see any class attributes, add them to the class's attributes that will
 		// be written out. Keep SourceFileAttributes out since we just
-		// did them above. (One of the computations for SourceFileAttribute
-		// may be redundant.)
-	    ArrayList classAttributes = classBands.getClassAttributes()[classNum];
+		// did them above.
 	    ArrayList classAttributesWithoutSourceFileAttribute = new ArrayList();
 	    for(int index=0; index < classAttributes.size(); index++) {
 	        Attribute attrib = (Attribute)classAttributes.get(index);
@@ -159,7 +174,7 @@ public class Segment {
 	    }
         Attribute[] originalAttributes = classFile.attributes;
         classFile.attributes = new Attribute[originalAttributes.length + classAttributesWithoutSourceFileAttribute.size()];
-        System.arraycopy(originalAttributes, 0, classFile.attributes, 0, originalAttributes.length);        
+        System.arraycopy(originalAttributes, 0, classFile.attributes, 0, originalAttributes.length);
 	    for(int index=0; index < classAttributesWithoutSourceFileAttribute.size(); index++) {
 	        Attribute attrib = ((Attribute)classAttributesWithoutSourceFileAttribute.get(index));
 	        cp.add(attrib);
@@ -200,11 +215,23 @@ public class Segment {
 
 		// add inner class attribute (if required)
 		boolean addInnerClassesAttr = false;
+		// TODO: remove the debug info below
+//        String debugClass = getClassBands().getClassThis()[classNum];
+//        SegmentUtils.debug("buildClassFile: class is " + debugClass);
+//        if("com/ibm/collaboration/realtime/application/RTCMainPlugin".equals(foo)) {
+//            SegmentUtils.debug("self halt");
+//        }
 		IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
 		boolean ic_local_sent = false;
 		if(ic_local != null) {
 		    ic_local_sent = true;
 		}
+		// TODO: remove the debug code below
+//		if(ic_local_sent) {
+//		    for(int xx = 0; xx < ic_local.length; xx++) {
+//		        SegmentUtils.debug("ic_local[" + xx + "]=" + ic_local[xx]);
+//		    }
+//		}
 		InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute("InnerClasses");
 		IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
 		IcTuple[] ic_stored = computeIcStored(ic_local, ic_relevant);
