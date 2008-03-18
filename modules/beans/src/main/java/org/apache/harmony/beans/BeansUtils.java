@@ -26,4 +26,32 @@ public class BeansUtils {
     public static final int getHashCode(boolean b) {
         return b?1:0;
     }
+    
+    public static String toASCIILowerCase(String s) {
+        int len = s.length();
+        StringBuilder buffer = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if ('A' <= c && c <= 'Z') {
+                buffer.append((char) (c + ('a' - 'A')));
+            } else {
+                buffer.append(c);
+            }
+        }
+        return buffer.toString();
+    }
+    
+    public static String toASCIIUpperCase(String s) {
+        int len = s.length();
+        StringBuilder buffer = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if ('a' <= c && c <= 'z') {
+                buffer.append((char) (c - ('a' - 'A')));
+            } else {
+                buffer.append(c);
+            }
+        }
+        return buffer.toString();
+    }
 }
