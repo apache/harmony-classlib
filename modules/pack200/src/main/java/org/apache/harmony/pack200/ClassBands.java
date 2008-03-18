@@ -83,13 +83,13 @@ public class ClassBands extends BandSet {
 
     private long[][] methodFlags;
 
-    private AttributeLayoutMap attrMap;
+    private final AttributeLayoutMap attrMap;
 
-    private CpBands cpBands;
+    private final CpBands cpBands;
 
-    private SegmentOptions options;
+    private final SegmentOptions options;
 
-    private int classCount;
+    private final int classCount;
 
     private int[] methodAttrCalls;
 
