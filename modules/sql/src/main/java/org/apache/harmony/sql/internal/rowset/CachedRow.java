@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.BitSet;
 
+import org.apache.harmony.sql.internal.nls.Messages;
+
 public class CachedRow implements Cloneable {
     private Object[] columnData;
 
@@ -121,8 +123,8 @@ public class CachedRow implements Cloneable {
 
     public void updateObject(int columnIndex, Object x) throws SQLException {
         if (nonUpdateable) {
-            // TODO load message from resource file
-            throw new SQLException("Not Updateable of the CurrentRow");
+            // rowset.21=Not Updateable of the CurrentRow
+            throw new SQLException(Messages.getString("rowset.21")); //$NON-NLS-1$
         }
 
         columnData[columnIndex - 1] = x;

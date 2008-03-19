@@ -143,7 +143,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private Connection conn;
 
-    private static Map<Integer, Class> TYPE_MAPPING = initialTypeMapping();
+    private boolean isNotifyListener = true;
+
+    private static Map<Integer, Class<?>> TYPE_MAPPING = initialTypeMapping();
 
     public static final String PROVIDER_ID = "Apache Harmony HYOptimisticProvider"; //$NON-NLS-1$
 
@@ -152,8 +154,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         initialProperties();
     }
 
-    private static Map<Integer, Class> initialTypeMapping() {
-        HashMap<Integer, Class> map = new HashMap<Integer, Class>();
+    private static Map<Integer, Class<?>> initialTypeMapping() {
+        HashMap<Integer, Class<?>> map = new HashMap<Integer, Class<?>>();
         map.put(Integer.valueOf(Types.ARRAY), Array.class);
         map.put(Integer.valueOf(Types.BIGINT), Long.class);
         map.put(Integer.valueOf(Types.BINARY), byte[].class);
@@ -215,7 +217,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void acceptChanges() throws SyncProviderException {
         if (isCursorOnInsert) {
             // rowset.11=Illegal operation on an insert row
-            throw new SyncProviderException(Messages.getString("rowset.11"));
+            throw new SyncProviderException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
 
         Connection currentConn = null;
@@ -315,7 +317,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                 absolute(index);
             }
 
-            notifyRowSetChanged();
+            if (isNotifyListener) {
+                notifyRowSetChanged();
+            }
 
         } catch (SyncProviderException e) {
             throw e;
@@ -381,12 +385,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             output = (CachedRowSetImpl) super.clone();
             // BaseRowSet.params
             Field paramsField = output.getClass().getSuperclass()
-                    .getDeclaredField("params");
+                    .getDeclaredField("params"); //$NON-NLS-1$
             paramsField.setAccessible(true);
             paramsField.set(output, paramsHashtable);
             // BaseRowSet.listeners
             Field listenersField = output.getClass().getSuperclass()
-                    .getDeclaredField("listeners");
+                    .getDeclaredField("listeners"); //$NON-NLS-1$
             listenersField.setAccessible(true);
             listenersField.set(output, listeners);
             // BaseRowSet.map
@@ -438,14 +442,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
             return output;
         } catch (CloneNotSupportedException e) {
-            // TODO add error message
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         } catch (NoSuchFieldException e) {
-            // TODO add error message
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         } catch (IllegalAccessException e) {
-            // TODO add error message
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
     }
 
@@ -479,22 +480,21 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         try {
             result = (RowSet) super.clone();
         } catch (CloneNotSupportedException e) {
-            // TODO add error message
-            throw new SQLException();
+            throw new SQLException(e.getMessage());
         }
 
         return result;
     }
 
-    public void execute(Connection conn) throws SQLException {
+    public void execute(Connection connection) throws SQLException {
         String localCommand = getCommand();
         if (localCommand == null || getParams() == null) {
             // rowset.16=Not a valid command
-            throw new SQLException(Messages.getString("rowset.16"));
+            throw new SQLException(Messages.getString("rowset.16")); //$NON-NLS-1$
         }
 
-        this.conn = conn;
-        PreparedStatement ps = conn.prepareStatement(localCommand);
+        conn = connection;
+        PreparedStatement ps = connection.prepareStatement(localCommand);
         Object[] params = getParams();
         for (int i = 0; i < params.length; i++)
             ps.setObject(i + 1, params[i]);
@@ -515,7 +515,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int[] getKeyColumns() throws SQLException {
-        return keyCols == null ? null : keyCols.clone();
+        if (rows == null) {
+            // TODO add error messages
+            throw new SQLException();
+        }
+        if (keyCols == null) {
+            return new int[0];
+        }
+
+        return keyCols;
     }
 
     public ResultSet getOriginal() throws SQLException {
@@ -560,9 +568,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      */
     public boolean nextPage() throws SQLException {
         if (rows == null || nextPageRowIndex == -1 || getPageSize() == 0) {
-            // TODO load message from resource file
-            throw new SQLException(
-                    "Using execute() method populate data before calling");
+            // rowset.19=Populate data before calling
+            throw new SQLException(Messages.getString("rowset.19")); //$NON-NLS-1$
         }
 
         if (cachedResultSet == null) {
@@ -586,7 +593,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                     index++;
                 }
 
+                isNotifyListener = false;
                 doPopulate(rs, true);
+                notifyRowSetChanged();
+                isNotifyListener = true;
 
                 if (rows.size() == 0) {
                     return false;
@@ -602,7 +612,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         if (cachedResultSet.absolute(nextPageRowIndex)) {
             cachedResultSet.previous();
+
+            isNotifyListener = false;
             doPopulate(cachedResultSet, true);
+            notifyRowSetChanged();
+            isNotifyListener = true;
 
             if (rows.size() == 0) {
                 return false;
@@ -655,6 +669,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     private void doPopulate(ResultSet rs, boolean isPaging) throws SQLException {
+        isNotifyListener = false;
         meta = copyMetaData(rs.getMetaData());
 
         columnCount = meta.getColumnCount();
@@ -698,6 +713,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         // recovery the states
         beforeFirst();
+
+        isNotifyListener = true;
+        if (isNotifyListener) {
+            notifyRowSetChanged();
+        }
     }
 
     // deep copy of ResultSetMetaData
@@ -744,9 +764,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public boolean previousPage() throws SQLException {
         if (rows == null || previousPageRowIndex == -1 || getPageSize() == 0) {
-            // TODO load message from resource file
-            throw new SQLException(
-                    "Using execute() method populate data before calling");
+            // rowset.19=Populate data before calling
+            throw new SQLException(Messages.getString("rowset.19")); //$NON-NLS-1$
         }
 
         if (previousPageRowIndex == 0) {
@@ -788,7 +807,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                         && previousPageRowIndex - startIndex + 1 != prePageSize) {
                     setPageSize(previousPageRowIndex - startIndex + 1);
                 }
+                isNotifyListener = false;
                 doPopulate(rs, true);
+                notifyRowSetChanged();
+                isNotifyListener = true;
 
                 setPageSize(prePageSize);
 
@@ -834,8 +856,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void release() throws SQLException {
-        // TODO send a rowSetChanged event to all listeners
         rows = new ArrayList<CachedRow>();
+        notifyRowSetChanged();
     }
 
     public void restoreOriginal() throws SQLException {
@@ -843,6 +865,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return;
         }
 
+        isNotifyListener = false;
         List<CachedRow> insertedRows = new ArrayList<CachedRow>();
         for (CachedRow row : rows) {
             if (row.isInsert()) {
@@ -857,8 +880,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         deletedRowCount = 0;
 
         first();
-
-        // TODO fire rowSetChanged event
+        isNotifyListener = true;
+        notifyRowSetChanged();
     }
 
     public void rollback() throws SQLException {
@@ -881,7 +904,22 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void setKeyColumns(int[] keys) throws SQLException {
-        keyCols = keys.clone();
+        if (keys == null) {
+            throw new NullPointerException();
+        }
+
+        if (rows == null) {
+            keyCols = keys.clone();
+        } else {
+            for (int key : keys) {
+                if (key <= 0 || key > columnCount) {
+                    // sql.27=Invalid column index :{0}
+                    throw new SQLException(Messages.getString("sql.27", key)); //$NON-NLS-1$
+                }
+            }
+
+            keyCols = keys.clone();
+        }
     }
 
     public void setMetaData(RowSetMetaData md) throws SQLException {
@@ -936,9 +974,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Collection<?> toCollection() throws SQLException {
         if (rows == null) {
             // sql.38=Object is invalid
-            throw new SQLException(Messages.getString("sql.38"));
+            throw new SQLException(Messages.getString("sql.38")); //$NON-NLS-1$
         }
-        List<Vector> list = new ArrayList<Vector>();
+        List<Vector<Object>> list = new ArrayList<Vector<Object>>();
         if (rows.size() > 0) {
             Vector<Object> vector = null;
             for (int i = 0; i < rows.size(); i++) {
@@ -956,12 +994,12 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Collection<?> toCollection(int column) throws SQLException {
         if (rows == null) {
             // sql.38=Object is invalid
-            throw new SQLException(Messages.getString("sql.38"));
+            throw new SQLException(Messages.getString("sql.38")); //$NON-NLS-1$
         }
 
         if (column <= 0 || column > columnCount) {
             // sql.42=Illegal Argument
-            throw new SQLException(Messages.getString("sql.42"));
+            throw new SQLException(Messages.getString("sql.42")); //$NON-NLS-1$
         }
 
         Vector<Object> vector = new Vector<Object>();
@@ -979,46 +1017,56 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void undoDelete() throws SQLException {
         if (isAfterLast() || isBeforeFirst()) {
-            // TODO add error messages
-            throw new SQLException();
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
 
         if (currentRow != null && !currentRow.isDelete()) {
-            // TODO add error messages
-            throw new SQLException();
+            // rowset.0=Not a valid position
+            throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
         }
 
         if (currentRow != null && currentRow.isDelete()) {
             currentRow.undoDelete();
             deletedRowCount--;
         }
+
+        if (isNotifyListener) {
+            notifyRowChanged();
+        }
     }
 
     public void undoInsert() throws SQLException {
-        // TODO notify listener
         checkValidRow();
         if (isCursorOnInsert) {
             // rowset.11=Illegal operation on an insert row
-            throw new SQLException(Messages.getString("rowset.11"));
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
         if (!rowInserted()) {
             // rowset.4=Not an insert row
-            throw new SQLException(Messages.getString("rowset.4"));
+            throw new SQLException(Messages.getString("rowset.4")); //$NON-NLS-1$
         }
         rows.remove(currentRow);
         next();
+        if (isNotifyListener) {
+            notifyRowChanged();
+        }
     }
 
     public void undoUpdate() throws SQLException {
         checkValidRow();
         if (isCursorOnInsert && insertRow == null) {
             // rowset.11=Illegal operation on an insert row
-            throw new SQLException(Messages.getString("rowset.11"));
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
         if (currentRow == insertRow) {
             currentRow = new CachedRow(new Object[columnCount]);
         } else if (rowUpdated()) {
             currentRow.restoreOriginal();
+        }
+
+        if (isNotifyListener) {
+            notifyRowChanged();
         }
     }
 
@@ -1044,7 +1092,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void setMatchColumn(int columnIdx) throws SQLException {
         if (columnIdx < 0) {
             // TODO why is 0 valid? load message from resource files
-            throw new SQLException("Match columns should be greater than 0");
+            // rowset.20=Match columns should be greater than 0
+            throw new SQLException(Messages.getString("rowset.20")); //$NON-NLS-1$
         }
 
         if (matchColumnIndexes == null) {
@@ -1067,7 +1116,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         for (int i : columnIdxes) {
             if (i < 0) {
                 // TODO why is 0 valid? load message from resource files
-                throw new SQLException("Match columns should be greater than 0");
+                // rowset.20=Match columns should be greater than 0
+                throw new SQLException(Messages.getString("rowset.20")); //$NON-NLS-1$
             }
         }
 
@@ -1219,6 +1269,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
         }
         if (rows == null || rows.size() == 0) {
+            if (isNotifyListener) {
+                notifyCursorMoved();
+            }
             return false;
         }
 
@@ -1234,17 +1287,26 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         if (row <= 0) {
             currentRowIndex = 0;
             currentRow = null;
+            if (isNotifyListener) {
+                notifyCursorMoved();
+            }
             return false;
         }
 
         if (row > rows.size()) {
             currentRowIndex = rows.size() + 1;
             currentRow = null;
+            if (isNotifyListener) {
+                notifyCursorMoved();
+            }
             return false;
         }
 
         currentRowIndex = row;
         currentRow = rows.get(currentRowIndex - 1);
+        if (isNotifyListener) {
+            notifyCursorMoved();
+        }
         return true;
     }
 
@@ -1261,13 +1323,18 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void cancelRowUpdates() throws SQLException {
-        if (currentRow == null || currentRow == insertRow) {
-            // TODO add error message
-            throw new SQLException();
+        if (currentRow == null) {
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
+        if (isCursorOnInsert) {
+            // rowset.11=Illegal operation on an insert row
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
 
         if (rowUpdated()) {
             currentRow.restoreOriginal();
+            notifyRowChanged();
         }
     }
 
@@ -1295,12 +1362,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void deleteRow() throws SQLException {
         checkValidRow();
-        if (currentRow == insertRow) {
-            // TODO add error message
-            throw new SQLException();
+        if (isCursorOnInsert) {
+            // rowset.11=Illegal operation on an insert row
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
         currentRow.setDelete();
         deletedRowCount++;
+        if (isNotifyListener) {
+            notifyRowChanged();
+        }
     }
 
     private void checkValidRow() throws SQLException {
@@ -1400,7 +1470,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return (Array) obj;
         } catch (ClassCastException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1454,7 +1524,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return new BigDecimal(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1503,7 +1573,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return (Blob) obj;
         } catch (ClassCastException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1522,7 +1592,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Boolean.parseBoolean(obj.toString());
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1541,7 +1611,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Byte.parseByte(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1560,7 +1630,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return (byte[]) obj;
         } catch (ClassCastException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1587,7 +1657,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return new StringReader(new String((char[]) obj));
         }
         // rowset.10=Data Type Mismatch
-        throw new SQLException(Messages.getString("rowset.10"));
+        throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
     }
 
     public Reader getCharacterStream(String columnName) throws SQLException {
@@ -1605,7 +1675,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return (Clob) obj;
         } catch (ClassCastException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1619,7 +1689,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
          */
         if (cursorName == null) {
             // rowset.14=Positioned updates not supported
-            throw new SQLException(Messages.getString("rowset.14"));
+            throw new SQLException(Messages.getString("rowset.14")); //$NON-NLS-1$
         }
         return cursorName;
     }
@@ -1638,10 +1708,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                 return new Date(((Timestamp) obj).getTime());
             }
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1668,7 +1738,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Double.parseDouble(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1687,7 +1757,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Float.parseFloat(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1706,7 +1776,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Integer.parseInt(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1725,7 +1795,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Long.parseLong(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1740,11 +1810,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public Object getObject(int columnIndex) throws SQLException {
         if (meta == null || currentRow == null) {
             // rowset.7=Not a valid cursor
-            throw new SQLException(Messages.getString("rowset.7"));
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
         if (columnIndex <= 0 || columnIndex > columnCount) {
             // sql.27=Invalid column index :{0}
-            throw new SQLException(Messages.getString("sql.27", columnIndex));
+            throw new SQLException(Messages.getString("sql.27", columnIndex)); //$NON-NLS-1$
         }
         Object obj = currentRow.getObject(columnIndex);
         if (obj == null) {
@@ -1780,7 +1850,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return (Ref) obj;
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1824,7 +1894,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Short.parseShort(obj.toString());
         } catch (NumberFormatException e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1848,7 +1918,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return obj.toString();
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1878,10 +1948,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                 return new Time(((Timestamp) obj).getTime());
             }
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1913,7 +1983,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return Timestamp.valueOf(obj.toString());
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1942,7 +2012,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return (java.net.URL) obj;
         } catch (Exception e) {
             // rowset.10=Data Type Mismatch
-            throw new SQLException(Messages.getString("rowset.10"));
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
     }
 
@@ -1950,6 +2020,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         return getURL(getIndexByName(columnName));
     }
 
+    @SuppressWarnings("deprecation")
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
         Object obj = getObject(columnIndex);
         if (obj == null) {
@@ -2003,12 +2074,15 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             }
         }
         if (!isValueSet) {
-            // TODO add error message
-            throw new SQLException();
+            // rowset.18=None column is updated
+            throw new SQLException(Messages.getString("rowset.18")); //$NON-NLS-1$
         }
         insertRow.setInsert();
         rows.add(insertRow);
         insertRow = null;
+        if (isNotifyListener) {
+            notifyRowChanged();
+        }
     }
 
     public boolean isAfterLast() throws SQLException {
@@ -2141,8 +2215,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         checkValidRow();
         if (isCursorOnInsert) {
             // rowset.0=Not a valid position
-            throw new SQLException(Messages.getString("rowset.0"));
+            throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
         }
+        currentRow.restoreOriginal();
     }
 
     public boolean relative(int moveRows) throws SQLException {
@@ -2228,7 +2303,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             currentRow = insertRow;
         }
 
-        Class type = columnTypes[columnIndex - 1];
+        Class<?> type = columnTypes[columnIndex - 1];
         if (type != null && !type.equals(String.class)
                 && !type.equals(byte[].class)) {
             // rowset.10=Data Type Mismatch
@@ -2280,7 +2355,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             currentRow = insertRow;
         }
 
-        Class type = columnTypes[columnIndex - 1];
+        Class<?> type = columnTypes[columnIndex - 1];
         if (type != null && !type.equals(byte[].class)) {
             // rowset.10=Data Type Mismatch
             throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
@@ -2353,7 +2428,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             currentRow = insertRow;
         }
 
-        Class type = columnTypes[columnIndex - 1];
+        Class<?> type = columnTypes[columnIndex - 1];
         if (type != null && !type.equals(String.class)
                 && !type.equals(byte[].class)) {
             // rowset.10=Data Type Mismatch
@@ -2458,7 +2533,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throws SQLException {
         checkValidRow();
         checkColumnValid(columnIndex);
-        Class type = columnTypes[columnIndex - 1];
+        Class<?> type = columnTypes[columnIndex - 1];
         // ava.sql.Types.DECIMA or java.sql.Types.NUMERIC types
         if (type.equals(BigDecimal.class)) {
             /*
@@ -2501,13 +2576,18 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateRow() throws SQLException {
-        if ((currentRow == insertRow)
-                || (getConcurrency() == (ResultSet.CONCUR_READ_ONLY))) {
-            // TODO add error messages
-            throw new SQLException();
+        if (isCursorOnInsert) {
+            // rowset.11=Illegal operation on an insert row
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
+        }
+        if (getConcurrency() == (ResultSet.CONCUR_READ_ONLY)) {
+            // rowset.17=The Result Set is CONCUR_READ_ONLY
+            throw new SQLException(Messages.getString("rowset.17")); //$NON-NLS-1$
         }
         currentRow.setUpdate();
-        notifyRowChanged();
+        if (isNotifyListener) {
+            notifyRowChanged();
+        }
     }
 
     public void updateShort(int columnIndex, short x) throws SQLException {
@@ -2554,6 +2634,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      * @param value
      *            the new value to be updated
      */
+    @SuppressWarnings("boxing")
     private Object convertUpdateValue(int columnIndex, Object value)
             throws SQLException {
 
@@ -2561,7 +2642,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             return value;
         }
 
-        Class type = columnTypes[columnIndex - 1];
+        Class<?> type = columnTypes[columnIndex - 1];
 
         /*
          * TODO if type == null, the type mapping is not supported by Harmony
@@ -2714,6 +2795,43 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         if (type.equals(BigDecimal.class)) {
             return value;
+        }
+
+        if (type.equals(Date.class)) {
+            if (value instanceof Timestamp) {
+                Timestamp timestamp = (Timestamp) value;
+                return new Date(timestamp.getTime());
+            }
+
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(Time.class)) {
+            if (value instanceof Timestamp) {
+                Timestamp timestamp = (Timestamp) value;
+                return new Time(timestamp.getTime());
+            }
+
+            if (value instanceof String) {
+                return value;
+            }
+        }
+
+        if (type.equals(Timestamp.class)) {
+            if (value instanceof Date) {
+                Date date = (Date) value;
+                return new Timestamp(date.getTime());
+            }
+            if (value instanceof Time) {
+                Time time = (Time) value;
+                return new Timestamp(time.getTime());
+            }
+
+            if (value instanceof String) {
+                return value;
+            }
         }
 
         // rowset.10=Data Type Mismatch

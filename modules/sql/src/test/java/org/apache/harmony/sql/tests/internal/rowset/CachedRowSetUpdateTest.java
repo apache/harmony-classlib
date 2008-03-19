@@ -169,6 +169,8 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
 
     public void testCancelRowUpdates() throws Exception {
         noInitialCrset = newNoInitialInstance();
+        Listener listener = new Listener();
+        noInitialCrset.addRowSetListener(listener);
         try {
             noInitialCrset.cancelRowUpdates();
             fail("should throw exception");
@@ -214,7 +216,9 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         assertTrue(noInitialCrset.absolute(3));
         noInitialCrset.updateString(2, "update3");
         // call cancelRowUpdates() before updateRow(), no effect here
+        listener.clear();
         noInitialCrset.cancelRowUpdates();
+        assertNull(listener.getTag());
         assertEquals("update3", noInitialCrset.getString(2));
         noInitialCrset.updateRow();
         noInitialCrset.acceptChanges(conn);
@@ -226,7 +230,11 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         noInitialCrset.updateRow();
         assertEquals("update4", noInitialCrset.getString(2));
         // call cancelRowUpdates() after updateRow(), it works here
+
+        listener.clear();
         noInitialCrset.cancelRowUpdates();
+        assertEquals(CachedRowSetListenerTest.EVENT_ROW_CHANGED, listener
+                .getTag());
         assertEquals("test4", noInitialCrset.getString(2));
         noInitialCrset.acceptChanges(conn);
         assertEquals("test4", noInitialCrset.getString(2));
@@ -841,7 +849,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
 
         crset.updateBigDecimal(2, new BigDecimal(12));
         assertEquals(new BigDecimal(12).toString(), crset.getObject(2));
-        
+
         crset.updateLong(3, 444423L);
         crset.updateBigDecimal(4, new BigDecimal(12));
         crset.updateBigDecimal(5, new BigDecimal(23));
@@ -852,5 +860,169 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.updateDate(10, new Date(965324512));
         crset.updateTime(11, new Time(452368512));
         crset.updateTimestamp(12, new Timestamp(874532105));
+    }
+
+    public void testUpdateDate() throws Exception {
+        crset.moveToInsertRow();
+
+        crset.updateInt(1, 50);
+        crset.updateString(2, "test100");
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateLong(6, 33);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+
+        crset.updateDate(10, new Date(965324512));
+        try {
+            crset.updateInt(10, 12345);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateLong(10, 123456789L);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateDouble(10, 123456789.2398);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateTime(10, new Time(452368512));
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        crset.updateString(10, "test");
+        assertTrue(crset.getObject(10) instanceof String);
+        assertEquals("test", crset.getObject(10));
+
+        crset.updateTimestamp(10, new Timestamp(874532105));
+        assertTrue(crset.getObject(10) instanceof Date);
+        assertEquals(new Timestamp(874532105).getTime(), crset.getDate(10)
+                .getTime());
+
+        crset.updateTime(11, new Time(452368512));
+        crset.updateTimestamp(12, new Timestamp(874532105));
+    }
+
+    public void testUpdateTime() throws Exception {
+        crset.moveToInsertRow();
+
+        crset.updateInt(1, 50);
+        crset.updateString(2, "test100");
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateLong(6, 33);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+        crset.updateDate(10, new Date(965324512));
+
+        crset.updateTime(11, new Time(452368512));
+
+        try {
+            crset.updateInt(11, 12345);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateLong(11, 123456789L);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateDouble(11, 123456789.2398);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateDate(11, new Date(452368512));
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        crset.updateString(11, "test");
+        assertTrue(crset.getObject(11) instanceof String);
+        assertEquals("test", crset.getObject(11));
+
+        crset.updateTimestamp(11, new Timestamp(874532105));
+        assertTrue(crset.getObject(11) instanceof Time);
+        assertEquals(new Timestamp(874532105).getTime(), crset.getTime(11)
+                .getTime());
+
+        crset.updateTimestamp(12, new Timestamp(874532105));
+    }
+
+    public void testUpdateTimestamp() throws Exception {
+        crset.moveToInsertRow();
+
+        crset.updateInt(1, 50);
+        crset.updateString(2, "test100");
+        crset.updateLong(3, 444423L);
+        crset.updateBigDecimal(4, new BigDecimal(12));
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateLong(6, 33);
+        crset.updateFloat(7, 4.8F);
+        crset.updateFloat(8, 4.888F);
+        crset.updateDouble(9, 4.9999);
+        crset.updateDate(10, new Date(965324512));
+        crset.updateTime(11, new Time(452368512));
+
+        crset.updateTimestamp(12, new Timestamp(874532105));
+
+        try {
+            crset.updateInt(12, 12345);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateLong(12, 123456789L);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        try {
+            crset.updateDouble(12, 123456789.2398);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Data Type Mismatch
+        }
+
+        crset.updateString(12, "test");
+        assertTrue(crset.getObject(12) instanceof String);
+        assertEquals("test", crset.getObject(12));
+
+        crset.updateDate(12, new Date(452368512));
+        assertTrue(crset.getObject(12) instanceof Timestamp);
+        assertEquals(new Date(452368512).getTime(), crset.getTimestamp(12)
+                .getTime());
+
+        crset.updateTime(12, new Time(874532105));
+        assertTrue(crset.getObject(12) instanceof Timestamp);
+        assertEquals(new Timestamp(874532105).getTime(), crset.getTimestamp(12)
+                .getTime());
     }
 }

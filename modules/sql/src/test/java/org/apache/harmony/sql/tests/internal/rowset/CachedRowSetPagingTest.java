@@ -31,6 +31,8 @@ public class CachedRowSetPagingTest extends CachedRowSetTestCase {
     public void testPagingInMemory() throws Exception {
         insertMoreData(10);
         crset = newNoInitialInstance();
+        Listener listener = new Listener();
+        crset.addRowSetListener(listener);
 
         st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                 ResultSet.CONCUR_UPDATABLE);
@@ -52,7 +54,10 @@ public class CachedRowSetPagingTest extends CachedRowSetTestCase {
             assertEquals(i, crset.getInt(1));
         }
 
+        listener.clear();
         assertTrue(crset.nextPage());
+        assertEquals(CachedRowSetListenerTest.EVENT_ROWSET_CHANGED, listener
+                .getTag());
 
         crset.beforeFirst();
 
@@ -71,6 +76,8 @@ public class CachedRowSetPagingTest extends CachedRowSetTestCase {
         insertMoreData(4);
 
         crset = newNoInitialInstance();
+        Listener listener = new Listener();
+        crset.addRowSetListener(listener);
 
         st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                 ResultSet.CONCUR_UPDATABLE);
@@ -118,9 +125,14 @@ public class CachedRowSetPagingTest extends CachedRowSetTestCase {
 
         assertFalse(crset.next());
         assertTrue(crset.isAfterLast());
+        listener.clear();
         assertFalse(crset.nextPage());
+        assertNull(listener.getTag());
 
+        listener.clear();
         assertTrue(crset.previousPage());
+        assertEquals(CachedRowSetListenerTest.EVENT_ROWSET_CHANGED, listener
+                .getTag());
 
         if (!"true".equals(System.getProperty("Testing Harmony"))) {
             // RI need previousPage one more time

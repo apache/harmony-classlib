@@ -256,4 +256,7 @@ public class CachedRowSetTestCase extends TestCase {
         crset.setUrl(DERBY_URL);
     }
 
+    public void testTestCase() throws Exception {
+        // do nothing
+    }
 }
