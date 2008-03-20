@@ -51,14 +51,11 @@ public class CachedRowSetWriter implements RowSetWriter {
         return originalConnection;
     }
 
-    /**
-     * TODO add transaction
-     */
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
         initial(theRowSet);
         // analyse every row and do responsible task.
-        currentRowSet.beforeFirst();// currentRowSet.first();
-        originalRowSet.beforeFirst();// originalRowSet.first();
+        currentRowSet.beforeFirst();
+        originalRowSet.beforeFirst();
         resolver = null;
         while (currentRowSet.next()) {
             if (currentRowSet.rowInserted()) {
@@ -89,7 +86,6 @@ public class CachedRowSetWriter implements RowSetWriter {
         if (resolver != null) {
             throw new SyncProviderException(resolver);
         }
-        // TODO release resource
         return true;
     }
 

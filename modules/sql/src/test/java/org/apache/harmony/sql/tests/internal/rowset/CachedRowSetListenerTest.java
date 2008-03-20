@@ -17,6 +17,10 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.sql.SQLException;
+
+import javax.sql.RowSetEvent;
+
 public class CachedRowSetListenerTest extends CachedRowSetTestCase {
 
     public static final String EVENT_CURSOR_MOVED = "cursorMoved";
@@ -198,11 +202,7 @@ public class CachedRowSetListenerTest extends CachedRowSetTestCase {
         crset.updateString(2, "insert10");
         crset.insertRow();
         crset.moveToCurrentRow();
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            assertTrue(crset.last());
-        } else {
-            assertTrue(crset.next());
-        }
+        assertTrue(crset.next());
         assertEquals("insert10", crset.getString(2));
         assertTrue(crset.rowInserted());
         listener.clear();
@@ -218,11 +218,7 @@ public class CachedRowSetListenerTest extends CachedRowSetTestCase {
         crset.updateString(2, "insert11");
         crset.insertRow();
         crset.moveToCurrentRow();
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            assertTrue(crset.last());
-        } else {
-            assertTrue(crset.next());
-        }
+        assertTrue(crset.next());
         assertTrue(crset.rowInserted());
         listener.clear();
         crset.undoInsert();
@@ -296,5 +292,111 @@ public class CachedRowSetListenerTest extends CachedRowSetTestCase {
         noInitialCrset.release();
         assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
         listener.clear();
+    }
+
+    public void testRowSetPopulated_One() throws Exception {
+        /*
+         * There are 24 rows in database.
+         */
+        insertMoreData(20);
+        noInitialCrset = newNoInitialInstance();
+        Listener listener = new Listener();
+        noInitialCrset.addRowSetListener(listener);
+
+        assertEquals(0, noInitialCrset.getFetchSize());
+        noInitialCrset.setMaxRows(10);
+        noInitialCrset.setFetchSize(3);
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 3);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 4);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 6);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 8);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 12);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 24);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+    }
+
+    public void testRowSetPopulated_Two() throws Exception {
+        /*
+         * There are only 4 rows in database.
+         */
+        noInitialCrset = newNoInitialInstance();
+        Listener listener = new Listener();
+        noInitialCrset.addRowSetListener(listener);
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(crset), 20);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+        assertEquals(noInitialCrset, listener.getEventSource());
+
+        for (int i = 1; i <= 10; i++) {
+            listener.clear();
+            noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), i);
+            assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+        }
+
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+        noInitialCrset.setMaxRows(10);
+        noInitialCrset.setFetchSize(2);
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 2);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 3);
+        assertNull(listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(noInitialCrset), 4);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(crset), 4);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+        assertEquals(noInitialCrset, listener.getEventSource());
+    }
+
+    public void testRowSetPopulated_Three() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        Listener listener = new Listener();
+        noInitialCrset.addRowSetListener(listener);
+        noInitialCrset.setMaxRows(10);
+        noInitialCrset.setFetchSize(4);
+
+        try {
+            noInitialCrset.rowSetPopulated(new RowSetEvent(crset), 3);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        listener.clear();
+        noInitialCrset.rowSetPopulated(new RowSetEvent(crset), 4);
+        assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+
+        for (int i = 5; i <= 30; i++) {
+            listener.clear();
+            noInitialCrset.rowSetPopulated(new RowSetEvent(crset), i);
+            assertEquals(EVENT_ROWSET_CHANGED, listener.getTag());
+        }
     }
 }

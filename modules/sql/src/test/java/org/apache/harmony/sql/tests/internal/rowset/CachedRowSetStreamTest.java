@@ -32,9 +32,6 @@ import java.util.Locale;
 import javax.sql.rowset.CachedRowSet;
 
 public class CachedRowSetStreamTest extends CachedRowSetTestCase {
-    public static final String DERBY_URL_Create = "jdbc:derby:src/test/resources/STREAM;create=true";
-
-    public static final String DERBY_URL = "jdbc:derby:src/test/resources/STREAM";
 
     public final static int DEFAULT_COLUMN_COUNT = 3;
 

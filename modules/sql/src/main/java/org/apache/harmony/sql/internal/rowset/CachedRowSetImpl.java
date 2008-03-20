@@ -55,6 +55,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 import javax.sql.RowSet;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetInternal;
@@ -69,7 +72,6 @@ import javax.sql.rowset.spi.SyncFactoryException;
 import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
@@ -116,7 +118,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private boolean isCursorOnInsert;
 
-    // TODO remember to evalute it in CachedRowSetReader
     private int[] keyCols;
 
     private int columnCount;
@@ -221,12 +222,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         }
 
         Connection currentConn = null;
+        Connection preConn = conn;
         try {
-            currentConn = getConnection();
+            currentConn = retrieveConnection();
+            currentConn.setTypeMap(getTypeMap());
             acceptChanges(currentConn);
         } catch (SQLException e) {
             try {
-                currentConn.rollback();
+                if (currentConn != null) {
+                    currentConn.rollback();
+                }
             } catch (SQLException ex) {
                 // ignore
             }
@@ -234,7 +239,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             ex.initCause(e);
             throw ex;
         } finally {
-            conn = null;
+            conn = preConn;
             if (currentConn != null) {
                 try {
                     currentConn.commit();
@@ -425,16 +430,14 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             copyOriginalRs.populate(getOriginal());
             output.originalResultSet = copyOriginalRs;
 
-            /*
-             * TODO uncomment after getMatchColumnIndexes and
-             * getMatchColumnNames implemented
-             */
-            // if (getMatchColumnIndexes() != null) {
-            // output.setMatchColumn(getMatchColumnIndexes().clone());
-            // }
-            // if (getMatchColumnNames() != null) {
-            // output.setMatchColumn(getMatchColumnNames().clone());
-            // }
+            if (matchColumnIndexes != null) {
+                output.matchColumnIndexes = matchColumnIndexes.clone();
+            }
+
+            if (matchColumnNames != null) {
+                output.matchColumnNames = matchColumnNames.clone();
+            }
+
             output.setSyncProvider(getSyncProvider().getProviderID());
             if (insertRow != null) {
                 output.insertRow = insertRow.createClone();
@@ -516,8 +519,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public int[] getKeyColumns() throws SQLException {
         if (rows == null) {
-            // TODO add error messages
-            throw new SQLException();
+            // rowset.26=The object has not been initialized
+            throw new SQLException(Messages.getString("rowset.26")); //$NON-NLS-1$
         }
         if (keyCols == null) {
             return new int[0];
@@ -532,8 +535,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public ResultSet getOriginalRow() throws SQLException {
         if (currentRow == null) {
-            // TODO add error messages
-            throw new SQLException();
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
 
         CachedRowSetImpl originalRowRset = new CachedRowSetImpl();
@@ -573,14 +576,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         }
 
         if (cachedResultSet == null) {
-            // TODO ensure the getConnection can works!
             String localCommand = getCommand();
             if (localCommand == null || getParams() == null) {
-                // TODO add error messages
-                throw new SQLException();
+                // rowset.16=Not a valid command
+                throw new SQLException(Messages.getString("rowset.16")); //$NON-NLS-1$
             }
 
-            PreparedStatement ps = getConnection().prepareStatement(
+            PreparedStatement ps = retrieveConnection().prepareStatement(
                     localCommand);
             Object[] params = getParams();
             for (int i = 0; i < params.length; i++) {
@@ -638,13 +640,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void populate(ResultSet rs, int startRow) throws SQLException {
         if (rs == null) {
-            // TODO add error messages
-            throw new SQLException();
+            // sql.42=Illegal Argument
+            throw new SQLException(Messages.getString("sql.42")); //$NON-NLS-1$
         }
 
         if (startRow == 1) {
             rs.beforeFirst();
-            // TODO use next move
+            // maybe use next to move is better
         } else if (startRow <= 0 || !rs.absolute(startRow - 1)) {
             // rowset.7=Not a valid cursor
             throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
@@ -684,6 +686,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         } catch (SQLException e) {
             cursorName = null;
             // ignore
+        }
+
+        if (rs.getStatement() != null
+                && rs.getStatement().getConnection() != null) {
+            setTypeMap(rs.getStatement().getConnection().getTypeMap());
         }
 
         /*
@@ -773,14 +780,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         }
 
         if (cachedResultSet == null) {
-            // TODO ensure the getConnection can works!
             String localCommand = getCommand();
             if (localCommand == null || getParams() == null) {
-                // TODO add error messages
-                throw new SQLException();
+                // rowset.16=Not a valid command
+                throw new SQLException(Messages.getString("rowset.16")); //$NON-NLS-1$
             }
 
-            PreparedStatement ps = getConnection().prepareStatement(
+            PreparedStatement ps = retrieveConnection().prepareStatement(
                     localCommand);
             Object[] params = getParams();
             for (int i = 0; i < params.length; i++)
@@ -900,7 +906,17 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void rowSetPopulated(RowSetEvent event, int numRows)
             throws SQLException {
-        throw new NotImplementedException();
+        if (numRows <= 0) {
+            // sql.42=Illegal Argument
+            throw new SQLException(Messages.getString("sql.42")); //$NON-NLS-1$
+        }
+        if (numRows < getFetchSize()) {
+            // rowset.22=Number of rows is less than fetch size
+            throw new SQLException(Messages.getString("rowset.22")); //$NON-NLS-1$
+        }
+        if (size() == 0 || size() % numRows == 0) {
+            notifyRowSetChanged();
+        }
     }
 
     public void setKeyColumns(int[] keys) throws SQLException {
@@ -928,8 +944,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void setOriginalRow() throws SQLException {
         if (currentRow == null) {
-            // TODO add error messages
-            throw new SQLException();
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
         }
 
         if (rowDeleted()) {
@@ -993,8 +1009,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public Collection<?> toCollection(int column) throws SQLException {
         if (rows == null) {
-            // sql.38=Object is invalid
-            throw new SQLException(Messages.getString("sql.38")); //$NON-NLS-1$
+            return new Vector<Object>();
         }
 
         if (column <= 0 || column > columnCount) {
@@ -1091,7 +1106,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void setMatchColumn(int columnIdx) throws SQLException {
         if (columnIdx < 0) {
-            // TODO why is 0 valid? load message from resource files
+            // TODO why is 0 valid?
             // rowset.20=Match columns should be greater than 0
             throw new SQLException(Messages.getString("rowset.20")); //$NON-NLS-1$
         }
@@ -1115,7 +1130,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         for (int i : columnIdxes) {
             if (i < 0) {
-                // TODO why is 0 valid? load message from resource files
+                // TODO why is 0 valid?
                 // rowset.20=Match columns should be greater than 0
                 throw new SQLException(Messages.getString("rowset.20")); //$NON-NLS-1$
             }
@@ -1530,7 +1545,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public BigDecimal getBigDecimal(int columnIndex, int scale)
             throws SQLException {
-        throw new NotImplementedException();
+        BigDecimal big = getBigDecimal(columnIndex);
+        if (big == null) {
+            return null;
+        }
+        return big.setScale(scale);
     }
 
     public BigDecimal getBigDecimal(String columnName) throws SQLException {
@@ -1684,9 +1703,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public String getCursorName() throws SQLException {
-        /*
-         * FIXME not sure how to implement it.
-         */
         if (cursorName == null) {
             // rowset.14=Positioned updates not supported
             throw new SQLException(Messages.getString("rowset.14")); //$NON-NLS-1$
@@ -1716,7 +1732,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-        throw new NotImplementedException();
+        Date date = getDate(columnIndex);
+        if (date == null) {
+            return null;
+        }
+
+        Calendar tempCal = Calendar.getInstance(cal.getTimeZone());
+        tempCal.setTime(date);
+        cal.set(tempCal.get(Calendar.YEAR), tempCal.get(Calendar.MONTH),
+                tempCal.get(Calendar.DAY_OF_MONTH));
+        return new Date(cal.getTimeInMillis());
     }
 
     public Date getDate(String columnName) throws SQLException {
@@ -1827,7 +1852,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public Object getObject(int columnIndex, Map<String, Class<?>> map)
             throws SQLException {
-        throw new NotImplementedException();
+        // FIXME the usage of map
+        return getObject(columnIndex);
     }
 
     public Object getObject(String columnName) throws SQLException {
@@ -1859,7 +1885,6 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public int getRow() throws SQLException {
-        // FIXME need more tests
         if (currentRow == null || rows == null || isCursorOnInsert) {
             return 0;
         }
@@ -1956,7 +1981,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public Time getTime(int columnIndex, Calendar cal) throws SQLException {
-        throw new NotImplementedException();
+        Time time = getTime(columnIndex);
+        if (time == null) {
+            return null;
+        }
+        Calendar tempCal = Calendar.getInstance(cal.getTimeZone());
+        tempCal.setTimeInMillis(time.getTime());
+        cal.set(Calendar.HOUR, tempCal.get(Calendar.HOUR));
+        cal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, tempCal.get(Calendar.SECOND));
+        return new Time(cal.getTimeInMillis());
     }
 
     public Time getTime(String columnName) throws SQLException {
@@ -1989,7 +2023,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public Timestamp getTimestamp(int columnIndex, Calendar cal)
             throws SQLException {
-        throw new NotImplementedException();
+        Timestamp timestamp = getTimestamp(columnIndex);
+        if (timestamp == null) {
+            return null;
+        }
+        Calendar tempCal = Calendar.getInstance(cal.getTimeZone());
+        tempCal.setTimeInMillis(timestamp.getTime());
+        cal.set(tempCal.get(Calendar.YEAR), tempCal.get(Calendar.MONDAY),
+                tempCal.get(Calendar.DAY_OF_MONTH), tempCal.get(Calendar.HOUR),
+                tempCal.get(Calendar.MINUTE), tempCal.get(Calendar.SECOND));
+        return new Timestamp(cal.getTimeInMillis());
     }
 
     public Timestamp getTimestamp(String columnName) throws SQLException {
@@ -2078,7 +2121,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException(Messages.getString("rowset.18")); //$NON-NLS-1$
         }
         insertRow.setInsert();
-        rows.add(insertRow);
+        rows.add(rememberedCursorPosition, insertRow);
         insertRow = null;
         if (isNotifyListener) {
             notifyRowChanged();
@@ -2132,14 +2175,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void moveToInsertRow() throws SQLException {
         if (meta == null) {
-            // TODO add error message
-            throw new SQLException();
+            // rowset.26=The object has not been initialized
+            throw new SQLException(Messages.getString("rowset.26")); //$NON-NLS-1$
         }
         insertRow = new CachedRow(new Object[columnCount]);
         currentRow = insertRow;
-        rememberedCursorPosition = currentRowIndex;
-        currentRowIndex = -1;
-        isCursorOnInsert = true;
+        if (!isCursorOnInsert) {
+            rememberedCursorPosition = currentRowIndex;
+            currentRowIndex = -1;
+            isCursorOnInsert = true;
+        }
     }
 
     public boolean next() throws SQLException {
@@ -2262,17 +2307,25 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public boolean rowInserted() throws SQLException {
-        if (currentRow == null || isCursorOnInsert) {
-            // TODO add error message
-            throw new SQLException();
+        if (currentRow == null) {
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
+        if (isCursorOnInsert) {
+            // rowset.11=Illegal operation on an insert row
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
         return currentRow.isInsert();
     }
 
     public boolean rowUpdated() throws SQLException {
-        if (currentRow == null || currentRow == insertRow) {
-            // TODO add error message
-            throw new SQLException();
+        if (currentRow == null) {
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
+        if (isCursorOnInsert) {
+            // rowset.11=Illegal operation on an insert row
+            throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
 
         if (!currentRow.isUpdate()) {
@@ -2865,13 +2918,31 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void execute() throws SQLException {
-        execute(getConnection());
-        conn = null;
+        Connection preConn = conn;
+        execute(retrieveConnection());
+        conn = preConn;
     }
 
     public Connection getConnection() throws SQLException {
-        // TODO consider user name, password and datasource
-        return DriverManager.getConnection(getUrl());
+        return conn;
+    }
+
+    private Connection retrieveConnection() throws SQLException {
+        if (getUrl() != null) {
+            return DriverManager.getConnection(getUrl());
+        } else if (getDataSourceName() != null) {
+            try {
+                Context contex = new InitialContext();
+                DataSource ds = (DataSource) contex.lookup(getDataSourceName());
+                return ds.getConnection();
+            } catch (Exception e) {
+                // rowset.25=(JNDI)Unable to get connection
+                SQLException ex = new SQLException("rowset.25"); //$NON-NLS-1$
+                throw ex;
+            }
+        }
+        // rowset.24=Unable to get connection
+        throw new SQLException("rowset.24"); //$NON-NLS-1$
     }
 
     CachedRow getCurrentRow() {

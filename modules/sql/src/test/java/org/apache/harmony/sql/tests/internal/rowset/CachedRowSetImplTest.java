@@ -17,6 +17,7 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -32,10 +33,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.sql.DataSource;
 import javax.sql.RowSetEvent;
+import javax.sql.RowSetInternal;
 import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.spi.SyncFactory;
+import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
 import javax.sql.rowset.spi.SyncResolver;
 
@@ -76,8 +81,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals("update3", crset.getString(2));
         originalRow = crset.getOriginalRow();
         assertTrue(originalRow.next());
-        // TODO uncomment it after implement Writer
-        // assertEquals("update3", originalRow.getString(2));
+        assertEquals("update3", originalRow.getString(2));
     }
 
     public void testSetOriginalRow() throws Exception {
@@ -206,7 +210,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
     public void testAcceptChanges() throws SQLException {
         crset.setTableName("USER_INFO");
-        // FIXME: if the value of column is null, it would go wrong when
+        // NOTICE: if the value of column is null, it would go wrong when
         // call acceptChanges(). And if one method in TestCase throws
         // SQLException, the following method will be affected.
         rs.next();
@@ -482,7 +486,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, crset
                 .getTransactionIsolation());
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
-        assertNull(crset.getTypeMap());
         assertEquals(DERBY_URL, crset.getUrl());
         assertNull(crset.getUsername());
         assertTrue(crset.getEscapeProcessing());
@@ -602,7 +605,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
         // check the attributes in the duplicate. These are supposed to be the
         // same as the original
-        // System.out.println("crsetCopySchema: " + crsetCopySchema.getInt(1));
         assertFalse(crsetCopySchema.next());
         assertEquals("testCommand", crsetCopySchema.getCommand());
         assertEquals(ResultSet.CONCUR_UPDATABLE, crsetCopySchema
@@ -619,9 +621,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertNull(listener.getTag());
         rs = st.executeQuery("select * from USER_INFO");
         crsetCopySchema.populate(rs);
-        // TODO: in the Harmony implementation, need to call notifyRowSetChanged
-        // at the suitable place
-        // assertEquals("rowSetChanged", listener.getTag());
+        assertEquals("rowSetChanged", listener.getTag());
         listener.clear();
         // the move of the original's cursor shouldn't affect the duplicate
         crset.next();
@@ -717,30 +717,28 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(crset.getCommand(), crsetCopy.getCommand());
         assertEquals(crset.getConcurrency(), crsetCopy.getConcurrency());
 
-        // uncomment after implemented
-        // try {
-        // assertEquals(crset.getCursorName(), crsetCopy.getCursorName());
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // try {
-        // assertEquals(crset.getMatchColumnIndexes(), crsetCopy
-        // .getMatchColumnIndexes());
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        //
-        // try {
-        // assertEquals(crset.getMatchColumnNames(), crsetCopy
-        // .getMatchColumnNames());
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // assertEquals(crset.getRow(), crsetCopy.getRow());
-        // assertEquals(crset.getStatement(), crsetCopy.getStatement());
-        // assertNotSame(crset.getWarnings(), crsetCopy.getWarnings());
+        try {
+            assertEquals(crset.getCursorName(), crsetCopy.getCursorName());
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        try {
+            assertEquals(crset.getMatchColumnIndexes(), crsetCopy
+                    .getMatchColumnIndexes());
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            assertEquals(crset.getMatchColumnNames(), crsetCopy
+                    .getMatchColumnNames());
+        } catch (SQLException e) {
+            // expected
+        }
+        assertEquals(crset.getRow(), crsetCopy.getRow());
+        assertEquals(crset.getStatement(), crsetCopy.getStatement());
 
         assertEquals(crset.getEscapeProcessing(), crsetCopy
                 .getEscapeProcessing());
@@ -1165,26 +1163,25 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
                 .getConcurrency());
         assertEquals(0, crset.getRow());
 
-        // TODO uncomment after impelemented
-        // try {
-        // crset.getCursorName();
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // try {
-        // crset.getMatchColumnIndexes();
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        //
-        // try {
-        // crset.getMatchColumnNames();
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // assertNull(crset.getStatement());
+        try {
+            crset.getCursorName();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        try {
+            crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            crset.getMatchColumnNames();
+        } catch (SQLException e) {
+            // expected
+        }
+        assertNull(crset.getStatement());
 
         assertEquals(true, noInitialCrset.getEscapeProcessing());
         assertEquals(Connection.TRANSACTION_READ_COMMITTED, noInitialCrset
@@ -1484,31 +1481,26 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(rs.next());
         assertEquals(5, rs.getInt(1));
 
-        /*
-         * TODO Insert multiple rows one time, uncomment after implemented
-         */
-        // TODO uncomment it after insert methods are implemented
-        // noInitialCrset = newNoInitialInstance();
-        // rs = st.executeQuery("select * from USER_INFO");
-        // noInitialCrset.populate(rs);
-        // noInitialCrset.setReadOnly(false);
-        // noInitialCrset.moveToInsertRow();
-        // for (int i = 6; i <= 20; i++) {
-        // noInitialCrset.updateInt(1, i);
-        // noInitialCrset.updateString(2, "test" + i);
-        // noInitialCrset.insertRow();
-        // }
-        // noInitialCrset.moveToCurrentRow();
-        // noInitialCrset.acceptChanges(conn);
-        // // check the new rows in CachedRowSet
-        // assertEquals(20, noInitialCrset.size());
-        // // check the new rows in DB
-        // rs = st.executeQuery("select * from USER_INFO");
-        // int cursorIndex = 0;
-        // while (rs.next()) {
-        // cursorIndex++;
-        // }
-        // assertEquals(20, cursorIndex);
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+        noInitialCrset.moveToInsertRow();
+        for (int i = 6; i <= 20; i++) {
+            noInitialCrset.updateInt(1, i);
+            noInitialCrset.updateString(2, "test" + i);
+            noInitialCrset.insertRow();
+        }
+        noInitialCrset.moveToCurrentRow();
+        noInitialCrset.acceptChanges(conn);
+        // check the new rows in CachedRowSet
+        assertEquals(20, noInitialCrset.size());
+        // check the new rows in DB
+        rs = st.executeQuery("select * from USER_INFO");
+        int cursorIndex = 0;
+        while (rs.next()) {
+            cursorIndex++;
+        }
+        assertEquals(20, cursorIndex);
     }
 
     public void testAcceptChanges_InsertException() throws Exception {
@@ -1540,15 +1532,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             }
 
             assertTrue(resolver.nextConflict());
-            /*
-             * TODO no-bug different, ri insert row after current row, Harmony
-             * insert row after last row
-             */
-            if ("true".equals(System.getProperty("Testing Harmony"))) {
-                assertEquals(5, resolver.getRow());
-            } else {
-                assertEquals(1, resolver.getRow());
-            }
+            assertEquals(1, resolver.getRow());
 
             assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
 
@@ -1589,16 +1573,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             }
 
             assertTrue(resolver.nextConflict());
-            /*
-             * TODO no-bug different, ri insert row after current row, Harmony
-             * insert row after last row
-             */
-            if ("true".equals(System.getProperty("Testing Harmony"))) {
-                assertEquals(5, resolver.getRow());
-            } else {
-                assertEquals(1, resolver.getRow());
-            }
-
+            assertEquals(1, resolver.getRow());
             assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
 
             for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
@@ -1675,15 +1650,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             }
 
             assertTrue(resolver.nextConflict());
-            /*
-             * TODO no-bug different, ri insert row after current row, Harmony
-             * insert row after last row
-             */
-            if ("true".equals(System.getProperty("Testing Harmony"))) {
-                assertEquals(5, resolver.getRow());
-            } else {
-                assertEquals(1, resolver.getRow());
-            }
+            assertEquals(1, resolver.getRow());
 
             assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
 
@@ -2122,11 +2089,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(7, crset.findColumn("FloaT_T"));
     }
 
-    /**
-     * TODO test event
-     * 
-     * @throws Exception
-     */
     public void testRestoreOriginal() throws Exception {
         // update
         assertTrue(crset.absolute(3));
@@ -2269,11 +2231,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals("test3", crset.getString(2));
     }
 
-    /**
-     * TODO test event
-     * 
-     * @throws Exception
-     */
     public void testRestoreOriginal_MultiChanges() throws Exception {
         insertMoreData(5);
 
@@ -2416,24 +2373,25 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
                     assertEquals(rs.getObject(i), vector.get(i - 1));
                 }
             }
+        } else {
+            rs = st.executeQuery("select * from USER_INFO");
+            noInitialCrset.populate(rs);
+
+            Collection<?> collection = noInitialCrset.toCollection();
+            assertEquals("class java.util.TreeMap$2", collection.getClass()
+                    .toString());
+            Iterator iter = collection.iterator();
+            assertTrue(iter.hasNext());
+            assertEquals("class com.sun.rowset.internal.Row", iter.next()
+                    .getClass().toString());
         }
     }
 
     public void testToCollectionInt() throws Exception {
         noInitialCrset = newNoInitialInstance();
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            try {
-                noInitialCrset.toCollection(0);
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // expected
-            }
-        } else {
-            assertEquals(0, noInitialCrset.toCollection(-1).size());
-            assertEquals(0, noInitialCrset.toCollection(0).size());
-            assertEquals(Vector.class, noInitialCrset.toCollection(1)
-                    .getClass());
-        }
+        assertEquals(0, noInitialCrset.toCollection(-1).size());
+        assertEquals(0, noInitialCrset.toCollection(0).size());
+        assertEquals(Vector.class, noInitialCrset.toCollection(1).getClass());
 
         rs = st.executeQuery("select * from USER_INFO");
         noInitialCrset.populate(rs);
@@ -2735,6 +2693,144 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(8, args[1]);
 
     }
+
+    public void testProvider() throws Exception {
+        SyncProvider provider = null;
+        if (System.getProperty("Testing Harmony") == "true") {
+            provider = SyncFactory
+                    .getInstance("Apache Harmony HYOptimisticProvider");
+        } else {
+            provider = SyncFactory
+                    .getInstance("com.sun.rowset.providers.RIOptimisticProvider");
+        }
+
+        assertEquals(SyncProvider.GRADE_CHECK_MODIFIED_AT_COMMIT, provider
+                .getProviderGrade());
+        assertEquals(SyncProvider.DATASOURCE_NO_LOCK, provider
+                .getDataSourceLock());
+        assertEquals(SyncProvider.NONUPDATABLE_VIEW_SYNC, provider
+                .supportsUpdatableView());
+
+        try {
+            provider.setDataSourceLock(SyncProvider.DATASOURCE_TABLE_LOCK);
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        try {
+            provider.setDataSourceLock(SyncProvider.DATASOURCE_ROW_LOCK);
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        try {
+            provider.setDataSourceLock(SyncProvider.DATASOURCE_DB_LOCK);
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        provider.setDataSourceLock(SyncProvider.DATASOURCE_NO_LOCK);
+    }
+
+    public void testGetConnection() throws Exception {
+        RowSetInternal rowset = (RowSetInternal) noInitialCrset;
+        assertNull(rowset.getConnection());
+
+        noInitialCrset.setUsername("test");
+        noInitialCrset.setPassword("pwd");
+
+        assertNull(noInitialCrset.getUrl());
+        assertNull(noInitialCrset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        noInitialCrset.setUrl(DERBY_URL);
+        assertNull(noInitialCrset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        noInitialCrset.setUsername(null);
+        noInitialCrset.setPassword(null);
+        noInitialCrset.setUrl(DERBY_URL);
+        assertNull(noInitialCrset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        // test acceptChange
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+
+        crset.populate(rs);
+
+        rowset = (RowSetInternal) crset;
+
+        assertNull(crset.getUsername());
+        assertNull(crset.getPassword());
+        assertNull(crset.getUrl());
+        assertNull(crset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        crset.setUrl(DERBY_URL);
+        assertNull(crset.getUsername());
+        assertNull(crset.getPassword());
+        assertEquals(DERBY_URL, crset.getUrl());
+        assertNull(rowset.getConnection());
+
+        crset.absolute(3);
+        crset.updateString(2, "update2");
+        assertEquals(DERBY_URL, crset.getUrl());
+        crset.acceptChanges();
+        assertNull(rowset.getConnection());
+
+        crset.acceptChanges(conn);
+
+        assertNotNull(rowset.getConnection());
+        assertSame(conn, rowset.getConnection());
+
+        crset.acceptChanges();
+        assertSame(conn, rowset.getConnection());
+
+        Connection connection = DriverManager.getConnection(DERBY_URL);
+        crset.acceptChanges(connection);
+        assertSame(connection, rowset.getConnection());
+
+    }
+
+    public void testRetrieveConnection() throws Exception {
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+
+        crset.populate(rs);
+
+        assertNull(crset.getUrl());
+        assertNull(crset.getDataSourceName());
+        try {
+            crset.acceptChanges();
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected, Unable to get connection
+        }
+
+        // wrong user and password
+        crset.setUsername("testusername");
+        crset.setPassword("testpassword");
+        crset.setUrl(DERBY_URL);
+        crset.absolute(3);
+        crset.updateString(2, "update3");
+        crset.updateRow();
+
+        crset.acceptChanges();
+
+        crset.setDataSourceName("testDataSource");
+
+        try {
+            crset.acceptChanges();
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected, (JNDI)Unable to get connection
+        }
+    }
+
 }
 
 class Listener implements RowSetListener, Cloneable {
@@ -2743,14 +2839,13 @@ class Listener implements RowSetListener, Cloneable {
 
     private boolean isPrint = false;
 
-    private int count = 0;
+    private Object eventSource = null;
 
     public void cursorMoved(RowSetEvent theEvent) {
         if (isPrint) {
             System.out.println("cursorMoved");
         }
         tag = CachedRowSetListenerTest.EVENT_CURSOR_MOVED;
-        count++;
     }
 
     public void rowChanged(RowSetEvent theEvent) {
@@ -2758,7 +2853,6 @@ class Listener implements RowSetListener, Cloneable {
             System.out.println("rowChanged");
         }
         tag = CachedRowSetListenerTest.EVENT_ROW_CHANGED;
-        count++;
     }
 
     public void rowSetChanged(RowSetEvent theEvent) {
@@ -2766,23 +2860,24 @@ class Listener implements RowSetListener, Cloneable {
             System.out.println("rowSetChanged");
         }
         tag = CachedRowSetListenerTest.EVENT_ROWSET_CHANGED;
-        count++;
+        eventSource = theEvent.getSource();
     }
 
     public String getTag() {
         return tag;
     }
 
+    public Object getEventSource() {
+        return eventSource;
+    }
+
     public void clear() {
         tag = null;
+        eventSource = null;
     }
 
     public void setPrint(boolean isPrint) {
         this.isPrint = isPrint;
-    }
-
-    public int getCount() {
-        return count;
     }
 
     public Listener clone() throws CloneNotSupportedException {

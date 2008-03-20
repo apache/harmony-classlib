@@ -137,8 +137,8 @@ public class CachedRowSetTestCase extends TestCase {
         preStmt.setInt(1, 3);
         preStmt.setString(2, "test3");
         preStmt.setLong(3, 3333L);
-        preStmt.setBigDecimal(4, new BigDecimal(123));
-        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setBigDecimal(4, new BigDecimal("123.6521"));
+        preStmt.setBigDecimal(5, new BigDecimal("85.31"));
         preStmt.setInt(6, 13);
         preStmt.setFloat(7, 3.7F);
         preStmt.setFloat(8, 3.888F);

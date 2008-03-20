@@ -70,7 +70,7 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
             // expected
         }
         noInitialCrset.insertRow();
-         try {
+        try {
             noInitialCrset.rowInserted();
             fail("should throw SQLException");
         } catch (SQLException e) {
@@ -112,9 +112,10 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         noInitialCrset.populate(rs);
         assertTrue(noInitialCrset.absolute(3));
         noInitialCrset.moveToInsertRow();
-        
+
+        // getRow() return 0 when the cursor is on the insert row
         assertEquals(0, noInitialCrset.getRow());
-        
+
         try {
             // call insertRow() without call any update method
             noInitialCrset.insertRow();
@@ -130,9 +131,16 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         assertEquals(0, noInitialCrset.getRow());
         noInitialCrset.insertRow();
         assertEquals(0, noInitialCrset.getRow());
-        
+
         noInitialCrset.moveToCurrentRow();
         assertEquals(3, noInitialCrset.getInt(1));
+
+        // the inserted row is after the current row immediately
+        assertTrue(noInitialCrset.next());
+        assertEquals("insert10", noInitialCrset.getString(2));
+
+        assertTrue(noInitialCrset.next());
+        assertEquals("test4", noInitialCrset.getString(2));
     }
 
     public void testInsertRow_Multi() throws Exception {
@@ -272,6 +280,43 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
             index++;
             assertFalse(noInitialCrset.rowInserted());
         }
+        assertEquals(10, index);
+    }
+
+    public void testInsertRow_MultiTwo() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+
+        assertTrue(noInitialCrset.first());
+        noInitialCrset.moveToInsertRow();
+        for (int i = 11; i <= 15; i++) {
+            noInitialCrset.updateInt(1, i);
+            noInitialCrset.updateString(2, "insert" + i);
+            noInitialCrset.insertRow();
+        }
+        noInitialCrset.moveToCurrentRow();
+        assertEquals(1, noInitialCrset.getInt(1));
+
+        int index = 1;
+        do {
+            if (index == 1) {
+                assertEquals(1, noInitialCrset.getInt(1));
+            } else if (index == 2) {
+                assertEquals(15, noInitialCrset.getInt(1));
+            } else if (index == 3) {
+                assertEquals(14, noInitialCrset.getInt(1));
+            } else if (index == 4) {
+                assertEquals(13, noInitialCrset.getInt(1));
+            } else if (index == 5) {
+                assertEquals(12, noInitialCrset.getInt(1));
+            } else if (index == 6) {
+                assertEquals(11, noInitialCrset.getInt(1));
+            } else if (index == 7) {
+                assertEquals(2, noInitialCrset.getInt(1));
+            }
+            index++;
+        } while (noInitialCrset.next());
         assertEquals(10, index);
     }
 

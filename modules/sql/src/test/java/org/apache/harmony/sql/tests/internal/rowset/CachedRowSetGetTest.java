@@ -17,7 +17,10 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.util.Calendar;
 
 public class CachedRowSetGetTest extends CachedRowSetTestCase {
 
@@ -209,7 +212,10 @@ public class CachedRowSetGetTest extends CachedRowSetTestCase {
             // expected
         }
 
-        crset.getDate(10);
+        Date date = crset.getDate(10);
+        Calendar cal = Calendar.getInstance();
+        date = crset.getDate(10, cal);
+        assertEquals(date.getTime(), cal.getTimeInMillis());
 
         try {
             crset.getDate(11);
@@ -218,7 +224,10 @@ public class CachedRowSetGetTest extends CachedRowSetTestCase {
             // expected
         }
 
-        crset.getDate(12);
+        date = crset.getDate(12);
+        assertEquals(52365412356663L, date.getTime());
+        date = crset.getDate(12, cal);
+        assertNotSame(52365412356663L, date.getTime());
     }
 
     public void testGetTime() throws Exception {
@@ -294,9 +303,14 @@ public class CachedRowSetGetTest extends CachedRowSetTestCase {
             // expected
         }
 
-        crset.getTime(11);
+        Time time = crset.getTime(11);
+        Calendar cal = Calendar.getInstance();
+        time = crset.getTime(11, cal);
 
-        crset.getTime(12);
+        time = crset.getTime(12);
+        assertEquals(52365412356663L, time.getTime());
+        cal = Calendar.getInstance();
+        time = crset.getTime(12, cal);
     }
 
     public void testGetTimestamp() throws Exception {
@@ -366,9 +380,27 @@ public class CachedRowSetGetTest extends CachedRowSetTestCase {
         }
 
         crset.getTimestamp(10);
+        Calendar cal = Calendar.getInstance();
+        crset.getTimestamp(10, cal);
 
         crset.getTimestamp(11);
+        cal = Calendar.getInstance();
+        crset.getTimestamp(11, cal);
 
         crset.getTimestamp(12);
+        cal = Calendar.getInstance();
+        crset.getTimestamp(12, cal);
+    }
+
+    public void testGetBigDecimal() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+
+        assertTrue(noInitialCrset.absolute(3));
+        noInitialCrset.getBigDecimal(4);
+        noInitialCrset.getBigDecimal(4, 4);
+        noInitialCrset.getBigDecimal(5);
+        noInitialCrset.getBigDecimal(5, 4);
     }
 }

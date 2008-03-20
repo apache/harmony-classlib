@@ -61,19 +61,7 @@ public class CachedRow implements Cloneable {
         mask.set(i);
     }
 
-    public void setUnavailable() {
-        // FIXME: What is this method used for?
-        setDelete();
-        setInsert();
-        mask.clear();
-        mask.flip(0, columnData.length);
-    }
-
     public void setNonUpdateable() {
-        // setDelete();
-        // setInsert();
-        // mask.clear();
-        // mask.flip(0,columnData.length);
         nonUpdateable = true;
     }
 

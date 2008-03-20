@@ -385,49 +385,23 @@ public class CachedRowSetTransactionTest extends CachedRowSetTestCase {
         crset.beforeFirst();
         index = 0;
 
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            while (crset.next()) {
-                index++;
-                if (index == 4) {
-                    assertEquals("update4", crset.getString(2));
-                } else if (index == 5) {
-                    assertEquals("insert5", crset.getString(2));
-                } else if (index == 6) {
-                    assertEquals("insert66666666666", crset.getString(2));
-                }
-            }
-        } else {
-            while (crset.next()) {
-                index++;
-                if (index == 4) {
-                    assertEquals("update4", crset.getString(2));
-                } else if (index == 5) {
-                    assertEquals("insert66666666666", crset.getString(2));
-                } else if (index == 6) {
-                    assertEquals("insert5", crset.getString(2));
-                }
+        while (crset.next()) {
+            index++;
+            if (index == 4) {
+                assertEquals("update4", crset.getString(2));
+            } else if (index == 5) {
+                assertEquals("insert66666666666", crset.getString(2));
+            } else if (index == 6) {
+                assertEquals("insert5", crset.getString(2));
             }
         }
         assertEquals(6, index);
 
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            try {
-                crset.acceptChanges();
-                fail("should throw exception");
-            } catch (SyncProviderException e) {
-                // expected
-            }
-
-            // check db
-            rs = st.executeQuery("SELECT * FROM USER_INFO");
-            index = 0;
-            while (rs.next()) {
-                index++;
-                if (index == 4) {
-                    assertEquals("test4", rs.getString(2));
-                }
-            }
-            assertEquals(4, index);
+        try {
+            crset.acceptChanges();
+            fail("should throw exception");
+        } catch (SyncProviderException e) {
+            // expected
         }
     }
 }
