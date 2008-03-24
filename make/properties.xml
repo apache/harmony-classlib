@@ -252,7 +252,7 @@
     <condition property="png.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
-    <condition property="png.home" value="/sw">
+    <condition property="png.home" value="/opt/local">
         <isset property="is.macosx"/>
     </condition>
     <property name="png.home" value="/usr" />
@@ -260,7 +260,7 @@
     <condition property="lcms.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
-    <condition property="lcms.home" value="/sw">
+    <condition property="lcms.home" value="/opt/local">
         <isset property="is.macosx"/>
     </condition>
     <property name="lcms.home" value="/usr" />
@@ -268,7 +268,7 @@
     <condition property="jpeg.home" value="/usr/local">
         <isset property="is.freebsd"/>
     </condition>
-    <condition property="jpeg.home" value="/sw">
+    <condition property="jpeg.home" value="/opt/local">
         <isset property="is.macosx"/>
     </condition>
     <property name="jpeg.home" value="/usr" />
