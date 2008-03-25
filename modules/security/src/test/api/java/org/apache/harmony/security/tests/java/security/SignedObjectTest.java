@@ -15,18 +15,16 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.tests.java.security;
-import java.security.*;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignedObject;
 import java.util.Properties;
 
-import org.apache.harmony.security.tests.support.TestKeyPair;
-
 import junit.framework.TestCase;
+
+import org.apache.harmony.security.tests.support.TestKeyPair;
 
 /**
  * Tests for <code>SignedObject</code> constructor and methods
@@ -34,19 +32,19 @@ import junit.framework.TestCase;
 public class SignedObjectTest extends TestCase {
 
     public void testSignedObject() throws Exception {
-		TestKeyPair tkp = null;
-	    Properties prop;
-	    
-        Signature sig = Signature.getInstance("SHA1withDSA");		
-    	
-    	try {
-			tkp = new TestKeyPair("DSA");
-		} catch (NoSuchAlgorithmException e) {
-    		e.printStackTrace();
-    		return;
-		}
-    	prop = new Properties();
-    	prop.put("aaa", "bbb");
+        TestKeyPair tkp = null;
+        Properties prop;
+
+        Signature sig = Signature.getInstance("SHA1withDSA");
+
+        try {
+            tkp = new TestKeyPair("DSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return;
+        }
+        prop = new Properties();
+        prop.put("aaa", "bbb");
 
         SignedObject so = new SignedObject(prop, tkp.getPrivate(), sig);
 
@@ -56,5 +54,5 @@ public class SignedObjectTest extends TestCase {
         assertTrue("verify() failed", so.verify(tkp.getPublic(), sig));
 
         assertNotNull("signature is null", so.getSignature());
-	}
+    }
 }
