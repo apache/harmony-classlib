@@ -1099,4 +1099,6 @@ public abstract class CommonGraphics2D extends Graphics2D {
         //copy.origTransform = new AffineTransform(origTransform);
         copy.origPoint = new Point(origPoint);
     }
+
+    public void flush(){}
 }

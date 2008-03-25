@@ -79,6 +79,7 @@ import javax.accessibility.AccessibleStateSet;
 
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.FieldsAccessor;
+import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.State;
@@ -3714,6 +3715,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } else {
             update(g);
         }
+        ((CommonGraphics2D)g).flush();
         g.dispose();
     }
 
