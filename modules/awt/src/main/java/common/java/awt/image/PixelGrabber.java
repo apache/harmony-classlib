@@ -153,7 +153,7 @@ public class PixelGrabber implements ImageConsumer {
         case DATA_TYPE_INT:
             for(int y = 0; y < srcH; y++){
                 for(int x = 0; x < srcW; x++){
-                    iData[realOff+x] = cm.getRGB(pixels[srcOff+x] & 0xff);
+                    iData[realOff + x] = cm.getRGB(pixels[srcOff + x] & 0xff);                    
                 }
                 srcOff += srcScan;
                 realOff += scanline;
