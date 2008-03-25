@@ -259,4 +259,22 @@ public class CachedRowSetTestCase extends TestCase {
     public void testTestCase() throws Exception {
         // do nothing
     }
+
+    public void createNewTable() throws Exception {
+        st = conn.createStatement();
+        rs = conn.getMetaData().getTables(null, "APP", "CUSTOMER_INFO", null);
+        String createTableSQL = "create table CUSTOMER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(30) NOT NULL)";
+        String alterTableSQL = "ALTER TABLE CUSTOMER_INFO ADD CONSTRAINT CUSTOMER_INFO_PK Primary Key (ID)";
+
+        if (!rs.next()) {
+            st.execute(createTableSQL);
+            st.execute(alterTableSQL);
+        }
+
+        st.executeUpdate("delete from CUSTOMER_INFO");
+        st
+                .executeUpdate("insert into CUSTOMER_INFO(ID,NAME) values (1111,'customer_one')");
+        st
+                .executeUpdate("insert into CUSTOMER_INFO(ID,NAME) values (5555,'customer_two')");
+    }
 }

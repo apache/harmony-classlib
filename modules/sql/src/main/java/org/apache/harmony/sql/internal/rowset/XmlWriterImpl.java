@@ -42,7 +42,6 @@ import org.w3c.dom.Element;
 
 public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
 
-    @SuppressWarnings("nls")
     public void writeXML(WebRowSet caller, Writer writer) throws SQLException {
         if (writer == null || caller == null || caller.getMetaData() == null) {
             throw new NullPointerException();
@@ -55,24 +54,26 @@ public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
                     .newDocumentBuilder();
             doc = docBuidler.newDocument();
         } catch (ParserConfigurationException e) {
-            throw new SQLException(e.getMessage());
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
         }
 
         /*
          * root element: webRowSet
          */
-        Element rootElement = doc.createElement("webRowSet");
-        rootElement.setAttribute("xmlns", "http://java.sun.com/xml/ns/jdbc");
-        rootElement.setAttribute("xmlns:xsi",
-                "http://www.w3.org/2001/XMLSchema-instance");
+        Element rootElement = doc.createElement("webRowSet"); //$NON-NLS-1$
+        rootElement.setAttribute("xmlns", "http://java.sun.com/xml/ns/jdbc"); //$NON-NLS-1$ //$NON-NLS-2$
+        rootElement.setAttribute("xmlns:xsi", //$NON-NLS-1$
+                "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$
         rootElement
-                .setAttribute("xsi:schemaLocation",
-                        "http://java.sun.com/xml/ns/jdbc http://java.sun.com/xml/ns/jdbc/webrowset.xsd");
+                .setAttribute("xsi:schemaLocation", //$NON-NLS-1$
+                        "http://java.sun.com/xml/ns/jdbc http://java.sun.com/xml/ns/jdbc/webrowset.xsd"); //$NON-NLS-1$
 
         /*
          * Element: properties
          */
-        Element prop = doc.createElement("properties");
+        Element prop = doc.createElement("properties"); //$NON-NLS-1$
         rootElement.appendChild(prop);
         writeProperties(doc, prop, caller);
 
@@ -80,10 +81,10 @@ public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
          * Element: metadata
          */
         ResultSetMetaData rsmd = caller.getMetaData();
-        Element metadataEle = doc.createElement("metadata");
+        Element metadataEle = doc.createElement("metadata"); //$NON-NLS-1$
         // column-count
         int colCount = rsmd.getColumnCount();
-        Element colCountEle = doc.createElement("column-count");
+        Element colCountEle = doc.createElement("column-count"); //$NON-NLS-1$
         colCountEle.setTextContent(Integer.toString(colCount));
         metadataEle.appendChild(colCountEle);
         // add each column definition
@@ -95,7 +96,7 @@ public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
         /*
          * Element: data
          */
-        Element data = doc.createElement("data");
+        Element data = doc.createElement("data"); //$NON-NLS-1$
         rootElement.appendChild(data);
 
         writeRowSetData(doc, data, caller);
@@ -112,11 +113,17 @@ public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
             StreamResult streamResult = new StreamResult(writer);
             transformer.transform(domSrc, streamResult);
         } catch (TransformerConfigurationException e) {
-            throw new SQLException(e.getMessage());
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
         } catch (TransformerFactoryConfigurationError e) {
-            throw new SQLException(e.getMessage());
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
         } catch (TransformerException e) {
-            throw new SQLException(e.getMessage());
+            SQLException ex = new SQLException();
+            ex.initCause(e);
+            throw ex;
         }
     }
 
@@ -223,79 +230,79 @@ public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
         }
     }
 
-    @SuppressWarnings( { "nls", "boxing" })
+    @SuppressWarnings("boxing")
     private void writeProperties(Document doc, Element prop, WebRowSet caller)
             throws SQLException {
 
-        appendElement(prop, doc, "command", caller.getCommand());
-        appendElement(prop, doc, "concurrency", caller.getConcurrency());
-        appendElement(prop, doc, "datasource", caller.getDataSourceName());
-        appendElement(prop, doc, "escape-processing", caller
+        appendElement(prop, doc, "command", caller.getCommand()); //$NON-NLS-1$
+        appendElement(prop, doc, "concurrency", caller.getConcurrency()); //$NON-NLS-1$
+        appendElement(prop, doc, "datasource", caller.getDataSourceName()); //$NON-NLS-1$
+        appendElement(prop, doc, "escape-processing", caller //$NON-NLS-1$
                 .getEscapeProcessing());
-        appendElement(prop, doc, "fetch-direction", caller.getFetchDirection());
-        appendElement(prop, doc, "fetch-size", caller.getFetchSize());
-        appendElement(prop, doc, "isolation-level", caller
+        appendElement(prop, doc, "fetch-direction", caller.getFetchDirection()); //$NON-NLS-1$
+        appendElement(prop, doc, "fetch-size", caller.getFetchSize()); //$NON-NLS-1$
+        appendElement(prop, doc, "isolation-level", caller //$NON-NLS-1$
                 .getTransactionIsolation());
 
         // write key columns
-        Element keyColumns = doc.createElement("key-columns");
+        Element keyColumns = doc.createElement("key-columns"); //$NON-NLS-1$
         prop.appendChild(keyColumns);
 
         int[] indexes = caller.getKeyColumns();
         for (int i = 0; i < indexes.length; ++i) {
-            appendElement(keyColumns, doc, "column", indexes[i]);
+            appendElement(keyColumns, doc, "column", indexes[i]); //$NON-NLS-1$
         }
 
         // wirte type map
-        Element typeMap = doc.createElement("map");
+        Element typeMap = doc.createElement("map"); //$NON-NLS-1$
         prop.appendChild(typeMap);
         if (caller.getTypeMap() != null) {
             for (Iterator<String> iter = caller.getTypeMap().keySet()
                     .iterator(); iter.hasNext();) {
                 String key = iter.next();
-                appendElement(typeMap, doc, "type", key);
-                appendElement(typeMap, doc, "class", caller.getTypeMap().get(
+                appendElement(typeMap, doc, "type", key); //$NON-NLS-1$
+                appendElement(typeMap, doc, "class", caller.getTypeMap().get( //$NON-NLS-1$
                         key).getName());
             }
         }
 
-        appendElement(prop, doc, "max-field-size", caller.getMaxFieldSize());
-        appendElement(prop, doc, "max-rows", caller.getMaxRows());
-        appendElement(prop, doc, "query-timeout", caller.getQueryTimeout());
-        appendElement(prop, doc, "read-only", caller.isReadOnly());
+        appendElement(prop, doc, "max-field-size", caller.getMaxFieldSize()); //$NON-NLS-1$
+        appendElement(prop, doc, "max-rows", caller.getMaxRows()); //$NON-NLS-1$
+        appendElement(prop, doc, "query-timeout", caller.getQueryTimeout()); //$NON-NLS-1$
+        appendElement(prop, doc, "read-only", caller.isReadOnly()); //$NON-NLS-1$
 
         String rowsetType = null;
         switch (caller.getType()) {
         case ResultSet.TYPE_FORWARD_ONLY:
-            rowsetType = "ResultSet.TYPE_FORWARD_ONLY";
+            rowsetType = "ResultSet.TYPE_FORWARD_ONLY"; //$NON-NLS-1$
             break;
         case ResultSet.TYPE_SCROLL_INSENSITIVE:
-            rowsetType = "ResultSet.TYPE_SCROLL_INSENSITIVE";
+            rowsetType = "ResultSet.TYPE_SCROLL_INSENSITIVE"; //$NON-NLS-1$
             break;
         case ResultSet.TYPE_SCROLL_SENSITIVE:
-            rowsetType = "ResultSet.TYPE_SCROLL_SENSITIVE";
+            rowsetType = "ResultSet.TYPE_SCROLL_SENSITIVE"; //$NON-NLS-1$
             break;
 
         }
 
-        appendElement(prop, doc, "rowset-type", rowsetType);
+        appendElement(prop, doc, "rowset-type", rowsetType); //$NON-NLS-1$
 
-        appendElement(prop, doc, "show-deleted", caller.getShowDeleted());
-        appendElement(prop, doc, "table-name", caller.getTableName());
-        appendElement(prop, doc, "url", caller.getUrl());
+        appendElement(prop, doc, "show-deleted", caller.getShowDeleted()); //$NON-NLS-1$
+        appendElement(prop, doc, "table-name", caller.getTableName()); //$NON-NLS-1$
+        appendElement(prop, doc, "url", caller.getUrl()); //$NON-NLS-1$
 
-        Element provider = doc.createElement("sync-provider");
+        Element provider = doc.createElement("sync-provider"); //$NON-NLS-1$
         prop.appendChild(provider);
 
-        appendElement(provider, doc, "sync-provider-name", caller
+        appendElement(provider, doc, "sync-provider-name", caller //$NON-NLS-1$
                 .getSyncProvider().getProviderID());
-        appendElement(provider, doc, "sync-provider-vendor", caller
+        appendElement(provider, doc, "sync-provider-vendor", caller //$NON-NLS-1$
                 .getSyncProvider().getVendor());
-        appendElement(provider, doc, "sync-provider-version", caller
+        appendElement(provider, doc, "sync-provider-version", caller //$NON-NLS-1$
                 .getSyncProvider().getVersion());
-        appendElement(provider, doc, "sync-provider-grade", caller
+        appendElement(provider, doc, "sync-provider-grade", caller //$NON-NLS-1$
                 .getSyncProvider().getProviderGrade());
-        appendElement(provider, doc, "data-source-lock", caller
+        appendElement(provider, doc, "data-source-lock", caller //$NON-NLS-1$
                 .getSyncProvider().getDataSourceLock());
 
     }
@@ -317,36 +324,36 @@ public class XmlWriterImpl extends CachedRowSetWriter implements XmlWriter {
         root.appendChild(child);
     }
 
-    @SuppressWarnings( { "nls", "boxing" })
+    @SuppressWarnings("boxing")
     private void writeMetadataByCol(Document doc, Element ele,
             ResultSetMetaData rsmd, int colIndex) throws SQLException {
-        Element colDefEle = doc.createElement("column-definition");
-        appendElement(colDefEle, doc, "column-index", colIndex);
-        appendElement(colDefEle, doc, "auto-increment", rsmd
+        Element colDefEle = doc.createElement("column-definition"); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "column-index", colIndex); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "auto-increment", rsmd //$NON-NLS-1$
                 .isAutoIncrement(colIndex));
-        appendElement(colDefEle, doc, "case-sensitive", rsmd
+        appendElement(colDefEle, doc, "case-sensitive", rsmd //$NON-NLS-1$
                 .isCaseSensitive(colIndex));
-        appendElement(colDefEle, doc, "currency", rsmd.isCurrency(colIndex));
-        appendElement(colDefEle, doc, "nullable", rsmd.isNullable(colIndex));
-        appendElement(colDefEle, doc, "signed", rsmd.isSigned(colIndex));
-        appendElement(colDefEle, doc, "searchable", rsmd.isSearchable(colIndex));
-        appendElement(colDefEle, doc, "column-display-size", rsmd
+        appendElement(colDefEle, doc, "currency", rsmd.isCurrency(colIndex)); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "nullable", rsmd.isNullable(colIndex)); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "signed", rsmd.isSigned(colIndex)); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "searchable", rsmd.isSearchable(colIndex)); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "column-display-size", rsmd //$NON-NLS-1$
                 .getColumnDisplaySize(colIndex));
-        appendElement(colDefEle, doc, "column-label", rsmd
+        appendElement(colDefEle, doc, "column-label", rsmd //$NON-NLS-1$
                 .getColumnLabel(colIndex));
-        appendElement(colDefEle, doc, "column-name", rsmd
+        appendElement(colDefEle, doc, "column-name", rsmd //$NON-NLS-1$
                 .getColumnName(colIndex));
-        appendElement(colDefEle, doc, "schema-name", rsmd
+        appendElement(colDefEle, doc, "schema-name", rsmd //$NON-NLS-1$
                 .getSchemaName(colIndex));
-        appendElement(colDefEle, doc, "column-precision", rsmd
+        appendElement(colDefEle, doc, "column-precision", rsmd //$NON-NLS-1$
                 .getPrecision(colIndex));
-        appendElement(colDefEle, doc, "column-scale", rsmd.getScale(colIndex));
-        appendElement(colDefEle, doc, "table-name", rsmd.getTableName(colIndex));
-        appendElement(colDefEle, doc, "catalog-name", rsmd
+        appendElement(colDefEle, doc, "column-scale", rsmd.getScale(colIndex)); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "table-name", rsmd.getTableName(colIndex)); //$NON-NLS-1$
+        appendElement(colDefEle, doc, "catalog-name", rsmd //$NON-NLS-1$
                 .getCatalogName(colIndex));
-        appendElement(colDefEle, doc, "column-type", rsmd
+        appendElement(colDefEle, doc, "column-type", rsmd //$NON-NLS-1$
                 .getColumnType(colIndex));
-        appendElement(colDefEle, doc, "column-type-name", rsmd
+        appendElement(colDefEle, doc, "column-type-name", rsmd //$NON-NLS-1$
                 .getColumnTypeName(colIndex));
         ele.appendChild(colDefEle);
     }

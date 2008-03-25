@@ -975,7 +975,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void setTableName(String tabName) throws SQLException {
         if (tabName == null) {
             // rowset.3=Table name should not be null
-            throw new SQLException("rowset.3"); //$NON-NLS-1$
+            throw new SQLException(Messages.getString("rowset.3")); //$NON-NLS-1$
         }
         tableName = tabName;
     }

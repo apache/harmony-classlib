@@ -18,6 +18,7 @@ package org.apache.harmony.sql.internal.rowset;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -28,9 +29,9 @@ import java.sql.SQLException;
 import javax.sql.rowset.WebRowSet;
 import javax.sql.rowset.spi.SyncFactoryException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public class WebRowSetImpl extends CachedRowSetImpl implements WebRowSet {
+
+    private static final long serialVersionUID = -1585509574069224797L;
 
     public WebRowSetImpl() throws SyncFactoryException {
         super();
@@ -41,11 +42,11 @@ public class WebRowSetImpl extends CachedRowSetImpl implements WebRowSet {
     }
 
     public void readXml(Reader reader) throws SQLException {
-        throw new NotImplementedException();
+        new XmlReaderImpl().readXML(this, reader);
     }
 
     public void readXml(InputStream iStream) throws SQLException, IOException {
-        throw new NotImplementedException();
+        new XmlReaderImpl().readXML(this, new InputStreamReader(iStream));
     }
 
     public void writeXml(ResultSet rs, Writer writer) throws SQLException {

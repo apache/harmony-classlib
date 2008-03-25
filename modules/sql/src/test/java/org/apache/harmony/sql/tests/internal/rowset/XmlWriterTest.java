@@ -20,9 +20,14 @@ package org.apache.harmony.sql.tests.internal.rowset;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.sql.Array;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +51,131 @@ public class XmlWriterTest extends CachedRowSetTestCase {
     public void setUp() throws Exception {
         super.setUp();
         strWriter = new StringWriter();
+    }
+
+    public void testWriteXML_Unicode() throws Exception {
+        final String unicodeChar = "\u4e2d\u6587";
+        String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
+                + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
+                + "?, ?, ?, ?, ?, ?)";
+        PreparedStatement preStmt = conn.prepareStatement(insertSQL);
+        preStmt.setInt(1, 10);
+        preStmt.setString(2, unicodeChar);
+        preStmt.setLong(3, 444423L);
+        preStmt.setBigDecimal(4, new BigDecimal(12));
+        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setInt(6, 41);
+        preStmt.setFloat(7, 4.8F);
+        preStmt.setFloat(8, 4.888F);
+        preStmt.setDouble(9, 4.9999);
+        preStmt.setDate(10, new Date(965324512));
+        preStmt.setTime(11, new Time(452368512));
+        preStmt.setTimestamp(12, new Timestamp(874532105));
+        preStmt.executeUpdate();
+        preStmt.close();
+
+        WebRowSet webRs = newWebRowSet();
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        webRs.populate(rs);
+        webRs.writeXml(strWriter);
+        assertTrue(webRs.last());
+        assertEquals(unicodeChar, webRs.getString(2));
+        assertFalse(-1 == strWriter.toString().indexOf(unicodeChar));
+
+        WebRowSet webRs2 = newWebRowSet();
+        webRs2.readXml(new StringReader(strWriter.toString()));
+        assertTrue(webRs2.last());
+        assertEquals(unicodeChar, webRs2.getString(2));
+    }
+
+    public void testWriteXML_Listener() throws Exception {
+        /*
+         * First, populate WebRowSet using ResultSet; then call WebRowSet's
+         * writeXml(), write to StringWriter; call readXml() to read the
+         * StringWriter's content again. See what happens: The properties and
+         * metadata remains the same. Only four new rows which are the same as
+         * the original data in WebRowSet are added.
+         */
+        WebRowSet webRs = newWebRowSet();
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        webRs.populate(rs);
+        ResultSetMetaData meta = webRs.getMetaData();
+        // register listener
+        Listener listener = new Listener();
+        webRs.addRowSetListener(listener);
+        assertNull(listener.getTag());
+        // write to StringWriter
+        webRs.writeXml(strWriter);
+        webRs.beforeFirst();
+        // read from StringWriter
+        webRs.readXml(new StringReader(strWriter.toString()));
+        isMetaDataEquals(meta, webRs.getMetaData());
+        webRs.beforeFirst();
+        int index = 0;
+        while (webRs.next()) {
+            index++;
+            if (index > 4) {
+                assertEquals(index - 4, webRs.getInt(1));
+            } else {
+                assertEquals(index, webRs.getInt(1));
+            }
+        }
+        // TODO How to solve the difference between RI and Harmony
+        // assertEquals(8, index);
+
+        /*
+         * Create a new table. Then populate it to WebRowSet. See what happens:
+         * The metadata and the row datas come from the new table.
+         */
+        createNewTable();
+        rs = st.executeQuery("SELECT * FROM CUSTOMER_INFO");
+        index = 0;
+        while (rs.next()) {
+            index++;
+            if (index == 1) {
+                assertEquals(1111, rs.getInt(1));
+                assertEquals("customer_one", rs.getString(2));
+            } else if (index == 2) {
+                assertEquals(5555, rs.getInt(1));
+                assertEquals("customer_two", rs.getString(2));
+            }
+        }
+        assertEquals(2, index);
+        rs = st.executeQuery("SELECT * FROM CUSTOMER_INFO");
+        webRs.beforeFirst();
+        listener.clear();
+        webRs.populate(rs);
+        assertEquals(CachedRowSetListenerTest.EVENT_ROWSET_CHANGED, listener
+                .getTag());
+        webRs.beforeFirst();
+        index = 0;
+        /*
+         * TODO record the difference between RI and Harmony
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            while (webRs.next()) {
+                index++;
+                if (index == 1) {
+                    assertEquals(1111, webRs.getInt(1));
+                    assertEquals("customer_one", webRs.getString(2));
+                } else if (index == 2) {
+                    assertEquals(5555, webRs.getInt(1));
+                    assertEquals("customer_two", webRs.getString(2));
+                }
+            }
+        } else {
+            while (webRs.next()) {
+                index++;
+                if (index == 1) {
+                    assertEquals(1, webRs.getInt(1));
+                    assertEquals("hermit", webRs.getString(2));
+                } else if (index == 2) {
+                    assertEquals(2, webRs.getInt(1));
+                    assertEquals("test", webRs.getString(2));
+                }
+            }
+        }
+        assertEquals(2, index);
     }
 
     public void testWriteXML() throws Exception {
@@ -316,7 +446,7 @@ public class XmlWriterTest extends CachedRowSetTestCase {
                 .newInstance();
     }
 
-    public Document getDocument(StringWriter strWriter) throws Exception {
+    private Document getDocument(StringWriter strWriter) throws Exception {
         StringBuffer buffer = strWriter.getBuffer();
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
@@ -324,7 +454,7 @@ public class XmlWriterTest extends CachedRowSetTestCase {
                 .toString())));
     }
 
-    public void assertProperties(Document doc, WebRowSet webRs)
+    public static void assertProperties(Document doc, WebRowSet webRs)
             throws Exception {
         Element element = (Element) doc.getFirstChild();
         Element prop = getElement(element, "properties");
@@ -507,13 +637,14 @@ public class XmlWriterTest extends CachedRowSetTestCase {
 
     }
 
-    private Element getElement(Element node, String name) {
+    private static Element getElement(Element node, String name) {
         NodeList list = node.getElementsByTagName(name);
         assertEquals(1, list.getLength());
         return (Element) list.item(0);
     }
 
-    public void assertMetadata(Document doc, WebRowSet webRs) throws Exception {
+    public static void assertMetadata(Document doc, WebRowSet webRs)
+            throws Exception {
         boolean isArrived = false;
         ResultSetMetaData meta = webRs.getMetaData();
         NodeList nodeList = doc.getFirstChild().getChildNodes();
@@ -658,7 +789,8 @@ public class XmlWriterTest extends CachedRowSetTestCase {
         assertTrue(isArrived);
     }
 
-    public void assertData(Document doc, WebRowSet webRs) throws Exception {
+    public static void assertData(Document doc, WebRowSet webRs)
+            throws Exception {
         webRs.setShowDeleted(true);
         webRs.beforeFirst();
 
@@ -678,7 +810,7 @@ public class XmlWriterTest extends CachedRowSetTestCase {
         webRs.setShowDeleted(false);
     }
 
-    private void assertRow(Element ele, WebRowSet webRs, int rowIndex)
+    private static void assertRow(Element ele, WebRowSet webRs, int rowIndex)
             throws Exception {
         assertTrue(webRs.absolute(rowIndex));
         String rowTag = null;
