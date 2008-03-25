@@ -119,7 +119,7 @@ public class Canvas extends Component implements Accessible {
     public void paint(Graphics g) {
         toolkit.lockAWT();
         try {
-            // just do nothing
+            g.clearRect(0, 0, w, h);
         } finally {
             toolkit.unlockAWT();
         }
