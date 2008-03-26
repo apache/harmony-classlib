@@ -17,6 +17,10 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -86,9 +90,8 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
     public void testSetOriginalRow() throws Exception {
         /*
-         * According to the spec, this method is called internally after the any
-         * modified values in the current row have been synchronized with the
-         * data source.
+         * This method is called internally after the current row have been
+         * synchronized with the data source.
          */
         crset.beforeFirst();
         assertTrue(crset.absolute(3));
@@ -2831,6 +2834,58 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         }
     }
 
+    public void testSerializable() throws Exception {
+
+        crset.absolute(3);
+        crset.updateString(2, "update3");
+
+        assertEquals(3, crset.getRow());
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bout);
+        out.writeObject(crset);
+
+        out.close();
+
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(
+                bout.toByteArray()));
+
+        CachedRowSet another = (CachedRowSet) in.readObject();
+        in.close();
+
+        isMetaDataEquals(crset.getMetaData(), another.getMetaData());
+
+        assertEquals(crset.getRow(), another.getRow());
+        assertEquals(crset.getString(2), another.getString(2));
+
+        crset = newNoInitialInstance();
+        crset.setCommand("SELECT * FROM USER_INFO");
+        crset.setUrl(DERBY_URL);
+        crset.execute();
+
+        crset.absolute(3);
+
+        bout = new ByteArrayOutputStream();
+        out = new ObjectOutputStream(bout);
+        out.writeObject(crset);
+
+        out.close();
+
+        in = new ObjectInputStream(new ByteArrayInputStream(bout.toByteArray()));
+
+        another = (CachedRowSet) in.readObject();
+
+        isMetaDataEquals(crset.getMetaData(), another.getMetaData());
+
+        assertEquals(crset.getRow(), another.getRow());
+
+        try {
+            another.commit();
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
 }
 
 class Listener implements RowSetListener, Cloneable {

@@ -67,6 +67,10 @@ import javax.sql.rowset.BaseRowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.RowSetWarning;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialRef;
 import javax.sql.rowset.spi.SyncFactory;
 import javax.sql.rowset.spi.SyncFactoryException;
 import javax.sql.rowset.spi.SyncProvider;
@@ -142,7 +146,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private boolean isLastColNull;
 
-    private Connection conn;
+    private transient Connection conn;
 
     private boolean isNotifyListener = true;
 
@@ -498,22 +502,53 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
         conn = connection;
         PreparedStatement ps = connection.prepareStatement(localCommand);
-        Object[] params = getParams();
-        for (int i = 0; i < params.length; i++)
-            ps.setObject(i + 1, params[i]);
+        setParameter(ps);
 
         if (ps.execute()) {
             doPopulate(ps.getResultSet(), true);
+
+            if (getPageSize() != 0) {
+                nextPageRowIndex = rows.size() + 1;
+                previousPageRowIndex = 0;
+                cachedResultSet = null;
+            } else {
+                previousPageRowIndex = -1;
+                nextPageRowIndex = -1;
+                cachedResultSet = null;
+            }
         }
 
-        if (getPageSize() != 0) {
-            nextPageRowIndex = rows.size() + 1;
-            previousPageRowIndex = 0;
-            cachedResultSet = null;
-        } else {
-            previousPageRowIndex = -1;
-            nextPageRowIndex = -1;
-            cachedResultSet = null;
+    }
+
+    private void setParameter(PreparedStatement ps) throws SQLException {
+        Object[] params = getParams();
+        for (int i = 0; i < params.length; i++) {
+            if (params[i] instanceof Object[]) {
+                Object[] objs = (Object[]) params[i];
+                // character stream
+                if (objs.length == 2) {
+                    ps.setCharacterStream(i + 1, (Reader) objs[0],
+                            ((Integer) objs[1]).intValue());
+                } else {
+                    int type = ((Integer) objs[2]).intValue();
+                    switch (type) {
+                    case BaseRowSet.ASCII_STREAM_PARAM:
+                        ps.setAsciiStream(i + 1, (InputStream) objs[0],
+                                ((Integer) objs[1]).intValue());
+                        break;
+                    case BaseRowSet.BINARY_STREAM_PARAM:
+                        ps.setBinaryStream(i + 1, (InputStream) objs[0],
+                                ((Integer) objs[1]).intValue());
+                        break;
+                    case BaseRowSet.UNICODE_STREAM_PARAM:
+                        ps.setUnicodeStream(i + 1, (InputStream) objs[0],
+                                ((Integer) objs[1]).intValue());
+                        break;
+                    }
+                }
+            } else {
+                ps.setObject(i + 1, params[i]);
+            }
         }
     }
 
@@ -584,10 +619,9 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
             PreparedStatement ps = retrieveConnection().prepareStatement(
                     localCommand);
-            Object[] params = getParams();
-            for (int i = 0; i < params.length; i++) {
-                ps.setObject(i + 1, params[i]);
-            }
+
+            setParameter(ps);
+
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
                 int index = 1;
@@ -788,9 +822,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
             PreparedStatement ps = retrieveConnection().prepareStatement(
                     localCommand);
-            Object[] params = getParams();
-            for (int i = 0; i < params.length; i++)
-                ps.setObject(i + 1, params[i]);
+
+            setParameter(ps);
 
             if (ps.execute()) {
                 ResultSet rs = ps.getResultSet();
@@ -1841,6 +1874,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             // sql.27=Invalid column index :{0}
             throw new SQLException(Messages.getString("sql.27", columnIndex)); //$NON-NLS-1$
         }
+
         Object obj = currentRow.getObject(columnIndex);
         if (obj == null) {
             isLastColNull = true;
@@ -2110,7 +2144,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException(Messages.getString("rowset.4")); //$NON-NLS-1$
         }
         boolean isValueSet = false;
-        for (int i = 1; i <= columnCount; i++) {
+        for (int i = 0; i < columnCount; i++) {
             if (currentRow.getUpdateMask(i)) {
                 isValueSet = true;
                 break;
@@ -2121,7 +2155,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException(Messages.getString("rowset.18")); //$NON-NLS-1$
         }
         insertRow.setInsert();
-        rows.add(rememberedCursorPosition, insertRow);
+        if (rememberedCursorPosition > rows.size()) {
+            rows.add(insertRow);
+        } else {
+            rows.add(rememberedCursorPosition, insertRow);
+        }
         insertRow = null;
         if (isNotifyListener) {
             notifyRowChanged();
@@ -2351,10 +2389,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throws SQLException {
         checkValidRow();
         checkColumnValid(columnIndex);
-        if (isCursorOnInsert && insertRow == null) {
-            insertRow = new CachedRow(new Object[columnCount]);
-            currentRow = insertRow;
-        }
+        initInsertRow(columnIndex, in);
 
         Class<?> type = columnTypes[columnIndex - 1];
         if (type != null && !type.equals(String.class)
@@ -2403,10 +2438,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throws SQLException {
         checkValidRow();
         checkColumnValid(columnIndex);
-        if (isCursorOnInsert && insertRow == null) {
-            insertRow = new CachedRow(new Object[columnCount]);
-            currentRow = insertRow;
-        }
+        initInsertRow(columnIndex, in);
 
         Class<?> type = columnTypes[columnIndex - 1];
         if (type != null && !type.equals(byte[].class)) {
@@ -2476,10 +2508,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throws SQLException {
         checkValidRow();
         checkColumnValid(columnIndex);
-        if (isCursorOnInsert && insertRow == null) {
-            insertRow = new CachedRow(new Object[columnCount]);
-            currentRow = insertRow;
-        }
+        initInsertRow(columnIndex, in);
 
         Class<?> type = columnTypes[columnIndex - 1];
         if (type != null && !type.equals(String.class)
@@ -2575,10 +2604,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     public void updateObject(int columnIndex, Object x) throws SQLException {
         checkValidRow();
         checkColumnValid(columnIndex);
-        if (isCursorOnInsert && insertRow == null) {
-            insertRow = new CachedRow(new Object[columnCount]);
-            currentRow = insertRow;
-        }
+        initInsertRow(columnIndex, x);
         currentRow.updateObject(columnIndex, x);
     }
 
@@ -2604,10 +2630,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             // x = ((BigDecimal) x).setScale(scale);
             // }
         }
-        if (isCursorOnInsert && insertRow == null) {
-            insertRow = new CachedRow(new Object[columnCount]);
-            currentRow = insertRow;
-        }
+        initInsertRow(columnIndex, x);
         currentRow.updateObject(columnIndex, x);
     }
 
@@ -2666,12 +2689,24 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throws SQLException {
         checkValidRow();
         checkColumnValid(columnIndex);
+        initInsertRow(columnIndex, value);
+        currentRow.updateObject(columnIndex, convertUpdateValue(columnIndex,
+                value));
+    }
+
+    /**
+     * The implementation of FilteredRowSet would override this method. The
+     * parameters also are used for override.
+     * 
+     * @param columnIndex
+     * @param value
+     */
+    protected void initInsertRow(int columnIndex, Object value)
+            throws SQLException {
         if (isCursorOnInsert && insertRow == null) {
             insertRow = new CachedRow(new Object[columnCount]);
             currentRow = insertRow;
         }
-        currentRow.updateObject(columnIndex, convertUpdateValue(columnIndex,
-                value));
     }
 
     /**
@@ -2702,7 +2737,28 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
          * now, leave this type check to JDBC driver
          */
 
-        if (type == null || type.isInstance(value)) {
+        if (type == null) {
+            return value;
+        }
+
+        // convert to serializable object
+        if (type.isInstance(value)) {
+            if (type.equals(Array.class) && !(value instanceof SerialArray)) {
+                return new SerialArray((Array) value);
+            }
+
+            if (type.equals(Blob.class) && !(value instanceof SerialBlob)) {
+                return new SerialBlob((Blob) value);
+            }
+
+            if (type.equals(Clob.class) && !(value instanceof SerialClob)) {
+                return new SerialClob((Clob) value);
+            }
+
+            if (type.equals(Ref.class) && !(value instanceof SerialRef)) {
+                return new SerialRef((Ref) value);
+            }
+
             return value;
         }
 
@@ -2937,12 +2993,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
                 return ds.getConnection();
             } catch (Exception e) {
                 // rowset.25=(JNDI)Unable to get connection
-                SQLException ex = new SQLException("rowset.25"); //$NON-NLS-1$
+                SQLException ex = new SQLException(Messages
+                        .getString("rowset.25")); //$NON-NLS-1$
                 throw ex;
             }
         }
         // rowset.24=Unable to get connection
-        throw new SQLException("rowset.24"); //$NON-NLS-1$
+        throw new SQLException(Messages.getString("rowset.24")); //$NON-NLS-1$
     }
 
     CachedRow getCurrentRow() {
@@ -2955,4 +3012,19 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         super.setCommand(cmd);
     }
 
+    protected boolean isCursorOnInsert() {
+        return isCursorOnInsert;
+    }
+
+    protected boolean isNotifyListener() {
+        return isNotifyListener;
+    }
+
+    protected void setIsNotifyListener(boolean isNotifyListener) {
+        this.isNotifyListener = isNotifyListener;
+    }
+
+    protected CachedRow getInsertRow() {
+        return insertRow;
+    }
 }

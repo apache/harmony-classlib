@@ -1095,4 +1095,94 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
         }
     }
 
+    public void testSetBinaryStream() throws Exception {
+
+        insertRow(3, "test3", new byte[] { 1, 2, 3 });
+        crset = newNoInitialInstance();
+
+        crset.setCommand("select * from STREAM where VARCHAR_FOR_BIT_T= ?");
+
+        crset.setBinaryStream(1, new ByteArrayInputStream(
+                new byte[] { 1, 2, 3 }), 3);
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+
+            crset.execute(conn);
+
+            assertTrue(crset.next());
+
+            assertEquals(3, crset.getInt(1));
+
+            byte[] bs = crset.getBytes(3);
+            assertEquals(1, bs[0]);
+            assertEquals(2, bs[1]);
+            assertEquals(3, bs[2]);
+        } else {
+            try {
+                crset.execute(conn);
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // error message: An attempt was made to get a data value of
+                // type 'VARCHAR ()
+                // FOR BIT DATA' from a data value of type
+                // 'java.io.InputStream(ASCII)'.
+                /*
+                 * TODO It seems RI invoke wrong method when it's setBinaryStream
+                 */
+            }
+        }
+
+    }
+
+    public void testSetAsciiStream() throws Exception {
+
+        crset = newNoInitialInstance();
+
+        crset.setCommand("update STREAM set LONGVARCHAR_T=? where ID= ?");
+
+        String value = "It's    is a very very very long long long story";
+        crset.setAsciiStream(1, new ByteArrayInputStream(value.getBytes()),
+                value.getBytes().length);
+        crset.setInt(2, 1);
+
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+
+            crset.execute(conn);
+            rs = st.executeQuery("select * from STREAM where ID = 1");
+
+            assertTrue(rs.next());
+            assertEquals(1, rs.getInt(1));
+            assertEquals(value, rs.getString(2));
+        } else {
+            try {
+                crset.execute(conn);
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // Unable to deduce param type
+                /*
+                 * TODO It seems RI doesn't support stream
+                 */
+            }
+        }
+    }
+
+    public void testSetCharacterStream() throws Exception {
+
+        crset = newNoInitialInstance();
+
+        String value = new String("\u548c\u8c10");
+        crset.setCommand("update STREAM set LONGVARCHAR_T=? where ID= ?");
+
+        crset.setCharacterStream(1, new StringReader(value), value
+                .toCharArray().length);
+        crset.setInt(2, 1);
+
+        crset.execute(conn);
+
+        rs = st.executeQuery("select * from STREAM where ID = 1");
+
+        assertTrue(rs.next());
+        assertEquals(1, rs.getInt(1));
+        assertEquals(value, rs.getString(2));
+
+    }
 }

@@ -206,10 +206,6 @@ public class XmlReaderImpl extends CachedRowSetReader implements XmlReader {
             currentValue = new String(ch, start, length);
         }
 
-        private void readHeader() {
-            // TODO
-        }
-
         private void readProperties() throws SQLException {
             if ("command".equals(currentTagName)) { //$NON-NLS-1$
                 webRs.setCommand(currentValue);

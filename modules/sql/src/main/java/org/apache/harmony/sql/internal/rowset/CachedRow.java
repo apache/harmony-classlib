@@ -16,13 +16,17 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.BitSet;
 
 import org.apache.harmony.sql.internal.nls.Messages;
 
-public class CachedRow implements Cloneable {
+public class CachedRow implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = 5131958045838461662L;
+
     private Object[] columnData;
 
     private Object[] originalColumnData;

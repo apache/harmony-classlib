@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.harmony.sql.tests.internal.rowset;
 
-import java.io.FileWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.SQLException;
@@ -75,11 +73,11 @@ public class WebRowSetTest extends CachedRowSetTestCase {
         assertTrue(webRs.absolute(3));
         webRs.updateString(2, "updateRow");
         webRs.updateRow();
-        
+
         assertTrue(webRs.next());
         webRs.updateString(2, "anotherUpdateRow");
         webRs.updateRow();
-        
+
         StringWriter writer = new StringWriter();
 
         webRs.writeXml(writer);
@@ -90,7 +88,7 @@ public class WebRowSetTest extends CachedRowSetTestCase {
         assertCachedRowSetEquals(webRs, another);
 
     }
-    
+
     public void testWriteAndRead_Delete() throws Exception {
         rs = st.executeQuery("SELECT * FROM USER_INFO");
         webRs = newWebRowSet();

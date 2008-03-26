@@ -17,7 +17,9 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 
@@ -81,7 +83,25 @@ public class XmlReaderTest extends TestCase {
     }
 
     public void testReaderXml_InputStream() throws Exception {
-        // TODO
+        WebRowSet webRs = newWebRowSet();
+        webRs.readXml(new FileInputStream(currentUrl));
+
+        /*
+         * TODO A row is marked as delete in XML. The row isn't marked as delete
+         * any more after populating to WebRowSet.
+         */
+        if (!"true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(webRs.absolute(3));
+            assertEquals(3, webRs.getInt(1));
+            assertFalse(webRs.rowDeleted());
+            webRs.deleteRow();
+        }
+
+        Document srcDoc = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder().parse(currentUrl);
+        XmlWriterTest.assertProperties(srcDoc, webRs);
+        XmlWriterTest.assertMetadata(srcDoc, webRs);
+        XmlWriterTest.assertData(srcDoc, webRs);
     }
 
     public void setUp() throws Exception {

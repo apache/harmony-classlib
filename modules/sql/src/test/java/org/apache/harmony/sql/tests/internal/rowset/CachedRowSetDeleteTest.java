@@ -340,14 +340,8 @@ public class CachedRowSetDeleteTest extends CachedRowSetTestCase {
         noInitialCrset.populate(rs);
 
         /*
-         * Test exception. According to spec, it would throw SQLException when
-         * calling undoDelete() in such conditions:
-         * 
-         * 1) the current row has not been deleted.
-         * 
-         * 2) the cursor is on the insert row.
-         * 
-         * 3) the curosr is before the first row, or after the last row.
+         * Test exception. It would throw SQLException when calling undoDelete()
+         * in such conditions.
          */
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             // TODO RI doesn't follow the spec, we follow spec
@@ -475,11 +469,6 @@ public class CachedRowSetDeleteTest extends CachedRowSetTestCase {
         // NOTICE: The cursor is on the second row, not the third row
         assertEquals(2, noInitialCrset.getInt(1));
 
-        // assertTrue(noInitialCrset.absolute(1));
-        // System.out.println("first: ");
-        // for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
-        // System.out.print(noInitialCrset.getObject(i) + " ");
-        // }
         // retrieve the data in CachedRowSet after calling deleteRow()
         noInitialCrset.beforeFirst();
         int index = 0;
@@ -537,7 +526,7 @@ public class CachedRowSetDeleteTest extends CachedRowSetTestCase {
 
     public void testRelative() throws Exception {
         insertMoreData(10);
-        
+
         rs = st.executeQuery("SELECT * FROM USER_INFO");
         crset = newNoInitialInstance();
         crset.populate(rs);

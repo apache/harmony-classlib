@@ -17,12 +17,16 @@
 
 package org.apache.harmony.sql.internal.rowset;
 
+import java.io.Serializable;
+
 import javax.sql.RowSetReader;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
 
-public class HYOptimisticProvider extends SyncProvider {
+public class HYOptimisticProvider extends SyncProvider implements Serializable {
+
+    private static final long serialVersionUID = -4275201032064821711L;
 
     private final static String providerID = "Apache Harmony"; //$NON-NLS-1$
 
