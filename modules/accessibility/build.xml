@@ -105,7 +105,8 @@
     <target name="build-jar" depends="svn-info">
         <mkdir dir="${hy.jdk}/jre/lib/boot"/>
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar"
-             manifest="${hy.accessibility}/META-INF/MANIFEST.MF">
+             manifest="${hy.accessibility}/META-INF/MANIFEST.MF"
+             compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

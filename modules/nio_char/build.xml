@@ -121,7 +121,8 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.nio_char.packaging.jarname}.jar"
-             manifest="${hy.nio_char}/META-INF/MANIFEST.MF">
+             manifest="${hy.nio_char}/META-INF/MANIFEST.MF"
+             compress="${hy.jar.compress}">
             <metainf prefix="META-INF/services"
                 dir="${hy.nio_char.src.main.java}/org/apache/harmony/niochar"
                 includes="java.nio.charset.spi.CharsetProvider"/>

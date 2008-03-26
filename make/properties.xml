@@ -35,14 +35,12 @@
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="1.5" />
     <property name="hy.javac.maxmem" value="384M" />
+    <property name="hy.javac.debug" value="on" />
+    <property name="hy.jar.compress" value="true" />
+    <property name="build.compilerarg" value="-nowarn" />
 
-    <!-- Temporarily always include class file debug info -->
-    <condition property="hy.javac.debug" value="on" else="on">
-        <equals arg1="${hy.cfg}" arg2="debug" />
-    </condition>
-
-    <!-- Local variable tables should be available in debug, and unavailable in release modes. -->
-    <condition property="build.compilerarg" value="-nowarn -g" else="-nowarn -g:lines,source">
+    <!-- Include only stack trace information into release build -->
+    <condition property="hy.javac.debuglevel" value="lines,vars,source" else="lines,source">
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
@@ -570,7 +568,8 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
    
    <presetdef name="hy.javac">
        <javac target="${hy.javac.target}" source="${hy.javac.source}" 
-                compiler="${hy.javac.compiler}" debug="${hy.javac.debug}">
+               compiler="${hy.javac.compiler}"
+               debug="${hy.javac.debug}" debuglevel="${hy.javac.debuglevel}">
            <compilerarg line="${build.compilerarg}" />
        </javac>
    </presetdef>
