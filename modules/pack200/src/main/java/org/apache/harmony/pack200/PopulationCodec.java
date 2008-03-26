@@ -58,12 +58,11 @@ public class PopulationCodec extends Codec {
         // read table of favorites first
         long smallest = Long.MAX_VALUE;
         long last = 0;
-        long value = 0; // TODO Are these sensible starting points?
+        long value = 0;
         int k = -1;
         while( true ) {
-            last = value;
             value = favouredCodec.decode(in,last);
-            if ( value == smallest || value == last)
+            if (k > -1 && (value == smallest || value == last))
                 break;
             favoured[++k] = value;
             if (Math.abs(smallest) > Math.abs(value)) {
@@ -72,6 +71,7 @@ public class PopulationCodec extends Codec {
                 // ensure that -X and +X -> +X
                 smallest = Math.abs(smallest);
             }
+            last = value;
         }
         // if tokenCodec needs to be derived from the T, L and K values
         if (tokenCodec == null) {
