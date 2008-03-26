@@ -26,6 +26,7 @@ public abstract class CPRef extends ConstantPoolEntry {
 
 	protected CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
+	private String resolvedComparisonString = null;
 
 	public CPRef(byte type, CPClass className, CPNameAndType descriptor) {
 		super(type);
@@ -90,6 +91,10 @@ public abstract class CPRef extends ConstantPoolEntry {
 
         // If we get here, the receiver has been resolved; there
         // is a different sort order.
+        if(resolvedComparisonString != null) {
+            return resolvedComparisonString;
+        }
+
         StringBuffer result = new StringBuffer();
         // Pad all numbers to 6 digits so they sort correctly.
         int padLength = 6;
@@ -105,7 +110,8 @@ public abstract class CPRef extends ConstantPoolEntry {
             result.append('0');
         }
         result.append("" + nameAndTypeIndex);
-        return result.toString();
+        resolvedComparisonString = result.toString();
+        return resolvedComparisonString;
     }
 
 	public String toString() {

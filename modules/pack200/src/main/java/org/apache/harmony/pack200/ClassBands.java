@@ -623,25 +623,31 @@ public class ClassBands extends BandSet {
                 // decided at the end when creating class constant pools
                 icLocal[i] = new IcTuple[classInnerClassesN[innerClassIndex]];
                 for (int j = 0; j < icLocal[i].length; j++) {
-                    IcTuple icTuple = new IcTuple();
-                    icTuple.C = cpClass[classInnerClassesRC[innerClassIndex][j]];
-                    icTuple.F = classInnerClassesF[innerClassIndex][j];
-                    if (icTuple.F != 0) {
-                        icTuple.C2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
-                        icTuple.N = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
+                    String icTupleC = null;
+                    int icTupleF = -1;
+                    String icTupleC2 = null;
+                    String icTupleN = null;
+
+                    icTupleC = cpClass[classInnerClassesRC[innerClassIndex][j]];
+                    icTupleF = classInnerClassesF[innerClassIndex][j];
+                    if (icTupleF != 0) {
+                        icTupleC2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
+                        icTupleN = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
                         innerClassC2NIndex++;
                     } else {
                         // Get from icBands
                         IcBands icBands = segment.getIcBands();
                         IcTuple[] icAll = icBands.getIcTuples();
                         for (int k = 0; k < icAll.length; k++) {
-                            if (icAll[k].C.equals(icTuple.C)) {
-                                icTuple.C2 = icAll[k].C2;
-                                icTuple.N = icAll[k].N;
+                            if (icAll[k].getC().equals(icTupleC)) {
+                                icTupleC2 = icAll[k].getC2();
+                                icTupleN = icAll[k].getN();
                                 break;
                             }
                         }
                     }
+
+                    IcTuple icTuple = new IcTuple(icTupleC, icTupleF, icTupleC2, icTupleN);
                     icLocal[i][j] = icTuple;
                 }
                 innerClassIndex++;

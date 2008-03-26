@@ -22,61 +22,33 @@ import org.apache.harmony.pack200.IcTuple;
 public class ICTupleTest extends TestCase {
 
     public void testPredictedClassTupleParsing() {
-        IcTuple tuple = new IcTuple();
-        tuple.C = "orw/SimpleHelloWorld$SimpleHelloWorldInner";
-        tuple.C2 = null;
-        tuple.F = 0;
-        tuple.N = null;
+        IcTuple tuple = new IcTuple("orw/SimpleHelloWorld$SimpleHelloWorldInner", 0, null, null);
         assertEquals("SimpleHelloWorldInner", tuple.simpleClassName());
         assertEquals("orw/SimpleHelloWorld", tuple.outerClassString());
 
-        tuple = new IcTuple();
-        tuple.C = "java/util/AbstractList$2$Local";
-        tuple.C2 = null;
-        tuple.F = 0;
-        tuple.N = null;
+        tuple = new IcTuple("java/util/AbstractList$2$Local", 0, null, null);
         assertEquals("Local", tuple.simpleClassName());
         assertEquals("java/util/AbstractList$2", tuple.outerClassString());
 
-        tuple = new IcTuple();
-        tuple.C = "java/util/AbstractList#2#Local";
-        tuple.C2 = null;
-        tuple.F = 0;
-        tuple.N = null;
+        tuple = new IcTuple("java/util/AbstractList#2#Local", 0, null, null);
         assertEquals("Local", tuple.simpleClassName());
         assertEquals("java/util/AbstractList$2", tuple.outerClassString());
 
-        tuple = new IcTuple();
-        tuple.C = "java/util/AbstractList$1";
-        tuple.C2 = null;
-        tuple.F = 0;
-        tuple.N = null;
+        tuple = new IcTuple("java/util/AbstractList$1", 0, null, null);
         assertEquals("1", tuple.simpleClassName());
         assertEquals("java/util/AbstractList", tuple.outerClassString());
     }
 
     public void testExplicitClassTupleParsing() {
-        IcTuple tuple = new IcTuple();
-        tuple.C = "Foo$$2$Local";
-        tuple.C2 = null;
-        tuple.F = IcTuple.NESTED_CLASS_FLAG;
-        tuple.N = "$2$Local";
+        IcTuple tuple = new IcTuple("Foo$$2$Local", IcTuple.NESTED_CLASS_FLAG, null, "$2$Local");
         assertEquals("$2$Local", tuple.simpleClassName());
-        assertEquals(null, tuple.outerClassString());
+        assertEquals("Foo$$2", tuple.outerClassString());
 
-        tuple = new IcTuple();
-        tuple.C = "Red$Herring";
-        tuple.C2 = "Red$Herring";
-        tuple.F = IcTuple.NESTED_CLASS_FLAG;
-        tuple.N = null;
-        assertEquals(null, tuple.simpleClassName());
+        tuple = new IcTuple("Red$Herring", IcTuple.NESTED_CLASS_FLAG, "Red$Herring", null);
+        assertEquals("Herring", tuple.simpleClassName());
         assertEquals("Red$Herring", tuple.outerClassString());
 
-        tuple = new IcTuple();
-        tuple.C = "X$1$Q";
-        tuple.C2 = "X$1";
-        tuple.F = IcTuple.NESTED_CLASS_FLAG;
-        tuple.N = "Q";
+        tuple = new IcTuple("X$1$Q", IcTuple.NESTED_CLASS_FLAG, "X$1", "Q");
         assertEquals("Q", tuple.simpleClassName());
         assertEquals("X$1", tuple.outerClassString());
     }

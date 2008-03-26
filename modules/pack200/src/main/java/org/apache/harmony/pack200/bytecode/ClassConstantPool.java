@@ -57,14 +57,21 @@ public class ClassConstantPool {
         // Only add in constant pools, but resolve all types since they may
         // introduce new constant pool entries
 // This is a handy way to see what's adding a ClassFileEntry - set a breakpoint on the print
-//      if(entry instanceof CPFieldRef) {
-//          SegmentUtils.debug("AAH:" + ((CPFieldRef)entry).comparisonString());
-//          if (((CPUTF8)entry).underlyingString().matches("Code")) {
-//              SegmentUtils.debug("Adding");
+//      if(entry instanceof CPLong) {
+//          org.apache.harmony.pack200.SegmentUtils.debug("AAH:" + ((CPUTF8)entry).underlyingString());
+//          if (((CPUTF8)entry).underlyingString().indexOf('\b') != -1) {
+//          boolean halt = false;
+//          for(int index=0; index < entries.size(); index++) {
+//              ClassFileEntry foo = (ClassFileEntry)(entries.get(index));
+//              if(foo instanceof CPUTF8) {
+//                 if(((CPUTF8)foo).underlyingString().matches(".*MRUBundleFileList.java.*"))  {
+//                      halt = true;
+//                  }
+//
+//              }
 //          }
 //      }
         if (entry instanceof ConstantPoolEntry) {
-//            classPoolSet.add(entry);
             if (!entries.contains(entry)) {
                 entries.add(entry);
                 if (entry instanceof CPLong ||entry instanceof CPDouble)

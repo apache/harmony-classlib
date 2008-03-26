@@ -216,22 +216,13 @@ public class Segment {
 		// add inner class attribute (if required)
 		boolean addInnerClassesAttr = false;
 		// TODO: remove the debug info below
-//        String debugClass = getClassBands().getClassThis()[classNum];
-//        SegmentUtils.debug("buildClassFile: class is " + debugClass);
-//        if("com/ibm/collaboration/realtime/application/RTCMainPlugin".equals(foo)) {
-//            SegmentUtils.debug("self halt");
-//        }
+        String debugClass = getClassBands().getClassThis()[classNum];
+        SegmentUtils.debug("buildClassFile: class is " + debugClass);
 		IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
 		boolean ic_local_sent = false;
 		if(ic_local != null) {
 		    ic_local_sent = true;
 		}
-		// TODO: remove the debug code below
-//		if(ic_local_sent) {
-//		    for(int xx = 0; xx < ic_local.length; xx++) {
-//		        SegmentUtils.debug("ic_local[" + xx + "]=" + ic_local[xx]);
-//		    }
-//		}
 		InnerClassesAttribute innerClassesAttribute = new InnerClassesAttribute("InnerClasses");
 		IcTuple[] ic_relevant = getIcBands().getRelevantIcTuples(fullName, cp);
 		IcTuple[] ic_stored = computeIcStored(ic_local, ic_relevant);

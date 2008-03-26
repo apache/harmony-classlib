@@ -79,14 +79,19 @@ public class IcBands extends BandSet {
         icAll = new IcTuple[icThisClass.length];
         int index = 0;
         for (int i = 0; i < icThisClass.length; i++) {
-            icAll[i] = new IcTuple();
-            icAll[i].C = icThisClass[i];
-            icAll[i].F = icFlags[i];
+            String icTupleC = null;
+            int icTupleF = -1;
+            String icTupleC2 = null;
+            String icTupleN = null;
+
+            icTupleC = icThisClass[i];
+            icTupleF = icFlags[i];
             if((icFlags[i] & 1<<16) != 0) {
-                icAll[i].C2 = icOuterClass[index];
-                icAll[i].N = icName[index];
+                icTupleC2 = icOuterClass[index];
+                icTupleN = icName[index];
                 index++;
             }
+            icAll[i] = new IcTuple(icTupleC, icTupleF, icTupleC2, icTupleN);
         }
     }
 
@@ -106,23 +111,17 @@ public class IcBands extends BandSet {
         IcTuple[] allTuples = getIcTuples();
         int allTuplesSize = allTuples.length;
         for(int index=0; index < allTuplesSize; index++) {
-            if(allTuples[index].outerClassString().equals(className)) {
-                // Originally I added all classes (anonymous and not anonymous).
-                // That yielded bad results on some classes. Adding just
-                // the non-anonymous classes (which is not what the
-                // spec specifies) seems to fix up a number of cases
-                // where the classes are otherwise mismatched.
-                if(!allTuples[index].isAnonymous()) {
-                    relevantTuples.add(allTuples[index]);
-                }
+            if(allTuples[index].shouldAddToRelevantForClassName(className)  ) {
+                relevantTuples.add(allTuples[index]);
             }
         }
 
         List classPoolClasses = cp.allClasses();
         boolean changed = true;
-        // For every class in both ic_this_class and cp,
+        // For every class constant in both ic_this_class and cp,
         // add it to ic_relevant. Repeat until no more
         // changes to ic_relevant.
+
         while(changed) {
             changed = false;
             for(int allTupleIndex=0; allTupleIndex < allTuplesSize; allTupleIndex++) {
@@ -140,6 +139,39 @@ public class IcBands extends BandSet {
                 }
             }
         }
+
+        // Not part of spec: fix up by adding to relevantTuples the parents
+        // of inner classes which are themselves inner classes.
+        // i.e., I think that if Foo$Bar$Baz gets added, Foo$Bar needs to be added
+        // as well.
+
+        boolean changedFixup = true;
+        ArrayList tuplesToAdd = new ArrayList();
+        while(changedFixup) {
+            changedFixup = false;
+            for(int index=0; index < relevantTuples.size(); index++) {
+                IcTuple aRelevantTuple = (IcTuple)relevantTuples.get(index);
+                for(int allTupleIndex = 0; allTupleIndex < allTuplesSize; allTupleIndex++) {
+                    if(aRelevantTuple.outerClassString().equals(allTuples[allTupleIndex].thisClassString())) {
+                        if(!aRelevantTuple.outerIsAnonymous()) {
+                            tuplesToAdd.add(allTuples[allTupleIndex]);
+                        }
+                    }
+                }
+            }
+            if(tuplesToAdd.size() > 0) {
+                Iterator it = tuplesToAdd.iterator();
+                while(it.hasNext()) {
+                    IcTuple tuple = (IcTuple)it.next();
+                    if(!relevantTuples.contains(tuple)) {
+                        changedFixup = true;
+                        relevantTuples.add(tuple);
+                    }
+                }
+                tuplesToAdd = new ArrayList();
+            }
+        }
+        // End not part of the spec. Ugh.
 
         // Now order the result as a subsequence of ic_all
         IcTuple[] orderedRelevantTuples = new IcTuple[relevantTuples.size()];

@@ -24,6 +24,8 @@ public class CPUTF8 extends ConstantPoolEntry {
 
     private String utf8;
 
+    private String cachedSignatureComparisonString = null;
+
     public CPUTF8(String utf8, int domain) {
 		super(ConstantPoolEntry.CP_UTF8);
 		this.utf8 = utf8;
@@ -94,6 +96,9 @@ public class CPUTF8 extends ConstantPoolEntry {
     }
 
     public String signatureComparisonString() {
+        if(cachedSignatureComparisonString != null) {
+            return cachedSignatureComparisonString;
+        }
         // TODO: what to do about inner classes?
         if(utf8==null) {return "null:utf8 (probably an inner class?)";};
         StringBuffer alphaChars = new StringBuffer();
@@ -116,6 +121,9 @@ public class CPUTF8 extends ConstantPoolEntry {
                 alphaChars.append(utf8.charAt(index));
             }
         }
-        return(alphaChars.toString() + extraChars.toString());
+        extraChars.append(Character.MAX_VALUE);
+        extraChars.append(utf8); // make sure the chars are distinct
+        cachedSignatureComparisonString = alphaChars.toString() + extraChars.toString();
+        return(cachedSignatureComparisonString);
     }
 }

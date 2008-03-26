@@ -42,7 +42,7 @@ public class InnerClassesAttribute extends Attribute {
         int inner_class_access_flags = -1;
 
         public InnerClassesEntry(IcTuple icTuple) {
-            this(icTuple.C, icTuple.C2, icTuple.N, icTuple.F);
+            this(icTuple.getC(), icTuple.getC2(), icTuple.getN(), icTuple.getF());
         }
 
         public InnerClassesEntry(String innerString, String outerString, String nameString, int flags) {
