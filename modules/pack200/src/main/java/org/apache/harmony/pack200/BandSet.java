@@ -95,15 +95,6 @@ public abstract class BandSet {
             // First element should not be discarded
             band = codec.decodeInts(count - 1, in, first);
         }
-//        if(!negativesAllowed && codec != codecUsed) {
-//            if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isSigned()) {
-//                for (int i = 0; i < band.length; i++) {
-//                    while(band[i] < 0) {
-//                        band[i] += ((BHSDCodec)codecUsed).cardinality();
-//                    }
-//                }
-//            }
-//        }
         if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isDelta()) {
             BHSDCodec bhsd = (BHSDCodec)codecUsed;
             long cardinality = bhsd.cardinality();
@@ -303,10 +294,10 @@ public abstract class BandSet {
             result[i] = new long[counts[i]];
             sum += counts[i];
         }
-        long[] hi = null;
+        int[] hi = null;
         int[] lo;
         if(hiCodec != null) {
-            hi = decodeBandLong(name, in, hiCodec, sum);
+            hi = decodeBandInt(name, in, hiCodec, sum);
             lo = decodeBandInt(name, in, loCodec, sum);
         } else {
             lo = decodeBandInt(name, in, loCodec, sum);
@@ -316,7 +307,7 @@ public abstract class BandSet {
         for (int i = 0; i < result.length; i++) {
             for (int j = 0; j < result[i].length; j++) {
                 if(hi != null) {
-                    result[i][j] = (hi[index] << 32) | lo[index];
+                    result[i][j] = ((long)hi[index] << 32) | (lo[index] & 4294967295L);
                 } else {
                     result[i][j] = lo[index];
                 }
