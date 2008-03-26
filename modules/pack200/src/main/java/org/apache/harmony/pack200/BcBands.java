@@ -377,7 +377,8 @@ public class BcBands extends BandSet {
                     int maxLocal = codeMaxNALocals[i];
                     if (!staticModifier.matches(methodFlag))
                         maxLocal++; // one for 'this' parameter
-                    maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
+                    // I believe this has to take wide arguments into account
+                    maxLocal += SegmentUtils.countInvokeInterfaceArgs(methodDescr[c][m]);
                     operandManager.setCurrentClass(segment.getClassBands()
                             .getClassThis()[c]);
                     operandManager.setSuperClass(segment.getClassBands()
