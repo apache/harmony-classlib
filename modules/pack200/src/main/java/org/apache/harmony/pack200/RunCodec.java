@@ -28,8 +28,8 @@ import java.util.Arrays;
  */
 public class RunCodec extends Codec {
 	private int k;
-	private Codec aCodec;
-	private Codec bCodec;
+	private final Codec aCodec;
+	private final Codec bCodec;
 	private long last;
 
 	public RunCodec(int k, Codec aCodec, Codec bCodec) throws Pack200Exception {
@@ -47,16 +47,30 @@ public class RunCodec extends Codec {
 
 	public long decode(InputStream in, long last) throws IOException, Pack200Exception {
 		if(--k>=0) {
-			long value = aCodec.decode(in,last);
+			long value = aCodec.decode(in, this.last);
 			this.last = (k == 0 ? 0 : value);
-			return value;
+			return normalise(aCodec, value);
 		} else {
-			this.last = bCodec.decode(in,last);
-			return this.last;
+			this.last = bCodec.decode(in, this.last);
+			return normalise(bCodec, this.last);
 		}
 	}
 
-    public int[] decodeInts(int n, InputStream in) throws IOException, Pack200Exception {
+    private long normalise(Codec codecUsed, long value) {
+        if(codecUsed instanceof BHSDCodec && ((BHSDCodec)codecUsed).isDelta()) {
+            BHSDCodec bhsd = (BHSDCodec)codecUsed;
+            long cardinality = bhsd.cardinality();
+           while (value > bhsd.largest()) {
+                value -= cardinality;
+            }
+            while (value < bhsd.smallest()) {
+                value += cardinality;
+            }
+        }
+        return value;
+	}
+
+	public int[] decodeInts(int n, InputStream in) throws IOException, Pack200Exception {
         int[] band = new int[n];
         int[] aValues = aCodec.decodeInts(k, in);
         normalise(aValues, aCodec);
