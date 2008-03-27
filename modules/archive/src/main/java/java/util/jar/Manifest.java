@@ -206,7 +206,7 @@ public class Manifest implements Cloneable {
         try {
             buf = org.apache.harmony.luni.util.ByteBuffer.wrap(is);
         } catch (OutOfMemoryError oome) {
-            throw new IOException(Messages.getString("archive.manifestTooLong")); // $NON-NLS-1$
+            throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
         }
         im = new InitManifest(buf, mainAttributes,
                 Attributes.Name.MANIFEST_VERSION);
@@ -313,7 +313,7 @@ public class Manifest implements Cloneable {
         byte[] out = name.getBytes();
         if (out.length > LINE_LENGTH_LIMIT) {
             throw new IOException(Messages.getString(
-                    "archive.headerNameTooLong", name, LINE_LENGTH_LIMIT));
+                    "archive.33", name, LINE_LENGTH_LIMIT)); //$NON-NLS-1$
         }
 
         os.write(out);

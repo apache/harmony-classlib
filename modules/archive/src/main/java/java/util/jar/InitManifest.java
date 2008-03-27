@@ -48,7 +48,7 @@ class InitManifest {
         // check a version attribute
         if (!readHeader() || !name.equals(ver)) {
             throw new IOException(Messages.getString(
-                    "archive.missingVersionAttribute", ver)); //$NON-NLS-1$
+                    "archive.2D", ver)); //$NON-NLS-1$
         }
 
         main.put(name, value);
@@ -63,8 +63,7 @@ class InitManifest {
         int mark = pos;
         while (readHeader()) {
             if (!Attributes.Name.NAME.equals(name)) {
-                throw new IOException(Messages
-                        .getString("archive.entryIsNotNamed")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("archive.23")); //$NON-NLS-1$
             }
             String entryNameValue = value;
 
@@ -85,8 +84,7 @@ class InitManifest {
                     // this: either use a list of chunks, or decide on used
                     // signature algorithm in advance and reread the chunks while
                     // updating the signature; for now a defensive error is thrown
-                    throw new IOException(Messages
-                            .getString("archive.verifiableEntryRepeated"));
+                    throw new IOException(Messages.getString("archive.34")); //$NON-NLS-1$
                 }
                 chunks.put(entryNameValue, new Manifest.Chunk(mark, pos));
                 mark = pos;
@@ -140,7 +138,7 @@ class InitManifest {
 
                 if (buf[pos++] != ' ') {
                     throw new IOException(Messages.getString(
-                            "archive.invalidAttribute", nameBuffer));
+                            "archive.30", nameBuffer)); //$NON-NLS-1$
                 }
 
                 name = new Attributes.Name(nameBuffer);
@@ -149,13 +147,12 @@ class InitManifest {
 
             if (!((b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z') || b == '_'
                     || b == '-' || (b >= '0' && b <= '9'))) {
-                throw new IOException(Messages.getString(
-                        "archive.invalidAttribute", b));
+                throw new IOException(Messages.getString("archive.30", b)); //$NON-NLS-1$
             }
         }
         if (i > 0) {
             throw new IOException(Messages.getString(
-                    "archive.invalidAttribute", wrap(mark, buf.length)));
+                    "archive.30", wrap(mark, buf.length))); //$NON-NLS-1$
         }
     }
 
@@ -173,8 +170,7 @@ class InitManifest {
 
             switch (next) {
             case 0:
-                throw new IOException(Messages
-                        .getString("archive.nulCharInManifest")); // $NON-NLS-1$
+                throw new IOException(Messages.getString("archive.2F")); //$NON-NLS-1$
             case '\n':
                 if (lastCr) {
                     lastCr = false;

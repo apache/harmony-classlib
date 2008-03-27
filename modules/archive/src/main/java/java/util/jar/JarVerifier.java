@@ -125,7 +125,7 @@ class JarVerifier {
             byte[] d = digest.digest();
             if (!MessageDigest.isEqual(d, Base64.decode(hash))) {
                 throw new SecurityException(Messages.getString(
-                        "archive.invalidDigest", new Object[] { //$NON-NLS-1$
+                        "archive.32", new Object[] { //$NON-NLS-1$
                         JarFile.MANIFEST_NAME, name, jarName }));
             }
             verifiedEntries.put(name, certificates);
@@ -312,17 +312,17 @@ class JarVerifier {
         } catch (IOException e) {
             return;
         } catch (GeneralSecurityException e) {
-            /* [MSG "archive.30", "{0} failed verification of {1}"] */
+            /* [MSG "archive.31", "{0} failed verification of {1}"] */
             throw new SecurityException(Messages.getString(
-                    "archive.30", jarName, signatureFile)); //$NON-NLS-1$
+                    "archive.31", jarName, signatureFile)); //$NON-NLS-1$
         }
 
         // Verify manifest hash in .sf file
         Attributes attributes = new Attributes();
         HashMap<String, Attributes> entries = new HashMap<String, Attributes>();
         try {
-            InitManifest im = new InitManifest(sfBytes, attributes, Attributes.Name.SIGNATURE_VERSION); //$NON-NLS-1$
-            im.initEntries(entries, null); //$NON-NLS-1$
+            InitManifest im = new InitManifest(sfBytes, attributes, Attributes.Name.SIGNATURE_VERSION);
+            im.initEntries(entries, null);
         } catch (IOException e) {
             return;
         }
@@ -341,9 +341,9 @@ class JarVerifier {
             String digestAttribute = "-Digest-Manifest-Main-Attributes"; //$NON-NLS-1$
             if (!verify(attributes, digestAttribute, manifest, 0,
                     mainAttributesEnd, false, true)) {
-                /* [MSG "archive.30", "{0} failed verification of {1}"] */
+                /* [MSG "archive.31", "{0} failed verification of {1}"] */
                 throw new SecurityException(Messages.getString(
-                        "archive.30", jarName, signatureFile)); //$NON-NLS-1$
+                        "archive.31", jarName, signatureFile)); //$NON-NLS-1$
             }
         }
 
@@ -363,7 +363,7 @@ class JarVerifier {
                 if (!verify(entry.getValue(), "-Digest", manifest, //$NON-NLS-1$
                         chunk.start, chunk.end, createdBySigntool, false)) {
                     throw new SecurityException(Messages.getString(
-                            "archive.invalidDigest", //$NON-NLS-1$
+                            "archive.32", //$NON-NLS-1$
                             new Object[] { signatureFile, entry.getKey(),
                                     jarName }));
                 }
