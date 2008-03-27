@@ -313,7 +313,7 @@ public class Manifest implements Cloneable {
         byte[] out = name.getBytes();
         if (out.length > LINE_LENGTH_LIMIT) {
             throw new IOException(Messages.getString(
-                    "archive.33", name, LINE_LENGTH_LIMIT)); //$NON-NLS-1$
+                    "archive.33", name, Integer.valueOf(LINE_LENGTH_LIMIT))); //$NON-NLS-1$
         }
 
         os.write(out);
