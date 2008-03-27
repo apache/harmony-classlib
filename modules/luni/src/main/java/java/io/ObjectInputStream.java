@@ -49,7 +49,7 @@ import org.apache.harmony.luni.util.PriviAction;
 public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamConstants {
 
-    private static InputStream emptyStream = new ByteArrayInputStream(
+    private InputStream emptyStream = new ByteArrayInputStream(
             new byte[0]);
 
     // To put into objectsRead when reading unsharedObject
