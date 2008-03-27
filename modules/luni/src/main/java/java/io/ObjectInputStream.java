@@ -27,7 +27,7 @@ import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.harmony.kernel.vm.VM;
@@ -81,7 +81,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     private boolean enableResolve;
 
     // Table mapping Integer (handle) -> Object
-    private Hashtable<Integer, Object> objectsRead;
+    private HashMap<Integer, Object> objectsRead;
 
     // Used by defaultReadObject
     private Object currentObject;
@@ -105,7 +105,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     // Handle for the current class descriptor
     private Integer descriptorHandle;
 
-    private static final Hashtable<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String, Class<?>>();
+    private static final HashMap<String, Class<?>> PRIMITIVE_CLASSES =
+        new HashMap<String, Class<?>>();
 
     static {
         PRIMITIVE_CLASSES.put("byte", byte.class); //$NON-NLS-1$
@@ -2358,7 +2359,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * Reset the collection of objects already loaded by the receiver.
      */
     private void resetSeenObjects() {
-        objectsRead = new Hashtable<Integer, Object>();
+        objectsRead = new HashMap<Integer, Object>();
         currentHandle = baseWireHandle;
         primitiveData = emptyStream;
     }
