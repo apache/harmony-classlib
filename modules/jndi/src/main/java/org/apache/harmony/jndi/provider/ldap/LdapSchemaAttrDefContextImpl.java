@@ -47,7 +47,7 @@ public class LdapSchemaAttrDefContextImpl extends LdapContextImpl {
 
     public Attributes getAttributes(Name name, String[] as)
             throws NamingException {
-        BasicAttributes attributes = new BasicAttributes();
+        BasicAttributes attributes = new BasicAttributes(true);
         Set<String> keySet = attrTree.keySet();
         Iterator<String> iter = keySet.iterator();
         while (iter.hasNext()) {

@@ -101,7 +101,7 @@ public class LdapSearchResult {
         if (entries.containsKey(name)) {
             attrs = entries.get(name);
         } else {
-            attrs = new BasicAttributes();
+            attrs = new BasicAttributes(true);
             entries.put(name, attrs);
         }
 

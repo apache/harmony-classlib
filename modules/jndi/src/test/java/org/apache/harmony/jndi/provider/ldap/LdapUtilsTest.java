@@ -18,9 +18,11 @@
 package org.apache.harmony.jndi.provider.ldap;
 
 import javax.naming.CommunicationException;
+import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.InvalidSearchFilterException;
+import javax.naming.ldap.LdapName;
 
 import junit.framework.TestCase;
 
@@ -85,11 +87,101 @@ public class LdapUtilsTest extends TestCase {
         assertEquals("test", pair.getValue());
     }
 
+    public void test_convertToRelativeName() throws Exception {
+        LdapName base = new LdapName("");
+        LdapName dn = new LdapName("cn=test,o=harmony");
+
+        LdapName relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals(dn, relative);
+
+        base = new LdapName("o=harmony");
+        relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals(new LdapName("cn=test"), relative);
+
+        base = new LdapName("o=harmony");
+        dn = new LdapName("cn=test,o=apache,o=harmony");
+        relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals(new LdapName("cn=test,o=apache"), relative);
+
+        base = new LdapName("o=harmony");
+        dn = new LdapName("o=harmony");
+        relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals(new LdapName(""), relative);
+    }
+
+    public void test_convertToRelativeName_String() throws Exception {
+        String base = "";
+        String dn = "cn=test,o=harmony";
+
+        String relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals(dn, relative);
+
+        base = "o=harmony";
+        relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals("cn=test", relative);
+
+        base = "o=harmony";
+        dn = "cn=test,o=apache,o=harmony";
+        relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals("cn=test,o=apache", relative);
+
+        base = "o=harmony";
+        dn = "o=harmony";
+        relative = LdapUtils.convertToRelativeName(dn, base);
+        assertEquals("", relative);
+    }
+
+    public void test_convertToRelativeName_String_Exception() throws Exception {
+        String base = "cn=test,o=harmony";
+        String dn = "";
+
+        try {
+            LdapUtils.convertToRelativeName(dn, base);
+            fail("Should throw NamingException");
+        } catch (NamingException e) {
+            // expected
+        }
+
+        base = "o=harmony";
+        dn = "cn=test,o=apache";
+
+        try {
+            LdapUtils.convertToRelativeName(dn, base);
+            fail("Should throw NamingException");
+        } catch (NamingException e) {
+            // expected
+        }
+        try {
+            LdapUtils.convertToRelativeName("o+harmony", "");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+    }
+
+    public void test_convertToRelativeName_Exception() throws Exception {
+        LdapName base = new LdapName("cn=test,o=harmony");
+        LdapName dn = new LdapName("");
+
+        try {
+            LdapUtils.convertToRelativeName(dn, base);
+            fail("Should throw NamingException");
+        } catch (NamingException e) {
+            // expected
+        }
+
+        base = new LdapName("o=harmony");
+        dn = new LdapName("cn=test,o=apache");
+
+        try {
+            LdapUtils.convertToRelativeName(dn, base);
+            fail("Should throw NamingException");
+        } catch (NamingException e) {
+            // expected
+        }
+    }
     private LdapResult getLdapResult(int errorCode, String message) {
         LdapResult result = new LdapResult();
-        if (message == null) {
-
-        }
         Object[] values = new Object[] { ASN1Integer.fromIntValue(errorCode),
                 Utils.getBytes(""), Utils.getBytes(message), null };
         result.decodeValues(values);

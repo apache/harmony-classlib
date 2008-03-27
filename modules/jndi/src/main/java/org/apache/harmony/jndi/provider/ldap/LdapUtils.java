@@ -26,6 +26,7 @@ import javax.naming.CommunicationException;
 import javax.naming.ContextNotEmptyException;
 import javax.naming.InvalidNameException;
 import javax.naming.LimitExceededException;
+import javax.naming.Name;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
@@ -41,6 +42,7 @@ import javax.naming.directory.InvalidAttributeValueException;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SchemaViolationException;
+import javax.naming.ldap.LdapName;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
@@ -178,5 +180,44 @@ public class LdapUtils {
             return new NamingException(Messages.getString("ldap.35", //$NON-NLS-1$
                     new Object[] { errorCode }));
         }
+    }
+
+    /**
+     * convert absolute dn to the dn relatived to the dn of
+     * <code>targetContextDN</code>.
+     * 
+     * @param dn
+     *            absolute dn
+     * @param base
+     *            base dn of the relative name
+     * @return dn relatived to the <code>dn</code> of <code>base</code>
+     * @throws NamingException
+     * @throws InvalidNameException
+     */
+    public static String convertToRelativeName(String dn, String base)
+            throws InvalidNameException, NamingException {
+        return convertToRelativeName(new LdapName(dn), new LdapName(base))
+                .toString();
+    }
+
+    public static LdapName convertToRelativeName(LdapName dn, LdapName base)
+            throws NamingException {
+        if (base.size() == 0) {
+            return dn;
+        }
+
+        if (dn.size() < base.size()) {
+            // TODO add error message
+            throw new NamingException("");
+        }
+
+        Name prefix = dn.getPrefix(base.size());
+        if (!prefix.equals(base)) {
+            // TODO add error message
+            throw new NamingException("");
+        }
+
+        return (LdapName) dn.getSuffix(base.size());
+
     }
 }

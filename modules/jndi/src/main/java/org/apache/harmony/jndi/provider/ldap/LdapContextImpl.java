@@ -426,7 +426,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     private Attributes convertSerialToAttribute(Serializable serializable)
             throws NamingException {
-        Attributes attrs = new BasicAttributes();
+        Attributes attrs = new BasicAttributes(true);
 
         Attribute objectClass = new BasicAttribute("objectClass");
         objectClass.add("top");
@@ -474,7 +474,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     private Attributes convertRefToAttribute(Reference ref) {
-        Attributes attrs = new BasicAttributes();
+        Attributes attrs = new BasicAttributes(true);
 
         Attribute objectClass = new BasicAttribute("objectClass");
         objectClass.add("top");
@@ -533,7 +533,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
          */
 
         if (attributes == null) {
-            attributes = new BasicAttributes();
+            attributes = new BasicAttributes(true);
             Attribute attr = new LdapAttribute("objectClass", this);
             attr.add("top");
             attr.add("javaContainer");
@@ -626,7 +626,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             return first;
         }
 
-        BasicAttributes attrs = new BasicAttributes();
+        BasicAttributes attrs = new BasicAttributes(true);
         NamingEnumeration<? extends Attribute> enu = first.getAll();
         while (enu.hasMore()) {
             attrs.put(enu.next());
@@ -741,7 +741,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         }
 
         // no attribute retrieved from server, return a empty Attributes
-        return new BasicAttributes();
+        return new BasicAttributes(true);
     }
 
     public Attributes getAttributes(String s) throws NamingException {
@@ -1276,7 +1276,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 sr.setNameInNamespace(dn.substring(index + 1, dn.length()));
                 list.add(sr);
             } else {
-                String relativeName = convertToRelativeName(dn, baseDN);
+                String relativeName = LdapUtils.convertToRelativeName(dn, baseDN);
                 sr = new SearchResult(relativeName, null, entries.get(dn));
                 sr.setNameInNamespace(dn);
             }
@@ -1334,7 +1334,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 sr.setNameInNamespace(dn.substring(index + 1, dn.length()));
                 list.add(sr);
             } else {
-                String relativeName = convertToRelativeName(dn, baseDN);
+                String relativeName = LdapUtils.convertToRelativeName(dn, baseDN);
                 sr = new SearchResult(relativeName, null, entries.get(dn));
                 sr.setNameInNamespace(dn);
             }
@@ -1736,7 +1736,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         tempName.addAll(name);
         String baseDN = tempName.toString();
         for (String dn : entries.keySet()) {
-            String relativeName = convertToRelativeName(dn, baseDN);
+            String relativeName = LdapUtils.convertToRelativeName(dn, baseDN);
             Attributes attrs = entries.get(dn);
             Attribute attrClass = attrs.get("javaClassName");
             String className = null;
@@ -1760,29 +1760,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 .getException());
     }
 
-    /**
-     * convert absolute dn to the dn relatived to the dn of
-     * <code>targetContextDN</code>.
-     * 
-     * @param dn
-     *            absolute dn
-     * @param base
-     *            base dn of the relative name
-     * @return dn relatived to the <code>dn</code> of <code>base</code>
-     */
-    protected String convertToRelativeName(String dn, String base) {
-
-        if (base.equals("")) {
-            return dn;
-        }
-
-        int index = dn.lastIndexOf(base);
-        if (index == 0) {
-            return "";
-        }
-
-        return dn.substring(0, index - 1);
-    }
 
     protected String getTargetDN(Name name, Name prefix)
             throws NamingException, InvalidNameException {
@@ -2485,7 +2462,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 // construct event
                 if (obj instanceof ECNotificationControl) {
                     ECNotificationControl control = (ECNotificationControl) obj;
-                    event = constructNamingEvent(this, control, baseDN);
+                    try {
+                        event = constructNamingEvent(this, control, baseDN);
+                    } catch (NamingException e) {
+                        // FIXME may never reach
+                    }
                 }
 
                 if (obj instanceof LdapResult) {
@@ -2579,36 +2560,36 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     private NamingEvent constructNamingEvent(PersistentSearchResult result,
-            ECNotificationControl control, String baseDN) {
+            ECNotificationControl control, String baseDN) throws InvalidNameException, NamingException {
         Binding newBinding = null;
         Binding oldBinding = null;
 
         switch (control.getChangeType()) {
         case ECNotificationControl.ADD:
-            String newName = convertToRelativeName(result.getDn(), baseDN);
+            String newName = LdapUtils.convertToRelativeName(result.getDn(), baseDN);
             newBinding = new Binding(newName, null);
             newBinding.setNameInNamespace(result.getDn());
             break;
         case ECNotificationControl.DELETE:
-            String deleteName = convertToRelativeName(result.getDn(), baseDN);
+            String deleteName = LdapUtils.convertToRelativeName(result.getDn(), baseDN);
             oldBinding = new Binding(deleteName, null);
             oldBinding.setNameInNamespace(result.getDn());
             break;
         case ECNotificationControl.MODIFY_DN:
             if (result.getDn() != null) {
-                newBinding = new Binding(convertToRelativeName(result.getDn(),
+                newBinding = new Binding(LdapUtils.convertToRelativeName(result.getDn(),
                         baseDN), null);
                 newBinding.setNameInNamespace(result.getDn());
             }
 
             if (control.getPreviousDN() != null) {
-                oldBinding = new Binding(convertToRelativeName(control
+                oldBinding = new Binding(LdapUtils.convertToRelativeName(control
                         .getPreviousDN(), baseDN), null);
                 oldBinding.setNameInNamespace(control.getPreviousDN());
             }
             break;
         case ECNotificationControl.MODIFY:
-            String relativeName = convertToRelativeName(result.getDn(), baseDN);
+            String relativeName = LdapUtils.convertToRelativeName(result.getDn(), baseDN);
             newBinding = new Binding(relativeName, null);
             newBinding.setNameInNamespace(result.getDn());
             // FIXME: how to get old binding?
