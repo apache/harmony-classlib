@@ -55,14 +55,14 @@ public class CpBands extends BandSet {
     private String[] cpString;
     private String[] cpUTF8;
 
-    private HashMap[] stringsToCPUTF8 = new HashMap[ClassConstantPool.NUM_DOMAINS];
-    private HashMap stringsToCPStrings = new HashMap();
-    private HashMap longsToCPLongs = new HashMap();
-    private HashMap integersToCPIntegers = new HashMap();
-    private HashMap floatsToCPFloats = new HashMap();
-    private HashMap stringsToCPClass = new HashMap();
-    private HashMap doublesToCPDoubles = new HashMap();
-    private HashMap descriptorsToCPNameAndTypes = new HashMap();
+    private final HashMap[] stringsToCPUTF8 = new HashMap[ClassConstantPool.NUM_DOMAINS];
+    private final HashMap stringsToCPStrings = new HashMap();
+    private final HashMap longsToCPLongs = new HashMap();
+    private final HashMap integersToCPIntegers = new HashMap();
+    private final HashMap floatsToCPFloats = new HashMap();
+    private final HashMap stringsToCPClass = new HashMap();
+    private final HashMap doublesToCPDoubles = new HashMap();
+    private final HashMap descriptorsToCPNameAndTypes = new HashMap();
 
 
     public CpBands(Segment segment) {
@@ -336,7 +336,10 @@ public class CpBands extends BandSet {
 
         // Read in the big suffix data
         int[] bigSuffixCounts = decodeBandInt("cp_Utf8_big_suffix", in, Codec.DELTA5, bigSuffixCount);
-        int[][] bigSuffixDataBand = decodeBandInt("cp_Utf8_big_chars", in, Codec.DELTA5, bigSuffixCounts);
+        int[][] bigSuffixDataBand = new int[bigSuffixCount][];
+        for (int i = 0; i < bigSuffixDataBand.length; i++) {
+			bigSuffixDataBand[i] = decodeBandInt("cp_Utf8_big_chars " + i, in, Codec.DELTA5, bigSuffixCounts[i]);
+		}
 
         // Convert big suffix data to characters
         char bigSuffixData[][] = new char[bigSuffixCount][];
