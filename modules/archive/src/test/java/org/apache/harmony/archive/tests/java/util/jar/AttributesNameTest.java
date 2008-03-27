@@ -26,12 +26,12 @@ public class AttributesNameTest extends TestCase {
 	/**
 	 * @tests java.util.jar.Attributes.Name#Name(java.lang.String)
 	 */
-	public void test_AttributesName_Constructor() {
+	public void testAttributesNameConstructor() {
 		// Regression for HARMONY-85
 		try {
 			new Attributes.Name(
 					"01234567890123456789012345678901234567890123456789012345678901234567890");
-			fail("Assert 0: should have thrown IllegalArgumentException");
+			fail("Should throw IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			// expected
 		}

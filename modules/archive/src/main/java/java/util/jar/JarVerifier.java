@@ -31,13 +31,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.zip.ZipEntry;
 
 import org.apache.harmony.archive.internal.nls.Messages;
+import org.apache.harmony.luni.util.Util;
 import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.security.utils.JarUtils;
-
-import org.apache.harmony.archive.util.Util;
 
 /**
  * Non-public class used by {@link JarFile} and {@link JarInputStream} to manage
@@ -71,45 +69,68 @@ class JarVerifier {
 
     private final Hashtable<String, Certificate[]> verifiedEntries = new Hashtable<String, Certificate[]>();
 
-    byte[] mainAttributesChunk;
+    int mainAttributesEnd;
 
     /**
-     * TODO Type description
+     * Stores and a hash and a message digest and verifies that massage digest
+     * matches the hash.
      */
-    static class VerifierEntry extends OutputStream {
+    class VerifierEntry extends OutputStream {
 
-        MessageDigest digest;
+        private String name;
 
-        byte[] hash;
+        private MessageDigest digest;
 
-        Certificate[] certificates;
+        private byte[] hash;
 
-        VerifierEntry(MessageDigest digest, byte[] hash,
+        private Certificate[] certificates;
+
+        VerifierEntry(String name, MessageDigest digest, byte[] hash,
                 Certificate[] certificates) {
+            this.name = name;
             this.digest = digest;
             this.hash = hash;
             this.certificates = certificates;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see java.io.OutputStream#write(int)
+        /**
+         * Updates a digest with one byte.
          */
         @Override
         public void write(int value) {
             digest.update((byte) value);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see java.io.OutputStream#write(byte[], int, int)
+        /**
+         * Updates a digest with byte array.
          */
         @Override
         public void write(byte[] buf, int off, int nbytes) {
             digest.update(buf, off, nbytes);
         }
+
+        /**
+         * Verifies that the digests stored in the manifest match the decrypted
+         * digests from the .SF file. This indicates the validity of the
+         * signing, not the integrity of the file, as it's digest must be
+         * calculated and verified when its contents are read.
+         * 
+         * @throws SecurityException
+         *             if the digest value stored in the manifest does <i>not</i>
+         *             agree with the decrypted digest as recovered from the
+         *             <code>.SF</code> file.
+         * @see #initEntry(String)
+         */
+        void verify() {
+            byte[] d = digest.digest();
+            if (!MessageDigest.isEqual(d, Base64.decode(hash))) {
+                throw new SecurityException(Messages.getString(
+                        "archive.invalidDigest", new Object[] { //$NON-NLS-1$
+                        JarFile.MANIFEST_NAME, name, jarName }));
+            }
+            verifiedEntries.put(name, certificates);
+        }
+
     }
 
     /**
@@ -187,16 +208,16 @@ class JarVerifier {
             }
             byte[] hashBytes;
             try {
-                hashBytes = hash.getBytes("ISO8859_1"); //$NON-NLS-1$
+                hashBytes = hash.getBytes("ISO-8859-1"); //$NON-NLS-1$
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e.toString());
             }
 
             try {
-                return new VerifierEntry(MessageDigest.getInstance(algorithm),
-                        hashBytes, certificatesArray);
+                return new VerifierEntry(name, MessageDigest
+                        .getInstance(algorithm), hashBytes, certificatesArray);
             } catch (NoSuchAlgorithmException e) {
-                // Ignored
+                // ignored
             }
         }
         return null;
@@ -267,6 +288,12 @@ class JarVerifier {
             return;
         }
 
+        byte[] manifest = metaEntries.get(JarFile.MANIFEST_NAME);
+        // Manifest entry is required for any verifications.
+        if (manifest == null) {
+            return;
+        }
+
         byte[] sBlockBytes = metaEntries.get(certFile);
         try {
             Certificate[] signerCertChain = JarUtils.verifySignature(
@@ -292,66 +319,58 @@ class JarVerifier {
 
         // Verify manifest hash in .sf file
         Attributes attributes = new Attributes();
-        HashMap<String, Attributes> hm = new HashMap<String, Attributes>();
+        HashMap<String, Attributes> entries = new HashMap<String, Attributes>();
         try {
-            new InitManifest(new ByteArrayInputStream(sfBytes), attributes, hm,
-                    null, "Signature-Version"); //$NON-NLS-1$
+            InitManifest im = new InitManifest(sfBytes, attributes, Attributes.Name.SIGNATURE_VERSION); //$NON-NLS-1$
+            im.initEntries(entries, null); //$NON-NLS-1$
         } catch (IOException e) {
             return;
         }
 
         boolean createdBySigntool = false;
-        String createdByValue = attributes.getValue("Created-By"); //$NON-NLS-1$
-        if (createdByValue != null) {
-            createdBySigntool = createdByValue.indexOf("signtool") != -1; //$NON-NLS-1$
+        String createdBy = attributes.getValue("Created-By"); //$NON-NLS-1$
+        if (createdBy != null) {
+            createdBySigntool = createdBy.indexOf("signtool") != -1; //$NON-NLS-1$
         }
 
         // Use .SF to verify the mainAttributes of the manifest
         // If there is no -Digest-Manifest-Main-Attributes entry in .SF
         // file, such as those created before java 1.5, then we ignore
         // such verification.
-        // FIXME: The meaning of createdBySigntool
-        if (mainAttributesChunk != null && !createdBySigntool) {
+        if (mainAttributesEnd > 0 && !createdBySigntool) {
             String digestAttribute = "-Digest-Manifest-Main-Attributes"; //$NON-NLS-1$
-            if (!verify(attributes, digestAttribute, mainAttributesChunk,
-                    false, true)) {
+            if (!verify(attributes, digestAttribute, manifest, 0,
+                    mainAttributesEnd, false, true)) {
                 /* [MSG "archive.30", "{0} failed verification of {1}"] */
                 throw new SecurityException(Messages.getString(
                         "archive.30", jarName, signatureFile)); //$NON-NLS-1$
             }
         }
 
-        byte[] manifest = metaEntries.get(JarFile.MANIFEST_NAME);
-        if (manifest == null) {
-            return;
-        }
-        // Use .SF to verify the whole manifest
+        // Use .SF to verify the whole manifest.
         String digestAttribute = createdBySigntool ? "-Digest" //$NON-NLS-1$
                 : "-Digest-Manifest"; //$NON-NLS-1$
-        if (!verify(attributes, digestAttribute, manifest, false, false)) {
-            Iterator<Map.Entry<String, Attributes>> it = hm.entrySet()
+        if (!verify(attributes, digestAttribute, manifest, 0, manifest.length,
+                false, false)) {
+            Iterator<Map.Entry<String, Attributes>> it = entries.entrySet()
                     .iterator();
             while (it.hasNext()) {
                 Map.Entry<String, Attributes> entry = it.next();
-                byte[] chunk = man.getChunk(entry.getKey());
+                Manifest.Chunk chunk = man.getChunk(entry.getKey());
                 if (chunk == null) {
                     return;
                 }
-                if (!verify(entry.getValue(), "-Digest", chunk, //$NON-NLS-1$
-                        createdBySigntool, false)) {
-                    /*
-                     * [MSG "archive.31", "{0} has invalid digest for {1} in
-                     * {2}"]
-                     */
+                if (!verify(entry.getValue(), "-Digest", manifest, //$NON-NLS-1$
+                        chunk.start, chunk.end, createdBySigntool, false)) {
                     throw new SecurityException(Messages.getString(
-                            "archive.31", //$NON-NLS-1$
+                            "archive.invalidDigest", //$NON-NLS-1$
                             new Object[] { signatureFile, entry.getKey(),
                                     jarName }));
                 }
             }
         }
         metaEntries.put(signatureFile, null);
-        signatures.put(signatureFile, hm);
+        signatures.put(signatureFile, entries);
     }
 
     /**
@@ -362,34 +381,6 @@ class JarVerifier {
      */
     void setManifest(Manifest mf) {
         man = mf;
-    }
-
-    /**
-     * Verifies that the digests stored in the manifest match the decrypted
-     * digests from the .SF file. This indicates the validity of the signing,
-     * not the integrity of the file, as it's digest must be calculated and
-     * verified when its contents are read.
-     * 
-     * @param entry
-     *            the {@link VerifierEntry} associated with the specified
-     *            <code>zipEntry</code>.
-     * @param zipEntry
-     *            an entry in the jar file
-     * @throws SecurityException
-     *             if the digest value stored in the manifest does <i>not</i>
-     *             agree with the decrypted digest as recovered from the
-     *             <code>.SF</code> file.
-     * @see #initEntry(String)
-     */
-    void verifySignatures(VerifierEntry entry, ZipEntry zipEntry) {
-        byte[] digest = entry.digest.digest();
-        if (!MessageDigest.isEqual(digest, Base64.decode(entry.hash))) {
-            /* [MSG "archive.31", "{0} has invalid digest for {1} in {2}"] */
-            throw new SecurityException(Messages.getString(
-                    "archive.31", new Object[] { //$NON-NLS-1$
-                    JarFile.MANIFEST_NAME, zipEntry.getName(), jarName }));
-        }
-        verifiedEntries.put(zipEntry.getName(), entry.certificates);
     }
 
     /**
@@ -404,7 +395,7 @@ class JarVerifier {
     }
 
     private boolean verify(Attributes attributes, String entry, byte[] data,
-            boolean ignoreSecondEndline, boolean ignorable) {
+            int start, int end, boolean ignoreSecondEndline, boolean ignorable) {
         String algorithms = attributes.getValue("Digest-Algorithms"); //$NON-NLS-1$
         if (algorithms == null) {
             algorithms = "SHA SHA1"; //$NON-NLS-1$
@@ -423,16 +414,16 @@ class JarVerifier {
             } catch (NoSuchAlgorithmException e) {
                 continue;
             }
-            if (ignoreSecondEndline && data[data.length - 1] == '\n'
-                    && data[data.length - 2] == '\n') {
-                md.update(data, 0, data.length - 1);
+            if (ignoreSecondEndline && data[end - 1] == '\n'
+                    && data[end - 2] == '\n') {
+                md.update(data, start, end - 1 - start);
             } else {
-                md.update(data, 0, data.length);
+                md.update(data, start, end - start);
             }
             byte[] b = md.digest();
             byte[] hashBytes;
             try {
-                hashBytes = hash.getBytes("ISO8859_1"); //$NON-NLS-1$
+                hashBytes = hash.getBytes("ISO-8859-1"); //$NON-NLS-1$
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e.toString());
             }
