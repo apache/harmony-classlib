@@ -54,4 +54,15 @@ public abstract class ClassFileEntry {
 		doWrite(dos);
 	}
 
+    /**
+     * Answer true if the receiver must be at the beginning
+     * of the class pool (because it is the target of a
+     * single-byte ldc command). Otherwise answer false.
+     *
+     * @return boolean true if the receiver must be under
+     *   256; otherwise false.
+     */
+    public boolean mustStartClassPool() {
+        return false;
+    }
 }

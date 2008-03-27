@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class ClassConstantPool {
@@ -146,12 +148,25 @@ public class ClassConstantPool {
         // references, which are sorted by index in the
         // class pool.
         it = entries.iterator();
+        ClassPoolSet startOfPool = new ClassPoolSet();
         ClassPoolSet finalSort = new ClassPoolSet();
         while(it.hasNext()) {
-            finalSort.add(it.next());
+            ClassFileEntry nextEntry = (ClassFileEntry)it.next();
+            if(nextEntry.mustStartClassPool()) {
+                startOfPool.add(nextEntry);
+            } else {
+                finalSort.add(nextEntry);
+            }
+        }
+        entries = new ArrayList();
+        Iterator itStart = startOfPool.iterator();
+        while(itStart.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry) itStart.next();
+            entries.add(entry);
+            if (entry instanceof CPLong ||entry instanceof CPDouble)
+                entries.add(entry); //these get 2 slots because of their size
         }
         it = finalSort.iterator();
-        entries = new ArrayList();
         while(it.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) it.next();
             entries.add(entry);

@@ -67,6 +67,7 @@ public class StringRefForm extends SingleByteReferenceForm {
             byteCode.setNestedPositions(new int[][]{{0, 2}});
         } else {
             byteCode.setNestedPositions(new int[][]{{0, 1}});
+            ((CPString)nested[0]).mustStartClassPool(true);
         }
     }
 }
