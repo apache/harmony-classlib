@@ -27,27 +27,49 @@ import org.apache.harmony.luni.util.NotImplementedException;
 public class JdbcRowSetImpl extends AbstractRowSetImpl implements JdbcRowSet {
 
     public void commit() throws SQLException {
-        throw new NotImplementedException();
+        if (connection == null) {
+            throw new NullPointerException();
+        }
+        connection.commit();
     }
 
     public boolean getAutoCommit() throws SQLException {
-        throw new NotImplementedException();
+        if (connection == null) {
+            throw new NullPointerException();
+        }
+        return connection.getAutoCommit();
     }
 
     public RowSetWarning getRowSetWarnings() throws SQLException {
-        throw new NotImplementedException();
+        return null;
     }
 
     public void rollback() throws SQLException {
-        throw new NotImplementedException();
+        if (connection == null) {
+            throw new NullPointerException();
+        }
+
+        connection.rollback();
+        statement = null;
+        resultSet = null;
     }
 
     public void rollback(Savepoint s) throws SQLException {
-        throw new NotImplementedException();
+        if (connection == null) {
+            throw new NullPointerException();
+        }
+
+        connection.rollback(s);
+        statement = null;
+        resultSet = null;
     }
 
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        throw new NotImplementedException();
+        if (connection == null) {
+            throw new NullPointerException();
+        }
+
+        connection.setAutoCommit(autoCommit);
     }
 
     public int[] getMatchColumnIndexes() throws SQLException {

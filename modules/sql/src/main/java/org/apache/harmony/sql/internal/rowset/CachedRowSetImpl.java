@@ -134,6 +134,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private SQLWarning sqlwarn = new SQLWarning();
 
+    // TODO deal with rowSetWarning
     private RowSetWarning rowSetWarning = new RowSetWarning();
 
     private Class[] columnTypes;
