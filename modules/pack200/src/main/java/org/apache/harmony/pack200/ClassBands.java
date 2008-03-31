@@ -47,6 +47,8 @@ public class ClassBands extends BandSet {
 
     private long[] classFlags;
 
+    private long[] classAccessFlags; // Access flags for writing to the class file
+
     private String[][] classInterfaces;
 
     private int[] classMethodCount;
@@ -77,11 +79,15 @@ public class ClassBands extends BandSet {
 
     private long[][] fieldFlags;
 
+    private long[][] fieldAccessFlags;
+
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
 
     private long[][] methodFlags;
+    
+    private long[][] methodAccessFlags;
 
     private final AttributeLayoutMap attrMap;
 
@@ -1203,8 +1209,25 @@ public class ClassBands extends BandSet {
         return classFieldCount;
     }
 
-    public long[] getClassFlags() {
+    public long[] getRawClassFlags() {
         return classFlags;
+    }
+
+    public long[] getClassFlags() throws Pack200Exception {
+    	if(classAccessFlags == null) {
+    		long mask = 0x7FFF;
+    		for (int i = 0; i < 16; i++) {
+				AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_CLASS);
+				if(layout != null && !layout.isDefaultLayout()) {
+					mask &= ~(1 << i);
+				}
+			}
+    		classAccessFlags = new long[classFlags.length];
+    		for (int i = 0; i < classFlags.length; i++) {
+    				classAccessFlags[i] = classFlags[i] & mask;
+    		}
+    	}
+        return classAccessFlags;
     }
 
     public String[][] getClassInterfaces() {
@@ -1239,8 +1262,24 @@ public class ClassBands extends BandSet {
         return fieldDescr;
     }
 
-    public long[][] getFieldFlags() {
-        return fieldFlags;
+    public long[][] getFieldFlags() throws Pack200Exception {
+    	if(fieldAccessFlags == null) {
+    		long mask = 0x7FFF;
+    		for (int i = 0; i < 16; i++) {
+				AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_FIELD);
+				if(layout != null && !layout.isDefaultLayout()) {
+					mask &= ~(1 << i);
+				}
+			}
+    		fieldAccessFlags = new long[fieldFlags.length][];
+    		for (int i = 0; i < fieldFlags.length; i++) {
+    			fieldAccessFlags[i] = new long[fieldFlags[i].length];
+				for (int j = 0; j < fieldFlags[i].length; j++) {
+					fieldAccessFlags[i][j] = fieldFlags[i][j] & mask;
+				}
+    		}
+    	}
+        return fieldAccessFlags;
     }
 
     /**
@@ -1272,8 +1311,24 @@ public class ClassBands extends BandSet {
         return methodDescr;
     }
 
-    public long[][] getMethodFlags() {
-        return methodFlags;
+    public long[][] getMethodFlags() throws Pack200Exception {
+    	if(methodAccessFlags == null) {
+    		long mask = 0x7FFF;
+    		for (int i = 0; i < 16; i++) {
+				AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_METHOD);
+				if(layout != null && !layout.isDefaultLayout()) {
+					mask &= ~(1 << i);
+				}
+			}
+    		methodAccessFlags = new long[methodFlags.length][];
+    		for (int i = 0; i < methodFlags.length; i++) {
+    			methodAccessFlags[i] = new long[methodFlags[i].length];
+				for (int j = 0; j < methodFlags[i].length; j++) {
+					methodAccessFlags[i][j] = methodFlags[i][j] & mask;
+				}
+    		}
+    	}
+        return methodAccessFlags;
     }
 
     /**

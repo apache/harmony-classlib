@@ -21,8 +21,7 @@ import java.util.List;
 public class CPMethod extends CPMember {
 
 	public CPMethod(CPUTF8 name, CPUTF8 descriptor, long flags, List attributes) {
-		// TODO Check that we only pass these on, or remap
-		super(name, descriptor, 0x7FFF & flags, attributes);
+		super(name, descriptor, flags, attributes);
 	}
 
 }

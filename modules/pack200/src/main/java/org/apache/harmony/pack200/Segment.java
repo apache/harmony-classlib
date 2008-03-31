@@ -143,7 +143,7 @@ public class Segment {
             AttributeLayout SOURCE_FILE = attrDefinitionBands.getAttributeDefinitionMap()
     				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
     						AttributeLayout.CONTEXT_CLASS);
-    		if (SOURCE_FILE.matches(classBands.getClassFlags()[classNum])) {
+    		if (SOURCE_FILE.matches(classBands.getRawClassFlags()[classNum])) {
     		    int firstDollar = SegmentUtils.indexOfFirstDollar(fullName);
     		    String fileName = null;
 
@@ -202,13 +202,13 @@ public class Segment {
 		}
 		// add methods
 		ClassFileEntry cfMethods[] = new ClassFileEntry[classBands.getClassMethodCount()[classNum]];
-		// fieldDescr and fieldFlags used to create this
+		// methodDescr and methodFlags used to create this
 		for (i = 0; i < cfMethods.length; i++) {
             String descriptorStr = classBands.getMethodDescr()[classNum][i];
             int colon = descriptorStr.indexOf(':');
             CPUTF8 name = cpBands.cpUTF8Value(descriptorStr.substring(0,colon), ClassConstantPool.DOMAIN_NORMALASCIIZ);
             CPUTF8 descriptor = cpBands.cpUTF8Value(descriptorStr.substring(colon+1), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-			cfMethods[i] = cp.add(new CPMethod(name, descriptor, classBands
+            cfMethods[i] = cp.add(new CPMethod(name, descriptor, classBands
                     .getMethodFlags()[classNum][i], classBands
                     .getMethodAttributes()[classNum][i]));
 		}
