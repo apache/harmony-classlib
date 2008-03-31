@@ -136,14 +136,12 @@ public class CpBands extends BandSet {
     private void parseCpDouble(InputStream in) throws IOException,
             Pack200Exception {
         int cpDoubleCount = header.getCpDoubleCount();
-        cpDouble = new double[cpDoubleCount];
-        long[] hiBits = decodeBandLong("cp_Double_hi", in, Codec.UDELTA5,
-                cpDoubleCount);
-        long[] loBits = decodeBandLong("cp_Double_lo", in, Codec.DELTA5,
-                cpDoubleCount);
-        for (int i = 0; i < cpDoubleCount; i++) {
-            cpDouble[i] = Double.longBitsToDouble(hiBits[i] << 32 | loBits[i]);
-        }
+        long[] band = parseFlags("cp_Double", in, cpDoubleCount,
+                Codec.UDELTA5, Codec.DELTA5);
+        cpDouble = new double[band.length];
+        for (int i = 0; i < band.length; i++) {
+			cpDouble[i] = Double.longBitsToDouble(band[i]);
+		}
     }
 
     /**
