@@ -136,7 +136,8 @@ public class ManifestTest extends TestCase {
                 + "Name: \nSpecification-Title: foo\nSpecification-Version: 1.0\nSpecification-Vendor: \n"
                 + "Implementation-Title: \nImplementation-Version: 1.0\nImplementation-Vendor: \n\n";
         ByteArrayInputStream bis = new ByteArrayInputStream(manifestContent
-                .getBytes());
+                .getBytes("ISO-8859-1"));
+
 
         Manifest mf = new Manifest(bis);
         assertEquals("Should be 4 main attributes", 4, mf.getMainAttributes()
@@ -239,8 +240,33 @@ public class ManifestTest extends TestCase {
     }
 
     /**
-     * @tests {@link java.util.jar.Manifest#read(java.io.InputStream)
+     * Ensures compatibility with manifests produced by gcc.
+     * 
+     * @see <a
+     *      href="http://issues.apache.org/jira/browse/HARMONY-5662">HARMONY-5662</a>
      */
+    public void testNul() throws IOException {
+        String manifestContent =
+                "Manifest-Version: 1.0\nCreated-By: nasty gcc tool\n\n\0";
+
+        byte[] bytes = manifestContent.getBytes("ISO-8859-1");
+        new Manifest(new ByteArrayInputStream(bytes)); // the last NUL is ok
+        
+        bytes[bytes.length - 1] = 26;
+        new Manifest(new ByteArrayInputStream(bytes)); // the last EOF is ok
+
+        bytes[bytes.length - 1] = 'A'; // the last line ignored
+        new Manifest(new ByteArrayInputStream(bytes));
+
+        bytes[2] = 0; // NUL char in Manifest
+        try {
+            new Manifest(new ByteArrayInputStream(bytes));
+            fail("IOException expected");
+        } catch (IOException e) {
+            // desired
+        }
+    }
+
     public void testDecoding() throws IOException {
         Manifest m = getManifest(ATT_JAR_NAME);
         final byte[] bVendor = new byte[] { (byte) 0xd0, (byte) 0x9C,

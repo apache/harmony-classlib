@@ -28,7 +28,7 @@ import java.security.PrivilegedAction;
 /**
  * The class contains static {@link java.io.InputStream} utilities.
  */
-public class ByteBuffer {
+public class InputStreamExposer {
 
     /**
      * Provides access to a protected underlying buffer of
@@ -69,7 +69,7 @@ public class ByteBuffer {
      *         beginning, and an end position is at the buffer end, or a copy of
      *         the underlying buffer part.
      */
-    private static byte[] wrap(ByteArrayInputStream bais) {
+    private static byte[] expose(ByteArrayInputStream bais) {
         byte[] buffer, buf;
         int pos;
         synchronized (bais) {
@@ -100,13 +100,13 @@ public class ByteBuffer {
      *            the stream to be read.
      * @return the snapshot wrapping the buffer where the bytes are read to.
      */
-    public static byte[] wrap(InputStream is) throws IOException {
+    public static byte[] expose(InputStream is) throws IOException {
         if (is instanceof ExposedByteArrayInputStream) {
             return ((ExposedByteArrayInputStream) is).expose();
         }
 
         if (is.getClass().equals(ByteArrayInputStream.class)) {
-            return wrap((ByteArrayInputStream) is);
+            return expose((ByteArrayInputStream) is);
         }
 
         // this may be slow, put optimizations suitable for your stream

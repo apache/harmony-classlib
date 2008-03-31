@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.harmony.archive.internal.nls.Messages;
+import org.apache.harmony.luni.util.InputStreamExposer;
 import org.apache.harmony.luni.util.ThreadLocalCache;
 
 /**
@@ -204,10 +205,19 @@ public class Manifest implements Cloneable {
     public void read(InputStream is) throws IOException {
         byte[] buf;
         try {
-            buf = org.apache.harmony.luni.util.ByteBuffer.wrap(is);
+            buf = InputStreamExposer.expose(is);
         } catch (OutOfMemoryError oome) {
             throw new IOException(Messages.getString("archive.2E")); //$NON-NLS-1$
         }
+
+        // a workaround for HARMONY-5662
+        // replace EOF and NUL with another new line
+        // which does not trigger an error
+        byte b = buf[buf.length - 1];
+        if (0 == b || 26 == b) {
+            buf[buf.length - 1] = '\n';
+        }
+
         im = new InitManifest(buf, mainAttributes,
                 Attributes.Name.MANIFEST_VERSION);
         mainEnd = im.getPos();
