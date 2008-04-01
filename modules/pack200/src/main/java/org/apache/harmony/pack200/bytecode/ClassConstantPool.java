@@ -17,12 +17,13 @@
 package org.apache.harmony.pack200.bytecode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentUtils;
 
 
 public class ClassConstantPool {
@@ -43,14 +44,17 @@ public class ClassConstantPool {
     public static final int DOMAIN_ATTRIBUTEASCIIZ = 12;
     public static final int NUM_DOMAINS = DOMAIN_ATTRIBUTEASCIIZ + 1;
 
-//    protected SortedSet sortedEntries = new TreeSet(new PoolComparator());
     protected ClassPoolSet classPoolSet = new ClassPoolSet();
+    protected HashSet entriesContainsSet = new HashSet();
+    protected HashSet othersContainsSet = new HashSet();
+
+    protected Map indexCache = null;
+
     public String toString() {
         return entries.toString();
     }
-    private final List others = new ArrayList();
-
-    private List entries = new ArrayList();
+    private List others = new ArrayList(500);
+    private List entries = new ArrayList(500);
 
     private boolean resolved;
 
@@ -74,14 +78,18 @@ public class ClassConstantPool {
 //          }
 //      }
         if (entry instanceof ConstantPoolEntry) {
-            if (!entries.contains(entry)) {
+          if (!entriesContainsSet.contains(entry)) {
+                entriesContainsSet.add(entry);
                 entries.add(entry);
                 if (entry instanceof CPLong ||entry instanceof CPDouble)
                     entries.add(entry); //these get 2 slots because of their size
             }
         } else {
-            if (!others.contains(entry))
+          if (!othersContainsSet.contains(entry)) {
+                othersContainsSet.add(entry);
                 others.add(entry);
+          }
+
         }
         ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
         for (int i = 0; i < nestedEntries.length; i++) {
@@ -90,13 +98,41 @@ public class ClassConstantPool {
         return entry;
     }
 
-    public int indexOf(ClassFileEntry entry) {
+    protected void initializeIndexCache() {
+        indexCache = new HashMap();
+        for(int index=0; index < entries.size(); index++) {
+            ClassFileEntry indexEntry = (ClassFileEntry)entries.get(index);
+            if(indexCache.containsKey(indexEntry)) {
+                // key is already in there - do nothing
+                // This will happen if a long or double
+                // is the entry - they take up 2 slots.
+            } else {
+                indexCache.put(indexEntry, new Integer(index));
+            }
+        }
+    }
+
+    public int indexOfOld(ClassFileEntry entry) {
         if (!resolved)
             throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
         int entryIndex = entries.indexOf(entry);
         // If the entry isn't found, answer -1. Otherwise answer the entry.
         if(entryIndex != -1) {
             return entryIndex + 1;
+        }
+        return -1;
+    }
+
+    public int indexOf(ClassFileEntry entry) {
+        if (!resolved)
+            throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
+        if(null == indexCache) {
+            initializeIndexCache();
+        }
+        Integer entryIndex = ((Integer)indexCache.get(entry));
+        // If the entry isn't found, answer -1. Otherwise answer the entry.
+        if(entryIndex != null) {
+            return entryIndex.intValue() + 1;
         }
         return -1;
     }
@@ -117,7 +153,7 @@ public class ClassConstantPool {
         while(it.hasNext()) {
             classPoolSet.add(it.next());
         }
-        entries = new ArrayList();
+        entries = new ArrayList(entries.size());
       Iterator sortedIterator = classPoolSet.iterator();
       while(sortedIterator.hasNext()) {
           ConstantPoolEntry entry = (ConstantPoolEntry)sortedIterator.next();
@@ -147,6 +183,10 @@ public class ClassConstantPool {
         // final sort of the class pool. This fixes up
         // references, which are sorted by index in the
         // class pool.
+
+        // Since we resorted, need to initialize index cache
+        initializeIndexCache();
+
         it = entries.iterator();
         ClassPoolSet startOfPool = new ClassPoolSet();
         ClassPoolSet finalSort = new ClassPoolSet();
@@ -158,7 +198,7 @@ public class ClassConstantPool {
                 finalSort.add(nextEntry);
             }
         }
-        entries = new ArrayList();
+        entries = new ArrayList(entries.size());
         Iterator itStart = startOfPool.iterator();
         while(itStart.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) itStart.next();
@@ -173,6 +213,9 @@ public class ClassConstantPool {
             if (entry instanceof CPLong ||entry instanceof CPDouble)
                 entries.add(entry); //these get 2 slots because of their size
         }
+
+        // Since we resorted, need to initialize index cache
+        initializeIndexCache();
 
         // Now that the indices have been re-sorted, need
         // to re-resolve to update references. This should

@@ -31,6 +31,8 @@ public class CPNameAndType extends ConstantPoolEntry {
 
 	transient int nameIndex;
 
+	protected String cachedComparisonString = null;
+
 	public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
 		super(ConstantPoolEntry.CP_NameAndType);
 		this.name = name;
@@ -118,6 +120,9 @@ public class CPNameAndType extends ConstantPoolEntry {
         // going on. How to sort these things so that even if
         // they're in some oddball codepage they'll still end
         // up sorted correctly?
+        if(cachedComparisonString != null) {
+            return cachedComparisonString;
+        }
         String descriptorString = descriptor.underlyingString();
         StringBuffer comparisonBuffer = new StringBuffer();
         if((descriptorString.indexOf("(")) == -1) {
@@ -141,6 +146,7 @@ public class CPNameAndType extends ConstantPoolEntry {
             }
         }
         comparisonBuffer.append(name.underlyingString());
-        return comparisonBuffer.toString();
+        cachedComparisonString = comparisonBuffer.toString();
+        return cachedComparisonString;
     }
 }

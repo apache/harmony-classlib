@@ -41,6 +41,9 @@ public abstract class CPRef extends ConstantPoolEntry {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+		if (this.hashCode() != obj.hashCode()) {
+		    return false;
+		}
 		final CPRef other = (CPRef) obj;
 		if (className == null) {
 			if (other.className != null)
