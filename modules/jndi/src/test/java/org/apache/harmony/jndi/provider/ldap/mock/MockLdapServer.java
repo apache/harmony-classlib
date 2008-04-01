@@ -51,15 +51,19 @@ public class MockLdapServer implements Runnable {
 
     private static int DEFAULT_PORT = 1024;
 
-    public void start() {
-        port = DEFAULT_PORT;
-        while (true) {
-            try {
-                server = new ServerSocket(port);
-                break;
-            } catch (IOException e) {
-                ++port;
-            }
+    public MockLdapServer() {
+        // do nothing
+    }
+
+    public MockLdapServer(MockLdapServer mockServer) {
+        this.server = mockServer.server;
+        port = mockServer.port;
+    }
+
+    public void start() throws IOException {
+        if (server == null) {
+            server = new ServerSocket(0);
+            port = server.getLocalPort();
         }
 
         isStopped = false;

@@ -136,6 +136,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      */
     private Control[] connCtls;
 
+    private boolean isReBind = false;
+
+    private boolean isReConnect = false;
+
     private HashMap<NamingListener, List<Integer>> listeners;
 
     private List<UnsolicitedNotificationListener> unls;
@@ -199,20 +203,14 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             Hashtable<Object, Object> environment, String dn)
             throws NamingException {
         initial(client, environment, dn);
-
-        try {
             doBindOperation(connCtls);
-        } catch (IOException e) {
-            CommunicationException ex = new CommunicationException();
-            ex.setRootCause(e);
-            throw ex;
-        }
     }
 
     private void initial(LdapClient ldapClient,
             Hashtable<Object, Object> environment, String dn)
             throws InvalidNameException {
         this.client = ldapClient;
+        client.use();
         if (environment == null) {
             this.env = new Hashtable<Object, Object>();
         } else {
@@ -239,13 +237,16 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      * @throws NamingException
      * @throws ParseException
      */
-    private void doBindOperation(Control[] connCtsl) throws IOException,
-            NamingException {
+    private void doBindOperation(Control[] connCtsl) throws NamingException {
+        if (client.getReferCount() > 1) {
+            changeConnection();
+        }
 
         SaslBind saslBind = new SaslBind();
         LdapResult result = null;
 
         SaslBind.AuthMech authMech = saslBind.valueAuthMech(env);
+        try {
         if (authMech == SaslBind.AuthMech.None) {
             BindOp bind = new BindOp("", "", null, null);
             client.doOperation(bind, connCtsl);
@@ -259,6 +260,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             result = bind.getResult();
         } else if (authMech == SaslBind.AuthMech.SASL) {
             result = saslBind.doSaslBindOperation(env, client, connCtsl);
+            }
+        } catch (IOException e) {
+            CommunicationException ex = new CommunicationException();
+            ex.setRootCause(e);
+            throw ex;
         }
 
         if (LdapUtils.getExceptionFromResult(result) != null) {
@@ -316,14 +322,16 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public void reconnect(Control[] ac) throws NamingException {
-        connCtls = ac;
-        try {
-            doBindOperation(connCtls);
-        } catch (IOException e) {
-            CommunicationException ex = new CommunicationException();
-            ex.setRootCause(e);
-            throw ex;
+        connCtls = copyControls(ac);
+        if (isReConnect) {
+            try {
+                changeConnection();
+            } finally {
+                isReConnect = false;
+            }
         }
+
+        doBindOperation(connCtls);
     }
 
     public void setRequestControls(Control[] controls) throws NamingException {
@@ -1377,6 +1385,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     LdapSearchResult doSearch(SearchOp op) throws NamingException {
+        applyEnvChange();
+
         if (env.get(LDAP_DEREF_ALIASES) != null) {
             String derefAliases = (String) env.get(LDAP_DEREF_ALIASES);
             if (derefAliases.equals("always")) {
@@ -1480,6 +1490,16 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return op.getSearchResult();
     }
 
+    private void applyEnvChange() throws NamingException {
+        if (isReBind) {
+            try {
+                reconnect(connCtls);
+            } finally {
+                isReBind = false;
+            }
+        }
+    }
+
     /**
      * Follow referrals in SearchResultReference. Referrals in
      * SearchResultReference is different with LDAPResult, which may contians
@@ -1537,6 +1557,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public Object addToEnvironment(String s, Object o) throws NamingException {
+        if (s == null || o == null) {
+            throw new NullPointerException();
+        }
+
         Object preValue = env.put(s, o);
 
         // if preValue equals o, do nothing
@@ -1545,7 +1569,13 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             return preValue;
         }
 
-        updateEnvironment(s);
+        if (connectionProperties.contains(s)) {
+            if (s.equals(Context.SECURITY_PROTOCOL)
+                    || s.equals("java.naming.ldap.factory.socket")) {
+                isReConnect = true;
+            }
+            isReBind = true;
+        }
 
         return preValue;
     }
@@ -1561,6 +1591,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     public void close() throws NamingException {
         if (!isClosed) {
             isClosed = true;
+            client.unuse();
             client = null;
         }
     }
@@ -2062,6 +2093,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public Object removeFromEnvironment(String s) throws NamingException {
+        if (s == null) {
+            throw new NullPointerException();
+        }
+
         Object preValue = env.remove(s);
 
         // if s doesn't exist in env
@@ -2069,33 +2104,25 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             return preValue;
         }
 
-        updateEnvironment(s);
+        if (connectionProperties.contains(s)) {
+            if (s.equals(Context.SECURITY_PROTOCOL)
+                    || s.equals("java.naming.ldap.factory.socket")) {
+                isReConnect = true;
+            }
+            isReBind = true;
+        }
 
         return preValue;
     }
 
-    private void updateEnvironment(String propName) throws NamingException,
-            AuthenticationNotSupportedException, CommunicationException,
-            ConfigurationException {
-        if (connectionProperties.contains(propName)) {
-            if (propName.equals("java.naming.ldap.factory.socket")) {
-                // use new socket factory to connect server
-                String address = client.getAddress();
-                int port = client.getPort();
+    private void changeConnection() throws NamingException {
 
-                client = LdapClient.newInstance(address, port, env);
-                try {
-                    doBindOperation(connCtls);
-                } catch (IOException e) {
-                    CommunicationException ex = new CommunicationException();
-                    ex.setRootCause(e);
-                    throw ex;
-                }
-            } else {
-
-                reconnect(connCtls);
-            }
-        }
+        // use new socket factory to connect server
+        String address = client.getAddress();
+        int port = client.getPort();
+        client.unuse();
+        client = LdapClient.newInstance(address, port, env);
+        client.use();
     }
 
     public void rename(Name nOld, Name nNew) throws NamingException {
@@ -2176,6 +2203,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      * @throws NamingException
      */
     protected void doBasicOperation(LdapOperation op) throws NamingException {
+        applyEnvChange();
+
         LdapMessage message = null;
         try {
             message = client.doOperation(op, requestControls);
@@ -2449,7 +2478,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     private int doPersistentSearch(String targetDN, final String baseDN,
             Filter filter, SearchControls controls,
-            NamingListener namingListener) throws CommunicationException {
+            NamingListener namingListener) throws NamingException {
+        applyEnvChange();
 
         SearchOp op = new SearchOp(targetDN, controls, filter);
 

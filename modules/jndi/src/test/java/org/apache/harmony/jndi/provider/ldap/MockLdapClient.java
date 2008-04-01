@@ -86,6 +86,16 @@ public class MockLdapClient extends LdapClient {
         request = op;
     }
 
+    @Override
+    public void use() {
+        // do nothing
+    }
+
+    @Override
+    public void unuse() {
+        // do nothing
+    }
+
     public ASN1Encodable getRequest() {
         return request;
     }

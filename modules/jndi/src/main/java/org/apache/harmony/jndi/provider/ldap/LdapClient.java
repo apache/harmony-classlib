@@ -94,6 +94,7 @@ public class LdapClient {
      * registered UnsolicitedListener
      */
     private List<UnsolicitedListener> unls = new ArrayList<UnsolicitedListener>();
+    private int referCount = 0;
 
     // constructor for test
     public LdapClient() {
@@ -705,6 +706,16 @@ public class LdapClient {
         }
     }
 
+    // FIXME simple implementation
+    public void use() {
+        referCount++;
+    }
+
+    // FIXME simple implementation
+    public void unuse() {
+        referCount--;
+    }
+
     private void notifyPersistenSearchListener(Element element) {
         PersistentSearchResult psr = (PersistentSearchResult) ((SearchOp) element.response
                 .getResponseOp()).getSearchResult();
@@ -726,4 +737,7 @@ public class LdapClient {
         }
     }
 
+    public int getReferCount() {
+        return referCount;
+    }
 }
