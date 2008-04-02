@@ -198,44 +198,54 @@ public class CachedRowSetTestCase extends TestCase {
     protected void isMetaDataEquals(ResultSetMetaData expected,
             ResultSetMetaData actual) throws SQLException {
         assertEquals(expected.getColumnCount(), actual.getColumnCount());
+        isMetaDataEqualsInColCount(expected, 1, expected.getColumnCount(),
+                actual, 1);
+        assertEquals(expected.getTableName(1), actual.getTableName(1));
+    }
 
-        int columnCount = expected.getColumnCount();
-
-        for (int column = 1; column <= columnCount; column++) {
+    protected void isMetaDataEqualsInColCount(ResultSetMetaData expected,
+            int fromIndexInExpected, int toIndexInExpected,
+            ResultSetMetaData actual, int fromColInActual) throws SQLException {
+        for (int column = fromIndexInExpected; column <= toIndexInExpected; column++) {
             assertEquals(expected.isAutoIncrement(column), actual
-                    .isAutoIncrement(column));
+                    .isAutoIncrement(fromColInActual));
             assertEquals(expected.isCaseSensitive(column), actual
-                    .isCaseSensitive(column));
-            assertEquals(expected.isCurrency(column), actual.isCurrency(column));
+                    .isCaseSensitive(fromColInActual));
+            assertEquals(expected.isCurrency(column), actual
+                    .isCurrency(fromColInActual));
             assertEquals(expected.isDefinitelyWritable(column), actual
-                    .isDefinitelyWritable(column));
-            assertEquals(expected.isReadOnly(column), actual.isReadOnly(column));
+                    .isDefinitelyWritable(fromColInActual));
+            assertEquals(expected.isReadOnly(column), actual
+                    .isReadOnly(fromColInActual));
             assertEquals(expected.isSearchable(column), actual
-                    .isSearchable(column));
-            assertEquals(expected.isSigned(column), actual.isSigned(column));
-            assertEquals(expected.isWritable(column), actual.isWritable(column));
-            assertEquals(expected.isNullable(column), actual.isNullable(column));
+                    .isSearchable(fromColInActual));
+            assertEquals(expected.isSigned(column), actual
+                    .isSigned(fromColInActual));
+            assertEquals(expected.isWritable(column), actual
+                    .isWritable(fromColInActual));
+            assertEquals(expected.isNullable(column), actual
+                    .isNullable(fromColInActual));
             assertEquals(expected.getCatalogName(column), actual
-                    .getCatalogName(column));
+                    .getCatalogName(fromColInActual));
             assertEquals(expected.getColumnClassName(column), actual
-                    .getColumnClassName(column));
+                    .getColumnClassName(fromColInActual));
             assertEquals(expected.getColumnDisplaySize(column), actual
-                    .getColumnDisplaySize(column));
+                    .getColumnDisplaySize(fromColInActual));
             assertEquals(expected.getColumnLabel(column), actual
-                    .getColumnLabel(column));
+                    .getColumnLabel(fromColInActual));
             assertEquals(expected.getColumnName(column), actual
-                    .getColumnName(column));
+                    .getColumnName(fromColInActual));
             assertEquals(expected.getColumnType(column), actual
-                    .getColumnType(column));
+                    .getColumnType(fromColInActual));
             assertEquals(expected.getColumnTypeName(column), actual
-                    .getColumnTypeName(column));
+                    .getColumnTypeName(fromColInActual));
             assertEquals(expected.getPrecision(column), actual
-                    .getPrecision(column));
-            assertEquals(expected.getScale(column), actual.getScale(column));
+                    .getPrecision(fromColInActual));
+            assertEquals(expected.getScale(column), actual
+                    .getScale(fromColInActual));
             assertEquals(expected.getSchemaName(column), actual
-                    .getSchemaName(column));
-            assertEquals(expected.getTableName(column), actual
-                    .getTableName(column));
+                    .getSchemaName(fromColInActual));
+            fromColInActual++;
         }
     }
 

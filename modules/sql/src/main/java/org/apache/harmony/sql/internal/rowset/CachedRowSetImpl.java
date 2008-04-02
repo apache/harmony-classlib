@@ -83,16 +83,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<CachedRow> rows;
+    protected ArrayList<CachedRow> rows;
 
-    private RowSetMetaData meta;
+    protected RowSetMetaData meta;
 
-    private CachedRow currentRow;
+    protected CachedRow currentRow;
 
     /**
      * current row index include deleted rows, start from 1
      */
-    private int currentRowIndex;
+    protected int currentRowIndex;
 
     // the number of the rows in one "page"
     private int pageSize;
@@ -763,45 +763,42 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     // deep copy of ResultSetMetaData
-    private RowSetMetaData copyMetaData(ResultSetMetaData metaData)
+    protected RowSetMetaData copyMetaData(ResultSetMetaData metaData)
             throws SQLException {
         RowSetMetaDataImpl rowSetMetaData = new RowSetMetaDataImpl();
         rowSetMetaData.setColumnCount(metaData.getColumnCount());
         for (int columnIndex = 1; columnIndex <= metaData.getColumnCount(); columnIndex++) {
             rowSetMetaData.setAutoIncrement(columnIndex, metaData
                     .isAutoIncrement(columnIndex));
-            rowSetMetaData.setCaseSensitive(columnIndex, metaData
-                    .isCaseSensitive(columnIndex));
-            rowSetMetaData.setCatalogName(columnIndex, metaData
-                    .getCatalogName(columnIndex));
-            rowSetMetaData.setColumnDisplaySize(columnIndex, metaData
-                    .getColumnDisplaySize(columnIndex));
-            rowSetMetaData.setColumnLabel(columnIndex, metaData
-                    .getColumnLabel(columnIndex));
-            rowSetMetaData.setColumnName(columnIndex, metaData
-                    .getColumnName(columnIndex));
-            rowSetMetaData.setColumnType(columnIndex, metaData
-                    .getColumnType(columnIndex));
-            rowSetMetaData.setColumnTypeName(columnIndex, metaData
-                    .getColumnTypeName(columnIndex));
-            rowSetMetaData.setCurrency(columnIndex, metaData
-                    .isCurrency(columnIndex));
-            rowSetMetaData.setNullable(columnIndex, metaData
-                    .isNullable(columnIndex));
-            rowSetMetaData.setPrecision(columnIndex, metaData
-                    .getPrecision(columnIndex));
-            rowSetMetaData
-                    .setScale(columnIndex, metaData.getScale(columnIndex));
-            rowSetMetaData.setSchemaName(columnIndex, metaData
-                    .getSchemaName(columnIndex));
-            rowSetMetaData.setSearchable(columnIndex, metaData
-                    .isSearchable(columnIndex));
-            rowSetMetaData.setSigned(columnIndex, metaData
-                    .isSigned(columnIndex));
-            rowSetMetaData.setTableName(columnIndex, metaData
-                    .getTableName(columnIndex));
+            doCopyMetaData(rowSetMetaData, columnIndex, metaData, columnIndex);
         }
         return rowSetMetaData;
+    }
+
+    protected void doCopyMetaData(RowSetMetaData targetRsmd, int targetIndex,
+            ResultSetMetaData srcRsmd, int srcIndex) throws SQLException {
+        targetRsmd.setAutoIncrement(targetIndex, srcRsmd
+                .isAutoIncrement(srcIndex));
+        targetRsmd.setCaseSensitive(targetIndex, srcRsmd
+                .isCaseSensitive(srcIndex));
+        targetRsmd
+                .setCatalogName(targetIndex, srcRsmd.getCatalogName(srcIndex));
+        targetRsmd.setColumnDisplaySize(targetIndex, srcRsmd
+                .getColumnDisplaySize(srcIndex));
+        targetRsmd
+                .setColumnLabel(targetIndex, srcRsmd.getColumnLabel(srcIndex));
+        targetRsmd.setColumnName(targetIndex, srcRsmd.getColumnName(srcIndex));
+        targetRsmd.setColumnType(targetIndex, srcRsmd.getColumnType(srcIndex));
+        targetRsmd.setColumnTypeName(targetIndex, srcRsmd
+                .getColumnTypeName(srcIndex));
+        targetRsmd.setCurrency(targetIndex, srcRsmd.isCurrency(srcIndex));
+        targetRsmd.setNullable(targetIndex, srcRsmd.isNullable(srcIndex));
+        targetRsmd.setPrecision(targetIndex, srcRsmd.getPrecision(srcIndex));
+        targetRsmd.setScale(targetIndex, srcRsmd.getScale(srcIndex));
+        targetRsmd.setSchemaName(targetIndex, srcRsmd.getSchemaName(srcIndex));
+        targetRsmd.setSearchable(targetIndex, srcRsmd.isSearchable(srcIndex));
+        targetRsmd.setSigned(targetIndex, srcRsmd.isSigned(srcIndex));
+        targetRsmd.setTableName(targetIndex, srcRsmd.getTableName(srcIndex));
     }
 
     public boolean previousPage() throws SQLException {
@@ -2243,6 +2240,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      * @throws SQLException
      */
     private int findNextValidRow() throws SQLException {
+        if (isCursorOnInsert) {
+            // rowset.0=Not a valid position
+            throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
+        }
+        if (rows == null || rows.size() == 0) {
+            return -1;
+        }
         int index = currentRowIndex + 1;
 
         if (getShowDeleted()) {
@@ -2275,6 +2279,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      * @throws SQLException
      */
     private int findPreviousValidRow() throws SQLException {
+        if (isCursorOnInsert) {
+            // rowset.0=Not a valid position
+            throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
+        }
+        if (rows == null || rows.size() == 0) {
+            return -1;
+        }
         int index = currentRowIndex - 1;
 
         if (index <= 0) {
