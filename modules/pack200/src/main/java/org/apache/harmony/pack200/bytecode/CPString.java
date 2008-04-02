@@ -23,7 +23,6 @@ public class CPString extends CPConstant {
 
     private transient int nameIndex;
 	private CPUTF8 name;
-	private boolean mustStartClassPool = false;
 
     public CPString(CPUTF8 value) {
 		super(ConstantPoolEntry.CP_String, value);
@@ -53,29 +52,4 @@ public class CPString extends CPConstant {
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		return new ClassFileEntry[] { name };
  	}
-
-	public String comparisonString() {
-	    return ((CPUTF8)getValue()).underlyingString();
-	}
-
-    /**
-     * Set whether the receiver must be at the start of the
-     * class pool. Anything which is the target of a single-
-     * byte ldc (bytecode 18, String) command must be at
-     * the start of the class pool.
-     *
-     * @param b boolean true if the receiver must be at
-     * the start of the class pool, otherwise false.
-     */
-    public void mustStartClassPool(boolean b) {
-        mustStartClassPool = b;
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#mustStartClassPool()
-     */
-    public boolean mustStartClassPool() {
-        return mustStartClassPool;
-    }
 }

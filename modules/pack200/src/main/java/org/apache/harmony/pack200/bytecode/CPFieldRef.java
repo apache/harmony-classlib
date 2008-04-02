@@ -25,7 +25,6 @@ public class CPFieldRef extends ConstantPoolEntry {
 	transient int classNameIndex;
 	private CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
-	private String cachedComparisonString = null;
 
 	public CPFieldRef(CPClass className, CPNameAndType descriptor) {
 		super(ConstantPoolEntry.CP_Fieldref);
@@ -52,13 +51,6 @@ public class CPFieldRef extends ConstantPoolEntry {
 	public String toString() {
 		return "FieldRef: " + className + "#" + nameAndType;
 	}
-
-    public String comparisonString() {
-        if(cachedComparisonString == null) {
-            cachedComparisonString = (className.getName() + Character.MAX_VALUE) + nameAndType.descriptor + Character.MAX_VALUE + nameAndType.name;
-        }
-        return cachedComparisonString;
-    }
 
 	public int hashCode() {
 		final int PRIME = 31;

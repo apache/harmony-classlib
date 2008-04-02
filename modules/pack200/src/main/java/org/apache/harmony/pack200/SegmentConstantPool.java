@@ -291,7 +291,9 @@ public class SegmentConstantPool {
         }
     }
 
+    protected ConstantPoolEntry cachedCpAll[] = {};
     public ConstantPoolEntry[] getCpAll() throws Pack200Exception {
+        if(cachedCpAll.length == 0) {
         	ArrayList cpAll = new ArrayList();
         	// TODO: this is 1.5-specific. Try to get rid
         	// of it.
@@ -325,11 +327,10 @@ public class SegmentConstantPool {
         	for(int index=0; index < bands.getCpIMethodClass().length; index++) {
         		cpAll.add(getConstantPoolEntry(CP_IMETHOD, index));
         	}
-
         	ConstantPoolEntry[] result = new ConstantPoolEntry[cpAll.size()];
         	cpAll.toArray(result);
-        	return result;
+        	cachedCpAll = result;
         }
-
-
+        return cachedCpAll;
     }
+}

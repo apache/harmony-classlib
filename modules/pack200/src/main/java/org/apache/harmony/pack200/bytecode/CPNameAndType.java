@@ -31,8 +31,6 @@ public class CPNameAndType extends ConstantPoolEntry {
 
 	transient int nameIndex;
 
-	protected String cachedComparisonString = null;
-
 	public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
 		super(ConstantPoolEntry.CP_NameAndType);
 		this.name = name;
@@ -106,47 +104,4 @@ public class CPNameAndType extends ConstantPoolEntry {
 	public int invokeInterfaceCount() {
 	    return 1 + SegmentUtils.countInvokeInterfaceArgs(descriptor.underlyingString());
 	}
-
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.ConstantPoolEntry#comparisonString()
-     */
-    public String comparisonString() {
-        // First come those things which don't have an
-        // associated signature. Then come the native signatures,
-        // then finally the class signatures.
-        // TODO: I think Character.MAX_VALUE is no longer the
-        // biggest character, what with the weird codepage thing
-        // going on. How to sort these things so that even if
-        // they're in some oddball codepage they'll still end
-        // up sorted correctly?
-        if(cachedComparisonString != null) {
-            return cachedComparisonString;
-        }
-        String descriptorString = descriptor.underlyingString();
-        StringBuffer comparisonBuffer = new StringBuffer();
-        if((descriptorString.indexOf("(")) == -1) {
-            // it's a variable reference
-            comparisonBuffer.append(descriptor.underlyingString());
-        } else {
-            // it's a signature. Append something that will
-            // make the comparison buffer bigger than all
-            // non-signature references.
-            comparisonBuffer.append(Character.MAX_VALUE);
-            // do the natives first
-            if(descriptorString.length() <= 4) {
-                // it's a native signature
-                comparisonBuffer.append(descriptor.underlyingString());
-            } else {
-                // it's a non-native signature. Append something
-                // that will make the comparison buffer bigger
-                // than all native signature references.
-                comparisonBuffer.append(Character.MAX_VALUE);
-                comparisonBuffer.append(descriptor.underlyingString());
-            }
-        }
-        comparisonBuffer.append(name.underlyingString());
-        cachedComparisonString = comparisonBuffer.toString();
-        return cachedComparisonString;
-    }
 }

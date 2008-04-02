@@ -44,7 +44,6 @@ public class ClassConstantPool {
     public static final int DOMAIN_ATTRIBUTEASCIIZ = 12;
     public static final int NUM_DOMAINS = DOMAIN_ATTRIBUTEASCIIZ + 1;
 
-    protected ClassPoolSet classPoolSet = new ClassPoolSet();
     protected HashSet entriesContainsSet = new HashSet();
     protected HashSet othersContainsSet = new HashSet();
 
@@ -81,8 +80,6 @@ public class ClassConstantPool {
           if (!entriesContainsSet.contains(entry)) {
                 entriesContainsSet.add(entry);
                 entries.add(entry);
-                if (entry instanceof CPLong ||entry instanceof CPDouble)
-                    entries.add(entry); //these get 2 slots because of their size
             }
         } else {
           if (!othersContainsSet.contains(entry)) {
@@ -112,17 +109,6 @@ public class ClassConstantPool {
         }
     }
 
-    public int indexOfOld(ClassFileEntry entry) {
-        if (!resolved)
-            throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
-        int entryIndex = entries.indexOf(entry);
-        // If the entry isn't found, answer -1. Otherwise answer the entry.
-        if(entryIndex != -1) {
-            return entryIndex + 1;
-        }
-        return -1;
-    }
-
     public int indexOf(ClassFileEntry entry) {
         if (!resolved)
             throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
@@ -148,48 +134,56 @@ public class ClassConstantPool {
     }
 
     public void resolve(Segment segment) {
-        classPoolSet = new ClassPoolSet();
-        Iterator it = entries.iterator();
-        while(it.hasNext()) {
-            classPoolSet.add(it.next());
-        }
-        entries = new ArrayList(entries.size());
-      Iterator sortedIterator = classPoolSet.iterator();
-      while(sortedIterator.hasNext()) {
-          ConstantPoolEntry entry = (ConstantPoolEntry)sortedIterator.next();
-          entries.add(entry);
-          // need to do this both here and in the sort below
-          // so the indices are correct.
-          if (entry instanceof CPLong ||entry instanceof CPDouble)
-              entries.add(entry); //these get 2 slots because of their size
+        Iterator it;
+      resolved= true;
+      it = entries.iterator();
+      while (it.hasNext()) {
+          ClassFileEntry entry = (ClassFileEntry) it.next();
+          entry.resolve(this);
       }
-        resolve();
+      it = others.iterator();
+      while (it.hasNext()) {
+          ClassFileEntry entry = (ClassFileEntry) it.next();
+          entry.resolve(this);
+      }
+
+      sortClassPool(segment);
     }
 
-    public void resolve() {
-        resolved= true;
+    /**
+     * Answer the collection of CPClasses currently held
+     * by the ClassPoolSet. This is used to calculate relevant
+     * classes when generating the set of relevant inner
+     * classes (ic_relevant())
+     * @return ArrayList collection of all classes.
+     *
+     * NOTE: when this list is answered, the classes may not
+     * yet be resolved.
+     */
+    public List allClasses() {
+        List classesList = new ArrayList();
         Iterator it = entries.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
-            entry.resolve(this);
+        while(it.hasNext()) {
+            ConstantPoolEntry entry = (ConstantPoolEntry)it.next();
+            if(entry.getDomain() == DOMAIN_CLASSREF) {
+                classesList.add(entry);
+            }
         }
-        it = others.iterator();
-        while (it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry) it.next();
-            entry.resolve(this);
-        }
+        return classesList;
+    }
 
+    protected void sortClassPool(Segment segment) {
         // Now that everything has been resolved, do one
         // final sort of the class pool. This fixes up
-        // references, which are sorted by index in the
-        // class pool.
+        // references to objects which need to be at the
+        // start of the class pool
 
         // Since we resorted, need to initialize index cache
         initializeIndexCache();
 
-        it = entries.iterator();
-        ClassPoolSet startOfPool = new ClassPoolSet();
-        ClassPoolSet finalSort = new ClassPoolSet();
+        Iterator it = entries.iterator();
+        ArrayList startOfPool = new ArrayList();
+        ArrayList finalSort = new ArrayList();
         while(it.hasNext()) {
             ClassFileEntry nextEntry = (ClassFileEntry)it.next();
             if(nextEntry.mustStartClassPool()) {
@@ -231,27 +225,5 @@ public class ClassConstantPool {
             ClassFileEntry entry = (ClassFileEntry)it.next();
             entry.resolve(this);
         }
-    }
-
-    /**
-     * Answer the collection of CPClasses currently held
-     * by the ClassPoolSet. This is used to calculate relevant
-     * classes when generating the set of relevant inner
-     * classes (ic_relevant())
-     * @return ArrayList collection of all classes.
-     *
-     * NOTE: when this list is answered, the classes may not
-     * yet be resolved.
-     */
-    public List allClasses() {
-        List classesList = new ArrayList();
-        Iterator it = entries.iterator();
-        while(it.hasNext()) {
-            ConstantPoolEntry entry = (ConstantPoolEntry)it.next();
-            if(entry.getDomain() == DOMAIN_CLASSREF) {
-                classesList.add(entry);
-            }
-        }
-        return classesList;
     }
 }

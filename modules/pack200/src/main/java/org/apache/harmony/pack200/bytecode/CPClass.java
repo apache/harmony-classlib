@@ -84,11 +84,4 @@ public class CPClass extends ConstantPoolEntry {
 	protected void writeBody(DataOutputStream dos) throws IOException {
 		dos.writeShort(index);
 	}
-
-   public String comparisonString() {
-       // TODO: what to do about inner classes?
-       if(name==null) {return "null:name (probably an inner class?)";};
-        return getName();
-   }
-
 }

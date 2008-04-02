@@ -26,7 +26,6 @@ public abstract class CPRef extends ConstantPoolEntry {
 
 	protected CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
-	private String resolvedComparisonString = null;
 
 	public CPRef(byte type, CPClass className, CPNameAndType descriptor) {
 		super(type);
@@ -81,54 +80,22 @@ public abstract class CPRef extends ConstantPoolEntry {
 		classNameIndex = pool.indexOf(className);
 	}
 
-   public String comparisonString() {
-        // This one is tricky. The sorting appears to be
-        // done based on the indices of the method descriptor
-        // and class name in the classpool *after* sorting them.
-
-       // If we haven't yet been resolved, just do a normal
-       // compare (so things like .contains() work).
-        if(!isResolved()) {
-            return super.comparisonString();
-        }
-
-        // If we get here, the receiver has been resolved; there
-        // is a different sort order.
-        if(resolvedComparisonString != null) {
-            return resolvedComparisonString;
-        }
-
-        StringBuffer result = new StringBuffer();
-        // Pad all numbers to 6 digits so they sort correctly.
-        int padLength = 6;
-        int classIndexLength = ("" + classNameIndex).length();
-        int nameAndTypeIndexLength = ("" + nameAndTypeIndex).length();
-
-        for(int index=0; index < (padLength - classIndexLength); index++) {
-            result.append('0');
-        }
-        result.append("" + classNameIndex);
-        result.append(":");
-        for(int index=0; index < (padLength - nameAndTypeIndexLength); index++) {
-            result.append('0');
-        }
-        result.append("" + nameAndTypeIndex);
-        resolvedComparisonString = result.toString();
-        return resolvedComparisonString;
-    }
-
+    protected String cachedToString = null;
 	public String toString() {
-		String type;
-		if (getTag() == ConstantPoolEntry.CP_Fieldref) {
-			type = "FieldRef"; //$NON-NLS-1$
-		} else if (getTag() == ConstantPoolEntry.CP_Methodref) {
-			type = "MethoddRef"; //$NON-NLS-1$
-		} else if (getTag() == ConstantPoolEntry.CP_InterfaceMethodref) {
-			type = "InterfaceMethodRef"; //$NON-NLS-1$
-		} else {
-			type = "unknown"; //$NON-NLS-1$
-		}
-		return type + ": " + className + "#" + nameAndType; //$NON-NLS-1$ //$NON-NLS-2$
+	    if(cachedToString == null) {
+	        String type;
+	        if (getTag() == ConstantPoolEntry.CP_Fieldref) {
+	            type = "FieldRef"; //$NON-NLS-1$
+	        } else if (getTag() == ConstantPoolEntry.CP_Methodref) {
+	            type = "MethoddRef"; //$NON-NLS-1$
+	        } else if (getTag() == ConstantPoolEntry.CP_InterfaceMethodref) {
+	            type = "InterfaceMethodRef"; //$NON-NLS-1$
+	        } else {
+	            type = "unknown"; //$NON-NLS-1$
+	        }
+	        cachedToString = type + ": " + className + "#" + nameAndType; //$NON-NLS-1$ //$NON-NLS-2$
+	    }
+		return cachedToString;
 	}
 
 	protected void writeBody(DataOutputStream dos) throws IOException {

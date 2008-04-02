@@ -23,20 +23,6 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 public class CPUTF8Test extends TestCase {
 
-    public void testUnequalCompareStrings() {
-        CPUTF8 one = new CPUTF8("(III)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        CPUTF8 two = new CPUTF8("((I[II)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        CPUTF8 three = new CPUTF8("([III)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        assertFalse(one.normalComparisonString().equals(two.normalComparisonString()));
-        assertFalse(one.signatureComparisonString().equals(two.signatureComparisonString()));
-
-        assertFalse(one.normalComparisonString().equals(three.normalComparisonString()));
-        assertFalse(one.signatureComparisonString().equals(three.signatureComparisonString()));
-    
-        assertFalse(two.normalComparisonString().equals(three.normalComparisonString()));
-        assertFalse(two.signatureComparisonString().equals(three.signatureComparisonString()));
-    }
-
     public void testEquality() {
         CPUTF8 one = new CPUTF8("(III)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
         CPUTF8 two = new CPUTF8("((I[II)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
