@@ -29,7 +29,7 @@ public class CPUTF8Test extends TestCase {
         CPUTF8 three = new CPUTF8("([III)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
         assertFalse(one.equals(two));
         assertFalse(one.equals(three));
-        assertFalse(two.equals(three));        
+        assertFalse(two.equals(three));
 
         assertFalse(two.equals(one));
         assertFalse(three.equals(one));

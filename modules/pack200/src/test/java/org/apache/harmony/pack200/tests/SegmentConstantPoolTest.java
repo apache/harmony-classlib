@@ -39,7 +39,7 @@ public class SegmentConstantPoolTest extends TestCase {
         public int matchSpecificPoolEntryIndex(String[] classNameArray, String[] methodNameArray, String desiredClassName, String desiredMethodRegex, int desiredIndex) {
         	return super.matchSpecificPoolEntryIndex(classNameArray, methodNameArray, desiredClassName, desiredMethodRegex, desiredIndex);
         };
-        
+
         public boolean regexMatchesVisible(String regexString, String compareString) {
             return SegmentConstantPool.regexMatches(regexString, compareString);
         }
@@ -89,7 +89,7 @@ public class SegmentConstantPoolTest extends TestCase {
         assertTrue(mockPool.regexMatchesVisible("^<init>.*", "<init>"));
         assertTrue(mockPool.regexMatchesVisible("^<init>.*", "<init>stuff"));
         assertFalse(mockPool.regexMatchesVisible("^<init>.*", "init>stuff"));
-        assertFalse(mockPool.regexMatchesVisible("^<init>.*", "<init"));	    
-        assertFalse(mockPool.regexMatchesVisible("^<init>.*", ""));        
+        assertFalse(mockPool.regexMatchesVisible("^<init>.*", "<init"));
+        assertFalse(mockPool.regexMatchesVisible("^<init>.*", ""));
 	}
 }

@@ -52,7 +52,7 @@ public class ConstantPoolTest extends TestCase {
 		pool.resolve(new Segment());
 		assertTrue(pool.indexOf(u1) > 0);
 	}
-	
+
 	public void testAllClasses() {
 	    pool.add(new CPClass(new CPUTF8("RandomClass", ClassConstantPool.DOMAIN_NORMALASCIIZ)));
         pool.add(new CPClass(new CPUTF8("RandomClass2", ClassConstantPool.DOMAIN_NORMALASCIIZ)));

@@ -86,7 +86,7 @@ public class ClassBands extends BandSet {
     private String[][] methodDescr;
 
     private long[][] methodFlags;
-    
+
     private long[][] methodAccessFlags;
 
     private final AttributeLayoutMap attrMap;

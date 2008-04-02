@@ -54,7 +54,7 @@ public class BHSDCodecTest extends TestCase {
                     if (j != decoded) {
                         fail("Failed with codec: " + i + ", " + codec + " expected: " + j
                                 + ", got: " + decoded);
-                    }                   
+                    }
                 }
             }
 
