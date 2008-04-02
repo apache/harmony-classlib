@@ -21,16 +21,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.harmony.pack200.Pack200Exception;
+
 public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
 
     private int local_variable_table_length;
-    private int[] start_pcs;
-    private int[] lengths;
+    private final int[] start_pcs;
+    private final int[] lengths;
     private int[] name_indexes;
     private int[] descriptor_indexes;
-    private int[] indexes;
-    private CPUTF8[] names;
-    private CPUTF8[] descriptors;
+    private final int[] indexes;
+    private final CPUTF8[] names;
+    private final CPUTF8[] descriptors;
     private static final CPUTF8 attributeName = new CPUTF8(
             "LocalVariableTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
@@ -98,7 +100,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
     /* (non-Javadoc)
      * @see org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute#renumber(java.util.List)
      */
-    public void renumber(List byteCodeOffsets) {
+    public void renumber(List byteCodeOffsets) throws Pack200Exception {
         // Remember the unrenumbered start_pcs, since that's used later
         // to calculate end position.
         int[] unrenumbered_start_pcs = new int[start_pcs.length];
@@ -131,7 +133,7 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             // the encodedLength to it to get the stop index.
             int stopIndex = indexOfStartPC + encodedLength;
             if(stopIndex < 0) {
-                System.out.println(stopIndex);
+                throw new Pack200Exception("Error renumbering bytecode indexes");
             }
             // Length can either be an index into the byte code offsets, or one beyond the
             // end of the byte code offsets. Need to determine which this is.
