@@ -149,7 +149,6 @@ public class UTF_8 extends Charset {
                         jchar -= remainingNumbers[tail];
                         inIndex += tail;
                     }
-                    pos++;
                     cArr[outIndex++] = (char) jchar;
                     outRemaining--;
                 }
@@ -186,9 +185,8 @@ public class UTF_8 extends Charset {
                             }
                             jchar -= remainingNumbers[tail];
                             pos += tail;
-                            pos++;
                         }
-
+                        pos++;
                         out.put((char) jchar);
                         outRemaining--;
                     }
