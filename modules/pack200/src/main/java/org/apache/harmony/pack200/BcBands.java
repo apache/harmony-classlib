@@ -262,7 +262,7 @@ public class BcBands extends BandSet {
                                     || nextInstruction == 169) {
                                 bcLocalCount ++;
                             } else {
-                                debug("Found unhandled " + ByteCode.getByteCode(nextInstruction));
+                            	segment.log(Segment.LOG_LEVEL_VERBOSE, "Found unhandled " + ByteCode.getByteCode(nextInstruction));
                             }
                             i++;
                             break;
@@ -277,13 +277,11 @@ public class BcBands extends BandSet {
                        case 254: // byte_escape
                            bcEscCount++;
                            break;
-                       default: // unhandled specifically at this stage
+                       default:
                            if(endsWithLoad(codePacked) || endsWithStore(codePacked)) {
                                bcLocalCount++;
                            } else if (startsWithIf(codePacked)) {
                                bcLabelCount++;
-                           } else {
-                               debug("Found unhandled " + codePacked + " " + ByteCode.getByteCode(codePacked));
                            }
                        }
                    }
@@ -291,7 +289,7 @@ public class BcBands extends BandSet {
             }
         }
         // other bytecode bands
-        debug("Parsed *bc_codes (" + bcParsed + ")");
+       segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed *bc_codes (" + bcParsed + ")");
         bcCaseCount = decodeBandInt("bc_case_count", in, Codec.UNSIGNED5, bcCaseCountCount);
         int bcCaseValueCount = 0;
         for (int i = 0; i < bcCaseCount.length; i++) {

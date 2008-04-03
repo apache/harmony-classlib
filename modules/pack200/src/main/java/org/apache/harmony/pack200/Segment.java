@@ -21,6 +21,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -69,30 +70,11 @@ import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
  */
 public class Segment {
 
+    public static final int LOG_LEVEL_VERBOSE = 2;
 
-	/**
-     * TODO: Do we need this method now we have Archive as the main entry point?
-     *
-	 * Decode a segment from the given input stream. This does not attempt to
-	 * re-assemble or export any class files, but it contains enough information
-	 * to be able to re-assemble class files by external callers.
-	 *
-	 * @param in
-	 *            the input stream to read from
-	 * @return a segment parsed from the input stream
-	 * @throws IOException
-	 *             if a problem occurs during reading from the underlying stream
-	 * @throws Pack200Exception
-	 *             if a problem occurs with an unexpected value or unsupported
-	 *             codec
-	 */
-	public static Segment parse(InputStream in) throws IOException,
-			Pack200Exception {
-		Segment segment = new Segment();
-        segment.parseSegment(in);
-		return segment;
-	}
+    public static final int LOG_LEVEL_STANDARD = 1;
 
+    public static final int LOG_LEVEL_QUIET = 0;
 
     private SegmentHeader header;
 
@@ -111,6 +93,10 @@ public class Segment {
     private boolean overrideDeflateHint;
 
     private boolean deflateHint;
+
+	private int logLevel;
+
+	private PrintWriter logStream;
 
 	private ClassFile buildClassFile(int classNum) throws Pack200Exception {
 		ClassFile classFile = new ClassFile();
@@ -215,9 +201,8 @@ public class Segment {
 
 		// add inner class attribute (if required)
 		boolean addInnerClassesAttr = false;
-		// TODO: remove the debug info below
         String debugClass = getClassBands().getClassThis()[classNum];
-        SegmentUtils.debug("buildClassFile: class is " + debugClass);
+        log(LOG_LEVEL_VERBOSE, "Building the class file for: " + debugClass);
 		IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
 		boolean ic_local_sent = false;
 		if(ic_local != null) {
@@ -277,9 +262,9 @@ public class Segment {
 		// sort CP according to cp_All
 		cp.resolve(this);
 		// print out entries
-		debug("Constant pool looks like:");
+		log(LOG_LEVEL_VERBOSE, "Constant pool looks like:");
 		for (i = 1; i <= cp.size(); i++) {
-			debug(String.valueOf(i) + ":" + String.valueOf(cp.get(i)));
+			log(LOG_LEVEL_VERBOSE, String.valueOf(i) + ":" + String.valueOf(cp.get(i)));
 		}
 		// NOTE the indexOf is only valid after the cp.resolve()
 		// build up remainder of file
@@ -359,8 +344,8 @@ public class Segment {
 	 */
 	private void parseSegment(InputStream in) throws IOException,
 			Pack200Exception {
-		debug("-------");
-        header = new SegmentHeader();
+		log(LOG_LEVEL_VERBOSE, "-------");
+        header = new SegmentHeader(this);
         header.unpack(in);
         cpBands = new CpBands(this);
         cpBands.unpack(in);
@@ -392,23 +377,6 @@ public class Segment {
         parseSegment(in);
         writeJar(out);
     }
-
-    /**
-     * This is a local debugging message to aid the developer in writing this
-     * class. It will be removed before going into production. If the property
-     * 'debug.pack200' is set, this will generate messages to stderr; otherwise,
-     * it will be silent.
-     *
-     * @param message
-     * @deprecated this should be removed from production code
-     */
-    protected void debug(String message) {
-        if (System.getProperty("debug.pack200") != null) {
-            System.err.println(message);
-        }
-    }
-
-
 
 	/**
 	 * Writes the segment to an output stream. The output stream should be
@@ -520,15 +488,17 @@ public class Segment {
 
 
     public void setLogLevel(int logLevel) {
-
+    	this.logLevel = logLevel;
     }
 
-    public void setLogStream(OutputStream stream) {
-
+    public void setLogStream(OutputStream logStream) {
+    	this.logStream = new PrintWriter(logStream);
     }
 
     public void log(int logLevel, String message) {
-
+    	if (this.logLevel >= logLevel) {
+    		logStream.println(message);
+    	}
     }
 
     /**

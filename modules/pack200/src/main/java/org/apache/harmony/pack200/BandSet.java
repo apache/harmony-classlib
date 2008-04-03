@@ -315,8 +315,7 @@ public abstract class BandSet {
             }
         }
 
-        // TODO Remove debugging code
-        debug("Parsed *" + name + " (" + result.length + ")");
+        segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed *" + name + " (" + result.length + ")");
         return result;
     }
 
@@ -411,19 +410,6 @@ public abstract class BandSet {
             pos += num;
         }
         return result;
-    }
-
-    /**
-     * This is a local debugging message to aid the developer in writing this
-     * class. It will be removed before going into production. If the property
-     * 'debug.pack200' is set, this will generate messages to stderr; otherwise,
-     * it will be silent.
-     *
-     * @param message
-     * @deprecated this should be removed from production code
-     */
-    protected void debug(String message) {
-        segment.debug(message);
     }
 
     public CPInteger[] parseCPIntReferences(String name, InputStream in, BHSDCodec codec, int count) throws IOException, Pack200Exception {

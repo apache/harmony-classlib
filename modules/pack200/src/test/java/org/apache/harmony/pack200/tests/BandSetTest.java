@@ -19,7 +19,6 @@ package org.apache.harmony.pack200.tests;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import junit.framework.TestCase;
 
@@ -34,14 +33,11 @@ public class BandSetTest extends TestCase {
 
     public class MockSegment extends Segment {
         public SegmentHeader getSegmentHeader() {
-            return new SegmentHeader();
+            return new SegmentHeader(this);
         }
     }
 
-    private BandSet bandSet = new BandSet(new MockSegment()) {
-
-        public void pack(OutputStream outputStream) {
-        }
+    private final BandSet bandSet = new BandSet(new MockSegment()) {
 
         public void unpack(InputStream inputStream) throws IOException, Pack200Exception {
         }

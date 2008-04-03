@@ -20,7 +20,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentUtils;
 import org.apache.harmony.pack200.bytecode.forms.ByteCodeForm;
 
 public class ByteCode extends ClassFileEntry {
@@ -134,7 +133,7 @@ public class ByteCode extends ClassFileEntry {
 					break;
 
 				default:
-					SegmentUtils.debug("Unhandled resolve " + this);
+					throw new Error("Unhandled resolve " + this);
 				}
 			}
 		}
