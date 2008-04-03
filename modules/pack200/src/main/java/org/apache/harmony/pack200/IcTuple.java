@@ -51,7 +51,6 @@ public class IcTuple {
     private boolean initialized = false;
     private boolean anonymous = false;
     private boolean member = true;
-    private boolean outerIsAnonymous = false;
 
     /**
      * Answer true if the receiver is predicted;
