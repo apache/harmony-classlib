@@ -36,12 +36,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.Binding;
 import javax.naming.CannotProceedException;
 import javax.naming.CommunicationException;
 import javax.naming.CompositeName;
-import javax.naming.ConfigurationException;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.LimitExceededException;

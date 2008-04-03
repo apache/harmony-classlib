@@ -60,7 +60,8 @@ public class ReferralExceptionImpl extends LdapReferralException {
         String host = parser.getHost();
         int port = parser.getPort();
 
-        LdapClient client = LdapClient.newInstance(host, port, env);
+        LdapClient client = LdapClient.newInstance(host, port, env, LdapUtils
+                .isLdapsURL(referrals[index]));
 
         LdapContextImpl context = new LdapContextImpl(client,
                 (Hashtable<Object, Object>) env, targetDN);
@@ -84,7 +85,8 @@ public class ReferralExceptionImpl extends LdapReferralException {
         String host = parser.getHost();
         int port = parser.getPort();
 
-        LdapClient client = LdapClient.newInstance(host, port, myEnv);
+        LdapClient client = LdapClient.newInstance(host, port, myEnv, LdapUtils
+                .isLdapsURL(referrals[index]));
 
         LdapContextImpl context = new LdapContextImpl(client, myEnv, targetDN);
 

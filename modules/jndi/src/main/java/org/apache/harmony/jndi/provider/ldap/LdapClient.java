@@ -27,13 +27,10 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.naming.CommunicationException;
-import javax.naming.ConfigurationException;
-import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.StartTlsRequest;
 import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.LdapContextImpl.UnsolicitedListener;
@@ -94,6 +91,10 @@ public class LdapClient {
      * registered UnsolicitedListener
      */
     private List<UnsolicitedListener> unls = new ArrayList<UnsolicitedListener>();
+
+    /**
+     * how may references point to this client
+     */
     private int referCount = 0;
 
     // constructor for test
@@ -521,66 +522,22 @@ public class LdapClient {
      */
     public static LdapClient newInstance(String host, int port,
             Hashtable<?, ?> envmt) throws NamingException {
-        String factoryName = (String) envmt
-                .get("java.naming.ldap.factory.socket");
+        return newInstance(host, port, envmt, false);
+    }
 
-        SocketFactory factory = null;
-        if (factoryName == null || "".equals(factoryName)) {
-            if ("ssl".equalsIgnoreCase((String) envmt
-                    .get(Context.SECURITY_PROTOCOL))) {
-                factory = SSLSocketFactory.getDefault();
-            } else {
-                factory = SocketFactory.getDefault();
-            }
-        } else {
+    public static LdapClient newInstance(String host, int port,
+            Hashtable<?, ?> envmt, boolean isLdaps) throws NamingException {
+        SocketFactory factory = LdapUtils.getSocketFactory(envmt, isLdaps);
 
-            try {
-                factory = (SocketFactory) classForName(factoryName)
-                        .newInstance();
-            } catch (Exception e) {
-                ConfigurationException ex = new ConfigurationException();
-                ex.setRootCause(e);
-                throw ex;
-            }
-        }
         // TODO: get LdapClient from pool first.
 
         try {
             return new LdapClient(factory, host, port);
-
         } catch (IOException e) {
             CommunicationException ex = new CommunicationException();
             ex.setRootCause(e);
             throw ex;
         }
-    }
-
-    private static Class<?> classForName(final String className)
-            throws ClassNotFoundException {
-
-        Class<?> cls = null;
-        // try thread context class loader first
-        try {
-            cls = Class.forName(className, true, Thread.currentThread()
-                    .getContextClassLoader());
-        } catch (ClassNotFoundException e) {
-            // Ignored.
-        }
-        // try system class loader second
-        try {
-            cls = Class.forName(className, true, ClassLoader
-                    .getSystemClassLoader());
-        } catch (ClassNotFoundException e1) {
-            // Ignored.
-        }
-
-        if (cls == null) {
-            // jndi.1C=class {0} not found
-            throw new ClassNotFoundException(Messages.getString(
-                    "jndi.1C", className)); //$NON-NLS-1$
-        }
-
-        return cls;
     }
 
     /**

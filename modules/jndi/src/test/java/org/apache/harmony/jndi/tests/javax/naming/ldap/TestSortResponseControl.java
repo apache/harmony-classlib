@@ -424,12 +424,39 @@ public class TestSortResponseControl extends TestCase {
 		}
 	}
 
+    /**
+     * <p>Test method for 'javax.naming.ldap.SortResponseControl.SortResponseControl(String, boolean, byte[])'</p>
+     */
+    public void testSortResponseControl019() throws IOException{
 
-	/**
-	 * <p>Test method for 'javax.naming.ldap.SortResponseControl.isSorted()'</p>
-	 * <p>Here we are testing if the isSorted method returns the correct answer for sorted results.</p>
-	 * <p>The expected result in this case is true.</p>
-	 */
+        String Id="test";
+        boolean crit=false;
+        byte[] ber1={48,1,10,1,0};
+        byte[] ber2={48,5,10,1,3};
+        byte[] ber3={48,3,10,2,3,3};
+        byte[] ber4={48,4,10,1,3,3,3};
+        byte[] ber5={48,8,10,1,3,(byte)128,3,'T','e','s','t'};
+        SortResponseControl src=null;
+        src = new SortResponseControl(Id, crit, ber1);
+        assertEquals(Id, src.getID());
+        assertEquals(src.getResultCode(), 0);
+        src = new SortResponseControl(Id, crit, ber2);
+        assertEquals(src.getResultCode(), 3);
+        src = new SortResponseControl(Id, crit, ber3);
+        assertEquals(src.getResultCode(), 771);
+        src = new SortResponseControl(Id, crit, ber4);
+        assertEquals(src.getResultCode(), 3);
+        src = new SortResponseControl(Id, crit, ber5);
+        assertEquals(src.getResultCode(), 3);
+        assertEquals("Tes", src.getAttributeID());
+    }    
+
+
+    /**
+     * <p>Test method for 'javax.naming.ldap.SortResponseControl.isSorted()'</p>
+     * <p>Here we are testing if the isSorted method returns the correct answer for sorted results.</p>
+     * <p>The expected result in this case is true.</p>
+     */
 	public void testIsSorted001() {
 
 		SortResponseControl src=null;

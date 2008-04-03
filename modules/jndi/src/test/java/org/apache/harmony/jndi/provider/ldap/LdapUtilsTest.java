@@ -17,12 +17,18 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
+import java.net.Socket;
+import java.util.Hashtable;
 import javax.naming.CommunicationException;
+import javax.naming.ConfigurationException;
+import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.TimeLimitExceededException;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.ldap.LdapName;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
 import junit.framework.TestCase;
 
@@ -179,6 +185,143 @@ public class LdapUtilsTest extends TestCase {
         } catch (NamingException e) {
             // expected
         }
+    }
+
+    /*
+     * @Test
+     * org.apache.harmony.jndi.provider.ldap.LdapUtils.getSocketFactory(Hashtable<?,
+     * ?>)
+     * 
+     * There are three properties determine the SocketFactory to be used:
+     * "java.naming.ldap.factory.socket", "java.naming.security.protocol" and
+     * protocol defined in URL
+     * 
+     */
+    public void test_getSocketFactory() throws Exception {
+
+        SocketFactory factory = null;
+        String painSocketFactoryName = SocketFactory.getDefault().getClass()
+                .getName();
+        String sslSocketFactoryName = SSLSocketFactory.getDefault().getClass()
+                .getName();
+
+        /*
+         * Ldaps=false
+         */
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        factory = LdapUtils.getSocketFactory(env, false);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(painSocketFactoryName));
+
+        /*
+         * Ldaps=true
+         */
+        factory = LdapUtils.getSocketFactory(env, true);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
+
+        /*
+         * Ldaps=true java.naming.security.protocol=ssl
+         */
+        env = new Hashtable<Object, Object>();
+        env.put(Context.SECURITY_PROTOCOL, "ssl");
+        factory = LdapUtils.getSocketFactory(env, true);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
+
+        /*
+         * Ldaps=false java.naming.security.protocol=ssl
+         */
+        env.put(Context.SECURITY_PROTOCOL, "ssl");
+        factory = LdapUtils.getSocketFactory(env, false);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
+
+        /*
+         * Ldaps=true java.naming.ldap.factory.socket=pain socket factory
+         */
+        env = new Hashtable<Object, Object>();
+        env.put("java.naming.ldap.factory.socket", painSocketFactoryName);
+        try {
+            factory = LdapUtils.getSocketFactory(env, true);
+            fail("Should throw IllegalAccessException");
+        } catch (ConfigurationException e) {
+            assertTrue(e.getCause() instanceof IllegalAccessException);
+        }
+
+        /*
+         * Ldaps=false java.naming.ldap.factory.socket=pain socket factory
+         */
+        env.put("java.naming.ldap.factory.socket", painSocketFactoryName);
+        try {
+            factory = LdapUtils.getSocketFactory(env, false);
+            fail("Should throw IllegalAccessException");
+        } catch (ConfigurationException e) {
+            assertTrue(e.getCause() instanceof IllegalAccessException);
+        }
+
+        /*
+         * Ldaps=true java.naming.ldap.factory.socket=ssl socket factory
+         */
+        env = new Hashtable<Object, Object>();
+        env.put("java.naming.ldap.factory.socket", sslSocketFactoryName);
+        factory = LdapUtils.getSocketFactory(env, true);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
+
+        /*
+         * Ldaps=false java.naming.ldap.factory.socket=ssl socket factory
+         */
+        env.put("java.naming.ldap.factory.socket", sslSocketFactoryName);
+        factory = LdapUtils.getSocketFactory(env, false);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
+
+        /*
+         * Ldaps=false java.naming.ldap.factory.socket=ssl socket factory
+         * java.naming.security.protocol=ssl
+         */
+        env.put(Context.SECURITY_PROTOCOL, "ssl");
+        env.put("java.naming.ldap.factory.socket", sslSocketFactoryName);
+        factory = LdapUtils.getSocketFactory(env, false);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
+
+        /*
+         * Ldaps=false java.naming.ldap.factory.socket=pain socket factory
+         * java.naming.security.protocol=ssl
+         */
+        env.put(Context.SECURITY_PROTOCOL, "ssl");
+        env.put("java.naming.ldap.factory.socket", painSocketFactoryName);
+        try {
+            factory = LdapUtils.getSocketFactory(env, false);
+            fail("Should throw IllegalAccessException");
+        } catch (ConfigurationException e) {
+            assertTrue(e.getCause() instanceof IllegalAccessException);
+        }
+
+        /*
+         * Ldaps=true java.naming.ldap.factory.socket=pain socket factory
+         * java.naming.security.protocol=ssl
+         */
+        env.put(Context.SECURITY_PROTOCOL, "ssl");
+        env.put("java.naming.ldap.factory.socket", painSocketFactoryName);
+        try {
+            factory = LdapUtils.getSocketFactory(env, true);
+            fail("Should throw IllegalAccessException");
+        } catch (ConfigurationException e) {
+            assertTrue(e.getCause() instanceof IllegalAccessException);
+        }
+
+        /*
+         * Ldaps=true java.naming.ldap.factory.socket=ssl socket factory
+         * java.naming.security.protocol=ssl
+         */
+        env.put(Context.SECURITY_PROTOCOL, "ssl");
+        env.put("java.naming.ldap.factory.socket", sslSocketFactoryName);
+        factory = LdapUtils.getSocketFactory(env, true);
+        assertNotNull(factory);
+        assertTrue(factory.getClass().getName().equals(sslSocketFactoryName));
     }
     private LdapResult getLdapResult(int errorCode, String message) {
         LdapResult result = new LdapResult();
