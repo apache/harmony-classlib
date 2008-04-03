@@ -43,7 +43,7 @@ public class GBCharsetEncoderTest extends CharsetEncoderTest {
 		super.tearDown();
 	}
 
-	public void testCanEncodechar() throws CharacterCodingException {
+	public void testCanEncodechar() {
 		// normal case for utfCS
 		assertTrue(encoder.canEncode('\u0077'));
 		assertTrue(encoder.canEncode('\uc2a3'));

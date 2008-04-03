@@ -42,7 +42,7 @@ public class ASCCharsetDecoderTest extends CharsetDecoderTest {
 	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
 	// }
 
-	ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {
+	ByteBuffer getUnmappedByteBuffer() {
 		// FIXME: different here
 		return null;
 		// ByteBuffer buffer = ByteBuffer.allocate(8);
@@ -53,11 +53,11 @@ public class ASCCharsetDecoderTest extends CharsetDecoderTest {
 
 	}
 
-	ByteBuffer getMalformByteBuffer() throws UnsupportedEncodingException {
+	ByteBuffer getMalformedByteBuffer() {
 		// FIXME: different here
 		ByteBuffer buffer = ByteBuffer.allocate(8);
 		buffer.put((byte) -1);
-		buffer.put(unibytes);
+		buffer.put(getByteBuffer());
 		buffer.flip();
 		return buffer;
 
