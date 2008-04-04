@@ -56,9 +56,9 @@ public final class BHSDCodec extends Codec {
 
     private long cardinality;
 
-    private long smallest;
+    private final long smallest;
 
-    private long largest;
+    private final long largest;
 
 	/**
 	 * Constructs an unsigned, non-delta Codec with the given B and H values.
@@ -191,10 +191,10 @@ public final class BHSDCodec extends Codec {
 		return z;
 	}
 
-	private long cast32(long u) {
-        u = (long) ((long) ((u + Math.pow(2, 31)) % Math.pow(2, 32)) - Math.pow(2, 31));
-        return u;
-    }
+//	private long cast32(long u) {
+//        u = (long) ((long) ((u + Math.pow(2, 31)) % Math.pow(2, 32)) - Math.pow(2, 31));
+//        return u;
+//    }
 
     private boolean isHigh(long x) {
         return x>=l;

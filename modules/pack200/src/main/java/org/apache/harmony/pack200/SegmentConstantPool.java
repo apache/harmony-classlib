@@ -16,8 +16,6 @@
  */
 package org.apache.harmony.pack200;
 
-import java.util.ArrayList;
-
 import org.apache.harmony.pack200.bytecode.CPFieldRef;
 import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
 import org.apache.harmony.pack200.bytecode.CPMethodRef;
@@ -25,10 +23,8 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
 public class SegmentConstantPool {
-    /**
-     *
-     */
-    private CpBands bands;
+
+    private final CpBands bands;
 
     /**
      * @param bands
