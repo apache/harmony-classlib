@@ -27,10 +27,20 @@ public abstract class CPRef extends ConstantPoolEntry {
 	protected CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
 
+    /**
+	 * Create a new CPRef
+	 * @param type
+	 * @param className
+	 * @param descriptor
+	 * @throws NullPointerException if descriptor or className is null
+	 */
 	public CPRef(byte type, CPClass className, CPNameAndType descriptor) {
 		super(type);
 		this.className = className;
 		this.nameAndType = descriptor;
+		if(descriptor == null || className == null) {
+            throw new NullPointerException("Null arguments are not allowed");
+		}
 	}
 
 	public boolean equals(Object obj) {
@@ -44,15 +54,9 @@ public abstract class CPRef extends ConstantPoolEntry {
 		    return false;
 		}
 		final CPRef other = (CPRef) obj;
-		if (className == null) {
-			if (other.className != null)
-				return false;
-		} else if (!className.equals(other.className))
+		if (!className.equals(other.className))
 			return false;
-		if (nameAndType == null) {
-			if (other.nameAndType != null)
-				return false;
-		} else if (!nameAndType.equals(other.nameAndType))
+		if (!nameAndType.equals(other.nameAndType))
 			return false;
 		return true;
 	}
@@ -65,13 +69,8 @@ public abstract class CPRef extends ConstantPoolEntry {
 	}
 
 	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result
-				+ ((className == null) ? 0 : className.hashCode());
-		result = PRIME * result
-				+ ((nameAndType == null) ? 0 : nameAndType.hashCode());
-		return result;
+		final int PRIME = 37;
+		return (PRIME * className.hashCode()) + nameAndType.hashCode();
 	}
 
 	protected void resolve(ClassConstantPool pool) {

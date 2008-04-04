@@ -31,11 +31,21 @@ public class CPNameAndType extends ConstantPoolEntry {
 
 	transient int nameIndex;
 
+	/**
+	 * Create a new CPNameAndType
+	 * @param name
+	 * @param descriptor
+	 * @param domain
+	 * @throws NullPointerException if name or descriptor is null
+	 */
 	public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
 		super(ConstantPoolEntry.CP_NameAndType);
 		this.name = name;
 		this.descriptor = descriptor;
         this.domain = domain;
+        if(name == null || descriptor == null) {
+            throw new NullPointerException("Null arguments are not allowed");
+        }
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
@@ -67,8 +77,8 @@ public class CPNameAndType extends ConstantPoolEntry {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + ((descriptor == null) ? 0 : descriptor.hashCode());
-		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+		result = PRIME * result + descriptor.hashCode();
+		result = PRIME * result + name.hashCode();
 		return result;
 	}
 
@@ -81,15 +91,9 @@ public class CPNameAndType extends ConstantPoolEntry {
 		if (getClass() != obj.getClass())
 			return false;
 		final CPNameAndType other = (CPNameAndType) obj;
-		if (descriptor == null) {
-			if (other.descriptor != null)
-				return false;
-		} else if (!descriptor.equals(other.descriptor))
+		if (!descriptor.equals(other.descriptor))
 			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
+		if (!name.equals(other.name))
 			return false;
 		return true;
 	}

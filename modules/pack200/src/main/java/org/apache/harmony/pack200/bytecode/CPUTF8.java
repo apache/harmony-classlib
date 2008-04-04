@@ -22,14 +22,23 @@ import java.io.UnsupportedEncodingException;
 
 public class CPUTF8 extends ConstantPoolEntry {
 
-    private String utf8;
+    private final String utf8;
 
+    /**
+     * Creates a new CPUTF8 instance
+     * @param utf8
+     * @param domain
+     * @throws NullPointerException if utf8 is null
+     */
     public CPUTF8(String utf8, int domain) {
 		super(ConstantPoolEntry.CP_UTF8);
 		this.utf8 = utf8;
 		this.domain = domain;
         if(domain == ClassConstantPool.DOMAIN_UNDEFINED) {
             throw new RuntimeException();
+        }
+        if(utf8 == null) {
+            throw new NullPointerException("Null arguments are not allowed");
         }
 	}
 
@@ -41,19 +50,12 @@ public class CPUTF8 extends ConstantPoolEntry {
 		if (this.getClass() != obj.getClass())
 			return false;
 		final CPUTF8 other = (CPUTF8) obj;
-		if (utf8 == null) {
-			if (other.utf8 != null)
-				return false;
-		} else if (!utf8.equals(other.utf8))
-			return false;
-		return true;
+		return utf8.equals(other.utf8);
 	}
 
 	public int hashCode() {
 		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((utf8 == null) ? 0 : utf8.hashCode());
-		return result;
+		return PRIME + utf8.hashCode();
 	}
 
 	public String toString() {
@@ -64,11 +66,7 @@ public class CPUTF8 extends ConstantPoolEntry {
 		byte[] bytes;
 		try {
 			// TODO Check that this is the right UTF-8 for bytes
-			if (utf8 == null) {
-				bytes = new byte[0];
-			} else {
-				bytes = utf8.getBytes("UTF-8");
-			}
+			bytes = utf8.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Couldn't convert string " + utf8
 					+ " to UTF-8");

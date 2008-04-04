@@ -290,47 +290,4 @@ public class SegmentConstantPool {
             throw new Error("Get value incomplete");
         }
     }
-
-    protected ConstantPoolEntry cachedCpAll[] = {};
-    public ConstantPoolEntry[] getCpAll() throws Pack200Exception {
-        if(cachedCpAll.length == 0) {
-        	ArrayList cpAll = new ArrayList();
-        	// TODO: this is 1.5-specific. Try to get rid
-        	// of it.
-        	for(int index=0; index < bands.getCpUTF8().length; index++) {
-        		cpAll.add(getConstantPoolEntry(UTF_8, index));
-        	}
-        	for(int index=0; index < bands.getCpInt().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_INT, index));
-        	}
-        	for(int index=0; index < bands.getCpFloat().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_FLOAT, index));
-        	}
-        	for(int index=0; index < bands.getCpLong().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_LONG, index));
-        	}
-        	for(int index=0; index < bands.getCpDouble().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_DOUBLE, index));
-        	}
-        	for(int index=0; index < bands.getCpString().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_STRING, index));
-        	}
-        	for(int index=0; index < bands.getCpClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_CLASS, index));
-        	}
-        	for(int index=0; index < bands.getCpFieldClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_FIELD, index));
-        	}
-        	for(int index=0; index < bands.getCpMethodClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_METHOD, index));
-        	}
-        	for(int index=0; index < bands.getCpIMethodClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_IMETHOD, index));
-        	}
-        	ConstantPoolEntry[] result = new ConstantPoolEntry[cpAll.size()];
-        	cpAll.toArray(result);
-        	cachedCpAll = result;
-        }
-        return cachedCpAll;
-    }
 }

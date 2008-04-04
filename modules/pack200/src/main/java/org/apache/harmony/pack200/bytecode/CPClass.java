@@ -19,19 +19,27 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
 public class CPClass extends ConstantPoolEntry {
+
 	private int index;
 
 	public String name;
 
-	private CPUTF8 utf8;
+	private final CPUTF8 utf8;
 
+	/**
+	 * Creates a new CPClass
+	 * @param name
+	 * @throws NullPointerException if name is null
+	 */
     public CPClass(CPUTF8 name) {
 		super(ConstantPoolEntry.CP_Class);
 		this.name = name.underlyingString();
 		this.domain = ClassConstantPool.DOMAIN_CLASSREF;
 		this.utf8 = name;
+		if(name == null) {
+            throw new NullPointerException("Null arguments are not allowed");
+		}
 	}
 
     public boolean equals(Object obj) {
@@ -42,17 +50,7 @@ public class CPClass extends ConstantPoolEntry {
 		if (this.getClass() != obj.getClass())
 			return false;
 		final CPClass other = (CPClass) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (utf8 == null) {
-			if (other.utf8 != null)
-				return false;
-		} else if (!utf8.equals(other.utf8))
-			return false;
-		return true;
+		return utf8.equals(other.utf8);
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
@@ -61,11 +59,7 @@ public class CPClass extends ConstantPoolEntry {
 
 
 	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
-		result = PRIME * result + ((utf8 == null) ? 0 : utf8.hashCode());
-		return result;
+		return utf8.hashCode();
 	}
 
 	protected void resolve(ClassConstantPool pool) {
