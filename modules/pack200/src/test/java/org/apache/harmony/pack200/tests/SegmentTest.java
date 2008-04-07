@@ -34,64 +34,64 @@ import org.apache.harmony.pack200.Segment;
  */
 public class SegmentTest extends TestCase {
 
-    InputStream in;
-    JarOutputStream out;
-    File file;
+	InputStream in;
+	JarOutputStream out;
 
-    public void testHelloWorld() throws Exception {
-        in = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
-        Segment segment = Segment.parse(in);
-        assertNotNull(segment);
-        file = File.createTempFile("HelloWorld", ".jar");
-        out = new JarOutputStream(new FileOutputStream(file));
-        segment.writeJar(out);
-        out.close();
-        out = null;
-        JarFile jarFile = new JarFile(file);
-        JarEntry entry = jarFile.getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
-        assertNotNull(entry);
-        Process process = Runtime.getRuntime().exec("java -cp " + file.getName() + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld", new String[] {}, file.getParentFile());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line = reader.readLine();
-        assertEquals("Hello world", line);
-        file.deleteOnExit();
-    }
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		try {
+			if (in != null) {
+				in.close();
+			}
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+		}
+	}
 
-    public void testJustResources() throws Exception {
-        in = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
-        Segment segment = Segment.parse(in);
-        assertNotNull(segment);
-        file = File.createTempFile("JustResources", ".jar");
-        out = new JarOutputStream(new FileOutputStream(file));
-        segment.writeJar(out);
-    }
+	public void testJustResources() throws Exception {
+		in = Segment.class
+				.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
+		out = new JarOutputStream(new FileOutputStream(File.createTempFile(
+				"just", "resources.jar")));
+		Segment segment = new Segment();
+		segment.unpack(in, out);
+	}
 
-     public void testInterfaceOnly() throws Exception {
-        in = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
-        Segment segment = Segment.parse(in);
-        assertNotNull(segment);
-        file = File.createTempFile("InterfaceOnly", ".jar");
-        out = new JarOutputStream(new FileOutputStream(file));
-        segment.writeJar(out);
-    }
+	public void testInterfaceOnly() throws Exception {
+		in = Segment.class
+				.getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
+		out = new JarOutputStream(new FileOutputStream(File.createTempFile(
+				"Interface", "Only.jar")));
+		Segment segment = new Segment();
+		segment.unpack(in, out);
+	}
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        try {
-            if (in != null) {
-                in.close();
-            }
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (file != null) {
-                file.delete();
-            }
-        }
-    }
+	public void testHelloWorld() throws Exception {
+		in = Segment.class
+				.getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
+		File file = File.createTempFile("hello", "world.jar");
+		out = new JarOutputStream(new FileOutputStream(file));
+		Segment segment = new Segment();
+		segment.unpack(in, out);
+		out.close();
+		out = null;
+		JarFile jarFile = new JarFile(file);
+		JarEntry entry = jarFile
+				.getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
+		assertNotNull(entry);
+		Process process = Runtime
+				.getRuntime()
+				.exec(
+						"java -cp "
+								+ file.getName()
+								+ " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
+						new String[] {}, file.getParentFile());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				process.getInputStream()));
+		String line = reader.readLine();
+		assertEquals(line, "Hello world");
+	}
 
 }
