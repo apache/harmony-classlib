@@ -65,6 +65,14 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		bundle = ResourceBundle.getBundle(name, new Locale("de", "FR", "var"));
 		assertEquals("Wrong bundle de_FR_var 2", "parentValue4", bundle.getString("parent4")
 				);
+        
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle.getBundle("Does not exist",Locale.getDefault());
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
 
 		// Test with a security manager
 		Locale.setDefault(new Locale("en", "US"));
@@ -134,6 +142,14 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 		String s = bb.find("nonexistent");
 		s = bb.find("name");
 		assertEquals("Wrong property got", "Name", s);
+        
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle.getBundle("Does not exist",Locale.getDefault(), loader);
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
 	}
 
 	/**
@@ -158,7 +174,32 @@ public class ResourceBundleTest extends junit.framework.TestCase {
 				"frFRVARChildValue2", bundle.getString("child2"));
 		assertEquals("Wrong value child1", 
 				"frFRVARChildValue1", bundle.getString("child1"));
+        
+		// Regression test for Harmony-5698
+        try {
+            ResourceBundle.getBundle("Does not exist");
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
 	}
+
+    /**
+     * @tests java.util.ResourceBundle#getObject(java.lang.String)
+     */
+    public void test_getObjectLjava_lang_String() {
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle bundle;
+            String name = "tests.support.Support_TestResource";
+            Locale.setDefault(new Locale("en", "US"));
+            bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
+            bundle.getObject("not exist");
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
+    }
 
     public void test_getBundle_getClassName() {
         // Regression test for Harmony-1759
