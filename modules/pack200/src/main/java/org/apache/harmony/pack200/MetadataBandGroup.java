@@ -36,12 +36,12 @@ import org.apache.harmony.pack200.bytecode.AnnotationsAttribute.ElementValue;
 import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleParameterAnnotationsAttribute.ParameterAnnotation;
 
 /**
- * Group of metadata bands, e.g. class_RVA_bands, method_AD_bands etc
+ * A group of metadata bands, such as class_RVA_bands, method_AD_bands etc.
  */
 public class MetadataBandGroup {
 
-    private String type;
-    private CpBands cpBands;
+    private final String type;
+    private final CpBands cpBands;
 
     public MetadataBandGroup(String type, CpBands cpBands) {
         this.type = type;

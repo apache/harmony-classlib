@@ -26,9 +26,10 @@ import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 /**
- * Pack200 Inner Class Bands
+ * Inner Class Bands
  */
 public class IcBands extends BandSet {
+
     private IcTuple[] icAll;
 
     private final String[] cpUTF8;
@@ -36,7 +37,7 @@ public class IcBands extends BandSet {
     private final String[] cpClass;
 
     /**
-     * @param header
+     * @param segment
      */
     public IcBands(Segment segment) {
         super(segment);

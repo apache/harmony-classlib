@@ -21,6 +21,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * SegmentHeader is the header band of a {@link Segment}
+ */
 public class SegmentHeader {
 
     private int archiveMajor;
@@ -83,7 +86,7 @@ public class SegmentHeader {
      * get their inspiration from ...
      */
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
-    
+
     public SegmentHeader(Segment segment) {
 		this.segment = segment;
 	}

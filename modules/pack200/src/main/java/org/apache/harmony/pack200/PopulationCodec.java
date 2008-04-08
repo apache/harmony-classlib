@@ -19,7 +19,14 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * A PopulationCodec is a Codec that is well suited to encoding data that shows
+ * statistical or repetetive patterns, containign for example a few numbers
+ * which are repeated a lot throughout the set, but not necessarily
+ * sequentially.
+ */
 public class PopulationCodec extends Codec {
+
     private final Codec favouredCodec;
     private Codec tokenCodec;
     private final Codec unvafouredCodec;

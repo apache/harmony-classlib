@@ -39,7 +39,7 @@ import org.apache.harmony.pack200.bytecode.SignatureAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
- * Pack200 Class Bands
+ * Class Bands
  */
 public class ClassBands extends BandSet {
 

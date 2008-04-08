@@ -22,6 +22,10 @@ import org.apache.harmony.pack200.bytecode.CPMethodRef;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
+/**
+ * SegmentConstantPool manages the constant pool used for re-creating class
+ * files.
+ */
 public class SegmentConstantPool {
 
     private final CpBands bands;

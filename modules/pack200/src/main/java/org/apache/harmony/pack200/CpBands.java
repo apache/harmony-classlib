@@ -31,6 +31,9 @@ import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
+/**
+ * Constant Pool bands
+ */
 public class CpBands extends BandSet {
 
     public SegmentConstantPool getConstantPool() {

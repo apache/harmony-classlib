@@ -34,6 +34,9 @@ import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
+/**
+ * Abstract superclass for a set of bands
+ */
 public abstract class BandSet {
 
     public abstract void unpack(InputStream inputStream) throws IOException, Pack200Exception;
@@ -55,8 +58,8 @@ public abstract class BandSet {
      *            purposes)
      * @param in
      *            the InputStream to decode from
-     * @param defaultCodec
-     *            the default codec for this band
+     * @param codec
+     *            the default Codec for this band
      * @param count
      *            the number of elements to read
      * @return an array of decoded <code>int</code> values
@@ -314,8 +317,6 @@ public abstract class BandSet {
                 index++;
             }
         }
-
-        segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed *" + name + " (" + result.length + ")");
         return result;
     }
 
@@ -331,18 +332,17 @@ public abstract class BandSet {
      * @param in
      *            the input stream to read from
      * @param codec
-     *            the codec to use for decoding
+     *            the BHSDCodec to use for decoding
      * @param count
      *            the number of references to decode
      * @param reference
-     *            the array of values to use for the indexes; often
-     *            {@link #cpUTF8}
+     *            the array of values to use for the references
      *
      * @throws IOException
      *             if a problem occurs during reading from the underlying stream
      * @throws Pack200Exception
      *             if a problem occurs with an unexpected value or unsupported
-     *             codec
+     *             Codec
      */
     public String[] parseReferences(String name, InputStream in,
             BHSDCodec codec, int count, String[] reference) throws IOException,
@@ -364,18 +364,17 @@ public abstract class BandSet {
      * @param in
      *            the input stream to read from
      * @param codec
-     *            the codec to use for decoding
-     * @param count
-     *            the number of references to decode
+     *            the BHSDCodec to use for decoding
+     * @param counts
+     *            the numbers of references to decode for each array entry
      * @param reference
-     *            the array of values to use for the indexes; often
-     *            {@link #cpUTF8}
+     *            the array of values to use for the references
      *
      * @throws IOException
      *             if a problem occurs during reading from the underlying stream
      * @throws Pack200Exception
      *             if a problem occurs with an unexpected value or unsupported
-     *             codec
+     *             Codec
      */
     public String[][] parseReferences(String name, InputStream in,
             BHSDCodec codec, int counts[], String[] reference)

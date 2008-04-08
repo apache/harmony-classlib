@@ -31,7 +31,7 @@ import org.apache.harmony.pack200.bytecode.ExceptionTableEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * Pack200 Bytecode bands
+ * Bytecode bands
  */
 public class BcBands extends BandSet {
 
@@ -66,7 +66,7 @@ public class BcBands extends BandSet {
     private int[][] bcEscByte;
 
     /**
-     * @param header
+     * @param segment
      */
     public BcBands(Segment segment) {
         super(segment);
@@ -289,7 +289,6 @@ public class BcBands extends BandSet {
             }
         }
         // other bytecode bands
-       segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed *bc_codes (" + bcParsed + ")");
         bcCaseCount = decodeBandInt("bc_case_count", in, Codec.UNSIGNED5, bcCaseCountCount);
         int bcCaseValueCount = 0;
         for (int i = 0; i < bcCaseCount.length; i++) {

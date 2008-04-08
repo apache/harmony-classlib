@@ -41,17 +41,12 @@ import org.apache.harmony.pack200.bytecode.InnerClassesAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
- * A Pack200 archive consists of one (or more) segments. Each segment is
- * standalone, in the sense that every segment has the magic number header;
+ * A Pack200 archive consists of one or more segments. Each segment is
+ * stand-alone, in the sense that every segment has the magic number header;
  * thus, every segment is also a valid archive. However, it is possible to
  * combine (non-GZipped) archives into a single large archive by concatenation
  * alone. Thus all the hard work in unpacking an archive falls to understanding
  * a segment.
- *
- * This class implements the Pack200 specification by an entry point ({@link #parse(InputStream)})
- * which in turn delegates to a variety of other parse methods. Each parse
- * method corresponds (roughly) to the name of the bands in the Pack200
- * specification.
  *
  * The first component of a segment is the header; this contains (amongst other
  * things) the expected counts of constant pool entries, which in turn defines
@@ -201,9 +196,7 @@ public class Segment {
 
 		// add inner class attribute (if required)
 		boolean addInnerClassesAttr = false;
-        String debugClass = getClassBands().getClassThis()[classNum];
-        log(LOG_LEVEL_VERBOSE, "Building the class file for: " + debugClass);
-		IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
+        IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
 		boolean ic_local_sent = false;
 		if(ic_local != null) {
 		    ic_local_sent = true;
@@ -261,11 +254,6 @@ public class Segment {
 		}
 		// sort CP according to cp_All
 		cp.resolve(this);
-		// print out entries
-		log(LOG_LEVEL_VERBOSE, "Constant pool looks like:");
-		for (i = 1; i <= cp.size(); i++) {
-			log(LOG_LEVEL_VERBOSE, String.valueOf(i) + ":" + String.valueOf(cp.get(i)));
-		}
 		// NOTE the indexOf is only valid after the cp.resolve()
 		// build up remainder of file
 		classFile.accessFlags = (int) classBands.getClassFlags()[classNum];
@@ -387,12 +375,10 @@ public class Segment {
 	 *
 	 * @param out
 	 *            the JarOutputStream to write data to
-	 * @param in
-	 *            the same InputStream that was used to parse the segment
 	 * @throws IOException
-	 *             if an error occurs whilst reading or writing to the streams
+	 *             if an error occurs while reading or writing to the streams
 	 * @throws Pack200Exception
-	 *             if an error occurs whilst unpacking data
+	 *             if an error occurs while processing data
 	 */
 	public void writeJar(JarOutputStream out)
 			throws IOException, Pack200Exception {

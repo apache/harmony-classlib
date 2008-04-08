@@ -18,6 +18,14 @@ package org.apache.harmony.pack200;
 
 import java.util.ArrayList;
 
+/**
+ * An IcTuple is the set of information that describes an inner class.
+ *
+ * C is the fully qualified class name<br>
+ * F is the flags<br>
+ * C2 is the outer class name, or null if it can be inferred from C<br>
+ * N is the inner class name, or null if it can be inferred from C<br>
+ */
 public class IcTuple {
 
     public IcTuple(String C, int F, String C2, String N) {
@@ -56,7 +64,6 @@ public class IcTuple {
      * Answer true if the receiver is predicted;
      * answer false if the receiver is specified
      * explicitly in the outer and name fields.
-     * @return
      */
     public boolean predicted() {
         return predictOuter || predictSimple;
@@ -64,8 +71,6 @@ public class IcTuple {
 
     /**
      * Break the receiver into components at $ boundaries.
-     *
-     * @return
      */
     public String[] innerBreakAtDollar(String className) {
         ArrayList resultList = new ArrayList();

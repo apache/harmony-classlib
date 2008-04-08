@@ -104,7 +104,6 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Tokenise the layout into AttributeElements
-     * @return a List of AttributeElements
      * @throws IOException
      */
     private void parseLayout() throws IOException {
@@ -798,9 +797,8 @@ public class NewAttributeBands extends BandSet {
     }
 
     /**
-     * Returns the codec that should be used for the given layout element
+     * Returns the {@link BHSDCodec} that should be used for the given layout element
      * @param layoutElement
-     * @return
      */
     public BHSDCodec getCodec(String layoutElement) {
         if (layoutElement.indexOf("O") >= 0) { //$NON-NLS-1$

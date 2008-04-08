@@ -139,7 +139,6 @@ public class ByteCode extends ClassFileEntry {
 		}
 	}
 
-
 	/**
 	 * Given an array of ints which correspond to bytes in the
 	 * operand of the bytecode, set the rewrite bytes of the
@@ -314,7 +313,7 @@ public class ByteCode extends ClassFileEntry {
      * up to point to the absolute position in the CodeAttribute
      * array. This method sets the targets.
      *
-     * @param byteCodeTarget int index in array
+     * @param byteCodeTargets int index in array
      */
     public void setByteCodeTargets(int[] byteCodeTargets) {
         this.byteCodeTargets = byteCodeTargets;

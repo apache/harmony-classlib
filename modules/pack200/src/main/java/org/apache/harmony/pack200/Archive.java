@@ -30,9 +30,9 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
 /**
- * The Archive class is the main entry point to unpack200. An archive is
- * constructed with either two file names, a pack file and an output file name
- * or two input streams corresponding to the input and the output streams. Then
+ * Archive is the main entry point to unpack200. An archive is constructed with
+ * either two file names, a pack file and an output file name or two input
+ * streams corresponding to the input and the output streams. Then
  * <code>unpack()</code> is called, to unpack the pack200 archive.
  */
 public class Archive {
