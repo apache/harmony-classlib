@@ -2391,14 +2391,23 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     protected Class<?> resolveClass(ObjectStreamClass osClass)
             throws IOException, ClassNotFoundException {
-        String className = osClass.getName();
-        // if it is primitive class, for example, long.class
-        Class<?> cls = PRIMITIVE_CLASSES.get(className);
+        // fastpath: obtain cached value
+        Class<?> cls = osClass.forClass();
         if (null == cls) {
-            // not primitive class
-            // Use the first non-null ClassLoader on the stack. If null, use the
-            // system class loader
-            return Class.forName(className, true, callerClassLoader);
+            // slowpath: resolve the class
+            String className = osClass.getName();
+
+            // if it is primitive class, for example, long.class
+            cls = PRIMITIVE_CLASSES.get(className);
+
+            if (null == cls) {
+                // not primitive class
+                // Use the first non-null ClassLoader on the stack. If null, use
+                // the system class loader
+                cls = Class.forName(className, true, callerClassLoader);
+                // save the value
+                osClass.setClass(cls);
+            }
         }
         return cls;
     }
