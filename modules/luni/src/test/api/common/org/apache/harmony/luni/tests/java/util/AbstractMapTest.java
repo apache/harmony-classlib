@@ -132,10 +132,104 @@ public class AbstractMapTest extends junit.framework.TestCase {
 		Object valueOut = aSpecialMap.remove(specialKey);
 		assertSame("MyMap", valueOut, specialValue);
 	}
+    
+
+    /**
+     * @tests java.util.AbstractMap#clear()
+     */
+    public void test_clear() {
+        // normal clear()
+        AbstractMap map = new HashMap();
+        map.put(1, 1);
+        map.clear();
+        assertEquals("Should equal to be empty.", true, map.isEmpty());
+
+        // Special entrySet return a Set with no clear method.
+        AbstractMap myMap = new MocAbstractMap();
+        try {
+            myMap.clear();
+            fail("Should throw an unsupportedoprationexception");
+        } catch (UnsupportedOperationException e) {
+
+        }
+    }
+
+    class MocAbstractMap<K, V> extends AbstractMap {
+
+        public Set entrySet() {
+            Set set = new MySet();
+            return set;
+        }
+
+        class MySet extends HashSet {
+
+            public void clear() {
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    /**
+     * @tests java.util.AbstractMap#containsKey(Object)
+     */
+    public void test_containsKey() {
+        AbstractMap map = new AMT();
+
+        assertEquals("Shoule equal to be false.", false, map.containsKey("k"));
+        assertEquals("Shoule equal to be false.", false, map.containsKey(null));
+
+        map.put("k", "v");
+        map.put("key", null);
+        map.put(null, "value");
+        map.put(null, null);
+
+        assertEquals("Shoule equal to be true.", true, map.containsKey("k"));
+        assertEquals("Shoule equal to be true.", true, map.containsKey("key"));
+        assertEquals("Shoule equal to be true.", true, map.containsKey(null));
+    }
+
+    /**
+     * @tests java.util.AbstractMap#containsValue(Object)
+     */
+    public void test_containValue() {
+        AbstractMap map = new AMT();
+
+        assertEquals("Shoule equal to be false.", false, map.containsValue("v"));
+        assertEquals("Shoule equal to be false.", false, map
+                .containsValue(null));
+        
+        map.put("k", "v");
+        map.put("key", null);
+        map.put(null, "value");
+        
+        System.out.println(map);
+        
+        assertEquals("Shoule equal to be true.", true, map.containsValue("v"));
+        assertEquals("Shoule equal to be true.", true, map
+                .containsValue("value"));
+        assertEquals("Shoule equal to be true.", true, map.containsValue(null));
+    }
+
+    /**
+     * @tests java.util.AbstractMap#get(Object)
+     */
+    public void test_get() {
+        AbstractMap map = new AMT();
+        assertEquals("Shoule equal to be null.", null, map.get("key"));
+        assertEquals("Shoule equal to be null.", null, map.get(null));
+
+        map.put("k", "v");
+        map.put("key", null);
+        map.put(null, "value");
+
+        assertEquals("Shoule equal to be v.", "v", map.get("k"));
+        assertEquals("Shoule equal to be null.", null, map.get("key"));
+        assertEquals("Shoule equal to be value.", "value", map.get(null));
+    }
 
 	/**
-	 * @tests java.util.AbstractMap#values()
-	 */
+     * @tests java.util.AbstractMap#values()
+     */
 	public void test_values() {
 		AbstractMap map1 = new HashMap(0);
 		assertSame("HashMap(0)", map1.values(), map1.values());

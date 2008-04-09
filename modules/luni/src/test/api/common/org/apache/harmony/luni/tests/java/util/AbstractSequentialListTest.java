@@ -52,7 +52,7 @@ public class AbstractSequentialListTest extends TestCase {
     }
     
     /**
-     * @tests {@link java.util.AbstractSequentialList#addAll(int, java.util.Collection)}
+     * @tests java.util.AbstractSequentialList#addAll(int, java.util.Collection)
      */
     public void test_addAll_ILCollection() {
         AbstractSequentialList<String> al = new ASLT<String>();
@@ -63,6 +63,70 @@ public class AbstractSequentialListTest extends TestCase {
         Collection<String> c = Arrays.asList(someList);
         al.addAll(c);
         assertTrue("Should return true", al.addAll(2, c)); //$NON-NLS-1$
+    }
+    
+
+    /**
+     * @tests java.util.AbstractSequentialList#get(int)
+     */
+    public void test_get() {
+        AbstractSequentialList list = new MyAbstractSequentialList();
+        list.add(1);
+        list.add("value");
+        assertEquals("Should be equal to \"1\".", 1, list.get(0));
+        assertEquals("Should be equal to \"value\".", "value", list.get(1));
+
+        // get value by index which is out of bounds
+        try {
+            list.get(list.size());
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            list.get(-1);
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+    }
+
+    /**
+     * @tests java.util.AbstractSequentialList#remove(int)
+     */
+    public void test_remove() {
+        AbstractSequentialList list = new MyAbstractSequentialList();
+        list.add(1);
+
+        // normal test
+        assertEquals("Should be equal to \"1\".", 1, list.remove(0));
+
+        list.add("value");
+        assertEquals("Should be equal to \"value\".", "value", list.remove(0));
+
+        // remove index is out of bounds
+        try {
+            list.remove(list.size());
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            list.remove(-1);
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        // list dont't support remove operation
+        try {
+            AbstractSequentialList mylist = new MockAbstractSequentialList();
+            mylist.remove(0);
+            fail("Should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
     }
     
     public void test_set() throws Exception {
@@ -80,10 +144,7 @@ public class AbstractSequentialListTest extends TestCase {
 		private LinkedList list = new LinkedList();
 
 		public ListIterator listIterator(int index) {
-			ListIterator iter = list.listIterator();
-			for (int i = 0; i < index; i++) {
-				iter.next();
-			}
+			ListIterator iter = list.listIterator(index);
 			return iter;
 		}
 
@@ -92,4 +153,22 @@ public class AbstractSequentialListTest extends TestCase {
 			return list.size();
 		}
 	}
+    
+    class MockAbstractSequentialList<E> extends AbstractSequentialList {
+        private LinkedList list = new LinkedList();
+
+        public ListIterator listIterator(int index) {
+            ListIterator iter = list.listIterator(index);
+            return iter;
+        }
+
+        @Override
+        public int size() {
+            return list.size();
+        }
+
+        public E remove(int location) {
+            throw new UnsupportedOperationException();
+        }
+    }
 }
