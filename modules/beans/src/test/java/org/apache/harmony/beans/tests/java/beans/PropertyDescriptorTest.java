@@ -23,6 +23,7 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import junit.framework.TestCase;
 
@@ -1221,5 +1222,27 @@ public class PropertyDescriptorTest extends TestCase {
         PropertyDescriptor pd2 = new PropertyDescriptor("a",MockBean.class);
         assertEquals(pd1, pd2);
         assertEquals(pd1.hashCode(), pd2.hashCode());
+    }
+    
+    private class MockBeanForTR {
+        int i;
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+    }
+    
+    public void testByLocale() throws IntrospectionException{
+        Locale backup = Locale.getDefault();
+        Locale.setDefault(new Locale("TR"));
+        try {
+            assertNotNull(new PropertyDescriptor("i", MockBeanForTR.class));
+        } finally {
+            Locale.setDefault(backup);
+        }
     }
 }

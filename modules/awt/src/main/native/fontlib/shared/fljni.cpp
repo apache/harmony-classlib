@@ -16,6 +16,7 @@
  */
 
 #include "fljni.h"
+#include <string.h>
 
 /*
  * Class:     org_apache_harmony_awt_gl_font_fontlib_FLFontManager

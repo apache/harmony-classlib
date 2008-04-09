@@ -79,6 +79,7 @@ import javax.accessibility.AccessibleStateSet;
 
 import org.apache.harmony.awt.ClipRegion;
 import org.apache.harmony.awt.FieldsAccessor;
+import org.apache.harmony.awt.gl.CommonGraphics2D;
 import org.apache.harmony.awt.gl.MultiRectArea;
 import org.apache.harmony.awt.internal.nls.Messages;
 import org.apache.harmony.awt.state.State;
@@ -947,8 +948,8 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         PrivilegedAction<String[]> action = new PrivilegedAction<String[]>() {
             public String[] run() {
                 String properties[] = new String[2];
-                properties[0] = System.getProperty("awt.image.redrawrate", "100"); //$NON-NLS-1$ //$NON-NLS-2$
-                properties[1] = System.getProperty("awt.image.incrementaldraw", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+                properties[0] = org.apache.harmony.awt.Utils.getSystemProperty("awt.image.redrawrate", "100"); //$NON-NLS-1$ //$NON-NLS-2$
+                properties[1] = org.apache.harmony.awt.Utils.getSystemProperty("awt.image.incrementaldraw", "true"); //$NON-NLS-1$ //$NON-NLS-2$
                 return properties;
             }
         };
@@ -3714,6 +3715,7 @@ public abstract class Component implements ImageObserver, MenuContainer, Seriali
         } else {
             update(g);
         }
+        ((CommonGraphics2D)g).flush();
         g.dispose();
     }
 

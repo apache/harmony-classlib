@@ -16,7 +16,10 @@
  */
 package org.apache.harmony.pack200;
 
-
+/**
+ * AttributeLayout defines a layout that describes how an attribute will be
+ * transmitted.
+ */
 public class AttributeLayout implements IMatcher {
 
 	public static final String ACC_ABSTRACT = "ACC_ABSTRACT"; //$NON-NLS-1$
@@ -89,16 +92,16 @@ public class AttributeLayout implements IMatcher {
 	}
 
 
-    private int context;
+    private final int context;
 
-    private int index;
+    private final int index;
 
 	private final String layout;
 
 	private long mask;
 
-    private String name;
-    private boolean isDefault;
+    private final String name;
+    private final boolean isDefault;
     private int backwardsCallCount;
 
 

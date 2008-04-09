@@ -38,12 +38,9 @@ public class SSLSessionBindingEventTest extends TestCase {
     public final void testSSLSessionBindingEvent() {
         SSLSession ses = new MySSLSession();
         SSLSessionBindingEvent event = new SSLSessionBindingEvent(ses, "test");
-        if (!"test".equals(event.getName())) {
-            fail("incorrect name");
-        }
-        if (!event.getSession().equals(ses)) {
-            fail("incorrect session");
-        }
+        
+        assertEquals("test", event.getName());
+        assertEquals(ses, event.getSession());
     }
 
 }

@@ -57,7 +57,7 @@ public class LdapSchemaClassDefContextImpl extends LdapContextImpl {
                         .findSchemaDefInfo(
                                 LdapSchemaContextImpl.OBJECT_CLASSES, className
                                         .toLowerCase());
-                as = new BasicAttributes();
+                as = new BasicAttributes(true);
                 Set<String> keySet = classDefInfo.keySet();
                 for (Iterator<String> iterator = keySet.iterator(); iterator
                         .hasNext();) {

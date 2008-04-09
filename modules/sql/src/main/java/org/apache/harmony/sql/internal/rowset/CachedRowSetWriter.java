@@ -25,6 +25,7 @@ import javax.sql.RowSetInternal;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.spi.SyncProviderException;
+import javax.sql.rowset.spi.SyncResolver;
 
 public class CachedRowSetWriter implements RowSetWriter {
 
@@ -40,6 +41,8 @@ public class CachedRowSetWriter implements RowSetWriter {
 
     private int columnCount;
 
+    private SyncResolverImpl resolver;
+
     public void setConnection(Connection conn) {
         originalConnection = conn;
     }
@@ -48,36 +51,51 @@ public class CachedRowSetWriter implements RowSetWriter {
         return originalConnection;
     }
 
-    /**
-     * TODO add transaction
-     */
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
         initial(theRowSet);
         // analyse every row and do responsible task.
-        currentRowSet.beforeFirst();// currentRowSet.first();
-        originalRowSet.beforeFirst();// originalRowSet.first();
+        currentRowSet.beforeFirst();
+        originalRowSet.beforeFirst();
+        resolver = null;
         while (currentRowSet.next()) {
             if (currentRowSet.rowInserted()) {
-                insertCurrentRow();
+                try {
+                    insertCurrentRow();
+                } catch (SyncProviderException e) {
+                    addConflict(SyncResolver.INSERT_ROW_CONFLICT);
+                }
             } else if (currentRowSet.rowDeleted()) {
                 if (isConflictExistForCurrentRow()) {
-                    // TODO: conflict exists, should throw SyncProviderException
-                    throw new SyncProviderException();
+                    addConflict(SyncResolver.DELETE_ROW_CONFLICT);
                 }
 
                 deleteCurrentRow();
 
             } else if (currentRowSet.rowUpdated()) {
                 if (isConflictExistForCurrentRow()) {
-                    // TODO: conflict exists, should throw SyncProviderException
-                    throw new SyncProviderException();
+                    addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
                 }
-                
-                updateCurrentRow();
+                try {
+                    updateCurrentRow();
+                } catch (SyncProviderException e) {
+                    addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
+                }
             }
         }
-        // TODO release resource
+
+        if (resolver != null) {
+            throw new SyncProviderException(resolver);
+        }
         return true;
+    }
+
+    private void addConflict(int status) throws SQLException {
+        if (resolver == null) {
+            resolver = new SyncResolverImpl(currentRowSet.getMetaData());
+        }
+
+        resolver.addConflictRow(new CachedRow(new Object[columnCount]),
+                currentRowSet.getRow(), status);
     }
 
     /**
@@ -120,13 +138,12 @@ public class CachedRowSetWriter implements RowSetWriter {
          */
         PreparedStatement preSt = getConnection().prepareStatement(
                 insertSQL.toString());
-        for (int i = 0; i < updateCount; i++) {
-            preSt.setObject(i + 1, insertColValues[i]);
-        }
         try {
+            for (int i = 0; i < updateCount; i++) {
+                preSt.setObject(i + 1, insertColValues[i]);
+            }
             preSt.executeUpdate();
         } catch (SQLException e) {
-            // TODO generate SyncProviderException
             throw new SyncProviderException();
         } finally {
             preSt.close();
@@ -151,8 +168,12 @@ public class CachedRowSetWriter implements RowSetWriter {
          */
         PreparedStatement preSt = getConnection().prepareStatement(
                 deleteSQL.toString());
-        fillParamInPreStatement(preSt, 1);
-        preSt.executeUpdate();
+        try {
+            fillParamInPreStatement(preSt, 1);
+            preSt.executeUpdate();
+        } finally {
+            preSt.close();
+        }
     }
 
     /**
@@ -193,21 +214,20 @@ public class CachedRowSetWriter implements RowSetWriter {
          */
         PreparedStatement preSt = getConnection().prepareStatement(
                 updateSQL.toString());
-        // the SET part of SQL
-        for (int i = 0; i < updateCount; i++) {
-            if (updateColValues[i] == null) {
-                preSt.setNull(i + 1, currentRowSet.getMetaData().getColumnType(
-                        updateColIndexs[i]));
-            } else {
-                preSt.setObject(i + 1, updateColValues[i]);
-            }
-        }
-        // the WHERE part of SQL
-        fillParamInPreStatement(preSt, updateCount + 1);
         try {
+            // the SET part of SQL
+            for (int i = 0; i < updateCount; i++) {
+                if (updateColValues[i] == null) {
+                    preSt.setNull(i + 1, currentRowSet.getMetaData()
+                            .getColumnType(updateColIndexs[i]));
+                } else {
+                    preSt.setObject(i + 1, updateColValues[i]);
+                }
+            }
+            // the WHERE part of SQL
+            fillParamInPreStatement(preSt, updateCount + 1);
             preSt.executeUpdate();
         } catch (SQLException e) {
-            // TODO generate SyncProviderException
             throw new SyncProviderException();
         } finally {
             preSt.close();
@@ -244,15 +264,21 @@ public class CachedRowSetWriter implements RowSetWriter {
 
         PreparedStatement preSt = getConnection().prepareStatement(
                 querySQL.toString());
-        fillParamInPreStatement(preSt, 1);
-        ResultSet queryRs = preSt.executeQuery();
-        if (queryRs.next()) {
-            if (queryRs.getInt(1) == 1) {
-                isExist = false;
+        ResultSet queryRs = null;
+        try {
+            fillParamInPreStatement(preSt, 1);
+            queryRs = preSt.executeQuery();
+            if (queryRs.next()) {
+                if (queryRs.getInt(1) == 1) {
+                    isExist = false;
+                }
             }
+        } finally {
+            if (queryRs != null) {
+                queryRs.close();
+            }
+            preSt.close();
         }
-        queryRs.close();
-        preSt.close();
 
         return isExist;
     }

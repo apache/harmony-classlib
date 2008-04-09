@@ -32,8 +32,9 @@ public class UtilTest extends TestCase {
     }
 
     public void testToASCIILowerCase() {
-        assertEquals("abcdefghijklmnopqrstuvwxyz", Util //$NON-NLS-1$
-                .toASCIILowerCase("ABCDEFGHIJKLMNOPQRSTUVWXYZ")); //$NON-NLS-1$
+        assertEquals(
+                "abcdefghijklmnopqrstuvwxyz", org.apache.harmony.luni.util.Util //$NON-NLS-1$
+                        .toASCIILowerCase("ABCDEFGHIJKLMNOPQRSTUVWXYZ")); //$NON-NLS-1$
 
         for (int i = 0; i < 255; i++) {
             if (i >= 'a' && i <= 'z') {
@@ -43,13 +44,15 @@ public class UtilTest extends TestCase {
                 continue;
             }
             String cString = "" + (char) i; //$NON-NLS-1$
-            assertEquals(cString, Util.toASCIILowerCase(cString));
+            assertEquals(cString, org.apache.harmony.luni.util.Util
+                    .toASCIILowerCase(cString));
         }
     }
 
     public void testToASCIIUpperCase() {
-        assertEquals("ABCDEFGHIJKLMNOPQRSTUVWXYZ", Util //$NON-NLS-1$
-                .toASCIIUpperCase("abcdefghijklmnopqrstuvwxyz")); //$NON-NLS-1$
+        assertEquals(
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ", org.apache.harmony.luni.util.Util //$NON-NLS-1$
+                        .toASCIIUpperCase("abcdefghijklmnopqrstuvwxyz")); //$NON-NLS-1$
 
         for (int i = 0; i < 255; i++) {
             if (i >= 'a' && i <= 'z') {
@@ -59,11 +62,12 @@ public class UtilTest extends TestCase {
                 continue;
             }
             String cString = "" + (char) i; //$NON-NLS-1$
-            assertEquals(cString, Util.toASCIIUpperCase(cString));
+            assertEquals(cString, org.apache.harmony.luni.util.Util
+                    .toASCIIUpperCase(cString));
         }
     }
-    
-    public void testEqualsIgnoreCase(){
+
+    public void testEqualsIgnoreCase() {
         assertTrue(Util.equalsIgnoreCase(s1, s2));
     }
 

@@ -195,7 +195,7 @@ public class Cursor implements Serializable {
         }
         String sep = File.separator;
         String cursorsDir = "lib" + sep + "images" + sep + "cursors"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        String cursorsAbsDir = System.getProperty("java.home") + sep + //$NON-NLS-1$
+        String cursorsAbsDir = org.apache.harmony.awt.Utils.getSystemProperty("java.home") + sep + //$NON-NLS-1$
                                 cursorsDir;
         String cursorPropsFileName = "cursors.properties"; //$NON-NLS-1$
         String cursorPropsFullFileName = (cursorsAbsDir + sep +

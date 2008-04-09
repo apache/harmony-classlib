@@ -133,7 +133,8 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.print.packaging.jarname}.jar"
-             manifest="${hy.print}/META-INF/MANIFEST.MF">
+             manifest="${hy.print}/META-INF/MANIFEST.MF"
+             compress="${hy.jar.compress}">
             <metainf prefix="META-INF/services"
                 dir="${hy.print.src.main.java}/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>

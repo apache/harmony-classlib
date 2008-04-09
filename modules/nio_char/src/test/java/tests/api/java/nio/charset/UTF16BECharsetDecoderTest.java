@@ -25,50 +25,48 @@ import java.nio.charset.Charset;
  */
 public class UTF16BECharsetDecoderTest extends CharsetDecoderTest {
 
-	protected void setUp() throws Exception {
-		cs = Charset.forName("utf-16be");
-		unibytes = new byte[] { 0, 32, 0, 98, 0, 117, 0, 102, 0, 102, 0, 101,
-				0, 114 };
-		super.setUp();
-	}
+    protected void setUp() throws Exception {
+        cs = Charset.forName("utf-16be");
+        super.setUp();
+    }
 
-	/*
-	 * @see CharsetDecoderTest#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    /*
+     * @see CharsetDecoderTest#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	// FIXME: give up this tests
-	// public void testDefaultCharsPerByte() {
-	// // assertEquals(1, decoder.averageCharsPerByte());
-	// // assertEquals(1, decoder.maxCharsPerByte());
-	// assertEquals(decoder.averageCharsPerByte(), 0.5, 0.001);
-	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
-	// }
+    // FIXME: give up this tests
+    // public void testDefaultCharsPerByte() {
+    // // assertEquals(1, decoder.averageCharsPerByte());
+    // // assertEquals(1, decoder.maxCharsPerByte());
+    // assertEquals(decoder.averageCharsPerByte(), 0.5, 0.001);
+    // assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
+    // }
 
-	ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {
-		// no unmap byte buffer
-		return null;
-	}
+    ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {
+        // no unmap byte buffer
+        return null;
+    }
 
-	ByteBuffer getMalformByteBuffer() throws UnsupportedEncodingException {
-		// FIXME: different here, RI can parse 0xd8d8
-		// ByteBuffer buffer = ByteBuffer.allocate(100);
-		// buffer.put((byte)0xd8);
-		// buffer.put((byte)0xd8);
-		// buffer.put(unibytes);
-		// buffer.flip();
-		// return buffer;
-		return null;
-	}
+    ByteBuffer getMalformedByteBuffer() throws UnsupportedEncodingException {
+        // FIXME: different here, RI can parse 0xd8d8
+        // ByteBuffer buffer = ByteBuffer.allocate(100);
+        // buffer.put((byte)0xd8);
+        // buffer.put((byte)0xd8);
+        // buffer.put(unibytes);
+        // buffer.flip();
+        // return buffer;
+        return null;
+    }
 
-	ByteBuffer getExceptionByteArray() throws UnsupportedEncodingException {
-		return null;
-	}
+    ByteBuffer getExceptionByteArray() throws UnsupportedEncodingException {
+        return null;
+    }
 
-	byte[] getUnibytes() {
-		return new byte[] { 0, 32, 0, 98, 0, 117, 0, 102, 0, 102, 0, 101, 0,
-				114 };
-	}
+    protected ByteBuffer getByteBuffer() {
+        return ByteBuffer.wrap(new byte[] { 0, 32, 0, 98, 0, 117, 0, 102, 0,
+                102, 0, 101, 0, 114 });
+    }
 }

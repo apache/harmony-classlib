@@ -22,6 +22,8 @@
 package java.awt;
 
 import java.awt.image.BufferedImage;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Locale;
 
 import org.apache.harmony.awt.ContextStorage;
@@ -29,6 +31,9 @@ import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 
 
 public abstract class GraphicsEnvironment {
+
+    static Boolean isHeadless;
+
     protected GraphicsEnvironment() {}
 
     public static GraphicsEnvironment getLocalGraphicsEnvironment() {
@@ -55,7 +60,11 @@ public abstract class GraphicsEnvironment {
     }
 
     public static boolean isHeadless() {
-        return "true".equals(System.getProperty("java.awt.headless"));
+        if (isHeadless == null) {
+            isHeadless = "true".equals(org.apache.harmony.awt.Utils.getSystemProperty("java.awt.headless")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        return isHeadless.booleanValue();
     }
 
     public Rectangle getMaximumWindowBounds() throws HeadlessException {

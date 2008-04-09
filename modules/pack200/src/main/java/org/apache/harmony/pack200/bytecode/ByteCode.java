@@ -20,7 +20,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentUtils;
 import org.apache.harmony.pack200.bytecode.forms.ByteCodeForm;
 
 public class ByteCode extends ClassFileEntry {
@@ -64,7 +63,7 @@ public class ByteCode extends ClassFileEntry {
 		final ByteCode other = (ByteCode) obj;
 		if (getByteCodeForm() != other.getByteCodeForm())
 			return false;
-		if (!rewrite.equals(other.rewrite))
+		if (rewrite != other.rewrite)
 			return false;
 		return true;
 	}
@@ -133,20 +132,12 @@ public class ByteCode extends ClassFileEntry {
 					setOperand2Bytes(pool.indexOf(nested[index]), getNestedPosition(index)[0]);
 					break;
 
-				case 4:
-					// TODO: need to handle wides?
-                    SegmentUtils.debug("Need to handle wides");
-                    throw new Error("Instruction argument not handled");
-					// figure out and if so, handle and put a break here.
-					// break;
-
 				default:
-					SegmentUtils.debug("Unhandled resolve " + this);
+					throw new Error("Unhandled resolve " + this);
 				}
 			}
 		}
 	}
-
 
 	/**
 	 * Given an array of ints which correspond to bytes in the
@@ -322,7 +313,7 @@ public class ByteCode extends ClassFileEntry {
      * up to point to the absolute position in the CodeAttribute
      * array. This method sets the targets.
      *
-     * @param byteCodeTarget int index in array
+     * @param byteCodeTargets int index in array
      */
     public void setByteCodeTargets(int[] byteCodeTargets) {
         this.byteCodeTargets = byteCodeTargets;

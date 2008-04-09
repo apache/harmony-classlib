@@ -37,7 +37,7 @@ public class PngDecoder extends ImageDecoder {
     private static native void initIDs();
 
     static {
-        System.loadLibrary("gl"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("gl"); //$NON-NLS-1$
         initIDs();
     }
 

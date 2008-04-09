@@ -21,6 +21,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * SegmentHeader is the header band of a {@link Segment}
+ */
 public class SegmentHeader {
 
     private int archiveMajor;
@@ -75,12 +78,18 @@ public class SegmentHeader {
 
     private SegmentOptions options;
 
+	private final Segment segment;
+
 
     /**
      * The magic header for a Pack200 Segment is 0xCAFED00D. I wonder where they
      * get their inspiration from ...
      */
     private static final int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D };
+
+    public SegmentHeader(Segment segment) {
+		this.segment = segment;
+	}
 
     public void unpack(InputStream in) throws IOException,
             Pack200Exception, Error, Pack200Exception {
@@ -328,8 +337,7 @@ public class SegmentHeader {
      */
     private long[] decodeScalar(String name, InputStream in, BHSDCodec codec,
             int n) throws IOException, Pack200Exception {
-        // TODO Remove debugging code
-        debug("Parsed #" + name + " (" + n + ")");
+        segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed #" + name + " (" + n + ")");
         return codec.decode(n, in);
     }
 
@@ -355,7 +363,7 @@ public class SegmentHeader {
     private long decodeScalar(String name, InputStream in, BHSDCodec codec)
             throws IOException, Pack200Exception {
         long ret =  codec.decode(in);
-        debug("Parsed #" + name + " as " + ret);
+        segment.log(Segment.LOG_LEVEL_VERBOSE, "Parsed #" + name + " as " + ret);
         return ret;
     }
 
@@ -394,7 +402,7 @@ public class SegmentHeader {
      *             if a problem occurs with an unexpected value or unsupported
      *             codec
      */
-    private static void readFully(InputStream in, byte[] data)
+    private void readFully(InputStream in, byte[] data)
             throws IOException, Pack200Exception {
         int total = in.read(data);
         if (total == -1)
@@ -411,12 +419,4 @@ public class SegmentHeader {
     public int getBandHeadersSize() {
         return bandHeadersSize;
     }
-
-    protected void debug(String message) {
-      if (System.getProperty("debug.pack200") != null) {
-          System.err.println(message);
-      }
-  }
-
-
 }

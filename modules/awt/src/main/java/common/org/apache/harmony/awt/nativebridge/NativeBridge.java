@@ -20,6 +20,9 @@
  */
 package org.apache.harmony.awt.nativebridge;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.apache.harmony.misc.accessors.AccessorFactory;
 import org.apache.harmony.misc.accessors.MemoryAccessor;
 
@@ -28,8 +31,13 @@ public class NativeBridge {
     private NativeBridge() {
     }
 
+    private static final MemoryAccessor memAccess = AccessController.doPrivileged(new PrivilegedAction<MemoryAccessor>() {
+                                                      public MemoryAccessor run() {
+                                                          return AccessorFactory.getMemoryAccessor();
+                                                      }
+                                                  });
+
     private static final NativeBridge instance = new NativeBridge();
-    private static final MemoryAccessor memAccess = AccessorFactory.getMemoryAccessor();
     public static final int ptrSize = memAccess.getPointerSize();
     public static final boolean is64 = (ptrSize == 8);
 

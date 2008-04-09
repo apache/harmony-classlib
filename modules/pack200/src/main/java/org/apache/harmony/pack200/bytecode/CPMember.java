@@ -18,7 +18,7 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,14 +28,25 @@ public class CPMember extends ClassFileEntry {
 	short flags;
 	CPUTF8 name;
 	transient int nameIndex;
-	private CPUTF8 descriptor;
+	private final CPUTF8 descriptor;
 	transient int descriptorIndex;
 
+	/**
+	 * Create a new CPMember
+	 * @param name
+	 * @param descriptor
+	 * @param flags
+	 * @param attributes
+	 * @throws NullPointerException if name or descriptor is null
+	 */
 	public CPMember(CPUTF8 name, CPUTF8 descriptor, long flags, List attributes) {
 		this.name = name;
         this.descriptor = descriptor;
         this.flags = (short) flags;
-		this.attributes = (attributes == null ? new ArrayList() : attributes);
+		this.attributes = (attributes == null ? Collections.EMPTY_LIST : attributes);
+		if(name == null || descriptor == null) {
+            throw new NullPointerException("Null arguments are not allowed");
+		}
 	}
 
 	protected ClassFileEntry[] getNestedClassFileEntries() {
@@ -66,10 +77,10 @@ public class CPMember extends ClassFileEntry {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + ((attributes == null) ? 0 : attributes.hashCode());
-		result = PRIME * result + ((descriptor == null) ? 0 : descriptor.hashCode());
+		result = PRIME * result + attributes.hashCode();
+		result = PRIME * result + descriptor.hashCode();
 		result = PRIME * result + flags;
-		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+		result = PRIME * result + name.hashCode();
 		return result;
 	}
 
@@ -81,22 +92,13 @@ public class CPMember extends ClassFileEntry {
 		if (getClass() != obj.getClass())
 			return false;
 		final CPMember other = (CPMember) obj;
-		if (attributes == null) {
-			if (other.attributes != null)
-				return false;
-		} else if (!attributes.equals(other.attributes))
+		if (!attributes.equals(other.attributes))
 			return false;
-		if (descriptor == null) {
-			if (other.descriptor != null)
-				return false;
-		} else if (!descriptor.equals(other.descriptor))
+		if (!descriptor.equals(other.descriptor))
 			return false;
 		if (flags != other.flags)
 			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
+		if (!name.equals(other.name))
 			return false;
 		return true;
 	}

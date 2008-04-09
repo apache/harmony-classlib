@@ -1276,12 +1276,8 @@ public abstract class Toolkit {
     private static Theme createTheme() {
         String osName = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
         String packageBase = "org.apache.harmony.awt.theme", win = "windows", lin = "linux"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        PrivilegedAction<String> action = new PrivilegedAction<String>() {
-            public String run() {
-                return System.getProperty("awt.theme"); //$NON-NLS-1$
-            }
-        };
-        String className = AccessController.doPrivileged(action);
+        String className = org.apache.harmony.awt.Utils.getSystemProperty("awt.theme"); //$NON-NLS-1$
+
         if (className == null) {
             if (osName.startsWith(lin)) {
                 className = packageBase + "." + lin + ".LinuxTheme"; //$NON-NLS-1$ //$NON-NLS-2$

@@ -131,21 +131,21 @@ public class CachedRowSetTestCase extends TestCase {
 
         String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
                 + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
-                + "?, ?, ?, ?, ?, ? )";
+                + "?, ?, ?, ?, ?, ?)";
         PreparedStatement preStmt = conn.prepareStatement(insertSQL);
         // third row
         preStmt.setInt(1, 3);
         preStmt.setString(2, "test3");
         preStmt.setLong(3, 3333L);
-        preStmt.setBigDecimal(4, new BigDecimal(123));
-        preStmt.setBigDecimal(5, new BigDecimal(23));
+        preStmt.setBigDecimal(4, new BigDecimal("123.6521"));
+        preStmt.setBigDecimal(5, new BigDecimal("85.31"));
         preStmt.setInt(6, 13);
         preStmt.setFloat(7, 3.7F);
         preStmt.setFloat(8, 3.888F);
-        preStmt.setDouble(9, 3.9999);
-        preStmt.setDate(10, new Date(523654123));
-        preStmt.setTime(11, new Time(966554221));
-        preStmt.setTimestamp(12, new Timestamp(521342100));
+        preStmt.setDouble(9, 3.99999999);
+        preStmt.setDate(10, new Date(52365412356663L));
+        preStmt.setTime(11, new Time(96655422555551L));
+        preStmt.setTimestamp(12, new Timestamp(52365412356663L));
         preStmt.executeUpdate();
         // fourth row
         preStmt.setInt(1, 4);
@@ -170,11 +170,11 @@ public class CachedRowSetTestCase extends TestCase {
     protected void insertMoreData(int rows) throws Exception {
         String insertSQL = "INSERT INTO USER_INFO(ID, NAME, BIGINT_T, NUMERIC_T, DECIMAL_T, SMALLINT_T, "
                 + "FLOAT_T, REAL_T, DOUBLE_T, DATE_T, TIME_T, TIMESTAMP_T) VALUES(?, ?, ?, ?, ?, ?,"
-                + "?, ?, ?, ?, ?, ? )";
+                + "?, ?, ?, ?, ?, ?)";
         PreparedStatement preStmt = conn.prepareStatement(insertSQL);
 
         // insert 15 rows
-        for (int i = DEFAULT_ROW_COUNT + 1; i <= DEFAULT_ROW_COUNT + rows + 1; i++) {
+        for (int i = DEFAULT_ROW_COUNT + 1; i < DEFAULT_ROW_COUNT + rows + 1; i++) {
             preStmt.setInt(1, i);
             preStmt.setString(2, "test" + i);
             preStmt.setLong(3, 444423L);
@@ -198,44 +198,54 @@ public class CachedRowSetTestCase extends TestCase {
     protected void isMetaDataEquals(ResultSetMetaData expected,
             ResultSetMetaData actual) throws SQLException {
         assertEquals(expected.getColumnCount(), actual.getColumnCount());
+        isMetaDataEqualsInColCount(expected, 1, expected.getColumnCount(),
+                actual, 1);
+        assertEquals(expected.getTableName(1), actual.getTableName(1));
+    }
 
-        int columnCount = expected.getColumnCount();
-
-        for (int column = 1; column <= columnCount; column++) {
+    protected void isMetaDataEqualsInColCount(ResultSetMetaData expected,
+            int fromIndexInExpected, int toIndexInExpected,
+            ResultSetMetaData actual, int fromColInActual) throws SQLException {
+        for (int column = fromIndexInExpected; column <= toIndexInExpected; column++) {
             assertEquals(expected.isAutoIncrement(column), actual
-                    .isAutoIncrement(column));
+                    .isAutoIncrement(fromColInActual));
             assertEquals(expected.isCaseSensitive(column), actual
-                    .isCaseSensitive(column));
-            assertEquals(expected.isCurrency(column), actual.isCurrency(column));
+                    .isCaseSensitive(fromColInActual));
+            assertEquals(expected.isCurrency(column), actual
+                    .isCurrency(fromColInActual));
             assertEquals(expected.isDefinitelyWritable(column), actual
-                    .isDefinitelyWritable(column));
-            assertEquals(expected.isReadOnly(column), actual.isReadOnly(column));
+                    .isDefinitelyWritable(fromColInActual));
+            assertEquals(expected.isReadOnly(column), actual
+                    .isReadOnly(fromColInActual));
             assertEquals(expected.isSearchable(column), actual
-                    .isSearchable(column));
-            assertEquals(expected.isSigned(column), actual.isSigned(column));
-            assertEquals(expected.isWritable(column), actual.isWritable(column));
-            assertEquals(expected.isNullable(column), actual.isNullable(column));
+                    .isSearchable(fromColInActual));
+            assertEquals(expected.isSigned(column), actual
+                    .isSigned(fromColInActual));
+            assertEquals(expected.isWritable(column), actual
+                    .isWritable(fromColInActual));
+            assertEquals(expected.isNullable(column), actual
+                    .isNullable(fromColInActual));
             assertEquals(expected.getCatalogName(column), actual
-                    .getCatalogName(column));
+                    .getCatalogName(fromColInActual));
             assertEquals(expected.getColumnClassName(column), actual
-                    .getColumnClassName(column));
+                    .getColumnClassName(fromColInActual));
             assertEquals(expected.getColumnDisplaySize(column), actual
-                    .getColumnDisplaySize(column));
+                    .getColumnDisplaySize(fromColInActual));
             assertEquals(expected.getColumnLabel(column), actual
-                    .getColumnLabel(column));
+                    .getColumnLabel(fromColInActual));
             assertEquals(expected.getColumnName(column), actual
-                    .getColumnName(column));
+                    .getColumnName(fromColInActual));
             assertEquals(expected.getColumnType(column), actual
-                    .getColumnType(column));
+                    .getColumnType(fromColInActual));
             assertEquals(expected.getColumnTypeName(column), actual
-                    .getColumnTypeName(column));
+                    .getColumnTypeName(fromColInActual));
             assertEquals(expected.getPrecision(column), actual
-                    .getPrecision(column));
-            assertEquals(expected.getScale(column), actual.getScale(column));
+                    .getPrecision(fromColInActual));
+            assertEquals(expected.getScale(column), actual
+                    .getScale(fromColInActual));
             assertEquals(expected.getSchemaName(column), actual
-                    .getSchemaName(column));
-            assertEquals(expected.getTableName(column), actual
-                    .getTableName(column));
+                    .getSchemaName(fromColInActual));
+            fromColInActual++;
         }
     }
 
@@ -256,4 +266,25 @@ public class CachedRowSetTestCase extends TestCase {
         crset.setUrl(DERBY_URL);
     }
 
+    public void testTestCase() throws Exception {
+        // do nothing
+    }
+
+    public void createNewTable() throws Exception {
+        st = conn.createStatement();
+        rs = conn.getMetaData().getTables(null, "APP", "CUSTOMER_INFO", null);
+        String createTableSQL = "create table CUSTOMER_INFO (ID INTEGER NOT NULL,NAME VARCHAR(30) NOT NULL)";
+        String alterTableSQL = "ALTER TABLE CUSTOMER_INFO ADD CONSTRAINT CUSTOMER_INFO_PK Primary Key (ID)";
+
+        if (!rs.next()) {
+            st.execute(createTableSQL);
+            st.execute(alterTableSQL);
+        }
+
+        st.executeUpdate("delete from CUSTOMER_INFO");
+        st
+                .executeUpdate("insert into CUSTOMER_INFO(ID,NAME) values (1111,'customer_one')");
+        st
+                .executeUpdate("insert into CUSTOMER_INFO(ID,NAME) values (5555,'customer_two')");
+    }
 }

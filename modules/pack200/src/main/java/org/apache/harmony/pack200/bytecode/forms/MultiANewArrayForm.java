@@ -23,7 +23,7 @@ import org.apache.harmony.pack200.bytecode.OperandManager;
  * This class implements the byte code form for the
  * multianewarray instruction. It has a class reference
  * and a byte operand.
- * 
+ *
  * MultiANewArrayForms (like other anewarray
  * forms) do not track the last new().
  */

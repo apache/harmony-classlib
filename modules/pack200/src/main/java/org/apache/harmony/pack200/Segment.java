@@ -21,6 +21,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,17 +41,12 @@ import org.apache.harmony.pack200.bytecode.InnerClassesAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
- * A Pack200 archive consists of one (or more) segments. Each segment is
- * standalone, in the sense that every segment has the magic number header;
+ * A Pack200 archive consists of one or more segments. Each segment is
+ * stand-alone, in the sense that every segment has the magic number header;
  * thus, every segment is also a valid archive. However, it is possible to
  * combine (non-GZipped) archives into a single large archive by concatenation
  * alone. Thus all the hard work in unpacking an archive falls to understanding
  * a segment.
- *
- * This class implements the Pack200 specification by an entry point ({@link #parse(InputStream)})
- * which in turn delegates to a variety of other parse methods. Each parse
- * method corresponds (roughly) to the name of the bands in the Pack200
- * specification.
  *
  * The first component of a segment is the header; this contains (amongst other
  * things) the expected counts of constant pool entries, which in turn defines
@@ -69,30 +65,11 @@ import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
  */
 public class Segment {
 
+    public static final int LOG_LEVEL_VERBOSE = 2;
 
-	/**
-     * TODO: Do we need this method now we have Archive as the main entry point?
-     *
-	 * Decode a segment from the given input stream. This does not attempt to
-	 * re-assemble or export any class files, but it contains enough information
-	 * to be able to re-assemble class files by external callers.
-	 *
-	 * @param in
-	 *            the input stream to read from
-	 * @return a segment parsed from the input stream
-	 * @throws IOException
-	 *             if a problem occurs during reading from the underlying stream
-	 * @throws Pack200Exception
-	 *             if a problem occurs with an unexpected value or unsupported
-	 *             codec
-	 */
-	public static Segment parse(InputStream in) throws IOException,
-			Pack200Exception {
-		Segment segment = new Segment();
-        segment.parseSegment(in);
-		return segment;
-	}
+    public static final int LOG_LEVEL_STANDARD = 1;
 
+    public static final int LOG_LEVEL_QUIET = 0;
 
     private SegmentHeader header;
 
@@ -112,6 +89,10 @@ public class Segment {
 
     private boolean deflateHint;
 
+	private int logLevel;
+
+	private PrintWriter logStream;
+
 	private ClassFile buildClassFile(int classNum) throws Pack200Exception {
 		ClassFile classFile = new ClassFile();
 		classFile.major = header.getDefaultClassMajorVersion(); // TODO If
@@ -127,23 +108,60 @@ public class Segment {
 		int i = fullName.lastIndexOf("/") + 1; // if lastIndexOf==-1, then
 		// -1+1=0, so str.substring(0)
 		// == str
-		AttributeLayout SOURCE_FILE = attrDefinitionBands.getAttributeDefinitionMap()
-				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
-						AttributeLayout.CONTEXT_CLASS);
-		if (SOURCE_FILE.matches(classBands.getClassFlags()[classNum])) {
-		    int firstDollar = SegmentUtils.indexOfFirstDollar(fullName);
-		    String fileName = null;
 
-		    if(firstDollar > -1 && (i <= firstDollar)) {
-		        fileName = fullName.substring(i, firstDollar) + ".java";
-		    } else {
-		        fileName = fullName.substring(i) + ".java";
-		    }
-			classFile.attributes = new Attribute[] { (Attribute) cp
-					.add(new SourceFileAttribute(cpBands.cpUTF8Value(fileName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ))) };
-		} else {
-			classFile.attributes = new Attribute[] {};
-		}
+		// Get the source file attribute
+        ArrayList classAttributes = classBands.getClassAttributes()[classNum];
+        SourceFileAttribute sourceFileAttribute = null;
+        for(int index=0; index < classAttributes.size(); index++) {
+            if(((Attribute)classAttributes.get(index)).isSourceFileAttribute()) {
+                sourceFileAttribute = ((SourceFileAttribute)classAttributes.get(index));
+            }
+        }
+
+        if(sourceFileAttribute == null) {
+            // If we don't have a source file attribute yet, we need
+            // to infer it from the class.
+            AttributeLayout SOURCE_FILE = attrDefinitionBands.getAttributeDefinitionMap()
+    				.getAttributeLayout(AttributeLayout.ATTRIBUTE_SOURCE_FILE,
+    						AttributeLayout.CONTEXT_CLASS);
+    		if (SOURCE_FILE.matches(classBands.getRawClassFlags()[classNum])) {
+    		    int firstDollar = SegmentUtils.indexOfFirstDollar(fullName);
+    		    String fileName = null;
+
+    		    if(firstDollar > -1 && (i <= firstDollar)) {
+    		        fileName = fullName.substring(i, firstDollar) + ".java";
+    		    } else {
+    		        fileName = fullName.substring(i) + ".java";
+    		    }
+    		    sourceFileAttribute = new SourceFileAttribute(cpBands.cpUTF8Value(fileName, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ));
+    			classFile.attributes = new Attribute[] { (Attribute) cp
+    					.add(sourceFileAttribute) };
+    		} else {
+                classFile.attributes = new Attribute[] {};
+            }
+        } else {
+            classFile.attributes = new Attribute[] { (Attribute) cp.add(sourceFileAttribute)};
+        }
+
+		// If we see any class attributes, add them to the class's attributes that will
+		// be written out. Keep SourceFileAttributes out since we just
+		// did them above.
+	    ArrayList classAttributesWithoutSourceFileAttribute = new ArrayList();
+	    for(int index=0; index < classAttributes.size(); index++) {
+	        Attribute attrib = (Attribute)classAttributes.get(index);
+	        if(!attrib.isSourceFileAttribute()) {
+	            classAttributesWithoutSourceFileAttribute.add(attrib);
+	        }
+	    }
+        Attribute[] originalAttributes = classFile.attributes;
+        classFile.attributes = new Attribute[originalAttributes.length + classAttributesWithoutSourceFileAttribute.size()];
+        System.arraycopy(originalAttributes, 0, classFile.attributes, 0, originalAttributes.length);
+	    for(int index=0; index < classAttributesWithoutSourceFileAttribute.size(); index++) {
+	        Attribute attrib = ((Attribute)classAttributesWithoutSourceFileAttribute.get(index));
+	        cp.add(attrib);
+	        classFile.attributes[originalAttributes.length + index] = attrib;
+	    }
+
 		// this/superclass
 		ClassFileEntry cfThis = cp.add(cpBands.cpClassValue(fullName));
 		ClassFileEntry cfSuper = cp.add(cpBands.cpClassValue(classBands.getClassSuper()[classNum]));
@@ -165,20 +183,20 @@ public class Segment {
 		}
 		// add methods
 		ClassFileEntry cfMethods[] = new ClassFileEntry[classBands.getClassMethodCount()[classNum]];
-		// fieldDescr and fieldFlags used to create this
+		// methodDescr and methodFlags used to create this
 		for (i = 0; i < cfMethods.length; i++) {
             String descriptorStr = classBands.getMethodDescr()[classNum][i];
             int colon = descriptorStr.indexOf(':');
             CPUTF8 name = cpBands.cpUTF8Value(descriptorStr.substring(0,colon), ClassConstantPool.DOMAIN_NORMALASCIIZ);
             CPUTF8 descriptor = cpBands.cpUTF8Value(descriptorStr.substring(colon+1), ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
-			cfMethods[i] = cp.add(new CPMethod(name, descriptor, classBands
+            cfMethods[i] = cp.add(new CPMethod(name, descriptor, classBands
                     .getMethodFlags()[classNum][i], classBands
                     .getMethodAttributes()[classNum][i]));
 		}
 
 		// add inner class attribute (if required)
 		boolean addInnerClassesAttr = false;
-		IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
+        IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
 		boolean ic_local_sent = false;
 		if(ic_local != null) {
 		    ic_local_sent = true;
@@ -236,11 +254,6 @@ public class Segment {
 		}
 		// sort CP according to cp_All
 		cp.resolve(this);
-		// print out entries
-		debug("Constant pool looks like:");
-		for (i = 1; i <= cp.size(); i++) {
-			debug(String.valueOf(i) + ":" + String.valueOf(cp.get(i)));
-		}
 		// NOTE the indexOf is only valid after the cp.resolve()
 		// build up remainder of file
 		classFile.accessFlags = (int) classBands.getClassFlags()[classNum];
@@ -319,8 +332,8 @@ public class Segment {
 	 */
 	private void parseSegment(InputStream in) throws IOException,
 			Pack200Exception {
-		debug("-------");
-        header = new SegmentHeader();
+		log(LOG_LEVEL_VERBOSE, "-------");
+        header = new SegmentHeader(this);
         header.unpack(in);
         cpBands = new CpBands(this);
         cpBands.unpack(in);
@@ -353,23 +366,6 @@ public class Segment {
         writeJar(out);
     }
 
-    /**
-     * This is a local debugging message to aid the developer in writing this
-     * class. It will be removed before going into production. If the property
-     * 'debug.pack200' is set, this will generate messages to stderr; otherwise,
-     * it will be silent.
-     *
-     * @param message
-     * @deprecated this should be removed from production code
-     */
-    protected void debug(String message) {
-        if (System.getProperty("debug.pack200") != null) {
-            System.err.println(message);
-        }
-    }
-
-
-
 	/**
 	 * Writes the segment to an output stream. The output stream should be
 	 * pre-buffered for efficiency. Also takes the same input stream for
@@ -379,12 +375,10 @@ public class Segment {
 	 *
 	 * @param out
 	 *            the JarOutputStream to write data to
-	 * @param in
-	 *            the same InputStream that was used to parse the segment
 	 * @throws IOException
-	 *             if an error occurs whilst reading or writing to the streams
+	 *             if an error occurs while reading or writing to the streams
 	 * @throws Pack200Exception
-	 *             if an error occurs whilst unpacking data
+	 *             if an error occurs while processing data
 	 */
 	public void writeJar(JarOutputStream out)
 			throws IOException, Pack200Exception {
@@ -480,15 +474,17 @@ public class Segment {
 
 
     public void setLogLevel(int logLevel) {
-
+    	this.logLevel = logLevel;
     }
 
-    public void setLogStream(OutputStream stream) {
-
+    public void setLogStream(OutputStream logStream) {
+    	this.logStream = new PrintWriter(logStream);
     }
 
     public void log(int logLevel, String message) {
-
+    	if (this.logLevel >= logLevel) {
+    		logStream.println(message);
+    	}
     }
 
     /**

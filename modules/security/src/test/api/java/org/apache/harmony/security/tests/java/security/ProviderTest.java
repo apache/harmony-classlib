@@ -53,25 +53,20 @@ public class ProviderTest extends TestCase {
      * Class under test for void Provider()
      */
     public final void testProvider() {
-        if (!p.getProperty("Provider.id name").equals(String.valueOf(p.getName()))) {
-            fail("Incorrect \"Provider.id name\" value");    
-        }
-        if (!p.getProperty("Provider.id version").equals(String.valueOf(p.getVersion()))) {
-            fail("Incorrect \"Provider.id version\" value");    
-        }
-        if (!p.getProperty("Provider.id info").equals(String.valueOf(p.getInfo()))) {
-            fail("Incorrect \"Provider.id info\" value");    
-        }
-        if (!p.getProperty("Provider.id className").equals(p.getClass().getName())) {
-            fail("Incorrect \"Provider.id className\" value");    
-        }
+        assertEquals("Provider.id name", p.getProperty("Provider.id name"),
+                String.valueOf(p.getName()));
+        assertEquals("Provider.id version", p
+                .getProperty("Provider.id version"), String.valueOf(p
+                .getVersion()));
+        assertEquals("Provider.id info", p.getProperty("Provider.id info"),
+                String.valueOf(p.getInfo()));
+        assertEquals("Provider.id className", p
+                .getProperty("Provider.id className"), p.getClass().getName());
     }
 
     public final void testClear() {
         p.clear();
-        if (p.getProperty("MessageDigest.SHA-1") != null) {
-            fail("Provider contains properties");
-        }
+        assertNull(p.getProperty("MessageDigest.SHA-1"));
     }
 
     /*
@@ -79,29 +74,22 @@ public class ProviderTest extends TestCase {
      */
     public final void testProviderStringdoubleString() {
         Provider p = new MyProvider("Provider name", 123.456, "Provider info");
-        if (!p.getName().equals("Provider name") ||
-            p.getVersion() != 123.456 ||
-            !p.getInfo().equals("Provider info")) {
-            fail("Incorrect values");
-        }
+
+        assertEquals("Provider name", p.getName());
+        assertEquals(123.456, p.getVersion(), 0L);
+        assertEquals("Provider info", p.getInfo());
     }
 
     public final void testGetName() {
-        if (!p.getName().equals("MyProvider")) {
-            fail("Incorrect provider name");
-        }
+        assertEquals("MyProvider", p.getName());
     }
 
     public final void testGetVersion() {
-        if (p.getVersion() != 1.0) {
-            fail("Incorrect provider version");
-        }
+        assertEquals(1.0, p.getVersion(), 0L);
     }
 
     public final void testGetInfo() {
-        if (!p.getInfo().equals("Provider for testing")) {
-            fail("Incorrect provider info");
-        }
+        assertEquals("Provider for testing", p.getInfo());
     }
 
     /*
@@ -181,22 +169,19 @@ public class ProviderTest extends TestCase {
         } catch (UnsupportedOperationException e) {
         }
         Set s1 = p.keySet();
-        if ((s == s1) || s1.isEmpty() ) {
-            fail("Must return unmodifiable set");
-        }
-        if (s1.size() != 8) {    
-            fail("Incorrect set size");
-        }
-        if (!s1.contains("MessageDigest.SHA-256") ||
-                !s1.contains("MessageDigest.SHA-1") ||
-                !s1.contains("Alg.Alias.MessageDigest.SHA1") ||
-                !s1.contains("MessageDigest.abc") ||
-                !s1.contains("Provider.id info") ||
-                !s1.contains("Provider.id className") ||
-                !s1.contains("Provider.id version") ||
-                !s1.contains("Provider.id name")) {
-            fail("Incorrect set");
-        }
+
+        assertNotSame(s, s1);
+        assertFalse(s1.isEmpty());
+        assertEquals(8, s1.size());
+
+        assertTrue(s1.contains("MessageDigest.SHA-256"));
+        assertTrue(s1.contains("MessageDigest.SHA-1"));
+        assertTrue(s1.contains("Alg.Alias.MessageDigest.SHA1"));
+        assertTrue(s1.contains("MessageDigest.abc"));
+        assertTrue(s1.contains("Provider.id info"));
+        assertTrue(s1.contains("Provider.id className"));
+        assertTrue(s1.contains("Provider.id version"));
+        assertTrue(s1.contains("Provider.id name"));
     }
 
     /*
@@ -211,21 +196,18 @@ public class ProviderTest extends TestCase {
         } catch (UnsupportedOperationException e) {
         }
         Collection c1 = p.values();
-        if ((c == c1) || c1.isEmpty() ) {
-            fail("Must return unmodifiable set");
-        }
-        if (c1.size() != 8) {    
-            fail("Incorrect set size " + c1.size());
-        }    
-        if (!c1.contains("MyProvider") ||
-                !c1.contains("aaa.bbb.ccc.ddd") ||
-                !c1.contains("Provider for testing") ||
-                !c1.contains("1.0") ||
-                !c1.contains("SomeClassName") ||
-                !c1.contains("SHA-1") ||
-                !c1.contains(p.getClass().getName())) {
-            fail("Incorrect set");
-        }
+
+        assertNotSame(c, c1);
+        assertFalse(c1.isEmpty());
+        assertEquals(8, c1.size());
+
+        assertTrue(c1.contains("MyProvider"));
+        assertTrue(c1.contains("aaa.bbb.ccc.ddd"));
+        assertTrue(c1.contains("Provider for testing"));
+        assertTrue(c1.contains("1.0"));
+        assertTrue(c1.contains("SomeClassName"));
+        assertTrue(c1.contains("SHA-1"));
+        assertTrue(c1.contains(p.getClass().getName()));
     }
 
     /*
@@ -234,14 +216,12 @@ public class ProviderTest extends TestCase {
     public final void testPutObjectObject() {
         p.put("MessageDigest.SHA-1", "aaa.bbb.ccc.ddd");
         p.put("Type.Algorithm", "className");
-        if (!"aaa.bbb.ccc.ddd".equals(p.getProperty("MessageDigest.SHA-1").trim()) ) {
-            fail("Incorrect property value");
-        }
+        assertEquals("aaa.bbb.ccc.ddd", p.getProperty("MessageDigest.SHA-1")
+                .trim());
         
         Set services = p.getServices();
-        if (services.size() != 3) {
-            fail("incorrect size");
-        }
+        assertEquals(3, services.size());
+
         for (Iterator it = services.iterator(); it.hasNext();) {
             Provider.Service s = (Provider.Service)it.next();
             if ("Type".equals(s.getType()) &&
@@ -268,23 +248,17 @@ public class ProviderTest extends TestCase {
      */
     public final void testRemoveObject() {
         Object o = p.remove("MessageDigest.SHA-1");
-        if (!"SomeClassName".equals(o)) {
-            fail("Incorrect return value");
-        }
-        if (p.getProperty("MessageDigest.SHA-1") != null) {
-            fail("Provider contains properties");
-        }
-        if (p.getServices().size() != 1){
-            fail("Service not removed");
-        }
+
+        assertEquals("SomeClassName", o);
+        assertNull(p.getProperty("MessageDigest.SHA-1"));
+        assertEquals(1, p.getServices().size());
     }
  
     public final void testService1() {
         p.put("MessageDigest.SHA-1", "AnotherClassName");
         Provider.Service s = p.getService("MessageDigest", "SHA-1");
-        if (!"AnotherClassName".equals(s.getClassName())) {
-            fail("Incorrect class name "+ s.getClassName());
-        }
+
+        assertEquals("AnotherClassName", s.getClassName());
     }
 
  /*

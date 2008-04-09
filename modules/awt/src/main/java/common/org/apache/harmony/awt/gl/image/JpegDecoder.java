@@ -82,7 +82,7 @@ public class JpegDecoder extends ImageDecoder {
     private ColorModel cm = null;
 
     static {
-        System.loadLibrary("jpegdecoder"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("jpegdecoder"); //$NON-NLS-1$
 
         cmGray = new ComponentColorModel(
                 ColorSpace.getInstance(ColorSpace.CS_GRAY),

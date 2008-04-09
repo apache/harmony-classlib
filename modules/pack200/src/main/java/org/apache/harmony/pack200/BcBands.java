@@ -31,7 +31,7 @@ import org.apache.harmony.pack200.bytecode.ExceptionTableEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * Pack200 Bytecode bands
+ * Bytecode bands
  */
 public class BcBands extends BandSet {
 
@@ -66,7 +66,7 @@ public class BcBands extends BandSet {
     private int[][] bcEscByte;
 
     /**
-     * @param header
+     * @param segment
      */
     public BcBands(Segment segment) {
         super(segment);
@@ -262,7 +262,7 @@ public class BcBands extends BandSet {
                                     || nextInstruction == 169) {
                                 bcLocalCount ++;
                             } else {
-                                debug("Found unhandled " + ByteCode.getByteCode(nextInstruction));
+                            	segment.log(Segment.LOG_LEVEL_VERBOSE, "Found unhandled " + ByteCode.getByteCode(nextInstruction));
                             }
                             i++;
                             break;
@@ -277,13 +277,11 @@ public class BcBands extends BandSet {
                        case 254: // byte_escape
                            bcEscCount++;
                            break;
-                       default: // unhandled specifically at this stage
+                       default:
                            if(endsWithLoad(codePacked) || endsWithStore(codePacked)) {
                                bcLocalCount++;
                            } else if (startsWithIf(codePacked)) {
                                bcLabelCount++;
-                           } else {
-                               debug("Found unhandled " + codePacked + " " + ByteCode.getByteCode(codePacked));
                            }
                        }
                    }
@@ -291,7 +289,6 @@ public class BcBands extends BandSet {
             }
         }
         // other bytecode bands
-        debug("Parsed *bc_codes (" + bcParsed + ")");
         bcCaseCount = decodeBandInt("bc_case_count", in, Codec.UNSIGNED5, bcCaseCountCount);
         int bcCaseValueCount = 0;
         for (int i = 0; i < bcCaseCount.length; i++) {
@@ -377,7 +374,8 @@ public class BcBands extends BandSet {
                     int maxLocal = codeMaxNALocals[i];
                     if (!staticModifier.matches(methodFlag))
                         maxLocal++; // one for 'this' parameter
-                    maxLocal += SegmentUtils.countArgs(methodDescr[c][m]);
+                    // I believe this has to take wide arguments into account
+                    maxLocal += SegmentUtils.countInvokeInterfaceArgs(methodDescr[c][m]);
                     operandManager.setCurrentClass(segment.getClassBands()
                             .getClassThis()[c]);
                     operandManager.setSuperClass(segment.getClassBands()
@@ -386,7 +384,13 @@ public class BcBands extends BandSet {
                     if(handlerCount != null) {
                         for (int j = 0; j < handlerCount[i]; j++) {
                             String handlerClass = handlerClassTypes[i][j];
-                            CPClass cpHandlerClass = segment.getCpBands().cpClassValue(handlerClass);
+                            CPClass cpHandlerClass = null;
+                            if(handlerClass != null) {
+                                // The handlerClass will be null if the
+                                // catch is a finally (that is, the
+                                // exception table catch_type should be 0
+                                cpHandlerClass = segment.getCpBands().cpClassValue(handlerClass);
+                            }
                             ExceptionTableEntry entry = new ExceptionTableEntry(
                                     handlerStartPCs[i][j], handlerEndPCs[i][j],
                                     handlerCatchPCs[i][j], cpHandlerClass);

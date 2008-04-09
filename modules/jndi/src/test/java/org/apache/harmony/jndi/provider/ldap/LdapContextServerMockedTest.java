@@ -27,6 +27,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.SortControl;
 
 import junit.framework.TestCase;
@@ -42,7 +43,7 @@ public class LdapContextServerMockedTest extends TestCase {
     private Hashtable<Object, Object> env = new Hashtable<Object, Object>();
 
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         server = new MockLdapServer();
         server.start();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
@@ -132,8 +133,11 @@ public class LdapContextServerMockedTest extends TestCase {
 
         assertNull(context.getConnectControls());
 
+        server = new MockLdapServer(server);
+        server.start();
         server.setResponseSeq(new LdapMessage[] { new LdapMessage(
                 LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
         context.reconnect(new Control[] { new SortControl("",
                 Control.NONCRITICAL) });
 
@@ -325,6 +329,140 @@ public class LdapContextServerMockedTest extends TestCase {
         context.getAttributes("cn=test");
 
         referralServer.stop();
+    }
+
+    public void testAddToEnvironment() throws Exception {
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
+        assertNull(env.get(Context.REFERRAL));
+
+        InitialDirContext initialDirContext = new InitialDirContext(env);
+
+        // Context.REFERRAL changed doesn't cause re-bind operation
+        initialDirContext.addToEnvironment(Context.REFERRAL, "ignore");
+
+        assertEquals("ignore", initialDirContext.getEnvironment().get(
+                Context.REFERRAL));
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_DEL_RESPONSE, new EncodableLdapResult(),
+                null) });
+
+        initialDirContext.destroySubcontext("cn=test");
+
+        /*
+         * Context.SECURITY_AUTHENTICATION will case re-bind when invoke context
+         * methods at first time
+         */
+        Object preValue = initialDirContext.addToEnvironment(
+                Context.SECURITY_AUTHENTICATION, "none");
+        assertFalse("none".equals(preValue));
+
+        server.setResponseSeq(new LdapMessage[] {
+                new LdapMessage(LdapASN1Constant.OP_BIND_RESPONSE,
+                        new BindResponse(), null),
+                new LdapMessage(LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                        new EncodableLdapResult(), null) });
+
+        initialDirContext.lookup("");
+
+        preValue = initialDirContext.addToEnvironment(
+                Context.SECURITY_AUTHENTICATION, "simple");
+        assertFalse("simple".equals(preValue));
+
+        // initialDirContext is shared connection, will create new connection
+        server = new MockLdapServer(server);
+        server.start();
+        server.setResponseSeq(new LdapMessage[] {
+                new LdapMessage(LdapASN1Constant.OP_BIND_RESPONSE,
+                        new BindResponse(), null),
+                new LdapMessage(LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                        new EncodableLdapResult(), null) });
+
+        initialDirContext.lookup("");
+
+    }
+
+    public void testReconnect() throws Exception {
+        Control[] expected = new Control[] { new PagedResultsControl(10,
+                Control.NONCRITICAL) };
+        env.put("java.naming.ldap.control.connect", expected);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        LdapContext context = new InitialLdapContext(env, null);
+
+        Control[] controls = context.getConnectControls();
+        assertNotNull(controls);
+        assertNotSame(expected, controls);
+
+        Control c = controls[0];
+        assertTrue(c instanceof PagedResultsControl);
+        assertEquals(Control.NONCRITICAL, ((PagedResultsControl) c)
+                .isCritical());
+        assertEquals(expected[0], c);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
+        expected = new Control[] { new SortControl("", Control.NONCRITICAL) };
+        context.reconnect(expected);
+
+        controls = context.getConnectControls();
+        assertNotNull(controls);
+        assertEquals(1, controls.length);
+        c = controls[0];
+        assertTrue(c instanceof SortControl);
+        assertEquals(Control.NONCRITICAL, ((SortControl) c).isCritical());
+        assertNotSame(expected, controls);
+        assertEquals(expected[0], c);
+
+        expected[0] = new PagedResultsControl(10, Control.NONCRITICAL);
+        controls = context.getConnectControls();
+        assertNotNull(controls);
+        assertEquals(1, controls.length);
+        c = controls[0];
+        assertTrue(c instanceof SortControl);
+        assertEquals(Control.NONCRITICAL, ((SortControl) c).isCritical());
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        context.reconnect(null);
+
+        assertNull(context.getConnectControls());
+    }
+
+    public void testReconnect_share_connection() throws Exception {
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        LdapContext context = new InitialLdapContext(env, null);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
+        // doesn't create new connection
+        context.reconnect(null);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                new EncodableLdapResult(), null) });
+        // another and context share the same connection now
+        LdapContext another = (LdapContext) context.lookup("");
+
+        MockLdapServer one = new MockLdapServer(server);
+        one.start();
+
+        one.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        // create new connection
+        context.reconnect(null);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        // use original connection
+        another.reconnect(null);
     }
 
 }

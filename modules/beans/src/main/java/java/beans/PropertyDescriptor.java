@@ -218,7 +218,7 @@ public class PropertyDescriptor extends FeatureDescriptor {
     String createDefaultMethodName(String propertyName, String prefix) {
         String result = null;
         if (propertyName != null) {
-            String bos = propertyName.substring(0, 1).toUpperCase();
+            String bos = BeansUtils.toASCIIUpperCase(propertyName.substring(0, 1));
             String eos = propertyName.substring(1, propertyName.length());
             result = prefix + bos + eos;
         }

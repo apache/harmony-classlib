@@ -26,11 +26,9 @@ import javax.net.ssl.KeyStoreBuilderParameters;
 
 import junit.framework.TestCase;
 
-
 /**
  * Tests for <code>KeyStoreBuilderParameters</code> class constructors and
  * methods.
- *  
  */
 public class KeyStoreBuilderParametersTest extends TestCase {
 
@@ -71,12 +69,8 @@ public class KeyStoreBuilderParametersTest extends TestCase {
             fail("The list is modifiable");
         } catch (UnsupportedOperationException e) {
         }
-        if (result.size() != 1) {
-            fail("incorrect size");
-        }
-        if (!result.contains(builder)) {
-            fail("incorrect list");
-        }
+        assertEquals("incorrect size", 1, result.size());
+        assertTrue("incorrect list", result.contains(builder));
         
         ksbuilders = new ArrayList();
         ksbuilders.add(builder);
@@ -88,12 +82,8 @@ public class KeyStoreBuilderParametersTest extends TestCase {
             fail("The list is modifiable");
         } catch (UnsupportedOperationException e) {
         }
-        if (result.size() != 2) {
-            fail("incorrect size");
-        }
-        if (!result.containsAll(ksbuilders)) {
-            fail("incorrect list");
-        }
+        assertEquals("incorrect size", 2, result.size());
+        assertTrue("incorrect list", result.containsAll(ksbuilders));
     }
 }
 

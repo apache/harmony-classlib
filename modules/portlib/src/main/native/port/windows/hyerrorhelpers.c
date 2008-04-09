@@ -30,6 +30,7 @@
 #undef CDEV_CURRENT_FUNCTION
 
 #include <string.h>
+#include <stdio.h>
 #include "portpriv.h"
 #include "portnls.h"
 #include "hyportptb.h"

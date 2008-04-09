@@ -52,8 +52,4 @@ public class CPString extends CPConstant {
 	protected ClassFileEntry[] getNestedClassFileEntries() {
 		return new ClassFileEntry[] { name };
  	}
-
-	public String comparisonString() {
-	    return ((CPUTF8)getValue()).underlyingString();
-	}
 }

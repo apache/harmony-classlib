@@ -16,6 +16,7 @@
 
 package org.apache.harmony.nio_char.tests.java.nio.charset;
 
+import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -29,29 +30,29 @@ import junit.framework.TestCase;
 
 public class CharsetEncoderTest extends TestCase {
 
-	/**
-	 * @tests java.nio.charset.CharsetEncoder.CharsetEncoder(
-	 *        java.nio.charset.Charset, float, float)
-	 */
-	public void test_ConstructorLjava_nio_charset_CharsetFF() {
-		// Regression for HARMONY-141
-		try {
-			Charset cs = Charset.forName("UTF-8"); //$NON-NLS-1$
-			new MockCharsetEncoderForHarmony141(cs, 1.1f, 1);
-			fail("Assert 0: Should throw IllegalArgumentException."); //$NON-NLS-1$
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
+    /**
+     * @tests java.nio.charset.CharsetEncoder.CharsetEncoder(
+     *        java.nio.charset.Charset, float, float)
+     */
+    public void test_ConstructorLjava_nio_charset_CharsetFF() {
+        // Regression for HARMONY-141
+        try {
+            Charset cs = Charset.forName("UTF-8"); //$NON-NLS-1$
+            new MockCharsetEncoderForHarmony141(cs, 1.1f, 1);
+            fail("Assert 0: Should throw IllegalArgumentException."); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
-		try {
-			Charset cs = Charset.forName("ISO8859-1"); //$NON-NLS-1$
-			new MockCharsetEncoderForHarmony141(cs, 1.1f, 1,
-					new byte[] { 0x1a });
-			fail("Assert 1: Should throw IllegalArgumentException."); //$NON-NLS-1$
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
-	}
+        try {
+            Charset cs = Charset.forName("ISO8859-1"); //$NON-NLS-1$
+            new MockCharsetEncoderForHarmony141(cs, 1.1f, 1,
+                    new byte[] { 0x1a });
+            fail("Assert 1: Should throw IllegalArgumentException."); //$NON-NLS-1$
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
 
     /**
      * @tests java.nio.charset.CharsetEncoder.CharsetEncoder(
@@ -69,21 +70,21 @@ public class CharsetEncoderTest extends TestCase {
 
     public static class MockCharsetEncoderForHarmony141 extends CharsetEncoder {
 
-		protected MockCharsetEncoderForHarmony141(Charset cs,
-				float averageBytesPerChar, float maxBytesPerChar) {
-			super(cs, averageBytesPerChar, maxBytesPerChar);
-		}
+        protected MockCharsetEncoderForHarmony141(Charset cs,
+                float averageBytesPerChar, float maxBytesPerChar) {
+            super(cs, averageBytesPerChar, maxBytesPerChar);
+        }
 
-		public MockCharsetEncoderForHarmony141(Charset cs,
-				float averageBytesPerChar, float maxBytesPerChar,
-				byte[] replacement) {
-			super(cs, averageBytesPerChar, maxBytesPerChar, replacement);
-		}
+        public MockCharsetEncoderForHarmony141(Charset cs,
+                float averageBytesPerChar, float maxBytesPerChar,
+                byte[] replacement) {
+            super(cs, averageBytesPerChar, maxBytesPerChar, replacement);
+        }
 
-		protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
-			return null;
-		}
-	}
+        protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
+            return null;
+        }
+    }
 
     public static class MockCharsetEncoderForHarmony491 extends CharsetEncoder {
 
@@ -104,66 +105,85 @@ public class CharsetEncoderTest extends TestCase {
     /*
      * Test malfunction encode(CharBuffer)
      */
-	public void test_EncodeLjava_nio_CharBuffer() throws Exception {
-		MockMalfunctionCharset cs = new MockMalfunctionCharset("mock", null);
-		try {
-			cs.encode(CharBuffer.wrap("AB"));
-			fail("should throw CoderMalfunctionError");// NON-NLS-1$
-		} catch (CoderMalfunctionError e) {
-			// expected
-		}
-	}
+    public void test_EncodeLjava_nio_CharBuffer() throws Exception {
+        MockMalfunctionCharset cs = new MockMalfunctionCharset("mock", null);
+        try {
+            cs.encode(CharBuffer.wrap("AB"));
+            fail("should throw CoderMalfunctionError");// NON-NLS-1$
+        } catch (CoderMalfunctionError e) {
+            // expected
+        }
+    }
 
-	/*
-	 * Mock charset class with malfunction decode & encode.
-	 */
-	static final class MockMalfunctionCharset extends Charset {
+    /*
+     * Mock charset class with malfunction decode & encode.
+     */
+    static final class MockMalfunctionCharset extends Charset {
 
-		public MockMalfunctionCharset(String canonicalName, String[] aliases) {
-			super(canonicalName, aliases);
-		}
+        public MockMalfunctionCharset(String canonicalName, String[] aliases) {
+            super(canonicalName, aliases);
+        }
 
-		public boolean contains(Charset cs) {
-			return false;
-		}
+        public boolean contains(Charset cs) {
+            return false;
+        }
 
-		public CharsetDecoder newDecoder() {
-			return Charset.forName("UTF-8").newDecoder();
-		}
+        public CharsetDecoder newDecoder() {
+            return Charset.forName("UTF-8").newDecoder();
+        }
 
-		public CharsetEncoder newEncoder() {
-			return new MockMalfunctionEncoder(this);
-		}
-	}
+        public CharsetEncoder newEncoder() {
+            return new MockMalfunctionEncoder(this);
+        }
+    }
 
-	/*
-	 * Mock encoder. encodeLoop always throws unexpected exception.
-	 */
-	static class MockMalfunctionEncoder extends java.nio.charset.CharsetEncoder {
+    /*
+     * Mock encoder. encodeLoop always throws unexpected exception.
+     */
+    static class MockMalfunctionEncoder extends java.nio.charset.CharsetEncoder {
 
-		public MockMalfunctionEncoder(Charset cs) {
-			super(cs, 1, 3, new byte[] { (byte) '?' });
-		}
+        public MockMalfunctionEncoder(Charset cs) {
+            super(cs, 1, 3, new byte[] { (byte) '?' });
+        }
 
-		protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
-			throw new BufferOverflowException();
-		}
-	}
+        protected CoderResult encodeLoop(CharBuffer in, ByteBuffer out) {
+            throw new BufferOverflowException();
+        }
+    }
 
-	/*
-	 * Test reserve bytes encode(CharBuffer,ByteBuffer,boolean)
-	 */
-	public void test_EncodeLjava_nio_CharBufferLjava_nio_ByteBufferB() {
-		CharsetEncoder encoder = Charset.forName("utf-8").newEncoder();
-		CharBuffer in1 = CharBuffer.wrap("\ud800");
-		CharBuffer in2 = CharBuffer.wrap("\udc00");
-		ByteBuffer out = ByteBuffer.allocate(4);
-		encoder.reset();
-		CoderResult result = encoder.encode(in1, out, false);
-		assertEquals(4, out.remaining());
-		assertTrue(result.isUnderflow());
-		result = encoder.encode(in2, out, true);
-		assertEquals(4, out.remaining());
-		assertTrue(result.isMalformed());
-	}
+    /*
+     * Test reserve bytes encode(CharBuffer,ByteBuffer,boolean)
+     */
+    public void test_EncodeLjava_nio_CharBufferLjava_nio_ByteBufferB() {
+        CharsetEncoder encoder = Charset.forName("utf-8").newEncoder();
+        CharBuffer in1 = CharBuffer.wrap("\ud800");
+        CharBuffer in2 = CharBuffer.wrap("\udc00");
+        ByteBuffer out = ByteBuffer.allocate(4);
+        encoder.reset();
+        CoderResult result = encoder.encode(in1, out, false);
+        assertEquals(4, out.remaining());
+        assertTrue(result.isUnderflow());
+        result = encoder.encode(in2, out, true);
+        assertEquals(4, out.remaining());
+        assertTrue(result.isMalformed());
+    }
+
+    /**
+     * @tests {@link java.nio.charset.Charset#encode(java.nio.CharBuffer)
+     */
+    public void testUtf8Encoding() throws IOException {
+        byte[] orig = new byte[] { (byte) 0xed, (byte) 0xa0,
+                (byte) 0x80 };
+        String s = new String(orig, "UTF-8");
+        assertEquals(1, s.length());
+        assertEquals(55296, s.charAt(0));
+        Charset.forName("UTF-8").encode(CharBuffer.wrap(s));
+//        ByteBuffer buf = <result> 
+//        for (byte o : orig) {
+//            byte b = 0;
+//            buf.get(b);
+//            assertEquals(o, b);
+//        }
+    }
+
 }

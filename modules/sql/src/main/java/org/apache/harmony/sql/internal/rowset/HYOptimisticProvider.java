@@ -17,27 +17,28 @@
 
 package org.apache.harmony.sql.internal.rowset;
 
+import java.io.Serializable;
+
 import javax.sql.RowSetReader;
 import javax.sql.RowSetWriter;
 import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
+public class HYOptimisticProvider extends SyncProvider implements Serializable {
 
-public class HYOptimisticProvider extends SyncProvider {
+    private static final long serialVersionUID = -4275201032064821711L;
 
-    private final static String providerID = "Apache Harmony";
+    private final static String providerID = "Apache Harmony"; //$NON-NLS-1$
 
-    private final static int providerGrade = SyncProvider.DATASOURCE_NO_LOCK;
+    private final static int providerGrade = SyncProvider.GRADE_CHECK_MODIFIED_AT_COMMIT;
 
-    private final static String vendor = "Apache Harmony";
+    private final static String vendor = "Apache Harmony"; //$NON-NLS-1$
 
-    private final static String version = "";
+    private final static String version = ""; //$NON-NLS-1$
 
     @Override
     public int getDataSourceLock() throws SyncProviderException {
-        // TODO Auto-generated method stub
-        return 0;
+        return DATASOURCE_NO_LOCK;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class HYOptimisticProvider extends SyncProvider {
 
     @Override
     public RowSetReader getRowSetReader() {
-        throw new NotImplementedException();
+        return new CachedRowSetReader();
     }
 
     @Override
@@ -73,14 +74,15 @@ public class HYOptimisticProvider extends SyncProvider {
     @Override
     public void setDataSourceLock(int dataSourceLock)
             throws SyncProviderException {
-        // TODO Auto-generated method stub
-
+        if (dataSourceLock != DATASOURCE_NO_LOCK) {
+            // rowset.23=Locking classification is not supported
+            throw new SyncProviderException("rowset.23"); //$NON-NLS-1$
+        }
     }
 
     @Override
     public int supportsUpdatableView() {
-        // TODO Auto-generated method stub
-        return 0;
+        return NONUPDATABLE_VIEW_SYNC;
     }
 
 }

@@ -39,7 +39,7 @@ public class ClassFileEntryTest extends TestCase {
 	private void checkEquality(Object equal1, Object equal2, String toString, Object unequal) {
 		assertEquals(equal1,equal2);
 		assertEquals(equal1.hashCode(),equal2.hashCode());
-		assertTrue(equal1.toString().indexOf(toString)>=0); 
+		assertTrue(equal1.toString().indexOf(toString)>=0);
 		assertFalse(equal1.equals(unequal));
 		assertFalse(equal2.equals(unequal));
 		assertFalse(unequal.equals(equal1));

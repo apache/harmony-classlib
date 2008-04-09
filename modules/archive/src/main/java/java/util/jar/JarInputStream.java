@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.harmony.archive.util.Util;
+import org.apache.harmony.luni.util.Util;
 
 public class JarInputStream extends ZipInputStream {
 
@@ -68,8 +68,8 @@ public class JarInputStream extends ZipInputStream {
             if (verify) {
                 verifier.setManifest(manifest);
                 if (manifest != null) {
-                    verifier.mainAttributesChunk = manifest
-                            .getMainAttributesChunk();
+                    verifier.mainAttributesEnd = manifest
+                            .getMainAttributesEnd();
                 }
             }
 
@@ -132,10 +132,7 @@ public class JarInputStream extends ZipInputStream {
                             throw e;
                         }
                     } else {
-                        verifier
-                                .verifySignatures(
-                                        (JarVerifier.VerifierEntry) verStream,
-                                        jarEntry);
+                        ((JarVerifier.VerifierEntry) verStream).verify();
                     }
                 }
             } else {

@@ -593,7 +593,7 @@ public class Font implements Serializable {
     }
 
     public static Font getFont(String sp, Font f) {
-        String pr = System.getProperty(sp);
+        String pr = org.apache.harmony.awt.Utils.getSystemProperty(sp);
         if (pr == null) {
             return f;
         }

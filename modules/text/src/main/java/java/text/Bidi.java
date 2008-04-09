@@ -185,8 +185,8 @@ public final class Bidi {
     }
 
     /* private constructor used by createLineBidi() */
-    private Bidi(com.ibm.icu.text.Bidi bidi) {
-        this.icuBidi = bidi;
+    private Bidi() {
+        super();
     }
 
     /**
@@ -218,8 +218,8 @@ public final class Bidi {
                     "text.12", new Object[] { lineStart, lineLimit, length })); //$NON-NLS-1$
         }
 
-        com.ibm.icu.text.Bidi lineBidi = icuBidi.createLineBidi(lineStart, lineLimit);
-        Bidi bidi = new Bidi(lineBidi);
+        Bidi bidi = new Bidi();
+        bidi.icuBidi = icuBidi.createLineBidi(lineStart, lineLimit);
         return bidi;
     }
 

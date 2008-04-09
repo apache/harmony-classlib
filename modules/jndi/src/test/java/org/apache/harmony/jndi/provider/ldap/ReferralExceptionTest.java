@@ -30,7 +30,7 @@ import org.apache.harmony.jndi.provider.ldap.mock.MockLdapServer;
 public class ReferralExceptionTest extends TestCase {
 	private MockLdapServer server;
 
-	public void setUp() {
+	public void setUp() throws Exception {
 		server = new MockLdapServer();
 		server.start();
 	}

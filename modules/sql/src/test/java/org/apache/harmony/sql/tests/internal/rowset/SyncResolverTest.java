@@ -20,12 +20,13 @@ package org.apache.harmony.sql.tests.internal.rowset;
 import java.sql.SQLException;
 
 import javax.sql.RowSetMetaData;
+import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetMetaDataImpl;
+import javax.sql.rowset.spi.SyncProviderException;
 import javax.sql.rowset.spi.SyncResolver;
 
 import org.apache.harmony.sql.internal.rowset.CachedRow;
 import org.apache.harmony.sql.internal.rowset.SyncResolverImpl;
-
 
 public class SyncResolverTest extends CachedRowSetTestCase {
     @Override
@@ -39,41 +40,36 @@ public class SyncResolverTest extends CachedRowSetTestCase {
     }
 
     public void testNotSupportMethods() throws Exception {
-        /*
-         * TODO uncomment below fragment code when Harmony support detect
-         * conflict, so the test can run on both RI and Harmony
-         */
-        // CachedRowSet copy = crset.createCopy();
-        //
-        // copy.absolute(3);
-        // crset.absolute(3);
-        //
-        // copy.updateString(2, "updated");
-        // assertEquals("updated", copy.getString(2));
-        // assertEquals("test3", crset.getString(2));
-        //
-        // copy.updateRow();
-        // copy.acceptChanges();
-        //
-        // assertEquals(copy.getString(2), "updated");
-        // assertEquals(crset.getString(2), "test3");
-        //
-        // crset.updateString(2, "again");
-        //
-        // assertEquals(copy.getString(2), "updated");
-        // assertEquals(crset.getString(2), "again");
-        //
-        // crset.updateRow();
-        //
-        // SyncProviderException ex = null;
-        // try {
-        // crset.acceptChanges(conn);
-        // } catch (SyncProviderException e) {
-        // ex = e;
-        // }
-        //
-        // SyncResolver resolver = ex.getSyncResolver();
-        SyncResolver resolver = new SyncResolverImpl(null);
+        CachedRowSet copy = crset.createCopy();
+
+        copy.absolute(3);
+        crset.absolute(3);
+
+        copy.updateString(2, "updated");
+        assertEquals("updated", copy.getString(2));
+        assertEquals("test3", crset.getString(2));
+
+        copy.updateRow();
+        copy.acceptChanges();
+
+        assertEquals(copy.getString(2), "updated");
+        assertEquals(crset.getString(2), "test3");
+
+        crset.updateString(2, "again");
+
+        assertEquals(copy.getString(2), "updated");
+        assertEquals(crset.getString(2), "again");
+
+        crset.updateRow();
+
+        SyncProviderException ex = null;
+        try {
+            crset.acceptChanges(conn);
+        } catch (SyncProviderException e) {
+            ex = e;
+        }
+
+        SyncResolver resolver = ex.getSyncResolver();
 
         try {
             resolver.absolute(1);
@@ -372,7 +368,7 @@ public class SyncResolverTest extends CachedRowSetTestCase {
         resolver.addConflictRow(
                 new CachedRow(new Object[DEFAULT_COLUMN_COUNT]), 2,
                 SyncResolver.INSERT_ROW_CONFLICT);
-        
+
         try {
             resolver.getStatus();
             fail("Should throw NullPointerException");

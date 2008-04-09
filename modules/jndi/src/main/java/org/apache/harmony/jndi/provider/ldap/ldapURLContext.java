@@ -76,7 +76,8 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
         int port = parser.getPort();
         String dn = parser.getBaseObject();
 
-        LdapClient client = LdapClient.newInstance(host, port, myEnv);
+        LdapClient client = LdapClient.newInstance(host, port, myEnv, LdapUtils
+                .isLdapsURL(url));
 
         LdapContextImpl context = new LdapContextImpl(client,
                 (Hashtable<Object, Object>) myEnv, dn);
@@ -490,7 +491,8 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
         String host = parser.getHost();
         int port = parser.getPort();
 
-        LdapClient client = LdapClient.newInstance(host, port, environment);
+        LdapClient client = LdapClient.newInstance(host, port, environment,
+                LdapUtils.isLdapsURL(url));
         LdapContextImpl context = null;
         try {
             context = new LdapContextImpl(client,
@@ -564,7 +566,8 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
         String host = parser.getHost();
         int port = parser.getPort();
 
-        LdapClient client = LdapClient.newInstance(host, port, environment);
+        LdapClient client = LdapClient.newInstance(host, port, environment,
+                LdapUtils.isLdapsURL(url));
         LdapContextImpl context = null;
 
         try {

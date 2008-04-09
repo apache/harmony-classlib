@@ -56,7 +56,6 @@ public class SyncFactory {
 
     private static String resLocation;
 
-    // TODO: the default provider hasn't been implemented yet
     private static String defaultProviderName = "org.apache.harmony.sql.internal.rowset.HYOptimisticProvider"; //$NON-NLS-1$
 
     private static ProviderImpl defaultProvider = new ProviderImpl(

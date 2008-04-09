@@ -77,7 +77,7 @@ public class NativeCMM {
             AccessController.doPrivileged(
                   new PrivilegedAction<Void>() {
                     public Void run() {
-                        System.loadLibrary("lcmm"); //$NON-NLS-1$
+                        org.apache.harmony.awt.Utils.loadLibrary("lcmm"); //$NON-NLS-1$
                         return null;
                     }
             } );

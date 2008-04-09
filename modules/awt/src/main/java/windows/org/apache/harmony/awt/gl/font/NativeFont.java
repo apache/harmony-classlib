@@ -534,7 +534,7 @@ public class NativeFont {
             AccessController.doPrivileged(
                   new PrivilegedAction<Void>() {
                     public Void run() {
-                        System.loadLibrary("fontlib"); //$NON-NLS-1$
+                        org.apache.harmony.awt.Utils.loadLibrary("fontlib"); //$NON-NLS-1$
                         return null;
                     }
             } );

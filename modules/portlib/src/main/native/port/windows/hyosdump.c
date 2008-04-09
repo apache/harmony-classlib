@@ -315,7 +315,7 @@ openFileFromEnvVar (struct HyPortLibrary *portLibrary, char *envVarName,
     {
       pidStore[0] = '-';
       /* this env var is set to append a unique identifier to the dump file name */
-      itoa (GetCurrentProcessId (), &pidStore[1], 10);
+      _itoa (GetCurrentProcessId (), &pidStore[1], 10);
     }
   else
     {

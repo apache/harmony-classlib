@@ -18,6 +18,7 @@ package org.apache.harmony.pack200.bytecode.forms;
 
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -40,6 +41,7 @@ public class NarrowClassRefForm extends ClassRefForm {
         super.setNestedEntries(byteCode, operandManager, offset);
         if(!widened) {
             byteCode.setNestedPositions(new int[][] {{0,1}});
+            ((CPClass)byteCode.getNestedClassFileEntries()[0]).mustStartClassPool(true);
         }
     }
 }

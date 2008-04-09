@@ -34,7 +34,11 @@ public abstract class AbstractBandsTestCase extends TestCase {
     protected int[] numMethods = {1};
 
     public class MockSegmentHeader extends SegmentHeader {
-        public int getClassCount() {
+        public MockSegmentHeader(Segment segment) {
+			super(segment);
+		}
+
+		public int getClassCount() {
             return numClasses;
         }
 
@@ -73,7 +77,7 @@ public abstract class AbstractBandsTestCase extends TestCase {
         }
 
         public SegmentHeader getSegmentHeader() {
-            return new MockSegmentHeader();
+            return new MockSegmentHeader(this);
         }
     }
 

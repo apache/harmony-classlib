@@ -36,6 +36,8 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 
 import org.apache.harmony.awt.gl.CommonGraphics2D;
@@ -79,14 +81,18 @@ public class WinGDIPGraphics2D extends CommonGraphics2D {
     private static final long gdipToken;
 
     static {
-        System.loadLibrary("gl"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("gl"); //$NON-NLS-1$
 
         // GDI+ startup
         gdipToken = gdiPlusStartup();
 
         // Prepare GDI+ shutdown
-        GDIPShutdown hook = new GDIPShutdown();
-        Runtime.getRuntime().addShutdownHook(hook);
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+                Runtime.getRuntime().addShutdownHook(new GDIPShutdown());
+                return null;
+            }
+        });
     }
 
     public WinGDIPGraphics2D(NativeWindow nw, int tx, int ty, MultiRectArea clip) {

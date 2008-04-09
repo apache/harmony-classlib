@@ -361,8 +361,6 @@ Java_org_apache_harmony_awt_gl_linux_XBlitter_bltImage
         XRenderComposite(display, op, srcPict, alphaMask, dstPict, 
             srcX, srcY, 0, 0, dstX, dstY, width, height);
 
-        XFlush(display);
-
         if(alphaMask) XRenderFreePicture(display, alphaMask);
         XRenderFreePicture(display, srcPict);
         XRenderFreePicture(display, dstPict);
@@ -447,7 +445,6 @@ Java_org_apache_harmony_awt_gl_linux_XBlitter_bltPixmap
 
         XSetClipRectangles(display, dstSurf->gc, 0, 0, rects, num_rects, Unsorted);
         XCopyArea(display, srcSurf->drawable, dstSurf->drawable, dstSurf->gc, srcX, srcY, width, height, dstX, dstY);
-        XFlush(display);
 
         if(rects) free(rects);
         return;
@@ -568,8 +565,6 @@ Java_org_apache_harmony_awt_gl_linux_XBlitter_bltPixmap
 
         XRenderComposite(display, op, srcPict, alphaMask, dstPict, 
             srcX, srcY, 0, 0, dstX, dstY, width, height);
-
-        XFlush(display);
 
         if(alphaMask) XRenderFreePicture(display, alphaMask);
         XRenderFreePicture(display, srcPict);

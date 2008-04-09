@@ -84,7 +84,11 @@ endif
 MDLLIBFILES = $(LIBPATH)libhycommon.a
 
 ifeq ($(HY_NO_THR),false)
+ifeq ($(HY_THR_NO_DEPLOY), true)
+MDLLIBFILES += $(HY_HDK)/../modules/portlib/src/main/native/thread/libhythr$(HY_LINKLIB_SUFFIX)
+else
 MDLLIBFILES += $(DLLPATH)libhythr$(HY_LINKLIB_SUFFIX)
+endif
 else
 DEFINES += -DHY_NO_THR
 endif

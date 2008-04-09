@@ -49,7 +49,7 @@ public class ISOCharsetDecoderTest extends CharsetDecoderTest {
 
 	}
 
-	ByteBuffer getMalformByteBuffer() throws UnsupportedEncodingException {
+	ByteBuffer getMalformedByteBuffer() throws UnsupportedEncodingException {
 		// TODO how malform
 		return null;
 	}

@@ -57,14 +57,9 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 	byte tag;
 
 	protected int domain = ClassConstantPool.DOMAIN_UNDEFINED;
-	public static int creationOrderCount = 100;
-	public String comparisonString() {
-	    return toString();
-	}
-	public int creationOrder = -1;
+
 	ConstantPoolEntry(byte tag) {
 		this.tag = tag;
-		this.creationOrder = creationOrderCount++;
 	}
 
 	public abstract boolean equals(Object obj);
@@ -89,4 +84,25 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 	}
 
 	protected abstract void writeBody(DataOutputStream dos) throws IOException;
+
+	private boolean mustStartClassPool = false;
+    /**
+     * Set whether the receiver must be at the start of the
+     * class pool. Anything which is the target of a single-
+     * byte ldc (bytecode 18) command must be at the start
+     * of the class pool.
+     *
+     * @param b boolean true if the receiver must be at
+     * the start of the class pool, otherwise false.
+     */
+    public void mustStartClassPool(boolean b) {
+        mustStartClassPool = b;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#mustStartClassPool()
+     */
+    public boolean mustStartClassPool() {
+        return mustStartClassPool;
+    }
 }

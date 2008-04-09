@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -52,61 +51,56 @@ public class JarFile extends ZipFile {
 
         private ZipEntry zipEntry;
 
-        private JarVerifier verifier;
-
         private JarVerifier.VerifierEntry entry;
 
-        private MessageDigest digest;
-
-        JarFileInputStream(InputStream is, ZipEntry ze, JarVerifier ver) {
+        JarFileInputStream(InputStream is, ZipEntry ze,
+                JarVerifier.VerifierEntry e) {
             super(is);
-            if (ver != null) {
-                zipEntry = ze;
-                verifier = ver;
-                count = zipEntry.getSize();
-                entry = verifier.initEntry(ze.getName());
-                if (entry != null) {
-                    digest = entry.digest;
-                }
-            }
+            zipEntry = ze;
+            count = zipEntry.getSize();
+            entry = e;
         }
 
         @Override
         public int read() throws IOException {
-            int r = super.read();
-            if (entry != null) {
+            if (count > 0) {
+                int r = super.read();
                 if (r != -1) {
-                    digest.update((byte) r);
+                    entry.write(r);
                     count--;
+                } else {
+                    count = 0;
                 }
-                if (r == -1 || count <= 0) {
-                    JarVerifier.VerifierEntry temp = entry;
-                    entry = null;
-                    verifier.verifySignatures(temp, zipEntry);
+                if (count == 0) {
+                    entry.verify();
                 }
+                return r;
+            } else {
+                return -1;
             }
-            return r;
         }
 
         @Override
         public int read(byte[] buf, int off, int nbytes) throws IOException {
-            int r = super.read(buf, off, nbytes);
-            if (entry != null) {
+            if (count > 0) {
+                int r = super.read(buf, off, nbytes);
                 if (r != -1) {
                     int size = r;
                     if (count < size) {
                         size = (int) count;
                     }
-                    digest.update(buf, off, size);
-                    count -= r;
+                    entry.write(buf, off, size);
+                    count -= size;
+                } else {
+                    count = 0;
                 }
-                if (r == -1 || count <= 0) {
-                    JarVerifier.VerifierEntry temp = entry;
-                    entry = null;
-                    verifier.verifySignatures(temp, zipEntry);
+                if (count == 0) {
+                    entry.verify();
                 }
+                return r;
+            } else {
+                return -1;
             }
-            return r;
         }
 
         @Override
@@ -332,7 +326,7 @@ public class JarFile extends ZipFile {
      *            the ZipEntry to read from
      * @return java.io.InputStream
      * @exception java.io.IOException
-     *                If an error occured while creating the InputStream.
+     *                If an error occurred while creating the InputStream.
      */
     @Override
     public InputStream getInputStream(ZipEntry ze) throws IOException {
@@ -342,8 +336,7 @@ public class JarFile extends ZipFile {
         if (verifier != null) {
             verifier.setManifest(getManifest());
             if (manifest != null) {
-                verifier.mainAttributesChunk = manifest
-                        .getMainAttributesChunk();
+                verifier.mainAttributesEnd = manifest.getMainAttributesEnd();
             }
             if (verifier.readCertificates()) {
                 verifier.removeMetaEntries();
@@ -359,8 +352,14 @@ public class JarFile extends ZipFile {
         if (in == null) {
             return null;
         }
-        return new JarFileInputStream(in, ze, ze.getSize() >= 0 ? verifier
-                : null);
+        if (verifier == null || ze.getSize() == -1) {
+            return in;
+        }
+        JarVerifier.VerifierEntry entry = verifier.initEntry(ze.getName());
+        if (entry == null) {
+            return in;
+        }
+        return new JarFileInputStream(in, ze, entry);
     }
 
     /**
