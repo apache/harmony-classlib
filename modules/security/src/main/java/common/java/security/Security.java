@@ -361,7 +361,11 @@ public final class Security {
         if (sm != null) {
             sm.checkSecurityAccess("getProperty." + key); //$NON-NLS-1$
         }
-        return secprops.getProperty(key);
+        String property = secprops.getProperty(key);
+        if (property != null) {
+            property = property.trim();
+        }
+        return property;
     }
 
 	/**

@@ -625,6 +625,9 @@ public class CompoundName implements Name {
     }
 
     public Name getSuffix(int index) {
+        if (index == elem.size()) {
+            return new CompoundName(new Vector<String>().elements(), mySyntax);
+        }
         validateIndex(index, false);
         return new CompoundName(new Vector<String>(elem.subList(index, elem
                 .size())).elements(), mySyntax);

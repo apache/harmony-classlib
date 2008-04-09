@@ -19,13 +19,21 @@ package org.apache.harmony.pack200.bytecode;
 
 public abstract class CPConstant extends ConstantPoolEntry {
 
-	private Object value;
+	private final Object value;
 
+	/**
+	 * Create a new CPConstant
+	 * @param tag
+	 * @param value
+	 * @throws NullPointerException if value is null
+	 */
 	public CPConstant(byte tag, Object value) {
 		super(tag);
 		this.value = value;
+		if (value == null) {
+		    throw new NullPointerException("Null arguments are not allowed");
+		}
 	}
-
 
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -53,7 +61,4 @@ public abstract class CPConstant extends ConstantPoolEntry {
 	protected Object getValue() {
 		return value;
 	}
-
-
-
 }

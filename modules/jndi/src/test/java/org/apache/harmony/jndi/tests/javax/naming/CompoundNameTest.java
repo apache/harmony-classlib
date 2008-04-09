@@ -968,7 +968,8 @@ public class CompoundNameTest extends TestCase {
 		assertNameEquals(name.getSuffix(0), "a", "b", "c");
 		assertNameEquals(name.getSuffix(1), "b", "c");
 		assertNameEquals(name.getSuffix(2), "c");
-		// assertNameEmpty(name.getSuffix(3)); // worth debate
+        // Follow spec: If posn is equal to size(), an empty compound name is returned.
+        assertNameEmpty(name.getSuffix(3));
 		try {
 			name.getPrefix(-1);
 			fail();

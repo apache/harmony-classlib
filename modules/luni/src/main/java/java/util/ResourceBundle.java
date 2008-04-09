@@ -26,6 +26,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.apache.harmony.kernel.vm.VM;
+import org.apache.harmony.luni.util.Msg;
 
 /**
  * ResourceBundle is an abstract class which is the superclass of classes which
@@ -143,7 +144,7 @@ public abstract class ResourceBundle {
                     + Locale.getDefault(), true, loader)) != null) {
                 return bundle;
             }
-            throw new MissingResourceException(null, bundleName + '_' + locale,
+            throw new MissingResourceException(Msg.getString("KA029", bundleName, locale), bundleName + '_' + locale, //$NON-NLS-1$
                     EMPTY_STRING);
         }
         throw new NullPointerException();
@@ -347,7 +348,7 @@ public abstract class ResourceBundle {
             if ((bundle = handleGetBundle(bundleName, localeName, true, loader)) != null) {
                 return bundle;
             }
-            throw new MissingResourceException(null, bundleName + '_' + locale,
+            throw new MissingResourceException(Msg.getString("KA029", bundleName, locale), bundleName + '_' + locale, //$NON-NLS-1$
                     EMPTY_STRING);
         }
         throw new NullPointerException();
@@ -389,7 +390,7 @@ public abstract class ResourceBundle {
             last = theParent;
             theParent = theParent.parent;
         } while (theParent != null);
-        throw new MissingResourceException(null, last.getClass().getName(), key);
+        throw new MissingResourceException(Msg.getString("KA029", last.getClass().getName(), key), last.getClass().getName(), key); //$NON-NLS-1$
     }
 
     /**

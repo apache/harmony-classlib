@@ -16,7 +16,6 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
-import org.apache.harmony.pack200.CpBands;
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.ByteCode;
@@ -68,6 +67,7 @@ public class StringRefForm extends SingleByteReferenceForm {
             byteCode.setNestedPositions(new int[][]{{0, 2}});
         } else {
             byteCode.setNestedPositions(new int[][]{{0, 1}});
+            ((CPString)nested[0]).mustStartClassPool(true);
         }
     }
 }

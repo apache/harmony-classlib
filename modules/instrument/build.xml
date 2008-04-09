@@ -124,7 +124,8 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/instrument.jar"
-             manifest="${hy.instrument}/META-INF/MANIFEST.MF">
+             manifest="${hy.instrument}/META-INF/MANIFEST.MF"
+             compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 

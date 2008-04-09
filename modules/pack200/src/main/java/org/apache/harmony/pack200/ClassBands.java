@@ -24,16 +24,12 @@ import java.util.List;
 
 import org.apache.harmony.pack200.bytecode.Attribute;
 import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CPDouble;
-import org.apache.harmony.pack200.bytecode.CPFloat;
-import org.apache.harmony.pack200.bytecode.CPInteger;
-import org.apache.harmony.pack200.bytecode.CPLong;
 import org.apache.harmony.pack200.bytecode.CPNameAndType;
-import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.ConstantValueAttribute;
+import org.apache.harmony.pack200.bytecode.DeprecatedAttribute;
 import org.apache.harmony.pack200.bytecode.EnclosingMethodAttribute;
 import org.apache.harmony.pack200.bytecode.ExceptionsAttribute;
 import org.apache.harmony.pack200.bytecode.LineNumberTableAttribute;
@@ -43,13 +39,15 @@ import org.apache.harmony.pack200.bytecode.SignatureAttribute;
 import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
 
 /**
- * Pack200 Class Bands
+ * Class Bands
  */
 public class ClassBands extends BandSet {
 
     private int[] classFieldCount;
 
     private long[] classFlags;
+
+    private long[] classAccessFlags; // Access flags for writing to the class file
 
     private String[][] classInterfaces;
 
@@ -81,19 +79,23 @@ public class ClassBands extends BandSet {
 
     private long[][] fieldFlags;
 
+    private long[][] fieldAccessFlags;
+
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
 
     private long[][] methodFlags;
 
-    private AttributeLayoutMap attrMap;
+    private long[][] methodAccessFlags;
 
-    private CpBands cpBands;
+    private final AttributeLayoutMap attrMap;
 
-    private SegmentOptions options;
+    private final CpBands cpBands;
 
-    private int classCount;
+    private final SegmentOptions options;
+
+    private final int classCount;
 
     private int[] methodAttrCalls;
 
@@ -220,9 +222,16 @@ public class ClassBands extends BandSet {
             }
         }
 
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_FIELD);
+
         for (int i = 0; i < classCount; i++) {
             for (int j = 0; j < fieldFlags[i].length; j++) {
                 long flag = fieldFlags[i][j];
+                if(deprecatedLayout.matches(flag)) {
+                    fieldAttributes[i][j].add(new DeprecatedAttribute());
+                }
                 if (constantValueLayout.matches(flag)) {
                     // we've got a value to read
                     long result = field_constantValue_KQ[constantValueIndex];
@@ -357,12 +366,19 @@ public class ClassBands extends BandSet {
             }
         }
 
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_METHOD);
+
         // Add attributes to the attribute arrays
         int methodExceptionsIndex = 0;
         int methodSignatureIndex = 0;
         for (int i = 0; i < methodAttributes.length; i++) {
             for (int j = 0; j < methodAttributes[i].length; j++) {
                 long flag = methodFlags[i][j];
+                if(deprecatedLayout.matches(flag)) {
+                    methodAttributes[i][j].add(new DeprecatedAttribute());
+                }
                 if (methodExceptionsLayout.matches(flag)) {
                     int n = numExceptions[methodExceptionsIndex];
                     String[] exceptions = methodExceptionsRS[methodExceptionsIndex];
@@ -450,6 +466,10 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_CLASS);
         int[] classAttrCalls = decodeBandInt("class_attr_calls", in,
                 Codec.UNSIGNED5, callCount);
+
+        AttributeLayout deprecatedLayout = attrMap.getAttributeLayout(
+                AttributeLayout.ATTRIBUTE_DEPRECATED,
+                AttributeLayout.CONTEXT_CLASS);
 
         AttributeLayout sourceFileLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SOURCE_FILE,
@@ -558,7 +578,9 @@ public class ClassBands extends BandSet {
         icLocal = new IcTuple[classCount][];
         for (int i = 0; i < classCount; i++) {
             long flag = classFlags[i];
-
+            if(deprecatedLayout.matches(classFlags[i])) {
+                classAttributes[i].add(new DeprecatedAttribute());
+            }
             if (sourceFileLayout.matches(flag)) {
                 long result = classSourceFile[sourceFileIndex];
                 String value = (String) sourceFileLayout.getValue(result,
@@ -607,25 +629,31 @@ public class ClassBands extends BandSet {
                 // decided at the end when creating class constant pools
                 icLocal[i] = new IcTuple[classInnerClassesN[innerClassIndex]];
                 for (int j = 0; j < icLocal[i].length; j++) {
-                    IcTuple icTuple = new IcTuple();
-                    icTuple.C = cpClass[classInnerClassesRC[innerClassIndex][j]];
-                    icTuple.F = classInnerClassesF[innerClassIndex][j];
-                    if (icTuple.F != 0) {
-                        icTuple.C2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
-                        icTuple.N = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
+                    String icTupleC = null;
+                    int icTupleF = -1;
+                    String icTupleC2 = null;
+                    String icTupleN = null;
+
+                    icTupleC = cpClass[classInnerClassesRC[innerClassIndex][j]];
+                    icTupleF = classInnerClassesF[innerClassIndex][j];
+                    if (icTupleF != 0) {
+                        icTupleC2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
+                        icTupleN = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
                         innerClassC2NIndex++;
                     } else {
                         // Get from icBands
                         IcBands icBands = segment.getIcBands();
                         IcTuple[] icAll = icBands.getIcTuples();
                         for (int k = 0; k < icAll.length; k++) {
-                            if (icAll[k].C.equals(icTuple.C)) {
-                                icTuple.C2 = icAll[k].C2;
-                                icTuple.N = icAll[k].N;
+                            if (icAll[k].getC().equals(icTupleC)) {
+                                icTupleC2 = icAll[k].getC2();
+                                icTupleN = icAll[k].getN();
                                 break;
                             }
                         }
                     }
+
+                    IcTuple icTuple = new IcTuple(icTupleC, icTupleF, icTupleC2, icTupleN);
                     icLocal[i][j] = icTuple;
                 }
                 innerClassIndex++;
@@ -785,7 +813,7 @@ public class ClassBands extends BandSet {
                 localVariableTableN);
         int[][] localVariableTableSpanO = decodeBandInt(
                 "code_LocalVariableTable_span_O", in, Codec.BRANCH5,
-                localVariableTableN, false);
+                localVariableTableN);
         CPUTF8[][] localVariableTableNameRU = stringsToCPUTF8(parseReferences(
                 "code_LocalVariableTable_name_RU", in, Codec.UNSIGNED5,
                 localVariableTableN, cpBands.getCpUTF8()));
@@ -1173,12 +1201,33 @@ public class ClassBands extends BandSet {
         return numBackwardsCalls;
     }
 
+    public ArrayList[] getClassAttributes() {
+        return classAttributes;
+    }
+
     public int[] getClassFieldCount() {
         return classFieldCount;
     }
 
-    public long[] getClassFlags() {
+    public long[] getRawClassFlags() {
         return classFlags;
+    }
+
+    public long[] getClassFlags() throws Pack200Exception {
+    	if(classAccessFlags == null) {
+    		long mask = 0x7FFF;
+    		for (int i = 0; i < 16; i++) {
+				AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_CLASS);
+				if(layout != null && !layout.isDefaultLayout()) {
+					mask &= ~(1 << i);
+				}
+			}
+    		classAccessFlags = new long[classFlags.length];
+    		for (int i = 0; i < classFlags.length; i++) {
+    				classAccessFlags[i] = classFlags[i] & mask;
+    		}
+    	}
+        return classAccessFlags;
     }
 
     public String[][] getClassInterfaces() {
@@ -1213,8 +1262,24 @@ public class ClassBands extends BandSet {
         return fieldDescr;
     }
 
-    public long[][] getFieldFlags() {
-        return fieldFlags;
+    public long[][] getFieldFlags() throws Pack200Exception {
+    	if(fieldAccessFlags == null) {
+    		long mask = 0x7FFF;
+    		for (int i = 0; i < 16; i++) {
+				AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_FIELD);
+				if(layout != null && !layout.isDefaultLayout()) {
+					mask &= ~(1 << i);
+				}
+			}
+    		fieldAccessFlags = new long[fieldFlags.length][];
+    		for (int i = 0; i < fieldFlags.length; i++) {
+    			fieldAccessFlags[i] = new long[fieldFlags[i].length];
+				for (int j = 0; j < fieldFlags[i].length; j++) {
+					fieldAccessFlags[i][j] = fieldFlags[i][j] & mask;
+				}
+    		}
+    	}
+        return fieldAccessFlags;
     }
 
     /**
@@ -1246,8 +1311,24 @@ public class ClassBands extends BandSet {
         return methodDescr;
     }
 
-    public long[][] getMethodFlags() {
-        return methodFlags;
+    public long[][] getMethodFlags() throws Pack200Exception {
+    	if(methodAccessFlags == null) {
+    		long mask = 0x7FFF;
+    		for (int i = 0; i < 16; i++) {
+				AttributeLayout layout = attrMap.getAttributeLayout(i, AttributeLayout.CONTEXT_METHOD);
+				if(layout != null && !layout.isDefaultLayout()) {
+					mask &= ~(1 << i);
+				}
+			}
+    		methodAccessFlags = new long[methodFlags.length][];
+    		for (int i = 0; i < methodFlags.length; i++) {
+    			methodAccessFlags[i] = new long[methodFlags[i].length];
+				for (int j = 0; j < methodFlags[i].length; j++) {
+					methodAccessFlags[i][j] = methodFlags[i][j] & mask;
+				}
+    		}
+    	}
+        return methodAccessFlags;
     }
 
     /**

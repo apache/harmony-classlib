@@ -662,12 +662,9 @@ public class Window extends Container implements Accessible {
         if (sm.checkTopLevelWindow(this)) {
             return null;
         }
-        PrivilegedAction<String> action = new PrivilegedAction<String>() {
-            public String run() {
-                return System.getProperty("awt.appletWarning", "Warning: Java window"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        };
-        return AccessController.doPrivileged(action);
+
+        return org.apache.harmony.awt.Utils.getSystemProperty(
+                        "awt.appletWarning", "Warning: Java window"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public boolean isActive() {

@@ -49,7 +49,8 @@ public class LdapContextFactory implements InitialContextFactory {
         int port = parser.getPort();
         String dn = parser.getBaseObject();
 
-        LdapClient client = LdapClient.newInstance(host, port, myEnv);
+        LdapClient client = LdapClient.newInstance(host, port, myEnv, LdapUtils
+                .isLdapsURL(url));
 
         LdapContextImpl context = new LdapContextImpl(client, myEnv, dn);
 

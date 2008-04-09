@@ -39,12 +39,12 @@ public class FileBands extends BandSet {
 
     private long[] fileSize;
 
-    private String[] cpUTF8;
+    private final String[] cpUTF8;
 
     private InputStream in;
 
     /**
-     * @param header
+     * @param segment
      */
     public FileBands(Segment segment) {
         super(segment);

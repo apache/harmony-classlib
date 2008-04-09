@@ -26,12 +26,12 @@ import org.apache.harmony.pack200.IcTuple;
 
 
 public class InnerClassesAttribute extends Attribute {
-    
+
     private static final CPUTF8 attributeName = new CPUTF8(
             "InnerClasses", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
 
-    class InnerClassesEntry {
+    private static class InnerClassesEntry {
         CPClass inner_class_info;
         CPClass outer_class_info;
         CPUTF8 inner_class_name;
@@ -42,7 +42,7 @@ public class InnerClassesAttribute extends Attribute {
         int inner_class_access_flags = -1;
 
         public InnerClassesEntry(IcTuple icTuple) {
-            this(icTuple.C, icTuple.C2, icTuple.N, icTuple.F);
+            this(icTuple.getC(), icTuple.getC2(), icTuple.getN(), icTuple.getF());
         }
 
         public InnerClassesEntry(String innerString, String outerString, String nameString, int flags) {
@@ -93,8 +93,8 @@ public class InnerClassesAttribute extends Attribute {
 
     }
 
-    private List innerClasses = new ArrayList();
-    private List nestedClassFileEntries = new ArrayList();
+    private final List innerClasses = new ArrayList();
+    private final List nestedClassFileEntries = new ArrayList();
 
     public InnerClassesAttribute(String name) {
         super(attributeName);

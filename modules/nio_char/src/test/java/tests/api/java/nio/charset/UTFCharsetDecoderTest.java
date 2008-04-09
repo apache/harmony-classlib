@@ -25,39 +25,52 @@ import java.nio.charset.Charset;
  */
 public class UTFCharsetDecoderTest extends CharsetDecoderTest {
 
-	protected void setUp() throws Exception {
-		cs = Charset.forName("utf-8");
-		super.setUp();
-	}
+    protected void setUp() throws Exception {
+        cs = Charset.forName("utf-8");
+        super.setUp();
+    }
 
-	/*
-	 * @see CharsetDecoderTest#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    /*
+     * @see CharsetDecoderTest#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	// FIXME: give up this tests
-	// public void testDefaultCharsPerByte(){
-	// assertEquals(decoder.averageCharsPerByte(), 0.333, 0.001);
-	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
-	// // assertEquals(1, decoder.averageCharsPerByte());
-	// // assertEquals(1, decoder.maxCharsPerByte());
-	// }
+    // FIXME: give up this tests
+    // public void testDefaultCharsPerByte(){
+    // assertEquals(decoder.averageCharsPerByte(), 0.333, 0.001);
+    // assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
+    // // assertEquals(1, decoder.averageCharsPerByte());
+    // // assertEquals(1, decoder.maxCharsPerByte());
+    // }
 
-	ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {
-		return null;
-	}
+    ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {
+        return null;
+    }
 
-	ByteBuffer getMalformByteBuffer() throws UnsupportedEncodingException {
-		ByteBuffer buffer = ByteBuffer.allocate(20);
-		buffer.put((byte) 0xd8);
-		buffer.put(unibytes);
-		buffer.flip();
-		return buffer;
-	}
+    ByteBuffer getMalformedByteBuffer() throws UnsupportedEncodingException {
+        ByteBuffer buffer = ByteBuffer.allocate(getByteBuffer().remaining() + 1);
+        buffer.put((byte) 0xd8);
+        buffer.put(getByteBuffer());
+        buffer.flip();
+        return buffer;
+    }
 
-	ByteBuffer getExceptionByteArray() throws UnsupportedEncodingException {
-		return null;
-	}
+    ByteBuffer getExceptionByteArray() throws UnsupportedEncodingException {
+        return null;
+    }
+
+    protected String getString() {
+        return " buffer \u041c\u0430\u0441\u044e\u043b\u044f \u611b";
+    }
+
+    protected ByteBuffer getByteBuffer() {
+        return ByteBuffer.wrap(new byte[] { 32, 98, 117, 102, 102, 101, 114,
+                32, (byte) 0xd0, (byte) 0x9c, (byte) 0xd0, (byte) 0xb0,
+                (byte) 0xd1, (byte) 0x81, (byte) 0xd1, (byte) 0x8e,
+                (byte) 0xd0, (byte) 0xbb, (byte) 0xd1, (byte) 0x8f, 32,
+                (byte) 0xe6, (byte) 0x84, (byte) 0x9b });
+    }
+
 }

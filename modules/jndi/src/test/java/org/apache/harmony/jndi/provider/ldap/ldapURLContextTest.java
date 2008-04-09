@@ -34,7 +34,7 @@ public class ldapURLContextTest extends TestCase {
     private MockLdapServer server;
 
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         server = new MockLdapServer();
         server.start();
     }

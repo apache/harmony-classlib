@@ -27,7 +27,6 @@ import org.apache.harmony.pack200.bytecode.CPDouble;
 import org.apache.harmony.pack200.bytecode.CPFloat;
 import org.apache.harmony.pack200.bytecode.CPInteger;
 import org.apache.harmony.pack200.bytecode.CPLong;
-import org.apache.harmony.pack200.bytecode.CPNameAndType;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleAnnotationsAttribute;
@@ -37,12 +36,12 @@ import org.apache.harmony.pack200.bytecode.AnnotationsAttribute.ElementValue;
 import org.apache.harmony.pack200.bytecode.RuntimeVisibleorInvisibleParameterAnnotationsAttribute.ParameterAnnotation;
 
 /**
- * Group of metadata bands, e.g. class_RVA_bands, method_AD_bands etc
+ * A group of metadata bands, such as class_RVA_bands, method_AD_bands etc.
  */
 public class MetadataBandGroup {
 
-    private String type;
-    private CpBands cpBands;
+    private final String type;
+    private final CpBands cpBands;
 
     public MetadataBandGroup(String type, CpBands cpBands) {
         this.type = type;

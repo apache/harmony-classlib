@@ -18,7 +18,9 @@ package org.apache.harmony.sql.internal.rowset;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.sql.ResultSet;
@@ -27,37 +29,45 @@ import java.sql.SQLException;
 import javax.sql.rowset.WebRowSet;
 import javax.sql.rowset.spi.SyncFactoryException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
-
 public class WebRowSetImpl extends CachedRowSetImpl implements WebRowSet {
+
+    private static final long serialVersionUID = -1585509574069224797L;
+
+    public WebRowSetImpl() throws SyncFactoryException {
+        super();
+    }
 
     public WebRowSetImpl(String providerID) throws SyncFactoryException {
         super(providerID);
     }
 
     public void readXml(Reader reader) throws SQLException {
-        throw new NotImplementedException();
+        new XmlReaderImpl().readXML(this, reader);
     }
 
     public void readXml(InputStream iStream) throws SQLException, IOException {
-        throw new NotImplementedException();
+        new XmlReaderImpl().readXML(this, new InputStreamReader(iStream));
     }
 
     public void writeXml(ResultSet rs, Writer writer) throws SQLException {
-        throw new NotImplementedException();
+        populate(rs);
+        writeXml(writer);
+        beforeFirst();
     }
 
     public void writeXml(ResultSet rs, OutputStream oStream)
             throws SQLException, IOException {
-        throw new NotImplementedException();
+        populate(rs);
+        writeXml(oStream);
+        beforeFirst();
     }
 
     public void writeXml(Writer writer) throws SQLException {
-        throw new NotImplementedException();
+        new XmlWriterImpl().writeXML(this, writer);
     }
 
     public void writeXml(OutputStream oStream) throws SQLException, IOException {
-        throw new NotImplementedException();
+        new XmlWriterImpl().writeXML(this, new OutputStreamWriter(oStream));
     }
 
 }

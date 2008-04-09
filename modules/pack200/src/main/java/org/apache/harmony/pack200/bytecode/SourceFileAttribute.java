@@ -48,6 +48,13 @@ public class SourceFileAttribute extends Attribute {
 		return true;
 	}
 
+    /* (non-Javadoc)
+     * @see org.apache.harmony.pack200.bytecode.Attribute#isSourceFileAttribute()
+     */
+    public boolean isSourceFileAttribute() {
+        return true;
+    }
+
 	protected int getLength() {
 		return 2;
 	}

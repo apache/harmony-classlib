@@ -18,6 +18,7 @@ package org.apache.harmony.pack200.bytecode.forms;
 
 import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -45,6 +46,7 @@ public abstract class SingleByteReferenceForm extends ReferenceForm {
             byteCode.setNestedPositions(new int[][] {{0,2}});
         } else {
             byteCode.setNestedPositions(new int[][] {{0,1}});
+            ((ConstantPoolEntry)byteCode.getNestedClassFileEntries()[0]).mustStartClassPool(true);
         }
     }
 }

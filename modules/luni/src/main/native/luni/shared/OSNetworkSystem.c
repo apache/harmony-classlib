@@ -423,7 +423,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketImpl
 {
   PORT_ACCESS_FROM_ENV(env);
   jbyte *message;
-  I_32 sent = 0;
   jint result = 0;
 
 /* TODO: ARRAY PINNING */
@@ -750,7 +749,6 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_availableStreamImpl
   char message[MSGLEN];
 
   I_32 result, flags = 0;
-  I_32 loopFlag = 1;
 
   hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
   if (!hysock_socketIsValid(hysocketP)) {

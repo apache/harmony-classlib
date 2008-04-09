@@ -19,13 +19,17 @@ package org.apache.harmony.jndi.provider.ldap;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 import javax.naming.AuthenticationException;
 import javax.naming.AuthenticationNotSupportedException;
 import javax.naming.CommunicationException;
+import javax.naming.ConfigurationException;
+import javax.naming.Context;
 import javax.naming.ContextNotEmptyException;
 import javax.naming.InvalidNameException;
 import javax.naming.LimitExceededException;
+import javax.naming.Name;
 import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
@@ -41,6 +45,9 @@ import javax.naming.directory.InvalidAttributeValueException;
 import javax.naming.directory.InvalidSearchFilterException;
 import javax.naming.directory.NoSuchAttributeException;
 import javax.naming.directory.SchemaViolationException;
+import javax.naming.ldap.LdapName;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.harmony.jndi.internal.nls.Messages;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
@@ -178,5 +185,113 @@ public class LdapUtils {
             return new NamingException(Messages.getString("ldap.35", //$NON-NLS-1$
                     new Object[] { errorCode }));
         }
+    }
+
+    /**
+     * convert absolute dn to the dn relatived to the dn of
+     * <code>targetContextDN</code>.
+     * 
+     * @param dn
+     *            absolute dn
+     * @param base
+     *            base dn of the relative name
+     * @return dn relatived to the <code>dn</code> of <code>base</code>
+     * @throws NamingException
+     * @throws InvalidNameException
+     */
+    public static String convertToRelativeName(String dn, String base)
+            throws InvalidNameException, NamingException {
+        return convertToRelativeName(new LdapName(dn), new LdapName(base))
+                .toString();
+    }
+
+    public static LdapName convertToRelativeName(LdapName dn, LdapName base)
+            throws NamingException {
+        if (base.size() == 0) {
+            return dn;
+        }
+
+        if (dn.size() < base.size()) {
+            // TODO add error message
+            throw new NamingException("");
+        }
+
+        Name prefix = dn.getPrefix(base.size());
+        if (!prefix.equals(base)) {
+            // TODO add error message
+            throw new NamingException("");
+        }
+
+        return (LdapName) dn.getSuffix(base.size());
+
+    }
+    /**
+     * Get SocketFactory according three properties:
+     * "java.naming.ldap.factory.socket", "java.naming.security.protocol" and
+     * protocol defined in URL. If "java.naming.ldap.factory.socket" set, then
+     * use it. otherwise check protocol defined in URL: "ldaps" use
+     * <code>SSLSocketFactory.getDefault()</code> to retrieve factory; If is
+     * "ldap", check whether "java.naming.security.protocol" is set to "ssl", if
+     * set, use <code>SSLSocketFactory.getDefault()</code> get factory.
+     * 
+     * @param envmt
+     * @param isLdaps
+     * @return
+     * @throws ConfigurationException
+     */
+    public static SocketFactory getSocketFactory(Hashtable<?, ?> envmt,
+            boolean isLdaps) throws ConfigurationException {
+        String factoryName = (String) envmt
+                .get("java.naming.ldap.factory.socket");
+
+        SocketFactory factory = null;
+
+        // if "java.naming.ldap.factory.socket" set, use it
+        if (factoryName != null && !("".equals(factoryName))) {
+            try {
+                factory = (SocketFactory) classForName(factoryName)
+                        .newInstance();
+            } catch (Exception e) {
+                ConfigurationException ex = new ConfigurationException();
+                ex.setRootCause(e);
+                throw ex;
+            }
+        }
+
+        // factory name not set
+        if (factory == null) {
+            if (isLdaps) {
+                factory = SSLSocketFactory.getDefault();
+            }
+            // It's case sensitive in RI
+            else if ("ssl".equalsIgnoreCase((String) envmt
+                    .get(Context.SECURITY_PROTOCOL))) {
+                factory = SSLSocketFactory.getDefault();
+            } else {
+                factory = SocketFactory.getDefault();
+            }
+        }
+
+        return factory;
+    }
+
+    public static boolean isLdapsURL(String url) {
+        return url.toLowerCase().startsWith("ldaps://");
+    }
+
+    private static Class<?> classForName(final String className)
+            throws ClassNotFoundException {
+        Class<?> cls = null;
+        // try thread context class loader first
+        try {
+            cls = Class.forName(className, true, Thread.currentThread()
+                    .getContextClassLoader());
+        } catch (ClassNotFoundException e) {
+            // try system class loader second
+            cls = Class.forName(className, true, ClassLoader
+                    .getSystemClassLoader());
+        }
+
+        return cls;
     }
 }

@@ -25,7 +25,7 @@ import java.awt.HeadlessException;
 
 import org.apache.harmony.awt.gl.CommonGraphicsEnvironment;
 import org.apache.harmony.awt.wtk.WindowFactory;
-
+import org.apache.harmony.awt.Utils;
 
 /**
  * Windows GraphicsEnvironment implementation
@@ -36,7 +36,7 @@ public class WinGraphicsEnvironment extends CommonGraphicsEnvironment {
     WinGraphicsDevice []devices = null;
 
     static {
-        System.loadLibrary("gl"); //$NON-NLS-1$
+        Utils.loadLibrary("gl"); //$NON-NLS-1$
     }
 
     public WinGraphicsEnvironment(WindowFactory wf) {

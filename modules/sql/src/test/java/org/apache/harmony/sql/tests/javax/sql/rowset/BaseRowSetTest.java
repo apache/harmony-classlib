@@ -941,6 +941,37 @@ public class BaseRowSetTest extends TestCase {
                 params[0] instanceof SerialRef);
     }
 
+    // Parameters should be cleared when setCommand()
+    public void testSetCommand() throws SQLException {
+        BaseRowSetImpl baseRowSet = new BaseRowSetImpl();
+        baseRowSet.initParams();
+        baseRowSet.setCommand("Test command ? and ?");
+        baseRowSet.setString(1, "FirstParameter");
+        baseRowSet.setString(2, "SecondParameter");
+        Object[] params1 = baseRowSet.getParams();
+
+        assertEquals("The number of parameters should be 2 after setting.", 2,
+                params1.length);
+
+        baseRowSet.setCommand("Test command 2 without parameter");
+        Object[] params2 = baseRowSet.getParams();
+
+        assertEquals(
+                "The number of parameters should be 0 since command has been reset",
+                0, params2.length);
+
+    }
+
+    // Since the maxSize is set to 0 by default and 0 represents no limit, we
+    // can't just throw exception when we want to set size greater to 0,
+    public void testSetFetchSize() throws SQLException {
+        BaseRowSetImpl baseRowSet = new BaseRowSetImpl();
+        baseRowSet.initParams();
+        assertEquals(0, baseRowSet.getMaxRows());
+        baseRowSet.setFetchSize(3);
+        assertEquals("The fetch size should be set to 3.", 3, baseRowSet.getFetchSize());
+    }
+    
     private static final class BaseRowSetImpl extends BaseRowSet {
         private static final long serialVersionUID = 1L;
 

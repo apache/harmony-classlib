@@ -67,21 +67,12 @@ public class ProviderServiceTest extends TestCase {
 		Provider.Service s = new Provider.Service(p,
                 "type", "algorithm", "className", null, null);
 		
-		if (!s.getType().equals("type")) {
-			fail("getType() failed");
-		}
-		if (!s.getAlgorithm().equals("algorithm")) {
-			fail("getAlgorithm() failed");
-		}
-		if (s.getProvider()!= p) {
-			fail("getProvider() failed");
-		}
-		if (!s.getClassName().equals("className")) {
-			fail("getClassName() failed");
-		}
-		if (!s.supportsParameter(new Object())) {
-			fail("supportsParameter() failed");
-		}
+        assertEquals("getType() failed", "type", s.getType());
+        assertEquals("getAlgorithm() failed", "algorithm", s.getAlgorithm());
+        assertSame("getProvider() failed", p, s.getProvider());
+        assertEquals("getClassName() failed", "className", s.getClassName());
+        assertTrue("supportsParameter() failed", s
+                .supportsParameter(new Object()));
 	}
 
 	public void testGetAttribute() {
@@ -94,9 +85,7 @@ public class ProviderServiceTest extends TestCase {
 		} catch (NullPointerException e) {	
 		}
 	
-		if (s.getAttribute("aaa") != null) {
-			fail("getAttribute(aaa) failed");			
-		}
+        assertNull("getAttribute(aaa) failed", s.getAttribute("aaa"));
 		
 		HashMap hm = new HashMap();
 		hm.put("attribute", "value");
@@ -105,33 +94,22 @@ public class ProviderServiceTest extends TestCase {
 		
 		s = new Provider.Service(p, "type", "algorithm", "className", 
 		 		null, hm);
-		if (s.getAttribute("bbb") != null) {
-			fail("getAttribute(bbb) failed");			
-		}
-		if (!s.getAttribute("attribute").equals("value")) {
-			fail("getAttribute(attribute) failed");			
-		}
-		if (!s.getAttribute("KeySize").equals("1024")) {
-			fail("getAttribute(KeySize) failed");			
-		}	
+        assertNull("getAttribute(bbb) failed", s.getAttribute("bbb"));
+        assertEquals("getAttribute(attribute) failed", "value", s
+                .getAttribute("attribute"));
+        assertEquals("getAttribute(KeySize) failed", "1024", s
+                .getAttribute("KeySize"));
 	}
     
-    public void testNewInstance() {
+    public void testNewInstance() throws NoSuchAlgorithmException {
         Provider p = new MyProvider();
         Provider.Service s = new Provider.Service(p, "SecureRandom",
                 "algorithm",
                 "org.apache.harmony.security.tests.support.RandomImpl",
                 null, null);
-        Object o = null;
-        try {
-            o = s.newInstance(null);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            fail("newInstance() failed");
-        }
-        if (!(o instanceof RandomImpl)) {
-            fail("incorrect instance");
-        }
+
+        Object o = s.newInstance(null);
+        assertTrue("incorrect instance", o instanceof RandomImpl);
         
         try {
             o = s.newInstance(new Object());

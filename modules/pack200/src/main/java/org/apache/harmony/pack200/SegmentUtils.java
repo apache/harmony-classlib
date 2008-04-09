@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200;
 
-// TODO Write doc
+/**
+ * Utility class for unpack200
+ */
 public final class SegmentUtils {
 
 	public static int countArgs(String descriptor) {

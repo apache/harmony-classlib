@@ -17,6 +17,7 @@
 
 package java.util.jar;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class Attributes implements Cloneable, Map<Object, Object> {
     protected Map<Object, Object> map;
 
     public static class Name {
-        private final String name;
+        private final byte[] name;
 
         private int hashCode;
 
@@ -82,42 +83,71 @@ public class Attributes implements Cloneable, Map<Object, Object> {
         public static final Name IMPLEMENTATION_URL = new Name(
                 "Implementation-URL"); //$NON-NLS-1$
 
+        static final Name NAME = new Name("Name");
+
         public Name(String s) {
             int i = s.length();
-            if (i == 0 || i > 70) {
+            if (i == 0 || i > Manifest.LINE_LENGTH_LIMIT - 2) {
                 throw new IllegalArgumentException();
             }
+
+            name = new byte[i];
+
             for (; --i >= 0;) {
                 char ch = s.charAt(i);
                 if (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
                         || ch == '_' || ch == '-' || (ch >= '0' && ch <= '9'))) {
                     throw new IllegalArgumentException(s);
                 }
+                name[i] = (byte) ch;
             }
-            name = s;
         }
 
-        @Override
-        public String toString() {
+        /**
+         * A private constructor for a trusted attribute name.
+         */
+        Name(byte[] buf) {
+            name = buf;
+        }
+
+        public byte[] getBytes() {
             return name;
         }
 
         @Override
-        public boolean equals(Object an) {
-            if (an == null) {
+        public String toString() {
+            try {
+                return new String(name, "ISO-8859-1");
+            } catch (UnsupportedEncodingException iee) {
+                throw new InternalError(iee.getLocalizedMessage());
+            }
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (object == null || object.getClass() != getClass()
+                    || object.hashCode() != hashCode()) {
                 return false;
             }
-            return an.getClass() == this.getClass()
-                    && Util.equalsIgnoreCase(name, ((Name) an).name);
+
+            return Util.equalsIgnoreCase(name, ((Name) object).name);
         }
 
         @Override
         public int hashCode() {
             if (hashCode == 0) {
-                hashCode = Util.toASCIILowerCase(name).hashCode();
+                int hash = 0, multiplier = 1;
+                for (int i = name.length - 1; i >= 0; i--) {
+                    // 'A' & 0xDF == 'a' & 0xDF, ..., 'Z' & 0xDF == 'z' & 0xDF
+                    hash += (name[i] & 0xDF) * multiplier;
+                    int shifted = multiplier << 5;
+                    multiplier = shifted - multiplier;
+                }
+                hashCode = hash;
             }
             return hashCode;
         }
+
     }
 
     /**

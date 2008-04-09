@@ -28,6 +28,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -36,7 +38,7 @@ import java.util.Vector;
 
 import org.apache.harmony.awt.gl.CommonGraphics2DFactory;
 import org.apache.harmony.awt.gl.font.fontlib.FLFontManager;
-
+import org.apache.harmony.awt.Utils;
 
 public abstract class FontManager {
 
@@ -44,8 +46,7 @@ public abstract class FontManager {
         java.awt.Toolkit.getDefaultToolkit();
     }
     
-    public static final boolean IS_FONTLIB = "true".equals(System.getProperty("java.awt.fontlib")) || 
-        GraphicsEnvironment.isHeadless();
+    public static final boolean IS_FONTLIB  = "true".equals(Utils.getSystemProperty("java.awt.fontlib")) || GraphicsEnvironment.isHeadless();    
     
     /**
      * array of font families names
@@ -205,16 +206,19 @@ public abstract class FontManager {
      */
     public Hashtable<String, Vector<FontProperty>> fProperties = new Hashtable<String, Vector<FontProperty>>();
 
-    public FontManager(){
-        
+    public FontManager() {
         if (!IS_FONTLIB) {
             allFamilies = getAllFamilies();
             /*
              * Creating and registering shutdown hook to free resources
              * before object is destroyed.
              */
-            DisposeNativeHook shutdownHook = new DisposeNativeHook();
-            Runtime.getRuntime().addShutdownHook(shutdownHook);
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                public Object run() {
+                    Runtime.getRuntime().addShutdownHook(new DisposeNativeHook());
+                    return null;
+                }
+            });
         }
     }
 
@@ -577,11 +581,11 @@ public abstract class FontManager {
     public static File getFontPropertyFile(){
         File file = null;
 
-        String javaHome = System.getProperty("java.home"); //$NON-NLS-1$
+        String javaHome = Utils.getSystemProperty("java.home"); //$NON-NLS-1$
         Locale l = Locale.getDefault();
         String language = l.getLanguage();
         String country = l.getCountry();
-        String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-1$
+        String fileEncoding = Utils.getSystemProperty("file.encoding"); //$NON-NLS-1$
 
         String os = System.getProperty("os.name"); //$NON-NLS-1$
 

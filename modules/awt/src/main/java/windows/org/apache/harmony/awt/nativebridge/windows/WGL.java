@@ -40,7 +40,7 @@ public class WGL extends BasicLibWrapper {
     }
 
     private WGL() {
-        System.loadLibrary("Win32Wrapper");
+        org.apache.harmony.awt.Utils.loadLibrary("Win32Wrapper");
         init();
     }
 

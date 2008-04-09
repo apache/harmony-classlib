@@ -37,7 +37,7 @@ public class Callback {
     private static Handler handlerDataTransfer;
 
     static {
-        System.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("Win32Wrapper"); //$NON-NLS-1$
         callbackWNDPROC = initCallBackWNDPROC();
         callbackOFNHOOKPROC = initCallBackOFNHOOKPROC();
         callbackDataTransferProc = initCallBackDataTransferProc();

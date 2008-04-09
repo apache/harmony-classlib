@@ -47,7 +47,7 @@
 #define HARMONY_JARRUNNER_CLASSNAME  "org.apache.harmony.vm.JarRunner"
 
 #if defined(WIN32)
-#define PLATFORM_STRNICMP strnicmp
+#define PLATFORM_STRNICMP _strnicmp
 #endif
 
 #if defined(LINUX) || defined(FREEBSD) || defined(AIX) || defined(MACOSX) || defined(ZOS)

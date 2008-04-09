@@ -23,8 +23,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO Comment -- quite a lot can be nicked from Codec, since this was created
- * from it
+ * A BHSD codec is a means of encoding integer values as a sequence of bytes or
+ * vice versa using a specified "BHSD" encoding mechanism. It uses a variable-length encoding and a modified sign representation
+ * such that small numbers are represented as a single byte, whilst larger
+ * numbers take more bytes to encode. The number may be signed or unsigned; if
+ * it is unsigned, it can be weighted towards positive numbers or equally
+ * distributed using a one's complement. The Codec also supports delta coding,
+ * where a sequence of numbers is represented as a series of first-order
+ * differences. So a delta encoding of the integers [1..10] would be represented
+ * as a sequence of 10x1s. This allows the absolute value of a coded integer to
+ * fall outside of the 'small number' range, whilst still being encoded as a
+ * single byte.
+ *
+ * A BHSD codec is configured with four parameters:
+ * <dl>
+ * <dt>B</dt>
+ * <dd>The maximum number of bytes that each value is encoded as. B must be a
+ * value between [1..5]. For a pass-through coding (where each byte is encoded
+ * as itself, aka {@link #BYTE1}, B is 1 (each byte takes a maximum of 1 byte).</dd>
+ * <dt>H</dt>
+ * <dd>The radix of the integer. Values are defined as a sequence of values,
+ * where value <code>n</code> is multiplied by <code>H^<sup>n</sup></code>.
+ * So the number 1234 may be represented as the sequence 4 3 2 1 with a radix
+ * (H) of 10. Note that other permutations are also possible; 43 2 1 will also
+ * encode 1234. The co-parameter L is defined as 256-H. This is important
+ * because only the last value in a sequence may be &lt; L; all prior values
+ * must be &gt; L.</dd>
+ * <dt>S</dt>
+ * <dd>Whether the codec represents signed values (or not). This may have 3
+ * values; 0 (unsigned), 1 (signed, one's complement) or 2 (signed, two's
+ * complement)</dd>
+ * <dt>D</dt>
+ * <dd>Whether the codec represents a delta encoding. This may be 0 (no delta)
+ * or 1 (delta encoding). A delta encoding of 1 indicates that values are
+ * cumulative; a sequence of <code>1 1 1 1 1</code> will represent the
+ * sequence <code>1 2 3 4 5</code>. For this reason, the codec supports two
+ * variants of decode; one {@link #decode(InputStream, long) with} and one
+ * {@link #decode(InputStream) without} a <code>last</code> parameter. If the
+ * codec is a non-delta encoding, then the value is ignored if passed. If the
+ * codec is a delta encoding, it is a run-time error to call the value without
+ * the extra parameter, and the previous value should be returned. (It was
+ * designed this way to support multi-threaded access without requiring a new
+ * instance of the Codec to be cloned for each use.)
+ * <dt>
+ * </dl>
+ *
+ * Codecs are notated as (B,H,S,D) and either D or S,D may be omitted if zero.
+ * Thus {@link #BYTE1} is denoted (1,256,0,0) or (1,256). The
+ * {@link #toString()} method prints out the condensed form of the encoding.
+ * Often, the last character in the name ({@link #BYTE1}, {@link #UNSIGNED5})
+ * gives a clue as to the B value. Those that start with U ({@link #UDELTA5},
+ * {@link #UNSIGNED5}) are unsigned; otherwise, in most cases, they are signed.
+ * The presence of the word Delta ({@link #DELTA5}, {@link #UDELTA5})
+ * indicates a delta encoding is used.
  *
  */
 public final class BHSDCodec extends Codec {
@@ -32,29 +83,33 @@ public final class BHSDCodec extends Codec {
 	/**
 	 * The maximum number of bytes in each coding word
 	 */
-	private int b;
+	private final int b;
 
 	/**
 	 * Whether delta encoding is used (0=false,1=true)
 	 */
-	private int d;
+	private final int d;
 
 	/**
 	 * The radix of the encoding
 	 */
-	private int h;
+	private final int h;
 
 	/**
 	 * The co-parameter of h; h-256
 	 */
-	private int l;
+	private final int l;
 
 	/**
 	 * Represents signed numbers or not (0=unsigned,1/2=signed)
 	 */
-	private int s;
+	private final int s;
 
     private long cardinality;
+
+    private final long smallest;
+
+    private final long largest;
 
 	/**
 	 * Constructs an unsigned, non-delta Codec with the given B and H values.
@@ -123,6 +178,8 @@ public final class BHSDCodec extends Codec {
         } else {
             cardinality = (long) ((long)(l * (1-Math.pow(h, b))/(1-h)) + Math.pow(h,b));
         }
+        smallest = calculateSmallest();
+        largest = calculateLargest();
 	}
 
 	/**
@@ -157,38 +214,38 @@ public final class BHSDCodec extends Codec {
             n++;
 		} while (n < b & isHigh(x));
 
-// TODO: Decide whether to use this algorithm instead (neater, possibly quicker but less easy to understand)
-//        if (isSigned()) {
-//            int u = ((1 << s) - 1);
-//            if ((z & u) == u) {
-//                z = z >>> s ^ -1L;
-//            } else {
-//                z = z - (z >>> s);
-//            }
-//        }
-        if(isSigned()) {
-            long u = z;
-            long twoPowS = (long)Math.pow(2, s);
-            double twoPowSMinusOne = twoPowS-1;
-            if(u % twoPowS < twoPowSMinusOne) {
-                if(cardinality < Math.pow(2, 32)) {
-                    z = (long) (u - (Math.floor(u/ twoPowS)));
-                } else {
-                    z = cast32((long) (u - (Math.floor(u/ twoPowS))));
-                }
+        if (isSigned()) {
+            int u = ((1 << s) - 1);
+            if ((z & u) == u) {
+                z = z >>> s ^ -1L;
             } else {
-                z = (long) (-Math.floor(u/ twoPowS) - 1);
+                z = z - (z >>> s);
             }
         }
+// This algorithm does the same thing, but is probably slower.  Leaving in for now for readability
+//        if(isSigned()) {
+//            long u = z;
+//            long twoPowS = (long)Math.pow(2, s);
+//            double twoPowSMinusOne = twoPowS-1;
+//            if(u % twoPowS < twoPowSMinusOne) {
+//                if(cardinality < Math.pow(2, 32)) {
+//                    z = (long) (u - (Math.floor(u/ twoPowS)));
+//                } else {
+//                    z = cast32((long) (u - (Math.floor(u/ twoPowS))));
+//                }
+//            } else {
+//                z = (long) (-Math.floor(u/ twoPowS) - 1);
+//            }
+//        }
 	    if (isDelta())
 	        z += last;
 		return z;
 	}
 
-	private long cast32(long u) {
-        u = (long) ((long) ((u + Math.pow(2, 31)) % Math.pow(2, 32)) - Math.pow(2, 31));
-        return u;
-    }
+//	private long cast32(long u) {
+//        u = (long) ((long) ((u + Math.pow(2, 31)) % Math.pow(2, 32)) - Math.pow(2, 31));
+//        return u;
+//    }
 
     private boolean isHigh(long x) {
         return x>=l;
@@ -202,7 +259,7 @@ public final class BHSDCodec extends Codec {
 	 * @return <code>true</code> if the encoding can encode this value
 	 */
 	public boolean encodes(long value) {
-		return (value >= smallest() && value <= largest());
+		return (value >= smallest && value <= largest);
 	}
 
     public byte[] encode(long value, long last) throws Pack200Exception {
@@ -270,10 +327,17 @@ public final class BHSDCodec extends Codec {
 	 *
 	 * @return the largest value that this codec can represent.
 	 */
-	public long largest() {
+    public long largest() {
+        return largest;
+    }
+
+	private long calculateLargest() {
 		long result;
 		// TODO This can probably be optimized into a better mathematical statement
-		if (s == 0) {
+        if(d == 1) {
+            BHSDCodec bh0 = new BHSDCodec(b, h);
+            return bh0.largest();
+        } else if (s == 0) {
 			result = cardinality() - 1;
 		} else if (s == 1) {
 			result = cardinality() / 2 - 1;
@@ -285,18 +349,30 @@ public final class BHSDCodec extends Codec {
 		return Math.min((s == 0 ? ((long) Integer.MAX_VALUE) << 1
 				: Integer.MAX_VALUE) - 1, result);
 	}
+
 	/**
 	 * Returns the smallest value that this codec can represent.
 	 *
 	 * @return the smallest value that this codec can represent.
 	 */
-	public long smallest() {
+    public long smallest() {
+        return smallest;
+    }
+
+	private long calculateSmallest() {
 		long result;
-		if (isSigned()) {
-			result = -cardinality() / (1 << s);
-		} else {
-			result = 0;
-		}
+         if (d == 1) {
+            BHSDCodec bh0 = new BHSDCodec(b, h);
+            return bh0.smallest();
+        } else if (isSigned()) {
+            result = -cardinality() / (1 << s);
+        } else {
+            if (cardinality > Integer.MAX_VALUE) {
+                result = Integer.MIN_VALUE;
+            } else {
+                result = 0;
+            }
+        }
 		return Math.max(Integer.MIN_VALUE, result);
 	}
 	/**

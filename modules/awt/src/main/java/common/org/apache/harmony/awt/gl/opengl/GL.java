@@ -38,7 +38,7 @@ public class GL extends BasicLibWrapper {
     }
 
     private GL() {
-        System.loadLibrary("oglwrapper"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("oglwrapper"); //$NON-NLS-1$
         init();
     }
 

@@ -20,6 +20,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.harmony.pack200.Pack200Exception;
+
 public abstract class BCIRenumberedAttribute extends Attribute {
 
     protected boolean renumbered = false;
@@ -50,7 +52,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
      *
      * @param byteCodeOffsets List of Integer offsets of the bytecode array
      */
-    public void renumber(List byteCodeOffsets) {
+    public void renumber(List byteCodeOffsets) throws Pack200Exception {
         if(renumbered) {
             throw new Error("Trying to renumber a line number table that has already been renumbered");
         }

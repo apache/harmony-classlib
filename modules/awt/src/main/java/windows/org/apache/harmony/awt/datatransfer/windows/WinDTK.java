@@ -24,6 +24,8 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.peer.DragSourceContextPeer;
 import java.awt.dnd.peer.DropTargetContextPeer;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import org.apache.harmony.awt.datatransfer.DTK;
 import org.apache.harmony.awt.datatransfer.NativeClipboard;
@@ -39,8 +41,11 @@ import org.apache.harmony.misc.accessors.ObjectAccessor;
 public final class WinDTK extends DTK implements Callback.Handler {
     
     private static final Win32 win32 = Win32.getInstance();
-    private static final ObjectAccessor objAccessor = 
-        AccessorFactory.getObjectAccessor();
+    private static final ObjectAccessor objAccessor = AccessController.doPrivileged(new PrivilegedAction<ObjectAccessor>() {
+                                                        public ObjectAccessor run() {
+                                                            return AccessorFactory.getObjectAccessor();
+                                                        }
+                                                    });    
     
     private static final int WM_TASK = WindowsDefs.WM_USER + 1;
     

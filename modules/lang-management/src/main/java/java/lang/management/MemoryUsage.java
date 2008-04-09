@@ -111,7 +111,9 @@ public class MemoryUsage {
 
     @Override
     public String toString() {
-        return "MemoryUsage: init=" + init + "used=" + used + "committed=" + committed + "max="
-                + max;
+        return "init = " + init + " (" + (init >> 10)
+          + "K) used = " + used + " (" + (used >> 10)
+          + "K) committed = " + committed + " (" + (committed >> 10)
+          + "K) max = " + max + " (" + (max >> 10) + "K)";
     }
 }

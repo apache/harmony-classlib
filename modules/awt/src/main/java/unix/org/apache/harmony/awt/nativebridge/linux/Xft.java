@@ -39,7 +39,7 @@ public class Xft extends BasicLibWrapper {
     }
 
     private Xft() {
-        System.loadLibrary("X11Wrapper"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("X11Wrapper"); //$NON-NLS-1$
         init();
     }
 

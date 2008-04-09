@@ -37,7 +37,7 @@ class XServerConnection {
         this.x11 = X11.getInstance();;
         display = x11.XOpenDisplay(0); //0 - we use default display only
         if (display == 0) {
-            String name = System.getProperty("DISPLAY"); //$NON-NLS-1$
+            String name = org.apache.harmony.awt.Utils.getSystemProperty("DISPLAY"); //$NON-NLS-1$
             // awt.0F=Cannot open display '{0}'
             throw new InternalError(Messages.getString("awt.0F", //$NON-NLS-1$ 
                     (name != null ? name : ""))); //$NON-NLS-1$
@@ -45,7 +45,7 @@ class XServerConnection {
 
         screen = x11.XDefaultScreen(display);
 
-        System.loadLibrary("gl");
+        org.apache.harmony.awt.Utils.loadLibrary("gl");
         init(display, screen);
     }
 

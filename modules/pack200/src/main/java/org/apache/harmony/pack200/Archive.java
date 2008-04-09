@@ -30,26 +30,20 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
 /**
- * The Archive class is the main entry point to unpack200. An archive is
- * constructed with either two file names, a pack file and an output file name
- * or two input streams corresponding to the input and the output streams. Then
+ * Archive is the main entry point to unpack200. An archive is constructed with
+ * either two file names, a pack file and an output file name or two input
+ * streams corresponding to the input and the output streams. Then
  * <code>unpack()</code> is called, to unpack the pack200 archive.
  */
 public class Archive {
 
-    private static final int LOG_LEVEL_VERBOSE = 2;
-
-    private static final int LOG_LEVEL_STANDARD = 1;
-
-    private static final int LOG_LEVEL_QUIET = 0;
-
     private InputStream inputStream;
 
-    private JarOutputStream outputStream;
+    private final JarOutputStream outputStream;
 
     private boolean removePackFile;
 
-    private int logLevel = LOG_LEVEL_STANDARD;
+    private int logLevel = Segment.LOG_LEVEL_STANDARD;
 
     private FileOutputStream logFile;
 
@@ -58,6 +52,8 @@ public class Archive {
     private boolean deflateHint;
 
     private String inputFileName;
+
+	private String outputFileName;
 
     /**
      * Creates an Archive with the given input and output file names.
@@ -69,6 +65,7 @@ public class Archive {
     public Archive(String inputFile, String outputFile)
             throws FileNotFoundException, IOException {
         this.inputFileName = inputFile;
+        this.outputFileName = outputFile;
         inputStream = new FileInputStream(inputFile);
         outputStream = new JarOutputStream(new FileOutputStream(outputFile));
     }
@@ -135,29 +132,49 @@ public class Archive {
                     outputStream.closeEntry();
                 }
             } else {
+            	int i = 0;
                 while (available(inputStream)) {
+                	i++;
                     Segment segment = new Segment();
                     segment.setLogLevel(logLevel);
                     segment.setLogStream(logFile != null ? (OutputStream) logFile
                             : (OutputStream) System.out);
+                    if (i == 1) {
+						segment.log(Segment.LOG_LEVEL_VERBOSE,
+								"Unpacking from " + inputFileName + " to "
+										+ outputFileName);
+					}
+                    segment.log(Segment.LOG_LEVEL_VERBOSE, "Reading segment " + i);
                     if (overrideDeflateHint) {
                         segment.overrideDeflateHint(deflateHint);
                     }
                     segment.unpack(inputStream, outputStream);
                     outputStream.flush();
+
+                    if(inputStream instanceof FileInputStream) {
+                    	inputFileName = ((FileInputStream)inputStream).getFD().toString();
+                    }
                 }
             }
         } finally {
             try {
                 inputStream.close();
-            } catch (Exception e2) {}
+            } catch (Exception e) {}
             try {
                 outputStream.close();
-            } catch (Exception e2) {}
+            } catch (Exception e) {}
+            if(logFile != null) {
+            	try {
+            		logFile.close();
+            	} catch (Exception e) {}
+            }
         }
         if (removePackFile) {
             File file = new File(inputFileName);
-            file.delete();
+            boolean deleted = file.delete();
+            if(!deleted) {
+            	throw new Pack200Exception("Failed to delete the input file.");
+            }
         }
     }
 
@@ -180,17 +197,17 @@ public class Archive {
 
     public void setVerbose(boolean verbose) {
         if (verbose) {
-            logLevel = LOG_LEVEL_VERBOSE;
-        } else if (logLevel == LOG_LEVEL_VERBOSE) {
-            logLevel = LOG_LEVEL_STANDARD;
+            logLevel = Segment.LOG_LEVEL_VERBOSE;
+        } else if (logLevel == Segment.LOG_LEVEL_VERBOSE) {
+            logLevel = Segment.LOG_LEVEL_STANDARD;
         }
     }
 
     public void setQuiet(boolean quiet) {
         if (quiet) {
-            logLevel = LOG_LEVEL_QUIET;
-        } else if (logLevel == LOG_LEVEL_QUIET) {
-            logLevel = LOG_LEVEL_QUIET;
+            logLevel = Segment.LOG_LEVEL_QUIET;
+        } else if (logLevel == Segment.LOG_LEVEL_QUIET) {
+            logLevel = Segment.LOG_LEVEL_QUIET;
         }
     }
 

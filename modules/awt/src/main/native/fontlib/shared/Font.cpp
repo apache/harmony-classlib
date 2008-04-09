@@ -22,6 +22,7 @@
 #include "Environment.h"
 #include "TTFont.h"
 #include "T1Font.h"
+#include <string.h>
 
 Font::Font() {
     _famName = NULL;

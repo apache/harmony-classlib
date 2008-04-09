@@ -158,6 +158,12 @@ JNIEXPORT jint JNICALL
 Java_org_apache_harmony_awt_gl_linux_XGraphics2D_setStroke(JNIEnv *, jobject, 
     jlong, jlong, jint, jint, jint, jint, jbyteArray, jint);
 
+/*
+ * Method: org.apache.harmony.awt.gl.linux.XGraphics2D.flush(J)V
+ */
+JNIEXPORT jint JNICALL 
+Java_org_apache_harmony_awt_gl_linux_XGraphics2D_flush(JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

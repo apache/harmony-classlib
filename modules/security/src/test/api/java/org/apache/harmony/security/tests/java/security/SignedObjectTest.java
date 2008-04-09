@@ -15,84 +15,44 @@
  *  limitations under the License.
  */
 
-/**
-* @author Boris V. Kuznetsov
-* @version $Revision$
-*/
-
 package org.apache.harmony.security.tests.java.security;
-import java.security.*;
-import java.io.IOException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Properties;
 
-import org.apache.harmony.security.tests.support.TestKeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignedObject;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.security.tests.support.TestKeyPair;
 
 /**
  * Tests for <code>SignedObject</code> constructor and methods
- * 
  */
 public class SignedObjectTest extends TestCase {
 
-	public void testSignedObject() {
-		Signature sig = null;
-		TestKeyPair tkp = null;
-	    Properties prop;
-	    
-	    try {
-        	sig = Signature.getInstance("SHA1withDSA");		
-    	} catch (NoSuchAlgorithmException e) {
-    		fail(e.toString());
-    	}
-    	
-    	try {
-			tkp = new TestKeyPair("DSA");
-		} catch (NoSuchAlgorithmException e) {
-    		e.printStackTrace();
-    		return;
-		}
-    	prop = new Properties();
-    	prop.put("aaa", "bbb");
-    	SignedObject so = null;
-    	try {
-    		so = new SignedObject(prop, tkp.getPrivate(), sig);
-    	} catch (IOException e) {
-           	fail(e.toString());  
-    	} catch (SignatureException e) {   
-           	fail(e.toString());  
-    	} catch (InvalidKeyException e) {
-           	fail(e.toString());  
-    	} catch (InvalidKeySpecException e) {
-          	fail(e.toString());
-		}
+    public void testSignedObject() throws Exception {
+        TestKeyPair tkp = null;
+        Properties prop;
 
-    	assertEquals("SHA1withDSA", so.getAlgorithm());
- 
+        Signature sig = Signature.getInstance("SHA1withDSA");
+
         try {
-            assertEquals(so.getObject(), prop);      	
-        } catch (ClassNotFoundException e) {
-           	fail(e.toString());  
-        } catch (IOException e) {
-           	fail(e.toString());  
+            tkp = new TestKeyPair("DSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return;
         }
-        try {
-        	if (!so.verify(tkp.getPublic(), sig)) {
-            	fail("verify() failed");
-            }	
-        } catch (SignatureException e) {
-        	fail(e.toString());      	
-        } catch (InvalidKeyException e) {
-           	fail(e.toString());         	
-        } catch (InvalidKeySpecException e) {
-           	fail(e.toString()); 
-		}
-        
-        if (so.getSignature() == null) {
-        	fail("signature is null");
-        }	    	 
-	}
-	
+        prop = new Properties();
+        prop.put("aaa", "bbb");
+
+        SignedObject so = new SignedObject(prop, tkp.getPrivate(), sig);
+
+        assertEquals("SHA1withDSA", so.getAlgorithm());
+        assertEquals(prop, so.getObject());
+
+        assertTrue("verify() failed", so.verify(tkp.getPublic(), sig));
+
+        assertNotNull("signature is null", so.getSignature());
+    }
 }

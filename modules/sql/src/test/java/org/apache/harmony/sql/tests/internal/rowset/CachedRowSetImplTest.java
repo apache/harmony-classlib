@@ -17,6 +17,11 @@
 
 package org.apache.harmony.sql.tests.internal.rowset;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -27,13 +32,21 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
 
+import javax.sql.DataSource;
 import javax.sql.RowSetEvent;
+import javax.sql.RowSetInternal;
 import javax.sql.RowSetListener;
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.spi.SyncFactory;
+import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
+import javax.sql.rowset.spi.SyncResolver;
 
 public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
@@ -72,8 +85,62 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals("update3", crset.getString(2));
         originalRow = crset.getOriginalRow();
         assertTrue(originalRow.next());
-        // TODO uncomment it after implement Writer
-        // assertEquals("update3", originalRow.getString(2));
+        assertEquals("update3", originalRow.getString(2));
+    }
+
+    public void testSetOriginalRow() throws Exception {
+        /*
+         * This method is called internally after the current row have been
+         * synchronized with the data source.
+         */
+        crset.beforeFirst();
+        assertTrue(crset.absolute(3));
+        crset.updateString(2, "update3");
+        // NOTICE: though update the column here, updateRow() isn't called.
+
+        assertTrue(crset.next());
+        crset.deleteRow();
+        crset.acceptChanges(conn);
+
+        // DB
+        rs = st.executeQuery("select * from user_info");
+        int index = 0;
+        while (rs.next()) {
+            index++;
+            assertEquals(index, rs.getInt(1));
+            if (index == 3) {
+                assertEquals("test3", rs.getString(2));
+            }
+        }
+        assertEquals(3, index);
+        // CachedRowSet
+        crset.beforeFirst();
+        index = 0;
+        while (crset.next()) {
+            index++;
+            assertEquals(index, crset.getInt(1));
+            if (index == 3) {
+                assertEquals("update3", crset.getString(2));
+            }
+        }
+        assertEquals(3, index);
+
+        // move to the third row, call updateRow() again
+        assertTrue(crset.absolute(3));
+        crset.updateRow();
+        crset.acceptChanges(conn);
+        // Compare DB and CachedRowSet
+        rs = st.executeQuery("select * from user_info");
+        // CachedRowSet
+        crset.beforeFirst();
+        index = 0;
+        while (crset.next() && rs.next()) {
+            index++;
+            assertEquals(index, rs.getInt(1));
+            if (index == 3) {
+                assertEquals("update3", rs.getString(2));
+            }
+        }
     }
 
     public void testSetSyncProvider() throws Exception {
@@ -83,48 +150,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             assertEquals(crset.getSyncProvider().getClass().getCanonicalName(),
                     mySyncProvider);
         }
-    }
-
-    public void testColumnUpdatedInt() throws SQLException {
-        crset.first();
-        // try {
-        // assertFalse(crset.columnUpdated(1));
-        // fail("should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected;
-        // }
-        crset.next();
-        try {
-            crset.columnUpdated(-1);
-            fail("should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected;
-        }
-        try {
-            crset.columnUpdated(0);
-            fail("should throw IndexOutOfBoundsException");
-        } catch (IndexOutOfBoundsException e) {
-            // expected;
-        }
-        assertFalse(crset.columnUpdated(1));
-    }
-
-    public void testColumnUpdatedString() throws SQLException {
-        crset.first();
-        // try {
-        // assertFalse(crset.columnUpdated("ID"));
-        // fail("should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected;
-        // }
-        crset.next();
-        try {
-            assertFalse(crset.columnUpdated("Incorrect"));
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected;
-        }
-        assertFalse(crset.columnUpdated("NAME"));
     }
 
     public void testGetPageSize() throws SQLException {
@@ -146,7 +171,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
     }
 
     public void testGetTableName() throws SQLException {
-
         crset.setTableName("USER");
         assertEquals("USER", crset.getTableName());
     }
@@ -164,64 +188,32 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(DEFAULT_ROW_COUNT, crset.size());
         // before populate should return 0
         assertEquals(0, noInitialCrset.size());
-    }
 
-    public void testDeleteRow() throws SQLException {
-        crset.first();
-        // try {
-        // crset.deleteRow();
-        // fail("should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected;
-        // }
-        crset.next();
-        assertFalse(crset.rowDeleted());
+        crset.absolute(3);
+        assertFalse(crset.getShowDeleted());
         crset.deleteRow();
         assertEquals(DEFAULT_ROW_COUNT, crset.size());
-        assertTrue(crset.rowDeleted());
-    }
 
-    public void testRowDeleted() throws SQLException {
-        // try {
-        // crset.rowDeleted();
-        // fail("should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected;
-        // }
-    }
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
 
-    public void testInsertRow() throws SQLException {
-        crset.first();
-        try {
-            crset.insertRow();
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected;
-        }
-        crset.next();
-        try {
-            crset.insertRow();
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected;
-        }
-        crset.moveToInsertRow();
-        crset.updateString("Name", "TonyWu");
-        crset.updateInt("ID", 3);
-        crset.insertRow();
-        assertEquals("TonyWu", crset.getString(2));
-        assertEquals("TonyWu", crset.getString("Name"));
-        assertEquals(3, crset.getInt(1));
-        assertEquals(3, crset.getInt("ID"));
+        crset.populate(rs);
+        crset.setShowDeleted(true);
+        assertTrue(crset.getShowDeleted());
+        assertEquals(DEFAULT_ROW_COUNT, crset.size());
 
-        crset.moveToCurrentRow();
-        assertFalse(crset.rowInserted());
+        crset.absolute(3);
+        crset.deleteRow();
+        assertEquals(DEFAULT_ROW_COUNT, crset.size());
 
+        crset.acceptChanges(conn);
+
+        assertEquals(DEFAULT_ROW_COUNT - 1, crset.size());
     }
 
     public void testAcceptChanges() throws SQLException {
         crset.setTableName("USER_INFO");
-        // FIXME: if the value of column is null, it would go wrong when
+        // NOTICE: if the value of column is null, it would go wrong when
         // call acceptChanges(). And if one method in TestCase throws
         // SQLException, the following method will be affected.
         rs.next();
@@ -350,8 +342,9 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         Listener listener = new Listener(); // a class implements RowSetListener
         crset.addRowSetListener(listener);
         crset.absolute(3); // move to the third row for testing
-        // TODO: when the cursor moved, notifyCursorMoved() should be called
-        // assertEquals("cursorMoved", listener.getTag());
+        assertEquals(CachedRowSetListenerTest.EVENT_CURSOR_MOVED, listener
+                .getTag());
+        listener.clear();
 
         CachedRowSet crsetShared = (CachedRowSet) crset.createShared();
         assertEquals("testUsername", crsetShared.getUsername());
@@ -376,8 +369,10 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals("modify3", crsetShared.getString(2));
         assertEquals("modify3", crset.getString(2));
         crsetShared.updateRow();
+        listener.clear();
         crsetShared.acceptChanges();
-        assertEquals("rowSetChanged", listener.getTag());
+        assertEquals(CachedRowSetListenerTest.EVENT_ROWSET_CHANGED, listener
+                .getTag());
 
         // when move the duplicate's cursor, the original shouldn't be affected
         crsetShared.absolute(1);
@@ -386,7 +381,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
     }
 
     public void testcreateCopyNoConstraints() throws Exception {
-
         crset.setConcurrency(ResultSet.CONCUR_READ_ONLY);
         crset.setType(ResultSet.TYPE_SCROLL_SENSITIVE);
         crset.setEscapeProcessing(false);
@@ -401,6 +395,10 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crset.setMaxFieldSize(10);
         crset.setFetchDirection(ResultSet.FETCH_UNKNOWN);
 
+        /*
+         * NOTICE: when run on RI, if add the listener first, then it will go
+         * wrong when call createCopySchema().It's said that clone failed.
+         */
         CachedRowSet copy = crset.createCopyNoConstraints();
 
         // default is ResultSet.CONCUR_UPDATABLE
@@ -427,9 +425,8 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         // default is null
         assertNull(copy.getTypeMap());
 
-        if (crset.getKeyColumns() == null) {
-            assertNull(copy.getKeyColumns());
-        } else {
+        if (crset.getKeyColumns() != null && crset.getKeyColumns().length != 0) {
+
             int[] keyColumns = crset.getKeyColumns();
             int[] copyKeyColumns = copy.getKeyColumns();
 
@@ -448,31 +445,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(crset.isFirst(), copy.isFirst());
         assertEquals(crset.isLast(), copy.isLast());
         assertEquals(crset.getRow(), copy.getRow());
-
-        // TODO uncomment them after implemented
-        // assertNotSame(crset.getWarnings(), copy.getWarnings());
-        // assertEquals(crset.getStatement(), copy.getStatement());
-        // try {
-        // assertEquals(crset.getCursorName(), copy.getCursorName());
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        //
-        // try {
-        // assertEquals(crset.getMatchColumnIndexes(), copy
-        // .getMatchColumnIndexes());
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        //
-        // try {
-        // assertEquals(crset.getMatchColumnNames(), copy
-        // .getMatchColumnNames());
-        // } catch (SQLException e) {
-        // // expected
-        // }
 
         assertEquals(crset.isReadOnly(), copy.isReadOnly());
         assertEquals(crset.size(), copy.size());
@@ -517,11 +489,15 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, crset
                 .getTransactionIsolation());
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
-        assertNull(crset.getTypeMap());
         assertEquals(DERBY_URL, crset.getUrl());
         assertNull(crset.getUsername());
         assertTrue(crset.getEscapeProcessing());
-        assertNull(crset.getKeyColumns());
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertNotNull(crset.getKeyColumns());
+            assertEquals(0, crset.getKeyColumns().length);
+        } else {
+            assertNull(crset.getKeyColumns());
+        }
 
         // set value
         crset.setCommand("testCommand");
@@ -615,8 +591,6 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         // compare the meta data between the duplicate and the original
         assertNotSame(crset.getMetaData(), crsetCopySchema.getMetaData());
         assertNotSame(crset.getOriginal(), crsetCopySchema.getOriginal());
-        // assertNotSame(crset.getSyncProvider(), crsetCopySchema
-        // .getSyncProvider());
 
         assertEquals("USER_INFO", crset.getTableName());
         assertEquals("USER_INFO", rsmdCopySchema.getTableName(1));
@@ -625,11 +599,15 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         // check the primary key
         // TODO: RI doesn't evalute the keyColumns. The value of
         // crset.getKeyColumns() is null.
-        assertEquals(crset.getKeyColumns(), crsetCopySchema.getKeyColumns());
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertNotNull(crset.getKeyColumns());
+            assertEquals(0, crset.getKeyColumns().length);
+        } else {
+            assertNull(crset.getKeyColumns());
+        }
 
         // check the attributes in the duplicate. These are supposed to be the
         // same as the original
-        // System.out.println("crsetCopySchema: " + crsetCopySchema.getInt(1));
         assertFalse(crsetCopySchema.next());
         assertEquals("testCommand", crsetCopySchema.getCommand());
         assertEquals(ResultSet.CONCUR_UPDATABLE, crsetCopySchema
@@ -646,10 +624,8 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertNull(listener.getTag());
         rs = st.executeQuery("select * from USER_INFO");
         crsetCopySchema.populate(rs);
-        // TODO: in the Harmony implementation, need to call notifyRowSetChanged
-        // at the suitable place
-        // assertEquals("rowSetChanged", listener.getTag());
-        listener.setTag(null);
+        assertEquals("rowSetChanged", listener.getTag());
+        listener.clear();
         // the move of the original's cursor shouldn't affect the duplicate
         crset.next();
         assertNull(listener.getTag());
@@ -744,38 +720,34 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(crset.getCommand(), crsetCopy.getCommand());
         assertEquals(crset.getConcurrency(), crsetCopy.getConcurrency());
 
-        // uncomment after implemented
-        // try {
-        // assertEquals(crset.getCursorName(), crsetCopy.getCursorName());
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // try {
-        // assertEquals(crset.getMatchColumnIndexes(), crsetCopy
-        // .getMatchColumnIndexes());
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        //
-        // try {
-        // assertEquals(crset.getMatchColumnNames(), crsetCopy
-        // .getMatchColumnNames());
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // assertEquals(crset.getRow(), crsetCopy.getRow());
-        // assertEquals(crset.getStatement(), crsetCopy.getStatement());
-        // assertNotSame(crset.getWarnings(), crsetCopy.getWarnings());
+        try {
+            assertEquals(crset.getCursorName(), crsetCopy.getCursorName());
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        try {
+            assertEquals(crset.getMatchColumnIndexes(), crsetCopy
+                    .getMatchColumnIndexes());
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            assertEquals(crset.getMatchColumnNames(), crsetCopy
+                    .getMatchColumnNames());
+        } catch (SQLException e) {
+            // expected
+        }
+        assertEquals(crset.getRow(), crsetCopy.getRow());
+        assertEquals(crset.getStatement(), crsetCopy.getStatement());
 
         assertEquals(crset.getEscapeProcessing(), crsetCopy
                 .getEscapeProcessing());
         assertEquals(crset.getFetchDirection(), crsetCopy.getFetchDirection());
         assertEquals(crset.getFetchSize(), crsetCopy.getFetchSize());
-        if (crset.getKeyColumns() == null) {
-            assertNull(crsetCopy.getKeyColumns());
-        } else {
+        if (crset.getKeyColumns() != null && crset.getKeyColumns().length != 0) {
             int[] keyColumns = crset.getKeyColumns();
             int[] copyKeyColumns = crsetCopy.getKeyColumns();
 
@@ -847,7 +819,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("Should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // expected, TODO test SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(3, resolver.getRow());
+
+            assertEquals(SyncResolver.UPDATE_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
 
         assertEquals("updated", copy.getString(2));
@@ -862,14 +854,15 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crset.setInt(1, 3);
         crset.execute();
 
-        assertEquals(12, crset.getMetaData().getColumnCount());
+        assertEquals(DEFAULT_COLUMN_COUNT, crset.getMetaData().getColumnCount());
         assertTrue(crset.next());
         assertEquals("test3", crset.getString(2));
         assertFalse(crset.next());
 
         CachedRowSet crsetCopy = crset.createCopy();
         crsetCopy.execute();
-        assertEquals(12, crsetCopy.getMetaData().getColumnCount());
+        assertEquals(DEFAULT_COLUMN_COUNT, crsetCopy.getMetaData()
+                .getColumnCount());
         assertTrue(crsetCopy.next());
         assertEquals("test3", crsetCopy.getString(2));
         assertFalse(crsetCopy.next());
@@ -919,11 +912,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
         int i = 0;
 
+        /*
+         * TODO In RI there are before first page and after last page, according
+         * spec, there shouldn't be, Harmony follow spec
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            i = 2;
+        }
+
         crset.beforeFirst();
         while (crset.nextPage()) {
             while (crset.next()) {
                 assertEquals(++i, crset.getInt(1));
             }
+        }
+
+        /*
+         * TODO In RI there are before first page and after last page, according
+         * spec, there shouldn't be, Harmony follow spec
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            i = 2;
         }
 
         while (crset.previousPage()) {
@@ -958,7 +967,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             cursorIndex++;
         }
         // setMaxRows no effect, we follow ri
-        assertEquals(20, cursorIndex);
+        assertEquals(19, cursorIndex);
 
         /*
          * The pageSize won't work when call method populate(ResultSet) without
@@ -986,7 +995,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
          * CachedRowSet's pageSize is 5. However, the pageSize doesn't work in
          * RI. The CachedRowSet gets all the data from ResultSet. We follow ri.
          */
-        assertEquals(20, cursorIndex);
+        assertEquals(19, cursorIndex);
 
         noInitialCrset = newNoInitialInstance();
         rs = st.executeQuery("select * from USER_INFO");
@@ -1000,7 +1009,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         while (noInitialCrset.next()) {
             cursorIndex++;
         }
-        assertEquals(18, cursorIndex);
+        assertEquals(17, cursorIndex);
     }
 
     public void testPopulate_LResultSet_I() throws Exception {
@@ -1014,6 +1023,15 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             fail("Should throw SQLException");
         } catch (SQLException e) {
             // expected
+        }
+
+        try {
+            noInitialCrset.populate(null, 1);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, we follow spec
+        } catch (NullPointerException e) {
+            // ri throw NullPointerException
         }
 
         // create a scrollable and updatable ResultSet
@@ -1088,7 +1106,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
                 assertEquals(cursorIndex, noInitialCrset.getInt(1));
             }
         }
-        assertEquals(20, cursorIndex);
+        assertEquals(19, cursorIndex);
 
         try {
             noInitialCrset.populate(crsetCopy, 0);
@@ -1147,27 +1165,26 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(ResultSet.CONCUR_UPDATABLE, noInitialCrset
                 .getConcurrency());
         assertEquals(0, crset.getRow());
-        
-        // TODO uncomment after impelemented
-        // try {
-        // crset.getCursorName();
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // try {
-        // crset.getMatchColumnIndexes();
-        // fail("Should throw SQLException");
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        //
-        // try {
-        // crset.getMatchColumnNames();
-        // } catch (SQLException e) {
-        // // expected
-        // }
-        // assertNull(crset.getStatement());
+
+        try {
+            crset.getCursorName();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        try {
+            crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            crset.getMatchColumnNames();
+        } catch (SQLException e) {
+            // expected
+        }
+        assertNull(crset.getStatement());
 
         assertEquals(true, noInitialCrset.getEscapeProcessing());
         assertEquals(Connection.TRANSACTION_READ_COMMITTED, noInitialCrset
@@ -1176,7 +1193,16 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(ResultSet.FETCH_FORWARD, noInitialCrset
                 .getFetchDirection());
         assertEquals(0, noInitialCrset.getFetchSize());
-        assertNull(noInitialCrset.getKeyColumns());
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            try {
+                noInitialCrset.getKeyColumns();
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected
+            }
+        } else {
+            assertNull(noInitialCrset.getKeyColumns());
+        }
 
         assertEquals(0, noInitialCrset.getMaxFieldSize());
         assertEquals(0, noInitialCrset.getMaxRows());
@@ -1232,17 +1258,31 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(crset.isAfterLast());
         assertTrue(crset.previous());
 
-        // non-bug different
+        // TODO RI's bug
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertEquals(DEFAULT_ROW_COUNT, crset.getRow());
             assertEquals("test4", crset.getString(2));
+        } else {
+            assertEquals(-1, crset.getRow());
+            assertEquals("test4", crset.getString(2));
+
+            assertTrue(crset.previous());
+            assertEquals(-2, crset.getRow());
+            assertEquals("test3", crset.getString(2));
         }
     }
 
     public void testAbsolute() throws Exception {
-        // non-bug different
+        // TODO non-bug different
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertFalse(crset.absolute(0));
+        } else {
+            try {
+                assertTrue(crset.absolute(0));
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // invalid cursor position
+            }
         }
 
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, crset.getType());
@@ -1262,9 +1302,9 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(crset.next());
 
         /*
-         * when the given row number is negative, spec says absolute(-1) equals
-         * last(). However, the return value of absolute(negative) is false when
-         * run on RI. The Harmony follows the spec.
+         * TODO when the given row number is negative, spec says absolute(-1)
+         * equals last(). However, the return value of absolute(negative) is
+         * false when run on RI. The Harmony follows the spec.
          */
         if (System.getProperty("Testing Harmony") == "true") {
             assertTrue(crset.absolute(-1));
@@ -1272,7 +1312,30 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             assertTrue(crset.absolute(-3));
             assertEquals(2, crset.getInt(1));
             assertFalse(crset.absolute(-5));
+        } else {
+            assertFalse(crset.absolute(-1));
+            assertEquals(0, crset.getRow());
+            assertTrue(crset.isBeforeFirst());
         }
+
+        crset.moveToInsertRow();
+        try {
+            crset.first();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        crset.updateInt(1, 60);
+        crset.updateString(2, "abc");
+        crset.insertRow();
+        try {
+            crset.absolute(3);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        crset.moveToCurrentRow();
+        assertTrue(crset.absolute(2));
 
         crset.setType(ResultSet.TYPE_FORWARD_ONLY);
         try {
@@ -1421,31 +1484,26 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertTrue(rs.next());
         assertEquals(5, rs.getInt(1));
 
-        /*
-         * TODO Insert multiple rows one time, uncomment after implemented
-         */
-        // TODO uncomment it after insert methods are implemented
-        // noInitialCrset = newNoInitialInstance();
-        // rs = st.executeQuery("select * from USER_INFO");
-        // noInitialCrset.populate(rs);
-        // noInitialCrset.setReadOnly(false);
-        // noInitialCrset.moveToInsertRow();
-        // for (int i = 6; i <= 20; i++) {
-        // noInitialCrset.updateInt(1, i);
-        // noInitialCrset.updateString(2, "test" + i);
-        // noInitialCrset.insertRow();
-        // }
-        // noInitialCrset.moveToCurrentRow();
-        // noInitialCrset.acceptChanges(conn);
-        // // check the new rows in CachedRowSet
-        // assertEquals(20, noInitialCrset.size());
-        // // check the new rows in DB
-        // rs = st.executeQuery("select * from USER_INFO");
-        // int cursorIndex = 0;
-        // while (rs.next()) {
-        // cursorIndex++;
-        // }
-        // assertEquals(20, cursorIndex);
+        noInitialCrset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+        noInitialCrset.moveToInsertRow();
+        for (int i = 6; i <= 20; i++) {
+            noInitialCrset.updateInt(1, i);
+            noInitialCrset.updateString(2, "test" + i);
+            noInitialCrset.insertRow();
+        }
+        noInitialCrset.moveToCurrentRow();
+        noInitialCrset.acceptChanges(conn);
+        // check the new rows in CachedRowSet
+        assertEquals(20, noInitialCrset.size());
+        // check the new rows in DB
+        rs = st.executeQuery("select * from USER_INFO");
+        int cursorIndex = 0;
+        while (rs.next()) {
+            cursorIndex++;
+        }
+        assertEquals(20, cursorIndex);
     }
 
     public void testAcceptChanges_InsertException() throws Exception {
@@ -1466,7 +1524,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(1, resolver.getRow());
+
+            assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
 
         /*
@@ -1487,7 +1565,26 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(1, resolver.getRow());
+            assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
 
         /*
@@ -1545,7 +1642,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(1, resolver.getRow());
+
+            assertEquals(SyncResolver.INSERT_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
     }
 
@@ -1560,6 +1677,8 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         while (crset.next()) {
             crset.deleteRow();
         }
+
+        // TODO maybe RI's bug
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             crset.acceptChanges(conn);
         } else {
@@ -1597,7 +1716,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(3, resolver.getRow());
+
+            assertEquals(SyncResolver.DELETE_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
 
         /*
@@ -1618,7 +1757,28 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            // TODO resolver doesn't contian conflict in RI, maybe RI's bug
+            if ("true".equals(System.getProperty("Testing Harmony"))) {
+                assertTrue(resolver.nextConflict());
+
+                for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                    // all values are null
+                    assertNull(resolver.getConflictValue(i));
+                }
+
+            } else {
+                assertFalse(resolver.nextConflict());
+            }
         }
     }
 
@@ -1676,7 +1836,27 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(3, resolver.getRow());
+
+            assertEquals(SyncResolver.UPDATE_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
 
         /*
@@ -1698,7 +1878,30 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(3, resolver.getRow());
+
+            assertEquals(SyncResolver.UPDATE_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                try {
+                    resolver.getConflictValue(i);
+                } catch (SQLException ex) {
+                    // TODO RI throw SQLException here, maybe RI's bug
+                }
+            }
+
+            assertFalse(resolver.nextConflict());
         }
 
         /*
@@ -1720,38 +1923,1020 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.acceptChanges(conn);
             fail("should throw SyncProviderException");
         } catch (SyncProviderException e) {
-            // TODO analysis SyncProviderException
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            assertTrue(resolver.nextConflict());
+            assertEquals(3, resolver.getRow());
+
+            assertEquals(SyncResolver.UPDATE_ROW_CONFLICT, resolver.getStatus());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertFalse(resolver.nextConflict());
         }
     }
 
-    public class Listener implements RowSetListener, Cloneable {
+    public void testAcceptChanges_MultiConflicts() throws Exception {
+        /*
+         * Update a row in which one column's value is out of range
+         */
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        crset.updateString(2, "update4");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200000); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.updateRow();
 
-        private String tag = null;
+        /*
+         * Delete a row which has been deleted from database
+         */
+        int result = st.executeUpdate("delete from USER_INFO where ID = 1");
+        assertEquals(1, result);
+        // move to the first row which doesn't exist in database
+        assertTrue(crset.absolute(1));
+        assertEquals(1, crset.getInt(1));
+        crset.deleteRow();
 
-        public void cursorMoved(RowSetEvent theEvent) {
-            tag = "cursorMoved";
+        /*
+         * Insert a new row. One given column's value exceeds the max range.
+         * Therefore, it should throw SyncProviderException.
+         */
+        assertTrue(crset.last());
+        crset.moveToInsertRow();
+        crset.updateInt(1, 5);
+        crset.updateString(2, "test5");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200000); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.insertRow();
+        crset.moveToCurrentRow();
+
+        try {
+            crset.acceptChanges(conn);
+        } catch (SyncProviderException e) {
+            SyncResolver resolver = e.getSyncResolver();
+            assertEquals(0, resolver.getRow());
+
+            try {
+                resolver.getConflictValue(1);
+                fail("Should throw SQLException");
+            } catch (SQLException ex) {
+                // expected, Invalid cursor position
+            }
+
+            HashMap<Integer, Integer> conflicts = new HashMap<Integer, Integer>();
+            conflicts.put(SyncResolver.INSERT_ROW_CONFLICT, 5);
+            conflicts.put(SyncResolver.UPDATE_ROW_CONFLICT, 3);
+            conflicts.put(SyncResolver.DELETE_ROW_CONFLICT, 1);
+
+            assertTrue(resolver.nextConflict());
+
+            assertTrue(conflicts.containsKey(resolver.getStatus()));
+            assertEquals(((Integer) conflicts.get(resolver.getStatus()))
+                    .intValue(), resolver.getRow());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            assertTrue(resolver.nextConflict());
+
+            assertTrue(conflicts.containsKey(resolver.getStatus()));
+            assertEquals(((Integer) conflicts.get(resolver.getStatus()))
+                    .intValue(), resolver.getRow());
+
+            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                // all values are null
+                assertNull(resolver.getConflictValue(i));
+            }
+
+            // TODO RI only contains two conflicts, maybe RI's bug
+            if ("true".equals(System.getProperty("Testing Harmony"))) {
+                assertTrue(resolver.nextConflict());
+
+                assertTrue(conflicts.containsKey(resolver.getStatus()));
+                assertEquals(((Integer) conflicts.get(resolver.getStatus()))
+                        .intValue(), resolver.getRow());
+
+                for (int i = 1; i <= DEFAULT_COLUMN_COUNT; ++i) {
+                    // all values are null
+                    assertNull(resolver.getConflictValue(i));
+                }
+
+                assertFalse(resolver.nextConflict());
+
+            } else {
+                assertFalse(resolver.nextConflict());
+            }
+
+        }
+    }
+
+    public void testFindColumn() throws SQLException {
+        try {
+            noInitialCrset.findColumn(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
         }
 
-        public void rowChanged(RowSetEvent theEvent) {
-            tag = "rowChanged";
+        try {
+            noInitialCrset.findColumn("ID");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
         }
 
-        public void rowSetChanged(RowSetEvent theEvent) {
-            tag = "rowSetChanged";
+        try {
+            noInitialCrset.findColumn("not exist name");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
         }
 
-        public String getTag() {
-            return tag;
+        try {
+            crset.findColumn("not exist name");
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Invalid column name
         }
 
-        public void setTag(String tag) {
-            this.tag = tag;
+        try {
+            crset.findColumn(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
         }
 
-        public Listener clone() throws CloneNotSupportedException {
-            Listener listener = (Listener) super.clone();
-            listener.tag = tag;
-            return listener;
+        assertEquals(1, crset.findColumn("ID"));
+
+        assertEquals(1, crset.findColumn("id"));
+
+        assertEquals(7, crset.findColumn("FLOAT_T"));
+
+        assertEquals(7, crset.findColumn("FloaT_T"));
+    }
+
+    public void testRestoreOriginal() throws Exception {
+        // update
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        crset.updateString(2, "update3");
+        assertEquals("update3", crset.getString(2));
+
+        crset.updateRow();
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+            assertTrue(crset.absolute(3));
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+            assertTrue(crset.next());
         }
+
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        // insert
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+        crset.next();
+
+        crset.moveToInsertRow();
+        crset.updateInt(1, 5);
+        crset.updateString(2, "test5");
+        crset.updateLong(3, 555555L);
+        crset.updateInt(4, 200); // 200000 exceeds the NUMERIC's range
+        crset.updateBigDecimal(5, new BigDecimal(23));
+        crset.updateFloat(8, 4.888F);
+        crset.insertRow();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+
+            int count = 0;
+            crset.beforeFirst();
+            while (crset.next()) {
+                count++;
+            }
+            assertEquals(4, count);
+        } else {
+            assertEquals(0, crset.getRow());
+
+            // assertTrue(crset.next()); throws SQLException
+            crset.beforeFirst();
+            assertTrue(crset.isBeforeFirst());
+            // assertTrue(crset.next()); throws SQLException
+            /*
+             * I can't move cursor to a valid position, so can't do any check
+             */
+        }
+
+        // delete
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        crset.absolute(3);
+        crset.deleteRow();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+            assertTrue(crset.absolute(3));
+            assertEquals(3, crset.getInt(1));
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+            assertTrue(crset.absolute(3));
+            assertEquals(3, crset.getInt(1));
+        }
+
+        crset = newNoInitialInstance();
+
+        crset.restoreOriginal();
+
+        // invoke restoreOriginal cursor out of rowset
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        crset.updateString(2, "update3");
+        assertEquals("update3", crset.getString(2));
+
+        crset.updateRow();
+
+        crset.beforeFirst();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+            assertTrue(crset.absolute(3));
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+            assertTrue(crset.next());
+        }
+
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+    }
+
+    public void testRestoreOriginal_MultiChanges() throws Exception {
+        insertMoreData(5);
+
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        // row 3 not call updateRow
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("test3", crset.getString(2));
+
+        crset.updateString(2, "update3");
+        assertEquals("update3", crset.getString(2));
+
+        // row 4 call updateRow
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertEquals("test4", crset.getString(2));
+
+        crset.updateString(2, "update4");
+        assertEquals("update4", crset.getString(2));
+        crset.updateRow();
+
+        // delete row 5
+        assertTrue(crset.next());
+        assertEquals(5, crset.getInt(1));
+        crset.deleteRow();
+
+        crset.restoreOriginal();
+
+        /*
+         * TODO seems RI put the cursor out of rowset after restoreOriginal, RI'
+         * bug
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(crset.isFirst());
+            assertEquals(1, crset.getRow());
+        } else {
+            assertEquals(0, crset.getRow());
+            crset.beforeFirst();
+        }
+
+        assertTrue(crset.absolute(3));
+        assertEquals(3, crset.getInt(1));
+        assertEquals("update3", crset.getString(2));
+
+        assertTrue(crset.next());
+        assertEquals("test4", crset.getString(2));
+
+        assertTrue(crset.next());
+        assertEquals(5, crset.getInt(1));
+    }
+
+    public void testRefreshRow() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            noInitialCrset.refreshRow();
+            fail("should throw exception");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // RI throw ArrayIndexOutOfBoundsException
+        } catch (SQLException e) {
+            // expected
+        }
+
+        rs = st.executeQuery("SELECT * FROM USER_INFO");
+        noInitialCrset.populate(rs);
+        assertTrue(noInitialCrset.isBeforeFirst());
+        try {
+            noInitialCrset.refreshRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected: Invalid cursor position
+        }
+
+        // when the cursor is on the insert row
+        noInitialCrset.moveToInsertRow();
+        try {
+            noInitialCrset.refreshRow();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected: Invalid cursor position
+        }
+
+        // move the cursor to the third row
+        noInitialCrset.moveToCurrentRow();
+        assertTrue(noInitialCrset.absolute(3));
+        // no effect
+        noInitialCrset.refreshRow();
+
+        /*
+         * Update the third row in database. Then call refreshRow().
+         */
+        int result = st
+                .executeUpdate("UPDATE USER_INFO SET NAME = 'update33' WHERE ID = 3");
+        assertEquals(1, result);
+
+        // still no effect.
+        noInitialCrset.refreshRow();
+        assertEquals(3, noInitialCrset.getInt(1));
+        assertEquals("test3", noInitialCrset.getString(2));
+
+        noInitialCrset.updateString(2, "update33");
+        noInitialCrset.refreshRow();
+        assertEquals("test3", noInitialCrset.getString(2));
+
+        noInitialCrset.updateString(2, "update33");
+        noInitialCrset.updateRow();
+        noInitialCrset.beforeFirst();
+        assertTrue(noInitialCrset.absolute(3));
+        assertEquals("update33", noInitialCrset.getString(2));
+        assertTrue(noInitialCrset.rowUpdated());
+        noInitialCrset.refreshRow();
+        assertEquals("test3", noInitialCrset.getString(2));
+        assertFalse(noInitialCrset.rowUpdated());
+    }
+
+    public void testToCollection() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            noInitialCrset.toCollection();
+            fail("should throw exception");
+        } catch (NullPointerException e) {
+            // RI throw NullPointerException
+        } catch (SQLException e) {
+            // expected
+        }
+
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            rs = st.executeQuery("select * from USER_INFO");
+            noInitialCrset.populate(rs);
+            rs = st.executeQuery("select * from USER_INFO");
+
+            Collection<?> collection = noInitialCrset.toCollection();
+            Iterator iter = collection.iterator();
+            while (iter.hasNext()) {
+                Vector vector = (Vector) iter.next();
+                assertTrue(rs.next());
+                for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+                    assertEquals(rs.getObject(i), vector.get(i - 1));
+                }
+            }
+        } else {
+            rs = st.executeQuery("select * from USER_INFO");
+            noInitialCrset.populate(rs);
+
+            Collection<?> collection = noInitialCrset.toCollection();
+            assertEquals("class java.util.TreeMap$2", collection.getClass()
+                    .toString());
+            Iterator iter = collection.iterator();
+            assertTrue(iter.hasNext());
+            assertEquals("class com.sun.rowset.internal.Row", iter.next()
+                    .getClass().toString());
+        }
+    }
+
+    public void testToCollectionInt() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        assertEquals(0, noInitialCrset.toCollection(-1).size());
+        assertEquals(0, noInitialCrset.toCollection(0).size());
+        assertEquals(Vector.class, noInitialCrset.toCollection(1).getClass());
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+
+        try {
+            noInitialCrset.toCollection(0);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        try {
+            noInitialCrset.toCollection(DEFAULT_COLUMN_COUNT + 1);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        Vector vector = (Vector) noInitialCrset.toCollection(1);
+        Iterator iter = vector.iterator();
+        int index = 0;
+        while (iter.hasNext()) {
+            index++;
+            assertEquals(index, iter.next());
+        }
+        assertEquals(4, index);
+
+        vector = (Vector) noInitialCrset.toCollection(3);
+        iter = vector.iterator();
+        index = 0;
+        while (iter.hasNext()) {
+            index++;
+            if (index == 1 || index == 2) {
+                assertNull(iter.next());
+            } else if (index == 3) {
+                assertEquals("3333", iter.next().toString());
+            } else if (index == 4) {
+                assertEquals("444423", iter.next().toString());
+            }
+        }
+        assertEquals(4, index);
+    }
+
+    public void testToCollectionString() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            assertEquals(0, noInitialCrset.toCollection("ID"));
+            fail("should throw exception");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+
+        try {
+            noInitialCrset.toCollection("valid");
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        Vector vector = (Vector) noInitialCrset.toCollection("ID");
+        Iterator iter = vector.iterator();
+        int index = 0;
+        while (iter.hasNext()) {
+            index++;
+            assertEquals(index, iter.next());
+        }
+        assertEquals(4, index);
+
+        vector = (Vector) noInitialCrset.toCollection("BIGINT_T");
+        iter = vector.iterator();
+        index = 0;
+        while (iter.hasNext()) {
+            index++;
+            if (index == 1 || index == 2) {
+                assertNull(iter.next());
+            } else if (index == 3) {
+                assertEquals("3333", iter.next().toString());
+            } else if (index == 4) {
+                assertEquals("444423", iter.next().toString());
+            }
+        }
+        assertEquals(4, index);
+    }
+
+    public void testGetCursorName() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        try {
+            noInitialCrset.getCursorName();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        rs = st.executeQuery("select * from USER_INFO");
+        assertTrue(rs.next());
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+
+        try {
+            noInitialCrset.getCursorName();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        while (noInitialCrset.next()) {
+            try {
+                noInitialCrset.getCursorName();
+                fail("should throw SQLException");
+            } catch (SQLException e) {
+                // expected
+            }
+        }
+    }
+
+    public void testGetStatement() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        assertNull(noInitialCrset.getStatement());
+
+        rs = st.executeQuery("select * from USER_INFO");
+        assertNotNull(rs.getStatement());
+        noInitialCrset.populate(rs);
+        assertNull(noInitialCrset.getStatement());
+
+        noInitialCrset.setUrl(DERBY_URL);
+        assertNull(noInitialCrset.getStatement());
+    }
+
+    public void testWasNull() throws Exception {
+        noInitialCrset = newNoInitialInstance();
+        assertFalse(noInitialCrset.wasNull());
+
+        rs = st.executeQuery("select * from USER_INFO");
+        noInitialCrset.populate(rs);
+        assertFalse(noInitialCrset.wasNull());
+
+        assertTrue(noInitialCrset.next());
+        assertFalse(noInitialCrset.wasNull());
+        assertNull(noInitialCrset.getObject(3));
+        assertTrue(noInitialCrset.wasNull());
+
+        assertNotNull(noInitialCrset.getObject(1));
+        assertFalse(noInitialCrset.wasNull());
+
+        assertNull(noInitialCrset.getObject(5));
+        assertTrue(noInitialCrset.wasNull());
+
+        assertTrue(noInitialCrset.absolute(3));
+        noInitialCrset.updateString(2, "x");
+        assertTrue(noInitialCrset.wasNull());
+
+        assertTrue(noInitialCrset.first());
+        for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
+            if (noInitialCrset.getObject(i) == null) {
+                assertTrue(noInitialCrset.wasNull());
+            } else {
+                assertFalse(noInitialCrset.wasNull());
+            }
+        }
+    }
+
+    public void testGetKeyColumns() throws Exception {
+        int[] columns = null;
+        /*
+         * TODO spec says SQLException should be thrown when CachedRowSet object
+         * is empty, while RI return null, Harmony follow spec
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            try {
+                columns = noInitialCrset.getKeyColumns();
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected
+            }
+
+        } else {
+            columns = noInitialCrset.getKeyColumns();
+            assertNull(columns);
+        }
+
+        columns = crset.getKeyColumns();
+
+        /*
+         * TODO spec says empty array should be return when on key columns is
+         * setted, while RI return null, Harmony follow spec
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertNotNull(columns);
+            assertEquals(0, columns.length);
+        } else {
+            assertNull(columns);
+        }
+
+    }
+
+    public void testSetKeyColumns() throws Exception {
+        try {
+            noInitialCrset.setKeyColumns(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        int[] columns = null;
+
+        noInitialCrset.setKeyColumns(new int[0]);
+        noInitialCrset.setKeyColumns(new int[] { 1, 100 });
+
+        rs = st.executeQuery("select * from user_info");
+
+        noInitialCrset.populate(rs);
+
+        /*
+         * populate doesn't initial keyColumns, it's not reasonable, but we
+         * follow RI here
+         */
+        columns = noInitialCrset.getKeyColumns();
+        assertNotNull(columns);
+        assertEquals(2, columns.length);
+        assertEquals(1, columns[0]);
+        assertEquals(100, columns[1]);
+
+        try {
+            crset.setKeyColumns(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        crset.setKeyColumns(new int[0]);
+        columns = crset.getKeyColumns();
+        assertNotNull(columns);
+        assertEquals(0, columns.length);
+
+        try {
+            crset.setKeyColumns(new int[] { 1, 100 });
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Invalid column index 100
+        }
+
+        crset.setKeyColumns(new int[] { 1, 2 });
+        columns = crset.getKeyColumns();
+        assertNotNull(columns);
+        assertEquals(2, columns.length);
+        assertEquals(1, columns[0]);
+        assertEquals(2, columns[1]);
+
+        try {
+            crset.getMatchColumnIndexes();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
+        crset.setMatchColumn(3);
+        int[] matchColumns = crset.getMatchColumnIndexes();
+        assertEquals(3, matchColumns[0]);
+        for (int i = 1; i < 10; ++i) {
+            assertEquals(-1, matchColumns[i]);
+        }
+
+        crset.setKeyColumns(new int[] { 4, 5 });
+        columns = crset.getKeyColumns();
+        assertNotNull(columns);
+        assertEquals(2, columns.length);
+        assertEquals(4, columns[0]);
+        assertEquals(5, columns[1]);
+
+        // setKeyColumns doesn't effect match columns
+        matchColumns = crset.getMatchColumnIndexes();
+        assertEquals(3, matchColumns[0]);
+        for (int i = 1; i < 10; ++i) {
+            assertEquals(-1, matchColumns[i]);
+        }
+
+        int[] args = new int[] { 6, 7 };
+        crset.setKeyColumns(args);
+        columns = crset.getKeyColumns();
+        assertNotNull(columns);
+        assertEquals(2, columns.length);
+        assertEquals(6, columns[0]);
+        assertEquals(7, columns[1]);
+
+        assertNotSame(args, columns);
+
+        // getKeyColumns doesn't do clone
+        assertSame(crset.getKeyColumns(), crset.getKeyColumns());
+        columns = crset.getKeyColumns();
+        assertEquals(6, columns[0]);
+        assertEquals(7, columns[1]);
+
+        columns[1] = 8;
+
+        args = crset.getKeyColumns();
+        assertEquals(8, args[1]);
+
+    }
+
+    public void testProvider() throws Exception {
+        SyncProvider provider = null;
+        if (System.getProperty("Testing Harmony") == "true") {
+            provider = SyncFactory
+                    .getInstance("Apache Harmony HYOptimisticProvider");
+        } else {
+            provider = SyncFactory
+                    .getInstance("com.sun.rowset.providers.RIOptimisticProvider");
+        }
+
+        assertEquals(SyncProvider.GRADE_CHECK_MODIFIED_AT_COMMIT, provider
+                .getProviderGrade());
+        assertEquals(SyncProvider.DATASOURCE_NO_LOCK, provider
+                .getDataSourceLock());
+        assertEquals(SyncProvider.NONUPDATABLE_VIEW_SYNC, provider
+                .supportsUpdatableView());
+
+        try {
+            provider.setDataSourceLock(SyncProvider.DATASOURCE_TABLE_LOCK);
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        try {
+            provider.setDataSourceLock(SyncProvider.DATASOURCE_ROW_LOCK);
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        try {
+            provider.setDataSourceLock(SyncProvider.DATASOURCE_DB_LOCK);
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected
+        }
+
+        provider.setDataSourceLock(SyncProvider.DATASOURCE_NO_LOCK);
+    }
+
+    public void testGetConnection() throws Exception {
+        RowSetInternal rowset = (RowSetInternal) noInitialCrset;
+        assertNull(rowset.getConnection());
+
+        noInitialCrset.setUsername("test");
+        noInitialCrset.setPassword("pwd");
+
+        assertNull(noInitialCrset.getUrl());
+        assertNull(noInitialCrset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        noInitialCrset.setUrl(DERBY_URL);
+        assertNull(noInitialCrset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        noInitialCrset.setUsername(null);
+        noInitialCrset.setPassword(null);
+        noInitialCrset.setUrl(DERBY_URL);
+        assertNull(noInitialCrset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        // test acceptChange
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+
+        crset.populate(rs);
+
+        rowset = (RowSetInternal) crset;
+
+        assertNull(crset.getUsername());
+        assertNull(crset.getPassword());
+        assertNull(crset.getUrl());
+        assertNull(crset.getDataSourceName());
+        assertNull(rowset.getConnection());
+
+        crset.setUrl(DERBY_URL);
+        assertNull(crset.getUsername());
+        assertNull(crset.getPassword());
+        assertEquals(DERBY_URL, crset.getUrl());
+        assertNull(rowset.getConnection());
+
+        crset.absolute(3);
+        crset.updateString(2, "update2");
+        assertEquals(DERBY_URL, crset.getUrl());
+        crset.acceptChanges();
+        assertNull(rowset.getConnection());
+
+        crset.acceptChanges(conn);
+
+        assertNotNull(rowset.getConnection());
+        assertSame(conn, rowset.getConnection());
+
+        crset.acceptChanges();
+        assertSame(conn, rowset.getConnection());
+
+        Connection connection = DriverManager.getConnection(DERBY_URL);
+        crset.acceptChanges(connection);
+        assertSame(connection, rowset.getConnection());
+
+    }
+
+    public void testRetrieveConnection() throws Exception {
+        crset = newNoInitialInstance();
+        rs = st.executeQuery("select * from USER_INFO");
+
+        crset.populate(rs);
+
+        assertNull(crset.getUrl());
+        assertNull(crset.getDataSourceName());
+        try {
+            crset.acceptChanges();
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected, Unable to get connection
+        }
+
+        // wrong user and password
+        crset.setUsername("testusername");
+        crset.setPassword("testpassword");
+        crset.setUrl(DERBY_URL);
+        crset.absolute(3);
+        crset.updateString(2, "update3");
+        crset.updateRow();
+
+        crset.acceptChanges();
+
+        crset.setDataSourceName("testDataSource");
+
+        try {
+            crset.acceptChanges();
+            fail("Should throw SyncProviderException");
+        } catch (SyncProviderException e) {
+            // expected, (JNDI)Unable to get connection
+        }
+    }
+
+    public void testSerializable() throws Exception {
+
+        crset.absolute(3);
+        crset.updateString(2, "update3");
+
+        assertEquals(3, crset.getRow());
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bout);
+        out.writeObject(crset);
+
+        out.close();
+
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(
+                bout.toByteArray()));
+
+        CachedRowSet another = (CachedRowSet) in.readObject();
+        in.close();
+
+        isMetaDataEquals(crset.getMetaData(), another.getMetaData());
+
+        assertEquals(crset.getRow(), another.getRow());
+        assertEquals(crset.getString(2), another.getString(2));
+
+        crset = newNoInitialInstance();
+        crset.setCommand("SELECT * FROM USER_INFO");
+        crset.setUrl(DERBY_URL);
+        crset.execute();
+
+        crset.absolute(3);
+
+        bout = new ByteArrayOutputStream();
+        out = new ObjectOutputStream(bout);
+        out.writeObject(crset);
+
+        out.close();
+
+        in = new ObjectInputStream(new ByteArrayInputStream(bout.toByteArray()));
+
+        another = (CachedRowSet) in.readObject();
+
+        isMetaDataEquals(crset.getMetaData(), another.getMetaData());
+
+        assertEquals(crset.getRow(), another.getRow());
+
+        try {
+            another.commit();
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+}
+
+class Listener implements RowSetListener, Cloneable {
+
+    private String tag = null;
+
+    private boolean isPrint = false;
+
+    private Object eventSource = null;
+
+    public void cursorMoved(RowSetEvent theEvent) {
+        if (isPrint) {
+            System.out.println("cursorMoved");
+        }
+        tag = CachedRowSetListenerTest.EVENT_CURSOR_MOVED;
+    }
+
+    public void rowChanged(RowSetEvent theEvent) {
+        if (isPrint) {
+            System.out.println("rowChanged");
+        }
+        tag = CachedRowSetListenerTest.EVENT_ROW_CHANGED;
+    }
+
+    public void rowSetChanged(RowSetEvent theEvent) {
+        if (isPrint) {
+            System.out.println("rowSetChanged");
+        }
+        tag = CachedRowSetListenerTest.EVENT_ROWSET_CHANGED;
+        eventSource = theEvent.getSource();
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public Object getEventSource() {
+        return eventSource;
+    }
+
+    public void clear() {
+        tag = null;
+        eventSource = null;
+    }
+
+    public void setPrint(boolean isPrint) {
+        this.isPrint = isPrint;
+    }
+
+    public Listener clone() throws CloneNotSupportedException {
+        Listener listener = (Listener) super.clone();
+        return listener;
     }
 }

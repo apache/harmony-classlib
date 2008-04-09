@@ -16,10 +16,17 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+import java.io.Serializable;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.util.BitSet;
 
-public class CachedRow implements Cloneable {
+import org.apache.harmony.sql.internal.nls.Messages;
+
+public class CachedRow implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = 5131958045838461662L;
+
     private Object[] columnData;
 
     private Object[] originalColumnData;
@@ -33,6 +40,16 @@ public class CachedRow implements Cloneable {
     private boolean isUpdate;
 
     private boolean nonUpdateable = false;
+
+    private SQLWarning sqlWarning = null;
+
+    public SQLWarning getSqlWarning() {
+        return sqlWarning;
+    }
+
+    public void setSqlWarning(SQLWarning sqlWarning) {
+        this.sqlWarning = sqlWarning;
+    }
 
     public CachedRow(Object[] columnData) {
         this.columnData = columnData.clone();
@@ -48,19 +65,7 @@ public class CachedRow implements Cloneable {
         mask.set(i);
     }
 
-    public void setUnavailable() {
-        // FIXME: What is this method used for?
-        setDelete();
-        setInsert();
-        mask.clear();
-        mask.flip(0, columnData.length);
-    }
-
     public void setNonUpdateable() {
-        // setDelete();
-        // setInsert();
-        // mask.clear();
-        // mask.flip(0,columnData.length);
         nonUpdateable = true;
     }
 
@@ -110,8 +115,8 @@ public class CachedRow implements Cloneable {
 
     public void updateObject(int columnIndex, Object x) throws SQLException {
         if (nonUpdateable) {
-            // TODO load message from resource file
-            throw new SQLException("Not Updateable of the CurrentRow");
+            // rowset.21=Not Updateable of the CurrentRow
+            throw new SQLException(Messages.getString("rowset.21")); //$NON-NLS-1$
         }
 
         columnData[columnIndex - 1] = x;
@@ -128,6 +133,14 @@ public class CachedRow implements Cloneable {
         isInsert = false;
         mask.flip(0, columnData.length);
         originalColumnData = columnData.clone();
+    }
+
+    public void restoreOriginal() {
+        isUpdate = false;
+        isDelete = false;
+        isInsert = false;
+        mask.flip(0, columnData.length);
+        columnData = originalColumnData.clone();
     }
 
     public Object getObject(int columnIndex) {

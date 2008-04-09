@@ -76,7 +76,7 @@ public class WinGDIGraphics2D extends CommonGraphics2D {
 
 
     static {
-        System.loadLibrary("gl"); //$NON-NLS-1$
+        org.apache.harmony.awt.Utils.loadLibrary("gl"); //$NON-NLS-1$
     }
 
     public WinGDIGraphics2D(NativeWindow nw, int tx, int ty, MultiRectArea clip) {

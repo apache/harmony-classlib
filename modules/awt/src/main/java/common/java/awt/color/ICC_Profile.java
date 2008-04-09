@@ -586,19 +586,19 @@ public class ICC_Profile implements Serializable {
                         } catch (FileNotFoundException e) {}
 
                         // Check java.iccprofile.path entries
-                        fiStream = tryPath(System.getProperty("java.iccprofile.path"), fName); //$NON-NLS-1$
+                        fiStream = tryPath(org.apache.harmony.awt.Utils.getSystemProperty("java.iccprofile.path"), fName); //$NON-NLS-1$
                         if (fiStream != null) {
                             return fiStream;
                         }
 
                         // Check java.class.path entries
-                        fiStream = tryPath(System.getProperty("java.class.path"), fName); //$NON-NLS-1$
+                        fiStream = tryPath(org.apache.harmony.awt.Utils.getSystemProperty("java.class.path"), fName); //$NON-NLS-1$
                         if (fiStream != null) {
                             return fiStream;
                         }
 
                         // Check directory with java sample profiles
-                        String home = System.getProperty("java.home"); //$NON-NLS-1$
+                        String home = org.apache.harmony.awt.Utils.getSystemProperty("java.home"); //$NON-NLS-1$
                         if (home != null) {
                             fiStream = tryPath(
                                     home + File.separatorChar +

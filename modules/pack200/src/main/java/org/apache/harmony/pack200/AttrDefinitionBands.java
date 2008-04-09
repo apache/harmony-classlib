@@ -20,7 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
+ * Attribute definition bands are the set of bands used to define extra
+ * attributes transmitted in the archive.
  */
 public class AttrDefinitionBands extends BandSet {
 
@@ -32,7 +33,7 @@ public class AttrDefinitionBands extends BandSet {
 
     private AttributeLayoutMap attributeDefinitionMap;
 
-    private String[] cpUTF8;
+    private final String[] cpUTF8;
 
     public AttrDefinitionBands(Segment segment) {
         super(segment);

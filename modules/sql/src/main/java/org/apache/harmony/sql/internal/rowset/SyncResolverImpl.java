@@ -39,7 +39,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.RowSetMetaData;
 import javax.sql.rowset.BaseRowSet;
 import javax.sql.rowset.spi.SyncResolver;
 
@@ -61,7 +60,7 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
 
     private int currentIndex;
 
-    private RowSetMetaData metadata;
+    private ResultSetMetaData metadata;
 
     private static class ConflictedRow {
         CachedRow row;
@@ -77,7 +76,7 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
         }
     }
 
-    public SyncResolverImpl(RowSetMetaData metadata) {
+    public SyncResolverImpl(ResultSetMetaData metadata) {
         super();
         this.metadata = metadata;
         conflictRows = new ArrayList<ConflictedRow>();
@@ -166,7 +165,7 @@ public class SyncResolverImpl extends BaseRowSet implements SyncResolver {
             }
         }
         // rowset.1=Not a valid column name
-        throw new SQLException(Messages.getString("rowset.1"));
+        throw new SQLException(Messages.getString("rowset.1")); //$NON-NLS-1$
     }
 
     public void execute() throws SQLException {

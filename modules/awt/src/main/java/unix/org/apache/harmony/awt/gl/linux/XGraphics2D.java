@@ -950,6 +950,11 @@ public class XGraphics2D extends CommonGraphics2D {
 
     }
 
+    @Override
+    public void flush(){
+        flush(display);
+    }
+
     // Native methods
 
     // GC methods
@@ -985,5 +990,9 @@ public class XGraphics2D extends CommonGraphics2D {
     private native int fillArc(long display, long drawable, long gc, int x, int y, int width, int height, int startAngle, int angle);
 
     private native int copyArea(long display, long src, long dst, long gc, int src_x, int src_y, int width, int height, int dst_x, int dst_y);
+
+    // Send all queued requests to the server
+
+    private native void flush(long display);
 
 }

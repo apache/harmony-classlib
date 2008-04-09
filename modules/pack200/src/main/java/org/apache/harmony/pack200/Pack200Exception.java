@@ -39,7 +39,7 @@ public class Pack200Exception extends Exception {
 	 * @param message
 	 *            the text message to display
 	 * @param cause
-	 *            the throwable that caused this problem
+	 *            the {@link Throwable} that caused this problem
 	 */
 	public Pack200Exception(String message, Throwable cause) {
 		super(message, cause);
@@ -49,7 +49,7 @@ public class Pack200Exception extends Exception {
 	 * Create a new Pack200 exception with the given message and cause
 	 *
 	 * @param cause
-	 *            the throwable that caused this problem
+	 *            the {@link Throwable} that caused this problem
 	 */
 	public Pack200Exception(Throwable cause) {
 		super(cause);

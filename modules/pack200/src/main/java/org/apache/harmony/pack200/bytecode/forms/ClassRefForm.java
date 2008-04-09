@@ -16,7 +16,10 @@
  */
 package org.apache.harmony.pack200.bytecode.forms;
 
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.SegmentConstantPool;
+import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
@@ -38,6 +41,26 @@ public class ClassRefForm extends ReferenceForm {
         this.widened = widened;
     }
 
+    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
+        // If the offset is not zero, proceed normally.
+        if(offset != 0) {
+            super.setNestedEntries(byteCode, operandManager, offset - 1);
+            return;
+        }
+        // If the offset is 0, ClassRefForms refer to
+        // the current class. Add that as the nested class.
+        // (This is true for all bc_classref forms in
+        // the spec except for multianewarray, which has
+        // its own form.)
+        SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        ClassFileEntry[] nested = null;
+        // How do I get this class?
+        nested = new ClassFileEntry[] {
+                globalPool.getClassPoolEntry(operandManager.getCurrentClass())
+            };
+        byteCode.setNested(nested);
+        byteCode.setNestedPositions(new int[][] {{0,2}});
+    }
     public int getOperandType() {
         return TYPE_CLASSREF;
     }

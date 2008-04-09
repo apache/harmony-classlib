@@ -73,6 +73,38 @@ public class ResourceBundleTest extends junit.framework.TestCase {
     private static final Control DEFAULT_CONTROL = Control
             .getControl(FORMAT_DEFAULT);
 
+    /**
+     * @tests java.util.ResourceBundle#getString(java.lang.String)
+     */
+    public void test_getStringLjava_lang_String() {
+        ResourceBundle bundle;
+        String name = "tests.support.Support_TestResource";
+        Locale.setDefault(new Locale("en", "US"));
+        bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR", "VAR"));
+        assertEquals("Wrong value parent4", "frFRVARValue4", bundle
+                .getString("parent4"));
+        assertEquals("Wrong value parent3", "frFRValue3", bundle
+                .getString("parent3"));
+        assertEquals("Wrong value parent2", "frValue2", bundle
+                .getString("parent2"));
+        assertEquals("Wrong value parent1", "parentValue1", bundle
+                .getString("parent1"));
+        assertEquals("Wrong value child3", "frFRVARChildValue3", bundle
+                .getString("child3"));
+        assertEquals("Wrong value child2", "frFRVARChildValue2", bundle
+                .getString("child2"));
+        assertEquals("Wrong value child1", "frFRVARChildValue1", bundle
+                .getString("child1"));
+
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle.getBundle("Does not exist");
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
+    }
+
     @SuppressWarnings("nls")
     private static final Locale LOCALE_FRFR = new Locale("fr", "FR");
 
@@ -124,6 +156,14 @@ public class ResourceBundleTest extends junit.framework.TestCase {
         assertEquals("Wrong bundle de_FR_var 2", "parentValue4", bundle
                 .getString("parent4"));
 
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle.getBundle("Does not exist", Locale.getDefault());
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
+
         // Test with a security manager
         Locale.setDefault(new Locale("en", "US"));
         System.setSecurityManager(new SecurityManager());
@@ -162,11 +202,50 @@ public class ResourceBundleTest extends junit.framework.TestCase {
         assertEquals("Wrong cached value", "en_resource", bundle
                 .getString("property"));
 
+        String classPath = System.getProperty("java.class.path");
+        StringTokenizer tok = new StringTokenizer(classPath, File.pathSeparator);
+        Vector urlVec = new Vector();
+        String resPackage = Support_Resources.RESOURCE_PACKAGE;
+        try {
+            while (tok.hasMoreTokens()) {
+                String path = (String) tok.nextToken();
+                String url;
+                if (new File(path).isDirectory())
+                    url = "file:" + path + resPackage + "subfolder/";
+                else
+                    url = "jar:file:" + path + "!" + resPackage + "subfolder/";
+                urlVec.addElement(new URL(url));
+            }
+        } catch (MalformedURLException e) {
+        }
+        URL[] urls = new URL[urlVec.size()];
+        for (int i = 0; i < urlVec.size(); i++)
+            urls[i] = (URL) urlVec.elementAt(i);
+        URLClassLoader loader = new URLClassLoader(urls, null);
+
+        String name = Support_Resources.RESOURCE_PACKAGE_NAME
+                + ".hyts_resource";
+        ResourceBundle bundle = ResourceBundle.getBundle(name, Locale
+                .getDefault());
+        assertEquals("Wrong value read", "parent", bundle.getString("property"));
+        bundle = ResourceBundle.getBundle(name, Locale.getDefault(), loader);
+        assertEquals("Wrong cached value", "resource", bundle
+                .getString("property"));
+
         // Regression test for Harmony-3823
         B bb = new B();
         String s = bb.find("nonexistent");
         s = bb.find("name");
         assertEquals("Wrong property got", "Name", s);
+
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle.getBundle("Does not exist", Locale.getDefault(),
+                    loader);
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
     }
 
     @SuppressWarnings("nls")
@@ -207,32 +286,23 @@ public class ResourceBundleTest extends junit.framework.TestCase {
     }
 
     /**
-     * @tests java.util.ResourceBundle#getString(java.lang.String)
+     * @tests java.util.ResourceBundle#getObject(java.lang.String)
      */
-    @SuppressWarnings("nls")
-    public void test_getStringLjava_lang_String() {
-        bundle = ResourceBundle.getBundle(CLASS_NAME, new Locale("fr", "FR",
-                "VAR"));
-        assertEquals("Wrong value parent4", "frFRVARValue4", bundle
-                .getString("parent4"));
-        assertEquals("Wrong value parent3", "frFRValue3", bundle
-                .getString("parent3"));
-        assertEquals("Wrong value parent2", "frValue2", bundle
-                .getString("parent2"));
-        assertEquals("Wrong value parent1", "parentValue1", bundle
-                .getString("parent1"));
-        assertEquals("Wrong value child3", "frFRVARChildValue3", bundle
-                .getString("child3"));
-        assertEquals("Wrong value child2", "frFRVARChildValue2", bundle
-                .getString("child2"));
-        assertEquals("Wrong value child1", "frFRVARChildValue1", bundle
-                .getString("child1"));
+    public void test_getObjectLjava_lang_String() {
+        // Regression test for Harmony-5698
+        try {
+            ResourceBundle bundle;
+            String name = "tests.support.Support_TestResource";
+            Locale.setDefault(new Locale("en", "US"));
+            bundle = ResourceBundle.getBundle(name, new Locale("fr", "FR",
+                    "VAR"));
+            bundle.getObject("not exist");
+            fail("Should throw MissingResourceException");
+        } catch (MissingResourceException e) {
+            assertNotNull(e.getLocalizedMessage());
+        }
     }
 
-    /**
-     * @tests {@link java.util.ResourceBundle#getBundle(String, Locale, ClassLoader)}
-     */
-    @SuppressWarnings("nls")
     public void test_getBundle_getClassName() {
         // Regression test for Harmony-1759
         Locale locale = Locale.GERMAN;

@@ -60,8 +60,9 @@ extern DWORD unusedThreadID;
 /* THREAD_SELF */
 #define THREAD_SELF() (GetCurrentThread())
 /* THREAD_YIELD */
-
+#if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x0400
+#endif
 #define THREAD_YIELD() (f_yield())
 
 /* THREAD_CREATE */

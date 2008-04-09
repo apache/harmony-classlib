@@ -43,9 +43,7 @@ import org.apache.harmony.pack200.bytecode.NewAttribute;
  */
 public class NewAttributeBands extends BandSet {
 
-    private AttributeLayout attributeLayout;
-
-    private List attributes;
+    private final AttributeLayout attributeLayout;
 
     private int backwardsCallCount;
 
@@ -65,15 +63,6 @@ public class NewAttributeBands extends BandSet {
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
         // does nothing - use parseAttributes instead
-    }
-
-    /**
-     * Returns the list of attributes read in by this band set.  This method
-     * should only be called after unpack() or it will return null.
-     * @return List of Attributes
-     */
-    public List getAttributes() {
-        return attributes;
     }
 
     /**
@@ -115,7 +104,6 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Tokenise the layout into AttributeElements
-     * @return a List of AttributeElements
      * @throws IOException
      */
     private void parseLayout() throws IOException {
@@ -364,7 +352,7 @@ public class NewAttributeBands extends BandSet {
 
     private class Integral extends LayoutElement {
 
-        private String tag;
+        private final String tag;
         private long[] band;
 
         public Integral(String tag) {
@@ -428,9 +416,9 @@ public class NewAttributeBands extends BandSet {
      */
     private class Replication extends LayoutElement {
 
-        private Integral countElement;
+        private final Integral countElement;
 
-        private List layoutElements = new ArrayList();
+        private final List layoutElements = new ArrayList();
 
         public Replication(String tag, String contents) throws IOException {
             this.countElement = new Integral(tag);
@@ -479,9 +467,9 @@ public class NewAttributeBands extends BandSet {
      */
     private class Union extends LayoutElement {
 
-        private Integral unionTag;
-        private List unionCases;
-        private List defaultCaseBody;
+        private final Integral unionTag;
+        private final List unionCases;
+        private final List defaultCaseBody;
         private int[] caseCounts;
         private int defaultCount;
 
@@ -572,7 +560,7 @@ public class NewAttributeBands extends BandSet {
 
     private class Call extends LayoutElement {
 
-        private int callableIndex;
+        private final int callableIndex;
         private Callable callable;
 
         public Call(int callableIndex) {
@@ -608,11 +596,11 @@ public class NewAttributeBands extends BandSet {
      */
     private class Reference extends LayoutElement {
 
-        private String tag;
+        private final String tag;
 
         private Object band;
 
-        private int length;
+        private final int length;
 
         public Reference(String tag) {
             this.tag = tag;
@@ -677,9 +665,9 @@ public class NewAttributeBands extends BandSet {
 
     }
 
-    private class Callable implements AttributeLayoutElement {
+    private static class Callable implements AttributeLayoutElement {
 
-        private List body;
+        private final List body;
 
         private boolean isBackwardsCallable;
 
@@ -748,7 +736,7 @@ public class NewAttributeBands extends BandSet {
 
         private List body;
 
-        private List tags;
+        private final List tags;
 
         public UnionCase(List tags) {
             this.tags = tags;
@@ -809,9 +797,8 @@ public class NewAttributeBands extends BandSet {
     }
 
     /**
-     * Returns the codec that should be used for the given layout element
+     * Returns the {@link BHSDCodec} that should be used for the given layout element
      * @param layoutElement
-     * @return
      */
     public BHSDCodec getCodec(String layoutElement) {
         if (layoutElement.indexOf("O") >= 0) { //$NON-NLS-1$
@@ -875,7 +862,10 @@ public class NewAttributeBands extends BandSet {
         }
         stream.reset();
         char[] digits = new char[length];
-        stream.read(digits);
+        int read = stream.read(digits);
+        if (read != digits.length) {
+        	throw new IOException("Error reading from the input stream");
+        }
         return Integer.parseInt((negative ? "-" : "") + new String(digits));
     }
 

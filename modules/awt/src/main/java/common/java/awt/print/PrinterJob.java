@@ -77,7 +77,7 @@ public abstract class PrinterJob {
         return AccessController.doPrivileged(
                 new PrivilegedAction<PrinterJob>() {
             public PrinterJob run() {
-                String s = System.getProperty("java.awt.printerjob"); //$NON-NLS-1$
+                String s = org.apache.harmony.awt.Utils.getSystemProperty("java.awt.printerjob"); //$NON-NLS-1$
 
                 if (s == null || s.equals("")){ //$NON-NLS-1$
                     s = "java.awt.print.PrinterJobImpl"; //$NON-NLS-1$

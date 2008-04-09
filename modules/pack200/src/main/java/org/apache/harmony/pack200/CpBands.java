@@ -31,6 +31,9 @@ import org.apache.harmony.pack200.bytecode.CPString;
 import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
+/**
+ * Constant Pool bands
+ */
 public class CpBands extends BandSet {
 
     public SegmentConstantPool getConstantPool() {
@@ -55,14 +58,14 @@ public class CpBands extends BandSet {
     private String[] cpString;
     private String[] cpUTF8;
 
-    private HashMap[] stringsToCPUTF8 = new HashMap[ClassConstantPool.NUM_DOMAINS];
-    private HashMap stringsToCPStrings = new HashMap();
-    private HashMap longsToCPLongs = new HashMap();
-    private HashMap integersToCPIntegers = new HashMap();
-    private HashMap floatsToCPFloats = new HashMap();
-    private HashMap stringsToCPClass = new HashMap();
-    private HashMap doublesToCPDoubles = new HashMap();
-    private HashMap descriptorsToCPNameAndTypes = new HashMap();
+    private final HashMap[] stringsToCPUTF8 = new HashMap[ClassConstantPool.NUM_DOMAINS];
+    private final HashMap stringsToCPStrings = new HashMap();
+    private final HashMap longsToCPLongs = new HashMap();
+    private final HashMap integersToCPIntegers = new HashMap();
+    private final HashMap floatsToCPFloats = new HashMap();
+    private final HashMap stringsToCPClass = new HashMap();
+    private final HashMap doublesToCPDoubles = new HashMap();
+    private final HashMap descriptorsToCPNameAndTypes = new HashMap();
 
 
     public CpBands(Segment segment) {
@@ -136,14 +139,12 @@ public class CpBands extends BandSet {
     private void parseCpDouble(InputStream in) throws IOException,
             Pack200Exception {
         int cpDoubleCount = header.getCpDoubleCount();
-        cpDouble = new double[cpDoubleCount];
-        long[] hiBits = decodeBandLong("cp_Double_hi", in, Codec.UDELTA5,
-                cpDoubleCount);
-        long[] loBits = decodeBandLong("cp_Double_lo", in, Codec.DELTA5,
-                cpDoubleCount);
-        for (int i = 0; i < cpDoubleCount; i++) {
-            cpDouble[i] = Double.longBitsToDouble(hiBits[i] << 32 | loBits[i]);
-        }
+        long[] band = parseFlags("cp_Double", in, cpDoubleCount,
+                Codec.UDELTA5, Codec.DELTA5);
+        cpDouble = new double[band.length];
+        for (int i = 0; i < band.length; i++) {
+			cpDouble[i] = Double.longBitsToDouble(band[i]);
+		}
     }
 
     /**
@@ -336,7 +337,10 @@ public class CpBands extends BandSet {
 
         // Read in the big suffix data
         int[] bigSuffixCounts = decodeBandInt("cp_Utf8_big_suffix", in, Codec.DELTA5, bigSuffixCount);
-        int[][] bigSuffixDataBand = decodeBandInt("cp_Utf8_big_chars", in, Codec.DELTA5, bigSuffixCounts);
+        int[][] bigSuffixDataBand = new int[bigSuffixCount][];
+        for (int i = 0; i < bigSuffixDataBand.length; i++) {
+			bigSuffixDataBand[i] = decodeBandInt("cp_Utf8_big_chars " + i, in, Codec.DELTA5, bigSuffixCounts[i]);
+		}
 
         // Convert big suffix data to characters
         char bigSuffixData[][] = new char[bigSuffixCount][];

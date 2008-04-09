@@ -16,6 +16,11 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+import java.net.URL;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -23,6 +28,11 @@ import java.util.ArrayList;
 
 import javax.sql.RowSetInternal;
 import javax.sql.RowSetReader;
+import javax.sql.rowset.serial.SerialArray;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialDatalink;
+import javax.sql.rowset.serial.SerialRef;
 
 public class CachedRowSetReader implements RowSetReader {
 
@@ -30,7 +40,16 @@ public class CachedRowSetReader implements RowSetReader {
 
     private ResultSetMetaData metadata;
 
+    public CachedRowSetReader() {
+        // do nothing, used by SyncProvider
+    }
+
     public CachedRowSetReader(ResultSet rs) throws SQLException {
+        this.rs = rs;
+        this.metadata = rs.getMetaData();
+    }
+
+    public void setResultSet(ResultSet rs) throws SQLException {
         this.rs = rs;
         this.metadata = rs.getMetaData();
     }
@@ -49,10 +68,28 @@ public class CachedRowSetReader implements RowSetReader {
         while (rs.next()) {
             Object[] columnData = new Object[columnCount];
             for (int i = 0; i < columnCount; i++) {
-                columnData[i] = rs.getObject(i + 1);
+                Object obj = rs.getObject(i + 1);
+                if (obj == null) {
+                    columnData[i] = null;
+                    continue;
+                }
+                if (obj instanceof Array) {
+                    obj = new SerialArray((Array) obj);
+                } else if (obj instanceof Blob) {
+                    obj = new SerialBlob((Blob) obj);
+                } else if (obj instanceof Clob) {
+                    obj = new SerialClob((Clob) obj);
+                } else if (obj instanceof Ref) {
+                    obj = new SerialRef((Ref) obj);
+                } else if (obj instanceof URL) {
+                    obj = new SerialDatalink((URL) obj);
+                }
+                columnData[i] = obj;
             }
 
-            data.add(new CachedRow(columnData));
+            CachedRow currentRow = new CachedRow(columnData);
+            currentRow.setSqlWarning(rs.getWarnings());
+            data.add(currentRow);
 
             if (maxRows > 0 && maxRows == data.size()) {
                 break;

@@ -27,7 +27,7 @@ import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.harmony.kernel.vm.VM;
@@ -49,7 +49,7 @@ import org.apache.harmony.luni.util.PriviAction;
 public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamConstants {
 
-    private static InputStream emptyStream = new ByteArrayInputStream(
+    private InputStream emptyStream = new ByteArrayInputStream(
             new byte[0]);
 
     // To put into objectsRead when reading unsharedObject
@@ -81,7 +81,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     private boolean enableResolve;
 
     // Table mapping Integer (handle) -> Object
-    private Hashtable<Integer, Object> objectsRead;
+    private HashMap<Integer, Object> objectsRead;
 
     // Used by defaultReadObject
     private Object currentObject;
@@ -105,7 +105,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     // Handle for the current class descriptor
     private Integer descriptorHandle;
 
-    private static final Hashtable<String, Class<?>> PRIMITIVE_CLASSES = new Hashtable<String, Class<?>>();
+    private static final HashMap<String, Class<?>> PRIMITIVE_CLASSES =
+        new HashMap<String, Class<?>>();
 
     static {
         PRIMITIVE_CLASSES.put("byte", byte.class); //$NON-NLS-1$
@@ -2358,7 +2359,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * Reset the collection of objects already loaded by the receiver.
      */
     private void resetSeenObjects() {
-        objectsRead = new Hashtable<Integer, Object>();
+        objectsRead = new HashMap<Integer, Object>();
         currentHandle = baseWireHandle;
         primitiveData = emptyStream;
     }
@@ -2390,14 +2391,23 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     protected Class<?> resolveClass(ObjectStreamClass osClass)
             throws IOException, ClassNotFoundException {
-        String className = osClass.getName();
-        // if it is primitive class, for example, long.class
-        Class<?> cls = PRIMITIVE_CLASSES.get(className);
+        // fastpath: obtain cached value
+        Class<?> cls = osClass.forClass();
         if (null == cls) {
-            // not primitive class
-            // Use the first non-null ClassLoader on the stack. If null, use the
-            // system class loader
-            return Class.forName(className, true, callerClassLoader);
+            // slowpath: resolve the class
+            String className = osClass.getName();
+
+            // if it is primitive class, for example, long.class
+            cls = PRIMITIVE_CLASSES.get(className);
+
+            if (null == cls) {
+                // not primitive class
+                // Use the first non-null ClassLoader on the stack. If null, use
+                // the system class loader
+                cls = Class.forName(className, true, callerClassLoader);
+                // save the value
+                osClass.setClass(cls);
+            }
         }
         return cls;
     }

@@ -713,7 +713,7 @@ public class LinuxNativeFont {
             java.security.AccessController
                     .doPrivileged(new java.security.PrivilegedAction() {
                         public Object run() {
-                            System.loadLibrary("linuxfont"); //$NON-NLS-1$
+                            org.apache.harmony.awt.Utils.loadLibrary("linuxfont"); //$NON-NLS-1$
                             return null;
                         }
                     });

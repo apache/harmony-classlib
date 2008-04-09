@@ -173,6 +173,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
             throw new SQLException();
         }
         this.command = cmd;
+        clearParameters();
     }
 
     public String getUrl() throws SQLException {
@@ -359,7 +360,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         if (rows < 0) {
             throw new SQLException();
         }
-        if (rows > maxRows) {
+        if (maxRows != 0 && rows > maxRows) {
             throw new SQLException();
         }
         this.fetchSize = rows;
@@ -990,7 +991,7 @@ public abstract class BaseRowSet implements Cloneable, Serializable {
         }
         return result;
     }
-    
+
     public BaseRowSet clone() throws CloneNotSupportedException{
         BaseRowSet result = (BaseRowSet) super.clone();        
         return result;

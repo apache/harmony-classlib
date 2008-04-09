@@ -16,19 +16,19 @@
  */
 package org.apache.harmony.pack200;
 
-import java.util.ArrayList;
-
 import org.apache.harmony.pack200.bytecode.CPFieldRef;
 import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
 import org.apache.harmony.pack200.bytecode.CPMethodRef;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 
+/**
+ * SegmentConstantPool manages the constant pool used for re-creating class
+ * files.
+ */
 public class SegmentConstantPool {
-    /**
-     *
-     */
-    private CpBands bands;
+
+    private final CpBands bands;
 
     /**
      * @param bands
@@ -53,7 +53,10 @@ public class SegmentConstantPool {
     public static final int CP_METHOD = 11;
     public static final int CP_IMETHOD = 12;
 
-    // TODO: All CP***??
+    protected static final String REGEX_MATCH_ALL = ".*";
+    protected static final String INITSTRING = "<init>";
+    protected static final String REGEX_MATCH_INIT = "^" + INITSTRING + ".*";
+
     public Object getValue(int cp, long value) throws Pack200Exception {
         int index = (int) value;
         if (index == -1) {
@@ -79,8 +82,7 @@ public class SegmentConstantPool {
         } else if (cp == CP_DESCR) {
             return bands.getCpDescriptor()[index];
         } else {
-            // etc
-            throw new Error("Get value incomplete");
+            throw new Error("Tried to get a value I don't know about: " + cp);
         }
     }
 
@@ -144,7 +146,7 @@ public class SegmentConstantPool {
      */
     public ConstantPoolEntry getInitMethodPoolEntry(int cp, long value, String desiredClassName) throws Pack200Exception {
     	int realIndex = -1;
-    	String desiredRegex = "^<init>.*";
+    	String desiredRegex = REGEX_MATCH_INIT;
     	if (cp == CP_METHOD) {
     		realIndex = matchSpecificPoolEntryIndex(bands.getCpMethodClass(), bands.getCpMethodDescriptor(), desiredClassName, desiredRegex, (int)value);
     	} else {
@@ -182,7 +184,7 @@ public class SegmentConstantPool {
      * @return int index into nameArray, or -1 if not found.
      */
     protected int matchSpecificPoolEntryIndex(String[] nameArray, String compareString, int desiredIndex) {
-    	return matchSpecificPoolEntryIndex(nameArray, nameArray, compareString, ".*", desiredIndex);
+    	return matchSpecificPoolEntryIndex(nameArray, nameArray, compareString, REGEX_MATCH_ALL, desiredIndex);
     }
 
     /**
@@ -205,7 +207,7 @@ public class SegmentConstantPool {
     	int instanceCount = -1;
     	for(int index=0; index < primaryArray.length; index++) {
     		if((primaryArray[index].equals(primaryCompareString)) &&
-    				secondaryArray[index].matches(secondaryCompareRegex)) {
+    				regexMatches(secondaryCompareRegex, secondaryArray[index]) ) {
     			instanceCount++;
     			if(instanceCount == desiredIndex) {
     				return index;
@@ -217,6 +219,33 @@ public class SegmentConstantPool {
     	return -1;
     }
 
+    /**
+     * We don't want a dependency on regex in Pack200. The
+     * only place one exists is in matchSpecificPoolEntryIndex().
+     * To eliminate this dependency, we've implemented the
+     * world's stupidest regexMatch. It knows about the two
+     * forms we care about:
+     *  .* (aka REGEX_MATCH_ALL)
+     *  ^<init>.* (aka REGEX_MATCH_INIT)
+     * and will answer correctly if those are passed as the
+     * regexString.
+     * @param regexString String against which the compareString will be matched
+     * @param compareString String to match against the regexString
+     * @return boolean true if the compareString matches the regexString;
+     *  otherwise false.
+     */
+    protected static boolean regexMatches(String regexString, String compareString) {
+        if(REGEX_MATCH_ALL.equals(regexString)) {
+            return true;
+        }
+        if(REGEX_MATCH_INIT.equals(regexString)) {
+            if(compareString.length() < (INITSTRING.length())) {
+                return false;
+            }
+            return(INITSTRING.equals(compareString.substring(0, INITSTRING.length())));
+        }
+        throw new Error("regex trying to match a pattern I don't know: " + regexString);
+    }
 
     public ConstantPoolEntry getConstantPoolEntry(int cp, long value) throws Pack200Exception {
         int index = (int) value;
@@ -261,46 +290,4 @@ public class SegmentConstantPool {
             throw new Error("Get value incomplete");
         }
     }
-
-    public ConstantPoolEntry[] getCpAll() throws Pack200Exception {
-        	ArrayList cpAll = new ArrayList();
-        	// TODO: this is 1.5-specific. Try to get rid
-        	// of it.
-        	for(int index=0; index < bands.getCpUTF8().length; index++) {
-        		cpAll.add(getConstantPoolEntry(UTF_8, index));
-        	}
-        	for(int index=0; index < bands.getCpInt().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_INT, index));
-        	}
-        	for(int index=0; index < bands.getCpFloat().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_FLOAT, index));
-        	}
-        	for(int index=0; index < bands.getCpLong().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_LONG, index));
-        	}
-        	for(int index=0; index < bands.getCpDouble().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_DOUBLE, index));
-        	}
-        	for(int index=0; index < bands.getCpString().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_STRING, index));
-        	}
-        	for(int index=0; index < bands.getCpClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_CLASS, index));
-        	}
-        	for(int index=0; index < bands.getCpFieldClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_FIELD, index));
-        	}
-        	for(int index=0; index < bands.getCpMethodClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_METHOD, index));
-        	}
-        	for(int index=0; index < bands.getCpIMethodClass().length; index++) {
-        		cpAll.add(getConstantPoolEntry(CP_IMETHOD, index));
-        	}
-
-        	ConstantPoolEntry[] result = new ConstantPoolEntry[cpAll.size()];
-        	cpAll.toArray(result);
-        	return result;
-        }
-
-
-    }
+}

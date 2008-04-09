@@ -316,7 +316,7 @@ public class IMManager {
     
     private static String getInputStyle() {
         String propName = INPUT_STYLE_PROP;
-        String inputStyle = System.getProperty(propName);
+        String inputStyle = org.apache.harmony.awt.Utils.getSystemProperty(propName);
         if (inputStyle != null) {
             return inputStyle;
         }

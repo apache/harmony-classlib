@@ -126,7 +126,8 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar"
-             manifest="${hy.swing}/META-INF/MANIFEST.MF">
+             manifest="${hy.swing}/META-INF/MANIFEST.MF"
+             compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <fileset refid="hidden.classes" />
             <manifest>

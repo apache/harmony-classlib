@@ -188,7 +188,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
     public Attributes getAttributes(Name name) throws NamingException {
         Name targetDN = (rdn.size() != 0) ? name.addAll(rdn) : name;
 
-        BasicAttributes schemaAttributes = new BasicAttributes();
+        BasicAttributes schemaAttributes = new BasicAttributes(true);
 
         Set<String> keyset = null;
         int size = targetDN.size();
@@ -209,7 +209,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             if (null == classDef) {
                 throw new NameNotFoundException(name.toString());
             }
-            schemaAttributes = new BasicAttributes();
+            schemaAttributes = new BasicAttributes(true);
             keyset = classDef.keySet();
             for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
                 String id = i.next();
@@ -228,7 +228,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             throws NamingException {
         Attributes attrs = getAttributes(name);
         Attribute attr = null;
-        Attributes filteredAttrs = new BasicAttributes();
+        Attributes filteredAttrs = new BasicAttributes(true);
         for (int i = 0; i < as.length; i++) {
             attr = attrs.get(as[i]);
             if (attr != null) {
@@ -543,7 +543,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         boolean hasAttributes2Return = (null != as && 0 != as.length);
 
         // Attribute matcher
-        BasicAttributes attrMatcher = new BasicAttributes();
+        BasicAttributes attrMatcher = new BasicAttributes(true);
         if (hasMatchingAttributes) {
             NamingEnumeration<? extends Attribute> attrEnum = attributes
                     .getAll();
@@ -611,7 +611,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                      * encountered attribute value,
                      */
                     if (attribute.contains(schemaType)) {
-                        BasicAttributes basicAttributes = new BasicAttributes();
+                        BasicAttributes basicAttributes = new BasicAttributes(true);
                         /*
                          * if(objectclassIndex == -1), then No name was choose,
                          * which means SearchResult will have empty
@@ -629,7 +629,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             } else {
                 for (int i = 0; i < attrValues.size(); i++) {
                     schemaType = schemaLdap2Jndi.get(attrValues.get(i));
-                    BasicAttributes basicAttributes = new BasicAttributes();
+                    BasicAttributes basicAttributes = new BasicAttributes(true);
                     /*
                      * if(objectclassIndex == -1), then No name was choose,
                      * which means SearchResult will have empty BasicAttributes.
@@ -674,7 +674,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                         }
                     }
                     if (matched) {
-                        basicAttributes = new BasicAttributes();
+                        basicAttributes = new BasicAttributes(true);
                         for (Iterator<String> iterator = schemaDef.keySet()
                                 .iterator(); iterator.hasNext();) {
                             String key = iterator.next();
@@ -695,7 +695,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                 for (int i = 0; i < attrValues.size(); i++) {
                     Hashtable<String, Object> schemaDef = schemas
                             .get(attrValues.get(i));
-                    basicAttributes = new BasicAttributes();
+                    basicAttributes = new BasicAttributes(true);
                     for (Iterator<String> iterator = schemaDef.keySet()
                             .iterator(); iterator.hasNext();) {
                         String key = iterator.next();
@@ -782,7 +782,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             throw ex;
         }
 
-        BasicAttributes matchingAttrs = new BasicAttributes();
+        BasicAttributes matchingAttrs = new BasicAttributes(true);
         extractMatchingAttributes(f, matchingAttrs);
 
         return search(name, matchingAttrs, searchControls

@@ -229,7 +229,7 @@ public class DefaultFileDialog implements ActionListener, ItemListener {
     }
 
     private File getDefaultFolder() {
-        return new File(System.getProperty("user.dir")); //$NON-NLS-1$
+        return new File(org.apache.harmony.awt.Utils.getSystemProperty("user.dir")); //$NON-NLS-1$
     }
 
     private void addListeners() {

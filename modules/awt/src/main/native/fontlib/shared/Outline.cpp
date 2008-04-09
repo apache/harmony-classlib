@@ -19,6 +19,7 @@
  * @version $Revision$
  */
 #include "Outline.h"
+#include <string.h>
 
 Outline::Outline(ufshort pointsNumber, ufshort commandNumber) {
 	pointsCount = 0;

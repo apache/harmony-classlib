@@ -29,10 +29,8 @@ import javax.net.ssl.SSLSocketFactory;
 
 import junit.framework.TestCase;
 
-
 /**
  * Tests for <code>HandshakeCompletedEvent</code> class constructors and methods.
- * 
  */
 public class HandshakeCompletedEventTest extends TestCase {
 
@@ -87,14 +85,9 @@ public class HandshakeCompletedEventTest extends TestCase {
         SSLSession ses = new MySSLSession();
 
         HandshakeCompletedEvent event = new HandshakeCompletedEvent(soc, ses);
-        String name = event.getCipherSuite();
-        String name_ses = ses.getCipherSuite();
-        if (name == null && name_ses != null) {
-            fail("incorrect null CipherCuite");
-        }
-        if (!name.equals(name_ses)) {
-            fail("incorrect CipherCuite");
-        }
+        
+        assertNotNull(event.getCipherSuite());
+        assertNull(ses.getCipherSuite());
     }
 
     public final void testGetLocalCertificates() {
@@ -151,12 +144,8 @@ public class HandshakeCompletedEventTest extends TestCase {
         }
     	SSLSession ses = new MySSLSession();
         HandshakeCompletedEvent event = new HandshakeCompletedEvent(soc, ses);
-        if (!ses.equals(event.getSession())) {
-            fail("incorrect session");
-        }
-        if (!soc.equals(event.getSocket())) {
-            fail("incorrect socket");
-        }
+        
+        assertEquals(ses, event.getSession());
+        assertEquals(soc, event.getSocket());
     }
-
 }
