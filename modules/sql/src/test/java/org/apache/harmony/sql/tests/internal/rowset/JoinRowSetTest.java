@@ -739,12 +739,9 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         crset.setTableName("BOOKS");
         jrs.addRowSet(crset);
         if ("true".equals(System.getProperty("Testing Harmony"))) {
-            try {
-                jrs.getRowSetNames();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // expected
-            }
+            assertEquals(2, jrs.getRowSetNames().length);
+            assertEquals("USER_INFO", jrs.getRowSetNames()[0]);
+            assertEquals("BOOKS", jrs.getRowSetNames()[1]);
         } else {
             try {
                 jrs.getRowSetNames();

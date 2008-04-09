@@ -124,7 +124,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private int[] keyCols;
 
-    private int columnCount;
+    protected int columnCount;
 
     private int deletedRowCount;
 
@@ -137,7 +137,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     // TODO deal with rowSetWarning
     private RowSetWarning rowSetWarning = new RowSetWarning();
 
-    private Class[] columnTypes;
+    protected Class[] columnTypes;
 
     private String[] matchColumnNames;
 
@@ -151,7 +151,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private boolean isNotifyListener = true;
 
-    private static Map<Integer, Class<?>> TYPE_MAPPING = initialTypeMapping();
+    protected static Map<Integer, Class<?>> TYPE_MAPPING = initialTypeMapping();
 
     public static final String PROVIDER_ID = "Apache Harmony HYOptimisticProvider"; //$NON-NLS-1$
 

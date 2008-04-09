@@ -18,13 +18,17 @@ package org.apache.harmony.sql.internal.rowset;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.sql.RowSet;
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.JdbcRowSet;
 import javax.sql.rowset.JoinRowSet;
 import javax.sql.rowset.Joinable;
 import javax.sql.rowset.RowSetMetaDataImpl;
@@ -42,6 +46,11 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
     private List<String> matchColNames;
 
     private int joinType;
+
+    private static String MERGED_COLUMN_NAME = "MergedCol"; //$NON-NLS-1$
+
+    // Whether the rows can be sorted using object in matched index.
+    private boolean isSortable;
 
     public JoinRowSetImpl() throws SyncFactoryException {
         super();
@@ -76,7 +85,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
             for (int i = 1; i <= getMetaData().getColumnCount(); i++) {
                 doCopyMetaData(rowSetMetaData, i, getMetaData(), i);
                 if (i == matchColIndexs.get(0).intValue()) {
-                    rowSetMetaData.setColumnName(i, "MergedCol"); //$NON-NLS-1$
+                    rowSetMetaData.setColumnName(i, MERGED_COLUMN_NAME);
                 }
             }
             int index = 0;
@@ -156,25 +165,59 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
             throw new SQLException(Messages.getString("rowset.35")); //$NON-NLS-1$
         }
 
-        // TODO to be continue
-        rsList.add(rowset);
-        if (rsList.size() == 1) {
-            setMatchColumn(columnIdx);
-        }
-
+        int type = rowset.getMetaData().getColumnType(columnIdx);
         if (getMetaData() != null
-                && getMetaData().getColumnType(getMatchColumnIndexes()[0]) != rowset
-                        .getMetaData().getColumnType(columnIdx)) {
+                && getMetaData().getColumnType(getMatchColumnIndexes()[0]) != type) {
             setMetaData(null);
             rows = null;
+            // rowset.10=Data Type Mismatch
+            throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
+        }
+
+        if (getMetaData() == null
+                && (type == Types.BINARY || type == Types.LONGVARBINARY
+                        || type == Types.VARBINARY || type == Types.BLOB
+                        || type == Types.CLOB || type == Types.ARRAY
+                        || type == Types.LONGVARCHAR
+                        || type == Types.JAVA_OBJECT || type == Types.OTHER || type == Types.NULL)) {
+            // rowset.10=Data Type Mismatch
             throw new SQLException(Messages.getString("rowset.10")); //$NON-NLS-1$
         }
 
         composeMetaData(rowset.getMetaData(), columnIdx);
-        matchColIndexs.add(columnIdx);
 
-        // TODO join data
+        columnCount = getMetaData().getColumnCount();
+        // Reassign columnTypes.
+        columnTypes = new Class[columnCount];
+        for (int i = 1; i <= columnTypes.length; ++i) {
+            columnTypes[i - 1] = TYPE_MAPPING.get(Integer.valueOf(meta
+                    .getColumnType(i)));
+        }
 
+        matchColIndexs.add(Integer.valueOf(columnIdx));
+
+        if (rowset instanceof JdbcRowSet) {
+            CachedRowSet convertRowset = new CachedRowSetImpl();
+            convertRowset.populate(rowset);
+            rsList.add(convertRowset);
+        } else {
+            rsList.add(rowset);
+        }
+
+        if (rsList.size() == 1) {
+            initSortable();
+        }
+        try {
+            innerJoin();
+        } catch (CloneNotSupportedException e) {
+            SQLException sqlException = new SQLException();
+            sqlException.initCause(e);
+            throw sqlException;
+        }
+
+        if (rsList.size() == 1) {
+            setMatchColumn(columnIdx);
+        }
     }
 
     public void addRowSet(RowSet rowset, String columnName) throws SQLException {
@@ -256,7 +299,8 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         if (supportsJoinType(joinType)) {
             this.joinType = joinType;
         } else {
-            throw new SQLException("This type of join is not supported."); //$NON-NLS-1$
+            // rowset.38=This type of join is not supported
+            throw new SQLException(Messages.getString("rowset.38")); //$NON-NLS-1$
         }
     }
 
@@ -280,8 +324,8 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         return supportsJoinType(RIGHT_OUTER_JOIN);
     }
 
-    private boolean supportsJoinType(int joinType) {
-        if (joinType == INNER_JOIN) {
+    private boolean supportsJoinType(int type) {
+        if (type == INNER_JOIN) {
             return true;
         }
         return false;
@@ -291,4 +335,377 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         throw new NotImplementedException();
     }
 
+    /**
+     * Join the data with another CachedRowSet. It updates rows,
+     * currentRowIndex, currentRow and columnCount. It doesn't update its
+     * RowSetMetaData or any other status.
+     * 
+     * @throws SQLException
+     * @throws CloneNotSupportedException
+     */
+    private void innerJoin() throws SQLException, CloneNotSupportedException {
+        CachedRowSetImpl rowSetToAdd = (CachedRowSetImpl) rsList.get(rsList
+                .size() - 1);
+
+        // If it is the first RowSet added, then just copy the data of
+        // rowSetToAdd.
+        // Since here the RowSet has been added to rsList, so it is 2 to
+        // compared with, not 1.
+        if (rsList.size() < 2) {
+            // Create a new arrayList to store the copied data.
+            // Since the size will be the same with the rowSetToAdd, so
+            // initialing the list with this size will improve performance.
+            ArrayList<CachedRow> newRows = new ArrayList<CachedRow>(
+                    rowSetToAdd.rows.size());
+
+            // Make clones for all the CachedRows in rowSetToAdd, regardless of
+            // whether it is deleted.
+            for (int i = 0; i < rowSetToAdd.rows.size(); i++) {
+                newRows.add(rowSetToAdd.rows.get(i).createClone());
+            }
+
+            // Sets the rows and columnCount.
+            setRows(newRows, rowSetToAdd.columnCount);
+
+            // Set the currentRow and currentRowIndex.
+            currentRowIndex = rowSetToAdd.currentRowIndex;
+            if (currentRowIndex > 0 && currentRowIndex <= rows.size()) {
+                currentRow = rows.get(currentRowIndex - 1);
+            } else {
+                currentRow = null;
+            }
+        } else {
+            // Get the match index of itself and the rowSet to added.
+            int matchIndex = matchColIndexs.get(0).intValue();
+            // Here we can sure rsList.size() > 1
+            int matchIndexOfToAdd = matchColIndexs.get(rsList.size() - 1)
+                    .intValue();
+
+            // The comparator used to sort the rows of itself (When it can be
+            // sorted), and to compare
+            // the rows between these two rowSets.
+            CachedRowComparator comparator;
+
+            // If the rows can be sorted on the object of match index, call
+            // sortJoinRows.
+            // Otherwise call iterativeJoinRows.
+            if (isSortable()) {
+                comparator = new CachedRowComparator(matchIndex,
+                        matchIndexOfToAdd, true);
+                sortJoinRows(rowSetToAdd, matchIndex, matchIndexOfToAdd,
+                        comparator);
+            } else {
+                comparator = new CachedRowComparator(matchIndex,
+                        matchIndexOfToAdd, false);
+                iterativeJoinRows(rowSetToAdd, matchIndex, matchIndexOfToAdd,
+                        comparator);
+            }
+
+            // Set the curosr of rowSetToAdd to the last.
+            rowSetToAdd.last();
+
+            // Set the cursor of itself to beforeFirst.
+            beforeFirst();
+        }
+    }
+
+    private boolean isSortable() {
+        return isSortable;
+    }
+
+    private void initSortable() {
+        Class<?> clazz = columnTypes[matchColIndexs.get(0).intValue() - 1];
+        Class[] classes = clazz.getInterfaces();
+        isSortable = false;
+        for (Class<?> c : classes) {
+            if (c.equals(Comparable.class)) {
+                isSortable = true;
+                break;
+            }
+        }
+    }
+
+    private void iterativeJoinRows(CachedRowSetImpl rowSetToAdd,
+            int matchColumnIndex, int matchColumnIndexOfToAdd,
+            CachedRowComparator comparator) throws SQLException {
+        // The row from itself.
+        CachedRow row;
+        // The row from rowSet to add.
+        CachedRow rowToAdd;
+        // The row will be created to join the row and rowToAdd.
+        CachedRow newRow;
+
+        /*
+         * Create a new arrayList to store the copied data. Since the size will
+         * surely less then the min of the two rowSets, so initialing the list
+         * with half of the min will improve performance.
+         */
+        ArrayList<CachedRow> newRows = new ArrayList<CachedRow>(Math.min(rows
+                .size(), rowSetToAdd.rows.size()) / 2);
+
+        /*
+         * Computes the column count of rowSetToAdd, the result rowSet, the
+         * orignal rowSet.
+         */
+        int addedColumnCount = rowSetToAdd.getMetaData().getColumnCount();
+        int resultColumnCount = this.getMetaData().getColumnCount();
+
+        /*
+         * Since only one matched index is supported, and these two matched
+         * columns will merge to one column, so the original column count is
+         * just the minus of result comlumn count and added column count plus 1.
+         */
+        int originalColumnCount = resultColumnCount + 1 - addedColumnCount;
+
+        /*
+         * Iterates two rowsets, compare rowNum1 * rowNum2 times. If match,
+         * construct a new row, add it to the row list.
+         */
+        this.beforeFirst();
+        while (this.next()) {
+            row = this.getCurrentRow();
+            // If the value is null, just jump to next row.
+            // Since null won't match anything, even null.
+            if (row.getObject(matchColumnIndex) != null) {
+                rowSetToAdd.beforeFirst();
+                while (rowSetToAdd.next()) {
+                    rowToAdd = rowSetToAdd.getCurrentRow();
+                    if (comparator.compare(row, rowToAdd) == 0) {
+                        // It match, contruct a new row, add it to list.
+                        newRow = constructNewRow(row, rowToAdd,
+                                matchColumnIndex, matchColumnIndexOfToAdd,
+                                resultColumnCount, originalColumnCount);
+                        newRows.add(newRow);
+                    }
+                }
+            }
+        }
+
+        // Sets the rows and column count.
+        setRows(newRows, resultColumnCount);
+    }
+
+    private void sortJoinRows(CachedRowSetImpl rowSetToAdd,
+            int matchColumnIndex, int matchColumnIndexOfToAdd,
+            CachedRowComparator comparator) throws SQLException {
+        // The row from itself.
+        CachedRow row;
+        // The row from rowSet to add.
+        CachedRow rowToAdd;
+        // The row will be created to join the row and rowToAdd.
+        CachedRow newRow;
+
+        /*
+         * Create a new arrayList to store the copied data. Since the size will
+         * surely less then the min of the two rowSets, so initialing the list
+         * with half of the min will improve performance.
+         */
+        ArrayList<CachedRow> newRows = new ArrayList<CachedRow>(Math.min(rows
+                .size(), rowSetToAdd.rows.size()) / 2);
+
+        /*
+         * Computes the column count of rowSetToAdd, the result rowSet, the
+         * orignal rowSet.
+         */
+        int addedColumnCount = rowSetToAdd.getMetaData().getColumnCount();
+        int resultColumnCount = this.getMetaData().getColumnCount();
+
+        /*
+         * Since only one matched index is supported, and these two matched
+         * columns will merge to one column, so the original column count is
+         * just the minus of result comlumn count and added column count plus 1.
+         */
+        int originalColumnCount = resultColumnCount + 1 - addedColumnCount;
+
+        /*
+         * Sort the original rows. Set both the column to compared to the match
+         * index of original rows, since the comprasion will happened inside the
+         * orignal rows.
+         */
+        comparator.setFirstIndex(matchColumnIndex);
+        comparator.setSecondIndex(matchColumnIndex);
+        Collections.sort(rows, comparator);
+
+        /*
+         * Then comparator will be used to compare the object from two rowSets,
+         * so set firstIndex of comparator to match index of itself, and second
+         * index to match index of rowSet to add.
+         */
+        comparator.setFirstIndex(matchColumnIndex);
+        comparator.setSecondIndex(matchColumnIndexOfToAdd);
+
+        int position;
+        /*
+         * Iterates the rows of rowSetToAdd, find matched row in orignal rows
+         * using binary search.(It has been sorted).
+         */
+        rowSetToAdd.beforeFirst();
+        while (rowSetToAdd.next()) {
+            rowToAdd = rowSetToAdd.getCurrentRow();
+
+            /*
+             * If the value is null, just jump to next row. Since null won't
+             * match anything, even null.
+             */
+            if (rowToAdd.getObject(matchColumnIndexOfToAdd) == null) {
+                continue;
+            }
+
+            // Find the position of the matched row in original rows.
+            position = Collections.binarySearch(rows, rowToAdd, comparator);
+
+            // Not found, jump to next row.
+            if (position < 0) {
+                continue;
+            }
+
+            row = rows.get(position);
+            /*
+             * If row is deleted and showDeleted is false, it will not be
+             * joined.
+             */
+            if (getShowDeleted() || !row.isDelete()) {
+                // Contruct a new row, add it to list.
+                newRow = constructNewRow(row, rowToAdd, matchColumnIndex,
+                        matchColumnIndexOfToAdd, resultColumnCount,
+                        originalColumnCount);
+                newRows.add(newRow);
+
+                /*
+                 * Since there may be other rows also match, so we have to
+                 * examine the before positions and after positions until they
+                 * don't match. Remember, Collections.binarySearch does NOT
+                 * guarantee which row will be found if multiple element are
+                 * equal to the search value.
+                 */
+                for (int i = position - 1; i >= 0; i--) {
+                    row = rows.get(i);
+                    if (comparator.compare(row, rowToAdd) == 0) {
+                        newRow = constructNewRow(row, rowToAdd,
+                                matchColumnIndex, matchColumnIndexOfToAdd,
+                                resultColumnCount, originalColumnCount);
+                        newRows.add(newRow);
+                    } else {
+                        break;
+                    }
+                }
+
+                for (int i = position + 1; i < rows.size(); i++) {
+                    row = rows.get(i);
+                    if (comparator.compare(row, rowToAdd) == 0) {
+                        newRow = constructNewRow(row, rowToAdd,
+                                matchColumnIndex, matchColumnIndexOfToAdd,
+                                resultColumnCount, originalColumnCount);
+                        newRows.add(newRow);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        // Sets the rows and column count.
+        setRows(newRows, resultColumnCount);
+    }
+
+    /**
+     * Construct a new CachedRow which will contain the data from both rows,
+     * excluding matched column, which will only appear once in the result row..
+     * 
+     * @param row
+     *            The first row to join.
+     * @param rowToAdd
+     *            The second row to join.
+     * @param matchColumnIndex
+     *            The match index of first row.
+     * @param matchColumnIndexOfToAdd
+     *            The match index of second row.
+     * @param resultColumnCount
+     *            The column count of the result row.
+     * @param originalColumnCount
+     *            The column count of original row.
+     * @return
+     */
+    protected CachedRow constructNewRow(CachedRow row, CachedRow rowToAdd,
+            int matchColumnIndex, int matchColumnIndexOfToAdd,
+            int resultColumnCount, int originalColumnCount) {
+        Object[] rowData;
+
+        rowData = new Object[resultColumnCount];
+
+        int i = 0;
+        for (; i < matchColumnIndex; i++) {
+            rowData[i] = row.getObject(i + 1);
+        }
+
+        for (; i < originalColumnCount; i++) {
+            rowData[i] = row.getObject(i + 1);
+        }
+
+        int j = 1;
+        for (; i < originalColumnCount + matchColumnIndexOfToAdd - 1; i++, j++) {
+            rowData[i] = rowToAdd.getObject(j);
+        }
+        for (; i < resultColumnCount; i++, j++) {
+            rowData[i] = rowToAdd.getObject(j + 1);
+        }
+        return new CachedRow(rowData);
+    }
+
+    private static class CachedRowComparator implements Comparator<CachedRow> {
+
+        private int firstIndex;
+
+        private int secondIndex;
+
+        private boolean isComparable;
+
+        public CachedRowComparator(int firstIndex, int secondIndex,
+                boolean isComparable) {
+            this.firstIndex = firstIndex;
+            this.secondIndex = secondIndex;
+            this.isComparable = isComparable;
+        }
+
+        public void setFirstIndex(int firstIndex) {
+            this.firstIndex = firstIndex;
+        }
+
+        public void setComparable(boolean isComparable) {
+            this.isComparable = isComparable;
+        }
+
+        public void setSecondIndex(int secondIndex) {
+            this.secondIndex = secondIndex;
+        }
+
+        public int compare(CachedRow object1, CachedRow object2) {
+            Object first = object1.getObject(firstIndex);
+            Object second = object2.getObject(secondIndex);
+
+            if (first == null && second == null) {
+                return 0;
+            }
+
+            if (first == null && second != null) {
+                return -1;
+            }
+
+            if (first != null && second == null) {
+                return 1;
+            }
+
+            if (isComparable) {
+                return ((Comparable<Object>) first).compareTo(second);
+            }
+
+            if (first.equals(second)) {
+                return 0;
+            }
+            return -1;
+
+        }
+
+    }
 }
