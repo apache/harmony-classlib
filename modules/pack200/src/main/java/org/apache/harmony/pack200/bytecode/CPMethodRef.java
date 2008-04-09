@@ -16,6 +16,9 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
+/**
+ * Method reference constant pool entry.
+ */
 public class CPMethodRef extends CPRef {
 
 	public CPMethodRef(CPClass className, CPNameAndType descriptor) {

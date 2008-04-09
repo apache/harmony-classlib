@@ -19,20 +19,21 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Local variable type table.
+ */
 public class LocalVariableTypeTableAttribute extends Attribute {
 
-
     private int local_variable_type_table_length;
-    private int[] start_pcs;
-    private int[] lengths;
+    private final int[] start_pcs;
+    private final int[] lengths;
     private int[] name_indexes;
     private int[] signature_indexes;
-    private int[] indexes;
-    private CPUTF8[] names;
-    private CPUTF8[] signatures;
+    private final int[] indexes;
+    private final CPUTF8[] names;
+    private final CPUTF8[] signatures;
     private static final CPUTF8 attributeName = new CPUTF8(
             "LocalVariableTypeTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
-
 
     public LocalVariableTypeTableAttribute(int local_variable_type_table_length,
             int[] start_pcs, int[] lengths, CPUTF8[] names,

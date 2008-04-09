@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Abstract superclass for class file attributes
+ */
 public abstract class Attribute extends ClassFileEntry {
     protected final CPUTF8 attributeName;
 

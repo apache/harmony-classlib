@@ -19,6 +19,10 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Abstract superclass for reference constant pool entries, such as a method or field
+ * reference.
+ */
 public abstract class CPRef extends ConstantPoolEntry {
 
 	CPClass className;

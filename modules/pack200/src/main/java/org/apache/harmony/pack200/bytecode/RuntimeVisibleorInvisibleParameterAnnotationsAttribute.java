@@ -19,10 +19,15 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Paramenter annotations class file attribute, either a
+ * RuntimeVisibleParamenterAnnotations attribute or a
+ * RuntimeInvisibleParameterAnnotations attribute.
+ */
 public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends AnnotationsAttribute {
 
-    private int num_parameters;
-    private ParameterAnnotation[] parameter_annotations;
+    private final int num_parameters;
+    private final ParameterAnnotation[] parameter_annotations;
 
     public RuntimeVisibleorInvisibleParameterAnnotationsAttribute(CPUTF8 name, ParameterAnnotation[] parameter_annotations) {
         super(name);
@@ -57,10 +62,13 @@ public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends Anno
     }
 
 
+    /**
+     * ParameterAnnotation represents the annotations on a single parameter.
+     */
     public static class ParameterAnnotation {
 
-        private Annotation[] annotations;
-        private int num_annotations;
+        private final Annotation[] annotations;
+        private final int num_annotations;
 
         public ParameterAnnotation(Annotation[] annotations) {
             this.num_annotations = annotations.length;

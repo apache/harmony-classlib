@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Constant pool entry for a class
+ */
 public class CPClass extends ConstantPoolEntry {
 
 	private int index;

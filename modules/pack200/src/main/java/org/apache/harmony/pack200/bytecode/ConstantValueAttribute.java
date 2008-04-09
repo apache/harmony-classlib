@@ -19,10 +19,14 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * An {@link Attribute} representing a constant.
+ */
 public class ConstantValueAttribute extends Attribute {
-	private int constantIndex;
 
-	private ClassFileEntry entry;
+    private int constantIndex;
+
+	private final ClassFileEntry entry;
 
     private static final CPUTF8 attributeName = new CPUTF8(
             "ConstantValue", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$

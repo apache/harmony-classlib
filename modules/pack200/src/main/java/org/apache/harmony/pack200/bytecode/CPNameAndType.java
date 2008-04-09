@@ -21,6 +21,9 @@ import java.io.IOException;
 
 import org.apache.harmony.pack200.SegmentUtils;
 
+/**
+ * Name and Type pair constant pool entry.
+ */
 public class CPNameAndType extends ConstantPoolEntry {
 
 	CPUTF8 descriptor;

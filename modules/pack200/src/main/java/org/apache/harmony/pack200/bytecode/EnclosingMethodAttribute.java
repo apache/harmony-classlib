@@ -19,12 +19,15 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Enclosing method class file attribute.
+ */
 public class EnclosingMethodAttribute extends Attribute {
 
     private int class_index;
     private int method_index;
-    private CPClass cpClass;
-    private CPNameAndType method;
+    private final CPClass cpClass;
+    private final CPNameAndType method;
     private static final CPUTF8 attributeName = new CPUTF8(
             "EnclosingMethod", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 

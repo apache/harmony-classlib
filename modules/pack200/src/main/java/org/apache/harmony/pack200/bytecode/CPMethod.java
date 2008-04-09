@@ -18,6 +18,9 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.util.List;
 
+/**
+ * Method constant pool entry.
+ */
 public class CPMethod extends CPMember {
 
 	public CPMethod(CPUTF8 name, CPUTF8 descriptor, long flags, List attributes) {

@@ -19,11 +19,14 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Field reference constant pool entry.
+ */
 public class CPFieldRef extends ConstantPoolEntry {
 
 	CPClass className;
 	transient int classNameIndex;
-	private CPNameAndType nameAndType;
+	private final CPNameAndType nameAndType;
 	transient int nameAndTypeIndex;
 
 	public CPFieldRef(CPClass className, CPNameAndType descriptor) {

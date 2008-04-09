@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Long constant pool entry.
+ */
 public class CPLong extends CPConstantNumber {
 
     public CPLong(Long value) {

@@ -16,7 +16,10 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
-
+/**
+ * Abstract superclass for constant pool constant entries such as numbers or
+ * Strings
+ */
 public abstract class CPConstant extends ConstantPoolEntry {
 
 	private final Object value;
@@ -51,13 +54,13 @@ public abstract class CPConstant extends ConstantPoolEntry {
 		return true;
 	}
 
-
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
+
 	protected Object getValue() {
 		return value;
 	}

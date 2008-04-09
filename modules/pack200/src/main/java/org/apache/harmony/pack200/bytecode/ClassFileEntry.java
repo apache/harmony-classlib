@@ -19,7 +19,11 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * The abstract superclass for all types of class file entries.
+ */
 public abstract class ClassFileEntry {
+
 	protected static final ClassFileEntry[] NONE = new ClassFileEntry[0];
 	private boolean resolved;
 

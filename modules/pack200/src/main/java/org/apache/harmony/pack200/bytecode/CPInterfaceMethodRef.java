@@ -16,6 +16,9 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
+/**
+ * Interface method reference constant pool entry.
+ */
 public class CPInterfaceMethodRef extends CPRef {
 
 	public CPInterfaceMethodRef(CPClass className, CPNameAndType descriptor) {

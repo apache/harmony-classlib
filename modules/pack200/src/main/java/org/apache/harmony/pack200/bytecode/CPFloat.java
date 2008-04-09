@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Float constant pool entry.
+ */
 public class CPFloat extends CPConstantNumber {
 
     public CPFloat(Float value) {

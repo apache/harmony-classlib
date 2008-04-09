@@ -16,7 +16,9 @@
  */
 package org.apache.harmony.pack200.bytecode;
 
-
+/**
+ * Abstract superclass for constant pool entries that are numbers.
+ */
 public abstract class CPConstantNumber extends CPConstant {
 
 	public CPConstantNumber(byte tag, Object value) {

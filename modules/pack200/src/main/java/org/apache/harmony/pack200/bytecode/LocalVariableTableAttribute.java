@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.apache.harmony.pack200.Pack200Exception;
 
+/**
+ * Local variable table
+ */
 public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
 
     private int local_variable_table_length;
@@ -35,7 +38,6 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
     private final CPUTF8[] descriptors;
     private static final CPUTF8 attributeName = new CPUTF8(
             "LocalVariableTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
-
 
     public LocalVariableTableAttribute(int local_variable_table_length,
             int[] start_pcs, int[] lengths, CPUTF8[] names,

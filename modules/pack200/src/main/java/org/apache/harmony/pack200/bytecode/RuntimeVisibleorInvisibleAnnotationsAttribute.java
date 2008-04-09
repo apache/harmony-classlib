@@ -19,10 +19,14 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Annotations class file attribute, either a RuntimeVisibleAnnotations
+ * attribute or a RuntimeInvisibleAnnotations attribute.
+ */
 public class RuntimeVisibleorInvisibleAnnotationsAttribute extends AnnotationsAttribute {
 
-    private int num_annotations;
-    private Annotation[] annotations;
+    private final int num_annotations;
+    private final Annotation[] annotations;
 
     public RuntimeVisibleorInvisibleAnnotationsAttribute(CPUTF8 name, Annotation[] annotations) {
         super(name);

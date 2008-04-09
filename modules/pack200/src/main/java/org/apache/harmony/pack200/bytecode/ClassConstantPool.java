@@ -25,7 +25,9 @@ import java.util.Map;
 
 import org.apache.harmony.pack200.Segment;
 
-
+/**
+ * The Class constant pool
+ */
 public class ClassConstantPool {
 
     // These are the domains in sorted order.
@@ -52,7 +54,7 @@ public class ClassConstantPool {
     public String toString() {
         return entries.toString();
     }
-    private List others = new ArrayList(500);
+    private final List others = new ArrayList(500);
     private List entries = new ArrayList(500);
 
     private boolean resolved;

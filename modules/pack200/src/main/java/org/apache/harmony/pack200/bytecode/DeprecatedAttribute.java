@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Deprecated class file attribute.
+ */
 public class DeprecatedAttribute extends Attribute {
 
     private static final CPUTF8 attributeName = new CPUTF8("Deprecated", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);

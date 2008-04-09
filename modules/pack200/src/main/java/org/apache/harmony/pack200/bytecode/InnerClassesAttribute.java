@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.pack200.IcTuple;
-
-
+/**
+ * Inner classes class file attribute
+ */
 public class InnerClassesAttribute extends Attribute {
 
     private static final CPUTF8 attributeName = new CPUTF8(
             "InnerClasses", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
-
 
     private static class InnerClassesEntry {
         CPClass inner_class_info;
@@ -41,13 +40,6 @@ public class InnerClassesAttribute extends Attribute {
         int inner_name_index = -1;
         int inner_class_access_flags = -1;
 
-        public InnerClassesEntry(IcTuple icTuple) {
-            this(icTuple.getC(), icTuple.getC2(), icTuple.getN(), icTuple.getF());
-        }
-
-        public InnerClassesEntry(String innerString, String outerString, String nameString, int flags) {
-
-        }
         public InnerClassesEntry(CPClass innerClass, CPClass outerClass, CPUTF8 innerName, int flags) {
             this.inner_class_info = innerClass;
             this.outer_class_info = outerClass;

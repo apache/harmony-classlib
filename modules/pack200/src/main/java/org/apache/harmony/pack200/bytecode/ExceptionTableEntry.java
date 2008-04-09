@@ -20,12 +20,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * An entry in an exception table.
+ */
 public class ExceptionTableEntry {
 
-    private int startPC;
-    private int endPC;
-    private int handlerPC;
-    private CPClass catchType;
+    private final int startPC;
+    private final int endPC;
+    private final int handlerPC;
+    private final CPClass catchType;
 
     private int startPcRenumbered;
     private int endPcRenumbered;

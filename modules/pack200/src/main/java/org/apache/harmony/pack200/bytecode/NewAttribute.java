@@ -23,12 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A New (i.e. non-predefined) Class File attribute
+ * A compressor-defined class file attribute.
  */
 public class NewAttribute extends BCIRenumberedAttribute {
 
-    private List lengths = new ArrayList(); // List of Integers
-    private List body = new ArrayList();
+    private final List lengths = new ArrayList(); // List of Integers
+    private final List body = new ArrayList();
     private ClassConstantPool pool;
 
     public NewAttribute(CPUTF8 attributeName) {
@@ -149,7 +149,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     private static class BCOffset extends BCValue {
 
-        private int offset;
+        private final int offset;
         private int index;
 
         public BCOffset(int offset) {
@@ -164,7 +164,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     private static class BCIndex extends BCValue {
 
-        private int index;
+        private final int index;
 
         public BCIndex(int index) {
             this.index = index;
@@ -173,7 +173,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     private static class BCLength extends BCValue {
 
-        private int length;
+        private final int length;
 
         public BCLength(int length) {
             this.length = length;

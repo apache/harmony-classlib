@@ -20,7 +20,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- *
+ * Abstract superclass for constant pool entries
  */
 public abstract class ConstantPoolEntry extends ClassFileEntry {
 	public static final byte CP_Class = 7;

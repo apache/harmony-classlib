@@ -19,11 +19,14 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-
+/**
+ * ClassFile is used to represent and write out Java class files.
+ */
 public class ClassFile {
+
 	public int major;
 	public int minor;
-	private int magic = 0xCAFEBABE;
+	private final int magic = 0xCAFEBABE;
 	public ClassConstantPool pool = new ClassConstantPool();
 	public int accessFlags;
 	public int thisClass;

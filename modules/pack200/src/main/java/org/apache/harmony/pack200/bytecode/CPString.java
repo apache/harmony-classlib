@@ -19,10 +19,13 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * String constant pool entry.
+ */
 public class CPString extends CPConstant {
 
     private transient int nameIndex;
-	private CPUTF8 name;
+	private final CPUTF8 name;
 
     public CPString(CPUTF8 value) {
 		super(ConstantPoolEntry.CP_String, value);

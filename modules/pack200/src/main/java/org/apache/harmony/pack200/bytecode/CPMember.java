@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Superclass for member constant pool entries, such as fields or methods.
+ */
 public class CPMember extends ClassFileEntry {
 
 	List attributes;

@@ -20,6 +20,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+/**
+ * UTF8 constant pool entry, used for storing long Strings.
+ */
 public class CPUTF8 extends ConstantPoolEntry {
 
     private final String utf8;

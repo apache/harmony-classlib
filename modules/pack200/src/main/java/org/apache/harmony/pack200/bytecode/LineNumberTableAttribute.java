@@ -19,11 +19,14 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Line number table
+ */
 public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
-    private int line_number_table_length;
-    private int[] start_pcs;
-    private int[] line_numbers;
+    private final int line_number_table_length;
+    private final int[] start_pcs;
+    private final int[] line_numbers;
     private static final CPUTF8 attributeName = new CPUTF8(
             "LineNumberTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 

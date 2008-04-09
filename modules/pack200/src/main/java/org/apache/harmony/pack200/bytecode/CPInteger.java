@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Integer constant pool entry.
+ */
 public class CPInteger extends CPConstantNumber {
 
     public CPInteger(Integer value) {

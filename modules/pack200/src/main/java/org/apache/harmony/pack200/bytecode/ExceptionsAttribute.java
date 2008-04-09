@@ -20,6 +20,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Exceptions class file attribute
+ */
 public class ExceptionsAttribute extends Attribute {
 
     private static final CPUTF8 attributeName = new CPUTF8(

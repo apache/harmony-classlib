@@ -18,6 +18,9 @@ package org.apache.harmony.pack200.bytecode;
 
 import java.util.List;
 
+/**
+ * Field constant pool entry.
+ */
 public class CPField extends CPMember {
 
 	public CPField(CPUTF8 name, CPUTF8 descriptor, long flags, List attributes) {

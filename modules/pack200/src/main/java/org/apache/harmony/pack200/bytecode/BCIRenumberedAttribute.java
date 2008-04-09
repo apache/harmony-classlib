@@ -22,6 +22,10 @@ import java.util.List;
 
 import org.apache.harmony.pack200.Pack200Exception;
 
+/**
+ * Abstract superclass for attributes that have some part encoded with a BCI
+ * renumbering
+ */
 public abstract class BCIRenumberedAttribute extends Attribute {
 
     protected boolean renumbered = false;

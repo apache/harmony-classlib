@@ -22,6 +22,9 @@ import java.io.IOException;
 import org.apache.harmony.pack200.Segment;
 import org.apache.harmony.pack200.bytecode.forms.ByteCodeForm;
 
+/**
+ * A bytecode class file entry.
+ */
 public class ByteCode extends ClassFileEntry {
 
 	public static ByteCode getByteCode(int opcode) {

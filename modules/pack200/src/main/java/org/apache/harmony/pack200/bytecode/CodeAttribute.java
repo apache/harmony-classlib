@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.harmony.pack200.Segment;
 
 public class CodeAttribute extends BCIRenumberedAttribute {
+
     public List attributes = new ArrayList();
     // instances
     public List byteCodeOffsets = new ArrayList();
@@ -37,7 +38,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
 
     public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
             Segment segment, OperandManager operandManager, List exceptionTable) {
-        super(attributeName); //$NON-NLS-1$
+        super(attributeName);
         this.maxLocals = maxLocals;
         this.maxStack = maxStack;
         this.codeLength = 0;

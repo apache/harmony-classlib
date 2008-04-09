@@ -19,10 +19,13 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Signature class file attribute
+ */
 public class SignatureAttribute extends Attribute {
 
     private int signature_index;
-    private CPUTF8 signature;
+    private final CPUTF8 signature;
 
     private static final CPUTF8 attributeName = new CPUTF8("Signature", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 

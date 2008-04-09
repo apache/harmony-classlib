@@ -20,11 +20,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * AnnotationDefault attribute
+ * AnnotationDefault class file attribute
  */
 public class AnnotationDefaultAttribute extends AnnotationsAttribute {
 
-    private ElementValue element_value;
+    private final ElementValue element_value;
 
     private static final CPUTF8 attributeName = new CPUTF8("AnnotationDefault", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 

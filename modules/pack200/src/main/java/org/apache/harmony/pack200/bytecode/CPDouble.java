@@ -19,6 +19,9 @@ package org.apache.harmony.pack200.bytecode;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/**
+ * Double constant pool entry.
+ */
 public class CPDouble extends CPConstantNumber {
 
     public CPDouble(Double value) {
