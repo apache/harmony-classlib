@@ -223,6 +223,38 @@ public class PropertyEditorManagerTest extends TestCase {
         }
     }
 
+    // Regression test for HARMONY-5711
+    @SuppressWarnings("nls")
+    public void testBooleanEditor() {
+        PropertyEditor propertyEditor = PropertyEditorManager
+                .findEditor(boolean.class);
+        assertNotNull(propertyEditor);
+        String tags[] = propertyEditor.getTags();
+        assertEquals(2, tags.length);
+        assertEquals("True", tags[0]);
+        assertEquals("False", tags[1]);
+
+        propertyEditor.setValue(Boolean.FALSE);
+        assertEquals("False", propertyEditor.getAsText());
+        assertEquals("false", propertyEditor.getJavaInitializationString());
+        propertyEditor.setAsText("False");
+        assertEquals("False", propertyEditor.getAsText());
+        assertEquals("false", propertyEditor.getJavaInitializationString());
+        propertyEditor.setAsText("false");
+        assertEquals("False", propertyEditor.getAsText());
+        assertEquals("false", propertyEditor.getJavaInitializationString());
+
+        propertyEditor.setValue(Boolean.TRUE);
+        assertEquals("True", propertyEditor.getAsText());
+        assertEquals("true", propertyEditor.getJavaInitializationString());
+        propertyEditor.setAsText("True");
+        assertEquals("True", propertyEditor.getAsText());
+        assertEquals("true", propertyEditor.getJavaInitializationString());
+        propertyEditor.setAsText("true");
+        assertEquals("True", propertyEditor.getAsText());
+        assertEquals("true", propertyEditor.getJavaInitializationString());
+    }
+    
     public void testByteEditor() {
         PropertyEditor editor = PropertyEditorManager.findEditor(Byte.TYPE);
         byte b = (byte) 0x7F;
