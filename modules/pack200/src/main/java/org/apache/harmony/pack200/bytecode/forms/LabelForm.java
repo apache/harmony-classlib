@@ -31,7 +31,6 @@ public class LabelForm extends ByteCodeForm {
 
     public LabelForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public LabelForm(int opcode, String name, int[] rewrite, boolean widened) {
@@ -52,11 +51,11 @@ public class LabelForm extends ByteCodeForm {
      */
     public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
         // LabelForms need to fix up the target of label operations
-        int originalTarget = byteCode.getByteCodeTargets()[0];
-        int sourceIndex = byteCode.getByteCodeIndex();
-        int absoluteInstructionTargetIndex = sourceIndex + originalTarget;
-        int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
-        int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
+        final int originalTarget = byteCode.getByteCodeTargets()[0];
+        final int sourceIndex = byteCode.getByteCodeIndex();
+        final int absoluteInstructionTargetIndex = sourceIndex + originalTarget;
+        final int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
+        final int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
         // The operand is the difference between the source instruction
         // and the destination instruction.
         byteCode.setOperandSigned2Bytes(targetValue - sourceValue, 0);

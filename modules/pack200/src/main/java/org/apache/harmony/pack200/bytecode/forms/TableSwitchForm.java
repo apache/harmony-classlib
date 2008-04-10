@@ -35,25 +35,25 @@ public class TableSwitchForm extends SwitchForm {
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        int case_count = operandManager.nextCaseCount();
-        int default_pc = operandManager.nextLabel();
+        final int case_count = operandManager.nextCaseCount();
+        final int default_pc = operandManager.nextLabel();
         int case_value = -1;
         case_value = operandManager.nextCaseValues();
 
-        int case_pcs[] = new int[case_count];
+        final int case_pcs[] = new int[case_count];
         for(int index=0; index < case_count; index++) {
             case_pcs[index] = operandManager.nextLabel();
         }
 
-        int[] labelsArray = new int[case_count + 1];
+        final int[] labelsArray = new int[case_count + 1];
         labelsArray[0] = default_pc;
         for(int index=1; index < case_count + 1; index++) {
             labelsArray[index] = case_pcs[index-1];
         }
         byteCode.setByteCodeTargets(labelsArray);
 
-        int lowValue = case_value;
-        int highValue = lowValue + case_count - 1;
+        final int lowValue = case_value;
+        final int highValue = lowValue + case_count - 1;
         // All this gets dumped into the rewrite bytes of the
         // poor bytecode.
 
@@ -67,13 +67,13 @@ public class TableSwitchForm extends SwitchForm {
         // First, there's the bytecode. Then there are 0-3
         // bytes of padding so that the first (default)
         // label is on a 4-byte offset.
-        int padLength = 3 - (codeLength % 4);
-        int rewriteSize = 1 + padLength + 4 // defaultbytes
+        final int padLength = 3 - (codeLength % 4);
+        final int rewriteSize = 1 + padLength + 4 // defaultbytes
             + 4 // lowbyte
             + 4 // highbyte
             + (4 * case_pcs.length);
 
-        int[] newRewrite = new int[rewriteSize];
+        final int[] newRewrite = new int[rewriteSize];
         int rewriteIndex = 0;
 
         // Fill in what we can now
@@ -93,12 +93,12 @@ public class TableSwitchForm extends SwitchForm {
         newRewrite[rewriteIndex++] = -1;
 
         // lowbyte
-        int lowbyteIndex = rewriteIndex;
+        final int lowbyteIndex = rewriteIndex;
         setRewrite4Bytes(lowValue, lowbyteIndex, newRewrite);
         rewriteIndex += 4;
 
         // highbyte
-        int highbyteIndex = rewriteIndex;
+        final int highbyteIndex = rewriteIndex;
         setRewrite4Bytes(highValue, highbyteIndex, newRewrite);
         rewriteIndex += 4;
 

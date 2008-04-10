@@ -33,7 +33,6 @@ public abstract class SingleByteReferenceForm extends ReferenceForm {
     public SingleByteReferenceForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     protected abstract int getOffset(OperandManager operandManager);

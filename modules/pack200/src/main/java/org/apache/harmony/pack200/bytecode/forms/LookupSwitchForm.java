@@ -34,18 +34,18 @@ public class LookupSwitchForm extends SwitchForm {
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        int case_count = operandManager.nextCaseCount();
-        int default_pc = operandManager.nextLabel();
-        int case_values[] = new int[case_count];
+        final int case_count = operandManager.nextCaseCount();
+        final int default_pc = operandManager.nextLabel();
+        final int case_values[] = new int[case_count];
         for(int index=0; index < case_count; index++) {
             case_values[index] = operandManager.nextCaseValues();
         }
-        int case_pcs[] = new int[case_count];
+        final int case_pcs[] = new int[case_count];
         for(int index=0; index < case_count; index++) {
             case_pcs[index] = operandManager.nextLabel();
         }
 
-        int[] labelsArray = new int[case_count + 1];
+        final int[] labelsArray = new int[case_count + 1];
         labelsArray[0] = default_pc;
         for(int index=1; index < case_count + 1; index++) {
             labelsArray[index] = case_pcs[index-1];
@@ -66,13 +66,13 @@ public class LookupSwitchForm extends SwitchForm {
         // First, there's the bytecode. Then there are 0-3
         // bytes of padding so that the first (default)
         // label is on a 4-byte offset.
-        int padLength = 3 - (codeLength % 4);
-        int rewriteSize = 1 + padLength + 4 // defaultbytes
+        final int padLength = 3 - (codeLength % 4);
+        final int rewriteSize = 1 + padLength + 4 // defaultbytes
             + 4 // npairs
             + (4 * case_values.length)
             + (4 * case_pcs.length);
 
-        int[] newRewrite = new int[rewriteSize];
+        final int[] newRewrite = new int[rewriteSize];
         int rewriteIndex = 0;
 
         // Fill in what we can now
@@ -92,7 +92,7 @@ public class LookupSwitchForm extends SwitchForm {
         newRewrite[rewriteIndex++] = -1;
 
         // npairs
-        int npairsIndex = rewriteIndex;
+        final int npairsIndex = rewriteIndex;
         setRewrite4Bytes(case_values.length, npairsIndex, newRewrite);
         rewriteIndex += 4;
 

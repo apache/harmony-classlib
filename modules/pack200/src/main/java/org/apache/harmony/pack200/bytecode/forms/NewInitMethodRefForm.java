@@ -32,7 +32,6 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
     public NewInitMethodRefForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public int getOperandType() {
@@ -44,12 +43,12 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
     }
 
     protected String context(OperandManager operandManager) {
-        String result = operandManager.getNewClass();
+        final String result = operandManager.getNewClass();
         return result;
     }
 
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
-        SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;
         nested = new ClassFileEntry[] {
                 globalPool.getInitMethodPoolEntry(SegmentConstantPool.CP_METHOD, offset, context(operandManager))

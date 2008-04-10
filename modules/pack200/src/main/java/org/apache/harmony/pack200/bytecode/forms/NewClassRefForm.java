@@ -37,7 +37,6 @@ public class NewClassRefForm extends ClassRefForm {
     public NewClassRefForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)
@@ -46,10 +45,10 @@ public class NewClassRefForm extends ClassRefForm {
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
         ClassFileEntry[] nested = null;
-        int offset = getOffset(operandManager);
+        final int offset = getOffset(operandManager);
         if(offset == 0) {
             // Use current class
-            SegmentConstantPool globalPool = operandManager.globalConstantPool();
+            final SegmentConstantPool globalPool = operandManager.globalConstantPool();
             nested = new ClassFileEntry[] {
                         globalPool.getClassPoolEntry(operandManager.getCurrentClass())
             };
@@ -61,7 +60,7 @@ public class NewClassRefForm extends ClassRefForm {
                 // Parent takes care of subtracting one from offset
                 // to adjust for 1-based global pool
                 setNestedEntries(byteCode, operandManager, offset);
-            } catch (Pack200Exception ex) {
+            } catch (final Pack200Exception ex) {
                 throw new Error("Got a pack200 exception. What to do?");
             }
         }

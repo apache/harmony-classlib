@@ -28,7 +28,6 @@ public class FieldRefForm extends ReferenceForm {
 
     public FieldRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public int getOperandType() {

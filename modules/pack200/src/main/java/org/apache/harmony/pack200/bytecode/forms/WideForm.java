@@ -48,7 +48,7 @@ public class WideForm extends VariableInstructionForm {
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        int instruction = operandManager.nextWideByteCode();
+        final int instruction = operandManager.nextWideByteCode();
         if(instruction == 132) {
             setByteCodeOperandsFormat2(instruction, byteCode, operandManager, codeLength);
         } else {
@@ -75,7 +75,7 @@ public class WideForm extends VariableInstructionForm {
         // there's a good chance that the formats will
         // differ, so an updater will not have to disentangle
         // it.
-        int local = operandManager.nextLocal();
+        final int local = operandManager.nextLocal();
 
         // Unlike most byte codes, the wide bytecode is a
         // variable-sized bytecode. Because of this, the
@@ -83,7 +83,7 @@ public class WideForm extends VariableInstructionForm {
         // for each bytecode, rather than in the ByteCodeForm
         // class.
 
-        int[] newRewrite = new int[4];
+        final int[] newRewrite = new int[4];
         int rewriteIndex = 0;
 
         // Fill in what we can now
@@ -113,8 +113,8 @@ public class WideForm extends VariableInstructionForm {
     protected void setByteCodeOperandsFormat2(int instruction, ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
 
-        int local = operandManager.nextLocal();
-        int constWord = operandManager.nextShort();
+        final int local = operandManager.nextLocal();
+        final int constWord = operandManager.nextShort();
 
         // Unlike most byte codes, the wide bytecode is a
         // variable-sized bytecode. Because of this, the
@@ -122,7 +122,7 @@ public class WideForm extends VariableInstructionForm {
         // for each bytecode, rather than in the ByteCodeForm
         // class.
 
-        int[] newRewrite = new int[6];
+        final int[] newRewrite = new int[6];
         int rewriteIndex = 0;
 
         // Fill in what we can now

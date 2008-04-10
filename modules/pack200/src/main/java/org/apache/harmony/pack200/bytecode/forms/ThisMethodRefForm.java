@@ -31,7 +31,6 @@ public class ThisMethodRefForm extends ClassSpecificReferenceForm {
     public ThisMethodRefForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public int getOperandType() {

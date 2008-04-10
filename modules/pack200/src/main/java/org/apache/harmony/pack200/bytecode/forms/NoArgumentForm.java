@@ -29,7 +29,6 @@ public class NoArgumentForm extends ByteCodeForm {
 
     public NoArgumentForm(int opcode, String name) {
         super(opcode, name);
-        // TODO Auto-generated constructor stub
     }
 
     public int getOperandType() {

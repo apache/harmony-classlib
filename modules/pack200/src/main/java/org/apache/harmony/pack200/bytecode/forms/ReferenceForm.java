@@ -30,14 +30,13 @@ public abstract class ReferenceForm extends ByteCodeForm {
 
     public ReferenceForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     protected abstract int getPoolID();
     protected abstract int getOffset(OperandManager operandManager);
 
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
-        SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;
         nested = new ClassFileEntry[] {
                     globalPool.getConstantPoolEntry(getPoolID(), offset)
@@ -51,10 +50,10 @@ public abstract class ReferenceForm extends ByteCodeForm {
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        int offset = getOffset(operandManager);
+        final int offset = getOffset(operandManager);
         try {
             setNestedEntries(byteCode, operandManager, offset);
-        } catch (Pack200Exception ex) {
+        } catch (final Pack200Exception ex) {
             throw new Error("Got a pack200 exception. What to do?");
         }
     }

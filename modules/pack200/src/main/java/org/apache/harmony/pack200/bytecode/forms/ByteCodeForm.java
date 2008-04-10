@@ -61,7 +61,7 @@ public class ByteCodeForm {
 
     protected static final Map byteCodes = new HashMap();
     static {
-        ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
+        final ByteCodeForm[] byteCodeArray = new ByteCodeForm[256];
         byteCodeArray[0] = new NoArgumentForm(0, "nop");
         byteCodeArray[1] = new NoArgumentForm(1, "aconst_null");
         byteCodeArray[2] = new NoArgumentForm(2, "iconst_m1");
@@ -316,7 +316,7 @@ public class ByteCodeForm {
         // Put all the bytecodes in a HashMap so we can
         // get them by either name or number
         for (int i = 0; i < byteCodeArray.length; i++) {
-            ByteCodeForm byteCode = byteCodeArray[i];
+            final ByteCodeForm byteCode = byteCodeArray[i];
             if (byteCode != null) {
                 byteCodes.put(new Integer(i), byteCode);
                 byteCodes.put(byteCode.getName(), byteCode);
@@ -387,7 +387,7 @@ public class ByteCodeForm {
         }
 
         // Now we have the first index and the last index.
-        int difference = lastOperandIndex - firstOperandIndex;
+        final int difference = lastOperandIndex - firstOperandIndex;
 
         // If last < first, something is wrong.
         if(difference < 0) {
@@ -425,7 +425,7 @@ public class ByteCodeForm {
     }
 
     public int[] getRewriteCopy() {
-        int[] result = new int[rewrite.length];
+        final int[] result = new int[rewrite.length];
         System.arraycopy(rewrite, 0, result, 0, rewrite.length);
         return result;
     }

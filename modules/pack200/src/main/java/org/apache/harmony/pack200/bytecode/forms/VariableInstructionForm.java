@@ -120,7 +120,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
             throw new Error("Trying to rewrite " + this + " but there is no room for 4 bytes");
         }
 
-        int byteCodeRewriteLength = rewrite.length;
+        final int byteCodeRewriteLength = rewrite.length;
 
         if(absPosition + 3 > byteCodeRewriteLength) {
             throw new Error("Trying to rewrite " + this + " with an int at position " + absPosition + " but this won't fit in the rewrite array");
@@ -146,7 +146,7 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
             throw new Error("Trying to rewrite " + this + " but there is no room for 4 bytes");
         }
 
-        int byteCodeRewriteLength = rewrite.length;
+        final int byteCodeRewriteLength = rewrite.length;
 
         if(absPosition + 1 > byteCodeRewriteLength) {
             throw new Error("Trying to rewrite " + this + " with an int at position " + absPosition + " but this won't fit in the rewrite array");

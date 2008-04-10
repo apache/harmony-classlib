@@ -33,7 +33,6 @@ public class ClassRefForm extends ReferenceForm {
 
     public ClassRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public ClassRefForm(int opcode, String name, int[] rewrite, boolean widened) {
@@ -52,7 +51,7 @@ public class ClassRefForm extends ReferenceForm {
         // (This is true for all bc_classref forms in
         // the spec except for multianewarray, which has
         // its own form.)
-        SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;
         // How do I get this class?
         nested = new ClassFileEntry[] {

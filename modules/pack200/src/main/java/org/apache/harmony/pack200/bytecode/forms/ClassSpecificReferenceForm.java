@@ -34,7 +34,6 @@ public abstract class ClassSpecificReferenceForm extends ReferenceForm {
     public ClassSpecificReferenceForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     protected abstract int getOffset(OperandManager operandManager);
@@ -42,7 +41,7 @@ public abstract class ClassSpecificReferenceForm extends ReferenceForm {
     protected abstract String context(OperandManager operandManager);
 
     protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
-        SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
         ClassFileEntry[] nested = null;
         nested = new ClassFileEntry[] {
                 globalPool.getClassSpecificPoolEntry(getPoolID(), offset, context(operandManager))

@@ -32,7 +32,6 @@ public class MultiANewArrayForm extends ClassRefForm {
     public MultiANewArrayForm(int opcode, String name,
             int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public int getOperandType() {
@@ -57,7 +56,7 @@ public class MultiANewArrayForm extends ClassRefForm {
         super.setByteCodeOperands(byteCode, operandManager, codeLength);
 
         // We have to handle the dimension.
-        int dimension = operandManager.nextByte();
+        final int dimension = operandManager.nextByte();
         byteCode.setOperandByte(dimension, 2);
     }
 }

@@ -55,7 +55,7 @@ public class IMethodRefForm extends ReferenceForm {
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
         super.setByteCodeOperands(byteCode, operandManager, codeLength);
-        int count=((CPInterfaceMethodRef)byteCode.getNestedClassFileEntries()[0]).invokeInterfaceCount();
+        final int count=((CPInterfaceMethodRef)byteCode.getNestedClassFileEntries()[0]).invokeInterfaceCount();
         byteCode.getRewrite()[3] = count;
     }
 }

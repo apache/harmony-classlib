@@ -42,8 +42,8 @@ public class IincForm extends ByteCodeForm {
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        int local = operandManager.nextLocal();
-        int constant = operandManager.nextByte();
+        final int local = operandManager.nextLocal();
+        final int constant = operandManager.nextByte();
         byteCode.setOperandBytes(new int[]{local, constant});
     }
 }

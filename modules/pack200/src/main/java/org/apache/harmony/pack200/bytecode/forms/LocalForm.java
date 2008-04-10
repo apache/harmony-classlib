@@ -29,7 +29,6 @@ public class LocalForm extends ByteCodeForm {
 
     public LocalForm(int opcode, String name) {
         super(opcode, name);
-        // TODO Auto-generated constructor stub
     }
 
     public LocalForm(int opcode, String name, int[] rewrite) {

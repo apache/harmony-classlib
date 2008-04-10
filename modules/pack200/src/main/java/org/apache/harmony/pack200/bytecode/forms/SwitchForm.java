@@ -24,12 +24,10 @@ public abstract class SwitchForm extends VariableInstructionForm {
 
     public SwitchForm(int opcode, String name) {
         super(opcode, name);
-        // TODO Auto-generated constructor stub
     }
 
     public SwitchForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
-        // TODO Auto-generated constructor stub
     }
 
     public int getOperandType() {
@@ -52,18 +50,18 @@ public abstract class SwitchForm extends VariableInstructionForm {
      */
     public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
         // SwitchForms need to fix up the target of label operations
-        int[] originalTargets = byteCode.getByteCodeTargets();
-        int numberOfLabels = originalTargets.length;
-        int[] replacementTargets = new int[numberOfLabels];
+        final int[] originalTargets = byteCode.getByteCodeTargets();
+        final int numberOfLabels = originalTargets.length;
+        final int[] replacementTargets = new int[numberOfLabels];
 
-        int sourceIndex = byteCode.getByteCodeIndex();
-        int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
+        final int sourceIndex = byteCode.getByteCodeIndex();
+        final int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
         for(int index=0; index < numberOfLabels; index++) {
-            int absoluteInstructionTargetIndex = sourceIndex + originalTargets[index];
-            int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
+            final int absoluteInstructionTargetIndex = sourceIndex + originalTargets[index];
+            final int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
             replacementTargets[index] = targetValue - sourceValue;
         }
-        int[] rewriteArray = byteCode.getRewrite();
+        final int[] rewriteArray = byteCode.getRewrite();
         for(int index=0; index < numberOfLabels; index++) {
             setRewrite4Bytes(replacementTargets[index], rewriteArray);
         }
