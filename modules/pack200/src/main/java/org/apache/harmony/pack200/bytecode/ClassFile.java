@@ -24,47 +24,51 @@ import java.io.IOException;
  */
 public class ClassFile {
 
-	public int major;
-	public int minor;
-	private final int magic = 0xCAFEBABE;
-	public ClassConstantPool pool = new ClassConstantPool();
-	public int accessFlags;
-	public int thisClass;
-	public int superClass;
-	public int[] interfaces;
-	public ClassFileEntry[] fields;
-	public ClassFileEntry[] methods;
-	public Attribute[] attributes;
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeInt(magic);
-		dos.writeShort(minor);
-		dos.writeShort(major);
-		dos.writeShort(pool.size()+1);
-		for(int i=1;i<=pool.size();i++) {
-			ConstantPoolEntry entry;
-			(entry = (ConstantPoolEntry)pool.get(i)).doWrite(dos);
-			// Doubles and longs take up two spaces in the pool, but only one gets written
-			if (entry.getTag() == ConstantPoolEntry.CP_Double || entry.getTag() == ConstantPoolEntry.CP_Long)
-				i++;
-		};
-		dos.writeShort(accessFlags);
-		dos.writeShort(thisClass);
-		dos.writeShort(superClass);
-		dos.writeShort(interfaces.length);
-		for(int i=0;i<interfaces.length;i++) {
-			dos.writeShort(interfaces[i]);
-		}
-		dos.writeShort(fields.length);
-		for(int i=0;i<fields.length;i++) {
-			fields[i].write(dos);
-		}
-		dos.writeShort(methods.length);
-        for(int i=0;i<methods.length;i++) {
-			methods[i].write(dos);
-		}
-		dos.writeShort(attributes.length);
-		for(int i=0;i<attributes.length;i++) {
-			attributes[i].write(dos);
-		}
-	}
+    public int major;
+    public int minor;
+    private final int magic = 0xCAFEBABE;
+    public ClassConstantPool pool = new ClassConstantPool();
+    public int accessFlags;
+    public int thisClass;
+    public int superClass;
+    public int[] interfaces;
+    public ClassFileEntry[] fields;
+    public ClassFileEntry[] methods;
+    public Attribute[] attributes;
+
+    public void write(DataOutputStream dos) throws IOException {
+        dos.writeInt(magic);
+        dos.writeShort(minor);
+        dos.writeShort(major);
+        dos.writeShort(pool.size() + 1);
+        for (int i = 1; i <= pool.size(); i++) {
+            ConstantPoolEntry entry;
+            (entry = (ConstantPoolEntry) pool.get(i)).doWrite(dos);
+            // Doubles and longs take up two spaces in the pool, but only one
+            // gets written
+            if (entry.getTag() == ConstantPoolEntry.CP_Double
+                    || entry.getTag() == ConstantPoolEntry.CP_Long)
+                i++;
+        }
+        ;
+        dos.writeShort(accessFlags);
+        dos.writeShort(thisClass);
+        dos.writeShort(superClass);
+        dos.writeShort(interfaces.length);
+        for (int i = 0; i < interfaces.length; i++) {
+            dos.writeShort(interfaces[i]);
+        }
+        dos.writeShort(fields.length);
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].write(dos);
+        }
+        dos.writeShort(methods.length);
+        for (int i = 0; i < methods.length; i++) {
+            methods[i].write(dos);
+        }
+        dos.writeShort(attributes.length);
+        for (int i = 0; i < attributes.length; i++) {
+            attributes[i].write(dos);
+        }
+    }
 }

@@ -23,31 +23,33 @@ import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * Abstract superclass of all classes that have class-specific
- * references to constant pool information.
- * These classes have a context (a string representing a pack200 class)
- * i.e., they send getClassSpecificPoolEntry instead of getConstantPoolEntry.
- *
+ * Abstract superclass of all classes that have class-specific references to
+ * constant pool information. These classes have a context (a string
+ * representing a pack200 class) i.e., they send getClassSpecificPoolEntry
+ * instead of getConstantPoolEntry.
+ * 
  */
 public abstract class ClassSpecificReferenceForm extends ReferenceForm {
 
-    public ClassSpecificReferenceForm(int opcode, String name,
-            int[] rewrite) {
+    public ClassSpecificReferenceForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
     }
 
     protected abstract int getOffset(OperandManager operandManager);
+
     protected abstract int getPoolID();
+
     protected abstract String context(OperandManager operandManager);
 
-    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
-        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
+    protected void setNestedEntries(ByteCode byteCode,
+            OperandManager operandManager, int offset) throws Pack200Exception {
+        final SegmentConstantPool globalPool = operandManager
+                .globalConstantPool();
         ClassFileEntry[] nested = null;
-        nested = new ClassFileEntry[] {
-                globalPool.getClassSpecificPoolEntry(getPoolID(), offset, context(operandManager))
-                };
+        nested = new ClassFileEntry[] { globalPool.getClassSpecificPoolEntry(
+                getPoolID(), offset, context(operandManager)) };
         byteCode.setNested(nested);
-        byteCode.setNestedPositions(new int[][] {{0, 2}});
+        byteCode.setNestedPositions(new int[][] { { 0, 2 } });
     }
 
 }

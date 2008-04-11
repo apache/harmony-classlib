@@ -54,6 +54,7 @@ public class ClassConstantPool {
     public String toString() {
         return entries.toString();
     }
+
     private final List others = new ArrayList(500);
     private List entries = new ArrayList(500);
 
@@ -63,31 +64,34 @@ public class ClassConstantPool {
         // We don't want duplicates.
         // Only add in constant pools, but resolve all types since they may
         // introduce new constant pool entries
-// This is a handy way to see what's adding a ClassFileEntry - set a breakpoint on the print
-//      if(entry instanceof CPLong) {
-//          org.apache.harmony.pack200.SegmentUtils.debug("AAH:" + ((CPUTF8)entry).underlyingString());
-//          if (((CPUTF8)entry).underlyingString().indexOf('\b') != -1) {
-//          boolean halt = false;
-//          for(int index=0; index < entries.size(); index++) {
-//              ClassFileEntry foo = (ClassFileEntry)(entries.get(index));
-//              if(foo instanceof CPUTF8) {
-//                 if(((CPUTF8)foo).underlyingString().matches(".*MRUBundleFileList.java.*"))  {
-//                      halt = true;
-//                  }
-//
-//              }
-//          }
-//      }
+        // This is a handy way to see what's adding a ClassFileEntry - set a
+        // breakpoint on the print
+        // if(entry instanceof CPLong) {
+        // org.apache.harmony.pack200.SegmentUtils.debug("AAH:" +
+        // ((CPUTF8)entry).underlyingString());
+        // if (((CPUTF8)entry).underlyingString().indexOf('\b') != -1) {
+        // boolean halt = false;
+        // for(int index=0; index < entries.size(); index++) {
+        // ClassFileEntry foo = (ClassFileEntry)(entries.get(index));
+        // if(foo instanceof CPUTF8) {
+        // if(((CPUTF8)foo).underlyingString().matches(".*MRUBundleFileList.java.*"))
+        // {
+        // halt = true;
+        // }
+        //
+        // }
+        // }
+        // }
         if (entry instanceof ConstantPoolEntry) {
-          if (!entriesContainsSet.contains(entry)) {
+            if (!entriesContainsSet.contains(entry)) {
                 entriesContainsSet.add(entry);
                 entries.add(entry);
             }
         } else {
-          if (!othersContainsSet.contains(entry)) {
+            if (!othersContainsSet.contains(entry)) {
                 othersContainsSet.add(entry);
                 others.add(entry);
-          }
+            }
 
         }
         ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
@@ -99,9 +103,9 @@ public class ClassConstantPool {
 
     protected void initializeIndexCache() {
         indexCache = new HashMap();
-        for(int index=0; index < entries.size(); index++) {
-            ClassFileEntry indexEntry = (ClassFileEntry)entries.get(index);
-            if(indexCache.containsKey(indexEntry)) {
+        for (int index = 0; index < entries.size(); index++) {
+            ClassFileEntry indexEntry = (ClassFileEntry) entries.get(index);
+            if (indexCache.containsKey(indexEntry)) {
                 // key is already in there - do nothing
                 // This will happen if a long or double
                 // is the entry - they take up 2 slots.
@@ -113,13 +117,14 @@ public class ClassConstantPool {
 
     public int indexOf(ClassFileEntry entry) {
         if (!resolved)
-            throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
-        if(null == indexCache) {
+            throw new IllegalStateException(
+                    "Constant pool is not yet resolved; this does not make any sense");
+        if (null == indexCache) {
             initializeIndexCache();
         }
-        Integer entryIndex = ((Integer)indexCache.get(entry));
+        Integer entryIndex = ((Integer) indexCache.get(entry));
         // If the entry isn't found, answer -1. Otherwise answer the entry.
-        if(entryIndex != null) {
+        if (entryIndex != null) {
             return entryIndex.intValue() + 1;
         }
         return -1;
@@ -131,43 +136,43 @@ public class ClassConstantPool {
 
     public ClassFileEntry get(int i) {
         if (!resolved)
-            throw new IllegalStateException("Constant pool is not yet resolved; this does not make any sense");
+            throw new IllegalStateException(
+                    "Constant pool is not yet resolved; this does not make any sense");
         return (ClassFileEntry) entries.get(--i);
     }
 
     public void resolve(Segment segment) {
         Iterator it;
-      resolved= true;
-      it = entries.iterator();
-      while (it.hasNext()) {
-          ClassFileEntry entry = (ClassFileEntry) it.next();
-          entry.resolve(this);
-      }
-      it = others.iterator();
-      while (it.hasNext()) {
-          ClassFileEntry entry = (ClassFileEntry) it.next();
-          entry.resolve(this);
-      }
+        resolved = true;
+        it = entries.iterator();
+        while (it.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry) it.next();
+            entry.resolve(this);
+        }
+        it = others.iterator();
+        while (it.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry) it.next();
+            entry.resolve(this);
+        }
 
-      sortClassPool(segment);
+        sortClassPool(segment);
     }
 
     /**
-     * Answer the collection of CPClasses currently held
-     * by the ClassPoolSet. This is used to calculate relevant
-     * classes when generating the set of relevant inner
-     * classes (ic_relevant())
+     * Answer the collection of CPClasses currently held by the ClassPoolSet.
+     * This is used to calculate relevant classes when generating the set of
+     * relevant inner classes (ic_relevant())
+     * 
      * @return ArrayList collection of all classes.
-     *
-     * NOTE: when this list is answered, the classes may not
-     * yet be resolved.
+     * 
+     * NOTE: when this list is answered, the classes may not yet be resolved.
      */
     public List allClasses() {
         List classesList = new ArrayList();
         Iterator it = entries.iterator();
-        while(it.hasNext()) {
-            ConstantPoolEntry entry = (ConstantPoolEntry)it.next();
-            if(entry.getDomain() == DOMAIN_CLASSREF) {
+        while (it.hasNext()) {
+            ConstantPoolEntry entry = (ConstantPoolEntry) it.next();
+            if (entry.getDomain() == DOMAIN_CLASSREF) {
                 classesList.add(entry);
             }
         }
@@ -186,9 +191,9 @@ public class ClassConstantPool {
         Iterator it = entries.iterator();
         ArrayList startOfPool = new ArrayList();
         ArrayList finalSort = new ArrayList();
-        while(it.hasNext()) {
-            ClassFileEntry nextEntry = (ClassFileEntry)it.next();
-            if(nextEntry.mustStartClassPool()) {
+        while (it.hasNext()) {
+            ClassFileEntry nextEntry = (ClassFileEntry) it.next();
+            if (nextEntry.mustStartClassPool()) {
                 startOfPool.add(nextEntry);
             } else {
                 finalSort.add(nextEntry);
@@ -196,18 +201,18 @@ public class ClassConstantPool {
         }
         entries = new ArrayList(entries.size());
         Iterator itStart = startOfPool.iterator();
-        while(itStart.hasNext()) {
+        while (itStart.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) itStart.next();
             entries.add(entry);
-            if (entry instanceof CPLong ||entry instanceof CPDouble)
-                entries.add(entry); //these get 2 slots because of their size
+            if (entry instanceof CPLong || entry instanceof CPDouble)
+                entries.add(entry); // these get 2 slots because of their size
         }
         it = finalSort.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) it.next();
             entries.add(entry);
-            if (entry instanceof CPLong ||entry instanceof CPDouble)
-                entries.add(entry); //these get 2 slots because of their size
+            if (entry instanceof CPLong || entry instanceof CPDouble)
+                entries.add(entry); // these get 2 slots because of their size
         }
 
         // Since we resorted, need to initialize index cache
@@ -217,14 +222,14 @@ public class ClassConstantPool {
         // to re-resolve to update references. This should
         // not add any new entries this time through.
         it = entries.iterator();
-        while(it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry)it.next();
+        while (it.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry) it.next();
             entry.resolve(this);
         }
         // Also need to re-resolve the others.
         it = others.iterator();
-        while(it.hasNext()) {
-            ClassFileEntry entry = (ClassFileEntry)it.next();
+        while (it.hasNext()) {
+            ClassFileEntry entry = (ClassFileEntry) it.next();
             entry.resolve(this);
         }
     }

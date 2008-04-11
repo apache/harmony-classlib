@@ -40,11 +40,12 @@ public class AttrDefinitionBands extends BandSet {
         this.cpUTF8 = segment.getCpBands().getCpUTF8();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException,
-            Pack200Exception {
+    public void unpack(InputStream in) throws IOException, Pack200Exception {
         int attributeDefinitionCount = header.getAttributeDefinitionCount();
         attributeDefinitionHeader = decodeBandInt("attr_definition_headers",
                 in, Codec.BYTE1, attributeDefinitionCount);
@@ -56,13 +57,13 @@ public class AttrDefinitionBands extends BandSet {
         attributeDefinitionMap = new AttributeLayoutMap();
 
         int overflowIndex = 32;
-        if(segment.getSegmentHeader().getOptions().hasClassFlagsHi()) {
+        if (segment.getSegmentHeader().getOptions().hasClassFlagsHi()) {
             overflowIndex = 63;
         }
         for (int i = 0; i < attributeDefinitionCount; i++) {
             int context = attributeDefinitionHeader[i] & 0x03;
             int index = (attributeDefinitionHeader[i] >> 2) - 1;
-            if(index == -1) {
+            if (index == -1) {
                 index = overflowIndex++;
             }
             AttributeLayout layout = new AttributeLayout(

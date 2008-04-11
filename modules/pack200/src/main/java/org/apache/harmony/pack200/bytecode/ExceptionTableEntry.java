@@ -36,41 +36,47 @@ public class ExceptionTableEntry {
     private int catchTypeIndex;
 
     /**
-     * Create a new ExceptionTableEntry. Exception tables are
-     * of two kinds: either a normal one (with a Throwable as
-     * the catch_type) or a finally clause (which has no
-     * catch_type). In the class file, the finally clause is
-     * represented as catch_type == 0.
-     *
-     * To create a finally clause with this method, pass in
-     * null for the catchType.
-     *
-     * @param startPC int
-     * @param endPC int
-     * @param handlerPC int
-     * @param catchType CPClass (if it's a normal catch) or null
-     *  (if it's a finally clause).
+     * Create a new ExceptionTableEntry. Exception tables are of two kinds:
+     * either a normal one (with a Throwable as the catch_type) or a finally
+     * clause (which has no catch_type). In the class file, the finally clause
+     * is represented as catch_type == 0.
+     * 
+     * To create a finally clause with this method, pass in null for the
+     * catchType.
+     * 
+     * @param startPC
+     *            int
+     * @param endPC
+     *            int
+     * @param handlerPC
+     *            int
+     * @param catchType
+     *            CPClass (if it's a normal catch) or null (if it's a finally
+     *            clause).
      */
-    public ExceptionTableEntry(int startPC, int endPC, int handlerPC, CPClass catchType) {
+    public ExceptionTableEntry(int startPC, int endPC, int handlerPC,
+            CPClass catchType) {
         this.startPC = startPC;
         this.endPC = endPC;
         this.handlerPC = handlerPC;
         this.catchType = catchType;
     }
 
-	public void write(DataOutputStream dos) throws IOException {
-		dos.writeShort(startPcRenumbered);
-		dos.writeShort(endPcRenumbered);
-		dos.writeShort(handlerPcRenumbered);
-		dos.writeShort(catchTypeIndex);
-	}
+    public void write(DataOutputStream dos) throws IOException {
+        dos.writeShort(startPcRenumbered);
+        dos.writeShort(endPcRenumbered);
+        dos.writeShort(handlerPcRenumbered);
+        dos.writeShort(catchTypeIndex);
+    }
 
     public void renumber(List byteCodeOffsets) {
-        startPcRenumbered = ((Integer)byteCodeOffsets.get(startPC)).intValue();
+        startPcRenumbered = ((Integer) byteCodeOffsets.get(startPC)).intValue();
         int endPcIndex = startPC + endPC;
-        endPcRenumbered = ((Integer)byteCodeOffsets.get(endPcIndex)).intValue();
+        endPcRenumbered = ((Integer) byteCodeOffsets.get(endPcIndex))
+                .intValue();
         int handlerPcIndex = endPcIndex + handlerPC;
-        handlerPcRenumbered = ((Integer)byteCodeOffsets.get(handlerPcIndex)).intValue();
+        handlerPcRenumbered = ((Integer) byteCodeOffsets.get(handlerPcIndex))
+                .intValue();
     }
 
     public CPClass getCatchType() {
@@ -78,7 +84,7 @@ public class ExceptionTableEntry {
     }
 
     public void resolve(ClassConstantPool pool) {
-        if(catchType == null) {
+        if (catchType == null) {
             // If the catch type is a finally clause
             // the index is always 0.
             catchTypeIndex = 0;

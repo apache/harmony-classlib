@@ -20,12 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Parses the file band headers (not including the actual bits themselves).
- * At the end of this parse call, the input stream will be positioned at the
- * start of the file_bits themselves, and there will be Sum(file_size) bits
- * remaining in the stream with BYTE1 compression. A decent implementation
- * will probably just stream the bytes out to the reconstituted Jar rather
- * than caching them.
+ * Parses the file band headers (not including the actual bits themselves). At
+ * the end of this parse call, the input stream will be positioned at the start
+ * of the file_bits themselves, and there will be Sum(file_size) bits remaining
+ * in the stream with BYTE1 compression. A decent implementation will probably
+ * just stream the bytes out to the reconstituted Jar rather than caching them.
  */
 public class FileBands extends BandSet {
 
@@ -51,11 +50,12 @@ public class FileBands extends BandSet {
         this.cpUTF8 = segment.getCpBands().getCpUTF8();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
      */
-    public void unpack(InputStream in) throws IOException,
-            Pack200Exception {
+    public void unpack(InputStream in) throws IOException, Pack200Exception {
         int numberOfFiles = header.getNumberOfFiles();
         SegmentOptions options = header.getOptions();
 
@@ -75,12 +75,12 @@ public class FileBands extends BandSet {
         } else {
             fileOptions = new long[numberOfFiles];
         }
-        this.in = in; // store for use by processFileBits(), which is called later
+        this.in = in; // store for use by processFileBits(), which is called
+        // later
     }
 
     // TODO: stream the file bits directly somehow
-    public void processFileBits() throws IOException,
-            Pack200Exception {
+    public void processFileBits() throws IOException, Pack200Exception {
         // now read in the bytes
         int numberOfFiles = header.getNumberOfFiles();
         fileBits = new byte[numberOfFiles][];
@@ -90,8 +90,9 @@ public class FileBands extends BandSet {
             // not the right choice, and we should just serialize it here?
             fileBits[i] = new byte[size];
             int read = in.read(fileBits[i]);
-            if(read < size) {
-                throw new Pack200Exception("Expected to read " + size +" bytes but read " + read);
+            if (read < size) {
+                throw new Pack200Exception("Expected to read " + size
+                        + " bytes but read " + read);
             }
         }
     }

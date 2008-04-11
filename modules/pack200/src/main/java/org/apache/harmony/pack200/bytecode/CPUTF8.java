@@ -29,56 +29,58 @@ public class CPUTF8 extends ConstantPoolEntry {
 
     /**
      * Creates a new CPUTF8 instance
+     * 
      * @param utf8
      * @param domain
-     * @throws NullPointerException if utf8 is null
+     * @throws NullPointerException
+     *             if utf8 is null
      */
     public CPUTF8(String utf8, int domain) {
-		super(ConstantPoolEntry.CP_UTF8);
-		this.utf8 = utf8;
-		this.domain = domain;
-        if(domain == ClassConstantPool.DOMAIN_UNDEFINED) {
+        super(ConstantPoolEntry.CP_UTF8);
+        this.utf8 = utf8;
+        this.domain = domain;
+        if (domain == ClassConstantPool.DOMAIN_UNDEFINED) {
             throw new RuntimeException();
         }
-        if(utf8 == null) {
+        if (utf8 == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
-	}
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		final CPUTF8 other = (CPUTF8) obj;
-		return utf8.equals(other.utf8);
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        final CPUTF8 other = (CPUTF8) obj;
+        return utf8.equals(other.utf8);
+    }
 
-	public int hashCode() {
-		final int PRIME = 31;
-		return PRIME + utf8.hashCode();
-	}
+    public int hashCode() {
+        final int PRIME = 31;
+        return PRIME + utf8.hashCode();
+    }
 
-	public String toString() {
-		return "UTF8: " + utf8;
-	}
+    public String toString() {
+        return "UTF8: " + utf8;
+    }
 
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		byte[] bytes;
-		try {
-			// TODO Check that this is the right UTF-8 for bytes
-			bytes = utf8.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Couldn't convert string " + utf8
-					+ " to UTF-8");
-		}
-		dos.writeShort(bytes.length);
-		dos.write(bytes);
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        byte[] bytes;
+        try {
+            // TODO Check that this is the right UTF-8 for bytes
+            bytes = utf8.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Couldn't convert string " + utf8
+                    + " to UTF-8");
+        }
+        dos.writeShort(bytes.length);
+        dos.write(bytes);
+    }
 
-	public String underlyingString() {
-	    return utf8;
-	}
+    public String underlyingString() {
+        return utf8;
+    }
 }

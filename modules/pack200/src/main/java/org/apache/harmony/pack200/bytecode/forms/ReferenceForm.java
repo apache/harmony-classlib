@@ -23,8 +23,8 @@ import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * Abstract class of all ByteCodeForms which add a nested
- * entry from the globalConstantPool.
+ * Abstract class of all ByteCodeForms which add a nested entry from the
+ * globalConstantPool.
  */
 public abstract class ReferenceForm extends ByteCodeForm {
 
@@ -33,20 +33,26 @@ public abstract class ReferenceForm extends ByteCodeForm {
     }
 
     protected abstract int getPoolID();
+
     protected abstract int getOffset(OperandManager operandManager);
 
-    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
-        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
+    protected void setNestedEntries(ByteCode byteCode,
+            OperandManager operandManager, int offset) throws Pack200Exception {
+        final SegmentConstantPool globalPool = operandManager
+                .globalConstantPool();
         ClassFileEntry[] nested = null;
-        nested = new ClassFileEntry[] {
-                    globalPool.getConstantPoolEntry(getPoolID(), offset)
-            };
+        nested = new ClassFileEntry[] { globalPool.getConstantPoolEntry(
+                getPoolID(), offset) };
         byteCode.setNested(nested);
-        byteCode.setNestedPositions(new int[][] {{0,2}});
+        byteCode.setNestedPositions(new int[][] { { 0, 2 } });
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.Segment)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.Segment)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {

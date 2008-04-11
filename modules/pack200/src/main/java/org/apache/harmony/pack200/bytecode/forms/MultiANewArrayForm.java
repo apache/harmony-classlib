@@ -20,17 +20,14 @@ import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for the
- * multianewarray instruction. It has a class reference
- * and a byte operand.
- *
- * MultiANewArrayForms (like other anewarray
- * forms) do not track the last new().
+ * This class implements the byte code form for the multianewarray instruction.
+ * It has a class reference and a byte operand.
+ * 
+ * MultiANewArrayForms (like other anewarray forms) do not track the last new().
  */
 public class MultiANewArrayForm extends ClassRefForm {
 
-    public MultiANewArrayForm(int opcode, String name,
-            int[] rewrite) {
+    public MultiANewArrayForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
     }
 
@@ -46,8 +43,12 @@ public class MultiANewArrayForm extends ClassRefForm {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {

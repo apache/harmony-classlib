@@ -26,7 +26,8 @@ public class AnnotationDefaultAttribute extends AnnotationsAttribute {
 
     private final ElementValue element_value;
 
-    private static final CPUTF8 attributeName = new CPUTF8("AnnotationDefault", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private static final CPUTF8 attributeName = new CPUTF8("AnnotationDefault",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 
     public AnnotationDefaultAttribute(ElementValue element_value) {
         super(attributeName);

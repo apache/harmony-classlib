@@ -34,7 +34,8 @@ public class CodeAttribute extends BCIRenumberedAttribute {
     public List exceptionTable; // of ExceptionTableEntry
     public int maxLocals;
     public int maxStack;
-    private static final CPUTF8 attributeName = new CPUTF8("Code", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private static final CPUTF8 attributeName = new CPUTF8("Code",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 
     public CodeAttribute(int maxStack, int maxLocals, byte codePacked[],
             Segment segment, OperandManager operandManager, List exceptionTable) {
@@ -70,7 +71,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
                 byteCodeOffsets.add(new Integer(lastBytecodePosition
                         + byteCode.getLength()));
             }
-            if(byteCode.getOpcode() == 0xC4) {
+            if (byteCode.getOpcode() == 0xC4) {
                 // Special processing for wide bytecode - it knows what its
                 // instruction is from the opcode manager, so ignore the
                 // next instruction
@@ -82,7 +83,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
         // At this point, byteCodes may be a different size than
         // codePacked because of wide bytecodes.
         for (int i = 0; i < byteCodes.size(); i++) {
-            ByteCode byteCode = (ByteCode)byteCodes.get(i);
+            ByteCode byteCode = (ByteCode) byteCodes.get(i);
             byteCode.applyByteCodeTargetFixup(this);
         }
     }
@@ -110,7 +111,7 @@ public class CodeAttribute extends BCIRenumberedAttribute {
             // If the catch type is null, this is a finally
             // block. If it's not null, we need to add the
             // CPClass to the list of nested class file entries.
-            if(catchType != null) {
+            if (catchType != null) {
                 nestedEntries.add(catchType);
             }
         }

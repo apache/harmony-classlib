@@ -24,7 +24,6 @@ import java.io.IOException;
  */
 public abstract class AnnotationsAttribute extends Attribute {
 
-
     /**
      * Class to represent the annotation structure for class file attributes
      */
@@ -39,8 +38,8 @@ public abstract class AnnotationsAttribute extends Attribute {
         private int type_index;
         private int[] name_indexes;
 
-
-        public Annotation(int num_pairs, CPUTF8 type, CPUTF8[] element_names, ElementValue[] element_values) {
+        public Annotation(int num_pairs, CPUTF8 type, CPUTF8[] element_names,
+                ElementValue[] element_values) {
             this.num_pairs = num_pairs;
             this.type = type;
             this.element_names = element_names;
@@ -92,18 +91,18 @@ public abstract class AnnotationsAttribute extends Attribute {
         }
 
         public void resolve(ClassConstantPool pool) {
-            if(value instanceof CPConstant) {
-                ((CPConstant)value).resolve(pool);
-                constant_value_index = pool.indexOf((CPConstant)value);
+            if (value instanceof CPConstant) {
+                ((CPConstant) value).resolve(pool);
+                constant_value_index = pool.indexOf((CPConstant) value);
             } else if (value instanceof CPClass) {
-                ((CPClass)value).resolve(pool);
-                constant_value_index = pool.indexOf((CPClass)value);
+                ((CPClass) value).resolve(pool);
+                constant_value_index = pool.indexOf((CPClass) value);
             } else if (value instanceof CPNameAndType) {
-                ((CPNameAndType)value).resolve(pool);
+                ((CPNameAndType) value).resolve(pool);
             } else if (value instanceof Annotation) {
-                ((Annotation)value).resolve(pool);
+                ((Annotation) value).resolve(pool);
             } else if (value instanceof ElementValue[]) {
-                ElementValue[] nestedValues = (ElementValue[])value;
+                ElementValue[] nestedValues = (ElementValue[]) value;
                 for (int i = 0; i < nestedValues.length; i++) {
                     nestedValues[i].resolve(pool);
                 }
@@ -112,14 +111,14 @@ public abstract class AnnotationsAttribute extends Attribute {
 
         public void writeBody(DataOutputStream dos) throws IOException {
             dos.writeByte(tag);
-            if(constant_value_index != -1) {
+            if (constant_value_index != -1) {
                 dos.writeShort(constant_value_index);
             } else if (value instanceof CPNameAndType) {
-                ((CPNameAndType)value).writeBody(dos);
+                ((CPNameAndType) value).writeBody(dos);
             } else if (value instanceof Annotation) {
-                ((Annotation)value).writeBody(dos);
+                ((Annotation) value).writeBody(dos);
             } else if (value instanceof ElementValue[]) {
-                ElementValue[] nestedValues = (ElementValue[])value;
+                ElementValue[] nestedValues = (ElementValue[]) value;
                 for (int i = 0; i < nestedValues.length; i++) {
                     nestedValues[i].writeBody(dos);
                 }
@@ -127,7 +126,7 @@ public abstract class AnnotationsAttribute extends Attribute {
         }
 
         public int getLength() {
-            switch(tag) {
+            switch (tag) {
             case 'B':
             case 'C':
             case 'D':
@@ -142,13 +141,13 @@ public abstract class AnnotationsAttribute extends Attribute {
                 return 5;
             case '[':
                 int length = 3;
-                ElementValue[] nestedValues = (ElementValue[])value;
+                ElementValue[] nestedValues = (ElementValue[]) value;
                 for (int i = 0; i < nestedValues.length; i++) {
                     length += nestedValues[i].getLength();
                 }
                 return length;
             case '@':
-                return (1 + ((Annotation)value).getLength());
+                return (1 + ((Annotation) value).getLength());
             }
             return 0;
         }
@@ -157,7 +156,5 @@ public abstract class AnnotationsAttribute extends Attribute {
     public AnnotationsAttribute(CPUTF8 attributeName) {
         super(attributeName);
     }
-
-
 
 }

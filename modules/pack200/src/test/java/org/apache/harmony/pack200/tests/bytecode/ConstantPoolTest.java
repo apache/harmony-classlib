@@ -25,37 +25,49 @@ import org.apache.harmony.pack200.bytecode.CPUTF8;
 import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 
 public class ConstantPoolTest extends TestCase {
-	private ClassConstantPool pool;
 
-	public void setUp() {
-		pool = new ClassConstantPool();
-	}
-	public void testDuplicateUTF8() {
-		CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
-		CPUTF8 u2 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
-		pool.add(u1);
-		pool.add(u2);
-		assertEquals(1,pool.size());
-	}
-	public void testDuplicateField() {
-		CPMember cp1 = new CPMember(new CPUTF8("name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ),0,null);
-		pool.add(cp1);
-		assertEquals(2,pool.size());
-		CPMember cp2 = new CPMember(new CPUTF8("name", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I", ClassConstantPool.DOMAIN_NORMALASCIIZ),0,null);
-		pool.add(cp2);
-		assertEquals(2,pool.size());
-	}
-	public void testIndex() {
-		pool.add(new CPUTF8("OtherThing", ClassConstantPool.DOMAIN_NORMALASCIIZ));
-		CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
-		pool.add(u1);
-		pool.resolve(new Segment());
-		assertTrue(pool.indexOf(u1) > 0);
-	}
+    private ClassConstantPool pool;
 
-	public void testAllClasses() {
-	    pool.add(new CPClass(new CPUTF8("RandomClass", ClassConstantPool.DOMAIN_NORMALASCIIZ)));
-        pool.add(new CPClass(new CPUTF8("RandomClass2", ClassConstantPool.DOMAIN_NORMALASCIIZ)));
-	    assertEquals(2, pool.allClasses().size());
-	}
+    public void setUp() {
+        pool = new ClassConstantPool();
+    }
+
+    public void testDuplicateUTF8() {
+        CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
+        CPUTF8 u2 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
+        pool.add(u1);
+        pool.add(u2);
+        assertEquals(1, pool.size());
+    }
+
+    public void testDuplicateField() {
+        CPMember cp1 = new CPMember(new CPUTF8("name",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+        pool.add(cp1);
+        assertEquals(2, pool.size());
+        CPMember cp2 = new CPMember(new CPUTF8("name",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+        pool.add(cp2);
+        assertEquals(2, pool.size());
+    }
+
+    public void testIndex() {
+        pool
+                .add(new CPUTF8("OtherThing",
+                        ClassConstantPool.DOMAIN_NORMALASCIIZ));
+        CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
+        pool.add(u1);
+        pool.resolve(new Segment());
+        assertTrue(pool.indexOf(u1) > 0);
+    }
+
+    public void testAllClasses() {
+        pool.add(new CPClass(new CPUTF8("RandomClass",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ)));
+        pool.add(new CPClass(new CPUTF8("RandomClass2",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ)));
+        assertEquals(2, pool.allClasses().size());
+    }
 }

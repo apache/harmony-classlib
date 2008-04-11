@@ -26,7 +26,7 @@ import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.Segment;
 
 /**
- *
+ * 
  */
 public class ClassBandsTest extends AbstractBandsTestCase {
 
@@ -74,23 +74,24 @@ public class ClassBandsTest extends AbstractBandsTestCase {
     }
 
     public class MockSegment extends AbstractBandsTestCase.MockSegment {
+
         protected CpBands getCpBands() {
             return new MockCpBands(this);
         }
     }
 
-
-
     ClassBands classBands = new ClassBands(new MockSegment());
 
     public void testSimple() throws IOException, Pack200Exception {
-        cpClasses = new String[] { "Class1", "Class2", "Class3", "Interface1", "Interface2" };
+        cpClasses = new String[] { "Class1", "Class2", "Class3", "Interface1",
+                "Interface2" };
         cpDescriptor = new String[0];
         cpUTF8 = new String[0];
         byte[] classThis = Codec.DELTA5.encode(1, 0);
         byte[] classSuper = Codec.DELTA5.encode(2, 0);
         byte[] classInterfaceCount = Codec.DELTA5.encode(2, 0);
-        byte[] classInterfaceRef1 = classBands.encodeBandLong(new long[] {3, 4}, Codec.DELTA5);
+        byte[] classInterfaceRef1 = classBands.encodeBandLong(
+                new long[] { 3, 4 }, Codec.DELTA5);
         byte[] classFieldCount = Codec.DELTA5.encode(0, 0);
         byte[] classMethodCount = Codec.DELTA5.encode(0, 0);
         byte[] classFlags = Codec.UNSIGNED5.encode(0, 0);
@@ -122,15 +123,17 @@ public class ClassBandsTest extends AbstractBandsTestCase {
 
     public void testWithMethods() throws Pack200Exception, IOException {
         cpClasses = new String[] { "Class1", "Class2", "Class3" };
-        cpDescriptor = new String[] {"method1", "method2", "method3"};
+        cpDescriptor = new String[] { "method1", "method2", "method3" };
         cpUTF8 = new String[0];
         byte[] classThis = Codec.DELTA5.encode(1, 0);
         byte[] classSuper = Codec.DELTA5.encode(2, 0);
         byte[] classInterfaceCount = Codec.DELTA5.encode(0, 0);
         byte[] classFieldCount = Codec.DELTA5.encode(0, 0);
         byte[] classMethodCount = Codec.DELTA5.encode(3, 0);
-        byte[] methodDescr = classBands.encodeBandLong(new long[]{0, 1, 2}, Codec.MDELTA5);
-        byte[] methodFlagsLo = classBands.encodeBandLong(new long[]{0, 0, 0}, Codec.UNSIGNED5);
+        byte[] methodDescr = classBands.encodeBandLong(new long[] { 0, 1, 2 },
+                Codec.MDELTA5);
+        byte[] methodFlagsLo = classBands.encodeBandLong(
+                new long[] { 0, 0, 0 }, Codec.UNSIGNED5);
         byte[] classFlags = Codec.UNSIGNED5.encode(0, 0);
         byte[][] allArrays = new byte[][] { classThis, classSuper,
                 classInterfaceCount, classFieldCount, classMethodCount,
@@ -164,7 +167,5 @@ public class ClassBandsTest extends AbstractBandsTestCase {
     public void testWithFields() {
 
     }
-
-
 
 }

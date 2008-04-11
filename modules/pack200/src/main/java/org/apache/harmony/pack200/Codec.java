@@ -22,7 +22,7 @@ import java.io.InputStream;
 /**
  * A Codec allows a sequence of bytes to be decoded into integer values (or vice
  * versa).
- *
+ * 
  * There are a number of standard Codecs ({@link #UDELTA5}, {@link #UNSIGNED5},
  * {@link #BYTE1}, {@link #CHAR3}) that are used in the implementation of many
  * bands; but there are a variety of other ones, and indeed the specification
@@ -32,6 +32,7 @@ import java.io.InputStream;
  * canonical number. {@link CodecEncoding#getCodec(int, InputStream, Codec)})
  */
 public abstract class Codec {
+
     /**
      * BCI5 = (5,4): Used for storing branching information in bytecode.
      */
@@ -87,7 +88,7 @@ public abstract class Codec {
      * Decode a sequence of bytes from the given input stream, returning the
      * value as a long. Note that this method can only be applied for non-delta
      * encodings.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @return the value as a long
@@ -106,15 +107,15 @@ public abstract class Codec {
      * previous value must be passed in as a parameter. If it is a non-delta
      * encoding, then it does not matter what value is passed in, so it makes
      * sense for the value to be passed in by default using code similar to:
-     *
+     * 
      * <pre>
      * long last = 0;
      * while (condition) {
-     *  last = codec.decode(in, last);
-     *  // do something with last
+     *     last = codec.decode(in, last);
+     *     // do something with last
      * }
      * </pre>
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @param last
@@ -133,10 +134,11 @@ public abstract class Codec {
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * This should probably be used in most cases, since some codecs
-     * (such as @{link PopCodec}) only work when the number of values
-     * to be read is known.
-     *
+     * This should probably be used in most cases, since some codecs (such as
+     * 
+     * @{link PopCodec}) only work when the number of values to be read is
+     *        known.
+     * 
      * @param n
      *            the number of values to decode
      * @param in
@@ -154,18 +156,19 @@ public abstract class Codec {
             Pack200Exception {
         long result[] = new long[n];
         long last = 0;
-        for(int i=0;i<n;i++) {
-            result[i] = last = decode(in,last);
+        for (int i = 0; i < n; i++) {
+            result[i] = last = decode(in, last);
         }
         return result;
     }
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * This should probably be used in most cases, since some codecs
-     * (such as @{link PopCodec}) only work when the number of values
-     * to be read is known.
-     *
+     * This should probably be used in most cases, since some codecs (such as
+     * 
+     * @{link PopCodec}) only work when the number of values to be read is
+     *        known.
+     * 
      * @param n
      *            the number of values to decode
      * @param in
@@ -183,15 +186,15 @@ public abstract class Codec {
             Pack200Exception {
         int result[] = new int[n];
         int last = 0;
-        for(int i=0;i<n;i++) {
-            result[i] = last = (int) decode(in,last);
+        for (int i = 0; i < n; i++) {
+            result[i] = last = (int) decode(in, last);
         }
         return result;
     }
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     *
+     * 
      * @param n
      *            the number of values to decode
      * @param in
@@ -207,20 +210,20 @@ public abstract class Codec {
      *             if there is a problem decoding the value or that the value is
      *             invalid
      */
-    public long[] decode(int n, InputStream in, long firstValue) throws IOException,
-            Pack200Exception {
+    public long[] decode(int n, InputStream in, long firstValue)
+            throws IOException, Pack200Exception {
         long result[] = new long[n + 1];
         result[0] = firstValue;
         long last = firstValue;
-        for(int i=1;i<n+1;i++) {
-            result[i] = last = decode(in,last);
+        for (int i = 1; i < n + 1; i++) {
+            result[i] = last = decode(in, last);
         }
         return result;
     }
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     *
+     * 
      * @param n
      *            the number of values to decode
      * @param in
@@ -236,13 +239,13 @@ public abstract class Codec {
      *             if there is a problem decoding the value or that the value is
      *             invalid
      */
-    public int[] decodeInts(int n, InputStream in, int firstValue) throws IOException,
-            Pack200Exception {
+    public int[] decodeInts(int n, InputStream in, int firstValue)
+            throws IOException, Pack200Exception {
         int result[] = new int[n + 1];
         result[0] = firstValue;
         int last = firstValue;
-        for(int i=1;i<n+1;i++) {
-            result[i] = last = (int) decode(in,last);
+        for (int i = 1; i < n + 1; i++) {
+            result[i] = last = (int) decode(in, last);
         }
         return result;
     }

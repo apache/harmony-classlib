@@ -24,23 +24,25 @@ import java.io.IOException;
  * RuntimeVisibleParamenterAnnotations attribute or a
  * RuntimeInvisibleParameterAnnotations attribute.
  */
-public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends AnnotationsAttribute {
+public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends
+        AnnotationsAttribute {
 
     private final int num_parameters;
     private final ParameterAnnotation[] parameter_annotations;
 
-    public RuntimeVisibleorInvisibleParameterAnnotationsAttribute(CPUTF8 name, ParameterAnnotation[] parameter_annotations) {
+    public RuntimeVisibleorInvisibleParameterAnnotationsAttribute(CPUTF8 name,
+            ParameterAnnotation[] parameter_annotations) {
         super(name);
         this.num_parameters = parameter_annotations.length;
         this.parameter_annotations = parameter_annotations;
     }
 
     protected int getLength() {
-       int length = 1;
-       for (int i = 0; i < num_parameters; i++) {
-           length += parameter_annotations[i].getLength();
-       }
-       return length;
+        int length = 1;
+        for (int i = 0; i < num_parameters; i++) {
+            length += parameter_annotations[i].getLength();
+        }
+        return length;
     }
 
     protected void resolve(ClassConstantPool pool) {
@@ -58,9 +60,9 @@ public class RuntimeVisibleorInvisibleParameterAnnotationsAttribute extends Anno
     }
 
     public String toString() {
-        return attributeName.underlyingString() + ": " + num_parameters + " parameter annotations";
+        return attributeName.underlyingString() + ": " + num_parameters
+                + " parameter annotations";
     }
-
 
     /**
      * ParameterAnnotation represents the annotations on a single parameter.

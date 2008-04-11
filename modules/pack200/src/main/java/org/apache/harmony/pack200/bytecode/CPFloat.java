@@ -25,16 +25,16 @@ import java.io.IOException;
 public class CPFloat extends CPConstantNumber {
 
     public CPFloat(Float value) {
-		super(ConstantPoolEntry.CP_Float,value);
-	      this.domain = ClassConstantPool.DOMAIN_FLOAT;
-	}
+        super(ConstantPoolEntry.CP_Float, value);
+        this.domain = ClassConstantPool.DOMAIN_FLOAT;
+    }
 
     protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeFloat(getNumber().floatValue());
-	}
+        dos.writeFloat(getNumber().floatValue());
+    }
 
-	public String toString() {
-		return "Float: " + getValue();
-	}
+    public String toString() {
+        return "Float: " + getValue();
+    }
 
 }

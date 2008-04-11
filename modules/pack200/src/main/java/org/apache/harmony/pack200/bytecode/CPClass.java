@@ -24,61 +24,62 @@ import java.io.IOException;
  */
 public class CPClass extends ConstantPoolEntry {
 
-	private int index;
+    private int index;
 
-	public String name;
+    public String name;
 
-	private final CPUTF8 utf8;
+    private final CPUTF8 utf8;
 
-	/**
-	 * Creates a new CPClass
-	 * @param name
-	 * @throws NullPointerException if name is null
-	 */
+    /**
+     * Creates a new CPClass
+     * 
+     * @param name
+     * @throws NullPointerException
+     *             if name is null
+     */
     public CPClass(CPUTF8 name) {
-		super(ConstantPoolEntry.CP_Class);
-		this.name = name.underlyingString();
-		this.domain = ClassConstantPool.DOMAIN_CLASSREF;
-		this.utf8 = name;
-		if(name == null) {
+        super(ConstantPoolEntry.CP_Class);
+        this.name = name.underlyingString();
+        this.domain = ClassConstantPool.DOMAIN_CLASSREF;
+        this.utf8 = name;
+        if (name == null) {
             throw new NullPointerException("Null arguments are not allowed");
-		}
-	}
+        }
+    }
 
     public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		final CPClass other = (CPClass) obj;
-		return utf8.equals(other.utf8);
-	}
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        final CPClass other = (CPClass) obj;
+        return utf8.equals(other.utf8);
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { utf8, };
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { utf8, };
+    }
 
+    public int hashCode() {
+        return utf8.hashCode();
+    }
 
-	public int hashCode() {
-		return utf8.hashCode();
-	}
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        index = pool.indexOf(utf8);
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		index = pool.indexOf(utf8);
-	}
+    public String toString() {
+        return "Class: " + getName();
+    }
 
-	public String toString() {
-		return "Class: " + getName();
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getName() {
-		return name;
-	}
-
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(index);
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(index);
+    }
 }

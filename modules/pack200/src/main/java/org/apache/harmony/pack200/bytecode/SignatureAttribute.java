@@ -27,14 +27,17 @@ public class SignatureAttribute extends Attribute {
     private int signature_index;
     private final CPUTF8 signature;
 
-    private static final CPUTF8 attributeName = new CPUTF8("Signature", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private static final CPUTF8 attributeName = new CPUTF8("Signature",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 
     public SignatureAttribute(CPUTF8 value) {
         super(attributeName);
         this.signature = value;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
@@ -47,14 +50,18 @@ public class SignatureAttribute extends Attribute {
         signature_index = pool.indexOf(signature);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
         dos.writeShort(signature_index);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {

@@ -29,9 +29,11 @@ public class TableSwitchForm extends SwitchForm {
         super(opcode, name, rewrite);
     }
 
-
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.SwitchForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandManager, int)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.SwitchForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandManager, int)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
@@ -41,14 +43,14 @@ public class TableSwitchForm extends SwitchForm {
         case_value = operandManager.nextCaseValues();
 
         final int case_pcs[] = new int[case_count];
-        for(int index=0; index < case_count; index++) {
+        for (int index = 0; index < case_count; index++) {
             case_pcs[index] = operandManager.nextLabel();
         }
 
         final int[] labelsArray = new int[case_count + 1];
         labelsArray[0] = default_pc;
-        for(int index=1; index < case_count + 1; index++) {
-            labelsArray[index] = case_pcs[index-1];
+        for (int index = 1; index < case_count + 1; index++) {
+            labelsArray[index] = case_pcs[index - 1];
         }
         byteCode.setByteCodeTargets(labelsArray);
 
@@ -56,7 +58,6 @@ public class TableSwitchForm extends SwitchForm {
         final int highValue = lowValue + case_count - 1;
         // All this gets dumped into the rewrite bytes of the
         // poor bytecode.
-
 
         // Unlike most byte codes, the TableSwitch is a
         // variable-sized bytecode. Because of this, the
@@ -69,9 +70,9 @@ public class TableSwitchForm extends SwitchForm {
         // label is on a 4-byte offset.
         final int padLength = 3 - (codeLength % 4);
         final int rewriteSize = 1 + padLength + 4 // defaultbytes
-            + 4 // lowbyte
-            + 4 // highbyte
-            + (4 * case_pcs.length);
+                + 4 // lowbyte
+                + 4 // highbyte
+                + (4 * case_pcs.length);
 
         final int[] newRewrite = new int[rewriteSize];
         int rewriteIndex = 0;
@@ -81,7 +82,7 @@ public class TableSwitchForm extends SwitchForm {
         newRewrite[rewriteIndex++] = byteCode.getOpcode();
 
         // padding
-        for(int index=0; index < padLength; index++) {
+        for (int index = 0; index < padLength; index++) {
             newRewrite[rewriteIndex++] = 0;
         }
 
@@ -104,7 +105,7 @@ public class TableSwitchForm extends SwitchForm {
 
         // jump offsets
         // The case_pcs will get overwritten by fixUpByteCodeTargets
-        for(int index = 0; index < case_count; index++) {
+        for (int index = 0; index < case_count; index++) {
             // offset
             newRewrite[rewriteIndex++] = -1;
             newRewrite[rewriteIndex++] = -1;

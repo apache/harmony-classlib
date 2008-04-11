@@ -41,31 +41,31 @@ import org.apache.harmony.pack200.SegmentConstantPool;
  */
 public class BcBandsTest extends AbstractBandsTestCase {
 
-	public class MockCpBands extends CpBands {
+    public class MockCpBands extends CpBands {
 
-		public MockCpBands(Segment segment) {
-			super(segment);
-		}
+        public MockCpBands(Segment segment) {
+            super(segment);
+        }
 
-	    public String[] getCpString() {
-        	String[] classes = new String[100];
-        	for(int index=0; index < 100; index++) {
-        		classes[index] = "java/lang/Stri:ng(J)";
-        	}
-        	return classes;
-	    }
+        public String[] getCpString() {
+            String[] classes = new String[100];
+            for (int index = 0; index < 100; index++) {
+                classes[index] = "java/lang/Stri:ng(J)";
+            }
+            return classes;
+        }
 
-	    public String[] getCpClass() {
-	    	return getCpString();
-	    }
+        public String[] getCpClass() {
+            return getCpString();
+        }
 
-	    public String[] getCpFieldClass() {
-	    	return getCpClass();
-	    }
+        public String[] getCpFieldClass() {
+            return getCpClass();
+        }
 
-	    public String[] getCpFieldDescriptor() {
-	    	return getCpString();
-	    }
+        public String[] getCpFieldDescriptor() {
+            return getCpString();
+        }
 
         public String[] getCpMethodClass() {
             return getCpClass();
@@ -83,46 +83,47 @@ public class BcBandsTest extends AbstractBandsTestCase {
             return getCpString();
         }
 
-	    public int[] getCpInt() {
-        	int[] elements = new int[100];
-        	for(int index=0; index < 100; index++) {
-        		elements[index] = 1;
-        	}
-        	return elements;
-	    }
+        public int[] getCpInt() {
+            int[] elements = new int[100];
+            for (int index = 0; index < 100; index++) {
+                elements[index] = 1;
+            }
+            return elements;
+        }
 
-	    public float[] getCpFloat() {
-        	float[] elements = new float[100];
-        	for(int index=0; index < 100; index++) {
-        		elements[index] = 1.0f;
-        	}
-        	return elements;
-	    }
+        public float[] getCpFloat() {
+            float[] elements = new float[100];
+            for (int index = 0; index < 100; index++) {
+                elements[index] = 1.0f;
+            }
+            return elements;
+        }
 
-	    public long[] getCpLong() {
-	    	long[] elements = new long[100];
-	    	for(int index=0; index < 100; index++) {
-	    		elements[index] = 1L;
-	    	}
-	    	return elements;
-	    }
+        public long[] getCpLong() {
+            long[] elements = new long[100];
+            for (int index = 0; index < 100; index++) {
+                elements[index] = 1L;
+            }
+            return elements;
+        }
 
-	    public double[] getCpDouble() {
-	    	double[] elements = new double[100];
-	    	for(int index=0; index < 100; index++) {
-	    		elements[index] = 1.0D;
-	    	}
-	    	return elements;
-	    }
-}
+        public double[] getCpDouble() {
+            double[] elements = new double[100];
+            for (int index = 0; index < 100; index++) {
+                elements[index] = 1.0D;
+            }
+            return elements;
+        }
+    }
 
     public class MockClassBands extends ClassBands {
+
         public MockClassBands(Segment segment) {
             super(segment);
         }
 
         public long[][] getMethodFlags() {
-            long[][] flags = new long[numClasses][] ;
+            long[][] flags = new long[numClasses][];
             for (int i = 0; i < flags.length; i++) {
                 flags[i] = new long[numMethods[i]];
             }
@@ -146,7 +147,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
         }
 
         public String[][] getMethodDescr() {
-            String[][] descr =  new String[numClasses][];
+            String[][] descr = new String[numClasses][];
             for (int i = 0; i < descr.length; i++) {
                 descr[i] = new String[numMethods[i]];
                 for (int j = 0; j < descr[i].length; j++) {
@@ -157,23 +158,23 @@ public class BcBandsTest extends AbstractBandsTestCase {
         }
 
         public String[] getClassThis() {
-        	String[] thisClasses = new String[numClasses];
-        	for(int index=0; index < numClasses; index++) {
-        		thisClasses[index] = "java/lang/String";
-        	}
-        	return thisClasses;
+            String[] thisClasses = new String[numClasses];
+            for (int index = 0; index < numClasses; index++) {
+                thisClasses[index] = "java/lang/String";
+            }
+            return thisClasses;
         }
 
         public String[] getClassSuper() {
-        	String[] superClasses = new String[numClasses];
-        	for(int index=0; index < numClasses; index++) {
-        		superClasses[index] = "java/lang/Object";
-        	}
-        	return superClasses;
+            String[] superClasses = new String[numClasses];
+            for (int index = 0; index < numClasses; index++) {
+                superClasses[index] = "java/lang/Object";
+            }
+            return superClasses;
         }
 
         public ArrayList[][] getMethodAttributes() {
-            ArrayList[][] attributes =  new ArrayList[numClasses][];
+            ArrayList[][] attributes = new ArrayList[numClasses][];
             for (int i = 0; i < attributes.length; i++) {
                 attributes[i] = new ArrayList[numMethods[i]];
                 for (int j = 0; j < attributes[i].length; j++) {
@@ -185,11 +186,11 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
         public ArrayList getOrderedCodeAttributes() {
             int totalMethods = 0;
-            for(int classIndex = 0; classIndex < numMethods.length; classIndex++) {
+            for (int classIndex = 0; classIndex < numMethods.length; classIndex++) {
                 totalMethods = totalMethods + numMethods[classIndex];
             }
             ArrayList orderedAttributeList = new ArrayList();
-            for(int classIndex=0; classIndex < totalMethods; classIndex++) {
+            for (int classIndex = 0; classIndex < totalMethods; classIndex++) {
                 ArrayList currentAttributes = new ArrayList();
                 orderedAttributeList.add(currentAttributes);
             }
@@ -198,15 +199,17 @@ public class BcBandsTest extends AbstractBandsTestCase {
     }
 
     public class MockSegment extends AbstractBandsTestCase.MockSegment {
-    	public CpBands cpBands;
+
+        public CpBands cpBands;
+
         protected AttrDefinitionBands getAttrDefinitionBands() {
             return new MockAttributeDefinitionBands(this);
         }
 
         protected CpBands getCpBands() {
-        	if(null == cpBands) {
-        		cpBands = new MockCpBands(this);
-        	}
+            if (null == cpBands) {
+                cpBands = new MockCpBands(this);
+            }
             return cpBands;
         }
 
@@ -224,7 +227,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
     /**
      * Test with single byte instructions that mean all other bands apart from
      * bc_codes will be empty.
-     *
+     * 
      * @throws IOException
      * @throws Pack200Exception
      */
@@ -246,57 +249,64 @@ public class BcBandsTest extends AbstractBandsTestCase {
                 (byte) 194, (byte) 195, (byte) 255 };
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
-        assertEquals(bytes.length - 1, bcBands.getMethodByteCodePacked()[0][0].length);
+        assertEquals(bytes.length - 1,
+                bcBands.getMethodByteCodePacked()[0][0].length);
     }
 
     /**
      * Test with multiple classes but single byte instructions
-     *
+     * 
      * @throws IOException
      * @throws Pack200Exception
      */
-    public void testMultipleClassesSimple() throws IOException, Pack200Exception {
+    public void testMultipleClassesSimple() throws IOException,
+            Pack200Exception {
         numClasses = 2;
-        numMethods = new int[] {1,1};
-        byte[] bytes = new byte[] {50, 50, (byte)255, 50, 50, (byte)255};
+        numMethods = new int[] { 1, 1 };
+        byte[] bytes = new byte[] { 50, 50, (byte) 255, 50, 50, (byte) 255 };
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
 
         numClasses = 1;
-        numMethods = new int[] {1};
+        numMethods = new int[] { 1 };
     }
 
     /**
-     * Test with multiple classes and multiple methods but single byte instructions
+     * Test with multiple classes and multiple methods but single byte
+     * instructions
+     * 
      * @throws IOException
      * @throws Pack200Exception
      */
-    public void testMultipleMethodsSimple() throws IOException, Pack200Exception {
+    public void testMultipleMethodsSimple() throws IOException,
+            Pack200Exception {
         numClasses = 2;
-        numMethods = new int[] {3,1};
-        byte[] bytes = new byte[] {50, 50, (byte)255,50, 50, (byte)255, 50, 50, (byte)255, 50, 50, (byte)255};
+        numMethods = new int[] { 3, 1 };
+        byte[] bytes = new byte[] { 50, 50, (byte) 255, 50, 50, (byte) 255, 50,
+                50, (byte) 255, 50, 50, (byte) 255 };
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
 
         numClasses = 1;
-        numMethods = new int[] {1};
+        numMethods = new int[] { 1 };
     }
 
-
     /**
-     * Test with codes that require entries in the bc_case_count and bc_case_value bands
+     * Test with codes that require entries in the bc_case_count and
+     * bc_case_value bands
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcCaseBands() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] { (byte)170, (byte)171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte)255,
-                2, 5, // bc_case_count
+        byte[] bytes = new byte[] { (byte) 170, (byte) 171, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 255, 2, 5, // bc_case_count
                 0, 0, 0, 0, 0, 0, 0, // bc_case_value
-                0, 0, 0, 0, 0, 0, 0, 0, 0}; // bc_label
+                0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(18, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -312,15 +322,15 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_byte band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcByteBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {16, (byte)132, (byte)188, (byte)197, (byte)255,
-                8, 8, 8, 8, // bc_byte band
+        byte[] bytes = new byte[] { 16, (byte) 132, (byte) 188, (byte) 197,
+                (byte) 255, 8, 8, 8, 8, // bc_byte band
                 8, // bc_locals band (required by iinc (132))
-                8}; // bc_class band (required by multianewarray (197))
+                8 }; // bc_class band (required by multianewarray (197))
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(4, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -335,15 +345,15 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_short band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcShortBand() throws IOException, Pack200Exception {
-    	//TODO: Need to fix this testcase so it has enough data to pass.
-        byte[] bytes = new byte[] {17, (byte)196, (byte)132, (byte)255,
-                8, 8,// bc_short band
-                8}; // bc_locals band (required by wide iinc (196, 132))
+        // TODO: Need to fix this testcase so it has enough data to pass.
+        byte[] bytes = new byte[] { 17, (byte) 196, (byte) 132, (byte) 255, 8,
+                8,// bc_short band
+                8 }; // bc_locals band (required by wide iinc (196, 132))
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(3, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -353,14 +363,14 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_local band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcLocalBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {21, 22, 23, 24, 25,
-                54, 55, 56, 57, 58, (byte)169, (byte) 255,
-                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}; // bc_local band
+        byte[] bytes = new byte[] { 21, 22, 23, 24, 25, 54, 55, 56, 57, 58,
+                (byte) 169, (byte) 255, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_local
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(11, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -369,19 +379,29 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_label band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcLabelBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte) 159, (byte) 160, (byte) 161,
+        byte[] bytes = new byte[] { (byte) 159, (byte) 160, (byte) 161,
                 (byte) 162, (byte) 163, (byte) 164, (byte) 165, (byte) 166,
-                (byte) 167, (byte) 168,  (byte) 170, (byte) 171,  (byte) 198, (byte) 199, (byte) 200, (byte) 201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 255,
-                2, 2, // bc_case_count (required by tableswitch (170) and lookupswitch (171))
+                (byte) 167, (byte) 168, (byte) 170, (byte) 171, (byte) 198,
+                (byte) 199, (byte) 200, (byte) 201, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 255, 2, 2, // bc_case_count
+                // (required
+                // by
+                // tableswitch
+                // (170) and
+                // lookupswitch
+                // (171))
                 0, 0, 0, 0, // bc_case_value
-//                Now that we're actually doing real label lookup, need valid labels
-//                8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_label band
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label band
+                // Now that we're actually doing real label lookup, need valid
+                // labels
+                // 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_label
+                // band
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // bc_label
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(36, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -389,11 +409,10 @@ public class BcBandsTest extends AbstractBandsTestCase {
     }
 
     public void testWideForms() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte) 196, (byte) 54, // wide istore
+        byte[] bytes = new byte[] { (byte) 196, (byte) 54, // wide istore
                 (byte) 196, (byte) 132, // wide iinc
-                (byte) 255,
-                0, // bc_short band
-                0, 1}; // bc_locals band
+                (byte) 255, 0, // bc_short band
+                0, 1 }; // bc_locals band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(4, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -403,13 +422,13 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_intref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcIntRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)234, (byte)237, (byte)255,
-                8, 8}; // bc_intref band
+        byte[] bytes = new byte[] { (byte) 234, (byte) 237, (byte) 255, 8, 8 }; // bc_intref
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -419,13 +438,13 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_floatref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcFloatRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)235, (byte)238, (byte)255,
-                8, 8}; // bc_floatref band
+        byte[] bytes = new byte[] { (byte) 235, (byte) 238, (byte) 255, 8, 8 }; // bc_floatref
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -435,13 +454,12 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_longref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcLongRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {20, (byte)255,
-                8}; // bc_longref band
+        byte[] bytes = new byte[] { 20, (byte) 255, 8 }; // bc_longref band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(1, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -451,13 +469,13 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_doubleref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcDoubleRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)239, (byte)255,
-                8}; // bc_doubleref band
+        byte[] bytes = new byte[] { (byte) 239, (byte) 255, 8 }; // bc_doubleref
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(1, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -465,16 +483,15 @@ public class BcBandsTest extends AbstractBandsTestCase {
         assertEquals(1, bc_doubleref.length);
     }
 
-
     /**
      * Test with codes that should require entries in the bc_stringref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcStringRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {18, 19, (byte)255,
-                8, 8}; // bc_stringref band
+        byte[] bytes = new byte[] { 18, 19, (byte) 255, 8, 8 }; // bc_stringref
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -482,16 +499,15 @@ public class BcBandsTest extends AbstractBandsTestCase {
         assertEquals(2, bc_stringref.length);
     }
 
-
     /**
      * Test with codes that should require entries in the bc_classref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcClassRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)233, (byte)236, (byte)255,
-                8, 8}; // bc_classref band
+        byte[] bytes = new byte[] { (byte) 233, (byte) 236, (byte) 255, 8, 8 }; // bc_classref
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(2, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -501,13 +517,13 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_fieldref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcFieldRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)178, (byte)179, (byte)180, (byte)181, (byte)255,
-                8, 8, 8, 8}; // bc_fieldref band
+        byte[] bytes = new byte[] { (byte) 178, (byte) 179, (byte) 180,
+                (byte) 181, (byte) 255, 8, 8, 8, 8 }; // bc_fieldref band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(4, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -517,13 +533,13 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_methodref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcMethodRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)182, (byte)183, (byte)184, (byte)255,
-                8, 8, 8}; // bc_methodref band
+        byte[] bytes = new byte[] { (byte) 182, (byte) 183, (byte) 184,
+                (byte) 255, 8, 8, 8 }; // bc_methodref band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(3, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -533,13 +549,13 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_imethodref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcIMethodRefBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)185, (byte)255,
-                8}; // bc_imethodref band
+        byte[] bytes = new byte[] { (byte) 185, (byte) 255, 8 }; // bc_imethodref
+        // band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(1, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -549,15 +565,14 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_thisfieldref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcThisFieldBand() throws IOException, Pack200Exception {
         byte[] bytes = new byte[] { (byte) 202, (byte) 203, (byte) 204,
                 (byte) 205, (byte) 209, (byte) 210, (byte) 211, (byte) 212,
-                (byte) 255,
-                8, 8, 8, 8, 8, 8, 8, 8 }; // bc_thisfieldref band
+                (byte) 255, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_thisfieldref band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(8, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -567,15 +582,14 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_superfield band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcSuperFieldBand() throws IOException, Pack200Exception {
         byte[] bytes = new byte[] { (byte) 216, (byte) 217, (byte) 218,
                 (byte) 219, (byte) 223, (byte) 224, (byte) 225, (byte) 226,
-                (byte) 255,
-                8, 8, 8, 8, 8, 8, 8, 8}; // bc_superfield band
+                (byte) 255, 8, 8, 8, 8, 8, 8, 8, 8 }; // bc_superfield band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(8, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -585,13 +599,14 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_thismethod band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcThisMethodBand() throws IOException, Pack200Exception {
-        byte[] bytes = new byte[] {(byte)206, (byte)207, (byte)208, (byte)213, (byte)214, (byte)215, (byte)255,
-                8, 8, 8, 8, 8, 8}; // bc_thismethod band
+        byte[] bytes = new byte[] { (byte) 206, (byte) 207, (byte) 208,
+                (byte) 213, (byte) 214, (byte) 215, (byte) 255, 8, 8, 8, 8, 8,
+                8 }; // bc_thismethod band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(6, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -601,15 +616,17 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_supermethod band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcSuperMethodBand() throws IOException, Pack200Exception {
-    	//TODO: Need to fix this testcase so it has enough data to pass.
-    	if(true) return;
-        byte[] bytes = new byte[] {(byte)220, (byte)221, (byte)222, (byte)227, (byte)228, (byte)229, (byte)255,
-                8, 8, 8, 8, 8, 8}; // bc_supermethod band
+        // TODO: Need to fix this testcase so it has enough data to pass.
+        if (true)
+            return;
+        byte[] bytes = new byte[] { (byte) 220, (byte) 221, (byte) 222,
+                (byte) 227, (byte) 228, (byte) 229, (byte) 255, 8, 8, 8, 8, 8,
+                8 }; // bc_supermethod band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(6, bcBands.getMethodByteCodePacked()[0][0].length);
@@ -619,15 +636,16 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_initrefref band
-     *
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
     public void testBcInitRefRefBand() throws IOException, Pack200Exception {
-    	//TODO: Need to fix this testcase so it has enough data to pass.
-    	if(true) return;
-       byte[] bytes = new byte[] {(byte)230, (byte)231, (byte)232, (byte)255,
-                8, 8, 8}; // bc_initrefref band
+        // TODO: Need to fix this testcase so it has enough data to pass.
+        if (true)
+            return;
+        byte[] bytes = new byte[] { (byte) 230, (byte) 231, (byte) 232,
+                (byte) 255, 8, 8, 8 }; // bc_initrefref band
         InputStream in = new ByteArrayInputStream(bytes);
         bcBands.unpack(in);
         assertEquals(3, bcBands.getMethodByteCodePacked()[0][0].length);

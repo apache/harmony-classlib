@@ -19,13 +19,12 @@ package org.apache.harmony.pack200.bytecode.forms;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class is used to determine which init method should
- * be called, based on the last current class reference.
+ * This class is used to determine which init method should be called, based on
+ * the last current class reference.
  */
 public class ThisInitMethodRefForm extends InitMethodReferenceForm {
 
-    public ThisInitMethodRefForm(int opcode, String name,
-            int[] rewrite) {
+    public ThisInitMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
     }
 

@@ -26,89 +26,89 @@ import org.apache.harmony.pack200.SegmentUtils;
  */
 public class CPNameAndType extends ConstantPoolEntry {
 
-	CPUTF8 descriptor;
+    CPUTF8 descriptor;
 
-	transient int descriptorIndex;
+    transient int descriptorIndex;
 
-	CPUTF8 name;
+    CPUTF8 name;
 
-	transient int nameIndex;
+    transient int nameIndex;
 
-	/**
-	 * Create a new CPNameAndType
-	 * @param name
-	 * @param descriptor
-	 * @param domain
-	 * @throws NullPointerException if name or descriptor is null
-	 */
-	public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
-		super(ConstantPoolEntry.CP_NameAndType);
-		this.name = name;
-		this.descriptor = descriptor;
+    /**
+     * Create a new CPNameAndType
+     * 
+     * @param name
+     * @param descriptor
+     * @param domain
+     * @throws NullPointerException
+     *             if name or descriptor is null
+     */
+    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
+        super(ConstantPoolEntry.CP_NameAndType);
+        this.name = name;
+        this.descriptor = descriptor;
         this.domain = domain;
-        if(name == null || descriptor == null) {
+        if (name == null || descriptor == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
-	}
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { name, descriptor };
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { name, descriptor };
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		descriptorIndex = pool.indexOf(descriptor);
-		nameIndex = pool.indexOf(name);
-	}
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        descriptorIndex = pool.indexOf(descriptor);
+        nameIndex = pool.indexOf(name);
+    }
 
-	/*
-	 * field_info { u2 access_flags; u2 name_index; u2 descriptor_index; u2
-	 * attributes_count; attribute_info attributes[attributes_count]; }
-	 */
+    /*
+     * field_info { u2 access_flags; u2 name_index; u2 descriptor_index; u2
+     * attributes_count; attribute_info attributes[attributes_count]; }
+     */
 
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(nameIndex);
-		dos.writeShort(descriptorIndex);
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(nameIndex);
+        dos.writeShort(descriptorIndex);
+    }
 
+    public String toString() {
+        return "NameAndType: " + name + "(" + descriptor + ")";
+    }
 
-	public String toString() {
-		return "NameAndType: " + name + "(" + descriptor + ")";
-	}
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + descriptor.hashCode();
+        result = PRIME * result + name.hashCode();
+        return result;
+    }
 
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final CPNameAndType other = (CPNameAndType) obj;
+        if (!descriptor.equals(other.descriptor))
+            return false;
+        if (!name.equals(other.name))
+            return false;
+        return true;
+    }
 
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + descriptor.hashCode();
-		result = PRIME * result + name.hashCode();
-		return result;
-	}
-
-
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final CPNameAndType other = (CPNameAndType) obj;
-		if (!descriptor.equals(other.descriptor))
-			return false;
-		if (!name.equals(other.name))
-			return false;
-		return true;
-	}
-
-	/**
-	 * Answers the invokeinterface count argument when the
-	 * receiver is treated as an invokeinterface target.
-	 * This value is not meaningful if the receiver is not
-     * an invokeinterface target.
-	 * @return count
-	 */
-	public int invokeInterfaceCount() {
-	    return 1 + SegmentUtils.countInvokeInterfaceArgs(descriptor.underlyingString());
-	}
+    /**
+     * Answers the invokeinterface count argument when the receiver is treated
+     * as an invokeinterface target. This value is not meaningful if the
+     * receiver is not an invokeinterface target.
+     * 
+     * @return count
+     */
+    public int invokeInterfaceCount() {
+        return 1 + SegmentUtils.countInvokeInterfaceArgs(descriptor
+                .underlyingString());
+    }
 }

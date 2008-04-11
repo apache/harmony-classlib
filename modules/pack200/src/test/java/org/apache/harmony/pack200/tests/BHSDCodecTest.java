@@ -31,14 +31,14 @@ import org.apache.harmony.pack200.Pack200Exception;
  */
 public class BHSDCodecTest extends TestCase {
 
-
     public void testEncodeDecode() throws IOException, Pack200Exception {
         for (int i = 1; i < 116; i++) {
 
             BHSDCodec codec = (BHSDCodec) CodecEncoding.getCodec(i, null, null);
 
-            if(!codec.isDelta()) {
-                // Test encode-decode with a selection of numbers within the range of the codec
+            if (!codec.isDelta()) {
+                // Test encode-decode with a selection of numbers within the
+                // range of the codec
                 long largest = codec.largest();
                 long smallest = codec.isSigned() ? codec.smallest() : 0;
                 long difference = (largest - smallest) / 4;
@@ -46,14 +46,14 @@ public class BHSDCodecTest extends TestCase {
                     byte[] encoded = codec.encode(j, 0);
                     long decoded = 0;
                     try {
-                        decoded = codec.decode(new ByteArrayInputStream(encoded),
-                                0);
+                        decoded = codec.decode(
+                                new ByteArrayInputStream(encoded), 0);
                     } catch (EOFException e) {
                         System.out.println(e);
                     }
                     if (j != decoded) {
-                        fail("Failed with codec: " + i + ", " + codec + " expected: " + j
-                                + ", got: " + decoded);
+                        fail("Failed with codec: " + i + ", " + codec
+                                + " expected: " + j + ", got: " + decoded);
                     }
                 }
             }

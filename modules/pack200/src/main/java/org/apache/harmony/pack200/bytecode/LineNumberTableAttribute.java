@@ -30,8 +30,8 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     private static final CPUTF8 attributeName = new CPUTF8(
             "LineNumberTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
-
-    public LineNumberTableAttribute(int line_number_table_length, int[] start_pcs, int[] line_numbers) {
+    public LineNumberTableAttribute(int line_number_table_length,
+            int[] start_pcs, int[] line_numbers) {
         super(attributeName);
         this.line_number_table_length = line_number_table_length;
         this.start_pcs = start_pcs;
@@ -50,26 +50,32 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
         return "LineNumberTable: " + line_number_table_length + " lines";
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#getNestedClassFileEntries()
      */
     protected ClassFileEntry[] getNestedClassFileEntries() {
-        return new ClassFileEntry[] {getAttributeName()};
+        return new ClassFileEntry[] { getAttributeName() };
     }
 
-	/* (non-Javadoc)
-	 * @see org.apache.harmony.pack200.bytecode.Attribute#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
-	 */
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.Attribute#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
+     */
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+    }
 
     protected int[] getStartPCs() {
         return start_pcs;

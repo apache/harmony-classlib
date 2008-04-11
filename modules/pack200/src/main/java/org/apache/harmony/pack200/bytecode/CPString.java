@@ -25,34 +25,33 @@ import java.io.IOException;
 public class CPString extends CPConstant {
 
     private transient int nameIndex;
-	private final CPUTF8 name;
+    private final CPUTF8 name;
 
     public CPString(CPUTF8 value) {
-		super(ConstantPoolEntry.CP_String, value);
-		this.domain = ClassConstantPool.DOMAIN_STRING;
-		this.name = value;
-	}
+        super(ConstantPoolEntry.CP_String, value);
+        this.domain = ClassConstantPool.DOMAIN_STRING;
+        this.name = value;
+    }
 
     protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(nameIndex);
-	}
+        dos.writeShort(nameIndex);
+    }
 
+    public String toString() {
+        return "String: " + getValue();
+    }
 
-	public String toString() {
-		return "String: " + getValue();
-	}
+    /**
+     * Allows the constant pool entries to resolve their nested entries
+     * 
+     * @param pool
+     */
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        nameIndex = pool.indexOf(name);
+    }
 
-	/**
-	 * Allows the constant pool entries to resolve their nested entries
-	 *
-	 * @param pool
-	 */
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		nameIndex = pool.indexOf(name);
-	}
-
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { name };
- 	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { name };
+    }
 }

@@ -39,7 +39,8 @@ public class CodeAttributeTest extends TestCase {
         public MockCodeAttribute(int maxStack, int maxLocals,
                 byte[] codePacked, Segment segment,
                 OperandManager operandManager, List exceptionTable) {
-            super(maxStack, maxLocals, codePacked, segment, operandManager, exceptionTable);
+            super(maxStack, maxLocals, codePacked, segment, operandManager,
+                    exceptionTable);
         }
 
         public int getLength() {
@@ -48,6 +49,7 @@ public class CodeAttributeTest extends TestCase {
     }
 
     public class MockCpBands extends CpBands {
+
         public MockCpBands(Segment segment) {
             super(segment);
         }
@@ -99,18 +101,19 @@ public class CodeAttributeTest extends TestCase {
                     new int[] { 0 }, // bcThisMethod
                     new int[] {}, // bcSuperMethod
                     new int[] {} // bcInitRef
-, null
-            );
+                    , null);
         }
     }
 
     public class MockSegment extends Segment {
+
         public SegmentConstantPool getConstantPool() {
             return new MockSegmentConstantPool(cpBands);
         }
     }
 
     public class MockSegmentConstantPool extends SegmentConstantPool {
+
         public MockSegmentConstantPool(CpBands bands) {
             super(bands);
         }
@@ -149,8 +152,7 @@ public class CodeAttributeTest extends TestCase {
                 mixedByteArray, // codePacked
                 segment, // segment
                 operandManager, // operandManager
-                new ArrayList()
-        );
+                new ArrayList());
         assertEquals(29, attribute.getLength());
 
         attribute.attributes.add(new LocalVariableTableAttribute(0, null, null,
@@ -168,8 +170,7 @@ public class CodeAttributeTest extends TestCase {
                 mixedByteArray, // codePacked
                 segment, // segment
                 operandManager, // operandManager
-                new ArrayList()
-        );
+                new ArrayList());
         assertEquals(2, attribute.maxLocals);
         assertEquals(3, attribute.maxStack);
         assertEquals("aload_0_putfield_this", ((ByteCode) attribute.byteCodes
@@ -192,8 +193,7 @@ public class CodeAttributeTest extends TestCase {
                 singleByteArray, // codePacked
                 segment, // segment
                 operandManager, // operandManager
-                new ArrayList()
-        );
+                new ArrayList());
         assertEquals(3, attribute.maxLocals);
         assertEquals(4, attribute.maxStack);
         assertEquals("invokespecial_this", ((ByteCode) attribute.byteCodes

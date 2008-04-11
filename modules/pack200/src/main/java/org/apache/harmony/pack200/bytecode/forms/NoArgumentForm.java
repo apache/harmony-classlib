@@ -20,10 +20,9 @@ import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form of all bytecodes
- * which either have no operands (such as nop) or have all
- * their operands passed on the stack (not encoded as bytes
- * in the bytecode streams).
+ * This class implements the byte code form of all bytecodes which either have
+ * no operands (such as nop) or have all their operands passed on the stack (not
+ * encoded as bytes in the bytecode streams).
  */
 public class NoArgumentForm extends ByteCodeForm {
 
@@ -39,8 +38,12 @@ public class NoArgumentForm extends ByteCodeForm {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {

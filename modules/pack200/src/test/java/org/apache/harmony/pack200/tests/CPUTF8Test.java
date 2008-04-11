@@ -24,9 +24,12 @@ import org.apache.harmony.pack200.bytecode.ClassConstantPool;
 public class CPUTF8Test extends TestCase {
 
     public void testEquality() {
-        CPUTF8 one = new CPUTF8("(III)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        CPUTF8 two = new CPUTF8("((I[II)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        CPUTF8 three = new CPUTF8("([III)V", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+        CPUTF8 one = new CPUTF8("(III)V",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+        CPUTF8 two = new CPUTF8("((I[II)V",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+        CPUTF8 three = new CPUTF8("([III)V",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
         assertFalse(one.equals(two));
         assertFalse(one.equals(three));
         assertFalse(two.equals(three));

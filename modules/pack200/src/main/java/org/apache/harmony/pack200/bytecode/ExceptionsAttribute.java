@@ -28,78 +28,78 @@ public class ExceptionsAttribute extends Attribute {
     private static final CPUTF8 attributeName = new CPUTF8(
             "Exceptions", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
-	private static int hashCode(Object[] array) {
-		final int prime = 31;
-		if (array == null)
-			return 0;
-		int result = 1;
-		for (int index = 0; index < array.length; index++) {
-			result = prime * result
-					+ (array[index] == null ? 0 : array[index].hashCode());
-		}
-		return result;
-	}
+    private static int hashCode(Object[] array) {
+        final int prime = 31;
+        if (array == null)
+            return 0;
+        int result = 1;
+        for (int index = 0; index < array.length; index++) {
+            result = prime * result
+                    + (array[index] == null ? 0 : array[index].hashCode());
+        }
+        return result;
+    }
 
-	private transient int[] exceptionIndexes;
+    private transient int[] exceptionIndexes;
 
-	private final CPClass[] exceptions;
+    private final CPClass[] exceptions;
 
-	public ExceptionsAttribute(CPClass[] exceptions) {
-		super(attributeName);
-		this.exceptions = exceptions;
-	}
+    public ExceptionsAttribute(CPClass[] exceptions) {
+        super(attributeName);
+        this.exceptions = exceptions;
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final ExceptionsAttribute other = (ExceptionsAttribute) obj;
-		if (!Arrays.equals(exceptions, other.exceptions))
-			return false;
-		return true;
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ExceptionsAttribute other = (ExceptionsAttribute) obj;
+        if (!Arrays.equals(exceptions, other.exceptions))
+            return false;
+        return true;
+    }
 
-	protected int getLength() {
-		return 2 + 2 * exceptions.length;
-	}
+    protected int getLength() {
+        return 2 + 2 * exceptions.length;
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		ClassFileEntry[] result = new ClassFileEntry[exceptions.length+1];
-		for (int i = 0; i < exceptions.length; i++) {
-			result[i] = exceptions[i];
-		}
-		result[exceptions.length] = getAttributeName();
-		return result;
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        ClassFileEntry[] result = new ClassFileEntry[exceptions.length + 1];
+        for (int i = 0; i < exceptions.length; i++) {
+            result[i] = exceptions[i];
+        }
+        result[exceptions.length] = getAttributeName();
+        return result;
+    }
 
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ExceptionsAttribute.hashCode(exceptions);
-		return result;
-	}
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ExceptionsAttribute.hashCode(exceptions);
+        return result;
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		exceptionIndexes = new int[exceptions.length];
-		for (int i = 0; i < exceptions.length; i++) {
-			exceptions[i].resolve(pool);
-			exceptionIndexes[i] = pool.indexOf(exceptions[i]);
-		}
-	}
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        exceptionIndexes = new int[exceptions.length];
+        for (int i = 0; i < exceptions.length; i++) {
+            exceptions[i].resolve(pool);
+            exceptionIndexes[i] = pool.indexOf(exceptions[i]);
+        }
+    }
 
-	public String toString() {
-		return "Exceptions: " + exceptions;
-	}
+    public String toString() {
+        return "Exceptions: " + exceptions;
+    }
 
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(exceptionIndexes.length);
-		for (int i = 0; i < exceptionIndexes.length; i++) {
-			dos.writeShort(exceptionIndexes[i]);
-		}
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(exceptionIndexes.length);
+        for (int i = 0; i < exceptionIndexes.length; i++) {
+            dos.writeShort(exceptionIndexes[i]);
+        }
+    }
 
 }

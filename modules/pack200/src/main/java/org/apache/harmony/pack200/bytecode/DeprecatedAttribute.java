@@ -24,27 +24,34 @@ import java.io.IOException;
  */
 public class DeprecatedAttribute extends Attribute {
 
-    private static final CPUTF8 attributeName = new CPUTF8("Deprecated", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private static final CPUTF8 attributeName = new CPUTF8("Deprecated",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 
     public DeprecatedAttribute() {
         super(attributeName);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
         return 0;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
         // No body
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {

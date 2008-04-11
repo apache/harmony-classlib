@@ -17,10 +17,9 @@
 package org.apache.harmony.pack200.bytecode.forms;
 
 /**
- * This abstract class implements the common code for
- * instructions which have variable lengths. This
- * is currently the *switch instructions and some
- * wide (_w) instructions.
+ * This abstract class implements the common code for instructions which have
+ * variable lengths. This is currently the *switch instructions and some wide
+ * (_w) instructions.
  */
 public abstract class VariableInstructionForm extends ByteCodeForm {
 
@@ -33,36 +32,31 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
     }
 
     /**
-     * Given an int operand, set the rewrite bytes for
-     * the next available operand position and the three
-     * immediately following it to a highest-byte,
-     * mid-high, mid-low, low-byte encoding of the operand.
-     *
-     *  Note that unlike the ByteCode setOperand* operations, this
-     *  starts with an actual bytecode rewrite array (rather than
-     *  a ByteCodeForm prototype rewrite array). Also, this method
-     *  overwrites -1 values in the rewrite array - so if you start
-     *  with an array that looks like:
-     *  {100, -1, -1, -1, -1, 200, -1, -1, -1, -1} then calling
-     *  setRewrite4Bytes(0, rewrite) the first time will convert
-     *  it to:
-     *  {100, 0, 0, 0, 0, 200, -1, -1, -1, -1}
-     *  Calling setRewrite4Bytes(0, rewrite) a second time will
-     *  convert it to:
-     *  {100, 0, 0, 0, 0, 200, 0, 0, 0, 0}
-     *
-     * @param operand int to set the rewrite bytes to
-     * @param rewrite int[] bytes to rewrite
+     * Given an int operand, set the rewrite bytes for the next available
+     * operand position and the three immediately following it to a
+     * highest-byte, mid-high, mid-low, low-byte encoding of the operand.
+     * 
+     * Note that unlike the ByteCode setOperand* operations, this starts with an
+     * actual bytecode rewrite array (rather than a ByteCodeForm prototype
+     * rewrite array). Also, this method overwrites -1 values in the rewrite
+     * array - so if you start with an array that looks like: {100, -1, -1, -1,
+     * -1, 200, -1, -1, -1, -1} then calling setRewrite4Bytes(0, rewrite) the
+     * first time will convert it to: {100, 0, 0, 0, 0, 200, -1, -1, -1, -1}
+     * Calling setRewrite4Bytes(0, rewrite) a second time will convert it to:
+     * {100, 0, 0, 0, 0, 200, 0, 0, 0, 0}
+     * 
+     * @param operand
+     *            int to set the rewrite bytes to
+     * @param rewrite
+     *            int[] bytes to rewrite
      */
     public void setRewrite4Bytes(int operand, int[] rewrite) {
         int firstOperandPosition = -1;
 
         // Find the first -1 in the rewrite array
-        for(int index=0; index < rewrite.length - 3; index++) {
-            if((rewrite[index] == -1)
-                    && (rewrite[index+1] == -1)
-                    && (rewrite[index+2] == -1)
-                    && (rewrite[index+3] == -1)) {
+        for (int index = 0; index < rewrite.length - 3; index++) {
+            if ((rewrite[index] == -1) && (rewrite[index + 1] == -1)
+                    && (rewrite[index + 2] == -1) && (rewrite[index + 3] == -1)) {
                 firstOperandPosition = index;
                 break;
             }
@@ -71,34 +65,30 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
     }
 
     /**
-     * Given an int operand, set the rewrite bytes for
-     * the next available operand position and the byte
-     * immediately following it to a high-byte,
+     * Given an int operand, set the rewrite bytes for the next available
+     * operand position and the byte immediately following it to a high-byte,
      * low-byte encoding of the operand.
-     *
-     *  Note that unlike the ByteCode setOperand* operations, this
-     *  starts with an actual bytecode rewrite array (rather than
-     *  a ByteCodeForm prototype rewrite array). Also, this method
-     *  overwrites -1 values in the rewrite array - so if you start
-     *  with an array that looks like:
-     *  {100, -1, -1, -1, -1, 200, -1, -1, -1, -1} then calling
-     *  setRewrite2Bytes(0, rewrite) the first time will convert
-     *  it to:
-     *  {100, 0, 0, -1, -1, 200, -1, -1, -1, -1}
-     *  Calling setRewrite2Bytes(0, rewrite) a second time will
-     *  convert it to:
-     *  {100, 0, 0, 0, 0, 200, -1, -1, -1, -1}
-     *
-     * @param operand int to set the rewrite bytes to
-     * @param rewrite int[] bytes to rewrite
+     * 
+     * Note that unlike the ByteCode setOperand* operations, this starts with an
+     * actual bytecode rewrite array (rather than a ByteCodeForm prototype
+     * rewrite array). Also, this method overwrites -1 values in the rewrite
+     * array - so if you start with an array that looks like: {100, -1, -1, -1,
+     * -1, 200, -1, -1, -1, -1} then calling setRewrite2Bytes(0, rewrite) the
+     * first time will convert it to: {100, 0, 0, -1, -1, 200, -1, -1, -1, -1}
+     * Calling setRewrite2Bytes(0, rewrite) a second time will convert it to:
+     * {100, 0, 0, 0, 0, 200, -1, -1, -1, -1}
+     * 
+     * @param operand
+     *            int to set the rewrite bytes to
+     * @param rewrite
+     *            int[] bytes to rewrite
      */
     public void setRewrite2Bytes(int operand, int[] rewrite) {
         int firstOperandPosition = -1;
 
         // Find the first -1 in the rewrite array
-        for(int index=0; index < rewrite.length - 3; index++) {
-            if((rewrite[index] == -1)
-                    && (rewrite[index+1] == -1)) {
+        for (int index = 0; index < rewrite.length - 3; index++) {
+            if ((rewrite[index] == -1) && (rewrite[index + 1] == -1)) {
                 firstOperandPosition = index;
                 break;
             }
@@ -107,23 +97,30 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
     }
 
     /**
-     * This method writes operand directly into the rewrite
-     * array at index position specified.
-     * @param operand value to write
-     * @param absPosition position in array to write. Note that
-     *   this is absolute position in the array, so one can
-     *   overwrite the bytecode if one isn't careful.
-     * @param rewrite array to write into
+     * This method writes operand directly into the rewrite array at index
+     * position specified.
+     * 
+     * @param operand
+     *            value to write
+     * @param absPosition
+     *            position in array to write. Note that this is absolute
+     *            position in the array, so one can overwrite the bytecode if
+     *            one isn't careful.
+     * @param rewrite
+     *            array to write into
      */
     public void setRewrite4Bytes(int operand, int absPosition, int[] rewrite) {
-        if(absPosition < 0) {
-            throw new Error("Trying to rewrite " + this + " but there is no room for 4 bytes");
+        if (absPosition < 0) {
+            throw new Error("Trying to rewrite " + this
+                    + " but there is no room for 4 bytes");
         }
 
         final int byteCodeRewriteLength = rewrite.length;
 
-        if(absPosition + 3 > byteCodeRewriteLength) {
-            throw new Error("Trying to rewrite " + this + " with an int at position " + absPosition + " but this won't fit in the rewrite array");
+        if (absPosition + 3 > byteCodeRewriteLength) {
+            throw new Error("Trying to rewrite " + this
+                    + " with an int at position " + absPosition
+                    + " but this won't fit in the rewrite array");
         }
 
         rewrite[absPosition] = ((0xFF000000) & operand) >> 24;
@@ -133,23 +130,30 @@ public abstract class VariableInstructionForm extends ByteCodeForm {
     }
 
     /**
-     * This method writes operand directly into the rewrite
-     * array at index position specified.
-     * @param operand value to write
-     * @param absPosition position in array to write. Note that
-     *   this is absolute position in the array, so one can
-     *   overwrite the bytecode if one isn't careful.
-     * @param rewrite array to write into
+     * This method writes operand directly into the rewrite array at index
+     * position specified.
+     * 
+     * @param operand
+     *            value to write
+     * @param absPosition
+     *            position in array to write. Note that this is absolute
+     *            position in the array, so one can overwrite the bytecode if
+     *            one isn't careful.
+     * @param rewrite
+     *            array to write into
      */
     public void setRewrite2Bytes(int operand, int absPosition, int[] rewrite) {
-        if(absPosition < 0) {
-            throw new Error("Trying to rewrite " + this + " but there is no room for 4 bytes");
+        if (absPosition < 0) {
+            throw new Error("Trying to rewrite " + this
+                    + " but there is no room for 4 bytes");
         }
 
         final int byteCodeRewriteLength = rewrite.length;
 
-        if(absPosition + 1 > byteCodeRewriteLength) {
-            throw new Error("Trying to rewrite " + this + " with an int at position " + absPosition + " but this won't fit in the rewrite array");
+        if (absPosition + 1 > byteCodeRewriteLength) {
+            throw new Error("Trying to rewrite " + this
+                    + " with an int at position " + absPosition
+                    + " but this won't fit in the rewrite array");
         }
 
         rewrite[absPosition] = ((0xFF00) & operand) >> 8;

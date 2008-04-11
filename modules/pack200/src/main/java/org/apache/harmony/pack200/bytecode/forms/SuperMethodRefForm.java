@@ -20,16 +20,14 @@ import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements references to methods defined
- * in the superclass, which is set by this class in the
- * OperandManager. Pack200 allows the superclass to be
- * inferred from context; this class tracks previous
- * method reference superclasses to allow this.
+ * This class implements references to methods defined in the superclass, which
+ * is set by this class in the OperandManager. Pack200 allows the superclass to
+ * be inferred from context; this class tracks previous method reference
+ * superclasses to allow this.
  */
 public class SuperMethodRefForm extends ClassSpecificReferenceForm {
 
-    public SuperMethodRefForm(int opcode, String name,
-            int[] rewrite) {
+    public SuperMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
     }
 

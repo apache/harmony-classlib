@@ -23,14 +23,12 @@ import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class is used to determine which init method should
- * be called, based on the last class which was sent a
- * constructor message.
+ * This class is used to determine which init method should be called, based on
+ * the last class which was sent a constructor message.
  */
 public class NewInitMethodRefForm extends InitMethodReferenceForm {
 
-    public NewInitMethodRefForm(int opcode, String name,
-            int[] rewrite) {
+    public NewInitMethodRefForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
     }
 
@@ -47,13 +45,14 @@ public class NewInitMethodRefForm extends InitMethodReferenceForm {
         return result;
     }
 
-    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
-        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
+    protected void setNestedEntries(ByteCode byteCode,
+            OperandManager operandManager, int offset) throws Pack200Exception {
+        final SegmentConstantPool globalPool = operandManager
+                .globalConstantPool();
         ClassFileEntry[] nested = null;
-        nested = new ClassFileEntry[] {
-                globalPool.getInitMethodPoolEntry(SegmentConstantPool.CP_METHOD, offset, context(operandManager))
-        };
+        nested = new ClassFileEntry[] { globalPool.getInitMethodPoolEntry(
+                SegmentConstantPool.CP_METHOD, offset, context(operandManager)) };
         byteCode.setNested(nested);
-        byteCode.setNestedPositions(new int[][] {{0, 2}});
+        byteCode.setNestedPositions(new int[][] { { 0, 2 } });
     }
 }

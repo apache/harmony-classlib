@@ -24,65 +24,66 @@ import java.io.IOException;
  */
 public class SourceFileAttribute extends Attribute {
 
-	private final CPUTF8 name;
-	private int nameIndex;
+    private final CPUTF8 name;
+    private int nameIndex;
     private static final CPUTF8 attributeName = new CPUTF8(
             "SourceFile", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
+    public SourceFileAttribute(CPUTF8 name) {
+        super(attributeName);
+        this.name = name;
+    }
 
-	public SourceFileAttribute(CPUTF8 name) {
-		super(attributeName);
-		this.name = name;
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        final SourceFileAttribute other = (SourceFileAttribute) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		final SourceFileAttribute other = (SourceFileAttribute) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
-	}
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#isSourceFileAttribute()
      */
     public boolean isSourceFileAttribute() {
         return true;
     }
 
-	protected int getLength() {
-		return 2;
-	}
+    protected int getLength() {
+        return 2;
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { getAttributeName(), name };
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { getAttributeName(), name };
+    }
 
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = super.hashCode();
-		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = super.hashCode();
+        result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		nameIndex = pool.indexOf(name);
-	}
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        nameIndex = pool.indexOf(name);
+    }
 
-	public String toString() {
-		return "SourceFile: " + name;
-	}
+    public String toString() {
+        return "SourceFile: " + name;
+    }
 
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(nameIndex);
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(nameIndex);
+    }
 }

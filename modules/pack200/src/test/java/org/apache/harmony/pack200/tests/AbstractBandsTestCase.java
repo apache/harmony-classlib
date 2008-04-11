@@ -26,19 +26,20 @@ import org.apache.harmony.pack200.SegmentHeader;
 import org.apache.harmony.pack200.SegmentOptions;
 
 /**
- *
+ * 
  */
 public abstract class AbstractBandsTestCase extends TestCase {
 
     protected int numClasses = 1;
-    protected int[] numMethods = {1};
+    protected int[] numMethods = { 1 };
 
     public class MockSegmentHeader extends SegmentHeader {
-        public MockSegmentHeader(Segment segment) {
-			super(segment);
-		}
 
-		public int getClassCount() {
+        public MockSegmentHeader(Segment segment) {
+            super(segment);
+        }
+
+        public int getClassCount() {
             return numClasses;
         }
 
@@ -66,8 +67,6 @@ public abstract class AbstractBandsTestCase extends TestCase {
             return null;
         }
 
-
-
     }
 
     public class MockSegment extends Segment {
@@ -80,6 +79,5 @@ public abstract class AbstractBandsTestCase extends TestCase {
             return new MockSegmentHeader(this);
         }
     }
-
 
 }

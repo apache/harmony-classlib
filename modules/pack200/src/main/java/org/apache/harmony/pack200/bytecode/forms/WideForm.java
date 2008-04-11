@@ -20,9 +20,8 @@ import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for the
- * wide instruction. Unlike other instructions, it
- * can take multiple forms, depending on what is being
+ * This class implements the byte code form for the wide instruction. Unlike
+ * other instructions, it can take multiple forms, depending on what is being
  * widened.
  */
 public class WideForm extends VariableInstructionForm {
@@ -43,30 +42,41 @@ public class WideForm extends VariableInstructionForm {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
         final int instruction = operandManager.nextWideByteCode();
-        if(instruction == 132) {
-            setByteCodeOperandsFormat2(instruction, byteCode, operandManager, codeLength);
+        if (instruction == 132) {
+            setByteCodeOperandsFormat2(instruction, byteCode, operandManager,
+                    codeLength);
         } else {
-            setByteCodeOperandsFormat1(instruction, byteCode, operandManager, codeLength);
+            setByteCodeOperandsFormat1(instruction, byteCode, operandManager,
+                    codeLength);
         }
     }
 
     /**
-     * This method sets the rewrite array for the bytecode
-     * using Format 1 of the JVM spec: an opcode and two index
-     * bytes. This is used for ?load/?store/ret
-     * @param instruction should be 132
-     * @param byteCode the byte code whose rewrite array should be updated
-     * @param operandManager the source of the operands
-     * @param codeLength ignored
+     * This method sets the rewrite array for the bytecode using Format 1 of the
+     * JVM spec: an opcode and two index bytes. This is used for
+     * ?load/?store/ret
+     * 
+     * @param instruction
+     *            should be 132
+     * @param byteCode
+     *            the byte code whose rewrite array should be updated
+     * @param operandManager
+     *            the source of the operands
+     * @param codeLength
+     *            ignored
      */
-    protected void setByteCodeOperandsFormat1(int instruction, ByteCode byteCode,
-            OperandManager operandManager, int codeLength) {
+    protected void setByteCodeOperandsFormat1(int instruction,
+            ByteCode byteCode, OperandManager operandManager, int codeLength) {
 
         // Even though this code is really similar to the
         // code for setByteCodeOperandsFormat2, I've left it
@@ -95,23 +105,27 @@ public class WideForm extends VariableInstructionForm {
 
         // Index bytes
         setRewrite2Bytes(local, rewriteIndex, newRewrite);
-        rewriteIndex +=2;
+        rewriteIndex += 2;
 
         byteCode.setRewrite(newRewrite);
     }
 
-
     /**
-     * This method sets the rewrite array for the bytecode
-     * using Format 2 of the JVM spec: an opcode, two index
-     * bytes, and two constant bytes. This is used for iinc.
-     * @param instruction int should be 132
-     * @param byteCode ByteCode whose rewrite array should be updated
-     * @param operandManager OperandManager source of the operands
-     * @param codeLength ignored
+     * This method sets the rewrite array for the bytecode using Format 2 of the
+     * JVM spec: an opcode, two index bytes, and two constant bytes. This is
+     * used for iinc.
+     * 
+     * @param instruction
+     *            int should be 132
+     * @param byteCode
+     *            ByteCode whose rewrite array should be updated
+     * @param operandManager
+     *            OperandManager source of the operands
+     * @param codeLength
+     *            ignored
      */
-    protected void setByteCodeOperandsFormat2(int instruction, ByteCode byteCode,
-            OperandManager operandManager, int codeLength) {
+    protected void setByteCodeOperandsFormat2(int instruction,
+            ByteCode byteCode, OperandManager operandManager, int codeLength) {
 
         final int local = operandManager.nextLocal();
         final int constWord = operandManager.nextShort();
@@ -134,11 +148,12 @@ public class WideForm extends VariableInstructionForm {
 
         // Index bytes
         setRewrite2Bytes(local, rewriteIndex, newRewrite);
-        rewriteIndex +=2;
+        rewriteIndex += 2;
 
         // constant bytes
         setRewrite2Bytes(constWord, rewriteIndex, newRewrite);
-        rewriteIndex += 2; // not strictly necessary, but just in case something comes along later
+        rewriteIndex += 2; // not strictly necessary, but just in case
+        // something comes along later
 
         byteCode.setRewrite(newRewrite);
     }

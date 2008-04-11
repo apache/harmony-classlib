@@ -26,65 +26,62 @@ public class ConstantValueAttribute extends Attribute {
 
     private int constantIndex;
 
-	private final ClassFileEntry entry;
+    private final ClassFileEntry entry;
 
     private static final CPUTF8 attributeName = new CPUTF8(
             "ConstantValue", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
-	public ConstantValueAttribute(ClassFileEntry entry) {
-		super(attributeName);
-        if(entry == null) {
+    public ConstantValueAttribute(ClassFileEntry entry) {
+        super(attributeName);
+        if (entry == null) {
             throw new NullPointerException();
         }
-		this.entry = entry;
-	}
+        this.entry = entry;
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		final ConstantValueAttribute other = (ConstantValueAttribute) obj;
-		if (entry == null) {
-			if (other.entry != null)
-				return false;
-		} else if (!entry.equals(other.entry))
-			return false;
-		return true;
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        final ConstantValueAttribute other = (ConstantValueAttribute) obj;
+        if (entry == null) {
+            if (other.entry != null)
+                return false;
+        } else if (!entry.equals(other.entry))
+            return false;
+        return true;
+    }
 
+    protected int getLength() {
+        return 2;
+    }
 
-	protected int getLength() {
-		return 2;
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { getAttributeName(), entry };
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { getAttributeName(), entry };
-	}
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = super.hashCode();
+        result = PRIME * result + ((entry == null) ? 0 : entry.hashCode());
+        return result;
+    }
 
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        entry.resolve(pool);
+        this.constantIndex = pool.indexOf(entry);
+    }
 
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = super.hashCode();
-		result = PRIME * result + ((entry == null) ? 0 : entry.hashCode());
-		return result;
-	}
+    public String toString() {
+        return "Constant:" + entry;
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		entry.resolve(pool);
-		this.constantIndex = pool.indexOf(entry);
-	}
-
-	public String toString() {
-		return "Constant:" + entry;
-	}
-
-
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(constantIndex);
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(constantIndex);
+    }
 
 }

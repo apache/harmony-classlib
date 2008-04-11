@@ -21,9 +21,10 @@ import junit.framework.TestCase;
 import org.apache.harmony.pack200.bytecode.ByteCode;
 
 public class ByteCodeTest extends TestCase {
-	public void testByteCode() {
-		assertEquals("nop", ByteCode.getByteCode(0).getName());
-		assertEquals("return", ByteCode.getByteCode(-79).getName());
-		assertEquals("return", ByteCode.getByteCode(177).getName());
-	}
+
+    public void testByteCode() {
+        assertEquals("nop", ByteCode.getByteCode(0).getName());
+        assertEquals("return", ByteCode.getByteCode(-79).getName());
+        assertEquals("return", ByteCode.getByteCode(177).getName());
+    }
 }

@@ -23,9 +23,8 @@ import org.apache.harmony.pack200.bytecode.ClassFileEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for those
- * bytecodes which have class references (and only
- * class references).
+ * This class implements the byte code form for those bytecodes which have class
+ * references (and only class references).
  */
 public class ClassRefForm extends ReferenceForm {
 
@@ -40,9 +39,10 @@ public class ClassRefForm extends ReferenceForm {
         this.widened = widened;
     }
 
-    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
+    protected void setNestedEntries(ByteCode byteCode,
+            OperandManager operandManager, int offset) throws Pack200Exception {
         // If the offset is not zero, proceed normally.
-        if(offset != 0) {
+        if (offset != 0) {
             super.setNestedEntries(byteCode, operandManager, offset - 1);
             return;
         }
@@ -51,15 +51,16 @@ public class ClassRefForm extends ReferenceForm {
         // (This is true for all bc_classref forms in
         // the spec except for multianewarray, which has
         // its own form.)
-        final SegmentConstantPool globalPool = operandManager.globalConstantPool();
+        final SegmentConstantPool globalPool = operandManager
+                .globalConstantPool();
         ClassFileEntry[] nested = null;
         // How do I get this class?
-        nested = new ClassFileEntry[] {
-                globalPool.getClassPoolEntry(operandManager.getCurrentClass())
-            };
+        nested = new ClassFileEntry[] { globalPool
+                .getClassPoolEntry(operandManager.getCurrentClass()) };
         byteCode.setNested(nested);
-        byteCode.setNestedPositions(new int[][] {{0,2}});
+        byteCode.setNestedPositions(new int[][] { { 0, 2 } });
     }
+
     public int getOperandType() {
         return TYPE_CLASSREF;
     }

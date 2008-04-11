@@ -22,46 +22,48 @@ package org.apache.harmony.pack200.bytecode;
  */
 public abstract class CPConstant extends ConstantPoolEntry {
 
-	private final Object value;
+    private final Object value;
 
-	/**
-	 * Create a new CPConstant
-	 * @param tag
-	 * @param value
-	 * @throws NullPointerException if value is null
-	 */
-	public CPConstant(byte tag, Object value) {
-		super(tag);
-		this.value = value;
-		if (value == null) {
-		    throw new NullPointerException("Null arguments are not allowed");
-		}
-	}
+    /**
+     * Create a new CPConstant
+     * 
+     * @param tag
+     * @param value
+     * @throws NullPointerException
+     *             if value is null
+     */
+    public CPConstant(byte tag, Object value) {
+        super(tag);
+        this.value = value;
+        if (value == null) {
+            throw new NullPointerException("Null arguments are not allowed");
+        }
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		final CPConstant other = (CPConstant) obj;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
-		return true;
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        final CPConstant other = (CPConstant) obj;
+        if (value == null) {
+            if (other.value != null)
+                return false;
+        } else if (!value.equals(other.value))
+            return false;
+        return true;
+    }
 
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
 
-	protected Object getValue() {
-		return value;
-	}
+    protected Object getValue() {
+        return value;
+    }
 }

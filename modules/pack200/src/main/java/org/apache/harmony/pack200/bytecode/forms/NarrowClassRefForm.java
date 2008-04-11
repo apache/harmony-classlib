@@ -22,9 +22,8 @@ import org.apache.harmony.pack200.bytecode.CPClass;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class is used for representations of cldc and
- * cldc_w. In these cases, a narrow class ref has one
- * byte and a wide class ref has two bytes.
+ * This class is used for representations of cldc and cldc_w. In these cases, a
+ * narrow class ref has one byte and a wide class ref has two bytes.
  */
 public class NarrowClassRefForm extends ClassRefForm {
 
@@ -35,13 +34,15 @@ public class NarrowClassRefForm extends ClassRefForm {
     public NarrowClassRefForm(int opcode, String name, int[] rewrite,
             boolean widened) {
         super(opcode, name, rewrite, widened);
-     }
+    }
 
-    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
+    protected void setNestedEntries(ByteCode byteCode,
+            OperandManager operandManager, int offset) throws Pack200Exception {
         super.setNestedEntries(byteCode, operandManager, offset);
-        if(!widened) {
-            byteCode.setNestedPositions(new int[][] {{0,1}});
-            ((CPClass)byteCode.getNestedClassFileEntries()[0]).mustStartClassPool(true);
+        if (!widened) {
+            byteCode.setNestedPositions(new int[][] { { 0, 1 } });
+            ((CPClass) byteCode.getNestedClassFileEntries()[0])
+                    .mustStartClassPool(true);
         }
     }
 }

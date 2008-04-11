@@ -35,7 +35,9 @@ public class NewAttribute extends BCIRenumberedAttribute {
         super(attributeName);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
@@ -46,7 +48,9 @@ public class NewAttribute extends BCIRenumberedAttribute {
         return length;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
@@ -54,27 +58,29 @@ public class NewAttribute extends BCIRenumberedAttribute {
             int length = ((Integer) lengths.get(i)).intValue();
             Object obj = body.get(i);
             long value = 0;
-            if(obj instanceof Long) {
-                value = ((Long)obj).longValue();
+            if (obj instanceof Long) {
+                value = ((Long) obj).longValue();
             } else if (obj instanceof ClassFileEntry) {
-                value = pool.indexOf(((ClassFileEntry)obj));
+                value = pool.indexOf(((ClassFileEntry) obj));
             } else if (obj instanceof BCValue) {
-                value = ((BCValue)obj).actualValue;
+                value = ((BCValue) obj).actualValue;
             }
             // Write
-            if(length == 1) {
-                dos.writeByte((int)value);
+            if (length == 1) {
+                dos.writeByte((int) value);
             } else if (length == 2) {
-                dos.writeShort((int)value);
+                dos.writeShort((int) value);
             } else if (length == 4) {
-                dos.writeInt((int)value);
+                dos.writeInt((int) value);
             } else if (length == 8) {
                 dos.writeLong(value);
             }
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
@@ -140,8 +146,8 @@ public class NewAttribute extends BCIRenumberedAttribute {
         super.resolve(pool);
         for (Iterator iter = body.iterator(); iter.hasNext();) {
             Object element = iter.next();
-            if(element instanceof ClassFileEntry) {
-                ((ClassFileEntry)element).resolve(pool);
+            if (element instanceof ClassFileEntry) {
+                ((ClassFileEntry) element).resolve(pool);
             }
         }
         this.pool = pool;
@@ -197,33 +203,41 @@ public class NewAttribute extends BCIRenumberedAttribute {
     }
 
     public void renumber(List byteCodeOffsets) {
-        if(!renumbered) {
+        if (!renumbered) {
             Object previous = null;
             for (Iterator iter = body.iterator(); iter.hasNext();) {
                 Object obj = iter.next();
-                if(obj instanceof BCIndex) {
+                if (obj instanceof BCIndex) {
                     BCIndex bcIndex = (BCIndex) obj;
-                    bcIndex.setActualValue(((Integer)byteCodeOffsets.get(bcIndex.index)).intValue());
+                    bcIndex.setActualValue(((Integer) byteCodeOffsets
+                            .get(bcIndex.index)).intValue());
                 } else if (obj instanceof BCOffset) {
-                    BCOffset bcOffset = (BCOffset)obj;
-                    if(previous instanceof BCIndex) {
-                        int index = ((BCIndex)previous).index + bcOffset.offset;
+                    BCOffset bcOffset = (BCOffset) obj;
+                    if (previous instanceof BCIndex) {
+                        int index = ((BCIndex) previous).index
+                                + bcOffset.offset;
                         bcOffset.setIndex(index);
-                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(index)).intValue());
-                    } else if(previous instanceof BCOffset) {
-                        int index = ((BCOffset)previous).index + bcOffset.offset;
+                        bcOffset.setActualValue(((Integer) byteCodeOffsets
+                                .get(index)).intValue());
+                    } else if (previous instanceof BCOffset) {
+                        int index = ((BCOffset) previous).index
+                                + bcOffset.offset;
                         bcOffset.setIndex(index);
-                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(index)).intValue());
+                        bcOffset.setActualValue(((Integer) byteCodeOffsets
+                                .get(index)).intValue());
                     } else {
                         // Not sure if this should be able to happen
-                        bcOffset.setActualValue(((Integer)byteCodeOffsets.get(bcOffset.offset)).intValue());
+                        bcOffset.setActualValue(((Integer) byteCodeOffsets
+                                .get(bcOffset.offset)).intValue());
                     }
                 } else if (obj instanceof BCLength) {
                     // previous must be a BCIndex
                     BCLength bcLength = (BCLength) obj;
                     BCIndex prevIndex = (BCIndex) previous;
                     int index = prevIndex.index + bcLength.length;
-                    int actualLength = ((Integer)byteCodeOffsets.get(index)).intValue() - prevIndex.actualValue;
+                    int actualLength = ((Integer) byteCodeOffsets.get(index))
+                            .intValue()
+                            - prevIndex.actualValue;
                     bcLength.setActualValue(actualLength);
                 }
                 previous = obj;

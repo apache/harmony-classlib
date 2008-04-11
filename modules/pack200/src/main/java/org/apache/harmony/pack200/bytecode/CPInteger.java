@@ -25,17 +25,16 @@ import java.io.IOException;
 public class CPInteger extends CPConstantNumber {
 
     public CPInteger(Integer value) {
-		super(ConstantPoolEntry.CP_Integer,value);
-		this.domain = ClassConstantPool.DOMAIN_INTEGER;
-	}
+        super(ConstantPoolEntry.CP_Integer, value);
+        this.domain = ClassConstantPool.DOMAIN_INTEGER;
+    }
 
     protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeInt(getNumber().intValue());
-	}
+        dos.writeInt(getNumber().intValue());
+    }
 
-
-	public String toString() {
-		return "Integer: " + getValue();
-	}
+    public String toString() {
+        return "Integer: " + getValue();
+    }
 
 }

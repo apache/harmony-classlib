@@ -24,47 +24,46 @@ import java.io.IOException;
  */
 public abstract class ClassFileEntry {
 
-	protected static final ClassFileEntry[] NONE = new ClassFileEntry[0];
-	private boolean resolved;
+    protected static final ClassFileEntry[] NONE = new ClassFileEntry[0];
+    private boolean resolved;
 
-	protected abstract void doWrite(DataOutputStream dos) throws IOException;
+    protected abstract void doWrite(DataOutputStream dos) throws IOException;
 
-	public abstract boolean equals(Object arg0);
+    public abstract boolean equals(Object arg0);
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return NONE;
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return NONE;
+    }
 
-	public abstract int hashCode();
-
-	/**
-	 * Allows the constant pool entries to resolve their nested entries
-	 *
-	 * @param pool
-	 */
-	protected void resolve(ClassConstantPool pool) {
-		resolved = true;
-	}
-
-	protected boolean isResolved() {
-	    return resolved;
-	}
-
-	public abstract String toString();
-
-	public final void write(DataOutputStream dos) throws IOException {
-		if (!resolved)
-			throw new IllegalStateException("Entry has not been resolved");
-		doWrite(dos);
-	}
+    public abstract int hashCode();
 
     /**
-     * Answer true if the receiver must be at the beginning
-     * of the class pool (because it is the target of a
-     * single-byte ldc command). Otherwise answer false.
-     *
-     * @return boolean true if the receiver must be under
-     *   256; otherwise false.
+     * Allows the constant pool entries to resolve their nested entries
+     * 
+     * @param pool
+     */
+    protected void resolve(ClassConstantPool pool) {
+        resolved = true;
+    }
+
+    protected boolean isResolved() {
+        return resolved;
+    }
+
+    public abstract String toString();
+
+    public final void write(DataOutputStream dos) throws IOException {
+        if (!resolved)
+            throw new IllegalStateException("Entry has not been resolved");
+        doWrite(dos);
+    }
+
+    /**
+     * Answer true if the receiver must be at the beginning of the class pool
+     * (because it is the target of a single-byte ldc command). Otherwise answer
+     * false.
+     * 
+     * @return boolean true if the receiver must be under 256; otherwise false.
      */
     public boolean mustStartClassPool() {
         return false;

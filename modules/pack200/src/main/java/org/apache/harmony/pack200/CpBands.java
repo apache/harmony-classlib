@@ -67,7 +67,6 @@ public class CpBands extends BandSet {
     private final HashMap doublesToCPDoubles = new HashMap();
     private final HashMap descriptorsToCPNameAndTypes = new HashMap();
 
-
     public CpBands(Segment segment) {
         super(segment);
     }
@@ -90,7 +89,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool class names, using {@link #cpClassCount} to
      * populate {@link #cpClass} from {@link #cpUTF8}.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -106,7 +105,6 @@ public class CpBands extends BandSet {
                 cpUTF8);
     }
 
-
     /**
      * Parses the constant pool descriptor definitions, using
      * {@link #cpDescriptorCount} to populate {@link #cpDescriptor}. For ease
@@ -114,7 +112,7 @@ public class CpBands extends BandSet {
      * largely to make it easier for representing field and method descriptors
      * (e.g. <code>out:java.lang.PrintStream</code>) in a way that is
      * compatible with passing String arrays.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -139,18 +137,18 @@ public class CpBands extends BandSet {
     private void parseCpDouble(InputStream in) throws IOException,
             Pack200Exception {
         int cpDoubleCount = header.getCpDoubleCount();
-        long[] band = parseFlags("cp_Double", in, cpDoubleCount,
-                Codec.UDELTA5, Codec.DELTA5);
+        long[] band = parseFlags("cp_Double", in, cpDoubleCount, Codec.UDELTA5,
+                Codec.DELTA5);
         cpDouble = new double[band.length];
         for (int i = 0; i < band.length; i++) {
-			cpDouble[i] = Double.longBitsToDouble(band[i]);
-		}
+            cpDouble[i] = Double.longBitsToDouble(band[i]);
+        }
     }
 
     /**
      * Parses the constant pool field definitions, using {@link #cpFieldCount}
      * to populate {@link #cpFieldClass} and {@link #cpFieldDescriptor}.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -183,7 +181,7 @@ public class CpBands extends BandSet {
      * Parses the constant pool interface method definitions, using
      * {@link #cpIMethodCount} to populate {@link #cpIMethodClass} and
      * {@link #cpIMethodDescriptor}.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -210,14 +208,14 @@ public class CpBands extends BandSet {
     private void parseCpLong(InputStream in) throws IOException,
             Pack200Exception {
         int cpLongCount = header.getCpLongCount();
-        cpLong = parseFlags("cp_Long", in, cpLongCount,
-                Codec.UDELTA5, Codec.DELTA5);
+        cpLong = parseFlags("cp_Long", in, cpLongCount, Codec.UDELTA5,
+                Codec.DELTA5);
     }
 
     /**
      * Parses the constant pool method definitions, using {@link #cpMethodCount}
      * to populate {@link #cpMethodClass} and {@link #cpMethodDescriptor}.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -248,7 +246,7 @@ public class CpBands extends BandSet {
      * representation identical to the bytecode equivalent
      * <code>[Ljava/lang/String;(V)</code> TODO Check that the form is as
      * above and update other types e.g. J
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -268,12 +266,13 @@ public class CpBands extends BandSet {
             String form = cpSignatureForm[i];
             char[] chars = form.toCharArray();
             for (int j = 0; j < chars.length; j++) {
-                if(chars[j] == 'L') {
+                if (chars[j] == 'L') {
                     lCount++;
                 }
             }
         }
-        String[] cpSignatureClasses = parseReferences("cp_Signature_classes", in, Codec.UDELTA5, lCount, cpClass);
+        String[] cpSignatureClasses = parseReferences("cp_Signature_classes",
+                in, Codec.UDELTA5, lCount, cpClass);
         int index = 0;
         for (int i = 0; i < cpSignatureCount; i++) {
             String form = cpSignatureForm[i];
@@ -297,7 +296,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool strings, using {@link #cpStringCount} to
      * populate {@link #cpString} from indexes into {@link #cpUTF8}.
-     *
+     * 
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -309,7 +308,8 @@ public class CpBands extends BandSet {
     private void parseCpString(InputStream in) throws IOException,
             Pack200Exception {
         int cpStringCount = header.getCpStringCount();
-        cpString = parseReferences("cp_String", in, Codec.UDELTA5, cpStringCount, cpUTF8);
+        cpString = parseReferences("cp_String", in, Codec.UDELTA5,
+                cpStringCount, cpUTF8);
     }
 
     private void parseCpUtf8(InputStream in) throws IOException,
@@ -317,10 +317,12 @@ public class CpBands extends BandSet {
         int cpUTF8Count = header.getCpUTF8Count();
         cpUTF8 = new String[cpUTF8Count];
         cpUTF8[0] = ""; //$NON-NLS-1$
-        int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5, cpUTF8Count-2);
+        int[] prefix = decodeBandInt("cpUTF8Prefix", in, Codec.DELTA5,
+                cpUTF8Count - 2);
         int charCount = 0;
         int bigSuffixCount = 0;
-        int[] suffix = decodeBandInt("cpUTF8Suffix", in, Codec.UNSIGNED5, cpUTF8Count-1);
+        int[] suffix = decodeBandInt("cpUTF8Suffix", in, Codec.UNSIGNED5,
+                cpUTF8Count - 1);
 
         for (int i = 0; i < suffix.length; i++) {
             if (suffix[i] == 0) {
@@ -330,17 +332,20 @@ public class CpBands extends BandSet {
             }
         }
         char[] data = new char[charCount];
-        int[] dataBand = decodeBandInt("cp_Utf8_chars", in, Codec.CHAR3, charCount);
+        int[] dataBand = decodeBandInt("cp_Utf8_chars", in, Codec.CHAR3,
+                charCount);
         for (int i = 0; i < data.length; i++) {
             data[i] = (char) dataBand[i];
         }
 
         // Read in the big suffix data
-        int[] bigSuffixCounts = decodeBandInt("cp_Utf8_big_suffix", in, Codec.DELTA5, bigSuffixCount);
+        int[] bigSuffixCounts = decodeBandInt("cp_Utf8_big_suffix", in,
+                Codec.DELTA5, bigSuffixCount);
         int[][] bigSuffixDataBand = new int[bigSuffixCount][];
         for (int i = 0; i < bigSuffixDataBand.length; i++) {
-			bigSuffixDataBand[i] = decodeBandInt("cp_Utf8_big_chars " + i, in, Codec.DELTA5, bigSuffixCounts[i]);
-		}
+            bigSuffixDataBand[i] = decodeBandInt("cp_Utf8_big_chars " + i, in,
+                    Codec.DELTA5, bigSuffixCounts[i]);
+        }
 
         // Convert big suffix data to characters
         char bigSuffixData[][] = new char[bigSuffixCount][];
@@ -355,15 +360,15 @@ public class CpBands extends BandSet {
         bigSuffixCount = 0;
         for (int i = 1; i < cpUTF8Count; i++) {
             String lastString = cpUTF8[i - 1];
-            if (suffix[i-1] == 0) {
+            if (suffix[i - 1] == 0) {
                 // The big suffix stuff hasn't been tested, and I'll be
                 // surprised if it works first time w/o errors ...
-                cpUTF8[i] = lastString.substring(0, i>1 ? prefix[i-2] : 0)
+                cpUTF8[i] = lastString.substring(0, i > 1 ? prefix[i - 2] : 0)
                         + new String(bigSuffixData[bigSuffixCount++]);
             } else {
-                cpUTF8[i] = lastString.substring(0, i>1 ? prefix[i-2]: 0)
-                        + new String(data, charCount, suffix[i-1]);
-                charCount += suffix[i-1];
+                cpUTF8[i] = lastString.substring(0, i > 1 ? prefix[i - 2] : 0)
+                        + new String(data, charCount, suffix[i - 1]);
+                charCount += suffix[i - 1];
             }
         }
     }
@@ -429,11 +434,11 @@ public class CpBands extends BandSet {
     }
 
     public CPUTF8 cpUTF8Value(String string, int domain) {
-        if(stringsToCPUTF8[domain] == null) {
+        if (stringsToCPUTF8[domain] == null) {
             stringsToCPUTF8[domain] = new HashMap();
         }
         CPUTF8 cputf8 = (CPUTF8) stringsToCPUTF8[domain].get(string);
-        if(cputf8 == null) {
+        if (cputf8 == null) {
             cputf8 = new CPUTF8(string, domain);
             stringsToCPUTF8[domain].put(string, cputf8);
         }
@@ -442,8 +447,9 @@ public class CpBands extends BandSet {
 
     public CPString cpStringValue(String string) {
         CPString cpString = (CPString) stringsToCPStrings.get(string);
-        if(cpString == null) {
-            cpString = new CPString(cpUTF8Value(string, ClassConstantPool.DOMAIN_NORMALASCIIZ));
+        if (cpString == null) {
+            cpString = new CPString(cpUTF8Value(string,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ));
             stringsToCPStrings.put(string, cpString);
         }
         return cpString;
@@ -451,7 +457,7 @@ public class CpBands extends BandSet {
 
     public CPLong cpLongValue(Long l) {
         CPLong cpLong = (CPLong) longsToCPLongs.get(l);
-        if(cpLong == null) {
+        if (cpLong == null) {
             cpLong = new CPLong(l);
             longsToCPLongs.put(l, cpLong);
         }
@@ -460,7 +466,7 @@ public class CpBands extends BandSet {
 
     public CPInteger cpIntegerValue(Integer i) {
         CPInteger cpInteger = (CPInteger) integersToCPIntegers.get(i);
-        if(cpInteger == null) {
+        if (cpInteger == null) {
             cpInteger = new CPInteger(i);
             integersToCPIntegers.put(i, cpInteger);
         }
@@ -469,7 +475,7 @@ public class CpBands extends BandSet {
 
     public CPFloat cpFloatValue(Float f) {
         CPFloat cpFloat = (CPFloat) floatsToCPFloats.get(f);
-        if(cpFloat == null) {
+        if (cpFloat == null) {
             cpFloat = new CPFloat(f);
             floatsToCPFloats.put(f, cpFloat);
         }
@@ -478,8 +484,9 @@ public class CpBands extends BandSet {
 
     public CPClass cpClassValue(String string) {
         CPClass cpString = (CPClass) stringsToCPClass.get(string);
-        if(cpString == null) {
-            cpString = new CPClass(cpUTF8Value(string, ClassConstantPool.DOMAIN_NORMALASCIIZ));
+        if (cpString == null) {
+            cpString = new CPClass(cpUTF8Value(string,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ));
             stringsToCPClass.put(string, cpString);
         }
         return cpString;
@@ -487,7 +494,7 @@ public class CpBands extends BandSet {
 
     public CPDouble cpDoubleValue(Double dbl) {
         CPDouble cpDouble = (CPDouble) doublesToCPDoubles.get(dbl);
-        if(cpDouble == null) {
+        if (cpDouble == null) {
             cpDouble = new CPDouble(dbl);
             doublesToCPDoubles.put(dbl, cpDouble);
         }
@@ -495,29 +502,31 @@ public class CpBands extends BandSet {
     }
 
     public CPNameAndType cpNameAndTypeValue(String descriptor) {
-        CPNameAndType cpNameAndType = (CPNameAndType) descriptorsToCPNameAndTypes.get(descriptor);
-        if(cpNameAndType == null) {
+        CPNameAndType cpNameAndType = (CPNameAndType) descriptorsToCPNameAndTypes
+                .get(descriptor);
+        if (cpNameAndType == null) {
             int descriptorDomain = ClassConstantPool.DOMAIN_UNDEFINED;
             int colon = descriptor.indexOf(':');
-            String nameString = descriptor.substring(0,colon);
-            String descriptorString = descriptor.substring(colon+1);
+            String nameString = descriptor.substring(0, colon);
+            String descriptorString = descriptor.substring(colon + 1);
             // For some reason, descriptors which have just plain
             // native types are stored in DOMAIN_NORMALASCIIZ rather
             // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
             // that DOMAIN_SIGNATUREASCIIZ is poorly named.
             boolean nativeDescriptor = true;
-            for(int index=0; index < descriptorString.length(); index++) {
+            for (int index = 0; index < descriptorString.length(); index++) {
                 char currentChar = descriptorString.charAt(index);
-                if(Character.isLetter(currentChar)) {
-                    if(currentChar == 'L') {
+                if (Character.isLetter(currentChar)) {
+                    if (currentChar == 'L') {
                         nativeDescriptor = false;
                     }
                     break;
                 }
             }
             int domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
-            CPUTF8 name = cpUTF8Value(nameString, ClassConstantPool.DOMAIN_NORMALASCIIZ);
-            if( nativeDescriptor ) {
+            CPUTF8 name = cpUTF8Value(nameString,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            if (nativeDescriptor) {
                 // Native signatures are stored in DOMAIN_NORMALASCIIZ, not
                 // DOMAIN_SIGNATUREASCIIZ for some reason.
                 descriptorDomain = ClassConstantPool.DOMAIN_NORMALASCIIZ;

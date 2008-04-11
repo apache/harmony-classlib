@@ -20,14 +20,10 @@ import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for those
- * bytecodes which have regular method references (and only
- * regular method references). These are:
- *    invokevirtual
- *    invokespecial
- *    invokestatic
- * Class-specific references to methods are subclasses of
- * ClassSpecificReferenceForm instead.
+ * This class implements the byte code form for those bytecodes which have
+ * regular method references (and only regular method references). These are:
+ * invokevirtual invokespecial invokestatic Class-specific references to methods
+ * are subclasses of ClassSpecificReferenceForm instead.
  */
 public class MethodRefForm extends ReferenceForm {
 

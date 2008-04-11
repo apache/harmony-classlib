@@ -20,9 +20,8 @@ import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for those
- * bytecodes which have long references (and only
- * long references).
+ * This class implements the byte code form for those bytecodes which have long
+ * references (and only long references).
  */
 public class LongForm extends ReferenceForm {
 

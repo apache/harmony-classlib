@@ -38,31 +38,42 @@ public abstract class SwitchForm extends VariableInstructionForm {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTargets(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.CodeAttribute)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTargets(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.CodeAttribute)
      */
-    public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
+    public void fixUpByteCodeTargets(ByteCode byteCode,
+            CodeAttribute codeAttribute) {
         // SwitchForms need to fix up the target of label operations
         final int[] originalTargets = byteCode.getByteCodeTargets();
         final int numberOfLabels = originalTargets.length;
         final int[] replacementTargets = new int[numberOfLabels];
 
         final int sourceIndex = byteCode.getByteCodeIndex();
-        final int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
-        for(int index=0; index < numberOfLabels; index++) {
-            final int absoluteInstructionTargetIndex = sourceIndex + originalTargets[index];
-            final int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
+        final int sourceValue = ((Integer) codeAttribute.byteCodeOffsets
+                .get(sourceIndex)).intValue();
+        for (int index = 0; index < numberOfLabels; index++) {
+            final int absoluteInstructionTargetIndex = sourceIndex
+                    + originalTargets[index];
+            final int targetValue = ((Integer) codeAttribute.byteCodeOffsets
+                    .get(absoluteInstructionTargetIndex)).intValue();
             replacementTargets[index] = targetValue - sourceValue;
         }
         final int[] rewriteArray = byteCode.getRewrite();
-        for(int index=0; index < numberOfLabels; index++) {
+        for (int index = 0; index < numberOfLabels; index++) {
             setRewrite4Bytes(replacementTargets[index], rewriteArray);
         }
     }

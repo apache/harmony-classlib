@@ -53,13 +53,15 @@ public class Archive {
 
     private String inputFileName;
 
-	private String outputFileName;
+    private String outputFileName;
 
     /**
      * Creates an Archive with the given input and output file names.
+     * 
      * @param inputFile
      * @param outputFile
-     * @throws FileNotFoundException if the input file does not exist
+     * @throws FileNotFoundException
+     *             if the input file does not exist
      * @throws IOException
      */
     public Archive(String inputFile, String outputFile)
@@ -71,9 +73,10 @@ public class Archive {
     }
 
     /**
-     * Creates an Archive with streams for the input and output files.
-     * Note: If you use this method then calling {@link #setRemovePackFile(boolean)}
-     * will have no effect.
+     * Creates an Archive with streams for the input and output files. Note: If
+     * you use this method then calling {@link #setRemovePackFile(boolean)} will
+     * have no effect.
+     * 
      * @param inputStream
      * @param outputStream
      * @throws IOException
@@ -86,6 +89,7 @@ public class Archive {
 
     /**
      * Unpacks the Archive from the input file to the output file
+     * 
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -106,7 +110,8 @@ public class Archive {
                 inputStream.reset();
             }
             inputStream.mark(4);
-            int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D }; // Magic word for pack200
+            int[] magic = { 0xCA, 0xFE, 0xD0, 0x0D }; // Magic word for
+            // pack200
             int word[] = new int[4];
             for (int i = 0; i < word.length; i++) {
                 word[i] = inputStream.read();
@@ -118,62 +123,69 @@ public class Archive {
                 }
             }
             inputStream.reset();
-            if(compressedWithE0) { // The original Jar was not packed, so just copy it across
+            if (compressedWithE0) { // The original Jar was not packed, so just
+                // copy it across
                 JarInputStream jarInputStream = new JarInputStream(inputStream);
                 JarEntry jarEntry;
-                while((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
                     outputStream.putNextEntry(jarEntry);
                     byte[] bytes = new byte[16384];
                     int bytesRead = jarInputStream.read(bytes);
-                    while(bytesRead != -1) {
+                    while (bytesRead != -1) {
                         outputStream.write(bytes, 0, bytesRead);
                         bytesRead = jarInputStream.read(bytes);
                     }
                     outputStream.closeEntry();
                 }
             } else {
-            	int i = 0;
+                int i = 0;
                 while (available(inputStream)) {
-                	i++;
+                    i++;
                     Segment segment = new Segment();
                     segment.setLogLevel(logLevel);
-                    segment.setLogStream(logFile != null ? (OutputStream) logFile
-                            : (OutputStream) System.out);
+                    segment
+                            .setLogStream(logFile != null ? (OutputStream) logFile
+                                    : (OutputStream) System.out);
                     if (i == 1) {
-						segment.log(Segment.LOG_LEVEL_VERBOSE,
-								"Unpacking from " + inputFileName + " to "
-										+ outputFileName);
-					}
-                    segment.log(Segment.LOG_LEVEL_VERBOSE, "Reading segment " + i);
+                        segment.log(Segment.LOG_LEVEL_VERBOSE,
+                                "Unpacking from " + inputFileName + " to "
+                                        + outputFileName);
+                    }
+                    segment.log(Segment.LOG_LEVEL_VERBOSE, "Reading segment "
+                            + i);
                     if (overrideDeflateHint) {
                         segment.overrideDeflateHint(deflateHint);
                     }
                     segment.unpack(inputStream, outputStream);
                     outputStream.flush();
 
-                    if(inputStream instanceof FileInputStream) {
-                    	inputFileName = ((FileInputStream)inputStream).getFD().toString();
+                    if (inputStream instanceof FileInputStream) {
+                        inputFileName = ((FileInputStream) inputStream).getFD()
+                                .toString();
                     }
                 }
             }
         } finally {
             try {
                 inputStream.close();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
             try {
                 outputStream.close();
-            } catch (Exception e) {}
-            if(logFile != null) {
-            	try {
-            		logFile.close();
-            	} catch (Exception e) {}
+            } catch (Exception e) {
+            }
+            if (logFile != null) {
+                try {
+                    logFile.close();
+                } catch (Exception e) {
+                }
             }
         }
         if (removePackFile) {
             File file = new File(inputFileName);
             boolean deleted = file.delete();
-            if(!deleted) {
-            	throw new Pack200Exception("Failed to delete the input file.");
+            if (!deleted) {
+                throw new Pack200Exception("Failed to delete the input file.");
             }
         }
     }
@@ -188,7 +200,7 @@ public class Archive {
     /**
      * If removePackFile is set to true, the input file is deleted after
      * unpacking
-     *
+     * 
      * @param removePackFile
      */
     public void setRemovePackFile(boolean removePackFile) {

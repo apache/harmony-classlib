@@ -22,7 +22,8 @@ import org.apache.harmony.pack200.IcTuple;
 public class ICTupleTest extends TestCase {
 
     public void testPredictedClassTupleParsing() {
-        IcTuple tuple = new IcTuple("orw/SimpleHelloWorld$SimpleHelloWorldInner", 0, null, null);
+        IcTuple tuple = new IcTuple(
+                "orw/SimpleHelloWorld$SimpleHelloWorldInner", 0, null, null);
         assertEquals("SimpleHelloWorldInner", tuple.simpleClassName());
         assertEquals("orw/SimpleHelloWorld", tuple.outerClassString());
 
@@ -40,11 +41,13 @@ public class ICTupleTest extends TestCase {
     }
 
     public void testExplicitClassTupleParsing() {
-        IcTuple tuple = new IcTuple("Foo$$2$Local", IcTuple.NESTED_CLASS_FLAG, null, "$2$Local");
+        IcTuple tuple = new IcTuple("Foo$$2$Local", IcTuple.NESTED_CLASS_FLAG,
+                null, "$2$Local");
         assertEquals("$2$Local", tuple.simpleClassName());
         assertEquals("Foo$$2", tuple.outerClassString());
 
-        tuple = new IcTuple("Red$Herring", IcTuple.NESTED_CLASS_FLAG, "Red$Herring", null);
+        tuple = new IcTuple("Red$Herring", IcTuple.NESTED_CLASS_FLAG,
+                "Red$Herring", null);
         assertEquals("Herring", tuple.simpleClassName());
         assertEquals("Red$Herring", tuple.outerClassString());
 

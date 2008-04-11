@@ -23,23 +23,25 @@ import java.io.IOException;
  * Annotations class file attribute, either a RuntimeVisibleAnnotations
  * attribute or a RuntimeInvisibleAnnotations attribute.
  */
-public class RuntimeVisibleorInvisibleAnnotationsAttribute extends AnnotationsAttribute {
+public class RuntimeVisibleorInvisibleAnnotationsAttribute extends
+        AnnotationsAttribute {
 
     private final int num_annotations;
     private final Annotation[] annotations;
 
-    public RuntimeVisibleorInvisibleAnnotationsAttribute(CPUTF8 name, Annotation[] annotations) {
+    public RuntimeVisibleorInvisibleAnnotationsAttribute(CPUTF8 name,
+            Annotation[] annotations) {
         super(name);
         this.num_annotations = annotations.length;
         this.annotations = annotations;
     }
 
     protected int getLength() {
-       int length = 2;
-       for (int i = 0; i < num_annotations; i++) {
-           length += annotations[i].getLength();
-       }
-       return length;
+        int length = 2;
+        for (int i = 0; i < num_annotations; i++) {
+            length += annotations[i].getLength();
+        }
+        return length;
     }
 
     protected void resolve(ClassConstantPool pool) {
@@ -57,7 +59,8 @@ public class RuntimeVisibleorInvisibleAnnotationsAttribute extends AnnotationsAt
     }
 
     public String toString() {
-        return attributeName.underlyingString() + ": " + num_annotations + " annotations";
+        return attributeName.underlyingString() + ": " + num_annotations
+                + " annotations";
     }
 
 }

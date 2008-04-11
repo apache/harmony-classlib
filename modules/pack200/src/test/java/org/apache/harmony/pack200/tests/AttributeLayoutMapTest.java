@@ -23,26 +23,31 @@ import org.apache.harmony.pack200.AttributeLayoutMap;
 import org.apache.harmony.pack200.Pack200Exception;
 
 public class AttributeLayoutMapTest extends TestCase {
-	public void testRepeatable() throws Pack200Exception {
-		// Check we can retrieve a default layout
-		AttributeLayoutMap a = new AttributeLayoutMap();
-		AttributeLayout layout = a.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
-		assertNotNull(layout);
-		assertEquals("RUNH",layout.getLayout());
-		// and that we can change it
-		a.add(new AttributeLayout("SourceFile",AttributeLayout.CONTEXT_CLASS,"FROG",15));
-		layout = a.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
-		assertNotNull(layout);
-		assertEquals("FROG",layout.getLayout());
-		assertTrue(layout.matches(1<<15));
-		assertFalse(layout.matches(1<<16));
-		assertTrue(layout.matches(-1));
-		assertFalse(layout.matches(0));
-		// and that changes don't affect subsequent defaults
-		AttributeLayoutMap b = new AttributeLayoutMap();
-		layout = b.getAttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS);
-		assertNotNull(layout);
-		assertEquals("RUNH",layout.getLayout());
 
-	}
+    public void testRepeatable() throws Pack200Exception {
+        // Check we can retrieve a default layout
+        AttributeLayoutMap a = new AttributeLayoutMap();
+        AttributeLayout layout = a.getAttributeLayout("SourceFile",
+                AttributeLayout.CONTEXT_CLASS);
+        assertNotNull(layout);
+        assertEquals("RUNH", layout.getLayout());
+        // and that we can change it
+        a.add(new AttributeLayout("SourceFile", AttributeLayout.CONTEXT_CLASS,
+                "FROG", 15));
+        layout = a.getAttributeLayout("SourceFile",
+                AttributeLayout.CONTEXT_CLASS);
+        assertNotNull(layout);
+        assertEquals("FROG", layout.getLayout());
+        assertTrue(layout.matches(1 << 15));
+        assertFalse(layout.matches(1 << 16));
+        assertTrue(layout.matches(-1));
+        assertFalse(layout.matches(0));
+        // and that changes don't affect subsequent defaults
+        AttributeLayoutMap b = new AttributeLayoutMap();
+        layout = b.getAttributeLayout("SourceFile",
+                AttributeLayout.CONTEXT_CLASS);
+        assertNotNull(layout);
+        assertEquals("RUNH", layout.getLayout());
+
+    }
 }

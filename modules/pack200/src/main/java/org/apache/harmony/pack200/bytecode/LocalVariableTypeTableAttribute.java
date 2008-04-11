@@ -35,9 +35,9 @@ public class LocalVariableTypeTableAttribute extends Attribute {
     private static final CPUTF8 attributeName = new CPUTF8(
             "LocalVariableTypeTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
-    public LocalVariableTypeTableAttribute(int local_variable_type_table_length,
-            int[] start_pcs, int[] lengths, CPUTF8[] names,
-            CPUTF8[] signatures, int[] indexes) {
+    public LocalVariableTypeTableAttribute(
+            int local_variable_type_table_length, int[] start_pcs,
+            int[] lengths, CPUTF8[] names, CPUTF8[] signatures, int[] indexes) {
         super(attributeName);
         this.local_variable_type_table_length = local_variable_type_table_length;
         this.start_pcs = start_pcs;
@@ -75,7 +75,8 @@ public class LocalVariableTypeTableAttribute extends Attribute {
     }
 
     public String toString() {
-        return "LocalVariableTypeTable: " + + local_variable_type_table_length + " varaibles";
+        return "LocalVariableTypeTable: " + +local_variable_type_table_length
+                + " varaibles";
     }
 
 }

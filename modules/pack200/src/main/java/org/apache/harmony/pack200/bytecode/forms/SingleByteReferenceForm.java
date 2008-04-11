@@ -22,16 +22,14 @@ import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * Some bytecodes (such as (a)ldc, fldc and ildc) have single-
- * byte references to the class pool. This class is the
- * abstract superclass of those classes.
+ * Some bytecodes (such as (a)ldc, fldc and ildc) have single- byte references
+ * to the class pool. This class is the abstract superclass of those classes.
  */
 public abstract class SingleByteReferenceForm extends ReferenceForm {
 
     protected boolean widened = false;
 
-    public SingleByteReferenceForm(int opcode, String name,
-            int[] rewrite) {
+    public SingleByteReferenceForm(int opcode, String name, int[] rewrite) {
         super(opcode, name, rewrite);
     }
 
@@ -39,13 +37,15 @@ public abstract class SingleByteReferenceForm extends ReferenceForm {
 
     protected abstract int getPoolID();
 
-    protected void setNestedEntries(ByteCode byteCode, OperandManager operandManager, int offset) throws Pack200Exception {
+    protected void setNestedEntries(ByteCode byteCode,
+            OperandManager operandManager, int offset) throws Pack200Exception {
         super.setNestedEntries(byteCode, operandManager, offset);
-        if(widened) {
-            byteCode.setNestedPositions(new int[][] {{0,2}});
+        if (widened) {
+            byteCode.setNestedPositions(new int[][] { { 0, 2 } });
         } else {
-            byteCode.setNestedPositions(new int[][] {{0,1}});
-            ((ConstantPoolEntry)byteCode.getNestedClassFileEntries()[0]).mustStartClassPool(true);
+            byteCode.setNestedPositions(new int[][] { { 0, 1 } });
+            ((ConstantPoolEntry) byteCode.getNestedClassFileEntries()[0])
+                    .mustStartClassPool(true);
         }
     }
 }

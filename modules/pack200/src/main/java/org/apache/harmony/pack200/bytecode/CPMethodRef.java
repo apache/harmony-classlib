@@ -21,13 +21,13 @@ package org.apache.harmony.pack200.bytecode;
  */
 public class CPMethodRef extends CPRef {
 
-	public CPMethodRef(CPClass className, CPNameAndType descriptor) {
-		super(ConstantPoolEntry.CP_Methodref, className, descriptor);
+    public CPMethodRef(CPClass className, CPNameAndType descriptor) {
+        super(ConstantPoolEntry.CP_Methodref, className, descriptor);
         this.domain = ClassConstantPool.DOMAIN_METHOD;
-	}
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] { className, nameAndType };
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { className, nameAndType };
+    }
 
 }

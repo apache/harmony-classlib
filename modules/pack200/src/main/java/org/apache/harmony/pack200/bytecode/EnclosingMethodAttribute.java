@@ -37,7 +37,9 @@ public class EnclosingMethodAttribute extends Attribute {
         this.method = method;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
@@ -52,7 +54,9 @@ public class EnclosingMethodAttribute extends Attribute {
         method_index = pool.indexOf(method);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
@@ -60,7 +64,9 @@ public class EnclosingMethodAttribute extends Attribute {
         dos.writeShort(method_index);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {

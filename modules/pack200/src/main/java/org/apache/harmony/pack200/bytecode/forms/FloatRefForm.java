@@ -19,9 +19,8 @@ import org.apache.harmony.pack200.SegmentConstantPool;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for those
- * bytecodes which have float references (and only
- * float references).
+ * This class implements the byte code form for those bytecodes which have float
+ * references (and only float references).
  */
 public class FloatRefForm extends SingleByteReferenceForm {
 

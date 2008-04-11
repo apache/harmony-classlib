@@ -24,64 +24,66 @@ import java.io.IOException;
  */
 public class CPFieldRef extends ConstantPoolEntry {
 
-	CPClass className;
-	transient int classNameIndex;
-	private final CPNameAndType nameAndType;
-	transient int nameAndTypeIndex;
+    CPClass className;
+    transient int classNameIndex;
+    private final CPNameAndType nameAndType;
+    transient int nameAndTypeIndex;
 
-	public CPFieldRef(CPClass className, CPNameAndType descriptor) {
-		super(ConstantPoolEntry.CP_Fieldref);
-		this.domain = ClassConstantPool.DOMAIN_FIELD;
-		this.className = className;
-		this.nameAndType = descriptor;
-	}
+    public CPFieldRef(CPClass className, CPNameAndType descriptor) {
+        super(ConstantPoolEntry.CP_Fieldref);
+        this.domain = ClassConstantPool.DOMAIN_FIELD;
+        this.className = className;
+        this.nameAndType = descriptor;
+    }
 
-	protected ClassFileEntry[] getNestedClassFileEntries() {
-		return new ClassFileEntry[] {className, nameAndType};
-	}
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        return new ClassFileEntry[] { className, nameAndType };
+    }
 
-	protected void resolve(ClassConstantPool pool) {
-		super.resolve(pool);
-		nameAndTypeIndex = pool.indexOf(nameAndType);
-		classNameIndex = pool.indexOf(className);
-	}
+    protected void resolve(ClassConstantPool pool) {
+        super.resolve(pool);
+        nameAndTypeIndex = pool.indexOf(nameAndType);
+        classNameIndex = pool.indexOf(className);
+    }
 
-	protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeShort(classNameIndex);
-		dos.writeShort(nameAndTypeIndex);
-	}
+    protected void writeBody(DataOutputStream dos) throws IOException {
+        dos.writeShort(classNameIndex);
+        dos.writeShort(nameAndTypeIndex);
+    }
 
-	public String toString() {
-		return "FieldRef: " + className + "#" + nameAndType;
-	}
+    public String toString() {
+        return "FieldRef: " + className + "#" + nameAndType;
+    }
 
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		result = PRIME * result + ((className == null) ? 0 : className.hashCode());
-		result = PRIME * result + ((nameAndType == null) ? 0 : nameAndType.hashCode());
-		return result;
-	}
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result
+                + ((className == null) ? 0 : className.hashCode());
+        result = PRIME * result
+                + ((nameAndType == null) ? 0 : nameAndType.hashCode());
+        return result;
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final CPFieldRef other = (CPFieldRef) obj;
-		if (className == null) {
-			if (other.className != null)
-				return false;
-		} else if (!className.equals(other.className))
-			return false;
-		if (nameAndType == null) {
-			if (other.nameAndType != null)
-				return false;
-		} else if (!nameAndType.equals(other.nameAndType))
-			return false;
-		return true;
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final CPFieldRef other = (CPFieldRef) obj;
+        if (className == null) {
+            if (other.className != null)
+                return false;
+        } else if (!className.equals(other.className))
+            return false;
+        if (nameAndType == null) {
+            if (other.nameAndType != null)
+                return false;
+        } else if (!nameAndType.equals(other.nameAndType))
+            return false;
+        return true;
+    }
 
 }

@@ -20,8 +20,7 @@ import org.apache.harmony.pack200.bytecode.ByteCode;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the form for bytecodes
- * which have short operands only.
+ * This class implements the form for bytecodes which have short operands only.
  */
 public class ShortForm extends ByteCodeForm {
 
@@ -37,8 +36,12 @@ public class ShortForm extends ByteCodeForm {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {

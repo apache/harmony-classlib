@@ -25,16 +25,16 @@ import java.io.IOException;
 public class CPDouble extends CPConstantNumber {
 
     public CPDouble(Double value) {
-		super(ConstantPoolEntry.CP_Double,value);
+        super(ConstantPoolEntry.CP_Double, value);
         this.domain = ClassConstantPool.DOMAIN_DOUBLE;
-	}
+    }
 
     protected void writeBody(DataOutputStream dos) throws IOException {
-		dos.writeDouble(getNumber().doubleValue());
-	}
+        dos.writeDouble(getNumber().doubleValue());
+    }
 
-	public String toString() {
-		return "Double: " + getValue();
-	}
+    public String toString() {
+        return "Double: " + getValue();
+    }
 
 }

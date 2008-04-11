@@ -21,9 +21,8 @@ import org.apache.harmony.pack200.bytecode.CodeAttribute;
 import org.apache.harmony.pack200.bytecode.OperandManager;
 
 /**
- * This class implements the byte code form for those
- * bytecodes which have label references (and only
- * label references).
+ * This class implements the byte code form for those bytecodes which have label
+ * references (and only label references).
  */
 public class LabelForm extends ByteCodeForm {
 
@@ -46,32 +45,42 @@ public class LabelForm extends ByteCodeForm {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTarget(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.CodeAttribute)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#fixUpByteCodeTarget(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.CodeAttribute)
      */
-    public void fixUpByteCodeTargets(ByteCode byteCode, CodeAttribute codeAttribute) {
+    public void fixUpByteCodeTargets(ByteCode byteCode,
+            CodeAttribute codeAttribute) {
         // LabelForms need to fix up the target of label operations
         final int originalTarget = byteCode.getByteCodeTargets()[0];
         final int sourceIndex = byteCode.getByteCodeIndex();
         final int absoluteInstructionTargetIndex = sourceIndex + originalTarget;
-        final int targetValue = ((Integer)codeAttribute.byteCodeOffsets.get(absoluteInstructionTargetIndex)).intValue();
-        final int sourceValue = ((Integer)codeAttribute.byteCodeOffsets.get(sourceIndex)).intValue();
+        final int targetValue = ((Integer) codeAttribute.byteCodeOffsets
+                .get(absoluteInstructionTargetIndex)).intValue();
+        final int sourceValue = ((Integer) codeAttribute.byteCodeOffsets
+                .get(sourceIndex)).intValue();
         // The operand is the difference between the source instruction
         // and the destination instruction.
         byteCode.setOperandSigned2Bytes(targetValue - sourceValue, 0);
-        if(widened) {
-            byteCode.setNestedPositions(new int[][] {{0,4}});
+        if (widened) {
+            byteCode.setNestedPositions(new int[][] { { 0, 4 } });
         } else {
-            byteCode.setNestedPositions(new int[][] {{0,2}});
+            byteCode.setNestedPositions(new int[][] { { 0, 2 } });
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode, org.apache.harmony.pack200.bytecode.OperandTable, org.apache.harmony.pack200.SegmentConstantPool)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
+     *      org.apache.harmony.pack200.bytecode.OperandTable,
+     *      org.apache.harmony.pack200.SegmentConstantPool)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
-        byteCode.setByteCodeTargets(new int[] {operandManager.nextLabel()});
+        byteCode.setByteCodeTargets(new int[] { operandManager.nextLabel() });
         // The byte code operands actually get set later -
         // once we have all the bytecodes - in fixUpByteCodeTarget().
         return;

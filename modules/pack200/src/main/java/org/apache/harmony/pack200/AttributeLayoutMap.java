@@ -197,9 +197,11 @@ public class AttributeLayoutMap {
     private final Map methodLayouts = new HashMap();
     private final Map codeLayouts = new HashMap();
 
-    // The order of the maps in this array should not be changed as their indices correspond to
+    // The order of the maps in this array should not be changed as their
+    // indices correspond to
     // the value of their context constants (AttributeLayout.CONTEXT_CLASS etc.)
-    private final Map[] layouts = new Map[] {classLayouts, fieldLayouts, methodLayouts, codeLayouts};
+    private final Map[] layouts = new Map[] { classLayouts, fieldLayouts,
+            methodLayouts, codeLayouts };
 
     private final Map layoutsToBands = new HashMap();
 
@@ -211,10 +213,9 @@ public class AttributeLayoutMap {
     }
 
     public void add(AttributeLayout layout) {
-        layouts[layout.getContext()].put(new Integer(layout.getIndex()), layout);
+        layouts[layout.getContext()]
+                .put(new Integer(layout.getIndex()), layout);
     }
-
-
 
     public void add(AttributeLayout layout, NewAttributeBands newBands) {
         add(layout);
@@ -226,7 +227,7 @@ public class AttributeLayoutMap {
         Map map = layouts[context];
         for (Iterator iter = map.values().iterator(); iter.hasNext();) {
             AttributeLayout layout = (AttributeLayout) iter.next();
-            if(layout.getName().equals(name)) {
+            if (layout.getName().equals(name)) {
                 return layout;
             }
         }
@@ -242,24 +243,24 @@ public class AttributeLayoutMap {
     /**
      * The map should not contain the same layout and name combination more than
      * once for each context.
+     * 
      * @throws Pack200Exception
-     *
+     * 
      */
     public void checkMap() throws Pack200Exception {
         for (int i = 0; i < layouts.length; i++) {
             Map map = layouts[i];
             Collection c = map.values();
-            if(!(c instanceof List)) {
+            if (!(c instanceof List)) {
                 c = new ArrayList(c);
             }
-            List l = (List)c;
+            List l = (List) c;
             for (int j = 0; j < l.size(); j++) {
                 AttributeLayout layout1 = (AttributeLayout) l.get(j);
                 for (int j2 = j + 1; j2 < l.size(); j2++) {
                     AttributeLayout layout2 = (AttributeLayout) l.get(j2);
                     if (layout1.getName().equals(layout2.getName())
-                            && layout1.getLayout().equals(
-                                    layout2.getLayout())) {
+                            && layout1.getLayout().equals(layout2.getLayout())) {
                         throw new Pack200Exception(
                                 "Same layout/name combination: "
                                         + layout1.getLayout()
