@@ -500,73 +500,73 @@ public class CalendarTest extends junit.framework.TestCase {
         early.set(2008, 3, 20, 17, 28, 12);
         late.set(2008, 3, 20, 17, 28, 22);
         // test before()
-        assertEquals("Should be equal to true.", true, early.before(late));
-        assertEquals("Should be equal to false.", false, early.before(early));
-        assertEquals("Should be equal to false.", false, late.before(early));
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
         // test after();
-        assertEquals("Should be equal to true.", true, late.after(early));
-        assertEquals("Should be equal to false.", false, late.after(late));
-        assertEquals("Should be equal to false.", false, early.after(late));
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
 
         // test by minute
         early.set(2008, 3, 20, 17, 18, 12);
         late.set(2008, 3, 20, 17, 28, 12);
         // test before()
-        assertEquals("Should be equal to true.", true, early.before(late));
-        assertEquals("Should be equal to false.", false, early.before(early));
-        assertEquals("Should be equal to false.", false, late.before(early));
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
         // test after();
-        assertEquals("Should be equal to true.", true, late.after(early));
-        assertEquals("Should be equal to false.", false, late.after(late));
-        assertEquals("Should be equal to false.", false, early.after(late));
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
 
         // test by hour
         early.set(2008, 3, 20, 17, 28, 12);
         late.set(2008, 3, 20, 27, 28, 12);
         // test before()
-        assertEquals("Should be equal to true.", true, early.before(late));
-        assertEquals("Should be equal to false.", false, early.before(early));
-        assertEquals("Should be equal to false.", false, late.before(early));
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
         // test after();
-        assertEquals("Should be equal to true.", true, late.after(early));
-        assertEquals("Should be equal to false.", false, late.after(late));
-        assertEquals("Should be equal to false.", false, early.after(late));
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
 
         // test by day
         early.set(2008, 3, 10, 17, 28, 12);
         late.set(2008, 3, 20, 17, 28, 12);
         // test before()
-        assertEquals("Should be equal to true.", true, early.before(late));
-        assertEquals("Should be equal to false.", false, early.before(early));
-        assertEquals("Should be equal to false.", false, late.before(early));
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
         // test after();
-        assertEquals("Should be equal to true.", true, late.after(early));
-        assertEquals("Should be equal to false.", false, late.after(late));
-        assertEquals("Should be equal to false.", false, early.after(late));
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
 
         // test by month
         early.set(2008, 2, 20, 17, 28, 12);
         late.set(2008, 3, 20, 17, 28, 12);
         // test before()
-        assertEquals("Should be equal to true.", true, early.before(late));
-        assertEquals("Should be equal to false.", false, early.before(early));
-        assertEquals("Should be equal to false.", false, late.before(early));
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
         // test after();
-        assertEquals("Should be equal to true.", true, late.after(early));
-        assertEquals("Should be equal to false.", false, late.after(late));
-        assertEquals("Should be equal to false.", false, early.after(late));
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
 
         // test by year
         early.set(2007, 3, 20, 17, 28, 12);
         late.set(2008, 3, 20, 17, 28, 12);
         // test before()
-        assertEquals("Should be equal to true.", true, early.before(late));
-        assertEquals("Should be equal to false.", false, early.before(early));
-        assertEquals("Should be equal to false.", false, late.before(early));
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
         // test after();
-        assertEquals("Should be equal to true.", true, late.after(early));
-        assertEquals("Should be equal to false.", false, late.after(late));
-        assertEquals("Should be equal to false.", false, early.after(late));
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
     }
 
     /**
@@ -601,16 +601,16 @@ public class CalendarTest extends junit.framework.TestCase {
             int index = fields[i];
             calendar.clear(index);
             if (5 == index) {
-                // RI also don't change the value of DATE
-                assertEquals("Field " + index + " Should be equal to 20.", 20,
+                // RI also doesn't change the value of DATE
+                assertEquals("Field " + index + " Should equal to 20.", 20,
                         calendar.get(index));
             } else if (11 == index) {
-                // RI also don't change the value of HOUR
-                assertEquals("Field " + index + " Should be equal to 17.", 17,
+                // RI also doesn't change the value of HOUR
+                assertEquals("Field " + index + " Should equal to 17.", 17,
                         calendar.get(index));
             } else {
                 // Other have been set to default values
-                assertEquals("Field " + index + " Should be equal to "
+                assertEquals("Field " + index + " Should equal to "
                         + defaults[i] + ".", defaults[i], calendar.get(index));
             }
         }
@@ -622,7 +622,7 @@ public class CalendarTest extends junit.framework.TestCase {
 
         for (int i = 0; i < fields.length; i++) {
             int index = fields[i];
-            assertEquals("Field " + index + " Should be equal to "
+            assertEquals("Field " + index + " Should equal to "
                     + defaults[i] + ".", defaults[i], calendar.get(index));
         }
     }
@@ -634,7 +634,7 @@ public class CalendarTest extends junit.framework.TestCase {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         for (int i = 0; i < Calendar.FIELD_COUNT; i++) {
-            assertEquals("Should equal to be false.", false, calendar.isSet(i));
+            assertFalse(calendar.isSet(i));
         }
     }
 
@@ -651,7 +651,7 @@ public class CalendarTest extends junit.framework.TestCase {
                 break;
             }
         }
-        assertEquals("Should at least contain Locale.US.", true, exist);
+        assertTrue(exist);
     }
 
     /**
@@ -662,19 +662,19 @@ public class CalendarTest extends junit.framework.TestCase {
         // test getInstance(Locale)
         Calendar us_calendar = Calendar.getInstance(Locale.US);
         Calendar ch_calendar = Calendar.getInstance(Locale.CHINESE);
-        assertEquals("Should equal to be Sunday.", Calendar.SUNDAY, us_calendar
+        assertEquals(Calendar.SUNDAY, us_calendar
                 .getFirstDayOfWeek());
-        assertEquals("Should equal to be Monday.", Calendar.MONDAY, ch_calendar
+        assertEquals(Calendar.MONDAY, ch_calendar
                 .getFirstDayOfWeek());
 
         // test getInstance(Locale, TimeZone)
         Calendar gmt_calendar = Calendar.getInstance(TimeZone
                 .getTimeZone("GMT"), Locale.US);
-        assertEquals("Should equal to \"GMT\"", TimeZone.getTimeZone("GMT"),
+        assertEquals(TimeZone.getTimeZone("GMT"),
                 gmt_calendar.getTimeZone());
         Calendar est_calendar = Calendar.getInstance(TimeZone
                 .getTimeZone("EST"), Locale.US);
-        assertEquals("Should equal to \"EST\"", TimeZone.getTimeZone("EST")
+        assertEquals(TimeZone.getTimeZone("EST")
                 .getID(), est_calendar.getTimeZone().getID());
     }
 
@@ -684,8 +684,7 @@ public class CalendarTest extends junit.framework.TestCase {
     public void test_internalGet() {
         MockGregorianCalendar c = new MockGregorianCalendar();
         c.clear(Calendar.YEAR);
-        assertEquals("Should not be equal to 1970.", 0, c
-                .internal_get(Calendar.YEAR));
+        assertEquals(0, c.internal_get(Calendar.YEAR));
     }
 
     /**
@@ -693,11 +692,7 @@ public class CalendarTest extends junit.framework.TestCase {
      */
     public void test_hashcode() {
         Calendar calendar = Calendar.getInstance(Locale.JAPAN);
-        assertEquals("Should equal to true.", true,
-                calendar.hashCode() == calendar.hashCode());
-        Calendar en_calendar = Calendar.getInstance(Locale.ENGLISH);
-        assertEquals("Should equal to false.", false,
-                en_calendar.hashCode() == calendar.hashCode());
+        assertTrue(calendar.hashCode() == calendar.hashCode());
     }
 
     /**
@@ -709,20 +704,20 @@ public class CalendarTest extends junit.framework.TestCase {
 
         // roll up
         calendar.roll(Calendar.DATE, 5);
-        assertEquals("Shoule be equal to 25", 25, calendar.get(Calendar.DATE));
+        assertEquals(25, calendar.get(Calendar.DATE));
 
         // roll down
         calendar.roll(Calendar.DATE, -5);
-        assertEquals("Shoule be equal to 20", 20, calendar.get(Calendar.DATE));
+        assertEquals(20, calendar.get(Calendar.DATE));
 
         // roll 0
         calendar.roll(Calendar.DATE, 0);
-        assertEquals("Shoule be equal to 20", 20, calendar.get(Calendar.DATE));
+        assertEquals(20, calendar.get(Calendar.DATE));
 
         // roll overweight
         calendar.set(2008, 1, 31, 17, 28, 12);
         calendar.roll(Calendar.MONTH, 1);
-        assertEquals("Shoule be equal to 2", 2, calendar.get(Calendar.DATE));
+        assertEquals(2, calendar.get(Calendar.DATE));
 
     }
 
@@ -731,16 +726,12 @@ public class CalendarTest extends junit.framework.TestCase {
      */
     public void test_toString() {
         Calendar calendar = Calendar.getInstance();
-        assertEquals("Should be the current time with no '?' in the string.",
-                true, (calendar.toString() != null)
-                        && (calendar.toString() instanceof String)
-                        && (calendar.toString().indexOf("?") == -1));
+        //Should be the current time with no interrogation in the string.
+        assertTrue(calendar.toString() instanceof String);
+        assertEquals(-1, calendar.toString().indexOf("?"));
         calendar.clear();
-        assertEquals(
-                "Should be the empty but not null. With several '?'s in the string.",
-                true, (calendar.toString() != null)
-                        && (calendar.toString() instanceof String)
-                        && (calendar.toString().indexOf("?") != -1));
+        assertTrue(calendar.toString() instanceof String);
+        assertTrue(0 <= calendar.toString().indexOf("?"));
     }
 
     /**

@@ -35,104 +35,103 @@ import java.util.WeakHashMap;
 
 public class AbstractMapTest extends junit.framework.TestCase {
 
-	static final String specialKey = "specialKey".intern();
+    static final String specialKey = "specialKey".intern();
 
-	static final String specialValue = "specialValue".intern();
+    static final String specialValue = "specialValue".intern();
 
-	// The impl of MyMap is not realistic, but serves to create a type
-	// that uses the default remove behavior.
-	class MyMap extends AbstractMap {
-		final Set mySet = new HashSet(1);
+    // The impl of MyMap is not realistic, but serves to create a type
+    // that uses the default remove behavior.
+    class MyMap extends AbstractMap {
+        final Set mySet = new HashSet(1);
 
-		MyMap() {
-			mySet.add(new Map.Entry() {
-				public Object getKey() {
-					return specialKey;
-				}
+        MyMap() {
+            mySet.add(new Map.Entry() {
+                public Object getKey() {
+                    return specialKey;
+                }
 
-				public Object getValue() {
-					return specialValue;
-				}
+                public Object getValue() {
+                    return specialValue;
+                }
 
-				public Object setValue(Object object) {
-					return null;
-				}
-			});
-		}
+                public Object setValue(Object object) {
+                    return null;
+                }
+            });
+        }
 
-		public Object put(Object key, Object value) {
-			return null;
-		}
+        public Object put(Object key, Object value) {
+            return null;
+        }
 
-		public Set entrySet() {
-			return mySet;
-		}
-	}
+        public Set entrySet() {
+            return mySet;
+        }
+    }
 
-	/**
-	 * @tests java.util.AbstractMap#keySet()
-	 */
-	public void test_keySet() {
-		AbstractMap map1 = new HashMap(0);
-		assertSame("HashMap(0)", map1.keySet(), map1.keySet());
+    /**
+     * @tests java.util.AbstractMap#keySet()
+     */
+    public void test_keySet() {
+        AbstractMap map1 = new HashMap(0);
+        assertSame("HashMap(0)", map1.keySet(), map1.keySet());
 
-		AbstractMap map2 = new HashMap(10);
-		assertSame("HashMap(10)", map2.keySet(), map2.keySet());
+        AbstractMap map2 = new HashMap(10);
+        assertSame("HashMap(10)", map2.keySet(), map2.keySet());
 
-		Map map3 = Collections.EMPTY_MAP;
-		assertSame("EMPTY_MAP", map3.keySet(), map3.keySet());
+        Map map3 = Collections.EMPTY_MAP;
+        assertSame("EMPTY_MAP", map3.keySet(), map3.keySet());
 
-		AbstractMap map4 = new IdentityHashMap(1);
-		assertSame("IdentityHashMap", map4.keySet(), map4.keySet());
+        AbstractMap map4 = new IdentityHashMap(1);
+        assertSame("IdentityHashMap", map4.keySet(), map4.keySet());
 
-		AbstractMap map5 = new LinkedHashMap(122);
-		assertSame("LinkedHashMap", map5.keySet(), map5.keySet());
+        AbstractMap map5 = new LinkedHashMap(122);
+        assertSame("LinkedHashMap", map5.keySet(), map5.keySet());
 
-		AbstractMap map6 = new TreeMap();
-		assertSame("TreeMap", map6.keySet(), map6.keySet());
+        AbstractMap map6 = new TreeMap();
+        assertSame("TreeMap", map6.keySet(), map6.keySet());
 
-		AbstractMap map7 = new WeakHashMap();
-		assertSame("WeakHashMap", map7.keySet(), map7.keySet());
-	}
+        AbstractMap map7 = new WeakHashMap();
+        assertSame("WeakHashMap", map7.keySet(), map7.keySet());
+    }
 
-	/**
-	 * @tests java.util.AbstractMap#remove(java.lang.Object)
-	 */
-	public void test_removeLjava_lang_Object() {
-		Object key = new Object();
-		Object value = new Object();
+    /**
+     * @tests java.util.AbstractMap#remove(java.lang.Object)
+     */
+    public void test_removeLjava_lang_Object() {
+        Object key = new Object();
+        Object value = new Object();
 
-		AbstractMap map1 = new HashMap(0);
-		map1.put("key", value);
-		assertSame("HashMap(0)", map1.remove("key"), value);
+        AbstractMap map1 = new HashMap(0);
+        map1.put("key", value);
+        assertSame("HashMap(0)", map1.remove("key"), value);
 
-		AbstractMap map4 = new IdentityHashMap(1);
-		map4.put(key, value);
-		assertSame("IdentityHashMap", map4.remove(key), value);
+        AbstractMap map4 = new IdentityHashMap(1);
+        map4.put(key, value);
+        assertSame("IdentityHashMap", map4.remove(key), value);
 
-		AbstractMap map5 = new LinkedHashMap(122);
-		map5.put(key, value);
-		assertSame("LinkedHashMap", map5.remove(key), value);
+        AbstractMap map5 = new LinkedHashMap(122);
+        map5.put(key, value);
+        assertSame("LinkedHashMap", map5.remove(key), value);
 
-		AbstractMap map6 = new TreeMap(new Comparator() {
-			// Bogus comparator
-			public int compare(Object object1, Object object2) {
-				return 0;
-			}
-		});
-		map6.put(key, value);
-		assertSame("TreeMap", map6.remove(key), value);
+        AbstractMap map6 = new TreeMap(new Comparator() {
+            // Bogus comparator
+            public int compare(Object object1, Object object2) {
+                return 0;
+            }
+        });
+        map6.put(key, value);
+        assertSame("TreeMap", map6.remove(key), value);
 
-		AbstractMap map7 = new WeakHashMap();
-		map7.put(key, value);
-		assertSame("WeakHashMap", map7.remove(key), value);
+        AbstractMap map7 = new WeakHashMap();
+        map7.put(key, value);
+        assertSame("WeakHashMap", map7.remove(key), value);
 
-		AbstractMap aSpecialMap = new MyMap();
-		aSpecialMap.put(specialKey, specialValue);
-		Object valueOut = aSpecialMap.remove(specialKey);
-		assertSame("MyMap", valueOut, specialValue);
-	}
-    
+        AbstractMap aSpecialMap = new MyMap();
+        aSpecialMap.put(specialKey, specialValue);
+        Object valueOut = aSpecialMap.remove(specialKey);
+        assertSame("MyMap", valueOut, specialValue);
+    }
 
     /**
      * @tests java.util.AbstractMap#clear()
@@ -142,15 +141,15 @@ public class AbstractMapTest extends junit.framework.TestCase {
         AbstractMap map = new HashMap();
         map.put(1, 1);
         map.clear();
-        assertEquals("Should equal to be empty.", true, map.isEmpty());
+        assertTrue(map.isEmpty());
 
         // Special entrySet return a Set with no clear method.
         AbstractMap myMap = new MocAbstractMap();
         try {
             myMap.clear();
-            fail("Should throw an unsupportedoprationexception");
+            fail("Should throw UnsupportedOprationException");
         } catch (UnsupportedOperationException e) {
-
+            // expected
         }
     }
 
@@ -162,7 +161,6 @@ public class AbstractMapTest extends junit.framework.TestCase {
         }
 
         class MySet extends HashSet {
-
             public void clear() {
                 throw new UnsupportedOperationException();
             }
@@ -175,17 +173,17 @@ public class AbstractMapTest extends junit.framework.TestCase {
     public void test_containsKey() {
         AbstractMap map = new AMT();
 
-        assertEquals("Shoule equal to be false.", false, map.containsKey("k"));
-        assertEquals("Shoule equal to be false.", false, map.containsKey(null));
+        assertFalse(map.containsKey("k"));
+        assertFalse(map.containsKey(null));
 
         map.put("k", "v");
         map.put("key", null);
         map.put(null, "value");
         map.put(null, null);
 
-        assertEquals("Shoule equal to be true.", true, map.containsKey("k"));
-        assertEquals("Shoule equal to be true.", true, map.containsKey("key"));
-        assertEquals("Shoule equal to be true.", true, map.containsKey(null));
+        assertTrue(map.containsKey("k"));
+        assertTrue(map.containsKey("key"));
+        assertTrue(map.containsKey(null));
     }
 
     /**
@@ -194,20 +192,16 @@ public class AbstractMapTest extends junit.framework.TestCase {
     public void test_containValue() {
         AbstractMap map = new AMT();
 
-        assertEquals("Shoule equal to be false.", false, map.containsValue("v"));
-        assertEquals("Shoule equal to be false.", false, map
-                .containsValue(null));
-        
+        assertFalse(map.containsValue("v"));
+        assertFalse(map.containsValue(null));
+
         map.put("k", "v");
         map.put("key", null);
         map.put(null, "value");
-        
-        System.out.println(map);
-        
-        assertEquals("Shoule equal to be true.", true, map.containsValue("v"));
-        assertEquals("Shoule equal to be true.", true, map
-                .containsValue("value"));
-        assertEquals("Shoule equal to be true.", true, map.containsValue(null));
+
+        assertTrue(map.containsValue("v"));
+        assertTrue(map.containsValue("value"));
+        assertTrue(map.containsValue(null));
     }
 
     /**
@@ -215,82 +209,82 @@ public class AbstractMapTest extends junit.framework.TestCase {
      */
     public void test_get() {
         AbstractMap map = new AMT();
-        assertEquals("Shoule equal to be null.", null, map.get("key"));
-        assertEquals("Shoule equal to be null.", null, map.get(null));
+        assertNull(map.get("key"));
+        assertNull(map.get(null));
 
         map.put("k", "v");
         map.put("key", null);
         map.put(null, "value");
 
-        assertEquals("Shoule equal to be v.", "v", map.get("k"));
-        assertEquals("Shoule equal to be null.", null, map.get("key"));
-        assertEquals("Shoule equal to be value.", "value", map.get(null));
+        assertEquals("v", map.get("k"));
+        assertNull(map.get("key"));
+        assertEquals("value", map.get(null));
     }
 
-	/**
+    /**
      * @tests java.util.AbstractMap#values()
      */
-	public void test_values() {
-		AbstractMap map1 = new HashMap(0);
-		assertSame("HashMap(0)", map1.values(), map1.values());
+    public void test_values() {
+        AbstractMap map1 = new HashMap(0);
+        assertSame("HashMap(0)", map1.values(), map1.values());
 
-		AbstractMap map2 = new HashMap(10);
-		assertSame("HashMap(10)", map2.values(), map2.values());
+        AbstractMap map2 = new HashMap(10);
+        assertSame("HashMap(10)", map2.values(), map2.values());
 
-		Map map3 = Collections.EMPTY_MAP;
-		assertSame("EMPTY_MAP", map3.values(), map3.values());
+        Map map3 = Collections.EMPTY_MAP;
+        assertSame("EMPTY_MAP", map3.values(), map3.values());
 
-		AbstractMap map4 = new IdentityHashMap(1);
-		assertSame("IdentityHashMap", map4.values(), map4.values());
+        AbstractMap map4 = new IdentityHashMap(1);
+        assertSame("IdentityHashMap", map4.values(), map4.values());
 
-		AbstractMap map5 = new LinkedHashMap(122);
-		assertSame("IdentityHashMap", map5.values(), map5.values());
+        AbstractMap map5 = new LinkedHashMap(122);
+        assertSame("IdentityHashMap", map5.values(), map5.values());
 
-		AbstractMap map6 = new TreeMap();
-		assertSame("TreeMap", map6.values(), map6.values());
+        AbstractMap map6 = new TreeMap();
+        assertSame("TreeMap", map6.values(), map6.values());
 
-		AbstractMap map7 = new WeakHashMap();
-		assertSame("WeakHashMap", map7.values(), map7.values());
-	}
+        AbstractMap map7 = new WeakHashMap();
+        assertSame("WeakHashMap", map7.values(), map7.values());
+    }
 
-	/**
-	 * @tests java.util.AbstractMap#clone()
-	 */
-	public void test_clone() {
-		class MyMap extends AbstractMap implements Cloneable {
-			private Map map = new HashMap();
+    /**
+     * @tests java.util.AbstractMap#clone()
+     */
+    public void test_clone() {
+        class MyMap extends AbstractMap implements Cloneable {
+            private Map map = new HashMap();
 
-			public Set entrySet() {
-				return map.entrySet();
-			}
+            public Set entrySet() {
+                return map.entrySet();
+            }
 
-			public Object put(Object key, Object value) {
-				return map.put(key, value);
-			}
+            public Object put(Object key, Object value) {
+                return map.put(key, value);
+            }
 
-			public Map getMap() {
-				return map;
-			}
+            public Map getMap() {
+                return map;
+            }
 
-			public Object clone() {
-				try {
-					return super.clone();
-				} catch (CloneNotSupportedException e) {
-					return null;
-				}
-			}
-		}
-		;
-		MyMap map = new MyMap();
-		map.put("one", "1");
-		Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
-		assertTrue("entry not added", entry.getKey() == "one"
-				&& entry.getValue() == "1");
-		MyMap mapClone = (MyMap) map.clone();
-		assertTrue("clone not shallow", map.getMap() == mapClone.getMap());
-	}
-	
-	public class AMT extends AbstractMap {
+            public Object clone() {
+                try {
+                    return super.clone();
+                } catch (CloneNotSupportedException e) {
+                    return null;
+                }
+            }
+        }
+        ;
+        MyMap map = new MyMap();
+        map.put("one", "1");
+        Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
+        assertTrue("entry not added", entry.getKey() == "one"
+                && entry.getValue() == "1");
+        MyMap mapClone = (MyMap) map.clone();
+        assertTrue("clone not shallow", map.getMap() == mapClone.getMap());
+    }
+
+    public class AMT extends AbstractMap {
 
         // Very crude AbstractMap implementation
         Vector values = new Vector();
@@ -361,9 +355,9 @@ public class AbstractMapTest extends junit.framework.TestCase {
         assertEquals("Should be equal", amt, ht);
     }
 
-	protected void setUp() {
-	}
+    protected void setUp() {
+    }
 
-	protected void tearDown() {
-	}
+    protected void tearDown() {
+    }
 }
