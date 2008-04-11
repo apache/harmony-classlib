@@ -13,6 +13,7 @@ Bundle-ClassPath: .
 Eclipse-JREBundle: true
 Import-Package: java.io;resolution:=optional,
  java.lang;resolution:=optional,
+ java.nio,
  java.util;resolution:=optional,
  java.util.jar;resolution:=optional
 Export-Package: org.apache.harmony.pack200,
