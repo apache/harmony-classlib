@@ -47,6 +47,22 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private static final String SUFFIX_LISTEN = "Listener"; //$NON-NLS-1$
 
+    private static final String STR_NORMAL = "normal"; //$NON-NLS-1$
+
+    private static final String STR_INDEXED = "indexed"; //$NON-NLS-1$
+
+    private static final String STR_VALID = "valid"; //$NON-NLS-1$
+
+    private static final String STR_INVALID = "invalid"; //$NON-NLS-1$
+
+    private static final String STR_PROPERTY_TYPE = "PropertyType"; //$NON-NLS-1$
+
+    private static final String STR_IS_CONSTRAINED = "isConstrained"; //$NON-NLS-1$
+
+    private static final String STR_SETTERS = "setters"; //$NON-NLS-1$
+
+    private static final String STR_GETTERS = "getters"; //$NON-NLS-1$
+
     private boolean explicitMethods = false;
 
     private boolean explicitProperties = false;
@@ -276,7 +292,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
                 // Sub is PropertyDescriptor
                 if (subIndexedType == null) {
                     // Same property type
-                    if (subType.getName().equals(superType.getName())) {
+                    if (subType != null &&
+                            subType.getName().equals(superType.getName())) {
                         if ((subGet == null) && (superGet != null)) {
                             subDesc.setReadMethod(superGet);
                         }
@@ -481,8 +498,6 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * Introspects the supplied class and returns a list of the public methods
      * of the class
      * 
-     * @param beanClass -
-     *            the class
      * @return An array of MethodDescriptors with the public methods. null if
      *         there are no public methods
      */
@@ -533,8 +548,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
      * Introspects the supplied class and returns a list of the Properties of
      * the class
      * 
-     * @param beanClass -
-     *            the Class
+     * @param stopClass -
+     *            the to introspecting at
      * @return The list of Properties as an array of PropertyDescriptors
      * @throws IntrospectionException
      */
@@ -556,6 +571,9 @@ class StandardBeanInfo extends SimpleBeanInfo {
             introspectGet(theMethods[i].getMethod(), propertyTable);
             introspectSet(theMethods[i].getMethod(), propertyTable);
         }
+
+        // fix possible getter & setter collisions
+        fixGetSet(propertyTable);
 
         // If there are listener methods, should be bound.
         MethodDescriptor[] allMethods = introspectMethods(true);
@@ -586,17 +604,17 @@ class StandardBeanInfo extends SimpleBeanInfo {
             if (table == null) {
                 continue;
             }
-            String normalTag = (String) table.get("normal"); //$NON-NLS-1$
-            String indexedTag = (String) table.get("indexed"); //$NON-NLS-1$
+            String normalTag = (String) table.get(STR_NORMAL);
+            String indexedTag = (String) table.get(STR_INDEXED);
 
             if ((normalTag == null) && (indexedTag == null)) {
                 continue;
             }
 
-            Method get = (Method) table.get("normalget"); //$NON-NLS-1$
-            Method set = (Method) table.get("normalset"); //$NON-NLS-1$
-            Method indexedGet = (Method) table.get("indexedget"); //$NON-NLS-1$
-            Method indexedSet = (Method) table.get("indexedset"); //$NON-NLS-1$
+            Method get = (Method) table.get(STR_NORMAL + PREFIX_GET);
+            Method set = (Method) table.get(STR_NORMAL + PREFIX_SET);
+            Method indexedGet = (Method) table.get(STR_INDEXED + PREFIX_GET);
+            Method indexedSet = (Method) table.get(STR_INDEXED + PREFIX_SET);
 
             PropertyDescriptor propertyDesc = null;
             if (indexedTag == null) {
@@ -619,7 +637,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             } else {
                 propertyDesc.setBound(false);
             }
-            if (table.get("isConstrained") == Boolean.TRUE) { //$NON-NLS-1$
+            if (table.get(STR_IS_CONSTRAINED) == Boolean.TRUE) { //$NON-NLS-1$
                 propertyDesc.setConstrained(true);
             }
             propertyList.add(propertyDesc);
@@ -659,13 +677,20 @@ class StandardBeanInfo extends SimpleBeanInfo {
     @SuppressWarnings("unchecked")
     private static void introspectGet(Method theMethod,
 			HashMap<String, HashMap> propertyTable) {
-		String methodName = theMethod.getName();
-		if (methodName == null) {
+
+        String methodName = theMethod.getName();
+        int prefixLength = 0;
+        String propertyName;
+        Class propertyType;
+        Class[] paramTypes;
+        HashMap table;
+        ArrayList<Method> getters;
+
+        if (methodName == null) {
 			return;
 		}
 
-		int prefixLength = 0;
-		if (methodName.startsWith(PREFIX_GET)) {
+        if (methodName.startsWith(PREFIX_GET)) {
 			prefixLength = PREFIX_GET.length();
 		}
 
@@ -677,153 +702,325 @@ class StandardBeanInfo extends SimpleBeanInfo {
 			return;
 		}
 
-		String propertyName = decapitalize(methodName.substring(prefixLength));
-		// validate property name
+		propertyName = decapitalize(methodName.substring(prefixLength));
+
+        // validate property name
 		if (!isValidProperty(propertyName)) {
 			return;
 		}
 
-		Class propertyType = theMethod.getReturnType();
+        // validate return type
+        propertyType = theMethod.getReturnType();
 
-		// check return type getMethod
-		if (propertyType.getName().equals(Void.TYPE.getName())) {
-			return;
-		}
+        if (propertyType == null || propertyType == void.class) {
+            return;
+        }
 
 		// isXXX return boolean
 		if (prefixLength == 2) {
-			if (!propertyType.getName().equals(Boolean.TYPE.getName())) {
+			if (!(propertyType == boolean.class)) {
 				return;
 			}
 		}
 
-		// indexed get method
-		Class[] paramTypes = theMethod.getParameterTypes();
-
-		if (paramTypes.length > 1) {
+        // validate parameter types
+        paramTypes = theMethod.getParameterTypes();
+		if (paramTypes.length > 1 ||
+                (paramTypes.length == 1 && paramTypes[0] != int.class)) {
 			return;
 		}
 
-		String tag = "normal"; //$NON-NLS-1$
+        //
 
-		if (paramTypes.length == 1) {
-			if (paramTypes[0].getName().equals(Integer.TYPE.getName())) {
-				tag = "indexed"; //$NON-NLS-1$
-			} else {
-				return;
-			}
-
-		}
-
-		HashMap table = propertyTable.get(propertyName);
+        table = propertyTable.get(propertyName);
 		if (table == null) {
 			table = new HashMap();
 			propertyTable.put(propertyName, table);
 		}
 
-		// the "get" propertyType is conflict with "set" propertyType
-		Class oldPropertyType = (Class) table.get(tag + "PropertyType"); //$NON-NLS-1$
-		if ((oldPropertyType != null)
-				&& (!oldPropertyType.getName().equals(propertyType.getName()))) {
-			table.put(tag, "invalid"); //$NON-NLS-1$
-			table.remove(tag + "set"); //$NON-NLS-1$
-		} else {
-			table.put(tag, "valid"); //$NON-NLS-1$
-		}
-		
-		table.put(tag + "PropertyType", propertyType); //$NON-NLS-1$
+        getters = (ArrayList<Method>) table.get(STR_GETTERS);
+        if (getters == null) {
+            getters = new ArrayList<Method>();
+            table.put(STR_GETTERS, getters);
+        }
 
-		// According to the spec "is" method should be used prior to "get"
-		if (prefixLength == 3) {
-			if (!table.containsKey(tag + "get")) { //$NON-NLS-1$
-				table.put(tag + "get", theMethod); //$NON-NLS-1$
-			}
-		} else {
-			table.put(tag + "get", theMethod); //$NON-NLS-1$
-		}
-	}
+        // add current method as a valid getter
+        getters.add(theMethod);
+    }
 
     @SuppressWarnings("unchecked")
     private static void introspectSet(Method theMethod,
             HashMap<String, HashMap> propertyTable) {
+
         String methodName = theMethod.getName();
-        if (methodName == null) {
+        String propertyName;
+        Class returnType;
+        Class[] paramTypes;
+
+        if (methodName == null || !methodName.startsWith(PREFIX_SET)) {
             return;
         }
 
-        int prefixLength = 0;
-        if (methodName.startsWith(PREFIX_SET)) {
-            prefixLength = PREFIX_GET.length();
-        }
-
-        if (prefixLength == 0) {
-            return;
-        }
-
-        String propertyName = decapitalize(methodName.substring(prefixLength));
+        propertyName = decapitalize(methodName.substring(
+                PREFIX_SET.length()));
 
         // validate property name
         if (!isValidProperty(propertyName)) {
             return;
         }
 
-        Class returnType = theMethod.getReturnType();
+        // validate return type
+        returnType = theMethod.getReturnType();
 
-        if (!returnType.getName().equals(Void.TYPE.getName())) {
+//        if (!returnType.getName().equals(Void.TYPE.getName())) {
+        if (!(returnType == void.class)) {
             return;
         }
 
-        // indexed get method
-        Class[] paramTypes = theMethod.getParameterTypes();
+        // validate param types
+        paramTypes = theMethod.getParameterTypes();
 
-        if ((paramTypes.length == 0) || (paramTypes.length > 2)) {
+        if (paramTypes.length == 0 || paramTypes.length > 2 ||
+                (paramTypes.length == 2 && paramTypes[0] != int.class)) {
             return;
         }
 
-        String tag = "normal"; //$NON-NLS-1$
-
-        Class propertyType = paramTypes[0];
-
-        if (paramTypes.length == 2) {
-            if (paramTypes[0].getName().equals(Integer.TYPE.getName())) {
-                tag = "indexed"; //$NON-NLS-1$
-                propertyType = paramTypes[1];
-            } else {
-                return;
-            }
-        }
+        //
 
         HashMap table = propertyTable.get(propertyName);
         if (table == null) {
             table = new HashMap();
+            propertyTable.put(propertyName, table);
         }
 
-        Class oldPropertyType = (Class) table.get(tag + "PropertyType"); //$NON-NLS-1$
-        if ((oldPropertyType != null)
-                && (!oldPropertyType.getName().equals(propertyType.getName()))) {
-            table.put(tag, "invalid"); //$NON-NLS-1$
-            return;
+        ArrayList<Method> setters = (ArrayList<Method>) table.get(STR_SETTERS);
+        if (setters == null) {
+            setters = new ArrayList<Method>();
+            table.put(STR_SETTERS, setters);
         }
-
-        table.put(tag, "valid"); //$NON-NLS-1$
-        table.put(tag + "set", theMethod); //$NON-NLS-1$
-        table.put(tag + "PropertyType", propertyType); //$NON-NLS-1$
 
         // handle constrained
         Class[] exceptions = theMethod.getExceptionTypes();
         for (Class e : exceptions) {
             if (e.equals(PropertyVetoException.class)) {
-                table.put("isConstrained", Boolean.TRUE); //$NON-NLS-1$
+                table.put(STR_IS_CONSTRAINED, Boolean.TRUE); //$NON-NLS-1$
             }
         }
-        propertyTable.put(propertyName, table);
+
+        // add new setter
+        setters.add(theMethod);
+    }
+
+    /**
+     * Checks and fixs all cases when several incompatible checkers /
+     * getters were specified for single property.
+     * @param propertyTable
+     * @throws IntrospectionException
+     */
+    private void fixGetSet(HashMap<String, HashMap> propertyTable)
+            throws IntrospectionException {
+
+        if (propertyTable == null) {
+            return;
+        }
+
+        for (String key : propertyTable.keySet()) {
+            HashMap<String, Object> table = propertyTable.get(key);
+            ArrayList<Method> getters = (ArrayList<Method>) table.get(STR_GETTERS);
+            ArrayList<Method> setters = (ArrayList<Method>) table.get(STR_SETTERS);
+
+            Method normalGetter = null;
+            Method indexedGetter = null;
+            Method normalSetter = null;
+            Method indexedSetter = null;
+
+            Class normalPropType = null;
+            Class indexedPropType = null;
+
+            if (getters == null) {
+                getters = new ArrayList<Method>();
+            }
+
+            if (setters == null) {
+                setters = new ArrayList<Method>();
+            }
+
+            // retrieve getters
+            for (Method getter: getters) {
+                // checks if it's a normal getter
+                if (getter.getParameterTypes() == null ||
+                        getter.getParameterTypes().length == 0) {
+                    // normal getter found
+                    if (normalGetter == null ||
+                            getter.getName().startsWith(PREFIX_IS)) {
+                        normalGetter = getter;
+                    }
+                }
+
+                // checks if it's an indexed getter
+                if (getter.getParameterTypes() != null &&
+                        getter.getParameterTypes().length == 1 &&
+                        getter.getParameterTypes()[0] == int.class) {
+                    // indexed getter found
+                    if (indexedGetter == null ||
+                            getter.getName().startsWith(PREFIX_IS)) {
+                        indexedGetter = getter;
+                    }
+                }
+            }
+
+            // retrieve normal setter
+            if (normalGetter != null) {
+                // Now we will try to look for normal setter of the same type.
+                Class propertyType = normalGetter.getReturnType();
+
+                for (Method setter: setters) {
+                    if (setter.getParameterTypes().length == 1 &&
+                            propertyType.equals(setter.getParameterTypes()[0]))
+                    {
+                        normalSetter = setter;
+                        break;
+                    }
+                }
+            } else {
+                // Normal getter wasn't defined. Let's look for the last
+                // defined setter
+
+                for (Method setter: setters) {
+                    if (setter.getParameterTypes().length == 1) {
+                        normalSetter = setter;
+                    }
+                }
+            }
+
+            // retrieve indexed setter
+            if (indexedGetter != null) {
+                // Now we will try to look for indexed setter of the same type.
+                Class propertyType = indexedGetter.getReturnType();
+
+                for (Method setter: setters) {
+                    if (setter.getParameterTypes().length == 2 &&
+                            setter.getParameterTypes()[0] == int.class &&
+                            propertyType.equals(setter.getParameterTypes()[1]))
+                    {
+                        indexedSetter = setter;
+                        break;
+                    }
+                }
+            } else {
+                // Indexed getter wasn't defined. Let's look for the last
+                // defined indexed setter
+
+                for (Method setter: setters) {
+                    if (setter.getParameterTypes().length == 2 &&
+                            setter.getParameterTypes()[0] == int.class) {
+                        indexedSetter = setter;
+                    }
+                }
+            }
+
+            // determine property type
+            if (normalGetter != null) {
+                normalPropType = normalGetter.getReturnType();
+            } else if (normalSetter != null) {
+                normalPropType = normalSetter.getParameterTypes()[0];
+            }
+
+            // determine indexed getter/setter type
+            if (indexedGetter != null) {
+                indexedPropType = indexedGetter.getReturnType();
+            } else if (indexedSetter != null) {
+                indexedPropType = indexedSetter.getParameterTypes()[1];
+            }
+
+            // convert array-typed normal getters to indexed getters
+            if (normalGetter != null && normalGetter.getReturnType().isArray())
+            {
+                
+            }
+
+            // RULES
+            // These rules were created after performing extensive black-box
+            // testing of RI
+
+            // RULE1
+            // Both normal getter and setter of the same type were defined;
+            // no indexed getter/setter *PAIR* of the other type defined
+            if (normalGetter != null && normalSetter != null &&
+                    (indexedGetter == null || indexedSetter == null) &&
+                    normalPropType != indexedPropType) {
+//                String tag = normalPropType.isArray() ?
+//                        STR_INDEXED : STR_NORMAL;
+                String tag = STR_NORMAL;
+
+                table.put(tag, STR_VALID);
+                table.put(tag + PREFIX_GET, normalGetter);
+                table.put(tag + PREFIX_SET, normalSetter);
+                table.put(tag + STR_PROPERTY_TYPE, normalPropType);
+                continue;
+            }
+
+            // RULE2
+            // normal getter and/or setter was defined; no indexed
+            // getters & setters defined
+            if ((normalGetter != null || normalSetter != null) &&
+                    indexedGetter == null && indexedSetter == null) {
+//                String tag = normalPropType.isArray() ?
+//                        STR_INDEXED : STR_NORMAL;
+                String tag = STR_NORMAL;
+
+                table.put(tag, STR_VALID);
+                table.put(tag + PREFIX_GET, normalGetter);
+                table.put(tag + PREFIX_SET, normalSetter);
+                table.put(tag + STR_PROPERTY_TYPE, normalPropType);
+                continue;
+            }
+
+            // RULE3
+            // mix of normal / indexed getters and setters are defined. Types
+            // are compatible
+            if ((normalGetter != null || normalSetter != null) &&
+                    (indexedGetter != null || indexedSetter != null) &&
+                    normalPropType.isArray() &&
+                    normalPropType.getComponentType() == indexedPropType) {
+                table.put(STR_NORMAL, STR_VALID);
+                table.put(STR_NORMAL + PREFIX_GET, normalGetter);
+                table.put(STR_NORMAL + PREFIX_SET, normalSetter);
+                table.put(STR_NORMAL + STR_PROPERTY_TYPE, normalPropType);
+
+                table.put(STR_INDEXED, STR_VALID);
+                table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                table.put(STR_INDEXED + STR_PROPERTY_TYPE, indexedPropType);
+
+                continue;
+            }
+
+            // RULE4
+            // no normal normal getter / setter.
+            // Only indexed getter and/or setter is given
+            // no normal setters / getters defined
+            if (normalSetter == null && normalGetter == null &&
+                    (indexedGetter != null || indexedSetter != null)) {
+                table.put(STR_INDEXED, STR_VALID);
+                table.put(STR_INDEXED + PREFIX_GET, indexedGetter);
+                table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                table.put(STR_INDEXED + STR_PROPERTY_TYPE,
+                        indexedPropType);
+                continue;
+            }
+
+            // default rule - invalid property
+            table.put(STR_NORMAL, STR_INVALID);
+            table.put(STR_INDEXED, STR_INVALID);            
+        }
+
     }
 
     /**
      * Introspects the supplied Bean class and returns a list of the Events of
      * the class
      * 
-     * @param beanClass
      * @return the events
      * @throws IntrospectionException
      */
