@@ -30,7 +30,7 @@ public class ClassVersionTest extends TestCase {
 
     public void testCorrectVersionOfSegment() throws IOException {
         InputStream in = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/Segment.class");
+                .getResourceAsStream("/org/apache/harmony/unpack200/Segment.class");
         DataInputStream din = new DataInputStream(in);
 
         assertEquals(0xCAFEBABE, din.readInt());
@@ -41,7 +41,7 @@ public class ClassVersionTest extends TestCase {
 
     public void testCorrectVersionOfTest() throws IOException {
         InputStream in = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/tests/ClassVersionTest.class");
+                .getResourceAsStream("/org/apache/harmony/unpack200/tests/ClassVersionTest.class");
         DataInputStream din = new DataInputStream(in);
 
         assertEquals(0xCAFEBABE, din.readInt());
@@ -55,7 +55,7 @@ public class ClassVersionTest extends TestCase {
         // tests that both the file is on the classpath and that it's been
         // compiled correctly, but without actually loading the class
         InputStream in = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/Pack200Adapter.class");
+                .getResourceAsStream("/org/apache/harmony/unpack200/Pack200Adapter.class");
         if (in != null) { // If running in Eclipse and Java5 stuff not
             // built/available
             DataInputStream din = new DataInputStream(in);
