@@ -126,7 +126,7 @@
 
     <target name="build-jar" depends="svn-info">
         <jar destfile="${hy.jdk}/jre/lib/boot/pack200.jar"
-             manifest="${hy.unpack200}/META-INF/MANIFEST.MF"
+             manifest="${hy.pack200}/META-INF/MANIFEST.MF"
              compress="${hy.jar.compress}">
             <fileset refid="classes" />
             <manifest>
@@ -148,16 +148,16 @@
     </target>
 
     <target name="compile-tests" depends="copy-test-resources" > 
-        <mkdir dir="${hy.unpack200.bin.test}" />
+        <mkdir dir="${hy.pack200.bin.test}" />
 
         <echo message="Compiling PACK200 tests" />
         <javac srcdir="${hy.pack200.src.test.java}"
-               destdir="${hy.unpack200.bin.test}"
+               destdir="${hy.pack200.bin.test}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.unpack200.javac.source}" 
-               target="${hy.unpack200.javac.target}"
+               source="${hy.pack200.javac.source}" 
+               target="${hy.pack200.javac.target}"
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
@@ -196,7 +196,7 @@
             <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
-                <pathelement path="${hy.unpack200.bin.test}"/>
+                <pathelement path="${hy.pack200.bin.test}"/>
                 <pathelement path="${hy.pack200.src.test.resources}"/>
             </classpath>
             <classpath location="../../build/tests" />
@@ -230,8 +230,8 @@
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.unpack200.bin.test}" />
-        <copy todir="${hy.unpack200.bin.test}" includeemptydirs="false">
+        <mkdir dir="${hy.pack200.bin.test}" />
+        <copy todir="${hy.pack200.bin.test}" includeemptydirs="false">
             <fileset dir="${hy.pack200.src.test.resources}">
                 <exclude name="**/*.java" />
             </fileset>
