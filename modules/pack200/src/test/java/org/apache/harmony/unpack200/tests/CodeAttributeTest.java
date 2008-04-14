@@ -21,13 +21,13 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.CpBands;
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentConstantPool;
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.CodeAttribute;
-import org.apache.harmony.pack200.bytecode.LocalVariableTableAttribute;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.CpBands;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.CodeAttribute;
+import org.apache.harmony.unpack200.bytecode.LocalVariableTableAttribute;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * Tests for CodeAttribute

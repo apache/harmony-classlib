@@ -18,11 +18,11 @@ package org.apache.harmony.pack200.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.AttributeLayout;
-import org.apache.harmony.pack200.Codec;
-import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.AttributeLayout;
+import org.apache.harmony.unpack200.Codec;
+import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.SegmentConstantPool;
 
 public class AttributeLayoutTest extends TestCase {
 

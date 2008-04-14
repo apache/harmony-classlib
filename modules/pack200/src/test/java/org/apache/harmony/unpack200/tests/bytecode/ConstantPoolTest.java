@@ -18,11 +18,11 @@ package org.apache.harmony.pack200.tests.bytecode;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CPMember;
-import org.apache.harmony.pack200.bytecode.CPUTF8;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.CPMember;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 public class ConstantPoolTest extends TestCase {
 

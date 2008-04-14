@@ -18,26 +18,24 @@ package org.apache.harmony.pack200.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.SegmentOptions;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
-/**
- * 
- */
-public class SegmentOptionsTest extends TestCase {
+public class CPUTF8Test extends TestCase {
 
-    public void testUnused() {
-        int[] unused = new int[] { 3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-                23, 24, 25, 26, 27, 28, 29, 30, 31 };
-        for (int i = 0; i < unused.length; i++) {
-            try {
-                new SegmentOptions(1 << unused[i]);
-                fail("Bit "
-                        + unused[i]
-                        + " should be unused, but it's not caught during construction");
-            } catch (Pack200Exception e) {
-                assertTrue(true);
-            }
-        }
+    public void testEquality() {
+        CPUTF8 one = new CPUTF8("(III)V",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+        CPUTF8 two = new CPUTF8("((I[II)V",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+        CPUTF8 three = new CPUTF8("([III)V",
+                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+        assertFalse(one.equals(two));
+        assertFalse(one.equals(three));
+        assertFalse(two.equals(three));
+
+        assertFalse(two.equals(one));
+        assertFalse(three.equals(one));
+        assertFalse(three.equals(two));
     }
 }

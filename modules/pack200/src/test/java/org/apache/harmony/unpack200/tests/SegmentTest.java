@@ -27,10 +27,10 @@ import java.util.jar.JarOutputStream;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.unpack200.Segment;
 
 /**
- * Tests for org.apache.harmony.pack200.Segment.
+ * Tests for org.apache.harmony.unpack200.Segment.
  */
 public class SegmentTest extends TestCase {
 
@@ -86,7 +86,7 @@ public class SegmentTest extends TestCase {
 				.exec(
 						"java -cp "
 								+ file.getName()
-								+ " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
+								+ " org.apache.harmony.archive.tests.internal.unpack200.HelloWorld",
 						new String[] {}, file.getParentFile());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				process.getInputStream()));

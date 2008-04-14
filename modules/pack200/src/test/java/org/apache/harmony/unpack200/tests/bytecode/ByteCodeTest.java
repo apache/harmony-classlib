@@ -14,28 +14,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.tests;
+package org.apache.harmony.pack200.tests.bytecode;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.bytecode.CPUTF8;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
 
-public class CPUTF8Test extends TestCase {
+public class ByteCodeTest extends TestCase {
 
-    public void testEquality() {
-        CPUTF8 one = new CPUTF8("(III)V",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        CPUTF8 two = new CPUTF8("((I[II)V",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        CPUTF8 three = new CPUTF8("([III)V",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
-        assertFalse(one.equals(two));
-        assertFalse(one.equals(three));
-        assertFalse(two.equals(three));
-
-        assertFalse(two.equals(one));
-        assertFalse(three.equals(one));
-        assertFalse(three.equals(two));
+    public void testByteCode() {
+        assertEquals("nop", ByteCode.getByteCode(0).getName());
+        assertEquals("return", ByteCode.getByteCode(-79).getName());
+        assertEquals("return", ByteCode.getByteCode(177).getName());
     }
 }

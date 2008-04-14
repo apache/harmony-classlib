@@ -22,12 +22,12 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.BHSDCodec;
-import org.apache.harmony.pack200.BandSet;
-import org.apache.harmony.pack200.Codec;
-import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentHeader;
+import org.apache.harmony.unpack200.BHSDCodec;
+import org.apache.harmony.unpack200.BandSet;
+import org.apache.harmony.unpack200.Codec;
+import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.SegmentHeader;
 
 public class BandSetTest extends TestCase {
 

@@ -14,17 +14,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.tests.bytecode;
+package org.apache.harmony.pack200.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.unpack200.SegmentOptions;
 
-public class ByteCodeTest extends TestCase {
+/**
+ * 
+ */
+public class SegmentOptionsTest extends TestCase {
 
-    public void testByteCode() {
-        assertEquals("nop", ByteCode.getByteCode(0).getName());
-        assertEquals("return", ByteCode.getByteCode(-79).getName());
-        assertEquals("return", ByteCode.getByteCode(177).getName());
+    public void testUnused() {
+        int[] unused = new int[] { 3, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+                23, 24, 25, 26, 27, 28, 29, 30, 31 };
+        for (int i = 0; i < unused.length; i++) {
+            try {
+                new SegmentOptions(1 << unused[i]);
+                fail("Bit "
+                        + unused[i]
+                        + " should be unused, but it's not caught during construction");
+            } catch (Pack200Exception e) {
+                assertTrue(true);
+            }
+        }
     }
 }

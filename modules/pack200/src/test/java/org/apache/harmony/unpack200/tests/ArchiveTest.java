@@ -24,10 +24,10 @@ import java.util.jar.JarOutputStream;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.Archive;
+import org.apache.harmony.unpack200.Archive;
 
 /**
- * Tests for org.apache.harmony.pack200.Archive, which is the main class for unpack200.
+ * Tests for org.apache.harmony.unpack200.Archive, which is the main class for unpack200.
  */
 public class ArchiveTest extends TestCase {
 

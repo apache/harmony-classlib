@@ -18,12 +18,12 @@ package org.apache.harmony.pack200.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.CpBands;
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.CpBands;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.SegmentConstantPool;
 
 /**
- * Tests for org.apache.harmony.pack200.SegmentConstantPool.
+ * Tests for org.apache.harmony.unpack200.SegmentConstantPool.
  */
 public class SegmentConstantPoolTest extends TestCase {
 

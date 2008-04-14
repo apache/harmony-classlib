@@ -18,8 +18,8 @@ package org.apache.harmony.pack200.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.IMatcher;
-import org.apache.harmony.pack200.SegmentUtils;
+import org.apache.harmony.unpack200.IMatcher;
+import org.apache.harmony.unpack200.SegmentUtils;
 
 public class SegmentUtilsTest extends TestCase {
 

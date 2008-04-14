@@ -18,15 +18,15 @@ package org.apache.harmony.pack200.tests.bytecode;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.bytecode.CPDouble;
-import org.apache.harmony.pack200.bytecode.CPFloat;
-import org.apache.harmony.pack200.bytecode.CPInteger;
-import org.apache.harmony.pack200.bytecode.CPLong;
-import org.apache.harmony.pack200.bytecode.CPMember;
-import org.apache.harmony.pack200.bytecode.CPString;
-import org.apache.harmony.pack200.bytecode.CPUTF8;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
-import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
+import org.apache.harmony.unpack200.bytecode.CPDouble;
+import org.apache.harmony.unpack200.bytecode.CPFloat;
+import org.apache.harmony.unpack200.bytecode.CPInteger;
+import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMember;
+import org.apache.harmony.unpack200.bytecode.CPString;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
 
 public class ClassFileEntryTest extends TestCase {
 

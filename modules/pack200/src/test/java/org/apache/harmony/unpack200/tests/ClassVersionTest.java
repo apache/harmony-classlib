@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.unpack200.Segment;
 
 public class ClassVersionTest extends TestCase {
 
