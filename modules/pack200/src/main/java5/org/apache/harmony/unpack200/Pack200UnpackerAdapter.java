@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200.Unpacker;
 
+import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.unpack200.Segment;
+
 /**
  * This class provides the binding between the standard Pack200 interface and
  * the internal interface for (un)packing. As this uses generics for the
