@@ -28,14 +28,14 @@
 
     <fileset id="classes" dir="${hy.build}">
         <or>
-            <present targetdir="${hy.unpack200.src.main.java}" />
-            <present targetdir="${hy.unpack200.src.main.java}">
+            <present targetdir="${hy.pack200.src.main.java}" />
+            <present targetdir="${hy.pack200.src.main.java}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
             </present>
-            <present targetdir="${hy.unpack200.src.main.java5}" />
-            <present targetdir="${hy.unpack200.src.main.java5}">
+            <present targetdir="${hy.pack200.src.main.java5}" />
+            <present targetdir="${hy.pack200.src.main.java5}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -79,7 +79,7 @@
 
     	<!-- Ordinary classes -->
         <javac sourcepath=""
-               srcdir="${hy.unpack200.src.main.java}"
+               srcdir="${hy.pack200.src.main.java}"
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -97,7 +97,7 @@
         </javac>
     	<!-- Java5 classes, with generics -->
         <javac sourcepath=""
-               srcdir="${hy.unpack200.src.main.java5}"
+               srcdir="${hy.pack200.src.main.java5}"
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -118,7 +118,7 @@
     <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.unpack200.src.main.java}">
+            <fileset dir="${hy.pack200.src.main.java}">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
@@ -137,8 +137,8 @@
         </jar>
 
         <jar destfile="${hy.jdk}/jre/lib/boot/pack200-src.jar">
-            <fileset dir="${hy.unpack200.src.main.java}" />
-            <fileset dir="${hy.unpack200.src.main.java}/../java5" />
+            <fileset dir="${hy.pack200.src.main.java}" />
+            <fileset dir="${hy.pack200.src.main.java}/../java5" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -151,7 +151,7 @@
         <mkdir dir="${hy.unpack200.bin.test}" />
 
         <echo message="Compiling PACK200 tests" />
-        <javac srcdir="${hy.unpack200.src.test.java}"
+        <javac srcdir="${hy.pack200.src.test.java}"
                destdir="${hy.unpack200.bin.test}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
@@ -197,7 +197,7 @@
 
             <classpath>
                 <pathelement path="${hy.unpack200.bin.test}"/>
-                <pathelement path="${hy.unpack200.src.test.resources}"/>
+                <pathelement path="${hy.pack200.src.test.resources}"/>
             </classpath>
             <classpath location="../../build/tests" />
             <classpath location="${hy.hdk}/build/test/support.jar" />
@@ -206,7 +206,7 @@
 
             <batchtest todir="${hy.tests.reports}" haltonfailure="no" >
 
-                <fileset dir="${hy.unpack200.src.test.java}">
+                <fileset dir="${hy.pack200.src.test.java}">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
                     <!-- unless ${test.case} -->
@@ -232,7 +232,7 @@
     <target name="copy-test-resources">
         <mkdir dir="${hy.unpack200.bin.test}" />
         <copy todir="${hy.unpack200.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.unpack200.src.test.resources}">
+            <fileset dir="${hy.pack200.src.test.resources}">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
