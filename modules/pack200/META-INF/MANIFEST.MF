@@ -16,8 +16,8 @@ Import-Package: java.io;resolution:=optional,
  java.nio,
  java.util;resolution:=optional,
  java.util.jar;resolution:=optional
-Export-Package: org.apache.harmony.pack200,
- org.apache.harmony.pack200.bytecode
+Export-Package: org.apache.harmony.unpack200,
+ org.apache.harmony.unpack200.bytecode
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  J2SE-1.5
 
