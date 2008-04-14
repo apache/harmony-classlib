@@ -16,6 +16,8 @@
  */
 package org.apache.harmony.sql.internal.rowset;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -34,12 +36,13 @@ import javax.sql.rowset.Joinable;
 import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.spi.SyncFactoryException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
 
     private List<RowSet> rsList;
+
+    private CachedRowSet copyFirstRs;
 
     private List<Integer> matchColIndexs;
 
@@ -61,6 +64,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         super(providerID);
         initProperties();
     }
+    
 
     private void initProperties() {
         rsList = new ArrayList<RowSet>();
@@ -216,6 +220,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         }
 
         if (rsList.size() == 1) {
+            copyFirstRs = ((CachedRowSet) rsList.get(0)).createCopy();
             setMatchColumn(columnIdx);
         }
     }
@@ -229,7 +234,12 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
             throw new SQLException(Messages.getString("rowset.32")); //$NON-NLS-1$
         }
 
-        int columnIdx = rowset.findColumn(columnName);
+        int columnIdx = -1;
+        try {
+            columnIdx = rowset.findColumn(columnName);
+        } catch (SQLException e) {
+            throw e;
+        }
         addRowSet(rowset, columnIdx);
     }
 
@@ -288,11 +298,113 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
     }
 
     public Collection<?> getRowSets() throws SQLException {
-        throw new NotImplementedException();
+        return rsList;
     }
 
+    /**
+     * Gets a sql clause which specify the join action.
+     */
     public String getWhereClause() throws SQLException {
-        throw new NotImplementedException();
+        int size = rsList.size();
+
+        // If 0 rowSets in it, return "".
+        if (size == 0) {
+            return ""; //$NON-NLS-1$
+        }
+
+        String whereClause;
+        String tableName;
+        int metaColumnCount;
+        int matchIndex;
+        if (size == 1) {
+            tableName = ((CachedRowSet) rsList.get(0)).getTableName();
+            if (tableName == null) {
+                throw new SQLException(Messages.getString("rowset.39")); //$NON-NLS-1$
+            }
+            metaColumnCount = meta.getColumnCount();
+            whereClause = "Select"; //$NON-NLS-1$
+            for (int i = 1; i <= metaColumnCount; i++) {
+                whereClause += " " + tableName + "." + meta.getColumnName(i); //$NON-NLS-1$ //$NON-NLS-2$
+                if (i < metaColumnCount) {
+                    whereClause += ","; //$NON-NLS-1$
+                } else {
+                    whereClause += " from " + tableName; //$NON-NLS-1$
+                }
+            }
+        } else {
+            whereClause = "Select"; //$NON-NLS-1$
+            CachedRowSet rowSet;
+            String matchName;
+
+            for (int i = 0; i < size; i++) {
+                rowSet = (CachedRowSet) rsList.get(i);
+                tableName = rowSet.getTableName();
+                if (tableName == null) {
+                    throw new SQLException(Messages.getString("rowset.39")); //$NON-NLS-1$
+                }
+
+                matchIndex = matchColIndexs.get(0);
+                if (i == 0) {
+                    matchName = rowSet.getMetaData().getColumnName(matchIndex);
+                    whereClause += " " + tableName + "." + matchName + ",";
+                }
+
+                metaColumnCount = rowSet.getMetaData().getColumnCount();
+                for (int j = 1; j < matchIndex; j++) {
+                    matchName = rowSet.getMetaData().getColumnName(j);
+                    whereClause += " " + tableName + "." + matchName;
+
+                    if (j != metaColumnCount - 1 || i != size - 1) {
+                        whereClause += ",";
+                    } else {
+                        whereClause += " ";
+                    }
+                }
+
+                for (int j = matchIndex + 1; j <= metaColumnCount; j++) {
+                    matchName = rowSet.getMetaData().getColumnName(j);
+                    whereClause += " " + tableName + "." + matchName;
+
+                    if (j != metaColumnCount || i != size - 1) {
+                        whereClause += ",";
+                    } else {
+                        whereClause += " ";
+                    }
+                }
+            }
+            whereClause += "from ";
+            for (int i = 0; i < size; i++) {
+                rowSet = (CachedRowSet) rsList.get(i);
+                tableName = rowSet.getTableName();
+
+                whereClause += tableName;
+                if (i != size - 1) {
+                    whereClause += ", ";
+                } else {
+                    whereClause += " ";
+                }
+            }
+
+            whereClause += "where ";
+            CachedRowSet firstRowSet = (CachedRowSet) rsList.get(0);
+            String firstTableName = firstRowSet.getTableName();
+            String firstMatchName = firstRowSet.getMetaData().getColumnName(
+                    matchColIndexs.get(0));
+            for (int i = 1; i < size; i++) {
+                rowSet = (CachedRowSet) rsList.get(i);
+                tableName = rowSet.getTableName();
+                matchIndex = matchColIndexs.get(i);
+                matchName = rowSet.getMetaData().getColumnName(matchIndex);
+
+                whereClause += firstTableName + "." + firstMatchName + " = ";
+                whereClause += tableName + "." + matchName;
+                if (i != size - 1) {
+                    whereClause += " and ";
+                }
+            }
+        }
+
+        return whereClause;
     }
 
     public void setJoinType(int joinType) throws SQLException {
@@ -332,7 +444,77 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
     }
 
     public CachedRowSet toCachedRowSet() throws SQLException {
-        throw new NotImplementedException();
+        if (rsList.size() == 0) {
+            CachedRowSetImpl toCrset = new CachedRowSetImpl();
+            toCrset.setRows(new ArrayList<CachedRow>(), 0);
+            return toCrset;
+        } else if (rsList.size() == 1) {
+            CachedRowSet toCrset = ((CachedRowSet) rsList.get(0)).createCopy();
+            toCrset.setMetaData(meta);
+            return toCrset;
+        } else {
+            CachedRowSetImpl toCrset = new CachedRowSetImpl();
+            toCrset.setRows(rows, meta.getColumnCount());
+            toCrset.setMetaData(meta);
+            toCrset.columnTypes = columnTypes;
+            toCrset.setTypeMap(rsList.get(0).getTypeMap());
+            if (rsList.get(0).getUrl() != null) {
+                toCrset.setUrl(rsList.get(0).getUrl());
+                toCrset.setUsername(rsList.get(0).getUsername());
+                toCrset.setPassword(rsList.get(0).getPassword());
+            } else if (rsList.get(0).getDataSourceName() != null) {
+                toCrset.setDataSourceName(rsList.get(0).getDataSourceName());
+            }
+            return toCrset;
+        }
+    }
+
+    @Override
+    public void populate(ResultSet rs) throws SQLException {
+        // do nothing
+    }
+
+    @Override
+    public void populate(ResultSet rs, int startRow) throws SQLException {
+        // do nothing
+    }
+
+    @Override
+    public void execute() throws SQLException {
+        if (rsList.size() == 0) {
+            throw new SQLException();
+        } else if (rsList.size() == 1) {
+            try {
+                copyFirstRs.execute();
+                super.populate(copyFirstRs);
+            } catch (SQLException e) {
+                setRows(new ArrayList<CachedRow>(), getMetaData()
+                        .getColumnCount());
+                throw e;
+            }
+        } else {
+            setRows(new ArrayList<CachedRow>(), getMetaData().getColumnCount());
+            throw new SQLException();
+        }
+    }
+
+    @Override
+    public void execute(Connection connection) throws SQLException {
+        if (rsList.size() == 0) {
+            throw new SQLException();
+        } else if (rsList.size() == 1) {
+            try {
+                copyFirstRs.execute(connection);
+                super.populate(copyFirstRs);
+            } catch (SQLException e) {
+                setRows(new ArrayList<CachedRow>(), getMetaData()
+                        .getColumnCount());
+                throw e;
+            }
+        } else {
+            setRows(new ArrayList<CachedRow>(), getMetaData().getColumnCount());
+            throw new SQLException();
+        }
     }
 
     /**
@@ -706,6 +888,5 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
             return -1;
 
         }
-
     }
 }

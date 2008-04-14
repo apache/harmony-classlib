@@ -53,11 +53,15 @@ public class FilteredRowSetTest extends CachedRowSetTestCase {
         Predicate range = new RangeOne();
         filteredRowSet.setFilter(range);
 
-        try {
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
             filteredRowSet.createCopy();
-            fail("should throw SQLException");
-        } catch (SQLException e) {
-            // expected
+        } else {
+            try {
+                filteredRowSet.createCopy();
+                fail("should throw SQLException");
+            } catch (SQLException e) {
+                // expected
+            }
         }
     }
 

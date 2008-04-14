@@ -880,6 +880,62 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertFalse(crset.next());
     }
 
+    public void testCreateCopy4() throws Exception {
+        crset.setCommand("SELECT * FROM USER_INFO WHERE ID = ?");
+        crset.setInt(1, 3);
+        crset.execute();
+        // check data
+        assertTrue(crset.next());
+        assertEquals(3, crset.getInt(1));
+        assertFalse(crset.next());
+
+        // deep copy
+        CachedRowSet copyCrset = crset.createCopy();
+        copyCrset.beforeFirst();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+        copyCrset.execute();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        crset.setInt(1, 4);
+        crset.execute();
+        crset.beforeFirst();
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertFalse(crset.next());
+
+        copyCrset.beforeFirst();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        copyCrset.execute();
+        copyCrset.beforeFirst();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        copyCrset.setInt(1, 1);
+        copyCrset.execute();
+        assertTrue(copyCrset.next());
+        assertEquals(1, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        crset.beforeFirst();
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertFalse(crset.next());
+
+        crset.execute();
+        crset.beforeFirst();
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertFalse(crset.next());
+    }
+
     public void testAfterLast() throws Exception {
         try {
             rs.afterLast();
@@ -2886,6 +2942,18 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             // expected
         }
     }
+
+    public void testGetOriginal() throws Exception {
+        crset = newNoInitialInstance();
+        try {
+            crset.getOriginal();
+            fail("Should throw NullPointerException.");
+        }
+        catch (NullPointerException e) {
+            // Expected.
+        }
+    }
+
 }
 
 class Listener implements RowSetListener, Cloneable {

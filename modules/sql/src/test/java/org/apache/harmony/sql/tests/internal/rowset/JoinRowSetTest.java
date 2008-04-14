@@ -312,7 +312,6 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
          * Test empty WebRowSet
          */
         WebRowSet webRs = newWebRowSet();
-
         /*
          * Though WebRowSet implements Joinable, addRowSet(WebRowSet) would
          * throw ClassCastException when run on RI.
@@ -335,28 +334,40 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         } else {
             try {
                 jrs.addRowSet(webRs);
-                fail("should throw NullPointerException");
-            } catch (SQLException e) {
-                // Expected
+                fail("should throw ClassCastException");
+            } catch (ClassCastException e) {
+                // expected
             }
 
             webRs.setMatchColumn(1);
-            jrs.addRowSet(webRs);
+            try {
+                jrs.addRowSet(webRs);
+                fail("should throw ClassCastException");
+            } catch (ClassCastException e) {
+                // expected
+            }
         }
         jrs.close();
 
         /*
          * Test WebRowSet filled with data
          */
-        // TODO uncomment it after implementing addRowSet(RowSet, int)
-        // jrs = newJoinRowSet();
-        // webRs = newWebRowSet();
-        // webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
-        // webRs.setMatchColumn(1);
-        // jrs.addRowSet(webRs);
-        // assertTrue(jrs.next());
-        // assertEquals(1, jrs.getInt(1));
-        // jrs.close();
+        jrs = newJoinRowSet();
+        webRs = newWebRowSet();
+        webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
+        webRs.setMatchColumn(1);
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            jrs.addRowSet(webRs);
+        } else {
+            try {
+                // The same problem as the empty
+                jrs.addRowSet(webRs);
+                fail("should throw ClassCastException");
+            } catch (ClassCastException e) {
+                // expected
+            }
+        }
+        jrs.close();
     }
 
     public void testAddJoinableRowSet_WebRowSet_Int_Exception()
@@ -374,21 +385,32 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
                 // expected
             }
         } else {
-            jrs.addRowSet(webRs, 1);
+            try {
+                jrs.addRowSet(webRs, 1);
+                fail("should throw ClassCastException");
+            } catch (ClassCastException e) {
+                // expected
+            }
         }
         jrs.close();
 
         /*
          * Test non-empty WebRowSet.
          */
-        // TODO uncomment it after implementing addRowSet(RowSet, int)
-        // jrs = newJoinRowSet();
-        // webRs = newWebRowSet();
-        // webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
-        // jrs.addRowSet(webRs, 1);
-        // assertTrue(jrs.next());
-        // assertEquals(1, jrs.getInt(1));
-        // jrs.close();
+        jrs = newJoinRowSet();
+        webRs = newWebRowSet();
+        webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            jrs.addRowSet(webRs, 1);
+        } else {
+            try {
+                jrs.addRowSet(webRs, 1);
+                fail("should throw ClassCastException");
+            } catch (ClassCastException e) {
+                // expected
+            }
+        }
+        jrs.close();
     }
 
     public void testAddJoinableRowSet_FilteredRowSet_Exception()
@@ -604,6 +626,7 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
                 }
             }
         }
+
     }
 
     private boolean isTypeMatch(int first, int second) throws Exception {
@@ -750,5 +773,92 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
                 // expected
             }
         }
+    }
+
+    public void testToCachedRowSet_CachedRowSet() throws Exception {
+        /*
+         * Test empty JoinRowSet
+         */
+        CachedRowSet emptyToCrset = jrs.toCachedRowSet();
+        assertNull(emptyToCrset.getMetaData());
+        assertFalse(emptyToCrset.first());
+
+        /*
+         * The first CachedRowSet
+         */
+        jrs = newJoinRowSet();
+        jrs.addRowSet(crset, 1);
+        CachedRowSet toCrset = jrs.toCachedRowSet();
+        // check metadata
+        assertSame(crset.getMetaData(), jrs.getMetaData());
+        assertSame(crset.getMetaData(), toCrset.getMetaData());
+        assertNotSame(crset, toCrset);
+        // check data
+        int index = 0;
+        toCrset.beforeFirst();
+        crset.beforeFirst();
+        while (toCrset.next() && crset.next()) {
+            for (int i = 1; i <= crset.getMetaData().getColumnCount(); i++) {
+                assertEquals(toCrset.getObject(i), crset.getObject(i));
+            }
+            index++;
+        }
+        assertEquals(4, index);
+
+        /*
+         * The second CachedRowSet
+         */
+        noInitialCrset.populate(st.executeQuery("SELECT * FROM BOOKS"));
+        jrs.addRowSet(noInitialCrset, 1);
+        toCrset = jrs.toCachedRowSet();
+        // check metadata
+        assertSame(jrs.getMetaData(), toCrset.getMetaData());
+        /*
+         * check data. The data order is not the same between RI and HY.
+         */
+        index = 0;
+        rs = st.executeQuery("SELECT * FROM BOOKS");
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            toCrset.beforeFirst();
+            while (toCrset.next() && rs.next()) {
+                index++;
+                assertEquals(toCrset.getObject(14), rs.getObject(3));
+            }
+        } else {
+            toCrset.afterLast();
+            while (toCrset.previous() && rs.next()) {
+                index++;
+                assertEquals(toCrset.getObject(14), rs.getObject(3));
+            }
+        }
+        assertEquals(6, index);
+
+        /*
+         * The third CachedRowSet
+         */
+        insertDataToCustomerTable();
+        CachedRowSet thirdCrset = newNoInitialInstance();
+        thirdCrset.populate(st.executeQuery("SELECT * FROM CUSTOMER_INFO"));
+        jrs.addRowSet(thirdCrset, 1);
+        toCrset = jrs.toCachedRowSet();
+        // check metadata
+        assertSame(jrs.getMetaData(), toCrset.getMetaData());
+        // check data
+        toCrset.beforeFirst();
+        index = 1;
+        while (toCrset.next()) {
+            if (index == 1) {
+                assertEquals(3, toCrset.getInt(1));
+                index++;
+            } else if (index == 2) {
+                assertEquals(3, toCrset.getInt(1));
+                index++;
+            } else if (index == 3) {
+                assertEquals(4, toCrset.getInt(1));
+            } else {
+                index = -1;
+            }
+        }
+        assertEquals(3, index);
     }
 }

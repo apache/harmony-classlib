@@ -24,7 +24,6 @@ import java.io.Reader;
 import java.io.StringBufferInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -67,6 +66,7 @@ import javax.sql.rowset.BaseRowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.RowSetWarning;
+import javax.sql.rowset.WebRowSet;
 import javax.sql.rowset.serial.SerialArray;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialClob;
@@ -394,12 +394,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
              */
             output = (CachedRowSetImpl) super.clone();
             // BaseRowSet.params
-            Field paramsField = output.getClass().getSuperclass()
-                    .getDeclaredField("params"); //$NON-NLS-1$
+            Field paramsField = BaseRowSet.class.getDeclaredField("params"); //$NON-NLS-1$
             paramsField.setAccessible(true);
             paramsField.set(output, paramsHashtable);
             // BaseRowSet.listeners
-            Field listenersField = output.getClass().getSuperclass()
+            Field listenersField = BaseRowSet.class
                     .getDeclaredField("listeners"); //$NON-NLS-1$
             listenersField.setAccessible(true);
             listenersField.set(output, listeners);
@@ -566,6 +565,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public ResultSet getOriginal() throws SQLException {
+        if (originalResultSet == null)
+        {
+            throw new NullPointerException();
+        }
         return originalResultSet;
     }
 
@@ -1437,6 +1440,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      * @return row index include delted rows
      */
     private int getIndexIncludeDeletedRows(int index) throws SQLException {
+        if (rows == null || rows.size() == 0) {
+            return -1;
+        }
+
         if (getShowDeleted()) {
             return index;
         }
@@ -2424,6 +2431,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             ex.initCause(e);
             throw ex;
         }
+
         updateString(columnIndex, new String(out.toByteArray()));
     }
 
@@ -2664,6 +2672,10 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateRow() throws SQLException {
+        if (currentRow == null) {
+            // rowset.7=Not a valid cursor
+            throw new SQLException(Messages.getString("rowset.7")); //$NON-NLS-1$
+        }
         if (isCursorOnInsert) {
             // rowset.11=Illegal operation on an insert row
             throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$

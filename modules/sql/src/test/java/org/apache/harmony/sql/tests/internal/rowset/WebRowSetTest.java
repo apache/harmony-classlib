@@ -29,6 +29,81 @@ public class WebRowSetTest extends CachedRowSetTestCase {
 
     protected WebRowSet another;
 
+    public void testCreateCopy() throws Exception {
+        webRs = newWebRowSet();
+        webRs.setUrl(DERBY_URL);
+        webRs.setCommand("SELECT * FROM USER_INFO WHERE ID = ?");
+        webRs.setInt(1, 3);
+        webRs.execute();
+
+        CachedRowSet copyWebRs = webRs.createCopy();
+        assertTrue(copyWebRs instanceof WebRowSet);
+        assertEquals("SELECT * FROM USER_INFO WHERE ID = ?", copyWebRs
+                .getCommand());
+        assertEquals(DERBY_URL, copyWebRs.getUrl());
+    }
+
+    public void testCreateCopy2() throws Exception {
+        webRs = newWebRowSet();
+        webRs.setUrl(DERBY_URL);
+        webRs.setCommand("SELECT * FROM USER_INFO WHERE ID = ? AND NAME = ?");
+        webRs.setInt(1, 3);
+        webRs.setString(2, "test3");
+        webRs.execute();
+        // check data
+        assertTrue(webRs.next());
+        assertEquals(3, webRs.getInt(1));
+        assertFalse(webRs.next());
+
+        // deep copy
+        CachedRowSet copyWebRs = webRs.createCopy();
+        copyWebRs.beforeFirst();
+        assertTrue(copyWebRs.next());
+        assertEquals(3, copyWebRs.getInt(1));
+        assertFalse(copyWebRs.next());
+        copyWebRs.execute();
+        assertTrue(copyWebRs.next());
+        assertEquals(3, copyWebRs.getInt(1));
+        assertFalse(copyWebRs.next());
+
+        webRs.setInt(1, 4);
+        webRs.setString(2, "test4");
+        webRs.execute();
+        webRs.beforeFirst();
+        assertTrue(webRs.next());
+        assertEquals(4, webRs.getInt(1));
+        assertFalse(webRs.next());
+
+        copyWebRs.beforeFirst();
+        assertTrue(copyWebRs.next());
+        assertEquals(3, copyWebRs.getInt(1));
+        assertFalse(copyWebRs.next());
+
+        copyWebRs.execute();
+        copyWebRs.beforeFirst();
+        assertTrue(copyWebRs.next());
+        assertEquals(3, copyWebRs.getInt(1));
+        assertFalse(copyWebRs.next());
+
+        copyWebRs.setInt(1, 1);
+        copyWebRs.setString(2, "hermit");
+        copyWebRs.execute();
+        assertTrue(copyWebRs.next());
+        assertEquals(1, copyWebRs.getInt(1));
+        assertFalse(copyWebRs.next());
+
+        webRs.beforeFirst();
+        assertTrue(webRs.next());
+        assertEquals(4, webRs.getInt(1));
+        assertFalse(webRs.next());
+
+        webRs.execute();
+        webRs.beforeFirst();
+        assertTrue(webRs.next());
+        assertEquals(4, webRs.getInt(1));
+        assertFalse(webRs.next());
+    }
+
     public void testWriteAndRead() throws Exception {
         rs = st.executeQuery("SELECT * FROM USER_INFO");
         webRs = newWebRowSet();
