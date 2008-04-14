@@ -83,8 +83,8 @@
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.unpack200.javac.source}"
-               target="${hy.unpack200.javac.target}"
+               source="${hy.pack200.javac.source}"
+               target="${hy.pack200.javac.target}"
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
