@@ -704,4 +704,43 @@ public class XMLEncoderTest extends TestCase {
             e.close();
         }
     }
+
+    /**
+     * This is a regression test for HARMONY-5707.
+     */
+    public void test5707() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(baos);
+        TstBean5707 bean1 = new TstBean5707();
+
+        encoder.writeObject(bean1);
+        encoder.close();        
+    }
+
+    public class TstBean5707 {
+        int val;
+
+        public TstBean5707() {
+            val = 0;
+        }
+
+        public TstBean5707(int n) {
+            val = n;
+        }
+
+        public TstBean5707 getProp1() {
+            return new TstBean5707(val);
+        }
+
+        public void setProp1(TstBean5707 val) {}
+
+        public boolean equals(Object obj) {
+            if (obj instanceof TstBean5707) {
+                return ((TstBean5707) obj).val == val;
+            }
+
+            return false;
+        }
+
+    }
 }
