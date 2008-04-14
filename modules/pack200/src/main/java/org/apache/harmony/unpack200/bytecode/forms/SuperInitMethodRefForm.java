@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
 /**
  * This class is used to determine which init method should be called, based on
@@ -35,7 +35,7 @@ public class SuperInitMethodRefForm extends InitMethodReferenceForm {
     }
 
     protected String context(
-            org.apache.harmony.pack200.bytecode.OperandManager operandManager) {
+            org.apache.harmony.unpack200.bytecode.OperandManager operandManager) {
         return operandManager.getSuperClass();
     }
 }

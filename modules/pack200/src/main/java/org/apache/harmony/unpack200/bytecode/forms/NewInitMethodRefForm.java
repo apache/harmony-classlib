@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.SegmentConstantPool;
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.ClassFileEntry;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * This class is used to determine which init method should be called, based on

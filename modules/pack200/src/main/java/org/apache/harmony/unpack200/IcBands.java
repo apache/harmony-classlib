@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 /**
  * Inner Class Bands
@@ -48,7 +48,7 @@ public class IcBands extends BandSet {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
+     * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
         // Read IC bands

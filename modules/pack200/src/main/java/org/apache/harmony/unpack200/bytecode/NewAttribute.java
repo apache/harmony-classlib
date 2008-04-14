@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#getLength()
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
         int length = 0;
@@ -51,7 +51,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
         for (int i = 0; i < lengths.size(); i++) {
@@ -81,7 +81,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
+     * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
         return attributeName.underlyingString();

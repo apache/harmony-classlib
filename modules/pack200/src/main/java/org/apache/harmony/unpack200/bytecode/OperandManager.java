@@ -15,10 +15,10 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.SegmentConstantPool;
 
 /**
  * This class keeps track of operands used. It provides API to let other classes

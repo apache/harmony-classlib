@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 /**
  * AttributeLayout defines a layout that describes how an attribute will be
@@ -241,7 +241,7 @@ public class AttributeLayout implements IMatcher {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.IMatches#matches(long)
+     * @see org.apache.harmony.unpack200.IMatches#matches(long)
      */
     public boolean matches(long value) {
         return (value & mask) != 0;

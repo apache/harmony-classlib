@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class EnclosingMethodAttribute extends Attribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#getLength()
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
         return 4;
@@ -57,7 +57,7 @@ public class EnclosingMethodAttribute extends Attribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
         dos.writeShort(class_index);
@@ -67,7 +67,7 @@ public class EnclosingMethodAttribute extends Attribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
+     * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
         return "EnclosingMethod";

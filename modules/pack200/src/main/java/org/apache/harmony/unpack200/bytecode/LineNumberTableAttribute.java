@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#toString()
+     * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
         return "LineNumberTable: " + line_number_table_length + " lines";
@@ -62,7 +62,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#getNestedClassFileEntries()
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#getNestedClassFileEntries()
      */
     protected ClassFileEntry[] getNestedClassFileEntries() {
         return new ClassFileEntry[] { getAttributeName() };
@@ -71,7 +71,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#resolve(org.apache.harmony.unpack200.bytecode.ClassConstantPool)
      */
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);

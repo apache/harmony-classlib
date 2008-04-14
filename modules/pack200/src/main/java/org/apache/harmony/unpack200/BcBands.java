@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,13 +22,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.harmony.pack200.bytecode.Attribute;
-import org.apache.harmony.pack200.bytecode.BCIRenumberedAttribute;
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CodeAttribute;
-import org.apache.harmony.pack200.bytecode.ExceptionTableEntry;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.bytecode.Attribute;
+import org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.CodeAttribute;
+import org.apache.harmony.unpack200.bytecode.ExceptionTableEntry;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * Bytecode bands
@@ -76,7 +76,7 @@ public class BcBands extends BandSet {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.BandSet#unpack(java.io.InputStream)
+     * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
 

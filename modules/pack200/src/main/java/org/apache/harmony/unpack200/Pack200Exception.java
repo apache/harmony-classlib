@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 /**
  * Represents a problem with a Pack200 coding/decoding issue.

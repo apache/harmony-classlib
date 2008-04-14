@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.harmony.pack200.Segment;
+import org.apache.harmony.unpack200.Segment;
 
 /**
  * The Class constant pool
@@ -67,7 +67,7 @@ public class ClassConstantPool {
         // This is a handy way to see what's adding a ClassFileEntry - set a
         // breakpoint on the print
         // if(entry instanceof CPLong) {
-        // org.apache.harmony.pack200.SegmentUtils.debug("AAH:" +
+        // org.apache.harmony.unpack200.SegmentUtils.debug("AAH:" +
         // ((CPUTF8)entry).underlyingString());
         // if (((CPUTF8)entry).underlyingString().indexOf('\b') != -1) {
         // boolean halt = false;

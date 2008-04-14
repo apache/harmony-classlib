@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.harmony.pack200.Pack200Exception;
+import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * Abstract superclass for attributes that have some part encoded with a BCI
@@ -32,8 +32,8 @@ public abstract class BCIRenumberedAttribute extends Attribute {
 
     /*
      * (non-Javadoc)
-     * 
-     * @see org.apache.harmony.pack200.bytecode.Attribute#hasBCIRenumbering()
+     *
+     * @see org.apache.harmony.unpack200.bytecode.Attribute#hasBCIRenumbering()
      */
     public boolean hasBCIRenumbering() {
         return true;
@@ -57,7 +57,7 @@ public abstract class BCIRenumberedAttribute extends Attribute {
      * byte code array of each instruction) and updates the start_pcs so that it
      * points to the instruction index itself, not the BCI renumbering of the
      * instruction.
-     * 
+     *
      * @param byteCodeOffsets
      *            List of Integer offsets of the bytecode array
      */

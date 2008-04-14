@@ -13,10 +13,10 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */package org.apache.harmony.pack200.bytecode.forms;
+ */package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.pack200.SegmentConstantPool;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * This class implements the byte code form for those bytecodes which have float

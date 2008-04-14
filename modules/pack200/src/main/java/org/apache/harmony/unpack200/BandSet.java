@@ -14,25 +14,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CPDouble;
-import org.apache.harmony.pack200.bytecode.CPFieldRef;
-import org.apache.harmony.pack200.bytecode.CPFloat;
-import org.apache.harmony.pack200.bytecode.CPInteger;
-import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
-import org.apache.harmony.pack200.bytecode.CPLong;
-import org.apache.harmony.pack200.bytecode.CPMethodRef;
-import org.apache.harmony.pack200.bytecode.CPNameAndType;
-import org.apache.harmony.pack200.bytecode.CPString;
-import org.apache.harmony.pack200.bytecode.CPUTF8;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.CPDouble;
+import org.apache.harmony.unpack200.bytecode.CPFieldRef;
+import org.apache.harmony.unpack200.bytecode.CPFloat;
+import org.apache.harmony.unpack200.bytecode.CPInteger;
+import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPNameAndType;
+import org.apache.harmony.unpack200.bytecode.CPString;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 /**
  * Abstract superclass for a set of bands

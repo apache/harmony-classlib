@@ -14,14 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.SegmentConstantPool;
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.ClassFileEntry;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * This class is an extension of the ClassRefForm. It has two purposes: 1. To
@@ -38,8 +38,8 @@ public class NewClassRefForm extends ClassRefForm {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.forms.ReferenceForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
-     *      org.apache.harmony.pack200.bytecode.OperandManager)
+     * @see org.apache.harmony.unpack200.bytecode.forms.ReferenceForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
+     *      org.apache.harmony.unpack200.bytecode.OperandManager)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
 /**
  * This abstract class implements the common code for instructions which have

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 /**
  * Utility class for unpack200
@@ -149,14 +149,14 @@ public final class SegmentUtils {
 
     /**
      * This is a debugging message to aid the developer in writing this class.
-     * If the property 'debug.pack200' is set, this will generate messages to
+     * If the property 'debug.unpack200' is set, this will generate messages to
      * stderr; otherwise, it will be silent.
      * 
      * @param message
      * @deprecated this may be removed from production code
      */
     public static void debug(String message) {
-        if (System.getProperty("debug.pack200") != null) {
+        if (System.getProperty("debug.unpack200") != null) {
             System.err.println(message);
         }
     }

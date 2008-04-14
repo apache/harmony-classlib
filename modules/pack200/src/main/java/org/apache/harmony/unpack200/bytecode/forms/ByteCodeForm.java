@@ -14,14 +14,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.CodeAttribute;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.CodeAttribute;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 public class ByteCodeForm {
 

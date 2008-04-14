@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
-import org.apache.harmony.pack200.bytecode.CPFieldRef;
-import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
-import org.apache.harmony.pack200.bytecode.CPMethodRef;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
-import org.apache.harmony.pack200.bytecode.ConstantPoolEntry;
+import org.apache.harmony.unpack200.bytecode.CPFieldRef;
+import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.ConstantPoolEntry;
 
 /**
  * SegmentConstantPool manages the constant pool used for re-creating class

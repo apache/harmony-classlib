@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200;
+package org.apache.harmony.unpack200;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
@@ -30,16 +30,16 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 
-import org.apache.harmony.pack200.bytecode.Attribute;
-import org.apache.harmony.pack200.bytecode.CPClass;
-import org.apache.harmony.pack200.bytecode.CPField;
-import org.apache.harmony.pack200.bytecode.CPMethod;
-import org.apache.harmony.pack200.bytecode.CPUTF8;
-import org.apache.harmony.pack200.bytecode.ClassConstantPool;
-import org.apache.harmony.pack200.bytecode.ClassFile;
-import org.apache.harmony.pack200.bytecode.ClassFileEntry;
-import org.apache.harmony.pack200.bytecode.InnerClassesAttribute;
-import org.apache.harmony.pack200.bytecode.SourceFileAttribute;
+import org.apache.harmony.unpack200.bytecode.Attribute;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.CPField;
+import org.apache.harmony.unpack200.bytecode.CPMethod;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.ClassFile;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
+import org.apache.harmony.unpack200.bytecode.InnerClassesAttribute;
+import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
 
 /**
  * A Pack200 archive consists of one or more segments. Each segment is

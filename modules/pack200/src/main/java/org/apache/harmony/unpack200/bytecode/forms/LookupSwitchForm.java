@@ -14,10 +14,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 public class LookupSwitchForm extends SwitchForm {
 
@@ -32,8 +32,8 @@ public class LookupSwitchForm extends SwitchForm {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.forms.SwitchForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
-     *      org.apache.harmony.pack200.bytecode.OperandManager, int)
+     * @see org.apache.harmony.unpack200.bytecode.forms.SwitchForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
+     *      org.apache.harmony.unpack200.bytecode.OperandManager, int)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {

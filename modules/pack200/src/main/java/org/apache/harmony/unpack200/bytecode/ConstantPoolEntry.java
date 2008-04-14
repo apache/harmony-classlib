@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -102,7 +102,7 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#mustStartClassPool()
+     * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#mustStartClassPool()
      */
     public boolean mustStartClassPool() {
         return mustStartClassPool;

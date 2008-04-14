@@ -14,13 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode;
+package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.apache.harmony.pack200.Segment;
-import org.apache.harmony.pack200.bytecode.forms.ByteCodeForm;
+import org.apache.harmony.unpack200.Segment;
+import org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm;
 
 /**
  * A bytecode class file entry.
@@ -120,7 +120,7 @@ public class ByteCode extends ClassFileEntry {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.ClassFileEntry#resolve(org.apache.harmony.pack200.bytecode.ClassConstantPool)
+     * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#resolve(org.apache.harmony.unpack200.bytecode.ClassConstantPool)
      */
     protected void resolve(ClassConstantPool pool) {
         super.resolve(pool);

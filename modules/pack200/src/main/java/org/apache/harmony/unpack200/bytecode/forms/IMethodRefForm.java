@@ -14,12 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.pack200.bytecode.forms;
+package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.pack200.SegmentConstantPool;
-import org.apache.harmony.pack200.bytecode.ByteCode;
-import org.apache.harmony.pack200.bytecode.CPInterfaceMethodRef;
-import org.apache.harmony.pack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.OperandManager;
 
 /**
  * This class implements the byte code form for those bytecodes which have
@@ -50,9 +50,9 @@ public class IMethodRefForm extends ReferenceForm {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.harmony.pack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.pack200.bytecode.ByteCode,
-     *      org.apache.harmony.pack200.bytecode.OperandTable,
-     *      org.apache.harmony.pack200.Segment)
+     * @see org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
+     *      org.apache.harmony.unpack200.bytecode.OperandTable,
+     *      org.apache.harmony.unpack200.Segment)
      */
     public void setByteCodeOperands(ByteCode byteCode,
             OperandManager operandManager, int codeLength) {
