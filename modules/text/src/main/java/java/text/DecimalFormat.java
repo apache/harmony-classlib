@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Currency;
@@ -48,6 +49,9 @@ public class DecimalFormat extends NumberFormat {
     private static final int CURRENT_SERIAL_VERTION = 3;
 
     private transient int serialVersionOnStream = 3;
+    
+    // set default RoundingMode to RoundingMode.HALF_EVEN
+    private transient RoundingMode roundingMode = RoundingMode.HALF_EVEN;
 
     /**
      * Constructs a new DecimalFormat for formatting and parsing numbers for the
@@ -561,6 +565,9 @@ public class DecimalFormat extends NumberFormat {
     public void setMaximumFractionDigits(int value) {
         super.setMaximumFractionDigits(value);
         dform.setMaximumFractionDigits(value);
+        
+        // update the RoundingIncrement
+		setRoundingIncrement(value);
     }
 
     /**
@@ -896,4 +903,77 @@ public class DecimalFormat extends NumberFormat {
                     }
                 });
     }
+    
+	/**
+	 * Get the RoundingMode of this DecimalFormat
+	 * 
+	 * @return the RoundingMode
+	 */
+	public RoundingMode getRoundingMode() {
+		// return the RoundingMode of this DecimalFormat
+		return roundingMode;
+	}
+
+	/**
+	 * Set the RoundingMode of this DecimalFormat
+	 * 
+	 * @param roundingMode
+	 *            the given RoundingMode
+	 */
+	public void setRoundingMode(RoundingMode roundingMode) {
+		if (roundingMode == null) {
+			// when the given RoundingMode is null, throw NullPointerException
+			throw new NullPointerException();
+		}
+
+		// update the RoundingMode with the given RoundingMode
+		this.roundingMode = roundingMode;
+
+		// update the RoundingMode of com.ibm.icu.text.DecimalFormat
+		switch(roundingMode){
+		case CEILING:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_CEILING);
+			break;
+		case DOWN:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_DOWN);
+			break;
+		case UP:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_UP);
+			break;
+		case FLOOR:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_FLOOR);
+			break;
+		case HALF_DOWN:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_HALF_DOWN);
+			break;
+		case HALF_UP:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_HALF_UP);
+			break;
+		case UNNECESSARY:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_UNNECESSARY);
+			break;
+		case HALF_EVEN:
+			dform.setRoundingMode(com.ibm.icu.math.BigDecimal.ROUND_HALF_EVEN);
+			break;
+		default:
+			break;
+		}
+		
+		// update the RoundingIncrement
+		setRoundingIncrement(getMaximumFractionDigits());
+	}
+
+	/*
+	 * Update the RoundingIncrement according to the given MaxFractionDigits
+	 */
+	private void setRoundingIncrement(int value) {
+		int maxFractionDigits = value;
+		// when value < 0, set maximumFractionDigits to 0 and update the
+		// RoundingIncreament
+		if (maxFractionDigits < 0) {
+			maxFractionDigits = 0;
+		}
+		double roundingIncrement = 1.0 / Math.pow(10, maxFractionDigits);
+		dform.setRoundingIncrement(roundingIncrement);
+	}
 }

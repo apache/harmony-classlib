@@ -22,6 +22,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
+import java.math.RoundingMode;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -737,5 +738,28 @@ public abstract class NumberFormat extends Format {
             throw new InvalidObjectException(Messages.getString("text.02")); //$NON-NLS-1$
         }
     }
+    
+    /**
+	 * Get RoundingMode of NumberFormat
+	 * 
+	 * @return the RoundingMode
+	 */
+	public RoundingMode getRoundingMode() {
+		// The default implementation always throws
+		// UnsupportedOperationException
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Set a given RoundingMode to this NumberFormat
+	 * 
+	 * @param roundingMode
+	 *            the given RoundingMode
+	 */
+	public void setRoundingMode(RoundingMode roundingMode) {
+		// The default implementation always throws
+		// UnsupportedOperationException
+		throw new UnsupportedOperationException();
+	}
 
 }

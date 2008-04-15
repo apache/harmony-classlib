@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.text.tests.java.text;
 
+import java.math.RoundingMode;
 import java.text.ChoiceFormat;
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
@@ -236,4 +237,38 @@ public class NumberFormatTest extends junit.framework.TestCase {
 
     protected void tearDown() {
     }
+    
+    /**
+	 * @test java.text.NumberFormat#setRoundingMode(java.math.RoundingMode)
+	 */
+	public void test_setRoundingMode_NullRoundingMode() {
+		try {
+			// Create a subclass ChoiceFormat which doesn't support
+			// RoundingMode
+			ChoiceFormat choiceFormat = new ChoiceFormat(
+					"0#Less than one|1#one|1<Between one and two|2<Greater than two");
+			((NumberFormat) choiceFormat).setRoundingMode(null);
+			// Follow the behavior of RI
+			fail("UnsupportedOperationException expected");
+		} catch (UnsupportedOperationException e) {
+			// expected
+		}
+	}
+
+	/**
+	 * @test java.text.NumberFormat#setRoundingMode(java.math.RoundingMode)
+	 */
+	public void test_setRoundingMode_Normal() {
+		try {
+			// Create a subclass ChoiceFormat which doesn't support
+			// RoundingMode
+			ChoiceFormat choiceFormat = new ChoiceFormat(
+					"0#Less than one|1#one|1<Between one and two|2<Greater than two");
+			((NumberFormat) choiceFormat).setRoundingMode(RoundingMode.CEILING);
+			fail("UnsupportedOperationException expected");
+		} catch (UnsupportedOperationException e) {
+			// expected
+		}
+	}
+	
 }
