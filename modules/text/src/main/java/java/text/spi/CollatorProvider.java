@@ -17,35 +17,35 @@
 
 package java.text.spi;
 
-import java.text.DateFormatSymbols;
+import java.text.Collator;
 import java.util.Locale;
 import java.util.spi.LocaleServiceProvider;
 
 /**
  * This abstract class should be extended by service provider which provides
- * instances of <code>DateFormatSymbols</code> class.
- * 
+ * instances of <code>Collator</code> class.
  */
-public abstract class DateFormatSymbolsProvider extends LocaleServiceProvider {
+public abstract class CollatorProvider extends LocaleServiceProvider {
 
     /**
      * The constructor
-     *
+     * 
      */
-    protected DateFormatSymbolsProvider() {
+    protected CollatorProvider() {
         // Do nothing.
     }
 
     /**
-     * Get an instance of <code>DateFormatSymbols</code> with the specified
-     * locale.
+     * Get an instance of <code>Collator</code> for the given locale
      * 
      * @param locale
      *            the specified locale
-     * @return a <code>DateFormatSymbols</code> instance
-     * @throws NullPointerException, if locale is null 
-     * @throws IllegalArgumentException, if locale isn't one of the locales 
-     *            returned from getAvailableLocales().
+     * @return an instance of <code>Collator</code> class
+     * @throws NullPointerException,
+     *             if locale is null
+     * @throws IllegalArgumentException,
+     *             if locale isn't one of the locales returned from
+     *             getAvailableLocales().
      */
-    public abstract DateFormatSymbols getInstance(Locale locale);
+    public abstract Collator getInstance(Locale locale);
 }
