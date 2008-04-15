@@ -1,0 +1,57 @@
+Compiled from "HelloWorld.java"
+public class org.apache.harmony.archive.tests.internal.pack200.HelloWorld extends java.lang.Object{
+int i;
+
+int j;
+
+int k;
+
+float f;
+
+float g;
+
+long l;
+
+double d;
+
+public org.apache.harmony.archive.tests.internal.pack200.HelloWorld();
+  Code:
+   0:	aload_0
+   1:	invokespecial	#64; //Method java/lang/Object."<init>":()V
+   4:	aload_0
+   5:	bipush	97
+   7:	putfield	#59; //Field i:I
+   10:	aload_0
+   11:	bipush	42
+   13:	putfield	#60; //Field j:I
+   16:	aload_0
+   17:	sipush	12345
+   20:	putfield	#61; //Field k:I
+   23:	aload_0
+   24:	ldc	#2; //float 3.142f
+   26:	putfield	#57; //Field f:F
+   29:	aload_0
+   30:	ldc	#1; //float 2.718f
+   32:	putfield	#58; //Field g:F
+   35:	aload_0
+   36:	ldc2_w	#31; //long 299792458l
+   39:	putfield	#62; //Field l:J
+   42:	aload_0
+   43:	ldc2_w	#33; //double 4.0d
+   46:	putfield	#56; //Field d:D
+   49:	return
+
+public static void main(java.lang.String[]);
+  Code:
+   0:	getstatic	#55; //Field java/lang/System.out:Ljava/io/PrintStream;
+   3:	ldc	#3; //String Hello world
+   5:	invokevirtual	#63; //Method java/io/PrintStream.println:(Ljava/lang/String;)V
+   8:	return
+
+public org.apache.harmony.archive.tests.internal.pack200.HelloWorld[][] method(int, int, int);
+  Code:
+   0:	aconst_null
+   1:	areturn
+
+}
+
