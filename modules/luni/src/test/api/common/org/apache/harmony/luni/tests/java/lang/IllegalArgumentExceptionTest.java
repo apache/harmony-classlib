@@ -43,6 +43,23 @@ public class IllegalArgumentExceptionTest extends TestCase {
 	}
     
     /**
+     * @tests {@link java.lang.IllegalArgumentException#IllegalArgumentException(Throwable)}
+     */
+    public void test_ConstructorLjava_lang_Throwable() {
+        Throwable emptyThrowable = new Exception();
+        IllegalArgumentException emptyException = new IllegalArgumentException(emptyThrowable);
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getLocalizedMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getCause().toString());
+
+        Throwable exception = new Exception("msg");
+        IllegalArgumentException e = new IllegalArgumentException(exception);
+        assertEquals(exception.getClass().getName() + ": " + "msg", e.getMessage());
+        assertEquals(exception.getClass().getName(), emptyException.getLocalizedMessage());
+        assertEquals(exception.getClass().getName(), emptyException.getCause().toString());
+    }
+    
+    /**
      * @tests java.lang.IllegalArgumentException#IllegalArgumentException(String,Throwable)
      */
     @SuppressWarnings("nls")
