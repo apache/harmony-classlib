@@ -34,64 +34,112 @@ import org.apache.harmony.unpack200.Segment;
  */
 public class SegmentTest extends TestCase {
 
-	InputStream in;
-	JarOutputStream out;
+    InputStream in;
+    JarOutputStream out;
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		try {
-			if (in != null) {
-				in.close();
-			}
-		} finally {
-			if (out != null) {
-				out.close();
-			}
-		}
-	}
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        try {
+            if (in != null) {
+                in.close();
+            }
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
+    }
 
-	public void testJustResources() throws Exception {
-		in = Segment.class
-				.getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
-		out = new JarOutputStream(new FileOutputStream(File.createTempFile(
-				"just", "resources.jar")));
-		Segment segment = new Segment();
-		segment.unpack(in, out);
-	}
+    public void testJustResources() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
+                "just", "resources.jar")));
+        Segment segment = new Segment();
+        segment.unpack(in, out);
+    }
 
-	public void testInterfaceOnly() throws Exception {
-		in = Segment.class
-				.getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
-		out = new JarOutputStream(new FileOutputStream(File.createTempFile(
-				"Interface", "Only.jar")));
-		Segment segment = new Segment();
-		segment.unpack(in, out);
-	}
+    public void testInterfaceOnly() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
+        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
+                "Interface", "Only.jar")));
+        Segment segment = new Segment();
+        segment.unpack(in, out);
+    }
 
-	public void testHelloWorld() throws Exception {
-		in = Segment.class
-				.getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
-		File file = File.createTempFile("hello", "world.jar");
-		out = new JarOutputStream(new FileOutputStream(file));
-		Segment segment = new Segment();
-		segment.unpack(in, out);
-		out.close();
-		out = null;
-		JarFile jarFile = new JarFile(file);
-		JarEntry entry = jarFile
-				.getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
-		assertNotNull(entry);
-		Process process = Runtime
-				.getRuntime()
-				.exec(
-						"java -cp "
-								+ file.getName()
-								+ " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
-						new String[] {}, file.getParentFile());
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				process.getInputStream()));
-		String line = reader.readLine();
-		assertEquals("Hello world", line);
-	}
+    public void testHelloWorld() throws Exception {
+        in = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
+        File file = File.createTempFile("hello", "world.jar");
+        out = new JarOutputStream(new FileOutputStream(file));
+        Segment segment = new Segment();
+        segment.unpack(in, out);
+        out.close();
+        out = null;
+        JarFile jarFile = new JarFile(file);
+        JarEntry entry = jarFile
+                .getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
+        assertNotNull(entry);
+        Process process = Runtime
+                .getRuntime()
+                .exec(
+                        "java -cp "
+                                + file.getName()
+                                + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
+                        new String[] {}, file.getParentFile());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                process.getInputStream()));
+        String line = reader.readLine();
+        assertEquals(line, "Hello world");
+        reader.close();
+
+        process = Runtime
+                .getRuntime()
+                .exec(
+                        "javap -c -classpath "
+                                + file.getName()
+                                + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
+                        new String[] {}, file.getParentFile());
+        reader = new BufferedReader(new InputStreamReader(process
+                .getInputStream()));
+        InputStream javapCompareFile = Segment.class
+                .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorldJavap.out");
+        BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+                javapCompareFile));
+        line = reader.readLine();
+        String line2 = reader2.readLine();
+        int i = 1;
+        while (line != null || line2 != null) {
+            compareLineWithoutDigits("Javap output differs at line " + i,
+                    line2, line);
+            line = reader.readLine();
+            line2 = reader2.readLine();
+            i++;
+        }
+        reader.close();
+        reader2.close();
+    }
+
+    // Compare without digits for now as we're not currently sorting the
+    // constant pool correctly
+    private void compareLineWithoutDigits(String message, String expectedLine,
+            String actualLine) {
+        String expected = "";
+        char[] chars = expectedLine.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (!Character.isDigit(chars[i])) {
+                expected += chars[i];
+            }
+        }
+        String actual = "";
+        char[] chars2 = actualLine.toCharArray();
+        for (int i = 0; i < chars2.length; i++) {
+            if (!Character.isDigit(chars2[i])) {
+                actual += chars2[i];
+            }
+        }
+        assertEquals(message, expected, actual);
+    }
 
 }
