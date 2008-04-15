@@ -42,7 +42,8 @@ Export-Package: java.io,
  java.lang.reflect,
  java.net,
  java.util,
- org.apache.harmony.luni.util,
+ java.util.spi,
  org.apache.harmony.luni.net,
- org.apache.harmony.luni.platform
+ org.apache.harmony.luni.platform,
+ org.apache.harmony.luni.util
 
