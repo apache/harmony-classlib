@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 /**
  * DateFormatSymbols holds the Strings used in the formating and parsing of
  * dates and times.
@@ -51,8 +53,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      *            the Locale
      */
     public DateFormatSymbols(Locale locale) {
-        com.ibm.icu.text.DateFormatSymbols icuSymbols = new com.ibm.icu.text.DateFormatSymbols(locale);
-        
+        com.ibm.icu.text.DateFormatSymbols icuSymbols = new com.ibm.icu.text.DateFormatSymbols(
+                locale);
+
         localPatternChars = icuSymbols.getLocalPatternChars();
         ampms = icuSymbols.getAmPmStrings();
         eras = icuSymbols.getEras();
@@ -61,6 +64,48 @@ public class DateFormatSymbols implements Serializable, Cloneable {
         shortWeekdays = icuSymbols.getShortWeekdays();
         weekdays = icuSymbols.getWeekdays();
         zoneStrings = icuSymbols.getZoneStrings();
+    }
+
+    /**
+     * Get all locales which <code>getInstance(Locale)</code> method support
+     * to return localize instance. The returned array locales include Java
+     * runtime and installed service provider supported locales. And it must
+     * contain <code>Locale</code> instance equals to <code>Locale.US</code>.
+     * 
+     * @return array of locales
+     */
+    public static Locale[] getAvailableLocales() {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Return the DateFormatSymbols instance for the default locale.
+     * 
+     * @return an instance of DateFormatSymbols
+     * 
+     * @since 1.6
+     */
+    public static final DateFormatSymbols getInstance() {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Return the DateFormatSymbols for the specified locale. This method
+     * return DateFormatSymbols instances for locales supported by the Java
+     * runtime and installed DateFormatSymbols implementations.
+     * 
+     * @param locale
+     *            locale for the returned DateFormatSymbols instance
+     * 
+     * @return an instance of DateFormatSymbols
+     * 
+     * @exception NullPointerException
+     *                if locale is null
+     * 
+     * @since 1.6
+     */
+    public static final DateFormatSymbols getInstance(Locale locale) {
+        throw new NotImplementedException();
     }
 
     /**

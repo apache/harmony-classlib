@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.Locale;
 
+import org.apache.harmony.luni.util.NotImplementedException;
+
 /**
  * DecimalFormatSymbols holds the symbols used in the formating and parsing of
  * numbers.
@@ -84,9 +86,52 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
         patternChars[Percent] = icuSymbols.getPercent();
         patternChars[PerMill] = icuSymbols.getPerMill();
         patternChars[Exponent] = icuSymbols.getExponentSeparator().charAt(0);
-        patternChars[MonetaryDecimalSeparator] = icuSymbols.getMonetaryDecimalSeparator();
+        patternChars[MonetaryDecimalSeparator] = icuSymbols
+                .getMonetaryDecimalSeparator();
         patternChars[MinusSign] = icuSymbols.getMinusSign();
-        
+
+    }
+
+    /**
+     * Get all locales which <code>getInstance(Locale)</code> method support
+     * to return localize instance. The returned array locales include Java
+     * runtime and installed service provider supported locales. And it must
+     * contain <code>Locale</code> instance equals to <code>Locale.US</code>.
+     * 
+     * @return array of locales
+     */
+    public static Locale[] getAvailableLocales() {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Return the DecimalFormatSymbols instance for the default locale.
+     * 
+     * @return an instance of DecimalFormatSymbols
+     * 
+     * @since 1.6
+     */
+    public static final DecimalFormatSymbols getInstance() {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Return the DecimalFormatSymbols for the specified locale. This method
+     * return DecimalFormatSymbols instances for locales supported by the Java
+     * runtime and installed DecimalFormatSymbolsProvider implementations.
+     * 
+     * @param locale
+     *            locale for the returned DecimalFormatSymbols instance
+     * 
+     * @return an instance of DecimalFormatSymbols
+     * 
+     * @exception NullPointerException
+     *                if locale is null
+     * 
+     * @since 1.6
+     */
+    public static final DecimalFormatSymbols getInstance(Locale locale) {
+        throw new NotImplementedException();
     }
 
     /**
@@ -188,6 +233,15 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
      */
     public char getDigit() {
         return patternChars[Digit];
+    }
+
+    /**
+     * Answers the String which separate the mantissa from the exponent.
+     * 
+     * @return a String
+     */
+    public String getExponentSeparator() {
+        throw new NotImplementedException();
     }
 
     /**
@@ -384,6 +438,16 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
     }
 
     /**
+     * Set the String which separate the mantissa from the exponent
+     * 
+     * @param value
+     *            the exponent separator String
+     */
+    public void setExponentSeparator(String value) {
+        throw new NotImplementedException();
+    }
+
+    /**
      * Sets the character used as the thousands separator in a number.
      * 
      * @param value
@@ -549,8 +613,8 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
             currency = null;
         }
     }
-    
-    Locale getLocale(){
+
+    Locale getLocale() {
         return locale;
     }
 }
