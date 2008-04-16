@@ -38,4 +38,14 @@ public class InvalidMarkExceptionTest extends TestCase {
 
         SerializationTest.verifyGolden(this, new InvalidMarkException());
     }
+    
+    /**
+     *@tests {@link java.nio.InvalidMarkException#InvalidMarkException()}
+     */
+    public void test_Constructor() {
+        InvalidMarkException exception = new InvalidMarkException();
+        assertNull(exception.getMessage());
+        assertNull(exception.getLocalizedMessage());
+        assertNull(exception.getCause());
+    }
 }
