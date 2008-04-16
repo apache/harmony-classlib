@@ -14,10 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Rustem V. Rafikov
- * @version $Revision: 1.3 $
- */
+
 package javax.imageio;
 
 import javax.imageio.stream.ImageInputStream;
@@ -146,9 +143,11 @@ public final class ImageIO {
         return new SpiIteratorToReadersIteratorWrapper(it);
     }
 
-    public static Iterator<ImageReader> getImageReadersByMIMEType(String MIMEType) throws NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
+    public static Iterator<ImageReader> getImageReadersByMIMEType(
+                    final String MIMEType) {
+        return new SpiIteratorToReadersIteratorWrapper(
+                registry.getServiceProviders(ImageReaderSpi.class,
+                new MIMETypeFilter(MIMEType), true));
     }
 
     public static String[] getWriterFormatNames() throws NotImplementedException {
@@ -181,9 +180,11 @@ public final class ImageIO {
         return new SpiIteratorToWritersIteratorWrapper(it);
     }
 
-    public static Iterator<ImageWriter> getImageWritersByMIMEType(String MIMEType) throws NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
+    public static Iterator<ImageWriter> getImageWritersByMIMEType(
+                    final String MIMEType) {
+        return new SpiIteratorToWritersIteratorWrapper(
+                registry.getServiceProviders(ImageWriterSpi.class,
+                new MIMETypeFilter(MIMEType), true));
     }
 
     public static ImageWriter getImageWriter(ImageReader reader) throws NotImplementedException {
@@ -382,6 +383,26 @@ public final class ImageIO {
         public boolean filter(Object provider) {
             ImageReaderWriterSpi spi = (ImageReaderWriterSpi) provider;
             return Arrays.asList(spi.getFileSuffixes()).contains(suf);
+        }
+    }
+
+    /**
+     * Filter to match spi by MIMEType
+     */
+    static class MIMETypeFilter implements ServiceRegistry.Filter {
+        private final String mimeType;
+
+        public MIMETypeFilter(final String mimeType) {
+            if (mimeType == null) {
+                throw new NullPointerException("MIMEType cannot be NULL");
+            }
+            
+            this.mimeType = mimeType;
+        }
+
+        public boolean filter(final Object provider) {
+            final String[] types = ((ImageReaderWriterSpi) provider).getMIMETypes();
+            return (types != null) && Arrays.asList(types).contains(mimeType);
         }
     }
 
