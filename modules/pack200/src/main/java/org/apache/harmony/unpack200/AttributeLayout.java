@@ -16,6 +16,8 @@
  */
 package org.apache.harmony.unpack200;
 
+import org.apache.harmony.pack200.Codec;
+
 /**
  * AttributeLayout defines a layout that describes how an attribute will be
  * transmitted.

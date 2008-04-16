@@ -19,8 +19,8 @@ package org.apache.harmony.unpack200.tests;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.unpack200.ClassBands;
-import org.apache.harmony.unpack200.Codec;
 import org.apache.harmony.unpack200.CpBands;
 import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;

@@ -27,7 +27,8 @@ import junit.framework.TestCase;
 import org.apache.harmony.unpack200.Archive;
 
 /**
- * Tests for org.apache.harmony.unpack200.Archive, which is the main class for unpack200.
+ * Tests for org.apache.harmony.unpack200.Archive, which is the main class for
+ * unpack200.
  */
 public class ArchiveTest extends TestCase {
 
@@ -105,7 +106,7 @@ public class ArchiveTest extends TestCase {
     }
 
     // Test with an archive packed with the -E0 option
-    public void testWithE0() throws Exception  {
+    public void testWithE0() throws Exception {
         in = Archive.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/simple-E0.pack.gz");
         file = File.createTempFile("simple-e0", ".jar");

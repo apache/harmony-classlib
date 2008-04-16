@@ -19,6 +19,8 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.pack200.Codec;
+
 /**
  * Attribute definition bands are the set of bands used to define extra
  * attributes transmitted in the archive.

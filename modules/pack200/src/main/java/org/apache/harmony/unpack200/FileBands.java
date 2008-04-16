@@ -19,6 +19,8 @@ package org.apache.harmony.unpack200;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.harmony.pack200.Codec;
+
 /**
  * Parses the file band headers (not including the actual bits themselves). At
  * the end of this parse call, the input stream will be positioned at the start

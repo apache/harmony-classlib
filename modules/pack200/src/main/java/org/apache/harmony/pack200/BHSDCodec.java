@@ -14,13 +14,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.unpack200;
+package org.apache.harmony.pack200;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A BHSD codec is a means of encoding integer values as a sequence of bytes or

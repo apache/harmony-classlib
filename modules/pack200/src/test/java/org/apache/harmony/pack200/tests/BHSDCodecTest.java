@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.harmony.unpack200.tests;
+package org.apache.harmony.pack200.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.unpack200.BHSDCodec;
-import org.apache.harmony.unpack200.CodecEncoding;
+import org.apache.harmony.pack200.BHSDCodec;
+import org.apache.harmony.pack200.CodecEncoding;
 import org.apache.harmony.unpack200.Pack200Exception;
 
 /**

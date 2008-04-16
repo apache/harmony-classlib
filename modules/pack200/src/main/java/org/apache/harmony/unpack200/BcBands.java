@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
