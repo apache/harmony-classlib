@@ -31,9 +31,12 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
+import java.net.SocketImplFactory;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.security.Permission;
+
+import org.apache.harmony.luni.net.SocketImplProvider;
 
 import tests.support.Support_Configuration;
 
@@ -2060,5 +2063,37 @@ public class SocketTest extends SocketTestCase {
         assertEquals("Returned incorrect string", expected, client.toString());
         client.close();
         server.close();
+    }
+    
+    /**
+     * @tests {@link java.net.Socket#setSocketImplFactory(SocketImplFactory)}
+     */
+    public void test_setSocketFactoryLjava_net_SocketImplFactory()
+            throws IOException {
+        SocketImplFactory factory = new MockSocketImplFactory();
+        // Should not throw SocketException when set DatagramSocketImplFactory
+        // for the first time.
+        Socket.setSocketImplFactory(factory);
+
+        try {
+            Socket.setSocketImplFactory(null);
+            fail("Should throw SocketException");
+        } catch (SocketException e) {
+            // Expected
+        }
+
+        try {
+            Socket.setSocketImplFactory(factory);
+            fail("Should throw SocketException");
+        } catch (SocketException e) {
+            // Expected
+        }
+    }
+
+    private class MockSocketImplFactory implements SocketImplFactory {
+
+        public SocketImpl createSocketImpl() {
+            return SocketImplProvider.getServerSocketImpl();
+        }
     }
 }

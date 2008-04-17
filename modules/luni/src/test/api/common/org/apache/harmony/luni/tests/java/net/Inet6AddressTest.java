@@ -854,6 +854,19 @@ public class Inet6AddressTest extends junit.framework.TestCase {
 		assertNull(v6Addr.getScopedInterface());
 	}
 
+    /**
+     * @tests {@link java.net.Inet6Address#hashCode()}
+     */
+    public void test_hashCode() throws UnknownHostException{
+        byte[] addr = { (byte) 0xFE, (byte) 0x80, 0, 0, 0, 0, 0, 0, 0x02, 0x11,
+                0x25, (byte) 0xFF, (byte) 0xFE, (byte) 0xF8, (byte) 0x7C,
+                (byte) 0xB2 };
+        Inet6Address address1, address2;
+        
+        address1 = Inet6Address.getByAddress("123", addr, 0);
+        address2 = Inet6Address.getByAddress("1234", addr, 0);
+        assertEquals(address1.hashCode(), address2.hashCode());
+    }
 	
 	int bytesToInt(byte bytes[], int start) {
 

@@ -57,9 +57,22 @@ public class SocketImplTest extends junit.framework.TestCase {
             // expected
         }
     }
+    
+    /**
+     * @tests java.net.SocketImpl#shutdownInput()
+     */
+    public void test_shutdownInput() {
+        MockSocketImpl s = new MockSocketImpl();
+        try {
+            s.shutdownInput();
+            fail("This method is still not implemented yet,It should throw IOException.");
+        } catch (IOException e) {
+            // Expected
+        }
+    }
 
     /**
-     * @tests java.net.SocketImpl#shutdownOutput()
+     * @tests java.net.SocketImpl#supportsUrgentData()
      */
     public void test_supportsUrgentData() {
         MockSocketImpl s = new MockSocketImpl();
@@ -128,6 +141,10 @@ public class SocketImplTest extends junit.framework.TestCase {
 
         public void shutdownOutput() throws IOException {
             super.shutdownOutput();
+        }
+        
+        public void shutdownInput() throws IOException{
+            super.shutdownInput();
         }
 
         public boolean testSupportsUrgentData() {
