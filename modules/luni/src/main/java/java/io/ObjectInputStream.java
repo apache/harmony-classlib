@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.harmony.misc.accessors.ObjectAccessor;
+import org.apache.harmony.misc.accessors.AccessorFactory;
+
 import org.apache.harmony.kernel.vm.VM;
 import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.Msg;
@@ -118,6 +121,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         PRIMITIVE_CLASSES.put("float", float.class); //$NON-NLS-1$
         PRIMITIVE_CLASSES.put("double", double.class); //$NON-NLS-1$
     }
+
+    private ObjectAccessor accessor = AccessorFactory.getObjectAccessor();
 
     // Internal type used to keep track of validators & corresponding priority
     static class InputValidationDesc {
@@ -1124,41 +1129,61 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         }
 
         for (ObjectStreamField fieldDesc : fields) {
+
+            // get associated Field 
+            long fieldID = fieldDesc.getFieldID(accessor, declaringClass);
+
             // Code duplication starts, just because Java is typed
             if (fieldDesc.isPrimitive()) {
                 try {
                     switch (fieldDesc.getTypeCode()) {
                         case 'B':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readByte());
+                            byte srcByte = input.readByte();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setByte(obj, fieldID, srcByte);
+                            };
                             break;
                         case 'C':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readChar());
+                            char srcChar = input.readChar();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setChar(obj, fieldID, srcChar);
+                            }
                             break;
                         case 'D':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readDouble());
+                            double srcDouble = input.readDouble();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setDouble(obj, fieldID, srcDouble);
+                            }
                             break;
                         case 'F':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readFloat());
+                            float srcFloat = input.readFloat();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setFloat(obj, fieldID, srcFloat);
+                            }
                             break;
                         case 'I':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readInt());
+                            int srcInt = input.readInt();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setInt(obj, fieldID, srcInt);
+                            }
                             break;
                         case 'J':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readLong());
+                            long srcLong = input.readLong();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setLong(obj, fieldID, srcLong);
+                            }
                             break;
                         case 'S':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readShort());
+                            short srcShort = input.readShort();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setShort(obj, fieldID, srcShort);
+                            }
                             break;
                         case 'Z':
-                            setField(obj, declaringClass, fieldDesc.getName(),
-                                    input.readBoolean());
+                            boolean srcBoolean = input.readBoolean();
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setBoolean(obj, fieldID, srcBoolean);
+                            }
                             break;
                         default:
                             throw new StreamCorruptedException(Msg.getString(
@@ -1195,8 +1220,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                                                     + fieldName }));
                         }
                         try {
-                            objSetField(obj, declaringClass, fieldName, fieldDesc
-                                    .getTypeString(), toSet);
+                            if (fieldID != ObjectStreamField.FIELD_IS_ABSENT) { 
+                                accessor.setObject(obj, fieldID, toSet);
+                            }
                         } catch (NoSuchFieldError e) {
                             // Ignored
                         }
@@ -2432,250 +2458,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // By default no object replacement. Subclasses can override
         return object;
     }
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>byte</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, byte value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>char</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, char value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>double</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, double value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>float</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, float value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>int</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, int value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>long</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, long value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new value <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            Class which declares the field
-     * @param fieldName
-     *            Name of the field to set
-     * @param fieldTypeName
-     *            Name of the class defining the type of the field
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void objSetField(Object instance,
-            Class<?> declaringClass, String fieldName, String fieldTypeName,
-            Object value) throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>short</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, short value)
-            throws NoSuchFieldError;
-
-    /**
-     * Set a given declared field named <code>fieldName</code> of
-     * <code>instance</code> to the new <code>boolean</code> value
-     * <code>value</code>.
-     * 
-     * This method could be implemented non-natively on top of java.lang.reflect
-     * implementations that support the <code>setAccessible</code> API, at the
-     * expense of extra object creation (java.lang.reflect.Field). Otherwise
-     * Serialization could not set private fields, except by the use of a native
-     * method like this one.
-     * 
-     * @param instance
-     *            Object whose field to set
-     * @param declaringClass
-     *            <code>instance</code>'s declaring class
-     * @param fieldName
-     *            Name of the field to set
-     * @param value
-     *            New value for the field
-     * 
-     * @throws NoSuchFieldError
-     *             If the field does not exist.
-     */
-    private static native void setField(Object instance,
-            Class<?> declaringClass, String fieldName, boolean value)
-            throws NoSuchFieldError;
 
     /**
      * Skips <code>length</code> bytes of primitive data from the receiver. It

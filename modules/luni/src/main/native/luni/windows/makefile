@@ -27,7 +27,6 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
   $(SHAREDSUB)luni_copyright.obj $(SHAREDSUB)file.obj procimpl.obj \
-  $(SHAREDSUB)oos.obj \
   $(SHAREDSUB)nethelp.obj $(SHAREDSUB)floatbits.obj \
   $(SHAREDSUB)ois.obj helpers.obj $(SHAREDSUB)math.obj \
   $(SHAREDSUB)luniglob.obj $(SHAREDSUB)proxy.obj $(SHAREDSUB)netif.obj \
