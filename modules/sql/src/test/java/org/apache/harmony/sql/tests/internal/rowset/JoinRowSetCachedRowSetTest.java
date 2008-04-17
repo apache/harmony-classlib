@@ -17,8 +17,9 @@
 package org.apache.harmony.sql.tests.internal.rowset;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Iterator;
+
+import javax.sql.rowset.spi.SyncProviderException;
+
 
 public class JoinRowSetCachedRowSetTest extends JoinRowSetTestCase {
 
@@ -512,5 +513,376 @@ public class JoinRowSetCachedRowSetTest extends JoinRowSetTestCase {
         // check data
         assertNotNull(jrs.getMetaData());
         assertFalse(jrs.first());
+    }
+
+    public void testCursorMoved() throws Exception {
+        Listener listener = new Listener();
+        jrs.addRowSetListener(listener);
+        assertNull(listener.getTag());
+
+        jrs.addRowSet(crset, 1);
+
+        assertTrue(jrs.absolute(1));
+        assertNull(listener.getTag());
+
+        assertTrue(jrs.next());
+        assertNull(listener.getTag());
+    }
+
+    public void testRowChanged() throws Exception {
+        Listener listener = new Listener();
+        jrs.addRowSetListener(listener);
+        assertNull(listener.getTag());
+        jrs.addRowSet(crset, 1);
+
+        assertTrue(jrs.absolute(1));
+        assertNull(listener.getTag());
+        jrs.setOriginalRow();
+        assertNull(listener.getTag());
+
+        /*
+         * updateRow() - rowChanged
+         */
+        assertTrue(jrs.absolute(3));
+        jrs.updateString(2, "abc");
+        assertNull(listener.getTag());
+        jrs.updateRow();
+        assertNull(listener.getTag());
+
+        /*
+         * deleteRow() - rowChanged
+         */
+        assertTrue(jrs.last());
+        jrs.deleteRow();
+        assertNull(listener.getTag());
+    }
+
+    public void testAcceptChanges_Exception() throws Exception {
+        try {
+            jrs.acceptChanges();
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+
+        try {
+            jrs.acceptChanges(conn);
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        jrs.addRowSet(crset, 1);
+
+        jrs.acceptChanges();
+        jrs.acceptChanges(conn);
+
+        jrs.absolute(4);
+        jrs.updateString(2, "Updated");
+        jrs.updateRow();
+
+        jrs.acceptChanges();
+
+        jrs = newJoinRowSet();
+        jrs.addRowSet(crset, 1);
+        try {
+            jrs.acceptChanges();
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+
+        jrs.acceptChanges(conn);
+        jrs.acceptChanges();
+    }
+
+    public void testAcceptChanges_Insert() throws Exception {
+        jrs.addRowSet(crset, 1);
+        jrs.absolute(4);
+        jrs.moveToInsertRow();
+        jrs.updateString(2, "Inserted");
+        jrs.updateInt(1, 5);
+        jrs.insertRow();
+        jrs.moveToCurrentRow();
+
+        try {
+            jrs.acceptChanges();
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+        jrs.acceptChanges(conn);
+        rs = st.executeQuery("select * from USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+        int rowNum = 0;
+        crset.beforeFirst();
+        while (crset.next()) {
+            rowNum++;
+        }
+        assertEquals(5, rowNum);
+
+        assertTrue(jrs.absolute(5));
+        assertEquals("Inserted", jrs.getString(2));
+    }
+
+    public void testAcceptChanges_Update() throws Exception {
+        jrs.addRowSet(crset, 1);
+
+        jrs.absolute(4);
+        jrs.updateString(2, "Updated");
+        jrs.updateRow();
+        jrs.moveToCurrentRow();
+
+        try {
+            jrs.acceptChanges();
+            fail("Should throw SyncProviderException.");
+
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+        jrs.acceptChanges(conn);
+
+        rs = st.executeQuery("select * from USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        crset.absolute(4);
+        assertEquals("Updated", crset.getString(2));
+
+        jrs.absolute(4);
+        assertEquals("Updated", jrs.getString(2));
+    }
+
+    public void testAcceptChanges_Delete() throws Exception {
+        jrs.addRowSet(crset, 1);
+
+        jrs.absolute(4);
+
+        jrs.deleteRow();
+        jrs.setShowDeleted(true);
+
+        int rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+
+        jrs.acceptChanges(conn);
+
+        rs = st.executeQuery("select * from USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+
+        rowNum = 0;
+        crset.beforeFirst();
+        while (crset.next()) {
+            rowNum++;
+        }
+        // In RI, the deletion will not affect database.
+        // In harmony, The deletion will happen in database according to spec.
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertEquals(3, rowNum);
+        } else {
+            assertEquals(4, rowNum);
+        }
+    }
+
+    public void testAcceptChanges_TwoSameRowSets() throws Exception {
+        jrs.addRowSet(crset, 1);
+        crset.beforeFirst();
+        jrs.addRowSet(crset, 1);
+
+        jrs.absolute(4);
+        jrs.updateString(2, "Updated");
+        jrs.updateRow();
+
+        try {
+            jrs.acceptChanges(conn);
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+    }
+
+    public void testAcceptChange_UpdateOrignailRowSet() throws Exception {
+        jrs.addRowSet(crset, 1);
+        crset.absolute(4);
+        crset.updateString(2, "Updated");
+        crset.updateRow();
+
+        jrs.acceptChanges(conn);
+
+        rs = st.executeQuery("select * from USER_INFO");
+        crset = newNoInitialInstance();
+        crset.populate(rs);
+        crset.absolute(4);
+        assertEquals("test4", crset.getString(2));
+    }
+
+    public void testUndoDeleted_Empty() throws Exception {
+        // No Exception.
+        jrs.undoDelete();
+    }
+
+    public void testUndoDeleted() throws Exception {
+        jrs.addRowSet(crset, 1);
+
+        /*
+         * Test exception. It would throw SQLException when calling undoDelete()
+         * in such conditions.
+         */
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            // TODO RI doesn't follow the spec, we follow spec
+            jrs.beforeFirst();
+            assertTrue(jrs.isBeforeFirst());
+            try {
+                jrs.undoDelete();
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, invalid cursor
+            }
+
+            jrs.afterLast();
+            assertTrue(jrs.isAfterLast());
+            try {
+                jrs.undoDelete();
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, invalid cursor
+            }
+
+            jrs.moveToInsertRow();
+            try {
+                jrs.undoDelete();
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, invalid cursor
+            }
+
+            jrs.moveToCurrentRow();
+            assertTrue(jrs.absolute(1));
+            assertFalse(jrs.rowDeleted());
+            try {
+                jrs.undoDelete();
+                fail("Should throw SQLException");
+            } catch (SQLException e) {
+                // expected, invalid cursor
+            }
+
+        } else {
+            // when run on RI, it won't throw SQLException
+            jrs.beforeFirst();
+            assertTrue(jrs.isBeforeFirst());
+            jrs.undoDelete();
+
+            jrs.afterLast();
+            assertTrue(jrs.isAfterLast());
+            jrs.undoDelete();
+
+            jrs.moveToInsertRow();
+            jrs.undoDelete();
+
+            jrs.moveToCurrentRow();
+            assertTrue(jrs.absolute(1));
+            assertFalse(jrs.rowDeleted());
+            jrs.undoDelete();
+        }
+
+        // delete the fourth row
+        assertTrue(jrs.absolute(4));
+        assertEquals(4, jrs.getInt(1));
+        assertFalse(jrs.rowDeleted());
+        jrs.deleteRow();
+        assertTrue(jrs.rowDeleted());
+
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            jrs.undoDelete();
+            assertFalse(jrs.rowDeleted());
+            jrs.acceptChanges(conn);
+
+            // check DB
+            rs = st.executeQuery("SELECT COUNT(*) FROM USER_INFO WHERE ID = 4");
+            assertTrue(rs.next());
+            assertEquals(1, rs.getInt(1));
+
+            // check CachedRowSet
+            jrs.beforeFirst();
+            int index = 0;
+            while (jrs.next()) {
+                index++;
+                assertEquals(index, jrs.getInt(1));
+            }
+            assertEquals(4, index);
+
+        } else {
+            // TODO undoDelete() still makes no difference in RI
+            jrs.undoDelete();
+            assertTrue(jrs.rowDeleted());
+            jrs.acceptChanges(conn);
+
+            // check DB
+            rs = st.executeQuery("SELECT COUNT(*) FROM USER_INFO WHERE ID = 4");
+            assertTrue(rs.next());
+            assertEquals(1, rs.getInt(1));
+
+            // check CachedRowSet
+            jrs.beforeFirst();
+            int index = 0;
+            while (jrs.next()) {
+                index++;
+                assertEquals(index, jrs.getInt(1));
+            }
+            assertEquals(3, index);
+        }
+
+    }
+
+    public void testUndoInsert_Empty() throws Exception {
+        try {
+            jrs.undoInsert();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // RI throws it.
+        }
+    }
+
+    public void testAcceptChanges_Complex() throws Exception {
+        crset.acceptChanges();
+
+        jrs.addRowSet(crset, 1);
+        try {
+            jrs.acceptChanges();
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+        crset.acceptChanges();
+
+        jrs.acceptChanges(conn);
+        jrs.acceptChanges();
+
+        try {
+            jrs.acceptChanges(null);
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
+
+        try {
+            jrs.acceptChanges();
+            fail("Should throw SyncProviderException.");
+        } catch (SyncProviderException e) {
+            // Expected.
+        }
     }
 }

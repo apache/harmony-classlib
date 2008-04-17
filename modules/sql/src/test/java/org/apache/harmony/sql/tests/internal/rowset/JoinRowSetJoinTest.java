@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.spi.SyncProvider;
 
 public class JoinRowSetJoinTest extends JoinRowSetTestCase {
 
@@ -419,6 +420,341 @@ public class JoinRowSetJoinTest extends JoinRowSetTestCase {
 
     }
 
+    public void testJoin_Delete() throws Exception {
+        rs = st.executeQuery("select * from BOOKS");
+        CachedRowSet crset2 = newNoInitialInstance();
+        crset2.populate(rs);
+
+        jrs.addRowSet(crset, 1);
+        jrs.first();
+        jrs.deleteRow();
+
+        int rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+
+        jrs.addRowSet(crset2, 1);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+    }
+
+    public void testJoin_Delete2() throws Exception {
+        rs = st.executeQuery("select * from BOOKS");
+        CachedRowSet crset2 = newNoInitialInstance();
+        crset2.populate(rs);
+
+       crset.absolute(3);
+        crset.deleteRow();
+        crset.setShowDeleted(true);
+
+        jrs.addRowSet(crset, 1);
+        jrs.first();
+        jrs.deleteRow();
+        
+        int rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+
+        jrs.setShowDeleted(true);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+
+        
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            if (jrs.getInt(1) == 3) {
+                assertTrue(jrs.rowDeleted());
+            }
+        }
+
+        crset2.absolute(6);
+        crset2.deleteRow();
+
+        crset2.beforeFirst();
+        while (crset2.next()) {
+            if (crset2.getInt(1) == 4) {
+                assertTrue(crset2.rowDeleted());
+            }
+        }
+
+        jrs.addRowSet(crset2, 1);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(5, rowNum);
+    }
+
+    public void testProperty_Empty() throws SQLException {
+        assertNull(jrs.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, jrs.getConcurrency());
+        try {
+            jrs.getCursorName();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        }
+        assertNull(jrs.getDataSourceName());
+        assertTrue(jrs.getEscapeProcessing());
+        assertEquals(ResultSet.FETCH_FORWARD, jrs.getFetchDirection());
+        assertEquals(0, jrs.getFetchSize());
+        assertEquals(0, jrs.getMaxFieldSize());
+        assertEquals(0, jrs.getMaxRows());
+        assertNull(jrs.getMetaData());
+        assertEquals(0, jrs.getPageSize());
+        assertNull(jrs.getPassword());
+        assertEquals(0, jrs.getQueryTimeout());
+        assertFalse(jrs.getShowDeleted());
+        assertNull(jrs.getStatement());
+        assertNotNull(jrs.getSyncProvider());
+        assertNull(jrs.getTableName());
+        assertNull(jrs.getUrl());
+        assertNull(jrs.getUsername());
+        assertNull(jrs.getTypeMap());
+
+        try {
+            jrs.getOriginal();
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // RI throws it.
+        }
+
+        try {
+            jrs.getOriginalRow();
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        } catch (NullPointerException e) {
+            // RI throws it.
+        }
+    }
+
+    public void testProperty() throws Exception {
+        SyncProvider sp = jrs.getSyncProvider();
+
+        crset.setDataSourceName("testDataSource");
+        crset.setCommand("testCommand");
+        crset.setConcurrency(ResultSet.CONCUR_READ_ONLY);
+        crset.setEscapeProcessing(false);
+        crset.setFetchDirection(ResultSet.FETCH_REVERSE);
+        crset.setMaxRows(80);
+        // TODO How to set it.
+        // crset.setFetchSize(10);
+        crset.setPageSize(20);
+        crset.setPassword("testPassword");
+        crset.setQueryTimeout(5);
+        crset.setShowDeleted(true);
+        crset.setTableName("testTableName");
+        crset.setUrl("testUrl");
+        ;
+        crset.setUsername("testUserName");
+        crset.setMaxFieldSize(20);
+        jrs.addRowSet(crset, 1);
+
+        assertNull(jrs.getCommand());
+        assertEquals(ResultSet.CONCUR_UPDATABLE, jrs.getConcurrency());
+        assertNull(jrs.getDataSourceName());
+        assertTrue(jrs.getEscapeProcessing());
+        assertEquals(ResultSet.FETCH_FORWARD, jrs.getFetchDirection());
+        assertEquals(crset.getFetchSize(), jrs.getFetchSize());
+        assertEquals(0, jrs.getMaxFieldSize());
+        assertEquals(0, jrs.getMaxRows());
+        assertEquals(0, jrs.getPageSize());
+        assertNull(jrs.getPassword());
+        assertEquals(0, jrs.getQueryTimeout());
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(jrs.getShowDeleted());
+        }
+        else {
+            assertFalse(jrs.getShowDeleted());
+        }
+        assertNull(jrs.getStatement());
+        assertEquals(sp, jrs.getSyncProvider());
+        // TODO
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertEquals(crset.getTableName(), jrs.getTableName());
+        }
+        else {
+            assertNull(jrs.getTableName());
+        }
+        assertNull(jrs.getUrl());
+        assertNull(jrs.getUsername());
+        assertNotNull(jrs.getOriginal());
+        assertEquals(crset.getTypeMap(), jrs.getTypeMap());
+    }
+
+    public void testProperty_TwoRowSets() throws Exception {
+        jrs.addRowSet(crset, 1);
+        rs = st.executeQuery("select * from BOOKS");
+        CachedRowSet crset2 = newNoInitialInstance();
+        crset2.populate(rs);
+        crset2.setDataSourceName("testDataSourceName");
+        jrs.addRowSet(crset2, 1);
+
+        assertEquals(crset2.getTypeMap(), jrs.getTypeMap());
+        assertEquals(crset.getTypeMap(), crset2.getTypeMap());
+    }
+
+    public void testRowProperty_deleteRow() throws Exception {
+        crset.first();
+        crset.deleteRow();
+        int rowNum = 0;
+        crset.beforeFirst();
+        while (crset.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+
+        jrs.addRowSet(crset, 1);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+
+        jrs.setShowDeleted(true);
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+
+        CachedRowSet crset2 = newNoInitialInstance();
+        rs = st.executeQuery("select * from books");
+        crset2.populate(rs);
+
+        crset2.absolute(3);
+        crset2.deleteRow();
+
+        jrs.addRowSet(crset2, 1);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+    }
+
+    public void testRowProperty_deleteRow2() throws Exception {
+        crset.first();
+        crset.deleteRow();
+        crset.setShowDeleted(true);
+        int rowNum = 0;
+        crset.beforeFirst();
+        while (crset.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+
+        jrs.addRowSet(crset, 1);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+            if (jrs.getInt(1) == 1) {
+                assertTrue(jrs.rowDeleted());
+            } else {
+                assertFalse(jrs.rowDeleted());
+            }
+        }
+        if (System.getProperty("Testing Harmony") == "true") {
+            assertTrue(jrs.getShowDeleted());
+        }
+        else {
+        assertFalse(jrs.getShowDeleted());
+        }
+        assertEquals(4, rowNum);
+
+        CachedRowSet crset2 = newNoInitialInstance();
+        rs = st.executeQuery("select * from books");
+        crset2.populate(rs);
+
+        crset2.absolute(3);
+        crset2.deleteRow();
+        crset2.setShowDeleted(true);
+
+        jrs.addRowSet(crset2, 1);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+            assertFalse(jrs.rowDeleted());
+        }
+        assertEquals(6, rowNum);
+    }
+
+    public void testRowProperty_deleteRow3() throws Exception {
+        crset.first();
+        crset.deleteRow();
+        crset.setShowDeleted(true);
+        int rowNum = 0;
+        crset.beforeFirst();
+        while (crset.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+
+        jrs.addRowSet(crset, 1);
+
+        jrs.setShowDeleted(true);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+            if (jrs.getInt(1) == 1) {
+                assertTrue(jrs.rowDeleted());
+            } else {
+                assertFalse(jrs.rowDeleted());
+            }
+        }
+        assertEquals(4, rowNum);
+        assertTrue(jrs.getShowDeleted());
+
+        CachedRowSet crset2 = newNoInitialInstance();
+        rs = st.executeQuery("select * from books");
+        crset2.populate(rs);
+
+        crset2.absolute(3);
+        crset2.deleteRow();
+        crset2.setShowDeleted(true);
+
+        jrs.addRowSet(crset2, 1);
+        jrs.setShowDeleted(false);
+
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+            assertFalse(jrs.rowDeleted());
+        }
+        assertEquals(6, rowNum);
+    }
+
     protected int getVisibleSize(ResultSet rs) throws SQLException {
         rs.beforeFirst();
         int rowNum = 0;
@@ -426,6 +762,107 @@ public class JoinRowSetJoinTest extends JoinRowSetTestCase {
             rowNum++;
         }
         return rowNum;
+    }
+    
+    public void testJoin_OrignalShowDeleted() throws SQLException {
+        jrs.addRowSet(crset, 1);
+        
+        jrs.first();
+        jrs.deleteRow();
+        
+        int rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+        
+        crset.setShowDeleted(true);
+        assertEquals(3, rowNum);     
+    }
+    
+    public void testJoin_OrignalShowDeleted2() throws SQLException {
+        crset.setShowDeleted(true);
+        jrs.addRowSet(crset, 1);
+        
+        jrs.first();
+        jrs.deleteRow();
+        
+        int rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+        assertTrue(jrs.absolute(4));
+        
+        if (System.getProperty("Testing Harmony") == "true") {
+            assertTrue(jrs.getShowDeleted());
+        }
+        else 
+        {
+        assertFalse(jrs.getShowDeleted());
+        }
+        crset.setShowDeleted(false);
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+        
+        crset.first();
+        jrs.beforeFirst();
+        assertTrue(crset.isFirst());
+        assertFalse(crset.isBeforeFirst());
+        assertTrue(jrs.isBeforeFirst());
+        
+        jrs.next();
+        assertTrue(crset.isFirst());
+        assertTrue(jrs.isFirst());
+        
+        jrs.next();
+        assertTrue(crset.isFirst());
+        assertFalse(jrs.isFirst());
+    }
+    
+    public void testJoin_OrignalShowDeleted3() throws Exception {
+        CachedRowSet crset2 = newNoInitialInstance();
+        rs = st.executeQuery("select * from books");
+        crset2.populate(rs);
+        
+        jrs.addRowSet(crset, 1);
+        jrs.first();
+        jrs.deleteRow();
+        
+        int rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+        
+        crset2.setShowDeleted(true);
+        jrs.addRowSet(crset2, 1);
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(4, rowNum);
+        
+        jrs.first();
+        jrs.deleteRow();
+        
+        rowNum = 0;
+        jrs.beforeFirst();
+        while (jrs.next()) {
+            rowNum++;
+        }
+        assertEquals(3, rowNum);
+        
+        
+        
     }
 
 }

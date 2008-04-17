@@ -39,10 +39,6 @@ public class WebRowSetImpl extends CachedRowSetImpl implements WebRowSet {
         super();
     }
 
-    public WebRowSetImpl(String providerID) throws SyncFactoryException {
-        super(providerID);
-    }
-
     public void readXml(Reader reader) throws SQLException {
         new XmlReaderImpl().readXML(this, reader);
     }

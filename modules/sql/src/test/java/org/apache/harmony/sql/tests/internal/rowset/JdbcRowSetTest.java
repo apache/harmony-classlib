@@ -252,7 +252,7 @@ public class JdbcRowSetTest extends CachedRowSetTestCase {
         assertEquals(0, jrs.getMaxRows());
 
         assertEquals(0, jrs.getQueryTimeout());
-        assertEquals(false, jrs.getShowDeleted());
+        assertFalse(jrs.getShowDeleted());
 
         assertEquals(DERBY_URL, jrs.getUrl());
         assertNull(jrs.getUsername());
@@ -274,7 +274,7 @@ public class JdbcRowSetTest extends CachedRowSetTestCase {
         assertEquals(0, jrs.getMaxRows());
 
         assertEquals(0, jrs.getQueryTimeout());
-        assertEquals(false, jrs.getShowDeleted());
+        assertFalse(jrs.getShowDeleted());
 
         assertEquals(DERBY_URL, jrs.getUrl());
         assertNull(jrs.getUsername());

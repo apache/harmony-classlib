@@ -1242,7 +1242,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         }
         assertNull(crset.getStatement());
 
-        assertEquals(true, noInitialCrset.getEscapeProcessing());
+        assertTrue(noInitialCrset.getEscapeProcessing());
         assertEquals(Connection.TRANSACTION_READ_COMMITTED, noInitialCrset
                 .getTransactionIsolation());
 
@@ -1264,9 +1264,9 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(0, noInitialCrset.getMaxRows());
 
         assertEquals(0, noInitialCrset.getPageSize());
-        assertEquals(null, noInitialCrset.getPassword());
+        assertNull(noInitialCrset.getPassword());
         assertEquals(0, noInitialCrset.getQueryTimeout());
-        assertEquals(false, noInitialCrset.getShowDeleted());
+        assertFalse(noInitialCrset.getShowDeleted());
 
         assertNull(noInitialCrset.getTableName());
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, noInitialCrset

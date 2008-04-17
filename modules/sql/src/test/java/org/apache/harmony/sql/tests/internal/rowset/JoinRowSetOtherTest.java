@@ -312,14 +312,15 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
         Collection collection;
 
         CachedRowSet crs = newNoInitialInstance();
-        try {
-
-            jrs.addRowSet(crs, 1);
-            if ("true".equals(System.getProperty("Testing Harmony"))) {
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            try {
+                jrs.addRowSet(crs, 1);
                 fail("Should throw SQLException in harmony.");
+            } catch (SQLException e) {
+                // Expected.
             }
-        } catch (SQLException e) {
-            // Expected.
+        } else {
+            jrs.addRowSet(crs, 1);
         }
     }
 
@@ -509,7 +510,7 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
     public void testGetWhereClause_MoreRowSets() throws Exception {
         crset.setTableName("Table1");
         jrs.addRowSet(crset, "ID");
-        
+
         // Creates another cached rowset.
         CachedRowSet crset2;
         crset2 = newNoInitialInstance();
@@ -518,14 +519,14 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
         crset2.execute();
         crset2.setTableName("Table2");
         jrs.addRowSet(crset2, "AUTHORID");
-        
+
         crset2 = newNoInitialInstance();
         crset2.setCommand("SELECT * FROM BOOKS");
         crset2.setUrl(DERBY_URL);
         crset2.execute();
         crset2.setTableName("Table3");
         jrs.addRowSet(crset2, "AUTHORID");
-      
+
         String whereClause = jrs.getWhereClause();
         assertNotNull(whereClause);
     }

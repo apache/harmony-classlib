@@ -35,7 +35,9 @@ import javax.sql.rowset.JoinRowSet;
 import javax.sql.rowset.Joinable;
 import javax.sql.rowset.RowSetMetaDataImpl;
 import javax.sql.rowset.spi.SyncFactoryException;
+import javax.sql.rowset.spi.SyncProviderException;
 
+import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
@@ -60,17 +62,24 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         initProperties();
     }
 
-    public JoinRowSetImpl(String providerID) throws SyncFactoryException {
-        super(providerID);
-        initProperties();
+    @Override
+    public void acceptChanges() throws SyncProviderException {
+        acceptChanges(conn);
     }
-    
+
+    @Override
+    protected boolean doAbsolute(int row, boolean checkType)
+            throws SQLException {
+        return super.doAbsolute(row, false);
+    }
 
     private void initProperties() {
         rsList = new ArrayList<RowSet>();
         matchColIndexs = new ArrayList<Integer>();
         matchColNames = new ArrayList<String>();
         joinType = INNER_JOIN;
+        setIsNotifyListener(false);
+        rows = new ArrayList<CachedRow>();
     }
 
     private void composeMetaData(ResultSetMetaData rsmd, int matchColumn)
@@ -343,63 +352,63 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
                     throw new SQLException(Messages.getString("rowset.39")); //$NON-NLS-1$
                 }
 
-                matchIndex = matchColIndexs.get(0);
+                matchIndex = matchColIndexs.get(0).intValue();
                 if (i == 0) {
                     matchName = rowSet.getMetaData().getColumnName(matchIndex);
-                    whereClause += " " + tableName + "." + matchName + ",";
+                    whereClause += " " + tableName + "." + matchName + ","; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
 
                 metaColumnCount = rowSet.getMetaData().getColumnCount();
                 for (int j = 1; j < matchIndex; j++) {
                     matchName = rowSet.getMetaData().getColumnName(j);
-                    whereClause += " " + tableName + "." + matchName;
+                    whereClause += " " + tableName + "." + matchName; //$NON-NLS-1$ //$NON-NLS-2$
 
                     if (j != metaColumnCount - 1 || i != size - 1) {
-                        whereClause += ",";
+                        whereClause += ","; //$NON-NLS-1$
                     } else {
-                        whereClause += " ";
+                        whereClause += " "; //$NON-NLS-1$
                     }
                 }
 
                 for (int j = matchIndex + 1; j <= metaColumnCount; j++) {
                     matchName = rowSet.getMetaData().getColumnName(j);
-                    whereClause += " " + tableName + "." + matchName;
+                    whereClause += " " + tableName + "." + matchName; //$NON-NLS-1$ //$NON-NLS-2$
 
                     if (j != metaColumnCount || i != size - 1) {
-                        whereClause += ",";
+                        whereClause += ","; //$NON-NLS-1$
                     } else {
-                        whereClause += " ";
+                        whereClause += " "; //$NON-NLS-1$
                     }
                 }
             }
-            whereClause += "from ";
+            whereClause += "from "; //$NON-NLS-1$
             for (int i = 0; i < size; i++) {
                 rowSet = (CachedRowSet) rsList.get(i);
                 tableName = rowSet.getTableName();
 
                 whereClause += tableName;
                 if (i != size - 1) {
-                    whereClause += ", ";
+                    whereClause += ", "; //$NON-NLS-1$
                 } else {
-                    whereClause += " ";
+                    whereClause += " "; //$NON-NLS-1$
                 }
             }
 
-            whereClause += "where ";
+            whereClause += "where "; //$NON-NLS-1$
             CachedRowSet firstRowSet = (CachedRowSet) rsList.get(0);
             String firstTableName = firstRowSet.getTableName();
             String firstMatchName = firstRowSet.getMetaData().getColumnName(
-                    matchColIndexs.get(0));
+                    matchColIndexs.get(0).intValue());
             for (int i = 1; i < size; i++) {
                 rowSet = (CachedRowSet) rsList.get(i);
                 tableName = rowSet.getTableName();
-                matchIndex = matchColIndexs.get(i);
+                matchIndex = matchColIndexs.get(i).intValue();
                 matchName = rowSet.getMetaData().getColumnName(matchIndex);
 
-                whereClause += firstTableName + "." + firstMatchName + " = ";
-                whereClause += tableName + "." + matchName;
+                whereClause += firstTableName + "." + firstMatchName + " = "; //$NON-NLS-1$ //$NON-NLS-2$
+                whereClause += tableName + "." + matchName; //$NON-NLS-1$
                 if (i != size - 1) {
-                    whereClause += " and ";
+                    whereClause += " and "; //$NON-NLS-1$
                 }
             }
         }
@@ -517,6 +526,33 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         }
     }
 
+    @Override
+    public boolean nextPage() throws SQLException {
+        boolean result = super.nextPage();
+        setIsNotifyListener(false);
+        return result;
+    }
+
+    @Override
+    public boolean previousPage() throws SQLException {
+        boolean result = super.previousPage();
+        setIsNotifyListener(false);
+        return result;
+    }
+
+    @Override
+    public void restoreOriginal() throws SQLException {
+        super.restoreOriginal();
+        setIsNotifyListener(false);
+    }
+
+    @Override
+    protected void doPopulate(ResultSet rs, boolean isPaging)
+            throws SQLException {
+        super.doPopulate(rs, isPaging);
+        setIsNotifyListener(false);
+    }
+
     /**
      * Join the data with another CachedRowSet. It updates rows,
      * currentRowIndex, currentRow and columnCount. It doesn't update its
@@ -542,8 +578,12 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
 
             // Make clones for all the CachedRows in rowSetToAdd, regardless of
             // whether it is deleted.
+            CachedRow row;
             for (int i = 0; i < rowSetToAdd.rows.size(); i++) {
-                newRows.add(rowSetToAdd.rows.get(i).createClone());
+                row = rowSetToAdd.rows.get(i);
+                if (!row.isDelete() || rowSetToAdd.getShowDeleted()) {
+                    newRows.add(row.createClone());
+                }
             }
 
             // Sets the rows and columnCount.
@@ -556,6 +596,15 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
             } else {
                 currentRow = null;
             }
+
+            // Inits other properties.
+            originalResultSet = rowSetToAdd.originalResultSet;
+            if (rowSetToAdd.conn != null) {
+                conn = rowSetToAdd.conn;
+            }
+            setTypeMap(rowSetToAdd.getTypeMap());
+            this.setTableName(rowSetToAdd.getTableName());
+            setShowDeleted(rowSetToAdd.getShowDeleted());
         } else {
             // Get the match index of itself and the rowSet to added.
             int matchIndex = matchColIndexs.get(0).intValue();
@@ -583,7 +632,7 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
                         comparator);
             }
 
-            // Set the curosr of rowSetToAdd to the last.
+            // Set the cursor of rowSetToAdd to the last.
             rowSetToAdd.last();
 
             // Set the cursor of itself to beforeFirst.
@@ -807,9 +856,9 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
      *            The column count of the result row.
      * @param originalColumnCount
      *            The column count of original row.
-     * @return
+     * @return The new created CachedRow.
      */
-    protected CachedRow constructNewRow(CachedRow row, CachedRow rowToAdd,
+    private CachedRow constructNewRow(CachedRow row, CachedRow rowToAdd,
             int matchColumnIndex, int matchColumnIndexOfToAdd,
             int resultColumnCount, int originalColumnCount) {
         Object[] rowData;
@@ -886,7 +935,6 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
                 return 0;
             }
             return -1;
-
         }
     }
 }

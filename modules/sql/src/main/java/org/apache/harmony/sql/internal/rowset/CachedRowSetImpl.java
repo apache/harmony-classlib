@@ -130,7 +130,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private SyncProvider syncProvider;
 
-    private CachedRowSetImpl originalResultSet;
+    protected CachedRowSetImpl originalResultSet;
 
     private SQLWarning sqlwarn = new SQLWarning();
 
@@ -147,7 +147,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private boolean isLastColNull;
 
-    private transient Connection conn;
+    protected transient Connection conn;
 
     private boolean isNotifyListener = true;
 
@@ -265,6 +265,11 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         }
 
         conn = con;
+
+        if (con == null) {
+            throw new SyncProviderException();
+        }
+
         try {
             conn.setAutoCommit(false);
             CachedRowSetWriter rowSetWriter = (CachedRowSetWriter) syncProvider
@@ -565,8 +570,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public ResultSet getOriginal() throws SQLException {
-        if (originalResultSet == null)
-        {
+        if (originalResultSet == null) {
             throw new NullPointerException();
         }
         return originalResultSet;
@@ -708,7 +712,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         }
     }
 
-    private void doPopulate(ResultSet rs, boolean isPaging) throws SQLException {
+    protected void doPopulate(ResultSet rs, boolean isPaging)
+            throws SQLException {
         isNotifyListener = false;
         meta = copyMetaData(rs.getMetaData());
 
@@ -1312,7 +1317,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
      * @return whether the cursor is on result set
      * @throws SQLException
      */
-    private boolean doAbsolute(int row, boolean checkType) throws SQLException {
+    protected boolean doAbsolute(int row, boolean checkType)
+            throws SQLException {
         if (isCursorOnInsert) {
             // rowset.0=Not a valid position
             throw new SQLException(Messages.getString("rowset.0")); //$NON-NLS-1$
@@ -3009,6 +3015,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     private Connection retrieveConnection() throws SQLException {
         if (getUrl() != null) {
+            // TODO UserName and Password 
             return DriverManager.getConnection(getUrl());
         } else if (getDataSourceName() != null) {
             try {
