@@ -19,15 +19,20 @@ package org.apache.harmony.text.tests.java.text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.ServiceConfigurationError;
 
 import junit.framework.TestCase;
+
+import org.apache.harmony.text.tests.java.text.MockedDecimalFormatSymbolsProvider.MockedDecimalFormatSymbols;
 
 public class DecimalFormatSymbolsTest extends TestCase {
 
@@ -52,6 +57,174 @@ public class DecimalFormatSymbolsTest extends TestCase {
         assertEquals("Returned incorrect symbols", '%', dfs.getPercent());
     }
 
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
+     */
+    public void test_getAvailableLocales_no_provider() throws Exception {
+        Locale[] locales = DecimalFormatSymbols.getAvailableLocales();
+        assertNotNull(locales);
+        // must contain Locale.US
+        boolean flag = false;
+        for (Locale locale : locales) {
+            if (locale.equals(Locale.US)) {
+                flag = true;
+                break;
+            }
+        }
+        assertTrue(flag);
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
+     */
+    public void test_getAvailableLocales_correct_provider() throws Exception {
+        URL path = new File("src/test/resources/provider/correct").toURL();
+        LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
+                new URL[] { path }) {
+            @Override
+            public void test() {
+                Locale[] locales = DecimalFormatSymbols.getAvailableLocales();
+                assertNotNull(locales);
+                // must contain mock Locale
+                boolean flag = false;
+                for (Locale locale : locales) {
+                    if (locale.getLanguage().equals("mock")) {
+                        flag = true;
+                        break;
+                    }
+                }
+                assertTrue(flag);
+            }
+
+        };
+
+        if (helper.getThrowable() != null) {
+            throw new Exception(helper.getThrowable());
+        }
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getAvailableLocales()
+     */
+    public void test_getAvailableLocales_wrong_provider() throws Exception {
+        URL path = new File("src/test/resources/provider/wrong").toURL();
+        LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
+                new URL[] { path }) {
+            @Override
+            public void test() {
+                try {
+                    DecimalFormatSymbols.getAvailableLocales();
+                    fail("Should throw ServiceConfigurationError");
+                } catch (ServiceConfigurationError e) {
+                    // expected
+                }
+            }
+        };
+
+        if (helper.getThrowable() != null) {
+            throw new Exception(helper.getThrowable());
+        }
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getInstance()
+     */
+    public void test_getInstance() {
+        assertEquals(new DecimalFormatSymbols(), DecimalFormatSymbols.getInstance());
+        assertEquals(new DecimalFormatSymbols(Locale.getDefault()),
+                DecimalFormatSymbols.getInstance());
+        
+        assertNotSame(DecimalFormatSymbols.getInstance(), DecimalFormatSymbols.getInstance());
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getInstance(Locale)
+     */
+    public void test_getInstanceLjava_util_Locale() {
+        try {
+            DecimalFormatSymbols.getInstance(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        assertEquals(new DecimalFormatSymbols(Locale.GERMANY), DecimalFormatSymbols
+                .getInstance(Locale.GERMANY));
+
+        Locale locale = new Locale("not exist language", "not exist country");
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+        assertNotNull(symbols);
+        assertEquals(DecimalFormatSymbols.getInstance(), symbols);
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getInstance(Locale)
+     */
+    public void test_getInstanceLjava_util_Locale_no_provider() {
+        try {
+            DecimalFormatSymbols.getInstance(null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        assertEquals(new DecimalFormatSymbols(Locale.GERMANY), DecimalFormatSymbols
+                .getInstance(Locale.GERMANY));
+
+        Locale locale = new Locale("not exist language", "not exist country");
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+        assertNotNull(symbols);
+        assertEquals(DecimalFormatSymbols.getInstance(), symbols);
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getInstance(Locale)
+     */
+    public void test_getInstanceLjava_util_Locale_correct_provider()
+            throws Exception {
+        URL path = new File("src/test/resources/provider/correct").toURL();
+        LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
+                new URL[] { path }) {
+            @Override
+            public void test() {
+                DecimalFormatSymbols symbols = DecimalFormatSymbols
+                        .getInstance(new Locale("Mock"));
+                assertTrue(symbols instanceof MockedDecimalFormatSymbols);
+
+            }
+        };
+
+        if (helper.getThrowable() != null) {
+            throw new Exception(helper.getThrowable());
+        }
+    }
+
+    /**
+     * @tests java.text.DecimalFormatSymbols#getInstance(Locale)
+     */
+    public void test_getInstanceLjava_util_Locale_wrong_provider()
+            throws Exception {
+        URL path = new File("src/test/resources/provider/wrong").toURL();
+        LoadLocaleProviderTestHelper helper = new LoadLocaleProviderTestHelper(
+                new URL[] { path }) {
+            @Override
+            public void test() {
+                try {
+                    DecimalFormatSymbols symbols = DecimalFormatSymbols
+                            .getInstance(new Locale("Mock"));
+                    fail("Should throw ServiceConfigurationError");
+                } catch (ServiceConfigurationError e) {
+                    // expected
+                }
+            }
+        };
+
+        if (helper.getThrowable() != null) {
+            throw new Exception(helper.getThrowable());
+        }
+    }
+    
     /**
      * @tests java.text.DecimalFormatSymbols#equals(java.lang.Object)
      */

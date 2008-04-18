@@ -450,7 +450,6 @@ public class SimpleDateFormat extends DateFormat {
 
         int beginPosition = buffer.length();
         Field dateFormatField = null;
-System.out.println("index:"+index);
         switch (index) {
             case ERA_FIELD:
                 dateFormatField = Field.ERA;

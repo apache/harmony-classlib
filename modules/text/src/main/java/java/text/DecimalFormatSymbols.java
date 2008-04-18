@@ -22,19 +22,30 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
+import java.text.spi.DecimalFormatSymbolsProvider;
 import java.util.Arrays;
 import java.util.Currency;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.text.LocaleServiceProviderLoader;
 
 /**
  * DecimalFormatSymbols holds the symbols used in the formating and parsing of
  * numbers.
  */
-public final class DecimalFormatSymbols implements Cloneable, Serializable {
+public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 5772796243397350300L;
+
+    private static Set<Locale> buildinLocales;
+
+    private static final String PROVIDER_CONFIGURATION_FILE_NAME = "META-INF/services/java.text.spi.DecimalFormatSymbolsProvider"; //$NON-NLS-1$
+
+    private static HashMap<ClassLoader, Object> providersCache = new HashMap<ClassLoader, Object>();
 
     private final int ZeroDigit = 0, Digit = 1, DecimalSeparator = 2,
             GroupingSeparator = 3, PatternSeparator = 4, Percent = 5,
@@ -101,7 +112,33 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
      * @return array of locales
      */
     public static Locale[] getAvailableLocales() {
-        throw new NotImplementedException();
+        Locale[] icuLocales = com.ibm.icu.text.DecimalFormatSymbols
+                .getAvailableLocales();
+        if (buildinLocales == null) {
+            initBuildInLocales(icuLocales);
+        }
+
+        Locale[] providerLocales = LocaleServiceProviderLoader
+                .getProviderSupportLocales(providersCache,
+                        PROVIDER_CONFIGURATION_FILE_NAME);
+
+        if (providerLocales == null) {
+            return icuLocales;
+        }
+
+        Locale[] locales = new Locale[icuLocales.length
+                + providerLocales.length];
+        System.arraycopy(icuLocales, 0, locales, 0, icuLocales.length);
+        System.arraycopy(providerLocales, 0, locales, icuLocales.length,
+                providerLocales.length);
+        return locales;
+    }
+
+    private static synchronized void initBuildInLocales(Locale[] icuLocales) {
+        buildinLocales = new HashSet<Locale>(icuLocales.length);
+        for (Locale locale : icuLocales) {
+            buildinLocales.add(locale);
+        }
     }
 
     /**
@@ -112,7 +149,7 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
      * @since 1.6
      */
     public static final DecimalFormatSymbols getInstance() {
-        throw new NotImplementedException();
+        return new DecimalFormatSymbols();
     }
 
     /**
@@ -131,7 +168,28 @@ public final class DecimalFormatSymbols implements Cloneable, Serializable {
      * @since 1.6
      */
     public static final DecimalFormatSymbols getInstance(Locale locale) {
-        throw new NotImplementedException();
+        if (null == locale) {
+            throw new NullPointerException();
+        }
+
+        if (buildinLocales == null) {
+            initBuildInLocales(com.ibm.icu.text.DecimalFormatSymbols
+                    .getAvailableLocales());
+        }
+
+        if (buildinLocales.contains(locale)) {
+            return new DecimalFormatSymbols(locale);
+        }
+
+        DecimalFormatSymbolsProvider provider = (DecimalFormatSymbolsProvider) LocaleServiceProviderLoader
+                .getProviderByLocale(providersCache, locale,
+                        PROVIDER_CONFIGURATION_FILE_NAME);
+
+        if (provider != null) {
+            return provider.getInstance(locale);
+        }
+        // return DecimalFormatSymbols using default locale
+        return new DecimalFormatSymbols();
     }
 
     /**

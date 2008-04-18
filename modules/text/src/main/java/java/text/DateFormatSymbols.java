@@ -18,10 +18,14 @@
 package java.text;
 
 import java.io.Serializable;
+import java.text.spi.DateFormatSymbolsProvider;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
-import org.apache.harmony.luni.util.NotImplementedException;
+import org.apache.harmony.text.LocaleServiceProviderLoader;
 
 /**
  * DateFormatSymbols holds the Strings used in the formating and parsing of
@@ -36,6 +40,12 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     String[] ampms, eras, months, shortMonths, shortWeekdays, weekdays;
 
     String[][] zoneStrings;
+
+    private static Set<Locale> buildinLocales;
+
+    private static HashMap<ClassLoader, Object> providersCache = new HashMap<ClassLoader, Object>();
+
+    private static final String PROVIDER_CONFIGURATION_FILE_NAME = "META-INF/services/java.text.spi.DateFormatSymbolsProvider"; //$NON-NLS-1$
 
     /**
      * Constructs a new DateFormatSymbols containing the symbols for the default
@@ -75,7 +85,33 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * @return array of locales
      */
     public static Locale[] getAvailableLocales() {
-        throw new NotImplementedException();
+        Locale[] icuLocales = com.ibm.icu.text.DateFormatSymbols
+                .getAvailableLocales();
+        if (buildinLocales == null) {
+            initBuildInLocales(icuLocales);
+        }
+
+        Locale[] providerLocales = LocaleServiceProviderLoader
+                .getProviderSupportLocales(providersCache,
+                        PROVIDER_CONFIGURATION_FILE_NAME);
+
+        if (providerLocales == null) {
+            return icuLocales;
+        }
+
+        Locale[] locales = new Locale[icuLocales.length
+                + providerLocales.length];
+        System.arraycopy(icuLocales, 0, locales, 0, icuLocales.length);
+        System.arraycopy(providerLocales, 0, locales, icuLocales.length,
+                providerLocales.length);
+        return locales;
+    }
+
+    private static synchronized void initBuildInLocales(Locale[] icuLocales) {
+        buildinLocales = new HashSet<Locale>(icuLocales.length);
+        for (Locale locale : icuLocales) {
+            buildinLocales.add(locale);
+        }
     }
 
     /**
@@ -86,13 +122,13 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * @since 1.6
      */
     public static final DateFormatSymbols getInstance() {
-        throw new NotImplementedException();
+        return new DateFormatSymbols();
     }
 
     /**
-     * Return the DateFormatSymbols for the specified locale. This method
-     * return DateFormatSymbols instances for locales supported by the Java
-     * runtime and installed DateFormatSymbols implementations.
+     * Return the DateFormatSymbols for the specified locale. This method return
+     * DateFormatSymbols instances for locales supported by the Java runtime and
+     * installed DateFormatSymbols implementations.
      * 
      * @param locale
      *            locale for the returned DateFormatSymbols instance
@@ -105,7 +141,30 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * @since 1.6
      */
     public static final DateFormatSymbols getInstance(Locale locale) {
-        throw new NotImplementedException();
+        if (null == locale) {
+            throw new NullPointerException();
+        }
+
+        if (buildinLocales == null) {
+            initBuildInLocales(com.ibm.icu.text.DateFormatSymbols
+                    .getAvailableLocales());
+        }
+
+        if (buildinLocales.contains(locale)) {
+            return new DateFormatSymbols(locale);
+        }
+
+        DateFormatSymbolsProvider provider = (DateFormatSymbolsProvider) LocaleServiceProviderLoader
+                .getProviderByLocale(providersCache, locale,
+                        PROVIDER_CONFIGURATION_FILE_NAME);
+
+        if (provider != null) {
+            return provider.getInstance(locale);
+        }
+
+        // return DateFormatSymbols using default locale
+        return new DateFormatSymbols();
+
     }
 
     /**
