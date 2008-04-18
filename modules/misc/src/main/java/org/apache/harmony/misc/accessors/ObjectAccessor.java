@@ -64,7 +64,7 @@ public class ObjectAccessor {
      * This class complies to singleton pattern.
      */
     private static ObjectAccessor instance;
-    static ObjectAccessor getInstance() {
+    public static ObjectAccessor getInstance() {
         if (instance == null) {
             System.loadLibrary("accessors"); //$NON-NLS-1$
             instance = new ObjectAccessor();

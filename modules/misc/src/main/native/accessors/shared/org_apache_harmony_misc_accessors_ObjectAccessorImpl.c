@@ -307,8 +307,13 @@ JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_
  */
 JNIEXPORT jobject JNICALL Java_org_apache_harmony_misc_accessors_ObjectAccessor_newInstance__Ljava_lang_Class_2J_3Ljava_lang_Object_2
 (JNIEnv *env, jobject accessorObj, jclass clss, jlong ctorID, jobjectArray args) {
-    jvalue* pargs = jarrayToValues(env, args);
-    jobject res = (*env)->NewObjectA(env, clss, (jmethodID)(intptr_t)ctorID, pargs);
+    jvalue *pargs = NULL;
+    jobject res;
+
+    if (args != NULL) {
+        pargs = jarrayToValues(env, args);
+    }
+    res = (*env)->NewObjectA(env, clss, (jmethodID)(intptr_t)ctorID, pargs);
     free(pargs);
     return res;
 }
