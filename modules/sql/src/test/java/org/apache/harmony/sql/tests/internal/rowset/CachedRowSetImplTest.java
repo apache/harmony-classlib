@@ -21,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -37,7 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javax.sql.DataSource;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetInternal;
 import javax.sql.RowSetListener;
@@ -144,7 +142,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
     }
 
     public void testSetSyncProvider() throws Exception {
-        if (System.getProperty("Testing Harmony") == "true") {
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
             String mySyncProvider = "org.apache.harmony.sql.internal.rowset.HYOptimisticProvider";
             crset.setSyncProvider(mySyncProvider);
             assertEquals(crset.getSyncProvider().getClass().getCanonicalName(),
@@ -737,6 +735,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         try {
             assertEquals(crset.getMatchColumnNames(), crsetCopy
                     .getMatchColumnNames());
+            fail("Should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
@@ -1237,6 +1236,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
         try {
             crset.getMatchColumnNames();
+            fail("Should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
@@ -1362,7 +1362,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
          * equals last(). However, the return value of absolute(negative) is
          * false when run on RI. The Harmony follows the spec.
          */
-        if (System.getProperty("Testing Harmony") == "true") {
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertTrue(crset.absolute(-1));
             assertEquals(4, crset.getInt(1));
             assertTrue(crset.absolute(-3));
@@ -2948,8 +2948,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         try {
             crset.getOriginal();
             fail("Should throw NullPointerException.");
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             // Expected.
         }
     }

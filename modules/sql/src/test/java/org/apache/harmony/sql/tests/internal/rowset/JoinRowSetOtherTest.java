@@ -16,11 +16,9 @@
  */
 package org.apache.harmony.sql.tests.internal.rowset;
 
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import javax.sql.RowSetMetaData;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.JdbcRowSet;
 import javax.sql.rowset.JoinRowSet;
@@ -306,20 +304,24 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
     /**
      * @throws Exception
      * @throws SQLException
-     * @tests java.sql.rowset.joinRowSet#getRowSets()
+     * @tests java.sql.rowset.joinRowSet#addRowSet()
      */
-    public void testGetRowSets_NoInitialCachedRowSet() throws Exception {
+    public void testAddRowSet_NoInitialCachedRowSet() throws Exception {
         Collection collection;
 
         CachedRowSet crs = newNoInitialInstance();
+        
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             try {
                 jrs.addRowSet(crs, 1);
                 fail("Should throw SQLException in harmony.");
-            } catch (SQLException e) {
+            }
+            catch (SQLException e)
+            {
                 // Expected.
             }
-        } else {
+        }
+        else {
             jrs.addRowSet(crs, 1);
         }
     }

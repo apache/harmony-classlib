@@ -526,33 +526,6 @@ public class JoinRowSetImpl extends WebRowSetImpl implements JoinRowSet {
         }
     }
 
-    @Override
-    public boolean nextPage() throws SQLException {
-        boolean result = super.nextPage();
-        setIsNotifyListener(false);
-        return result;
-    }
-
-    @Override
-    public boolean previousPage() throws SQLException {
-        boolean result = super.previousPage();
-        setIsNotifyListener(false);
-        return result;
-    }
-
-    @Override
-    public void restoreOriginal() throws SQLException {
-        super.restoreOriginal();
-        setIsNotifyListener(false);
-    }
-
-    @Override
-    protected void doPopulate(ResultSet rs, boolean isPaging)
-            throws SQLException {
-        super.doPopulate(rs, isPaging);
-        setIsNotifyListener(false);
-    }
-
     /**
      * Join the data with another CachedRowSet. It updates rows,
      * currentRowIndex, currentRow and columnCount. It doesn't update its

@@ -1018,6 +1018,18 @@ public class JdbcRowSetTest extends CachedRowSetTestCase {
             // expected
         }
         jrs.getFetchSize();
+        try {
+            jrs.getMatchColumnIndexes();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+        try {
+            jrs.getMatchColumnNames();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
         jrs.getMaxFieldSize();
         jrs.getMaxRows();
         try {

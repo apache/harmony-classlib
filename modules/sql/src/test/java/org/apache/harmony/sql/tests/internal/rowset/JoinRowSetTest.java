@@ -334,18 +334,15 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         } else {
             try {
                 jrs.addRowSet(webRs);
-                fail("should throw ClassCastException");
-            } catch (ClassCastException e) {
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
                 // expected
+            } catch (SQLException e) {
+                // Expected
             }
 
             webRs.setMatchColumn(1);
-            try {
-                jrs.addRowSet(webRs);
-                fail("should throw ClassCastException");
-            } catch (ClassCastException e) {
-                // expected
-            }
+            jrs.addRowSet(webRs);
         }
         jrs.close();
 
@@ -356,17 +353,9 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         webRs = newWebRowSet();
         webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
         webRs.setMatchColumn(1);
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            jrs.addRowSet(webRs);
-        } else {
-            try {
-                // The same problem as the empty
-                jrs.addRowSet(webRs);
-                fail("should throw ClassCastException");
-            } catch (ClassCastException e) {
-                // expected
-            }
-        }
+        jrs.addRowSet(webRs);
+        assertTrue(jrs.next());
+        assertEquals(1, jrs.getInt(1));
         jrs.close();
     }
 
@@ -385,12 +374,7 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
                 // expected
             }
         } else {
-            try {
-                jrs.addRowSet(webRs, 1);
-                fail("should throw ClassCastException");
-            } catch (ClassCastException e) {
-                // expected
-            }
+            jrs.addRowSet(webRs, 1);
         }
         jrs.close();
 
@@ -400,16 +384,9 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         jrs = newJoinRowSet();
         webRs = newWebRowSet();
         webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            jrs.addRowSet(webRs, 1);
-        } else {
-            try {
-                jrs.addRowSet(webRs, 1);
-                fail("should throw ClassCastException");
-            } catch (ClassCastException e) {
-                // expected
-            }
-        }
+        jrs.addRowSet(webRs, 1);
+        assertTrue(jrs.next());
+        assertEquals(1, jrs.getInt(1));
         jrs.close();
     }
 
@@ -860,5 +837,99 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
             }
         }
         assertEquals(3, index);
+    }
+
+    public void testToCachedRowSet_acceptChanges() throws Exception {
+        /*
+         * The first CachedRowSet
+         */
+        jrs.addRowSet(crset, 1);
+        CachedRowSet toCrset = jrs.toCachedRowSet();
+        // call crset.acceptChanges()
+        assertTrue(crset.absolute(3));
+        assertEquals("test3", crset.getString(2));
+        crset.updateString(2, "update3");
+        crset.updateRow();
+        crset.acceptChanges();
+        assertTrue(crset.absolute(3));
+        assertEquals("update3", crset.getString(2));
+        // call toCrset.acceptChanges()
+        assertTrue(toCrset.absolute(3));
+        assertEquals("test3", toCrset.getString(2));
+        assertTrue(toCrset.last());
+        assertEquals("test4", toCrset.getString(2));
+        toCrset.updateString(2, "update4");
+        toCrset.updateRow();
+        toCrset.acceptChanges();
+        assertTrue(toCrset.absolute(4));
+        assertEquals("update4", toCrset.getString(2));
+
+        /*
+         * The second CachedRowSet
+         */
+        noInitialCrset.populate(st.executeQuery("SELECT * FROM BOOKS"));
+        jrs.addRowSet(noInitialCrset, 1);
+        toCrset = jrs.toCachedRowSet();
+        // call toCrset.acceptChanges()
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(toCrset.last());
+        } else {
+            assertTrue(toCrset.first());
+        }
+        assertEquals(4, toCrset.getInt(1));
+        toCrset.updateString(2, "modify4");
+        toCrset.updateRow();
+        try {
+            toCrset.acceptChanges();
+            fail("should throw exception");
+        } catch (Exception e) {
+            // expected
+        }
+    }
+
+    public void testCancelRowUpdates_Simple() throws Exception {
+        jrs.addRowSet(crset, 1);
+        Listener listener = new Listener();
+        jrs.addRowSetListener(listener);
+
+        jrs.absolute(4);
+        jrs.updateString(2, "Updated");
+        jrs.updateRow();
+        jrs.absolute(4);
+        assertEquals("Updated", jrs.getString(2));
+
+        jrs.cancelRowUpdates();
+        jrs.absolute(4);
+        assertEquals("test4", jrs.getString(2));
+        assertNull(listener.getTag());
+    }
+
+    public void testCancelRowUpdates() throws Exception {
+        jrs.addRowSet(crset, 1);
+        Listener listener = new Listener();
+        jrs.addRowSetListener(listener);
+
+        assertTrue(jrs.absolute(3));
+        jrs.updateString(2, "update3");
+        // call cancelRowUpdates() before updateRow(), no effect here
+        listener.clear();
+        jrs.cancelRowUpdates();
+        assertNull(listener.getTag());
+        assertEquals("update3", jrs.getString(2));
+        jrs.updateRow();
+        jrs.absolute(3);
+        assertEquals("update3", jrs.getString(2));
+
+        assertTrue(jrs.absolute(4));
+        jrs.updateString(2, "update4");
+        assertEquals("update4", jrs.getString(2));
+        jrs.updateRow();
+        assertEquals("update4", jrs.getString(2));
+        // call cancelRowUpdates() after updateRow(), it works here
+        listener.clear();
+        assertEquals("update4", jrs.getString(2));
+        jrs.cancelRowUpdates();
+        assertEquals("test4", jrs.getString(2));
+        assertNull(listener.getTag());
     }
 }

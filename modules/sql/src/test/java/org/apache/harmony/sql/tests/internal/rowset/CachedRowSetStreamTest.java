@@ -734,6 +734,27 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
             // expected
         }
 
+        try {
+            crset.updateAsciiStream(3, new ByteArrayInputStream(new byte[0]),
+                    -3);
+            fail("should throw NegativeArraySizeException");
+        } catch (NegativeArraySizeException e) {
+            // expected
+        }
+
+        try {
+            crset
+                    .updateAsciiStream(3,
+                            new ByteArrayInputStream(new byte[0]), 0);
+            fail("Should throw IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        crset.updateAsciiStream(3, new ByteArrayInputStream(new byte[] { 1, 2,
+                3, 4, 5 }), 0);
+        assertEquals(0, crset.getString(3).length());
+
         crset.updateAsciiStream(3, new ByteArrayInputStream(new byte[] { 1, 2,
                 3, 4, 5 }), 2);
 
@@ -755,6 +776,36 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
         assertEquals(5, chars.length);
         for (int i = 0; i < chars.length; i++) {
             assertEquals(i + 1, chars[i]);
+        }
+
+        String value = new String("\u548c\u8c10");
+        in = new ByteArrayInputStream(value.getBytes());
+        crset.updateAsciiStream(2, in, in.available());
+
+        obj = crset.getObject(2);
+        assertTrue(obj instanceof String);
+        assertEquals(value, obj);
+
+        chars = ((String) obj).toCharArray();
+        char[] expected = value.toCharArray();
+        assertEquals(expected.length, chars.length);
+        for (int i = 0; i < chars.length; i++) {
+            assertEquals(expected[i], chars[i]);
+        }
+
+        value = new String("\u548d\u8c1a");
+        in = new ByteArrayInputStream(value.getBytes());
+        crset.updateAsciiStream(3, in, in.available());
+
+        obj = crset.getObject(3);
+        assertTrue(obj instanceof String);
+        assertEquals(value, obj);
+
+        chars = ((String) obj).toCharArray();
+        expected = value.toCharArray();
+        assertEquals(expected.length, chars.length);
+        for (int i = 0; i < chars.length; i++) {
+            assertEquals(expected[i], chars[i]);
         }
     }
 
@@ -841,6 +892,14 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
 
     public void testUpdateBinaryStream() throws Exception {
         crset.next();
+
+        try {
+            crset.updateBinaryStream(3, new ByteArrayInputStream(
+                    new byte[] { 0 }), -3);
+            fail("should throw NegativeArraySizeException");
+        } catch (NegativeArraySizeException e) {
+            // expected
+        }
 
         crset.updateBinaryStream(3, new ByteArrayInputStream(new byte[] { 1 }),
                 10);
@@ -980,6 +1039,13 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
             crset.updateCharacterStream(2, new StringReader("test"), 10);
             fail("Should throw IndexOutOfBoundsException");
         } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        try {
+            crset.updateCharacterStream(2, new StringReader("test"), -3);
+            fail("should throw NegativeArraySizeException");
+        } catch (NegativeArraySizeException e) {
             // expected
         }
 
