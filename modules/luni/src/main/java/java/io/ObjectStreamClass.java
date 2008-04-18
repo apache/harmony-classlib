@@ -58,6 +58,8 @@ public class ObjectStreamClass implements Serializable {
     // Name of the field that contains the SUID value (if present)
     private static final String UID_FIELD_NAME = "serialVersionUID"; //$NON-NLS-1$
 
+    static final long CONSTRUCTOR_IS_NOT_RESOLVED = -1;
+
     private static final int CLASS_MODIFIERS_MASK;
 
     private static final int FIELD_MODIFIERS_MASK;
@@ -173,6 +175,17 @@ public class ObjectStreamClass implements Serializable {
 
     // Array of ObjectStreamField describing the serialized fields of this class
     private transient ObjectStreamField[] loadFields;
+
+    // MethodID for deserialization constructor
+    private transient long constructor = CONSTRUCTOR_IS_NOT_RESOLVED;
+
+    void setConstructor(long newConstructor) {
+        constructor = newConstructor;
+    }
+
+    long getConstructor() {
+        return constructor;
+    }
 
     /*
      * If an ObjectStreamClass describes an Externalizable class, it (the

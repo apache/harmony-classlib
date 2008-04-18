@@ -27,7 +27,7 @@ endif
 BUILDFILES = \
 	$(SHAREDSUB)luni_copyright.o $(SHAREDSUB)file.o procimpl.o \
 	$(SHAREDSUB)nethelp.o \
-	$(SHAREDSUB)floatbits.o $(SHAREDSUB)ois.o \
+	$(SHAREDSUB)floatbits.o \
 	helpers.o $(SHAREDSUB)math.o $(SHAREDSUB)luniglob.o \
 	$(SHAREDSUB)proxy.o \
 	$(SHAREDSUB)cbigint.o $(SHAREDSUB)dblparse.o $(SHAREDSUB)fltparse.o \

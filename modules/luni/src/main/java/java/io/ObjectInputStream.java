@@ -495,25 +495,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     }
 
     /**
-     * Create and return a new instance of class <code>instantiationClass</code>
-     * but running the constructor defined in class
-     * <code>constructorClass</code> (same as <code>instantiationClass</code>
-     * or a superclass).
-     * 
-     * Has to be native to avoid visibility rules and to be able to have
-     * <code>instantiationClass</code> not the same as
-     * <code>constructorClass</code> (no such API in java.lang.reflect).
-     * 
-     * @param instantiationClass
-     *            The new object will be an instance of this class
-     * @param constructorClass
-     *            The empty constructor to run will be in this class
-     * @return the object created from <code>instantiationClass</code>
-     */
-    private static native Object newInstance(Class<?> instantiationClass,
-            Class<?> constructorClass);
-
-    /**
      * Return the next <code>int</code> handle to be used to indicate cyclic
      * references being loaded from the stream.
      * 
@@ -1860,51 +1841,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         return Integer.valueOf(input.readInt());
     }
 
-    /**
-     * Read a new object from the stream. It is assumed the object has not been
-     * loaded yet (not a cyclic reference). Return the object read.
-     * 
-     * If the object implements <code>Externalizable</code> its
-     * <code>readExternal</code> is called. Otherwise, all fields described by
-     * the class hierarchy are loaded. Each class can define how its declared
-     * instance fields are loaded by defining a private method
-     * <code>readObject</code>
-     * 
-     * @param unshared
-     *            read the object unshared
-     * @return the object read
-     * 
-     * @throws IOException
-     *             If an IO exception happened when reading the object.
-     * @throws OptionalDataException
-     *             If optional data could not be found when reading the object
-     *             graph
-     * @throws ClassNotFoundException
-     *             If a class for one of the objects could not be found
-     */
-    private Object readNewObject(boolean unshared)
-            throws OptionalDataException, ClassNotFoundException, IOException {
-        ObjectStreamClass classDesc = readClassDesc();
+    private Class<?> resolveConstructorClass(Class<?> objectClass, boolean wasSerializable, boolean wasExternalizable)
+        throws OptionalDataException, ClassNotFoundException, IOException {
 
-        if (classDesc == null) {
-            throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
-        }
-
-        Integer newHandle = Integer.valueOf(nextHandle());
-
-        // Note that these values come from the Stream, and in fact it could be
-        // that the classes have been changed so that the info below now
-        // conflicts with the newer class
-        boolean wasExternalizable = (classDesc.getFlags() & SC_EXTERNALIZABLE) > 0;
-        boolean wasSerializable = (classDesc.getFlags() & SC_SERIALIZABLE) > 0;
-
-        // Maybe we should cache the values above in classDesc ? It may be the
-        // case that when reading classDesc we may need to read more stuff
-        // depending on the values above
-        Class<?> objectClass = classDesc.forClass();
-
-        Object result, registeredResult = null;
-        if (objectClass != null) {
             // The class of the instance may not be the same as the class of the
             // constructor to run
             // This is the constructor to run if Externalizable
@@ -1964,9 +1903,66 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 }
             }
 
+            return constructorClass;
+    }
+
+    /**
+     * Read a new object from the stream. It is assumed the object has not been
+     * loaded yet (not a cyclic reference). Return the object read.
+     * 
+     * If the object implements <code>Externalizable</code> its
+     * <code>readExternal</code> is called. Otherwise, all fields described by
+     * the class hierarchy are loaded. Each class can define how its declared
+     * instance fields are loaded by defining a private method
+     * <code>readObject</code>
+     * 
+     * @param unshared
+     *            read the object unshared
+     * @return the object read
+     * 
+     * @throws IOException
+     *             If an IO exception happened when reading the object.
+     * @throws OptionalDataException
+     *             If optional data could not be found when reading the object
+     *             graph
+     * @throws ClassNotFoundException
+     *             If a class for one of the objects could not be found
+     */
+    private Object readNewObject(boolean unshared)
+            throws OptionalDataException, ClassNotFoundException, IOException {
+        ObjectStreamClass classDesc = readClassDesc();
+
+        if (classDesc == null) {
+            throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
+        }
+
+        Integer newHandle = Integer.valueOf(nextHandle());
+
+        // Note that these values come from the Stream, and in fact it could be
+        // that the classes have been changed so that the info below now
+        // conflicts with the newer class
+        boolean wasExternalizable = (classDesc.getFlags() & SC_EXTERNALIZABLE) > 0;
+        boolean wasSerializable = (classDesc.getFlags() & SC_SERIALIZABLE) > 0;
+
+
+        // Maybe we should cache the values above in classDesc ? It may be the
+        // case that when reading classDesc we may need to read more stuff
+        // depending on the values above
+        Class<?> objectClass = classDesc.forClass();
+
+        Object result, registeredResult = null;
+        if (objectClass != null) {
+
+            long constructor = classDesc.getConstructor();
+            if (constructor == ObjectStreamClass.CONSTRUCTOR_IS_NOT_RESOLVED) {
+                constructor = accessor.getMethodID(resolveConstructorClass(objectClass, wasSerializable, wasExternalizable), null, new Class[0]);
+                classDesc.setConstructor(constructor);
+            }
+
             // Now we know which class to instantiate and which constructor to
             // run. We are allowed to run the constructor.
-            result = newInstance(objectClass, constructorClass);
+            result = accessor.newInstance(objectClass, constructor, null);
+
             registerObjectRead(result, newHandle, unshared);
 
             registeredResult = result;
