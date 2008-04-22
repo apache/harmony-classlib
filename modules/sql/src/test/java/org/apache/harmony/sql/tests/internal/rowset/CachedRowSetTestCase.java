@@ -58,11 +58,7 @@ public class CachedRowSetTestCase extends TestCase {
         try {
             conn = DriverManager.getConnection(DERBY_URL);
         } catch (SQLException e) {
-            try {
-                conn = DriverManager.getConnection(DERBY_URL_Create);
-            } catch (SQLException ee) {
-                throw new SQLException("Create DB Failure!");
-            }
+            conn = DriverManager.getConnection(DERBY_URL_Create);
         }
 
         st = conn.createStatement();
