@@ -784,13 +784,13 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
 
         obj = crset.getObject(2);
         assertTrue(obj instanceof String);
-        assertEquals(value, obj);
+        assertEquals(new String(value.getBytes()), obj);
 
-        chars = ((String) obj).toCharArray();
-        char[] expected = value.toCharArray();
-        assertEquals(expected.length, chars.length);
-        for (int i = 0; i < chars.length; i++) {
-            assertEquals(expected[i], chars[i]);
+        byte[] bytes = ((String) obj).getBytes();
+        byte[] expected = value.getBytes();
+        assertEquals(expected.length, bytes.length);
+        for (int i = 0; i < bytes.length; i++) {
+            assertEquals(expected[i], bytes[i]);
         }
 
         value = new String("\u548d\u8c1a");
@@ -799,13 +799,13 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
 
         obj = crset.getObject(3);
         assertTrue(obj instanceof String);
-        assertEquals(value, obj);
+        assertEquals(new String(value.getBytes()), obj);
 
-        chars = ((String) obj).toCharArray();
-        expected = value.toCharArray();
-        assertEquals(expected.length, chars.length);
-        for (int i = 0; i < chars.length; i++) {
-            assertEquals(expected[i], chars[i]);
+        bytes = ((String) obj).getBytes();
+        expected = value.getBytes();
+        assertEquals(expected.length, bytes.length);
+        for (int i = 0; i < bytes.length; i++) {
+            assertEquals(expected[i], bytes[i]);
         }
     }
 
@@ -1192,7 +1192,8 @@ public class CachedRowSetStreamTest extends CachedRowSetTestCase {
                 // FOR BIT DATA' from a data value of type
                 // 'java.io.InputStream(ASCII)'.
                 /*
-                 * TODO It seems RI invoke wrong method when it's setBinaryStream
+                 * TODO It seems RI invoke wrong method when it's
+                 * setBinaryStream
                  */
             }
         }
