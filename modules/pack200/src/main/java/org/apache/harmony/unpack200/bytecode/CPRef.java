@@ -40,8 +40,8 @@ public abstract class CPRef extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if descriptor or className is null
      */
-    public CPRef(byte type, CPClass className, CPNameAndType descriptor) {
-        super(type);
+    public CPRef(byte type, CPClass className, CPNameAndType descriptor, int globalIndex) {
+        super(type, globalIndex);
         this.className = className;
         this.nameAndType = descriptor;
         if (descriptor == null || className == null) {

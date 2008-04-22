@@ -18,8 +18,8 @@ package org.apache.harmony.unpack200.bytecode;
  */
 public class CPInterfaceMethodRef extends CPRef {
 
-    public CPInterfaceMethodRef(CPClass className, CPNameAndType descriptor) {
-        super(ConstantPoolEntry.CP_InterfaceMethodref, className, descriptor);
+    public CPInterfaceMethodRef(CPClass className, CPNameAndType descriptor, int globalIndex) {
+        super(ConstantPoolEntry.CP_InterfaceMethodref, className, descriptor, globalIndex);
         this.domain = ClassConstantPool.DOMAIN_METHOD;
     }
 

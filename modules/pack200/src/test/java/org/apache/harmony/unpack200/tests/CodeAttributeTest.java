@@ -25,6 +25,11 @@ import org.apache.harmony.unpack200.CpBands;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
+import org.apache.harmony.unpack200.bytecode.CPFieldRef;
+import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPString;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
 import org.apache.harmony.unpack200.bytecode.LocalVariableTableAttribute;
 import org.apache.harmony.unpack200.bytecode.OperandManager;
@@ -54,28 +59,18 @@ public class CodeAttributeTest extends TestCase {
             super(segment);
         }
 
-        public String[] getCpFieldClass() {
-            return new String[] { "Un", "Deux", "Trois", "Quatre", "Cinq",
-                    "Six", "Sept", "Huit", "Neuf" };
+        public CPFieldRef cpFieldValue(int index) {
+            return null;
         }
 
-        public String[] getCpFieldDescriptor() {
-            return new String[] { "Un:un", "Deux:deux", "Trois:trois" };
+        public CPString cpStringValue(int index) {
+            return new CPString(new CPUTF8("Hello", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ), -1);
         }
 
-        public String[] getCpMethodClass() {
-            return new String[] { "Un", "Deux", "Trois", "Quatre", "Cinq",
-                    "Six", "Sept", "Huit", "Neuf" };
+        public CPMethodRef cpMethodValue(int index) {
+            return null;
         }
 
-        public String[] getCpMethodDescriptor() {
-            return new String[] { "Un:un", "Deux:deux", "Trois:trois" };
-        }
-
-        public String[] getCpString() {
-            return new String[] { "Un", "Deux", "Trois", "Quatre", "Cinq",
-                    "Six", "Sept", "Huit", "Neuf" };
-        }
     }
 
     public class MockOperandManager extends OperandManager {

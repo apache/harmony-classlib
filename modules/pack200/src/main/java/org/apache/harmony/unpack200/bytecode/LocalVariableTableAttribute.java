@@ -158,4 +158,8 @@ public class LocalVariableTableAttribute extends BCIRenumberedAttribute {
             lengths[index] = revisedLength;
         }
     }
+
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
 }

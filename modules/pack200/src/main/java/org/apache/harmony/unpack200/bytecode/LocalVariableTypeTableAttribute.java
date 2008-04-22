@@ -79,4 +79,8 @@ public class LocalVariableTypeTableAttribute extends Attribute {
                 + " varaibles";
     }
 
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
 }

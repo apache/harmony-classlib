@@ -21,8 +21,8 @@ package org.apache.harmony.unpack200.bytecode;
  */
 public abstract class CPConstantNumber extends CPConstant {
 
-    public CPConstantNumber(byte tag, Object value) {
-        super(tag, value);
+    public CPConstantNumber(byte tag, Object value, int globalIndex) {
+        super(tag, value, globalIndex);
     }
 
     protected Number getNumber() {

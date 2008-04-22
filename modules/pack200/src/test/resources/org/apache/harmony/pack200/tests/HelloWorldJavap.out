@@ -1,21 +1,102 @@
 Compiled from "HelloWorld.java"
-public class org.apache.harmony.archive.tests.internal.pack200.HelloWorld extends java.lang.Object{
+public class org.apache.harmony.archive.tests.internal.pack200.HelloWorld extends java.lang.Object
+  SourceFile: "HelloWorld.java"
+  minor version: 0
+  major version: 48
+  Constant pool:
+const #1 = float	2.718f;
+const #2 = float	3.142f;
+const #3 = String	#8;	//  Hello world
+const #4 = Asciz	()V;
+const #5 = Asciz	<init>;
+const #6 = Asciz	D;
+const #7 = Asciz	F;
+const #8 = Asciz	Hello world;
+const #9 = Asciz	I;
+const #10 = Asciz	J;
+const #11 = Asciz	a;
+const #12 = Asciz	args;
+const #13 = Asciz	b;
+const #14 = Asciz	c;
+const #15 = Asciz	d;
+const #16 = Asciz	f;
+const #17 = Asciz	g;
+const #18 = Asciz	i;
+const #19 = Asciz	j;
+const #20 = Asciz	java/io/PrintStream;
+const #21 = Asciz	java/lang/Object;
+const #22 = Asciz	java/lang/System;
+const #23 = Asciz	k;
+const #24 = Asciz	l;
+const #25 = Asciz	main;
+const #26 = Asciz	method;
+const #27 = Asciz	org/apache/harmony/archive/tests/internal/pack200/HelloWorld;
+const #28 = Asciz	out;
+const #29 = Asciz	println;
+const #30 = Asciz	this;
+const #31 = long	299792458l;
+const #33 = double	4.0d;
+const #35 = class	#20;	//  java/io/PrintStream
+const #36 = class	#21;	//  java/lang/Object
+const #37 = class	#22;	//  java/lang/System
+const #38 = class	#27;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld
+const #39 = Asciz	Ljava/io/PrintStream;;
+const #40 = Asciz	[Ljava/lang/String;;
+const #41 = Asciz	Lorg/apache/harmony/archive/tests/internal/pack200/HelloWorld;;
+const #42 = Asciz	(Ljava/lang/String;)V;
+const #43 = Asciz	([Ljava/lang/String;)V;
+const #44 = Asciz	(III)[[Lorg/apache/harmony/archive/tests/internal/pack200/HelloWorld;;
+const #45 = NameAndType	#15:#6;//  d:D
+const #46 = NameAndType	#16:#7;//  f:F
+const #47 = NameAndType	#17:#7;//  g:F
+const #48 = NameAndType	#18:#9;//  i:I
+const #49 = NameAndType	#19:#9;//  j:I
+const #50 = NameAndType	#23:#9;//  k:I
+const #51 = NameAndType	#24:#10;//  l:J
+const #52 = NameAndType	#28:#39;//  out:Ljava/io/PrintStream;
+const #53 = NameAndType	#5:#4;//  "<init>":()V
+const #54 = NameAndType	#29:#42;//  println:(Ljava/lang/String;)V
+const #55 = Field	#37.#52;	//  java/lang/System.out:Ljava/io/PrintStream;
+const #56 = Field	#38.#45;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.d:D
+const #57 = Field	#38.#46;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.f:F
+const #58 = Field	#38.#47;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.g:F
+const #59 = Field	#38.#48;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.i:I
+const #60 = Field	#38.#49;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.j:I
+const #61 = Field	#38.#50;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.k:I
+const #62 = Field	#38.#51;	//  org/apache/harmony/archive/tests/internal/pack200/HelloWorld.l:J
+const #63 = Method	#35.#54;	//  java/io/PrintStream.println:(Ljava/lang/String;)V
+const #64 = Method	#36.#53;	//  java/lang/Object."<init>":()V
+const #65 = Asciz	Code;
+const #66 = Asciz	HelloWorld.java;
+const #67 = Asciz	LineNumberTable;
+const #68 = Asciz	LocalVariableTable;
+const #69 = Asciz	SourceFile;
+
+{
 int i;
+
 
 int j;
 
+
 int k;
+
 
 float f;
 
+
 float g;
+
 
 long l;
 
+
 double d;
+
 
 public org.apache.harmony.archive.tests.internal.pack200.HelloWorld();
   Code:
+   Stack=3, Locals=1, Args_size=1
    0:	aload_0
    1:	invokespecial	#64; //Method java/lang/Object."<init>":()V
    4:	aload_0
@@ -40,18 +121,44 @@ public org.apache.harmony.archive.tests.internal.pack200.HelloWorld();
    43:	ldc2_w	#33; //double 4.0d
    46:	putfield	#56; //Field d:D
    49:	return
+  LineNumberTable: 
+   line 24: 0
+   line 25: 4
+   line 26: 23
+   line 27: 35
+   line 28: 42
+   line 24: 49
+  LocalVariableTable: 
+   Start  Length  Slot  Name   Signature
+   0      50      0    this       Lorg/apache/harmony/archive/tests/internal/pack200/HelloWorld;
 
 public static void main(java.lang.String[]);
   Code:
+   Stack=2, Locals=1, Args_size=1
    0:	getstatic	#55; //Field java/lang/System.out:Ljava/io/PrintStream;
    3:	ldc	#3; //String Hello world
    5:	invokevirtual	#63; //Method java/io/PrintStream.println:(Ljava/lang/String;)V
    8:	return
+  LineNumberTable: 
+   line 30: 0
+   line 31: 8
+  LocalVariableTable: 
+   Start  Length  Slot  Name   Signature
+   0      9      0    args       [Ljava/lang/String;
 
 public org.apache.harmony.archive.tests.internal.pack200.HelloWorld[][] method(int, int, int);
   Code:
+   Stack=1, Locals=4, Args_size=4
    0:	aconst_null
    1:	areturn
+  LineNumberTable: 
+   line 33: 0
+  LocalVariableTable: 
+   Start  Length  Slot  Name   Signature
+   0      2      0    this       Lorg/apache/harmony/archive/tests/internal/pack200/HelloWorld;
+   0      2      1    a       I
+   0      2      2    b       I
+   0      2      3    c       I
 
 }
 

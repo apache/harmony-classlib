@@ -28,11 +28,28 @@ import java.util.ArrayList;
  */
 public class IcTuple {
 
-    public IcTuple(String C, int F, String C2, String N) {
+    private final int cIndex;
+    private final int c2Index;
+    private final int nIndex;
+
+    /**
+     * 
+     * @param C
+     * @param F
+     * @param C2
+     * @param N
+     * @param cIndex the index of C in cpClass
+     * @param c2Index the index of C2 in cpClass, or -1 if C2 is null
+     * @param nIndex the index of N in cpUTF8, or -1 if N is null
+     */
+    public IcTuple(String C, int F, String C2, String N, int cIndex, int c2Index, int nIndex) {
         this.C = C;
         this.F = F;
         this.C2 = C2;
         this.N = N;
+        this.cIndex = cIndex;
+        this.c2Index = c2Index;
+        this.nIndex = nIndex;
         if (null == N) {
             predictSimple = true;
         }
@@ -42,8 +59,8 @@ public class IcTuple {
         initializeClassStrings();
     }
 
-    public IcTuple(String C, int F) {
-        this(C, F, null, null);
+    public IcTuple(String C, int F, int cIndex) {
+        this(C, F, null, null, cIndex, -1, -1);
     }
 
     public static final int NESTED_CLASS_FLAG = 0x00010000;
@@ -59,6 +76,8 @@ public class IcTuple {
     private boolean initialized = false;
     private boolean anonymous = false;
     private boolean member = true;
+    private int cachedOuterClassIndex;
+    private int cachedSimpleClassNameIndex;
 
     /**
      * Answer true if the receiver is predicted; answer false if the receiver is
@@ -217,9 +236,11 @@ public class IcTuple {
         // above. Can we eliminate some by reworking the logic?
         if (!predictSimple) {
             cachedSimpleClassName = N;
+            cachedSimpleClassNameIndex = nIndex;
         }
         if (!predictOuter) {
             cachedOuterClassString = C2;
+            cachedOuterClassIndex = c2Index;
         }
         if (isAllDigits(cachedSimpleClassName)) {
             anonymous = true;
@@ -308,5 +329,21 @@ public class IcTuple {
             return cachedOuterClassString;
         }
         return cachedOuterClassString.substring(0, firstDollarPosition);
+    }
+
+    public int thisClassIndex() {
+        if(predicted()) {
+            return cIndex;
+        } else {
+            return -1;
+        }
+    }
+
+    public int outerClassIndex() {
+        return cachedOuterClassIndex;
+    }
+
+    public int simpleClassNameIndex() {
+        return cachedSimpleClassNameIndex;
     }
 }

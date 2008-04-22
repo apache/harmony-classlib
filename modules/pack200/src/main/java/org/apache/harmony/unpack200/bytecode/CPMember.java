@@ -31,7 +31,7 @@ public class CPMember extends ClassFileEntry {
     short flags;
     CPUTF8 name;
     transient int nameIndex;
-    private final CPUTF8 descriptor;
+    protected final CPUTF8 descriptor;
     transient int descriptorIndex;
 
     /**
@@ -76,10 +76,6 @@ public class CPMember extends ClassFileEntry {
         }
     }
 
-    public String toString() {
-        return "Field: " + name + "(" + descriptor + ")";
-    }
-
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -88,6 +84,10 @@ public class CPMember extends ClassFileEntry {
         result = PRIME * result + flags;
         result = PRIME * result + name.hashCode();
         return result;
+    }
+
+    public String toString() {
+        return "CPMember: " + name + "(" + descriptor + ")";
     }
 
     public boolean equals(Object obj) {

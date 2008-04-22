@@ -42,6 +42,17 @@ public class MetadataBandGroup {
 
     private final String type;
     private final CpBands cpBands;
+    
+    private final CPUTF8 rvaUTF8 = new CPUTF8("RuntimeVisibleAnnotations",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private final CPUTF8 riaUTF8 = new CPUTF8("RuntimeInvisibleAnnotations",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private final CPUTF8 rvpaUTF8 = new CPUTF8(
+            "RuntimeVisibleParameterAnnotations",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
+    private final CPUTF8 ripaUTF8 = new CPUTF8(
+            "RuntimeInvisibleParameterAnnotations",
+            ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
 
     public MetadataBandGroup(String type, CpBands cpBands) {
         this.type = type;
@@ -156,11 +167,7 @@ public class MetadataBandGroup {
                     namesIterator);
         }
         return new RuntimeVisibleorInvisibleAnnotationsAttribute(type
-                .equals("RVA") ? cpBands.cpUTF8Value(
-                "RuntimeVisibleAnnotations",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ) : cpBands
-                .cpUTF8Value("RuntimeInvisibleAnnotations",
-                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ), annotations);
+                .equals("RVA") ? rvaUTF8 : riaUTF8, annotations);
     }
 
     private Attribute getParameterAttribute(int numParameters,
@@ -178,11 +185,7 @@ public class MetadataBandGroup {
             parameter_annotations[i] = new ParameterAnnotation(annotations);
         }
         return new RuntimeVisibleorInvisibleParameterAnnotationsAttribute(type
-                .equals("RVA") ? cpBands.cpUTF8Value(
-                "RuntimeVisibleParameterAnnotations",
-                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ) : cpBands
-                .cpUTF8Value("RuntimeInvisibleParameterAnnotations",
-                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ),
+                .equals("RVPA") ? rvpaUTF8 : ripaUTF8,
                 parameter_annotations);
     }
 

@@ -94,52 +94,30 @@ public class SegmentTest extends TestCase {
         assertEquals(line, "Hello world");
         reader.close();
 
-        process = Runtime
+        Process process2 = Runtime
                 .getRuntime()
                 .exec(
-                        "javap -c -classpath "
+                        "javap -c -verbose -classpath "
                                 + file.getName()
                                 + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
                         new String[] {}, file.getParentFile());
-        reader = new BufferedReader(new InputStreamReader(process
+        BufferedReader reader1 = new BufferedReader(new InputStreamReader(process2
                 .getInputStream()));
         InputStream javapCompareFile = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorldJavap.out");
         BufferedReader reader2 = new BufferedReader(new InputStreamReader(
                 javapCompareFile));
-        line = reader.readLine();
+        String line1 = reader1.readLine();
         String line2 = reader2.readLine();
         int i = 1;
-        while (line != null || line2 != null) {
-            compareLineWithoutDigits("Javap output differs at line " + i,
-                    line2, line);
-            line = reader.readLine();
+        while (line1 != null || line2 != null) {
+            assertEquals(line2, line1);
+            line1 = reader1.readLine();
             line2 = reader2.readLine();
             i++;
         }
-        reader.close();
+        reader1.close();
         reader2.close();
-    }
-
-    // Compare without digits for now as we're not currently sorting the
-    // constant pool correctly
-    private void compareLineWithoutDigits(String message, String expectedLine,
-            String actualLine) {
-        String expected = "";
-        char[] chars = expectedLine.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (!Character.isDigit(chars[i])) {
-                expected += chars[i];
-            }
-        }
-        String actual = "";
-        char[] chars2 = actualLine.toCharArray();
-        for (int i = 0; i < chars2.length; i++) {
-            if (!Character.isDigit(chars2[i])) {
-                actual += chars2[i];
-            }
-        }
-        assertEquals(message, expected, actual);
     }
 
 }

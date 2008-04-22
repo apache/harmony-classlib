@@ -27,4 +27,8 @@ public class CPField extends CPMember {
         super(name, descriptor, flags, attributes);
     }
 
+    public String toString() {
+        return "Field: " + name + "(" + descriptor + ")";
+    }
+
 }

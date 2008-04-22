@@ -68,6 +68,11 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
         return new ClassFileEntry[] { getAttributeName() };
     }
 
+
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
     /*
      * (non-Javadoc)
      * 

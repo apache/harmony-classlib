@@ -35,8 +35,8 @@ public class CPUTF8 extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if utf8 is null
      */
-    public CPUTF8(String utf8, int domain) {
-        super(ConstantPoolEntry.CP_UTF8);
+    public CPUTF8(String utf8, int domain, int globalIndex) {
+        super(ConstantPoolEntry.CP_UTF8, globalIndex);
         this.utf8 = utf8;
         this.domain = domain;
         if (domain == ClassConstantPool.DOMAIN_UNDEFINED) {
@@ -45,6 +45,10 @@ public class CPUTF8 extends ConstantPoolEntry {
         if (utf8 == null) {
             throw new NullPointerException("Null arguments are not allowed");
         }
+    }
+
+    public CPUTF8(String string, int domain) {
+        this(string, domain, -1);
     }
 
     public boolean equals(Object obj) {

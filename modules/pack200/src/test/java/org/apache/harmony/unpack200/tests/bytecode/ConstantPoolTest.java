@@ -33,8 +33,8 @@ public class ConstantPoolTest extends TestCase {
     }
 
     public void testDuplicateUTF8() {
-        CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
-        CPUTF8 u2 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
+        CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ, 1);
+        CPUTF8 u2 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ, 1);
         pool.add(u1);
         pool.add(u2);
         assertEquals(1, pool.size());
@@ -42,22 +42,24 @@ public class ConstantPoolTest extends TestCase {
 
     public void testDuplicateField() {
         CPMember cp1 = new CPMember(new CPUTF8("name",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, 1), new CPUTF8("I",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, 2), 0, null);
         pool.add(cp1);
+        pool.addNestedEntries();
         assertEquals(2, pool.size());
         CPMember cp2 = new CPMember(new CPUTF8("name",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8("I",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ), 0, null);
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, 1), new CPUTF8("I",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, 2), 0, null);
         pool.add(cp2);
+        pool.addNestedEntries();
         assertEquals(2, pool.size());
     }
 
     public void testIndex() {
         pool
                 .add(new CPUTF8("OtherThing",
-                        ClassConstantPool.DOMAIN_NORMALASCIIZ));
-        CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ);
+                        ClassConstantPool.DOMAIN_NORMALASCIIZ, 1));
+        CPUTF8 u1 = new CPUTF8("thing", ClassConstantPool.DOMAIN_NORMALASCIIZ, 2);
         pool.add(u1);
         pool.resolve(new Segment());
         assertTrue(pool.indexOf(u1) > 0);
@@ -65,9 +67,9 @@ public class ConstantPoolTest extends TestCase {
 
     public void testAllClasses() {
         pool.add(new CPClass(new CPUTF8("RandomClass",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ)));
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, 1), 10));
         pool.add(new CPClass(new CPUTF8("RandomClass2",
-                ClassConstantPool.DOMAIN_NORMALASCIIZ)));
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, 2), 20));
         assertEquals(2, pool.allClasses().size());
     }
 }

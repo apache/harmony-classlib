@@ -175,6 +175,10 @@ public class CodeAttribute extends BCIRenumberedAttribute {
         return attributes;
     }
 
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
     protected int[] getStartPCs() {
         // Do nothing here as we've overriden renumber
         return null;

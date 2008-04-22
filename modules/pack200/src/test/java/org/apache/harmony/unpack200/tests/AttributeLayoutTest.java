@@ -23,34 +23,44 @@ import org.apache.harmony.unpack200.AttributeLayout;
 import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 
 public class AttributeLayoutTest extends TestCase {
 
     public class TestSegment extends Segment {
 
         public SegmentConstantPool getConstantPool() {
-            final Object[][] data = new Object[][] {
+            final ClassFileEntry[][] data = new ClassFileEntry[][] {
                     {}, // ALL
-                    { "Zero", "One", "Two", "Three", "Four", "Five", "Six",
-                            "Seven", "Eight", "Nine" }, // UTF-8
+                    { entry("Zero"), entry("One"), entry("Two"),
+                            entry("Three"), entry("Four"), entry("Five"),
+                            entry("Six"), entry("Seven"), entry("Eight"),
+                            entry("Nine") }, // UTF-8
                     {},
                     {},
                     {},
                     {},
                     {},
                     {},
-                    { "Eins", "Zwei", "Drei", "Vier", "Funf", "Sechs",
-                            "Sieben", "Acht", "Neun" }, // Signature
+                    { entry("Eins"), entry("Zwei"), entry("Drei"),
+                            entry("Vier"), entry("Funf"), entry("Sechs"),
+                            entry("Sieben"), entry("Acht"), entry("Neun") }, // Signature
             };
             return new SegmentConstantPool(null) {
 
-                public Object getValue(int cp, long index) {
+                public ClassFileEntry getValue(int cp, long index) {
                     if (index == -1)
                         return null;
                     return data[cp][(int) index];
                 }
 
             };
+        }
+
+        private ClassFileEntry entry(String string) {
+            return new CPUTF8(string, ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
         }
     }
 
@@ -70,8 +80,8 @@ public class AttributeLayoutTest extends TestCase {
                 AttributeLayout.CONTEXT_CLASS, "RU", 1);
         Segment segment = new TestSegment();
         assertNull(layout.getValue(-1, segment.getConstantPool()));
-        assertEquals("Zero", layout.getValue(0, segment.getConstantPool()));
-        assertEquals("One", layout.getValue(1, segment.getConstantPool()));
+        assertEquals("Zero", ((CPUTF8)layout.getValue(0, segment.getConstantPool())).underlyingString());
+        assertEquals("One", ((CPUTF8)layout.getValue(1, segment.getConstantPool())).underlyingString());
     }
 
     public void testLayoutRUN() throws Pack200Exception {
@@ -79,8 +89,8 @@ public class AttributeLayoutTest extends TestCase {
                 AttributeLayout.CONTEXT_CLASS, "RUN", 1);
         Segment segment = new TestSegment();
         assertNull(layout.getValue(0, segment.getConstantPool()));
-        assertEquals("Zero", layout.getValue(1, segment.getConstantPool()));
-        assertEquals("One", layout.getValue(2, segment.getConstantPool()));
+        assertEquals("Zero", ((CPUTF8)layout.getValue(1, segment.getConstantPool())).underlyingString());
+        assertEquals("One", ((CPUTF8)layout.getValue(2, segment.getConstantPool())).underlyingString());
     }
 
     public void testLayoutRS() throws Pack200Exception {
@@ -88,8 +98,8 @@ public class AttributeLayoutTest extends TestCase {
                 AttributeLayout.CONTEXT_CLASS, "RS", 1);
         Segment segment = new TestSegment();
         assertNull(layout.getValue(-1, segment.getConstantPool()));
-        assertEquals("Eins", layout.getValue(0, segment.getConstantPool()));
-        assertEquals("Zwei", layout.getValue(1, segment.getConstantPool()));
+        assertEquals("Eins", ((CPUTF8)layout.getValue(0, segment.getConstantPool())).underlyingString());
+        assertEquals("Zwei", ((CPUTF8)layout.getValue(1, segment.getConstantPool())).underlyingString());
     }
 
     public void testLayoutRSN() throws Pack200Exception {
@@ -97,8 +107,8 @@ public class AttributeLayoutTest extends TestCase {
                 AttributeLayout.CONTEXT_CLASS, "RSN", 1);
         Segment segment = new TestSegment();
         assertNull(layout.getValue(0, segment.getConstantPool()));
-        assertEquals("Eins", layout.getValue(1, segment.getConstantPool()));
-        assertEquals("Zwei", layout.getValue(2, segment.getConstantPool()));
+        assertEquals("Eins", ((CPUTF8)layout.getValue(1, segment.getConstantPool())).underlyingString());
+        assertEquals("Zwei", ((CPUTF8)layout.getValue(2, segment.getConstantPool())).underlyingString());
     }
 
     public void testGetCodec() throws Pack200Exception {

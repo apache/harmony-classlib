@@ -37,8 +37,8 @@ public class CPClass extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if name is null
      */
-    public CPClass(CPUTF8 name) {
-        super(ConstantPoolEntry.CP_Class);
+    public CPClass(CPUTF8 name, int globalIndex) {
+        super(ConstantPoolEntry.CP_Class, globalIndex);
         this.name = name.underlyingString();
         this.domain = ClassConstantPool.DOMAIN_CLASSREF;
         this.utf8 = name;

@@ -57,8 +57,11 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
 
     protected int domain = ClassConstantPool.DOMAIN_UNDEFINED;
 
-    ConstantPoolEntry(byte tag) {
+    protected final int globalIndex;
+
+    ConstantPoolEntry(byte tag, int globalIndex) {
         this.tag = tag;
+        this.globalIndex = globalIndex;
     }
 
     public abstract boolean equals(Object obj);
@@ -106,5 +109,9 @@ public abstract class ConstantPoolEntry extends ClassFileEntry {
      */
     public boolean mustStartClassPool() {
         return mustStartClassPool;
+    }
+
+    public int getGlobalIndex() {
+        return globalIndex;
     }
 }

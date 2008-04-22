@@ -29,8 +29,8 @@ public class CPFieldRef extends ConstantPoolEntry {
     private final CPNameAndType nameAndType;
     transient int nameAndTypeIndex;
 
-    public CPFieldRef(CPClass className, CPNameAndType descriptor) {
-        super(ConstantPoolEntry.CP_Fieldref);
+    public CPFieldRef(CPClass className, CPNameAndType descriptor, int globalIndex) {
+        super(ConstantPoolEntry.CP_Fieldref, globalIndex);
         this.domain = ClassConstantPool.DOMAIN_FIELD;
         this.className = className;
         this.nameAndType = descriptor;

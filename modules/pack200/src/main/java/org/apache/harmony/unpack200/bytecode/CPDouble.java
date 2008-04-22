@@ -24,8 +24,8 @@ import java.io.IOException;
  */
 public class CPDouble extends CPConstantNumber {
 
-    public CPDouble(Double value) {
-        super(ConstantPoolEntry.CP_Double, value);
+    public CPDouble(Double value, int globalIndex) {
+        super(ConstantPoolEntry.CP_Double, value, globalIndex);
         this.domain = ClassConstantPool.DOMAIN_DOUBLE;
     }
 

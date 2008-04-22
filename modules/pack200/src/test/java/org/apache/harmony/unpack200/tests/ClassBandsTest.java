@@ -26,7 +26,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 
 /**
- * 
+ *
  */
 public class ClassBandsTest extends AbstractBandsTestCase {
 
@@ -112,12 +112,12 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         }
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         classBands.unpack(in);
-        assertEquals(cpClasses[1], classBands.getClassThis()[0]);
-        assertEquals(cpClasses[2], classBands.getClassSuper()[0]);
-        assertEquals(1, classBands.getClassInterfaces().length);
-        assertEquals(2, classBands.getClassInterfaces()[0].length);
-        assertEquals(cpClasses[3], classBands.getClassInterfaces()[0][0]);
-        assertEquals(cpClasses[4], classBands.getClassInterfaces()[0][1]);
+        assertEquals(1, classBands.getClassThisInts()[0]);
+        assertEquals(2, classBands.getClassSuperInts()[0]);
+        assertEquals(1, classBands.getClassInterfacesInts().length);
+        assertEquals(2, classBands.getClassInterfacesInts()[0].length);
+        assertEquals(3, classBands.getClassInterfacesInts()[0][0]);
+        assertEquals(4, classBands.getClassInterfacesInts()[0][1]);
         cpClasses = null;
     }
 
@@ -152,8 +152,8 @@ public class ClassBandsTest extends AbstractBandsTestCase {
         }
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         classBands.unpack(in);
-        assertEquals(cpClasses[1], classBands.getClassThis()[0]);
-        assertEquals(cpClasses[2], classBands.getClassSuper()[0]);
+        assertEquals(1, classBands.getClassThisInts()[0]);
+        assertEquals(2, classBands.getClassSuperInts()[0]);
         assertEquals(1, classBands.getMethodDescr().length);
         assertEquals(3, classBands.getMethodDescr()[0].length);
         assertEquals(cpDescriptor[0], classBands.getMethodDescr()[0][0]);
@@ -162,10 +162,6 @@ public class ClassBandsTest extends AbstractBandsTestCase {
 
         cpClasses = null;
         cpDescriptor = null;
-    }
-
-    public void testWithFields() {
-
     }
 
 }

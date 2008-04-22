@@ -382,7 +382,7 @@ public class BcBands extends BandSet {
         int[][] handlerEndPCs = segment.getClassBands().getCodeHandlerEndPO();
         int[][] handlerCatchPCs = segment.getClassBands()
                 .getCodeHandlerCatchPO();
-        String[][] handlerClassTypes = segment.getClassBands()
+        int[][] handlerClassTypes = segment.getClassBands()
                 .getCodeHandlerClassRCN();
 
         for (int c = 0; c < classCount; c++) {
@@ -398,16 +398,17 @@ public class BcBands extends BandSet {
                     // I believe this has to take wide arguments into account
                     maxLocal += SegmentUtils
                             .countInvokeInterfaceArgs(methodDescr[c][m]);
-                    operandManager.setCurrentClass(segment.getClassBands()
-                            .getClassThis()[c]);
-                    operandManager.setSuperClass(segment.getClassBands()
-                            .getClassSuper()[c]);
+                    String[] cpClass = segment.getCpBands().getCpClass();
+                    operandManager.setCurrentClass(cpClass[segment.getClassBands()
+                            .getClassThisInts()[c]]);
+                    operandManager.setSuperClass(cpClass[segment.getClassBands()
+                            .getClassSuperInts()[c]]);
                     List exceptionTable = new ArrayList();
                     if (handlerCount != null) {
                         for (int j = 0; j < handlerCount[i]; j++) {
-                            String handlerClass = handlerClassTypes[i][j];
+                            int handlerClass = handlerClassTypes[i][j] - 1;
                             CPClass cpHandlerClass = null;
-                            if (handlerClass != null) {
+                            if (handlerClass != -1) {
                                 // The handlerClass will be null if the
                                 // catch is a finally (that is, the
                                 // exception table catch_type should be 0

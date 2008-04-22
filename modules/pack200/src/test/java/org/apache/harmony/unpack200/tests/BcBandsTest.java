@@ -28,6 +28,18 @@ import org.apache.harmony.unpack200.CpBands;
 import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentConstantPool;
+import org.apache.harmony.unpack200.bytecode.CPClass;
+import org.apache.harmony.unpack200.bytecode.CPDouble;
+import org.apache.harmony.unpack200.bytecode.CPFieldRef;
+import org.apache.harmony.unpack200.bytecode.CPFloat;
+import org.apache.harmony.unpack200.bytecode.CPInteger;
+import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMethodRef;
+import org.apache.harmony.unpack200.bytecode.CPNameAndType;
+import org.apache.harmony.unpack200.bytecode.CPString;
+import org.apache.harmony.unpack200.bytecode.CPUTF8;
+import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
 /**
  * Tests for Pack200 bytecode bands
@@ -43,76 +55,68 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     public class MockCpBands extends CpBands {
 
+        private final CPUTF8 cpUTF8 = new CPUTF8("java/lang/String",
+                ClassConstantPool.DOMAIN_NORMALASCIIZ);
+        private final CPClass cpClass = new CPClass(cpUTF8, -1);
+        private final CPNameAndType descriptor = new CPNameAndType(new CPUTF8(
+                "Hello", ClassConstantPool.DOMAIN_NORMALASCIIZ), new CPUTF8(
+                "(a, b, c)", ClassConstantPool.DOMAIN_NORMALASCIIZ),
+                ClassConstantPool.DOMAIN_NORMALASCIIZ, -1);
+
         public MockCpBands(Segment segment) {
             super(segment);
         }
 
-        public String[] getCpString() {
-            String[] classes = new String[100];
-            for (int index = 0; index < 100; index++) {
-                classes[index] = "java/lang/Stri:ng(J)";
-            }
-            return classes;
+        public CPString cpStringValue(int index) {
+            return new CPString(cpUTF8, index);
+        }
+
+        public CPInteger cpIntegerValue(int index) {
+            return new CPInteger(new Integer(21), index);
+        }
+
+        public CPClass cpClassValue(int index) {
+            return cpClass;
+        }
+
+        public CPFloat cpFloatValue(int index) {
+            return new CPFloat(new Float(2.5F), index);
+        }
+
+        public CPLong cpLongValue(int index) {
+            return new CPLong(new Long(21L), index);
+        }
+
+        public CPDouble cpDoubleValue(int index) {
+            return new CPDouble(new Double(2.5D), index);
+        }
+
+        public CPFieldRef cpFieldValue(int index) {
+            return new CPFieldRef(cpClass, descriptor, index);
+        }
+
+        public CPMethodRef cpMethodValue(int index) {
+            return new CPMethodRef(cpClass, descriptor, index);
+        }
+
+        public CPInterfaceMethodRef cpIMethodValue(int index) {
+            return new CPInterfaceMethodRef(cpClass, descriptor, index);
         }
 
         public String[] getCpClass() {
-            return getCpString();
+            return new String[] {"Hello"};
         }
-
+        
         public String[] getCpFieldClass() {
-            return getCpClass();
-        }
-
-        public String[] getCpFieldDescriptor() {
-            return getCpString();
+            return new String[]{};
         }
 
         public String[] getCpMethodClass() {
-            return getCpClass();
-        }
-
-        public String[] getCpMethodDescriptor() {
-            return getCpString();
+            return new String[]{};
         }
 
         public String[] getCpIMethodClass() {
-            return getCpClass();
-        }
-
-        public String[] getCpIMethodDescriptor() {
-            return getCpString();
-        }
-
-        public int[] getCpInt() {
-            int[] elements = new int[100];
-            for (int index = 0; index < 100; index++) {
-                elements[index] = 1;
-            }
-            return elements;
-        }
-
-        public float[] getCpFloat() {
-            float[] elements = new float[100];
-            for (int index = 0; index < 100; index++) {
-                elements[index] = 1.0f;
-            }
-            return elements;
-        }
-
-        public long[] getCpLong() {
-            long[] elements = new long[100];
-            for (int index = 0; index < 100; index++) {
-                elements[index] = 1L;
-            }
-            return elements;
-        }
-
-        public double[] getCpDouble() {
-            double[] elements = new double[100];
-            for (int index = 0; index < 100; index++) {
-                elements[index] = 1.0D;
-            }
-            return elements;
+            return new String[]{};
         }
     }
 
@@ -157,18 +161,18 @@ public class BcBandsTest extends AbstractBandsTestCase {
             return descr;
         }
 
-        public String[] getClassThis() {
-            String[] thisClasses = new String[numClasses];
+        public int[] getClassThisInts() {
+            int[] thisClasses = new int[numClasses];
             for (int index = 0; index < numClasses; index++) {
-                thisClasses[index] = "java/lang/String";
+                thisClasses[index] = 0;
             }
             return thisClasses;
         }
 
-        public String[] getClassSuper() {
-            String[] superClasses = new String[numClasses];
+        public int[] getClassSuperInts() {
+            int[] superClasses = new int[numClasses];
             for (int index = 0; index < numClasses; index++) {
-                superClasses[index] = "java/lang/Object";
+                superClasses[index] = 0;
             }
             return superClasses;
         }
@@ -227,7 +231,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
     /**
      * Test with single byte instructions that mean all other bands apart from
      * bc_codes will be empty.
-     * 
+     *
      * @throws IOException
      * @throws Pack200Exception
      */
@@ -255,7 +259,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with multiple classes but single byte instructions
-     * 
+     *
      * @throws IOException
      * @throws Pack200Exception
      */
@@ -276,7 +280,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
     /**
      * Test with multiple classes and multiple methods but single byte
      * instructions
-     * 
+     *
      * @throws IOException
      * @throws Pack200Exception
      */
@@ -298,7 +302,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
     /**
      * Test with codes that require entries in the bc_case_count and
      * bc_case_value bands
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -322,7 +326,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_byte band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -345,7 +349,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_short band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -363,7 +367,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_local band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -379,7 +383,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_label band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -422,7 +426,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_intref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -438,7 +442,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_floatref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -454,7 +458,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_longref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -469,7 +473,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_doubleref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -485,7 +489,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_stringref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -501,7 +505,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_classref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -517,7 +521,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_fieldref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -533,7 +537,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_methodref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -549,7 +553,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_imethodref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -565,7 +569,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_thisfieldref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -582,7 +586,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_superfield band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -599,7 +603,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_thismethod band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -616,7 +620,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_supermethod band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -636,7 +640,7 @@ public class BcBandsTest extends AbstractBandsTestCase {
 
     /**
      * Test with codes that should require entries in the bc_initrefref band
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */

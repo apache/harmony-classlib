@@ -43,8 +43,8 @@ public class CPNameAndType extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if name or descriptor is null
      */
-    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain) {
-        super(ConstantPoolEntry.CP_NameAndType);
+    public CPNameAndType(CPUTF8 name, CPUTF8 descriptor, int domain, int globalIndex) {
+        super(ConstantPoolEntry.CP_NameAndType, globalIndex);
         this.name = name;
         this.descriptor = descriptor;
         this.domain = domain;

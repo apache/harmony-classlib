@@ -17,11 +17,14 @@
 package org.apache.harmony.unpack200.bytecode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.harmony.unpack200.Segment;
 
@@ -56,7 +59,7 @@ public class ClassConstantPool {
     }
 
     private final List others = new ArrayList(500);
-    private List entries = new ArrayList(500);
+    private final List entries = new ArrayList(500);
 
     private boolean resolved;
 
@@ -92,13 +95,32 @@ public class ClassConstantPool {
                 othersContainsSet.add(entry);
                 others.add(entry);
             }
-
-        }
-        ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
-        for (int i = 0; i < nestedEntries.length; i++) {
-            add(nestedEntries[i]);
         }
         return entry;
+    }
+
+    public void addNestedEntries() {
+        boolean added = true;
+        while (added) {
+            int entriesOriginalSize = entries.size();
+            int othersOriginalSize = others.size();
+            addNested(entries);
+            addNested(others);
+            added = !(entries.size() == entriesOriginalSize && others.size() == othersOriginalSize);
+        }
+    }
+
+    private void addNested(List classFileEntries) {
+        List newEntries = new ArrayList();
+        for (Iterator iterator = classFileEntries.iterator(); iterator
+                .hasNext();) {
+            ClassFileEntry entry = (ClassFileEntry) iterator.next();
+            ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
+            newEntries.addAll(Arrays.asList(nestedEntries));
+        }
+        for (Iterator iterator = newEntries.iterator(); iterator.hasNext();) {
+            add((ClassFileEntry) iterator.next());
+        }
     }
 
     protected void initializeIndexCache() {
@@ -142,6 +164,7 @@ public class ClassConstantPool {
     }
 
     public void resolve(Segment segment) {
+        initialSort();
         Iterator it;
         resolved = true;
         it = entries.iterator();
@@ -156,6 +179,46 @@ public class ClassConstantPool {
         }
 
         sortClassPool(segment);
+    }
+
+    private void initialSort() {
+        TreeSet inCpAll = new TreeSet(new Comparator() {
+            public int compare(Object arg0, Object arg1) {
+                return ((ConstantPoolEntry)arg0).getGlobalIndex() - ((ConstantPoolEntry)arg1).getGlobalIndex();
+            }
+        });
+        TreeSet cpUtf8sNotInCpAll = new TreeSet(new Comparator() {
+
+            public int compare(Object arg0, Object arg1) {
+                return ((CPUTF8)arg0).underlyingString().compareTo(((CPUTF8)arg1).underlyingString());
+            }
+            
+        });
+        TreeSet cpClassesNotInCpAll = new TreeSet(new Comparator() {
+
+            public int compare(Object arg0, Object arg1) {
+                return ((CPClass)arg0).getName().compareTo(((CPClass)arg1).getName());
+            }
+            
+        });
+        for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
+            ConstantPoolEntry entry = (ConstantPoolEntry) iterator.next();
+            if(entry.getGlobalIndex() == -1) {
+                if (entry instanceof CPUTF8) {
+                    cpUtf8sNotInCpAll.add(entry);
+                } else if (entry instanceof CPClass) {
+                    cpClassesNotInCpAll.add(entry);
+                } else {
+                    throw new Error("error");
+                }
+            } else {
+                inCpAll.add(entry);
+            }
+        }
+        entries.clear();
+        entries.addAll(inCpAll);
+        entries.addAll(cpUtf8sNotInCpAll);
+        entries.addAll(cpClassesNotInCpAll);
     }
 
     /**
@@ -199,7 +262,7 @@ public class ClassConstantPool {
                 finalSort.add(nextEntry);
             }
         }
-        entries = new ArrayList(entries.size());
+        entries.clear();
         Iterator itStart = startOfPool.iterator();
         while (itStart.hasNext()) {
             ClassFileEntry entry = (ClassFileEntry) itStart.next();
@@ -215,7 +278,7 @@ public class ClassConstantPool {
                 entries.add(entry); // these get 2 slots because of their size
         }
 
-        // Since we resorted, need to initialize index cache
+        // Since we re-sorted, need to initialize index cache
         initializeIndexCache();
 
         // Now that the indices have been re-sorted, need
@@ -232,5 +295,14 @@ public class ClassConstantPool {
             ClassFileEntry entry = (ClassFileEntry) it.next();
             entry.resolve(this);
         }
+    }
+
+    public ClassFileEntry addWithNestedEntries(ClassFileEntry entry) {
+        add(entry);
+        ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
+        for (int i = 0; i < nestedEntries.length; i++) {
+            addWithNestedEntries(nestedEntries[i]);
+        }
+        return entry;
     }
 }

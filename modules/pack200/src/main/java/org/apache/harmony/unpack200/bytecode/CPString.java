@@ -27,8 +27,8 @@ public class CPString extends CPConstant {
     private transient int nameIndex;
     private final CPUTF8 name;
 
-    public CPString(CPUTF8 value) {
-        super(ConstantPoolEntry.CP_String, value);
+    public CPString(CPUTF8 value, int globalIndex) {
+        super(ConstantPoolEntry.CP_String, value, globalIndex);
         this.domain = ClassConstantPool.DOMAIN_STRING;
         this.name = value;
     }

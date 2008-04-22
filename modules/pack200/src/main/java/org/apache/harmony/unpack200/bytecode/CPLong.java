@@ -24,8 +24,8 @@ import java.io.IOException;
  */
 public class CPLong extends CPConstantNumber {
 
-    public CPLong(Long value) {
-        super(ConstantPoolEntry.CP_Long, value);
+    public CPLong(Long value, int globalIndex) {
+        super(ConstantPoolEntry.CP_Long, value, globalIndex);
         this.domain = ClassConstantPool.DOMAIN_LONG;
     }
 

@@ -24,8 +24,8 @@ import java.io.IOException;
  */
 public class CPInteger extends CPConstantNumber {
 
-    public CPInteger(Integer value) {
-        super(ConstantPoolEntry.CP_Integer, value);
+    public CPInteger(Integer value, int globalIndex) {
+        super(ConstantPoolEntry.CP_Integer, value, globalIndex);
         this.domain = ClassConstantPool.DOMAIN_INTEGER;
     }
 

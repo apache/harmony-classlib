@@ -54,8 +54,9 @@ public class IcBands extends BandSet {
     public void unpack(InputStream in) throws IOException, Pack200Exception {
         // Read IC bands
         int innerClassCount = header.getInnerClassCount();
-        String[] icThisClass = parseReferences("ic_this_class", in,
-                Codec.UDELTA5, innerClassCount, cpClass);
+        int[] icThisClassInts = decodeBandInt("ic_this_class", in,
+                Codec.UDELTA5, innerClassCount);
+        String[] icThisClass = getReferences(icThisClassInts, cpClass);
         int[] icFlags = decodeBandInt("ic_flags", in, Codec.UNSIGNED5,
                 innerClassCount);
         int outerClasses = SegmentUtils.countBit16(icFlags);
@@ -84,19 +85,21 @@ public class IcBands extends BandSet {
         icAll = new IcTuple[icThisClass.length];
         int index = 0;
         for (int i = 0; i < icThisClass.length; i++) {
-            String icTupleC = null;
-            int icTupleF = -1;
+            String icTupleC = icThisClass[i];
+            int icTupleF = icFlags[i];
             String icTupleC2 = null;
             String icTupleN = null;
-
-            icTupleC = icThisClass[i];
-            icTupleF = icFlags[i];
+            int cIndex = icThisClassInts[i];
+            int c2Index = -1;
+            int nIndex = -1;
             if ((icFlags[i] & 1 << 16) != 0) {
                 icTupleC2 = icOuterClass[index];
                 icTupleN = icName[index];
+                c2Index = icOuterClassInts[index] - 1;
+                nIndex = icNameInts[index] - 1;
                 index++;
             }
-            icAll[i] = new IcTuple(icTupleC, icTupleF, icTupleC2, icTupleN);
+            icAll[i] = new IcTuple(icTupleC, icTupleF, icTupleC2, icTupleN, cIndex, c2Index, nIndex);
         }
     }
 

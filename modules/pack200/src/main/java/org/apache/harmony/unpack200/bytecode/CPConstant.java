@@ -32,8 +32,8 @@ public abstract class CPConstant extends ConstantPoolEntry {
      * @throws NullPointerException
      *             if value is null
      */
-    public CPConstant(byte tag, Object value) {
-        super(tag);
+    public CPConstant(byte tag, Object value, int globalIndex) {
+        super(tag, globalIndex);
         this.value = value;
         if (value == null) {
             throw new NullPointerException("Null arguments are not allowed");

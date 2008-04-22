@@ -16,10 +16,8 @@
  */
 package org.apache.harmony.unpack200;
 
-import org.apache.harmony.unpack200.bytecode.CPFieldRef;
-import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
-import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 import org.apache.harmony.unpack200.bytecode.ConstantPoolEntry;
 
 /**
@@ -57,30 +55,30 @@ public class SegmentConstantPool {
     protected static final String INITSTRING = "<init>";
     protected static final String REGEX_MATCH_INIT = "^" + INITSTRING + ".*";
 
-    public Object getValue(int cp, long value) throws Pack200Exception {
+    public ClassFileEntry getValue(int cp, long value) throws Pack200Exception {
         int index = (int) value;
         if (index == -1) {
             return null;
         } else if (index < 0) {
             throw new Pack200Exception("Cannot have a negative range");
         } else if (cp == UTF_8) {
-            return bands.getCpUTF8()[index];
+            return bands.cpUTF8Value(index, ClassConstantPool.DOMAIN_NORMALASCIIZ);
         } else if (cp == CP_INT) {
-            return new Integer(bands.getCpInt()[index]);
+            return bands.cpIntegerValue(index);
         } else if (cp == CP_FLOAT) {
-            return new Float(bands.getCpFloat()[index]);
+            return bands.cpFloatValue(index);
         } else if (cp == CP_LONG) {
-            return new Long(bands.getCpLong()[index]);
+            return bands.cpLongValue(index);
         } else if (cp == CP_DOUBLE) {
-            return new Double(bands.getCpDouble()[index]);
+            return bands.cpDoubleValue(index);
         } else if (cp == CP_STRING) {
-            return bands.cpStringValue(bands.getCpString()[index]);
+            return bands.cpStringValue(index);
         } else if (cp == CP_CLASS) {
-            return bands.getCpClass()[index];
+            return bands.cpClassValue(index);
         } else if (cp == SIGNATURE) {
-            return bands.getCpSignature()[index];
+            return bands.cpSignatureValue(index);
         } else if (cp == CP_DESCR) {
-            return bands.getCpDescriptor()[index];
+            return bands.cpNameAndTypeValue(index);
         } else {
             throw new Error("Tried to get a value I don't know about: " + cp);
         }
@@ -278,20 +276,20 @@ public class SegmentConstantPool {
         } else if (index < 0) {
             throw new Pack200Exception("Cannot have a negative range");
         } else if (cp == UTF_8) {
-            return bands.cpUTF8Value(bands.getCpUTF8()[index],
+            return bands.cpUTF8Value(index,
                     ClassConstantPool.DOMAIN_NORMALASCIIZ);
         } else if (cp == CP_INT) {
-            return bands.cpIntegerValue(new Integer(bands.getCpInt()[index]));
+            return bands.cpIntegerValue(index);
         } else if (cp == CP_FLOAT) {
-            return bands.cpFloatValue(new Float(bands.getCpFloat()[index]));
+            return bands.cpFloatValue(index);
         } else if (cp == CP_LONG) {
-            return bands.cpLongValue(new Long(bands.getCpLong()[index]));
+            return bands.cpLongValue(index);
         } else if (cp == CP_DOUBLE) {
-            return bands.cpDoubleValue(new Double(bands.getCpDouble()[index]));
+            return bands.cpDoubleValue(index);
         } else if (cp == CP_STRING) {
-            return bands.cpStringValue(bands.getCpString()[index]);
+            return bands.cpStringValue(index);
         } else if (cp == CP_CLASS) {
-            return bands.cpClassValue(bands.getCpClass()[index]);
+            return bands.cpClassValue(index);
         } else if (cp == SIGNATURE) {
             throw new Error("I don't know what to do with signatures yet");
             // return null /* new CPSignature(bands.getCpSignature()[index]) */;
@@ -300,17 +298,11 @@ public class SegmentConstantPool {
             // return null /* new CPDescriptor(bands.getCpDescriptor()[index])
             // */;
         } else if (cp == CP_FIELD) {
-            return new CPFieldRef(bands
-                    .cpClassValue(bands.getCpFieldClass()[index]), bands
-                    .cpNameAndTypeValue(bands.getCpFieldDescriptor()[index]));
+            return bands.cpFieldValue(index);
         } else if (cp == CP_METHOD) {
-            return new CPMethodRef(bands
-                    .cpClassValue(bands.getCpMethodClass()[index]), bands
-                    .cpNameAndTypeValue(bands.getCpMethodDescriptor()[index]));
+            return bands.cpMethodValue(index);
         } else if (cp == CP_IMETHOD) {
-            return new CPInterfaceMethodRef(bands.cpClassValue(bands
-                    .getCpIMethodClass()[index]), bands
-                    .cpNameAndTypeValue(bands.getCpIMethodDescriptor()[index]));
+            return bands.cpIMethodValue(index);
         } else {
             // etc
             throw new Error("Get value incomplete");

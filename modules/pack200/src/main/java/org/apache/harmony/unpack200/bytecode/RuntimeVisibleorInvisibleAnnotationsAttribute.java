@@ -63,4 +63,7 @@ public class RuntimeVisibleorInvisibleAnnotationsAttribute extends
                 + " annotations";
     }
 
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
 }

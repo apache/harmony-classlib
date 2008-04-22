@@ -24,9 +24,12 @@ import java.util.HashMap;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
+import org.apache.harmony.unpack200.bytecode.CPFieldRef;
 import org.apache.harmony.unpack200.bytecode.CPFloat;
 import org.apache.harmony.unpack200.bytecode.CPInteger;
+import org.apache.harmony.unpack200.bytecode.CPInterfaceMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPLong;
+import org.apache.harmony.unpack200.bytecode.CPMethodRef;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
 import org.apache.harmony.unpack200.bytecode.CPString;
 import org.apache.harmony.unpack200.bytecode.CPUTF8;
@@ -44,19 +47,30 @@ public class CpBands extends BandSet {
     private final SegmentConstantPool pool = new SegmentConstantPool(this);
 
     private String[] cpClass;
+    private int[] cpClassInts;
+    private int[] cpDescriptorNameInts;
+    private int[] cpDescriptorTypeInts;
     private String[] cpDescriptor;
     private double[] cpDouble;
     private String[] cpFieldClass;
     private String[] cpFieldDescriptor;
+    private int[] cpFieldClassInts;
+    private int[] cpFieldDescriptorInts;
     private float[] cpFloat;
     private String[] cpIMethodClass;
     private String[] cpIMethodDescriptor;
+    private int[] cpIMethodClassInts;
+    private int[] cpIMethodDescriptorInts;
     private int[] cpInt;
     private long[] cpLong;
     private String[] cpMethodClass;
     private String[] cpMethodDescriptor;
+    private int[] cpMethodClassInts;
+    private int[] cpMethodDescriptorInts;
     private String[] cpSignature;
+    private int[] cpSignatureInts;
     private String[] cpString;
+    private int[] cpStringInts;
     private String[] cpUTF8;
 
     private final HashMap[] stringsToCPUTF8 = new HashMap[ClassConstantPool.NUM_DOMAINS];
@@ -67,6 +81,18 @@ public class CpBands extends BandSet {
     private final HashMap stringsToCPClass = new HashMap();
     private final HashMap doublesToCPDoubles = new HashMap();
     private final HashMap descriptorsToCPNameAndTypes = new HashMap();
+
+    private int intOffset;
+    private int floatOffset;
+    private int longOffset;
+    private int doubleOffset;
+    private int stringOffset;
+    private int classOffset;
+    private int signatureOffset;
+    private int descrOffset;
+    private int fieldOffset;
+    private int methodOffset;
+    private int imethodOffset;
 
     public CpBands(Segment segment) {
         super(segment);
@@ -85,6 +111,18 @@ public class CpBands extends BandSet {
         parseCpField(in);
         parseCpMethod(in);
         parseCpIMethod(in);
+
+        intOffset = cpUTF8.length;
+        floatOffset = intOffset + cpInt.length;
+        longOffset = floatOffset + cpFloat.length;
+        doubleOffset = longOffset + cpLong.length;
+        stringOffset = doubleOffset + cpDouble.length;
+        classOffset = stringOffset + cpString.length;
+        signatureOffset = classOffset + cpClass.length;
+        descrOffset = signatureOffset + cpSignature.length;
+        fieldOffset = descrOffset + cpDescriptor.length;
+        methodOffset = fieldOffset + cpFieldClass.length;
+        imethodOffset = methodOffset + cpMethodClass.length;
     }
 
     /**
@@ -102,8 +140,11 @@ public class CpBands extends BandSet {
     private void parseCpClass(InputStream in) throws IOException,
             Pack200Exception {
         int cpClassCount = header.getCpClassCount();
-        cpClass = parseReferences("cp_Class", in, Codec.UDELTA5, cpClassCount,
-                cpUTF8);
+        cpClassInts = decodeBandInt("cp_Class", in, Codec.UDELTA5, cpClassCount);
+        cpClass = new String[cpClassCount];
+        for (int i = 0; i < cpClassCount; i++) {
+            cpClass[i] = cpUTF8[cpClassInts[i]];
+        }
     }
 
     /**
@@ -125,10 +166,13 @@ public class CpBands extends BandSet {
     private void parseCpDescriptor(InputStream in) throws IOException,
             Pack200Exception {
         int cpDescriptorCount = header.getCpDescriptorCount();
-        String[] cpDescriptorNames = parseReferences("cp_Descr_name", in,
-                Codec.DELTA5, cpDescriptorCount, cpUTF8);
-        String[] cpDescriptorTypes = parseReferences("cp_Descr_type", in,
-                Codec.UDELTA5, cpDescriptorCount, cpSignature);
+        cpDescriptorNameInts = decodeBandInt("cp_Descr_name", in, Codec.DELTA5,
+                cpDescriptorCount);
+        cpDescriptorTypeInts = decodeBandInt("cp_Descr_type", in,
+                Codec.UDELTA5, cpDescriptorCount);
+        String[] cpDescriptorNames = getReferences(cpDescriptorNameInts, cpUTF8);
+        String[] cpDescriptorTypes = getReferences(cpDescriptorTypeInts,
+                cpSignature);
         cpDescriptor = new String[cpDescriptorCount];
         for (int i = 0; i < cpDescriptorCount; i++) {
             cpDescriptor[i] = cpDescriptorNames[i] + ":" + cpDescriptorTypes[i]; //$NON-NLS-1$
@@ -161,10 +205,16 @@ public class CpBands extends BandSet {
     private void parseCpField(InputStream in) throws IOException,
             Pack200Exception {
         int cpFieldCount = header.getCpFieldCount();
-        cpFieldClass = parseReferences("cp_Field_class", in, Codec.DELTA5,
-                cpFieldCount, cpClass);
-        cpFieldDescriptor = parseReferences("cp_Field_desc", in, Codec.UDELTA5,
-                cpFieldCount, cpDescriptor);
+        cpFieldClassInts = decodeBandInt("cp_Field_class", in, Codec.DELTA5,
+                cpFieldCount);
+        cpFieldDescriptorInts = decodeBandInt("cp_Field_desc", in, Codec.UDELTA5,
+                cpFieldCount);
+        cpFieldClass = new String[cpFieldCount];
+        cpFieldDescriptor = new String[cpFieldCount];
+        for (int i = 0; i < cpFieldCount; i++) {
+            cpFieldClass[i] = cpClass[cpFieldClassInts[i]];
+            cpFieldDescriptor[i] = cpDescriptor[cpFieldDescriptorInts[i]];
+        }
     }
 
     private void parseCpFloat(InputStream in) throws IOException,
@@ -194,10 +244,16 @@ public class CpBands extends BandSet {
     private void parseCpIMethod(InputStream in) throws IOException,
             Pack200Exception {
         int cpIMethodCount = header.getCpIMethodCount();
-        cpIMethodClass = parseReferences("cp_Imethod_class", in, Codec.DELTA5,
-                cpIMethodCount, cpClass);
-        cpIMethodDescriptor = parseReferences("cp_Imethod_desc", in,
-                Codec.UDELTA5, cpIMethodCount, cpDescriptor);
+        cpIMethodClassInts = decodeBandInt("cp_Imethod_class", in, Codec.DELTA5,
+                cpIMethodCount);
+        cpIMethodDescriptorInts = decodeBandInt("cp_Imethod_desc", in,
+                Codec.UDELTA5, cpIMethodCount);
+        cpIMethodClass = new String[cpIMethodCount];
+        cpIMethodDescriptor = new String[cpIMethodCount];
+        for (int i = 0; i < cpIMethodCount; i++) {
+            cpIMethodClass[i] = cpClass[cpIMethodClassInts[i]];
+            cpIMethodDescriptor[i] = cpDescriptor[cpIMethodDescriptorInts[i]];
+        }
     }
 
     private void parseCpInt(InputStream in) throws IOException,
@@ -228,10 +284,16 @@ public class CpBands extends BandSet {
     private void parseCpMethod(InputStream in) throws IOException,
             Pack200Exception {
         int cpMethodCount = header.getCpMethodCount();
-        cpMethodClass = parseReferences("cp_Method_class", in, Codec.DELTA5,
-                cpMethodCount, cpClass);
-        cpMethodDescriptor = parseReferences("cp_Method_desc", in,
-                Codec.UDELTA5, cpMethodCount, cpDescriptor);
+        cpMethodClassInts = decodeBandInt("cp_Method_class", in, Codec.DELTA5,
+                cpMethodCount);
+        cpMethodDescriptorInts = decodeBandInt("cp_Method_desc", in,
+                Codec.UDELTA5, cpMethodCount);
+        cpMethodClass = new String[cpMethodCount];
+        cpMethodDescriptor = new String[cpMethodCount];
+        for (int i = 0; i < cpMethodCount; i++) {
+            cpMethodClass[i] = cpClass[cpMethodClassInts[i]];
+            cpMethodDescriptor[i] = cpDescriptor[cpMethodDescriptorInts[i]];
+        }
     }
 
     /**
@@ -259,8 +321,9 @@ public class CpBands extends BandSet {
     private void parseCpSignature(InputStream in) throws IOException,
             Pack200Exception {
         int cpSignatureCount = header.getCpSignatureCount();
-        String[] cpSignatureForm = parseReferences("cp_Signature_form", in,
-                Codec.DELTA5, cpSignatureCount, cpUTF8);
+        cpSignatureInts = decodeBandInt("cp_Signature_form", in,
+                Codec.DELTA5, cpSignatureCount);
+        String[] cpSignatureForm = getReferences(cpSignatureInts, cpUTF8);
         cpSignature = new String[cpSignatureCount];
         int lCount = 0;
         for (int i = 0; i < cpSignatureCount; i++) {
@@ -268,6 +331,7 @@ public class CpBands extends BandSet {
             char[] chars = form.toCharArray();
             for (int j = 0; j < chars.length; j++) {
                 if (chars[j] == 'L') {
+                    cpSignatureInts[i] = -1;
                     lCount++;
                 }
             }
@@ -309,8 +373,12 @@ public class CpBands extends BandSet {
     private void parseCpString(InputStream in) throws IOException,
             Pack200Exception {
         int cpStringCount = header.getCpStringCount();
-        cpString = parseReferences("cp_String", in, Codec.UDELTA5,
-                cpStringCount, cpUTF8);
+        cpStringInts = decodeBandInt("cp_String", in, Codec.UDELTA5,
+                cpStringCount);
+        cpString = new String[cpStringCount];
+        for (int i = 0; i < cpStringCount; i++) {
+            cpString[i] = cpUTF8[cpStringInts[i]];
+        }
     }
 
     private void parseCpUtf8(InputStream in) throws IOException,
@@ -434,78 +502,225 @@ public class CpBands extends BandSet {
         return cpUTF8;
     }
 
-    public CPUTF8 cpUTF8Value(String string, int domain) {
+    public CPUTF8 cpUTF8Value(int index, int domain) {
+        String string = cpUTF8[index];
         if (stringsToCPUTF8[domain] == null) {
             stringsToCPUTF8[domain] = new HashMap();
         }
         CPUTF8 cputf8 = (CPUTF8) stringsToCPUTF8[domain].get(string);
         if (cputf8 == null) {
-            cputf8 = new CPUTF8(string, domain);
+            cputf8 = new CPUTF8(string, domain, index);
+            stringsToCPUTF8[domain].put(string, cputf8);
+        }
+        return cputf8;
+    }
+    
+    public CPUTF8 cpUTF8Value(String string, int domain) {
+        return cpUTF8Value(string, domain, true);
+    }
+
+    public CPUTF8 cpUTF8Value(String string, int domain, boolean searchForIndex) {
+        if (stringsToCPUTF8[domain] == null) {
+            stringsToCPUTF8[domain] = new HashMap();
+        }
+        CPUTF8 cputf8 = (CPUTF8) stringsToCPUTF8[domain].get(string);
+        if (cputf8 == null) {
+            int index = -1;
+            if(searchForIndex) {
+                index = search(cpUTF8, string);
+            }
+            if(index != -1) {
+                return cpUTF8Value(index, domain);
+            }
+            if(searchForIndex) {
+                index = search(cpSignature, string);
+            }
+            if(index != -1) {
+                return cpSignatureValue(index);
+            }
+            cputf8 = new CPUTF8(string, domain, -1);
             stringsToCPUTF8[domain].put(string, cputf8);
         }
         return cputf8;
     }
 
-    public CPString cpStringValue(String string) {
+    public CPString cpStringValue(int index) {
+        String string = cpString[index];
+        int utf8Index = cpStringInts[index];
+        int globalIndex = stringOffset + index;
         CPString cpString = (CPString) stringsToCPStrings.get(string);
         if (cpString == null) {
-            cpString = new CPString(cpUTF8Value(string,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ));
+            cpString = new CPString(cpUTF8Value(utf8Index,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ), globalIndex);
             stringsToCPStrings.put(string, cpString);
         }
         return cpString;
     }
 
-    public CPLong cpLongValue(Long l) {
+    public CPLong cpLongValue(int index) {
+        Long l = new Long(cpLong[index]);
         CPLong cpLong = (CPLong) longsToCPLongs.get(l);
         if (cpLong == null) {
-            cpLong = new CPLong(l);
+            cpLong = new CPLong(l, index + longOffset);
             longsToCPLongs.put(l, cpLong);
         }
         return cpLong;
     }
 
-    public CPInteger cpIntegerValue(Integer i) {
+    public CPInteger cpIntegerValue(int index) {
+        Integer i = new Integer(cpInt[index]);
         CPInteger cpInteger = (CPInteger) integersToCPIntegers.get(i);
         if (cpInteger == null) {
-            cpInteger = new CPInteger(i);
+            cpInteger = new CPInteger(i, index + intOffset);
             integersToCPIntegers.put(i, cpInteger);
         }
         return cpInteger;
     }
 
-    public CPFloat cpFloatValue(Float f) {
+    public CPFloat cpFloatValue(int index) {
+        Float f = new Float(cpFloat[index]);
         CPFloat cpFloat = (CPFloat) floatsToCPFloats.get(f);
         if (cpFloat == null) {
-            cpFloat = new CPFloat(f);
+            cpFloat = new CPFloat(f, index + floatOffset);
             floatsToCPFloats.put(f, cpFloat);
         }
         return cpFloat;
     }
 
-    public CPClass cpClassValue(String string) {
+    public CPClass cpClassValue(int index) {
+        String string = cpClass[index];
+        int utf8Index = cpClassInts[index];
+        int globalIndex = classOffset + index;
         CPClass cpString = (CPClass) stringsToCPClass.get(string);
         if (cpString == null) {
-            cpString = new CPClass(cpUTF8Value(string,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ));
+            cpString = new CPClass(cpUTF8Value(utf8Index,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ), globalIndex);
             stringsToCPClass.put(string, cpString);
         }
         return cpString;
     }
 
-    public CPDouble cpDoubleValue(Double dbl) {
+    public CPClass cpClassValue(String string) {
+        CPClass cpString = (CPClass) stringsToCPClass.get(string);
+        if (cpString == null) {
+            int index = search(cpClass, string);
+            if(index != -1) {
+                return cpClassValue(index);
+            }
+            cpString = new CPClass(cpUTF8Value(string,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ, false), -1);
+            stringsToCPClass.put(string, cpString);
+        }
+        return cpString;
+    }
+
+    private int search(String[] array, String string) {
+        for (int i = 0; i < array.length; i++) {
+            if(array[i].equals(string)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public CPDouble cpDoubleValue(int index) {
+        Double dbl = new Double(cpDouble[index]);
         CPDouble cpDouble = (CPDouble) doublesToCPDoubles.get(dbl);
         if (cpDouble == null) {
-            cpDouble = new CPDouble(dbl);
+            cpDouble = new CPDouble(dbl, index + doubleOffset);
             doublesToCPDoubles.put(dbl, cpDouble);
         }
         return cpDouble;
     }
 
-    public CPNameAndType cpNameAndTypeValue(String descriptor) {
+    public CPNameAndType cpNameAndTypeValue(int index) {
+        String descriptor = cpDescriptor[index];
         CPNameAndType cpNameAndType = (CPNameAndType) descriptorsToCPNameAndTypes
                 .get(descriptor);
         if (cpNameAndType == null) {
+            int descriptorDomain = ClassConstantPool.DOMAIN_UNDEFINED;
+            int nameIndex = cpDescriptorNameInts[index];
+            int descriptorIndex = cpDescriptorTypeInts[index];
+            String descriptorString = cpSignature[descriptorIndex];
+                
+            // For some reason, descriptors which have just plain
+            // native types are stored in DOMAIN_NORMALASCIIZ rather
+            // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
+            // that DOMAIN_SIGNATUREASCIIZ is poorly named.
+            boolean nativeDescriptor = true;
+            for (int i = 0; i < descriptorString.length(); i++) {
+                char currentChar = descriptorString.charAt(i);
+                if (Character.isLetter(currentChar)) {
+                    if (currentChar == 'L') {
+                        nativeDescriptor = false;
+                    }
+                    break;
+                }
+            }
+            int domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
+            CPUTF8 name = cpUTF8Value(nameIndex,
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+            if (nativeDescriptor) {
+                // Native signatures are stored in DOMAIN_NORMALASCIIZ, not
+                // DOMAIN_SIGNATUREASCIIZ for some reason.
+                descriptorDomain = ClassConstantPool.DOMAIN_NORMALASCIIZ;
+            } else {
+                descriptorDomain = ClassConstantPool.DOMAIN_SIGNATUREASCIIZ;
+            }
+            CPUTF8 descriptorU = cpSignatureValue(descriptorIndex, descriptorDomain);
+            cpNameAndType = new CPNameAndType(name, descriptorU, domain, index + descrOffset);
+            descriptorsToCPNameAndTypes.put(descriptor, cpNameAndType);
+        }
+        return cpNameAndType;
+    }
+
+    public CPInterfaceMethodRef cpIMethodValue(int index) {
+        return new CPInterfaceMethodRef(cpClassValue(cpIMethodClassInts[index]),
+                cpNameAndTypeValue(cpIMethodDescriptorInts[index]), index
+                        + imethodOffset);
+    }
+
+    public CPMethodRef cpMethodValue(int index) {
+        return new CPMethodRef(cpClassValue(cpMethodClassInts[index]),
+                cpNameAndTypeValue(cpMethodDescriptorInts[index]), index
+                        + methodOffset);
+    }
+
+    public CPFieldRef cpFieldValue(int index) {
+        return new CPFieldRef(cpClassValue(cpFieldClassInts[index]),
+                cpNameAndTypeValue(cpFieldDescriptorInts[index]), index
+                        + fieldOffset);
+    }
+
+    public CPUTF8 cpSignatureValue(int index) {
+        return cpSignatureValue(index, ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+    }
+
+    public CPUTF8 cpSignatureValue(int index, int domain) {
+        int globalIndex = index + signatureOffset;
+        if(cpSignatureInts[index] != -1) {
+            globalIndex = cpSignatureInts[index];
+        }
+        if (stringsToCPUTF8[domain] == null) {
+            stringsToCPUTF8[domain] = new HashMap();
+        }
+        String string = cpSignature[index];
+        CPUTF8 cpUTF8 = (CPUTF8) stringsToCPUTF8[domain].get(string);
+        if(cpUTF8 == null) {
+            cpUTF8 = new CPUTF8(string, domain, globalIndex);
+            stringsToCPUTF8[domain].put(string, cpUTF8);
+        }
+        return cpUTF8;
+    }
+
+    public CPNameAndType cpNameAndTypeValue(String descriptor) {
+        CPNameAndType cpNameAndType = (CPNameAndType) descriptorsToCPNameAndTypes
+            .get(descriptor);
+        if (cpNameAndType == null) {
+            int index = search(cpDescriptor, descriptor);
+            if(index != -1) {
+                return cpNameAndTypeValue(index);
+            }
             int descriptorDomain = ClassConstantPool.DOMAIN_UNDEFINED;
             int colon = descriptor.indexOf(':');
             String nameString = descriptor.substring(0, colon);
@@ -515,8 +730,8 @@ public class CpBands extends BandSet {
             // than in DOMAIN_SIGNATUREASCIIZ. This might indicate
             // that DOMAIN_SIGNATUREASCIIZ is poorly named.
             boolean nativeDescriptor = true;
-            for (int index = 0; index < descriptorString.length(); index++) {
-                char currentChar = descriptorString.charAt(index);
+            for (int i = 0; i < descriptorString.length(); i++) {
+                char currentChar = descriptorString.charAt(i);
                 if (Character.isLetter(currentChar)) {
                     if (currentChar == 'L') {
                         nativeDescriptor = false;
@@ -526,7 +741,7 @@ public class CpBands extends BandSet {
             }
             int domain = ClassConstantPool.DOMAIN_NAMEANDTYPE;
             CPUTF8 name = cpUTF8Value(nameString,
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
+                    ClassConstantPool.DOMAIN_NORMALASCIIZ, true);
             if (nativeDescriptor) {
                 // Native signatures are stored in DOMAIN_NORMALASCIIZ, not
                 // DOMAIN_SIGNATUREASCIIZ for some reason.
@@ -534,11 +749,19 @@ public class CpBands extends BandSet {
             } else {
                 descriptorDomain = ClassConstantPool.DOMAIN_SIGNATUREASCIIZ;
             }
-            CPUTF8 descriptorU = cpUTF8Value(descriptorString, descriptorDomain);
-            cpNameAndType = new CPNameAndType(name, descriptorU, domain);
+            CPUTF8 descriptorU = cpUTF8Value(descriptorString, descriptorDomain, true);
+            cpNameAndType = new CPNameAndType(name, descriptorU, domain, index + descrOffset);
             descriptorsToCPNameAndTypes.put(descriptor, cpNameAndType);
         }
         return cpNameAndType;
+    }
+
+    public int[] getCpDescriptorNameInts() {
+        return cpDescriptorNameInts;
+    }
+
+    public int[] getCpDescriptorTypeInts() {
+        return cpDescriptorTypeInts;
     }
 
 }

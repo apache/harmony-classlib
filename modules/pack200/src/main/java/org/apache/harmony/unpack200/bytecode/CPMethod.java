@@ -27,4 +27,8 @@ public class CPMethod extends CPMember {
         super(name, descriptor, flags, attributes);
     }
 
+    public String toString() {
+        return "Method: " + name + "(" + descriptor + ")";
+    }
+
 }

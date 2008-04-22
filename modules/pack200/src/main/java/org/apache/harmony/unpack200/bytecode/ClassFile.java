@@ -50,7 +50,6 @@ public class ClassFile {
                     || entry.getTag() == ConstantPoolEntry.CP_Long)
                 i++;
         }
-        ;
         dos.writeShort(accessFlags);
         dos.writeShort(thisClass);
         dos.writeShort(superClass);

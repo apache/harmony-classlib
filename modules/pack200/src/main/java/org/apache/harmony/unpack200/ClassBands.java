@@ -51,13 +51,15 @@ public class ClassBands extends BandSet {
     private long[] classAccessFlags; // Access flags for writing to the class
     // file
 
-    private String[][] classInterfaces;
+    private int[][] classInterfacesInts;
 
     private int[] classMethodCount;
 
-    private String[] classSuper;
+    private int[] classSuperInts;
 
     private String[] classThis;
+
+    private int[] classThisInts;
 
     private ArrayList[] classAttributes;
 
@@ -79,6 +81,8 @@ public class ClassBands extends BandSet {
 
     private String[][] fieldDescr;
 
+    private int[][] fieldDescrInts;
+
     private long[][] fieldFlags;
 
     private long[][] fieldAccessFlags;
@@ -86,6 +90,8 @@ public class ClassBands extends BandSet {
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
+    
+    private int[][] methodDescrInts;
 
     private long[][] methodFlags;
 
@@ -107,7 +113,7 @@ public class ClassBands extends BandSet {
 
     private int[][] codeHandlerCatchPO;
 
-    private String[][] codeHandlerClassRCN;
+    private int[][] codeHandlerClassRCN;
 
     /**
      * @param segment
@@ -124,19 +130,19 @@ public class ClassBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
         int classCount = header.getClassCount();
-        classThis = parseReferences("class_this", in, Codec.DELTA5, classCount,
-                cpBands.getCpClass());
-        classSuper = parseReferences("class_super", in, Codec.DELTA5,
-                classCount, cpBands.getCpClass());
+        classThisInts = decodeBandInt("class_this", in, Codec.DELTA5, classCount);
+        classThis = getReferences(classThisInts, cpBands.getCpClass());
+        classSuperInts = decodeBandInt("class_super", in, Codec.DELTA5,
+                classCount);
         int[] classInterfaceLengths = decodeBandInt("class_interface_count",
                 in, Codec.DELTA5, classCount);
-        classInterfaces = parseReferences("class_interface", in, Codec.DELTA5,
-                classInterfaceLengths, cpBands.getCpClass());
+        classInterfacesInts = decodeBandInt("class_interface", in, Codec.DELTA5,
+                classInterfaceLengths);
         classFieldCount = decodeBandInt("class_field_count", in, Codec.DELTA5,
                 classCount);
         classMethodCount = decodeBandInt("class_method_count", in,
@@ -150,8 +156,9 @@ public class ClassBands extends BandSet {
 
     private void parseFieldBands(InputStream in) throws IOException,
             Pack200Exception {
-        fieldDescr = parseReferences("field_descr", in, Codec.DELTA5,
-                classFieldCount, cpBands.getCpDescriptor());
+        fieldDescrInts = decodeBandInt("field_descr", in, Codec.DELTA5,
+                classFieldCount);
+        fieldDescr = getReferences(fieldDescrInts, cpBands.getCpDescriptor());
         parseFieldAttrBands(in);
     }
 
@@ -247,10 +254,10 @@ public class ClassBands extends BandSet {
                     if (type.equals("B") || type.equals("S")
                             || type.equals("C") || type.equals("Z"))
                         type = "I";
-                    Object value = constantValueLayout.getValue(result, type,
-                            cpBands.getConstantPool());
-                    fieldAttributes[i][j].add(new ConstantValueAttribute(
-                            getClassFileEntry(value)));
+                    ClassFileEntry value = constantValueLayout.getValue(result,
+                            type, cpBands.getConstantPool());
+                    fieldAttributes[i][j]
+                            .add(new ConstantValueAttribute(value));
                     constantValueIndex++;
                 }
                 if (signatureLayout.matches(flag)) {
@@ -259,9 +266,8 @@ public class ClassBands extends BandSet {
                     String desc = fieldDescr[i][j];
                     int colon = desc.indexOf(':');
                     String type = desc.substring(colon + 1);
-                    CPUTF8 value = cpBands.cpUTF8Value((String) signatureLayout
-                            .getValue(result, type, cpBands.getConstantPool()),
-                            ClassConstantPool.DOMAIN_SIGNATUREASCIIZ);
+                    CPUTF8 value = (CPUTF8) signatureLayout.getValue(result,
+                            type, cpBands.getConstantPool());
                     fieldAttributes[i][j].add(new SignatureAttribute(value));
                     signatureIndex++;
                 }
@@ -278,28 +284,11 @@ public class ClassBands extends BandSet {
         }
     }
 
-    private ClassFileEntry getClassFileEntry(Object value) {
-        ClassFileEntry entry = null;
-        if (value instanceof ClassFileEntry) {
-            entry = (ClassFileEntry) value;
-        } else if (value instanceof java.lang.Integer) {
-            entry = cpBands.cpIntegerValue((Integer) value);
-        } else if (value instanceof java.lang.Long) {
-            entry = cpBands.cpLongValue((Long) value);
-        } else if (value instanceof java.lang.Float) {
-            entry = cpBands.cpFloatValue((Float) value);
-        } else if (value instanceof java.lang.Double) {
-            entry = cpBands.cpDoubleValue((Double) value);
-        } else if (value instanceof java.lang.String) {
-            entry = cpBands.cpStringValue((String) value);
-        }
-        return entry;
-    }
-
     private void parseMethodBands(InputStream in) throws IOException,
             Pack200Exception {
-        methodDescr = parseReferences("method_descr", in, Codec.MDELTA5,
-                classMethodCount, cpBands.getCpDescriptor());
+        methodDescrInts = decodeBandInt("method_descr", in, Codec.MDELTA5,
+                classMethodCount);
+        methodDescr = getReferences(methodDescrInts, cpBands.getCpDescriptor());
         parseMethodAttrBands(in);
     }
 
@@ -334,8 +323,8 @@ public class ClassBands extends BandSet {
                 methodExceptionsLayout);
         int[] numExceptions = decodeBandInt("method_Exceptions_n", in,
                 Codec.UNSIGNED5, count);
-        String[][] methodExceptionsRS = parseReferences("method_Exceptions_RC",
-                in, Codec.UNSIGNED5, numExceptions, cpBands.getCpClass());
+        int[][] methodExceptionsRS = decodeBandInt("method_Exceptions_RC",
+                in, Codec.UNSIGNED5, numExceptions);
 
         // Parse method signature attributes
         AttributeLayout methodSignatureLayout = attrMap.getAttributeLayout(
@@ -395,7 +384,7 @@ public class ClassBands extends BandSet {
                 }
                 if (methodExceptionsLayout.matches(flag)) {
                     int n = numExceptions[methodExceptionsIndex];
-                    String[] exceptions = methodExceptionsRS[methodExceptionsIndex];
+                    int[] exceptions = methodExceptionsRS[methodExceptionsIndex];
                     CPClass[] exceptionClasses = new CPClass[n];
                     for (int k = 0; k < n; k++) {
                         exceptionClasses[k] = cpBands
@@ -415,10 +404,10 @@ public class ClassBands extends BandSet {
                     // be e.g. KIB or KIH
                     if (type.equals("B") || type.equals("H"))
                         type = "I";
-                    Object value = methodSignatureLayout.getValue(result, type,
-                            cpBands.getConstantPool());
-                    methodAttributes[i][j].add(new ConstantValueAttribute(
-                            getClassFileEntry(value)));
+                    ClassFileEntry value = methodSignatureLayout.getValue(
+                            result, type, cpBands.getConstantPool());
+                    methodAttributes[i][j]
+                            .add(new ConstantValueAttribute(value));
                     methodSignatureIndex++;
                 }
                 // Non-predefined attributes
@@ -500,12 +489,12 @@ public class ClassBands extends BandSet {
                 AttributeLayout.CONTEXT_CLASS);
         int enclosingMethodCount = SegmentUtils.countMatches(classFlags,
                 enclosingMethodLayout);
-        String[] enclosingMethodRC = parseReferences(
+        int[] enclosingMethodRC = decodeBandInt(
                 "class_EnclosingMethod_RC", in, Codec.UNSIGNED5,
-                enclosingMethodCount, cpClass);
-        String[] enclosingMethodRDN = parseReferences(
+                enclosingMethodCount);
+        int[] enclosingMethodRDN = decodeBandInt(
                 "class_EnclosingMethod_RDN", in, Codec.UNSIGNED5,
-                enclosingMethodCount, cpBands.getCpDescriptor());
+                enclosingMethodCount);
 
         AttributeLayout signatureLayout = attrMap.getAttributeLayout(
                 AttributeLayout.ATTRIBUTE_SIGNATURE,
@@ -602,7 +591,7 @@ public class ClassBands extends BandSet {
             }
             if (sourceFileLayout.matches(flag)) {
                 long result = classSourceFile[sourceFileIndex];
-                String value = (String) sourceFileLayout.getValue(result,
+                ClassFileEntry value = sourceFileLayout.getValue(result,
                         cpBands.getConstantPool());
                 if (value == null) {
                     // Remove package prefix
@@ -624,11 +613,9 @@ public class ClassBands extends BandSet {
                         className = className.substring(0, index);
                     }
                     // Add .java to the end
-                    value = className + ".java";
+                    value = cpBands.cpUTF8Value(className + ".java", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ, false);
                 }
-                classAttributes[i].add(new SourceFileAttribute(cpBands
-                        .cpUTF8Value(value,
-                                ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ)));
+                classAttributes[i].add(new SourceFileAttribute((CPUTF8)value));
                 sourceFileIndex++;
             }
             if (enclosingMethodLayout.matches(flag)) {
@@ -642,10 +629,9 @@ public class ClassBands extends BandSet {
             }
             if (signatureLayout.matches(flag)) {
                 long result = classSignature[signatureIndex];
-                Object value = signatureLayout.getValue(result, cpBands
+                ClassFileEntry value = signatureLayout.getValue(result, cpBands
                         .getConstantPool());
-                classAttributes[i].add(new ConstantValueAttribute(
-                        getClassFileEntry(value)));
+                classAttributes[i].add(new ConstantValueAttribute(value));
                 signatureIndex++;
             }
             if (innerClassLayout.matches(flag)) {
@@ -653,16 +639,20 @@ public class ClassBands extends BandSet {
                 // decided at the end when creating class constant pools
                 icLocal[i] = new IcTuple[classInnerClassesN[innerClassIndex]];
                 for (int j = 0; j < icLocal[i].length; j++) {
-                    String icTupleC = null;
-                    int icTupleF = -1;
+                    int icTupleCIndex = classInnerClassesRC[innerClassIndex][j];
+                    int icTupleC2Index = -1;
+                    int icTupleNIndex = -1;
+
+                    String icTupleC = cpClass[icTupleCIndex];
+                    int icTupleF = classInnerClassesF[innerClassIndex][j];
                     String icTupleC2 = null;
                     String icTupleN = null;
-
-                    icTupleC = cpClass[classInnerClassesRC[innerClassIndex][j]];
-                    icTupleF = classInnerClassesF[innerClassIndex][j];
+                    
                     if (icTupleF != 0) {
-                        icTupleC2 = cpClass[classInnerClassesOuterRCN[innerClassC2NIndex]];
-                        icTupleN = cpUTF8[classInnerClassesNameRUN[innerClassC2NIndex]];
+                        icTupleC2Index = classInnerClassesOuterRCN[innerClassC2NIndex];
+                        icTupleNIndex = classInnerClassesNameRUN[innerClassC2NIndex];
+                        icTupleC2 = cpClass[icTupleC2Index];
+                        icTupleN = cpUTF8[icTupleNIndex];
                         innerClassC2NIndex++;
                     } else {
                         // Get from icBands
@@ -678,7 +668,7 @@ public class ClassBands extends BandSet {
                     }
 
                     IcTuple icTuple = new IcTuple(icTupleC, icTupleF,
-                            icTupleC2, icTupleN);
+                            icTupleC2, icTupleN, icTupleCIndex, icTupleC2Index, icTupleNIndex);
                     icLocal[i][j] = icTuple;
                 }
                 innerClassIndex++;
@@ -758,23 +748,11 @@ public class ClassBands extends BandSet {
                 Codec.BRANCH5, codeHandlerCount);
         codeHandlerCatchPO = decodeBandInt("code_handler_catch_PO", in,
                 Codec.BRANCH5, codeHandlerCount);
-        int[][] codeHandlerClassRCNints = decodeBandInt(
+        codeHandlerClassRCN = decodeBandInt(
                 "code_handler_class_RCN", in, Codec.UNSIGNED5, codeHandlerCount);
         // The codeHandlerClassRCN band contains incremented references to
         // cp_Class so we can't use parseReferences(..) here.
         String[] cpClass = cpBands.getCpClass();
-        codeHandlerClassRCN = new String[codeHandlerClassRCNints.length][];
-        for (int i = 0; i < codeHandlerClassRCNints.length; i++) {
-            codeHandlerClassRCN[i] = new String[codeHandlerClassRCNints[i].length];
-            for (int j = 0; j < codeHandlerClassRCNints[i].length; j++) {
-                int handlerClassReference = codeHandlerClassRCNints[i][j];
-                if (handlerClassReference == 0) {
-                    codeHandlerClassRCN[i][j] = null;
-                } else {
-                    codeHandlerClassRCN[i][j] = cpClass[handlerClassReference - 1];
-                }
-            }
-        }
 
         int codeFlagsCount = segment.getSegmentHeader().getOptions()
                 .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
@@ -839,12 +817,12 @@ public class ClassBands extends BandSet {
         int[][] localVariableTableSpanO = decodeBandInt(
                 "code_LocalVariableTable_span_O", in, Codec.BRANCH5,
                 localVariableTableN);
-        CPUTF8[][] localVariableTableNameRU = stringsToCPUTF8(parseReferences(
+        CPUTF8[][] localVariableTableNameRU = parseCPUTF8References(
                 "code_LocalVariableTable_name_RU", in, Codec.UNSIGNED5,
-                localVariableTableN, cpBands.getCpUTF8()));
-        CPUTF8[][] localVariableTableTypeRS = stringsToCPUTF8(parseReferences(
+                localVariableTableN);
+        CPUTF8[][] localVariableTableTypeRS = parseCPSignatureReferences(
                 "code_LocalVariableTable_type_RS", in, Codec.UNSIGNED5,
-                localVariableTableN, cpBands.getCpSignature()));
+                localVariableTableN);
         int[][] localVariableTableSlot = decodeBandInt(
                 "code_LocalVariableTable_slot", in, Codec.UNSIGNED5,
                 localVariableTableN);
@@ -877,12 +855,12 @@ public class ClassBands extends BandSet {
         int[][] localVariableTypeTableSpanO = decodeBandInt(
                 "code_LocalVariableTypeTable_span_O", in, Codec.BRANCH5,
                 localVariableTypeTableN);
-        CPUTF8[][] localVariableTypeTableNameRU = stringsToCPUTF8(parseReferences(
+        CPUTF8[][] localVariableTypeTableNameRU = parseCPUTF8References(
                 "code_LocalVariableTypeTable_name_RU", in, Codec.UNSIGNED5,
-                localVariableTypeTableN, cpBands.getCpUTF8()));
-        CPUTF8[][] localVariableTypeTableTypeRS = stringsToCPUTF8(parseReferences(
+                localVariableTypeTableN);
+        CPUTF8[][] localVariableTypeTableTypeRS = parseCPSignatureReferences(
                 "code_LocalVariableTypeTable_type_RS", in, Codec.UNSIGNED5,
-                localVariableTypeTableN, cpBands.getCpSignature()));
+                localVariableTypeTableN);
         int[][] localVariableTypeTableSlot = decodeBandInt(
                 "code_LocalVariableTypeTable_slot", in, Codec.UNSIGNED5,
                 localVariableTypeTableN);
@@ -965,27 +943,6 @@ public class ClassBands extends BandSet {
 
     }
 
-    private CPUTF8[][] stringsToCPUTF8(String[][] strings) {
-        CPUTF8[][] cpUTF8s = new CPUTF8[strings.length][];
-        for (int i = 0; i < strings.length; i++) {
-            cpUTF8s[i] = new CPUTF8[strings[i].length];
-            for (int j = 0; j < strings[i].length; j++) {
-                cpUTF8s[i][j] = cpBands.cpUTF8Value(strings[i][j],
-                        ClassConstantPool.DOMAIN_NORMALASCIIZ);
-            }
-        }
-        return cpUTF8s;
-    }
-
-    private CPUTF8[] stringsToCPUTF8(String[] strings) {
-        CPUTF8[] cpUTF8s = new CPUTF8[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            cpUTF8s[i] = cpBands.cpUTF8Value(strings[i],
-                    ClassConstantPool.DOMAIN_NORMALASCIIZ);
-        }
-        return cpUTF8s;
-    }
-
     private int parseFieldMetadataBands(InputStream in, int[] fieldAttrCalls)
             throws Pack200Exception, IOException {
         int backwardsCallsUsed = 0;
@@ -1045,9 +1002,9 @@ public class ClassBands extends BandSet {
             if (!rxa.equals("AD")) {
                 mbg[i].anno_N = decodeBandInt(contextName + "_" + rxa
                         + "_anno_N", in, Codec.UNSIGNED5, RxACount[i]);
-                mbg[i].type_RS = stringsToCPUTF8(parseReferences(contextName
+                mbg[i].type_RS = parseCPSignatureReferences(contextName
                         + "_" + rxa + "_type_RS", in, Codec.UNSIGNED5,
-                        mbg[i].anno_N, cpBands.getCpSignature()));
+                        mbg[i].anno_N);
                 mbg[i].pair_N = decodeBandInt(contextName + "_" + rxa
                         + "_pair_N", in, Codec.UNSIGNED5, mbg[i].anno_N);
                 for (int j = 0; j < mbg[i].pair_N.length; j++) {
@@ -1056,9 +1013,9 @@ public class ClassBands extends BandSet {
                     }
                 }
 
-                mbg[i].name_RU = stringsToCPUTF8(parseReferences(contextName
+                mbg[i].name_RU = parseCPUTF8References(contextName
                         + "_" + rxa + "_name_RU", in, Codec.UNSIGNED5,
-                        pairCount, cpBands.getCpUTF8()));
+                        pairCount);
             }
             mbg[i].T = decodeBandInt(contextName + "_" + rxa + "_T", in,
                     Codec.BYTE1, pairCount + backwardsCallCounts[i]);
@@ -1273,20 +1230,20 @@ public class ClassBands extends BandSet {
         return classAccessFlags;
     }
 
-    public String[][] getClassInterfaces() {
-        return classInterfaces;
+    public int[][] getClassInterfacesInts() {
+        return classInterfacesInts;
     }
 
     public int[] getClassMethodCount() {
         return classMethodCount;
     }
 
-    public String[] getClassSuper() {
-        return classSuper;
+    public int[] getClassSuperInts() {
+        return classSuperInts;
     }
 
-    public String[] getClassThis() {
-        return classThis;
+    public int[] getClassThisInts() {
+        return classThisInts;
     }
 
     public int[] getCodeMaxNALocals() {
@@ -1301,8 +1258,12 @@ public class ClassBands extends BandSet {
         return fieldAttributes;
     }
 
-    public String[][] getFieldDescr() {
-        return fieldDescr;
+    public int[][] getFieldDescrInts() {
+        return fieldDescrInts;
+    }
+
+    public int[][] getMethodDescrInts() {
+        return methodDescrInts;
     }
 
     public long[][] getFieldFlags() throws Pack200Exception {
@@ -1409,7 +1370,7 @@ public class ClassBands extends BandSet {
         return codeHandlerCatchPO;
     }
 
-    public String[][] getCodeHandlerClassRCN() {
+    public int[][] getCodeHandlerClassRCN() {
         return codeHandlerClassRCN;
     }
 

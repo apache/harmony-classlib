@@ -73,4 +73,8 @@ public class EnclosingMethodAttribute extends Attribute {
         return "EnclosingMethod";
     }
 
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
 }

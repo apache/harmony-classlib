@@ -51,4 +51,8 @@ public class AnnotationDefaultAttribute extends AnnotationsAttribute {
         return "AnnotationDefault: " + element_value;
     }
 
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
 }

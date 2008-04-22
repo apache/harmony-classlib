@@ -17,6 +17,7 @@
 package org.apache.harmony.unpack200;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 
 /**
  * AttributeLayout defines a layout that describes how an attribute will be
@@ -63,7 +64,7 @@ public class AttributeLayout implements IMatcher {
     public static final String[] contextNames = { "Class", "Field", "Method", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             "Code", }; //$NON-NLS-1$
 
-    private static Object getValue(String layout, long value,
+    private static ClassFileEntry getValue(String layout, long value,
             SegmentConstantPool pool) throws Pack200Exception {
         if (layout.startsWith("R")) { //$NON-NLS-1$
             // references
@@ -187,19 +188,19 @@ public class AttributeLayout implements IMatcher {
         return layout;
     }
 
-    public Object getValue(long value, SegmentConstantPool pool)
+    public ClassFileEntry getValue(long value, SegmentConstantPool pool)
             throws Pack200Exception {
         return getValue(layout, value, pool);
     }
 
-    public Object getValue(long value, String type, SegmentConstantPool pool)
+    public ClassFileEntry getValue(long value, String type, SegmentConstantPool pool)
             throws Pack200Exception {
         // TODO This really needs to be better tested, esp. the different types
         // TODO This should have the ability to deal with RUN stuff too, and
         // unions
         if (layout.startsWith("KQ")) { //$NON-NLS-1$
             if (type.equals("Ljava/lang/String;")) { //$NON-NLS-1$
-                Object value2 = getValue("KS", value, pool); //$NON-NLS-1$
+                ClassFileEntry value2 = getValue("KS", value, pool); //$NON-NLS-1$
                 return value2;
             } else {
                 return getValue("K" + type + layout.substring(2), value, //$NON-NLS-1$
