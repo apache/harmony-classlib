@@ -95,6 +95,7 @@ import org.apache.harmony.jndi.provider.ldap.ext.StartTlsResponseImpl;
 import org.apache.harmony.jndi.provider.ldap.parser.FilterParser;
 import org.apache.harmony.jndi.provider.ldap.parser.LdapUrlParser;
 import org.apache.harmony.jndi.provider.ldap.parser.ParseException;
+import org.apache.harmony.jndi.provider.ldap.parser.SchemaParser;
 import org.apache.harmony.jndi.provider.ldap.sasl.SaslBind;
 
 /**
@@ -201,7 +202,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             Hashtable<Object, Object> environment, String dn)
             throws NamingException {
         initial(client, environment, dn);
-            doBindOperation(connCtls);
+        doBindOperation(connCtls);
     }
 
     private void initial(LdapClient ldapClient,
@@ -245,19 +246,19 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         SaslBind.AuthMech authMech = saslBind.valueAuthMech(env);
         try {
-        if (authMech == SaslBind.AuthMech.None) {
-            BindOp bind = new BindOp("", "", null, null);
-            client.doOperation(bind, connCtsl);
-            result = bind.getResult();
-        } else if (authMech == SaslBind.AuthMech.Simple) {
-            String principal = (String) env.get(Context.SECURITY_PRINCIPAL);
-            String credential = Utils.getString(env
-                    .get(Context.SECURITY_CREDENTIALS));
-            BindOp bind = new BindOp(principal, credential, null, null);
-            client.doOperation(bind, connCtsl);
-            result = bind.getResult();
-        } else if (authMech == SaslBind.AuthMech.SASL) {
-            result = saslBind.doSaslBindOperation(env, client, connCtsl);
+            if (authMech == SaslBind.AuthMech.None) {
+                BindOp bind = new BindOp("", "", null, null);
+                client.doOperation(bind, connCtsl);
+                result = bind.getResult();
+            } else if (authMech == SaslBind.AuthMech.Simple) {
+                String principal = (String) env.get(Context.SECURITY_PRINCIPAL);
+                String credential = Utils.getString(env
+                        .get(Context.SECURITY_CREDENTIALS));
+                BindOp bind = new BindOp(principal, credential, null, null);
+                client.doOperation(bind, connCtsl);
+                result = bind.getResult();
+            } else if (authMech == SaslBind.AuthMech.SASL) {
+                result = saslBind.doSaslBindOperation(env, client, connCtsl);
             }
         } catch (IOException e) {
             CommunicationException ex = new CommunicationException();
@@ -761,14 +762,17 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     public static Hashtable<String, Hashtable<String, Hashtable<String, Object>>> schemaTree = new Hashtable<String, Hashtable<String, Hashtable<String, Object>>>();
 
+    private Hashtable<String, Object> schemaTable = new Hashtable<String, Object>();
+
     private LdapSchemaContextImpl ldapSchemaCtx = null;
 
     protected String subschemasubentry = null;
 
     public DirContext getSchema(Name name) throws NamingException {
         checkName(name);
-        if (null != ldapSchemaCtx)
+        if (null != ldapSchemaCtx) {
             return ldapSchemaCtx;
+        }
 
         SearchControls searchControls = new SearchControls();
         SearchOp search = null;
@@ -778,9 +782,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         Map<String, Attributes> names = null;
         Set<String> keyset = null;
 
-        if (name.size() != 0) {
-            subschemasubentry = name.toString() + "," + contextDn.toString();
-        }
         if (null == subschemasubentry) {
             filterParser = new FilterParser("(objectClass=*)");
             try {
@@ -795,7 +796,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             searchControls.setSearchScope(SearchControls.OBJECT_SCOPE);
             searchControls.setReturningAttributes(new String[] {
                     "namingContexts", "subschemaSubentry", "altServer", });
-            search = new SearchOp("", searchControls, filter);
+            search = new SearchOp(name.toString(), searchControls, filter);
 
             try {
                 client.doOperation(search, requestControls);
@@ -813,6 +814,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             names = sre.getEntries();
 
             keyset = names.keySet();
+
             schemaRoot: for (Iterator<String> iterator = keyset.iterator(); iterator
                     .hasNext();) {
                 String key = iterator.next();
@@ -826,6 +828,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                     }
                 }
             }
+        }
+
+        if (null == subschemasubentry) {
+            return getSchema(name.getPrefix(name.size() - 1));
         }
 
         searchControls.setSearchScope(SearchControls.OBJECT_SCOPE);
@@ -871,17 +877,32 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 if (!schemaTree.contains(schemaType.toLowerCase())) {
                     schemaTree.put(schemaType.toLowerCase(),
                             new Hashtable<String, Hashtable<String, Object>>());
+
+                    schemaTable.put(schemaType.toLowerCase(),
+                            new Hashtable<String, String>());
                 }
                 Hashtable<String, Hashtable<String, Object>> schemaDefs = schemaTree
                         .get(schemaType.toLowerCase());
+
+                Hashtable<String, String> schemaDef = (Hashtable<String, String>) schemaTable
+                        .get(schemaType.toLowerCase());
                 LdapAttribute attribute = (LdapAttribute) as.get(schemaType);
+               
+                String value;
+                String attrName;
                 for (int i = 0; i < attribute.size(); i++) {
-                    String value = (String) attribute.get(i);
+                    value = (String) attribute.get(i);
+                    attrName = SchemaParser.getName(value);
+                    schemaDef.put(attrName.toLowerCase(), value);
+
                     parseValue(schemaType, value.toLowerCase(), schemaDefs);
                 }
+
             }
         }
-        ldapSchemaCtx = new LdapSchemaContextImpl(this, env, name);
+
+        ldapSchemaCtx = new LdapSchemaContextImpl(this, env, name,
+                schemaTable, LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
         return ldapSchemaCtx;
     }
 
@@ -900,7 +921,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
      */
     private static void parseValue(String schemaType, String value,
             Hashtable<String, Hashtable<String, Object>> schemaDefs) {
-        StringTokenizer st = new StringTokenizer(value);
+        StringTokenizer st = new StringTokenizer(value.toLowerCase());
         // Skip (
         st.nextToken();
 
@@ -917,8 +938,14 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             if (attrName.startsWith("x-")) {
                 token = st.nextToken();
                 // remove the ending ' symbol
-                token = token.substring(0, token.length() - 1);
+                token = token.substring(1, token.length() - 1);
                 schemaDef.put(attrName, token);
+            }
+            if (attrName.startsWith("auxiliary")) {
+                schemaDef.put(attrName, "true");
+            }
+            if (attrName.startsWith("structural")) {
+                schemaDef.put(attrName, "true");
             }
             if (attrName.equals("usage") || attrName.equals("equality")
                     || attrName.equals("syntax") || attrName.equals("ordering")
@@ -1032,6 +1059,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     public DirContext getSchemaClassDefinition(Name name)
             throws NamingException {
+        checkName(name);
+
         if (null == ldapSchemaCtx) {
             getSchema("");
         }
@@ -1282,7 +1311,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 sr.setNameInNamespace(dn.substring(index + 1, dn.length()));
                 list.add(sr);
             } else {
-                String relativeName = LdapUtils.convertToRelativeName(dn, baseDN);
+                String relativeName = LdapUtils.convertToRelativeName(dn,
+                        baseDN);
                 sr = new SearchResult(relativeName, null, entries.get(dn));
                 sr.setNameInNamespace(dn);
             }
@@ -1340,7 +1370,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 sr.setNameInNamespace(dn.substring(index + 1, dn.length()));
                 list.add(sr);
             } else {
-                String relativeName = LdapUtils.convertToRelativeName(dn, baseDN);
+                String relativeName = LdapUtils.convertToRelativeName(dn,
+                        baseDN);
                 sr = new SearchResult(relativeName, null, entries.get(dn));
                 sr.setNameInNamespace(dn);
             }
@@ -1788,7 +1819,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return new LdapNamingEnumeration<NameClassPair>(list, result
                 .getException());
     }
-
 
     protected String getTargetDN(Name name, Name prefix)
             throws NamingException, InvalidNameException {
@@ -2588,36 +2618,40 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     private NamingEvent constructNamingEvent(PersistentSearchResult result,
-            ECNotificationControl control, String baseDN) throws InvalidNameException, NamingException {
+            ECNotificationControl control, String baseDN)
+            throws InvalidNameException, NamingException {
         Binding newBinding = null;
         Binding oldBinding = null;
 
         switch (control.getChangeType()) {
         case ECNotificationControl.ADD:
-            String newName = LdapUtils.convertToRelativeName(result.getDn(), baseDN);
+            String newName = LdapUtils.convertToRelativeName(result.getDn(),
+                    baseDN);
             newBinding = new Binding(newName, null);
             newBinding.setNameInNamespace(result.getDn());
             break;
         case ECNotificationControl.DELETE:
-            String deleteName = LdapUtils.convertToRelativeName(result.getDn(), baseDN);
+            String deleteName = LdapUtils.convertToRelativeName(result.getDn(),
+                    baseDN);
             oldBinding = new Binding(deleteName, null);
             oldBinding.setNameInNamespace(result.getDn());
             break;
         case ECNotificationControl.MODIFY_DN:
             if (result.getDn() != null) {
-                newBinding = new Binding(LdapUtils.convertToRelativeName(result.getDn(),
-                        baseDN), null);
+                newBinding = new Binding(LdapUtils.convertToRelativeName(result
+                        .getDn(), baseDN), null);
                 newBinding.setNameInNamespace(result.getDn());
             }
 
             if (control.getPreviousDN() != null) {
-                oldBinding = new Binding(LdapUtils.convertToRelativeName(control
-                        .getPreviousDN(), baseDN), null);
+                oldBinding = new Binding(LdapUtils.convertToRelativeName(
+                        control.getPreviousDN(), baseDN), null);
                 oldBinding.setNameInNamespace(control.getPreviousDN());
             }
             break;
         case ECNotificationControl.MODIFY:
-            String relativeName = LdapUtils.convertToRelativeName(result.getDn(), baseDN);
+            String relativeName = LdapUtils.convertToRelativeName(result
+                    .getDn(), baseDN);
             newBinding = new Binding(relativeName, null);
             newBinding.setNameInNamespace(result.getDn());
             // FIXME: how to get old binding?
