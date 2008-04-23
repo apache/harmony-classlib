@@ -91,7 +91,7 @@ public class SegmentTest extends TestCase {
         BufferedReader reader = new BufferedReader(new InputStreamReader(
                 process.getInputStream()));
         String line = reader.readLine();
-        assertEquals(line, "Hello world");
+        assertEquals("Hello world", line);
         reader.close();
 
         Process process2 = Runtime
