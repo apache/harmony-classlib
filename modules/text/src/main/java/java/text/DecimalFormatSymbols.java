@@ -58,7 +58,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     private transient Locale locale;
 
-    private String infinity, NaN, currencySymbol, intlCurrencySymbol;
+    private String infinity, NaN, currencySymbol, intlCurrencySymbol, exponentialSeparator;
 
     /**
      * Constructs a new DecimalFormatSymbols containing the symbols for the
@@ -83,6 +83,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         this.locale = locale;
         currencySymbol = icuSymbols.getCurrencySymbol();
         intlCurrencySymbol = icuSymbols.getInternationalCurrencySymbol();
+        exponentialSeparator = icuSymbols.getExponentSeparator();
         if (locale.getCountry().length() == 0) {
             currency = Currency.getInstance("XXX");
         } else {
@@ -235,7 +236,8 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         return Arrays.equals(patternChars, obj.patternChars)
                 && infinity.equals(obj.infinity) && NaN.equals(obj.NaN)
                 && currencySymbol.equals(obj.currencySymbol)
-                && intlCurrencySymbol.equals(obj.intlCurrencySymbol);
+                && intlCurrencySymbol.equals(obj.intlCurrencySymbol)
+                && exponentialSeparator.equals(obj.exponentialSeparator);
     }
 
     /**
@@ -299,7 +301,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * @return a String
      */
     public String getExponentSeparator() {
-        throw new NotImplementedException();
+        return exponentialSeparator;
     }
 
     /**
@@ -406,7 +408,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     public int hashCode() {
         return new String(patternChars).hashCode() + infinity.hashCode()
                 + NaN.hashCode() + currencySymbol.hashCode()
-                + intlCurrencySymbol.hashCode();
+                + intlCurrencySymbol.hashCode() + exponentialSeparator.hashCode();
     }
 
     /**
@@ -502,7 +504,10 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      *            the exponent separator String
      */
     public void setExponentSeparator(String value) {
-        throw new NotImplementedException();
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        exponentialSeparator = value;
     }
 
     /**
@@ -617,7 +622,8 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             new ObjectStreamField("perMill", Character.TYPE), //$NON-NLS-1$
             new ObjectStreamField("serialVersionOnStream", Integer.TYPE), //$NON-NLS-1$
             new ObjectStreamField("zeroDigit", Character.TYPE), //$NON-NLS-1$
-            new ObjectStreamField("locale", Locale.class), }; //$NON-NLS-1$
+            new ObjectStreamField("locale", Locale.class),  //$NON-NLS-1$
+            new ObjectStreamField("exponentSeparator", String.class) }; //$NON-NLS-1$
 
     private void writeObject(ObjectOutputStream stream) throws IOException {
         ObjectOutputStream.PutField fields = stream.putFields();
@@ -637,6 +643,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         fields.put("serialVersionOnStream", 1); //$NON-NLS-1$
         fields.put("zeroDigit", getZeroDigit()); //$NON-NLS-1$
         fields.put("locale", locale); //$NON-NLS-1$
+        fields.put("exponentSeparator", getExponentSeparator()); //$NON-NLS-1$
         stream.writeFields();
     }
 
@@ -657,7 +664,8 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         setPerMill(fields.get("perMill", '\u2030')); //$NON-NLS-1$
         setZeroDigit(fields.get("zeroDigit", '0')); //$NON-NLS-1$
         locale = (Locale) fields.get("locale", null); //$NON-NLS-1$
-        if (fields.get("serialVersionOnStream", 0) == 0) { //$NON-NLS-1$
+        int serialVersionOnStream = fields.get("serialVersionOnStream", 0); //$NON-NLS-1$
+        if (serialVersionOnStream == 0) {
             setMonetaryDecimalSeparator(getDecimalSeparator());
             setExponential('E');
         } else {
@@ -665,6 +673,13 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             setExponential(fields.get("exponential", 'E')); //$NON-NLS-1$
 
         }
+        
+        if (serialVersionOnStream < 3) {
+            setExponentSeparator(String.valueOf(getExponential())); //$NON-NLS-1$
+        } else {
+            setExponentSeparator((String) fields.get("exponentialSeparator", "E"));
+        }
+
         try {
             currency = Currency.getInstance(intlCurrencySymbol);
         } catch (IllegalArgumentException e) {
