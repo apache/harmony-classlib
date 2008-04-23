@@ -17,6 +17,7 @@
 
 package org.apache.harmony.text.tests.java.text;
 
+import java.text.Normalizer;
 import java.text.Normalizer.Form;
 
 import junit.framework.TestCase;
@@ -63,11 +64,119 @@ public class NormalizerTest extends TestCase {
         } catch (IllegalArgumentException e) {
             // expected
         }
-        
+
         try {
             Form.valueOf("NFC ");
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.text.Normalizer#isNormalized(CharSequence, Form)
+     */
+    public void test_isNormalized() throws Exception {
+        String src = "\u00c1";
+        assertTrue(Normalizer.isNormalized(src, Form.NFC));
+        assertFalse(Normalizer.isNormalized(src, Form.NFD));
+        assertTrue(Normalizer.isNormalized(src, Form.NFKC));
+        assertFalse(Normalizer.isNormalized(src, Form.NFKD));
+
+        src = "\u0041\u0301";
+        assertFalse(Normalizer.isNormalized(src, Form.NFC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFD));
+        assertFalse(Normalizer.isNormalized(src, Form.NFKC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFKD));
+
+        src = "\ufb03";
+        assertTrue(Normalizer.isNormalized(src, Form.NFC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFD));
+        assertFalse(Normalizer.isNormalized(src, Form.NFKC));
+        assertFalse(Normalizer.isNormalized(src, Form.NFKD));
+
+        src = "\u0066\u0066\u0069";
+        assertTrue(Normalizer.isNormalized(src, Form.NFC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFD));
+        assertTrue(Normalizer.isNormalized(src, Form.NFKC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFKD));
+
+        src = "";
+        assertTrue(Normalizer.isNormalized(src, Form.NFC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFD));
+        assertTrue(Normalizer.isNormalized(src, Form.NFKC));
+        assertTrue(Normalizer.isNormalized(src, Form.NFKD));
+    }
+
+    /**
+     * @tests java.text.Normalizer#isNormalized(CharSequence, Form)
+     */
+    public void test_isNormalized_exception() throws Exception {
+        try {
+            Normalizer.isNormalized(null, Form.NFC);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            Normalizer.isNormalized("chars", null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @tests java.text.Normalizer#normalize(CharSequence, Form)
+     */
+    public void test_normalize() throws Exception {
+        String src = "\u00c1";
+        assertEquals("\u00c1", Normalizer.normalize(src, Form.NFC));
+        assertEquals("\u0041\u0301", Normalizer.normalize(src, Form.NFD));
+        assertEquals("\u00c1", Normalizer.normalize(src, Form.NFKC));
+        assertEquals("\u0041\u0301", Normalizer.normalize(src, Form.NFKD));
+
+        src = "\u0041\u0301";
+        assertEquals("\u00c1", Normalizer.normalize(src, Form.NFC));
+        assertEquals("\u0041\u0301", Normalizer.normalize(src, Form.NFD));
+        assertEquals("\u00c1", Normalizer.normalize(src, Form.NFKC));
+        assertEquals("\u0041\u0301", Normalizer.normalize(src, Form.NFKD));
+
+        src = "\ufb03";
+        assertEquals("\ufb03", Normalizer.normalize(src, Form.NFC));
+        assertEquals("\ufb03", Normalizer.normalize(src, Form.NFD));
+        assertEquals("\u0066\u0066\u0069", Normalizer.normalize(src, Form.NFKC));
+        assertEquals("\u0066\u0066\u0069", Normalizer.normalize(src, Form.NFKD));
+
+        src = "\u0066\u0066\u0069";
+        assertEquals("\u0066\u0066\u0069", Normalizer.normalize(src, Form.NFC));
+        assertEquals("\u0066\u0066\u0069", Normalizer.normalize(src, Form.NFD));
+        assertEquals("\u0066\u0066\u0069", Normalizer.normalize(src, Form.NFKC));
+        assertEquals("\u0066\u0066\u0069", Normalizer.normalize(src, Form.NFKD));
+
+        src = "";
+        assertEquals("", Normalizer.normalize(src, Form.NFC));
+        assertEquals("", Normalizer.normalize(src, Form.NFD));
+        assertEquals("", Normalizer.normalize(src, Form.NFKC));
+        assertEquals("", Normalizer.normalize(src, Form.NFKD));
+    }
+
+    /**
+     * @tests java.text.Normalizer#normalize(CharSequence, Form)
+     */
+    public void test_normalize_exception() throws Exception {
+        try {
+            Normalizer.normalize(null, Form.NFC);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            Normalizer.normalize("chars", null);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
             // expected
         }
     }

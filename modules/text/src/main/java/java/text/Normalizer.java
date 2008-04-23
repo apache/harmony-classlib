@@ -17,7 +17,6 @@
 
 package java.text;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 
 /**
  * This class provider Unicode Normalization functions, which transform Unicode
@@ -67,7 +66,28 @@ public final class Normalizer {
      *                If <code>src</code> or <code>form</code> is null.
      */
     public static String normalize(CharSequence src, Form form) {
-        throw new NotImplementedException();
+        if (src == null || form == null) {
+            throw new NullPointerException();
+        }
+        
+        switch (form) {
+        case NFC:
+            return com.ibm.icu.text.Normalizer.normalize(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFC);
+        case NFD:
+            return com.ibm.icu.text.Normalizer.normalize(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFD);
+        case NFKC:
+            return com.ibm.icu.text.Normalizer.normalize(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFKC);
+        case NFKD:
+            return com.ibm.icu.text.Normalizer.normalize(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFKD);
+        default:
+            // never reach
+            return null;
+        }
+        
     }
 
     /**
@@ -84,6 +104,30 @@ public final class Normalizer {
      *                If <code>src</code> or <code>form</code> is null.
      */
     public static boolean isNormalized(CharSequence src, Form form) {
-        throw new NotImplementedException();
+        if (src == null || form == null) {
+            throw new NullPointerException();
+        }
+
+        switch (form) {
+        case NFC:
+            return com.ibm.icu.text.Normalizer.isNormalized(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFC,
+                    com.ibm.icu.text.Normalizer.UNICODE_3_2);
+        case NFD:
+            return com.ibm.icu.text.Normalizer.isNormalized(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFD,
+                    com.ibm.icu.text.Normalizer.UNICODE_3_2);
+        case NFKC:
+            return com.ibm.icu.text.Normalizer.isNormalized(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFKC,
+                    com.ibm.icu.text.Normalizer.UNICODE_3_2);
+        case NFKD:
+            return com.ibm.icu.text.Normalizer.isNormalized(src.toString(),
+                    com.ibm.icu.text.Normalizer.NFKD,
+                    com.ibm.icu.text.Normalizer.UNICODE_3_2);
+        default:
+            // never reach
+            return false;
+        }
     }
 }
