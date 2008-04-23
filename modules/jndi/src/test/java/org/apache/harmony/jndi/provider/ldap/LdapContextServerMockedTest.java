@@ -17,10 +17,18 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
+import javax.naming.CannotProceedException;
+import javax.naming.CompositeName;
 import javax.naming.Context;
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
 import javax.naming.PartialResultException;
+import javax.naming.RefAddr;
+import javax.naming.Reference;
 import javax.naming.ReferralException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
@@ -32,7 +40,9 @@ import javax.naming.ldap.SortControl;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
+import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.jndi.provider.ldap.mock.BindResponse;
 import org.apache.harmony.jndi.provider.ldap.mock.EncodableLdapResult;
 import org.apache.harmony.jndi.provider.ldap.mock.MockLdapServer;
@@ -46,8 +56,14 @@ public class LdapContextServerMockedTest extends TestCase {
     public void setUp() throws Exception {
         server = new MockLdapServer();
         server.start();
-        env.put(Context.INITIAL_CONTEXT_FACTORY,
-                "org.apache.harmony.jndi.provider.ldap.LdapContextFactory");
+        try {
+            Class.forName("com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.INITIAL_CONTEXT_FACTORY,
+                    "com.sun.jndi.ldap.LdapCtxFactory");
+        } catch (Exception e) {
+            env.put(Context.INITIAL_CONTEXT_FACTORY,
+                    "org.apache.harmony.jndi.provider.ldap.LdapContextFactory");
+        }
         env.put(Context.PROVIDER_URL, server.getURL());
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         env.put(Context.SECURITY_PRINCIPAL, "");
@@ -304,6 +320,41 @@ public class LdapContextServerMockedTest extends TestCase {
         }
     }
 
+    public void testSearchReferralFollow() throws Exception {
+        env.put(Context.REFERRAL, "follow");
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        DirContext context = new InitialDirContext(env);
+
+        final MockLdapServer referralServer = new MockLdapServer();
+        referralServer.start();
+
+        ASN1Encodable ref = new ASN1Encodable() {
+
+            public void encodeValues(Object[] values) {
+                List<byte[]> list = new ArrayList<byte[]>();
+                list.add(Utils.getBytes(referralServer.getURL()));
+                values[0] = list;
+            }
+
+        };
+
+        server.setResponseSeq(new LdapMessage[] {
+                new LdapMessage(LdapASN1Constant.OP_SEARCH_RESULT_REF, ref,
+                        null),
+                new LdapMessage(LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                        new EncodableLdapResult(), null) });
+
+        referralServer.setResponseSeq(new LdapMessage[] {
+                new LdapMessage(LdapASN1Constant.OP_BIND_RESPONSE,
+                        new BindResponse(), null),
+                new LdapMessage(LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                        new EncodableLdapResult(), null) });
+
+        context.search("cn=test", null);
+        
+    }
+
     public void testReferralFollow() throws Exception {
         env.put(Context.REFERRAL, "follow");
         server.setResponseSeq(new LdapMessage[] { new LdapMessage(
@@ -465,4 +516,101 @@ public class LdapContextServerMockedTest extends TestCase {
         another.reconnect(null);
     }
 
+    public void testFederation() throws Exception {
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        LdapContext context = new InitialLdapContext(env, null);
+
+        /*
+         * test invalid name 'test'
+         */
+        try {
+            context.getAttributes(new CompositeName("test"));
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+
+        /*
+         * test name '/usr/bin/cn=test'
+         */
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                new EncodableLdapResult(), null) });
+        try {
+            context.lookup("/usr/bin/cn=test");
+            fail("Should throw CannotProceedException");
+        } catch (CannotProceedException e) {
+            assertEquals("/", e.getAltName().toString());
+            assertEquals("usr/bin/cn=test", e.getRemainingName().toString());
+            assertNull(e.getRemainingNewName());
+            assertTrue(e.getResolvedName() instanceof CompositeName);
+            assertEquals(1, e.getResolvedName().size());
+            assertEquals("/", e.getResolvedName().toString());
+            assertTrue(e.getAltNameCtx() instanceof LdapContext);
+            assertEquals(context.getNameInNamespace(), e
+                    .getAltNameCtx().getNameInNamespace());
+            assertTrue(e.getResolvedObj() instanceof Reference);
+
+            Reference ref = (Reference) e.getResolvedObj();
+            assertEquals(Object.class.getName(), ref.getClassName());
+            assertNull(ref.getFactoryClassLocation());
+            assertNull(ref.getFactoryClassName());
+
+            assertEquals(1, ref.size());
+            RefAddr addr = ref.get(0);
+            assertTrue(addr.getContent() instanceof LdapContext);
+            assertEquals(context.getNameInNamespace(),
+                    ((LdapContext) addr.getContent()).getNameInNamespace());
+            assertEquals("nns", addr.getType());
+        }
+
+        /*
+         * test name 'usr/bin/cn=test'
+         */
+        try {
+            context.getAttributes("usr/bin/cn=test");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+
+        /*
+         * test name '/'
+         */
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                new EncodableLdapResult(), null) });
+        try {
+            Name name = new CompositeName();
+            name.add("");
+            context.getAttributes(name);
+            fail("Should throw CannotProceedException");
+        } catch (CannotProceedException e) {
+            assertEquals("/", e.getAltName().toString());
+            assertTrue(e.getRemainingName() instanceof CompositeName);
+            assertEquals(0, e.getRemainingName().size());
+            assertEquals("", e.getRemainingName().toString());
+            assertNull(e.getRemainingNewName());
+            assertTrue(e.getResolvedName() instanceof CompositeName);
+            assertEquals(1, e.getResolvedName().size());
+            assertEquals("/", e.getResolvedName().toString());
+            assertTrue(e.getAltNameCtx() instanceof LdapContext);
+            assertEquals(context.getNameInNamespace(), e
+                    .getAltNameCtx().getNameInNamespace());
+            assertTrue(e.getResolvedObj() instanceof Reference);
+
+            Reference ref = (Reference) e.getResolvedObj();
+            assertEquals(Object.class.getName(), ref.getClassName());
+            assertNull(ref.getFactoryClassLocation());
+            assertNull(ref.getFactoryClassName());
+
+            assertEquals(1, ref.size());
+            RefAddr addr = ref.get(0);
+            assertTrue(addr.getContent() instanceof LdapContext);
+            assertEquals(context.getNameInNamespace(),
+                    ((LdapContext) addr.getContent()).getNameInNamespace());
+            assertEquals("nns", addr.getType());
+        }
+    }
 }

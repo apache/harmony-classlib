@@ -114,7 +114,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     /**
      * name of the context
      */
-    protected Name contextDn;
+    protected LdapName contextDn;
 
     private Control[] requestControls;
 
@@ -364,7 +364,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * contex
@@ -525,7 +525,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -694,10 +694,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
-            if (!(name.getPrefix(0) instanceof LdapName)) {
-                throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
-            }
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -916,8 +913,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     /*
      * Sample schema value from Openldap server is ( 2.5.13.8 NAME
-     * 'numericStringMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 ) TODO check
-     * with RFC to see whether all the schema definition has been catered for
+     * 'numericStringMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 )
+     * 
+     * TODO check with RFC to see whether all the schema definition has been
+     * catered for
      */
     private static void parseValue(String schemaType, String value,
             Hashtable<String, Hashtable<String, Object>> schemaDefs) {
@@ -1161,7 +1160,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throw new NullPointerException(Messages.getString("ldap.27")); //$NON-NLS-1$
         }
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -1169,6 +1168,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             DirContext nns = (DirContext) findNnsContext(name);
             Name remainingName = name.getSuffix(1);
             nns.modifyAttributes(remainingName, modificationItems);
+            return;
+        }
+
+        if (modificationItems.length == 0) {
             return;
         }
 
@@ -1257,7 +1260,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             Attributes attributes, String[] as) throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -1332,7 +1335,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -1692,10 +1695,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     public void destroySubcontext(Name name) throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
-            if (!(name.getPrefix(0) instanceof LdapName)) {
-                throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
-            }
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -1739,10 +1739,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public NameParser getNameParser(Name name) throws NamingException {
-        if (name instanceof CompositeName && name.size() > 1) {
-            if (!(name.getPrefix(0) instanceof LdapName)) {
-                throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
-            }
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -1763,10 +1760,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
-            if (!(name.getPrefix(0) instanceof LdapName)) {
-                throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
-            }
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -1836,6 +1830,21 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return target.toString();
     }
 
+    protected boolean hasMultiNamingSpace(Name name) {
+        if (name instanceof CompositeName) {
+            // name '/'
+            if (name.size() == 1 && "".equals(name.get(0))) {
+                return true;
+            }
+
+            if (name.size() > 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected Context findNnsContext(Name name) throws NamingException {
         CannotProceedException cpe = null;
         if (env.containsKey(NamingManager.CPE)) {
@@ -1844,34 +1853,39 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             cpe = new CannotProceedException();
         }
 
-        Name remainingName = name.getSuffix(1);
-        Name altName = name.getPrefix(0);
-        Name targetName = composeName(altName, contextDn);
+        String dn = name.get(0);
+
+        // seems altName always is "/"
+        Name altName = new CompositeName();
+        altName.add("");
+
+        // if the dn doesn't exist, throw NameNotFoundException
+        lookup(dn);
 
         Name resolvedName = cpe.getResolvedName();
         if (resolvedName == null) {
             resolvedName = new CompositeName();
 
-        } else if (resolvedName.size() >= 2
-                && resolvedName.get(resolvedName.size() - 1).equals("")) {
-            // remove the last component if it is ""
-            // (the sign of the next naming system), so there must be at least
-            // one name before "".
-            resolvedName.remove(resolvedName.size() - 1);
         }
 
-        resolvedName.add(targetName.toString());
-        // add empty component name to indicate nns pointer
-        resolvedName.add("");
+        resolvedName.add(dn);
+
+        Name remainingName = name.getSuffix(1);
+        if (remainingName.size() == 1 && remainingName.get(0).equals("")) {
+            remainingName = new CompositeName();
+            if (!resolvedName.get(resolvedName.size() - 1).equals("")) {
+                resolvedName.add("");
+            }
+        }
+
+        final LdapContextImpl context = new LdapContextImpl(this, env,
+                composeName(new LdapName(dn), contextDn).toString());
 
         cpe.setAltName(altName);
-        cpe.setAltNameCtx(this);
+        cpe.setAltNameCtx(context);
         cpe.setEnvironment((Hashtable<Object, Object>) env.clone());
         cpe.setRemainingName(remainingName);
         cpe.setResolvedName(resolvedName);
-
-        final LdapContextImpl context = new LdapContextImpl(this, env,
-                composeName(altName, contextDn).toString());
 
         RefAddr addr = new RefAddr("nns") { //$NON-NLS-1$
 
@@ -1884,7 +1898,9 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         };
 
-        Reference ref = new Reference(context.getClass().getName(), addr);
+        // class name is always java.lang.Object in RI
+        Reference ref = new Reference(Object.class.getName(), addr);
+
         cpe.setResolvedObj(ref);
 
         return DirectoryManager.getContinuationDirContext(cpe);
@@ -1899,7 +1915,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * contex
@@ -1945,7 +1961,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     public Object lookup(Name name) throws NamingException {
         checkName(name);
 
-        if (name instanceof CompositeName && name.size() > 1) {
+        if (hasMultiNamingSpace(name)) {
             /*
              * multi ns, find next ns context, delegate operation to the next
              * context
@@ -2161,8 +2177,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throw new InvalidNameException(Messages.getString("ldap.2A")); //$NON-NLS-1$
         }
 
-        if (nOld instanceof CompositeName && nOld.size() > 1
-                && nNew instanceof CompositeName && nNew.size() > 1) {
+        if (hasMultiNamingSpace(nOld) && hasMultiNamingSpace(nNew)) {
             Context context = findNnsContext(nOld);
             context.rename(nOld.getSuffix(1), nNew.getSuffix(1));
             return;
@@ -2308,10 +2323,19 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return controls;
     }
 
-    private void checkName(Name name) {
+    private void checkName(Name name) throws InvalidNameException {
         if (name == null) {
             // jndi.2E=The name is null
             throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
+        }
+
+        if (!(name instanceof LdapName) && !(name instanceof CompositeName)) {
+            throw new InvalidNameException(Messages.getString("ldap.26")); //$NON-NLS-1$
+        }
+
+        // the first part of CompositeName must be ldap name
+        if (name instanceof CompositeName && name.size() > 0) {
+            new LdapName(name.get(0));
         }
     }
 
