@@ -20,6 +20,14 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
+import javax.naming.ConfigurationException;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
+import org.apache.harmony.jndi.internal.nls.Messages;
+
 public class SchemaParser {
 
     public final static String SPACE = " "; //$NON-NLS-1$
@@ -30,13 +38,43 @@ public class SchemaParser {
 
     public final static String SINGLE_QUOTE = "'"; //$NON-NLS-1$
 
-    public final static String NAME = "name"; //$NON-NLS-1$
+    public final static String DOLLAR = "$"; //$NON-NLS-1$
+
+    public final static String NAME = "NAME"; //$NON-NLS-1$
 
     public final static String ORIG = "orig"; //$NON-NLS-1$
 
-    public final static String NUMERICOID = "numericoid"; //$NON-NLS-1$
+    public final static String NUMERICOID = "NUMERICOID"; //$NON-NLS-1$
 
-    public final static String TRUE = "true"; //$NON-NLS-1$
+    public final static String MUST = "MUST"; //$NON-NLS-1$
+
+    public final static String MAY = "MAY"; //$NON-NLS-1$
+
+    public final static String SUP = "SUP"; //$NON-NLS-1$
+
+    public final static String ABSTRACT = "ABSTRACT"; //$NON-NLS-1$
+
+    public final static String STRUCTURAL = "STRUCTURAL"; //$NON-NLS-1$
+
+    public final static String AUXILIARY = "AUXILIARY"; //$NON-NLS-1$
+
+    public final static String SINGLE_VALUE = "SINGLE-VALUE"; //$NON-NLS-1$
+
+    public final static String NO_USER_MODIFICATION = "NO-USER-MODIFICATION"; //$NON-NLS-1$
+
+    public final static String X_PREFIX = "X-"; //$NON-NLS-1$
+
+    public final static String DESC = "DESC"; //$NON-NLS-1$
+
+    public final static String USAGE = "USAGE"; //$NON-NLS-1$
+
+    public final static String EQUALITY = "EQUALITY"; //$NON-NLS-1$
+
+    public final static String SYNTAX = "SYNTAX"; //$NON-NLS-1$
+
+    public final static String SUBSTR = "SUBSTR"; //$NON-NLS-1$
+
+    public final static String ORDERING = "ORDERING"; //$NON-NLS-1$
 
     public static String getName(String schemaLine) {
         StringTokenizer st = new StringTokenizer(schemaLine);
@@ -58,7 +96,7 @@ public class SchemaParser {
     }
 
     public static Hashtable<String, Object> parseValue(String schemaLine) {
-        StringTokenizer st = new StringTokenizer(schemaLine.toLowerCase());
+        StringTokenizer st = new StringTokenizer(schemaLine);
         // Skip (
         st.nextToken();
 
@@ -71,18 +109,19 @@ public class SchemaParser {
         ArrayList<String> values = null;
         StringBuilder desc = new StringBuilder();
         while (st.hasMoreTokens()) {
-            String attrName = st.nextToken().toLowerCase();
-            if (attrName.startsWith("x-")) { //$NON-NLS-1$
-                token = st.nextToken();
+            
+            String attrName = st.nextToken().toUpperCase();
+            if (attrName.startsWith(X_PREFIX)) {
+            	token = st.nextToken();
                 // remove the ending ' symbol
                 token = token.substring(1, token.length() - 1);
                 schemaDef.put(attrName, token);
-            } else if (attrName.equals("usage") || attrName.equals("equality") //$NON-NLS-1$//$NON-NLS-2$
-                    || attrName.equals("syntax") || attrName.equals("ordering") //$NON-NLS-1$ //$NON-NLS-2$
-                    || attrName.equals("substr")) { //$NON-NLS-1$
+            } else if (attrName.equals(USAGE) || attrName.equals(EQUALITY)
+                    || attrName.equals(SYNTAX) || attrName.equals(ORDERING)
+                    || attrName.equals(SUBSTR)) {
                 token = st.nextToken();
                 schemaDef.put(attrName, token);
-            } else if (attrName.equals("desc")) { //$NON-NLS-1$
+            } else if (attrName.equals(DESC)) {
                 token = st.nextToken();
 
                 // remove the leading ' symbol
@@ -140,15 +179,15 @@ public class SchemaParser {
                     }
                 }
                 schemaDef.put(attrName, values);
-            } else if (attrName.equals("must") || attrName.equals("sup") //$NON-NLS-1$ //$NON-NLS-2$
-                    || attrName.equals("may")) { //$NON-NLS-1$
+            } else if (attrName.equals(MUST) || attrName.equals(SUP)
+                    || attrName.equals(MAY)) {
                 token = st.nextToken();
                 values = new ArrayList<String>();
                 // has multiple values
                 if (token.startsWith(LEFT_PARENTHESIS)) {
                     token = st.nextToken();
                     while (!token.equals(RIGHT_PARENTHESIS)) {
-                        if (!token.equals("$")) //$NON-NLS-1$
+                        if (!token.equals(DOLLAR))
                             values.add(token);
                         token = st.nextToken();
                     }
@@ -156,13 +195,83 @@ public class SchemaParser {
                     values.add(token);
                 }
                 schemaDef.put(attrName, values);
-            } else if (attrName.equals("abstract") || attrName.equals("structural") //$NON-NLS-1$ //$NON-NLS-2$
-                    || attrName.equals("auxiliary") //$NON-NLS-1$
-                    || attrName.equals("single-value") //$NON-NLS-1$
-                    || attrName.equals("no-user-modification")) { //$NON-NLS-1$
-                schemaDef.put(attrName, TRUE);
+            } else if (attrName.equals(ABSTRACT) || attrName.equals(STRUCTURAL)
+                    || attrName.equals(AUXILIARY)
+                    || attrName.equals(SINGLE_VALUE)
+                    || attrName.equals(NO_USER_MODIFICATION)) {
+                schemaDef.put(attrName, "true"); //$NON-NLS-1$
             }
         }
         return schemaDef;
+    }
+
+    /*
+     * Format Attributes object to a string representation which can be
+     * understanded by server.
+     */
+    public static String format(Attributes attributes) throws NamingException {
+        StringBuilder builder = new StringBuilder();
+        builder.append(LEFT_PARENTHESIS);
+        builder.append(SPACE);
+
+        Attribute attribute = attributes.get(NUMERICOID);
+        // The NUMERICOID must be presented. Throw exception if not.
+        if (attribute == null) {
+            // ldap.36=Must have numeric OID
+            throw new ConfigurationException(Messages.getString("ldap.36")); //$NON-NLS-1$
+        }
+        builder.append(attribute.get());
+        builder.append(SPACE);
+
+        NamingEnumeration<String> ids = attributes.getIDs();
+
+        /*
+         * Iterate each attribute, and append the correspoind string
+         * representation for each one.
+         */
+        while (ids.hasMoreElements()) {
+            String id = ids.nextElement();
+            attribute = attributes.get(id);
+            // id is never null, so id.equals("something") can be used.
+            if (id.equals(MUST) || id.equals(MAY) || id.equals(SUP)) {
+                // Same kinds of attributes may have more than one value.
+                if (attribute.size() == 1) {
+                    builder.append(id);
+                    builder.append(SPACE);
+                    builder.append(attribute.get());
+                    builder.append(SPACE);
+                } else {
+                    builder.append(id);
+                    builder.append(SPACE);
+                    builder.append(LEFT_PARENTHESIS);
+                    builder.append(SPACE);
+                    builder.append(attribute.get(0));
+                    builder.append(SPACE);
+                    for (int i = 1; i < attribute.size(); i++) {
+                        builder.append(DOLLAR);
+                        builder.append(SPACE);
+                        builder.append(attribute.get(i));
+                        builder.append(SPACE);
+                    }
+                    builder.append(RIGHT_PARENTHESIS);
+                    builder.append(SPACE);
+                }
+            } else if (id.equals(ABSTRACT) || id.equals(STRUCTURAL)
+                    || id.equals(AUXILIARY) || id.equals(SINGLE_VALUE)
+                    || id.equals(NO_USER_MODIFICATION)) {
+                builder.append(id);
+                builder.append(SPACE);
+            } else if (!(id.equalsIgnoreCase(NUMERICOID))) {
+                builder.append(id);
+                builder.append(SPACE);
+                builder.append(SINGLE_QUOTE);
+                builder.append(attribute.get());
+                builder.append(SINGLE_QUOTE);
+                builder.append(SPACE);
+            }
+        }
+        builder.append(RIGHT_PARENTHESIS);
+
+        return builder.toString();
     }
 }

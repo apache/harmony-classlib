@@ -17,6 +17,7 @@
 package org.apache.harmony.jndi.provider.ldap;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.naming.Binding;
@@ -25,10 +26,15 @@ import javax.naming.Name;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.OperationNotSupportedException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SchemaViolationException;
 
 import junit.framework.TestCase;
 
@@ -719,4 +725,263 @@ public class LdapSchemaContextTest extends TestCase {
         assertEquals(1, count);
     }
 
+    public void testCreateAndDeleteSubContext() throws NamingException {
+        // Creates the attributes.
+        Attributes attrs = new BasicAttributes(false); // Ignore case
+        attrs.put("NAME", "ListObjectClass");
+        attrs.put("SUP", "top");
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.77");
+        attrs.put("DESC", "for test");
+        attrs.put("STRUCTURAL", "fds");
+
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext dir = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/ListObjectClass"), attrs);
+
+        Attributes createdAttrs = schema
+                .getAttributes("ClassDefinition/ListObjectClass");
+
+        NamingEnumeration<? extends Attribute> enumeration = createdAttrs
+                .getAll();
+
+        int count = 0;
+        while (enumeration.hasMore()) {
+            Attribute att = enumeration.next();
+            count++;
+        }
+        assertEquals(6, count);
+
+        schema.destroySubcontext("ClassDefinition/ListObjectClass");
+        try {
+            schema.getAttributes("ClassDefinition/ListObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testDestroySubContext_Exception() throws NamingException {
+        // No Exception.
+        schema.destroySubcontext("invalid");
+
+        try {
+            schema.destroySubcontext("invalid/invalid/invalid");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.destroySubcontext("invalid/invalid");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        // No Exception.
+        schema.destroySubcontext("classdefinition/invalid");
+
+        // No Exception.
+        schema.destroySubcontext("classdefinition/javaClass/name");
+
+        // No Exception.
+        schema.destroySubcontext("classdefinition/javaClass/invalid");
+
+        try {
+            schema.destroySubcontext("");
+            fail("Should throw ArrayIndexOutOfBoundsException.");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Expected.
+        }
+        try {
+            schema.destroySubcontext("classdefinition");
+            fail("Should throw SchemaViolationException.");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+    }
+
+    public void testCreateSubContext_Exception() throws NamingException {
+        // Creates the attributes.
+        Attributes attrs = new BasicAttributes(false); // Ignore case
+        attrs.put("NAME", "ListObjectClass");
+        attrs.put("SUP", "top");
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.77");
+        attrs.put("DESC", "for test");
+        attrs.put("STRUCTURAL", "fds");
+
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        Attributes invalidAttrs = new BasicAttributes();
+
+        try {
+            schema.createSubcontext(new CompositeName("invalid"), attrs);
+            fail("Should throw SchemaViolationException.");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+
+        try {
+            schema.createSubcontext(new CompositeName("invalid"), invalidAttrs);
+            fail("Should throw SchemaViolationException.");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+
+        try {
+            schema.createSubcontext(
+                    new CompositeName("invalid/invalid/invalid"), attrs);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.createSubcontext(
+                    new CompositeName("invalid/invalid/invalid"), invalidAttrs);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema
+                    .createSubcontext(new CompositeName("Classdefinition"),
+                            attrs);
+            fail("Should throw SchemaViolationException.");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+    }
+
+    public void testSubContext_OnSubSchema() throws NamingException {
+        DirContext subSchema = (DirContext) schema.lookup("classdefinition");
+
+        // Creates the attributes.
+        Attributes attrs = new BasicAttributes(false); // Ignore case
+        attrs.put("NAME", "ListObjectClass");
+        attrs.put("SUP", "top");
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.77");
+        attrs.put("DESC", "for test");
+        attrs.put("STRUCTURAL", "fds");
+
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext dir = subSchema.createSubcontext(new CompositeName(
+                "ListObjectClass"), attrs);
+
+        Attributes createdAttrs = dir.getAttributes("");
+
+        NamingEnumeration<? extends Attribute> enumeration = createdAttrs
+                .getAll();
+
+        int count = 0;
+        while (enumeration.hasMore()) {
+            Attribute att = enumeration.next();
+            count++;
+        }
+        assertEquals(6, count);
+
+        subSchema.destroySubcontext("ListObjectClass");
+
+        try {
+            schema.getAttributes("ClassDefinition/ListObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void test_CreateSubcontext_LName_LAttributes()
+            throws NamingException {
+        try {
+            schema.createSubcontext((Name) null, new BasicAttributes());
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            schema.createSubcontext(new CompositeName(""), null);
+            fail("Should throw ArrayIndexOutOfBoundsException");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            schema.createSubcontext(new CompositeName("test"), null);
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // expected
+        }
+        try {
+            schema.createSubcontext(new CompositeName("test"),
+                    new BasicAttributes());
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // expected
+        }
+    }
+
+    public void test_modifyAttributes_LString_LModificationItem()
+            throws NamingException {
+        try {
+            schema.modifyAttributes((String) null, new ModificationItem[] {});
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            schema.modifyAttributes("AttributeDefinition/dsaquality", null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void test_search_LString_LAttributes_LString()
+            throws NamingException {
+        try {
+            schema
+                    .search((String) null, new BasicAttributes(),
+                            new String[] {});
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void testDestroySubcontextString() throws NamingException {
+        try {
+            schema.destroySubcontext((String) null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void test_getNameInNamespace() throws NamingException {
+        try {
+            schema.getNameInNamespace();
+            fail("Should throw OperationNotSupportedException");
+        } catch (OperationNotSupportedException e) {
+            // expected
+        }
+    }
+
+    public void test_getSchemaClassDefinition() throws NamingException {
+        try {
+            schema.getSchemaClassDefinition(new CompositeName(""));
+            fail("Should throw OperationNotSupportedException");
+        } catch (OperationNotSupportedException e) {
+            // expected
+        }
+    }
 }

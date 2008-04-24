@@ -27,10 +27,10 @@ import java.util.TreeSet;
 
 import javax.naming.Binding;
 import javax.naming.CompositeName;
-import javax.naming.ConfigurationException;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NameAlreadyBoundException;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
@@ -56,13 +56,13 @@ import org.apache.harmony.jndi.provider.ldap.parser.SchemaParser;
 
 public class LdapSchemaContextImpl extends LdapContextImpl {
 
-    public static final String CLASS_DEFINITION = "classdefinition";
+    public static final String CLASS_DEFINITION = "ClassDefinition";
 
-    public static final String ATTRIBUTE_DEFINITION = "attributedefinition";
+    public static final String ATTRIBUTE_DEFINITION = "AttributeDefinition";
 
-    public static final String SYNTAX_DEFINITION = "syntaxdefinition";
+    public static final String SYNTAX_DEFINITION = "SyntaxDefinition";
 
-    public static final String MATCHING_RULE = "matchingrule";
+    public static final String MATCHING_RULE = "MatchingRule";
 
     public static final String OBJECT_CLASSES = "objectclasses";
 
@@ -78,10 +78,11 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     final private static Hashtable<String, String> schemaJndi2Ldap = new Hashtable<String, String>();
     static {
-        schemaJndi2Ldap.put(CLASS_DEFINITION, OBJECT_CLASSES);
-        schemaJndi2Ldap.put(ATTRIBUTE_DEFINITION, ATTRIBUTE_TYPES);
-        schemaJndi2Ldap.put(SYNTAX_DEFINITION, LDAP_SYNTAXES);
-        schemaJndi2Ldap.put(MATCHING_RULE, MATCHING_RULES);
+        schemaJndi2Ldap.put(CLASS_DEFINITION.toLowerCase(), OBJECT_CLASSES);
+        schemaJndi2Ldap
+                .put(ATTRIBUTE_DEFINITION.toLowerCase(), ATTRIBUTE_TYPES);
+        schemaJndi2Ldap.put(SYNTAX_DEFINITION.toLowerCase(), LDAP_SYNTAXES);
+        schemaJndi2Ldap.put(MATCHING_RULE.toLowerCase(), MATCHING_RULES);
     }
 
     final private static Hashtable<String, String> schemaLdap2Jndi = new Hashtable<String, String>();
@@ -140,86 +141,67 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         throw new OperationNotSupportedException();
     }
 
+    @Override
     public String getNameInNamespace() throws NamingException {
         throw new OperationNotSupportedException();
     }
 
+    @Override
     public DirContext createSubcontext(Name name, Attributes attributes)
             throws NamingException {
-        checkName(name);
-
-        Name schemaType = name.getPrefix(name.size() - 1);
+        int size = name.size();
+        Hashtable<String, Object> subSchemaTree = doLookup(name
+                .getPrefix(size - 1), size - 1);
 
         if (null == attributes || attributes.size() == 0) {
-            throw new SchemaViolationException(Messages.getString("jndi.8D"));
+            // jndi.8D=Must supply attributes describing schema
+            throw new SchemaViolationException(Messages.getString("jndi.8D")); //$NON-NLS-1$
         }
 
-        String schema = schemaJndi2Ldap
-                .get(schemaType.toString().toLowerCase());
-        if (null == schema) {
-            throw new SchemaViolationException(Messages.getString("jndi.8D"));
-        }
-        if (schemaTable.keySet().contains(schema)) {
-            throw new SchemaViolationException(Messages.getString("jndi.8E"));
-        }
-        String targetDN = rdn.toString() + parent.subschemasubentry;
-        StringBuilder builder = new StringBuilder("( ");
-        NamingEnumeration<String> ids = attributes.getIDs();
-
-        // FIXME what if attribute value has \' or \", or can Attributes be used
-        // directly
-        boolean hasNOID = false;
-        while (ids.hasMoreElements()) {
-            String id = ids.nextElement();
-            Attribute attribute = attributes.get(id);
-            if (id.equalsIgnoreCase("NUMERICOID")) {
-                builder.append(attribute);
-                builder.append(" ");
-                hasNOID = true;
-            } else {
-                builder.append(id);
-                builder.append(" ");
-                builder.append(attribute);
-                builder.append(" ");
-            }
-        }
-        builder.append(")");
-        if (!hasNOID) {
-            throw new ConfigurationException(Messages.getString("jndi.8F"));
+        if (level - size == 2) {
+            // jndi.8E=Cannot create new entry under schema root
+            throw new SchemaViolationException(Messages.getString("jndi.8E")); //$NON-NLS-1$
         }
 
-        ModifyOp op = new ModifyOp(targetDN);
+        String subSchemaType = name.getSuffix(size - 1).toString();
+
+        if (subSchemaTree.get(subSchemaType.toLowerCase()) != null) {
+            throw new NameAlreadyBoundException(subSchemaType);
+        }
+
+        String schemaLine = SchemaParser.format(attributes);
+
+        ModifyOp op = new ModifyOp(parent.subschemasubentry);
+        Name modifySchemaName = name.getPrefix(size - 1).addAll(rdn);
         BasicAttribute schemaEntry = new LdapAttribute(new BasicAttribute(
-                schema, builder.toString()), parent);
+                jndi2ldap(modifySchemaName.toString()), schemaLine), parent);
         op.addModification(jndi2ldap[DirContext.ADD_ATTRIBUTE],
                 new LdapAttribute(schemaEntry, parent));
-
         try {
             doBasicOperation(op);
+            subSchemaTree.put(subSchemaType.toLowerCase(), schemaLine);
         } catch (ReferralException e) {
             // TODO
         }
 
-        return new LdapSchemaContextImpl(parent, parent.env, name, null,
-                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+        return (DirContext) lookup(name);
+
     }
 
+    @Override
     public DirContext createSubcontext(String name, Attributes attributes)
             throws NamingException {
         Name n = convertFromStringToName(name);
         return createSubcontext(n, attributes);
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.harmony.jndi.provider.ldap.LdapContextImpl#getAttributes(javax.naming.Name)
-     */
     @Override
     public Attributes getAttributes(Name name) throws NamingException {
         int size = name.size();
 
         Hashtable<String, Object> attributesTable = doLookup(name, size);
 
-        BasicAttributes schemaAttributes = new BasicAttributes();
+        BasicAttributes schemaAttributes = new BasicAttributes(true);
 
         switch (level - size) {
         case 1:
@@ -394,47 +376,64 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     }
 
+    @Override
     public Context createSubcontext(Name name) throws NamingException {
         DirContext subContext = createSubcontext(name, null);
         return subContext;
     }
 
+    @Override
     public Context createSubcontext(String name) throws NamingException {
         Name n = convertFromStringToName(name);
         return createSubcontext(n);
     }
 
+    @Override
     public void destroySubcontext(Name name) throws NamingException {
-        checkName(name);
+        int size = name.size();
+        Hashtable<String, Object> subSchemaTree = doLookup(name
+                .getPrefix(size - 1), size - 1);
 
-        // Name schemaType = name.getPrefix(name.size() - 1);
-        String targetDN = rdn.toString() + parent.subschemasubentry;
-        ModifyOp op = new ModifyOp(targetDN);
-        String schemaType = null;
-        try {
-            schemaType = schemaJndi2Ldap.get(name.getPrefix(name.size() - 1)
-                    .toString().toLowerCase());
-        } catch (IndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        String subSchemaType = name.getSuffix(size - 1).toString()
+                .toLowerCase();
 
-        Hashtable<String, Object> classDef = parent.findSchemaDefInfo(
-                schemaType, name.get(1));
-        if (null == classDef) {
+        Object schema = subSchemaTree.get(jndi2ldap(subSchemaType));
+        if (schema == null) {
+            // Return silently.
             return;
         }
-        String oldValue = (String) classDef.get("orig");
-        LdapAttribute oldAttr = new LdapAttribute(new BasicAttribute(
-                schemaType, oldValue), parent);
-        op.addModification(jndi2ldap[DirContext.REMOVE_ATTRIBUTE], oldAttr);
 
+        if (level - size == 2) {
+            // ldap.37=Can't delete schema root
+            throw new SchemaViolationException(Messages.getString("ldap.37")); //$NON-NLS-1$
+        }
+
+        if (level == size) {
+            // Return silently.
+            return;
+        }
+
+        String schemaLine = schema.toString();
+        if (schema instanceof Hashtable) {
+            Hashtable table = (Hashtable) schema;
+            schemaLine = table.get(SchemaParser.ORIG).toString();
+        }
+
+        ModifyOp op = new ModifyOp(parent.subschemasubentry);
+        Name modifySchemaName = name.getPrefix(size - 1).addAll(rdn);
+        BasicAttribute schemaEntry = new LdapAttribute(new BasicAttribute(
+                jndi2ldap(modifySchemaName.toString()), schemaLine), parent);
+        op.addModification(jndi2ldap[DirContext.REMOVE_ATTRIBUTE],
+                new LdapAttribute(schemaEntry, parent));
         try {
             doBasicOperation(op);
-        } catch (Exception e) {
-            // TODO need to handle referal exception in the future
+            subSchemaTree.remove(subSchemaType);
+        } catch (ReferralException e) {
+            // TODO
         }
     }
 
+    @Override
     public void destroySubcontext(String name) throws NamingException {
         destroySubcontext(convertFromStringToName(name));
     }
@@ -445,7 +444,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             ldapName = jndiName;
         }
 
-        return ldapName.toLowerCase();
+        return ldapName;
     }
 
     private String jndi2ldap(String ldapName) {
@@ -583,6 +582,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         return tempSchema;
     }
 
+    @Override
     public Object lookup(String name) throws NamingException {
         return lookup(convertFromStringToName(name));
     }
