@@ -90,43 +90,52 @@ public class SegmentTest extends TestCase {
         JarEntry entry = jarFile
                 .getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
         assertNotNull(entry);
-        Process process = Runtime
-                .getRuntime()
-                .exec(
-                        "java -cp "
-                                + file.getName()
-                                + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
-                        new String[] {}, file.getParentFile());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                process.getInputStream()));
-        String line = reader.readLine();
-        assertEquals("Hello world", line);
-        reader.close();
-
-        Process process2 = Runtime
-                .getRuntime()
-                .exec(
-                        "javap -c -verbose -classpath "
-                                + file.getName()
-                                + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
-                        new String[] {}, file.getParentFile());
-        BufferedReader reader1 = new BufferedReader(new InputStreamReader(process2
-                .getInputStream()));
-        InputStream javapCompareFile = Segment.class
-                .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorldJavap.out");
-        BufferedReader reader2 = new BufferedReader(new InputStreamReader(
-                javapCompareFile));
-        String line1 = reader1.readLine();
-        String line2 = reader2.readLine();
-        int i = 1;
-        while (line1 != null || line2 != null) {
-            assertEquals(line2, line1);
-            line1 = reader1.readLine();
-            line2 = reader2.readLine();
-            i++;
+        
+        try {
+            Process process = Runtime
+                    .getRuntime()
+                    .exec(
+                            "java -cp "
+                                    + file.getName()
+                                    + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
+                            new String[] {}, file.getParentFile());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    process.getInputStream()));
+            String line = reader.readLine();
+            assertEquals("Hello world", line);
+            reader.close();
+    
+            Process process2 = Runtime
+                    .getRuntime()
+                    .exec(
+                            "javap -c -verbose -classpath "
+                                    + file.getName()
+                                    + " org.apache.harmony.archive.tests.internal.pack200.HelloWorld",
+                            new String[] {}, file.getParentFile());
+            BufferedReader reader1 = new BufferedReader(new InputStreamReader(process2
+                    .getInputStream()));
+            InputStream javapCompareFile = Segment.class
+                    .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorldJavap.out");
+            BufferedReader reader2 = new BufferedReader(new InputStreamReader(
+                    javapCompareFile));
+            String line1 = reader1.readLine();
+            String line2 = reader2.readLine();
+            int i = 1;
+            while (line1 != null || line2 != null) {
+                assertEquals(line2, line1);
+                line1 = reader1.readLine();
+                line2 = reader2.readLine();
+                i++;
+            }
+            reader1.close();
+            reader2.close();
+        } catch (IOException e) {
+            if (e.getMessage().startsWith("Unable to start program")) {
+                System.out.println("Warning: org.apache.harmony.unpack200.tests.SegmentTest.testHelloWorld() was not completed as java or javap could not be found");
+            } else {
+                throw e;
+            }
         }
-        reader1.close();
-        reader2.close();
     }
 
 }
