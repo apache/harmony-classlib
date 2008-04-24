@@ -275,6 +275,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         }
     }
 
+    @Override
     public void modifyAttributes(Name name, int i, Attributes attributes)
             throws NamingException {
         checkName(name);
@@ -301,79 +302,115 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         }
 
         modifyAttributes(name, items);
-
     }
 
     private static final int jndi2ldap[] = { -1, 0, 2, 1, };
 
+    @Override
     public void modifyAttributes(Name name, ModificationItem[] modificationItems)
             throws NamingException {
-        checkName(name);
+        // First get the old schema.
+        int size = name.size();
+        Hashtable<String, Object> subSchemaTree = doLookup(name
+                .getPrefix(size - 1), size - 1);
 
-        Name targetDN = (rdn.size() != 0) ? name.addAll(rdn) : name;
-        int size = targetDN.size();
-        ModifyOp op = new ModifyOp(targetDN.toString());
-        String oldValue = "(objectclass)";
-        switch (size) {
-        case 0:
-            break;
-        case 1:
-            String schemaType = schemaJndi2Ldap.get(name.get(0).toLowerCase());
-            if (null == schemaType) {
-                throw new NameNotFoundException(name.toString());
-            }
-            if (modificationItems == null) {
-                throw new NullPointerException(Messages.getString("ldap.27")); //$NON-NLS-1$
-            }
-            break;
-        default:
-            Hashtable<String, Object> classDef = parent
-                    .findSchemaDefInfo(schemaJndi2Ldap.get(name.get(0)
-                            .toLowerCase()), name.get(1));
-            if (modificationItems == null) {
-                throw new NullPointerException(Messages.getString("ldap.27")); //$NON-NLS-1$
-            }
-            if (null == classDef) {
-                throw new NameNotFoundException(name.toString());
-            }
+        String subSchemaType = name.getSuffix(size - 1).toString()
+                .toLowerCase();
 
-            oldValue = (String) classDef.get("orig");
+        Object schema = subSchemaTree.get(jndi2ldap(subSchemaType));
+        if (schema == null) {
+            throw new NameNotFoundException(name.toString());
         }
-        BasicAttribute oldAttr = new LdapAttribute(new BasicAttribute(
-                OBJECT_CLASSES, oldValue), parent);
-        StringBuilder addValue = new StringBuilder();
-        for (ModificationItem item : modificationItems) {
-            Attribute attr = item.getAttribute();
-            addValue.append(attr.getID()).append(" ").append(attr.get());
+
+        if (level - size == 2) {
+            // ldap.38=Can't modify schema root
+            throw new SchemaViolationException(Messages.getString("ldap.38")); //$NON-NLS-1$
         }
-        addValue.append(" )");
-        BasicAttribute newAttr = new LdapAttribute(new BasicAttribute(
-                OBJECT_CLASSES, oldValue.replace(")", addValue.toString())),
-                this);
+
+        if (modificationItems.length == 0) {
+            return;
+        }
+
+        String schemaLine = schema.toString();
+        if (schema instanceof Hashtable) {
+            Hashtable table = (Hashtable) schema;
+            schemaLine = table.get(SchemaParser.ORIG).toString();
+        }
+
+        // Construct the new schema.
+        Attributes attributes = getAttributes(name);
+        int modifyOperation;
+        Attribute modifyAttribute;
+        Attribute attribute;
+        NamingEnumeration<?> enu;
+        for (int i = 0; i < modificationItems.length; i++) {
+            modifyOperation = modificationItems[i].getModificationOp();
+            modifyAttribute = modificationItems[i].getAttribute();
+
+            switch (modifyOperation) {
+            case DirContext.ADD_ATTRIBUTE:
+                attribute = attributes.get(modifyAttribute.getID());
+                if (attribute == null) {
+                    attributes.put(modifyAttribute);
+                } else {
+                    enu = modifyAttribute.getAll();
+                    while (enu.hasMoreElements()) {
+                        attribute.add(enu.nextElement());
+                    }
+                    attributes.put(attribute);
+                }
+                break;
+
+            case DirContext.REMOVE_ATTRIBUTE:
+                attribute = attributes.get(modifyAttribute.getID());
+                enu = modifyAttribute.getAll();
+                while (enu.hasMoreElements()) {
+                    attribute.remove(enu.nextElement());
+                }
+                if (attribute.size() == 0) {
+                    attributes.remove(modifyAttribute.getID());
+                }
+                break;
+
+            case DirContext.REPLACE_ATTRIBUTE:
+                attributes.remove(modifyAttribute.getID());
+                attributes.put(modifyAttribute);
+                break;
+            default:
+                // Never reach here.
+            }
+        }
+        String newSchemaLine = SchemaParser.format(attributes);
+
+        // Remove old schema, then add new schema.
+        ModifyOp op = new ModifyOp(parent.subschemasubentry);
+        Name modifySchemaName = name.getPrefix(size - 1).addAll(rdn);
+        BasicAttribute schemaEntry = new LdapAttribute(new BasicAttribute(
+                jndi2ldap(modifySchemaName.toString()), schemaLine), parent);
         op.addModification(jndi2ldap[DirContext.REMOVE_ATTRIBUTE],
-                new LdapAttribute(oldAttr, parent));
+                new LdapAttribute(schemaEntry, parent));
+        BasicAttribute addSchemaEntry = new LdapAttribute(new BasicAttribute(
+                jndi2ldap(modifySchemaName.toString()), newSchemaLine), parent);
         op.addModification(jndi2ldap[DirContext.ADD_ATTRIBUTE],
-                new LdapAttribute(newAttr, parent));
+                new LdapAttribute(addSchemaEntry, parent));
 
-        try {
-            doBasicOperation(op);
-        } catch (Exception e) {
-            throw new SchemaViolationException("Cannot modify schema root");
-        }
-
+        doBasicOperation(op);
+        subSchemaTree.remove(subSchemaType);
+        subSchemaTree.put(subSchemaType, newSchemaLine);
     }
 
+    @Override
     public void modifyAttributes(String s, int i, Attributes attributes)
             throws NamingException {
         Name name = convertFromStringToName(s);
         modifyAttributes(name, i, attributes);
     }
 
+    @Override
     public void modifyAttributes(String s, ModificationItem[] modificationItems)
             throws NamingException {
         Name name = convertFromStringToName(s);
         modifyAttributes(name, modificationItems);
-
     }
 
     @Override

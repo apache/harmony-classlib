@@ -725,6 +725,424 @@ public class LdapSchemaContextTest extends TestCase {
         assertEquals(1, count);
     }
 
+    public void testRemoveAttributes_DESC() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("DESC", "for test");
+
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        assertNull(attrs.get("DESC"));
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testRemoveAttributes_DESC2() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("DESC", "different desc");
+
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        Attribute descAttr = attrs.get("DESC");
+
+        assertEquals("DESC", descAttr.getID());
+        assertEquals("for test", descAttr.get());
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testRemoveAttributes_Name() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("NAME", "MMObjectClass");
+
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        assertNull(attrs.get("NAME"));
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testRemoveAttributes_NUMERICOID() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("NUMERICOID", "test");
+
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        assertNotNull(attrs.get("NUMERICOID"));
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testRemoveAttributes_Multiple() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("DESC", "for test");
+        newAttributes.put("SUP", "top");
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        assertNull(attrs.get("DESC"));
+        assertNull(attrs.get("SUP"));
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testRemoveAttributes_MultipleValue() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("MUST", "cn");
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        Attribute attr = attrs.get("must");
+        Enumeration enu = attr.getAll();
+        assertEquals("objectclass", enu.nextElement());
+        assertFalse(enu.hasMoreElements());
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testRemoveAttributes_MultipleValue2() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put(must);
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REMOVE_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        assertNull(attrs.get("must"));
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testAddAttributes_DESC() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("DESC", "for test");
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.ADD_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        Attribute descAttr = attrs.get("DESC");
+
+        assertEquals("DESC", descAttr.getID());
+        assertEquals("for test", descAttr.get());
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testAddAttributes_MultipleMust() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("MUST", "objectclass");
+
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.ADD_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        Attribute mustAttr = attrs.get("MUST");
+        assertEquals(2, mustAttr.size());
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testAddAttributes_DuplicateDESC() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("DESC", "for test");
+
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.ADD_ATTRIBUTE, newAttributes);
+
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        Attribute descAttr = attrs.get("DESC");
+        assertEquals(1, descAttr.size());
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testReplaceAttributes() throws NamingException {
+        // Creates a new schema.
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext subSchema = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"), attrs);
+        Attributes newAttributes = new BasicAttributes();
+        newAttributes.put("DESC", "modifed test desc");
+        schema.modifyAttributes("ClassDefinition/MMObjectClass",
+                DirContext.REPLACE_ATTRIBUTE, newAttributes);
+        attrs = schema.getAttributes("ClassDefinition/MMObjectClass");
+        Attribute descAttr = attrs.get("DESC");
+
+        assertEquals("DESC", descAttr.getID());
+        assertEquals("modifed test desc", descAttr.get());
+
+        schema.destroySubcontext(new CompositeName(
+                "ClassDefinition/MMObjectClass"));
+        try {
+            schema.list("ClassDefinition/MMObjectClass");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
+    public void testModifyAttributes_Exception() throws NamingException {
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
+        attrs.put("NAME", "MMObjectClass");
+        attrs.put("DESC", "for test");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        try {
+            schema.modifyAttributes("invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.modifyAttributes("invalid/invalid/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.modifyAttributes("invalid/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.modifyAttributes("classdefinition/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.modifyAttributes("classdefinition/javaClass/name", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        try {
+            schema.modifyAttributes("classdefinition/javaClass/invalid", null);
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+    }
+
     public void testCreateAndDeleteSubContext() throws NamingException {
         // Creates the attributes.
         Attributes attrs = new BasicAttributes(false); // Ignore case
