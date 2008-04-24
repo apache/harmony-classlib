@@ -42,7 +42,7 @@ public class MockLdapServer implements Runnable {
 
     private Socket socket;
 
-	private LinkedList<LdapMessage> responses = new LinkedList<LdapMessage>();
+    private LinkedList<LdapMessage> responses = new LinkedList<LdapMessage>();
 
     private int port;
 
@@ -97,12 +97,12 @@ public class MockLdapServer implements Runnable {
         return port;
     }
 
-	public void setResponseSeq(LdapMessage[] msges) {
-		synchronized (responses) {
-			for (LdapMessage message : msges) {
-				responses.addLast(message);
-			}
-		}
+    public void setResponseSeq(LdapMessage[] msges) {
+        synchronized (responses) {
+            for (LdapMessage message : msges) {
+                responses.addLast(message);
+            }
+        }
 
         synchronized (lock) {
             lock.notify();
@@ -194,6 +194,15 @@ public class MockLdapServer implements Runnable {
                 // ignore
             }
         }
+    }
+
+    public void disconnectNotify() throws IOException {
+        MockLdapMessage message = new MockLdapMessage(new LdapMessage(
+                LdapASN1Constant.OP_EXTENDED_RESPONSE,
+                new DisconnectResponse(), null));
+        message.setMessageId(0);
+        OutputStream out = socket.getOutputStream();
+        out.write(message.encode());
     }
 
     public String getURL() {

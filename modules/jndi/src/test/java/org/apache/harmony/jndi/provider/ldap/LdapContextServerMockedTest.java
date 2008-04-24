@@ -32,11 +32,17 @@ import javax.naming.Reference;
 import javax.naming.ReferralException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.event.EventDirContext;
+import javax.naming.event.NamingExceptionEvent;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.SortControl;
+import javax.naming.ldap.UnsolicitedNotification;
+import javax.naming.ldap.UnsolicitedNotificationEvent;
+import javax.naming.ldap.UnsolicitedNotificationListener;
 
 import junit.framework.TestCase;
 
@@ -44,8 +50,11 @@ import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 import org.apache.harmony.jndi.provider.ldap.mock.BindResponse;
+import org.apache.harmony.jndi.provider.ldap.mock.DisconnectResponse;
 import org.apache.harmony.jndi.provider.ldap.mock.EncodableLdapResult;
+import org.apache.harmony.jndi.provider.ldap.mock.MockLdapMessage;
 import org.apache.harmony.jndi.provider.ldap.mock.MockLdapServer;
+import org.apache.harmony.security.x509.IssuingDistributionPoint;
 
 public class LdapContextServerMockedTest extends TestCase {
     private MockLdapServer server;
@@ -612,5 +621,59 @@ public class LdapContextServerMockedTest extends TestCase {
                     ((LdapContext) addr.getContent()).getNameInNamespace());
             assertEquals("nns", addr.getType());
         }
+    }
+    public void testUnsolicitedNotification() throws Exception {
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        LdapContext context = new InitialLdapContext(env, null);
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_SEARCH_RESULT_DONE,
+                new EncodableLdapResult(), null) });
+        EventDirContext eventContext = (EventDirContext) context.lookup("");
+
+        assertTrue(eventContext.targetMustExist());
+
+        MockUnsolicitedNotificationListener listener = new MockUnsolicitedNotificationListener();
+
+        MockLdapMessage message = new MockLdapMessage(new LdapMessage(
+                LdapASN1Constant.OP_EXTENDED_RESPONSE,
+                new DisconnectResponse(), null));
+        message.setMessageId(0);
+        server.setResponseSeq(new LdapMessage[] { message });
+
+        eventContext.addNamingListener("", "(objectclass=cn)", new Object[0],
+                new SearchControls(), listener);
+        server.disconnectNotify();
+        Thread.sleep(5000);
+        assertNull(listener.exceptionEvent);
+        assertNotNull(listener.unsolicatedEvent);
+        assertTrue(listener.unsolicatedEvent.getSource() instanceof LdapContext);
+        UnsolicitedNotification notification = listener.unsolicatedEvent
+                .getNotification();
+        assertNotNull(notification);
+        assertEquals(DisconnectResponse.oid, notification.getID());
+        assertNull(notification.getControls());
+        assertNull(notification.getException());
+        assertNull(notification.getReferrals());
+        assertNull(notification.getEncodedValue());
+    }
+
+    public class MockUnsolicitedNotificationListener implements
+            UnsolicitedNotificationListener {
+
+        UnsolicitedNotificationEvent unsolicatedEvent;
+
+        NamingExceptionEvent exceptionEvent;
+
+        public void notificationReceived(UnsolicitedNotificationEvent e) {
+            unsolicatedEvent = e;
+        }
+
+        public void namingExceptionThrown(
+                NamingExceptionEvent namingExceptionEvent) {
+            exceptionEvent = namingExceptionEvent;
+        }
+
     }
 }

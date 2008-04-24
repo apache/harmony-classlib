@@ -20,26 +20,17 @@ package org.apache.harmony.jndi.provider.ldap.mock;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
 import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 
-public class BindResponse implements ASN1Encodable {
-
+public class DisconnectResponse implements ASN1Encodable {
     private EncodableLdapResult result;
 
-    private String saslCreds;
+    public static final String oid = "1.3.6.1.4.1.1466.20036";
 
-    public BindResponse() {
-        this(new EncodableLdapResult(), null);
-    }
-
-    public BindResponse(EncodableLdapResult result, String saslCreds) {
-        this.result = result;
-        this.saslCreds = saslCreds;
+    public DisconnectResponse() {
+        this.result = new EncodableLdapResult();
     }
 
     public void encodeValues(Object[] values) {
         result.encodeValues(values);
-        if (saslCreds != null) {
-            values[4] = Utils.getBytes(saslCreds);
-        }
+        values[4] = Utils.getBytes(oid);
     }
-
 }

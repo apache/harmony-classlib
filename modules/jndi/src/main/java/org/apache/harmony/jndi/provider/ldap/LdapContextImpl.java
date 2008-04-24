@@ -2514,7 +2514,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 EventObject event = null;
                 try {
                     un.setControls(narrowingControls(cs));
-                    event = new UnsolicitedNotificationEvent(this, un);
+                    event = new UnsolicitedNotificationEvent(
+                            LdapContextImpl.this, un);
                 } catch (NamingException e) {
                     event = new NamingExceptionEvent(LdapContextImpl.this, e);
                 }
@@ -2637,8 +2638,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     public boolean targetMustExist() throws NamingException {
-        // FIXME
-        return false;
+        return true;
     }
 
     private NamingEvent constructNamingEvent(PersistentSearchResult result,
