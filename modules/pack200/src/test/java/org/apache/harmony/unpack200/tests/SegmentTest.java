@@ -19,6 +19,7 @@ package org.apache.harmony.unpack200.tests;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.jar.JarEntry;
@@ -36,25 +37,32 @@ public class SegmentTest extends TestCase {
 
     InputStream in;
     JarOutputStream out;
+    File file;
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        try {
-            if (in != null) {
+        if (in != null) {
+            try {
                 in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } finally {
+        }
+        try {
             if (out != null) {
                 out.close();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        file.delete();
     }
 
     public void testJustResources() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/JustResources.pack");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
-                "just", "resources.jar")));
+        file = File.createTempFile("just", "resources.jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Segment segment = new Segment();
         segment.unpack(in, out);
     }
@@ -62,8 +70,8 @@ public class SegmentTest extends TestCase {
     public void testInterfaceOnly() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/InterfaceOnly.pack");
-        out = new JarOutputStream(new FileOutputStream(File.createTempFile(
-                "Interface", "Only.jar")));
+        file = File.createTempFile("Interface", "Only.jar");
+        out = new JarOutputStream(new FileOutputStream(file));
         Segment segment = new Segment();
         segment.unpack(in, out);
     }
@@ -71,13 +79,14 @@ public class SegmentTest extends TestCase {
     public void testHelloWorld() throws Exception {
         in = Segment.class
                 .getResourceAsStream("/org/apache/harmony/pack200/tests/HelloWorld.pack");
-        File file = File.createTempFile("hello", "world.jar");
+        file = File.createTempFile("hello", "world.jar");
         out = new JarOutputStream(new FileOutputStream(file));
         Segment segment = new Segment();
         segment.unpack(in, out);
         out.close();
         out = null;
         JarFile jarFile = new JarFile(file);
+        file.deleteOnExit();
         JarEntry entry = jarFile
                 .getJarEntry("org/apache/harmony/archive/tests/internal/pack200/HelloWorld.class");
         assertNotNull(entry);
