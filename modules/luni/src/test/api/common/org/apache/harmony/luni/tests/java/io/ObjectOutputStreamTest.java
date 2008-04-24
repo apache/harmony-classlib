@@ -1053,6 +1053,31 @@ public class ObjectOutputStreamTest extends TestCase implements Serializable {
             ois.close();
         }
     }
+    
+    /**
+     * @tests {@link java.io.ObjectOutputStream#annotateProxyClass(java.lang.Class<T>)}
+     */
+    public void test_annotateProxyClass() throws SecurityException, IOException {
+        MockObjectOutputStream mockObjectOutputStream = new MockObjectOutputStream();
+        mockObjectOutputStream.annotateProxyClass(this.getClass());
+        assertEquals("The default implementation is doing nothing.",
+                mockObjectOutputStream, mockObjectOutputStream);
+
+    }
+
+    class MockObjectOutputStream extends ObjectOutputStream {
+
+        protected MockObjectOutputStream() throws IOException,
+                SecurityException {
+            super();
+        }
+
+        @Override
+        public void annotateProxyClass(Class<?> aClass) throws IOException {
+            super.annotateProxyClass(aClass);
+        }
+
+    }
 
     /**
      * Sets up the fixture, for example, open a network connection. This method

@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,7 @@ import java.io.PipedOutputStream;
 import java.io.Serializable;
 import java.io.SerializablePermission;
 import java.io.StreamCorruptedException;
+import java.lang.reflect.Proxy;
 import java.security.Permission;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -215,6 +217,56 @@ public class ObjectInputStreamTest extends TestCase implements
         } finally {
             System.setSecurityManager(sm);
         }
+    }
+    
+    /**
+     * @tests {@link java.io.ObjectInputStream#resolveProxyClass(String[])}
+     */
+    public void test_resolveProxyClass() throws IOException,
+            ClassNotFoundException {
+        oos.writeBytes("HelloWorld");
+        oos.close();
+        ois = new ObjectInputStream(new ByteArrayInputStream(bao.toByteArray()));
+        MockObjectInputStream mockIn = new MockObjectInputStream(
+                new ByteArrayInputStream(bao.toByteArray()));
+        Class[] clazzs = { java.io.ObjectInputStream.class,
+                java.io.Reader.class };
+        for (int i = 0; i < clazzs.length; i++) {
+            Class clazz = clazzs[i];
+            Class[] interfaceNames = clazz.getInterfaces();
+            String[] interfaces = new String[interfaceNames.length];
+            int index = 0;
+            for (Class c : interfaceNames) {
+                interfaces[index] = c.getName();
+                index++;
+            }
+            Class<?> s = mockIn.resolveProxyClass(interfaces);
+
+            if (Proxy.isProxyClass(s)) {
+                Class[] implementedInterfaces = s.getInterfaces();
+                for (index = 0; index < implementedInterfaces.length; index++) {
+                    assertEquals(interfaceNames[index],
+                            implementedInterfaces[index]);
+                }
+            } else {
+                fail("Should return a proxy class that implements the interfaces named in a proxy class descriptor");
+            }
+        }
+        mockIn.close();
+    }
+
+    class MockObjectInputStream extends ObjectInputStream {
+
+        public MockObjectInputStream(InputStream input)
+                throws StreamCorruptedException, IOException {
+            super(input);
+        }
+
+        @Override
+        public Class<?> resolveProxyClass(String[] interfaceNames) throws IOException, ClassNotFoundException {
+            return super.resolveProxyClass(interfaceNames);
+        }
+
     }
 
     /**
