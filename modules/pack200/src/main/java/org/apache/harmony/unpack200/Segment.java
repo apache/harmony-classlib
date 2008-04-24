@@ -221,8 +221,6 @@ public class Segment {
                     .getMethodAttributes()[classNum][i]));
         }
 
-        cp.addNestedEntries();
-
         // add inner class attribute (if required)
         boolean addInnerClassesAttr = false;
         IcTuple[] ic_local = getClassBands().getIcLocal()[classNum];
