@@ -1,0 +1,64 @@
+Compiled from "BaseRowSetTest.java"
+final class org.apache.harmony.sql.tests.javax.sql.rowset.BaseRowSetTest$BaseRowSetImpl extends javax.sql.rowset.BaseRowSet
+  SourceFile: "BaseRowSetTest.java"
+  InnerClass: 
+   final #23= #15 of #14; //BaseRowSetImpl=class org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl of class org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest
+  minor version: 0
+  major version: 48
+  Constant pool:
+const #1 = Asciz	()V;
+const #2 = Asciz	<init>;
+const #3 = Asciz	J;
+const #4 = Asciz	Synthetic;
+const #5 = Asciz	initParams;
+const #6 = Asciz	javax/sql/rowset/BaseRowSet;
+const #7 = Asciz	org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest;
+const #8 = Asciz	org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl;
+const #9 = Asciz	serialVersionUID;
+const #10 = Asciz	this;
+const #11 = long	1l;
+const #13 = class	#6;	//  javax/sql/rowset/BaseRowSet
+const #14 = class	#7;	//  org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest
+const #15 = class	#8;	//  org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl
+const #16 = Asciz	Lorg/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl;;
+const #17 = Asciz	(Lorg/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl;)V;
+const #18 = NameAndType	#2:#1;//  "<init>":()V
+const #19 = NameAndType	#5:#1;//  initParams:()V
+const #20 = Method	#13.#18;	//  javax/sql/rowset/BaseRowSet."<init>":()V
+const #21 = Method	#13.#19;	//  javax/sql/rowset/BaseRowSet.initParams:()V
+const #22 = Method	#15.#18;	//  org/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl."<init>":()V
+const #23 = Asciz	BaseRowSetImpl;
+const #24 = Asciz	BaseRowSetTest.java;
+const #25 = Asciz	Code;
+const #26 = Asciz	ConstantValue;
+const #27 = Asciz	InnerClasses;
+const #28 = Asciz	LineNumberTable;
+const #29 = Asciz	LocalVariableTable;
+const #30 = Asciz	SourceFile;
+
+{
+protected void initParams();
+  Code:
+   Stack=1, Locals=1, Args_size=1
+   0:	aload_0
+   1:	invokespecial	#21; //Method javax/sql/rowset/BaseRowSet.initParams:()V
+   4:	return
+  LineNumberTable: 
+   line 275: 0
+   line 276: 4
+  LocalVariableTable: 
+   Start  Length  Slot  Name   Signature
+   0      5      0    this       Lorg/apache/harmony/sql/tests/javax/sql/rowset/BaseRowSetTest$BaseRowSetImpl;
+
+org.apache.harmony.sql.tests.javax.sql.rowset.BaseRowSetTest$BaseRowSetImpl(org.apache.harmony.sql.tests.javax.sql.rowset.BaseRowSetTest$BaseRowSetImpl);
+  Synthetic: true
+  Code:
+   Stack=1, Locals=2, Args_size=2
+   0:	aload_0
+   1:	invokespecial	#22; //Method "<init>":()V
+   4:	return
+  LineNumberTable: 
+   line 270: 0
+
+}
+

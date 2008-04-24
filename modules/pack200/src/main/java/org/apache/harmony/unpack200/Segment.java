@@ -292,6 +292,7 @@ public class Segment {
             classFile.attributes = newAttrs;
             cp.add(innerClassesAttribute);
         }
+        cp.addNestedEntries();
         // sort CP according to cp_All
         cp.resolve(this);
         // NOTE the indexOf is only valid after the cp.resolve()

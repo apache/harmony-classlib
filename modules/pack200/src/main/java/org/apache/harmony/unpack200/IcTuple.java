@@ -76,8 +76,8 @@ public class IcTuple {
     private boolean initialized = false;
     private boolean anonymous = false;
     private boolean member = true;
-    private int cachedOuterClassIndex;
-    private int cachedSimpleClassNameIndex;
+    private int cachedOuterClassIndex = -1;
+    private int cachedSimpleClassNameIndex = -1;
 
     /**
      * Answer true if the receiver is predicted; answer false if the receiver is
