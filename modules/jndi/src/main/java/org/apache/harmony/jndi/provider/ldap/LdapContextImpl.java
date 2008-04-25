@@ -557,7 +557,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         List<LdapAttribute> la = new ArrayList<LdapAttribute>(attrs.size());
         NamingEnumeration<? extends Attribute> enu = attrs.getAll();
         while (enu.hasMore()) {
-            la.add(new LdapAttribute(enu.next(), this));
+            Attribute att = enu.next();
+            if (att.size() > 0) {
+                la.add(new LdapAttribute(att, this));
+            }
         }
 
         // do add operation
@@ -1282,17 +1285,27 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             filter = new Filter(Filter.PRESENT_FILTER);
             filter.setValue("objectClass");
         } else {
-            NamingEnumeration<? extends Attribute> attrs = attributes.getAll();
-            filter = new Filter(Filter.AND_FILTER);
-            while (attrs.hasMore()) {
-                Attribute attr = attrs.next();
-                String type = attr.getID();
-                NamingEnumeration<?> enuValues = attr.getAll();
-                while (enuValues.hasMore()) {
-                    Object value = enuValues.next();
-                    Filter child = new Filter(Filter.EQUALITY_MATCH_FILTER);
-                    child.setValue(new AttributeTypeAndValuePair(type, value));
-                    filter.addChild(child);
+            // only one attribute type and value pair
+            if (attributes.size() == 1 && attributes.getAll().next().size() == 1) {
+                filter = new Filter(Filter.EQUALITY_MATCH_FILTER);
+                Attribute att = attributes.getAll().next();
+                filter.setValue(new AttributeTypeAndValuePair(att.getID(), att
+                        .get()));
+            } else {
+                NamingEnumeration<? extends Attribute> attrs = attributes
+                        .getAll();
+                filter = new Filter(Filter.AND_FILTER);
+                while (attrs.hasMore()) {
+                    Attribute attr = attrs.next();
+                    String type = attr.getID();
+                    NamingEnumeration<?> enuValues = attr.getAll();
+                    while (enuValues.hasMore()) {
+                        Object value = enuValues.next();
+                        Filter child = new Filter(Filter.EQUALITY_MATCH_FILTER);
+                        child.setValue(new AttributeTypeAndValuePair(type,
+                                value));
+                        filter.addChild(child);
+                    }
                 }
             }
         }
@@ -1680,6 +1693,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         }
 
         if (name instanceof CompositeName) {
+            if (name.size() == 0) {
+                return new BasicAttributes(true);
+            }
+
             LdapName lname = new LdapName(name.get(0));
             Rdn rdn = lname.getRdn(lname.size() - 1);
             return rdn.toAttributes();
@@ -2072,7 +2089,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     }
 
     private boolean hasAttribute(Attributes attributes, String type,
-            Object value) throws NamingException {
+            String value) throws NamingException {
         Attribute attr = attributes.get(type);
         if (attr == null) {
             return false;
@@ -2081,7 +2098,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         NamingEnumeration<?> enu = attr.getAll();
         while (enu.hasMore()) {
             Object o = enu.next();
-            if (value.equals(o)) {
+            if (value.equalsIgnoreCase(Utils.getString(o))) {
                 return true;
             }
         }

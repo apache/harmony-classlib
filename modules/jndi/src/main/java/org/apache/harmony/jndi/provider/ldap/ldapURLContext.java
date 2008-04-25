@@ -102,6 +102,7 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
 
         if (name.size() == 1) {
             bind(name.get(0), obj, attributes);
+            return;
         }
 
         DirContext context = getContinuationContext(name);
@@ -359,6 +360,7 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
 
         if (name.size() == 1) {
             rebind(name.get(0), obj, attributes);
+            return;
         }
 
         DirContext context = getContinuationContext(name);
@@ -518,20 +520,27 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
                     filter = new Filter(Filter.PRESENT_FILTER);
                     filter.setValue("objectClass");
                 } else {
-                    NamingEnumeration<? extends Attribute> attrs = attributes
-                            .getAll();
-                    filter = new Filter(Filter.AND_FILTER);
-                    while (attrs.hasMore()) {
-                        Attribute attr = attrs.next();
-                        String type = attr.getID();
-                        NamingEnumeration<?> enuValues = attr.getAll();
-                        while (enuValues.hasMore()) {
-                            Object value = enuValues.next();
-                            Filter child = new Filter(
-                                    Filter.EQUALITY_MATCH_FILTER);
-                            child.setValue(new AttributeTypeAndValuePair(type,
-                                    value));
-                            filter.addChild(child);
+                    if (attributes.size() == 1) {
+                        filter = new Filter(Filter.EQUALITY_MATCH_FILTER);
+                        Attribute att = attributes.getAll().next();
+                        filter.setValue(new AttributeTypeAndValuePair(att
+                                .getID(), att.get()));
+                    } else {
+                        NamingEnumeration<? extends Attribute> attrs = attributes
+                                .getAll();
+                        filter = new Filter(Filter.AND_FILTER);
+                        while (attrs.hasMore()) {
+                            Attribute attr = attrs.next();
+                            String type = attr.getID();
+                            NamingEnumeration<?> enuValues = attr.getAll();
+                            while (enuValues.hasMore()) {
+                                Object value = enuValues.next();
+                                Filter child = new Filter(
+                                        Filter.EQUALITY_MATCH_FILTER);
+                                child.setValue(new AttributeTypeAndValuePair(
+                                        type, value));
+                                filter.addChild(child);
+                            }
                         }
                     }
                 }
@@ -547,6 +556,10 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
                         .get(name));
                 sr.setNameInNamespace(name);
                 list.add(sr);
+            }
+
+            if (list.size() == 0 && result.getException() != null) {
+                throw result.getException();
             }
 
             return new LdapNamingEnumeration<SearchResult>(list, result
@@ -604,6 +617,10 @@ public class ldapURLContext extends GenericURLContext implements DirContext {
                         .get(name));
                 sr.setNameInNamespace(name);
                 list.add(sr);
+            }
+
+            if (list.size() == 0 && result.getException() != null) {
+                throw result.getException();
             }
 
             return new LdapNamingEnumeration<SearchResult>(list, result
