@@ -406,7 +406,7 @@ public class InetAddress extends Object implements Serializable {
         // now try the negative cache
         String failedMessage = NegativeCache.getFailedMessage(host);
         if (failedMessage != null) {
-            throw new UnknownHostException(host + " - " + failedMessage); //$NON-NLS-1$
+            throw new UnknownHostException(host);
         }
 
         InetAddress anInetAddress;
@@ -415,7 +415,8 @@ public class InetAddress extends Object implements Serializable {
         } catch (UnknownHostException e) {
             // put the entry in the negative cache
             NegativeCache.put(host, e.getMessage());
-            throw new UnknownHostException(host + " - " + e.getMessage()); //$NON-NLS-1$
+            // use host for message to match RI, save the cause for giggles
+            throw (UnknownHostException)new UnknownHostException(host).initCause(e);
         }
 
         Cache.add(anInetAddress);
