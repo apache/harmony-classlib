@@ -403,6 +403,8 @@ public class InetAddress extends Object implements Serializable {
             return element.inetAddress();
         }
 
+        // TODO Clean up NegativeCache; there's no need to maintain the failure message
+        
         // now try the negative cache
         String failedMessage = NegativeCache.getFailedMessage(host);
         if (failedMessage != null) {
@@ -509,11 +511,11 @@ public class InetAddress extends Object implements Serializable {
     }
 
     class CacheElement {
-        long timeAdded = System.currentTimeMillis();
+        final long timeAdded = System.currentTimeMillis();
 
         CacheElement next;
 
-        public CacheElement() {
+        CacheElement() {
             super();
         }
 
@@ -527,18 +529,18 @@ public class InetAddress extends Object implements Serializable {
     }
 
     static class Cache {
-        static int maxSize = 5;
+        private static int maxSize = 5;
 
         private static int size = 0;
 
         private static CacheElement head;
 
-        static void clear() {
+        static synchronized void clear() {
             size = 0;
             head = null;
         }
 
-        static void add(InetAddress value) {
+        static synchronized void add(InetAddress value) {
             CacheElement newElement = value.cacheElement();
             if (size < maxSize) {
                 size++;
@@ -549,7 +551,7 @@ public class InetAddress extends Object implements Serializable {
             head = newElement;
         }
 
-        static CacheElement get(String name) {
+        static synchronized CacheElement get(String name) {
             CacheElement previous = null;
             CacheElement current = head;
             boolean notFound = true;
@@ -565,7 +567,7 @@ public class InetAddress extends Object implements Serializable {
             return current;
         }
 
-        private static void deleteTail() {
+        private synchronized static void deleteTail() {
             if (0 == size) {
                 return;
             }
@@ -582,7 +584,7 @@ public class InetAddress extends Object implements Serializable {
             previous.next = null;
         }
 
-        private static void moveToHead(CacheElement element,
+        private synchronized static void moveToHead(CacheElement element,
                 CacheElement elementPredecessor) {
             if (null == elementPredecessor) {
                 head = element;

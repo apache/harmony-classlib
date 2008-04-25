@@ -29,13 +29,13 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
 
     private static final long serialVersionUID = 1L;
 
-    static NegativeCache<String, NegCacheElement> negCache;
+    private static NegativeCache<String, NegCacheElement> negCache;
 
     // maximum number of entries in the cache
-    static final int MAX_NEGATIVE_ENTRIES = 5;
+    private static final int MAX_NEGATIVE_ENTRIES = 5;
 
     // the loading for the cache
-    static final float LOADING = 0.75F;
+    private static final float LOADING = 0.75F;
 
     /**
      * Answers the hostname for the cache element
@@ -69,7 +69,7 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
      * @param failedMessage
      *            the message returned when we failed the lookup
      */
-    static void put(String hostName, String failedMessage) {
+    static synchronized void put(String hostName, String failedMessage) {
         checkCacheExists();
         negCache.put(hostName, new NegCacheElement(failedMessage));
     }
@@ -83,7 +83,7 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
      * @return the message which was returned when the host failed to be looked
      *         up if there is still a valid entry within the cache
      */
-    static String getFailedMessage(String hostName) {
+    static synchronized String getFailedMessage(String hostName) {
         checkCacheExists();
         NegCacheElement element = negCache.get(hostName);
         if (element != null) {
@@ -111,7 +111,7 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
             }
         }
         if (element != null) {
-            return element.hostName();
+            return element.hostName;
         }
         return null;
     }
@@ -119,7 +119,7 @@ class NegativeCache<K, V> extends LinkedHashMap<K, V> {
     /**
      * This method checks if we have created the cache and if not creates it
      */
-    static void checkCacheExists() {
+    static synchronized void checkCacheExists() {
         if (negCache == null) {
             /*
              * Create with the access order set so ordering is based on when the
