@@ -406,8 +406,10 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
         E[] newArray = newElementArray(size + increment);
         if (location < size / 2) {
             int newFirst = newArray.length - (size + required);
-            System.arraycopy(array, location, newArray, location + increment,
+            // Copy elements after location to the new array skipping inserted elements
+            System.arraycopy(array, location + firstIndex, newArray, location + increment,
                     size - location);
+            // Copy elements before location to the new array from firstIndex
             System.arraycopy(array, firstIndex, newArray, newFirst, location);
             firstIndex = newFirst;
             lastIndex = newArray.length;
