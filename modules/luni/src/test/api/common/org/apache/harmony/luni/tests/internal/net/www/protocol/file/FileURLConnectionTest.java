@@ -55,5 +55,12 @@ public class FileURLConnectionTest extends TestCase {
         
         FileURLConnection conn = new FileURLConnection(anchorUrl);
         assertNotNull(conn.getInputStream());
+        
+        // Regression for Harmony-5779
+        String localURLString = "file://localhost/" + url.getFile();
+        URL localURL = new URL(localURLString);
+        conn = new FileURLConnection(localURL);
+        assertNotNull(conn.getInputStream());
+        assertEquals("file",conn.getURL().getProtocol());
     }
 }
