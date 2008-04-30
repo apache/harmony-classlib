@@ -25,6 +25,16 @@ import org.apache.harmony.testframework.serialization.SerializationTest;
  * Tests for CancelledKeyException
  */
 public class CancelledKeyExceptionTest extends TestCase {
+    
+    /**
+     * @tests {@link java.nio.channels.CancelledKeyException#CancelledKeyException()}
+     */
+    public void test_Constructor() {
+        CancelledKeyException e = new CancelledKeyException();
+        assertNull(e.getMessage());
+        assertNull(e.getLocalizedMessage());
+        assertNull(e.getCause());
+    }
 
     /**
      * @tests serialization/deserialization compatibility.
