@@ -1202,8 +1202,9 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
                 public boolean contains(Object object) {
                     if (object instanceof Map.Entry) {
                         Map.Entry<K, V> entry = (Map.Entry<K, V>) object;
-                        Object v1 = TreeMap.this.get(entry.getKey()), v2 = entry.getValue();
-                        return v1 == null ? v2 == null : v1.equals(v2);
+                        K key = entry.getKey();
+                        Object v1 = TreeMap.this.get(key), v2 = entry.getValue();
+                        return v1 == null ? ( v2 == null && TreeMap.this.containsKey(key) ) : v1.equals(v2);
                     }
                     return false;
                 }

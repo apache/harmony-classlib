@@ -643,6 +643,31 @@ public class TreeMapTest extends junit.framework.TestCase {
     }
 
     /**
+     * Tests entrySet().contains() method behaviour with respect to entries
+     * with null values.
+     * Regression test for HARMONY-5788.
+     */
+    public void test_entrySet_contains() throws Exception {
+        TreeMap master = new TreeMap<String, String>();
+        TreeMap test_map = new TreeMap<String, String>();
+
+        master.put("null", null);
+        Object[] entry = master.entrySet().toArray();
+        assertFalse("Empty map should not contain the null-valued entry",
+                    test_map.entrySet().contains(entry[0]));
+
+        test_map.put("null", null);
+        assertTrue("entrySet().containsAll(...) should work with null values",
+                   test_map.entrySet().containsAll(master.entrySet()));
+
+        master.clear();
+        master.put("null", '0');
+        entry = master.entrySet().toArray();
+        assertFalse("Null-valued entry should not equal non-null-valued entry",
+                    test_map.entrySet().contains(entry[0]));
+    }
+
+    /**
      * Sets up the fixture, for example, open a network connection. This method
      * is called before a test is executed.
      */
