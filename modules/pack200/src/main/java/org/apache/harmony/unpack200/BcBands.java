@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
@@ -28,8 +29,11 @@ import org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
+import org.apache.harmony.unpack200.bytecode.DeprecatedAttribute;
 import org.apache.harmony.unpack200.bytecode.ExceptionTableEntry;
 import org.apache.harmony.unpack200.bytecode.OperandManager;
+import org.apache.harmony.unpack200.bytecode.RuntimeVisibleorInvisibleAnnotationsAttribute;
+import org.apache.harmony.unpack200.bytecode.SignatureAttribute;
 
 /**
  * Bytecode bands
@@ -424,7 +428,21 @@ public class BcBands extends BandSet {
                     CodeAttribute codeAttr = new CodeAttribute(maxStack,
                             maxLocal, methodByteCodePacked[c][m], segment,
                             operandManager, exceptionTable);
-                    methodAttributes[c][m].add(codeAttr);
+                    ArrayList methodAttributesList = methodAttributes[c][m];
+                    // Make sure we add the code attribute in the right place
+                    int indexForCodeAttr = 0;
+                    for (Iterator iterator = methodAttributesList.iterator(); iterator
+                            .hasNext();) {
+                        Attribute attribute = (Attribute) iterator.next();
+                        if(attribute instanceof SignatureAttribute ||
+                                attribute instanceof DeprecatedAttribute ||
+                                attribute instanceof RuntimeVisibleorInvisibleAnnotationsAttribute) {
+                            indexForCodeAttr ++;
+                        } else {
+                            break;
+                        }
+                    }
+                    methodAttributesList.add(indexForCodeAttr, codeAttr);
                     codeAttr.renumber(codeAttr.byteCodeOffsets);
                     ArrayList currentAttributes = (ArrayList) orderedCodeAttributes
                             .get(i);

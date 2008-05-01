@@ -18,11 +18,15 @@ package org.apache.harmony.unpack200.bytecode;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * Local variable type table.
  */
-public class LocalVariableTypeTableAttribute extends Attribute {
+public class LocalVariableTypeTableAttribute extends BCIRenumberedAttribute {
 
     private int local_variable_type_table_length;
     private final int[] start_pcs;
@@ -73,6 +77,83 @@ public class LocalVariableTypeTableAttribute extends Attribute {
             signature_indexes[i] = pool.indexOf(signatures[i]);
         }
     }
+
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        ArrayList nestedEntries = new ArrayList();
+        nestedEntries.add(getAttributeName());
+        for (int i = 0; i < local_variable_type_table_length; i++) {
+            nestedEntries.add(names[i]);
+            nestedEntries.add(signatures[i]);
+        }
+        ClassFileEntry[] nestedEntryArray = new ClassFileEntry[nestedEntries
+                .size()];
+        nestedEntries.toArray(nestedEntryArray);
+        return nestedEntryArray;
+    }
+    
+    protected int[] getStartPCs() {
+        return start_pcs;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute#renumber(java.util.List)
+     */
+    public void renumber(List byteCodeOffsets) throws Pack200Exception {
+        // Remember the unrenumbered start_pcs, since that's used later
+        // to calculate end position.
+        int[] unrenumbered_start_pcs = new int[start_pcs.length];
+        System.arraycopy(start_pcs, 0, unrenumbered_start_pcs, 0,
+                start_pcs.length);
+
+        // Next renumber start_pcs in place
+        super.renumber(byteCodeOffsets);
+
+        // lengths are BRANCH5 encoded, not BCI-encoded.
+        // In other words:
+        // start_pc is BCI5 start_pc
+        // end_pc is byteCodeOffset[(index of start_pc in byteCodeOffset) +
+        // (encoded length)]
+        // real length = end_pc - start_pc
+        // special case if end_pc is beyond end of bytecode array
+
+        // First figure out the maximum size of the byteCodeOffsets array
+        int lastInstruction = ((Integer) byteCodeOffsets.get(byteCodeOffsets
+                .size() - 1)).intValue();
+        int maxSize = lastInstruction + 1;
+
+        // Iterate through the lengths and update each in turn.
+        // This is done in place in the lengths array.
+        for (int index = 0; index < lengths.length; index++) {
+            int start_pc = start_pcs[index];
+            int revisedLength = -1;
+            int encodedLength = lengths[index];
+
+            // First get the index of the start_pc in the byteCodeOffsets
+            int indexOfStartPC = unrenumbered_start_pcs[index];
+            // Given the index of the start_pc, we can now add
+            // the encodedLength to it to get the stop index.
+            int stopIndex = indexOfStartPC + encodedLength;
+            if (stopIndex < 0) {
+                throw new Pack200Exception("Error renumbering bytecode indexes");
+            }
+            // Length can either be an index into the byte code offsets, or one
+            // beyond the
+            // end of the byte code offsets. Need to determine which this is.
+            if (stopIndex == byteCodeOffsets.size()) {
+                // Pointing to one past the end of the byte code array
+                revisedLength = maxSize - start_pc;
+            } else {
+                // We're indexed into the byte code array
+                int stopValue = ((Integer) byteCodeOffsets.get(stopIndex))
+                        .intValue();
+                revisedLength = stopValue - start_pc;
+            }
+            lengths[index] = revisedLength;
+        }
+    }
+
 
     public String toString() {
         return "LocalVariableTypeTable: " + +local_variable_type_table_length

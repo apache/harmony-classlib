@@ -52,6 +52,8 @@ public class ClassConstantPool {
     protected HashSet entriesContainsSet = new HashSet();
     protected HashSet othersContainsSet = new HashSet();
 
+    private final HashSet mustStartClassPool = new HashSet();
+
     protected Map indexCache = null;
 
     public String toString() {
@@ -117,6 +119,11 @@ public class ClassConstantPool {
             ClassFileEntry entry = (ClassFileEntry) iterator.next();
             ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
             newEntries.addAll(Arrays.asList(nestedEntries));
+            if(entry instanceof ByteCode) {
+                if(((ByteCode)entry).nestedMustStartClassPool()) {
+                    mustStartClassPool.addAll(Arrays.asList(nestedEntries));
+                }
+            }
         }
         for (Iterator iterator = newEntries.iterator(); iterator.hasNext();) {
             add((ClassFileEntry) iterator.next());
@@ -256,7 +263,7 @@ public class ClassConstantPool {
         ArrayList finalSort = new ArrayList();
         while (it.hasNext()) {
             ClassFileEntry nextEntry = (ClassFileEntry) it.next();
-            if (nextEntry.mustStartClassPool()) {
+            if (mustStartClassPool.contains(nextEntry)) {
                 startOfPool.add(nextEntry);
             } else {
                 finalSort.add(nextEntry);

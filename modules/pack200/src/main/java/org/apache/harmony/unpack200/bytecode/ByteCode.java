@@ -373,4 +373,8 @@ public class ByteCode extends ClassFileEntry {
     public int[] getRewrite() {
         return rewrite;
     }
+
+    public boolean nestedMustStartClassPool() {
+        return byteCodeForm.nestedMustStartClassPool();
+    }
 }

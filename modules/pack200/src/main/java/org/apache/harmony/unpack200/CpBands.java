@@ -356,6 +356,11 @@ public class CpBands extends BandSet {
             }
             cpSignature[i] = signature.toString();
         }
+        for (int i = 0; i < cpSignatureInts.length; i++) {
+            if(cpSignatureInts[i] == -1) {
+                cpSignatureInts[i] = search(cpUTF8, cpSignature[i]);
+            }
+        }
     }
 
     /**
@@ -697,9 +702,11 @@ public class CpBands extends BandSet {
     }
 
     public CPUTF8 cpSignatureValue(int index, int domain) {
-        int globalIndex = index + signatureOffset;
+        int globalIndex;
         if(cpSignatureInts[index] != -1) {
             globalIndex = cpSignatureInts[index];
+        } else {
+            globalIndex = index + signatureOffset;
         }
         if (stringsToCPUTF8[domain] == null) {
             stringsToCPUTF8[domain] = new HashMap();
