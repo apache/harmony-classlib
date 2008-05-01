@@ -24,6 +24,7 @@ import java.net.CacheRequest;
 import java.net.CacheResponse;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.ResponseCache;
 import java.net.SocketPermission;
 import java.net.URI;
@@ -581,6 +582,72 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         assertNull(uc.getErrorStream());        
         uc.disconnect();
         assertNull(uc.getErrorStream());
+    }
+    
+    /**
+     * @tests {@link java.net.HttpURLConnection#setFollowRedirects(boolean)}
+     * @tests {@link java.net.HttpURLConnection#getFollowRedirects()}
+     */
+    public void test_followRedirects() {
+        assertTrue("The default value of followRedirects is not true",
+                HttpURLConnection.getFollowRedirects());
+
+        HttpURLConnection.setFollowRedirects(false);
+        assertFalse(HttpURLConnection.getFollowRedirects());
+
+        HttpURLConnection.setFollowRedirects(true);
+        assertTrue(HttpURLConnection.getFollowRedirects());
+    }
+
+    /**
+     * @throws ProtocolException 
+     * @tests {@link java.net.HttpURLConnection#setRequestMethod(String)}
+     * @tests {@link java.net.HttpURLConnection#getRequestMethod()}
+     */
+    public void test_requestMethod() throws MalformedURLException, ProtocolException{
+        URL url = new URL("http://harmony.apache.org/");
+        
+        HttpURLConnection con = new MyHttpURLConnection(url);
+        assertEquals("The default value of requestMethod is not \"GET\"", "GET",
+                con.getRequestMethod());
+
+        String[] methods = { "GET", "DELETE", "HEAD", "OPTIONS", "POST", "PUT",
+                "TRACE" };
+        // Nomal set. Should not throw ProtocolException
+        for (String method : methods) {
+            con.setRequestMethod(method);
+            assertEquals("The value of requestMethod is not " + method, method,
+                    con.getRequestMethod());
+        }
+            
+        try {
+            con.setRequestMethod("Wrong method");
+            fail("Should throw ProtocolException");
+        } catch (ProtocolException e) {
+            // Expected
+        }
+    }
+
+    private static class MyHttpURLConnection extends HttpURLConnection {
+
+        protected MyHttpURLConnection(URL url) {
+            super(url);
+        }
+
+        @Override
+        public void disconnect() {
+            // do nothing
+        }
+
+        @Override
+        public boolean usingProxy() {
+            return false;
+        }
+
+        @Override
+        public void connect() throws IOException {
+            // do nothing
+        }
     }
     
     /**

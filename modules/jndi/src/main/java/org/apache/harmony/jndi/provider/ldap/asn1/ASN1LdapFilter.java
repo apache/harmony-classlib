@@ -61,8 +61,8 @@ public class ASN1LdapFilter extends ASN1Type {
             out.content = bytes;
             out.length = bytes.length;
         }
-        // TODO: Any way better to do this(append out.content to out.encoded)?
-        out.encodeString();
+
+        out.encodeANY();
     }
 
     @Override
@@ -93,4 +93,8 @@ public class ASN1LdapFilter extends ASN1Type {
         out.length = bytes.length;
     }
 
+    @Override
+    public int getEncodedLength(BerOutputStream out) {
+        return out.length;
+    }
 }

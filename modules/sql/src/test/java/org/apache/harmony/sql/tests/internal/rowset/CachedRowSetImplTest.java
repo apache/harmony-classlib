@@ -21,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -37,7 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javax.sql.DataSource;
 import javax.sql.RowSetEvent;
 import javax.sql.RowSetInternal;
 import javax.sql.RowSetListener;
@@ -144,7 +142,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
     }
 
     public void testSetSyncProvider() throws Exception {
-        if (System.getProperty("Testing Harmony") == "true") {
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
             String mySyncProvider = "org.apache.harmony.sql.internal.rowset.HYOptimisticProvider";
             crset.setSyncProvider(mySyncProvider);
             assertEquals(crset.getSyncProvider().getClass().getCanonicalName(),
@@ -737,6 +735,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         try {
             assertEquals(crset.getMatchColumnNames(), crsetCopy
                     .getMatchColumnNames());
+            fail("Should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
@@ -877,6 +876,62 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crset.execute();
         assertTrue(crset.next());
         assertEquals("test3", crset.getString(2));
+        assertFalse(crset.next());
+    }
+
+    public void testCreateCopy4() throws Exception {
+        crset.setCommand("SELECT * FROM USER_INFO WHERE ID = ?");
+        crset.setInt(1, 3);
+        crset.execute();
+        // check data
+        assertTrue(crset.next());
+        assertEquals(3, crset.getInt(1));
+        assertFalse(crset.next());
+
+        // deep copy
+        CachedRowSet copyCrset = crset.createCopy();
+        copyCrset.beforeFirst();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+        copyCrset.execute();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        crset.setInt(1, 4);
+        crset.execute();
+        crset.beforeFirst();
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertFalse(crset.next());
+
+        copyCrset.beforeFirst();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        copyCrset.execute();
+        copyCrset.beforeFirst();
+        assertTrue(copyCrset.next());
+        assertEquals(3, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        copyCrset.setInt(1, 1);
+        copyCrset.execute();
+        assertTrue(copyCrset.next());
+        assertEquals(1, copyCrset.getInt(1));
+        assertFalse(copyCrset.next());
+
+        crset.beforeFirst();
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
+        assertFalse(crset.next());
+
+        crset.execute();
+        crset.beforeFirst();
+        assertTrue(crset.next());
+        assertEquals(4, crset.getInt(1));
         assertFalse(crset.next());
     }
 
@@ -1181,12 +1236,13 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
 
         try {
             crset.getMatchColumnNames();
+            fail("Should throw SQLException");
         } catch (SQLException e) {
             // expected
         }
         assertNull(crset.getStatement());
 
-        assertEquals(true, noInitialCrset.getEscapeProcessing());
+        assertTrue(noInitialCrset.getEscapeProcessing());
         assertEquals(Connection.TRANSACTION_READ_COMMITTED, noInitialCrset
                 .getTransactionIsolation());
 
@@ -1208,9 +1264,9 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         assertEquals(0, noInitialCrset.getMaxRows());
 
         assertEquals(0, noInitialCrset.getPageSize());
-        assertEquals(null, noInitialCrset.getPassword());
+        assertNull(noInitialCrset.getPassword());
         assertEquals(0, noInitialCrset.getQueryTimeout());
-        assertEquals(false, noInitialCrset.getShowDeleted());
+        assertFalse(noInitialCrset.getShowDeleted());
 
         assertNull(noInitialCrset.getTableName());
         assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, noInitialCrset
@@ -1306,7 +1362,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
          * equals last(). However, the return value of absolute(negative) is
          * false when run on RI. The Harmony follows the spec.
          */
-        if (System.getProperty("Testing Harmony") == "true") {
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
             assertTrue(crset.absolute(-1));
             assertEquals(4, crset.getInt(1));
             assertTrue(crset.absolute(-3));
@@ -2886,6 +2942,17 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             // expected
         }
     }
+
+    public void testGetOriginal() throws Exception {
+        crset = newNoInitialInstance();
+        try {
+            crset.getOriginal();
+            fail("Should throw NullPointerException.");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+    }
+
 }
 
 class Listener implements RowSetListener, Cloneable {

@@ -403,4 +403,73 @@ public class CachedRowSetGetTest extends CachedRowSetTestCase {
         noInitialCrset.getBigDecimal(5);
         noInitialCrset.getBigDecimal(5, 4);
     }
+
+    public void testGetBoolean() throws Exception {
+        crset.first();
+        assertTrue(crset.getBoolean(1));
+        crset.updateInt(1, 0);
+        assertFalse(crset.getBoolean(1));
+        crset.updateInt(1, -12);
+        assertTrue(crset.getBoolean(1));
+        crset.updateInt(1, 12);
+        assertTrue(crset.getBoolean(1));
+
+        try {
+            crset.getBoolean(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        }
+
+        crset.updateString(2, "true");
+        try {
+            crset.getBoolean(2);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        }
+
+        assertNull(crset.getObject(3));
+        assertFalse(crset.getBoolean(3));
+
+        crset.absolute(4);
+        assertEquals(444423L, crset.getLong(3));
+        assertTrue(crset.getBoolean(3));
+        crset.updateLong(3, 0);
+        assertFalse(crset.getBoolean(3));
+
+        assertTrue(crset.getBoolean(4));
+        assertTrue(crset.getBoolean(5));
+        assertTrue(crset.getBoolean(6));
+        assertTrue(crset.getBoolean(7));
+        crset.updateFloat(7, 0.0f);
+        assertFalse(crset.getBoolean(7));
+        crset.updateFloat(7, -23.1f);
+        assertTrue(crset.getBoolean(7));
+        assertTrue(crset.getBoolean(8));
+        assertTrue(crset.getBoolean(9));
+        crset.updateDouble(9, 0);
+        assertFalse(crset.getBoolean(9));
+
+        try {
+            crset.getBoolean(10);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        }
+
+        try {
+            crset.getBoolean(11);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        }
+
+        try {
+            crset.getBoolean(12);
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // Expected.
+        }
+    }
 }

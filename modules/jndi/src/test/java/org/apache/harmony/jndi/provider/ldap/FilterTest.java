@@ -17,9 +17,8 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
-import java.util.ArrayList;
-
 import org.apache.harmony.jndi.internal.parser.AttributeTypeAndValuePair;
+import org.apache.harmony.jndi.provider.ldap.Filter.MatchingRuleAssertion;
 import org.apache.harmony.jndi.provider.ldap.Filter.SubstringFilter;
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1TestUtils;
 import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
@@ -73,7 +72,21 @@ public class FilterTest extends TestCase {
         filter = new Filter(Filter.APPROX_MATCH_FILTER);
         filter.setValue(new AttributeTypeAndValuePair("cn", "test"));
         ASN1TestUtils.checkEncode(filter, LdapASN1Constant.Filter);
+        
+        filter = new Filter(Filter.EXTENSIBLE_MATCH_FILTER);
+        MatchingRuleAssertion value = new MatchingRuleAssertion();
+        value.setDnAttributes(true);
+        assertTrue(value.isDnAttributes());
+        value.setMatchingRule("equal");
+        assertEquals("equal", value.getMatchingRule());
+        value.setMatchValue("cn");
+        assertEquals("cn", value.getMatchValue());
+        value.setType("type");
+        assertEquals("type", value.getType());
+        filter.setValue(value);
 
+        ASN1TestUtils.checkEncode(filter, LdapASN1Constant.Filter);
+        
         // composite filter
         filter = new Filter(Filter.AND_FILTER);
         Filter equal = new Filter(Filter.EQUALITY_MATCH_FILTER);

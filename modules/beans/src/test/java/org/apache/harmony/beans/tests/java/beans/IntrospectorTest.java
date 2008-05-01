@@ -2331,4 +2331,254 @@ public class IntrospectorTest extends TestCase {
             assertFalse(pd.getName().equals("invisible"));
         }
     }
+
+    /**
+     * Tests tricky cases when several conflicting set/get methods are defined.
+     * All these tests pass on RI.
+     * This is a regression test for HARMONY-5675
+     * @throws IntrospectionException
+     */
+    public void test5675() throws IntrospectionException {
+        BeanInfo bInfo;
+
+        for (Class clz: new Class[] {TstBean5675.class, TstBean5675_2.class}) {
+
+            bInfo = Introspector.getBeanInfo(clz);
+
+            for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+                if (desc.getName().equals("prop1")) {
+                    assertNotNull("invalid get method", desc.getReadMethod());
+                    assertEquals("get method has invalid return type",
+                         Integer.class, desc.getReadMethod().getReturnType());
+                    assertNotNull("invalid set method", desc.getWriteMethod());
+                    assertEquals("invalid set method",
+                            "setProp1", desc.getWriteMethod().getName());
+                    assertNotNull("set method don't have any parameters",
+                            desc.getWriteMethod().getParameterTypes());
+                    assertEquals("set method has invalid parameters",
+                            Integer.class,
+                            desc.getWriteMethod().getParameterTypes()[0]);
+                }
+            }
+        }
+
+        for (Class clz : new Class[] {TstBean5675_3.class, TstBean5675_5.class,
+                TstBean5675_6.class}) {
+
+            bInfo = Introspector.getBeanInfo(clz);
+
+            for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+                if (desc.getName().equals("prop1")) {
+                    assertNull("Non-null get method", desc.getReadMethod());
+                    assertNull("Non-null set method", desc.getWriteMethod());
+                }
+            }
+        }
+
+        bInfo = Introspector.getBeanInfo(TstBean5675_4.class);
+        for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+            if (desc.getName().equals("prop1")) {
+                assertNotNull("invalid get method", desc.getReadMethod());
+                assertEquals("get method has invalid return type",
+                     Integer.class, desc.getReadMethod().getReturnType());
+                assertNull("Non-null set method", desc.getWriteMethod());
+            }
+        }
+
+        bInfo = Introspector.getBeanInfo(TstBean5675_7.class);
+        for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+            if (desc.getName().equals("prop1")) {
+                assertNull("Non-null get method", desc.getReadMethod());
+                assertEquals("invalid set method",
+                        "setProp1", desc.getWriteMethod().getName());
+                assertNotNull("set method don't have any parameters",
+                        desc.getWriteMethod().getParameterTypes());
+                assertEquals("set method has invalid parameters",
+                        Integer.class,
+                        desc.getWriteMethod().getParameterTypes()[0]);
+            }
+        }
+
+        bInfo = Introspector.getBeanInfo(TstBean5675_8.class);
+        for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+            if (desc.getName().equals("prop1")) {
+                assertNotNull("invalid get method", desc.getReadMethod());
+                assertEquals("get method has invalid return type",
+                     Integer[].class, desc.getReadMethod().getReturnType());
+                assertNull("Non-null set method", desc.getWriteMethod());
+            }
+        }
+
+        bInfo = Introspector.getBeanInfo(TstBean5675_9.class);
+        for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+            if (desc.getName().equals("prop1")) {
+                assertNull("Non-null get method", desc.getReadMethod());
+                assertNotNull("invalid set method", desc.getWriteMethod());
+                assertEquals("invalid set method",
+                        "setProp1", desc.getWriteMethod().getName());
+                assertNotNull("set method don't have any parameters",
+                        desc.getWriteMethod().getParameterTypes());
+                assertEquals("set method has invalid parameters",
+                        Integer[].class,
+                        desc.getWriteMethod().getParameterTypes()[0]);
+            }
+        }
+
+        bInfo = Introspector.getBeanInfo(TstBean5675_10.class);
+        for (PropertyDescriptor desc: bInfo.getPropertyDescriptors()) {
+
+            if (desc.getName().equals("prop1")) {
+                assertNotNull("invalid get method", desc.getReadMethod());
+                assertEquals("get method has invalid return type",
+                     Integer[].class, desc.getReadMethod().getReturnType());
+                assertNotNull("invalid set method", desc.getWriteMethod());
+                assertEquals("invalid set method",
+                        "setProp1", desc.getWriteMethod().getName());
+                assertNotNull("set method don't have any parameters",
+                        desc.getWriteMethod().getParameterTypes());
+                assertEquals("set method has invalid parameters",
+                        Integer[].class,
+                        desc.getWriteMethod().getParameterTypes()[0]);
+            }
+        }
+
+    }
+
+    class TstBean5675 {
+
+        public void setProp1(String uri) {}
+
+        public void setProp1(Integer i) {}
+
+
+        public Integer getProp1() {
+            return null;
+        }
+
+    }
+
+
+    class TstBean5675_2 {
+
+        public Integer getProp1() {
+            return null;
+        }
+
+        public String getProp1(int n) {
+            return null;
+        }
+
+        public void setProp1(Integer val) {}
+
+
+    }
+
+    class TstBean5675_3 {
+
+        public String getProp1(int n) {
+            return null;
+        }
+
+        public void setProp1(int n, String uri) {}
+
+        public void setProp1(Integer i) {}
+
+        public Integer getProp1() {
+            return null;
+        }
+
+    }
+
+    class TstBean5675_4 {
+
+        public void setProp1(String val) {}
+
+        public Integer getProp1() {
+            return null;
+        }
+
+    }
+
+    class TstBean5675_5 {
+
+        public Integer getProp1() {
+            return null;
+        }
+
+//        public void setProp1(Integer val) {}
+
+        public String getProp1(int n) {
+            return null;
+        }
+
+        public void setProp1(int n, String uri) {}
+
+
+    }
+
+    class TstBean5675_6 {
+
+        public Integer getProp1() {
+            return null;
+        }
+
+//        public void setProp1(Integer val) {}
+//
+//        public String getProp1(int n) {
+//            return null;
+//        }
+
+        public void setProp1(int n, String uri) {}
+
+
+    }
+
+    class TstBean5675_7 {
+        public void setProp1(String val) {}
+        public void setProp1(Integer val) {}
+    }
+
+    class TstBean5675_8 {
+        public Integer[] getProp1() {
+            return null;
+        }
+
+        //public void setProp1(Integer[] val) {}
+
+        public Integer getProp1(int n) {
+            return null;
+        }
+
+        public void setProp1(int n, Integer val) {}
+    }
+
+    class TstBean5675_9 {
+        public void setProp1(Integer[] val) {}
+
+        public Integer getProp1(int n) {
+            return null;
+        }
+
+    }
+
+    class TstBean5675_10 {
+        public Integer[] getProp1() {
+            return null;
+        }
+
+        public void setProp1(Integer[] val) {}
+
+        public Integer getProp1(int n) {
+            return null;
+        }
+
+        public void setProp1(int n, Integer val) {}
+    }
+
 }

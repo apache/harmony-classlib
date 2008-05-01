@@ -30,9 +30,12 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketImpl;
+import java.net.SocketImplFactory;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Properties;
+
+import org.apache.harmony.luni.net.SocketImplProvider;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_Exec;
@@ -306,11 +309,32 @@ public class ServerSocketTest extends SocketTestCase {
     /**
      * @tests java.net.ServerSocket#setSocketFactory(java.net.SocketImplFactory)
      */
-    public void test_setSocketFactoryLjava_net_SocketImplFactory() {
-        // Test for method void
-        // java.net.ServerSocket.setSocketFactory(java.net.SocketImplFactory)
+    public void test_setSocketFactoryLjava_net_SocketImplFactory()
+            throws IOException {
+        SocketImplFactory factory = new MockSocketImplFactory();
+        // Should not throw SocketException when set DatagramSocketImplFactory
+        // for the first time.
+        ServerSocket.setSocketFactory(factory);
 
-        // TODO : Implementation
+        try {
+            ServerSocket.setSocketFactory(null);
+            fail("Should throw SocketException");
+        } catch (SocketException e) {
+            // Expected
+        }
+
+        try {
+            ServerSocket.setSocketFactory(factory);
+            fail("Should throw SocketException");
+        } catch (SocketException e) {
+            // Expected
+        }
+    }
+
+    private static class MockSocketImplFactory implements SocketImplFactory {
+        public SocketImpl createSocketImpl() {
+            return SocketImplProvider.getServerSocketImpl();
+        }
     }
 
     /**

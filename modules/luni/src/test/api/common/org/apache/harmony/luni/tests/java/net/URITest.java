@@ -23,6 +23,8 @@ import java.net.URISyntaxException;
 
 import junit.framework.TestCase;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 public class URITest extends TestCase {
 
     private URI[] uris;
@@ -1833,5 +1835,14 @@ public class URITest extends TestCase {
                 // Expected
             }
         }
+    }
+    
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+        URI uri = new URI("http://harmony.apache.org/");
+
+        SerializationTest.verifySelf(uri);
     }
 }

@@ -45,6 +45,14 @@ public class EnumTest extends TestCase {
         Red, Green, Blue {};
     }
     
+    enum MockCloneEnum {
+        ONE;
+        
+        public void callClone() throws CloneNotSupportedException{
+            super.clone();
+        }
+    }
+    
     /**
      * @tests java.lang.Enum#compareTo(java.lang.Enum) 
      */
@@ -181,6 +189,19 @@ public class EnumTest extends TestCase {
         assertEquals(Sample.CURLY, myValues[2]);
         
         assertEquals(0, Empty.values().length);
+    }
+
+    /**
+     * @tests java.lang.Enum#clone()
+     */
+    public void test_clone() {
+        try {
+            MockCloneEnum.ONE.callClone();
+            fail("Should throw CloneNotSupprotedException");
+        } catch (CloneNotSupportedException e1) {
+            // expected
+        }
+
     }
     
     /**

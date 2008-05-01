@@ -446,7 +446,9 @@ public class GregorianCalendar extends Calendar {
     protected void computeFields() {
         int zoneOffset = getTimeZone().getRawOffset();
 
-        fields[ZONE_OFFSET] = zoneOffset;
+        if(!isSet[ZONE_OFFSET]) {
+            fields[ZONE_OFFSET] = zoneOffset;
+        }
 
         int millis = (int) (time % 86400000);
         int savedMillis = millis;

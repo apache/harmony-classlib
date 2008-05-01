@@ -25,6 +25,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 
 import org.apache.harmony.jndi.provider.ldap.LdapMessage;
+import org.apache.harmony.jndi.provider.ldap.asn1.LdapASN1Constant;
 import org.apache.harmony.security.asn1.ASN1Integer;
 
 /**
@@ -41,15 +42,13 @@ public class MockLdapServer implements Runnable {
 
     private Socket socket;
 
-	private LinkedList<LdapMessage> responses = new LinkedList<LdapMessage>();
+    private LinkedList<LdapMessage> responses = new LinkedList<LdapMessage>();
 
     private int port;
 
     private Object lock = new Object();
 
     private boolean isStopped;
-
-    private static int DEFAULT_PORT = 1024;
 
     public MockLdapServer() {
         // do nothing
@@ -98,12 +97,12 @@ public class MockLdapServer implements Runnable {
         return port;
     }
 
-	public void setResponseSeq(LdapMessage[] msges) {
-		synchronized (responses) {
-			for (LdapMessage message : msges) {
-				responses.addLast(message);
-			}
-		}
+    public void setResponseSeq(LdapMessage[] msges) {
+        synchronized (responses) {
+            for (LdapMessage message : msges) {
+                responses.addLast(message);
+            }
+        }
 
         synchronized (lock) {
             lock.notify();
@@ -113,12 +112,14 @@ public class MockLdapServer implements Runnable {
     public void run() {
         InputStream in = null;
         OutputStream out = null;
+        int searchID = -1;
+
         try {
             socket = server.accept();
             in = socket.getInputStream();
             out = socket.getOutputStream();
             while (!isStopped) {
-				if (responses.size() == 0) {
+                if (responses.size() == 0) {
                     try {
                         synchronized (lock) {
                             lock.wait();
@@ -128,28 +129,47 @@ public class MockLdapServer implements Runnable {
                     }
                 } else {
 
-					while (true) {
-						LdapMessage temp = null;
-						synchronized (responses) {
-							if (responses.size() == 0) {
-								break;
-							}
-							temp = responses.removeFirst();
-						}
-						
-                        final MockLdapMessage response = new MockLdapMessage(
-								temp);
-                        LdapMessage request = new LdapMessage(null) {
-                            public void decodeValues(Object[] values) {
-                                response.setMessageId(ASN1Integer
-                                        .toIntValue(values[0]));
+                    boolean isContinue = false;
+
+                    while (true) {
+                        LdapMessage temp = null;
+                        synchronized (responses) {
+                            if (responses.size() == 0) {
+                                break;
                             }
-                        };
-                        request.decode(in);
+                            temp = responses.removeFirst();
+                        }
+
+                        final MockLdapMessage response = new MockLdapMessage(
+                                temp);
+
+                        if (!isContinue) {
+                            LdapMessage request = new LdapMessage(null) {
+                                public void decodeValues(Object[] values) {
+                                    response.setMessageId(ASN1Integer
+                                            .toIntValue(values[0]));
+                                }
+                            };
+
+                            request.decode(in);
+
+                            if (response.getOperationIndex() == LdapASN1Constant.OP_SEARCH_RESULT_ENTRY
+                                    || response.getOperationIndex() == LdapASN1Constant.OP_SEARCH_RESULT_REF) {
+                                isContinue = true;
+                                searchID = response.getMessageId();
+                            } else {
+                                isContinue = false;
+                            }
+                        }
+
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
-                            //ignore
+                            // ignore
+                        }
+
+                        if (isContinue) {
+                            response.setMessageId(searchID);
                         }
                         out.write(response.encode());
                     }
@@ -174,6 +194,15 @@ public class MockLdapServer implements Runnable {
                 // ignore
             }
         }
+    }
+
+    public void disconnectNotify() throws IOException {
+        MockLdapMessage message = new MockLdapMessage(new LdapMessage(
+                LdapASN1Constant.OP_EXTENDED_RESPONSE,
+                new DisconnectResponse(), null));
+        message.setMessageId(0);
+        OutputStream out = socket.getOutputStream();
+        out.write(message.encode());
     }
 
     public String getURL() {

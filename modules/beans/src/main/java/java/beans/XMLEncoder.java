@@ -42,7 +42,9 @@ import java.util.List;
  */
 public class XMLEncoder extends Encoder {
 
-	/*
+    private static int DEADLOCK_THRESHOLD = 7;
+
+    /*
 	 * Every object written by the encoder has a record.
 	 */
 	private static class Record {
@@ -813,7 +815,41 @@ public class XMLEncoder extends Encoder {
 		rec.stats.add(stat);
 	}
 
-	/**
+    /**
+     * Imperfect attempt to detect a dead loop. This works with specific
+     * patterns that can be found in our AWT implementaiton.
+     * See HARMONY-5707 for details.
+     *
+     * @param value the object to check dupes for
+     * @return true if a dead loop detected; false otherwise
+     * FIXME
+     */
+    private boolean checkDeadLoop(Object value) {
+        int n = 0;
+        Object obj = value;
+
+        while (obj != null) {
+            Record rec = (Record) records.get(obj);
+
+            if (rec != null && rec.exp != null) {
+                obj = rec.exp.getTarget();
+            } else {
+                break;
+            }
+            
+            if (obj != null && value.equals(obj)) {
+                n++;
+
+                if (n >= DEADLOCK_THRESHOLD) {
+                    //System.out.println("Dead loop hit!");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
 	 * Sets the owner of this encoder.
 	 * 
 	 * @param owner
@@ -833,7 +869,8 @@ public class XMLEncoder extends Encoder {
 	    writingObject = true;
 		// get expression value
 		Object oldValue = null;
-		try {
+
+        try {
 			oldValue = oldExp.getValue();
 		} catch (Exception e) {
 			getExceptionListener()
@@ -853,7 +890,12 @@ public class XMLEncoder extends Encoder {
 			recordExpression(oldValue, oldExp);
 		}
 
-		super.writeExpression(oldExp);
+        // try to detect if we run into a dead loop
+        if (checkDeadLoop(oldValue)) {
+            return;
+        }
+
+        super.writeExpression(oldExp);
 		writingObject = oldWritingObject;
 	}
 

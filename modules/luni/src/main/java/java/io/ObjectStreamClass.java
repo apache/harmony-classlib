@@ -34,6 +34,7 @@ import java.util.WeakHashMap;
 
 import org.apache.harmony.luni.util.Msg;
 import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.ThreadLocalCache;
 
 /**
  * Instances of ObjectStreamClass are used to describe classes of objects used
@@ -56,6 +57,8 @@ public class ObjectStreamClass implements Serializable {
 
     // Name of the field that contains the SUID value (if present)
     private static final String UID_FIELD_NAME = "serialVersionUID"; //$NON-NLS-1$
+
+    static final long CONSTRUCTOR_IS_NOT_RESOLVED = -1;
 
     private static final int CLASS_MODIFIERS_MASK;
 
@@ -135,10 +138,6 @@ public class ObjectStreamClass implements Serializable {
 
     static final Class<ObjectStreamClass> OBJECTSTREAMCLASSCLASS = ObjectStreamClass.class;
 
-    // Table mapping instances of java.lang.Class to to corresponding instances
-    // of ObjectStreamClass
-    private static final WeakHashMap<Class<?>, ObjectStreamClass> classesAndDescriptors = new WeakHashMap<Class<?>, ObjectStreamClass>();
-
     private transient Method methodWriteReplace;
 
     private transient Method methodReadResolve;
@@ -176,6 +175,17 @@ public class ObjectStreamClass implements Serializable {
 
     // Array of ObjectStreamField describing the serialized fields of this class
     private transient ObjectStreamField[] loadFields;
+
+    // MethodID for deserialization constructor
+    private transient long constructor = CONSTRUCTOR_IS_NOT_RESOLVED;
+
+    void setConstructor(long newConstructor) {
+        constructor = newConstructor;
+    }
+
+    long getConstructor() {
+        return constructor;
+    }
 
     /*
      * If an ObjectStreamClass describes an Externalizable class, it (the
@@ -944,15 +954,13 @@ public class ObjectStreamClass implements Serializable {
      */
     private static ObjectStreamClass lookupStreamClass(Class<?> cl,
             boolean computeSUID) {
-        // Synchronized because of the lookup table 'classesAndDescriptors'
 
-        ObjectStreamClass cachedValue;
-        synchronized (classesAndDescriptors) {
-            cachedValue = classesAndDescriptors.get(cl);
-            if (cachedValue == null) {
-                cachedValue = createClassDesc(cl, computeSUID);
-                classesAndDescriptors.put(cl, cachedValue);
-            }
+        WeakHashMap<Class<?>,ObjectStreamClass> tlc = OSCThreadLocalCache.oscWeakHashMap.get();
+
+        ObjectStreamClass cachedValue = tlc.get(cl);
+        if (cachedValue == null) {
+            cachedValue = createClassDesc(cl, computeSUID);
+            tlc.put(cl, cachedValue);
         }
         return cachedValue;
 
@@ -1167,4 +1175,16 @@ public class ObjectStreamClass implements Serializable {
         return getName() + ": static final long serialVersionUID =" //$NON-NLS-1$
                 + getSerialVersionUID() + "L;"; //$NON-NLS-1$
     }
+
+    static class OSCThreadLocalCache extends ThreadLocalCache {
+
+        // thread-local cache for ObjectStreamClass.lookup
+        public static ThreadLocalCache<WeakHashMap<Class<?>,ObjectStreamClass>> oscWeakHashMap = new ThreadLocalCache<WeakHashMap<Class<?>,ObjectStreamClass>>() {
+            protected WeakHashMap<Class<?>,ObjectStreamClass> initialValue() {
+                return new WeakHashMap<Class<?>,ObjectStreamClass>();
+            }
+        };
+
+    }
+
 }

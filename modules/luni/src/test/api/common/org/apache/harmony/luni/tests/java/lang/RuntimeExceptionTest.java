@@ -39,4 +39,21 @@ public class RuntimeExceptionTest extends TestCase {
         assertEquals("fixture", e.getMessage());
         assertNull(e.getCause());
     }
+    
+    /**
+     * @tests {@link java.lang.RuntimeException#RuntimeException(Throwable)}
+     */
+    public void test_ConstructorLjava_lang_Throwable() {
+        Throwable emptyThrowable = new Exception();
+        RuntimeException emptyException = new RuntimeException(emptyThrowable);
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getLocalizedMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getCause().toString());
+
+        Throwable throwable = new Exception("msg");
+        RuntimeException exception = new RuntimeException(throwable);
+        assertEquals(throwable.getClass().getName() + ": " + "msg", exception.getMessage());
+        assertEquals(throwable.getClass().getName(), emptyException.getLocalizedMessage());
+        assertEquals(throwable.getClass().getName(), emptyException.getCause().toString());
+    }
 }

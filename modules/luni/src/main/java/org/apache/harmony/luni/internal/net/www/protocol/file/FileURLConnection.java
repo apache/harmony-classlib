@@ -59,9 +59,6 @@ public class FileURLConnection extends URLConnection {
     public FileURLConnection(URL url) {
         super(url);
         fileName = url.getFile();
-        if (url.getRef() != null) {
-            fileName += "#" + url.getRef(); //$NON-NLS-1$
-        }
         if (fileName == null) {
             fileName = ""; //$NON-NLS-1$
         }

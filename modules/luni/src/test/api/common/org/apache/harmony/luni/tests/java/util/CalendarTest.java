@@ -27,6 +27,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 public class CalendarTest extends junit.framework.TestCase {
 	
 	Locale defaultLocale;
@@ -479,6 +481,268 @@ public class CalendarTest extends junit.framework.TestCase {
 			Locale.US, Locale.UK, Locale.TAIWAN, Locale.PRC, Locale.KOREA,
 			Locale.JAPAN, Locale.ITALIAN, Locale.GERMAN, Locale.ENGLISH,
 			Locale.CHINA, Locale.CANADA, Locale.FRANCE };
+
+    /**
+     * @tests java.util.Calendar#before(Object)
+     * @tests java.util.Calendar#after(Object)
+     */
+    public void test_before_after() {
+        Calendar early = Calendar.getInstance();
+        Calendar late = Calendar.getInstance();
+        // test by second
+        early.set(2008, 3, 20, 17, 28, 12);
+        late.set(2008, 3, 20, 17, 28, 22);
+        // test before()
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
+        // test after();
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
+
+        // test by minute
+        early.set(2008, 3, 20, 17, 18, 12);
+        late.set(2008, 3, 20, 17, 28, 12);
+        // test before()
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
+        // test after();
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
+
+        // test by hour
+        early.set(2008, 3, 20, 17, 28, 12);
+        late.set(2008, 3, 20, 27, 28, 12);
+        // test before()
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
+        // test after();
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
+
+        // test by day
+        early.set(2008, 3, 10, 17, 28, 12);
+        late.set(2008, 3, 20, 17, 28, 12);
+        // test before()
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
+        // test after();
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
+
+        // test by month
+        early.set(2008, 2, 20, 17, 28, 12);
+        late.set(2008, 3, 20, 17, 28, 12);
+        // test before()
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
+        // test after();
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
+
+        // test by year
+        early.set(2007, 3, 20, 17, 28, 12);
+        late.set(2008, 3, 20, 17, 28, 12);
+        // test before()
+        assertTrue(early.before(late));
+        assertFalse(early.before(early));
+        assertFalse(late.before(early));
+        // test after();
+        assertTrue(late.after(early));
+        assertFalse(late.after(late));
+        assertFalse(early.after(late));
+    }
+
+    /**
+     * @tests java.util.Calendar#clear()
+     * @tests java.util.Calendar#clear(int)
+     */
+    public void test_clear() {
+        Calendar calendar = Calendar.getInstance();
+
+        int count = 6;
+        int[] fields = new int[count];
+        int[] defaults = new int[count];
+
+        fields[0] = Calendar.YEAR;
+        fields[1] = Calendar.MONTH;
+        fields[2] = Calendar.DATE;
+        fields[3] = Calendar.HOUR_OF_DAY;
+        fields[4] = Calendar.MINUTE;
+        fields[5] = Calendar.SECOND;
+
+        defaults[0] = 1970;
+        defaults[1] = 0;
+        defaults[2] = 1;
+        defaults[3] = 0;
+        defaults[4] = 0;
+        defaults[5] = 0;
+
+        calendar.set(2008, 3, 20, 17, 28, 12);
+
+        // test clear(int)
+        for (int i = 0; i < fields.length; i++) {
+            int index = fields[i];
+            calendar.clear(index);
+            if (5 == index) {
+                // RI also doesn't change the value of DATE
+                assertEquals("Field " + index + " Should equal to 20.", 20,
+                        calendar.get(index));
+            } else if (11 == index) {
+                // RI also doesn't change the value of HOUR
+                assertEquals("Field " + index + " Should equal to 17.", 17,
+                        calendar.get(index));
+            } else {
+                // Other have been set to default values
+                assertEquals("Field " + index + " Should equal to "
+                        + defaults[i] + ".", defaults[i], calendar.get(index));
+            }
+        }
+
+        // test clear()
+        calendar.set(2008, 3, 20, 17, 28, 12);
+
+        calendar.clear();
+
+        for (int i = 0; i < fields.length; i++) {
+            int index = fields[i];
+            assertEquals("Field " + index + " Should equal to "
+                    + defaults[i] + ".", defaults[i], calendar.get(index));
+        }
+    }
+
+    /**
+     * @tests java.util.Calendar#isSet(int)
+     */
+    public void test_isSet() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        for (int i = 0; i < Calendar.FIELD_COUNT; i++) {
+            assertFalse(calendar.isSet(i));
+        }
+    }
+
+    /**
+     * @tests java.util.Calendar#getAvailableLocales()
+     */
+    public void test_getAvailableLocales() {
+        Locale[] locales = Calendar.getAvailableLocales();
+        boolean exist = false;
+        for (int i = 0; i < locales.length; i++) {
+            Locale l = locales[i];
+            if (Locale.US.equals(l)) {
+                exist = true;
+                break;
+            }
+        }
+        assertTrue(exist);
+    }
+
+    /**
+     * @tests java.util.Calendar#getInstance(Locale)
+     * @tests java.util.Calendar#getInstance(TimeZone, Locale)
+     */
+    public void test_getInstance() {
+        // test getInstance(Locale)
+        Calendar us_calendar = Calendar.getInstance(Locale.US);
+        Calendar ch_calendar = Calendar.getInstance(Locale.CHINESE);
+        assertEquals(Calendar.SUNDAY, us_calendar
+                .getFirstDayOfWeek());
+        assertEquals(Calendar.MONDAY, ch_calendar
+                .getFirstDayOfWeek());
+
+        // test getInstance(Locale, TimeZone)
+        Calendar gmt_calendar = Calendar.getInstance(TimeZone
+                .getTimeZone("GMT"), Locale.US);
+        assertEquals(TimeZone.getTimeZone("GMT"),
+                gmt_calendar.getTimeZone());
+        Calendar est_calendar = Calendar.getInstance(TimeZone
+                .getTimeZone("EST"), Locale.US);
+        assertEquals(TimeZone.getTimeZone("EST")
+                .getID(), est_calendar.getTimeZone().getID());
+    }
+
+    /**
+     * @tests java.util.Calendar#internalGet(int)
+     */
+    public void test_internalGet() {
+        MockGregorianCalendar c = new MockGregorianCalendar();
+        c.clear(Calendar.YEAR);
+        assertEquals(0, c.internal_get(Calendar.YEAR));
+    }
+
+    /**
+     * @tests java.util.Calendar#hashCode()
+     */
+    public void test_hashcode() {
+        Calendar calendar = Calendar.getInstance(Locale.JAPAN);
+        assertTrue(calendar.hashCode() == calendar.hashCode());
+    }
+
+    /**
+     * @tests java.util.Calendar#roll(int, int)
+     */
+    public void test_roll() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2008, 3, 20, 17, 28, 12);
+
+        // roll up
+        calendar.roll(Calendar.DATE, 5);
+        assertEquals(25, calendar.get(Calendar.DATE));
+
+        // roll down
+        calendar.roll(Calendar.DATE, -5);
+        assertEquals(20, calendar.get(Calendar.DATE));
+
+        // roll 0
+        calendar.roll(Calendar.DATE, 0);
+        assertEquals(20, calendar.get(Calendar.DATE));
+
+        // roll overweight
+        calendar.set(2008, 1, 31, 17, 28, 12);
+        calendar.roll(Calendar.MONTH, 1);
+        assertEquals(2, calendar.get(Calendar.DATE));
+
+    }
+
+    /**
+     * @tests java.util.Calendar#toString()
+     */
+    public void test_toString() {
+        Calendar calendar = Calendar.getInstance();
+        //Should be the current time with no interrogation in the string.
+        assertTrue(calendar.toString() instanceof String);
+        assertEquals(-1, calendar.toString().indexOf("?"));
+        calendar.clear();
+        assertTrue(calendar.toString() instanceof String);
+        assertTrue(0 <= calendar.toString().indexOf("?"));
+    }
+
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2008, 3, 20, 17, 28, 12);
+
+        SerializationTest.verifySelf(calendar);
+    }
+
+
+    private class MockGregorianCalendar extends GregorianCalendar {
+        public int internal_get(int field) {
+            return super.internalGet(field);
+        }
+    }
 
     private class MockCalendar extends Calendar {
 

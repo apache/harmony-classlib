@@ -40,7 +40,9 @@ public class UnsolicitedNotificationImpl implements UnsolicitedNotification,
     public void decodeValues(Object[] values) {
         result = new LdapResult();
         result.decodeValues(values);
-        oid = Utils.getString(values[4]);
+        if (values[4] != null) {
+            oid = Utils.getString(values[4]);
+        }
         if (values[5] != null) {
             encodedValue = (byte[]) values[5];
         }

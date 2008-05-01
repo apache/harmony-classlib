@@ -39,4 +39,14 @@ public class BufferOverflowExceptionTest extends TestCase {
 
         SerializationTest.verifyGolden(this, new BufferOverflowException());
     }
+    
+    /**
+     *@tests {@link java.nio.BufferOverflowException#BufferOverflowException()}
+     */
+    public void test_Constructor() {
+        BufferOverflowException exception = new BufferOverflowException();
+        assertNull(exception.getMessage());
+        assertNull(exception.getLocalizedMessage());
+        assertNull(exception.getCause());
+    }
 }

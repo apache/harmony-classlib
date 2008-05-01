@@ -22,6 +22,8 @@ import java.net.SocketPermission;
 import java.net.UnknownHostException;
 import java.security.PermissionCollection;
 
+import org.apache.harmony.testframework.serialization.SerializationTest;
+
 import tests.support.Support_Configuration;
 
 public class SocketPermissionTest extends junit.framework.TestCase {
@@ -192,5 +194,14 @@ public class SocketPermissionTest extends junit.framework.TestCase {
                 pc.implies(p2));
         assertTrue("A different host should not imply resolve", !pc
                 .implies(star_Resolve));
+    }
+    
+    /**
+     * @tests serialization/deserialization.
+     */
+    public void testSerializationSelf() throws Exception {
+        SocketPermission permission = new SocketPermission("harmony.apache.org", "connect");;
+
+        SerializationTest.verifySelf(permission);
     }
 }
