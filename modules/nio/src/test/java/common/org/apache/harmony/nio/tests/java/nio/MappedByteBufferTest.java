@@ -21,37 +21,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileChannel.MapMode;
 
 import junit.framework.TestCase;
 
 public class MappedByteBufferTest extends TestCase {
 
+    File tmpFile;
+    
     /**
      * A regression test for failing to correctly set capacity of underlying
      * wrapped buffer from a mapped byte buffer.
      */
     public void testasIntBuffer() throws IOException {
-        // Create temp file with 26 bytes and 5 ints
-        File tmpFile = File.createTempFile("harmony", "test");  //$NON-NLS-1$//$NON-NLS-2$
-        tmpFile.deleteOnExit();
-        FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
-        FileChannel fileChannel = fileOutputStream.getChannel();
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(26 + 20);
-        for (int i = 0; i < 26; i++) {
-            byteBuffer.put((byte) ('A' + i));
-        }
-        for (int i = 0; i < 5; i++) {
-            byteBuffer.putInt(i + 1);
-        }
-        byteBuffer.rewind();
-        fileChannel.write(byteBuffer);
-        fileChannel.close();
-        fileOutputStream.close();
-
         // Map file
         FileInputStream fis = new FileInputStream(tmpFile);
         FileChannel fc = fis.getChannel();
@@ -72,5 +59,102 @@ public class MappedByteBufferTest extends TestCase {
             int val = ibuffer.get();
             assertEquals("Got wrong int value", i + 1, val); //$NON-NLS-1$
         }
+    }
+    
+    /**
+     * @tests {@link java.nio.MappedByteBuffer#force()}
+     */
+    public void test_force() throws IOException {
+        // buffer was not mapped in read/write mode
+        FileInputStream fileInputStream = new FileInputStream(tmpFile);
+        FileChannel fileChannelRead = fileInputStream.getChannel();
+        MappedByteBuffer mmbRead = fileChannelRead.map(MapMode.READ_ONLY, 0,
+                fileChannelRead.size());
+
+        mmbRead.force();
+
+        FileInputStream inputStream = new FileInputStream(tmpFile);
+        FileChannel fileChannelR = inputStream.getChannel();
+        MappedByteBuffer resultRead = fileChannelR.map(MapMode.READ_ONLY, 0,
+                fileChannelR.size());
+
+        //If this buffer was not mapped in read/write mode, then invoking this method has no effect.
+        assertEquals(
+                "Invoking force() should have no effect when this buffer was not mapped in read/write mode",
+                mmbRead, resultRead);
+
+        // Buffer was mapped in read/write mode
+        RandomAccessFile randomFile = new RandomAccessFile(tmpFile, "rw");
+        FileChannel fileChannelReadWrite = randomFile.getChannel();
+        MappedByteBuffer mmbReadWrite = fileChannelReadWrite.map(
+                FileChannel.MapMode.READ_WRITE, 0, fileChannelReadWrite.size());
+
+        mmbReadWrite.put((byte) 'o');
+        mmbReadWrite.force();
+
+        RandomAccessFile random = new RandomAccessFile(tmpFile, "rw");
+        FileChannel fileChannelRW = random.getChannel();
+        MappedByteBuffer resultReadWrite = fileChannelRW.map(
+                FileChannel.MapMode.READ_WRITE, 0, fileChannelRW.size());
+
+        // Invoking force() will change the buffer
+        assertFalse(mmbReadWrite.equals(resultReadWrite));
+    }
+
+    /**
+     * @tests {@link java.nio.MappedByteBuffer#isLoaded()}
+     */
+    public void test_isload() throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(tmpFile);
+        FileChannel fileChannelRead = fileInputStream.getChannel();
+        MappedByteBuffer mmbRead = fileChannelRead.map(MapMode.READ_ONLY, 0,
+                fileChannelRead.size());
+
+        assertFalse(mmbRead.isLoaded());
+
+        RandomAccessFile randomFile = new RandomAccessFile(tmpFile, "rw");
+        FileChannel fileChannelReadWrite = randomFile.getChannel();
+        MappedByteBuffer mmbReadWrite = fileChannelReadWrite.map(
+                FileChannel.MapMode.READ_WRITE, 0, fileChannelReadWrite.size());
+
+        assertFalse(mmbReadWrite.isLoaded());
+    }
+
+    /**
+     * @tests {@link java.nio.MappedByteBuffer#load()}
+     */
+    public void test_load() throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(tmpFile);
+        FileChannel fileChannelRead = fileInputStream.getChannel();
+        MappedByteBuffer mmbRead = fileChannelRead.map(MapMode.READ_ONLY, 0,
+                fileChannelRead.size());
+        
+        assertEquals(mmbRead, mmbRead.load());
+
+        RandomAccessFile randomFile = new RandomAccessFile(tmpFile, "rw");
+        FileChannel fileChannelReadWrite = randomFile.getChannel();
+        MappedByteBuffer mmbReadWrite = fileChannelReadWrite.map(
+                FileChannel.MapMode.READ_WRITE, 0, fileChannelReadWrite.size());
+
+        assertEquals(mmbReadWrite, mmbReadWrite.load());
+    }
+
+    protected void setUp() throws IOException {
+        // Create temp file with 26 bytes and 5 ints
+        tmpFile = File.createTempFile("harmony", "test");  //$NON-NLS-1$//$NON-NLS-2$
+        tmpFile.deleteOnExit();
+        FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
+        FileChannel fileChannel = fileOutputStream.getChannel();
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(26 + 20);
+        for (int i = 0; i < 26; i++) {
+            byteBuffer.put((byte) ('A' + i));
+        }
+        for (int i = 0; i < 5; i++) {
+            byteBuffer.putInt(i + 1);
+        }
+        byteBuffer.rewind();
+        fileChannel.write(byteBuffer);
+        fileChannel.close();
+        fileOutputStream.close();
     }
 }

@@ -38,4 +38,14 @@ public class ReadOnlyBufferExceptionTest extends TestCase {
 
         SerializationTest.verifyGolden(this, new ReadOnlyBufferException());
     }
+    
+    /**
+     *@tests {@link java.nio.ReadOnlyBufferException#ReadOnlyBufferException()}
+     */
+    public void test_Constructor() {
+        ReadOnlyBufferException exception = new ReadOnlyBufferException();
+        assertNull(exception.getMessage());
+        assertNull(exception.getLocalizedMessage());
+        assertNull(exception.getCause());
+    }
 }

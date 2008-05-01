@@ -52,7 +52,7 @@ public class AbstractSequentialListTest extends TestCase {
     }
     
     /**
-     * @tests {@link java.util.AbstractSequentialList#addAll(int, java.util.Collection)}
+     * @tests java.util.AbstractSequentialList#addAll(int, java.util.Collection)
      */
     public void test_addAll_ILCollection() {
         AbstractSequentialList<String> al = new ASLT<String>();
@@ -65,6 +65,70 @@ public class AbstractSequentialListTest extends TestCase {
         assertTrue("Should return true", al.addAll(2, c)); //$NON-NLS-1$
     }
     
+
+    /**
+     * @tests java.util.AbstractSequentialList#get(int)
+     */
+    public void test_get() {
+        AbstractSequentialList list = new MyAbstractSequentialList();
+        list.add(1);
+        list.add("value");
+        assertEquals(1, list.get(0));
+        assertEquals("value", list.get(1));
+
+        // get value by index which is out of bounds
+        try {
+            list.get(list.size());
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            list.get(-1);
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+    }
+
+    /**
+     * @tests java.util.AbstractSequentialList#remove(int)
+     */
+    public void test_remove() {
+        AbstractSequentialList list = new MyAbstractSequentialList();
+        list.add(1);
+
+        // normal test
+        assertEquals(1, list.remove(0));
+
+        list.add("value");
+        assertEquals("value", list.remove(0));
+
+        // remove index is out of bounds
+        try {
+            list.remove(list.size());
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+        try {
+            list.remove(-1);
+            fail("Should throw IndexOutOfBoundsException.");
+        } catch (IndexOutOfBoundsException e) {
+            // expected
+        }
+
+        // list dont't support remove operation
+        try {
+            AbstractSequentialList mylist = new MockAbstractSequentialList();
+            mylist.remove(0);
+            fail("Should throw UnsupportedOperationException.");
+        } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+    
     public void test_set() throws Exception {
 		MyAbstractSequentialList list = new MyAbstractSequentialList();
 		try {
@@ -75,15 +139,12 @@ public class AbstractSequentialListTest extends TestCase {
 		}
 	}
 
-	public static class MyAbstractSequentialList extends AbstractSequentialList {
+	static class MyAbstractSequentialList extends AbstractSequentialList {
 
 		private LinkedList list = new LinkedList();
 
 		public ListIterator listIterator(int index) {
-			ListIterator iter = list.listIterator();
-			for (int i = 0; i < index; i++) {
-				iter.next();
-			}
+			ListIterator iter = list.listIterator(index);
 			return iter;
 		}
 
@@ -92,4 +153,56 @@ public class AbstractSequentialListTest extends TestCase {
 			return list.size();
 		}
 	}
+    
+    static class MockAbstractSequentialList<E> extends AbstractSequentialList {
+
+        public ListIterator listIterator(int index) {
+            return new MockListIterator();
+        }
+
+        @Override
+        public int size() {
+            return 0;
+        }
+    }
+    
+    static class MockListIterator implements ListIterator{
+
+        public void add(Object object) {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean hasNext() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean hasPrevious() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object next() {
+            throw new UnsupportedOperationException();
+        }
+
+        public int nextIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object previous() {
+            throw new UnsupportedOperationException();
+        }
+
+        public int previousIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void set(Object object) {
+            throw new UnsupportedOperationException();
+        }
+        
+    }
 }

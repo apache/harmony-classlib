@@ -19,7 +19,6 @@ package org.apache.harmony.sql.tests.internal.rowset;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 

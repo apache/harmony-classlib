@@ -27,6 +27,8 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.spi.SyncProviderException;
 import javax.sql.rowset.spi.SyncResolver;
 
+import org.apache.harmony.sql.internal.nls.Messages;
+
 public class CachedRowSetWriter implements RowSetWriter {
 
     private CachedRowSet originalRowSet;
@@ -43,6 +45,8 @@ public class CachedRowSetWriter implements RowSetWriter {
 
     private SyncResolverImpl resolver;
 
+    private SyncProviderException syncException;
+
     public void setConnection(Connection conn) {
         originalConnection = conn;
     }
@@ -51,8 +55,12 @@ public class CachedRowSetWriter implements RowSetWriter {
         return originalConnection;
     }
 
+    public SyncProviderException getSyncException() {
+        return syncException;
+    }
+
     public boolean writeData(RowSetInternal theRowSet) throws SQLException {
-        initial(theRowSet);
+        init(theRowSet);
         // analyse every row and do responsible task.
         currentRowSet.beforeFirst();
         originalRowSet.beforeFirst();
@@ -67,24 +75,25 @@ public class CachedRowSetWriter implements RowSetWriter {
             } else if (currentRowSet.rowDeleted()) {
                 if (isConflictExistForCurrentRow()) {
                     addConflict(SyncResolver.DELETE_ROW_CONFLICT);
+                } else {
+                    deleteCurrentRow();
                 }
-
-                deleteCurrentRow();
-
             } else if (currentRowSet.rowUpdated()) {
                 if (isConflictExistForCurrentRow()) {
                     addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
-                }
-                try {
-                    updateCurrentRow();
-                } catch (SyncProviderException e) {
-                    addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
+                } else {
+                    try {
+                        updateCurrentRow();
+                    } catch (SyncProviderException e) {
+                        addConflict(SyncResolver.UPDATE_ROW_CONFLICT);
+                    }
                 }
             }
         }
 
         if (resolver != null) {
-            throw new SyncProviderException(resolver);
+            syncException = new SyncProviderException(resolver);
+            return false;
         }
         return true;
     }
@@ -103,23 +112,23 @@ public class CachedRowSetWriter implements RowSetWriter {
      * 
      * @throws SQLException
      */
-    @SuppressWarnings("nls")
     private void insertCurrentRow() throws SQLException {
         /*
          * the first step: generate the insert SQL
          */
-        StringBuffer insertSQL = new StringBuffer("INSERT INTO " + tableName
-                + "(");
-        StringBuffer insertColNames = new StringBuffer();
-        StringBuffer insertPlaceholder = new StringBuffer();
+        StringBuilder insertSQL = new StringBuilder("INSERT INTO "); //$NON-NLS-1$
+        insertSQL.append(tableName);
+        insertSQL.append("("); //$NON-NLS-1$
+        StringBuilder insertColNames = new StringBuilder();
+        StringBuilder insertPlaceholder = new StringBuilder();
         Object[] insertColValues = new Object[columnCount];
 
         int updateCount = 0;
         for (int i = 1; i <= columnCount; i++) {
-            boolean isColUpdate = currentRowSet.columnUpdated(i);
-            if (isColUpdate) {
-                insertColNames.append(colNames[i - 1] + ",");
-                insertPlaceholder.append("?,");
+            if (currentRowSet.columnUpdated(i)) {
+                insertColNames.append(colNames[i - 1]);
+                insertColNames.append(","); //$NON-NLS-1$
+                insertPlaceholder.append("?,"); //$NON-NLS-1$
                 insertColValues[updateCount] = currentRowSet.getObject(i);
                 updateCount++;
             }
@@ -129,9 +138,9 @@ public class CachedRowSetWriter implements RowSetWriter {
         }
 
         insertSQL.append(subStringN(insertColNames.toString(), 1));
-        insertSQL.append(") values (");
+        insertSQL.append(") values ("); //$NON-NLS-1$
         insertSQL.append(subStringN(insertPlaceholder.toString(), 1));
-        insertSQL.append(")");
+        insertSQL.append(")"); //$NON-NLS-1$
 
         /*
          * the second step: execute SQL
@@ -144,9 +153,14 @@ public class CachedRowSetWriter implements RowSetWriter {
             }
             preSt.executeUpdate();
         } catch (SQLException e) {
-            throw new SyncProviderException();
+            // rowset.29=Insert failed
+            throw new SyncProviderException(Messages.getString("rowset.29"));//$NON-NLS-1$
         } finally {
-            preSt.close();
+            try {
+                preSt.close();
+            } catch (SQLException e) {
+                // ignore
+            }
         }
     }
 
@@ -159,8 +173,9 @@ public class CachedRowSetWriter implements RowSetWriter {
         /*
          * the first step: generate the delete SQL
          */
-        StringBuffer deleteSQL = new StringBuffer("DELETE FROM " + tableName //$NON-NLS-1$
-                + " WHERE "); //$NON-NLS-1$
+        StringBuilder deleteSQL = new StringBuilder("DELETE FROM "); //$NON-NLS-1$
+        deleteSQL.append(tableName);
+        deleteSQL.append(" WHERE "); //$NON-NLS-1$
         deleteSQL.append(generateQueryCondition());
 
         /*
@@ -172,7 +187,11 @@ public class CachedRowSetWriter implements RowSetWriter {
             fillParamInPreStatement(preSt, 1);
             preSt.executeUpdate();
         } finally {
-            preSt.close();
+            try {
+                preSt.close();
+            } catch (SQLException e) {
+                // ignore
+            }
         }
     }
 
@@ -181,22 +200,22 @@ public class CachedRowSetWriter implements RowSetWriter {
      * 
      * @throws SQLException
      */
-    @SuppressWarnings("nls")
     private void updateCurrentRow() throws SQLException {
         /*
          * the first step: generate the delete SQL
          */
-        StringBuffer updateSQL = new StringBuffer("UPDATE " + tableName
-                + " SET ");
-        StringBuffer updateCols = new StringBuffer();
+        StringBuilder updateSQL = new StringBuilder("UPDATE "); //$NON-NLS-1$
+        updateSQL.append(tableName);
+        updateSQL.append(" SET "); //$NON-NLS-1$
+        StringBuilder updateCols = new StringBuilder();
         Object[] updateColValues = new Object[columnCount];
         int[] updateColIndexs = new int[columnCount];
 
         int updateCount = 0;
         for (int i = 1; i <= columnCount; i++) {
-            boolean isColUpdate = currentRowSet.columnUpdated(i);
-            if (isColUpdate) {
-                updateCols.append(colNames[i - 1] + " = ?, ");
+            if (currentRowSet.columnUpdated(i)) {
+                updateCols.append(colNames[i - 1]);
+                updateCols.append(" = ?, "); //$NON-NLS-1$
                 updateColValues[updateCount] = currentRowSet.getObject(i);
                 updateColIndexs[updateCount] = i;
                 updateCount++;
@@ -206,7 +225,7 @@ public class CachedRowSetWriter implements RowSetWriter {
             return;
         }
         updateSQL.append(subStringN(updateCols.toString(), 2));
-        updateSQL.append(" WHERE ");
+        updateSQL.append(" WHERE "); //$NON-NLS-1$
         updateSQL.append(generateQueryCondition());
 
         /*
@@ -228,18 +247,27 @@ public class CachedRowSetWriter implements RowSetWriter {
             fillParamInPreStatement(preSt, updateCount + 1);
             preSt.executeUpdate();
         } catch (SQLException e) {
-            throw new SyncProviderException();
+            // rowset.5=There are conflicts between rowset and data source
+            throw new SyncProviderException(Messages.getString("rowset.5"));//$NON-NLS-1$
         } finally {
-            preSt.close();
+            try {
+                preSt.close();
+            } catch (SQLException e) {
+                // ignore
+            }
         }
     }
 
-    private void initial(RowSetInternal theRowSet) throws SQLException {
+    private void init(RowSetInternal theRowSet) throws SQLException {
         currentRowSet = (CachedRowSetImpl) theRowSet;
         // initial environment
         originalRowSet = (CachedRowSet) currentRowSet.getOriginal();
-        // originalConnection = currentRowSet.getConnection();
-        tableName = currentRowSet.getTableName();
+        String schema = currentRowSet.getMetaData().getSchemaName(1);
+        if (schema == null || schema.length() == 0) {
+            tableName = currentRowSet.getTableName();
+        } else {
+            tableName = schema + "." + currentRowSet.getTableName(); //$NON-NLS-1$
+        }
         columnCount = currentRowSet.getMetaData().getColumnCount();
         colNames = new String[columnCount];
         for (int i = 1; i <= columnCount; i++) {
@@ -258,8 +286,9 @@ public class CachedRowSetWriter implements RowSetWriter {
         boolean isExist = true;
         originalRowSet.absolute(currentRowSet.getRow()); // the original data
 
-        StringBuffer querySQL = new StringBuffer("SELECT COUNT(*) FROM " //$NON-NLS-1$
-                + tableName + " WHERE "); //$NON-NLS-1$
+        StringBuilder querySQL = new StringBuilder("SELECT COUNT(*) FROM "); //$NON-NLS-1$
+        querySQL.append(tableName);
+        querySQL.append(" WHERE "); //$NON-NLS-1$
         querySQL.append(generateQueryCondition());
 
         PreparedStatement preSt = getConnection().prepareStatement(
@@ -274,10 +303,14 @@ public class CachedRowSetWriter implements RowSetWriter {
                 }
             }
         } finally {
-            if (queryRs != null) {
-                queryRs.close();
+            try {
+                if (queryRs != null) {
+                    queryRs.close();
+                }
+                preSt.close();
+            } catch (SQLException e) {
+                // ignore
             }
-            preSt.close();
         }
 
         return isExist;
@@ -289,17 +322,18 @@ public class CachedRowSetWriter implements RowSetWriter {
      * 
      * @return the SQL query expression
      */
-    @SuppressWarnings("nls")
     private String generateQueryCondition() throws SQLException {
-        StringBuffer queryCondtion = new StringBuffer(" ");
+        StringBuilder queryCondtion = new StringBuilder();
         for (int i = 0; i < colNames.length; i++) {
             if (originalRowSet.getObject(i + 1) == null) {
-                queryCondtion.append(colNames[i] + " is null ");
+                queryCondtion.append(colNames[i]);
+                queryCondtion.append(" is null "); //$NON-NLS-1$
             } else {
-                queryCondtion.append(colNames[i] + " = ? ");
+                queryCondtion.append(colNames[i]);
+                queryCondtion.append(" = ? "); //$NON-NLS-1$
             }
             if (i != colNames.length - 1) {
-                queryCondtion.append(" and ");
+                queryCondtion.append(" and "); //$NON-NLS-1$
             }
         }
         return queryCondtion.toString();

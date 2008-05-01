@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.IdentityHashMap;
 
+import org.apache.harmony.misc.accessors.ObjectAccessor;
+import org.apache.harmony.misc.accessors.AccessorFactory;
+
 import org.apache.harmony.luni.util.Msg;
 
 /**
@@ -108,7 +111,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      * Allows the receiver to decide if it needs to call writeObjectOverride
      */
     private boolean subclassOverridingImplementation;
+    
 
+    private ObjectAccessor accessor = AccessorFactory.getObjectAccessor();
 
     /**
      * Inner class to provide access to serializable fields
@@ -416,195 +421,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         output.flush();
     }
 
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a boolean.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native boolean getFieldBool(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a byte
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native byte getFieldByte(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a char.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native char getFieldChar(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a double.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native double getFieldDouble(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a float.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native float getFieldFloat(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * an int.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native int getFieldInt(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a long.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native long getFieldLong(Object instance,
-            Class<?> declaringClass, String fieldName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * an Object type whose name is <code>fieldTypeName</code>.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @param		fieldTypeName	Name of the class that defines the type of this field
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native Object getFieldObj(Object instance,
-            Class<?> declaringClass, String fieldName, String fieldTypeName);
-
-    /**
-     * Get the value of field named
-     * <code>fieldName<code> of object <code>instance</code>. The
-     * field is declared by class <code>declaringClass</code>. The field is supposed to be
-     * a short.
-     *
-     * This method could be implemented non-natively on top of java.lang.reflect implementations
-     * that support the <code>setAccessible</code> API, at the expense of extra object creation
-     * (java.lang.reflect.Field). Otherwise Serialization could not fetch private fields, except
-     * by the use of a native method like this one.
-     *
-     * @param		instance		Object whose field value we want to fetch
-     * @param		declaringClass	The class that declares the field
-     * @param		fieldName		Name of the field we want to fetch
-     * @return		the value of the field
-     *
-     * @throws		NoSuchFieldError If the field does not exist.
-     */
-    private static native short getFieldShort(Object instance,
-            Class<?> declaringClass, String fieldName);
 
     /**
      * Return the next <code>int</code> handle to be used to indicate cyclic
@@ -1160,6 +976,7 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         }
     }
 
+
     /**
      * Writes a collection of field values for the fields described by class
      * descriptor <code>classDesc</code> (an <code>ObjectStreamClass</code>).
@@ -1182,43 +999,38 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             throws IOException {
         ObjectStreamField[] fields = classDesc.fields();
         Class<?> declaringClass = classDesc.forClass();
-        for (int i = 0; i < fields.length; i++) {
+        for(ObjectStreamField fieldDesc : fields) {
             try {
+                
+                // get associated Field 
+                long fieldID = fieldDesc.getFieldID(accessor, declaringClass);
+
                 // Code duplication starts, just because Java is typed
-                ObjectStreamField fieldDesc = fields[i];
                 if (fieldDesc.isPrimitive()) {
                     switch (fieldDesc.getTypeCode()) {
                         case 'B':
-                            output.writeByte(getFieldByte(obj, declaringClass,
-                                    fieldDesc.getName()));
+                            output.writeByte(accessor.getByte(obj, fieldID));
                             break;
                         case 'C':
-                            output.writeChar(getFieldChar(obj, declaringClass,
-                                    fieldDesc.getName()));
+                            output.writeChar(accessor.getChar(obj, fieldID));
                             break;
                         case 'D':
-                            output.writeDouble(getFieldDouble(obj,
-                                    declaringClass, fieldDesc.getName()));
+                            output.writeDouble(accessor.getDouble(obj, fieldID));
                             break;
                         case 'F':
-                            output.writeFloat(getFieldFloat(obj,
-                                    declaringClass, fieldDesc.getName()));
+                            output.writeFloat(accessor.getFloat(obj, fieldID));
                             break;
                         case 'I':
-                            output.writeInt(getFieldInt(obj, declaringClass,
-                                    fieldDesc.getName()));
+                            output.writeInt(accessor.getInt(obj, fieldID));
                             break;
                         case 'J':
-                            output.writeLong(getFieldLong(obj, declaringClass,
-                                    fieldDesc.getName()));
+                            output.writeLong(accessor.getLong(obj, fieldID));
                             break;
                         case 'S':
-                            output.writeShort(getFieldShort(obj,
-                                    declaringClass, fieldDesc.getName()));
+                            output.writeShort(accessor.getShort(obj, fieldID));
                             break;
                         case 'Z':
-                            output.writeBoolean(getFieldBool(obj,
-                                    declaringClass, fieldDesc.getName()));
+                            output.writeBoolean(accessor.getBoolean(obj, fieldID));
                             break;
                         default:
                             throw new IOException(
@@ -1227,12 +1039,11 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                     }
                 } else {
                     // Object type (array included).
-                    Object field = getFieldObj(obj, declaringClass, fieldDesc
-                            .getName(), fieldDesc.getTypeString());
+                    Object objField = accessor.getObject(obj, fieldID);
                     if (fieldDesc.isUnshared()) {
-                        writeUnshared(field);
+                        writeUnshared(objField);
                     } else {
-                        writeObject(field);
+                        writeObject(objField);
                     }
                 }
             } catch (NoSuchFieldError nsf) {
@@ -2013,8 +1824,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
         // Only write field "name" for enum class, which is the second field of
         // enum, that is fields[1]. Ignore all non-fields and fields.length < 2
         if (null != fields && fields.length > 1) {
-            String str = (String) getFieldObj(object, declaringClass, fields[1]
-                    .getName(), fields[1].getTypeString());
+            String str = (String) accessor.getObject(object, fields[1].getFieldID(accessor, declaringClass));
+
             Integer strhandle = null;
             if (!unshared) {
                 strhandle = dumpCycle(str);

@@ -154,6 +154,31 @@ public class ArrayListTest extends junit.framework.TestCase {
             fail("IndexOutOfBoundsException expected");
         } catch (IndexOutOfBoundsException e) {
         }
+        
+        // Regression for HARMONY-5705
+        String[] data = new String[] { "1", "2", "3", "4", "5", "6", "7", "8" };
+        ArrayList list1 = new ArrayList();
+        ArrayList list2 = new ArrayList();
+        for (String d : data) {
+            list1.add(d);
+            list2.add(d);
+            list2.add(d);
+        }
+        while (list1.size() > 0)
+            list1.remove(0);
+        list1.addAll(list2);
+        assertTrue("The object list is not the same as orginal list", list1
+                .containsAll(list2) && list2.containsAll(list1));
+
+        obj = new ArrayList();
+        for (int i = 0; i < 100; i++) {
+            if (list1.size() > 0) {
+                obj.removeAll(list1);
+                obj.addAll(list1);
+            }
+        }
+        assertTrue("The object list is not the same as orginal list", obj
+                .containsAll(list1) && list1.containsAll(obj));
     }
 
     public void test_addAllCollectionOfQextendsE() {

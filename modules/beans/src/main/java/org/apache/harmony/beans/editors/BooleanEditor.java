@@ -42,6 +42,15 @@ public final class BooleanEditor extends PropertyEditorSupport {
     }
 
     @Override
+    public String getAsText() {
+        Object value = getValue();
+        if (value == null) {
+            return null;
+        }
+        return Boolean.TRUE.equals(value) ? "True" : "False"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    @Override
     public String getJavaInitializationString() {
         return getValueAsString();
     }

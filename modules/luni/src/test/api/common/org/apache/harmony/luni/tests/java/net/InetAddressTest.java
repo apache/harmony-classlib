@@ -129,6 +129,23 @@ public class InetAddressTest extends junit.framework.TestCase {
             }
         }
     }
+    
+    /**
+     * @tests java.net.InetAddress#getByName(String)
+     */
+    public void test_getByNameUnknownHostException() {
+        // Related to HARMONY-5784
+
+        // loop a few times to flex the negative cache paths
+        for (int i = 0; i < 5; i++) {
+            try {
+                InetAddress.getByName("unknown.unknown.bad");
+                fail("An UnknownHostException should have been thrown");
+            } catch (UnknownHostException e) {
+                assertEquals("unknown.unknown.bad", e.getMessage());
+            }
+        }
+    }
 
     /**
      * @tests java.net.InetAddress#equals(java.lang.Object)

@@ -41,6 +41,41 @@ public class IllegalStateExceptionTest extends TestCase {
         assertEquals("fixture", e.getMessage());
         assertNull(e.getCause());
     }
+    
+    /**
+     * @tests {@link java.land.IllegalStateException#IllIllegalStateException(java.lang.Throwable)}
+     */
+    public void test_ConstructorLjava_lang_Throwable() {
+        Throwable emptyThrowable = new Exception();
+        IllegalStateException emptyException = new IllegalStateException(emptyThrowable);
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getLocalizedMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getCause().toString());
+
+        Throwable throwable = new Exception("msg");
+        IllegalStateException exception = new IllegalStateException(throwable);
+        assertEquals(throwable.getClass().getName() + ": " + "msg", exception.getMessage());
+        assertEquals(throwable.getClass().getName(), emptyException.getLocalizedMessage());
+        assertEquals(throwable.getClass().getName(), emptyException.getCause().toString());
+    }
+
+    /**
+     * @tests {@link java.land.IllegalStateException#IllIllegalStateException(java.lang.String, java.lang.Throwable)}
+     */
+    public void test_ConstructorLjava_lang_StringLjava_lang_Throwable() {
+        Throwable emptyThrowable = new Exception();
+        IllegalStateException emptyException = new IllegalStateException("msg", emptyThrowable);
+        assertEquals("msg", emptyException.getMessage());
+        assertEquals("msg", emptyException.getLocalizedMessage());
+        assertEquals(emptyThrowable.getClass().getName(), emptyException.getCause().toString());
+
+        Throwable throwable = new Exception("msg_exception");
+        IllegalStateException exception = new IllegalStateException("msg", throwable);
+        assertEquals("msg", exception.getMessage());
+        assertEquals("msg", exception.getLocalizedMessage());
+        assertEquals(throwable.getClass().getName() + ": " + throwable.getMessage(), exception
+                .getCause().toString());
+    }
 
     /**
      * @tests serialization/deserialization.

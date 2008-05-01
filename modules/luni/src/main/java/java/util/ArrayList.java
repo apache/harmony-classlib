@@ -224,19 +224,17 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
      */
     @Override
     public boolean addAll(Collection<? extends E> collection) {
-        int growSize = collection.size();
-        if (growSize > 0) {
-            if (lastIndex > array.length - growSize) {
-                growAtEnd(growSize);
-            }
-            Object[] dumparray = new Object[growSize];
-            collection.toArray(dumparray);
-            System.arraycopy(dumparray, 0, this.array, lastIndex, growSize);
-            lastIndex += growSize;
-            modCount++;
-            return true;
+        Object[] dumpArray = collection.toArray();
+        if (dumpArray.length == 0) {
+            return false;
         }
-        return false;
+        if (dumpArray.length > array.length - lastIndex) {
+            growAtEnd(dumpArray.length);
+        }
+        System.arraycopy(dumpArray, 0, this.array, lastIndex, dumpArray.length);
+        lastIndex += dumpArray.length;
+        modCount++;
+        return true;
     }
 
     /**
@@ -520,6 +518,9 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
                             elementIndex, size - location - 1);
                     array[--lastIndex] = null;
                 }
+            }
+            if (firstIndex == lastIndex) {
+                firstIndex = lastIndex = 0;
             }
         } else {
             throw new IndexOutOfBoundsException();

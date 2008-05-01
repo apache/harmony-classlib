@@ -34,10 +34,6 @@ public class FilteredRowSetImpl extends WebRowSetImpl implements FilteredRowSet 
         super();
     }
 
-    public FilteredRowSetImpl(String providerID) throws SyncFactoryException {
-        super(providerID);
-    }
-
     public Predicate getFilter() {
         return predicate;
     }

@@ -45,4 +45,15 @@ public class FileURLConnectionTest extends TestCase {
         assertEquals("application/xml", getContentType("test.xml"));
         assertEquals("text/plain", getContentType("."));
     }
+    
+    public void testGetInputStream() throws IOException {
+        // Regression for Harmony-5737
+        String resourceName = "org/apache/harmony/luni/tests/" + "test.rtf";
+        URL url = ClassLoader.getSystemClassLoader().getResource(resourceName);
+        URL anchorUrl = new URL(url,"#anchor");
+        assertNotNull("Cannot find test resource " + resourceName, anchorUrl);
+        
+        FileURLConnection conn = new FileURLConnection(anchorUrl);
+        assertNotNull(conn.getInputStream());
+    }
 }

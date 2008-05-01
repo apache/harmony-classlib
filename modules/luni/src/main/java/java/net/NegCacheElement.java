@@ -22,17 +22,10 @@ package java.net;
 class NegCacheElement {
 
     // we need the time to figure out when the entry is stale
-    long timeAdded = System.currentTimeMillis();
+    final long timeAdded = System.currentTimeMillis();
 
     // holds the name of the host for which the lookup failed
-    String hostName;
-
-    /**
-     * default constructor
-     */
-    public NegCacheElement() {
-        super();
-    }
+    final String hostName;
 
     /**
      * Constructor used to set the hostname for the failed entry
@@ -40,16 +33,7 @@ class NegCacheElement {
      * @param hostName
      *            name of the host on which the lookup failed
      */
-    public NegCacheElement(String hostName) {
+    NegCacheElement(String hostName) {
         this.hostName = hostName;
-    }
-
-    /**
-     * Answers the hostname for the cache element
-     * 
-     * @return hostName name of the host on which the lookup failed
-     */
-    String hostName() {
-        return hostName;
     }
 }

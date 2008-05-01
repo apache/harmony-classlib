@@ -312,7 +312,6 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
          * Test empty WebRowSet
          */
         WebRowSet webRs = newWebRowSet();
-
         /*
          * Though WebRowSet implements Joinable, addRowSet(WebRowSet) would
          * throw ClassCastException when run on RI.
@@ -336,6 +335,8 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
             try {
                 jrs.addRowSet(webRs);
                 fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // expected
             } catch (SQLException e) {
                 // Expected
             }
@@ -348,15 +349,14 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         /*
          * Test WebRowSet filled with data
          */
-        // TODO uncomment it after implementing addRowSet(RowSet, int)
-        // jrs = newJoinRowSet();
-        // webRs = newWebRowSet();
-        // webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
-        // webRs.setMatchColumn(1);
-        // jrs.addRowSet(webRs);
-        // assertTrue(jrs.next());
-        // assertEquals(1, jrs.getInt(1));
-        // jrs.close();
+        jrs = newJoinRowSet();
+        webRs = newWebRowSet();
+        webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
+        webRs.setMatchColumn(1);
+        jrs.addRowSet(webRs);
+        assertTrue(jrs.next());
+        assertEquals(1, jrs.getInt(1));
+        jrs.close();
     }
 
     public void testAddJoinableRowSet_WebRowSet_Int_Exception()
@@ -381,14 +381,13 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         /*
          * Test non-empty WebRowSet.
          */
-        // TODO uncomment it after implementing addRowSet(RowSet, int)
-        // jrs = newJoinRowSet();
-        // webRs = newWebRowSet();
-        // webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
-        // jrs.addRowSet(webRs, 1);
-        // assertTrue(jrs.next());
-        // assertEquals(1, jrs.getInt(1));
-        // jrs.close();
+        jrs = newJoinRowSet();
+        webRs = newWebRowSet();
+        webRs.populate(st.executeQuery("SELECT * FROM USER_INFO"));
+        jrs.addRowSet(webRs, 1);
+        assertTrue(jrs.next());
+        assertEquals(1, jrs.getInt(1));
+        jrs.close();
     }
 
     public void testAddJoinableRowSet_FilteredRowSet_Exception()
@@ -604,6 +603,7 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
                 }
             }
         }
+
     }
 
     private boolean isTypeMatch(int first, int second) throws Exception {
@@ -739,12 +739,9 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
         crset.setTableName("BOOKS");
         jrs.addRowSet(crset);
         if ("true".equals(System.getProperty("Testing Harmony"))) {
-            try {
-                jrs.getRowSetNames();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // expected
-            }
+            assertEquals(2, jrs.getRowSetNames().length);
+            assertEquals("USER_INFO", jrs.getRowSetNames()[0]);
+            assertEquals("BOOKS", jrs.getRowSetNames()[1]);
         } else {
             try {
                 jrs.getRowSetNames();
@@ -753,5 +750,186 @@ public class JoinRowSetTest extends JoinRowSetTestCase {
                 // expected
             }
         }
+    }
+
+    public void testToCachedRowSet_CachedRowSet() throws Exception {
+        /*
+         * Test empty JoinRowSet
+         */
+        CachedRowSet emptyToCrset = jrs.toCachedRowSet();
+        assertNull(emptyToCrset.getMetaData());
+        assertFalse(emptyToCrset.first());
+
+        /*
+         * The first CachedRowSet
+         */
+        jrs = newJoinRowSet();
+        jrs.addRowSet(crset, 1);
+        CachedRowSet toCrset = jrs.toCachedRowSet();
+        // check metadata
+        assertSame(crset.getMetaData(), jrs.getMetaData());
+        assertSame(crset.getMetaData(), toCrset.getMetaData());
+        assertNotSame(crset, toCrset);
+        // check data
+        int index = 0;
+        toCrset.beforeFirst();
+        crset.beforeFirst();
+        while (toCrset.next() && crset.next()) {
+            for (int i = 1; i <= crset.getMetaData().getColumnCount(); i++) {
+                assertEquals(toCrset.getObject(i), crset.getObject(i));
+            }
+            index++;
+        }
+        assertEquals(4, index);
+
+        /*
+         * The second CachedRowSet
+         */
+        noInitialCrset.populate(st.executeQuery("SELECT * FROM BOOKS"));
+        jrs.addRowSet(noInitialCrset, 1);
+        toCrset = jrs.toCachedRowSet();
+        // check metadata
+        assertSame(jrs.getMetaData(), toCrset.getMetaData());
+        /*
+         * check data. The data order is not the same between RI and HY.
+         */
+        index = 0;
+        rs = st.executeQuery("SELECT * FROM BOOKS");
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            toCrset.beforeFirst();
+            while (toCrset.next() && rs.next()) {
+                index++;
+                assertEquals(toCrset.getObject(14), rs.getObject(3));
+            }
+        } else {
+            toCrset.afterLast();
+            while (toCrset.previous() && rs.next()) {
+                index++;
+                assertEquals(toCrset.getObject(14), rs.getObject(3));
+            }
+        }
+        assertEquals(6, index);
+
+        /*
+         * The third CachedRowSet
+         */
+        insertDataToCustomerTable();
+        CachedRowSet thirdCrset = newNoInitialInstance();
+        thirdCrset.populate(st.executeQuery("SELECT * FROM CUSTOMER_INFO"));
+        jrs.addRowSet(thirdCrset, 1);
+        toCrset = jrs.toCachedRowSet();
+        // check metadata
+        assertSame(jrs.getMetaData(), toCrset.getMetaData());
+        // check data
+        toCrset.beforeFirst();
+        index = 1;
+        while (toCrset.next()) {
+            if (index == 1) {
+                assertEquals(3, toCrset.getInt(1));
+                index++;
+            } else if (index == 2) {
+                assertEquals(3, toCrset.getInt(1));
+                index++;
+            } else if (index == 3) {
+                assertEquals(4, toCrset.getInt(1));
+            } else {
+                index = -1;
+            }
+        }
+        assertEquals(3, index);
+    }
+
+    public void testToCachedRowSet_acceptChanges() throws Exception {
+        /*
+         * The first CachedRowSet
+         */
+        jrs.addRowSet(crset, 1);
+        CachedRowSet toCrset = jrs.toCachedRowSet();
+        // call crset.acceptChanges()
+        assertTrue(crset.absolute(3));
+        assertEquals("test3", crset.getString(2));
+        crset.updateString(2, "update3");
+        crset.updateRow();
+        crset.acceptChanges();
+        assertTrue(crset.absolute(3));
+        assertEquals("update3", crset.getString(2));
+        // call toCrset.acceptChanges()
+        assertTrue(toCrset.absolute(3));
+        assertEquals("test3", toCrset.getString(2));
+        assertTrue(toCrset.last());
+        assertEquals("test4", toCrset.getString(2));
+        toCrset.updateString(2, "update4");
+        toCrset.updateRow();
+        toCrset.acceptChanges();
+        assertTrue(toCrset.absolute(4));
+        assertEquals("update4", toCrset.getString(2));
+
+        /*
+         * The second CachedRowSet
+         */
+        noInitialCrset.populate(st.executeQuery("SELECT * FROM BOOKS"));
+        jrs.addRowSet(noInitialCrset, 1);
+        toCrset = jrs.toCachedRowSet();
+        // call toCrset.acceptChanges()
+        if ("true".equals(System.getProperty("Testing Harmony"))) {
+            assertTrue(toCrset.last());
+        } else {
+            assertTrue(toCrset.first());
+        }
+        assertEquals(4, toCrset.getInt(1));
+        toCrset.updateString(2, "modify4");
+        toCrset.updateRow();
+        try {
+            toCrset.acceptChanges();
+            fail("should throw exception");
+        } catch (Exception e) {
+            // expected
+        }
+    }
+
+    public void testCancelRowUpdates_Simple() throws Exception {
+        jrs.addRowSet(crset, 1);
+        Listener listener = new Listener();
+        jrs.addRowSetListener(listener);
+
+        jrs.absolute(4);
+        jrs.updateString(2, "Updated");
+        jrs.updateRow();
+        jrs.absolute(4);
+        assertEquals("Updated", jrs.getString(2));
+
+        jrs.cancelRowUpdates();
+        jrs.absolute(4);
+        assertEquals("test4", jrs.getString(2));
+        assertNull(listener.getTag());
+    }
+
+    public void testCancelRowUpdates() throws Exception {
+        jrs.addRowSet(crset, 1);
+        Listener listener = new Listener();
+        jrs.addRowSetListener(listener);
+
+        assertTrue(jrs.absolute(3));
+        jrs.updateString(2, "update3");
+        // call cancelRowUpdates() before updateRow(), no effect here
+        listener.clear();
+        jrs.cancelRowUpdates();
+        assertNull(listener.getTag());
+        assertEquals("update3", jrs.getString(2));
+        jrs.updateRow();
+        jrs.absolute(3);
+        assertEquals("update3", jrs.getString(2));
+
+        assertTrue(jrs.absolute(4));
+        jrs.updateString(2, "update4");
+        assertEquals("update4", jrs.getString(2));
+        jrs.updateRow();
+        assertEquals("update4", jrs.getString(2));
+        // call cancelRowUpdates() after updateRow(), it works here
+        listener.clear();
+        assertEquals("update4", jrs.getString(2));
+        jrs.cancelRowUpdates();
+        assertEquals("test4", jrs.getString(2));
+        assertNull(listener.getTag());
     }
 }

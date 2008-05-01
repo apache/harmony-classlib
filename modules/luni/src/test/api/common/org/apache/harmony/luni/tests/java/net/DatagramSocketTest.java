@@ -23,6 +23,7 @@ import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.DatagramSocketImpl;
+import java.net.DatagramSocketImplFactory;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -34,6 +35,8 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Date;
+
+import org.apache.harmony.luni.net.SocketImplProvider;
 
 import tests.support.Support_Configuration;
 import tests.support.Support_PortManager;
@@ -930,6 +933,38 @@ public class DatagramSocketTest extends SocketTestCase {
             // expected;
         } finally {
             d.close();
+        }
+    }
+    
+    /**
+     * @tests {@link java.net.DatagramSocket#setDatagramSocketImplFactory(DatagramSocketImplFactory)}
+     */
+    public void test_set_Datagram_SocketImpl_Factory() throws IOException {
+        DatagramSocketImplFactory factory = new MockDatagramSocketImplFactory();
+        // Should not throw SocketException when set DatagramSocketImplFactory
+        // for the first time.
+        DatagramSocket.setDatagramSocketImplFactory(factory);
+
+        try {
+            DatagramSocket.setDatagramSocketImplFactory(null);
+            fail("Should throw SocketException");
+        } catch (SocketException e) {
+            // Expected
+        }
+
+        try {
+            DatagramSocket.setDatagramSocketImplFactory(factory);
+            fail("Should throw SocketException");
+        } catch (SocketException e) {
+            // Expected
+        }
+    }
+
+    private class MockDatagramSocketImplFactory implements
+            DatagramSocketImplFactory {
+
+        public DatagramSocketImpl createDatagramSocketImpl() {
+            return SocketImplProvider.getDatagramSocketImpl();
         }
     }
 

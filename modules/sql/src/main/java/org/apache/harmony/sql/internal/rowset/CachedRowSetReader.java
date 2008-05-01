@@ -39,24 +39,12 @@ public class CachedRowSetReader implements RowSetReader {
     private ResultSet rs;
 
     private ResultSetMetaData metadata;
-
-    public CachedRowSetReader() {
-        // do nothing, used by SyncProvider
-    }
-
-    public CachedRowSetReader(ResultSet rs) throws SQLException {
-        this.rs = rs;
-        this.metadata = rs.getMetaData();
-    }
-
+    
     public void setResultSet(ResultSet rs) throws SQLException {
         this.rs = rs;
         this.metadata = rs.getMetaData();
     }
 
-    /**
-     * TODO disable all listeners
-     */
     public void readData(RowSetInternal theCaller) throws SQLException {
         CachedRowSetImpl cachedRowSet = (CachedRowSetImpl) theCaller;
         int pageSize = cachedRowSet.getPageSize();

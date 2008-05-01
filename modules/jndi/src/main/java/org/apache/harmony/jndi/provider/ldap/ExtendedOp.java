@@ -61,7 +61,7 @@ public class ExtendedOp implements LdapOperation, ASN1Encodable,
         return request;
     }
 
-    public ExtendedResponse getExtendedResponse() {
+    public ExtendedResponse getExtendedResponse() throws NamingException {
 
         if (result != null && result.getResultCode() == 0
                 && responseValues != null) {
@@ -74,13 +74,9 @@ public class ExtendedOp implements LdapOperation, ASN1Encodable,
             if (value != null) {
                 length = value.length;
             }
-            
-            try {
-                response = request.createExtendedResponse(id, value, 0, length);
-            } catch (NamingException e) {
-                // FIXME: how to deal with this exception
-                e.printStackTrace();
-            }
+
+            response = request.createExtendedResponse(id, value, 0, length);
+
         }
         return response;
     }

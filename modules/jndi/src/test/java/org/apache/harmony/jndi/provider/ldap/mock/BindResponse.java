@@ -18,6 +18,7 @@
 package org.apache.harmony.jndi.provider.ldap.mock;
 
 import org.apache.harmony.jndi.provider.ldap.asn1.ASN1Encodable;
+import org.apache.harmony.jndi.provider.ldap.asn1.Utils;
 
 public class BindResponse implements ASN1Encodable {
 
@@ -36,7 +37,9 @@ public class BindResponse implements ASN1Encodable {
 
     public void encodeValues(Object[] values) {
         result.encodeValues(values);
-        values[4] = saslCreds;
+        if (saslCreds != null) {
+            values[4] = Utils.getBytes(saslCreds);
+        }
     }
 
 }

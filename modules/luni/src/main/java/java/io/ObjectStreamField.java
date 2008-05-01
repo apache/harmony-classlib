@@ -21,6 +21,8 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.apache.harmony.misc.accessors.ObjectAccessor;
+
 /**
  * This class represents object fields that are saved to the stream, by
  * serialization. Classes can define the collection of fields to be dumped,
@@ -30,6 +32,9 @@ import java.util.Comparator;
  * @see ObjectInputStream#readFields()
  */
 public class ObjectStreamField implements Comparable<Object> {
+
+    static final int FIELD_IS_NOT_RESOLVED = -1;
+    static final int FIELD_IS_ABSENT = -2;
 
     // Declared name of the field
     private String name;
@@ -46,6 +51,21 @@ public class ObjectStreamField implements Comparable<Object> {
     private boolean unshared;
 
     private boolean isDeserialized;
+
+    private long assocFieldID = FIELD_IS_NOT_RESOLVED;
+
+    long getFieldID(ObjectAccessor accessor, Class<?> declaringClass) {
+        if (assocFieldID != FIELD_IS_NOT_RESOLVED) {
+            return assocFieldID;
+        } else {
+            try {  
+                assocFieldID = accessor.getFieldID(declaringClass, name);
+            } catch(NoSuchFieldError e) {
+                assocFieldID = FIELD_IS_ABSENT;
+            }
+            return assocFieldID;
+        }
+    }
 
     /**
      * Constructs an ObjectStreamField with the given name and the given type

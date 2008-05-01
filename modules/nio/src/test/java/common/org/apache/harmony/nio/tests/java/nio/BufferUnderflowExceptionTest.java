@@ -42,4 +42,14 @@ public class BufferUnderflowExceptionTest extends TestCase {
 
         SerializationTest.verifyGolden(this, new BufferUnderflowException());
     }
+    
+    /**
+     *@tests {@link java.nio.BufferUnderflowException#BufferUnderflowException()}
+     */
+    public void test_Constructor() {
+        BufferUnderflowException exception = new BufferUnderflowException();
+        assertNull(exception.getMessage());
+        assertNull(exception.getLocalizedMessage());
+        assertNull(exception.getCause());
+    }
 }

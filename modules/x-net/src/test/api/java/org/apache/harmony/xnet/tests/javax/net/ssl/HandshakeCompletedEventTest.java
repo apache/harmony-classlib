@@ -86,8 +86,7 @@ public class HandshakeCompletedEventTest extends TestCase {
 
         HandshakeCompletedEvent event = new HandshakeCompletedEvent(soc, ses);
         
-        assertNotNull(event.getCipherSuite());
-        assertNull(ses.getCipherSuite());
+        assertEquals(event.getCipherSuite(), ses.getCipherSuite());
     }
 
     public final void testGetLocalCertificates() {

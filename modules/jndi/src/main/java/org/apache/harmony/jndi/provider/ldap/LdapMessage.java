@@ -196,7 +196,8 @@ public class LdapMessage implements ASN1Encodable, ASN1Decodable {
         // ABANDON, UNBIND and DELETE request are ASN.1 primitive
         if (opIndex == LdapASN1Constant.OP_ABANDON_REQUEST
                 || opIndex == LdapASN1Constant.OP_DEL_REQUEST
-                || opIndex == LdapASN1Constant.OP_UNBIND_REQUEST) {
+                || opIndex == LdapASN1Constant.OP_UNBIND_REQUEST
+                || opIndex == LdapASN1Constant.OP_SEARCH_RESULT_REF) {
             Object[] objs = new Object[1];
             requestOp.encodeValues(objs);
             values[1] = new ChosenValue(opIndex, objs[0]);

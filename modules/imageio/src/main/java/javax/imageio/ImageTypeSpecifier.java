@@ -21,6 +21,7 @@
 package javax.imageio;
 
 import java.awt.image.ColorModel;
+import java.awt.image.DirectColorModel;
 import java.awt.image.SampleModel;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -28,9 +29,6 @@ import java.awt.color.ColorSpace;
 
 import org.apache.harmony.luni.util.NotImplementedException;
 
-/**
- * TODO implement all the methods
- */
 public class ImageTypeSpecifier {
     
     protected ColorModel colorModel;
@@ -59,15 +57,15 @@ public class ImageTypeSpecifier {
         this.sampleModel = renderedImage.getSampleModel();
     }
 
-    public static ImageTypeSpecifier createPacked(ColorSpace colorSpace,
-                                                  int redMask,
-                                                  int greenMask,
-                                                  int blueMask,
-                                                  int alphaMask,
-                                                  int transferType,
-                                                  boolean isAlphaPremultiplied) throws NotImplementedException {
-        // TODO: implement
-        throw new NotImplementedException();
+    public static ImageTypeSpecifier createPacked(final ColorSpace colorSpace,
+                    final int redMask, final int greenMask, final int blueMask,
+                    final int alphaMask, final int transferType,
+                    final boolean isAlphaPremultiplied) {
+        final ColorModel model = new DirectColorModel(colorSpace, 32, redMask,
+                        greenMask, blueMask, alphaMask, isAlphaPremultiplied,
+                        transferType);
+        return new ImageTypeSpecifier(model, model.createCompatibleSampleModel(
+            1, 1));
     }
 
     public static ImageTypeSpecifier createInterleaved(ColorSpace colorSpace,
