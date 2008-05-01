@@ -842,7 +842,7 @@ class MapEntry implements Map.Entry<K, V>, Cloneable {
                 K key = entry.getKey();
                 if (subMap.isInRange(key)) {
                     V v1 = subMap.get(key), v2 = entry.getValue();
-                    return v1 == null ? v2 == null : v1.equals(v2);
+                    return v1 == null ? ( v2 == null && subMap.containsKey(key) ) : v1.equals(v2);
                 }
             }
             return false;
