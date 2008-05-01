@@ -656,6 +656,11 @@ public class TreeMapTest extends junit.framework.TestCase {
         assertFalse("Empty map should not contain the null-valued entry",
                     test_map.entrySet().contains(entry[0]));
 
+        Map<String, String> submap = test_map.subMap("a","z");
+        entry = master.entrySet().toArray();
+        assertFalse("Empty submap should not contain the null-valued entry",
+                    submap.entrySet().contains(entry[0]));
+
         test_map.put("null", null);
         assertTrue("entrySet().containsAll(...) should work with null values",
                    test_map.entrySet().containsAll(master.entrySet()));
