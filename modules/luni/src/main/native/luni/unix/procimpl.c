@@ -150,6 +150,7 @@ execProgram(JNIEnv * vmthread, jobject recv,
   if (grdpid == -1) goto error;
 
   if (grdpid == 0) {
+#ifndef ZOS
     /* Close file descriptors that are not used */
     close(newFD[0][1]);
     close(newFD[1][0]);
@@ -163,6 +164,7 @@ execProgram(JNIEnv * vmthread, jobject recv,
     setCloseOnExec(newFD[2][1]);
     setCloseOnExec(forkedChildIsRunning[1]);
     setCloseOnExec(execvFailure[1]);
+#endif /* ZOS */
 
     /* Redirect pipes so grand-child inherits new pipes */
     char dummy = '\0';

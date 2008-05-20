@@ -27,7 +27,12 @@ static char *errMsg = NULL;
 
 int gl_cmsErrorHandler(int errorCode, const char *msg) {
   if(errorCode == LCMS_ERRC_ABORTED) {
-    errMsg = _strdup(msg); // Throw exception later, after returning control from cmm
+    // Throw exception later, after returning control from cmm
+#ifndef ZOS
+    errMsg = _strdup(msg);
+#else
+    errMsg = strdup(msg);
+#endif
   }
 
   return 1;
