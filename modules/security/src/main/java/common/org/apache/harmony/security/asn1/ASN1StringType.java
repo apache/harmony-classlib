@@ -118,7 +118,9 @@ public abstract class ASN1StringType extends ASN1Type {
      * @return java.land.String object
      */
     public Object getDecodedObject(BerInputStream in) throws IOException {
-        return new String(in.buffer, in.contentOffset, in.length);
+        /* To ensure we get the correct encoding on non-ASCII platforms, specify
+           that we wish to convert from ASCII to the default platform encoding */
+        return new String(in.buffer, in.contentOffset, in.length, "ISO-8859-1");
     }
 
     //
