@@ -29,11 +29,9 @@ import org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CodeAttribute;
-import org.apache.harmony.unpack200.bytecode.DeprecatedAttribute;
 import org.apache.harmony.unpack200.bytecode.ExceptionTableEntry;
+import org.apache.harmony.unpack200.bytecode.NewAttribute;
 import org.apache.harmony.unpack200.bytecode.OperandManager;
-import org.apache.harmony.unpack200.bytecode.RuntimeVisibleorInvisibleAnnotationsAttribute;
-import org.apache.harmony.unpack200.bytecode.SignatureAttribute;
 
 /**
  * Bytecode bands
@@ -434,9 +432,7 @@ public class BcBands extends BandSet {
                     for (Iterator iterator = methodAttributesList.iterator(); iterator
                             .hasNext();) {
                         Attribute attribute = (Attribute) iterator.next();
-                        if(attribute instanceof SignatureAttribute ||
-                                attribute instanceof DeprecatedAttribute ||
-                                attribute instanceof RuntimeVisibleorInvisibleAnnotationsAttribute) {
+                        if((attribute instanceof NewAttribute && ((NewAttribute)attribute).getLayoutIndex() < 15)) {
                             indexForCodeAttr ++;
                         } else {
                             break;

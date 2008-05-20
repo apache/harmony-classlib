@@ -100,7 +100,8 @@ public class NewAttributeBands extends BandSet {
     private Attribute getOneAttribute(int index, List elements) {
         NewAttribute attribute = new NewAttribute(segment.getCpBands()
                 .cpUTF8Value(attributeLayout.getName(),
-                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ));
+                        ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ),
+                attributeLayout.getIndex());
         for (Iterator iter = elements.iterator(); iter.hasNext();) {
             AttributeLayoutElement element = (AttributeLayoutElement) iter
                     .next();

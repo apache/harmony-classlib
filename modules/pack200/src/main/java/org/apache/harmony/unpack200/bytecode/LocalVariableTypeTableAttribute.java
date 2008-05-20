@@ -36,6 +36,7 @@ public class LocalVariableTypeTableAttribute extends BCIRenumberedAttribute {
     private final int[] indexes;
     private final CPUTF8[] names;
     private final CPUTF8[] signatures;
+    private int codeLength;
     private static final CPUTF8 attributeName = new CPUTF8(
             "LocalVariableTypeTable", ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ); //$NON-NLS-1$
 
@@ -49,6 +50,10 @@ public class LocalVariableTypeTableAttribute extends BCIRenumberedAttribute {
         this.names = names;
         this.signatures = signatures;
         this.indexes = indexes;
+    }
+
+    public void setCodeLength(int length) {
+        codeLength = length;
     }
 
     protected int getLength() {
@@ -118,10 +123,7 @@ public class LocalVariableTypeTableAttribute extends BCIRenumberedAttribute {
         // real length = end_pc - start_pc
         // special case if end_pc is beyond end of bytecode array
 
-        // First figure out the maximum size of the byteCodeOffsets array
-        int lastInstruction = ((Integer) byteCodeOffsets.get(byteCodeOffsets
-                .size() - 1)).intValue();
-        int maxSize = lastInstruction + 1;
+        int maxSize = codeLength;
 
         // Iterate through the lengths and update each in turn.
         // This is done in place in the lengths array.

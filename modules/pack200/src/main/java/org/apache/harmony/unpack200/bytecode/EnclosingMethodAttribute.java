@@ -37,6 +37,14 @@ public class EnclosingMethodAttribute extends Attribute {
         this.method = method;
     }
 
+    protected ClassFileEntry[] getNestedClassFileEntries() {
+        if(method != null) {
+            return new ClassFileEntry[] {attributeName, cpClass, method};
+        } else {
+            return new ClassFileEntry[] {attributeName, cpClass};
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -50,8 +58,12 @@ public class EnclosingMethodAttribute extends Attribute {
         super.resolve(pool);
         cpClass.resolve(pool);
         class_index = pool.indexOf(cpClass);
-        method.resolve(pool);
-        method_index = pool.indexOf(method);
+        if(method != null) {
+            method.resolve(pool);
+            method_index = pool.indexOf(method);
+        } else {
+            method_index = 0;
+        }
     }
 
     /*
