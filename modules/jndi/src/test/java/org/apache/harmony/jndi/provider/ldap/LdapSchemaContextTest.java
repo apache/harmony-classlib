@@ -2067,4 +2067,143 @@ public class LdapSchemaContextTest extends TestCase {
         }
         assertEquals(2, count);
     }
+
+    public void testClassDefinition() throws NamingException {
+        MockLdapSchemaContext mockSchema = new MockLdapSchemaContext(context,
+                null, name, schemaTable,
+                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+        Attribute attribute = new BasicAttribute("objectClass", "javaClass");
+        attribute.add("extensibleobject");
+        attribute.add("prefNode");
+
+        DirContext classDefSchema = mockSchema.getClassDefinition(attribute);
+        ArrayList<String> verifyList = new ArrayList<String>();
+        verifyList.add("javaclass");
+        verifyList.add("prefnode");
+        verifyList.add("extensibleobject");
+        NamingEnumeration<NameClassPair> ne = classDefSchema.list("");
+        NameClassPair pair;
+        int count = 0;
+        while (ne.hasMore()) {
+            pair = ne.next();
+            count++;
+            assertTrue(verifyList.remove(pair.getName().toLowerCase()));
+        }
+        assertEquals(3, count);
+
+        ne = classDefSchema.list("prefnode");
+        assertFalse(ne.hasMore());
+
+        ne = classDefSchema.list("extensibleobject");
+        assertFalse(ne.hasMore());
+    }
+
+    public void testAttributeDefinition() throws NamingException {
+        addMoreAttributeData();
+        MockLdapContext mockContext = new MockLdapContext(context, null, "");
+        Attribute attr = new LdapAttribute("objectclass", mockContext);
+
+        DirContext attributeDefinition = attr.getAttributeDefinition();
+        NamingEnumeration<NameClassPair> ne = attributeDefinition.list("");
+        assertFalse(ne.hasMore());
+
+        try {
+            ne = attributeDefinition.list("invalid");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+
+        Attributes schemaAttributes = attributeDefinition.getAttributes("");
+        assertEquals(7, schemaAttributes.size());
+        assertEquals("1.3.6.1.4.1.1466.115.121.1.38", schemaAttributes.get(
+                "syntax").get());
+        assertEquals("objectClass", schemaAttributes.get("name").get());
+        assertEquals("2.5.4.0", schemaAttributes.get("numericoid").get());
+        assertEquals("userApplications", schemaAttributes.get("usage").get());
+        assertEquals("objectIdentifierMatch", schemaAttributes.get("equality")
+                .get());
+    }
+
+    public void testSyntaxDefinition() throws NamingException {
+        addMoreAttributeData();
+        MockLdapContext mockContext = new MockLdapContext(context, null, "");
+        Attribute attr = new LdapAttribute("objectclass", mockContext);
+        DirContext attributeDefinition = attr.getAttributeSyntaxDefinition();
+        NamingEnumeration<NameClassPair> ne = attributeDefinition.list("");
+        assertFalse(ne.hasMore());
+
+        try {
+            ne = attributeDefinition.list("invalid");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
+        Attributes schemaAttributes = attributeDefinition.getAttributes("");
+        assertEquals(3, schemaAttributes.size());
+        assertEquals("system", schemaAttributes.get("x-schema").get());
+        assertEquals("true", schemaAttributes.get("x-is-human-readable").get());
+        assertEquals("1.3.6.1.4.1.1466.115.121.1.38", schemaAttributes.get(
+                "numericoid").get());
+    }
+
+    private void addMoreAttributeData() throws InvalidNameException {
+        // Add more schema data.
+        Hashtable subschemaTable = (Hashtable) schemaTable
+                .get("attributetypes");
+
+        subschemaTable
+                .put(
+                        "objectclass",
+                        "( 2.5.4.0 NAME 'objectClass' "
+                                + "DESC 'RFC2256: object classes of the entity'  "
+                                + "EQUALITY objectIdentifierMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.38 "
+                                + "USAGE userApplications X-SCHEMA 'system' )");
+
+        subschemaTable = (Hashtable) schemaTable.get("ldapsyntaxes");
+        subschemaTable
+                .put(
+                        "1.3.6.1.4.1.1466.115.121.1.38",
+                        "( 1.3.6.1.4.1.1466.115.121.1.38  X-SCHEMA 'system' X-IS-HUMAN-READABLE 'true' )");
+        schema = new LdapSchemaContextImpl(context, null, name, schemaTable,
+                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+    }
+
+    public class MockLdapContext extends LdapContextImpl {
+        public MockLdapContext(LdapContextImpl context,
+                Hashtable<Object, Object> environment, String dn)
+                throws InvalidNameException {
+            super(context, environment, dn);
+        }
+
+        public DirContext getSchema(String name) {
+            return schema;
+        }
+
+        public Attributes getAttributes(Name name, String returningAttributes[])
+                throws NamingException {
+            Attribute attribute = new BasicAttribute("objectClass", "javaClass");
+            attribute.add("extensibleobject");
+            attribute.add("prefNode");
+            Attributes attributes = new BasicAttributes(true);
+            attributes.put(attribute);
+
+            return attributes;
+        }
+    }
+
+    public class MockLdapSchemaContext extends LdapSchemaContextImpl {
+
+        public MockLdapSchemaContext(LdapContextImpl ctx,
+                Hashtable<Object, Object> env, Name dn,
+                Hashtable<String, Object> schemaTable, int level)
+                throws InvalidNameException {
+            super(ctx, env, dn, schemaTable, level);
+        }
+
+        public DirContext getClassDefinition(Attribute attr)
+                throws NamingException {
+            return super.getClassDefinition(attr);
+        }
+    }
 }

@@ -1051,77 +1051,15 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return getSchema(new CompositeName(s));
     }
 
-    DirContext getSchemaAttributeDefinition(String name) throws NamingException {
-        if (null == ldapSchemaCtx) {
-            getSchema("");
-        }
-        Hashtable<String, Object> attrDef = findSchemaDefInfo(
-                LdapSchemaContextImpl.ATTRIBUTE_TYPES, name);
-
-        return new LdapSchemaAttrDefContextImpl(new CompositeName(name), env,
-                attrDef, this);
-    }
-
     public DirContext getSchemaClassDefinition(Name name)
             throws NamingException {
-        checkName(name);
+        Attributes attrs = getAttributes(name, new String[] { "objectClass" }); //$NON-NLS-1$
+        Attribute attr = attrs.get("objectClass"); //$NON-NLS-1$
 
         if (null == ldapSchemaCtx) {
-            getSchema("");
+            getSchema(""); //$NON-NLS-1$
         }
-
-        Hashtable<String, ArrayList<String>> classTree = new Hashtable<String, ArrayList<String>>();
-
-        SearchControls searchControls = new SearchControls();
-        searchControls.setSearchScope(SearchControls.OBJECT_SCOPE);
-        searchControls.setReturningAttributes(new String[] { "objectClass", });
-        searchControls.setReturningObjFlag(false);
-        FilterParser parser = new FilterParser("(objectClass=*)");
-        Filter filter = null;
-        try {
-            filter = parser.parse();
-        } catch (ParseException e1) {
-            // Should not throw this excption
-        }
-        String targetDN = getTargetDN(name, contextDn);
-        SearchOp search = new SearchOp(targetDN, searchControls, filter);
-
-        try {
-            client.doOperation(search, requestControls);
-        } catch (IOException e) {
-            CommunicationException ex = new CommunicationException(e
-                    .getMessage());
-            ex.setRootCause(e);
-            if (search.getSearchResult().isEmpty()) {
-                throw ex;
-            }
-            search.getSearchResult().setException(ex);
-        }
-        LdapSearchResult sre = search.getSearchResult();
-        Map<String, Attributes> names = sre.getEntries();
-
-        Set<String> keyset = names.keySet();
-        for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
-            String key = iterator.next();
-            Attributes as = names.get(key);
-            NamingEnumeration<String> ids = as.getIDs();
-
-            while (ids.hasMoreElements()) {
-                String schemaType = ids.nextElement();
-                if (!classTree.contains(schemaType)) {
-                    classTree.put(schemaType, new ArrayList());
-                }
-                ArrayList<String> classDefs = classTree.get(schemaType);
-                LdapAttribute attribute = (LdapAttribute) as.get(schemaType);
-                for (int i = 0; i < attribute.size(); i++) {
-                    String value = (String) attribute.get(i);
-                    classDefs.add(value);
-                }
-            }
-        }
-
-        return new LdapSchemaClassDefContextImpl(new CompositeName(targetDN),
-                env, classTree, this);
+        return ldapSchemaCtx.getClassDefinition(attr);
     }
 
     public DirContext getSchemaClassDefinition(String s) throws NamingException {

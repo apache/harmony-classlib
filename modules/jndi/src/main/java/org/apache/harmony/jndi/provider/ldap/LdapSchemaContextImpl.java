@@ -67,6 +67,8 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     public static final int SCHEMA_ROOT_LEVEL = 3;
 
+    public static final int DEFINITION_LEVEL = 2;
+
     protected String subschemasubentry = null;
 
     final private static Hashtable<String, String> schemaJndi2Ldap = new Hashtable<String, String>();
@@ -716,6 +718,27 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         }
 
         return enumeration;
+    }
+
+    protected DirContext getClassDefinition(Attribute objectclassAttr)
+            throws NamingException {
+        Hashtable<String, Object> definitionTable = new Hashtable<String, Object>();
+        Hashtable<String, Object> allDefinitionTable = (Hashtable<String, Object>) schemaTable
+                .get(OBJECT_CLASSES);
+
+        if (objectclassAttr != null) {
+            NamingEnumeration<?> ne = objectclassAttr.getAll();
+            String attributeType;
+            while (ne.hasMore()) {
+                attributeType = ne.next().toString().toLowerCase();
+                definitionTable.put(attributeType, allDefinitionTable
+                        .get(attributeType));
+            }
+        }
+
+        return new LdapSchemaContextImpl(this, env, new CompositeName(
+                OBJECT_CLASSES), definitionTable,
+                LdapSchemaContextImpl.DEFINITION_LEVEL);
     }
 
     private HashSet<SearchResult> doSimpleSearch(Name name,
