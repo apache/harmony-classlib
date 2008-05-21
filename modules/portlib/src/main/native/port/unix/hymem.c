@@ -71,6 +71,9 @@ hymem_allocate_memory (struct HyPortLibrary *portLibrary, UDATA byteAmount)
                            "\nallocate of %u bytes (new total is %u bytes)\n",
                            byteAmount, DEBUG_TOTAL_ALLOCATED_MEMORY);
   mem = (void *) malloc (byteAmount + sizeof (UDATA));
+#if defined(HYS390)
+  mem = (void *) (((UDATA) mem) & 0x7FFFFFFF);
+#endif /* HYS390 */
   *((UDATA *) mem) = byteAmount;
   pointer = ((UDATA) mem + sizeof (UDATA));
 #else
@@ -78,7 +81,11 @@ hymem_allocate_memory (struct HyPortLibrary *portLibrary, UDATA byteAmount)
     {                           /* prevent malloc from failing causing allocate to return null */
       byteAmount = 1;
     }
+
   pointer = malloc (byteAmount);
+#if defined(HYS390)
+  pointer = (void *) (((UDATA) pointer) & 0x7FFFFFFF);
+#endif /* HYS390 */
 #endif
 
 
@@ -141,6 +148,9 @@ hymem_reallocate_memory (struct HyPortLibrary *portLibrary,
   Trc_PRT_mem_hymem_reallocate_memory_Entry (memoryPointer, byteAmount);
 
   ptr = realloc (memoryPointer, byteAmount);
+#if defined(HYS390)
+  ptr = (void *) (((UDATA) ptr) & 0x7FFFFFFF);
+#endif
 
   Trc_PRT_mem_hymem_reallocate_memory_Exit (ptr);
   return ptr;
