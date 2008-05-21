@@ -20,6 +20,9 @@ package org.apache.harmony.jndi.provider.ldap;
 import java.util.Hashtable;
 
 import javax.naming.Context;
+import javax.naming.ldap.Control;
+import javax.naming.ldap.PagedResultsControl;
+import javax.naming.ldap.SortControl;
 
 import junit.framework.TestCase;
 
@@ -124,4 +127,49 @@ public class ReferralExceptionTest extends TestCase {
 
 		assertNull(ex.getReferralInfo());
 	}
+
+    public void testGetReferralContext3() throws Exception {
+        Hashtable<Object, Object> initialEnv = new Hashtable<Object, Object>();
+
+        initialEnv.put(Context.REFERRAL, "throw");
+        initialEnv.put("test.getReferralContext", "GetReferralContext");
+
+        String[] referrals = new String[] { server.getURL() };
+        ReferralExceptionImpl ex = new ReferralExceptionImpl("cn=dn",
+                referrals, initialEnv);
+
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+
+        env.put(Context.REFERRAL, "follow");
+        env.put("test.getReferralContext", "changed");
+
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
+        assertEquals(referrals[0], ex.getReferralInfo());
+        Context refContext = ex.getReferralContext(env, new Control[] {
+                new PagedResultsControl(1, true),
+                new SortControl("hello", true) });
+
+        Hashtable<Object, Object> refEnv = (Hashtable<Object, Object>) refContext
+                .getEnvironment();
+
+        assertEquals(env.get(Context.REFERRAL), refEnv.get(Context.REFERRAL));
+        assertEquals(env.get("test.getReferralContext"), refEnv
+                .get("test.getReferralContext"));
+        Control[] cs = (Control[]) refEnv
+                .get("java.naming.ldap.control.connect");
+        
+        assertNotNull(cs);
+        assertEquals(2, cs.length);
+        assertTrue(cs[0] instanceof PagedResultsControl);
+        assertTrue(cs[1] instanceof SortControl);
+
+        assertFalse(ex.skipReferral());
+
+        assertNull(ex.getReferralInfo());
+        
+        // do nothing
+        ex.retryReferral();
+    }
 }

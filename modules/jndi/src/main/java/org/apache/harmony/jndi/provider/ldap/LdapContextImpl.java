@@ -416,8 +416,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 if (element.getID().equalsIgnoreCase("objectClass")) {
                     element = mergeAttribute(resultAttributes
                             .get("objectClass"), element);
-                    if (resultAttributes.get("objectClass") != null) {
-                        element.remove("javaContainer");
+                    Attribute oc = resultAttributes.get("objectClass");
+                    if (oc != null) {
+                        if (!oc.contains("javaContainer") && oc.size() > 0) {
+                            element.remove("javaContainer");
+                        }
                     }
                     resultAttributes.put(element);
                 } else if (resultAttributes.get(element.getID()) == null) {

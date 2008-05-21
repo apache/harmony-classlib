@@ -26,6 +26,7 @@ import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NamingException;
 import javax.naming.PartialResultException;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
@@ -36,6 +37,8 @@ import javax.naming.directory.SearchControls;
 import javax.naming.event.EventDirContext;
 import javax.naming.event.NamingExceptionEvent;
 import javax.naming.ldap.Control;
+import javax.naming.ldap.ExtendedRequest;
+import javax.naming.ldap.ExtendedResponse;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.PagedResultsControl;
@@ -54,7 +57,6 @@ import org.apache.harmony.jndi.provider.ldap.mock.DisconnectResponse;
 import org.apache.harmony.jndi.provider.ldap.mock.EncodableLdapResult;
 import org.apache.harmony.jndi.provider.ldap.mock.MockLdapMessage;
 import org.apache.harmony.jndi.provider.ldap.mock.MockLdapServer;
-import org.apache.harmony.security.x509.IssuingDistributionPoint;
 
 public class LdapContextServerMockedTest extends TestCase {
     private MockLdapServer server;
@@ -645,7 +647,7 @@ public class LdapContextServerMockedTest extends TestCase {
         eventContext.addNamingListener("", "(objectclass=cn)", new Object[0],
                 new SearchControls(), listener);
         server.disconnectNotify();
-        Thread.sleep(5000);
+        Thread.sleep(500);
         assertNull(listener.exceptionEvent);
         assertNotNull(listener.unsolicatedEvent);
         assertTrue(listener.unsolicatedEvent.getSource() instanceof LdapContext);
@@ -657,6 +659,99 @@ public class LdapContextServerMockedTest extends TestCase {
         assertNull(notification.getException());
         assertNull(notification.getReferrals());
         assertNull(notification.getEncodedValue());
+    }
+
+    public void testExtendedOperation() throws Exception {
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+        LdapContext context = new InitialLdapContext(env, null);
+
+        ASN1Encodable encodableResponse = new ASN1Encodable() {
+
+            public void encodeValues(Object[] values) {
+                new EncodableLdapResult().encodeValues(values);
+                values[4] = Utils.getBytes("It's my id");
+                values[5] = new byte[] { 0, 1, 2, 3 };
+            }
+
+        };
+        server
+                .setResponseSeq(new LdapMessage[] { new LdapMessage(
+                        LdapASN1Constant.OP_EXTENDED_RESPONSE,
+                        encodableResponse, null) });
+
+        ExtendedResponse response = context
+                .extendedOperation(new MockExtendedRequest());
+        assertTrue(response instanceof MockExtendedResponse);
+        assertEquals("It's my id", response.getID());
+        assertEquals(4, response.getEncodedValue().length);
+        assertEquals(0, response.getEncodedValue()[0]);
+        assertEquals(1, response.getEncodedValue()[1]);
+        assertEquals(2, response.getEncodedValue()[2]);
+        assertEquals(3, response.getEncodedValue()[3]);
+
+        // test exception
+        encodableResponse = new ASN1Encodable() {
+            public void encodeValues(Object[] values) {
+                new EncodableLdapResult().encodeValues(values);
+                values[4] = Utils.getBytes("exception");
+                values[5] = new byte[] { 0, 1, 2, 3 };
+            }
+
+        };
+        server
+                .setResponseSeq(new LdapMessage[] { new LdapMessage(
+                        LdapASN1Constant.OP_EXTENDED_RESPONSE,
+                        encodableResponse, null) });
+
+        try {
+            context.extendedOperation(new MockExtendedRequest());
+            fail("Should throw NamingException");
+        } catch (NamingException e) {
+            // expected
+            assertEquals("exception", e.getMessage());
+        }
+    }
+
+    public class MockExtendedRequest implements ExtendedRequest {
+
+        public ExtendedResponse createExtendedResponse(String s, byte[] value,
+                int offset, int length) throws NamingException {
+            if (s.equalsIgnoreCase("exception")) {
+                throw new NamingException("exception");
+            }
+            return new MockExtendedResponse(s, value);
+        }
+
+        public byte[] getEncodedValue() {
+            return new byte[0];
+        }
+
+        public String getID() {
+            return getClass().getName();
+        }
+
+    }
+
+    public class MockExtendedResponse implements ExtendedResponse {
+
+        private String id;
+
+        private byte[] values;
+
+        public MockExtendedResponse(String id, byte[] values) {
+            this.id = id;
+            this.values = values;
+        }
+
+        public byte[] getEncodedValue() {
+            return values;
+        }
+
+        public String getID() {
+            return id;
+        }
+
     }
 
     public class MockUnsolicitedNotificationListener implements
