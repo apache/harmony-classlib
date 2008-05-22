@@ -24,6 +24,7 @@ import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.Vector;
 import java.lang.reflect.Array;
 
@@ -33,6 +34,7 @@ import junit.framework.TestSuite;
 
 import org.apache.harmony.beans.tests.java.beans.EncoderTest.SampleBean;
 import org.apache.harmony.beans.tests.java.beans.XMLEncoderTest.DependencyBean;
+import org.apache.harmony.beans.tests.support.MockOwnerClass;
 import org.apache.harmony.beans.tests.support.mock.MockBean4Codec;
 import org.apache.harmony.beans.tests.support.mock.MockBean4Owner_Owner;
 import org.apache.harmony.beans.tests.support.mock.MockBean4Owner_Target;
@@ -253,6 +255,34 @@ public class XMLDecoderTest extends TestCase {
 
         assertEquals(1, o1.getV());
         assertEquals(o1, t1.getV());
+    }
+    
+    public void testReadObject_Owner_Specific(){
+        String expectedValue = "expected value";
+        HashMap map = new HashMap();
+        map.put("key", expectedValue);
+        
+        XMLDecoder decoder = new XMLDecoder(this.getClass().getResourceAsStream(
+                "/xml/MockOwner.xml"), map);
+        String actualValue = (String) decoder.readObject();
+        assertEquals(expectedValue,actualValue);
+        
+        MockOwnerClass mock = new MockOwnerClass();
+        expectedValue = "I_Ljava.lang.String";
+        decoder = new XMLDecoder(this.getClass().getResourceAsStream(
+        "/xml/MockOwner_Specific.xml"), mock);
+        actualValue = (String) decoder.readObject();
+        assertEquals(expectedValue,actualValue);
+        
+        decoder = new XMLDecoder(this.getClass().getResourceAsStream(
+        "/xml/MockOwner_Ambiguous.xml"), mock);
+        actualValue = (String) decoder.readObject();
+        assertNull(actualValue);
+        
+        decoder = new XMLDecoder(this.getClass().getResourceAsStream(
+        "/xml/MockOwner_Null.xml"), mock);
+        actualValue = (String) decoder.readObject();
+        assertNull(actualValue);
     }
 
     public void testReadObject_Owner_WithWriteStatement() {
