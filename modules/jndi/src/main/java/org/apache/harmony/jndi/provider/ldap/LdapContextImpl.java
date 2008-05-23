@@ -763,8 +763,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         return getAttributes(convertFromStringToName(s), as);
     }
 
-    public static Hashtable<String, Hashtable<String, Hashtable<String, Object>>> schemaTree = new Hashtable<String, Hashtable<String, Hashtable<String, Object>>>();
-
     private Hashtable<String, Object> schemaTable = new Hashtable<String, Object>();
 
     private LdapSchemaContextImpl ldapSchemaCtx = null;
@@ -877,15 +875,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
             while (ids.hasMoreElements()) {
                 String schemaType = ids.nextElement();
-                if (!schemaTree.contains(schemaType.toLowerCase())) {
-                    schemaTree.put(schemaType.toLowerCase(),
-                            new Hashtable<String, Hashtable<String, Object>>());
-
+                if (!schemaTable.contains(schemaType.toLowerCase())) {
                     schemaTable.put(schemaType.toLowerCase(),
                             new Hashtable<String, String>());
                 }
-                Hashtable<String, Hashtable<String, Object>> schemaDefs = schemaTree
-                        .get(schemaType.toLowerCase());
 
                 Hashtable<String, String> schemaDef = (Hashtable<String, String>) schemaTable
                         .get(schemaType.toLowerCase());
@@ -897,154 +890,13 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                     value = (String) attribute.get(i);
                     attrName = SchemaParser.getName(value);
                     schemaDef.put(attrName.toLowerCase(), value);
-
-                    parseValue(schemaType, value.toLowerCase(), schemaDefs);
                 }
-
             }
         }
 
         ldapSchemaCtx = new LdapSchemaContextImpl(this, env, name,
                 schemaTable, LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
         return ldapSchemaCtx;
-    }
-
-    Hashtable<String, Object> findSchemaDefInfo(String schemaType,
-            String className) {
-        Hashtable<String, Hashtable<String, Object>> schemaDefs = schemaTree
-                .get(schemaType);
-        Hashtable<String, Object> schemaDef = schemaDefs.get(className);
-        return schemaDef;
-    }
-
-    /*
-     * Sample schema value from Openldap server is ( 2.5.13.8 NAME
-     * 'numericStringMatch' SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 )
-     * 
-     * TODO check with RFC to see whether all the schema definition has been
-     * catered for
-     */
-    private static void parseValue(String schemaType, String value,
-            Hashtable<String, Hashtable<String, Object>> schemaDefs) {
-        StringTokenizer st = new StringTokenizer(value.toLowerCase());
-        // Skip (
-        st.nextToken();
-
-        String oid = st.nextToken();
-
-        Hashtable<String, Object> schemaDef = new Hashtable<String, Object>();
-        schemaDef.put("orig", value);
-        schemaDef.put("numericoid", oid);
-        String token = null;
-        ArrayList<String> values = null;
-        StringBuilder desc = new StringBuilder();
-        while (st.hasMoreTokens()) {
-            String attrName = st.nextToken();
-            if (attrName.startsWith("x-")) {
-                token = st.nextToken();
-                // remove the ending ' symbol
-                token = token.substring(1, token.length() - 1);
-                schemaDef.put(attrName, token);
-            }
-            if (attrName.startsWith("auxiliary")) {
-                schemaDef.put(attrName, "true");
-            }
-            if (attrName.startsWith("structural")) {
-                schemaDef.put(attrName, "true");
-            }
-            if (attrName.equals("usage") || attrName.equals("equality")
-                    || attrName.equals("syntax") || attrName.equals("ordering")
-                    || attrName.equals("substr")) {
-                token = st.nextToken();
-                schemaDef.put(attrName, token);
-            }
-            if (attrName.equals("desc")) {
-                token = st.nextToken();
-
-                // remove the leading ' symbol
-                if (token.startsWith("'"))
-                    token = token.substring(1);
-                while (!token.endsWith("'")) {
-                    desc.append(token).append(" ");
-                    token = st.nextToken();
-                }
-
-                // remove the ending ' symbol
-                desc.append(token.substring(0, token.length() - 1));
-                schemaDef.put(attrName, desc.toString());
-                desc.delete(0, desc.length());
-            }
-            if (attrName.equals("name")) {
-                token = st.nextToken();
-                values = new ArrayList<String>();
-                // Name has multiple values
-                if (token.startsWith("(")) {
-                    token = st.nextToken();
-                    while (!token.equals(")")) {
-                        // remove the leading ' symbol
-                        if (token.startsWith("'"))
-                            token = token.substring(1);
-                        while (!token.endsWith("'")) {
-                            desc.append(token).append(" ");
-                            token = st.nextToken();
-                        }
-
-                        // remove the ending ' symbol
-                        desc.append(token.substring(0, token.length() - 1));
-                        values.add(desc.toString());
-                        desc.delete(0, desc.length());
-
-                        token = st.nextToken();
-                    }
-                } else {
-                    // remove the leading ' symbol
-                    if (token.startsWith("'"))
-                        token = token.substring(1);
-                    while (!token.endsWith("'")) {
-                        desc.append(token).append(" ");
-                        token = st.nextToken();
-                    }
-
-                    // remove the ending ' symbol
-                    desc.append(token.substring(0, token.length() - 1));
-                    values.add(desc.toString());
-                    desc.delete(0, desc.length());
-                }
-                schemaDef.put(attrName, values);
-                if (schemaType
-                        .equalsIgnoreCase(LdapSchemaContextImpl.LDAP_SYNTAXES)) {
-                    schemaDefs.put(oid, schemaDef);
-                } else {
-                    schemaDefs.put(values.get(0), schemaDef);
-                }
-            }
-            if (attrName.equals("must") || attrName.equals("sup")
-                    || attrName.equals("may")) {
-                token = st.nextToken();
-                values = new ArrayList<String>();
-                // has multiple values
-                if (token.startsWith("(")) {
-                    token = st.nextToken();
-                    while (!token.equals(")")) {
-                        if (!token.equals("$"))
-                            values.add(token);
-                        token = st.nextToken();
-                    }
-                } else {
-                    values.add(token);
-                }
-                schemaDef.put(attrName, values);
-            }
-            if (attrName.equals("abstract") || attrName.equals("structual")
-                    || attrName.equals("auxiliary")
-                    || attrName.equals("single-value")
-                    || attrName.equals("no-user-modification")) {
-                schemaDef.put(attrName, "true");
-            }
-        }
-        if (!schemaDef.keySet().contains("name")) {
-            schemaDefs.put(oid, schemaDef);
-        }
     }
 
     public DirContext getSchema(String s) throws NamingException {

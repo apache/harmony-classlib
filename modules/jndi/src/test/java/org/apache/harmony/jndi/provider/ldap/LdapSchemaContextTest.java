@@ -224,6 +224,13 @@ public class LdapSchemaContextTest extends TestCase {
         } catch (NameNotFoundException e) {
             // Expected.
         }
+        
+        try {
+            namingEnum = schema.list("objectclasses");
+            fail("Should throw NameNotFoundException.");
+        } catch (NameNotFoundException e) {
+            // Expected.
+        }
     }
 
     public void testList_Address() throws Exception {
