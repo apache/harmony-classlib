@@ -166,6 +166,89 @@ public class XMLDecoderTest extends TestCase {
         assertEquals(2, ints[1]);
         assertEquals(3, ints[2]);
     }
+    
+    public void testReadObject_Array_WithoutLength() {
+        // Read array of primitive types without length attribute
+        XMLDecoder dec = new XMLDecoder(this.getClass().getResourceAsStream(
+                "/xml/Array_Primitive.xml"));
+        Object[] arrays = (Object[]) dec.readObject();
+
+        boolean[] booleanArray = (boolean[]) arrays[0];
+        assertTrue(booleanArray[0]);
+        assertFalse(booleanArray[1]);
+
+        short[] shortArray = (short[]) arrays[1];
+        assertEquals(1, shortArray[0]);
+        assertEquals(1, shortArray[1]);
+
+        byte[] byteArray = (byte[]) arrays[2];
+        assertEquals(2, byteArray[0]);
+        assertEquals(2, byteArray[1]);
+
+        char[] charArray = (char[]) arrays[3];
+        assertEquals('c', charArray[0]);
+        assertEquals('c', charArray[1]);
+
+        int[] intArray = (int[]) arrays[4];
+        assertEquals(4, intArray[0]);
+        assertEquals(4, intArray[1]);
+        assertEquals(4, intArray[2]);
+        assertEquals(4, intArray[3]);
+
+        long[] longArray = (long[]) arrays[5];
+        assertEquals(5l, longArray[0]);
+        assertEquals(5l, longArray[1]);
+        assertEquals(5l, longArray[2]);
+        assertEquals(5l, longArray[3]);
+        assertEquals(5l, longArray[4]);
+
+        float[] floatArray = (float[]) arrays[6];
+        assertEquals(6f, floatArray[0]);
+        assertEquals(6f, floatArray[1]);
+
+        double[] doubleArray = (double[]) arrays[7];
+        assertEquals(7d, doubleArray[0]);
+        assertEquals(7d, doubleArray[1]);
+
+        // Read array of Object types without length attribute
+        dec = new XMLDecoder(this.getClass().getResourceAsStream(
+                "/xml/Array_Object.xml"));
+        Object[] array = (Object[]) dec.readObject();
+
+        assertTrue((Boolean) array[0]);
+        assertEquals(new Short((short) 1), (Short) array[1]);
+        assertEquals(new Byte((byte) 2), (Byte) array[2]);
+        assertEquals(new Character('c'), (Character) array[3]);
+        assertEquals(new Integer(4), (Integer) array[4]);
+        assertEquals(new Long(5), (Long) array[5]);
+        assertEquals(new Float(6), (Float) array[6]);
+        assertEquals(new Double(7), (Double) array[7]);
+        assertEquals("string", (String) array[8]);
+
+        // Read wrapper element in array of primitive types
+        dec = new XMLDecoder(this.getClass().getResourceAsStream(
+                "/xml/Array_Wrapper.xml"));
+        int[] integers = (int[]) dec.readObject();
+        assertEquals(11, integers[0]);
+        assertEquals(22, integers[1]);
+    }
+
+    public void testReadObject_Array_Special() {
+        // Read array of Object types in special case without length attribute
+        XMLDecoder dec = new XMLDecoder(this.getClass().getResourceAsStream(
+                "/xml/Array_Null.xml"));
+        Object[] array = (Object[]) dec.readObject();
+        assertNull(array[0]);
+        assertNull(array[1]);
+        assertEquals("", (String) array[2]);
+
+        // Read array with wrong type, it should return null,
+        // and throw a java.lang.IllegalArgumentException
+        dec = new XMLDecoder(this.getClass().getResourceAsStream(
+                "/xml/Array_Illegal.xml"));
+        array = (Object[]) dec.readObject();
+        assertNull(array);
+    }
 
     public void testReadObject_PropertyDependency() {
         XMLDecoder dec = new XMLDecoder(this.getClass().getResourceAsStream(

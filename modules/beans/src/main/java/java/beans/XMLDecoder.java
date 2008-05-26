@@ -197,19 +197,29 @@ public class XMLDecoder {
             }
         }
 
-        @SuppressWarnings("nls")
         private void startArrayElem(Attributes attributes) {
             Elem elem = new Elem();
             elem.isExpression = true;
-            elem.id = attributes.getValue("id");
+            elem.id = attributes.getValue("id"); //$NON-NLS-1$
             try {
                 // find component class
-                Class<?> compClass = classForName(attributes.getValue("class"));
-                // find length
-                int length = Integer.parseInt(attributes.getValue("length"));
-                // execute, new array instance
-                elem.result = Array.newInstance(compClass, length);
-                elem.isExecuted = true;
+                Class<?> compClass = classForName(attributes.getValue("class")); //$NON-NLS-1$
+                String lengthValue = attributes.getValue("length"); //$NON-NLS-1$
+                if (lengthValue != null) {
+                    // find length
+                    int length = Integer
+                            .parseInt(attributes.getValue("length")); //$NON-NLS-1$
+                    // execute, new array instance
+                    elem.result = Array.newInstance(compClass, length);
+                    elem.isExecuted = true;
+                } else {
+                    // create array without length attribute,
+                    // delay the excution to the end,
+                    // get array length from sub element
+                    elem.target = compClass;
+                    elem.methodName = "newArray"; //$NON-NLS-1$
+                    elem.isExecuted = false;
+                }
             } catch (Exception e) {
                 listener.exceptionThrown(e);
             }
