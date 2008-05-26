@@ -1105,6 +1105,36 @@ public class LdapSchemaContextTest extends TestCase {
         }
     }
 
+    public void testModifyAttributes_WatchSubSchema() throws NamingException {
+        // Creates the attributes.
+        Attributes attrs = new BasicAttributes(false); // Ignore case
+        attrs.put("NAME", "ListObjectClass");
+        attrs.put("SUP", "top");
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.77");
+        attrs.put("DESC", "for test");
+        attrs.put("STRUCTURAL", "fds");
+
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+
+        DirContext dir = schema.createSubcontext(new CompositeName(
+                "ClassDefinition/ListObjectClass"), attrs);
+
+        Attributes newAttrs = new BasicAttributes(false);
+        newAttrs.put("NAME", "Modified");
+        newAttrs.put("SUP", "top");
+        newAttrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.77");
+        newAttrs.put("DESC", "for test");
+        newAttrs.put("STRUCTURAL", "fds");
+
+        schema.modifyAttributes("ClassDefinition/ListObjectClass",
+                DirContext.REPLACE_ATTRIBUTE, newAttrs);
+
+        Attributes subSchemaAttrs = dir.getAttributes("");
+        assertEquals("Modified", subSchemaAttrs.get("NAME").get());
+    }
+
     public void testModifyAttributes_Exception() throws NamingException {
         Attributes attrs = new BasicAttributes(true); // Ignore case
         attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.88.11");
@@ -1156,6 +1186,21 @@ public class LdapSchemaContextTest extends TestCase {
             fail("Should throw NameNotFoundException.");
         } catch (NameNotFoundException e) {
             // Expected.
+        }
+
+        try {
+            schema.modifyAttributes("", new ModificationItem[] {});
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // expected
+        }
+
+        try {
+            schema.modifyAttributes(new CompositeName(""),
+                    new ModificationItem[] {});
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // expected
         }
     }
 
@@ -2073,6 +2118,165 @@ public class LdapSchemaContextTest extends TestCase {
             assertTrue(verifyList.remove(result.getName()));
         }
         assertEquals(2, count);
+    }
+
+    public void testRename() throws NamingException {
+        Name name1 = new CompositeName("test1");
+        Name name2 = new CompositeName("/");
+        Name invalidName1 = new CompositeName("");
+        try {
+            schema.rename(name1, name2);
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(invalidName1, name2);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(name2, invalidName1);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("test1", "test2");
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("", "test2");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("test1", "");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("classdefinition/javaClass", "test");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("classdefinition\\javaClass", "test");
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(new CompositeName("classdefinition/javaClass"),
+                    new CompositeName("test"));
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(new CompositeName("classdefinition\\javaClass"),
+                    new CompositeName("test"));
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("classdefinition/javaClass", "");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("", "classdefinition/javaClass");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+    }
+
+    public void testRename_Exception() throws NamingException {
+        Name name = new CompositeName("test");
+        Name nullName = null;
+        String nullString = null;
+        try {
+            schema.rename(nullName, name);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(name, nullName);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(nullName, nullName);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(nullString, "test");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("test", nullString);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(nullString, nullString);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("\\", nullString);
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename("/", nullString);
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
+
+        try {
+            schema.rename(null, "");
+            fail("Should throw NullPointerException");
+        } catch (NullPointerException e) {
+            // Expected.
+        }
     }
 
     public void testClassDefinition() throws NamingException {

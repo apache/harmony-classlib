@@ -21,6 +21,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.naming.Binding;
 import javax.naming.CompositeName;
@@ -257,7 +258,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             // jndi.2E=The name is null
             throw new NullPointerException(Messages.getString("jndi.2E")); //$NON-NLS-1$
         }
-        
+
         if (attributes == null) {
             // jndi.13=Non-null attribute is required for modification
             throw new NullPointerException(Messages.getString("jndi.13")); //$NON-NLS-1$
@@ -283,7 +284,8 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         modifyAttributes(name, items);
     }
 
-    // Mapping from DirContext's attribute operation code to server's operation code. 
+    // Mapping from DirContext's attribute operation code to server's operation
+    // code.
     private static final int OperationJndi2Ldap[] = { -1, 0, 2, 1, };
 
     @Override
@@ -291,6 +293,12 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             throws NamingException {
         // First get the old schema.
         int size = name.size();
+
+        if (size < 1) {
+            // ldap.38=Can't modify schema root
+            throw new SchemaViolationException(Messages.getString("ldap.38")); //$NON-NLS-1$
+        }
+
         Hashtable<String, Object> subSchemaTree = doLookup(name
                 .getPrefix(size - 1), size - 1);
 
@@ -366,17 +374,41 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
         ModifyOp op = new ModifyOp(ldapContext.subschemasubentry);
         Name modifySchemaName = name.getPrefix(size - 1).addAll(rdn);
         BasicAttribute schemaEntry = new LdapAttribute(new BasicAttribute(
-                jndi2ldap(modifySchemaName.toString()), schemaLine), ldapContext);
+                jndi2ldap(modifySchemaName.toString()), schemaLine),
+                ldapContext);
         op.addModification(OperationJndi2Ldap[DirContext.REMOVE_ATTRIBUTE],
                 new LdapAttribute(schemaEntry, ldapContext));
         BasicAttribute addSchemaEntry = new LdapAttribute(new BasicAttribute(
-                jndi2ldap(modifySchemaName.toString()), newSchemaLine), ldapContext);
+                jndi2ldap(modifySchemaName.toString()), newSchemaLine),
+                ldapContext);
         op.addModification(OperationJndi2Ldap[DirContext.ADD_ATTRIBUTE],
                 new LdapAttribute(addSchemaEntry, ldapContext));
 
         doBasicOperation(op);
-        subSchemaTree.remove(subSchemaType);
-        subSchemaTree.put(subSchemaType, newSchemaLine);
+
+        // Modify the hashtable to reflect the modification.
+        Object subSchema = subSchemaTree.get(subSchemaType);
+        if (subSchema instanceof String) {
+            subSchemaTree.remove(subSchemaType);
+            subSchemaTree.put(subSchemaType, newSchemaLine);
+        } else {
+            /*
+             * Here we can only change the content of subSchemaTable, instead of
+             * change the reference. Because in other ldapSchemaContext, there
+             * may be reference to this table. And they should also reflect the
+             * changes.
+             */
+            Hashtable<String, Object> subSchemaTable = (Hashtable<String, Object>) subSchema;
+            subSchemaTable.clear();
+            Hashtable<String, Object> parsedTable = SchemaParser
+                    .parseValue(newSchemaLine);
+            Iterator<Entry<String, Object>> it = parsedTable.entrySet()
+                    .iterator();
+            while (it.hasNext()) {
+                Entry<String, Object> entry = it.next();
+                subSchemaTable.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override
@@ -579,14 +611,26 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
     @Override
     public void rename(Name nOld, Name nNew) throws NamingException {
+        if (nOld == null || nNew == null) {
+            throw new NullPointerException();
+        }
+
+        if (nOld.size() == 0 || nNew.size() == 0) {
+            // ldap.3A=Can't rename empty name
+            throw new InvalidNameException(Messages.getString("ldap.3A")); //$NON-NLS-1$
+        }
+
+        if (nOld.size() > 1 || nNew.size() > 1) {
+            // ldap.3B=Can't rename across contexts
+            throw new InvalidNameException(Messages.getString("ldap.3B")); //$NON-NLS-1$
+        }
         // ldap.39=Can't rename schema
         throw new SchemaViolationException(Messages.getString("ldap.39")); //$NON-NLS-1$
     }
 
     @Override
     public void rename(String sOld, String sNew) throws NamingException {
-        // ldap.39=Can't rename schema
-        throw new SchemaViolationException(Messages.getString("ldap.39")); //$NON-NLS-1$
+        rename(new CompositeName(sOld), new CompositeName(sNew));
     }
 
     @Override
@@ -720,7 +764,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
     public NamingEnumeration<SearchResult> search(String name, String filter, SearchControls searchControls) throws NamingException {
         return search(new CompositeName(name), filter, searchControls);
     }
-    
+
     protected DirContext getClassDefinition(Attribute objectclassAttr)
             throws NamingException {
         Hashtable<String, Object> definitionTable = new Hashtable<String, Object>();
