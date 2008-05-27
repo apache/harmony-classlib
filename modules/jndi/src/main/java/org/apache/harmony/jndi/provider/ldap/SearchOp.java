@@ -44,6 +44,9 @@ public class SearchOp implements LdapOperation, ASN1Encodable,
     private LdapSearchResult result;
 
     public LdapSearchResult getSearchResult() {
+        if (result == null) {
+            result = new LdapSearchResult();
+        }
         return result;
     }
 

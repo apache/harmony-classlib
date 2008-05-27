@@ -49,6 +49,8 @@ public class LdapSearchResult {
 
     private String address;
 
+    private String[] binaryAttributes;
+
     public String getAddress() {
 		return address;
 	}
@@ -109,6 +111,9 @@ public class LdapSearchResult {
         for (Object[] objects : list) {
             LdapAttribute attr = new LdapAttribute();
             attr.decodeValues(objects);
+            if (!LdapAttribute.isBinary(attr.getID(), binaryAttributes)) {
+                attr.convertValueToString();
+            }
             attrs.put(attr);
         }
     }
@@ -140,4 +145,13 @@ public class LdapSearchResult {
     public void setRefURLs(List<String> refURLs) {
         this.refURLs = refURLs;
     }
+
+    public String[] getBinaryAttributes() {
+        return binaryAttributes;
+    }
+
+    public void setBinaryAttributes(String[] binaryAttributes) {
+        this.binaryAttributes = binaryAttributes;
+    }
+
 }

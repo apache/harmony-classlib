@@ -143,6 +143,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     private List<UnsolicitedNotificationListener> unls;
 
+    private String[] binaryAttributes;
+
     private static final Control NON_CRITICAL_MANAGE_REF_CONTROL = new ManageReferralControl(
             Control.NONCRITICAL);
 
@@ -153,6 +155,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     private static final String LDAP_CONTROL_CONNECT = "java.naming.ldap.control.connect"; //$NON-NLS-1$
 
     private static final String LDAP_TYPES_ONLY = "java.naming.ldap.typesOnly"; //$NON-NLS-1$
+
+    private static final String LDAP_ATTRIBUTES_BINARY = "java.naming.ldap.attributes.binary"; //$NON-NLS-1$
 
     /**
      * Some properties, such as 'java.naming.security.authentication', changed
@@ -1256,6 +1260,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             }
         }
 
+        op.getSearchResult().setBinaryAttributes(binaryAttributes);
+
         LdapMessage message = null;
         try {
             message = client.doOperation(op, requestControls);
@@ -1415,6 +1421,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             isReBind = true;
         }
 
+        if (s.equals(LDAP_ATTRIBUTES_BINARY)) {
+            String value = (String) o;
+            StringTokenizer st = new StringTokenizer(value.trim());
+            binaryAttributes = value.trim().split(" ");
+        }
         return preValue;
     }
 
@@ -1964,6 +1975,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 isReConnect = true;
             }
             isReBind = true;
+        }
+
+        if (s.equals(LDAP_ATTRIBUTES_BINARY)) {
+            binaryAttributes = null;
         }
 
         return preValue;

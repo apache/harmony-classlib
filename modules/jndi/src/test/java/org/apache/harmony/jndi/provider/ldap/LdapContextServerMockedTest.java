@@ -363,7 +363,7 @@ public class LdapContextServerMockedTest extends TestCase {
                         new EncodableLdapResult(), null) });
 
         context.search("cn=test", null);
-        
+
     }
 
     public void testReferralFollow() throws Exception {
@@ -444,6 +444,43 @@ public class LdapContextServerMockedTest extends TestCase {
 
         initialDirContext.lookup("");
 
+    }
+
+    public void testAddToEnvironment_binaryAttributeProp() throws Exception {
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
+        assertNull(env.get(Context.REFERRAL));
+
+        InitialDirContext initialDirContext = new InitialDirContext(env);
+
+        initialDirContext.addToEnvironment(
+                "java.naming.ldap.attributes.binary", "cn");
+        assertEquals("cn", initialDirContext.getEnvironment().get(
+                "java.naming.ldap.attributes.binary"));
+
+        initialDirContext.addToEnvironment(
+                "java.naming.ldap.attributes.binary", "cn ou");
+        assertEquals("cn ou", initialDirContext.getEnvironment().get(
+                "java.naming.ldap.attributes.binary"));
+
+        initialDirContext.addToEnvironment(
+                "java.naming.ldap.attributes.binary", " cn ");
+        assertEquals(" cn ", initialDirContext.getEnvironment().get(
+                "java.naming.ldap.attributes.binary"));
+
+        initialDirContext.addToEnvironment(
+                "java.naming.ldap.attributes.binary", " cn ou ");
+        assertEquals(" cn ou ", initialDirContext.getEnvironment().get(
+                "java.naming.ldap.attributes.binary"));
+
+        try {
+            initialDirContext.addToEnvironment(
+                    "java.naming.ldap.attributes.binary", new Object());
+            fail("Should throw ClassCastException");
+        } catch (ClassCastException e) {
+            // expected
+        }
     }
 
     public void testReconnect() throws Exception {
@@ -527,6 +564,12 @@ public class LdapContextServerMockedTest extends TestCase {
         another.reconnect(null);
     }
 
+    /*
+     * This test would block on RI, that because of difference of inner
+     * implementation between RI and Harmony, It's hard to emulate using
+     * MockServer. If run in real environment, the test will pass both on RI and
+     * Harmony.
+     */
     public void testFederation() throws Exception {
         server.setResponseSeq(new LdapMessage[] { new LdapMessage(
                 LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
@@ -559,8 +602,8 @@ public class LdapContextServerMockedTest extends TestCase {
             assertEquals(1, e.getResolvedName().size());
             assertEquals("/", e.getResolvedName().toString());
             assertTrue(e.getAltNameCtx() instanceof LdapContext);
-            assertEquals(context.getNameInNamespace(), e
-                    .getAltNameCtx().getNameInNamespace());
+            assertEquals(context.getNameInNamespace(), e.getAltNameCtx()
+                    .getNameInNamespace());
             assertTrue(e.getResolvedObj() instanceof Reference);
 
             Reference ref = (Reference) e.getResolvedObj();
@@ -571,8 +614,8 @@ public class LdapContextServerMockedTest extends TestCase {
             assertEquals(1, ref.size());
             RefAddr addr = ref.get(0);
             assertTrue(addr.getContent() instanceof LdapContext);
-            assertEquals(context.getNameInNamespace(),
-                    ((LdapContext) addr.getContent()).getNameInNamespace());
+            assertEquals(context.getNameInNamespace(), ((LdapContext) addr
+                    .getContent()).getNameInNamespace());
             assertEquals("nns", addr.getType());
         }
 
@@ -607,8 +650,8 @@ public class LdapContextServerMockedTest extends TestCase {
             assertEquals(1, e.getResolvedName().size());
             assertEquals("/", e.getResolvedName().toString());
             assertTrue(e.getAltNameCtx() instanceof LdapContext);
-            assertEquals(context.getNameInNamespace(), e
-                    .getAltNameCtx().getNameInNamespace());
+            assertEquals(context.getNameInNamespace(), e.getAltNameCtx()
+                    .getNameInNamespace());
             assertTrue(e.getResolvedObj() instanceof Reference);
 
             Reference ref = (Reference) e.getResolvedObj();
@@ -619,11 +662,12 @@ public class LdapContextServerMockedTest extends TestCase {
             assertEquals(1, ref.size());
             RefAddr addr = ref.get(0);
             assertTrue(addr.getContent() instanceof LdapContext);
-            assertEquals(context.getNameInNamespace(),
-                    ((LdapContext) addr.getContent()).getNameInNamespace());
+            assertEquals(context.getNameInNamespace(), ((LdapContext) addr
+                    .getContent()).getNameInNamespace());
             assertEquals("nns", addr.getType());
         }
     }
+
     public void testUnsolicitedNotification() throws Exception {
         server.setResponseSeq(new LdapMessage[] { new LdapMessage(
                 LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
