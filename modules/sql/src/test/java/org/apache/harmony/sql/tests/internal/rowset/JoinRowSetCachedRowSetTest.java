@@ -611,6 +611,7 @@ public class JoinRowSetCachedRowSetTest extends JoinRowSetTestCase {
         } catch (SyncProviderException e) {
             // Expected.
         }
+        jrs.setTableName("USER_INFO");
         jrs.acceptChanges(conn);
         rs = st.executeQuery("select * from USER_INFO");
         crset = newNoInitialInstance();

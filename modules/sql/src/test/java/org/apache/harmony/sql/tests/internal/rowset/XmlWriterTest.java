@@ -527,15 +527,17 @@ public class XmlWriterTest extends CachedRowSetTestCase {
                     i++;
                 }
                 assertEquals("type", list.item(i).getNodeName());
-                assertEquals(key, list.item(i).getTextContent());
+                String docTypeName = list.item(i).getTextContent();
+                assertTrue(webRs.getTypeMap().keySet().contains(docTypeName));
                 ++i;
 
                 while (!(list.item(i) instanceof Element)) {
                     i++;
                 }
                 assertEquals("class", list.item(i).getNodeName());
-                assertEquals(webRs.getTypeMap().get(key).getName(), list
-                        .item(i).getTextContent());
+                assertEquals(webRs.getTypeMap().get(docTypeName).getName(),
+                        list.item(i).getTextContent());
+
                 ++i;
             }
         }

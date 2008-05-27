@@ -251,9 +251,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
             // expected
         }
 
-        rs = st.executeQuery("SELECT * FROM USER_INFO");
-        noInitialCrset.populate(rs);
-
+        noInitialCrset.populate(st.executeQuery("SELECT * FROM USER_INFO"));
         assertTrue(noInitialCrset.isBeforeFirst());
         try {
             noInitialCrset.undoUpdate();
@@ -271,110 +269,79 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
             // expected
         }
 
-        /*
-         * The implementation of RI's undoUpdate seems not follow the spec at
-         * all.
-         */
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            assertTrue(noInitialCrset.absolute(3));
-            noInitialCrset.undoUpdate(); // no effect here
-
-            noInitialCrset.updateString(2, "update3");
-            noInitialCrset.undoUpdate(); // no effect here
-            assertEquals("update3", noInitialCrset.getString(2));
-            noInitialCrset.updateRow();
-            noInitialCrset.undoUpdate(); // effect here
-            assertEquals("test3", noInitialCrset.getString(2));
-
-            noInitialCrset.acceptChanges(conn);
-            assertEquals("test3", noInitialCrset.getString(2));
-            noInitialCrset.undoUpdate(); // no effect here
-
-            noInitialCrset.moveToInsertRow();
-            noInitialCrset.updateInt(1, 10);
-            noInitialCrset.updateString(2, "update10");
-            // undoUpdate() will set all columns of insert row null
-            noInitialCrset.undoUpdate();
-            for (int i = 1; i <= DEFAULT_COLUMN_COUNT; i++) {
-                assertNull(noInitialCrset.getObject(i));
-            }
-        } else {
-            assertTrue(noInitialCrset.absolute(3));
-            try {
-                noInitialCrset.undoUpdate();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // RI throw SQLException here.
-            }
-
-            noInitialCrset.updateString(2, "update3");
-            noInitialCrset.updateLong(3, 3333333L);
-            noInitialCrset.updateFloat(7, 3.3F);
-            try {
-                noInitialCrset.undoUpdate();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // RI throw SQLException here.
-            }
-
-            noInitialCrset.updateRow();
-            try {
-                noInitialCrset.undoUpdate();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // RI throw SQLException here.
-            }
-
-            noInitialCrset.acceptChanges(conn);
-            assertEquals("update3", noInitialCrset.getString(2));
-            assertEquals(3333333L, noInitialCrset.getLong(3));
-            assertEquals(3.3F, noInitialCrset.getFloat(7));
-            try {
-                noInitialCrset.undoUpdate();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // RI throw SQLException here.
-            }
-
-            noInitialCrset.moveToInsertRow();
-            noInitialCrset.updateInt(1, 10);
-            noInitialCrset.updateString(2, "update10");
-            noInitialCrset.insertRow();
-            noInitialCrset.moveToCurrentRow();
-            noInitialCrset.absolute(4);
-            assertEquals(10, noInitialCrset.getInt(1));
-            noInitialCrset.updateString(2, "abc");
-            // undoUpdate() has no effect here
-            noInitialCrset.undoUpdate();
-            noInitialCrset.acceptChanges(conn);
-
-            // check db
-            rs = st.executeQuery("SELECT * FROM USER_INFO WHERE ID = 10");
-            assertTrue(rs.next());
-            assertEquals(10, rs.getInt(1));
-            assertEquals("abc", rs.getString(2));
-
-            noInitialCrset.absolute(4);
-            assertEquals(10, noInitialCrset.getInt(1));
-            try {
-                noInitialCrset.undoUpdate();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // RI throw SQLException here.
-            }
-        }
-
-        noInitialCrset.moveToInsertRow();
-        noInitialCrset.updateInt(1, 10);
-        noInitialCrset.updateString(2, "update10");
-        noInitialCrset.insertRow();
+        assertTrue(noInitialCrset.absolute(3));
         try {
             noInitialCrset.undoUpdate();
             fail("should throw SQLException");
         } catch (SQLException e) {
             // RI throw SQLException here.
         }
+
+        noInitialCrset.updateString(2, "update3");
+        noInitialCrset.updateLong(3, 3333333L);
+        noInitialCrset.updateFloat(7, 3.3F);
+        try {
+            noInitialCrset.undoUpdate();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // RI throw SQLException here.
+        }
+
+        noInitialCrset.updateRow();
+        try {
+            noInitialCrset.undoUpdate();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // RI throw SQLException here.
+        }
+
+        noInitialCrset.acceptChanges(conn);
+        assertEquals("update3", noInitialCrset.getString(2));
+        assertEquals(3333333L, noInitialCrset.getLong(3));
+        assertEquals(3.3F, noInitialCrset.getFloat(7));
+        try {
+            noInitialCrset.undoUpdate();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // RI throw SQLException here.
+        }
+
+        noInitialCrset.moveToInsertRow();
+        noInitialCrset.updateInt(1, 10);
+        noInitialCrset.updateString(2, "update10");
+        noInitialCrset.insertRow();
         noInitialCrset.moveToCurrentRow();
+        try {
+            noInitialCrset.undoUpdate();
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // RI throw SQLException here.
+        }
+
+        // move to the inserted row
+        noInitialCrset.absolute(4);
+        assertTrue(noInitialCrset.rowInserted());
+        assertEquals(10, noInitialCrset.getInt(1));
+        // undoUpdate() work. It undo the insert operation.
+        noInitialCrset.undoUpdate();
+        // The cursor moves to the next row.
+        assertFalse(noInitialCrset.rowInserted());
+        assertEquals(4, noInitialCrset.getInt(1));
+        noInitialCrset.acceptChanges(conn);
+
+        // check db
+        rs = st.executeQuery("SELECT COUNT(*) FROM USER_INFO WHERE ID = 10");
+        assertTrue(rs.next());
+        assertEquals(0, rs.getInt(1));
+
+        // check CachedRowSet
+        noInitialCrset.beforeFirst();
+        int index = 0;
+        while (noInitialCrset.next()) {
+            index++;
+            assertEquals(index, noInitialCrset.getInt(1));
+        }
+        assertEquals(4, index);
     }
 
     public void testUpdateValue() throws Exception {
@@ -425,8 +392,8 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
 
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
-
     }
 
     public void testUpdateLong() throws SQLException {
@@ -481,8 +448,8 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.updateTimestamp(12, new Timestamp(874532105));
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
-
     }
 
     public void testUpdateInt() throws SQLException {
@@ -543,6 +510,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.updateTimestamp(12, new Timestamp(874532105));
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
 
         ResultSet rs = st
@@ -615,6 +583,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.updateTimestamp(12, new Timestamp(874532105));
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
     }
 
@@ -656,6 +625,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.updateTimestamp(12, new Timestamp(874532105));
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
     }
 
@@ -712,7 +682,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
 
         crset.insertRow();
         crset.moveToCurrentRow();
-
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
     }
 
@@ -820,6 +790,7 @@ public class CachedRowSetUpdateTest extends CachedRowSetTestCase {
         crset.updateTimestamp(12, new Timestamp(874532105));
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
     }
 

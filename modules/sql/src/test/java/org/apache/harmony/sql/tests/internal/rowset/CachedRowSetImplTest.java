@@ -1525,6 +1525,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
         crset.updateTimestamp(12, new Timestamp(874532105));
         crset.insertRow();
         crset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         crset.acceptChanges(conn);
         // check the new row in CachedRowSet
         crset.beforeFirst();
@@ -1550,6 +1551,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             noInitialCrset.insertRow();
         }
         noInitialCrset.moveToCurrentRow();
+        crset.setTableName("USER_INFO");
         noInitialCrset.acceptChanges(conn);
         // check the new rows in CachedRowSet
         assertEquals(20, noInitialCrset.size());
@@ -1734,28 +1736,11 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             crset.deleteRow();
         }
 
-        // TODO maybe RI's bug
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            crset.acceptChanges(conn);
-        } else {
-            try {
-                crset.acceptChanges(conn);
-            } catch (NullPointerException e) {
-                // RI would throw NullPointerException when deleting a row in
-                // which some columns' value are null
-            }
-        }
+        crset.acceptChanges(conn);
         // check DB
-        rs = st.executeQuery("select * from USER_INFO");
-        int rowCount = 0;
-        while (rs.next()) {
-            rowCount++;
-        }
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            assertEquals(0, rowCount);
-        } else {
-            assertEquals(4, rowCount);
-        }
+        rs = st.executeQuery("select count(*) from USER_INFO");
+        assertTrue(rs.next());
+        assertEquals(0, rs.getInt(1));
     }
 
     public void testAcceptChanges_DeleteException() throws Exception {
@@ -2437,7 +2422,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             noInitialCrset.populate(rs);
 
             Collection<?> collection = noInitialCrset.toCollection();
-            assertEquals("class java.util.TreeMap$2", collection.getClass()
+            assertEquals("class java.util.TreeMap$Values", collection.getClass()
                     .toString());
             Iterator iter = collection.iterator();
             assertTrue(iter.hasNext());

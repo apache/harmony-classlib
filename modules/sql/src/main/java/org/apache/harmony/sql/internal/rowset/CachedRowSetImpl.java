@@ -1141,7 +1141,7 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
             throw new SQLException(Messages.getString("rowset.4")); //$NON-NLS-1$
         }
         rows.remove(currentRow);
-        next();
+        absolute(currentRowIndex);
         if (isNotifyListener) {
             notifyRowChanged();
         }
@@ -1149,16 +1149,16 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
 
     public void undoUpdate() throws SQLException {
         checkValidRow();
-        if (isCursorOnInsert && insertRow == null) {
+        if (isCursorOnInsert) {
             // rowset.11=Illegal operation on an insert row
             throw new SQLException(Messages.getString("rowset.11")); //$NON-NLS-1$
         }
-        if (currentRow == insertRow) {
-            currentRow = new CachedRow(new Object[columnCount]);
-        } else if (rowUpdated()) {
-            currentRow.restoreOriginal();
+        if (!rowInserted()) {
+            // rowset.4=Not an insert row
+            throw new SQLException(Messages.getString("rowset.4")); //$NON-NLS-1$
         }
-
+        rows.remove(currentRow);
+        absolute(currentRowIndex);
         if (isNotifyListener) {
             notifyRowChanged();
         }

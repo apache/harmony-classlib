@@ -69,7 +69,7 @@ public class CachedRowSetSQLWarningTest extends CachedRowSetTestCase {
         rs = st.executeQuery("SELECT * FROM USER_INFO");
         noInitialCrset.populate(rs);
         assertNull(rs.getWarnings());
-        
+
         assertTrue(noInitialCrset.first());
         assertNull(rs.getWarnings());
     }
@@ -119,6 +119,7 @@ public class CachedRowSetSQLWarningTest extends CachedRowSetTestCase {
         assertNull(rsWarning.getSQLState());
         assertEquals(0, rsWarning.getErrorCode());
 
+        noInitialCrset.setTableName("USER_INFO");
         noInitialCrset.acceptChanges(conn);
         assertEquals(rsWarning, noInitialCrset.getRowSetWarnings());
         assertEquals(0, rsWarning.getErrorCode());

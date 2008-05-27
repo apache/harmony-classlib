@@ -180,6 +180,7 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         noInitialCrset.moveToCurrentRow();
 
         // commit to database
+        noInitialCrset.setTableName("USER_INFO");
         noInitialCrset.acceptChanges(conn);
 
         // check db
@@ -385,6 +386,7 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
             // expected
         }
         noInitialCrset.moveToCurrentRow();
+        noInitialCrset.setTableName("USER_INFO");
         noInitialCrset.acceptChanges(conn);
         assertEquals(3, noInitialCrset.getInt(1));
 
@@ -422,9 +424,6 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         }
         assertEquals(20, noInitialCrset.getInt(1));
         assertTrue(noInitialCrset.rowInserted());
-        /*
-         * When run on RI, undoInsert() has no effect.
-         */
         noInitialCrset.undoInsert();
 
         // commit to database
@@ -433,11 +432,6 @@ public class CachedRowSetInsertTest extends CachedRowSetTestCase {
         // check db
         rs = st.executeQuery("SELECT COUNT(*) FROM USER_INFO WHERE ID = 20");
         assertTrue(rs.next());
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            assertEquals(0, rs.getInt(1));
-        } else {
-            // undoInsert() has no effect when run RI.
-            assertEquals(1, rs.getInt(1));
-        }
+        assertEquals(0, rs.getInt(1));
     }
 }

@@ -384,30 +384,9 @@ public class FilteredRowSetTest extends CachedRowSetTestCase {
          * when running on RI.
          */
         filteredRowSet.moveToInsertRow();
-        if ("true".equals(System.getProperty("Testing Harmony"))) {
-            filteredRowSet.updateInt(1, 10);
-            filteredRowSet.updateString(2, "insert10");
-            filteredRowSet.insertRow();
-        } else {
-            try {
-                filteredRowSet.updateInt(1, 10);
-                fail("should throw NullPointerException");
-            } catch (NullPointerException e) {
-                // expected
-            }
-            try {
-                filteredRowSet.updateString(2, "insert10");
-                fail("should throw NullPointerException");
-            } catch (NullPointerException e) {
-                // expected
-            }
-            try {
-                filteredRowSet.insertRow();
-                fail("should throw SQLException");
-            } catch (SQLException e) {
-                // expected
-            }
-        }
+        filteredRowSet.updateInt(1, 10);
+        filteredRowSet.updateString(2, "insert10");
+        filteredRowSet.insertRow();
         filteredRowSet.moveToCurrentRow();
     }
 

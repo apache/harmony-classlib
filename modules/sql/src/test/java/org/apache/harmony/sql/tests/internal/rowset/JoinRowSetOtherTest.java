@@ -126,20 +126,11 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
         }
 
         // Tests setJoinType(CROSS_JOIN)
-        if (System.getProperty("Testing Harmony") == "true") {
-            try {
-                jrs.setJoinType(JoinRowSet.CROSS_JOIN);
-                fail("Should throw SQLException according to spec.");
-            } catch (SQLException e) {
-                // Expected.
-            }
-        } else {
-            try {
-                jrs.setJoinType(JoinRowSet.CROSS_JOIN);
-                fail("Should throw UnsupportedOperationException in RI");
-            } catch (UnsupportedOperationException e) {
-                // Expected
-            }
+        try {
+            jrs.setJoinType(JoinRowSet.CROSS_JOIN);
+            fail("Should throw SQLException according to spec.");
+        } catch (SQLException e) {
+            // Expected.
         }
 
         // Tests setJoinType(INNER_JOIN)
@@ -148,54 +139,27 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
         assertEquals(JoinRowSet.INNER_JOIN, joinType);
 
         // Tests setJoinType(FULL_JOIN)
-        if (System.getProperty("Testing Harmony") == "true") {
-            try {
-                jrs.setJoinType(JoinRowSet.FULL_JOIN);
-                fail("Should throw SQLException according to spec.");
-            } catch (SQLException e) {
-                // Expected.
-            }
-        } else {
-            try {
-                jrs.setJoinType(JoinRowSet.FULL_JOIN);
-                fail("Should throw UnsupportedOperationException in RI");
-            } catch (UnsupportedOperationException e) {
-                // Expected
-            }
+        try {
+            jrs.setJoinType(JoinRowSet.FULL_JOIN);
+            fail("Should throw SQLException according to spec.");
+        } catch (SQLException e) {
+            // Expected.
         }
 
         // Tests setJoinType(LEFT_OUTER_JOIN)
-        if (System.getProperty("Testing Harmony") == "true") {
-            try {
-                jrs.setJoinType(JoinRowSet.LEFT_OUTER_JOIN);
-                fail("Should throw SQLException according to spec.");
-            } catch (SQLException e) {
-                // Expected.
-            }
-        } else {
-            try {
-                jrs.setJoinType(JoinRowSet.LEFT_OUTER_JOIN);
-                fail("Should throw UnsupportedOperationException in RI");
-            } catch (UnsupportedOperationException e) {
-                // Expected
-            }
+        try {
+            jrs.setJoinType(JoinRowSet.LEFT_OUTER_JOIN);
+            fail("Should throw SQLException according to spec.");
+        } catch (SQLException e) {
+            // Expected.
         }
 
         // Tests setJoinType(RIGHT_OUTER_JOIN)
-        if (System.getProperty("Testing Harmony") == "true") {
-            try {
-                jrs.setJoinType(JoinRowSet.RIGHT_OUTER_JOIN);
-                fail("Should throw SQLException according to spec.");
-            } catch (SQLException e) {
-                // Expected.
-            }
-        } else {
-            try {
-                jrs.setJoinType(JoinRowSet.RIGHT_OUTER_JOIN);
-                fail("Should throw UnsupportedOperationException in RI");
-            } catch (UnsupportedOperationException e) {
-                // Expected
-            }
+        try {
+            jrs.setJoinType(JoinRowSet.RIGHT_OUTER_JOIN);
+            fail("Should throw SQLException according to spec.");
+        } catch (SQLException e) {
+            // Expected.
         }
 
         // Tests setJoinType(-1)
@@ -307,22 +271,22 @@ public class JoinRowSetOtherTest extends JoinRowSetTestCase {
      * @tests java.sql.rowset.joinRowSet#addRowSet()
      */
     public void testAddRowSet_NoInitialCachedRowSet() throws Exception {
-        Collection collection;
-
         CachedRowSet crs = newNoInitialInstance();
-        
+
         if ("true".equals(System.getProperty("Testing Harmony"))) {
             try {
                 jrs.addRowSet(crs, 1);
                 fail("Should throw SQLException in harmony.");
-            }
-            catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 // Expected.
             }
-        }
-        else {
-            jrs.addRowSet(crs, 1);
+        } else {
+            try {
+                jrs.addRowSet(crs, 1);
+                fail("should throw NullPointerException");
+            } catch (NullPointerException e) {
+                // Expected.
+            }
         }
     }
 
