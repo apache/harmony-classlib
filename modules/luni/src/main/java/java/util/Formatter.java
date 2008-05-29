@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.security.AccessController;
@@ -1722,9 +1723,18 @@ public final class Formatter implements Closeable, Flushable {
             boolean requireScientificRepresentation = true;
             double d = ((Number) argument).doubleValue();
             d = Math.abs(d);
-            long l = Math.round(d);
+            if (Double.isInfinite(d)) {
+                precision = formatToken.getPrecision();
+                precision--;
+                formatToken.setPrecision(precision);
+                transform_e();
+                return;
+            }
+            BigDecimal b = new BigDecimal(d, new MathContext(precision));
+            d = b.doubleValue();
+            long l = b.longValue();
 
-            if (l >= 1) {
+            if (d >= 1 && d < Math.pow(10, precision)) {
                 if (l < Math.pow(10, precision)) {
                     requireScientificRepresentation = false;
                     precision -= String.valueOf(l).length();
@@ -1738,19 +1748,20 @@ public final class Formatter implements Closeable, Flushable {
                 }
 
             } else {
-                l = Math.round(d * Math.pow(10, 4));
-                if (l >= 1) {
+                l = b.movePointRight(4).longValue();
+                b.movePointLeft(4);
+                if (d >= Math.pow(10, -4) && d < 1) {
                     requireScientificRepresentation = false;
                     precision += 4 - String.valueOf(l).length();
-                    l = Math.round(d * Math.pow(10, precision + 1));
+                    l = b.movePointRight(precision + 1).longValue();
+                    b.movePointLeft(precision + 1);
                     if (String.valueOf(l).length() <= formatToken
                             .getPrecision()) {
                         precision++;
                     }
-                    l = Math.round(d * Math.pow(10, precision));
-                    if (l < Math.pow(10, precision - 4)) {
-                        requireScientificRepresentation = true;
-                    } else {
+                    l = b.movePointRight(precision).longValue();
+                    b.movePointLeft(precision);
+                    if (l >= Math.pow(10, precision - 4)) {
                         formatToken.setPrecision(precision);
                     }
                 }
@@ -2062,9 +2073,10 @@ public final class Formatter implements Closeable, Flushable {
 
         private void transform_Z() {
             TimeZone timeZone = calendar.getTimeZone();
-            result
-                    .append(timeZone.getDisplayName(true, TimeZone.SHORT,
-                            locale));
+            result.append(timeZone
+                    .getDisplayName(
+                            timeZone.inDaylightTime(calendar.getTime()),
+                            TimeZone.SHORT, locale));
         }
 
         private void transform_z() {

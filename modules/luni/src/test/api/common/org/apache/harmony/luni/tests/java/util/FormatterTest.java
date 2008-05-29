@@ -29,11 +29,13 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.nio.charset.Charset;
 import java.security.Permission;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.DuplicateFormatFlagsException;
 import java.util.FormatFlagsConversionMismatchException;
 import java.util.Formattable;
@@ -56,6 +58,7 @@ import java.util.Formatter.BigDecimalLayoutForm;
 import junit.framework.TestCase;
 
 public class FormatterTest extends TestCase {
+	private boolean root;
 
     class MockAppendable implements Appendable {
         public Appendable append(CharSequence arg0) throws IOException {
@@ -247,12 +250,13 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
-        // FIXME This exception will not be thrown out on linux.
-        try {
-            f = new Formatter(readOnly.getPath());
-            fail("should throw FileNotFoundException");
-        } catch (FileNotFoundException e) {
-            // expected
+        if(!root){
+        	try {
+                f = new Formatter(readOnly.getPath());
+                fail("should throw FileNotFoundException");
+            } catch (FileNotFoundException e) {
+                // expected
+            }
         }
 
         SecurityManager oldsm = System.getSecurityManager();
@@ -302,12 +306,13 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
-        // FIXME This exception will not be thrown out on linux.
-        try {
-            f = new Formatter(readOnly.getPath(), "UTF-16BE");
-            fail("should throw FileNotFoundException");
-        } catch (FileNotFoundException e) {
-            // expected
+        if(!root){
+        	try {
+                f = new Formatter(readOnly.getPath(), "UTF-16BE");
+                fail("should throw FileNotFoundException");
+            } catch (FileNotFoundException e) {
+                // expected
+            }
         }
 
         SecurityManager oldsm = System.getSecurityManager();
@@ -365,14 +370,16 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
-        try {
-            f = new Formatter(readOnly.getPath(), Charset.defaultCharset()
-                    .name(), Locale.ITALY);
-            fail("should throw FileNotFoundException");
-        } catch (FileNotFoundException e) {
-            // expected
+        if(!root){
+        	try {
+                f = new Formatter(readOnly.getPath(), Charset.defaultCharset()
+                        .name(), Locale.ITALY);
+                fail("should throw FileNotFoundException");
+            } catch (FileNotFoundException e) {
+                // expected
+            }
         }
-
+        
         SecurityManager oldsm = System.getSecurityManager();
         System.setSecurityManager(new MockSecurityManager());
         try {
@@ -406,14 +413,15 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
-        // FIXME This exception will not be thrown out on linux.
-        try {
-            f = new Formatter(readOnly);
-            fail("should throw FileNotFoundException");
-        } catch (FileNotFoundException e) {
-            // expected
+        if(!root){
+        	try {
+                f = new Formatter(readOnly);
+                fail("should throw FileNotFoundException");
+            } catch (FileNotFoundException e) {
+                // expected
+            }
         }
-
+        
         SecurityManager oldsm = System.getSecurityManager();
         System.setSecurityManager(new MockSecurityManager());
         try {
@@ -447,12 +455,13 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
-        // FIXME This exception will not be thrown out on linux.
-        try {
-            f = new Formatter(readOnly, Charset.defaultCharset().name());
-            fail("should throw FileNotFoundException");
-        } catch (FileNotFoundException e) {
-            // expected
+        if(!root){
+        	try {
+                f = new Formatter(readOnly, Charset.defaultCharset().name());
+                fail("should throw FileNotFoundException");
+            } catch (FileNotFoundException e) {
+                // expected
+            }
         }
 
         SecurityManager oldsm = System.getSecurityManager();
@@ -534,13 +543,14 @@ public class FormatterTest extends TestCase {
         assertEquals(0, fileWithContent.length());
         f.close();
 
-        // FIXME This exception will not be thrown out on linux.
-        try {
-            f = new Formatter(readOnly.getPath(), Charset.defaultCharset()
-                    .name(), Locale.ITALY);
-            fail("should throw FileNotFoundException");
-        } catch (FileNotFoundException e) {
-            // expected
+        if(!root){
+        	try {
+                f = new Formatter(readOnly.getPath(), Charset.defaultCharset()
+                        .name(), Locale.ITALY);
+                fail("should throw FileNotFoundException");
+            } catch (FileNotFoundException e) {
+                // expected
+            }
         }
 
         SecurityManager oldsm = System.getSecurityManager();
@@ -4238,10 +4248,49 @@ public class FormatterTest extends TestCase {
         assertEquals("Wrong dec float value from valueOf ", BigDecimalLayoutForm.DECIMAL_FLOAT, decFloat);
     }
     
+    /*
+     * Regression test for Harmony-5845
+     * test the short name for timezone whether uses DaylightTime or not
+     */
+    public void test_DaylightTime() {
+        Calendar c1 = new GregorianCalendar(2007, 0, 1);
+        Calendar c2 = new GregorianCalendar(2007, 7, 1);
+
+        for (String tz : TimeZone.getAvailableIDs()) {
+            if (tz.equals("America/Los_Angeles")) {
+                c1.setTimeZone(TimeZone.getTimeZone(tz));
+                c2.setTimeZone(TimeZone.getTimeZone(tz));
+                assertTrue(String.format("%1$tZ%2$tZ", c1, c2).equals("PSTPDT"));
+            }
+            if (tz.equals("America/Panama")) {
+                c1.setTimeZone(TimeZone.getTimeZone(tz));
+                c2.setTimeZone(TimeZone.getTimeZone(tz));
+                assertTrue(String.format("%1$tZ%2$tZ", c1, c2).equals("ESTEST"));
+            }
+        }
+    }
+    
+    /*
+     * Regression test for Harmony-5845
+     * test scientific notation to follow RI's behavior
+     */
+    public void test_ScientificNotation() {
+        Formatter f = new Formatter();
+        MathContext mc = new MathContext(30);
+        BigDecimal value = new BigDecimal(0.1, mc);
+        f.format("%.30G", value);
+
+        String result = f.toString();
+        String expected = "0.100000000000000005551115123126";
+        assertEquals(expected, result);
+    }
+
+    
     /**
      * Setup resource files for testing
      */
     protected void setUp() throws IOException {
+        root = System.getProperty("user.name").equalsIgnoreCase("root");
         notExist = File.createTempFile("notexist", null);
         notExist.delete();
 
