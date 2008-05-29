@@ -20,7 +20,7 @@ import java.io.Serializable;
 public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
         implements Cloneable, Serializable {
 
-    private static final long serialVersionUID = 4782406773684236311L;
+    private static final long serialVersionUID = 1009687484059888093L;
 
     final Class<E> elementClass;
 
