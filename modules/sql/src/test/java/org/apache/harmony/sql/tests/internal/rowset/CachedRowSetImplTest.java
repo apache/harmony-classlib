@@ -1551,7 +1551,7 @@ public class CachedRowSetImplTest extends CachedRowSetTestCase {
             noInitialCrset.insertRow();
         }
         noInitialCrset.moveToCurrentRow();
-        crset.setTableName("USER_INFO");
+        noInitialCrset.setTableName("USER_INFO");
         noInitialCrset.acceptChanges(conn);
         // check the new rows in CachedRowSet
         assertEquals(20, noInitialCrset.size());

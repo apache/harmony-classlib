@@ -38,6 +38,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -77,7 +78,6 @@ import javax.sql.rowset.spi.SyncFactoryException;
 import javax.sql.rowset.spi.SyncProvider;
 import javax.sql.rowset.spi.SyncProviderException;
 
-import org.apache.harmony.luni.util.NotImplementedException;
 import org.apache.harmony.sql.internal.nls.Messages;
 
 public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
@@ -271,7 +271,8 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         conn = connection;
 
         if (conn == null) {
-            throw new SyncProviderException();
+            // rowset.31=No current connection
+            throw new SyncProviderException(Messages.getString("rowset.31")); //$NON-NLS-1$
         }
 
         boolean isShowDeleted = false;
@@ -2510,11 +2511,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateBlob(int columnIndex, Blob x) throws SQLException {
-        updateByType(columnIndex, x);
+        // sql.37=Operation not supported
+        throw new SQLException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 
     public void updateBlob(String columnName, Blob x) throws SQLException {
-        updateBlob(getIndexByName(columnName), x);
+        // sql.37=Operation not supported
+        throw new SQLException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 
     public void updateBoolean(int columnIndex, boolean x) throws SQLException {
@@ -2582,11 +2585,13 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
     }
 
     public void updateClob(int columnIndex, Clob x) throws SQLException {
-        updateByType(columnIndex, x);
+        // sql.37=Operation not supported
+        throw new SQLException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 
     public void updateClob(String columnName, Clob x) throws SQLException {
-        updateClob(getIndexByName(columnName), x);
+        // sql.37=Operation not supported
+        throw new SQLException(Messages.getString("sql.37")); //$NON-NLS-1$
     }
 
     public void updateDate(int columnIndex, Date x) throws SQLException {
@@ -3052,209 +3057,235 @@ public class CachedRowSetImpl extends BaseRowSet implements CachedRowSet,
         return currentRow;
     }
 
-    public void updateNCharacterStream(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+    public void updateNCharacterStream(String columnLabel, Reader reader)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateNCharacterStream(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(int columnIndex, Reader reader)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateNCharacterStream(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(String columnLabel, Reader reader, long x) {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateNCharacterStream(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateNCharacterStream(int columnIndex, Reader reader, long x)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateCharacterStream(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(String columnLabel, Reader reader)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateCharacterStream(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(int columnIndex, Reader reader)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateCharacterStream(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(String columnLabel, Reader reader, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateCharacterStream(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateCharacterStream(int columnIndex, Reader reader, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateBinaryStream(String columnLabel, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(String columnLabel, InputStream stream)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateBinaryStream(int columnIndex, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(int columnIndex, InputStream stream)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateBinaryStream(String columnLabel, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(String columnLabel, InputStream stream,
+            long x) throws SQLException {
+        updateBinaryStream(getIndexByName(columnLabel), stream, x);
     }
-    
-    public void updateBinaryStream(int columnIndex, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateBinaryStream(int columnIndex, InputStream stream, long x)
+            throws SQLException {
+        // do nothing. Follow RI.
     }
-    
-    public void updateRowId(String columnLabel, RowId x){
-        throw new NotImplementedException();
+
+    public void updateRowId(String columnLabel, RowId x) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateRowId(int columnIndex, RowId x){
-        throw new NotImplementedException();
+
+    public void updateRowId(int columnIndex, RowId x) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateNClob(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateNClob(String columnLabel, Reader reader)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateNClob(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateNClob(int columnIndex, Reader reader) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateNClob(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateNClob(String columnLabel, Reader reader, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateNClob(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateNClob(int columnIndex, Reader reader, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateNClob(String columnLabel, NClob nClob){
-        throw new NotImplementedException();
+
+    public void updateNClob(String columnLabel, NClob nClob)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateNClob(int columnIndex, NClob nClob){
-        throw new NotImplementedException();
+
+    public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateNString(String columnLabel, String nString){
-        throw new NotImplementedException();
+
+    public void updateNString(String columnLabel, String nString)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateNString(int columnIndex, String nString){
-        throw new NotImplementedException();
+
+    public void updateNString(int columnIndex, String nString)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateAsciiStream(String columnLabel, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(String columnLabel, InputStream stream)
+            throws SQLException {
+        // do nothing. Follow RI.
     }
-    
-    public void updateAsciiStream(int columnIndex, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(int columnIndex, InputStream stream)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateAsciiStream(String columnLabel, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(String columnLabel, InputStream stream, long x)
+            throws SQLException {
+        updateAsciiStream(getIndexByName(columnLabel), stream, x);
     }
-    
-    public void updateAsciiStream(int columnIndex, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateAsciiStream(int columnIndex, InputStream stream, long x)
+            throws SQLException {
+        // RI doesn't implement this method, and it doesn't throw any exception
+        // either.
     }
-    
-    public void updateSQLXML(String columnLabel, SQLXML xmlObject){
-        throw new NotImplementedException();
+
+    public void updateSQLXML(String columnLabel, SQLXML xmlObject)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateSQLXML(int columnIndex, SQLXML xmlObject){
-        throw new NotImplementedException();
+
+    public void updateSQLXML(int columnIndex, SQLXML xmlObject)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public void updateBlob(String columnLabel, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateBlob(String columnLabel, InputStream stream)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateBlob(int columnIndex, InputStream stream){
-        throw new NotImplementedException();
+
+    public void updateBlob(int columnIndex, InputStream stream)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateBlob(String columnLabel, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateBlob(String columnLabel, InputStream stream, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateBlob(int columnIndex, InputStream stream, long x){
-        throw new NotImplementedException();
+
+    public void updateBlob(int columnIndex, InputStream stream, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateClob(String columnLabel, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateClob(String columnLabel, Reader reader)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateClob(int columnIndex, Reader reader){
-        throw new NotImplementedException();
+
+    public void updateClob(int columnIndex, Reader reader) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateClob(String columnLabel, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateClob(String columnLabel, Reader reader, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public void updateClob(int columnIndex, Reader reader, long x){
-        throw new NotImplementedException();
+
+    public void updateClob(int columnIndex, Reader reader, long x)
+            throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
-    
-    public String getNString(int columnIndex){
-        throw new NotImplementedException();
+
+    public String getNString(int columnIndex) {
+        throw new UnsupportedOperationException();
     }
-    
-    public String getNString(String columnLabel){
-        throw new NotImplementedException();
+
+    public String getNString(String columnLabel) {
+        throw new UnsupportedOperationException();
     }
-    
-    public RowId getRowId(int columnIndex){
-        throw new NotImplementedException();
+
+    public RowId getRowId(int columnIndex) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public RowId getRowId(String columnLabel){
-        throw new NotImplementedException();
+
+    public RowId getRowId(String columnLabel) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public boolean isWrapperFor(Class<?> iface){
-        throw new NotImplementedException();
+
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
     }
-    
-    public Reader getNCharacterStream(int columnIndex){
-        throw new NotImplementedException();
+
+    public Reader getNCharacterStream(int columnIndex) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public Reader getNCharacterStream(String columnLabel){
-        throw new NotImplementedException();
+
+    public Reader getNCharacterStream(String columnLabel) throws SQLException {
+        throw new UnsupportedOperationException();
     }
-    
-    public <T> T unwrap(Class<T> iface){
-        throw new NotImplementedException();
+
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
     }
-    
-    public int getHoldability(){
-        throw new NotImplementedException();
+
+    public int getHoldability() throws SQLException {
+        throw new UnsupportedOperationException();
     }
 
     public NClob getNClob(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public NClob getNClob(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public SQLXML getSQLXML(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public boolean isClosed() throws SQLException {
-        // TODO Auto-generated method stub
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
