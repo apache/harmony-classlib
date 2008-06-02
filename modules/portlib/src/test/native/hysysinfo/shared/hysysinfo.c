@@ -120,7 +120,7 @@ int test_hysysinfo_shutdown(struct HyPortLibrary *hyportLibrary) {
     rc = hyportLibrary2.sysinfo_startup(&hyportLibrary2);
     if (0 != rc)
     {
-        Hytest_setErrMsg(hyportLibrary, "sysinfo startup failed: %s (%s)\n",
+        Hytest_setErrMsg(hyportLibrary, "sysinfo shutdown failed: %s (%s)\n",
                          hyportLibrary->error_last_error_message(hyportLibrary),HY_GET_CALLSITE());
         return -1;
     }

@@ -228,6 +228,7 @@
         <make dir="${hy.portlib.src.test.native}/hytime/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hysysinfo/${hy.os.family}" />
         <make dir="${hy.portlib.src.test.native}/hyipcmutex/${hy.os.family}" />
+        <make dir="${hy.portlib.src.test.native}/hymmap/${hy.os.family}" />
     </target>
 
     <target name="-run-native-tests" if="test.portlib">
@@ -249,6 +250,7 @@
         <exec-native test="hytime" />
         <exec-native test="hysysinfo" />
         <exec-native test="hyipcmutex" />
+        <exec-native test="hymmap" />
 	
         <move todir="${hy.tests.reports}">
             <fileset dir="${hy.portlib}">
@@ -285,6 +287,8 @@
         <make dir="${hy.portlib.src.test.native}/hysysinfo/${hy.os.family}" 
               target="clean" />
         <make dir="${hy.portlib.src.test.native}/hyipcmutex/${hy.os.family}" 
+              target="clean" />
+        <make dir="${hy.portlib.src.test.native}/hymmap/${hy.os.family}" 
               target="clean" />
     </target>
 

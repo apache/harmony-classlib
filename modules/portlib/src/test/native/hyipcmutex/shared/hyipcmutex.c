@@ -91,7 +91,7 @@ int test_hyipcmutex_shutdown(struct HyPortLibrary *hyportLibrary) {
     rc = hyportLibrary2.ipcmutex_startup(&hyportLibrary2);
     if (0 != rc)
     {
-        Hytest_setErrMsg(hyportLibrary, "ipcmutex startup failed: %s (%s)\n",
+        Hytest_setErrMsg(hyportLibrary, "ipcmutex shutdown failed: %s (%s)\n",
                          hyportLibrary->error_last_error_message(hyportLibrary),HY_GET_CALLSITE());
         return -1;
     }
