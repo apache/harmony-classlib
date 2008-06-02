@@ -219,6 +219,7 @@ typedef double				SYS_FLOAT;
 #define PLATFORM_LINE_DELIMITER	"\012"
 #define DIR_SEPARATOR '/'
 #define DIR_SEPARATOR_STR "/"
+#define PATH_SEPARATOR ':'
 #define PATH_SEPARATOR_STR ":"
 #define LIBPATH_ENV_VAR "LIBPATH"
 
