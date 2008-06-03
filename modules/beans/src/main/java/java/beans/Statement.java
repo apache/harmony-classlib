@@ -148,7 +148,7 @@ public class Statement {
                             .isAssignableFrom(theArguments[i].getClass());
                     if (!isNull && !isPrimitiveWrapper && !isAssignable) {
                         throw new IllegalArgumentException(Messages
-                                .getString("beans.62")); //$NON-NLS-1$
+                                .getString("beans.63")); //$NON-NLS-1$
                     }
                 }
                 result = Array.newInstance(clazz, length);
@@ -368,8 +368,23 @@ public class Statement {
         for (int i = 1; i < foundMethodsArr.length; i++) {
             int difference = comparator.compare(chosenOne, foundMethodsArr[i]);
             //if 2 methods have same relevance, throw exception
-            if(difference == 0){
-                throw new NoSuchMethodException("Cannot decide which method to call: "+methodName); //$NON-NLS-1$
+            if (difference == 0) {
+                // if 2 methods have the same signature, check their return type
+                Class<?> oneReturnType = chosenOne.getReturnType();
+                Class<?> foundMethodReturnType = foundMethodsArr[i]
+                        .getReturnType();
+                if (oneReturnType.equals(foundMethodReturnType)) {
+                    // if 2 methods have the same signature and return type,
+                    // throw NoSuchMethodException
+                    throw new NoSuchMethodException(Messages.getString(
+                            "beans.62", methodName)); //$NON-NLS-1$
+                }
+
+                if (oneReturnType.isAssignableFrom(foundMethodReturnType)) {
+                    // if chosenOne is super class or interface of
+                    // foundMethodReturnType, set chosenOne to foundMethodArr[i]
+                    chosenOne = foundMethodsArr[i];
+                }
             }
             if(difference > 0){
                 chosenOne = foundMethodsArr[i];

@@ -28,6 +28,19 @@ import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
 import org.apache.harmony.beans.tests.support.SampleException;
+import org.apache.harmony.beans.tests.support.TInspectorCluster;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.Ancestor;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.BooleanInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.CharacterInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.DoubleInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.FloatInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.IntegerInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.LongInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.ObjectInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.ObjectListInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.Offspring;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.ShortInspector;
+import org.apache.harmony.beans.tests.support.TInspectorCluster.StringInspector;
 
 /**
  * Test the class java.beans.Statement.
@@ -870,6 +883,139 @@ public class StatementTest extends TestCase {
         t = new Statement(mo, "overloadedMethodB", arguments);
         t.execute();
         MockObject.assertCalled("overloadedmethodB", arguments);
+    }
+    
+    /*
+     * Test for special case of the same signature but differnt return type
+     */
+    public void testExecute_SameSignatureDifferentReturn() throws Exception {
+        // Regression for Harmony-5854
+        Object[] ancestorArguments = new Object[] { new Ancestor() {
+        } };
+        Object[] offspringArguments = new Object[] { new Offspring() {
+        } };
+        String methodName = "visit";
+        Statement statement = null;
+
+        statement = new Statement(new StringInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_STRING);
+
+        statement = new Statement(new StringInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_STRING);
+
+        statement = new Statement(new BooleanInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_BOOLEAN);
+
+        statement = new Statement(new BooleanInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_BOOLEAN);
+
+        statement = new Statement(new CharacterInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_CHARACTER);
+
+        statement = new Statement(new CharacterInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_CHARACTER);
+
+        statement = new Statement(new ShortInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_SHORT);
+
+        statement = new Statement(new ShortInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_SHORT);
+
+        statement = new Statement(new IntegerInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_INTEGER);
+
+        statement = new Statement(new IntegerInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_INTEGER);
+
+        statement = new Statement(new LongInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_LONG);
+
+        statement = new Statement(new LongInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_LONG);
+
+        statement = new Statement(new FloatInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_FLOAT);
+
+        statement = new Statement(new FloatInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_FLOAT);
+
+        statement = new Statement(new DoubleInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_DOUBLE);
+
+        statement = new Statement(new DoubleInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_DOUBLE);
+
+        statement = new Statement(new ObjectInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_OBJECT);
+
+        statement = new Statement(new ObjectInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_OBJECT);
+
+        statement = new Statement(new ObjectListInspector(), "visit",
+                ancestorArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, ancestorArguments,
+                TInspectorCluster.ANCESTOR_OBJECT_LIST);
+
+        statement = new Statement(new ObjectListInspector(), "visit",
+                offspringArguments);
+        statement.execute();
+        TInspectorCluster.assertMethodCalled(methodName, offspringArguments,
+                TInspectorCluster.OFFSPRING_OBJECT_LIST);
     }
 
     /*
