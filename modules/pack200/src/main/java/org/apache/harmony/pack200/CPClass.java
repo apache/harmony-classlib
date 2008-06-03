@@ -17,13 +17,17 @@
 package org.apache.harmony.pack200;
 
 
-public class CPClass {
+public class CPClass implements Comparable {
 
 
     private final String className;
 
     public CPClass(String className) {
         this.className = className;
+    }
+
+    public int compareTo(Object arg0) {
+        return className.compareTo(((CPClass)arg0).className);
     }
 
 }

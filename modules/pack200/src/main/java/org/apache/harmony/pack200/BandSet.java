@@ -22,11 +22,14 @@ import java.io.OutputStream;
 
 public abstract class BandSet {
 
-    public abstract void pack(OutputStream out) throws IOException;
+    public abstract void pack(OutputStream out) throws IOException, Pack200Exception;
 
-    protected byte[] encodeScalar(int[] band) {
-        // TODO Auto-generated method stub
-        return null;
+    public byte[] encodeScalar(int[] band, BHSDCodec codec) throws Pack200Exception {
+        return codec.encode(band);
+    }
+
+    public byte[] encodeScalar(int value, BHSDCodec codec) throws Pack200Exception {
+        return codec.encode(value);
     }
 
 }

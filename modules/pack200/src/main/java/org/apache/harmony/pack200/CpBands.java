@@ -129,17 +129,21 @@ public class CpBands extends BandSet {
     public void addConstantNameAndType(ConstantNameAndType constant) {
         String name = constant.getName(currentConstantPool);
         String signature = constant.getSignature(currentConstantPool);
-        cp_Signature.add(signature);
-        CPNameAndType nameAndType = new CPNameAndType(name,
-                signature);
-        stringsToCpNameAndType.put(name + ":" + signature, nameAndType);
-        cp_Descr.add(nameAndType);
+        String descr = name + ":" + signature;
+        if(stringsToCpNameAndType.get(descr) != null) {
+            cp_Signature.add(signature);
+            CPNameAndType nameAndType = new CPNameAndType(name,
+                    signature);
+            stringsToCpNameAndType.put(descr, nameAndType);
+            cp_Descr.add(nameAndType);
+        }
     }
 
     public void addConstantString(ConstantString constant) {
         String string = constant.getBytes(currentConstantPool);
-        if(stringsToCpString.get(string) == null) {
-            CPString cpString = new CPString(string);
+        CPString cpString = (CPString) stringsToCpString.get(string);
+        if(cpString == null) {
+            cpString = new CPString(string);
             cp_String.add(cpString);
             stringsToCpString.put(string, cpString);
         }
@@ -159,18 +163,25 @@ public class CpBands extends BandSet {
     }
 
     public CPClass getCPClass(String className) {
-        if(stringsToCpClass.get(className) == null) {
-            throw new RuntimeException("null");
+        CPClass cpClass = (CPClass) stringsToCpClass.get(className);
+        if(cpClass == null) {
+            cpClass = new CPClass(className);
+            cp_Class.add(cpClass);
+            stringsToCpClass.put(className, cpClass);
         }
-        return (CPClass) stringsToCpClass.get(className);
+        return cpClass;
     }
 
     public CPNameAndType getCPNameAndType(String name, String signature) {
-        String str = name + ":" + signature;
-        if(stringsToCpNameAndType.get(str) == null) {
-            throw new RuntimeException("null");
+        String descr = name + ":" + signature;
+        CPNameAndType nameAndType = (CPNameAndType) stringsToCpNameAndType.get(descr);
+        if (nameAndType == null) {
+            cp_Signature.add(signature);
+            nameAndType = new CPNameAndType(name, signature);
+            stringsToCpNameAndType.put(descr, nameAndType);
+            cp_Descr.add(nameAndType);
         }
-        return (CPNameAndType) stringsToCpNameAndType.get(str);
+        return nameAndType;
     }
 
 }

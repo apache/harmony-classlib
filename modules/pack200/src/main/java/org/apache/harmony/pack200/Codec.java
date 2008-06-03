@@ -103,6 +103,30 @@ public abstract class Codec {
             Pack200Exception;
 
     /**
+     * Encode a single value into a sequence of bytes.
+     * 
+     * @param value
+     *            the value to encode
+     * @param last
+     *            the previous value encoded (for delta encodings)
+     * @return the encoded bytes
+     * @throws Pack200Exception
+     */
+    public abstract byte[] encode(long value, long last)
+            throws Pack200Exception;
+
+    /**
+     * Encode a single value into a sequence of bytes. Note that this method can
+     * only be used for non-delta encodings.
+     * 
+     * @param value
+     *            the value to encode
+     * @return the encoded bytes
+     * @throws Pack200Exception
+     */
+    public abstract byte[] encode(long value) throws Pack200Exception;
+
+    /**
      * Decode a sequence of bytes from the given input stream, returning the
      * value as a long. If this encoding is a delta encoding (d=1) then the
      * previous value must be passed in as a parameter. If it is a non-delta
@@ -249,5 +273,30 @@ public abstract class Codec {
             result[i] = last = (int) decode(in, last);
         }
         return result;
+    }
+
+    /**
+     * Encode a sequence of integers into a byte array
+     * 
+     * @param ints
+     *            the values to encode
+     * @return byte[] encoded bytes
+     * @throws Pack200Exception
+     *             if there is a problem encoding any of the values
+     */
+    public byte[] encode(int[] ints) throws Pack200Exception {
+        int total = 0;
+        byte[][] bytes = new byte[ints.length][];
+        for (int i = 0; i < ints.length; i++) {
+            bytes[i] = encode(ints[i]);
+            total += bytes[i].length;
+        }
+        byte[] encoded = new byte[total];
+        int index = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            System.arraycopy(bytes[i], 0, encoded, index, bytes[i].length);
+            index += bytes[i].length;
+        }
+        return encoded;
     }
 }

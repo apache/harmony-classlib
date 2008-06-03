@@ -75,7 +75,7 @@ public class Segment implements Visitor {
     private BcBands bcBands;
     private FileBands fileBands;
 
-    public void pack(List classes, OutputStream out) throws IOException {
+    public void pack(List classes, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
         cpBands = new CpBands();
         attributeDefinitionBands = new AttributeDefinitionBands();

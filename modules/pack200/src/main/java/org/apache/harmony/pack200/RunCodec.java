@@ -125,4 +125,14 @@ public class RunCodec extends Codec {
         return "RunCodec[k=" + k + ";aCodec=" + aCodec + "bCodec=" + bCodec
                 + "]";
     }
+
+    public byte[] encode(long value, long last) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public byte[] encode(long value) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

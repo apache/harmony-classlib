@@ -137,4 +137,14 @@ public class PopulationCodec extends Codec {
     public Codec getUnvafouredCodec() {
         return unvafouredCodec;
     }
+
+    public byte[] encode(long value, long last) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public byte[] encode(long value) throws Pack200Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

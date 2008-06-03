@@ -308,6 +308,10 @@ public final class BHSDCodec extends Codec {
         return bytes;
     }
 
+    public byte[] encode(long value) throws Pack200Exception {
+        return encode(value, 0);
+    }
+
     /**
      * Returns true if this codec is a delta codec
      *
