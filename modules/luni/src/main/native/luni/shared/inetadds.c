@@ -267,14 +267,14 @@ Java_java_net_InetAddress_inetAddrImpl (JNIEnv * env, jclass clazz,
 
   if (NULL == strHost)
     {
-      return (jint) NULL;
+      return (jint) 0;
     }
   result = hysock_inetaddr ((char *) strHost, &nipAddr);        /* Resolve the dotted ip string to an address */
   (*env)->ReleaseStringUTFChars (env, host, strHost);
   if (0 != result)
     {
       throwJavaNetUnknownHostException (env, result);
-      return (jint) NULL;
+      return (jint) 0;
     }
   return (jint) hysock_ntohl (nipAddr);
 }
