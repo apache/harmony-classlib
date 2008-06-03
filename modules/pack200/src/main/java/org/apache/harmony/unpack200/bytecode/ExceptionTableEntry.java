@@ -40,10 +40,10 @@ public class ExceptionTableEntry {
      * either a normal one (with a Throwable as the catch_type) or a finally
      * clause (which has no catch_type). In the class file, the finally clause
      * is represented as catch_type == 0.
-     * 
+     *
      * To create a finally clause with this method, pass in null for the
      * catchType.
-     * 
+     *
      * @param startPC
      *            int
      * @param endPC

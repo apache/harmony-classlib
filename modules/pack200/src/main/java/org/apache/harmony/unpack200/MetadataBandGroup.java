@@ -42,7 +42,7 @@ public class MetadataBandGroup {
 
     private final String type;
     private final CpBands cpBands;
-    
+
     private final CPUTF8 rvaUTF8 = new CPUTF8("RuntimeVisibleAnnotations",
             ClassConstantPool.DOMAIN_ATTRIBUTEASCIIZ);
     private final CPUTF8 riaUTF8 = new CPUTF8("RuntimeInvisibleAnnotations",

@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.AttrDefinitionBands;
 import org.apache.harmony.unpack200.BcBands;
 import org.apache.harmony.unpack200.ClassBands;
 import org.apache.harmony.unpack200.CpBands;
-import org.apache.harmony.unpack200.Pack200Exception;
 import org.apache.harmony.unpack200.Segment;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.CPClass;

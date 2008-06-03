@@ -52,7 +52,7 @@ public class SourceFileAttribute extends Attribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#isSourceFileAttribute()
      */
     public boolean isSourceFileAttribute() {

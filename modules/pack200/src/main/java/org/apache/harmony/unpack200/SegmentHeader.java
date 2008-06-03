@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * SegmentHeader is the header band of a {@link Segment}
@@ -120,7 +121,7 @@ public class SegmentHeader {
 
     /**
      * Sets the minor version of this archive
-     * 
+     *
      * @param version
      *            the minor version of the archive
      * @throws Pack200Exception
@@ -134,7 +135,7 @@ public class SegmentHeader {
 
     /**
      * Sets the major version of this archive.
-     * 
+     *
      * @param version
      *            the minor version of the archive
      * @throws Pack200Exception
@@ -239,11 +240,11 @@ public class SegmentHeader {
      * Obtain the band headers data as an input stream. If no band headers are
      * present, this will return an empty input stream to prevent any further
      * reads taking place.
-     * 
+     *
      * Note that as a stream, data consumed from this input stream can't be
      * re-used. Data is only read from this stream if the encoding is such that
      * additional information needs to be decoded from the stream itself.
-     * 
+     *
      * @return the band headers input stream
      */
     public InputStream getBandHeadersInputStream() {
@@ -329,7 +330,7 @@ public class SegmentHeader {
     /**
      * Decode a number of scalars from the band file. A scalar is like a band,
      * but does not perform any band code switching.
-     * 
+     *
      * @param name
      *            the name of the scalar (primarily for logging/debugging
      *            purposes)
@@ -355,7 +356,7 @@ public class SegmentHeader {
     /**
      * Decode a scalar from the band file. A scalar is like a band, but does not
      * perform any band code switching.
-     * 
+     *
      * @param name
      *            the name of the scalar (primarily for logging/debugging
      *            purposes)
@@ -404,7 +405,7 @@ public class SegmentHeader {
      * Completely reads in a byte array, akin to the implementation in
      * {@link java.lang.DataInputStream}. TODO Refactor out into a separate
      * InputStream handling class
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @param data

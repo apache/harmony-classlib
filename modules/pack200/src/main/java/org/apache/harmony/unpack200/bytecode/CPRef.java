@@ -33,7 +33,7 @@ public abstract class CPRef extends ConstantPoolEntry {
 
     /**
      * Create a new CPRef
-     * 
+     *
      * @param type
      * @param className
      * @param descriptor

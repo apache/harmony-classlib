@@ -32,7 +32,7 @@ public class CPClass extends ConstantPoolEntry {
 
     /**
      * Creates a new CPClass
-     * 
+     *
      * @param name
      * @throws NullPointerException
      *             if name is null

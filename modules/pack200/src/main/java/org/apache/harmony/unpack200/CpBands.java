@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
 import org.apache.harmony.unpack200.bytecode.CPFieldRef;
@@ -128,7 +129,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool class names, using {@link #cpClassCount} to
      * populate {@link #cpClass} from {@link #cpUTF8}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -154,7 +155,7 @@ public class CpBands extends BandSet {
      * largely to make it easier for representing field and method descriptors
      * (e.g. <code>out:java.lang.PrintStream</code>) in a way that is
      * compatible with passing String arrays.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -193,7 +194,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool field definitions, using {@link #cpFieldCount}
      * to populate {@link #cpFieldClass} and {@link #cpFieldDescriptor}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -232,7 +233,7 @@ public class CpBands extends BandSet {
      * Parses the constant pool interface method definitions, using
      * {@link #cpIMethodCount} to populate {@link #cpIMethodClass} and
      * {@link #cpIMethodDescriptor}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -272,7 +273,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool method definitions, using {@link #cpMethodCount}
      * to populate {@link #cpMethodClass} and {@link #cpMethodDescriptor}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -309,7 +310,7 @@ public class CpBands extends BandSet {
      * representation identical to the bytecode equivalent
      * <code>[Ljava/lang/String;(V)</code> TODO Check that the form is as
      * above and update other types e.g. J
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -366,7 +367,7 @@ public class CpBands extends BandSet {
     /**
      * Parses the constant pool strings, using {@link #cpStringCount} to
      * populate {@link #cpString} from indexes into {@link #cpUTF8}.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -519,7 +520,7 @@ public class CpBands extends BandSet {
         }
         return cputf8;
     }
-    
+
     public CPUTF8 cpUTF8Value(String string, int domain) {
         return cpUTF8Value(string, domain, true);
     }
@@ -647,7 +648,7 @@ public class CpBands extends BandSet {
             int nameIndex = cpDescriptorNameInts[index];
             int descriptorIndex = cpDescriptorTypeInts[index];
             String descriptorString = cpSignature[descriptorIndex];
-                
+
             // For some reason, descriptors which have just plain
             // native types are stored in DOMAIN_NORMALASCIIZ rather
             // than in DOMAIN_SIGNATUREASCIIZ. This might indicate

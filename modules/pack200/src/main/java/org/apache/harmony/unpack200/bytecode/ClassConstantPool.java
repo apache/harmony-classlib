@@ -199,14 +199,14 @@ public class ClassConstantPool {
             public int compare(Object arg0, Object arg1) {
                 return ((CPUTF8)arg0).underlyingString().compareTo(((CPUTF8)arg1).underlyingString());
             }
-            
+
         });
         TreeSet cpClassesNotInCpAll = new TreeSet(new Comparator() {
 
             public int compare(Object arg0, Object arg1) {
                 return ((CPClass)arg0).getName().compareTo(((CPClass)arg1).getName());
             }
-            
+
         });
         for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
             ConstantPoolEntry entry = (ConstantPoolEntry) iterator.next();
@@ -232,9 +232,9 @@ public class ClassConstantPool {
      * Answer the collection of CPClasses currently held by the ClassPoolSet.
      * This is used to calculate relevant classes when generating the set of
      * relevant inner classes (ic_relevant())
-     * 
+     *
      * @return ArrayList collection of all classes.
-     * 
+     *
      * NOTE: when this list is answered, the classes may not yet be resolved.
      */
     public List allClasses() {

@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.BCIRenumberedAttribute;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
@@ -78,7 +79,7 @@ public class BcBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {

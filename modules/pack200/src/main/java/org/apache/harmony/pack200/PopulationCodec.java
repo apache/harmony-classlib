@@ -19,7 +19,6 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A PopulationCodec is a Codec that is well suited to encoding data that shows

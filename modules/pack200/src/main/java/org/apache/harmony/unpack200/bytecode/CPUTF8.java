@@ -29,7 +29,7 @@ public class CPUTF8 extends ConstantPoolEntry {
 
     /**
      * Creates a new CPUTF8 instance
-     * 
+     *
      * @param utf8
      * @param domain
      * @throws NullPointerException

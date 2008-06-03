@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Parses the file band headers (not including the actual bits themselves). At
@@ -54,7 +55,7 @@ public class FileBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {

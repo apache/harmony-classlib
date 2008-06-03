@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A BHSD codec is a means of encoding integer values as a sequence of bytes or
@@ -36,7 +35,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
  * the integers [1..10] would be represented as a sequence of 10x1s. This allows
  * the absolute value of a coded integer to fall outside of the 'small number'
  * range, whilst still being encoded as a single byte.
- * 
+ *
  * A BHSD codec is configured with four parameters:
  * <dl>
  * <dt>B</dt>
@@ -69,7 +68,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
  * instance of the Codec to be cloned for each use.)
  * <dt>
  * </dl>
- * 
+ *
  * Codecs are notated as (B,H,S,D) and either D or S,D may be omitted if zero.
  * Thus {@link #BYTE1} is denoted (1,256,0,0) or (1,256). The
  * {@link #toString()} method prints out the condensed form of the encoding.
@@ -78,7 +77,7 @@ import org.apache.harmony.unpack200.Pack200Exception;
  * {@link #UNSIGNED5}) are unsigned; otherwise, in most cases, they are signed.
  * The presence of the word Delta ({@link #DELTA5}, {@link #UDELTA5})
  * indicates a delta encoding is used.
- * 
+ *
  */
 public final class BHSDCodec extends Codec {
 
@@ -115,7 +114,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Constructs an unsigned, non-delta Codec with the given B and H values.
-     * 
+     *
      * @param b
      *            the maximum number of bytes that a value can be encoded as
      *            [1..5]
@@ -128,7 +127,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Constructs a non-delta Codec with the given B, H and S values.
-     * 
+     *
      * @param b
      *            the maximum number of bytes that a value can be encoded as
      *            [1..5]
@@ -144,7 +143,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Constructs a Codec with the given B, H, S and D values.
-     * 
+     *
      * @param b
      *            the maximum number of bytes that a value can be encoded as
      *            [1..5]
@@ -188,7 +187,7 @@ public final class BHSDCodec extends Codec {
     /**
      * Returns the cardinality of this codec; that is, the number of distinct
      * values that it can contain.
-     * 
+     *
      * @return the cardinality of this codec
      */
     public long cardinality() {
@@ -256,7 +255,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * True if this encoding can code the given value
-     * 
+     *
      * @param value
      *            the value to check
      * @return <code>true</code> if the encoding can encode this value
@@ -311,7 +310,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns true if this codec is a delta codec
-     * 
+     *
      * @return true if this codec is a delta codec
      */
     public boolean isDelta() {
@@ -320,7 +319,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns true if this codec is a signed codec
-     * 
+     *
      * @return true if this codec is a signed codec
      */
     public boolean isSigned() {
@@ -329,7 +328,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns the largest value that this codec can represent.
-     * 
+     *
      * @return the largest value that this codec can represent.
      */
     public long largest() {
@@ -358,7 +357,7 @@ public final class BHSDCodec extends Codec {
 
     /**
      * Returns the smallest value that this codec can represent.
-     * 
+     *
      * @return the smallest value that this codec can represent.
      */
     public long smallest() {

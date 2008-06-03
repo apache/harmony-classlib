@@ -16,7 +16,7 @@
  */
 package org.apache.harmony.unpack200.bytecode.forms;
 
-import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.SegmentConstantPool;
 import org.apache.harmony.unpack200.bytecode.ByteCode;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
@@ -27,7 +27,7 @@ import org.apache.harmony.unpack200.bytecode.OperandManager;
  * constant pool information. These classes have a context (a string
  * representing a pack200 class) i.e., they send getClassSpecificPoolEntry
  * instead of getConstantPoolEntry.
- * 
+ *
  */
 public abstract class ClassSpecificReferenceForm extends ReferenceForm {
 

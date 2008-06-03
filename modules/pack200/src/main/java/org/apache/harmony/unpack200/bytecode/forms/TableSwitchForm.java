@@ -31,7 +31,7 @@ public class TableSwitchForm extends SwitchForm {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.forms.SwitchForm#setByteCodeOperands(org.apache.harmony.unpack200.bytecode.ByteCode,
      *      org.apache.harmony.unpack200.bytecode.OperandManager, int)
      */

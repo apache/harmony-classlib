@@ -29,6 +29,8 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.harmony.pack200.Pack200Exception;
+
 /**
  * Archive is the main entry point to unpack200. An archive is constructed with
  * either two file names, a pack file and an output file name or two input
@@ -57,7 +59,7 @@ public class Archive {
 
     /**
      * Creates an Archive with the given input and output file names.
-     * 
+     *
      * @param inputFile
      * @param outputFile
      * @throws FileNotFoundException
@@ -76,7 +78,7 @@ public class Archive {
      * Creates an Archive with streams for the input and output files. Note: If
      * you use this method then calling {@link #setRemovePackFile(boolean)} will
      * have no effect.
-     * 
+     *
      * @param inputStream
      * @param outputStream
      * @throws IOException
@@ -89,7 +91,7 @@ public class Archive {
 
     /**
      * Unpacks the Archive from the input file to the output file
-     * 
+     *
      * @throws Pack200Exception
      * @throws IOException
      */
@@ -200,7 +202,7 @@ public class Archive {
     /**
      * If removePackFile is set to true, the input file is deleted after
      * unpacking
-     * 
+     *
      * @param removePackFile
      */
     public void setRemovePackFile(boolean removePackFile) {

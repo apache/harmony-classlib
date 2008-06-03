@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A run codec is a grouping of two nested codecs; K values are decoded from the

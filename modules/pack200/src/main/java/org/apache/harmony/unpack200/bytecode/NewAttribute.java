@@ -43,7 +43,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#getLength()
      */
     protected int getLength() {
@@ -56,7 +56,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#writeBody(java.io.DataOutputStream)
      */
     protected void writeBody(DataOutputStream dos) throws IOException {
@@ -86,7 +86,7 @@ public class NewAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {

@@ -406,7 +406,7 @@ public class ByteCodeForm {
     /**
      * Answer a new instance of this class with the specified opcode and name.
      * Assume no rewrite.
-     * 
+     *
      * @param opcode
      *            int corresponding to the opcode's value
      * @param name
@@ -419,7 +419,7 @@ public class ByteCodeForm {
     /**
      * Answer a new instance of this class with the specified opcode, name,
      * operandType and rewrite
-     * 
+     *
      * @param opcode
      *            int corresponding to the opcode's value
      * @param name
@@ -628,7 +628,7 @@ public class ByteCodeForm {
      * This method will answer true if the receiver is a multi-bytecode
      * instruction (such as aload0_putfield_super); otherwise, it will answer
      * false.
-     * 
+     *
      * @return boolean true if multibytecode, false otherwise
      */
     public boolean hasMultipleByteCodes() {
@@ -648,7 +648,7 @@ public class ByteCodeForm {
     /**
      * When passed a byteCode, an OperandTable and a SegmentConstantPool, this
      * method will set the rewrite of the byteCode appropriately.
-     * 
+     *
      * @param byteCode
      *            ByteCode to be updated (!)
      * @param operandManager
@@ -666,7 +666,7 @@ public class ByteCodeForm {
     /**
      * The ByteCodeForm knows how to fix up a bytecode if it needs to be fixed
      * up because it holds a Label bytecode.
-     * 
+     *
      * @param byteCode
      *            a ByteCode to be fixed up
      * @param codeAttribute

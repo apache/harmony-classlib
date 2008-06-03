@@ -20,7 +20,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * CodecEncoding is used to get the right Codec for a given meta-encoding
@@ -99,7 +98,7 @@ public class CodecEncoding {
      * band_headers byte array. Since the values from this are consumed and not
      * repeated, the input stream should be reused for subsequent encodings.
      * This does not therefore close the input stream.
-     * 
+     *
      * @param value
      *            the canonical encoding value
      * @param in
@@ -108,7 +107,7 @@ public class CodecEncoding {
      *            TODO
      * @return the corresponding codec, or <code>null</code> if the default
      *         should be used
-     * 
+     *
      * @throws IOException
      *             if there is a problem reading from the input stream (which in
      *             reality, is never, since the band_headers are likely stored

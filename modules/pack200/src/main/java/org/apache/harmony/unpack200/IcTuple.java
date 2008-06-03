@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 /**
  * An IcTuple is the set of information that describes an inner class.
- * 
+ *
  * C is the fully qualified class name<br>
  * F is the flags<br>
  * C2 is the outer class name, or null if it can be inferred from C<br>
@@ -33,7 +33,7 @@ public class IcTuple {
     private final int nIndex;
 
     /**
-     * 
+     *
      * @param C
      * @param F
      * @param C2
@@ -115,7 +115,7 @@ public class IcTuple {
     /**
      * Answer the outer class name for the receiver. This may either be
      * specified or inferred from inner class name.
-     * 
+     *
      * @return String name of outer class
      */
     public String outerClassString() {
@@ -124,7 +124,7 @@ public class IcTuple {
 
     /**
      * Answer the inner class name for the receiver.
-     * 
+     *
      * @return String name of inner class
      */
     public String simpleClassName() {
@@ -134,7 +134,7 @@ public class IcTuple {
     /**
      * Answer the full name of the inner class represented by this tuple
      * (including its outer component)
-     * 
+     *
      * @return String full name of inner class
      */
     public String thisClassString() {

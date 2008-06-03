@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 
 /**
  * Attribute definition bands are the set of bands used to define extra
@@ -44,7 +45,7 @@ public class AttrDefinitionBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {

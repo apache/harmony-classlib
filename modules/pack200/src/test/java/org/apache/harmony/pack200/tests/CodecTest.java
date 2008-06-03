@@ -24,8 +24,8 @@ import junit.framework.TestCase;
 
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.RunCodec;
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * 

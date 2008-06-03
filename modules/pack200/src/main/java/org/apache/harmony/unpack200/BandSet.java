@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.CodecEncoding;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.pack200.PopulationCodec;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
@@ -57,7 +58,7 @@ public abstract class BandSet {
 
     /**
      * Decode a band and return an array of <code>int</code> values
-     * 
+     *
      * @param name
      *            the name of the band (primarily for logging/debugging
      *            purposes)
@@ -139,7 +140,7 @@ public abstract class BandSet {
 
     /**
      * Decode a band and return an array of <code>int[]</code> values
-     * 
+     *
      * @param name
      *            the name of the band (primarily for logging/debugging
      *            purposes)
@@ -180,7 +181,7 @@ public abstract class BandSet {
 
     /**
      * Decode a band and return an array of <code>long</code> values
-     * 
+     *
      * @param name
      *            the name of the band (primarily for logging/debugging
      *            purposes)
@@ -332,7 +333,7 @@ public abstract class BandSet {
      * <code>reference</code> (which is populated prior to this call). An
      * exception is thrown if a decoded index falls outside the range
      * [0..reference.length-1].
-     * 
+     *
      * @param name
      *            the band name
      * @param in
@@ -343,7 +344,7 @@ public abstract class BandSet {
      *            the number of references to decode
      * @param reference
      *            the array of values to use for the references
-     * 
+     *
      * @throws IOException
      *             if a problem occurs during reading from the underlying stream
      * @throws Pack200Exception
@@ -363,7 +364,7 @@ public abstract class BandSet {
      * exception is thrown if a decoded index falls outside the range
      * [0..reference.length-1]. Unlike the other parseReferences, this
      * post-processes the result into an array of results.
-     * 
+     *
      * @param name
      *            TODO
      * @param in
@@ -374,7 +375,7 @@ public abstract class BandSet {
      *            the numbers of references to decode for each array entry
      * @param reference
      *            the array of values to use for the references
-     * 
+     *
      * @throws IOException
      *             if a problem occurs during reading from the underlying stream
      * @throws Pack200Exception
@@ -632,7 +633,7 @@ public abstract class BandSet {
             result[i] = new String[ints[i].length];
             for (int j = 0; j < result[i].length; j++) {
                 result[i][j] = reference[ints[i][j]];
-                
+
             }
         }
         return result;

@@ -17,6 +17,7 @@
 package org.apache.harmony.unpack200;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 
 /**
@@ -109,7 +110,7 @@ public class AttributeLayout implements IMatcher {
     /**
      * Construct a default AttributeLayout (equivalent to
      * <code>new AttributeLayout(name, context, layout, index, true);</code>)
-     * 
+     *
      * @param name
      * @param context
      * @param layout
@@ -243,7 +244,7 @@ public class AttributeLayout implements IMatcher {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.IMatches#matches(long)
      */
     public boolean matches(long value) {

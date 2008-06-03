@@ -52,7 +52,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.ClassFileEntry#toString()
      */
     public String toString() {
@@ -61,7 +61,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#getNestedClassFileEntries()
      */
     protected ClassFileEntry[] getNestedClassFileEntries() {
@@ -75,7 +75,7 @@ public class LineNumberTableAttribute extends BCIRenumberedAttribute {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.bytecode.Attribute#resolve(org.apache.harmony.unpack200.bytecode.ClassConstantPool)
      */
     protected void resolve(ClassConstantPool pool) {

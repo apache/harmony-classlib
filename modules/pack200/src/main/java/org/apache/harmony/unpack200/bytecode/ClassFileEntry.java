@@ -39,7 +39,7 @@ public abstract class ClassFileEntry {
 
     /**
      * Allows the constant pool entries to resolve their nested entries
-     * 
+     *
      * @param pool
      */
     protected void resolve(ClassConstantPool pool) {

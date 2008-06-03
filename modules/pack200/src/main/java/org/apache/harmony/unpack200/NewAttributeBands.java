@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPDouble;
@@ -61,7 +62,7 @@ public class NewAttributeBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
@@ -71,7 +72,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Parse the bands relating to this AttributeLayout and return the correct
      * class file attributes as a List of {@link Attribute}
-     * 
+     *
      * @throws Pack200Exception
      */
     public List parseAttributes(InputStream in, int occurrenceCount)
@@ -92,7 +93,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Get one attribute at the given index from the various bands. The correct
      * bands must have already been read in.
-     * 
+     *
      * @param index
      * @param elements
      * @return
@@ -112,7 +113,7 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Tokenise the layout into AttributeElements
-     * 
+     *
      * @throws IOException
      */
     private void parseLayout() throws IOException {
@@ -130,7 +131,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Resolve calls in the attribute layout and returns the number of backwards
      * calls
-     * 
+     *
      * @param tokens -
      *            the attribute layout as a List of AttributeElements
      */
@@ -283,7 +284,7 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Read a UnionCase from the stream
-     * 
+     *
      * @param stream
      * @return
      * @throws IOException
@@ -322,7 +323,7 @@ public class NewAttributeBands extends BandSet {
 
         /**
          * Read the bands associated with this part of the layout
-         * 
+         *
          * @param in
          * @param count
          * @throws Pack200Exception
@@ -334,7 +335,7 @@ public class NewAttributeBands extends BandSet {
         /**
          * Add the band data for this element at the given index to the
          * attribute
-         * 
+         *
          * @param index
          * @param attribute
          */
@@ -715,7 +716,7 @@ public class NewAttributeBands extends BandSet {
         /**
          * Used by calls when adding band contents to attributes so they don't
          * have to keep track of the internal index of the callable
-         * 
+         *
          * @param attribute
          */
         public void addNextToAttribute(NewAttribute attribute) {
@@ -728,7 +729,7 @@ public class NewAttributeBands extends BandSet {
 
         /**
          * Adds the count of a call to this callable (ie the number of calls)
-         * 
+         *
          * @param count
          */
         public void addCount(int count) {
@@ -810,7 +811,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Utility method to get the contents of the given stream, up to the next
      * ']', (ignoring pairs of brackets '[' and ']')
-     * 
+     *
      * @param stream
      * @return
      * @throws IOException
@@ -837,7 +838,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Returns the {@link BHSDCodec} that should be used for the given layout
      * element
-     * 
+     *
      * @param layoutElement
      */
     public BHSDCodec getCodec(String layoutElement) {
@@ -858,7 +859,7 @@ public class NewAttributeBands extends BandSet {
     /**
      * Utility method to get the contents of the given stream, up to the next
      * ']', (ignoring pairs of brackets '[' and ']')
-     * 
+     *
      * @param stream
      * @return
      * @throws IOException
@@ -884,7 +885,7 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Read a number from the stream and return it
-     * 
+     *
      * @param stream
      * @return
      * @throws IOException
@@ -913,7 +914,7 @@ public class NewAttributeBands extends BandSet {
 
     /**
      * Read a 'body' section of the layout from the given stream
-     * 
+     *
      * @param stream
      * @return List of LayoutElements
      * @throws IOException
@@ -935,7 +936,7 @@ public class NewAttributeBands extends BandSet {
      * Once the attribute bands have been read the callables can be informed
      * about the number of times each is subject to a backwards call. This
      * method is used to set this information.
-     * 
+     *
      * @param backwardsCalls
      *            one int for each backwards callable, which contains the number
      *            of times that callable is subject to a backwards call.

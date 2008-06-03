@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPNameAndType;
@@ -90,7 +91,7 @@ public class ClassBands extends BandSet {
     private ArrayList[][] methodAttributes;
 
     private String[][] methodDescr;
-    
+
     private int[][] methodDescrInts;
 
     private long[][] methodFlags;
@@ -661,7 +662,7 @@ public class ClassBands extends BandSet {
                     int icTupleF = classInnerClassesF[innerClassIndex][j];
                     String icTupleC2 = null;
                     String icTupleN = null;
-                    
+
                     if (icTupleF != 0) {
                         icTupleC2Index = classInnerClassesOuterRCN[innerClassC2NIndex];
                         icTupleNIndex = classInnerClassesNameRUN[innerClassC2NIndex];
@@ -764,9 +765,6 @@ public class ClassBands extends BandSet {
                 Codec.BRANCH5, codeHandlerCount);
         codeHandlerClassRCN = decodeBandInt(
                 "code_handler_class_RCN", in, Codec.UNSIGNED5, codeHandlerCount);
-        // The codeHandlerClassRCN band contains incremented references to
-        // cp_Class so we can't use parseReferences(..) here.
-        String[] cpClass = cpBands.getCpClass();
 
         int codeFlagsCount = segment.getSegmentHeader().getOptions()
                 .hasAllCodeFlags() ? codeCount : codeSpecialHeader;
@@ -1166,7 +1164,7 @@ public class ClassBands extends BandSet {
     /**
      * Parse the class metadata bands and return the number of backwards
      * callables
-     * 
+     *
      * @param in
      * @param classAttrCalls
      * @return
@@ -1304,10 +1302,10 @@ public class ClassBands extends BandSet {
     /**
      * Answer an ArrayList of ArrayLists which hold the the code attributes
      * corresponding to all classes in order.
-     * 
+     *
      * If a class doesn't have any attributes, the corresponding element in this
      * list will be an empty ArrayList.
-     * 
+     *
      * @return ArrayList
      */
     public ArrayList getOrderedCodeAttributes() {
@@ -1358,7 +1356,7 @@ public class ClassBands extends BandSet {
      * Returns null if all classes should use the default major and minor
      * version or an array of integers containing the major version numberss to
      * use for each class in the segment
-     * 
+     *
      * @return Class file major version numbers, or null if none specified
      */
     public int[] getClassVersionMajor() {
@@ -1369,7 +1367,7 @@ public class ClassBands extends BandSet {
      * Returns null if all classes should use the default major and minor
      * version or an array of integers containing the minor version numberss to
      * use for each class in the segment
-     * 
+     *
      * @return Class file minor version numbers, or null if none specified
      */
     public int[] getClassVersionMinor() {

@@ -36,7 +36,7 @@ public class CPMember extends ClassFileEntry {
 
     /**
      * Create a new CPMember
-     * 
+     *
      * @param name
      * @param descriptor
      * @param flags

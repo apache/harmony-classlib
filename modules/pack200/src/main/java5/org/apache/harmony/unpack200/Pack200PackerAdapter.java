@@ -22,6 +22,8 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Pack200.Packer;
 
+import org.apache.harmony.pack200.Pack200Exception;
+
 
 /**
  * This class provides the binding between the standard Pack200 interface and the
@@ -31,12 +33,31 @@ import java.util.jar.Pack200.Packer;
  */
 public class Pack200PackerAdapter extends Pack200Adapter implements Packer {
 
-	public void pack(JarFile arg0, OutputStream arg1) throws IOException {
-		throw new Error("Not yet implemented");
+	public void pack(JarFile file, OutputStream out) throws IOException {
+        if (file == null || out == null)
+            throw new IllegalArgumentException(
+                    "Must specify both input and output streams");
+        completed(0);
+        try {
+            new org.apache.harmony.pack200.Archive(file, out).pack();
+        } catch (Pack200Exception e) {
+            throw new IOException("Failed to pack Jar:" + String.valueOf(e));
+        }
+        completed(1);
 	}
 
-	public void pack(JarInputStream arg0, OutputStream arg1) throws IOException {
-		throw new Error("Not yet implemented");
+	public void pack(JarInputStream in, OutputStream out) throws IOException {
+	    if (in == null || out == null)
+            throw new IllegalArgumentException(
+                    "Must specify both input and output streams");
+        completed(0);
+        try {
+            new org.apache.harmony.pack200.Archive(in, out).pack();
+        } catch (Pack200Exception e) {
+            throw new IOException("Failed to pack Jar:" + String.valueOf(e));
+        }
+        completed(1);
+        in.close();
 	}
 
 }

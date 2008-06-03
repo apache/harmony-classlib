@@ -19,12 +19,11 @@ package org.apache.harmony.pack200;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.harmony.unpack200.Pack200Exception;
 
 /**
  * A Codec allows a sequence of bytes to be decoded into integer values (or vice
  * versa).
- * 
+ *
  * There are a number of standard Codecs ({@link #UDELTA5}, {@link #UNSIGNED5},
  * {@link #BYTE1}, {@link #CHAR3}) that are used in the implementation of many
  * bands; but there are a variety of other ones, and indeed the specification
@@ -90,7 +89,7 @@ public abstract class Codec {
      * Decode a sequence of bytes from the given input stream, returning the
      * value as a long. Note that this method can only be applied for non-delta
      * encodings.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @return the value as a long
@@ -109,7 +108,7 @@ public abstract class Codec {
      * previous value must be passed in as a parameter. If it is a non-delta
      * encoding, then it does not matter what value is passed in, so it makes
      * sense for the value to be passed in by default using code similar to:
-     * 
+     *
      * <pre>
      * long last = 0;
      * while (condition) {
@@ -117,7 +116,7 @@ public abstract class Codec {
      *     // do something with last
      * }
      * </pre>
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @param last
@@ -137,10 +136,10 @@ public abstract class Codec {
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
      * This should probably be used in most cases, since some codecs (such as
-     * 
+     *
      * @{link PopCodec}) only work when the number of values to be read is
      *        known.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -167,10 +166,10 @@ public abstract class Codec {
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
      * This should probably be used in most cases, since some codecs (such as
-     * 
+     *
      * @{link PopCodec}) only work when the number of values to be read is
      *        known.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -196,7 +195,7 @@ public abstract class Codec {
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in
@@ -225,7 +224,7 @@ public abstract class Codec {
 
     /**
      * Decodes a sequence of <code>n</code> values from <code>in</code>.
-     * 
+     *
      * @param n
      *            the number of values to decode
      * @param in

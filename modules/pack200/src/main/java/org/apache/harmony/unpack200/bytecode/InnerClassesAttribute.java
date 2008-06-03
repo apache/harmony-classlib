@@ -52,7 +52,7 @@ public class InnerClassesAttribute extends Attribute {
         /**
          * Determine the indices of the things in the receiver which point to
          * elements of the ClassConstantPool
-         * 
+         *
          * @param pool
          *            ClassConstantPool which holds the CPClass and CPUTF8
          *            objects.

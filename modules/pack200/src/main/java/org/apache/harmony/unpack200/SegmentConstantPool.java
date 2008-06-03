@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.unpack200;
 
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 import org.apache.harmony.unpack200.bytecode.ConstantPoolEntry;
@@ -88,7 +89,7 @@ public class SegmentConstantPool {
      * Subset the constant pool of the specified type to be just that which has
      * the specified class name. Answer the ConstantPoolEntry at the
      * desiredIndex of the subsetted pool.
-     * 
+     *
      * @param cp
      *            type of constant pool array to search
      * @param desiredIndex
@@ -119,7 +120,7 @@ public class SegmentConstantPool {
     /**
      * Given the name of a class, answer the CPClass associated with that class.
      * Answer null if the class doesn't exist.
-     * 
+     *
      * @param name
      *            Class name to look for (form: java/lang/Object)
      * @return CPClass for that class name, or null if not found.
@@ -139,7 +140,7 @@ public class SegmentConstantPool {
 
     /**
      * Answer the init method for the specified class.
-     * 
+     *
      * @param cp
      *            constant pool to search (must be CP_METHOD)
      * @param value
@@ -169,19 +170,19 @@ public class SegmentConstantPool {
      * which have just those methods / fields defined in the superclass.
      * Similarly, _this bytecodes use just those methods/fields defined in this
      * class, and _init bytecodes use just those methods that start with <init>.
-     * 
+     *
      * This method takes an array of names, a String to match for, an index and
      * a boolean as parameters, and answers the array position in the array of
      * the indexth element which matches (or equals) the String (depending on
      * the state of the boolean)
-     * 
+     *
      * In other words, if the class array consists of: Object [position 0, 0th
      * instance of Object] String [position 1, 0th instance of String] String
      * [position 2, 1st instance of String] Object [position 3, 1st instance of
      * Object] Object [position 4, 2nd instance of Object] then
      * matchSpecificPoolEntryIndex(..., "Object", 2, false) will answer 4.
      * matchSpecificPoolEntryIndex(..., "String", 0, false) will answer 1.
-     * 
+     *
      * @param nameArray
      *            Array of Strings against which the compareString is tested
      * @param compareString
@@ -204,7 +205,7 @@ public class SegmentConstantPool {
      * secondaryCompareString When the desiredIndex number of hits has been
      * reached, the index into the original two arrays of the element hit is
      * returned.
-     * 
+     *
      * @param primaryArray
      *            The first array to search
      * @param secondaryArray
@@ -244,7 +245,7 @@ public class SegmentConstantPool {
      * forms we care about: .* (aka REGEX_MATCH_ALL) ^<init>.* (aka
      * REGEX_MATCH_INIT) and will answer correctly if those are passed as the
      * regexString.
-     * 
+     *
      * @param regexString
      *            String against which the compareString will be matched
      * @param compareString

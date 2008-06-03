@@ -16,6 +16,8 @@
  */
 package org.apache.harmony.unpack200;
 
+import org.apache.harmony.pack200.Pack200Exception;
+
 /**
  * Stores the combinations of bit flags that can be used in the segment header
  * options. Whilst this could be defined in {@link Segment}, it's cleaner to
@@ -62,7 +64,7 @@ public class SegmentOptions {
 
     /**
      * Creates a new segment options with the given integer value.
-     * 
+     *
      * @param options
      *            the integer value to use as the flags
      * @throws Pack200Exception

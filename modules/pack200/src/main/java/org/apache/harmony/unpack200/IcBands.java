@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 
@@ -48,7 +49,7 @@ public class IcBands extends BandSet {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.harmony.unpack200.BandSet#unpack(java.io.InputStream)
      */
     public void unpack(InputStream in) throws IOException, Pack200Exception {
@@ -110,7 +111,7 @@ public class IcBands extends BandSet {
     /**
      * Answer the relevant IcTuples for the specified className and class
      * constant pool.
-     * 
+     *
      * @param className
      *            String name of the class X for ic_relevant(X)
      * @param cp

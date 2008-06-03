@@ -31,6 +31,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 
 import org.apache.harmony.pack200.Codec;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.Attribute;
 import org.apache.harmony.unpack200.bytecode.CPClass;
 import org.apache.harmony.unpack200.bytecode.CPField;
@@ -49,14 +50,14 @@ import org.apache.harmony.unpack200.bytecode.SourceFileAttribute;
  * combine (non-GZipped) archives into a single large archive by concatenation
  * alone. Thus all the hard work in unpacking an archive falls to understanding
  * a segment.
- * 
+ *
  * The first component of a segment is the header; this contains (amongst other
  * things) the expected counts of constant pool entries, which in turn defines
  * how many values need to be read from the stream. Because values are variable
  * width (see {@link Codec}), it is not possible to calculate the start of the
  * next segment, although one of the header values does hint at the size of the
  * segment if non-zero, which can be used for buffering purposes.
- * 
+ *
  * Note that this does not perform any buffering of the input stream; each value
  * will be read on a byte-by-byte basis. It does not perform GZip decompression
  * automatically; both of these are expected to be done by the caller if the
@@ -234,7 +235,7 @@ public class Segment {
             int innerClassIndex = ic_stored[index].thisClassIndex();
             int outerClassIndex = ic_stored[index].outerClassIndex();
             int simpleClassNameIndex = ic_stored[index].simpleClassNameIndex();
-            
+
             String innerClassString = ic_stored[index].thisClassString();
             String outerClassString = ic_stored[index].outerClassString();
             String simpleClassName = ic_stored[index].simpleClassName();
@@ -308,7 +309,7 @@ public class Segment {
     /**
      * Given an ic_local and an ic_relevant, use them to calculate what should
      * be added as ic_stored.
-     * 
+     *
      * @param ic_local
      *            IcTuple[] array of local transmitted tuples
      * @param ic_relevant
@@ -360,7 +361,7 @@ public class Segment {
     /**
      * This performs the actual work of parsing against a non-static instance of
      * Segment.
-     * 
+     *
      * @param in
      *            the input stream to read from
      * @throws IOException
@@ -391,7 +392,7 @@ public class Segment {
     /**
      * Unpacks a packed stream (either .pack. or .pack.gz) into a corresponding
      * JarOuputStream.
-     * 
+     *
      * @throws Pack200Exception
      *             if there is a problem unpacking
      * @throws IOException
@@ -411,7 +412,7 @@ public class Segment {
      * reading, since the file bits may not be loaded and thus just copied from
      * one stream to another. Doesn't close the output stream when finished, in
      * case there are more entries (e.g. further segments) to be written.
-     * 
+     *
      * @param out
      *            the JarOutputStream to write data to
      * @throws IOException
@@ -522,7 +523,7 @@ public class Segment {
 
     /**
      * Override the archive's deflate hint with the given boolean
-     * 
+     *
      * @param deflateHint -
      *            the deflate hint to use
      */

@@ -36,7 +36,7 @@ public class CPNameAndType extends ConstantPoolEntry {
 
     /**
      * Create a new CPNameAndType
-     * 
+     *
      * @param name
      * @param descriptor
      * @param domain
@@ -104,7 +104,7 @@ public class CPNameAndType extends ConstantPoolEntry {
      * Answers the invokeinterface count argument when the receiver is treated
      * as an invokeinterface target. This value is not meaningful if the
      * receiver is not an invokeinterface target.
-     * 
+     *
      * @return count
      */
     public int invokeInterfaceCount() {

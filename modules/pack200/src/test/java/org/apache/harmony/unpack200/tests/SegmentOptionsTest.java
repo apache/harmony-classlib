@@ -18,7 +18,7 @@ package org.apache.harmony.unpack200.tests;
 
 import junit.framework.TestCase;
 
-import org.apache.harmony.unpack200.Pack200Exception;
+import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.SegmentOptions;
 
 /**
