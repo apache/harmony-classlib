@@ -1,18 +1,18 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.apache.harmony.pack200;
 
@@ -56,33 +56,27 @@ import org.apache.bcel.classfile.Synthetic;
 import org.apache.bcel.classfile.Unknown;
 import org.apache.bcel.classfile.Visitor;
 
-
 public class Segment implements Visitor {
 
-    private SegmentHeader segmentHeader;
-    private CpBands cpBands;
     private AttributeDefinitionBands attributeDefinitionBands;
-    private IcBands icBands;
-    private ClassBands classBands;
     private BcBands bcBands;
+    private ClassBands classBands;
+    private CpBands cpBands;
     private FileBands fileBands;
+    private IcBands icBands;
+    private SegmentHeader segmentHeader;
 
-    public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
+    public void pack(List classes, OutputStream out) throws IOException,
+            Pack200Exception {
         segmentHeader = new SegmentHeader();
-        cpBands = new CpBands(segmentHeader);
-        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader);
-        icBands = new IcBands(segmentHeader);
+        cpBands = new CpBands();
+        attributeDefinitionBands = new AttributeDefinitionBands();
+        icBands = new IcBands();
         classBands = new ClassBands(cpBands, classes.size());
         bcBands = new BcBands();
-        fileBands = new FileBands(segmentHeader, files);
+        fileBands = new FileBands();
 
         processClasses(classes);
-        
-        cpBands.finaliseBands();
-        attributeDefinitionBands.finaliseBands();
-        icBands.finaliseBands();
-        classBands.finaliseBands();
-        bcBands.finaliseBands();
 
         segmentHeader.pack(out);
         cpBands.pack(out);
@@ -185,8 +179,6 @@ public class Segment implements Visitor {
 
     public void visitJavaClass(JavaClass obj) {
         classBands.addClass(obj);
-        segmentHeader.addMinorVersion(obj.getMinor());
-        segmentHeader.addMajorVersion(obj.getMajor());
     }
 
     public void visitLineNumber(LineNumber obj) {
