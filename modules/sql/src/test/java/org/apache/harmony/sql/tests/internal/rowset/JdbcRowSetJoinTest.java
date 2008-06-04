@@ -1219,6 +1219,39 @@ public class JdbcRowSetJoinTest extends CachedRowSetTestCase {
         }
     }
 
+    public void testSetMatchColumn_Initial() throws Exception {
+        JdbcRowSet noInitalJrs = noInitalJdbcRowSet();
+        JdbcRowSet jrs = newJdbcRowSet();
+        String[] names = { "1", "2", "3" };
+        jrs.setMatchColumn(names);
+
+        names = jrs.getMatchColumnNames();
+        assertEquals(13, names.length);
+        assertEquals("1", names[0]);
+        assertEquals("2", names[1]);
+        assertEquals("3", names[2]);
+        try {
+            jrs.unsetMatchColumn(new String[] { "3", "2", "1" });
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+    }
+
+    public void testUnSetMatchColumn() throws Exception {
+        JdbcRowSet noInitalJrs = noInitalJdbcRowSet();
+        JdbcRowSet jrs = newJdbcRowSet();
+        int[] indexs = { 1, 2, 3 };
+        jrs.setMatchColumn(indexs);
+
+        try {
+            jrs.unsetMatchColumn(new int[] { 3, 2, 1 });
+            fail("Should throw SQLException");
+        } catch (SQLException e) {
+            // expected, Columns being unset are not the same as set
+        }
+    }
+
     protected JdbcRowSet noInitalJdbcRowSet() throws Exception {
         try {
             return (JdbcRowSet) Class.forName("com.sun.rowset.JdbcRowSetImpl")

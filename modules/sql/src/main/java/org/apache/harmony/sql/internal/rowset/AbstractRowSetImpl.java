@@ -32,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -841,292 +842,258 @@ public class AbstractRowSetImpl extends BaseRowSet implements RowSet {
     }
 
     public int getHoldability() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new UnsupportedOperationException();
     }
-    
+
     public int getConcurrency() throws SQLException {
         if (resultSet == null) {
             throw new NullPointerException();
         }
+
         return resultSet.getConcurrency();
     }
-    
+
     public Reader getNCharacterStream(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public Reader getNCharacterStream(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public NClob getNClob(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public NClob getNClob(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public String getNString(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public String getNString(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public RowId getRowId(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public RowId getRowId(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public SQLXML getSQLXML(String columnLabel) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public boolean isClosed() throws SQLException {
-        // TODO Auto-generated method stub
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     public void updateAsciiStream(int columnIndex, InputStream x, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateAsciiStream(String columnLabel, InputStream x, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateAsciiStream(int columnIndex, InputStream x)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateAsciiStream(String columnLabel, InputStream x)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBinaryStream(int columnIndex, InputStream x, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBinaryStream(String columnLabel, InputStream x,
             long length) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBinaryStream(int columnIndex, InputStream x)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBinaryStream(String columnLabel, InputStream x)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBlob(int columnIndex, InputStream inputStream, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBlob(String columnLabel, InputStream inputStream,
             long length) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBlob(int columnIndex, InputStream inputStream)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateBlob(String columnLabel, InputStream inputStream)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateCharacterStream(int columnIndex, Reader x, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateCharacterStream(String columnLabel, Reader reader,
             long length) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateCharacterStream(int columnIndex, Reader x)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateCharacterStream(String columnLabel, Reader reader)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateClob(int columnIndex, Reader reader, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateClob(String columnLabel, Reader reader, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateClob(int columnIndex, Reader reader) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateClob(String columnLabel, Reader reader)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateNCharacterStream(int columnIndex, Reader x, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
     public void updateNCharacterStream(String columnLabel, Reader reader,
             long length) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
     public void updateNCharacterStream(int columnIndex, Reader x)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateNCharacterStream(String columnLabel, Reader reader)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
-    public void updateNClob(int columnIndex, NClob clob) throws SQLException {
-        // TODO Auto-generated method stub
-        
+    public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
+        throw new UnsupportedOperationException();
     }
 
-    public void updateNClob(String columnLabel, NClob clob) throws SQLException {
-        // TODO Auto-generated method stub
-        
+    public void updateNClob(String columnLabel, NClob nClob)
+            throws SQLException {
+        throw new UnsupportedOperationException();
     }
 
     public void updateNClob(int columnIndex, Reader reader, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateNClob(String columnLabel, Reader reader, long length)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateNClob(int columnIndex, Reader reader) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public void updateNClob(String columnLabel, Reader reader)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new SQLFeatureNotSupportedException();
     }
 
-    public void updateNString(int columnIndex, String string)
+    public void updateNString(int columnIndex, String nString)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
-    public void updateNString(String columnLabel, String string)
+    public void updateNString(String columnLabel, String nString)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
     public void updateRowId(int columnIndex, RowId x) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
     public void updateRowId(String columnLabel, RowId x) throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
     public void updateSQLXML(int columnIndex, SQLXML xmlObject)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
     }
 
     public void updateSQLXML(String columnLabel, SQLXML xmlObject)
             throws SQLException {
-        // TODO Auto-generated method stub
-        
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setType(int type) throws SQLException {
+        switch (type) {
+        case ResultSet.TYPE_FORWARD_ONLY:
+        case ResultSet.TYPE_SCROLL_INSENSITIVE:
+        case ResultSet.TYPE_SCROLL_SENSITIVE: {
+            return;
+        }
+        default: {
+            // rowset.42=Invalid type
+            throw new SQLException(Messages.getString("rowset.42")); //$NON-NLS-1$
+        }
+        }
     }
 
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        // TODO Auto-generated method stub
         return null;
     }
-
 
     public int getFetchDirection() throws SQLException {
         if (resultSet == null) {
