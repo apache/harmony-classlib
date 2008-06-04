@@ -312,6 +312,12 @@
         </not>
      </condition>
 
+    <condition property="hy.portlib.stubs" value="true">
+        <or>
+            <equals arg1="${hy.os}" arg2="aix" />
+            <equals arg1="${hy.os}" arg2="zos" />
+        <or>
+    </condition>
     <property name="hy.portlib.stubs" value="false" />
 
     <condition property="hy.libstdc++.suffix" value=".libstdc++6">
