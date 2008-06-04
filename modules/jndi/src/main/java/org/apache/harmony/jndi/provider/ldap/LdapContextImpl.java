@@ -209,6 +209,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         doBindOperation(connCtls);
     }
 
+    public LdapContextImpl(LdapContextImpl context, String dn)
+            throws NamingException {
+        this(context.client, context.env, dn);
+    }
+
     private void initial(LdapClient ldapClient,
             Hashtable<Object, Object> environment, String dn)
             throws InvalidNameException {
@@ -887,7 +892,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 Hashtable<String, String> schemaDef = (Hashtable<String, String>) schemaTable
                         .get(schemaType.toLowerCase());
                 LdapAttribute attribute = (LdapAttribute) as.get(schemaType);
-               
                 String value;
                 String attrName;
                 for (int i = 0; i < attribute.size(); i++) {
@@ -898,8 +902,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             }
         }
 
-        ldapSchemaCtx = new LdapSchemaContextImpl(this, env, name,
-                schemaTable, LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
+        ldapSchemaCtx = new LdapSchemaContextImpl(this, env, name, schemaTable,
+                LdapSchemaContextImpl.SCHEMA_ROOT_LEVEL);
         return ldapSchemaCtx;
     }
 
@@ -1083,7 +1087,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             filter.setValue("objectClass");
         } else {
             // only one attribute type and value pair
-            if (attributes.size() == 1 && attributes.getAll().next().size() == 1) {
+            if (attributes.size() == 1
+                    && attributes.getAll().next().size() == 1) {
                 filter = new Filter(Filter.EQUALITY_MATCH_FILTER);
                 Attribute att = attributes.getAll().next();
                 filter.setValue(new AttributeTypeAndValuePair(att.getID(), att
@@ -1111,33 +1116,10 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         controls.setReturningAttributes(as);
         LdapSearchResult result = doSearch(targetDN, filter, controls);
 
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        Map<String, Attributes> entries = result.getEntries();
-        Name tempName = new LdapName(contextDn.toString());
-        tempName.addAll(name);
-        String baseDN = tempName.toString();
-        for (String dn : entries.keySet()) {
-            SearchResult sr = null;
-            if (dn.startsWith("ldap://")) {
-                sr = new SearchResult(dn, null, entries.get(dn), false);
-                int index = dn.indexOf("/", 7);
-                sr.setNameInNamespace(dn.substring(index + 1, dn.length()));
-                list.add(sr);
-            } else {
-                String relativeName = LdapUtils.convertToRelativeName(dn,
-                        baseDN);
-                sr = new SearchResult(relativeName, null, entries.get(dn));
-                sr.setNameInNamespace(dn);
-            }
-            list.add(sr);
-        }
-
-        if (list.size() == 0 && result.getException() != null) {
+        if (result.isEmpty() && result.getException() != null) {
             throw result.getException();
         }
-
-        return new LdapNamingEnumeration<SearchResult>(list, result
-                .getException());
+        return result.toSearchResultEnumeration(targetDN);
     }
 
     public NamingEnumeration<SearchResult> search(Name name, String filter,
@@ -1170,33 +1152,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         LdapSearchResult result = doSearch(targetDN, f, searchControls);
 
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        Map<String, Attributes> entries = result.getEntries();
-        Name tempName = new LdapName(contextDn.toString());
-        tempName.addAll(name);
-        String baseDN = tempName.toString();
-        for (String dn : entries.keySet()) {
-            SearchResult sr = null;
-            if (dn.startsWith("ldap://")) {
-                sr = new SearchResult(dn, null, entries.get(dn), false);
-                int index = dn.indexOf("/", 7);
-                sr.setNameInNamespace(dn.substring(index + 1, dn.length()));
-                list.add(sr);
-            } else {
-                String relativeName = LdapUtils.convertToRelativeName(dn,
-                        baseDN);
-                sr = new SearchResult(relativeName, null, entries.get(dn));
-                sr.setNameInNamespace(dn);
-            }
-            list.add(sr);
-        }
-
-        if (list.size() == 0 && result.getException() != null) {
+        if (result.isEmpty() && result.getException() != null) {
             throw result.getException();
         }
-
-        return new LdapNamingEnumeration<SearchResult>(list, result
-                .getException());
+        
+        return result.toSearchResultEnumeration(targetDN);
     }
 
     public NamingEnumeration<SearchResult> search(Name name, String filter,
@@ -1285,33 +1245,34 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         LdapResult result = op.getResult();
 
-        op.getSearchResult().setException(
-                LdapUtils.getExceptionFromResult(result));
+        if (result != null) {
+            op.getSearchResult().setException(
+                    LdapUtils.getExceptionFromResult(result));
 
-        // has error, not deal with referrals
-        if (result.getResultCode() != LdapResult.REFERRAL
-                && op.getSearchResult().getException() != null) {
-            return op.getSearchResult();
-        }
-
-        // baseObject is not located at the server
-        if (result.getResultCode() == LdapResult.REFERRAL) {
-            ReferralException ex = new ReferralExceptionImpl(contextDn
-                    .toString(), result.getReferrals(), env);
-            try {
-                if (isFollowReferral(ex)) {
-                    LdapContextImpl ctx = (LdapContextImpl) getReferralContext(ex);
-                    return ctx.doSearch(op);
-                } else {
-                    op.getSearchResult().setException(ex);
-                    return op.getSearchResult();
-                }
-            } catch (PartialResultException e) {
-                op.getSearchResult().setException(e);
+            // has error, not deal with referrals
+            if (result.getResultCode() != LdapResult.REFERRAL
+                    && op.getSearchResult().getException() != null) {
                 return op.getSearchResult();
             }
-        }
 
+            // baseObject is not located at the server
+            if (result.getResultCode() == LdapResult.REFERRAL) {
+                ReferralException ex = new ReferralExceptionImpl(contextDn
+                        .toString(), result.getReferrals(), env);
+                try {
+                    if (isFollowReferral(ex)) {
+                        LdapContextImpl ctx = (LdapContextImpl) getReferralContext(ex);
+                        return ctx.doSearch(op);
+                    } else {
+                        op.getSearchResult().setException(ex);
+                        return op.getSearchResult();
+                    }
+                } catch (PartialResultException e) {
+                    op.getSearchResult().setException(e);
+                    return op.getSearchResult();
+                }
+            }
+        }
         // there are SearchResultReference in search result
         if (op.getSearchResult().getRefURLs() != null
                 && op.getSearchResult().getRefURLs().size() != 0) {
@@ -1605,34 +1566,11 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
         LdapSearchResult result = doSearch(targetDN, filter, controls);
 
-        List<NameClassPair> list = new ArrayList<NameClassPair>();
-        Map<String, Attributes> entries = result.getEntries();
-        Name tempName = new LdapName(contextDn.toString());
-        tempName.addAll(name);
-        String baseDN = tempName.toString();
-        for (String dn : entries.keySet()) {
-            String relativeName = LdapUtils.convertToRelativeName(dn, baseDN);
-            Attributes attrs = entries.get(dn);
-            Attribute attrClass = attrs.get("javaClassName");
-            String className = null;
-            if (attrClass != null) {
-                className = (String) attrClass.get(0);
-            } else {
-                className = DirContext.class.getName();
-            }
-            NameClassPair pair = new NameClassPair(relativeName, className,
-                    true);
-            pair.setNameInNamespace(dn);
-            list.add(pair);
-        }
-
-        // no entries return
-        if (list.size() == 0 && result.getException() != null) {
+        if (result.isEmpty() && result.getException() != null) {
             throw result.getException();
         }
 
-        return new LdapNamingEnumeration<NameClassPair>(list, result
-                .getException());
+        return result.toNameClassPairEnumeration(targetDN);
     }
 
     protected String getTargetDN(Name name, Name prefix)
@@ -1750,28 +1688,23 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
          * there is only one ldap ns
          */
 
-        NamingEnumeration<NameClassPair> enu = list(name);
+        // NamingEnumeration<NameClassPair> enu = list(name);
+        // absolute dn name to list
+        String targetDN = getTargetDN(name, contextDn);
 
-        List<Binding> bindings = new ArrayList<Binding>();
+        // construct one-level search using filter "(objectclass=*)"
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+        Filter filter = new Filter(Filter.PRESENT_FILTER);
+        filter.setValue("objectClass");
 
-        while (enu.hasMore()) {
-            NameClassPair pair = enu.next();
-            Object bound = null;
-            if (!pair.getClassName().equals(DirContext.class.getName())) {
-                bound = lookup(pair.getName());
-            } else {
-                bound = new LdapContextImpl(this, env, contextDn.toString());
-            }
+        LdapSearchResult result = doSearch(targetDN, filter, controls);
 
-            Binding binding = new Binding(pair.getName(), bound.getClass()
-                    .getName(), bound);
-            binding.setNameInNamespace(pair.getNameInNamespace());
-            bindings.add(binding);
-
+        if (result.isEmpty() && result.getException() != null) {
+            throw result.getException();
         }
 
-        // FIXME: deal with exception
-        return new LdapNamingEnumeration<Binding>(bindings, null);
+        return result.toBindingEnumeration(this, name);
     }
 
     public NamingEnumeration<Binding> listBindings(String s)

@@ -17,66 +17,111 @@
 
 package org.apache.harmony.jndi.provider.ldap;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+import javax.naming.CommunicationException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+
+import org.apache.harmony.jndi.internal.nls.Messages;
 
 /**
  * TODO: dynamic load elements from server
  */
 public class LdapNamingEnumeration<T> implements NamingEnumeration<T> {
 
-    private ArrayList<T> values;
-
-    private int currentIndex;
+    private LinkedList<T> values;
 
     private NamingException exception;
+
+    /**
+     * flag to indicate whether all element have been added
+     */
+    private boolean isFinished;
+
+    /**
+     * max time to wait next element in millisconds
+     */
+    private long timeout = DEFAULT_TIMEOUT;
+
+    private static final long DEFAULT_TIMEOUT = 30000;
+
+    /**
+     * This constructor equals to
+     * <code>LdapNamingEnumeration(Collection<T>, NamingException, true)</code>
+     */
+    public LdapNamingEnumeration(Collection<T> list, NamingException ex) {
+        this(list, ex, true);
+    }
 
     /**
      * <code>list</code> and <code>ex</code> both can be <code>null</code>,
      * <code>null</code> of <code>list</code> will be treated as empty List.
      * 
      * @param list
-     *            All elements to be enumerate
+     *            elements added to the enumeration.
      * @param ex
-     *            exception would be thrown when over iterate
+     *            exception would be thrown when over iterate.
+     * @param isFinished
+     *            if all elements have been added.
      */
-    public LdapNamingEnumeration(Collection<T> list, NamingException ex) {
+    public LdapNamingEnumeration(Collection<T> list, NamingException ex,
+            boolean isFinished) {
         if (list == null) {
-            values = new ArrayList<T>();
+            values = new LinkedList<T>();
         } else {
-            values = new ArrayList<T>(list);
+            values = new LinkedList<T>(list);
         }
 
         exception = ex;
-        currentIndex = 0;
+        this.isFinished = isFinished;
     }
 
     /**
      * release all relative resources, current implementation just set
-     * enumeration values to <code>null</code>.
+     * enumeration values to <code>null</code> which indicate the enumeration
+     * is closed.
      */
-    public void close() throws NamingException {
+    public void close() {
         // no other resources need to release
-        values = null;
+        synchronized (values) {
+            values.clear();
+            values = null;
+        }
     }
 
     public boolean hasMore() throws NamingException {
+        // has been closed
         if (values == null) {
             return false;
         }
 
-        if (currentIndex < values.size()) {
+        if (!values.isEmpty()) {
             return true;
         }
-        // no elemnts to iterate, release resource first
+
+        synchronized (values) {
+            if (values.isEmpty() && !isFinished) {
+                waitMoreElement();
+                if (!values.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
         close();
+
         if (exception != null) {
             throw exception;
         }
+
+        if (!isFinished) {
+            // ldap.31=Read LDAP response message time out
+            throw new CommunicationException(Messages.getString("ldap.31")); //$NON-NLS-1$
+        }
+
         return false;
     }
 
@@ -86,11 +131,27 @@ public class LdapNamingEnumeration<T> implements NamingEnumeration<T> {
      * invoked.
      */
     public T next() throws NamingException {
-        if (values == null || currentIndex >= values.size()) {
+        if (values == null || (values.isEmpty() && isFinished)) {
             throw new NoSuchElementException();
         }
 
-        return values.get(currentIndex++);
+        synchronized (values) {
+            if (values.isEmpty() && !isFinished) {
+                waitMoreElement();
+                // wait timeout
+                if (values.isEmpty() && !isFinished) {
+                    if (exception != null) {
+                        throw exception;
+                    }
+                    // ldap.31=Read LDAP response message time out
+                    throw new CommunicationException(Messages
+                            .getString("ldap.31")); //$NON-NLS-1$
+                } else if (values.isEmpty()) {
+                    throw new NoSuchElementException();
+                }
+            }
+            return values.poll();
+        }
     }
 
     public boolean hasMoreElements() {
@@ -98,26 +159,86 @@ public class LdapNamingEnumeration<T> implements NamingEnumeration<T> {
             return false;
         }
 
-        if (currentIndex < values.size()) {
+        if (!values.isEmpty()) {
             return true;
         }
+
+        synchronized (values) {
+            if (values.isEmpty() && !isFinished) {
+                waitMoreElement();
+                if (!values.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
     public T nextElement() {
-        if (values == null || currentIndex >= values.size()) {
+        if (values == null || (values.isEmpty() && isFinished)) {
             throw new NoSuchElementException();
         }
 
-        return values.get(currentIndex++);
+        synchronized (values) {
+            if (values.isEmpty() && !isFinished) {
+                waitMoreElement();
+                if (values.isEmpty()) {
+                    throw new NoSuchElementException();
+                }
+            }
+            return values.poll();
+        }
     }
 
-    protected void setException(NamingException exception) {
+    private void waitMoreElement() {
+        try {
+            values.wait(timeout);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
+
+    void setException(NamingException exception) {
         this.exception = exception;
     }
-    
-    void add(T pair) {
-        values.add(pair);
+
+    void add(T pair, boolean isFinished) {
+        if (values == null) {
+            return;
+        }
+
+        synchronized (values) {
+            values.add(pair);
+            if (isFinished) {
+                this.isFinished = true;
+            }
+            values.notifyAll();
+        }
     }
 
+    void add(Collection<T> list, boolean isFinished) {
+        if (values == null) {
+            return;
+        }
+
+        synchronized (values) {
+            values.addAll(list);
+            if (isFinished) {
+                this.isFinished = true;
+            }
+            values.notifyAll();
+        }
+    }
+
+    boolean isFinished() {
+        return isFinished;
+    }
+
+    void setFinished() {
+        synchronized (values) {
+            isFinished = true;
+            values.notifyAll();
+        }
+    }
 }

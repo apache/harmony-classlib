@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.jndi.provider.ldap;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -490,21 +491,19 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
         Hashtable<String, Object> tempSchema = doLookup(name, size);
 
-        LdapNamingEnumeration<NameClassPair> enumeration = new LdapNamingEnumeration<NameClassPair>(
-                null, null);
-
         if (size == level - 1) {
-            return enumeration;
+            return new LdapNamingEnumeration<NameClassPair>(null, null);
         }
 
         Iterator<String> keys = tempSchema.keySet().iterator();
 
+        List<NameClassPair> list = new ArrayList<NameClassPair>();
         while (keys.hasNext()) {
-            enumeration.add(new NameClassPair(ldap2jndi(keys.next()), this
-                    .getClass().getName()));
+            list.add(new NameClassPair(ldap2jndi(keys.next()), this.getClass()
+                    .getName()));
         }
 
-        return enumeration;
+        return new LdapNamingEnumeration<NameClassPair>(list, null);
     }
 
     @Override
@@ -527,21 +526,19 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
         Hashtable<String, Object> tempSchema = doLookup(name, size);
 
-        LdapNamingEnumeration<Binding> enumeration = new LdapNamingEnumeration<Binding>(
-                null, null);
-
         if (size == level - 1) {
-            return enumeration;
+            return new LdapNamingEnumeration<Binding>(null, null);
         }
 
         Iterator<String> keys = tempSchema.keySet().iterator();
 
+        List<Binding> list = new ArrayList<Binding>();
         while (keys.hasNext()) {
-            enumeration.add(new Binding(ldap2jndi(keys.next()), this.getClass()
+            list.add(new Binding(ldap2jndi(keys.next()), this.getClass()
                     .getName()));
         }
 
-        return enumeration;
+        return new LdapNamingEnumeration<Binding>(list, null);
     }
 
     @Override
@@ -647,8 +644,6 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
         Hashtable<String, Object> subschemaTable = doLookup(name, size);
 
-        LdapNamingEnumeration<SearchResult> enumeration = new LdapNamingEnumeration<SearchResult>(
-                null, null);
         SearchResult searchResult;
         Attributes schemaAttributes;
         String schemaName;
@@ -656,6 +651,7 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
 
         if (level - size > 1) {
             keyset = subschemaTable.keySet();
+            List<SearchResult> list = new ArrayList<SearchResult>();
             for (Iterator<String> i = keyset.iterator(); i.hasNext();) {
                 schemaName = ldap2jndi(i.next());
                 Name tempName = (Name) name.clone();
@@ -666,11 +662,12 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
                             attributesToReturn);
                     searchResult = new SearchResult(ldap2jndi(schemaName), this
                             .getClass().getName(), null, schemaAttributes);
-                    enumeration.add(searchResult);
+                    list.add(searchResult);
                 }
             }
+            return new LdapNamingEnumeration<SearchResult>(list, null);
         }
-        return enumeration;
+        return new LdapNamingEnumeration<SearchResult>(null, null);
     }
 
     @Override
@@ -734,15 +731,13 @@ public class LdapSchemaContextImpl extends LdapContextImpl {
             }
         }
 
-        LdapNamingEnumeration<SearchResult> enumeration = new LdapNamingEnumeration<SearchResult>(
-                null, null);
-
         iterator = searchResults.iterator();
+        List<SearchResult> list = new ArrayList<SearchResult>();
         while (iterator.hasNext()) {
-            enumeration.add(iterator.next());
+            list.add(iterator.next());
         }
 
-        return enumeration;
+        return new LdapNamingEnumeration<SearchResult>(list, null);
     }
 
     @Override
