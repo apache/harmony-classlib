@@ -316,7 +316,7 @@
         <or>
             <equals arg1="${hy.os}" arg2="aix" />
             <equals arg1="${hy.os}" arg2="zos" />
-        <or>
+        </or>
     </condition>
     <property name="hy.portlib.stubs" value="false" />
 
