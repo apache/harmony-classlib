@@ -17,20 +17,41 @@
 package org.apache.harmony.pack200;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.bcel.classfile.Unknown;
 
 
 public class AttributeDefinitionBands extends BandSet {
 
+    private final SegmentHeader segmentHeader;
+    
+    private final Map namesToAttributes = new HashMap();
+
+    public AttributeDefinitionBands(SegmentHeader segmentHeader) {
+        this.segmentHeader = segmentHeader;
+    }
+
+    public void finaliseBands() {
+        segmentHeader.setAttribute_definition_count(namesToAttributes.keySet().size());
+    }
+
     public void pack(OutputStream out) {
         // TODO Auto-generated method stub
 
     }
 
-    public void addUnknownAttribute(Unknown obj) {
-        // TODO Auto-generated method stub
-
+    public void addUnknownAttribute(Unknown attribute) {
+        String name = attribute.getName();
+        List attributes = (List) namesToAttributes.get(name);
+        if(attributes == null) {
+            attributes = new ArrayList();
+            namesToAttributes.put(name, attributes);
+        }
+        attributes.add(attribute);
     }
 
 }

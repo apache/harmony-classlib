@@ -56,27 +56,33 @@ import org.apache.bcel.classfile.Synthetic;
 import org.apache.bcel.classfile.Unknown;
 import org.apache.bcel.classfile.Visitor;
 
+
 public class Segment implements Visitor {
 
-    private AttributeDefinitionBands attributeDefinitionBands;
-    private BcBands bcBands;
-    private ClassBands classBands;
-    private CpBands cpBands;
-    private FileBands fileBands;
-    private IcBands icBands;
     private SegmentHeader segmentHeader;
+    private CpBands cpBands;
+    private AttributeDefinitionBands attributeDefinitionBands;
+    private IcBands icBands;
+    private ClassBands classBands;
+    private BcBands bcBands;
+    private FileBands fileBands;
 
-    public void pack(List classes, OutputStream out) throws IOException,
-            Pack200Exception {
+    public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
-        cpBands = new CpBands();
-        attributeDefinitionBands = new AttributeDefinitionBands();
-        icBands = new IcBands();
+        cpBands = new CpBands(segmentHeader);
+        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader);
+        icBands = new IcBands(segmentHeader);
         classBands = new ClassBands(cpBands, classes.size());
         bcBands = new BcBands();
-        fileBands = new FileBands();
+        fileBands = new FileBands(segmentHeader, files);
 
         processClasses(classes);
+        
+        cpBands.finaliseBands();
+        attributeDefinitionBands.finaliseBands();
+        icBands.finaliseBands();
+        classBands.finaliseBands();
+        bcBands.finaliseBands();
 
         segmentHeader.pack(out);
         cpBands.pack(out);
@@ -179,6 +185,8 @@ public class Segment implements Visitor {
 
     public void visitJavaClass(JavaClass obj) {
         classBands.addClass(obj);
+        segmentHeader.addMinorVersion(obj.getMinor());
+        segmentHeader.addMajorVersion(obj.getMajor());
     }
 
     public void visitLineNumber(LineNumber obj) {
@@ -210,7 +218,6 @@ public class Segment implements Visitor {
 
     public void visitSourceFile(SourceFile obj) {
         // TODO Auto-generated method stub
-
     }
 
     public void visitStackMap(StackMap obj) {

@@ -50,6 +50,10 @@ public class ClassBands extends BandSet {
     private final CPNameAndType[][] field_descr;
     private final CPNameAndType[][] method_descr;
 
+    public void finaliseBands() {
+        
+    }
+
     public void pack(OutputStream out) {
         // TODO Auto-generated method stub
 
@@ -63,7 +67,6 @@ public class ClassBands extends BandSet {
         for (int i = 0; i < interfaces.length; i++) {
             class_interface[index][i] = cpBands.getCPClass(interfaces[i]);
         }
-
 
         Field[] fields = obj.getFields();
         class_field_count[index] = fields.length;

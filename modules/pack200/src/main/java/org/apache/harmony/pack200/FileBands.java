@@ -17,9 +17,22 @@
 package org.apache.harmony.pack200;
 
 import java.io.OutputStream;
+import java.util.List;
 
 
 public class FileBands extends BandSet {
+
+    private final List files;
+    private final SegmentHeader segmentHeader;
+
+    public FileBands(SegmentHeader segmentHeader, List files) {
+        this.segmentHeader = segmentHeader;
+        this.files = files;
+        int size = files.size();
+        if(size > 0) {
+            
+        }
+    }
 
     public void pack(OutputStream out) {
         // TODO Auto-generated method stub

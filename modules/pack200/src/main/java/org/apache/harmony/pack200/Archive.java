@@ -52,32 +52,26 @@ public class Archive {
 
     public void pack() throws Pack200Exception, IOException {
         List classes = new ArrayList();
+        List files = new ArrayList();
         if(inputStream != null) {
             while(inputStream.available() > 0) {
                 JarEntry jarEntry = inputStream.getNextJarEntry();
                 if(jarEntry != null) {
-                    addJarEntry(jarEntry, inputStream, classes);
+                    addJarEntry(jarEntry, inputStream, classes, files);
                 }
             }
         } else {
             Enumeration jarEntries = jarFile.entries();
             while(jarEntries.hasMoreElements()) {
                 JarEntry jarEntry = (JarEntry) jarEntries.nextElement();
-                addJarEntry(jarEntry, jarFile.getInputStream(jarEntry), classes);
+                addJarEntry(jarEntry, jarFile.getInputStream(jarEntry), classes, files);
             }
         }
-        new Segment().pack(classes, outputStream);  // TODO: Multiple segments
+        new Segment().pack(classes, files, outputStream);  // TODO: Multiple segments
     }
 
-    private void addJarEntry(JarEntry jarEntry, InputStream stream, List javaClasses) throws IOException, Pack200Exception {
+    private void addJarEntry(JarEntry jarEntry, InputStream stream, List javaClasses, List files) throws IOException, Pack200Exception {
         String name = jarEntry.getName();
-//        long size = jarEntry.getSize();
-//        long compressedSize = jarEntry.getCompressedSize();
-//        char[] bytes = new char[(int)size];
-//        int bytesRead = new InputStreamReader(stream).read(bytes);
-//        if(bytesRead != size) {
-//            throw new Pack200Exception("An error occurred reading from the Jar file");
-//        }
         if(name.endsWith(".class")) {
             ClassParser classParser = new ClassParser(stream, name);
             JavaClass javaClass = classParser.parse();

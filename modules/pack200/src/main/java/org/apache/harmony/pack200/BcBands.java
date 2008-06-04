@@ -23,6 +23,10 @@ import org.apache.bcel.classfile.Code;
 
 public class BcBands extends BandSet {
 
+    public void finaliseBands() {
+        
+    }
+
     public void pack(OutputStream out) {
         // TODO Auto-generated method stub
 

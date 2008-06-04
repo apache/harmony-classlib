@@ -64,9 +64,9 @@ public class SegmentHeader extends BandSet {
     private boolean  have_code_flags_hi;
 
     private int ic_count;
-    private int default_class_minver;
-    private int default_class_majver;
     private int class_count;
+    private final Counter minverCounter = new Counter();
+    private final Counter majverCounter = new Counter();
 
     /**
      * Encode and write the SegmentHeader bands to the OutputStream
@@ -173,11 +173,6 @@ public class SegmentHeader extends BandSet {
         cp_Imethod_count = count;
     }
 
-    public void setAttributeDefinition_count(int count) {
-        attribute_definition_count = count;
-    }
-
-
     public void setAttribute_definition_count(int attribute_definition_count) {
         this.attribute_definition_count = attribute_definition_count;
     }
@@ -257,17 +252,6 @@ public class SegmentHeader extends BandSet {
         this.ic_count = ic_count;
     }
 
-
-    public void setDefault_class_minver(int default_class_minver) {
-        this.default_class_minver = default_class_minver;
-    }
-
-
-    public void setDefault_class_majver(int default_class_majver) {
-        this.default_class_majver = default_class_majver;
-    }
-
-
     public void setClass_count(int class_count) {
         this.class_count = class_count;
     }
@@ -290,6 +274,8 @@ public class SegmentHeader extends BandSet {
     }
 
     private void writeClassCounts(OutputStream out) throws IOException, Pack200Exception {
+        int default_class_minver = minverCounter.getMostCommon();
+        int default_class_majver = majverCounter.getMostCommon();
         out.write(encodeScalar(ic_count, Codec.UNSIGNED5));
         out.write(encodeScalar(default_class_minver, Codec.UNSIGNED5));
         out.write(encodeScalar(default_class_majver, Codec.UNSIGNED5));
@@ -310,6 +296,53 @@ public class SegmentHeader extends BandSet {
             out.write(encodeScalar(archive_next_count, Codec.UNSIGNED5));
             out.write(encodeScalar(archive_modtime, Codec.UNSIGNED5));
             out.write(encodeScalar(file_count, Codec.UNSIGNED5));
+        }
+    }
+
+    public void addMinorVersion(int minor) {
+        minverCounter.add(minor);
+    }
+
+    public void addMajorVersion(int major) {
+        majverCounter.add(major);
+    }
+    
+    /**
+     * Counter for major/minor class file numbers so we can work out the default
+     */
+    private class Counter {
+        
+        private final int[] objs = new int[8];
+        private final int[] counts = new int[8];
+        private int length;
+        
+        public void add(int obj) {
+            boolean found = false;
+            for (int i = 0; i < length; i++) {
+                if(objs[i] == obj) {
+                    counts[i]++;
+                    found = true;
+                }
+            }
+            if(!found) {
+                objs[length] = obj;
+                counts[length] = 1;
+                length ++;
+                if(length > objs.length - 1) {
+                    Object[] newArray = new Object[objs.length + 8];
+                    System.arraycopy(objs, 0, newArray, 0, length);
+                }
+            }
+        }
+
+        public int getMostCommon() {
+            int returnIndex = 0;
+            for (int i = 0; i < length; i++) {
+                if(counts[i] > counts[returnIndex]) {
+                    returnIndex = i;
+                }
+            }
+            return objs[returnIndex];
         }
     }
 

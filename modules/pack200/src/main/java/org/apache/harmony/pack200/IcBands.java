@@ -26,6 +26,15 @@ import org.apache.bcel.classfile.InnerClasses;
 public class IcBands extends BandSet {
 
     private final List innerClasses = new ArrayList();
+    private final SegmentHeader segmentHeader;
+
+    public IcBands(SegmentHeader segmentHeader) {
+        this.segmentHeader = segmentHeader;
+    }
+
+    public void finaliseBands() {
+        segmentHeader.setIc_count(innerClasses.size());
+    }
 
     public void pack(OutputStream out) {
         // TODO Auto-generated method stub

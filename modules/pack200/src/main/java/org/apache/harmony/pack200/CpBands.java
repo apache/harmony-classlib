@@ -37,6 +37,8 @@ import org.apache.bcel.classfile.ConstantUtf8;
 
 public class CpBands extends BandSet {
 
+    private final SegmentHeader segmentHeader;
+
     private final Set cp_Utf8 = new TreeSet();
     private final Set cp_Int = new TreeSet();
     private final Set cp_Float = new TreeSet();
@@ -55,6 +57,11 @@ public class CpBands extends BandSet {
     private final Map stringsToCpNameAndType = new HashMap();
     private final Map stringsToCpString = new HashMap();
     private final Map stringsToCpSignature = new HashMap();
+    
+    
+    public CpBands(SegmentHeader segmentHeader) {
+        this.segmentHeader = segmentHeader;
+    }
 
     public void pack(OutputStream out) {
         // TODO Auto-generated method stub
@@ -65,9 +72,22 @@ public class CpBands extends BandSet {
         this.currentConstantPool = cp;
     }
 
-    public void sortPool() {
+    public void finaliseBands() {
 
         System.out.println("pool");
+        
+        segmentHeader.setCp_Utf8_count(cp_Utf8.size());
+        segmentHeader.setCp_Int_count(cp_Int.size());
+        segmentHeader.setCp_Float_count(cp_Float.size());
+        segmentHeader.setCp_Long_count(cp_Long.size());
+        segmentHeader.setCp_Double_count(cp_Double.size());
+        segmentHeader.setCp_String_count(cp_String.size());
+        segmentHeader.setCp_Class_count(cp_Class.size());
+        segmentHeader.setCp_Signature_count(cp_Signature.size());
+        segmentHeader.setCp_Descr_count(cp_Descr.size());
+        segmentHeader.setCp_Field_count(cp_Field.size());
+        segmentHeader.setCp_Method_count(cp_Method.size());
+        segmentHeader.setCp_Imethod_count(cp_Imethod.size());
     }
 
     public void addConstantClass(ConstantClass constant) {
