@@ -21,9 +21,6 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.bcel.classfile.AnnotationDefault;
-import org.apache.bcel.classfile.AnnotationEntry;
-import org.apache.bcel.classfile.Annotations;
 import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.CodeException;
 import org.apache.bcel.classfile.ConstantClass;
@@ -41,7 +38,6 @@ import org.apache.bcel.classfile.ConstantUtf8;
 import org.apache.bcel.classfile.ConstantValue;
 import org.apache.bcel.classfile.Deprecated;
 import org.apache.bcel.classfile.DescendingVisitor;
-import org.apache.bcel.classfile.EnclosingMethod;
 import org.apache.bcel.classfile.ExceptionTable;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.InnerClass;
@@ -51,15 +47,11 @@ import org.apache.bcel.classfile.LineNumber;
 import org.apache.bcel.classfile.LineNumberTable;
 import org.apache.bcel.classfile.LocalVariable;
 import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.LocalVariableTypeTable;
 import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.ParameterAnnotations;
 import org.apache.bcel.classfile.Signature;
 import org.apache.bcel.classfile.SourceFile;
 import org.apache.bcel.classfile.StackMap;
 import org.apache.bcel.classfile.StackMapEntry;
-import org.apache.bcel.classfile.StackMapTable;
-import org.apache.bcel.classfile.StackMapTableEntry;
 import org.apache.bcel.classfile.Synthetic;
 import org.apache.bcel.classfile.Unknown;
 import org.apache.bcel.classfile.Visitor;
@@ -67,7 +59,7 @@ import org.apache.bcel.classfile.Visitor;
 
 public class Segment implements Visitor {
 
-    private BandSet segmentHeader;
+    private SegmentHeader segmentHeader;
     private CpBands cpBands;
     private AttributeDefinitionBands attributeDefinitionBands;
     private IcBands icBands;
@@ -75,16 +67,22 @@ public class Segment implements Visitor {
     private BcBands bcBands;
     private FileBands fileBands;
 
-    public void pack(List classes, OutputStream out) throws IOException, Pack200Exception {
+    public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
-        cpBands = new CpBands();
-        attributeDefinitionBands = new AttributeDefinitionBands();
-        icBands = new IcBands();
+        cpBands = new CpBands(segmentHeader);
+        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader);
+        icBands = new IcBands(segmentHeader);
         classBands = new ClassBands(cpBands, classes.size());
         bcBands = new BcBands();
-        fileBands = new FileBands();
+        fileBands = new FileBands(segmentHeader, files);
 
         processClasses(classes);
+        
+        cpBands.finaliseBands();
+        attributeDefinitionBands.finaliseBands();
+        icBands.finaliseBands();
+        classBands.finaliseBands();
+        bcBands.finaliseBands();
 
         segmentHeader.pack(out);
         cpBands.pack(out);
@@ -100,22 +98,6 @@ public class Segment implements Visitor {
             JavaClass javaClass = (JavaClass) iterator.next();
             new DescendingVisitor(javaClass, this).visit();
         }
-        cpBands.sortPool();
-    }
-
-    public void visitAnnotation(Annotations obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitAnnotationDefault(AnnotationDefault obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitAnnotationEntry(AnnotationEntry obj) {
-        // TODO Auto-generated method stub
-
     }
 
     public void visitCode(Code obj) {
@@ -182,17 +164,10 @@ public class Segment implements Visitor {
 
     public void visitDeprecated(Deprecated obj) {
         // TODO Auto-generated method stub
-
-    }
-
-    public void visitEnclosingMethod(EnclosingMethod obj) {
-        // TODO Auto-generated method stub
-
     }
 
     public void visitExceptionTable(ExceptionTable obj) {
         // TODO Auto-generated method stub
-
     }
 
     public void visitField(Field obj) {
@@ -210,6 +185,8 @@ public class Segment implements Visitor {
 
     public void visitJavaClass(JavaClass obj) {
         classBands.addClass(obj);
+        segmentHeader.addMinorVersion(obj.getMinor());
+        segmentHeader.addMajorVersion(obj.getMajor());
     }
 
     public void visitLineNumber(LineNumber obj) {
@@ -231,18 +208,8 @@ public class Segment implements Visitor {
 
     }
 
-    public void visitLocalVariableTypeTable(LocalVariableTypeTable obj) {
-        // TODO Auto-generated method stub
-
-    }
-
     public void visitMethod(Method obj) {
         cpBands.addDesc(obj.getName(), obj.getSignature());
-    }
-
-    public void visitParameterAnnotation(ParameterAnnotations obj) {
-        // TODO Auto-generated method stub
-
     }
 
     public void visitSignature(Signature obj) {
@@ -260,16 +227,6 @@ public class Segment implements Visitor {
     }
 
     public void visitStackMapEntry(StackMapEntry obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitStackMapTable(StackMapTable obj) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void visitStackMapTableEntry(StackMapTableEntry obj) {
         // TODO Auto-generated method stub
 
     }
