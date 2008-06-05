@@ -95,7 +95,6 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     StandardBeanInfo(Class<?> beanClass, BeanInfo explicitBeanInfo, Class<?> stopClass)
             throws IntrospectionException {
-        assert (beanClass != null);
         this.beanClass = beanClass;
         /*--------------------------------------------------------------------------------------
          * There are 3 aspects of BeanInfo that must be supplied:
