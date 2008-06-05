@@ -162,7 +162,7 @@ Java_java_net_NetworkInterface_getNetworkInterfacesImpl (JNIEnv * env,
             }
         }
 
-      /* generate the object with the inet addresses for the itnerface       */
+      /* generate the object with the inet addresses for the interface       */
       for (i = 0; i < networkInterfaceArray.elements[j].numberAddresses; i++)
         {
           element = newJavaNetInetAddressGenericB (env,
