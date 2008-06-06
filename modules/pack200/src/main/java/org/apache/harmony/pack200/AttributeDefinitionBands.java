@@ -28,7 +28,7 @@ import org.apache.bcel.classfile.Unknown;
 public class AttributeDefinitionBands extends BandSet {
 
     private final SegmentHeader segmentHeader;
-    
+
     private final Map namesToAttributes = new HashMap();
 
     public AttributeDefinitionBands(SegmentHeader segmentHeader) {

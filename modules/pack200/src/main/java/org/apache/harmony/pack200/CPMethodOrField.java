@@ -16,22 +16,22 @@
  */
 package org.apache.harmony.pack200;
 
-public class MethodOrField implements Comparable {
+public class CPMethodOrField implements Comparable {
 
-    private final String className;
+    private final CPClass className;
     private final CPNameAndType nameAndType;
 
-    public MethodOrField(String className, CPNameAndType nameAndType) {
+    public CPMethodOrField(CPClass className, CPNameAndType nameAndType) {
         this.className = className;
         this.nameAndType = nameAndType;
     }
 
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof MethodOrField)) {
+        if (obj == null || !(obj instanceof CPMethodOrField)) {
             return false;
         }
-        return ((MethodOrField) obj).className.equals(className)
-                && ((MethodOrField) obj).nameAndType.equals(nameAndType);
+        return ((CPMethodOrField) obj).className.equals(className)
+                && ((CPMethodOrField) obj).nameAndType.equals(nameAndType);
     }
 
     public int hashCode() {
@@ -43,8 +43,8 @@ public class MethodOrField implements Comparable {
     }
 
     public int compareTo(Object obj) {
-        if (obj instanceof MethodOrField) {
-            MethodOrField mof = (MethodOrField) obj;
+        if (obj instanceof CPMethodOrField) {
+            CPMethodOrField mof = (CPMethodOrField) obj;
             int compareName = className.compareTo(mof.className);
             if (compareName == 0) {
                 return nameAndType.compareTo(mof.nameAndType);
@@ -53,5 +53,13 @@ public class MethodOrField implements Comparable {
             }
         }
         return 0;
+    }
+    
+    public int getClassIndex() {
+        return className.getIndex();
+    }
+    
+    public int getDescIndex() {
+        return nameAndType.getIndex();
     }
 }

@@ -306,16 +306,16 @@ public class SegmentHeader extends BandSet {
     public void addMajorVersion(int major) {
         majverCounter.add(major);
     }
-    
+
     /**
      * Counter for major/minor class file numbers so we can work out the default
      */
     private class Counter {
-        
+
         private final int[] objs = new int[8];
         private final int[] counts = new int[8];
         private int length;
-        
+
         public void add(int obj) {
             boolean found = false;
             for (int i = 0; i < length; i++) {

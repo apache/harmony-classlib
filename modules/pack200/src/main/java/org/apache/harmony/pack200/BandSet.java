@@ -32,4 +32,9 @@ public abstract class BandSet {
         return codec.encode(value);
     }
 
+    public byte[] encodeBandInt(int[] ints, Codec defaultCodec) throws Pack200Exception {
+        // TODO non-default codecs
+        return defaultCodec.encode(ints);
+    }
+
 }

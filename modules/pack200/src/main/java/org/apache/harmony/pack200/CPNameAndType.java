@@ -16,12 +16,12 @@
  */
 package org.apache.harmony.pack200;
 
-public class CPNameAndType implements Comparable {
+public class CPNameAndType extends ConstantPoolEntry implements Comparable {
 
-    private final String name;
-    private final String signature;
+    private final CPUTF8 name;
+    private final CPSignature signature;
 
-    public CPNameAndType(String name, String signature) {
+    public CPNameAndType(CPUTF8 name, CPSignature signature) {
         this.name = name;
         this.signature = signature;
     }
@@ -53,6 +53,14 @@ public class CPNameAndType implements Comparable {
             }
         }
         return 0;
+    }
+
+    public int getNameIndex() {
+        return name.getIndex();
+    }
+
+    public int getTypeIndex() {
+        return signature.getIndex();
     }
 
 }

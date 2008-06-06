@@ -283,6 +283,11 @@ public final class BHSDCodec extends Codec {
                     z += (z - z % 3) / 3;
                 }
             }
+        } else {
+            if (z < 0) {
+                // need to use integer overflow here to represent negatives.
+                z += 4294967296L; // this value is eq
+            }
         }
         List byteList = new ArrayList();
         for (int n = 0; n < b; n++) {

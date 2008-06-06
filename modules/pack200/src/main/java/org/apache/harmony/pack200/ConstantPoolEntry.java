@@ -17,26 +17,16 @@
 package org.apache.harmony.pack200;
 
 
-public class CPClass extends ConstantPoolEntry implements Comparable {
+public abstract class ConstantPoolEntry {
 
-    private final String className;
-    private final CPUTF8 utf8;
+    private int index = -1;
 
-    public CPClass(CPUTF8 utf8) {
-        this.utf8 = utf8;
-        this.className = utf8.getUnderlyingString();
+    public int getIndex() {
+        return index;
     }
 
-    public int compareTo(Object arg0) {
-        return className.compareTo(((CPClass)arg0).className);
-    }
-
-    public String toString() {
-        return className;
-    }
-
-    public int getIndexInCpUtf8() {
-        return utf8.getIndex();
+    public void setIndex(int index) {
+        this.index = index;
     }
 
 }

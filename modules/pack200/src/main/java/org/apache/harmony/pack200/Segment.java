@@ -5,9 +5,9 @@
  * licenses this file to You under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -77,7 +77,7 @@ public class Segment implements Visitor {
         fileBands = new FileBands(segmentHeader, files);
 
         processClasses(classes);
-        
+
         cpBands.finaliseBands();
         attributeDefinitionBands.finaliseBands();
         icBands.finaliseBands();
@@ -147,7 +147,6 @@ public class Segment implements Visitor {
     }
 
     public void visitConstantPool(ConstantPool obj) {
-        cpBands.setCurrentConstantPool(obj);
     }
 
     public void visitConstantString(ConstantString obj) {
@@ -171,7 +170,7 @@ public class Segment implements Visitor {
     }
 
     public void visitField(Field obj) {
-        cpBands.addDesc(obj.getName(), obj.getSignature());
+        cpBands.addCPNameAndType(obj.getName(), obj.getSignature());
     }
 
     public void visitInnerClass(InnerClass obj) {
@@ -184,6 +183,7 @@ public class Segment implements Visitor {
     }
 
     public void visitJavaClass(JavaClass obj) {
+        cpBands.setCurrentClass(obj);
         classBands.addClass(obj);
         segmentHeader.addMinorVersion(obj.getMinor());
         segmentHeader.addMajorVersion(obj.getMajor());
@@ -209,7 +209,7 @@ public class Segment implements Visitor {
     }
 
     public void visitMethod(Method obj) {
-        cpBands.addDesc(obj.getName(), obj.getSignature());
+        cpBands.addCPNameAndType(obj.getName(), obj.getSignature());
     }
 
     public void visitSignature(Signature obj) {

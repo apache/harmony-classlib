@@ -104,7 +104,7 @@ public abstract class Codec {
 
     /**
      * Encode a single value into a sequence of bytes.
-     * 
+     *
      * @param value
      *            the value to encode
      * @param last
@@ -118,7 +118,7 @@ public abstract class Codec {
     /**
      * Encode a single value into a sequence of bytes. Note that this method can
      * only be used for non-delta encodings.
-     * 
+     *
      * @param value
      *            the value to encode
      * @return the encoded bytes
@@ -277,7 +277,7 @@ public abstract class Codec {
 
     /**
      * Encode a sequence of integers into a byte array
-     * 
+     *
      * @param ints
      *            the values to encode
      * @return byte[] encoded bytes
@@ -288,7 +288,7 @@ public abstract class Codec {
         int total = 0;
         byte[][] bytes = new byte[ints.length][];
         for (int i = 0; i < ints.length; i++) {
-            bytes[i] = encode(ints[i]);
+            bytes[i] = encode(ints[i], i > 0 ? ints[i-1] : 0);
             total += bytes[i].length;
         }
         byte[] encoded = new byte[total];

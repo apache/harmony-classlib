@@ -16,27 +16,41 @@
  */
 package org.apache.harmony.pack200;
 
+import java.util.List;
 
-public class CPClass extends ConstantPoolEntry implements Comparable {
+public class CPSignature extends ConstantPoolEntry implements Comparable {
+    
+    private final CPUTF8 signatureForm;
+    private final List classes;
+    private final String signature;
 
-    private final String className;
-    private final CPUTF8 utf8;
-
-    public CPClass(CPUTF8 utf8) {
-        this.utf8 = utf8;
-        this.className = utf8.getUnderlyingString();
+    public CPSignature(String signature, CPUTF8 signatureForm, List classes) {
+        this.signature = signature;
+        this.signatureForm = signatureForm;
+        this.classes = classes;
     }
 
     public int compareTo(Object arg0) {
-        return className.compareTo(((CPClass)arg0).className);
-    }
-
-    public String toString() {
-        return className;
+        return signature.compareTo(((CPSignature)arg0).signature);
     }
 
     public int getIndexInCpUtf8() {
-        return utf8.getIndex();
+        return signatureForm.getIndex();
+    }
+    
+    public List getClasses() {
+        return classes;
+    }
+    
+    public String toString() {
+        return signature;
     }
 
+    public String getUnderlyingString() {
+        return signature;
+    }
+
+    public CPUTF8 getSignatureForm() {
+        return signatureForm;
+    }
 }

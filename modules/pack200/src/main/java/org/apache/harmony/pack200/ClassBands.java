@@ -51,7 +51,7 @@ public class ClassBands extends BandSet {
     private final CPNameAndType[][] method_descr;
 
     public void finaliseBands() {
-        
+
     }
 
     public void pack(OutputStream out) {

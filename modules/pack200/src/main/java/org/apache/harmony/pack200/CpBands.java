@@ -16,8 +16,13 @@
  */
 package org.apache.harmony.pack200;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -34,10 +39,17 @@ import org.apache.bcel.classfile.ConstantNameAndType;
 import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.ConstantString;
 import org.apache.bcel.classfile.ConstantUtf8;
+import org.apache.bcel.classfile.JavaClass;
 
+/**
+ * Pack200 Constant Pool Bands
+ */
 public class CpBands extends BandSet {
 
     private final SegmentHeader segmentHeader;
+
+    // Don't need to include default attribute names in the constant pool bands
+    private final Set defaultAttributeNames = new HashSet();
 
     private final Set cp_Utf8 = new TreeSet();
     private final Set cp_Int = new TreeSet();
@@ -52,30 +64,250 @@ public class CpBands extends BandSet {
     private final Set cp_Method = new TreeSet();
     private final Set cp_Imethod = new TreeSet();
 
-    private ConstantPool currentConstantPool;
-    private final Map stringsToCpClass = new HashMap();
+    private final Map stringsToCpUtf8 = new HashMap();
     private final Map stringsToCpNameAndType = new HashMap();
-    private final Map stringsToCpString = new HashMap();
+    // private final Map stringsToCpString = new HashMap();
+    private final Map stringsToCpClass = new HashMap();
     private final Map stringsToCpSignature = new HashMap();
-    
-    
+
+    private ConstantPool currentConstantPool;
+    private JavaClass currentClass;
+
     public CpBands(SegmentHeader segmentHeader) {
         this.segmentHeader = segmentHeader;
+        defaultAttributeNames.add("AnnotationDefault");
+        defaultAttributeNames.add("RuntimeVisibleAnnotations");
+        defaultAttributeNames.add("RuntimeInvisibleAnnotations");
+        defaultAttributeNames.add("RuntimeVisibleParameterAnnotations");
+        defaultAttributeNames.add("RuntimeInvisibleParameterAnnotations");
+        defaultAttributeNames.add("Code");
+        defaultAttributeNames.add("LineNumberTable");
+        defaultAttributeNames.add("LocalVariableTable");
+        defaultAttributeNames.add("LocalVariableTypeTable");
+        defaultAttributeNames.add("ConstantValue");
+        defaultAttributeNames.add("Deprecated");
+        defaultAttributeNames.add("EnclosingMethod");
+        defaultAttributeNames.add("Exceptions");
+        defaultAttributeNames.add("InnerClasses");
+        defaultAttributeNames.add("Signature");
+        defaultAttributeNames.add("SourceFile");
     }
 
-    public void pack(OutputStream out) {
-        // TODO Auto-generated method stub
-
+    public void pack(OutputStream out) throws IOException, Pack200Exception {
+        writeCpUtf8(out);
+        writeCpInt(out);
+        writeCpFloat(out);
+        writeCpLong(out);
+        writeCpDouble(out);
+        writeCpString(out);
+        writeCpClass(out);
+        writeCpSignature(out);
+        writeCpDescr(out);
+        writeCpMethodOrField(cp_Field, out);
+        writeCpMethodOrField(cp_Method, out);
+        writeCpMethodOrField(cp_Imethod, out);
     }
 
-    public void setCurrentConstantPool(ConstantPool cp) {
-        this.currentConstantPool = cp;
+    private void writeCpUtf8(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpUtf8Prefix = new int[cp_Utf8.size() - 2];
+        int[] cpUtf8Suffix = new int[cp_Utf8.size() - 1];
+        List chars = new ArrayList();
+        List bigSuffix = new ArrayList();
+        List bigChars = new ArrayList();
+        Object[] cpUtf8Array = cp_Utf8.toArray();
+        String first = ((CPUTF8) cpUtf8Array[1]).getUnderlyingString();
+        cpUtf8Suffix[0] = first.length();
+        addCharacters(chars, first.toCharArray());
+        for (int i = 2; i < cpUtf8Array.length; i++) {
+            char[] previous = ((CPUTF8) cpUtf8Array[i - 1])
+                    .getUnderlyingString().toCharArray();
+            String currentStr = ((CPUTF8) cpUtf8Array[i]).getUnderlyingString();
+            char[] current = currentStr.toCharArray();
+            int prefix = 0;
+            for (int j = 0; j < previous.length; j++) {
+                if (previous[j] == current[j]) {
+                    prefix++;
+                } else {
+                    break;
+                }
+            }
+            cpUtf8Prefix[i - 2] = prefix;
+            currentStr = currentStr.substring(prefix);
+            char[] suffix = currentStr.toCharArray();
+            if (suffix.length > 100) { // big suffix (100 is arbitrary - can we
+                                        // do better?)
+                cpUtf8Suffix[i - 1] = 0;
+                bigSuffix.add(new Integer(suffix.length));
+                addCharacters(bigChars, suffix);
+            } else {
+                cpUtf8Suffix[i - 1] = suffix.length;
+                addCharacters(chars, suffix);
+            }
+        }
+        int[] cpUtf8Chars = new int[chars.size()];
+        int[] cpUtf8BigSuffix = new int[bigSuffix.size()];
+        int[] cpUtf8BigChars = new int[bigChars.size()];
+        for (int i = 0; i < cpUtf8Chars.length; i++) {
+            cpUtf8Chars[i] = ((Character) chars.get(i)).charValue();
+        }
+        for (int i = 0; i < cpUtf8BigSuffix.length; i++) {
+            cpUtf8BigSuffix[i] = ((Integer) bigSuffix.get(i)).intValue();
+        }
+        for (int i = 0; i < cpUtf8BigChars.length; i++) {
+            cpUtf8BigChars[i] = ((Character) bigChars.get(i)).charValue();
+        }
+        out.write(encodeBandInt(cpUtf8Prefix, Codec.DELTA5));
+        out.write(encodeBandInt(cpUtf8Suffix, Codec.UNSIGNED5));
+        out.write(encodeBandInt(cpUtf8Chars, Codec.CHAR3));
+        out.write(encodeBandInt(cpUtf8BigSuffix, Codec.DELTA5));
+        out.write(encodeBandInt(cpUtf8BigChars, Codec.DELTA5));
+    }
+
+    private void addCharacters(List chars, char[] charArray) {
+        for (int i = 0; i < charArray.length; i++) {
+            chars.add(new Character(charArray[i]));
+        }
+    }
+
+    private void writeCpInt(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpInt = new int[cp_Int.size()];
+        int i = 0;
+        for (Iterator iterator = cp_Int.iterator(); iterator.hasNext();) {
+            Integer integer = (Integer) iterator.next();
+            cpInt[i] = integer.intValue();
+            i++;
+        }
+        out.write(encodeBandInt(cpInt, Codec.UDELTA5));
+    }
+
+    private void writeCpFloat(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpFloat = new int[cp_Float.size()];
+        int i = 0;
+        for (Iterator iterator = cp_Float.iterator(); iterator.hasNext();) {
+            Float fl = (Float) iterator.next();
+            cpFloat[i] = Float.floatToIntBits(fl.floatValue());
+            i++;
+        }
+        out.write(encodeBandInt(cpFloat, Codec.UDELTA5));
+    }
+
+    private void writeCpLong(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] highBits = new int[cp_Long.size()];
+        int[] loBits = new int[cp_Long.size()];
+        int i = 0;
+        for (Iterator iterator = cp_Long.iterator(); iterator.hasNext();) {
+            Long lng = (Long) iterator.next();
+            long l = lng.longValue();
+            highBits[i] = (int) (l >> 32);
+            loBits[i] = (int) l;
+            i++;
+        }
+        out.write(encodeBandInt(highBits, Codec.UDELTA5));
+        out.write(encodeBandInt(loBits, Codec.DELTA5));
+    }
+
+    private void writeCpDouble(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] highBits = new int[cp_Double.size()];
+        int[] loBits = new int[cp_Double.size()];
+        int i = 0;
+        for (Iterator iterator = cp_Double.iterator(); iterator.hasNext();) {
+            Double dbl = (Double) iterator.next();
+            long l = Double.doubleToLongBits(dbl.doubleValue());
+            highBits[i] = (int) (l >> 32);
+            loBits[i] = (int) l;
+            i++;
+        }
+        out.write(encodeBandInt(highBits, Codec.UDELTA5));
+        out.write(encodeBandInt(loBits, Codec.DELTA5));
+    }
+
+    private void writeCpString(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpString = new int[cp_String.size()];
+        int i = 0;
+        for (Iterator iterator = cp_String.iterator(); iterator.hasNext();) {
+            CPString cpStr = (CPString) iterator.next();
+            cpString[i] = cpStr.getIndexInCpUtf8();
+            i++;
+        }
+        out.write(encodeBandInt(cpString, Codec.UDELTA5));
+    }
+
+    private void writeCpClass(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpClass = new int[cp_Class.size()];
+        int i = 0;
+        for (Iterator iterator = cp_Class.iterator(); iterator.hasNext();) {
+            CPClass cpCl = (CPClass) iterator.next();
+            cpClass[i] = cpCl.getIndexInCpUtf8();
+            i++;
+        }
+        out.write(encodeBandInt(cpClass, Codec.UDELTA5));
+    }
+
+    private void writeCpSignature(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpSignatureForm = new int[cp_Signature.size()];
+        List classes = new ArrayList();
+        int i = 0;
+        for (Iterator iterator = cp_Signature.iterator(); iterator.hasNext();) {
+            CPSignature cpS = (CPSignature) iterator.next();
+            classes.addAll(cpS.getClasses());
+            cpSignatureForm[i] = cpS.getIndexInCpUtf8();
+            i++;
+        }
+        int[] cpSignatureClasses = new int[classes.size()];
+        for (int j = 0; j < cpSignatureClasses.length; j++) {
+            cpSignatureClasses[j] = ((CPClass) classes.get(j)).getIndex();
+        }
+        out.write(encodeBandInt(cpSignatureForm, Codec.DELTA5));
+        out.write(encodeBandInt(cpSignatureClasses, Codec.UDELTA5));
+    }
+
+    private void writeCpDescr(OutputStream out) throws IOException,
+            Pack200Exception {
+        int[] cpDescrName = new int[cp_Descr.size()];
+        int[] cpDescrType = new int[cp_Descr.size()];
+        int i = 0;
+        for (Iterator iterator = cp_Descr.iterator(); iterator.hasNext();) {
+            CPNameAndType nameAndType = (CPNameAndType) iterator.next();
+            cpDescrName[i] = nameAndType.getNameIndex();
+            cpDescrType[i] = nameAndType.getTypeIndex();
+            i++;
+        }
+        out.write(encodeBandInt(cpDescrName, Codec.DELTA5));
+        out.write(encodeBandInt(cpDescrType, Codec.UDELTA5));
+    }
+
+    private void writeCpMethodOrField(Set cp, OutputStream out)
+            throws IOException, Pack200Exception {
+        int[] cp_methodOrField_class = new int[cp.size()];
+        int[] cp_methodOrField_desc = new int[cp.size()];
+        int i = 0;
+        for (Iterator iterator = cp.iterator(); iterator.hasNext();) {
+            CPMethodOrField mOrF = (CPMethodOrField) iterator.next();
+            cp_methodOrField_class[i] = mOrF.getClassIndex();
+            cp_methodOrField_desc[i] = mOrF.getDescIndex();
+            i++;
+        }
+        out.write(encodeBandInt(cp_methodOrField_class, Codec.DELTA5));
+        out.write(encodeBandInt(cp_methodOrField_desc, Codec.UDELTA5));
+    }
+
+    public void setCurrentClass(JavaClass javaClass) {
+        this.currentClass = javaClass;
+        this.currentConstantPool = javaClass.getConstantPool();
     }
 
     public void finaliseBands() {
-
-        System.out.println("pool");
-        
+        addCpUtf8("");
+        removeSignaturesFromCpUTF8();
+        addIndices();
         segmentHeader.setCp_Utf8_count(cp_Utf8.size());
         segmentHeader.setCp_Int_count(cp_Int.size());
         segmentHeader.setCp_Float_count(cp_Float.size());
@@ -90,13 +322,42 @@ public class CpBands extends BandSet {
         segmentHeader.setCp_Imethod_count(cp_Imethod.size());
     }
 
+    private void removeSignaturesFromCpUTF8() {
+        for (Iterator iterator = cp_Signature.iterator(); iterator.hasNext();) {
+            CPSignature signature = (CPSignature) iterator.next();
+            String sigStr = signature.getUnderlyingString();
+            CPUTF8 utf8 = signature.getSignatureForm();
+            String form = utf8.getUnderlyingString();
+            if (!sigStr.equals(form)) {
+                removeCpUtf8(sigStr);
+            }
+        }
+    }
+
+    private void addIndices() {
+        Set[] sets = new Set[] { cp_Utf8, cp_String, cp_Class, cp_Signature,
+                cp_Descr };
+        for (int i = 0; i < sets.length; i++) {
+            int j = 0;
+            for (Iterator iterator = sets[i].iterator(); iterator.hasNext();) {
+                ConstantPoolEntry entry = (ConstantPoolEntry) iterator.next();
+                entry.setIndex(j);
+                j++;
+            }
+        }
+    }
+
+    private void removeCpUtf8(String string) {
+        CPUTF8 utf8 = (CPUTF8) stringsToCpUtf8.get(string);
+        if (utf8 != null) {
+            stringsToCpUtf8.remove(string);
+            cp_Utf8.remove(utf8);
+        }
+    }
+
     public void addConstantClass(ConstantClass constant) {
         String className = constant.getBytes(currentConstantPool);
-        if(stringsToCpClass.get(className) == null) {
-            CPClass cpClass = new CPClass(className);
-            cp_Class.add(cpClass);
-            stringsToCpClass.put(className, cpClass);
-        }
+        addCPClass(className);
     }
 
     public void addConstantDouble(ConstantDouble constant) {
@@ -107,10 +368,10 @@ public class CpBands extends BandSet {
         ConstantFieldref cf = constant;
         ConstantNameAndType cnat = (ConstantNameAndType) currentConstantPool
                 .getConstant(cf.getNameAndTypeIndex());
-        CPNameAndType nat = new CPNameAndType(cnat.getName(currentConstantPool),
+        CPNameAndType nat = getCPNameAndType(cnat.getName(currentConstantPool),
                 cnat.getSignature(currentConstantPool));
-        cp_Signature.add(cnat.getSignature(currentConstantPool));
-        cp_Field.add(new MethodOrField(cf.getClass(currentConstantPool), nat));
+        cp_Field.add(new CPMethodOrField(getCPClass(cf
+                .getClass(currentConstantPool)), nat));
     }
 
     public void addConstantFloat(ConstantFloat constant) {
@@ -126,9 +387,10 @@ public class CpBands extends BandSet {
         ConstantNameAndType cnat = (ConstantNameAndType) currentConstantPool
                 .getConstant(constant.getNameAndTypeIndex());
         String signature = cnat.getSignature(currentConstantPool);
-        cp_Signature.add(signature);
-        CPNameAndType nat = new CPNameAndType(cnat.getName(currentConstantPool), signature);
-        cp_Imethod.add(new MethodOrField(constant.getClass(currentConstantPool), nat));
+        CPNameAndType nat = getCPNameAndType(cnat.getName(currentConstantPool),
+                signature);
+        cp_Imethod.add(new CPMethodOrField(getCPClass(constant
+                .getClass(currentConstantPool)), nat));
     }
 
     public void addConstantLong(ConstantLong constant) {
@@ -139,69 +401,145 @@ public class CpBands extends BandSet {
         ConstantNameAndType cnat = (ConstantNameAndType) currentConstantPool
                 .getConstant(constant.getNameAndTypeIndex());
         String signature = cnat.getSignature(currentConstantPool);
-        cp_Signature.add(signature);
-        CPNameAndType nat = new CPNameAndType(cnat.getName(currentConstantPool),
+        CPNameAndType nat = getCPNameAndType(cnat.getName(currentConstantPool),
                 signature);
-        cp_Method.add(new MethodOrField(constant.getClass(currentConstantPool),
-                nat));
+        cp_Method.add(new CPMethodOrField(getCPClass(constant
+                .getClass(currentConstantPool)), nat));
     }
 
     public void addConstantNameAndType(ConstantNameAndType constant) {
         String name = constant.getName(currentConstantPool);
         String signature = constant.getSignature(currentConstantPool);
-        String descr = name + ":" + signature;
-        if(stringsToCpNameAndType.get(descr) != null) {
-            cp_Signature.add(signature);
-            CPNameAndType nameAndType = new CPNameAndType(name,
-                    signature);
-            stringsToCpNameAndType.put(descr, nameAndType);
-            cp_Descr.add(nameAndType);
-        }
+        addCPNameAndType(name, signature);
     }
 
     public void addConstantString(ConstantString constant) {
         String string = constant.getBytes(currentConstantPool);
-        CPString cpString = (CPString) stringsToCpString.get(string);
-        if(cpString == null) {
-            cpString = new CPString(string);
-            cp_String.add(cpString);
-            stringsToCpString.put(string, cpString);
-        }
+        // CPString cpString = (CPString) stringsToCpString.get(string);
+        // if(cpString == null) {
+        CPString cpString = new CPString(getCpUtf8(string));
+        cp_String.add(cpString);
+        // stringsToCpString.put(string, cpString);
+        // }
     }
 
     public void addConstantUtf8(ConstantUtf8 constant) {
-        cp_Utf8.add((constant).getBytes());
+        String utf8 = constant.getBytes();
+        if (!defaultAttributeNames.contains(utf8)) {
+            if (utf8.endsWith(".java")) {
+                if (!isPredictableSourceFileName(utf8)) {
+                    addCpUtf8(utf8);
+                }
+            } else {
+                addCpUtf8(utf8);
+            }
+        }
     }
 
-    public void addDesc(String name, String signature) {
-        cp_Signature.add(signature);
-        cp_Descr.add(new CPNameAndType(name, signature));
+    private void addCpUtf8(String utf8) {
+        getCpUtf8(utf8);
+    }
+
+    private CPUTF8 getCpUtf8(String utf8) {
+        CPUTF8 cpUtf8 = (CPUTF8) stringsToCpUtf8.get(utf8);
+        if (cpUtf8 == null) {
+            cpUtf8 = new CPUTF8(utf8);
+            cp_Utf8.add(cpUtf8);
+            stringsToCpUtf8.put(utf8, cpUtf8);
+        }
+        return cpUtf8;
+    }
+
+    public void addCPNameAndType(String name, String signature) {
+        getCPNameAndType(name, signature);
     }
 
     public void addSignature(String signature) {
-        cp_Signature.add(signature);
+        getSignature(signature);
+    }
+
+    private CPSignature getSignature(String signature) {
+        CPSignature cpS = (CPSignature) stringsToCpSignature.get(signature);
+        if (cpS == null) {
+            List cpClasses = new ArrayList();
+            CPUTF8 signatureUTF8;
+            if (signature.length() > 1 && signature.indexOf("L") != -1) {
+                List classes = new ArrayList();
+                char[] chars = signature.toCharArray();
+                StringBuffer signatureString = new StringBuffer();
+                for (int i = 0; i < chars.length; i++) {
+                    signatureString.append(chars[i]);
+                    if (chars[i] == 'L') {
+                        StringBuffer className = new StringBuffer();
+                        for (int j = i + 1; j < chars.length; j++) {
+                            char c = chars[j];
+                            if (Character.isLetter(c) || Character.isDigit(c)
+                                    || c == '/') {
+                                className.append(c);
+                            } else {
+                                classes.add(className.toString());
+                                i = j - 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+                removeCpUtf8(signature);
+                for (Iterator iterator2 = classes.iterator(); iterator2
+                        .hasNext();) {
+                    cpClasses.add(getCPClass((String) iterator2.next()));
+                }
+
+                signatureUTF8 = getCpUtf8(signatureString.toString());
+            } else {
+                signatureUTF8 = getCpUtf8(signature);
+            }
+            cpS = new CPSignature(signature, signatureUTF8, cpClasses);
+            cp_Signature.add(cpS);
+            stringsToCpSignature.put(signature, cpS);
+        }
+        return cpS;
     }
 
     public CPClass getCPClass(String className) {
+        className = className.replace('.', '/');
         CPClass cpClass = (CPClass) stringsToCpClass.get(className);
-        if(cpClass == null) {
-            cpClass = new CPClass(className);
+        if (cpClass == null) {
+            CPUTF8 cpUtf8 = getCpUtf8(className);
+            cpClass = new CPClass(cpUtf8);
             cp_Class.add(cpClass);
             stringsToCpClass.put(className, cpClass);
         }
         return cpClass;
     }
 
+    public void addCPClass(String className) {
+        getCPClass(className);
+    }
+
     public CPNameAndType getCPNameAndType(String name, String signature) {
         String descr = name + ":" + signature;
-        CPNameAndType nameAndType = (CPNameAndType) stringsToCpNameAndType.get(descr);
+        CPNameAndType nameAndType = (CPNameAndType) stringsToCpNameAndType
+                .get(descr);
         if (nameAndType == null) {
-            cp_Signature.add(signature);
-            nameAndType = new CPNameAndType(name, signature);
+            nameAndType = new CPNameAndType(getCpUtf8(name),
+                    getSignature(signature));
             stringsToCpNameAndType.put(descr, nameAndType);
             cp_Descr.add(nameAndType);
         }
         return nameAndType;
+    }
+
+    public boolean isPredictableSourceFileName(String name) {
+        String className = currentClass.getClassName();
+        if (className.indexOf(".") != -1) {
+            className = className.substring(className.lastIndexOf(".") + 1);
+        }
+        if (className.indexOf("$") != -1) {
+            className = className.substring(0, className.indexOf("$"));
+        }
+        className += ".java";
+        return className.equals(name);
     }
 
 }
