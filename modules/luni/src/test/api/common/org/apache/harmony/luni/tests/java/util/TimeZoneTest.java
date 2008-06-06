@@ -18,6 +18,7 @@
 package org.apache.harmony.luni.tests.java.util;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -147,8 +148,9 @@ public class TimeZoneTest extends junit.framework.TestCase {
                              "GMT+05:20", TimeZone.getTimeZone("GMT+520").getID());
 		assertEquals("Must return proper GMT formatted string for GMT+052 (eg. GMT+08:20).",
                              "GMT+00:52", TimeZone.getTimeZone("GMT+052").getID());
-		assertEquals("Must return proper GMT formatted string for GMT-0 (eg. GMT+08:20).",
-                             "GMT-00:00", TimeZone.getTimeZone("GMT-0").getID());
+        // GMT-0 is an available ID in ICU, so replace it with GMT-00
+		assertEquals("Must return proper GMT formatted string for GMT-00 (eg. GMT+08:20).",
+                             "GMT-00:00", TimeZone.getTimeZone("GMT-00").getID());
 	}
 
 	/**
@@ -186,6 +188,18 @@ public class TimeZoneTest extends junit.framework.TestCase {
         } catch (IllegalArgumentException e) {
             // expected
         }
+    }
+    
+    /*
+     * Regression for HARMONY-5860
+     */
+    public void test_GetTimezoneOffset() {
+        // America/Toronto is lazy initialized 
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Toronto"));
+        Date date = new Date(07, 2, 24);
+        assertEquals(300, date.getTimezoneOffset());
+        date = new Date(99, 8, 1);
+        assertEquals(240, date.getTimezoneOffset());
     }
     
 	protected void setUp() {
