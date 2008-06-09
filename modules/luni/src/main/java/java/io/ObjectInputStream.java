@@ -702,8 +702,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 ObjectStreamClass streamClass = ObjectStreamClass
                         .lookup(proxyClass);
                 streamClass.setLoadFields(new ObjectStreamField[0]);
-                registerObjectRead(streamClass, Integer.valueOf(nextHandle()),
-                        false);
+                registerObjectRead(streamClass, nextHandle(), false);
                 checkedSetSuperClassDesc(streamClass, readClassDesc());
                 return streamClass;
             case TC_REFERENCE:
@@ -1324,7 +1323,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 int index = findStreamSuperclass(superclass, streamClassList,
                         lastIndex);
                 if (index == -1) {
-                    readObjectNoData(object, superclass);
+                    readObjectNoData(object, superclass, ObjectStreamClass.lookupStreamClass(superclass));
                 } else {
                     for (int j = lastIndex; j <= index; j++) {
                         readObjectForClass(object, streamClassList.get(j));
@@ -1358,12 +1357,11 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         return -1;
     }
 
-    private void readObjectNoData(Object object, Class<?> cl)
+    private void readObjectNoData(Object object, Class<?> cl, ObjectStreamClass classDesc)
             throws ObjectStreamException {
-        if (!ObjectStreamClass.isSerializable(cl)) {
+        if (!classDesc.isSerializable()) {
             return;
         }
-        ObjectStreamClass classDesc = ObjectStreamClass.lookupStreamClass(cl);
         if (classDesc.hasMethodReadObjectNoData()){
             final Method readMethod = classDesc.getMethodReadObjectNoData();
             try {
@@ -1501,7 +1499,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
         }
 
-        Integer newHandle = Integer.valueOf(nextHandle());
+        Integer newHandle = nextHandle();
 
         // Array size
         int size = input.readInt();
@@ -1562,6 +1560,10 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             // Array of Objects
             Object[] objectArray = (Object[]) result;
             for (int i = 0; i < size; i++) {
+                // TODO: This place is the opportunity for enhancement
+                //      We can implement writing elements through fast-path,
+                //      without setting up the context (see readObject()) for 
+                //      each element with public API
                 objectArray[i] = readObject();
             }
         }
@@ -1590,10 +1592,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass classDesc = readClassDesc();
 
         if (classDesc != null) {
-            Integer newHandle = Integer.valueOf(nextHandle());
             Class<?> localClass = classDesc.forClass();
             if (localClass != null) {
-                registerObjectRead(localClass, newHandle, unshared);
+                registerObjectRead(localClass, nextHandle(), unshared);
             }
             return localClass;
         }
@@ -1659,7 +1660,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             ClassNotFoundException, IOException {
         // read classdesc for Enum first
         ObjectStreamClass classDesc = readEnumDesc();
-        Integer newHandle = Integer.valueOf(nextHandle());
+        int newHandle = nextHandle();
         // read name after class desc
         String name;
         byte tc = nextTC();
@@ -1705,7 +1706,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // subclasses during readClassDescriptor()
         primitiveData = input;
         Integer oldHandle = descriptorHandle;
-        descriptorHandle = Integer.valueOf(nextHandle());
+        descriptorHandle = nextHandle();
         ObjectStreamClass newClassDesc = readClassDescriptor();
         registerObjectRead(newClassDesc, descriptorHandle, unshared);
         descriptorHandle = oldHandle;
@@ -1795,8 +1796,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
          * descriptors. If called outside of readObject, the descriptorHandle
          * might be null.
          */
-        descriptorHandle = (null == descriptorHandle ? Integer
-                .valueOf(nextHandle()) : descriptorHandle);
+        descriptorHandle = (null == descriptorHandle ? nextHandle() : descriptorHandle);
         registerObjectRead(newClassDesc, descriptorHandle, false);
 
         readFieldDescriptors(newClassDesc);
@@ -1817,6 +1817,9 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      */
     protected Class<?> resolveProxyClass(String[] interfaceNames)
             throws IOException, ClassNotFoundException {
+            
+        // TODO: This method is opportunity for performance enhancement
+        //       We can cache the classloader and recently used interfaces.        
         ClassLoader loader = VM.getNonBootstrapClassLoader();
         Class<?>[] interfaces = new Class<?>[interfaceNames.length];
         for (int i = 0; i < interfaceNames.length; i++) {
@@ -1837,8 +1840,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
      * @throws IOException
      *             If an IO exception happened when reading the handle
      */
-    private Integer readNewHandle() throws IOException {
-        return Integer.valueOf(input.readInt());
+    private int readNewHandle() throws IOException {
+        return input.readInt();
     }
 
     private Class<?> resolveConstructorClass(Class<?> objectClass, boolean wasSerializable, boolean wasExternalizable)
@@ -1936,7 +1939,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
         }
 
-        Integer newHandle = Integer.valueOf(nextHandle());
+        Integer newHandle = nextHandle();
 
         // Note that these values come from the Stream, and in fact it could be
         // that the classes have been changed so that the info below now
@@ -2009,9 +2012,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         if (objectClass != null) {
 
-            ObjectStreamClass desc = ObjectStreamClass.lookupStreamClass(objectClass);
-            if (desc.hasMethodReadResolve()){
-                Method methodReadResolve = desc.getMethodReadResolve();
+            if (classDesc.hasMethodReadResolve()){
+                Method methodReadResolve = classDesc.getMethodReadResolve();
                 try {
                     result = methodReadResolve.invoke(result, (Object[]) null);
                 } catch (IllegalAccessException iae) {
@@ -2059,8 +2061,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (enableResolve) {
             result = resolveObject(result);
         }
-        int newHandle = nextHandle();
-        registerObjectRead(result, Integer.valueOf(newHandle), unshared);
+		registerObjectRead(result, nextHandle(), unshared);
 
         return result;
     }
@@ -2082,8 +2083,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         if (enableResolve) {
             result = resolveObject(result);
         }
-        int newHandle = nextHandle();
-        registerObjectRead(result, Integer.valueOf(newHandle), unshared);
+        registerObjectRead(result, nextHandle(), unshared);
 
         return result;
     }
@@ -2427,8 +2427,6 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 // Use the first non-null ClassLoader on the stack. If null, use
                 // the system class loader
                 cls = Class.forName(className, true, callerClassLoader);
-                // save the value
-                osClass.setClass(cls);
             }
         }
         return cls;
