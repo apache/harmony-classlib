@@ -57,12 +57,12 @@
 #if (defined(HYVM_USE_ICONV))
 static IDATA file_write_using_iconv (struct HyPortLibrary *portLibrary,
                                      IDATA fd, const char *buf, IDATA nbytes);
-#endif /* HYVM_USE_ICONV (autogen) */
+#endif /* HYVM_USE_ICONV */
 
 #if (defined(HYVM_USE_ICONV))
 static char* buf_write_using_iconv (struct HyPortLibrary *portLibrary,
                                      const char *buf, IDATA nbytes);
-#endif /* HYVM_USE_ICONV (autogen) */
+#endif /* HYVM_USE_ICONV */
 
 #if (defined(HYVM_USE_WCTOMB))
 #include "utf8decode.h"
@@ -70,22 +70,22 @@ static char* buf_write_using_iconv (struct HyPortLibrary *portLibrary,
 
 #if (defined(HYVM_USE_WCTOMB))
 static IDATA walkUTF8String (const U_8 * buf, IDATA nbytes);
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #if (defined(HYVM_USE_WCTOMB))
 static void translateUTF8String (const U_8 * in, U_8 * out, IDATA nbytes);
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #if (defined(HYVM_USE_WCTOMB))
 static IDATA file_write_using_wctomb (struct HyPortLibrary *portLibrary,
                                       IDATA fd, const char *buf,
                                       IDATA nbytes);
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #if (defined(HYVM_USE_WCTOMB))
 static char* buf_write_using_wctomb (struct HyPortLibrary *portLibrary,
                                       const char *buf, IDATA nbytes);
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -268,7 +268,7 @@ walkUTF8String (const U_8 * buf, IDATA nbytes)
     }
   return hasHighChars ? newLength : 0;
 }
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -308,7 +308,7 @@ translateUTF8String (const U_8 * in, U_8 * out, IDATA nbytes)
         }
     }
 }
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -343,7 +343,7 @@ file_write_using_wctomb (struct HyPortLibrary *portLibrary, IDATA fd,
     }
   return (result == nbytes) ? 0 : result;
 }
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -377,7 +377,7 @@ buf_write_using_wctomb (struct HyPortLibrary *portLibrary, const char *buf,
     outBuf[nbytes] = '\0';
     return outBuf;
 }
-#endif /* HYVM_USE_WCTOMB (autogen) */
+#endif /* HYVM_USE_WCTOMB */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -458,7 +458,7 @@ file_write_using_iconv (struct HyPortLibrary *portLibrary, IDATA fd,
     }
   return (result == nbytes) ? 0 : result;
 }
-#endif /* HYVM_USE_ICONV (autogen) */
+#endif /* HYVM_USE_ICONV */
 
 #undef CDEV_CURRENT_FUNCTION
 
@@ -527,7 +527,7 @@ buf_write_using_iconv (struct HyPortLibrary *portLibrary,
     portLibrary->mem_free_memory (portLibrary, bufStart);
     return outbuf;
 }
-#endif /* HYVM_USE_ICONV (autogen) */
+#endif /* HYVM_USE_ICONV */
 
 #undef CDEV_CURRENT_FUNCTION
 
