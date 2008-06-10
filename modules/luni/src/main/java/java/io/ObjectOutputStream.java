@@ -115,9 +115,9 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
 
     private ObjectAccessor accessor = AccessorFactory.getObjectAccessor();
 
-	/*
-	 * Descriptor for java.lang.reflect.Proxy
-	 */
+    /*
+     * Descriptor for java.lang.reflect.Proxy
+     */
     private final ObjectStreamClass proxyClassDesc = ObjectStreamClass.lookup(Proxy.class); 
   
     /**
@@ -1459,24 +1459,6 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
             currentPutField = originalCurrentPutField;
         }
 
-        return handle;
-    }
-
-    /**
-     * Updates the references table with new handle
-     * 
-     * @param obj
-     *            Non-null object being updated
-     * @param unshared
-     *            whether the handle is unshared
-     */
-    private int updateReference(Object object, boolean unshared) {
-        int handle = nextHandle();
-
-        if (!unshared) {
-            objectsWritten.put(object, handle);
-        }
-        
         return handle;
     }
     
