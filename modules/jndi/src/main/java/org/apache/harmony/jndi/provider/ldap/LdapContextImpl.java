@@ -807,7 +807,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             searchControls.setReturningAttributes(new String[] {
                     "namingContexts", "subschemaSubentry", "altServer", });
             search = new SearchOp(name.toString(), searchControls, filter);
-
+            search.setBatchSize(0);
             try {
                 client.doOperation(search, requestControls);
             } catch (IOException e) {
@@ -858,7 +858,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throw ex;
         }
         search = new SearchOp(subschemasubentry, searchControls, filter);
-
+        search.setBatchSize(0);
         try {
             client.doOperation(search, requestControls);
         } catch (IOException e) {
@@ -1155,7 +1155,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
         if (result.isEmpty() && result.getException() != null) {
             throw result.getException();
         }
-        
         return result.toSearchResultEnumeration(targetDN);
     }
 
@@ -1358,6 +1357,13 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     LdapSearchResult doSearch(String dn, Filter filter, SearchControls controls)
             throws NamingException {
         SearchOp op = new SearchOp(dn, controls, filter);
+        String stringValue = (String) env.get(Context.BATCHSIZE);
+        if (stringValue == null) {
+            op.setBatchSize(0);
+        } else {
+            op.setBatchSize(Integer.valueOf(stringValue).intValue());
+        }
+
         return doSearch(op);
     }
 

@@ -77,6 +77,8 @@ public class LdapClient {
      */
     private Hashtable<Integer, Element> requests = new Hashtable<Integer, Element>();
 
+    private Hashtable<Integer, Element> batchedSearchRequests = new Hashtable<Integer, Element>();
+
     /**
      * the max time to wait server response in milli-second
      */
@@ -182,6 +184,11 @@ public class LdapClient {
                             // get response operation according messageId
                             Element element = requests.get(Integer
                                     .valueOf(messageId));
+                            if (element == null) {
+                                element = batchedSearchRequests.get(Integer
+                                        .valueOf(messageId));
+                            }
+
                             if (element != null) {
                                 return element.response.getResponseOp();
                             }
@@ -229,20 +236,41 @@ public class LdapClient {
 
             Element element = requests.get(Integer.valueOf(response
                     .getMessageId()));
+            if (element == null
+                    && batchedSearchRequests.contains(Integer.valueOf(response
+                            .getMessageId()))) {
+                element = batchedSearchRequests.get(Integer.valueOf(response
+                        .getMessageId()));
+                // error occurs when read response
+                if (ex != null) {
+                    ((SearchOp) response.getResponseOp()).getSearchResult()
+                            .setException(ex);
+                    batchedSearchRequests.remove(Integer.valueOf(response
+                            .getMessageId()));
+                    return;
+                }
 
+                // wait time out
+                if (element.response.getMessageId() != response.getMessageId()) {
+                    // ldap.31=Read LDAP response message time out
+                    ((SearchOp) response.getResponseOp()).getSearchResult()
+                            .setException(
+                                    new IOException(Messages
+                                            .getString("ldap.31"))); //$NON-NLS-1$);
+                    batchedSearchRequests.remove(Integer.valueOf(response
+                            .getMessageId()));
+                    return;
+                }
+
+            }
             if (element != null) {
                 element.response = response;
                 element.ex = ex;
-                // persistent search response
+                // persistent search response || search response
                 if (element.lock == null) {
-
                     notifyPersistenSearchListener(element);
 
                 } else {
-                    /*
-                     * notify the thread which send request and wait for
-                     * response
-                     */
                     if (element.response.getOperationIndex() == LdapASN1Constant.OP_EXTENDED_RESPONSE
                             && ((ExtendedOp) element.response.getResponseOp())
                                     .getExtendedRequest().getID().equals(
@@ -254,6 +282,10 @@ public class LdapClient {
                         isStopped = true;
                     }
 
+                    /*
+                     * notify the thread which send request and wait for
+                     * response
+                     */
                     synchronized (element.lock) {
                         element.lock.notify();
                     }
@@ -366,7 +398,7 @@ public class LdapClient {
                 }
             }
         }
-        
+
         element = requests.get(messageID);
 
         // wait time out
@@ -394,7 +426,10 @@ public class LdapClient {
     }
 
     private LdapMessage doSearchOperation(ASN1Encodable request,
-            ASN1Decodable response, Control[] controls) throws IOException {
+            ASN1Decodable response, Control[] controls)
+            throws IOException {
+        int batchSize = ((SearchOp) request).getBatchSize();
+
         LdapMessage requestMsg = new LdapMessage(
                 LdapASN1Constant.OP_SEARCH_REQUEST, request, controls);
 
@@ -407,9 +442,15 @@ public class LdapClient {
             out.write(requestMsg.encode());
             out.flush();
             LdapMessage responseMsg = waitResponse(messageID, lock);
-
+            int size = 1;
             while (responseMsg.getOperationIndex() != LdapASN1Constant.OP_SEARCH_RESULT_DONE) {
+                if (size == batchSize) {
+                    batchedSearchRequests.put(messageID, requests
+                            .get(messageID));
+                    break;
+                }
                 responseMsg = waitResponse(messageID, lock);
+                ++size;
             }
 
             return responseMsg;

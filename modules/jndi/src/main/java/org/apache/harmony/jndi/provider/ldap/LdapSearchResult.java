@@ -92,6 +92,12 @@ public class LdapSearchResult {
      */
     private boolean isFinished;
 
+    private static int ENUMERATION_NAME_CLASS_PAIR = 1;
+
+    private static int ENUMERATION_BINDING = 2;
+
+    private static int ENUMERATION_SEARCH_RESULT = 3;
+
     public int getBatchSize() {
         return batchSize;
     }
@@ -218,7 +224,7 @@ public class LdapSearchResult {
 
     public NamingEnumeration<NameClassPair> toNameClassPairEnumeration(
             String baseDN) {
-        enumerationType = 1;
+        enumerationType = ENUMERATION_NAME_CLASS_PAIR;
         enumeration = new LdapNamingEnumeration<Object>(null, null);
         this.baseDN = baseDN;
         addToEnumeration();
@@ -227,7 +233,7 @@ public class LdapSearchResult {
 
     public NamingEnumeration<Binding> toBindingEnumeration(
             LdapContextImpl context, Name name) throws NamingException {
-        enumerationType = 2;
+        enumerationType = ENUMERATION_BINDING;
         enumeration = new LdapNamingEnumeration<Object>(null, null);
         this.context = context;
         this.name = name;
@@ -243,7 +249,7 @@ public class LdapSearchResult {
 
     public NamingEnumeration<SearchResult> toSearchResultEnumeration(
             String baseDN) {
-        enumerationType = 3;
+        enumerationType = ENUMERATION_SEARCH_RESULT;
         enumeration = new LdapNamingEnumeration<Object>(null, null);
         this.baseDN = baseDN;
 
