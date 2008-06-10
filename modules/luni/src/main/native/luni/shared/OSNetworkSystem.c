@@ -467,12 +467,12 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
    jint count)
 {
   PORT_ACCESS_FROM_ENV(env);
-  hysocket_t socketP;
   jbyte *message = (jbyte *) address;
   I_32 result = 0, sent = 0;
 
   if (sent < count) {
-    socketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
+    hysocket_t socketP =
+        getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
     if (!hysock_socketIsValid(socketP)) {
       throwJavaNetSocketException(env,
                                   sent ==0 ?
@@ -480,16 +480,16 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
                                     HYPORT_ERROR_SOCKET_INTERRUPTED);
       return (jint) 0;
     }
-  }
 
-  while (sent < count) {
-    result =
-      hysock_write(socketP, (U_8 *) message + sent, (I_32) count - sent,
-                   HYSOCK_NOFLAGS);
-    if (result < 0) {
-      break;
+    while (sent < count) {
+      result =
+        hysock_write(socketP, (U_8 *) message + sent, (I_32) count - sent,
+                     HYSOCK_NOFLAGS);
+      if (result < 0) {
+        break;
+      }
+      sent += result;
     }
-    sent += result;
   }
 
   /**
