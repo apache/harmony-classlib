@@ -370,7 +370,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
 	
 	if(!gdata){		
 		jvmtiCapabilities capabilities;		
-		jvmtiError err;
+		jvmtiError jvmti_err;
 		jvmtiEventCallbacks callbacks;
 		JNIEnv *env = NULL;
 		static jvmtiEnv *jvmti;
@@ -390,19 +390,20 @@ JNIEXPORT jint JNICALL Agent_OnLoad(JavaVM *vm, char *options, void *reserved){
 		capabilities.can_redefine_classes = 1;
 		//FIXME VM doesnot support the capbility right now.
 		//capabilities.can_redefine_any_class = 1;
-		err = (*jvmti)->AddCapabilities(jvmti, &capabilities);
-		check_jvmti_error(env, err, "Cannot add JVMTI capabilities.");
+		jvmti_err = (*jvmti)->AddCapabilities(jvmti, &capabilities);
+		check_jvmti_error(env, jvmti_err,
+                                  "Cannot add JVMTI capabilities.");
 
 		//set events callback function
 		(void)memset(&callbacks, 0, sizeof(callbacks));
 		callbacks.ClassFileLoadHook = &callbackClassFileLoadHook;
 		callbacks.VMInit = &callbackVMInit;
-		err = (*jvmti)->SetEventCallbacks(jvmti, &callbacks, sizeof(jvmtiEventCallbacks));
-		check_jvmti_error(env, err, "Cannot set JVMTI event callback functions.");
+		jvmti_err = (*jvmti)->SetEventCallbacks(jvmti, &callbacks, sizeof(jvmtiEventCallbacks));
+		check_jvmti_error(env, jvmti_err, "Cannot set JVMTI event callback functions.");
 
 		//enable classfileloadhook event
-		err = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_VM_INIT, NULL);
-		check_jvmti_error(env, err, "Cannot set JVMTI VMInit event notification mode.");
+		jvmti_err = (*jvmti)->SetEventNotificationMode(jvmti, JVMTI_ENABLE, JVMTI_EVENT_VM_INIT, NULL);
+		check_jvmti_error(env, jvmti_err, "Cannot set JVMTI VMInit event notification mode.");
 	}		
 	
 	return Parse_Options(vm,jnienv, gdata->jvmti,options);	
