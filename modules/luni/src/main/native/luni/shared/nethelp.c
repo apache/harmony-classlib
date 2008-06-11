@@ -733,7 +733,7 @@ callThreadYield (JNIEnv * env)
 
 jobjectArray
 createAliasArray (JNIEnv * env, jbyte ** addresses, I_32 * family, U_32 count,
-      char *hName, U_32 * scope_id_array)
+      const char *hName, U_32 * scope_id_array)
 {
   U_32 i, length;
   jobjectArray aliases = NULL;
@@ -786,7 +786,7 @@ createAliasArray (JNIEnv * env, jbyte ** addresses, I_32 * family, U_32 count,
 
 jobjectArray
 createAliasArrayFromAddrinfo (JNIEnv * env, hyaddrinfo_t addresses,
-            char *hName)
+            const char *hName)
 {
   PORT_ACCESS_FROM_ENV (env);
   U_32 count = 0;
@@ -1026,7 +1026,7 @@ newJavaNetInetAddressGenericB (JNIEnv * env, jbyte * address, U_32 length,
 
 jobject
 newJavaNetInetAddressGenericBS (JNIEnv * env, jbyte * address, U_32 length,
-        char *hostName, U_32 scope_id)
+        const char *hostName, U_32 scope_id)
 {
   jclass tempClass;
   jmethodID tempMethod;

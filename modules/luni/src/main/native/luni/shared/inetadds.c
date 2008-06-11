@@ -65,7 +65,7 @@ Java_java_net_InetAddress_getAliasesByNameImpl (JNIEnv * env, jclass clazz,
       return NULL;
     }
 
-  aliases = createAliasArrayFromAddrinfo (env, &addrinfo, (char *) str);
+  aliases = createAliasArrayFromAddrinfo (env, &addrinfo, str);
   hysock_freeaddrinfo (&addrinfo);
   (*env)->ReleaseStringUTFChars (env, aName, str);
   return aliases;
