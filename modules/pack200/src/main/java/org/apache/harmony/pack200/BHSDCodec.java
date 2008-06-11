@@ -285,8 +285,8 @@ public final class BHSDCodec extends Codec {
             }
         } else {
             if (z < 0) {
-                // need to use integer overflow here to represent negatives.
-                z += 4294967296L; // this value is eq
+                // Need to use integer overflow here to represent negatives.
+                z += 4294967296L; // this value is equal to (1 << 32).
             }
         }
         List byteList = new ArrayList();

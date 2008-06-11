@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Code;
 import org.apache.bcel.classfile.CodeException;
 import org.apache.bcel.classfile.ConstantClass;
@@ -66,11 +67,12 @@ public class Segment implements Visitor {
     private ClassBands classBands;
     private BcBands bcBands;
     private FileBands fileBands;
+    
 
     public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
         cpBands = new CpBands(segmentHeader);
-        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader);
+        attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader, cpBands);
         icBands = new IcBands(segmentHeader);
         classBands = new ClassBands(cpBands, classes.size());
         bcBands = new BcBands();
@@ -102,6 +104,12 @@ public class Segment implements Visitor {
 
     public void visitCode(Code obj) {
         bcBands.addCode(obj);
+        Attribute[] attributes = obj.getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if(attributes[i] instanceof Unknown) {
+                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
+            }
+        }
     }
 
     public void visitCodeException(CodeException obj) {
@@ -171,10 +179,15 @@ public class Segment implements Visitor {
 
     public void visitField(Field obj) {
         cpBands.addCPNameAndType(obj.getName(), obj.getSignature());
+        Attribute[] attributes = obj.getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if(attributes[i] instanceof Unknown) {
+                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
+            }
+        }
     }
 
     public void visitInnerClass(InnerClass obj) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -187,6 +200,12 @@ public class Segment implements Visitor {
         classBands.addClass(obj);
         segmentHeader.addMinorVersion(obj.getMinor());
         segmentHeader.addMajorVersion(obj.getMajor());
+        Attribute[] attributes = obj.getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if(attributes[i] instanceof Unknown) {
+                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
+            }
+        }
     }
 
     public void visitLineNumber(LineNumber obj) {
@@ -210,6 +229,12 @@ public class Segment implements Visitor {
 
     public void visitMethod(Method obj) {
         cpBands.addCPNameAndType(obj.getName(), obj.getSignature());
+        Attribute[] attributes = obj.getAttributes();
+        for (int i = 0; i < attributes.length; i++) {
+            if(attributes[i] instanceof Unknown) {
+                attributeDefinitionBands.addUnknownAttribute((Unknown)attributes[i], obj);
+            }
+        }
     }
 
     public void visitSignature(Signature obj) {
@@ -236,7 +261,6 @@ public class Segment implements Visitor {
     }
 
     public void visitUnknown(Unknown obj) {
-        attributeDefinitionBands.addUnknownAttribute(obj);
     }
 
 }

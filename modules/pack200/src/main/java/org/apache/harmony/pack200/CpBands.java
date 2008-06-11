@@ -440,7 +440,7 @@ public class CpBands extends BandSet {
         getCpUtf8(utf8);
     }
 
-    private CPUTF8 getCpUtf8(String utf8) {
+    public CPUTF8 getCpUtf8(String utf8) {
         CPUTF8 cpUtf8 = (CPUTF8) stringsToCpUtf8.get(utf8);
         if (cpUtf8 == null) {
             cpUtf8 = new CPUTF8(utf8);
