@@ -3900,7 +3900,6 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   I_32 err = 0;
 
 #if (defined(HAS_RTNETLINK))
-  struct rtattr *rta;
   U_32 sendLength = 0;
   struct linkReq_struct linkRequest;
   struct addrReq_struct addrRequest;
@@ -3954,7 +3953,7 @@ hysock_get_network_interfaces (struct HyPortLibrary * portLibrary,
   /* send the request  and count the number of interfaces */
   if (sendLength != linkRequest.netlinkHeader.nlmsg_len)
     {
-      I_32 err = errno;
+      err = errno;
       close (netlinkSocketHandle);
       hysock_cleanupNetlinkContext(portLibrary, &netlinkContext);
       
