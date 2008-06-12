@@ -298,6 +298,10 @@ Generating snapshot zip
                 </tokenfilter>
             </filterchain>
         </copy>
+        <copy file="make/make.xml"
+              tofile="${hy.hdk}/build/ant/make.xml"
+              outputencoding="UTF-8" >
+        </copy>
     </target>
 
     <target name="-init-hdk-for-clean">
