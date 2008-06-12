@@ -74,6 +74,58 @@ public class XMLDecoderTest extends TestCase {
         }
 
     }
+    
+    /*
+     * test XMLDecoder constructor with null inputStream argument
+     */
+    public void test_Constructor_NullInputStream() {
+        XMLDecoder xmlDecoder;
+        try {
+            xmlDecoder = new XMLDecoder(null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException iae) {
+            // Expected
+        }
+        
+        try{
+            xmlDecoder = new XMLDecoder(null, null);
+        }catch(IllegalArgumentException iae){
+            // Expected
+        }
+        
+        try{
+            xmlDecoder = new XMLDecoder(null, null, null);
+        }catch(IllegalArgumentException iae){
+            // Expected
+        }
+        
+        try{
+            xmlDecoder = new XMLDecoder(null, null, null, null);
+        }catch(IllegalArgumentException iae){
+            // Expected
+        }
+        
+    }
+    
+    /*
+     * test XMLDecoder constructor
+     */
+    public void test_Constructor_Normal() throws Exception {
+        XMLDecoder xmlDecoder;
+        xmlDecoder = new XMLDecoder(new ByteArrayInputStream(xml123bytes));
+        assertEquals(null, xmlDecoder.getOwner());
+        
+        final Vector<Exception> exceptions = new Vector<Exception>();
+        ExceptionListener el = new ExceptionListener() {
+            public void exceptionThrown(Exception e) {
+                exceptions.addElement(e);
+            }
+        };
+        
+        xmlDecoder = new XMLDecoder(new ByteArrayInputStream(xml123bytes), this, el);
+        assertEquals(el, xmlDecoder.getExceptionListener());
+        assertEquals(this, xmlDecoder.getOwner());
+    }
 
     public void testConstructor_ClassLoader() {
         XMLDecoder dec;

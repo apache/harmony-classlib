@@ -536,7 +536,7 @@ public class XMLDecoder {
      *            an input stream of xml
      */
     public XMLDecoder(InputStream inputStream) {
-        this(inputStream, null, null);
+        this(inputStream, null, null, null);
     }
 
     /**
@@ -548,7 +548,7 @@ public class XMLDecoder {
      *            the owner of this decoder
      */
     public XMLDecoder(InputStream inputStream, Object owner) {
-        this(inputStream, owner, null);
+        this(inputStream, owner, null, null);
     }
 
     /**
@@ -563,6 +563,11 @@ public class XMLDecoder {
      */
     public XMLDecoder(InputStream inputStream, Object owner,
             ExceptionListener listener) {
+        this(inputStream, owner, listener, null);
+    }
+
+    public XMLDecoder(InputStream inputStream, Object owner,
+            ExceptionListener listener, ClassLoader cl) {
         if (inputStream == null) {
             throw new IllegalArgumentException("Input stream cannot be null"); //$NON-NLS-1$
         }
@@ -570,19 +575,14 @@ public class XMLDecoder {
         this.owner = owner;
         this.listener = (listener == null) ? new DefaultExceptionListener()
                 : listener;
-
+        defaultClassLoader = cl;
+        
         try {
             SAXParserFactory.newInstance().newSAXParser().parse(inputStream,
                     new SAXHandler());
         } catch (Exception e) {
             this.listener.exceptionThrown(e);
         }
-    }
-
-    public XMLDecoder(InputStream inputStream, Object owner,
-            ExceptionListener listener, ClassLoader cl) {
-        this(inputStream, owner, listener);
-        defaultClassLoader = cl;
     }
 
     /**
