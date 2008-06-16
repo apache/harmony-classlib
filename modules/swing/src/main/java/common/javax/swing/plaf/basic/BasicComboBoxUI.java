@@ -721,7 +721,9 @@ public class BasicComboBoxUI extends ComboBoxUI {
 
     protected void unconfigureEditor() {
         editor.removeFocusListener(editorFocusListener);
-        comboBox.getEditor().removeActionListener(editorActionListener);
+        if (comboBox.getEditor() != null) {
+            comboBox.getEditor().removeActionListener(editorActionListener);
+        }
         editorFocusListener = null;
     }
 
