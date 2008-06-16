@@ -39,8 +39,6 @@ endif
 DLLNAME=../libpngencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYPNGENCODER_0.1
 
-CLEANFILES=jconfig.h
-
 include $(HY_HDK)/build/make/rules.mk
 
 libpng.a: $(PNG_DIR)libpng.$(HY_PLATFORM)
