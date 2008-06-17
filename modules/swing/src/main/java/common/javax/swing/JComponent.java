@@ -1091,7 +1091,10 @@ public abstract class JComponent extends Container implements Serializable {
         }
         result.setFont(getFont());
         result.setColor(getForeground());
-        ((Graphics2D) result).setBackground(getBackground());
+        if (result instanceof Graphics2D) { 		// DebugGraphics class does not have the setBackground method
+        	((Graphics2D) result).setBackground(getBackground());
+        }
+                
         return result;
     }
 
