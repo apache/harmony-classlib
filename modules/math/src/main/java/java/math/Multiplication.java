@@ -233,8 +233,7 @@ class Multiplication {
         int resSign = (a.sign != b.sign) ? -1 : 1;
         // A special case when both numbers don't exceed int
         if (resLength == 2) {
-            long val = (a.digits[0] & 0xFFFFFFFFL)
-            * (b.digits[0] & 0xFFFFFFFFL);
+            long val = unsignedMultAddAdd(a.digits[0], b.digits[0], 0, 0);
             int valueLo = (int)val;
             int valueHi = (int)(val >>> 32);
             return ((valueHi == 0)
@@ -244,25 +243,41 @@ class Multiplication {
         int[] aDigits = a.digits;
         int[] bDigits = b.digits;
         int resDigits[] = new int[resLength];
-        long carry;
-        long bDigit;
-        int i, j, m;
         // Common case
-        for (j = 0; j < bLen; j++) {
-            carry = 0;
-            bDigit = (bDigits[j] & 0xFFFFFFFFL);
-            for (i = 0, m = j; i < aLen; i++, m++) {
-                carry += (aDigits[i] & 0xFFFFFFFFL)
-                * bDigit
-                + (resDigits[m] & 0xFFFFFFFFL);
-                resDigits[m] = (int)carry;
-                carry >>>= 32;
-            }
-            resDigits[m] = (int) carry;
-        }
+        multArraysPAP(aDigits, aLen, bDigits, bLen, resDigits);
         BigInteger result = new BigInteger(resSign, resLength, resDigits);
         result.cutOffLeadingZeroes();
         return result;
+    }
+
+    static void multArraysPAP(int[] aDigits, int aLen, int[] bDigits, int bLen, int[] resDigits) {
+        if(aLen == 0 || bLen == 0) return;
+            
+        if(aLen == 1) {
+            resDigits[bLen] = multiplyByInt(resDigits, bDigits, bLen, aDigits[0]);
+        } else if(bLen == 1) {
+            resDigits[aLen] = multiplyByInt(resDigits, aDigits, aLen, bDigits[0]);
+        } else {
+            multPAP(aDigits, bDigits, resDigits, aLen, bLen);
+        }
+    }
+
+    static void multPAP(int a[], int b[], int t[], int aLen, int bLen) {
+        if(a == b && aLen == bLen) {
+            square(a, aLen, t);
+            return;
+        }
+        
+        for(int i = 0; i < aLen; i++){
+            long carry = 0;
+            int aI = a[i];
+            for (int j = 0; j < bLen; j++){
+               carry = unsignedMultAddAdd(aI, b[j], t[i+j], (int)carry);
+               t[i+j] = (int) carry;
+               carry >>>= 32;
+             }
+             t[i+bLen] = (int) carry;
+        }
     }
 
     /**
@@ -275,9 +290,8 @@ class Multiplication {
      */
     private static int multiplyByInt(int res[], int a[], final int aSize, final int factor) {
         long carry = 0;
-
         for (int i = 0; i < aSize; i++) {
-            carry += (a[i] & 0xFFFFFFFFL) * (factor & 0xFFFFFFFFL);
+            carry = unsignedMultAddAdd(a[i], factor, (int)carry, 0);
             res[i] = (int)carry;
             carry >>>= 32;
         }
@@ -311,7 +325,7 @@ class Multiplication {
         int[] aDigits = val.digits;
         
         if (aNumberLength == 1) {
-            long res = (aDigits[0] & 0xFFFFFFFFL) * (factor);
+            long res = unsignedMultAddAdd(aDigits[0], factor, 0, 0);
             int resLo = (int)res;
             int resHi = (int)(res >>> 32);
             return ((resHi == 0)
@@ -344,7 +358,7 @@ class Multiplication {
                 acc = acc.multiply(acc); // square
             }
             else{
-                acc = new BigInteger(1, square(acc.digits, acc.numberLength));
+                acc = new BigInteger(1, square(acc.digits, acc.numberLength, new int [acc.numberLength<<1]));
             }
         }
         // exponent == 1, multiply one more time
@@ -355,37 +369,34 @@ class Multiplication {
     /**
      *  Performs a<sup>2</sup>
      *  @param a The number to square.
-     *  @param length The length of the number to square.
+     *  @param aLen The length of the number to square.
      */ 
-    static int[] square(int[] a, int s) {
-        int [] t = new int [s<<1];
-        long cs;
-        long aI;
-        for(int i=0; i<s; i++){
-            cs = 0;
-            aI = (0xFFFFFFFFL & a[i]);
-            for (int j=i+1; j<s; j++){
-                cs += (0xFFFFFFFFL & t[i+j]) + aI * (0xFFFFFFFFL & a[j]) ;
-                t[i+j] = (int) cs;
-                cs >>>= 32;
-            }
-            
-            t[i+s] = (int) cs;
-        }
-        BitLevel.shiftLeft( t, t, 0, 1 );
-        cs = 0;
+    static int[] square(int[] a, int aLen, int[] res) {
+        long carry;
         
-        for(int i=0, index = 0; i< s; i++, index++){
-            aI = (0xFFFFFFFFL & a[i]);
-            cs += aI * aI  + (t[index] & 0xFFFFFFFFL);
-            t[index] = (int) cs;
-            cs >>>= 32;
-            index++;
-            cs += t[index] & 0xFFFFFFFFL ;
-            t[index] = (int)cs;
-            cs >>>= 32;
+        for(int i = 0; i < aLen; i++){
+            carry = 0;            
+            for (int j = i+1; j < aLen; j++){
+                carry = unsignedMultAddAdd(a[i], a[j], res[i+j], (int)carry);
+                res[i+j] = (int) carry;
+                carry >>>= 32;
+            }
+            res[i+aLen] = (int) carry;
         }
-        return t;
+        
+        BitLevel.shiftLeftOneBit(res, res, aLen << 1);
+        
+        carry = 0;
+        for(int i = 0, index = 0; i < aLen; i++, index++){            
+            carry = unsignedMultAddAdd(a[i], a[i], res[index],(int)carry);
+            res[index] = (int) carry;
+            carry >>>= 32;
+            index++;
+            carry += res[index] & 0xFFFFFFFFL;
+            res[index] = (int)carry;
+            carry >>>= 32;
+        }
+        return res;
     }
 
     /**
@@ -483,4 +494,23 @@ class Multiplication {
             return val.multiply(bigFivePows[1].pow(exp));
         }
     }
+
+    /**
+     * Computes the value unsigned ((uint)a*(uint)b + (uint)c + (uint)d). This
+     * method could improve the readability and performance of the code.
+     * 
+     * @param a
+     *            parameter 1
+     * @param b
+     *            parameter 2
+     * @param c
+     *            parameter 3
+     * @param d
+     *            parameter 4
+     * @return value of expression
+     */
+    static long unsignedMultAddAdd(int a, int b, int c, int d) {
+        return (a & 0xFFFFFFFFL) * (b & 0xFFFFFFFFL) + (c & 0xFFFFFFFFL) + (d & 0xFFFFFFFFL);
+    }
+
 }

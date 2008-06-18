@@ -65,6 +65,15 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
             new BigInteger(1, 6), new BigInteger(1, 7), new BigInteger(1, 8),
             new BigInteger(1, 9), TEN };
 
+    static final BigInteger[] TWO_POWS;
+
+    static {
+        TWO_POWS = new BigInteger[32];
+        for(int i = 0; i < TWO_POWS.length; i++) {
+            TWO_POWS[i] = BigInteger.valueOf(1L<<i);
+        }
+    }
+
     private transient int firstNonzeroDigit = -2;
 
     /* Serialized Fields */
@@ -423,6 +432,10 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
                 this, -n));
     }
 
+    BigInteger shiftLeftOneBit() {
+        return (sign == 0) ? this : BitLevel.shiftLeftOneBit(this);
+    }
+
     public int bitLength() {
         return BitLevel.bitLength(this);
     }
@@ -647,12 +660,10 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
         // calculate by shifting.
         if (!testBit(0)) {
             int x = 1;
-            BigInteger factor = BigInteger.ONE.shiftLeft(exp);
             while (!testBit(x)) {
-                factor = factor.shiftLeft(exp);
                 x++;
             }
-            return factor.multiply(this.shiftRight(x).pow(exp));
+            return getPowerOfTwo(x*exp).multiply(this.shiftRight(x).pow(exp));
         }
         return Multiplication.pow(this, exp);
     }
@@ -971,4 +982,16 @@ public class BigInteger extends Number implements Comparable<BigInteger>,
     void unCache() {
         firstNonzeroDigit = -2;
     }
+
+    static BigInteger getPowerOfTwo(int exp) {
+        if(exp < TWO_POWS.length) {
+            return TWO_POWS[exp];
+        }
+        int intCount = exp >> 5;
+        int bitN = exp & 31;
+        int resDigits[] = new int[intCount+1];
+        resDigits[intCount] = 1 << bitN;
+        return new BigInteger(1, intCount+1, resDigits);
+    }
 }
+
