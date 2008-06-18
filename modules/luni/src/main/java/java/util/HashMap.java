@@ -679,13 +679,17 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>,
         return null;
     }
 
+    /*
+     * Remove the given entry from the hashmap.
+     * Assumes that the entry is in the map.
+     */
     final void removeEntry(Entry<K, V> entry) {
         int index = entry.origKeyHash & (elementData.length - 1);
         Entry<K, V> m = elementData[index];
         if (m == entry) {
             elementData[index] = entry.next;
         } else {
-            while (m.next != entry && m.next != null) {
+            while (m.next != entry) {
                 m = m.next;
             }
             m.next = entry.next;
