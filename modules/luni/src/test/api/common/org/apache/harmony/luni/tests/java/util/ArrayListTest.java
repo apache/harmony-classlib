@@ -278,6 +278,26 @@ public class ArrayListTest extends junit.framework.TestCase {
 
 	}
 
+	// Regression test for HARMONY-5839
+    public void testaddAllHarmony5839() {
+        Collection coll = Arrays.asList(new String[] { "1", "2" });
+        List list = new ArrayList();
+        list.add("a");
+        list.add(0, "b");
+        list.add(0, "c");
+        list.add(0, "d");
+        list.add(0, "e");
+        list.add(0, "f");
+        list.add(0, "g");
+        list.add(0, "h");
+        list.add(0, "i");
+
+        list.addAll(6, coll);
+
+        assertEquals(11, list.size());
+        assertFalse(list.contains(null));
+    }
+	
 	/**
      * @tests java.util.ArrayList#clear()
      */
