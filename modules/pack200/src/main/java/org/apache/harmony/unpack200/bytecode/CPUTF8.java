@@ -72,16 +72,7 @@ public class CPUTF8 extends ConstantPoolEntry {
     }
 
     protected void writeBody(DataOutputStream dos) throws IOException {
-        byte[] bytes;
-        try {
-            // TODO Check that this is the right UTF-8 for bytes
-            bytes = utf8.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Couldn't convert string " + utf8
-                    + " to UTF-8");
-        }
-        dos.writeShort(bytes.length);
-        dos.write(bytes);
+        dos.writeUTF(utf8);
     }
 
     public String underlyingString() {

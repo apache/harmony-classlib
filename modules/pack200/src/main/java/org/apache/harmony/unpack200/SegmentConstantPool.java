@@ -20,6 +20,7 @@ import org.apache.harmony.pack200.Pack200Exception;
 import org.apache.harmony.unpack200.bytecode.ClassConstantPool;
 import org.apache.harmony.unpack200.bytecode.ClassFileEntry;
 import org.apache.harmony.unpack200.bytecode.ConstantPoolEntry;
+import java.util.List;
 
 /**
  * SegmentConstantPool manages the constant pool used for re-creating class
@@ -28,7 +29,7 @@ import org.apache.harmony.unpack200.bytecode.ConstantPoolEntry;
 public class SegmentConstantPool {
 
     private final CpBands bands;
-
+    private final SegmentConstantPoolArrayCache arrayCache = new SegmentConstantPoolArrayCache();
     /**
      * @param bands
      */
@@ -202,9 +203,9 @@ public class SegmentConstantPool {
      * of the number of hits it finds using the following basis of comparison
      * for a hit: - the primaryArray[index] must be .equals() to the
      * primaryCompareString - the secondaryArray[index] .matches() the
-     * secondaryCompareString When the desiredIndex number of hits has been
-     * reached, the index into the original two arrays of the element hit is
-     * returned.
+     * secondaryCompareString. When the desiredIndex number of hits 
+     * has been reached, the index into the original two arrays of 
+     * the element hit is returned. 
      *
      * @param primaryArray
      *            The first array to search
@@ -220,22 +221,27 @@ public class SegmentConstantPool {
      *         primaryArray and secondaryArray
      */
     protected int matchSpecificPoolEntryIndex(String[] primaryArray,
-            String[] secondaryArray, String primaryCompareString,
-            String secondaryCompareRegex, int desiredIndex) {
-        int instanceCount = -1;
-        for (int index = 0; index < primaryArray.length; index++) {
-            if ((primaryArray[index].equals(primaryCompareString))
-                    && regexMatches(secondaryCompareRegex,
-                            secondaryArray[index])) {
-                instanceCount++;
-                if (instanceCount == desiredIndex) {
-                    return index;
-                }
-            }
-        }
-        // We didn't return in the for loop, so the desiredMatch
-        // with desiredIndex must not exist in the array.
-        return -1;
+	    String[] secondaryArray, String primaryCompareString,
+	    String secondaryCompareRegex, int desiredIndex) {
+	int instanceCount = -1;
+	List indexList = arrayCache.indexesForArrayKey(primaryArray, primaryCompareString);
+	if(indexList.isEmpty()) {
+	    // Primary key not found, no chance of finding secondary
+	    return -1;
+	}
+
+	for(int index=0; index < indexList.size(); index++) {
+	    int arrayIndex = ((Integer)indexList.get(index)).intValue();
+	    if(regexMatches(secondaryCompareRegex, secondaryArray[arrayIndex])) {
+		instanceCount++;
+		if(instanceCount == desiredIndex) {
+		    return arrayIndex;
+		}
+	    }
+	}
+	// We didn't return in the for loop, so the desiredMatch
+	// with desiredIndex must not exist in the arrays.
+	return -1;
     }
 
     /**
