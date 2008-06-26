@@ -17,6 +17,12 @@
 
 package java.lang;
 
+/*
+ * Note that the Harmony VM "DRLVM" uses a different implementation of ThreadLocal.
+ * See DRLVM's classes here:
+ * http://svn.apache.org/viewvc/harmony/enhanced/drlvm/trunk/vm/vmcore/src/kernel_classes/
+ */
+
 /**
  * A ThreadLocal is a variable that has a per-thread value. Different Threads
  * may reference the same ThreadLocal object, but the values they observe will
