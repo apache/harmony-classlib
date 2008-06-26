@@ -483,6 +483,43 @@ public class LdapContextServerMockedTest extends TestCase {
         }
     }
 
+    public void testAddToEnvironment_batchSizeProp() throws Exception {
+        server.setResponseSeq(new LdapMessage[] { new LdapMessage(
+                LdapASN1Constant.OP_BIND_RESPONSE, new BindResponse(), null) });
+
+        assertNull(env.get(Context.REFERRAL));
+        InitialDirContext initialDirContext = new InitialDirContext(env);
+
+        initialDirContext.addToEnvironment(Context.BATCHSIZE, "4");
+        assertEquals("4", initialDirContext.getEnvironment().get(
+                Context.BATCHSIZE));
+
+        try {
+            initialDirContext.addToEnvironment(Context.BATCHSIZE, "wrong");
+            fail("Should throw NumberFormatException");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+        assertEquals("4", initialDirContext.getEnvironment().get(
+                Context.BATCHSIZE));
+
+        try {
+            initialDirContext.addToEnvironment(Context.BATCHSIZE, "3.3");
+            fail("Should throw NumberFormatException");
+        } catch (NumberFormatException e) {
+            // expected
+        }
+        assertEquals("4", initialDirContext.getEnvironment().get(
+                Context.BATCHSIZE));
+
+        try {
+            initialDirContext.addToEnvironment(Context.BATCHSIZE, new Object());
+            fail("Should throw ClassCastException");
+        } catch (ClassCastException e) {
+            // expected
+        }
+    }
+
     public void testReconnect() throws Exception {
         Control[] expected = new Control[] { new PagedResultsControl(10,
                 Control.NONCRITICAL) };

@@ -145,6 +145,8 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
 
     private String[] binaryAttributes;
 
+    private int batchSize = 0;
+
     private static final Control NON_CRITICAL_MANAGE_REF_CONTROL = new ManageReferralControl(
             Control.NONCRITICAL);
 
@@ -1188,6 +1190,7 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     LdapSearchResult doSearch(SearchOp op) throws NamingException {
         applyEnvChange();
 
+        op.setBatchSize(batchSize);
         if (env.get(LDAP_DEREF_ALIASES) != null) {
             String derefAliases = (String) env.get(LDAP_DEREF_ALIASES);
             if (derefAliases.equals("always")) {
@@ -1357,19 +1360,19 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
     LdapSearchResult doSearch(String dn, Filter filter, SearchControls controls)
             throws NamingException {
         SearchOp op = new SearchOp(dn, controls, filter);
-        String stringValue = (String) env.get(Context.BATCHSIZE);
-        if (stringValue == null) {
-            op.setBatchSize(0);
-        } else {
-            op.setBatchSize(Integer.valueOf(stringValue).intValue());
-        }
-
         return doSearch(op);
     }
 
     public Object addToEnvironment(String s, Object o) throws NamingException {
         if (s == null || o == null) {
             throw new NullPointerException();
+        }
+
+        if (s.equals(Context.BATCHSIZE)) {
+            batchSize = Integer.parseInt((String) o);
+        } else if (s.equals(LDAP_ATTRIBUTES_BINARY)) {
+            String value = (String) o;
+            binaryAttributes = value.trim().split(" ");
         }
 
         Object preValue = env.put(s, o);
@@ -1388,11 +1391,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             isReBind = true;
         }
 
-        if (s.equals(LDAP_ATTRIBUTES_BINARY)) {
-            String value = (String) o;
-            StringTokenizer st = new StringTokenizer(value.trim());
-            binaryAttributes = value.trim().split(" ");
-        }
         return preValue;
     }
 
@@ -1901,6 +1899,12 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
             throw new NullPointerException();
         }
 
+        if (s.equals(Context.BATCHSIZE)) {
+            batchSize = 0;
+        } else if (s.equals(LDAP_ATTRIBUTES_BINARY)) {
+            binaryAttributes = null;
+        }
+
         Object preValue = env.remove(s);
 
         // if s doesn't exist in env
@@ -1914,10 +1918,6 @@ public class LdapContextImpl implements LdapContext, EventDirContext {
                 isReConnect = true;
             }
             isReBind = true;
-        }
-
-        if (s.equals(LDAP_ATTRIBUTES_BINARY)) {
-            binaryAttributes = null;
         }
 
         return preValue;
