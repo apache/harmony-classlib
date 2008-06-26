@@ -31,7 +31,7 @@ public class DefaultMetalTheme extends MetalTheme {
     private static ColorUIResource primaryColor1 = new ColorUIResource(0x20, 0x50, 0x80);
     private static ColorUIResource primaryColor2 = new ColorUIResource(0x50, 0x80, 0xC0);
     private static ColorUIResource primaryColor3 = new ColorUIResource(0xC0, 0xE0, 0xFF);
-    private static ColorUIResource secondaryColor1 = new ColorUIResource(0x50, 0x50, 0x50);
+    private static ColorUIResource secondaryColor1 = new ColorUIResource(0x40, 0x40, 0x40);
     private static ColorUIResource secondaryColor2 = new ColorUIResource(0x80, 0x80, 0x80);
     private static ColorUIResource secondaryColor3 = new ColorUIResource(0xE0, 0xE0, 0xE0);
 
