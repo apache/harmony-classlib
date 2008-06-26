@@ -3,7 +3,6 @@ javax/swing/BoxLayoutTest.java
 javax/swing/DefaultDesktopManagerTest.java
 javax/swing/ImageIcon_MultithreadedTest.java
 javax/swing/JColorChooserTest.java
-javax/swing/JComboBoxTest.java
 javax/swing/JComponentTest.java
 javax/swing/JComponent_AddRemoveNotifyTest.java
 # should be checked once again: does it still hang?
