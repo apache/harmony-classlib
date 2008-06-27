@@ -109,11 +109,9 @@ public class ByteCode extends ClassFileEntry {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + getByteCodeForm().getOpcode();
+        result = prime * result + getByteCodeForm().hashCode();
         // Don't forget to take the operands = rewrite into account
-        for (int index = 1; index < rewrite.length; index++) {
-            result = result + rewrite[index];
-        }
+        result += rewrite.hashCode();
         return result;
     }
 
