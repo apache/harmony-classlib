@@ -352,7 +352,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketImpl
 
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) message, count, timeout);
+    (env, thisClz, fileDescriptor, (jlong) (IDATA)message, count, timeout);
 
   if (result > 0) {
     (*env)->SetByteArrayRegion(env, data, offset, result, (jbyte *) message);
@@ -377,7 +377,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_readSocketDirectImpl
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t hysocketP;
-  jbyte *message = (jbyte *) address;
+  jbyte *message = (jbyte *) (IDATA)address;
   I_32 result, localCount;
 
   hysocketP = getJavaIoFileDescriptorContentsAsAPointer(env, fileDescriptor);
@@ -446,7 +446,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketImpl
 
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) message, count);
+    (env, thisClz, fileDescriptor, (jlong)(IDATA) message, count);
 
 out:
   if ((U_8 *) message != internalBuffer) {
@@ -467,7 +467,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writeSocketDirectImpl
    jint count)
 {
   PORT_ACCESS_FROM_ENV(env);
-  jbyte *message = (jbyte *) address;
+  jbyte *message = (jbyte *) (IDATA)address;
   I_32 result = 0, sent = 0;
 
   if (sent < count) {
@@ -1097,7 +1097,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramImpl
 
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirectImpl
-    (env, thisClz, fileDescriptor, datagramPacket, (jlong) message, offset,
+    (env, thisClz, fileDescriptor, datagramPacket, (jlong)(IDATA)message, offset,
      localCount, timeout, peek);
 
   if (result > 0) {
@@ -1119,7 +1119,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_receiveDatagramDirectImpl
    jint timeout, jboolean peek)
 {
   PORT_ACCESS_FROM_ENV(env);
-  jbyte *message = (jbyte *) address;
+  jbyte *message = (jbyte *) (IDATA)address;
   hysocket_t hysocketP;
   hysockaddr_struct sockaddrP;
   I_32 result, localCount;
@@ -1192,7 +1192,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramImpl
 
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirectImpl
-    (env, thisClz, fileDescriptor, datagramPacket, (jlong) message, offset,
+    (env, thisClz, fileDescriptor, datagramPacket, (jlong)(IDATA)message, offset,
      localCount, timeout, peek);
 
   if (result > 0) {
@@ -1217,7 +1217,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_recvConnectedDatagramDirec
 {
   PORT_ACCESS_FROM_ENV(env);
   hysocket_t hysocketP;
-  jbyte *message = (jbyte *) address;
+  jbyte *message = (jbyte *) (IDATA)address;
   I_32 result;
   I_32 localCount;
   I_32 flags = HYSOCK_NOFLAGS;
@@ -1293,7 +1293,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramImpl
   (*env)->GetByteArrayRegion(env, data, offset, msgLength, message);
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) message, offset, msgLength,
+    (env, thisClz, fileDescriptor, (jlong) (IDATA)message, offset, msgLength,
      targetPort, bindToDevice, trafficClass, inetAddress);
   hymem_free_memory(message);
   return result;
@@ -1311,7 +1311,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendDatagramDirectImpl
    jint trafficClass, jobject inetAddress)
 {
   PORT_ACCESS_FROM_ENV(env);
-  jbyte *message = (jbyte *) address;
+  jbyte *message = (jbyte *) (IDATA)address;
   jbyte nhostAddrBytes[HYSOCK_INADDR6_LEN];
   int length;
 
@@ -1388,7 +1388,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramImpl
   (*env)->GetByteArrayRegion(env, data, offset, msgLength, message);
   result =
     Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirectImpl
-    (env, thisClz, fileDescriptor, (jlong) message, offset, msgLength,
+    (env, thisClz, fileDescriptor, (jlong) (IDATA)message, offset, msgLength,
      bindToDevice);
   /* ok       free the buffer and return the length sent  */
   hymem_free_memory(message);
@@ -1406,7 +1406,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_sendConnectedDatagramDirec
    jint offset, jint msgLength, jboolean bindToDevice)
 {
   PORT_ACCESS_FROM_ENV(env);
-  jbyte *message = (jbyte *) address;
+  jbyte *message = (jbyte *) (IDATA)address;
   I_32 result = 0;
   I_32 sent = 0;
   hysocket_t socketP;
