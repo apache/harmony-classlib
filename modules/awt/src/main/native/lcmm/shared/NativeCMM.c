@@ -21,6 +21,7 @@
  */
 
 #include "NativeCMM.h"
+#include <string.h>
 
 static LCMSBOOL cmsInitialized = FALSE; 
 static char *errMsg = NULL;
