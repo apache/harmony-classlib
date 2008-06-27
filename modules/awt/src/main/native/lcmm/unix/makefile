@@ -15,17 +15,16 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-LCMS_DIR=$(HY_HDK)/../depends/libs/build/lcms
-
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include -I$(LCMS_DIR)
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include $(LCMS_INCLUDES)
 
 BUILDFILES = \
   $(SHAREDSUB)/cmmerror.o \
   $(SHAREDSUB)/cmmio.o \
   $(SHAREDSUB)/cmmxforms.o \
   $(SHAREDSUB)/NativeCMM.o \
-  $(SHAREDSUB)/NativeImageFormat.o \
-  liblcms.a
+  $(SHAREDSUB)/NativeImageFormat.o
+
+OSLIBS += -llcms
 
 ifneq ($(HY_ZIP_API),true)
 MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
@@ -38,6 +37,3 @@ DLLNAME=../liblcmm$(HY_SHLIB_SUFFIX)
 EXPNAME=HYLCMM_0.1
 
 include $(HY_HDK)/build/make/rules.mk
-
-liblcms.a: $(LCMS_DIR)/liblcms.$(HY_PLATFORM)
-	cp $< $@

@@ -164,168 +164,29 @@
 	<touch file="${xerces.dir}/xercesImpl.jar" />
     </target>
 
-    <!-- 
-       *  FIXME : the following awful little hack is because we noticed that for whatever
-       *  reason, we can't link with libjpg.a et al on at least to kinds of 64-bit linux
-      -->
-
-    <target name="-check-unix-common" if="is.unix">
+    <target name="-check-unix" if="is.unix">
         
         <property name="lcms.msg"
                   value="liblcms development package not installed
-${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
 ${line.separator}For Fedora try: yum install lcms-devel" />
-        <mkdir dir="depends/libs/build/lcms" />
-        <check-one-link src="${lcms.home}/include/icc34.h"
-                        dest="depends/libs/build/lcms/icc34.h"
-                        message="${lcms.msg}" />
-        <check-one-link src="${lcms.home}/include/lcms.h"
-                        dest="depends/libs/build/lcms/lcms.h"
-                        message="${lcms.msg}" />
+        <check-os-file src="${lcms.home}/include/lcms.h"
+                       message="${lcms.msg}" />
 
         <property name="png.msg"
                   value="libpng development package not installed
-${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
 ${line.separator}For Fedora try: yum install libpng-devel" />
-        <mkdir dir="depends/libs/build/png" />
-        <check-one-link src="${png.home}/include/pngconf.h"
-                        dest="depends/libs/build/png/pngconf.h"
-                        message="${png.msg}" />
-        <check-one-link src="${png.home}/include/png.h"
-                        dest="depends/libs/build/png/png.h"
-                        message="${png.msg}" />
+        <check-os-file src="${png.home}/include/png.h"
+                       message="${png.msg}" />
 
         <property name="jpeg.msg"
                   value="libjpeg development package not installed
-${line.separator}See depends/libs/build/README.txt for further details.
 ${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
 ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <mkdir dir="depends/libs/build/jpeg" />
-        <check-one-link src="${jpeg.home}/include/jconfig.h"
-                        dest="depends/libs/build/jpeg/jconfig.lnx"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jpeglib.h"
-                        dest="depends/libs/build/jpeg/jpeglib.h"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jmorecfg.h"
-                        dest="depends/libs/build/jpeg/jmorecfg.h"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jerror.h"
-                        dest="depends/libs/build/jpeg/jerror.h"
-                        message="${jpeg.msg}" />
-    </target>
-
-    <target name="-check-unix-x86" if="is.x86" unless="is.windows" depends="-check-unix-common">
-        <check-one-link src="${lcms.home}/lib/liblcms.a"
-                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
-                        message="${lcms.msg}" />
-
-        <check-one-link src="${png.home}/lib/libpng.a"
-                        dest="depends/libs/build/png/libpng.${hy.platform}"
-                        message="${png.msg}" />
-
-        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
-                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
-                        message="${jpeg.msg}" />
-    </target>
-
-    <target name="-check-unix-x86_64" if="is.x86_64" unless="is.windows" depends="-check-unix-common">
-        <condition property="lcms.lib.home" value="${lcms.home}/lib64" else="${lcms.home}/lib">
-            <available file="${lcms.home}/lib64/liblcms.so"/>
-        </condition>
-        <check-one-link src="${lcms.lib.home}/liblcms.so"
-                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
-                        message="${lcms.msg}" />
-
-        <condition property="png.lib.home" value="${png.home}/lib64" else="${png.home}/lib">
-            <available file="${png.home}/lib64/libpng.so"/>
-        </condition>
-        <check-one-link src="${png.lib.home}/libpng.so"
-                        dest="depends/libs/build/png/libpng.${hy.platform}"
-                        message="${png.msg}" />
-
-        <condition property="jpeg.lib.home" value="${jpeg.home}/lib64" else="${jpeg.home}/lib">
-            <available file="${jpeg.home}/lib64/libjpeg.so"/>
-        </condition>
-        <check-one-link src="${jpeg.lib.home}/libjpeg.so"
-                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
-                        message="${jpeg.msg}" />
-    </target>
-
-    <target name="-check-unix-ia64" if="is.ia64" unless="is.windows" depends="-check-unix-common">
-        <check-one-link src="${lcms.home}/lib/liblcms.a"
-                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
-                        message="${lcms.msg}" />
-
-        <check-one-link src="${png.home}/lib/libpng.a"
-                        dest="depends/libs/build/png/libpng.${hy.platform}"
-                        message="${png.msg}" />
-
-        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
-                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
-                        message="${jpeg.msg}" />
-    </target>
-
-    <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64, -check-unix-ia64">
- 
-<!--        <property name="lcms.msg"
-                  value="liblcms development package not installed
-${line.separator}See depends/libs/build/README.txt for further details.
-${line.separator}For Debian/Ubuntu try: apt-get install liblcms1-dev
-${line.separator}For Fedora try: yum install lcms-devel" />
-        <mkdir dir="depends/libs/build/lcms" />
-        <check-one-link src="${lcms.home}/lib/liblcms.a"
-                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
-                        message="${lcms.msg}" />
-        <check-one-link src="${lcms.home}/include/icc34.h"
-                        dest="depends/libs/build/lcms/icc34.h"
-                        message="${lcms.msg}" />
-        <check-one-link src="${lcms.home}/include/lcms.h"
-                        dest="depends/libs/build/lcms/lcms.h"
-                        message="${lcms.msg}" />
-
-
-      <property name="png.msg"
-                  value="libpng development package not installed
-${line.separator}See depends/libs/build/README.txt for further details.
-${line.separator}For Debian/Ubuntu try: apt-get install libpng12-dev
-${line.separator}For Fedora try: yum install libpng-devel" />
-        <mkdir dir="depends/libs/build/png" />
-        <check-one-link src="${png.home}/lib/libpng.a"
-                        dest="depends/libs/build/png/libpng.${hy.platform}"
-                        message="${png.msg}" />
-        <check-one-link src="${png.home}/include/pngconf.h"
-                        dest="depends/libs/build/png/pngconf.h"
-                        message="${png.msg}" />
-        <check-one-link src="${png.home}/include/png.h"
-                        dest="depends/libs/build/png/png.h"
-                        message="${png.msg}" />
-
-
-       <property name="jpeg.msg"
-                  value="libjpeg development package not installed
-${line.separator}See depends/libs/build/README.txt for further details.
-${line.separator}For Debian/Ubuntu try: apt-get install libjpeg62-dev
-${line.separator}For Fedora try: yum install libjpeg-devel" />
-        <mkdir dir="depends/libs/build/jpeg" />
-        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
-                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jconfig.h"
-                        dest="depends/libs/build/jpeg/jconfig.lnx"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jpeglib.h"
-                        dest="depends/libs/build/jpeg/jpeglib.h"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jmorecfg.h"
-                        dest="depends/libs/build/jpeg/jmorecfg.h"
-                        message="${jpeg.msg}" />
-        <check-one-link src="${jpeg.home}/include/jerror.h"
-                        dest="depends/libs/build/jpeg/jerror.h"
-                        message="${jpeg.msg}" />
-    -->
+        <check-os-file src="${jpeg.home}/include/jconfig.h"
+                       message="${jpeg.msg}" />
 
     </target>
 
@@ -486,6 +347,32 @@ should be downloaded to:
 Run "ant fetch-depends" to automatically fetch dependencies.
 Note: Some of Harmony's dependencies are licensed under terms other
 than the Apache License v2.
+            </fail>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="check-os-file">
+        <attribute name="src" />
+        <attribute name="message" />
+        <sequential>
+            <echo level="info">Checking for system file @{src}</echo>
+        <available file="@{src}" type="file"
+                       property="@{src}.exists" />
+        <fail>
+        <condition>
+            <not>
+            <isset property="@{src}.exists" />
+            </not>
+        </condition>
+...
+
+Missing dependency.  The system file:
+
+  @{src}
+
+is missing.
+
+@{message}
             </fail>
         </sequential>
     </macrodef>
