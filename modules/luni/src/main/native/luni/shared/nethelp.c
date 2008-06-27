@@ -1571,7 +1571,7 @@ ioh_readbytesImpl (JNIEnv * env, jobject recv, jbyteArray buffer, jint offset,
   if (descriptor == 0)
     {
       /* hytty_get_chars() returns zero on EOF */
-      if ((result = hytty_get_chars (buf, count)) == 0)
+      if ((result = hytty_get_chars ((char*)buf, count)) == 0)
         result = -1;
     }
   else
