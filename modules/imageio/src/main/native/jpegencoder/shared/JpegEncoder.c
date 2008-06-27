@@ -371,7 +371,7 @@ Java_org_apache_harmony_x_imageio_plugins_jpeg_JPEGImageWriter_encode(JNIEnv *en
     if (setjmp(err_mgr->jmp_buffer)) {
         if (!(*env)->ExceptionOccurred(env)) {
             char msg_buffer[JMSG_LENGTH_MAX];
-            cinfo->err->format_message(cinfo, msg_buffer);
+            cinfo->err->format_message((j_common_ptr)cinfo, msg_buffer);
             throwNewExceptionByName(env, "javax/imageio/IIOException",
                                     msg_buffer);
         }
