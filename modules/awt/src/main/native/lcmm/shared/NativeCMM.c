@@ -28,10 +28,10 @@ static char *errMsg = NULL;
 int gl_cmsErrorHandler(int errorCode, const char *msg) {
   if(errorCode == LCMS_ERRC_ABORTED) {
     // Throw exception later, after returning control from cmm
-#ifndef ZOS
-    errMsg = _strdup(msg);
-#else
+#if defined(ZOS) || defined(LINUX)
     errMsg = strdup(msg);
+#else
+    errMsg = _strdup(msg);
 #endif
   }
 
