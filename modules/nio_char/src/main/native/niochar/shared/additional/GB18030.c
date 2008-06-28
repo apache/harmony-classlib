@@ -16,7 +16,7 @@
  */
 
 #include "GB18030.h"
-#define jlong2addr(a, x) ((a *)((int)(x)))
+#include "hycomp.h"
 
 #define linear(b1, b2, b3, b4) ((((b1)*10+(b2))*126L+(b3))*10L+(b4))
 static jbyte * unLinear(jint lin) {

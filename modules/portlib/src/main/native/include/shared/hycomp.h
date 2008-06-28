@@ -513,4 +513,10 @@ typedef float ESSINGLE;
 #define HY_SORT(base, nmemb, size, compare) qsort((base), (nmemb), (size), (compare))
 #endif
 
+/**
+ * Helper macros for storing/restoring pointers to jlong.
+ */
+#define jlong2addr(a, x) ((a *)((IDATA)(x)))
+#define addr2jlong(x) ((jlong)((IDATA)(x)))
+
 #endif /* hycomp_h */
