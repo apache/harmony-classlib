@@ -55,19 +55,21 @@
         </copy>
     </target>
 	
-	<target name="copy-zipsup-include" if="hy.skip.zip.api">
+    <target name="copy-zipsup-include" if="hy.skip.zip.api">
         <copy todir="${hy.hdk}/include" overwrite="yes">
             <fileset dir="${hy.archive.src.main.native}/include/shared">
                 <include name="zipsup.h" />
             </fileset>
         </copy>
-	</target>
+    </target>
     
-    <target name="overlay-oss" unless="hy.skip.zlib">
+    <target name="overlay-oss" depends="-unzip-oss,-ascii2ebcdic-conversion"
+            unless="hy.skip.zlib" />
+        
+    <target name="-unzip-oss">
         <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
         <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
         <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
-        <antcall target="-ascii2ebcdic-conversion" />
     </target>
 
     <target name="-ascii2ebcdic-conversion" if="is.zos">
@@ -166,22 +168,21 @@
     <!-- internal target for local and global test run sequence -->
     <target name="-test-module" depends="build, compile-tests, prepare-exclude, run-tests" />
 
-    <target name="clean">
+    <target name="clean" depends="clean-native-includes" >
         <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
         <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
         </delete>
         <delete failonerror="false" dir="bin"/>
-        <antcall target="clean-native-includes" />
     </target>
 
     <target name="clean-native-includes">
-    <delete failonerror="false">
-        <fileset dir="${hy.hdk}/include">
-        <include name="zipsup.h" />
-        </fileset>
-    </delete>
+        <delete failonerror="false">
+            <fileset dir="${hy.hdk}/include">
+                <include name="zipsup.h" />
+            </fileset>
+        </delete>
     </target>
 
     <target name="compile-java">
