@@ -106,10 +106,8 @@
         </jar>
     </target>
 
-    <target name="compile-tests">
-        <antcall target="compile-tests-api" />
-        <antcall target="compile-tests-impl" />
-    </target>
+    <target name="compile-tests"
+            depends="compile-tests-api,compile-tests-impl" />
 
     <target name="compile-tests-api">
         <echo message="Compiling LANG-MANAGEMENT API tests" />
@@ -168,10 +166,7 @@
                              result="${lang-management.exclude.file}"/>
     </target>
 
-    <target name="run-tests">
-        <antcall target="run-tests-api" />
-        <antcall target="run-tests-impl" />
-    </target>
+    <target name="run-tests" depends="run-tests-api,run-tests-impl" />
 
     <target name="run-tests-api">
         <mkdir dir="${hy.tests.reports}" />
