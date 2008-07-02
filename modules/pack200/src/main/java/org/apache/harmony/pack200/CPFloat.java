@@ -17,26 +17,19 @@
 package org.apache.harmony.pack200;
 
 
-public class CPString extends CPConstant {
+public class CPFloat extends CPConstant {
 
-    private final String string;
-    private final CPUTF8 utf8;
+    private float theFloat;
 
-    public CPString(CPUTF8 utf8) {
-        this.utf8 = utf8;
-        this.string = utf8.getUnderlyingString();
+    public CPFloat(float theFloat) {
+        this.theFloat = theFloat;
     }
 
-    public int compareTo(Object arg0) {
-        return string.compareTo(((CPString)arg0).string);
+    public int compareTo(Object obj) {
+        return Float.compare(theFloat, ((CPFloat)obj).theFloat);
     }
 
-    public String toString() {
-        return string;
+    public float getFloat() {
+        return theFloat;
     }
-
-    public int getIndexInCpUtf8() {
-        return utf8.getIndex();
-    }
-
 }

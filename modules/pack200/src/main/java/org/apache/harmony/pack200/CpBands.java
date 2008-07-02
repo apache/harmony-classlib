@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.ConstantDouble;
 import org.apache.bcel.classfile.ConstantFieldref;
@@ -69,6 +70,8 @@ public class CpBands extends BandSet {
     // private final Map stringsToCpString = new HashMap();
     private final Map stringsToCpClass = new HashMap();
     private final Map stringsToCpSignature = new HashMap();
+
+    private final Map constantsToCPConstant = new HashMap();
 
     private ConstantPool currentConstantPool;
     private JavaClass currentClass;
@@ -175,8 +178,8 @@ public class CpBands extends BandSet {
         int[] cpInt = new int[cp_Int.size()];
         int i = 0;
         for (Iterator iterator = cp_Int.iterator(); iterator.hasNext();) {
-            Integer integer = (Integer) iterator.next();
-            cpInt[i] = integer.intValue();
+            CPInt integer = (CPInt) iterator.next();
+            cpInt[i] = integer.getInt();
             i++;
         }
         out.write(encodeBandInt(cpInt, Codec.UDELTA5));
@@ -187,8 +190,8 @@ public class CpBands extends BandSet {
         int[] cpFloat = new int[cp_Float.size()];
         int i = 0;
         for (Iterator iterator = cp_Float.iterator(); iterator.hasNext();) {
-            Float fl = (Float) iterator.next();
-            cpFloat[i] = Float.floatToIntBits(fl.floatValue());
+            CPFloat fl = (CPFloat) iterator.next();
+            cpFloat[i] = Float.floatToIntBits(fl.getFloat());
             i++;
         }
         out.write(encodeBandInt(cpFloat, Codec.UDELTA5));
@@ -200,8 +203,8 @@ public class CpBands extends BandSet {
         int[] loBits = new int[cp_Long.size()];
         int i = 0;
         for (Iterator iterator = cp_Long.iterator(); iterator.hasNext();) {
-            Long lng = (Long) iterator.next();
-            long l = lng.longValue();
+            CPLong lng = (CPLong) iterator.next();
+            long l = lng.getLong();
             highBits[i] = (int) (l >> 32);
             loBits[i] = (int) l;
             i++;
@@ -216,8 +219,8 @@ public class CpBands extends BandSet {
         int[] loBits = new int[cp_Double.size()];
         int i = 0;
         for (Iterator iterator = cp_Double.iterator(); iterator.hasNext();) {
-            Double dbl = (Double) iterator.next();
-            long l = Double.doubleToLongBits(dbl.doubleValue());
+            CPDouble dbl = (CPDouble) iterator.next();
+            long l = Double.doubleToLongBits(dbl.getDouble());
             highBits[i] = (int) (l >> 32);
             loBits[i] = (int) l;
             i++;
@@ -305,7 +308,7 @@ public class CpBands extends BandSet {
     }
 
     public void finaliseBands() {
-        addCpUtf8("");
+        addCPUtf8("");
         removeSignaturesFromCpUTF8();
         addIndices();
         segmentHeader.setCp_Utf8_count(cp_Utf8.size());
@@ -361,7 +364,14 @@ public class CpBands extends BandSet {
     }
 
     public void addConstantDouble(ConstantDouble constant) {
-        cp_Double.add(new Double((constant).getBytes()));
+        double d = (constant).getBytes();
+        Double bigD = new Double(d);
+        CPDouble cpd = (CPDouble) constantsToCPConstant.get(bigD);
+        if(cpd == null) {
+            cpd = new CPDouble(d);
+            cp_Double.add(cpd);
+            constantsToCPConstant.put(bigD, cpd);
+        }
     }
 
     public void addConstantFieldref(ConstantFieldref constant) {
@@ -375,11 +385,25 @@ public class CpBands extends BandSet {
     }
 
     public void addConstantFloat(ConstantFloat constant) {
-        cp_Float.add(new Float((constant).getBytes()));
+        float f = (constant).getBytes();
+        Float bigF = new Float(f);
+        CPFloat cpf = (CPFloat) constantsToCPConstant.get(bigF);
+        if(cpf == null) {
+            cpf = new CPFloat(f);
+            cp_Float.add(cpf);
+            constantsToCPConstant.put(bigF, cpf);
+        }
     }
 
     public void addConstantInteger(ConstantInteger constant) {
-        cp_Int.add(new Integer((constant).getBytes()));
+        int i = (constant).getBytes();
+        Integer bigI = new Integer(i);
+        CPInt cpi = (CPInt) constantsToCPConstant.get(bigI);
+        if(cpi == null) {
+            cpi = new CPInt(i);
+            cp_Int.add(cpi);
+            constantsToCPConstant.put(bigI, cpi);
+        }
     }
 
     public void addConstantInterfaceMethodref(
@@ -394,7 +418,14 @@ public class CpBands extends BandSet {
     }
 
     public void addConstantLong(ConstantLong constant) {
-        cp_Long.add(new Long((constant).getBytes()));
+        long l = (constant).getBytes();
+        Long bigL = new Long(l);
+        CPLong cpl = (CPLong) constantsToCPConstant.get(bigL);
+        if(cpl == null) {
+            cpl = new CPLong(l);
+            cp_Long.add(cpl);
+            constantsToCPConstant.put(bigL, cpl);
+        }
     }
 
     public void addConstantMethodref(ConstantMethodref constant) {
@@ -415,32 +446,32 @@ public class CpBands extends BandSet {
 
     public void addConstantString(ConstantString constant) {
         String string = constant.getBytes(currentConstantPool);
-        // CPString cpString = (CPString) stringsToCpString.get(string);
-        // if(cpString == null) {
-        CPString cpString = new CPString(getCpUtf8(string));
-        cp_String.add(cpString);
-        // stringsToCpString.put(string, cpString);
-        // }
+        CPString cpString = (CPString) constantsToCPConstant.get(string);
+        if (cpString == null) {
+            cpString = new CPString(getCPUtf8(string));
+            cp_String.add(cpString);
+            constantsToCPConstant.put(string, cpString);
+        }
     }
 
     public void addConstantUtf8(ConstantUtf8 constant) {
         String utf8 = constant.getBytes();
         if (!defaultAttributeNames.contains(utf8)) {
             if (utf8.endsWith(".java")) {
-                if (!isPredictableSourceFileName(utf8)) {
-                    addCpUtf8(utf8);
+                if (!isPredictableSourceFileName(currentClass.getClassName(), utf8)) {
+                    addCPUtf8(utf8);
                 }
             } else {
-                addCpUtf8(utf8);
+                addCPUtf8(utf8);
             }
         }
     }
 
-    private void addCpUtf8(String utf8) {
-        getCpUtf8(utf8);
+    private void addCPUtf8(String utf8) {
+        getCPUtf8(utf8);
     }
 
-    public CPUTF8 getCpUtf8(String utf8) {
+    public CPUTF8 getCPUtf8(String utf8) {
         CPUTF8 cpUtf8 = (CPUTF8) stringsToCpUtf8.get(utf8);
         if (cpUtf8 == null) {
             cpUtf8 = new CPUTF8(utf8);
@@ -454,11 +485,11 @@ public class CpBands extends BandSet {
         getCPNameAndType(name, signature);
     }
 
-    public void addSignature(String signature) {
-        getSignature(signature);
+    public void addCPSignature(String signature) {
+        getCPSignature(signature);
     }
 
-    private CPSignature getSignature(String signature) {
+    public CPSignature getCPSignature(String signature) {
         CPSignature cpS = (CPSignature) stringsToCpSignature.get(signature);
         if (cpS == null) {
             List cpClasses = new ArrayList();
@@ -490,9 +521,9 @@ public class CpBands extends BandSet {
                     cpClasses.add(getCPClass((String) iterator2.next()));
                 }
 
-                signatureUTF8 = getCpUtf8(signatureString.toString());
+                signatureUTF8 = getCPUtf8(signatureString.toString());
             } else {
-                signatureUTF8 = getCpUtf8(signature);
+                signatureUTF8 = getCPUtf8(signature);
             }
             cpS = new CPSignature(signature, signatureUTF8, cpClasses);
             cp_Signature.add(cpS);
@@ -505,7 +536,7 @@ public class CpBands extends BandSet {
         className = className.replace('.', '/');
         CPClass cpClass = (CPClass) stringsToCpClass.get(className);
         if (cpClass == null) {
-            CPUTF8 cpUtf8 = getCpUtf8(className);
+            CPUTF8 cpUtf8 = getCPUtf8(className);
             cpClass = new CPClass(cpUtf8);
             cp_Class.add(cpClass);
             stringsToCpClass.put(className, cpClass);
@@ -522,24 +553,30 @@ public class CpBands extends BandSet {
         CPNameAndType nameAndType = (CPNameAndType) stringsToCpNameAndType
                 .get(descr);
         if (nameAndType == null) {
-            nameAndType = new CPNameAndType(getCpUtf8(name),
-                    getSignature(signature));
+            nameAndType = new CPNameAndType(getCPUtf8(name),
+                    getCPSignature(signature));
             stringsToCpNameAndType.put(descr, nameAndType);
             cp_Descr.add(nameAndType);
         }
         return nameAndType;
     }
 
-    public boolean isPredictableSourceFileName(String name) {
-        String className = currentClass.getClassName();
-        if (className.indexOf(".") != -1) {
-            className = className.substring(className.lastIndexOf(".") + 1);
+    public CPConstant getCPConstant(Constant theConstant, ConstantPool cp) {
+        Object key;
+        if(theConstant instanceof ConstantDouble) {
+            key = new Double(((ConstantDouble)theConstant).getBytes());
+        } else if (theConstant instanceof ConstantFloat) {
+            key = new Float(((ConstantFloat)theConstant).getBytes());
+        } else if (theConstant instanceof ConstantInteger) {
+            key = new Integer(((ConstantInteger)theConstant).getBytes());
+        } else if (theConstant instanceof ConstantLong) {
+            key = new Long(((ConstantLong)theConstant).getBytes());
+        } else if (theConstant instanceof ConstantString) {
+            key = ((ConstantString)theConstant).getBytes(cp);
+        } else {
+            throw new RuntimeException("Unexpected constant type: " + theConstant.getClass());
         }
-        if (className.indexOf("$") != -1) {
-            className = className.substring(0, className.indexOf("$"));
-        }
-        className += ".java";
-        return className.equals(name);
+        return (CPConstant) constantsToCPConstant.get(key);
     }
 
 }

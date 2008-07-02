@@ -248,6 +248,26 @@ public class SegmentHeader extends BandSet {
     }
 
 
+    public boolean have_class_flags_hi() {
+        return have_class_flags_hi;
+    }
+
+
+    public boolean have_field_flags_hi() {
+        return have_field_flags_hi;
+    }
+
+
+    public boolean have_method_flags_hi() {
+        return have_method_flags_hi;
+    }
+
+
+    public boolean have_code_flags_hi() {
+        return have_code_flags_hi;
+    }
+
+
     public void setIc_count(int ic_count) {
         this.ic_count = ic_count;
     }
@@ -344,6 +364,14 @@ public class SegmentHeader extends BandSet {
             }
             return objs[returnIndex];
         }
+    }
+
+    public int getDefaultMinorVersion() {
+        return minverCounter.getMostCommon();
+    }
+
+    public int getDefaultMajorVersion() {
+        return majverCounter.getMostCommon();
     }
 
 }

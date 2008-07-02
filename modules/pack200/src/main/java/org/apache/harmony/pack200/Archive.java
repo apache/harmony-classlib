@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.pack200;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,11 +42,11 @@ public class Archive {
 
     public Archive(JarInputStream inputStream, OutputStream outputStream) {
         this.inputStream = inputStream;
-        this.outputStream = outputStream;
+        this.outputStream = new BufferedOutputStream(outputStream);
     }
 
     public Archive(JarFile jarFile, OutputStream outputStream) {
-        this.outputStream = outputStream;
+        this.outputStream = new BufferedOutputStream(outputStream);
         this.jarFile = jarFile;
         inputStream = null;
     }

@@ -37,4 +37,41 @@ public abstract class BandSet {
         return defaultCodec.encode(ints);
     }
 
+    public boolean isPredictableSourceFileName(String className, String sourceFileName) {
+        if (className.indexOf(".") != -1) {
+            className = className.substring(className.lastIndexOf(".") + 1);
+        }
+        if (className.indexOf("$") != -1) {
+            className = className.substring(0, className.indexOf("$"));
+        }
+        className += ".java";
+        return className.equals(sourceFileName);
+    }
+
+    protected byte[] encodeFlags(long[] flags, BHSDCodec loCodec, BHSDCodec hiCodec,
+            boolean haveHiFlags) throws Pack200Exception {
+        if(!haveHiFlags) {
+            int[] loBits = new int[flags.length];
+            for (int i = 0; i < flags.length; i++) {
+                loBits[i] = (int) flags[i];
+            }
+            return encodeBandInt(loBits, loCodec);
+        } else {
+
+            int[] hiBits = new int[flags.length];
+            int[] loBits = new int[flags.length];
+            for (int i = 0; i < flags.length; i++) {
+                long l = flags[i];
+                hiBits[i] = (int) (l >> 32);
+                loBits[i] = (int) l;
+            }
+            byte[] hi = encodeBandInt(hiBits, hiCodec);
+            byte[] lo = encodeBandInt(loBits, loCodec);
+            byte[] total = new byte[hi.length + lo.length];
+            System.arraycopy(hi, 0, total, 0, hi.length);
+            System.arraycopy(lo, 0, total, hi.length + 1, lo.length);
+            return total;
+        }
+    }
+
 }

@@ -101,8 +101,8 @@ public class AttributeDefinitionBands extends BandSet {
         for (int i = 0; i < attributeDefinitionLayout.length; i++) {
             AttributeDefinition def = (AttributeDefinition) attributeDefinitions.get(i);
             attributeDefinitionHeader[i] = def.contextType | (def.index << 2);
-            attributeDefinitionName[i] = cpBands.getCpUtf8(def.name).getIndex();
-            attributeDefinitionLayout[i] = cpBands.getCpUtf8(def.layout).getIndex();
+            attributeDefinitionName[i] = cpBands.getCPUtf8(def.name).getIndex();
+            attributeDefinitionLayout[i] = cpBands.getCPUtf8(def.layout).getIndex();
         }
 
         out.write(encodeBandInt(attributeDefinitionHeader, Codec.BYTE1));
@@ -173,6 +173,11 @@ public class AttributeDefinitionBands extends BandSet {
             this.layout = layout;
         }
 
+    }
+
+    public int getIndex(Unknown attr) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

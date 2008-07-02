@@ -67,14 +67,14 @@ public class Segment implements Visitor {
     private ClassBands classBands;
     private BcBands bcBands;
     private FileBands fileBands;
-    
+
 
     public void pack(List classes, List files, OutputStream out) throws IOException, Pack200Exception {
         segmentHeader = new SegmentHeader();
         cpBands = new CpBands(segmentHeader);
         attributeDefinitionBands = new AttributeDefinitionBands(segmentHeader, cpBands);
         icBands = new IcBands(segmentHeader);
-        classBands = new ClassBands(cpBands, classes.size());
+        classBands = new ClassBands(segmentHeader, cpBands, attributeDefinitionBands, classes.size());
         bcBands = new BcBands();
         fileBands = new FileBands(segmentHeader, files);
 
@@ -96,6 +96,7 @@ public class Segment implements Visitor {
     }
 
     private void processClasses(List classes) {
+        segmentHeader.setClass_count(classes.size());
         for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
             JavaClass javaClass = (JavaClass) iterator.next();
             new DescendingVisitor(javaClass, this).visit();
@@ -219,7 +220,7 @@ public class Segment implements Visitor {
     }
 
     public void visitLocalVariable(LocalVariable obj) {
-        cpBands.addSignature(obj.getSignature());
+        cpBands.addCPSignature(obj.getSignature());
     }
 
     public void visitLocalVariableTable(LocalVariableTable obj) {

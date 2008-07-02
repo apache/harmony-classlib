@@ -17,26 +17,6 @@
 package org.apache.harmony.pack200;
 
 
-public class CPString extends CPConstant {
-
-    private final String string;
-    private final CPUTF8 utf8;
-
-    public CPString(CPUTF8 utf8) {
-        this.utf8 = utf8;
-        this.string = utf8.getUnderlyingString();
-    }
-
-    public int compareTo(Object arg0) {
-        return string.compareTo(((CPString)arg0).string);
-    }
-
-    public String toString() {
-        return string;
-    }
-
-    public int getIndexInCpUtf8() {
-        return utf8.getIndex();
-    }
+public abstract class CPConstant extends ConstantPoolEntry implements Comparable {
 
 }
