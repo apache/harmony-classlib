@@ -17,6 +17,7 @@
 package org.apache.harmony.unpack200;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -423,7 +424,8 @@ public class Segment {
     public void writeJar(JarOutputStream out) throws IOException,
             Pack200Exception {
         fileBands.processFileBits();
-        DataOutputStream dos = new DataOutputStream(out);
+        BufferedOutputStream buffer = new BufferedOutputStream(out);
+        DataOutputStream dos = new DataOutputStream(buffer);
         String[] fileName = fileBands.getFileName();
         long[] fileModtime = fileBands.getFileModtime();
         long[] fileOptions = fileBands.getFileOptions();
@@ -472,7 +474,6 @@ public class Segment {
             }
         }
         dos.flush();
-        out.flush();
     }
 
     public SegmentConstantPool getConstantPool() {
