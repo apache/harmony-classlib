@@ -203,7 +203,7 @@ public class BasicBordersTest extends SwingTestCase {
         assertEquals(new Insets(1, 1, 1, 1), border.getBorderInsets(testButton));
         if (isHarmony()) {
             assertEquals(new ColorUIResource(Color.WHITE), border.highlight);
-            assertEquals(new ColorUIResource(Color.DARK_GRAY), border.shadow);
+            assertEquals(new ColorUIResource(Color.GRAY), border.shadow);
         }
     }
 
