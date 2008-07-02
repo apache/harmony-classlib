@@ -28,8 +28,17 @@ import org.apache.harmony.unpack200.bytecode.forms.ByteCodeForm;
 public class ByteCode extends ClassFileEntry {
 
     public static ByteCode getByteCode(int opcode) {
-        return new ByteCode(0xFF & opcode);
+        int byteOpcode = 0xFF & opcode;
+        if(ByteCodeForm.get(byteOpcode).hasNoOperand()) {
+            if(null == noArgByteCodes[byteOpcode]) {
+                noArgByteCodes[byteOpcode] = new ByteCode(byteOpcode);
+            }
+            return noArgByteCodes[byteOpcode];
+        }
+        return new ByteCode(byteOpcode);
     }
+
+    private static ByteCode[] noArgByteCodes = new ByteCode[255];
 
     private final ByteCodeForm byteCodeForm;
 
