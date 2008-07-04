@@ -1103,7 +1103,7 @@ public class Utilities implements SwingConstants {
             py = heights;
             break;
         default:
-            assert false : "incorrect direction";
+            // do nothing to be compatible with RI
             return;
         }
 
