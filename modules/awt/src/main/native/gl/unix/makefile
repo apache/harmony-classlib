@@ -15,6 +15,8 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
+# TODO: Fix the warnings see HARMONY-5885
+WARNFLAGS :=
 
 INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include \
             -I/usr/X11R6/include -I/usr/include -Iinclude

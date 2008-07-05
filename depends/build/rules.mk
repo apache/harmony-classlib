@@ -17,8 +17,8 @@
 # Configuration Makefile
 #
 
-CFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CFLAGS)
-CXXFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CXXFLAGS)
+CFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CFLAGS) $(WARNFLAGS)
+CXXFLAGS := $(DEFINES) $(INCLUDES) $(OPT) $(CXXFLAGS) $(WARNFLAGS)
 EXPFILE = $(notdir $(basename $(DLLNAME))).exp
 
 # Convert $(LIBPATH)libblah.so to -L$(LIBPATH) ... -lblah, also for $(DLLPATH)
