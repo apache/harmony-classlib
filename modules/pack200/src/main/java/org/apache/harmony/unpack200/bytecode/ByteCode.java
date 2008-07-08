@@ -66,18 +66,7 @@ public class ByteCode extends ClassFileEntry {
     }
 
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final ByteCode other = (ByteCode) obj;
-        if (getByteCodeForm() != other.getByteCodeForm())
-            return false;
-        if (rewrite != other.rewrite)
-            return false;
-        return true;
+    	return this == obj;
     }
 
     public void extractOperands(OperandManager operandManager, Segment segment,
@@ -116,11 +105,11 @@ public class ByteCode extends ClassFileEntry {
     }
 
     public int hashCode() {
-        final int prime = 31;
+        final int prime = 41;
         int result = 1;
-        result = prime * result + getByteCodeForm().hashCode();
+        result = prime * result + getName().hashCode() + getByteCodeForm().hashCode();
         // Don't forget to take the operands = rewrite into account
-        result += rewrite.hashCode();
+        result += (prime * rewrite.hashCode());
         return result;
     }
 
