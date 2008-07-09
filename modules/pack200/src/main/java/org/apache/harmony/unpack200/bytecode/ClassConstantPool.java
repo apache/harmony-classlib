@@ -113,15 +113,13 @@ public class ClassConstantPool {
     }
 
     private void addNested(List classFileEntries) {
-        List newEntries = new ArrayList();
-
         for (int classFileIndex = 0; classFileIndex < classFileEntries.size(); classFileIndex++) {
             ClassFileEntry entry = (ClassFileEntry) classFileEntries.get(classFileIndex);
             ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
 
             // Add all nestedEntries to the newEntries list
             for(int nestedEntriesIndex = 0; nestedEntriesIndex < nestedEntries.length; nestedEntriesIndex++) {
-                newEntries.add(nestedEntries[nestedEntriesIndex]);
+                add(nestedEntries[nestedEntriesIndex]);
             }
 
             // If the entry is a bytecode that needs to start the
@@ -134,9 +132,6 @@ public class ClassConstantPool {
                     }
                 }
             }
-        }
-        for (Iterator iterator = newEntries.iterator(); iterator.hasNext();) {
-            add((ClassFileEntry) iterator.next());
         }
     }
 
