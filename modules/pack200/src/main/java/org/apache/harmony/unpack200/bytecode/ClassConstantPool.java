@@ -114,14 +114,24 @@ public class ClassConstantPool {
 
     private void addNested(List classFileEntries) {
         List newEntries = new ArrayList();
-        for (Iterator iterator = classFileEntries.iterator(); iterator
-                .hasNext();) {
-            ClassFileEntry entry = (ClassFileEntry) iterator.next();
+
+        for (int classFileIndex = 0; classFileIndex < classFileEntries.size(); classFileIndex++) {
+            ClassFileEntry entry = (ClassFileEntry) classFileEntries.get(classFileIndex);
             ClassFileEntry[] nestedEntries = entry.getNestedClassFileEntries();
-            newEntries.addAll(Arrays.asList(nestedEntries));
+
+            // Add all nestedEntries to the newEntries list
+            for(int nestedEntriesIndex = 0; nestedEntriesIndex < nestedEntries.length; nestedEntriesIndex++) {
+                newEntries.add(nestedEntries[nestedEntriesIndex]);
+            }
+
+            // If the entry is a bytecode that needs to start the
+            // class pool, add all the nestedEntries to the
+            // mustStartClassPool as well.
             if(entry instanceof ByteCode) {
                 if(((ByteCode)entry).nestedMustStartClassPool()) {
-                    mustStartClassPool.addAll(Arrays.asList(nestedEntries));
+                    for(int nestedEntriesIndex = 0; nestedEntriesIndex < nestedEntries.length; nestedEntriesIndex++) {
+                        mustStartClassPool.add(nestedEntries[nestedEntriesIndex]);
+                    }
                 }
             }
         }
